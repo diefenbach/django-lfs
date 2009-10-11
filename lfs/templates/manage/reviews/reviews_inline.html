@@ -1,0 +1,187 @@
+{% load i18n %}
+{% load lfs_tags %}
+
+<form action="{% url lfs_set_review_filters %}"
+      method="POST">
+
+	<table class="filters">
+		<tr>
+			<td class="discreet">{% trans "Pages" %}</td>
+			<td class="discreet">{% trans "Name" %}</td>
+			<td class="discreet">{% trans "Active" %}</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="navigation-pages">
+				    {% if page.has_previous %}
+				        <a class="ajax-link"
+				           href="{% url lfs_reviews_inline %}?page=1">
+				            <img src="{{MEDIA_URL}}lfs/icons/resultset_first.png"
+				                 alt="{% trans 'First' %}"
+				                 title="{% trans 'First' %}" />
+						</a>
+				        <a class="ajax-link"
+				           href="{% url lfs_reviews_inline %}?page={{ page.previous_page_number }}">
+				            <img src="{{MEDIA_URL}}lfs/icons/resultset_previous.png"
+				                 alt="{% trans 'Previous' %}"
+				                 title="{% trans 'Previous' %}" />
+						</a>
+				    {% else %}
+				        <img src="{{MEDIA_URL}}lfs/icons/resultset_first.png"
+				             alt="{% trans 'First' %}"
+				             title="{% trans 'First' %}" />
+				        <img src="{{MEDIA_URL}}lfs/icons/resultset_previous.png"
+				             alt="{% trans 'Previous' %}"
+				             title="{% trans 'Previous' %}" />
+				    {% endif %}
+
+				    {{ page.number }} {% trans "of" %} {{ paginator.num_pages }}
+
+				    {% if page.has_next %}
+				        <a class="ajax-link"
+				           href="{% url lfs_reviews_inline %}?page={{ page.next_page_number }}">
+				            <img src="{{MEDIA_URL}}lfs/icons/resultset_next.png"
+				                 alt="{% trans 'Next' %}"
+				                 title="{% trans 'Next' %}" />
+						</a>
+				        <a class="ajax-link"
+				           href="{% url lfs_reviews_inline %}?page={{ paginator.num_pages }}">
+				            <img src="{{MEDIA_URL}}lfs/icons/resultset_last.png"
+				                 alt="{% trans 'Last' %}"
+				                 title="{% trans 'Last' %}" />
+						</a>
+
+				    {% else %}
+				        <span>
+				            <img src="{{MEDIA_URL}}lfs/icons/resultset_next.png"
+				                 alt="{% trans 'Next' %}"
+				                 title="{% trans 'Next' %}" />
+				        </span>
+				        <span>
+				            <img src="{{MEDIA_URL}}lfs/icons/resultset_last.png"
+				                 alt="{% trans 'Last' %}"
+				                 title="{% trans 'Last' %}" />
+				        </span>
+				    {% endif %}
+				</div>
+			</td>
+			<td>
+				<input type="text"
+				       name="name"
+					   value="{{ name }}">
+			</td>
+			<td>
+				<select name="active">
+					<option value="">---</option>
+					<option {% ifequal active "1" %}selected="selected"{% endifequal %}value="1">{% trans "Yes" %}</option>
+					<option {% ifequal active "0" %}selected="selected"{% endifequal %}value="0">{% trans "No" %}</option>
+				</select>
+			</td>
+			<td>
+				<input type="submit"
+				       class="ajax-save-button-2" />
+	
+				<a href="{% url lfs_reset_review_filters %}"
+				   class="ajax-link reset">&nbsp;</a>
+			</td>
+		</tr>
+	</table>
+</form>
+<table class="lfs-manage-table">
+    <tr>
+        <th class="tiny">
+			<a class="ajax-link"
+			   href='{% url lfs_set_review_ordering "id" %}'>
+            	{% trans 'ID' %}
+           	</a>
+        </th>
+        <th class="middle">
+			<a class="ajax-link"
+			   href='{% url lfs_set_review_ordering "creation_date" %}'>
+            	{% trans 'Creation date' %}
+			</a>	
+        </th>
+        <th class="long">
+			<a class="ajax-link"
+			   href='{% url lfs_set_review_ordering "user_name" %}'>
+            	{% trans 'Name' %}
+			</a>
+        </th>
+        <th>
+			<a class="ajax-link" 
+			   href='{% url lfs_set_review_ordering "user_email" %}'>
+            	{% trans 'E-Mail' %}
+			</a>
+        </th>
+        <th>
+			<a class="ajax-link" 
+			   href='{% url lfs_set_review_ordering "product" %}'>
+            	{% trans 'Product' %}
+			</a>
+        </th>
+        <th class="small">
+			<a class="ajax-link"
+			   href='{% url lfs_set_review_ordering "score" %}'>
+            	{% trans 'Score' %}
+			</a>	
+        </th>
+        <th class="small">
+            {% trans 'Comment' %}
+        </th>
+        <th class="tiny">
+            {% trans 'Active' %}
+        </th>
+    </tr>
+
+    {% for review in page.object_list %}
+        <tr class="clickable"
+            onclick="window.location='{% url lfs_manage_review review.id %}'">
+            <td>
+               	{{ review.id }}
+            </td>
+        	<td>
+                {{ review.creation_date|date:"d.m.Y" }}
+            </td>
+            <td>
+				{% if review.user_name %}
+					{{ review.user_name }}
+				{% else %}
+					---
+				{% endif %}                
+            </td>
+            <td>
+				{% if review.user_email %}
+					{{ review.user_email }}
+				{% else %}
+					---
+				{% endif %}
+            </td>
+            <td>
+				<a href="{{ review.content.get_absolute_url }}">
+					{{ review.content.get_name }}
+				</a>	                
+            </td>
+            <td>
+				{{ review.score }}
+            </td>
+            <td>
+				{% if review.comment %}
+					<img src="/media/lfs/icons/tick.png"
+					     alt="{% trans 'Yes' %}">
+				{% else %}				
+					<img src="/media/lfs/icons/delete.png"
+					     alt="{% trans 'No' %}">
+				{% endif %}				
+            </td>
+            <td>
+				{% if review.active %}
+					<img src="/media/lfs/icons/tick.png"
+					     alt="{% trans 'Yes' %}">
+				{% else %}				
+					<img src="/media/lfs/icons/delete.png"
+					     alt="{% trans 'No' %}">
+				{% endif %}				
+            </td>
+        </tr>
+    {% endfor %}
+</table>

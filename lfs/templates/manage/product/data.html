@@ -1,0 +1,226 @@
+{% load i18n lfs_tags %}
+
+<script type="text/javascript">
+    $(function() {
+        tinyMCE.execCommand('mceAddControl', true, 'id_description');
+        tinyMCE.execCommand('mceAddControl', true, 'id_short_description');
+    });
+</script>
+
+<h2>{% trans 'Product data' %}</h2>
+
+<form id="product-data-form"
+      action="{% url lfs.manage.views.edit_product_data product.id %}"
+      method="post">
+
+        <div class="field">
+            <div class="label">
+                {{ form.active.label_tag }}:
+            </div>
+            <div>
+                {{ form.active }}
+            </div>
+        </div>
+        
+        <div class="field">
+            <div class="label">
+                    {% if product.is_variant %}
+                    {{ form.active_name }}
+                {% endif %}
+
+                {{ form.name.label_tag }}:
+            </div>
+
+            {% if form.name.errors %}
+                <div class="error">
+                    {{ form.name }}
+                    {{ form.name.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.name }}
+                    {% if product.is_variant %}
+                        {{ product.parent.name }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.slug.label_tag }}:
+            </div>
+
+            {% if form.slug.errors %}
+                <div class="error">
+                    {{ form.slug }}
+                    {{ form.slug.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.slug }}
+                    {% if product.is_variant %}
+                        {{ product.parent.slug }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {% if product.is_variant %}
+                    {{ form.active_sku }}
+                {% endif %}
+
+                {{ form.sku.label_tag }}:
+            </div>
+
+            {% if form.sku.errors %}
+                <div class="error">
+                    {{ form.sku }}
+                    {{ form.sku.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.sku }}
+                    {% if product.is_variant %}
+                        {{ product.parent.sku }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {% if product.is_variant %}
+                    {{ form.active_price }}
+                {% endif %}
+
+                {{ form.price.label_tag }}:
+            </div>
+
+            {% if form.price.errors %}
+                <div class="error">
+                    {{ form.price }}
+                    {{ form.price.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.price }}
+                    {% if product.is_variant %}
+                        {{ product.parent.price|currency }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        {% if not product.is_variant %}
+            <div class="field">
+                <div class="label">
+                    {{ form.tax.label_tag }}:
+                </div>
+
+                {% if form.tax.errors %}
+                    <div class="error">
+                        {{ form.tax }}
+                        {{ form.tax.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.tax }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if product.is_variant %}
+            <div class="field">
+                <div class="label">
+                    {{ form.for_sale.label_tag }}:
+                </div>
+                <div>
+                    {{ form.active_for_sale }}
+
+                    {% if product.parent.for_sale %}
+                        {% trans 'Yes' %}
+                    {% else %}
+                        {% trans 'No' %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="field">
+                <div class="label">
+                    {{ form.active_for_sale_price }}
+                    {{ form.for_sale_price.label_tag }}:
+                </div>
+                <div>
+                    {{ form.for_sale_price }}
+                    {{ product.parent.for_sale_price|currency }}
+                </div>
+
+            </div>
+        {% else %}
+            <div class="field">
+
+                <div class="label">
+                    {{ form.for_sale }}
+                    {{ form.for_sale.label_tag }}:
+                </div>
+
+                {% if form.for_sale_price.errors %}
+                    <div class="error">
+                        {{ form.for_sale_price }}
+                        {{ form.for_sale_price.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.for_sale_price }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="field">
+            <div class="label">
+                {% if product.is_variant %}
+                    {{ form.active_short_description }}
+                {% endif %}
+                {{ form.short_description.label_tag }}:
+            </div>
+
+            {% if form.short_description.errors %}
+                <div class="error">
+                    {{ form.short_description }}
+                    {{ form.short_description.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.short_description }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {% if product.is_variant %}
+                    {{ form.active_description }}
+                {% endif %}
+                {{ form.description.label_tag }}:
+            </div>
+
+            {% if form.description.errors %}
+                <div class="error">
+                    {{ form.description }}
+                    {{ form.description.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.description }}
+                </div>
+            {% endif %}
+        </div>
+
+        <input type="submit"
+               value="{% trans 'Save data' %}"
+               id="product-data-save-button" />
+</form>

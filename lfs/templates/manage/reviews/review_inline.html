@@ -1,0 +1,168 @@
+{% load i18n %}
+{% load lfs_tags %}
+
+<form action="{% url lfs_set_review_filters %}"
+      method="post">
+
+	<input type="hidden" name="came-from" value="review" />
+	<input type="hidden" name="review-id" value="{{ review.id }}" />
+
+    <table class="filters">
+		<tr>
+			<td class="discreet">{% trans "Name" %}</td>
+			<td class="discreet">{% trans "Active" %}</td>
+		</tr>
+		<tr>
+			<td>
+				<input type="text"
+				       name="name"
+					   value="{{ name }}">
+			</td>
+			<td>
+				<select name="active">
+					<option value="">---</option>
+					<option {% ifequal active "1" %}selected="selected"{% endifequal %}value="1">{% trans "Yes" %}</option>
+					<option {% ifequal active "0" %}selected="selected"{% endifequal %}value="0">{% trans "No" %}</option>
+				</select>
+			</td>
+			<td>
+				<input type="submit"
+				       class="ajax-save-button-2" />
+
+				<a href="{% url lfs_reset_review_filters %}?came-from=review;review-id={{ review.id }}"
+				   class="ajax-link reset">&nbsp;</a>
+			</td>
+		</tr>
+	</table>
+</form>
+
+
+<div class="site-actions">
+    <a class="overview"
+       href="{% url lfs_manage_reviews %}">{% trans 'Overview' %}</a>
+
+    <a class="delete confirmation-link"
+       data="{% trans 'Delete?' %}"
+       href="{% url lfs_delete_review review.id %}">
+       {% trans 'Delete review' %}</a>
+	
+	<form action="{% url lfs_set_review_state review.id %}"
+		  method="post"
+	      class="inline">
+		<label>{% trans "Active" %}:</label>
+
+		<select name="active">
+			<option {% ifequal review.active 1 %}selected="selected"{% endifequal %}value="1">{% trans "Yes" %}</option>
+			<option {% ifequal review.active 0 %}selected="selected"{% endifequal %}value="0">{% trans "No" %}</option>
+		</select>
+
+		<input class="ajax-save-button"
+			   type="submit"
+		       value='{% trans "Change" %}'>
+	</form>
+
+</div>
+
+<table class="lfs-manage-table">
+    <tr>
+        <th colspan="2">
+            {% trans 'General' %}
+        </th>
+    </tr>
+    <tr>
+        <td class="label"
+            style="width:150px">
+            {% trans 'ID' %}:
+        </td>
+		<td>
+            {{ review.id }}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'Active' %}:
+        </td>
+		<td>
+            {% if review.active %}
+            	{% trans "Yes" %}
+            {% else %}
+				{% trans "No" %}
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'Creation date' %}:
+        </td>
+		<td>
+			{{ review.creation_date|date:"d.m.Y - H:i" }}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'Name' %}:
+        </td>
+		<td>
+			{% if review.name %}
+				{{ review.user_name }}
+			{% else %}
+				---
+			{% endif %}
+			{% if review.user_email %}({{ review.user_email }}){% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'E-Mail' %}:
+        </td>
+		<td>
+			{% if review.user_email %}
+				{{ review.user_email }}
+			{% else %}
+				---
+			{% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'Registriert' %}:
+        </td>
+		<td>
+			{% if review.user %}
+				{% trans "Yes" %}
+			{% else %}
+				{% trans "No" %}
+			{% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'Product' %}:
+        </td>
+		<td>
+			<a href="{{ review.content.get_absolute_url }}">
+				{{ review.content.get_name }}
+			</a>            
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'Score' %}:
+        </td>
+		<td>
+            {{ review.score }}
+        </td>
+    </tr>
+</table>
+<table class="lfs-manage-table">
+	<tr>
+		<th>
+			{% trans 'Comment' %}:
+		</th>
+	</tr>
+    <tr>
+		<td>
+            {{ review.comment|safe }}
+        </td>
+    </tr>
+</table>

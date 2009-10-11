@@ -1,0 +1,14 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <h2 class="heading-middle">{% trans 'Utilities' %}</h2>
+	<ul>
+		<li>
+			<a href="{% url lfs_clear_cache %}">{% trans 'Clear Cache' %}</a>
+		</li>
+		<li>
+			<a href="{% url lfs_set_category_levels %}">{% trans 'Set category levels' %}</a>
+		</li>
+	</ul>
+{% endblock %}

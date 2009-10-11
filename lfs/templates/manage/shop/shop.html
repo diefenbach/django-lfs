@@ -1,0 +1,43 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+
+    <div class="site-actions">
+        <span class="label">{% trans 'Shop Preferences' %}</span>
+    </div>
+
+
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Shop' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#default-values">{% trans 'Default Values' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
+        </ul>
+
+        <div id="data">
+            <h2>{% trans 'Shop' %}</h2>
+            <form action="{% url lfs_manage_shop %}"
+                  method="post"
+                  enctype="multipart/form-data">
+                {% include "manage/lfs_form.html" %}
+                <input type="submit"
+                       value="{% trans 'Save shop' %}">
+            </form>
+        </div>
+        <div id="default-values">
+            {{ default_values }}
+        </div>
+        <div id="portlets">
+            {{ portlets|safe }}
+        </div>
+    </div>
+    <script>
+        $(function() {
+            tinyMCE.execCommand('mceAddControl', true, 'id_description');
+        });
+    </script>
+
+{% endblock %}

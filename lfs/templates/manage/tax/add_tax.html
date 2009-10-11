@@ -1,0 +1,42 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left_slot %}
+    {% for tax in taxes %}
+        <div>
+            <a href="{% url lfs_manage_tax tax.id %}">
+                {{tax.rate}}%
+            </a>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add tax' %}</a></li>            
+        </ul>
+
+        <div id="data">            
+            <form action="{% url lfs_add_tax %}"
+                  method="post">
+                {% include "manage/lfs_form.html" %}
+                <input type="submit"
+                       value="{% trans 'Add tax' %}">
+                
+                {% if  request.META.HTTP_REFERER %}
+                    <input type="button"
+                           onclick="window.location='{{request.META.HTTP_REFERER}}'"
+                           value="{% trans 'Cancel' %}" />
+                {% endif %}       
+            </form>
+        </div>
+    </div>    
+
+    <script>
+        $(function() {    
+            tinyMCE.execCommand('mceAddControl', true, 'id_body');
+        });    
+    </script>        
+{% endblock %}

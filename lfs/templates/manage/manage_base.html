@@ -1,0 +1,161 @@
+{% load i18n %}
+{% load sql %}
+{% load adminmedia %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>{% block title %}{% endblock %}</title>
+        <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/widgets.css" />
+        <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}lfs/css/lfs.manage.css" />
+        <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}lfs/jquery/jquery-ui-themeroller/jquery-ui-themeroller.css" />
+        <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}lfs/jquery/jquery.jgrowl.css" />
+        <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}lfs/jquery/superfish/superfish.css" />
+        <link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}lfs/jquery/jquery-treeview/jquery.treeview.css" />
+
+        <script type="text/javascript" src="/admin/jsi18n/"></script>
+        <script type="text/javascript" src="{% admin_media_prefix %}js/core.js"></script>
+        <script type="text/javascript" src="{% admin_media_prefix %}js/calendar.js"></script>
+        <script type="text/javascript" src="{% admin_media_prefix %}js/admin/DateTimeShortcuts.js"></script>
+
+        <script type="text/javascript" src="{% admin_media_prefix %}js/urlify.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}lfs/tiny_mce/jscripts/tiny_mce/tiny_mce.js"></script>
+
+        <script type="text/javascript" src="{{MEDIA_URL}}lfs/jquery/jquery.pack.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}lfs/jquery/jquery.livequery.pack.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}lfs/jquery/jquery.form.pack.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}lfs/jquery/jquery.jgrowl_minimized.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}lfs/jquery/jquery.cookie.pack.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}lfs/jquery/jquery-treeview/jquery.treeview.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}lfs/jquery/superfish/superfish.js"></script>
+
+        <script type="text/javascript" src="{{MEDIA_URL}}lfs/jquery/jquery-ui-personalized-1.5.3.packed.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}lfs/js/lfs.manage.js"></script>
+        <script type="text/javascript" src="{{MEDIA_URL}}lfs/js/json2.js"></script>
+
+        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/swfupload/swfupload.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/swfupload/swfupload.queue.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/swfupload/fileprogress.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/swfupload/handlers.js"></script>
+        <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/swfupload/default.css" />
+
+        {% block javascript %}{% endblock %}
+
+    </head>
+    <body class="{% block section %}{% endblock %}">
+
+        {# {% dbinfo %} #}
+
+        <div class="lfs-header">
+            <div class="logo">
+                <a href="{% url lfs_shop_view %}">
+                    <img src="{{MEDIA_URL}}lfs/img/logo.jpg"
+                         alt="LFS"
+                         title="LFS - Lightning Fast Shop"/>
+                </a>
+            </div>
+            <div class="username">
+                {% if user.is_authenticated %}
+                    {% if user.last_name %}
+                        <span>{{user.first_name}} {{user.last_name}}</span>
+                    {% else %}
+                        <span>{{ user.username }}</span>
+                    {% endif %}
+                    | <a class="logout"
+                         href="/logout">{% trans 'Logout' %}</a>
+                {% else %}
+                    <a href="/login">{% trans 'Login' %}</a>
+                {% endif %}
+            </div>
+
+            <table class="top-menu"
+                   width="100%"
+                   cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <ul class="sf-menu"
+                            width="100%">
+                            <li><a>{% trans 'Shop' %}</a>
+                                <ul>
+                                    <li><a href="{% url lfs_manage_shop %}">{% trans 'Preferences' %}</a></li>
+                                    <li><a href="{% url lfs_manage_actions %}">{% trans 'Actions' %}</a></li>
+                                    <li><a href="{% url lfs.manage.views.manage_shipping %}">{% trans 'Shipping Methods' %}</a></li>
+                                    <li><a href="{% url lfs_manage_delivery_times %}">{% trans 'Delivery Times' %}</a></li>
+                                    <li><a href="{% url lfs_manage_payment %}">{% trans 'Payment Methods' %}</a></li>
+                                    <li><a href="{% url lfs_manage_taxes %}">{% trans 'Taxes' %}</a></li>
+                                </ul>
+
+                            </li>
+                            <li><a>{% trans 'Catalog' %}</a>
+                                <ul>
+                                    <li><a href="{% url lfs_manage_product_dispatcher %}">{% trans 'Products' %}</a></li>
+                                    <li><a href="{% url lfs_manage_products %}">{% trans 'Product Overview' %}</a></li>
+                                    <li><a href="{% url lfs_manage_categories %}">{% trans 'Categories' %}</a></li>
+                                </ul>
+                            </li>
+                            <li><a>{% trans 'Properties' %}</a>
+                                <ul>
+                                    <li><a href="{% url lfs_manage_shop_properties %}">{% trans 'Properties' %}</a></li>
+                                    <li><a href="{% url lfs_manage_property_groups %}">{% trans 'Property Groups' %}</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a>{% trans 'HTML' %}</a>
+                                <ul>
+                                    <li><a href="{% url lfs_manage_pages %}">{% trans 'Pages' %}</a></li>
+                                    <li><a href="{% url lfs_manage_static_blocks %}">{% trans 'Static blocks' %}</a></li>
+                                </ul>
+                            </li>
+                            <li><a>{% trans 'Customers' %}</a>
+                                <ul>
+                                    <li><a href="{% url lfs_manage_customers %}">{% trans 'Customers' %}</a></li>
+                                    <li><a href="{% url lfs_orders %}">{% trans 'Orders' %}</a></li>
+                                    <li><a href="{% url lfs_manage_carts %}">{% trans 'Carts' %}</a></li>
+                                    <li><a href="{% url lfs_manage_reviews %}">{% trans 'Reviews' %}</a></li>
+                                </ul>
+                            </li>
+                            <li><a>{% trans 'Marketing' %}</a>
+                                <ul>
+                                    <li><a href="{% url lfs_manage_marketing %}">{% trans 'Topseller' %}</a></li>
+                                    <li><a href="{% url lfs_manage_rating_mails %}">{% trans 'Rating Mails' %}</a></li>
+                                </ul>
+                            </li>
+                            <li><a>{% trans 'Utils' %}</a>
+                                <ul>
+                                    <li><a href="{% url lfs_manage_utils %}">{% trans 'Miscellaneous' %}</a></li>
+                                    <li><a href="{% url lfs_export_dispatcher %}">{% trans 'Export' %}</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <table class="main">
+            <tr>
+                {% block left-slot-wrapper %}
+                    <td class="left-slot">
+                        {% block left_slot %}{% endblock %}
+                    </td>
+                {% endblock %}
+                <td class="middle-slot">
+                    {% block content %}{% endblock %}
+                </td>
+            </tr>
+        </table>
+
+        {% block footer %}
+            <div class="footer">
+                <p>{% trans 'Powered by' %} <a target="_blank" href="http://www.getlfs.com">LFS</a> &mdash; Lightning Fast Shop</p>
+                <p>
+                    <a target="_blank" href="http://www.getlfs.com">LFS</a> {% trans 'is a product of' %} <a target="_blank" href="http://www.iqpp.de">iqplusplus</a>
+                    &mdash; &copy; 2009 {% trans 'by' %} <a target="_blank" href="http://www.iqpp.de">iqplusplus</a> &mdash; {% trans 'All rights reserved' %}
+                </p>
+                <p>{% trans 'Distributed under the' %} <a target="_blank" href="http://www.opensource.org/licenses/bsd-license.php">{% trans 'BSD-License' %}</a></p>
+            </div>
+        {% endblock %}
+
+        <div id="dialog" title="LFC Dialog"></div>
+    </body>
+</html>

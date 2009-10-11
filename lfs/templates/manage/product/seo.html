@@ -1,0 +1,49 @@
+{% load i18n %}
+
+<h2>{% trans 'SEO' %}</h2>
+
+<form action="{% url lfs_manage_product_seo product.id %}"
+      method="post"
+      id="product-seo-form">
+    <div class="field">
+        <div class="label">
+            {% if product.is_variant %}
+                {{ form.active_meta_keywords }}
+            {% endif %}
+            {{ form.meta_keywords.label_tag }}:
+        </div>
+
+        {% if field.errors %}
+            <div class="error">
+                {{ form.meta_keywords }}
+                {{ field.meta_keywords.errors }}
+            </div>
+        {% else %}
+            <div>
+                {{ form.meta_keywords }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="field">
+        <div class="label">
+            {% if product.is_variant %}
+                {{ form.active_meta_description }}
+            {% endif %}
+                            
+            {{ form.meta_description.label_tag }}:
+        </div>
+    
+        {% if field.errors %}
+            <div class="error">
+                {{ form.meta_description }}
+                {{ field.meta_description.errors }}
+            </div>
+        {% else %}
+            <div>
+                {{ form.meta_description }}
+            </div>
+        {% endif %}
+    </div>
+    <input type="submit" value="Save SEO" class="seo-save-button" />
+</form>

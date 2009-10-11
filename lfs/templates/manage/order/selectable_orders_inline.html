@@ -1,0 +1,63 @@
+{% load i18n %}
+
+<div class="navigation-pages">
+
+    {% if page.has_previous %}
+        <a class="ajax-link"
+           href="{% url lfs_selectable_orders_inline %}?page=1">
+            <img src="{{MEDIA_URL}}lfs/icons/resultset_first.png"
+                 alt="{% trans 'First' %}"
+                 title="{% trans 'First' %}" />
+        </a>
+        <a class="ajax-link"
+           href="{% url lfs_selectable_orders_inline %}?page={{page.previous_page_number}}">
+            <img src="{{MEDIA_URL}}lfs/icons/resultset_previous.png"
+                 alt="{% trans 'Previous' %}"
+                 title="{% trans 'Previous' %}" />
+        </a>
+    {% else %}
+        <span>
+            <img src="{{MEDIA_URL}}lfs/icons/resultset_first.png"
+                 alt="{% trans 'First' %}"
+                 title="{% trans 'First' %}" />
+        </span>
+        <span>
+            <img src="{{MEDIA_URL}}lfs/icons/resultset_previous.png"
+                 alt="{% trans 'Previous' %}"
+                 title="{% trans 'Previous' %}" />
+        </span>
+    {% endif %}
+
+    {{page.number}}  {% trans 'of' %} {{paginator.num_pages}}
+
+    {% if page.has_next %}
+        <a class="ajax-link"
+           href="{% url lfs_selectable_orders_inline %}?page={{page.next_page_number}}">
+            <img src="{{MEDIA_URL}}lfs/icons/resultset_next.png"
+                 alt="{% trans 'Next' %}"
+                 title="{% trans 'Next' %}" />
+        </a>
+        <a class="ajax-link"
+           href="{% url lfs_selectable_orders_inline %}?page={{paginator.num_pages}}">
+            <img src="{{MEDIA_URL}}lfs/icons/resultset_last.png"
+                 alt="{% trans 'Last' %}"
+                 title="{% trans 'Last' %}" />
+        </a>
+    {% else %}
+        <img src="{{MEDIA_URL}}lfs/icons/resultset_next.png"
+             alt="{% trans 'Next' %}"
+             title="{% trans 'Next' %}" />
+        <img src="{{MEDIA_URL}}lfs/icons/resultset_last.png"
+             alt="{% trans 'Last' %}"
+             title="{% trans 'Last' %}" />
+    {% endif %}
+</div>
+
+{% for order in page.object_list %}
+    <div>
+        <a href="{% url lfs.manage.views.order_view order.id %}"
+           class="selectable {% ifequal order.id current_order.id %}selected{% endifequal %}">
+            {{ order.created|date:_("DATETIME_FORMAT") }}
+        </a>
+    </div>
+{% endfor %}

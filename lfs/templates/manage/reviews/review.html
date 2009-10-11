@@ -1,0 +1,16 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block section %}manage-review{% endblock %}
+
+{% block left_slot %}
+	<div id="selectable-reviews-inline">
+		{{ selectable_reviews_inline|safe }}
+	</div>
+{% endblock %}
+
+{% block content %}
+	<div id="review-inline">
+		{{ review_inline|safe }}
+	</div>
+{% endblock %}

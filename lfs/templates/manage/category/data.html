@@ -1,0 +1,20 @@
+{% load i18n %}
+
+<h2>{% trans 'Core data' %}</h2>
+
+<form action="{% url lfs_manage_category_edit_data category.id %}"
+      method="post"
+      class="category-data-form"
+      enctype="multipart/form-data">
+    {% include "manage/lfs_form.html" %}
+    <input value="{% trans 'Save' %}" 
+           type="submit" 
+           class="category-data-save-button"/>
+</form>
+<script>
+    $(function() {    
+        tinyMCE.execCommand('mceAddControl', true, 'id_description');
+        tinyMCE.execCommand('mceAddControl', true, 'id_short_description');
+    });    
+</script>    
+

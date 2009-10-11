@@ -1,0 +1,84 @@
+{% load i18n %}
+
+<h2 class="heading-middle">{% trans 'Step type' %}</h2>
+    <form id="shop-property-step-type-form"
+          action="{% url lfs_save_shop_property_step_type property.id %}"
+          method="post">
+
+    {{ step_type_form.step_type }}
+    
+    <input type="submit" 
+           value="{% trans 'Save step type' %}" 
+           name="Save"
+           class="shop-property-save-step-type-button" />    
+
+</form>
+
+{% if property.is_range_step_type %}
+    <h3 class="heading-middle">{% trans 'Step range' %}</h3>
+    <form id="shop-property-step-form"
+          action="{% url lfs_save_shop_property_step property.id %}"
+          method="post">
+    
+        {{ step_form.step }}
+        
+        <input type="submit" 
+               value="{% trans 'Save step' %}" 
+               name="Save"
+               class="shop-property-save-step-button" />
+    </form>
+    
+{% endif %}
+
+{% if property.is_steps_step_type %}
+    <h3 class="heading-middle">{% trans 'Steps' %}</h3>
+    <form id="shop-property-steps-form"
+          action="{% url lfs_add_shop_property_step property.id %}"
+          method="post">
+        <table>
+            <tr>
+                <td>
+                    <input class="number"
+                           type="text"
+                           size="10"
+                           name="start"
+                           value="" />
+                </td>
+                <td>
+                    <input type="submit"
+                           value="{% trans 'Add step' %}"
+                           name="add"
+                           class="shop-property-add-step-button" />
+                </td>
+            </tr>
+            {% for step in property.steps.all %}
+                <tr>
+                    <td>
+                        <input type="hidden" 
+                               name="step"
+                               value="{{step.id}}" />
+                           
+                        <input class="number"
+                               type="text"
+                               size="10"
+                               name="start-{{step.id}}"
+                               value="{{step.start}}" />
+                    </td>
+                    <td>
+                        <a class="confirmation-link"
+                           data="{% trans 'Delete?' %}" 
+                           href="{% url lfs_delete_shop_property_step step.id %}">
+                            <img src="{{MEDIA_URL}}lfs/icons/cross.png"
+                                 alt="{% trans 'Delete' %}"
+                                 title="{% trans 'Delete step' %}" />
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}                        
+        </table>
+        <input type="submit" 
+               value="{% trans 'Update steps' %}" 
+               name="update"
+               class="shop-property-add-step-button" />
+    </form>
+{% endif %}

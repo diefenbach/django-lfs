@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<br clear="both" />
+{% for product in page.object_list %}
+    <div style="padding-bottom:2px">
+        <a class="selectable {% ifequal product_id product.id %}selected{% endifequal %}"
+           id="selectable-product-id_{{ product.id }}"
+           href="{% url lfs.manage.views.manage_product product.id %}?page={{ page.number }}">
+            {{product.get_name}}
+        </a>
+
+        {# {% for variant in product.variants.all %} #}
+        {#     <div> #}
+        {#         <a class="selectable variant {% ifequal current_product variant.id %}selected{% endifequal %}" #}
+        {#            id="selectable-product-id_{{variant.id}}" #}
+        {#            href="{% url lfs.manage.views.manage_product variant.id %}"> #}
+        {#            {% if variant.get_name %} #}
+        {#                {{ variant.get_name }} #}
+        {#            {% else %} #}
+        {#                 {{ variant.slug }}                    #}
+        {#            {% endif %}                     #}
+        {#         </a> #}
+        {#     </div> #}
+        {# {% endfor %} #}
+
+    </div>
+{% endfor %}

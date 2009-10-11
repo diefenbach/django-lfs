@@ -1,0 +1,26 @@
+{% extends "manage/manage_base.html" %}
+
+{% load i18n %}
+{% load lfs_tags lfs_manage_tags %}
+
+{% block section %}manage-product{% endblock %}
+
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    
+    <div class="site-actions">
+        <span class="label">{% trans 'Topseller' %}</span>
+    </div>
+    <div id="product">
+        <div id="manage-tabs">
+            <ul>
+                <li class="ui-tabs-nav-item"><a href="#topseller">{% trans 'Topseller' %}</a></li>                
+            </ul>
+
+            <div id="topseller">
+                {{topseller|safe}}
+            </div>                        
+        </div>
+    </div>
+{% endblock %}

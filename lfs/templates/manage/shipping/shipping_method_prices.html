@@ -1,0 +1,61 @@
+{% load i18n %}
+
+<h2>{% trans 'Prices' %}</h2>
+<form action="{% url lfs_manage_add_shipping_price shipping_method.id %}"
+      method="post">
+    <input type="text" name="price" /> 
+    <input class="price-button" 
+           type="submit" value="{% trans 'Add price' %}" />
+</form>
+
+{% if prices %}
+    <h2 class="heading-middle">{% trans 'Existing prices' %}</h2>
+    <form action="{% url lfs_manage_update_shipping_prices shipping_method.id %}"
+          method="post">
+        <table>
+            <tr>
+                <th>
+                    <input type="checkbox" class="select-all-1" />
+                </th>
+                <th>
+                    {% trans 'Priority' %}
+                </th>
+                <th>
+                    {% trans 'Price' %}
+                </th>
+            </tr>
+            {% for price in prices  %}
+            <tr>
+                <td>
+                    <input type="checkbox" name="delete-{{price.id}}" class="select-1" />
+                </td>
+                <td>
+                    <input type="text" size="5" name="priority-{{price.id}}" value="{{price.priority}}" />
+                </td>
+                <td>
+                    <div>
+                        <input type="text" name="price-{{price.id}}" value="{{price.price}}" />
+                        <a href="{% url lfs_manage_shipping_price_criteria price.id %}"
+                           class="edit-price-criteria-button">{% trans 'Edit criteria' %}</a>                        
+                    </div>
+                    {% for criterion_object in price.criteria_objects.all %}
+                        <div style="padding-left:3px">
+                            {{criterion_object.criterion}}
+                        </div>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td></td>
+                <td colspan="2">
+                    <div class="manage-form-buttons">
+                        <input class="price-button" type="submit" name="delete" value="{% trans 'Delete prices' %}" />
+                        <input class="price-button" type="submit" name="update" value="{% trans 'Update prices' %}" />
+                    </div>
+                </td>
+            </tr>
+        
+        </table>
+    </form>
+{% endif %}

@@ -1,0 +1,53 @@
+{% load i18n %}
+
+<h2>{% trans 'Product values' %}</h2>
+
+<form id="update-product-values-form"
+      action="{% url lfs_update_product_values property_group.id %}"
+      method="post">
+    <table class="lfs-manage-table">
+        <tr>
+            <th>
+                {% trans 'Name' %}
+            </th>
+            {% for property in all_properties %}
+                <th>
+                    {{property.name}}
+                </th>
+            {% endfor %}            
+        </tr>
+        {% for product in products %}
+            <tr class="{% cycle 'even' 'odd' %}">
+                <td>
+					
+                    {{product.name}}
+                    <input type="hidden"
+                           name="product-id"
+                           value="{{product.id}}" />
+                </td>
+                {% for property in product.properties %}
+                    <td>
+                        {% if property.is_select_field %}
+                            <select name="property-{{product.id}}-{{property.id}}">
+                                <option value="">-----</option>
+                                {% for option in property.options %}
+                                    <option value="{{option.id}}"
+                                            {% if option.selected %}selected="selected"{% endif %}>
+                                        {{option.name}}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            <input type="text" 
+                                   name="property-{{product.id}}-{{property.id}}"
+                                   value="{{property.value}}" />
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    <input type="submit"
+           value="{% trans 'Save values' %}"
+           id="update-product-values-button" />
+</form>

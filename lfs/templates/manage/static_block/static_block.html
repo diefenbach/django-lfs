@@ -1,0 +1,46 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left_slot %}
+    {% for static_block in static_blocks %}
+        <div>
+            <a href="{% url lfs_manage_static_block static_block.id %}"
+               class="selectable {% ifequal static_block.id current_id %}selected{% endifequal %}">
+                {{static_block.name}}
+            </a>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="site-actions">
+        <span class="label">{{static_block.name}}</span>
+        
+        <a class="add" 
+           href="{% url lfs_add_static_block %}">{% trans 'Add Static Block' %}</a>
+        <a class="delete confirmation-link"
+           data="{% trans 'Delete?' %}"
+           href="{% url lfs_delete_static_block static_block.id %}">{% trans 'Delete' %}</a>
+        <a class="preview" 
+           href="{% url lfs_preview_static_block static_block.id %}">{% trans 'Preview' %}</a>
+    </div>
+
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Static block' %}</a></li>            
+        </ul>
+
+        <div id="data">
+            <h2>{% trans 'Static block' %}</h2>
+            <form action="{% url lfs_manage_static_block static_block.id %}"
+                  method="post">
+                {% include "manage/lfs_form.html" %}
+                <input type="submit"
+                       value="{% trans 'Save static block' %}">
+            </form>
+        </div>
+    </div>    
+    
+    
+{% endblock %}

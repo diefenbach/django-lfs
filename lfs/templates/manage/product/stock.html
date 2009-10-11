@@ -1,0 +1,194 @@
+{% load i18n %}
+<h2>{% trans 'Dimension' %}</h2>
+<form id="product-stock-form"
+      action="{% url lfs_save_product_stock product.id %}"
+      method="post">
+
+    <fieldset>
+        
+        <legend>
+            {% if product.is_variant %}{{ form.active_dimensions }}{% endif %}
+            {% trans 'Dimension' %}
+        </legend>
+
+        <div class="field">
+            <div class="label">
+                {{ form.weight.label_tag }}:
+            </div>
+
+            {% if form.weight.errors %}
+                <div class="error">
+                    {{ form.weight }}
+                    {{ form.weight.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.weight }} {% trans 'kg' %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.height.label_tag }}:
+            </div>
+
+            {% if form.height.errors %}
+                <div class="error">
+                    {{ form.height }}
+                    {{ form.height.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.height }} {% trans 'm' %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.width.label_tag }}:
+            </div>
+
+            {% if form.width.errors %}
+                <div class="error">
+                    {{ form.width }}
+                    {{ form.width.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.width }} {% trans 'm' %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.length.label_tag }}:
+            </div>
+
+            {% if form.length.errors %}
+                <div class="error">
+                    {{ form.length }}
+                    {{ form.length.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.length }} {% trans 'm' %}
+                </div>
+            {% endif %}
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>{% trans 'Stock data' %}</legend>
+
+        <div class="field">
+            <div class="label">
+                {{ form.deliverable.label_tag }}:
+            </div>
+
+            {% if form.deliverable.errors %}
+                <div class="error">
+                    {{ form.deliverable }}
+                    {{ form.deliverable.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.deliverable }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.manual_delivery_time.label_tag }}:
+            </div>
+
+            {% if form.delivery_time.errors %}
+                <div class="error">
+                    {{ form.delivery_time }}
+                    {{ form.delivery_time.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.manual_delivery_time }}
+                    {{ form.delivery_time }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.manage_stock_amount.label_tag }}:
+            </div>
+
+            {% if form.manage_stock_amount.errors %}
+                <div class="error">
+                    {{ form.manage_stock_amount }}
+                    {{ form.manage_stock_amount.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.manage_stock_amount }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.stock_amount.label_tag }}:
+            </div>
+
+            {% if form.stock_amount.errors %}
+                <div class="error">
+                    {{ form.stock_amount }}
+                    {{ form.stock_amount.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.stock_amount }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.order_time.label_tag }}:
+            </div>
+
+            {% if form.order_time.errors %}
+                <div class="error">
+                    {{ form.order_time }}
+                    {{ form.order_time.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.order_time }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.ordered_at.label_tag }}:
+            </div>
+
+            {% if form.ordered_at.errors %}
+                <div class="error">
+                    {{ form.ordered_at }}
+                    {{ form.ordered_at.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.ordered_at }}
+                </div>
+            {% endif %}
+        </div>
+
+    </fieldset>
+
+    <input class="product-stock-button"
+           type="submit"
+           value="{% trans 'Save stock' %}" />
+</form>

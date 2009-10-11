@@ -1,0 +1,155 @@
+{% extends "manage/manage_base.html" %}
+
+{% load i18n %}
+{% load lfs_tags %}
+
+{% block javascript %}
+    <script>
+        $(function() {
+            $("#id_name").livequery("keyup", function() {
+                var slug = $("#id_name").val()
+                slug = URLify(slug, 200)
+                $("#id_slug").val(slug);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block section %}manage-product{% endblock %}
+
+{% block left_slot %}
+    <form>
+        <input type="text" id="products" />
+    </form>
+
+    <div id="selectable-products">
+        {{selectable_products}}
+    </div>
+
+{% endblock %}
+
+{% block content %}
+
+    <div id="product">
+
+        <div id="manage-tabs">
+            <ul>
+                <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add product' %}</a></li>
+            </ul>
+
+            <div id="data">
+                <form id="product-data-form"
+                      action="{% url lfs.manage.views.add_product %}"
+                      method="post">
+
+                    {# Added fields manually to get the same ordering as in the  #}
+                    {# edit form. TODO: is there another method to sort fields #}
+                    {# other than in the model #}
+
+                    <div class="field">
+                        <div class="label">
+                            {{ form.name.label_tag }}:
+                        </div>
+
+                        {% if form.name.errors %}
+                            <div class="error">
+                                {{ form.name }}
+                                {{ form.name.errors }}
+                            </div>
+                        {% else %}
+                            <div>
+                                {{ form.name }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="field">
+                        <div class="label">
+                            {{ form.slug.label_tag }}:
+                        </div>
+
+                        {% if form.slug.errors %}
+                            <div class="error">
+                                {{ form.slug }}
+                                {{ form.slug.errors }}
+                            </div>
+                        {% else %}
+                            <div>
+                                {{ form.slug }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="field">
+                        <div class="label">
+                            {{ form.sku.label_tag }}:
+                        </div>
+
+                        {% if form.sku.errors %}
+                            <div class="error">
+                                {{ form.sku }}
+                                {{ form.sku.errors }}
+                            </div>
+                        {% else %}
+                            <div>
+                                {{ form.sku }}
+
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="field">
+                        <div class="label">
+                            {{ form.price.label_tag }}:
+                        </div>
+
+                        {% if form.price.errors %}
+                            <div class="error">
+                                {{ form.price }}
+                                {{ form.price.errors }}
+                            </div>
+                        {% else %}
+                            <div>
+                                {{ form.price }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="field">
+                        <div class="label">
+                            {{ form.tax.label_tag }}:
+                        </div>
+
+                        {% if form.tax.errors %}
+                            <div class="error">
+                                {{ form.tax }}
+                                {{ form.tax.errors }}
+                            </div>
+                        {% else %}
+                            <div>
+                                {{ form.tax }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <input type="hidden" id="id_for_sale_price" name="for_sale_price" value="0">
+                    <input type="hidden" id="id_sub_type" name="sub_type" value="0">
+
+                    <input type="submit"
+                           id="product-add-button" />
+                    {% if  request.META.HTTP_REFERER %}
+                        <input type="button"
+                               onclick="window.location='{{request.META.HTTP_REFERER}}'"
+                               value="{% trans 'Cancel' %}" />
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+<script>
+    $(function() {
+        tinyMCE.execCommand('mceAddControl', true, 'id_description');
+        tinyMCE.execCommand('mceAddControl', true, 'id_short_description');
+    });
+</script>
+{% endblock %}

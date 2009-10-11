@@ -1,0 +1,11 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+{% load lfs_tags %}
+
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+	<div id="customers-inline">
+		{{ customers_inline|safe }}
+	</div>
+{% endblock %}

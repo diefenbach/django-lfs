@@ -1,0 +1,68 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left_slot %}
+    <div id="payment-methods">
+        {{payment_methods}}
+    </div>
+    
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(function() {
+            $(".criteria").sortable({
+                placeholder: "droppable-hover",
+                items : "div",
+                opacity: .9,
+                axis: "y",
+                placeholder: "droppable-hover",
+                update:function() {
+                    update_positions();
+                }
+            });    
+        });
+    </script>        
+{% endblock %}
+
+{% block content %}
+    
+    <div class="site-actions">
+        <span class="label">
+            {{payment_method.name}}
+        </span>
+
+        <a class="add"
+           href="{% url lfs_add_payment_method %}">
+            {% trans 'Add payment method' %}</a>
+        
+        {% if payment_method.deletable %}
+            <a class="delete confirmation-link"
+               data="{% trans 'Delete?' %}"
+               href="{% url lfs_delete_payment_method payment_method.id %}">
+                {% trans 'Delete payment method' %}</a>            
+        {% endif %}    
+    </div>
+            
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#criteria">{% trans 'Criteria' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#prices">{% trans 'Prices' %}</a></li>            
+        </ul>
+
+        <div id="data">
+            {{data}}
+        </div>
+
+        <div id="criteria">
+            {{method_criteria}}
+        </div>
+
+        <div id="prices">
+            {{method_prices}}
+        </div>
+        
+    </div>
+
+{% endblock %}

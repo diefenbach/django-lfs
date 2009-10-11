@@ -1,0 +1,48 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block javascript %}
+    <script>
+        $(function() {
+            $("#id_title").livequery("keyup", function() {
+                var slug = $("#id_title").val()
+                slug = URLify(slug, 200)
+                $("#id_slug").val(slug);
+            });
+        });
+    </script>        
+{% endblock %}
+
+{% block left_slot %}
+    {% for action in actions %}
+        <div>
+            <a href="{% url lfs_manage_action action.id %}">
+                {{action.title}}
+            </a>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add action' %}</a></li>            
+        </ul>
+
+        <div id="data">
+            <h2>{% trans 'Add action' %}</h2>
+            <form action="{% url lfs_add_action %}"
+                  method="post"
+                  enctype="multipart/form-data">
+                {% include "manage/lfs_form.html" %}
+                <input type="submit"
+                       value="{% trans 'Add action' %}" />
+                    {% if  request.META.HTTP_REFERER %}
+                        <input type="button"
+                               onclick="window.location='{{request.META.HTTP_REFERER}}'"
+                               value="{% trans 'Cancel' %}" />
+                    {% endif %}
+            </form>
+        </div>
+    </div>    
+{% endblock %}

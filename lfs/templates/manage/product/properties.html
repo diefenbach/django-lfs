@@ -1,0 +1,68 @@
+{% load i18n %}
+<h2>{% trans 'Property Groups' %}</h2>
+
+<form action="{% url lfs_update_product_property_groups product.id %}"
+      method="post">    
+    <select name="selected-property-groups"
+            multiple="multiple">
+        {% for property_group in shop_property_groups %}
+            <option value="{{property_group.id}}" 
+                    {% if property_group.selected %}selected="selected"{% endif %}>
+                {{property_group.name}}
+            </option>
+        {% endfor %}
+    </select>
+    
+    <div class="lfs-buttons">
+        <input type="submit"
+               value="{% trans 'Update property groups' %}">
+    </div>           
+</form>
+
+<form action="{% url lfs_update_product_properties product.id %}"
+      method="post">
+    
+    <h2 class="heading-middle">{% trans 'Property Values' %}</h2>
+    
+    {% for property_group in product_property_groups %}
+        <div>
+            <h3>
+                {{property_group.name}}
+            </h3>
+            {% for property in property_group.properties %}
+                <div>
+                    {% ifequal property.type 1 %}
+                        <div class="field">
+                            <div class="label">
+                                {{property.name}}:
+                            </div>
+                            <input type="text" 
+                                   name="property-{{property.id}}"
+                                   value="{{property.value}}" />
+                        </div>
+                    {% else %}
+                        <div class="field">
+                            <div class="label">
+                                {{property.name}}:
+                            </div>
+                            <select name="property-{{property.id}}">
+                                <option>-----</option>
+                                {% for option in property.options %}
+                                    <option value="{{option.id}}"
+                                            {% if option.selected %}selected="selected"{% endif %}>
+                                        {{option.name}}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    {% endifequal %}
+                </div>
+            {% endfor %}
+        </div>    
+    {% endfor %}
+
+    <div class="lfs-buttons">
+        <input type="submit"
+               value="{% trans 'Update properties' %}" />
+    </div>       
+</form>

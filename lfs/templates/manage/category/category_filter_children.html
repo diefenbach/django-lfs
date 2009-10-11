@@ -1,0 +1,6 @@
+{% for category in categories %}
+    <option value="{{category.id}}" {% if category.selected %}selected="selected"{% endif %}>
+        {{category.name|safe}}
+    </option>
+    {{category.children}}
+{% endfor %}

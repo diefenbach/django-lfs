@@ -1,0 +1,70 @@
+{% load i18n %}
+
+<h2 class="heading-middle">{% trans 'Options' %}</h2>    
+<form id="shop-property-options-form"
+      action="{% url lfs_add_shop_property_option property.id %}"
+      method="post">
+    <table>
+        <tr>
+            <th>
+                {% trans 'Position' %}
+            </th>
+            <th>
+                {% trans 'Name' %}
+            </th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>
+                <input class="number"
+                       type="text"
+                       size="3"
+                       name="position"
+                       value="" />
+            </td>
+            <td>
+                <input type="text"
+                       name="name"/>
+            </td>
+            <td>
+                <input type="submit"
+                       value="{% trans 'Add option' %}"
+                       name="add"
+                       class="shop-property-add-option-button" />
+            </td>
+        </tr>
+        {% for option in property.options.all %}
+            <tr>
+                <td>
+                    <input type="hidden" 
+                           name="option"
+                           value="{{option.id}}" />
+                           
+                    <input class="number"
+                           type="text"
+                           size="3"
+                           name="position-{{option.id}}"
+                           value="{{option.position}}" />                                    
+                </td>
+                <td>
+                    <input type="text"
+                           name="name-{{option.id}}"
+                           value="{{option.name}}" />
+                    </td>
+                <td>
+                    <a class="confirmation-link"
+                       data="{% trans 'Delete?' %}" 
+                       href="{% url lfs_delete_shop_property_option option.id %}">
+                        <img src="{{MEDIA_URL}}lfs/icons/cross.png"
+                             alt="{% trans 'Delete' %}"
+                             title="{% trans 'Delete option' %}" />
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}                        
+    </table>
+    <input type="submit" 
+           value="{% trans 'Update options' %}" 
+           name="update"
+           class="shop-property-add-option-button" />
+</form>

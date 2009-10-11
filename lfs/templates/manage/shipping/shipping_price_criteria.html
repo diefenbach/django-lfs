@@ -1,0 +1,35 @@
+{% load i18n lfs_tags %}
+
+<div id="price-criteria">
+    
+    <h1>
+        {% trans 'Edit criteria for' %} {{shipping_price.price|currency}}
+    </h1>
+    
+    <form action="{% url lfs_manage_save_shipping_price_criteria shipping_price.id %}"
+          method="post">
+
+        <div class="top-buttons">            
+            <a class="criterion-add-first-button"
+                href="{% url lfs_add_criterion %}">
+                <img src="{{MEDIA_URL}}/lfs/icons/add.png" 
+                     class="icon-padding"
+                     alt="{% trans 'Add criterion' %}" />
+                {% trans 'Add criterion' %}
+            </a>
+        </div>
+
+        <table class="criteria">
+            {% for criterion in criteria %}
+                {{criterion|safe}}
+            {% endfor %}
+        </table>
+
+        <div class="manage-form-buttons">
+            <input class="price-criterion-save-button" 
+                   type="submit" 
+                   value="{% trans 'Save criteria' %}" />
+        </div>
+
+    </form>
+</div>

@@ -1,0 +1,65 @@
+{% load i18n %}
+{% load lfs_manage_tags %}
+
+<form action="{% url lfs_set_product_filters %}"
+      method="POST">
+
+	<input type="hidden"
+	       name="product-id"
+	       value="{{ product_id }}">
+
+	<table class="filters">
+		<tr>
+			<td class="discreet">{% trans "Name" %}</td>
+			<td class="discreet">{% trans "Price" %}</td>
+			<td class="discreet">{% trans "Category" %}</td>
+			<td class="discreet">{% trans "Active" %}</td>
+			<td class="discreet">{% trans "For sale" %}</td>
+			<td class="discreet">{% trans "Sub type" %}</td>
+		</tr>
+		<tr>
+			<td>
+				<input type="text"
+				       name="name"
+					   value="{{ name }}">
+			</td>
+			<td>
+				<input type="text"
+				       name="price"
+					   value="{{ price }}">
+			</td>
+			<td>
+	        	{% category_filter "products-category-filter" %}
+			</td>
+			<td>
+				<select name="active">
+					<option value="">---</option>
+					<option {% ifequal active "1" %}selected="selected"{% endifequal %}value="1">{% trans "Yes" %}</option>
+					<option {% ifequal active "0" %}selected="selected"{% endifequal %}value="0">{% trans "No" %}</option>
+				</select>
+			</td>
+			<td>
+				<select name="for_sale">
+					<option value="">---</option>
+					<option {% ifequal for_sale "1" %}selected="selected"{% endifequal %}value="1">{% trans "Yes" %}</option>
+					<option {% ifequal for_sale "0" %}selected="selected"{% endifequal %}value="0">{% trans "No" %}</option>
+				</select>
+			</td>
+			<td>
+				<select name="sub_type">
+					<option value="">---</option>
+					<option {% ifequal sub_type "0" %}selected="selected"{% endifequal %}value="0">{% trans "Standard" %}</option>
+					<option {% ifequal sub_type "1" %}selected="selected"{% endifequal %}value="1">{% trans "Product with variants" %}</option>
+					<option {% ifequal sub_type "2" %}selected="selected"{% endifequal %}value="2">{% trans "Variant" %}</option>
+				</select>
+			</td>
+			<td>
+				<input type="submit"
+				       class="ajax-save-button-2" />
+
+				<a href="{% url lfs_reset_product_filters %}?product-id={{ product_id }}"
+				   class="ajax-link reset">&nbsp;</a>
+			</td>
+		</tr>
+	</table>
+</form>

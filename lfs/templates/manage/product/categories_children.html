@@ -1,0 +1,22 @@
+{% load i18n %}
+{% if categories %}
+    <ul class="manage-categories">
+        {% for category in categories %}
+            <li>
+                <input type="checkbox" 
+                       name="categories"
+                       value="{{category.id}}"
+                       {% if category.checked %}checked="checked"{% endif %} />
+                <a href="{{category.url}}">
+                    {{category.name}}</a>
+                <a href="{% url lfs_manage_category category.id %}">
+                    <img src="{{MEDIA_URL}}lfs/icons/pencil.png"
+                         alt="{% trans 'Edit' %}"
+                         title="{% trans 'Edit category' %}" />
+                </a>
+            
+                {{category.children}}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

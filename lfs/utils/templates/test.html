@@ -1,0 +1,13 @@
+{% extends "shop_base.html" %}
+{% load lfs_tags %}
+
+{% block left_slot %}
+    {% categories_portlet %}
+{% endblock %}
+
+{% block right_slot %}
+    {% cart_portlet %}
+{% endblock %}
+
+{% block middle_slot %}
+{% endblock %}

@@ -1,0 +1,197 @@
+{% load i18n %}
+{% load lfs_tags %}
+
+<form action="{% url lfs_set_customer_filters %}"
+      method="post">
+
+	<input type="hidden" name="came-from" value="customer" />
+	<input type="hidden" name="customer-id" value="{{ customer.id }}" />
+
+    <table class="filters">
+		<tr>
+			<td></td>
+			<td class="discreet">{% trans "Name" %}</td>
+		</tr>
+		<tr>
+			<td>
+				<input type="text"
+				       name="name"
+					   value="{{ name }}">
+			</td>			
+			<td>
+				<input type="submit"
+				       class="ajax-save-button-2" />
+
+				<a href="{% url lfs_reset_customer_filters %}?came-from=customer;customer-id={{ customer.id }}"
+				   class="ajax-link reset">&nbsp;</a>
+			</td>
+		</tr>
+	</table>
+</form>
+
+
+<div class="site-actions">
+    <a class="overview"
+       href="{% url lfs_manage_customers %}">{% trans 'Overview' %}</a>
+</div>
+
+<table class="lfs-manage-table">
+    <tr>
+        <th colspan="2">
+            {% trans 'General' %}
+        </th>
+    </tr>
+    <tr>
+        <td class="label"
+            style="width:150px">
+            {% trans 'ID' %}:
+        </td>
+		<td>
+            {{ customer.id }}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'Registriert' %}:
+        </td>
+		<td>
+			{% if customer.user %}
+				{% trans "Yes" %}
+			{% else %}
+				{% trans "No" %}
+			{% endif %}
+        </td>
+    </tr>
+</table>
+
+<table class="lfs-manage-table">
+    <tr>
+        <th>
+            {% trans 'Invoice address' %}
+        </th>
+        <th>
+            {% trans 'Shipping address' %}
+        </th>
+    </tr>
+    <tr>
+        <td style="width:50%">
+			{% if customer.selected_invoice_address %}
+				<div>
+					{{ customer.selected_invoice_address.firstname }}
+					{{ customer.selected_invoice_address.lastname }}
+					
+					(<a href="mailto:{{ customer.get_email_address }}">{{ customer.get_email_address }}</a>)
+				</div>
+				<div>
+					{{ customer.selected_invoice_address.street }}				
+				</div>
+				<div>
+					{{ customer.selected_invoice_address.zip_code }} {{ customer.selected_invoice_address.city }}				
+				</div>
+				<div>
+					{{ customer.selected_invoice_address.phone }}
+				</div>
+			{% else %}
+				---
+			{% endif %}
+        </td>
+        <td>
+			{% if customer.selected_shipping_address %}
+				<div>
+					{{ customer.selected_shipping_address.firstname }}
+					{{ customer.selected_shipping_address.lastname }}
+				</div>
+				<div>
+					{{ customer.selected_shipping_address.street }}				
+				</div>
+				<div>
+					{{ customer.selected_shipping_address.zip_code }} {{ customer.selected_shipping_address.city }}				
+				</div>
+				<div>
+					{{ customer.selected_shipping_address.phone }}
+				</div>
+			{% else %}
+				---
+			{% endif %}
+        </td>
+    </tr>
+</table>
+
+{% if orders %}
+	
+	<h2>{% trans "Orders" %}</h2>
+
+	<table class="lfs-manage-table">
+		<tr>
+			<th class="tiny">
+				{% trans "ID" %}
+			</th>
+			<th class="middle">
+				{% trans "Creation date" %}
+			</th>
+			<th>
+				{% trans "State" %}
+			</th>
+	        <th class="number">
+	            {% trans 'Price' %}
+	        </th>
+	        <th class="number">
+	            {% trans 'Message' %}
+	        </th>
+		</tr>
+		{% for order in orders %}
+			<tr class="clickable"
+				onclick="window.location='{% url lfs_manage_order order.id %}'">
+				<td>
+					{{ order.id }}
+				</td>		
+				<td>
+					{{ order.created|date:_("DATETIME_FORMAT")}}
+				</td>		
+				<td>
+					{{ order.get_state_display }}
+				</td>		
+	            <td class="number">
+	                {{order.price|currency}}
+	            </td>
+	            <td class="number">
+	                {% if order.message %}
+	                    Yes
+	                {% else %}
+	                    No
+	                {% endif %}
+	            </td>
+			</tr>		
+		{% endfor %}
+	</table>
+{% endif %}
+
+{% if cart %}
+	<h2>{% trans "Cart" %}</h2>
+
+	<table class="lfs-manage-table">
+		<tr>
+			<th class="tiny">
+				{% trans "ID" %}
+			</th>
+			<th class="middle">
+				{% trans "Modification date" %}
+			</th>
+	        <th class="number">
+	            {% trans 'Price' %}
+	        </th>
+		</tr>
+		<tr style="cursor:pointer"
+			onclick="window.location='{% url lfs_manage_cart cart.id %}'">
+			<td>
+				{{ cart.id }}
+			</td>		
+			<td>
+				{{ cart.modification_date|date:_("DATETIME_FORMAT") }}
+			</td>		
+            <td class="number">
+                {{ cart_price|currency }}
+            </td>
+		</tr>
+	</table>	
+{% endif %}

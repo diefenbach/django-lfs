@@ -1,0 +1,189 @@
+{% load i18n lfs_tags %}
+
+<div id="related-products-inline">
+    <form id="add-related-products-form"
+          action="{% url lfs.manage.views.add_related_products product.id %}"
+          method="post">
+    
+        {% if page.has_previous %}
+            <a class="related-products-page-link"
+               href="{% url lfs.manage.views.manage_related_products_inline product.id%}?page=1">First</a>
+            <a class="related-products-page-link"
+               href="{% url lfs.manage.views.manage_related_products_inline product.id%}?page={{page.previous_page_number}}">Previous</a>
+        {% else %}
+            <span>{% trans 'First' %}</span>
+            <span>{% trans 'Previous' %}</span>
+        {% endif %}
+
+        {{page.number}} / {{paginator.num_pages}}
+
+        {% if page.has_next %}
+            <a class="related-products-page-link"
+               href="{% url lfs.manage.views.manage_related_products_inline product.id%}?page={{page.next_page_number}}">Next</a>
+            <a class="related-products-page-link"
+               href="{% url lfs.manage.views.manage_related_products_inline product.id%}?page={{paginator.num_pages}}">Last</a>
+       
+        {% else %}
+            <span>{% trans 'Next' %}</span>
+            <span>{% trans 'Last' %}</span>
+        {% endif %}
+
+        <table class="lfs-manage-table middle">
+            <tr>
+                <th class="checkbox">
+                    <input type="checkbox"
+                           class="select-all-1" />
+                </th>
+                <th>
+                    {% trans 'Name' %}
+                </th>
+                <th class="middle">
+                    {% trans 'SKU' %}
+                </th>
+                <th class="small">
+                    {% trans 'Active' %}
+                </th>
+                <th class="middle">
+                    {% trans 'Sub type' %}
+                </th>
+                <th class="small number">
+                    {% trans 'Price' %}
+                </th>
+                <th class="tiny right">
+                    {% trans 'Edit' %}
+                </th>
+            </tr>
+            {% for product in page.object_list %}
+                <tr class="{% cycle 'even' 'odd' %}">
+                    <td>
+                        <input type="checkbox"
+                               name="product-{{product.id}}"
+                               class="select-1" />
+                    </td>
+                    <td>
+                        {{product.get_name}}
+                    </td>
+                    <td>
+                        {{ product.get_sku }}
+                    </td>
+                    <td>
+						{% if product.is_active %}
+							<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+						{% else %}
+							<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+						{% endif %}
+                    </td>
+                    <td>
+                        {{product.sub_type|sub_type_name}}
+                    </td>
+                    <td class="number">
+                        {{product.price|currency}}
+                    </td>
+					<td class="right">
+						<a href="{% url lfs_product product.slug %}">
+	                        <img src="{{ MEDIA_URL }}lfs/icons/zoom.png"
+	                             alt="Edit"
+	                             title="{% trans 'Edit product' %}" />
+						</a>
+						<a href="{% url lfs_manage_product product.id %}">
+	                        <img src="{{ MEDIA_URL }}lfs/icons/pencil.png"
+	                             alt="Edit"
+	                             title="{% trans 'Edit product' %}" />
+						</a>
+					</td>
+                                                
+                </tr>
+            {% endfor %}
+        </table>
+
+        <input type="hidden"
+               name="keep-filters"
+               value="1" />
+
+        <input type="submit"
+               id="add-related-products-button"
+               value="{% trans 'Add to related products' %}" />
+
+    </form>
+
+    <h2 class="heading-middle">{% trans 'Related Products' %}</h2>
+        <form id="remove-related-products-form"
+              action="{% url lfs.manage.views.remove_related_products product.id %}"
+              method="post">
+            <table class="lfs-manage-table">
+                <tr>
+                    <th class="checkbox">
+                        <input type="checkbox"
+                               class="select-all-2" />
+                    </th>
+                    <th>
+                        {% trans 'Name' %}
+                    </th>
+	                <th class="middle">
+	                    {% trans 'SKU' %}
+	                </th>
+	                <th class="small">
+	                    {% trans 'Active' %}
+	                </th>
+                	<th class="middle">
+                        {% trans 'Sub type' %}
+                    </th>
+                    <th class="small number">
+                        {% trans 'Price' %}
+                    </th>
+                    <th class="tiny right">
+                        {% trans 'Edit' %}
+                    </th>
+                </tr>
+    
+                {% for related_product in related_products %}
+                    <tr>
+                        <td>
+                            <input type="checkbox"
+                                   name="product-{{related_product.id}}"
+                                   class="select-2" />
+                        </td>
+                        <td>
+                            {{ related_product.get_name }}
+                        </td>
+                        <td>
+                            {{ related_product.get_sku }}
+                        </td>
+						<td>
+							{% if product.is_active %}
+								<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+							{% else %}
+								<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+							{% endif %}							
+						</td>
+                        <td>
+                            {{ related_product.sub_type|sub_type_name }}
+                        </td>
+                        <td class="number">
+                            {{ related_product.price|currency }}
+                        </td>                                                
+						<td class="right">
+							<a href="{% url lfs_product related_product.slug %}">
+		                        <img src="{{ MEDIA_URL }}lfs/icons/zoom.png"
+		                             alt="Edit"
+		                             title="{% trans 'Edit product' %}" />
+							</a>
+							<a href="{% url lfs_manage_product related_product.id %}">
+		                        <img src="{{ MEDIA_URL }}lfs/icons/pencil.png"
+		                             alt="Edit"
+		                             title="{% trans 'Edit product' %}" />
+							</a>
+						</td>
+                    </tr>
+                {% endfor %}
+            </table>    
+
+            <input type="hidden"
+                   name="keep-filters"
+                   value="1" />
+
+            <input type="submit"
+                   id="remove-related-products-button" 
+                   value="{% trans 'Remove from related products' %}" />
+        </form>
+</div>        

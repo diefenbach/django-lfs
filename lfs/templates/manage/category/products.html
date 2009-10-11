@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load lfs_manage_tags %}
+
+<h2>{% trans 'Products' %}</h2>
+
+<form id="category-products-filter-form"
+      action="{% url lfs_manage_category_products_inline category.id %}"
+      onsubmit="return false">
+    
+    <input type="hidden" 
+           name="keep-session" 
+           value="1" />   
+           
+    <input class="category-products-filter-input" 
+           type="text" 
+           name="filter" />
+           
+    {% category_filter "category-products-categories-filter" "category_filter" %}
+    
+</form>
+
+<span id="products-inline">
+    {{products_inline}}
+</span>

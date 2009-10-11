@@ -1,0 +1,12 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+{% load lfs_tags %}
+
+{% block section %}manage-orders{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+	<div id="orders-inline">
+		{{ orders_inline|safe }}
+	</div>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% load i18n %}
+{% load lfs_tags %}
+{% load lfs_manage_tags %}
+
+<form id="category-products-add-form"
+      action="{% url lfs_manage_category_add_products category.id %}"
+      method="post">
+    
+    {% if page.has_previous %}
+        <a class="category-products-page-link"
+           href="{% url lfs_manage_category_products_inline category.id %}?page=1&amp;keep-session=1">First</a>
+        <a class="category-products-page-link"
+           href="{% url lfs_manage_category_products_inline category.id %}?page={{page.previous_page_number}}&amp;keep-session=1">Previous</a>
+    {% else %}
+        <span>{% trans 'First' %}</span>
+        <span>{% trans 'Previous' %}</span>
+    {% endif %}
+
+    {{page.number}} / {{paginator.num_pages}}
+
+    {% if page.has_next %}
+        <a class="category-products-page-link"
+           href="{% url lfs_manage_category_products_inline category.id %}?page={{page.next_page_number}}&amp;keep-session=1">Next</a>
+        <a class="category-products-page-link"
+           href="{% url lfs_manage_category_products_inline category.id%}?page={{paginator.num_pages}}&amp;keep-session=1">Last</a>
+       
+    {% else %}
+        <span>{% trans 'Next' %}</span>
+        <span>{% trans 'Last' %}</span>
+    {% endif %}
+
+    <table class="lfs-manage-table">
+        <tr>
+            <th class="checkbox">
+                <input type="checkbox"
+                       class="select-all-1" />
+            </th>
+            <th>
+                {% trans 'Name' %}
+            </th>
+            <th class="small">
+                {% trans 'Active' %}
+            </th>                
+            <th class="middle">
+                {% trans 'SKU' %}
+            </th>                
+            <th class="middle">
+                {% trans 'Sub type' %}
+            </th>
+            <th class="small number">
+                {% trans 'Price' %}
+            </th>
+            <th class="tiny right">
+                {% trans 'Edit' %}
+            </th>
+            
+        </tr>
+        {% for product in page.object_list %}
+            <tr class="{% cycle 'even' 'odd' %}">
+                <td>
+                    <input type="checkbox"
+                           class="select-1"
+                           name="{{product.id}}" />
+                </td>
+                <td>
+                    {{product.get_name}}
+                </td>
+                <td>
+					{% if product.is_active %}
+						<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+					{% else %}
+						<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+					{% endif %}
+                </td>
+                <td>
+                    {{product.get_sku}}
+                </td>
+                <td>
+                    {{product.sub_type|sub_type_name}}
+                </td>
+                <td class="number">
+                    {{product.get_price|currency}}
+                </td>
+                <td class="right">
+                    <a href="{% url lfs_manage_product product.id %}">
+                        <img src="{{MEDIA_URL}}lfs/icons/pencil.png" 
+                             alt="Edit"
+                             title="{% trans 'Edit product' %}" />
+                    </a>
+                </td>                    
+            </tr>        
+        {% endfor %}
+    </table>
+
+    <input type="hidden"
+           name="keep-session"
+           value="1" />
+           
+    <input type="submit"
+           class="category-products-add-button"
+           value="{% trans 'Add to category' %}" />
+
+</form>
+<h2 class="heading-middle">{% trans 'Selected products' %}</h2>
+
+<form id="category-selected-products-filter-form"
+      action="{% url lfs_selected_products category.id %}"
+      onsubmit="return false">
+    
+    <input type="hidden" 
+           name="keep-session" 
+           value="1" />   
+           
+    <input class="category-selected-products-filter-input" 
+           type="text" 
+           name="filter_2" />           
+</form>
+
+<div id="selected-products">
+    {{selected_products}}
+</div>

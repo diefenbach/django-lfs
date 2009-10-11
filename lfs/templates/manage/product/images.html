@@ -1,0 +1,142 @@
+{% load i18n %}
+
+{% if product.is_variant %}
+    <form id="active-images-update-form"
+          action="{% url lfs_manage_update_active_images product.id %}"
+          method="post">
+        <input type="checkbox" 
+               name="active_images"
+               {% if product.active_images %}checked="checked"{% endif %} />                   
+        <label for="active_accessories">
+            {% trans 'Active images' %}
+        </label>
+        <input class="images-update-button"
+               type="submit" value="Update" />
+    </form>
+{% endif %}    
+
+<h2 class="heading-middle">{% trans 'Images' %}</h2>
+        
+{% if product.images.all %}
+    <form id="product-images-update-form"
+          action="{% url lfs_manage_update_images product.id %}"
+          method="post">
+
+        <table class="lfs-manage-table">
+            <tr>
+                <th>
+                    <input type="checkbox" 
+                           class="delete-all" />
+                </th>
+                <th>
+                    {% trans 'Image' %}
+                </th>
+                <th>
+                    {% trans 'Title' %}
+                </th>
+                <th class="number">
+                    {% trans 'Position' %}
+                </th>
+            </tr>
+            {% for image in product.images.all %}
+                <tr>
+                    <td>
+                        <input type="checkbox"
+                               class="delete"
+                               name="delete-{{image.id}}"
+                               style="float:left" />                
+                    </td>
+                    <td>
+                        <img src="{{image.image.url_60x60}}" 
+                             alt="{{image.title}}" 
+                             title="{{image_title}}"
+                             style="float:left"/>
+                
+                    </td>
+                    <td>
+                        <input type="text" name="title-{{image.id}}" value="{{image.title}}" />                
+                    </td>
+                    <td class="number">
+                        <input type="text" name="position-{{image.id}}" value="{{image.position}}" size="3" />
+                    </td>
+                </tr>
+            {% endfor %}    
+        </table>
+        <div class="manage-form-buttons">
+            <input class="product-images-update-button"
+                   type="submit" name="update" value="{% trans 'Update' %}" />
+            <input class="product-images-update-button"
+                   type="submit" name="delete" value="{% trans 'Delete' %}" />
+        </div>
+    </form>    
+{% else %}
+    <span>{% trans 'There are no images' %}</span>
+{% endif %}
+
+<h3>{% trans 'Add images' %}</h3>
+
+<div id="content">
+    <form id="images-form"
+          action="."
+          data="{% url lfs_manage_images product.id %}"
+          method="post"
+          enctype="multipart/form-data">
+
+        <div class="fieldset flash" id="fsUploadProgress"></div>
+        <div>
+            <span id="spanButtonPlaceHolder"></span>
+            <input id="btnUpload"
+                   type="button"
+                   value="Select Files"
+                   style="width: 100px; height: 22px; font-size: 8pt;" />
+
+            <input id="btnCancel"
+                   type="button"
+                   value="Cancel All Uploads"
+                   onclick="swfu.cancelQueue();"
+                   disabled="disabled"
+                   style="margin-left: 2px; font-size: 8pt; height: 29px;" />
+        </div>
+
+    </form>
+</div>
+<script>
+    var swfu;
+
+    var settings = {
+        flash_url : "{{ MEDIA_URL }}lfs/swfupload/swfupload.swf",
+        upload_url: "{% url lfs_manage_add_image product.id %}",
+        file_size_limit : "100 MB",
+        file_types : "*.*",
+        file_types_description : "All Files",
+        file_upload_limit : 100,
+        file_queue_limit : 0,
+        custom_settings : {
+            progressTarget : "fsUploadProgress",
+            cancelButtonId : "btnCancel"
+        },
+        debug: false,
+
+        // Button settings
+        button_width: "100",
+        button_height: "22",
+        button_placeholder_id: "spanButtonPlaceHolder",
+        button_text_left_padding: 0,
+        button_text_top_padding: 13,
+        button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
+        button_cursor : SWFUpload.CURSOR.HAND,
+
+        // The event handler functions are defined in handlers.js
+        file_queued_handler : fileQueued,
+        file_queue_error_handler : fileQueueError,
+        file_dialog_complete_handler : fileDialogComplete,
+        upload_start_handler : uploadStart,
+        upload_progress_handler : uploadProgress,
+        upload_error_handler : uploadError,
+        upload_success_handler : uploadSuccess,
+        upload_complete_handler : uploadComplete,
+        queue_complete_handler : queueComplete  // Queue plugin event
+    };
+
+    swfu = new SWFUpload(settings);
+</script>

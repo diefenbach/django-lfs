@@ -1,0 +1,159 @@
+{% load i18n %}
+{% load lfs_tags %}
+
+<form action="{% url lfs_set_cart_filters %}"
+      method="POST">
+
+	<table class="filters">
+		<tr>
+			<td class="discreet">{% trans "Pages" %}</td>
+			<td></td>
+			<td class="discreet">{% trans "Start" %}</td>
+			<td class="discreet">{% trans "End" %}</td>
+		</tr>
+		<tr>
+	<td>
+		<div class="navigation-pages">
+		    {% if page.has_previous %}
+		        <a class="ajax-link"
+		           href="{% url lfs_carts_inline %}?page=1">
+		            <img src="{{MEDIA_URL}}lfs/icons/resultset_first.png"
+		                 alt="{% trans 'First' %}"
+		                 title="{% trans 'First' %}" />
+				</a>
+		        <a class="ajax-link"
+		           href="{% url lfs_carts_inline %}?page={{ page.previous_page_number }}">
+		            <img src="{{MEDIA_URL}}lfs/icons/resultset_previous.png"
+		                 alt="{% trans 'Previous' %}"
+		                 title="{% trans 'Previous' %}" />
+				</a>
+		    {% else %}
+		        <img src="{{MEDIA_URL}}lfs/icons/resultset_first.png"
+		             alt="{% trans 'First' %}"
+		             title="{% trans 'First' %}" />
+		        <img src="{{MEDIA_URL}}lfs/icons/resultset_previous.png"
+		             alt="{% trans 'Previous' %}"
+		             title="{% trans 'Previous' %}" />
+		    {% endif %}
+
+		    {{ page.number }} {% trans "of" %} {{ paginator.num_pages }}
+
+		    {% if page.has_next %}
+		        <a class="ajax-link"
+		           href="{% url lfs_carts_inline %}?page={{ page.next_page_number }}">
+		            <img src="{{MEDIA_URL}}lfs/icons/resultset_next.png"
+		                 alt="{% trans 'Next' %}"
+		                 title="{% trans 'Next' %}" />			
+				</a>
+		        <a class="ajax-link"
+		           href="{% url lfs_carts_inline %}?page={{ paginator.num_pages }}">
+		            <img src="{{MEDIA_URL}}lfs/icons/resultset_last.png"
+		                 alt="{% trans 'Last' %}"
+		                 title="{% trans 'Last' %}" />			
+				</a>
+
+		    {% else %}
+		        <span>
+		            <img src="{{MEDIA_URL}}lfs/icons/resultset_next.png"
+		                 alt="{% trans 'Next' %}"
+		                 title="{% trans 'Next' %}" />			
+		        </span>
+		        <span>            	
+		            <img src="{{MEDIA_URL}}lfs/icons/resultset_last.png"
+		                 alt="{% trans 'Last' %}"
+		                 title="{% trans 'Last' %}" />			
+		        </span>
+		    {% endif %}
+		</div>
+	
+	</td>
+	<td>
+		<a href="{% url lfs_set_cart_filters_date %}?start=0&amp;end=0"
+		   class="ajax-link">T</a>
+		<a href="{% url lfs_set_cart_filters_date %}?start=1&amp;end=1"
+		   class="ajax-link">Y</a>
+		<a href="{% url lfs_set_cart_filters_date %}?start=7&amp;end=0"
+		   class="ajax-link">W</a>
+	</td>
+	<td>
+		<input type="text"
+		       name="start"
+			   value="{{ start }}">
+	</td>
+	<td>
+
+		<input type="text"
+		       name="end"
+			   value="{{ end }}">				
+	</td>
+	<td>
+		<input type="submit"
+		       class="ajax-save-button-2" />
+
+		<a href="{% url lfs_reset_cart_filters %}"
+		   class="ajax-link reset">&nbsp;</a>		
+	</td>			
+	</tr>
+	</table>
+</form>
+<table class="lfs-manage-table">
+    <tr>
+        <th class="tiny">
+            {% trans 'ID' %}
+        </th>
+        <th style="width:150px">
+            {% trans 'Creation date' %}
+        </th>
+        <th style="width:150px">
+            {% trans 'Modification date' %}
+        </th>
+        <th style="width:100px; padding-right:20px">
+            {% trans 'User' %}
+        </th>
+        <th class="number"
+            style="width:100px; padding-right:20px">
+            {% trans 'Total' %}
+        </th>
+        <th class="number"
+            style="width:40px; padding-right:20px">
+            {% trans 'Items' %}
+        </th>
+        <th>
+            {% trans 'Products' %}
+        </th>
+    </tr>
+
+    {% for cart in carts %}
+        <tr class="clickable"
+            onclick="window.location='{% url lfs_manage_cart cart.id %}'">
+            <td>
+                {{ cart.id }}
+            </td>
+            <td>
+                {{ cart.creation_date|date:_("DATETIME_FORMAT") }}
+            </td>
+            <td>
+                <a href="{% url lfs_manage_cart cart.id %}">
+                    {{ cart.modification_date|date:_("DATETIME_FORMAT") }}
+                </a>
+            </td>
+            <td>
+                {% if cart.customer.selected_invoice_address %}
+                    {{ cart.customer.selected_invoice_address.firstname }}
+                    {{ cart.customer.selected_invoice_address.lastname }}
+				{% else %}	
+					---
+                {% endif %}
+            </td>
+            <td class="number" style="padding-right:20px" nowrap="nowrap">
+                {{ cart.total|currency }}
+            </td>
+            <td class="number" style="padding-right:20px">
+                {{ cart.amount_of_items }}
+            </td>
+            <td>
+                {{ cart.products }}
+            </td>
+        </tr>
+    {% endfor %}
+</table>

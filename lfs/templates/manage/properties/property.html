@@ -1,0 +1,67 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left_slot %}
+    {% for property in properties %}
+        <div>
+            <a href="{% url lfs_manage_shop_property property.id %}"
+               class="selectable {% ifequal property.id current_id %}selected{% endifequal %}">
+                {{property.name}}
+            </a>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="site-actions">
+        <span class="label">{{property.name}}</span>
+        <a class="add" 
+           href="{% url lfs_add_shop_property %}">{% trans 'Add Property' %}</a>
+        <a class="delete confirmation-link"
+           data="{% trans 'Delete?' %}"
+           href="{% url lfs_delete_shop_property property.id %}">{% trans 'Delete Property' %}</a>
+    </div>
+
+    <div id="manage-tabs">
+        
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Property' %}</a></li>
+        </ul>
+
+        <div id="data">
+            <h2>{% trans 'Property data' %}</h2>
+
+            <form action="{% url lfs_manage_shop_property property.id %}"
+                  method="post">
+                {% include "manage/lfs_form.html" %}
+                <input type="submit"
+                       value="{% trans 'Save property' %}">
+            </form>
+            
+            <h2 class="heading-middle">{% trans 'Field type' %}</h2>
+            <p class="attention">{% trans 'Attention: If the field type is changed all entered product values for this property will be deleted.' %}</p>
+            <form action="{% url lfs_update_shop_property_type property.id %}"
+                  method="post">
+
+                {{ type_form.type }}
+                
+                <input type="submit"
+                       value="{% trans 'Save property type' %}">
+            </form>
+            
+            {% if property.is_select_field %}
+                <div id="options">
+                    {{ options|safe }}
+                </div>
+            {% endif %}
+
+            {% if property.is_number_field %}
+                <div id="steps">
+                    {{ steps|safe }}
+                </div>            
+            {% endif %}
+            
+        </div>
+    </div>        
+{% endblock %}

@@ -1,0 +1,13 @@
+{% if categories %}
+	<ul class="menu" id="{{category.id}}">
+	    {% for category in categories %}
+	        <li id="category_{{category.id}}"
+	            {% if category.is_current %}class="current-item"{% endif %}>
+	            <a href="{% url lfs_manage_category category.id %}">
+	                {{category.name}}
+	            </a>
+	            {{category.children}}
+	        </li>    
+	    {% endfor %}
+	</ul>	
+{% endif %}

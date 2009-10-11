@@ -1,0 +1,41 @@
+{% load i18n %}
+<tr class="criterion" id="criterion-{{id}}">    
+    <td>
+        <input type="text" size="2" class="position" name="position-{{id}}" value="{{position}}" />
+    </td>    
+    
+    <td>
+        <select class="criterion-type" name="type-{{id}}">
+            <option value="country">{% trans 'Country' %}</option>
+            <option value="combinedlengthandgirth">{% trans 'Combined length and girth' %}</option>
+            <option value="payment_method">{% trans 'Payment method' %}</option>
+            <option value="price" selected="selected">{% trans 'Price' %}</option>
+            <option value="height">{% trans 'Height' %}</option>
+            <option value="length">{% trans 'Length' %}</option>
+            <option value="shipping_method">{% trans 'Shipping method' %}</option>
+            <option value="width">{% trans 'Width' %}</option>
+            <option value="weight">{% trans 'Weight' %}</option>
+        </select>
+    </td>
+    
+    <td>
+        {% include "manage/criteria/number_operators.html" %}
+    </td>    
+    <td>
+        <input class="criterion-value"
+               type="text" 
+               name="value-{{id}}" 
+               value="{{value}}"/>
+    </td>
+    <td>
+        <a class="criterion-add-button"
+           href="{% url lfs_add_criterion %}">
+            <img src="{{MEDIA_URL}}lfs/icons/add.png"
+                 alt="Add" />
+        </a>
+        <a class="criterion-delete-button">
+            <img src="{{MEDIA_URL}}lfs/icons/delete.png"
+                 alt="Delete" />        
+        </a>
+    </td>
+</tr>

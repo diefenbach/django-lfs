@@ -1,0 +1,16 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block section %}manage-customer{% endblock %}
+
+{% block left_slot %}
+	<div id="selectable-customers-inline">
+		{{ selectable_customers_inline|safe }}
+	</div>
+{% endblock %}
+
+{% block content %}
+	<div id="customer-inline">
+		{{ customer_inline|safe }}
+	</div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% load i18n %}
+{% load lfs_tags %}
+{% load lfs_manage_tags %}
+
+<form action="{% url lfs_manage_save_products %}"
+      method="post">
+
+    <table class="lfs-manage-table">
+        <tr>
+            <th width="1px">
+                <input type="checkbox"
+                       class="select-all-1" />
+            </th>
+            <th width="1px">
+                {% trans 'URL' %}
+            </th>
+            <th width="1px">
+                {% trans 'Name' %}
+            </th>
+            <th width="1px">
+                {% trans 'SKU' %}
+            </th>            
+            <th class="small">
+                {% trans 'Active' %}
+            </th>
+            <th>
+                {% trans 'Sub type' %}
+            </th>
+            <th>
+                <input type="checkbox" class="select-all-2"/> {% trans 'For Sale' %}
+            </th>
+            <th class="number">
+                {% trans 'Sale Price' %}
+            </th>
+            <th class="number">
+                {% trans 'Price' %}
+            </th>
+            <th class="right">
+                {% trans 'Edit' %} / {% trans 'View' %}
+            </th>
+        </tr>
+        {% for product in page.object_list %}
+            <tr>
+                <td>
+                    <input type="hidden"
+                           name="id-{{product.id}}"
+                           value="{{product.id}}" />
+                           
+                    <input type="checkbox" name="delete-{{ product.id }}"
+                           class="select-1" />
+                </td>
+                <td>
+                    <input type="text"
+                           size="30"
+                           name="slug-{{product.id}}"
+                           value="{{product.slug}}" />
+                </td>
+                <td>
+                    <input type="text"
+                           size="30"
+                           name="name-{{product.id}}"
+                           value="{{product.name}}" />
+                </td>
+                <td>
+                    <input type="text"
+                           size="30"
+                           name="sku-{{product.id}}"
+                           value="{{product.sku}}" />
+                </td>
+				<td>
+                    <input type="checkbox"
+                           name="active-{{ product.id }}"
+                           class="select-2"
+                           {% if  product.active %}checked="checked"{% endif %} />					
+				</td>
+                <td>
+                    {{product.sub_type|sub_type_name}}
+                </td>
+                <td>
+                    <input type="checkbox"
+                           name="for_sale-{{product.id}}"
+                           class="select-2"
+                           {% if  product.for_sale %}checked="checked"{% endif %} />
+                </td>
+                <td class="number">
+                    <input class="number"
+                           size="8"
+                           type="text"
+                           name="for_sale_price-{{product.id}}"
+                           value="{{product.for_sale_price}}" />
+                </td>
+                <td class="number">
+                    <input class="number"
+                           size="8"
+                           type="text"
+                           name="price-{{product.id}}"
+                           value="{{product.price}}" />
+                </td>
+                <td class="right">
+                    <a class="edit" 
+                       href="{% url lfs_manage_product product.id %}"
+                       title="{% trans 'Edit' %}"></a>
+                    <a class="view" 
+                       target="_blank"
+                       href="{% url lfs_product_by_id product.id %}"
+                       title="{% trans 'View' %}"></a>
+                </td>
+            </tr>            
+        {% endfor %}
+    </table>
+    <div class="manage-form-buttons ajax-save-button-2">
+        <input type="submit" name="save" value="{% trans 'Save' %}" />
+    </div>
+</form>    

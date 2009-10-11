@@ -1,0 +1,135 @@
+{% load i18n lfs_tags %}
+
+<form id="add-products-form"
+      action="{% url lfs_assign_products_to_property_group property_group.id %}"
+      method="post">
+        
+    {% if page.has_previous %}
+        <a class="products-page-link"
+           href="{% url lfs_pg_products_inline property_group.id %}?page=1">First</a>
+        <a class="products-page-link"
+           href="{% url lfs_pg_products_inline property_group.id %}?page={{page.previous_page_number}}">Previous</a>
+    {% else %}
+        <span>{% trans 'First' %}</span>
+        <span>{% trans 'Previous' %}</span>
+    {% endif %}
+
+    {{page.number}} / {{paginator.num_pages}}
+
+    {% if page.has_next %}
+        <a class="products-page-link"
+           href="{% url lfs_pg_products_inline property_group.id %}?page={{page.next_page_number}}">Next</a>
+        <a class="products-page-link"
+           href="{% url lfs_pg_products_inline property_group.id %}?page={{paginator.num_pages}}">Last</a>
+       
+    {% else %}
+        <span>{% trans 'Next' %}</span>
+        <span>{% trans 'Last' %}</span>
+    {% endif %}
+
+    <div>
+        <table class="lfs-manage-table">
+            <tr>
+                <th class="checkbox">
+                    <input type="checkbox"
+                           class="select-all-1" />
+                </th>
+                <th>
+                    {% trans 'Name' %}
+                </th>
+                <th>
+                    {% trans 'Sub type' %}
+                </th>
+                <th class="number">
+                    {% trans 'Price' %}
+                </th>
+            </tr>
+            {% for product in page.object_list %}
+                <tr class="{% cycle 'even' 'odd' %}">
+                    <td>
+                        <input type="checkbox"
+                               name="product-{{product.id}}"
+                               class="select-1" />
+                    </td>
+                    <td>
+                        {{product.get_name}}
+                    </td>
+                    <td>
+                        {{product.sub_type|sub_type_name}}
+                    </td>
+                    <td class="number">
+                        {{product.price|currency}}
+                    </td>
+                </tr>        
+            {% endfor %}
+        </table>
+    </div>
+    <input type="hidden"
+           name="keep-filters"
+           value="1" />
+
+    <input type="submit"
+           id="add-products-button"
+           value="{% trans 'Add to product group' %}" />
+
+</form>
+
+<h2 class="heading-middle">{% trans 'Assigned products' %}</h2>
+    <form id="products-update-form"
+          action="{% url lfs_pg_remove_products property_group.id %}"
+          method="post">
+        <table class="lfs-manage-table">
+            <tr>
+                <th class="checkbox">
+                    <input type="checkbox"
+                           class="select-all-2" />
+                </th>
+                <th>
+                    {% trans 'Name' %}
+                </th>
+                <th>
+                    {% trans 'Sub type' %}
+                </th>
+                <th class="number">
+                    {% trans 'Price' %}
+                </th>
+                <th class="number">
+                    {% trans 'Edit' %}
+                </th>
+            </tr>
+    
+            {% for product in group_products %}
+                <tr>
+                    <td>
+                        <input type="checkbox"
+                               name="product-{{product.id}}"
+                               class="select-2"/>
+                    </td>
+                    <td>
+                        {{product.get_name}}
+                    </td>                        
+                    <td>
+                        {{product.sub_type|sub_type_name}}
+                    </td>
+                    <td class="number">
+                        {{product.price|currency}}
+                    </td>                        
+                    <td class="number">
+                        <a href="{% url lfs_manage_product product.id %}#properties">
+                            <img src="{{MEDIA_URL}}lfs/icons/pencil.png" 
+                                 alt="{% trans 'Edit' %}"
+                                 title="{% trans 'Edit Product' %}">
+                        </a>
+                    </td>                        
+                </tr>
+            {% endfor %}
+        </table>    
+
+        <input type="hidden"
+               name="keep-filters"
+               value="1" />
+
+        <input type="submit"
+               class="products-update-button"
+               value="{% trans 'Remove from product group' %}" />
+    </form>

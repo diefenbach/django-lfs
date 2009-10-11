@@ -1,0 +1,15 @@
+{% extends "manage/manage_base.html" %}
+
+{% block section %}manage-order{% endblock %}
+
+{% block left_slot %}
+	<div id="selectable-orders">
+		{{ selectable_orders }}
+	</div>
+{% endblock %}
+
+{% block content %}
+	<div id="order-inline">
+		{{ order_inline|safe }}
+	</div>
+{% endblock %}

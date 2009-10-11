@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+
+    <!-- Shop -->
+    <object pk="1" model="core.shop">
+        <field type="CharField" name="name">LFS</field>
+        <field type="CharField" name="shop_owner"></field>
+        <field type="TextField" name="description"></field>
+        <field type="FileField" name="image"></field>
+        <field to="core.country" name="default_country" rel="ManyToOneRel">1</field>
+        <field to="core.country" name="countries" rel="ManyToManyRel">
+            <object pk="1"></object>
+        </field>
+    </object>    
+
+    <!-- Portlets -->
+    <object pk="1" model="portlets.slot">
+        <field type="CharField" name="name">Left</field>
+    </object>
+    <object pk="2" model="portlets.slot">
+        <field type="CharField" name="name">Right</field>
+    </object>
+
+    <!-- Countries -->
+    <object pk="1" model="core.country">
+      <field type="CharField" name="code">us</field>
+      <field type="CharField" name="name">USA</field>
+    </object>      
+    
+    <!-- Paymentmethod -->    
+    <object pk="1" model="payment.paymentmethod">
+        <field type="CharField" name="name">Direct debit</field>
+        <field type="TextField" name="description"></field>
+        <field type="TextField" name="note"></field>
+        <field type="IntegerField" name="priority">1</field>
+        <field type="FileField" name="image"></field>
+        <field type="BooleanField" name="active">1</field>
+        <field type="BooleanField" name="deletable">0</field>
+        <field type="FloatField" name="price">0.0</field>
+    </object>
+    <object pk="2" model="payment.paymentmethod">
+        <field type="CharField" name="name">Cash on delivery</field>
+        <field type="TextField" name="description"></field>
+        <field type="TextField" name="note"></field>
+        <field type="IntegerField" name="priority">2</field>
+        <field type="FileField" name="image"></field>
+        <field type="BooleanField" name="active">1</field>
+        <field type="BooleanField" name="deletable">0</field>        
+        <field type="FloatField" name="price">17.9</field>
+    </object>
+    <object pk="3" model="payment.paymentmethod">
+        <field type="CharField" name="name">PayPal</field>
+        <field type="TextField" name="description"></field>
+        <field type="TextField" name="note"></field>
+        <field type="IntegerField" name="priority">3</field>
+        <field type="FileField" name="image"></field>
+        <field type="BooleanField" name="active">1</field>
+        <field type="BooleanField" name="deletable">0</field>        
+        <field type="FloatField" name="price">0.0</field>
+    </object>
+    <object pk="4" model="payment.paymentmethod">
+        <field type="CharField" name="name">Prepayment</field>
+        <field type="TextField" name="description"></field>
+        <field type="TextField" name="note"></field>
+        <field type="IntegerField" name="priority">4</field>
+        <field type="FileField" name="image"></field>
+        <field type="BooleanField" name="active">1</field>
+        <field type="BooleanField" name="deletable">0</field>
+        <field type="FloatField" name="price">0.0</field>
+    </object>    
+    <object pk="5" model="payment.paymentmethod">
+        <field type="CharField" name="name">By invoice</field>
+        <field type="TextField" name="description"></field>
+        <field type="TextField" name="note"></field>
+        <field type="IntegerField" name="priority">5</field>
+        <field type="FileField" name="image"></field>
+        <field type="BooleanField" name="active">1</field>
+        <field type="BooleanField" name="deletable">0</field>
+        <field type="FloatField" name="price">0.0</field>
+    </object>    
+</django-objects>

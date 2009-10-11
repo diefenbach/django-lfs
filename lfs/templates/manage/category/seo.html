@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<h2>{% trans 'SEO' %}</h2>
+
+<form action="{% url lfs_manage_category_seo category.id %}"
+      method="post"
+      id="category-seo-form">
+        {% include "manage/lfs_form.html" %}
+    <input type="submit" value="{% trans 'Save SEO' %}" class="category-seo-button" />
+</form>

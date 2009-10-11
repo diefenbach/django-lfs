@@ -1,0 +1,103 @@
+{% load i18n %}
+<h2>
+    {% trans 'Default Values' %}
+</h2>
+
+<form id="shop-default-values-form"
+      action="{% url lfs_save_shop_default_values %}"
+      method="post">
+    <fieldset>
+        <legend>{% trans 'Format' %}</legend>
+        <div class="field">
+            <div class="label">
+                {{ form.product_cols.label_tag }}:
+            </div>
+        
+            {% if field.errors %}
+                <div class="error">
+                    {{ form.product_cols }}
+                    {{ form.product_cols.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.product_cols }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="field">
+            <div class="label">
+                {{ form.product_rows.label_tag }}:
+            </div>
+        
+            {% if form.product_rows.errors %}
+                <div class="error">
+                    {{ form.product_rows }}
+                    {{ form.product_rows.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.product_rows }}
+                </div>
+            {% endif %}
+        </div>        
+
+        <div class="field">
+            <div class="label">
+                {{ form.category_cols.label_tag }}:
+            </div>
+        
+            {% if form.category_cols.errors %}
+                <div class="error">
+                    {{ form.category_cols }}
+                    {{ form.category_cols.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.category_cols }}
+                </div>
+            {% endif %}
+        </div>                
+    </fieldset>
+    
+    <fieldset>
+        <legend>{% trans 'Countries' %}</legend>
+        <div class="field">
+            <div class="label">
+                {{ form.countries.label_tag }}:
+            </div>
+        
+            {% if form.default_country.errors %}
+                <div class="error">
+                    {{ form.countries }}
+                    {{ form.countries.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.countries }}
+                </div>
+            {% endif %}
+        </div>                
+
+        <div class="field">
+            <div class="label">
+                {{ form.default_country.label_tag }}:
+            </div>
+        
+            {% if form.default_country.errors %}
+                <div class="error">
+                    {{ form.default_country }}
+                    {{ form.default_country.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.default_country }}
+                </div>
+            {% endif %}
+        </div>                
+    </fieldset>
+        
+    <input id="shop-default-values-button"
+           type="submit"
+           value="{% trans 'Save Default Values' %}">
+</form>

@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<h2>{% trans 'Criteria' %}</h2>
+
+<form action="{% url lfs_manage_save_payment_method_criteria payment_method.id %}"
+      method="post">
+
+    <div class="top-buttons">
+        <a class="criterion-add-first-button"
+           href="{% url lfs_add_criterion %}">
+            <img class="icon-padding" 
+                 src="{{MEDIA_URL}}lfs/icons/add.png" /
+                 alt="Add" />
+            
+            {% trans 'Add criterion' %}
+        </a>
+    </div>
+
+    <table class="criteria">
+        {% for criterion in criteria %}
+            {{criterion|safe}}
+        {% endfor %}
+    </table>
+
+    <div class="manage-form-buttons">
+        <input class="criterion-save-button" 
+               type="submit" 
+               value="{% trans 'Save criteria' %}" />
+    </div>
+
+</form>

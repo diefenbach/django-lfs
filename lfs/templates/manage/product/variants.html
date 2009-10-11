@@ -1,0 +1,230 @@
+{% load i18n %}
+
+<div id="variants">
+    <h2>{% trans 'Property Groups' %}</h2>
+    <form action="{% url lfs_update_product_property_groups product.id %}"
+          method="post">    
+        <select name="selected-property-groups"
+                multiple="multiple">
+            {% for property_group in shop_property_groups %}
+                <option value="{{property_group.id}}" 
+                        {% if property_group.selected %}selected="selected"{% endif %}>
+                    {{property_group.name}}
+                </option>
+            {% endfor %}
+        </select>
+    
+        <div class="lfs-buttons">
+            <input type="submit"
+                   value="{% trans 'Update property groups' %}">
+        </div>           
+    </form>
+
+    <h2 class="heading-middle">{% trans 'Local properties' %}</h2>
+    <form id="property-add-form"
+          action="{% url lfs.manage.views.add_property product.id %}"      
+          method="post">
+        {{property_form.name}}
+        <input class="property-add-button"
+               type="submit"
+               value="{% trans 'Add property' %}" />
+    </form>
+
+    {% for property in local_properties %}
+        {% if not forloop.first %}
+            <a href="{% url lfs.manage.views.change_property_position %}?product_id={{product.id}}&amp;property_id={{property.id}}&amp;direction=up"
+               class="property-change-button">
+                <image src="{{MEDIA_URL}}lfs/icons/arrow_up.png" 
+                       alt="{% trans 'Up' %}" 
+                       title="{% trans 'Up' %}"/>
+        
+            </a>
+        {% endif %}
+        {% if not forloop.last %}
+            <a href="{% url lfs.manage.views.change_property_position %}?product_id={{product.id}}&amp;property_id={{property.id}}&amp;direction=down"
+                    class="property-change-button">
+                <image src="{{MEDIA_URL}}lfs/icons/arrow_down.png" 
+                       alt="{% trans 'Down' %}" 
+                       title="{% trans 'Down' %}"/>
+            </a>            
+        {% endif %}
+    
+        <a href="{% url lfs.manage.views.delete_property product.id property.id %}"
+           class="property-change-button">
+            <image src="{{MEDIA_URL}}lfs/icons/cross.png" 
+                   alt="delete" 
+                   title="{% trans 'Delete property' %}"/>            
+        </a>
+        {{property.name}}
+        <div class="property-options">
+            {% for option in property.options.all %}
+                <div>
+                    <a href="{% url lfs.manage.views.delete_property_option product.id option.id %}"
+                       class="property-change-button">
+                        <image src="{{MEDIA_URL}}lfs/icons/cross.png" 
+                               alt="delete" 
+                               title="{% trans 'Delete option' %}"/>
+                    
+                    </a>{{option.name}}
+                </div>
+            {% endfor %}
+            <div>
+                <form action="{% url lfs.manage.views.add_property_option product.id %}"
+                      method="post">                
+                    {{property_option_form.name}}
+                    <input type="hidden" name="property_id" value="{{property.id}}" />
+                    <input type="submit"
+                           class="option-add-button"
+                           value="{% trans 'Add option' %}" />
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+
+    <h2 class="heading-middle">{% trans 'Variants' %}</h2>
+    <form action="{% url lfs.manage.views.add_variants product.id %}"
+          class="variants-add-form"
+          method="post">
+        <table>
+            <tr>
+                <th>
+                    {% trans 'Slug' %}
+                </th>
+                <th>
+                    {% trans 'Name' %}
+                </th>
+                <th>
+                    {% trans 'Price' %}
+                </th>
+                {% for property in all_properties %}
+                    <th>
+                        {{property.name}}
+                    </th>
+                {% endfor %}
+                <th></th>
+            </tr>
+            <tr>
+                <td>
+                    {{variant_simple_form.slug}}
+                </td>
+                <td>
+                    {{variant_simple_form.name}}
+                </td>
+                <td>
+                    {{variant_simple_form.price}}
+                </td>
+                {% for property in all_properties %}
+                    <td>
+                        <select name="property_{{property.id}}">
+                            <option value="all">{% trans 'All' %}</option>
+                            {% for option in property.options.all %}
+                                <option value="{{option.id}}">
+                                    {{option.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </td>    
+                {% endfor %}                    
+                <td>
+                    <input type="submit"
+                           value="{% trans 'Add variant(s)' %}"
+                           class="variants-add-button" />
+                </td>
+            </tr>
+        </table>
+    </form>
+
+    {% if variants %}
+        <form id="variants-form" 
+              action="{% url lfs_manage_update_variants product.id %}"
+              method="post">
+            <table>
+                <th>
+                    <input type="checkbox" class="delete-all" />
+                </th>                
+                <th>        
+                    {% trans 'Pos.' %}
+                </th>
+                <th>        
+                    {% trans 'Active' %}
+                </th>                
+                <th>        
+                    {% trans 'URL' %}
+                </th>
+                <th>
+                    {% trans 'SKU' %}
+                </th>
+                <th>
+                    {% trans 'Name' %}
+                </th>
+                {% for property in all_properties %}
+                    <th>
+                        {{property.name}}
+                    </th>
+                {% endfor %}    
+                <th class="number">
+                    {% trans 'Price' %}
+                </th>
+                {% for variant in variants %}
+                    <tr>
+                        <td>
+                            <input type="hidden" name="variant-{{variant.id}}" />
+                            <input type="checkbox" class="delete" name="delete-{{variant.id}}" />
+                        </td>
+                        <td>
+                            <input type="text" name="position-{{variant.id}}" value="{{variant.position}}" size="3" />
+                        </td>             
+                        <td>
+                            <input type="checkbox" name="active-{{variant.id}}" {% if variant.active %}checked="checked"{% endif %} />
+                        </td>             
+                        <td>
+                            <input type="text" name="slug-{{variant.id}}" value="{{variant.slug}}" />
+                        </td>             
+                        <td>
+                            <input type="text" name="sku-{{variant.id}}" value="{{variant.sku}}" />
+                        </td>
+                        <td>
+                            <input type="text" name="name-{{variant.id}}" value="{{variant.name}}" />
+                        </td>
+
+                        {% for property in variant.properties %}
+                            <td>
+                                <select name="property-{{variant.id}}|{{property.id}}">
+                                    {% for option in property.options %}
+                                        <option value="{{option.id}}"
+                                                {% if option.selected %}selected="selected"{% endif %}>
+                                            {{option.name}}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        {% endfor %}
+                        <td class="number">
+                            <input class="number" type="text" name="price-{{variant.id}}" value="{{variant.price}}" />
+                        </td>
+                        <td>
+                            <a href="{% url lfs_manage_product variant.id %}">
+                                <img src="{{MEDIA_URL}}lfs/icons/pencil.png" 
+                                     alt="Edit"
+                                     title="{% trans 'Edit variant' %}" />
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <div class="manage-form-buttons">
+                <input type="submit" name="delete" class="variants-update-button" value="{% trans 'Delete' %}" />
+                <input type="submit" name="update" class="variants-update-button" value="{% trans 'Update' %}" />
+            </div>
+        </form>
+    
+        <h2 class="heading-middle">{% trans 'Display type' %}</h2>
+        <form action="{% url lfs.manage.views.edit_sub_type product.id %}"
+              method="post">
+            {{display_type_form.as_p}}
+            <input type="submit" 
+                   value="{% trans 'Change variant display type' %}" 
+                   class="option-add-button" />
+        </form>
+    {% endif %}    
+</div>

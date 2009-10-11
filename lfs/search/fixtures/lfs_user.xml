@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    <object pk="1" model="auth.user">
+        <field type="CharField" name="username">admin</field>
+        <field type="CharField" name="first_name"></field>
+        <field type="CharField" name="last_name"></field>
+        <field type="CharField" name="email">kai.diefenbach@iqpp.de</field>
+        <field type="CharField" name="password">sha1$7f4cf$138dbcc39595fd88b68fe7a6ad61b727a8de956a</field>
+        <field type="BooleanField" name="is_staff">1</field>
+        <field type="BooleanField" name="is_active">1</field>
+        <field type="BooleanField" name="is_superuser">1</field>
+        <field type="DateTimeField" name="last_login">2009-03-12 16:25:25</field>
+        <field type="DateTimeField" name="date_joined">2009-03-12 16:25:25</field>
+        <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
+        <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
+    </object>
+</django-objects>

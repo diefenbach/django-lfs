@@ -1,0 +1,3453 @@
+# LFS Romanian Translations
+# Copyright (C) 2009 Tiberiu Ichim
+# This file is distributed under the same license as the LFS package.
+# Tiberiu Ichim <tibi@pixelblaster.ro>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: LFS\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-09-14 13:06+0200\n"
+"PO-Revision-Date: 2009-09-20 13:44-0500\n"
+"Last-Translator: Tiberiu Ichim <tibi@pixelblaster.ro>\n"
+"Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cart/models.py:28
+#: cart/migrations/0001_initial.py:23
+#: criteria/_models.py:270
+#: criteria/models/criteria.py:581
+#: order/models.py:26
+#: order/migrations/0001_initial.py:57
+#: templates/manage/cart/carts_inline.html:111
+msgid "User"
+msgstr "Utilizator"
+
+#: cart/models.py:29
+#: cart/migrations/0001_initial.py:21
+#: order/models.py:27
+#: order/migrations/0001_initial.py:36
+msgid "Session"
+msgstr "Sesiune"
+
+#: cart/models.py:30
+#: cart/models.py:75
+#: cart/migrations/0003_add_date_fields.py:11
+#: cart/migrations/0003_add_date_fields.py:14
+#: catalog/models.py:452
+#: catalog/migrations/0001_initial.py:91
+#: templates/manage/cart/cart_inline.html:96
+#: templates/manage/cart/cart_inline.html:135
+#: templates/manage/cart/carts_inline.html:105
+#: templates/manage/customer/customer_inline.html:130
+#: templates/manage/reviews/review_inline.html:95
+#: templates/manage/reviews/reviews_inline.html:101
+msgid "Creation date"
+msgstr "Data creare"
+
+#: cart/models.py:31
+#: cart/models.py:76
+#: cart/migrations/0003_add_date_fields.py:17
+#: cart/migrations/0003_add_date_fields.py:20
+#: templates/manage/cart/cart_inline.html:104
+#: templates/manage/cart/carts_inline.html:108
+#: templates/manage/customer/customer_inline.html:178
+msgid "Modification date"
+msgstr "Data modificare"
+
+#: cart/models.py:72
+#: cart/migrations/0001_initial.py:15
+#: portlet/templatetags/lfs_portlets_tags.py:79
+#: templates/manage/customer/customer_inline.html:170
+#: templates/manage/customer/customers_inline.html:113
+msgid "Cart"
+msgstr "Coș"
+
+#: cart/models.py:73
+#: cart/migrations/0001_initial.py:13
+#: catalog/models.py:1059
+#: catalog/models.py:1236
+#: catalog/models.py:1292
+#: catalog/migrations/0001_initial.py:13
+#: catalog/migrations/0001_initial.py:61
+#: catalog/migrations/0001_initial.py:144
+#: marketing/models.py:11
+#: marketing/migrations/0001_initial.py:13
+#: templates/manage/cart/cart_inline.html:138
+#: templates/manage/product/product.html:70
+#: templates/manage/reviews/review_inline.html:140
+#: templates/manage/reviews/reviews_inline.html:119
+msgid "Product"
+msgstr "Produs"
+
+#: cart/models.py:74
+#: cart/migrations/0001_initial.py:12
+#: catalog/models.py:1062
+#: catalog/migrations/0001_initial.py:64
+#: templates/manage/product/accessories_inline.html:126
+msgid "Quantity"
+msgstr "Cantitate"
+
+#: cart/migrations/0002_add_cart_portlet.py:13
+#: catalog/models.py:1340
+#: catalog/migrations/0001_initial.py:155
+#: core/models.py:46
+#: core/migrations/0001_initial.py:13
+#: page/models.py:13
+#: page/migrations/0001_initial.py:13
+#: templates/manage/portlets/portlets_inline.html:84
+#: templates/manage/product/images.html:35
+msgid "Title"
+msgstr "Titlu"
+
+#: catalog/models.py:105
+#: catalog/models.py:429
+#: catalog/models.py:1124
+#: catalog/models.py:1263
+#: catalog/models.py:1359
+#: catalog/migrations/0001_initial.py:24
+#: catalog/migrations/0001_initial.py:39
+#: catalog/migrations/0001_initial.py:79
+#: catalog/migrations/0001_initial.py:135
+#: catalog/migrations/0001_initial.py:173
+#: core/models.py:20
+#: core/models.py:116
+#: core/migrations/0001_initial.py:39
+#: core/migrations/0001_initial.py:47
+#: export/models.py:15
+#: payment/models.py:61
+#: payment/migrations/0001_initial.py:13
+#: shipping/models.py:53
+#: shipping/migrations/0001_initial.py:23
+#: templates/manage/category/products_inline.html:39
+#: templates/manage/category/selected_products.html:39
+#: templates/manage/customer/customer_inline.html:13
+#: templates/manage/customer/customers_inline.html:10
+#: templates/manage/marketing/topseller_inline.html:37
+#: templates/manage/marketing/topseller_inline.html:119
+#: templates/manage/order/order_inline.html:14
+#: templates/manage/order/order_inline.html:250
+#: templates/manage/order/orders_inline.html:11
+#: templates/manage/order/orders_inline.html:121
+#: templates/manage/product/accessories_inline.html:39
+#: templates/manage/product/accessories_inline.html:120
+#: templates/manage/product/product_filters_inline.html:13
+#: templates/manage/product/products_inline.html:18
+#: templates/manage/product/related_products_inline.html:38
+#: templates/manage/product/related_products_inline.html:120
+#: templates/manage/product/variants.html:94
+#: templates/manage/product/variants.html:155
+#: templates/manage/properties/options_inline.html:13
+#: templates/manage/properties/pg_product_values.html:11
+#: templates/manage/properties/pg_products_inline.html:38
+#: templates/manage/properties/pg_products_inline.html:88
+#: templates/manage/properties/properties_inline.html:12
+#: templates/manage/properties/properties_inline.html:58
+#: templates/manage/reviews/review_inline.html:12
+#: templates/manage/reviews/review_inline.html:103
+#: templates/manage/reviews/reviews_inline.html:10
+#: templates/manage/reviews/reviews_inline.html:107
+msgid "Name"
+msgstr "Nume"
+
+#: catalog/models.py:106
+#: catalog/models.py:430
+#: catalog/migrations/0001_initial.py:40
+#: catalog/migrations/0001_initial.py:80
+#: export/models.py:16
+#: page/models.py:14
+#: page/migrations/0001_initial.py:19
+#: templates/manage/product/variants.html:91
+msgid "Slug"
+msgstr "Scurtătură"
+
+#: catalog/models.py:107
+#: catalog/models.py:481
+#: catalog/migrations/0001_initial.py:41
+#: catalog/migrations/0001_initial.py:107
+#: core/models.py:51
+#: core/migrations/0001_initial.py:12
+#: templates/manage/product/product.html:35
+msgid "Parent"
+msgstr "Părinte"
+
+#: catalog/models.py:111
+#: catalog/migrations/0001_initial.py:42
+msgid "Show all products"
+msgstr "Arată toate produsele"
+
+#: catalog/models.py:113
+#: catalog/models.py:1089
+#: catalog/models.py:1126
+#: catalog/settings.py:45
+#: export/models.py:17
+#: templates/manage/manage_base.html:91
+#: templates/manage/cart/carts_inline.html:122
+#: templates/manage/category/manage_category.html:40
+#: templates/manage/category/products.html:4
+#: templates/manage/marketing/topseller.html:4
+#: templates/manage/product/accessories.html:19
+#: templates/manage/product/related_products.html:19
+#: templates/manage/properties/pg_products.html:19
+#: templates/manage/properties/property_group.html:29
+msgid "Products"
+msgstr "Produse"
+
+#: catalog/models.py:114
+#: catalog/models.py:434
+#: catalog/migrations/0001_initial.py:43
+#: catalog/migrations/0001_initial.py:84
+msgid "Short description"
+msgstr "Scurtă descriere"
+
+#: catalog/models.py:115
+#: catalog/models.py:435
+#: catalog/models.py:1381
+#: catalog/migrations/0001_initial.py:44
+#: catalog/migrations/0001_initial.py:85
+#: catalog/migrations/0001_initial.py:127
+#: core/models.py:121
+#: core/migrations/0001_initial.py:26
+#: payment/models.py:63
+#: payment/migrations/0001_initial.py:15
+#: shipping/models.py:54
+#: shipping/migrations/0001_initial.py:24
+#: tax/models.py:9
+#: tax/migrations/0001_initial.py:14
+msgid "Description"
+msgstr "Descriere"
+
+#: catalog/models.py:116
+#: catalog/models.py:1341
+#: catalog/migrations/0001_initial.py:45
+#: catalog/migrations/0001_initial.py:156
+#: core/models.py:122
+#: core/migrations/0001_initial.py:28
+#: payment/models.py:66
+#: payment/migrations/0001_initial.py:18
+#: shipping/models.py:57
+#: shipping/migrations/0001_initial.py:27
+#: templates/manage/product/images.html:32
+msgid "Image"
+msgstr "Imagine"
+
+#: catalog/models.py:117
+#: catalog/models.py:1061
+#: catalog/models.py:1127
+#: catalog/models.py:1216
+#: catalog/models.py:1238
+#: catalog/models.py:1265
+#: catalog/models.py:1342
+#: catalog/migrations/0001_initial.py:46
+#: catalog/migrations/0001_initial.py:63
+#: catalog/migrations/0001_initial.py:137
+#: catalog/migrations/0001_initial.py:146
+#: catalog/migrations/0001_initial.py:157
+#: catalog/migrations/0001_initial.py:166
+#: catalog/migrations/0001_initial.py:174
+#: core/models.py:50
+#: core/migrations/0001_initial.py:16
+#: criteria/_models.py:603
+#: criteria/migrations/0001_initial.py:36
+#: criteria/models/criteria_objects.py:23
+#: marketing/models.py:12
+#: marketing/migrations/0001_initial.py:12
+#: page/models.py:18
+#: page/migrations/0001_initial.py:17
+#: templates/manage/marketing/topseller_inline.html:122
+#: templates/manage/portlets/portlet_add.html:7
+#: templates/manage/portlets/portlet_edit.html:7
+#: templates/manage/product/accessories_inline.html:123
+#: templates/manage/product/images.html:38
+#: templates/manage/properties/options_inline.html:10
+#: templates/manage/properties/properties_inline.html:55
+msgid "Position"
+msgstr "Poziție"
+
+#: catalog/models.py:118
+msgid "Exclude from navigation"
+msgstr "Exclude din navigație"
+
+#: catalog/models.py:120
+#: catalog/migrations/0001_initial.py:47
+#: core/models.py:123
+#: core/migrations/0001_initial.py:24
+#: templates/manage/static_block/static_block.html:31
+#: templates/manage/static_block/static_block.html:35
+msgid "Static block"
+msgstr "Bloc static"
+
+#: catalog/models.py:121
+#: catalog/migrations/0001_initial.py:48
+msgid "Content"
+msgstr "Conținut"
+
+#: catalog/models.py:122
+#: catalog/migrations/0001_initial.py:49
+msgid "Active formats"
+msgstr "Formate active"
+
+#: catalog/models.py:124
+#: catalog/migrations/0001_initial.py:50
+#: core/models.py:126
+#: core/migrations/0001_initial.py:36
+msgid "Product rows"
+msgstr "Linii produse"
+
+#: catalog/models.py:125
+#: catalog/migrations/0001_initial.py:51
+#: core/models.py:125
+#: core/migrations/0001_initial.py:32
+msgid "Product cols"
+msgstr "Coloane produse"
+
+#: catalog/models.py:126
+#: catalog/migrations/0001_initial.py:52
+#: core/models.py:127
+#: core/migrations/0001_initial.py:33
+msgid "Category cols"
+msgstr "Coloane categorii"
+
+#: catalog/models.py:128
+#: catalog/models.py:439
+#: catalog/migrations/0001_initial.py:53
+#: catalog/migrations/0001_initial.py:86
+msgid "Meta keywords"
+msgstr "Cuvinte cheie meta"
+
+#: catalog/models.py:129
+#: catalog/models.py:440
+#: catalog/migrations/0001_initial.py:54
+#: catalog/migrations/0001_initial.py:87
+msgid "Meta description"
+msgstr "Descrierea meta"
+
+#: catalog/models.py:431
+#: catalog/migrations/0001_initial.py:81
+#: templates/manage/category/products_inline.html:45
+#: templates/manage/category/selected_products.html:45
+#: templates/manage/marketing/topseller_inline.html:40
+#: templates/manage/marketing/topseller_inline.html:125
+#: templates/manage/order/order_inline.html:247
+#: templates/manage/product/accessories_inline.html:42
+#: templates/manage/product/accessories_inline.html:129
+#: templates/manage/product/products_inline.html:21
+#: templates/manage/product/related_products_inline.html:41
+#: templates/manage/product/related_products_inline.html:123
+#: templates/manage/product/variants.html:152
+msgid "SKU"
+msgstr "SKU"
+
+#: catalog/models.py:432
+#: catalog/models.py:433
+#: catalog/models.py:1264
+#: catalog/migrations/0001_initial.py:82
+#: catalog/migrations/0001_initial.py:83
+#: catalog/migrations/0001_initial.py:136
+#: criteria/_models.py:287
+#: criteria/migrations/0001_initial.py:61
+#: criteria/models/criteria.py:49
+#: order/models.py:32
+#: order/migrations/0001_initial.py:54
+#: payment/models.py:68
+#: payment/models.py:106
+#: payment/migrations/0001_initial.py:20
+#: payment/migrations/0001_initial.py:29
+#: shipping/models.py:60
+#: shipping/models.py:106
+#: shipping/migrations/0001_initial.py:14
+#: shipping/migrations/0001_initial.py:30
+#: templates/manage/cart/cart_inline.html:141
+#: templates/manage/category/products_inline.html:51
+#: templates/manage/category/selected_products.html:51
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:11
+#: templates/manage/criteria/country_criterion.html:12
+#: templates/manage/criteria/height_criterion.html:12
+#: templates/manage/criteria/length_criterion.html:12
+#: templates/manage/criteria/payment_method_criterion.html:12
+#: templates/manage/criteria/price_criterion.html:12
+#: templates/manage/criteria/shipping_method_criterion.html:12
+#: templates/manage/criteria/user_criterion.html:13
+#: templates/manage/criteria/weight_criterion.html:12
+#: templates/manage/criteria/width_criterion.html:11
+#: templates/manage/customer/customer_inline.html:136
+#: templates/manage/customer/customer_inline.html:181
+#: templates/manage/marketing/topseller_inline.html:49
+#: templates/manage/marketing/topseller_inline.html:134
+#: templates/manage/order/order_inline.html:258
+#: templates/manage/order/orders_inline.html:127
+#: templates/manage/payment/payment_method_prices.html:24
+#: templates/manage/product/accessories_inline.html:51
+#: templates/manage/product/accessories_inline.html:138
+#: templates/manage/product/product_filters_inline.html:14
+#: templates/manage/product/products_inline.html:36
+#: templates/manage/product/related_products_inline.html:50
+#: templates/manage/product/related_products_inline.html:132
+#: templates/manage/product/variants.html:97
+#: templates/manage/product/variants.html:163
+#: templates/manage/properties/pg_products_inline.html:44
+#: templates/manage/properties/pg_products_inline.html:94
+#: templates/manage/shipping/shipping_method_prices.html:24
+msgid "Price"
+msgstr "Preț"
+
+#: catalog/models.py:436
+#: templates/manage/product/images.html:18
+#: templates/manage/product/product.html:77
+msgid "Images"
+msgstr "Imagini"
+
+#: catalog/models.py:442
+msgid "Related products"
+msgstr "Produse de văzut"
+
+#: catalog/models.py:445
+msgid "Acessories"
+msgstr "Accesorii"
+
+#: catalog/models.py:449
+#: catalog/migrations/0001_initial.py:88
+#: templates/manage/product/product_filters_inline.html:17
+msgid "For sale"
+msgstr "La reducere"
+
+#: catalog/models.py:450
+#: catalog/migrations/0001_initial.py:89
+msgid "For sale price"
+msgstr "Preț la reducere"
+
+#: catalog/models.py:451
+#: catalog/migrations/0001_initial.py:90
+#: core/models.py:48
+#: core/migrations/0001_initial.py:15
+#: page/models.py:17
+#: page/migrations/0001_initial.py:16
+#: payment/models.py:62
+#: payment/models.py:108
+#: payment/migrations/0001_initial.py:14
+#: payment/migrations/0001_initial.py:31
+#: shipping/models.py:58
+#: shipping/models.py:111
+#: shipping/migrations/0001_initial.py:16
+#: shipping/migrations/0001_initial.py:28
+#: templates/manage/category/products_inline.html:42
+#: templates/manage/category/selected_products.html:42
+#: templates/manage/marketing/topseller_inline.html:43
+#: templates/manage/marketing/topseller_inline.html:128
+#: templates/manage/product/accessories_inline.html:45
+#: templates/manage/product/accessories_inline.html:132
+#: templates/manage/product/product_filters_inline.html:16
+#: templates/manage/product/products_inline.html:24
+#: templates/manage/product/related_products_inline.html:44
+#: templates/manage/product/related_products_inline.html:126
+#: templates/manage/reviews/review_inline.html:13
+#: templates/manage/reviews/review_inline.html:52
+#: templates/manage/reviews/review_inline.html:83
+#: templates/manage/reviews/reviews_inline.html:11
+#: templates/manage/reviews/reviews_inline.html:132
+msgid "Active"
+msgstr "Activ"
+
+#: catalog/models.py:455
+#: catalog/migrations/0001_initial.py:92
+msgid "Deliverable"
+msgstr "Livrabil"
+
+#: catalog/models.py:456
+#: catalog/migrations/0001_initial.py:93
+msgid "Manual delivery time"
+msgstr "Time de livrare manual"
+
+#: catalog/models.py:457
+#: catalog/migrations/0001_initial.py:94
+#: shipping/models.py:61
+#: shipping/migrations/0001_initial.py:31
+msgid "Delivery time"
+msgstr "Timp de livrare"
+
+#: catalog/models.py:458
+#: catalog/migrations/0001_initial.py:95
+msgid "Order time"
+msgstr "Timpul comenzii"
+
+#: catalog/models.py:459
+#: catalog/migrations/0001_initial.py:96
+msgid "Ordered at"
+msgstr "Comandat la"
+
+#: catalog/models.py:460
+#: catalog/migrations/0001_initial.py:97
+msgid "Manage stock amount"
+msgstr "Administrare stocuri"
+
+#: catalog/models.py:461
+#: catalog/migrations/0001_initial.py:98
+#: catalog/migrations/0002_changed_stock_amount.py:11
+#: catalog/migrations/0002_changed_stock_amount.py:18
+msgid "Stock amount"
+msgstr "Cantitate în stoc"
+
+#: catalog/models.py:464
+#: catalog/migrations/0001_initial.py:99
+#: criteria/_models.py:347
+#: criteria/_models.py:365
+#: criteria/migrations/0001_initial.py:14
+#: criteria/models/criteria.py:598
+#: criteria/models/criteria.py:616
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:16
+#: templates/manage/criteria/country_criterion.html:17
+#: templates/manage/criteria/height_criterion.html:17
+#: templates/manage/criteria/length_criterion.html:17
+#: templates/manage/criteria/payment_method_criterion.html:17
+#: templates/manage/criteria/price_criterion.html:17
+#: templates/manage/criteria/shipping_method_criterion.html:17
+#: templates/manage/criteria/user_criterion.html:18
+#: templates/manage/criteria/weight_criterion.html:17
+#: templates/manage/criteria/width_criterion.html:16
+msgid "Weight"
+msgstr "Greutate"
+
+#: catalog/models.py:465
+#: catalog/migrations/0001_initial.py:100
+#: criteria/_models.py:409
+#: criteria/_models.py:427
+#: criteria/_models.py:488
+#: criteria/migrations/0001_initial.py:28
+#: criteria/models/criteria.py:251
+#: criteria/models/criteria.py:269
+#: criteria/models/criteria.py:678
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:12
+#: templates/manage/criteria/country_criterion.html:13
+#: templates/manage/criteria/height_criterion.html:13
+#: templates/manage/criteria/length_criterion.html:13
+#: templates/manage/criteria/payment_method_criterion.html:13
+#: templates/manage/criteria/price_criterion.html:13
+#: templates/manage/criteria/shipping_method_criterion.html:13
+#: templates/manage/criteria/user_criterion.html:14
+#: templates/manage/criteria/weight_criterion.html:13
+#: templates/manage/criteria/width_criterion.html:12
+msgid "Height"
+msgstr "Înălțime"
+
+#: catalog/models.py:466
+#: catalog/migrations/0001_initial.py:101
+#: criteria/_models.py:531
+#: criteria/_models.py:549
+#: criteria/migrations/0001_initial.py:53
+#: criteria/models/criteria.py:312
+#: criteria/models/criteria.py:330
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:13
+#: templates/manage/criteria/country_criterion.html:14
+#: templates/manage/criteria/height_criterion.html:14
+#: templates/manage/criteria/length_criterion.html:14
+#: templates/manage/criteria/payment_method_criterion.html:14
+#: templates/manage/criteria/price_criterion.html:14
+#: templates/manage/criteria/shipping_method_criterion.html:14
+#: templates/manage/criteria/user_criterion.html:15
+#: templates/manage/criteria/weight_criterion.html:14
+#: templates/manage/criteria/width_criterion.html:13
+msgid "Length"
+msgstr "Lungime"
+
+#: catalog/models.py:467
+#: catalog/migrations/0001_initial.py:102
+#: criteria/_models.py:44
+#: criteria/_models.py:470
+#: criteria/migrations/0001_initial.py:69
+#: criteria/migrations/0002_add_girth_criterion.py:14
+#: criteria/models/criteria.py:109
+#: criteria/models/criteria.py:660
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:15
+#: templates/manage/criteria/country_criterion.html:16
+#: templates/manage/criteria/height_criterion.html:16
+#: templates/manage/criteria/length_criterion.html:16
+#: templates/manage/criteria/payment_method_criterion.html:16
+#: templates/manage/criteria/price_criterion.html:16
+#: templates/manage/criteria/shipping_method_criterion.html:16
+#: templates/manage/criteria/user_criterion.html:17
+#: templates/manage/criteria/weight_criterion.html:16
+#: templates/manage/criteria/width_criterion.html:15
+msgid "Width"
+msgstr "Lățime"
+
+#: catalog/models.py:470
+#: catalog/migrations/0001_initial.py:103
+#: order/models.py:33
+#: order/models.py:107
+#: order/migrations/0001_initial.py:15
+#: order/migrations/0001_initial.py:53
+#: payment/models.py:67
+#: payment/migrations/0001_initial.py:19
+#: shipping/models.py:59
+#: shipping/migrations/0001_initial.py:29
+#: templates/manage/tax/tax.html:32
+#: templates/manage/tax/tax.html.py:36
+msgid "Tax"
+msgstr "Taxă"
+
+#: catalog/models.py:471
+#: catalog/migrations/0001_initial.py:104
+msgid "Subtype"
+msgstr "Subtip"
+
+#: catalog/models.py:475
+#: catalog/migrations/0001_initial.py:105
+msgid "Default variant"
+msgstr "Variantă implicită"
+
+#: catalog/models.py:476
+#: catalog/migrations/0001_initial.py:106
+msgid "Variants display type"
+msgstr "Tip de afișare al variantelor"
+
+#: catalog/models.py:482
+#: catalog/migrations/0001_initial.py:108
+msgid "Active name"
+msgstr "Nume activ"
+
+#: catalog/models.py:483
+#: catalog/migrations/0001_initial.py:109
+msgid "Active SKU"
+msgstr "SKU activ"
+
+#: catalog/models.py:484
+#: catalog/migrations/0001_initial.py:110
+msgid "Active short description"
+msgstr "Scurtă descriere activ"
+
+#: catalog/models.py:485
+#: catalog/migrations/0001_initial.py:111
+msgid "Active description"
+msgstr "Descrierea activ"
+
+#: catalog/models.py:486
+msgid "Active price"
+msgstr "Preț activ"
+
+#: catalog/models.py:487
+#: catalog/migrations/0003_add_for_sale_attributes.py:11
+msgid "Active for sale"
+msgstr "Activ la reducere"
+
+#: catalog/models.py:488
+#: catalog/migrations/0003_add_for_sale_attributes.py:14
+msgid "Active for sale price"
+msgstr "Preț redus activ"
+
+#: catalog/models.py:489
+#: catalog/migrations/0001_initial.py:113
+msgid "Active Images"
+msgstr "Imagini activ"
+
+#: catalog/models.py:490
+#: catalog/migrations/0001_initial.py:114
+#: templates/manage/product/related_products.html:12
+msgid "Active related products"
+msgstr "Produse de văzut activ"
+
+#: catalog/models.py:491
+#: catalog/migrations/0001_initial.py:115
+#: templates/manage/product/accessories.html:12
+#: templates/manage/properties/pg_products.html:12
+msgid "Active accessories"
+msgstr "Accesorii activ"
+
+#: catalog/models.py:492
+#: catalog/migrations/0001_initial.py:116
+msgid "Active meta description"
+msgstr "Descriere meta activ"
+
+#: catalog/models.py:493
+#: catalog/migrations/0001_initial.py:117
+msgid "Active meta keywords"
+msgstr "Cuvinte cheie activ"
+
+#: catalog/models.py:494
+msgid "Active dimensions"
+msgstr "Dimensiuni activ"
+
+#: catalog/models.py:1060
+#: catalog/migrations/0001_initial.py:62
+msgid "Acessory"
+msgstr "Accesoriu"
+
+#: catalog/models.py:1125
+#: catalog/models.py:1214
+#: catalog/migrations/0001_initial.py:164
+msgid "Group"
+msgstr "Grup"
+
+#: catalog/models.py:1128
+#: catalog/models.py:1380
+#: catalog/migrations/0001_initial.py:126
+#: catalog/migrations/0001_initial.py:175
+msgid "Unit"
+msgstr "Unitate"
+
+#: catalog/models.py:1129
+#: catalog/migrations/0001_initial.py:176
+msgid "Display on product"
+msgstr "Afișează pe produs"
+
+#: catalog/models.py:1132
+#: catalog/migrations/0001_initial.py:179
+msgid "Display no results"
+msgstr "Afișează fără rezultate"
+
+#: catalog/models.py:1133
+#: catalog/migrations/0001_initial.py:180
+#: customer/models.py:93
+#: customer/migrations/0001_initial.py:17
+#: templates/manage/portlets/portlets_inline.html:81
+msgid "Type"
+msgstr "Tip"
+
+#: catalog/models.py:1135
+#: catalog/migrations/0001_initial.py:181
+#: templates/manage/properties/step_inline.html:3
+msgid "Step type"
+msgstr "Tip pas"
+
+#: catalog/models.py:1136
+#: catalog/migrations/0001_initial.py:182
+msgid "Step"
+msgstr "Pas"
+
+#: catalog/models.py:1141
+#: templates/manage/manage_base.html:96
+#: templates/manage/manage_base.html:98
+#: templates/manage/product/product.html:90
+#: templates/manage/properties/properties_inline.html:5
+#: templates/manage/properties/property_group.html:28
+msgid "Properties"
+msgstr "Proprietăți"
+
+#: catalog/models.py:1191
+#: catalog/models.py:1215
+#: catalog/models.py:1237
+#: catalog/models.py:1261
+#: catalog/models.py:1294
+#: catalog/migrations/0001_initial.py:15
+#: catalog/migrations/0001_initial.py:71
+#: catalog/migrations/0001_initial.py:134
+#: catalog/migrations/0001_initial.py:145
+#: catalog/migrations/0001_initial.py:165
+#: templates/manage/properties/property.html:29
+msgid "Property"
+msgstr "Proprietate"
+
+#: catalog/models.py:1336
+#: catalog/migrations/0001_initial.py:153
+#: criteria/_models.py:599
+#: criteria/migrations/0001_initial.py:35
+#: criteria/models/criteria_objects.py:19
+msgid "Content type"
+msgstr "Tip conținut"
+
+#: catalog/models.py:1337
+#: catalog/migrations/0001_initial.py:154
+#: criteria/_models.py:596
+#: criteria/_models.py:600
+#: criteria/migrations/0001_initial.py:34
+#: criteria/migrations/0001_initial.py:37
+#: criteria/models/criteria_objects.py:16
+#: criteria/models/criteria_objects.py:20
+msgid "Content id"
+msgstr "Id conținut"
+
+#: catalog/models.py:1360
+#: catalog/migrations/0001_initial.py:25
+#: templates/manage/manage_base.html:103
+msgid "HTML"
+msgstr "HTML"
+
+#: catalog/models.py:1378
+#: catalog/migrations/0001_initial.py:124
+msgid "Min"
+msgstr "Min"
+
+#: catalog/models.py:1379
+#: catalog/migrations/0001_initial.py:125
+msgid "Max"
+msgstr "Max"
+
+#: catalog/settings.py:7
+#: catalog/settings.py:17
+#: catalog/settings.py:23
+#: catalog/settings.py:29
+#: templates/manage/product/product_filters_inline.html:51
+msgid "Standard"
+msgstr "Standard"
+
+#: catalog/settings.py:8
+#: templates/manage/customer/customer_inline.html:59
+#: templates/manage/product/data.html:147
+#: templates/manage/product/product_filters_inline.html:37
+#: templates/manage/product/product_filters_inline.html:44
+#: templates/manage/reviews/review_inline.html:24
+#: templates/manage/reviews/review_inline.html:55
+#: templates/manage/reviews/review_inline.html:87
+#: templates/manage/reviews/review_inline.html:132
+#: templates/manage/reviews/reviews_inline.html:76
+#: templates/manage/reviews/reviews_inline.html:170
+#: templates/manage/reviews/reviews_inline.html:179
+msgid "Yes"
+msgstr "Da"
+
+#: catalog/settings.py:9
+#: templates/manage/customer/customer_inline.html:61
+#: templates/manage/product/data.html:149
+#: templates/manage/product/product_filters_inline.html:38
+#: templates/manage/product/product_filters_inline.html:45
+#: templates/manage/reviews/review_inline.html:25
+#: templates/manage/reviews/review_inline.html:56
+#: templates/manage/reviews/review_inline.html:89
+#: templates/manage/reviews/review_inline.html:134
+#: templates/manage/reviews/reviews_inline.html:77
+#: templates/manage/reviews/reviews_inline.html:173
+#: templates/manage/reviews/reviews_inline.html:182
+msgid "No"
+msgstr "Nu"
+
+#: catalog/settings.py:18
+#: catalog/settings.py:24
+#: catalog/settings.py:30
+#: templates/manage/product/product_filters_inline.html:52
+msgid "Product with variants"
+msgstr "Produs cu variante"
+
+#: catalog/settings.py:19
+#: catalog/settings.py:25
+#: export/models.py:69
+#: templates/manage/product/product.html:68
+#: templates/manage/product/product_filters_inline.html:53
+msgid "Variant"
+msgstr "Variană"
+
+#: catalog/settings.py:37
+msgid "List"
+msgstr "Listă"
+
+#: catalog/settings.py:38
+msgid "Select"
+msgstr "Selectează"
+
+#: catalog/settings.py:46
+#: portlet/templatetags/lfs_portlets_tags.py:93
+#: templates/manage/manage_base.html:93
+#: templates/manage/product/categories.html:3
+#: templates/manage/product/product.html:74
+msgid "Categories"
+msgstr "Categorii"
+
+#: catalog/settings.py:55
+msgid "hours"
+msgstr "ore"
+
+#: catalog/settings.py:56
+msgid "days"
+msgstr "zile"
+
+#: catalog/settings.py:57
+msgid "weeks"
+msgstr "săptămâni"
+
+#: catalog/settings.py:58
+msgid "months"
+msgstr "luni"
+
+#: catalog/settings.py:62
+msgid "hour"
+msgstr "oră"
+
+#: catalog/settings.py:63
+msgid "day"
+msgstr "zi"
+
+#: catalog/settings.py:64
+msgid "week"
+msgstr "săptămână"
+
+#: catalog/settings.py:65
+msgid "month"
+msgstr "lună"
+
+#: catalog/settings.py:73
+msgid "Number field"
+msgstr "Câmp număr"
+
+#: catalog/settings.py:74
+msgid "Text field"
+msgstr "Câmp text"
+
+#: catalog/settings.py:75
+msgid "Select field"
+msgstr "Câmp selectare"
+
+#: catalog/settings.py:83
+msgid "Automatic"
+msgstr "Automatic"
+
+#: catalog/settings.py:84
+msgid "Fixed step"
+msgstr "Pași ficși"
+
+#: catalog/settings.py:85
+msgid "Manual steps"
+msgstr "Pași manuali"
+
+#: catalog/views.py:33
+#: catalog/views.py:56
+msgid "The product has been changed according to your selection."
+msgstr "Produsul a fost modificat potrivit selecției."
+
+#: catalog/views.py:53
+#: catalog/views.py:423
+msgid "The choosen combination of properties is not deliverable."
+msgstr "Combinația de proprietăți aleasă nu este livrabilă"
+
+#: catalog/migrations/0001_initial.py:112
+msgid "Active Price"
+msgstr "Preț activ"
+
+#: checkout/forms.py:16
+#: checkout/forms.py:26
+#: customer/models.py:61
+#: customer/migrations/0001_initial.py:37
+#: templates/manage/customer/customers_inline.html:100
+msgid "Firstname"
+msgstr "Prenume"
+
+#: checkout/forms.py:17
+#: checkout/forms.py:27
+#: customer/models.py:62
+#: customer/migrations/0001_initial.py:38
+#: templates/manage/customer/customers_inline.html:94
+msgid "Lastname"
+msgstr "Nume"
+
+#: checkout/forms.py:18
+#: checkout/forms.py:28
+#: customer/models.py:63
+#: customer/migrations/0003_add_company_name.py:11
+msgid "Company name"
+msgstr "Nume companie"
+
+#: checkout/forms.py:19
+#: checkout/forms.py:29
+#: customer/models.py:64
+#: customer/migrations/0001_initial.py:41
+msgid "Street"
+msgstr "Stradă"
+
+#: checkout/forms.py:20
+#: checkout/forms.py:30
+msgid "Zip Code"
+msgstr "Cod poștal"
+
+#: checkout/forms.py:21
+#: checkout/forms.py:31
+#: customer/models.py:66
+#: customer/migrations/0001_initial.py:36
+msgid "City"
+msgstr "Oraș"
+
+#: checkout/forms.py:22
+#: checkout/forms.py:32
+#: criteria/_models.py:138
+#: criteria/models/criteria.py:203
+#: customer/models.py:68
+#: customer/migrations/0001_initial.py:42
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:8
+#: templates/manage/criteria/country_criterion.html:9
+#: templates/manage/criteria/height_criterion.html:9
+#: templates/manage/criteria/length_criterion.html:9
+#: templates/manage/criteria/payment_method_criterion.html:9
+#: templates/manage/criteria/price_criterion.html:9
+#: templates/manage/criteria/shipping_method_criterion.html:9
+#: templates/manage/criteria/user_criterion.html:10
+#: templates/manage/criteria/weight_criterion.html:9
+#: templates/manage/criteria/width_criterion.html:8
+msgid "Country"
+msgstr "Țară"
+
+#: checkout/forms.py:23
+#: checkout/forms.py:33
+#: customer/models.py:69
+#: customer/migrations/0001_initial.py:40
+#: templates/manage/order/order_inline.html:147
+msgid "Phone"
+msgstr "Telefon"
+
+#: checkout/forms.py:24
+#: customer/forms.py:27
+#: customer/forms.py:32
+#: templates/manage/order/order_inline.html:131
+msgid "E-mail"
+msgstr "E-mail"
+
+#: checkout/forms.py:35
+msgid "Account Number"
+msgstr "Număr cont"
+
+#: checkout/forms.py:36
+msgid "Bank Indentification Code"
+msgstr "Cod de identificare al băncii"
+
+#: checkout/forms.py:37
+msgid "Bankname"
+msgstr "Nume bancă"
+
+#: checkout/forms.py:38
+#: customer/models.py:83
+#: customer/migrations/0001_initial.py:27
+#: order/models.py:70
+#: order/migrations/0001_initial.py:35
+msgid "Depositor"
+msgstr "Depozitor"
+
+#: checkout/forms.py:42
+msgid "Credit Card Type"
+msgstr "Tip carte de credit"
+
+#: checkout/forms.py:43
+msgid "Credit Card Owner"
+msgstr "Proprietar carte de credit"
+
+#: checkout/forms.py:44
+msgid "Credit Card Number"
+msgstr "Număr carte de credit"
+
+#: checkout/forms.py:45
+msgid "Expiration Date Month"
+msgstr "Data de expirare: lună"
+
+#: checkout/forms.py:46
+msgid "Expiration Date Year"
+msgstr "Data de expirare: an"
+
+#: checkout/forms.py:47
+msgid "Verification Number"
+msgstr "Număr de verificare"
+
+#: checkout/forms.py:49
+msgid "Same as invoice"
+msgstr "La fel ca factura"
+
+#: checkout/forms.py:50
+msgid "Your message to us"
+msgstr "Mesajul tău pentru noi"
+
+#: checkout/forms.py:66
+msgid "This field is required."
+msgstr "Acest câmp este necesar."
+
+#: checkout/settings.py:7
+msgid "Anonymous and Authenticated"
+msgstr "Anonim sau Autentificat"
+
+#: checkout/settings.py:8
+msgid "Anonymous only"
+msgstr "Doar anonim"
+
+#: checkout/settings.py:9
+msgid "Authenticated only"
+msgstr "Doar autentificat"
+
+#: checkout/views.py:51
+#: customer/models.py:70
+#: customer/views.py:41
+#: customer/migrations/0001_initial.py:39
+#: templates/manage/customer/customers_inline.html:106
+#: templates/manage/reviews/review_inline.html:116
+#: templates/manage/reviews/reviews_inline.html:113
+msgid "E-Mail"
+msgstr "E-Mail"
+
+#: checkout/views.py:61
+#: customer/views.py:57
+msgid "You have been logged in."
+msgstr "Ai fost loginat."
+
+#: checkout/views.py:84
+#: customer/views.py:85
+msgid "You have been registered and logged in."
+msgstr "Ai fost înregistrat și loginat."
+
+#: checkout/views.py:381
+msgid "An error has been occured."
+msgstr "O eroare a apărut."
+
+#: core/models.py:19
+#: core/migrations/0001_initial.py:45
+msgid "Country code"
+msgstr "Cod țară"
+
+#: core/models.py:47
+#: core/migrations/0001_initial.py:18
+msgid "Link"
+msgstr "Legătură"
+
+#: core/models.py:117
+#: core/migrations/0001_initial.py:35
+msgid "Shop owner"
+msgstr "Proprietar magazin"
+
+#: core/models.py:118
+#: core/migrations/0001_initial.py:30
+msgid "From e-mail address"
+msgstr "Adresă email pt. trimițător"
+
+#: core/models.py:119
+#: core/migrations/0001_initial.py:34
+msgid "Notification email addresses"
+msgstr "Adrese de email pt notificare"
+
+#: core/models.py:128
+#: core/migrations/0001_initial.py:25
+msgid "Google Analytics ID"
+msgstr "ID Google Analytics"
+
+#: core/models.py:129
+#: core/migrations/0001_initial.py:38
+msgid "Google Analytics Site Tracking"
+msgstr "Google Analytics Site Tracking"
+
+#: core/models.py:130
+#: core/migrations/0001_initial.py:27
+msgid "Google Analytics E-Commerce Tracking"
+msgstr "Google Analytics E-Commerce Tracking"
+
+#: core/models.py:132
+#: criteria/_models.py:116
+#: criteria/models/criteria.py:181
+#: templates/manage/shop/default_values.html:64
+msgid "Countries"
+msgstr "Țări"
+
+#: core/models.py:133
+#: core/migrations/0001_initial.py:31
+msgid "Default country"
+msgstr "Țara implictă"
+
+#: core/models.py:134
+#: core/migrations/0002_add_default_currency.py:11
+msgid "Default Currency"
+msgstr "Moneda implicită"
+
+#: core/models.py:136
+#: core/migrations/0001_initial.py:29
+msgid "Checkout type"
+msgstr "Tipul de finalizare comandă"
+
+#: core/settings.py:5
+msgid "Top Menu"
+msgstr "Menu Top"
+
+#: core/templatetags/lfs_tags.py:152
+#: portlet/templatetags/lfs_portlets_tags.py:107
+msgid "Information"
+msgstr "Informații"
+
+#: core/templatetags/lfs_tags.py:375
+#, python-format
+msgid "%s tag needs no argument"
+msgstr "Cuvântul cheie %s nu necesită argumente"
+
+#: core/templatetags/lfs_tags.py:398
+#, python-format
+msgid "%s tag needs product as argument"
+msgstr "Cuvântul cheie %s are nevoie de produs ca și argument"
+
+#: criteria/_models.py:43
+#: criteria/_models.py:115
+#: criteria/_models.py:185
+#: criteria/_models.py:286
+#: criteria/_models.py:346
+#: criteria/_models.py:469
+#: criteria/_models.py:530
+#: criteria/migrations/0001_initial.py:12
+#: criteria/migrations/0001_initial.py:45
+#: criteria/migrations/0001_initial.py:52
+#: criteria/migrations/0001_initial.py:60
+#: criteria/migrations/0001_initial.py:68
+#: criteria/migrations/0002_add_girth_criterion.py:13
+#: criteria/migrations/0003_add_payment_method_criterion.py:13
+#: criteria/migrations/0004_add_shipping_method_criterion.py:13
+#: criteria/models/criteria.py:48
+#: criteria/models/criteria.py:108
+#: criteria/models/criteria.py:180
+#: criteria/models/criteria.py:311
+#: criteria/models/criteria.py:373
+#: criteria/models/criteria.py:466
+#: criteria/models/criteria.py:597
+#: criteria/models/criteria.py:659
+msgid "Operator"
+msgstr "Operator"
+
+#: criteria/_models.py:62
+#: criteria/models/criteria.py:127
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:9
+#: templates/manage/criteria/country_criterion.html:10
+#: templates/manage/criteria/height_criterion.html:10
+#: templates/manage/criteria/length_criterion.html:10
+#: templates/manage/criteria/payment_method_criterion.html:10
+#: templates/manage/criteria/price_criterion.html:10
+#: templates/manage/criteria/shipping_method_criterion.html:10
+#: templates/manage/criteria/user_criterion.html:11
+#: templates/manage/criteria/weight_criterion.html:10
+#: templates/manage/criteria/width_criterion.html:9
+msgid "Combined length and girth"
+msgstr "Lungimea și grosimea combinate"
+
+#: criteria/_models.py:208
+#: criteria/models/criteria.py:399
+#: payment/models.py:105
+#: payment/migrations/0001_initial.py:28
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:10
+#: templates/manage/criteria/country_criterion.html:11
+#: templates/manage/criteria/height_criterion.html:11
+#: templates/manage/criteria/length_criterion.html:11
+#: templates/manage/criteria/payment_method_criterion.html:11
+#: templates/manage/criteria/price_criterion.html:11
+#: templates/manage/criteria/shipping_method_criterion.html:11
+#: templates/manage/criteria/user_criterion.html:12
+#: templates/manage/criteria/weight_criterion.html:11
+#: templates/manage/criteria/width_criterion.html:10
+#: templates/manage/order/order_inline.html:173
+msgid "Payment method"
+msgstr "Metoda de plată"
+
+#: criteria/_models.py:305
+#: criteria/models/criteria.py:67
+msgid "Cart Price"
+msgstr "Preț Coș"
+
+#: criteria/_models.py:595
+#: criteria/migrations/0001_initial.py:39
+#: criteria/models/criteria_objects.py:15
+msgid "Criterion type"
+msgstr "Tip criterie"
+
+#: criteria/settings.py:16
+#: criteria/settings.py:24
+msgid "Equal to"
+msgstr "Egal cu"
+
+#: criteria/settings.py:17
+#: templates/manage/criteria/number_operators.html:4
+msgid "Less than"
+msgstr "Mai mic decât"
+
+#: criteria/settings.py:18
+msgid "Less than or equal to"
+msgstr "Mai mare sau mai mic decât"
+
+#: criteria/settings.py:19
+#: templates/manage/criteria/number_operators.html:6
+msgid "Greater than"
+msgstr "Mai mare decât"
+
+#: criteria/settings.py:20
+msgid "Greater than or equal to"
+msgstr "Mai mare sau egal cu"
+
+#: criteria/settings.py:25
+msgid "Contain"
+msgstr "Conține"
+
+#: criteria/settings.py:29
+msgid "Is"
+msgstr "Este"
+
+#: criteria/settings.py:30
+msgid "Is not"
+msgstr "Nu este"
+
+#: criteria/settings.py:31
+#: templates/manage/criteria/selection_operators.html:5
+msgid "Is valid"
+msgstr "Este valid"
+
+#: criteria/settings.py:32
+#: templates/manage/criteria/selection_operators.html:6
+msgid "Is not valid"
+msgstr "Nu este valid"
+
+#: criteria/models/criteria.py:374
+msgid "Payment methods"
+msgstr "Metode de plată"
+
+#: criteria/models/criteria.py:467
+msgid "Shipping methods"
+msgstr "Metode de livrare"
+
+#: criteria/models/criteria.py:492
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:14
+#: templates/manage/criteria/country_criterion.html:15
+#: templates/manage/criteria/height_criterion.html:15
+#: templates/manage/criteria/length_criterion.html:15
+#: templates/manage/criteria/payment_method_criterion.html:15
+#: templates/manage/criteria/price_criterion.html:15
+#: templates/manage/criteria/shipping_method_criterion.html:15
+#: templates/manage/criteria/user_criterion.html:16
+#: templates/manage/criteria/weight_criterion.html:15
+#: templates/manage/criteria/width_criterion.html:14
+#: templates/manage/order/order_inline.html:170
+msgid "Shipping method"
+msgstr "Metodă de livrare"
+
+#: customer/forms.py:34
+msgid "Password"
+msgstr "Parolă"
+
+#: customer/forms.py:36
+msgid "Confirm password"
+msgstr "Confirmă parola"
+
+#: customer/forms.py:45
+msgid "The two passwords do not match."
+msgstr "Cele două parole nu se potrivesc."
+
+#: customer/forms.py:55
+msgid "That email address is already in use."
+msgstr "Această adresă de email este folosită deja."
+
+#: customer/models.py:25
+#: customer/migrations/0001_initial.py:50
+msgid "Selected shipping method"
+msgstr "Selectează metoda de livrare"
+
+#: customer/models.py:26
+#: customer/migrations/0001_initial.py:56
+msgid "Selected payment method"
+msgstr "Metoda de plată selectată"
+
+#: customer/models.py:27
+#: customer/migrations/0001_initial.py:51
+msgid "Bank account"
+msgstr "Cont bancar"
+
+#: customer/models.py:28
+#: customer/migrations/0001_initial.py:59
+msgid "Credit card"
+msgstr "Carte de credit"
+
+#: customer/models.py:29
+#: customer/migrations/0001_initial.py:53
+msgid "Selected shipping address"
+msgstr "Selectează adresa de livrare"
+
+#: customer/models.py:30
+#: customer/migrations/0001_initial.py:52
+msgid "Selected invoice address"
+msgstr "Selectează adresa de facturare"
+
+#: customer/models.py:31
+#: customer/migrations/0001_initial.py:57
+msgid "Selected country"
+msgstr "Selectează țara"
+
+#: customer/models.py:59
+#: customer/models.py:78
+#: customer/models.py:91
+#: customer/migrations/0001_initial.py:12
+#: customer/migrations/0001_initial.py:24
+#: customer/migrations/0001_initial.py:35
+#: templates/manage/cart/cart_inline.html:71
+msgid "Customer"
+msgstr "Client"
+
+#: customer/models.py:65
+#: customer/migrations/0001_initial.py:44
+msgid "Zip code"
+msgstr "Cod poștal"
+
+#: customer/models.py:67
+#: customer/migrations/0002_add_address_state.py:11
+#: order/models.py:30
+#: order/migrations/0001_initial.py:45
+#: templates/manage/customer/customer_inline.html:133
+#: templates/manage/order/order_inline.html:15
+#: templates/manage/order/order_inline.html:83
+#: templates/manage/order/order_inline.html:139
+#: templates/manage/order/orders_inline.html:12
+#: templates/manage/order/orders_inline.html:124
+msgid "State"
+msgstr "Stat"
+
+#: customer/models.py:80
+#: customer/migrations/0001_initial.py:28
+#: order/models.py:67
+#: order/migrations/0001_initial.py:55
+msgid "Account number"
+msgstr "Număr cont"
+
+#: customer/models.py:81
+#: customer/migrations/0001_initial.py:26
+msgid "Bank identification code"
+msgstr "Cod identificare bancă"
+
+#: customer/models.py:82
+#: customer/migrations/0001_initial.py:25
+#: order/models.py:69
+#: order/migrations/0001_initial.py:50
+msgid "Bank name"
+msgstr "Nume bancă"
+
+#: customer/models.py:94
+#: customer/migrations/0001_initial.py:16
+msgid "Owner"
+msgstr "Proprietar"
+
+#: customer/models.py:95
+#: customer/migrations/0001_initial.py:13
+msgid "Number"
+msgstr "Număr"
+
+#: customer/models.py:96
+#: customer/migrations/0001_initial.py:15
+msgid "Expiration date month"
+msgstr "Data de expirare: lună"
+
+#: customer/models.py:97
+#: customer/migrations/0001_initial.py:14
+msgid "Expiration date year"
+msgstr "Data de expirare: an"
+
+#: customer/views.py:120
+msgid "You have been logged out."
+msgstr "Ai fost scos afară."
+
+#: export/models.py:18
+msgid "Script"
+msgstr "Script"
+
+#: export/models.py:19
+#: templates/manage/product/product.html:80
+#: templates/manage/product/variants.html:84
+msgid "Variants"
+msgstr "Variante"
+
+#: export/models.py:67
+#: templates/manage/category/manage_category.html:39
+#: templates/manage/product/product_filters_inline.html:15
+msgid "Category"
+msgstr "Categorie"
+
+#: export/models.py:68
+#: templates/manage/manage_base.html:125
+#: templates/manage/export/export.html:17
+msgid "Export"
+msgstr "Exportă"
+
+#: export/settings.py:10
+msgid "---"
+msgstr "---"
+
+#: export/settings.py:11
+msgid "Default"
+msgstr "Implicit"
+
+#: export/settings.py:12
+msgid "Cheapest"
+msgstr "Cel mai ieftin"
+
+#: export/settings.py:13
+#: templates/manage/category/category_filter.html:4
+#: templates/manage/category/category_select.html:4
+#: templates/manage/order/order_inline.html:47
+#: templates/manage/order/order_inline.html:89
+#: templates/manage/order/orders_inline.html:98
+#: templates/manage/product/variants.html:119
+msgid "All"
+msgstr "Toate"
+
+#: mail/utils.py:16
+msgid "Your order has been received"
+msgstr "Comanda ta a fost primită"
+
+#: mail/utils.py:38
+#, python-format
+msgid "Welcome to %s"
+msgstr "Bun venit la %s"
+
+#: manage/views/actions.py:55
+msgid "Action has been saved."
+msgstr "Acțiunea a fost salvată."
+
+#: manage/views/actions.py:79
+msgid "Action has been added."
+msgstr "Acțiunea a fost adaugată."
+
+#: manage/views/actions.py:98
+msgid "Action has been deleted."
+msgstr "Acțiunea a fost ștearsă."
+
+#: manage/views/carts.py:192
+msgid "Cart filters has been set."
+msgstr "Filtrele coșului au fost aplicate."
+
+#: manage/views/carts.py:222
+msgid "Cart filters has been set"
+msgstr "Filtrele coșului au fost aplicate"
+
+#: manage/views/carts.py:246
+msgid "Cart filters has been reset"
+msgstr "Filtrele coșului au fost resetate"
+
+#: manage/views/customer.py:210
+msgid "Customer filters have been set"
+msgstr "Filtrele clienți au fost aplicate"
+
+#: manage/views/customer.py:234
+msgid "Customer filters has been reset"
+msgstr "Filtrele clienți au fost resetate"
+
+#: manage/views/delivery_times.py:46
+msgid "Delivery time has been saved."
+msgstr "Timpul de livrare a fost salvat"
+
+#: manage/views/delivery_times.py:69
+msgid "Delivery time has been added."
+msgstr "Timpul de livrare a fost adaugat."
+
+#: manage/views/delivery_times.py:99
+msgid "Delivery time has been deleted."
+msgstr "Timpul de livrare a fost șters"
+
+#: manage/views/export.py:305
+msgid "Export data has been saved."
+msgstr "Data de export a fost salvată."
+
+#: manage/views/lfs_portlets.py:74
+msgid "Portlet has been updated."
+msgstr "Portletul a fost modificat."
+
+#: manage/views/lfs_portlets.py:121
+msgid "Portlet has been added."
+msgstr "Portletul a fost adăugat."
+
+#: manage/views/lfs_portlets.py:141
+msgid "Portlet has been deleted."
+msgstr "Portletul a fost șters."
+
+#: manage/views/lfs_portlets.py:181
+msgid "Portlet has been saved."
+msgstr "Portletul a fost salvat."
+
+#: manage/views/orders.py:133
+#: manage/views/orders.py:163
+msgid "Filters has been set"
+msgstr "Filtrele au fost aplicate"
+
+#: manage/views/orders.py:187
+msgid "Filters has been reset"
+msgstr "Filtrele au fost resetate"
+
+#: manage/views/orders.py:291
+msgid "Order has been sent."
+msgstr "Comanda a fost trimisă."
+
+#: manage/views/orders.py:304
+msgid "State has been changed"
+msgstr "Starea a fost modifică"
+
+#: manage/views/page.py:59
+msgid "Page has been saved."
+msgstr "Pagina a fost salvată."
+
+#: manage/views/page.py:83
+msgid "Page has been added."
+msgstr "Pagina a fost adaugată."
+
+#: manage/views/page.py:102
+msgid "Page has been deleted."
+msgstr "Pagina a fost ștearsă."
+
+#: manage/views/payment.py:175
+msgid "Payment method has been added."
+msgstr "Metoda de plată a fost adăugată."
+
+#: manage/views/payment.py:240
+#: manage/views/shipping.py:239
+msgid "Price has been added"
+msgstr "Prețul a fost adăugat"
+
+#: manage/views/payment.py:260
+#: manage/views/shipping.py:258
+msgid "Prices have been deleted"
+msgstr "Prețurile au fost șterse"
+
+#: manage/views/payment.py:272
+#: manage/views/shipping.py:270
+msgid "Prices have been updated"
+msgstr "Prețurile au fost modificate"
+
+#: manage/views/payment.py:336
+msgid "Payment method has been saved."
+msgstr "Metoda de plată a fost salvată."
+
+#: manage/views/payment.py:359
+msgid "Payment method has been deleted."
+msgstr "Metoda de plată a fost ștearsă."
+
+#: manage/views/properties.py:74
+msgid "Property type has been saved."
+msgstr "Tipul de proprietate a fost salvat."
+
+#: manage/views/properties.py:108
+msgid "Property type has been changed."
+msgstr "Tipul de proprietate a fost modificat."
+
+#: manage/views/properties.py:136
+msgid "Steps have been saved."
+msgstr "Pașii au fost salvați."
+
+#: manage/views/properties.py:151
+msgid "Step type has been saved."
+msgstr "Tipul de pas a fost salvat."
+
+#: manage/views/properties.py:167
+msgid "Step has been added."
+msgstr "Pasul a fost adăugat."
+
+#: manage/views/properties.py:179
+msgid "Steps have been updated."
+msgstr "Pașii au fost modificați."
+
+#: manage/views/properties.py:223
+msgid "Property has been added."
+msgstr "Proprietatea a fost adăugată."
+
+#: manage/views/properties.py:257
+msgid "Option has been added."
+msgstr "Opțiunea a fost adăugată."
+
+#: manage/views/properties.py:270
+msgid "Options have been update."
+msgstr "Opțiunea a fost modifică."
+
+#: manage/views/review.py:186
+msgid "Review filters have been set"
+msgstr "Filtrele pt recenzii au fost aplicate"
+
+#: manage/views/review.py:210
+msgid "Review filters have been reset"
+msgstr "Filtrele pt recenzii au fost șterse"
+
+#: manage/views/review.py:230
+msgid "Review has been deleted."
+msgstr "Recenzia a fost ștearsă."
+
+#: manage/views/review.py:250
+msgid "Review state has been set"
+msgstr "Starea recenziei a fost modificată"
+
+#: manage/views/shipping.py:174
+msgid "Shipping method has been added."
+msgstr "Metoda de livrare a fost adaugată."
+
+#: manage/views/shipping.py:322
+msgid "Shipping method has been saved."
+msgstr "Metoda de livrare a fost salvată."
+
+#: manage/views/shipping.py:345
+msgid "Shipping method has been deleted."
+msgstr "Metoda de livrare a fost ștearsă."
+
+#: manage/views/shop.py:53
+msgid "Shop data has been saved."
+msgstr "Datele magazinului au fost salvate."
+
+#: manage/views/shop.py:89
+msgid "Shop default values have been saved."
+msgstr "Datele implicite ale magazinului au fost salvate."
+
+#: manage/views/shop.py:91
+#: manage/views/categories/category.py:100
+#: manage/views/categories/seo.py:40
+#: manage/views/product/product.py:118
+msgid "Please correct the indicated errors."
+msgstr "Te rog corectează următoarele erori."
+
+#: manage/views/static_blocks.py:44
+msgid "Static block has been saved."
+msgstr "Blocul static a fost salvat."
+
+#: manage/views/static_blocks.py:66
+msgid "Static block has been added."
+msgstr "Blocul static a fost adăugat."
+
+#: manage/views/static_blocks.py:101
+msgid "Static block has been deleted."
+msgstr "Blocul static a fost șters."
+
+#: manage/views/tax.py:45
+msgid "Tax has been saved."
+msgstr "Taxa a fost salvată."
+
+#: manage/views/tax.py:68
+msgid "Tax has been added."
+msgstr "Taxa a fost adăugată."
+
+#: manage/views/tax.py:93
+msgid "Tax has been deleted."
+msgstr "Taxa a fost ștearsă."
+
+#: manage/views/utils.py:25
+msgid "Cache has been cleared."
+msgstr "Cache-ul a fost curățat."
+
+#: manage/views/utils.py:34
+msgid "Categoy levels have been created."
+msgstr "Nivelele de categorii au fost create."
+
+#: manage/views/utils.py:45
+msgid "Effective prices have been set."
+msgstr "Prețurile efective au fost aplicate."
+
+#: manage/views/categories/category.py:98
+msgid "Category data have been saved."
+msgstr "Datele categoriilor au fost salvate."
+
+#: manage/views/categories/products.py:175
+msgid "Selected products have been added to category."
+msgstr "Produsele selectate au fost adăugate la categorie."
+
+#: manage/views/categories/seo.py:38
+msgid "SEO data has been saved."
+msgstr "Datele SEO au fost salvate."
+
+#: manage/views/marketing/topseller.py:121
+msgid "Topseller have been added."
+msgstr "Topseller-ul a fost adăugat."
+
+#: manage/views/marketing/topseller.py:148
+msgid "Topseller have been removed."
+msgstr "Topseller-ul a fost șters."
+
+#: manage/views/marketing/topseller.py:168
+msgid "Topseller have been updated."
+msgstr "Topseller-ul a fost modificat."
+
+#: manage/views/product/accessories.py:154
+msgid "Accessories have been added."
+msgstr "Accesoriile au fost adăugate."
+
+#: manage/views/product/accessories.py:185
+msgid "Accessories have been removed."
+msgstr "Accesoriile au fost șterse."
+
+#: manage/views/product/accessories.py:215
+#: manage/views/product/accessories.py:235
+msgid "Accessories have been updated."
+msgstr "Accesoriile au fost modificate."
+
+#: manage/views/product/categories.py:90
+msgid "Categories have been saved."
+msgstr "Categoriile au fost salvate."
+
+#: manage/views/product/images.py:35
+msgid "Images has been added."
+msgstr "Imaginile au fost adăugate."
+
+#: manage/views/product/images.py:67
+msgid "Images has been deleted."
+msgstr "Imaginile au fost șterse."
+
+#: manage/views/product/images.py:77
+msgid "Images has been updated."
+msgstr "Imaginile au fost modificate."
+
+#: manage/views/product/images.py:126
+msgid "Active images has been updated."
+msgstr "Imaginile active au fost modificate."
+
+#: manage/views/product/product.py:116
+msgid "Product stock data has been saved."
+msgstr "Datele de stoc ale produsului a fost salvate."
+
+#: manage/views/product/product.py:251
+msgid "Sub type has been changed."
+msgstr "Subtipul a fost modificat."
+
+#: manage/views/product/product.py:334
+msgid "Product filters have been reset"
+msgstr "Filtrele produsului au fost resetate"
+
+#: manage/views/product/product.py:387
+msgid "Products have been saved"
+msgstr "Produsele au fost salvate"
+
+#: manage/views/product/product.py:422
+msgid "Product filters have been set"
+msgstr "Filtrele de produs au fost aplicate"
+
+#: manage/views/product/related_products.py:136
+msgid "Related products have been added."
+msgstr "Produsele relaționate au fost adăugate."
+
+#: manage/views/product/related_products.py:162
+msgid "Related products have been removed."
+msgstr "Produsele relaționate au fost șterse."
+
+#: manage/views/product/related_products.py:181
+msgid "Related products have been updated."
+msgstr "Produsele relaționate au fost modificate."
+
+#: manage/views/product/seo.py:44
+msgid "Seo data has been saved."
+msgstr "Datele SEO au fost salvate."
+
+#: manage/views/property_groups/product_values.py:85
+msgid "Product Values have been saved."
+msgstr "Valorile produsului au fost salvate."
+
+#: manage/views/property_groups/products.py:119
+msgid "Products have been assigned."
+msgstr "Produsele a fost desemnate."
+
+#: manage/views/property_groups/products.py:141
+msgid "Products have been removed."
+msgstr "Produsele au fost șterse."
+
+#: manage/views/property_groups/property_groups.py:54
+msgid "Property group has been saved."
+msgstr "Grupul de proprietăți a fost salvat."
+
+#: manage/views/property_groups/property_groups.py:98
+msgid "Property group has been added."
+msgstr "Grupul de proprietăți a fost adăugat."
+
+#: manage/views/property_groups/property_groups.py:117
+msgid "Property group has been deleted."
+msgstr "Grupul de proprietăți a fost șters."
+
+#: manage/views/property_groups/property_groups.py:133
+msgid "Properties have been assigned."
+msgstr "Proprietățile au fost desemnate."
+
+#: manage/views/property_groups/property_groups.py:151
+msgid "Properties have been removed."
+msgstr "Proprietățile au fost șterse."
+
+#: manage/views/property_groups/property_groups.py:158
+msgid "Properties have been updated."
+msgstr "Proprietățile au fost modificate."
+
+#: order/models.py:29
+#: order/migrations/0001_initial.py:59
+msgid "Created"
+msgstr "Creat"
+
+#: order/models.py:35
+#: order/migrations/0001_initial.py:33
+msgid "firstname"
+msgstr "firstname"
+
+#: order/models.py:36
+#: order/models.py:37
+#: order/migrations/0001_initial.py:47
+#: order/migrations/0001_initial.py:51
+msgid "lastname"
+msgstr "lastname"
+
+#: order/models.py:39
+#: order/migrations/0001_initial.py:58
+msgid "Invoice firstname"
+msgstr "Factură prenume"
+
+#: order/models.py:40
+#: order/migrations/0001_initial.py:62
+msgid "Invoice lastname"
+msgstr "Factură nume"
+
+#: order/models.py:41
+#: order/migrations/0003_add_company_name.py:11
+msgid "Invoice company name"
+msgstr "Factură nume companie"
+
+#: order/models.py:42
+#: order/migrations/0001_initial.py:49
+msgid "Invoice street"
+msgstr "Factură stradă"
+
+#: order/models.py:43
+#: order/migrations/0001_initial.py:46
+msgid "Invoice zip code"
+msgstr "Factură cod poștal"
+
+#: order/models.py:44
+#: order/migrations/0001_initial.py:37
+msgid "Invoice city"
+msgstr "Factură oraș"
+
+#: order/models.py:45
+#: order/migrations/0002_add_invoice_state_and_shipping_state_and_uuid.py:11
+msgid "Invoice state"
+msgstr "Factură județ"
+
+#: order/models.py:47
+#: order/migrations/0001_initial.py:56
+msgid "Invoice phone"
+msgstr "Factură telefon"
+
+#: order/models.py:49
+#: order/migrations/0001_initial.py:38
+msgid "Shipping firstname"
+msgstr "Livrare prenume"
+
+#: order/models.py:50
+#: order/migrations/0001_initial.py:48
+msgid "Shipping lastname"
+msgstr "Livrare nume"
+
+#: order/models.py:51
+#: order/migrations/0003_add_company_name.py:14
+msgid "Shipping company name"
+msgstr "Livrare nume companie"
+
+#: order/models.py:52
+#: order/migrations/0001_initial.py:30
+msgid "Shipping street"
+msgstr "Livrare stradă"
+
+#: order/models.py:53
+#: order/migrations/0001_initial.py:34
+msgid "Shipping zip code"
+msgstr "Livrare cod poștal"
+
+#: order/models.py:54
+#: order/migrations/0001_initial.py:52
+msgid "Shipping city"
+msgstr "Livrare oraș"
+
+#: order/models.py:55
+#: order/migrations/0002_add_invoice_state_and_shipping_state_and_uuid.py:14
+msgid "Shipping state"
+msgstr "Livrare județ"
+
+#: order/models.py:57
+#: order/migrations/0001_initial.py:43
+msgid "Shipping phone"
+msgstr "Livrare telefon"
+
+#: order/models.py:59
+#: order/migrations/0001_initial.py:29
+msgid "Shipping Method"
+msgstr "Metoda de Livrare"
+
+#: order/models.py:60
+#: order/migrations/0001_initial.py:41
+msgid "Shipping Price"
+msgstr "Preț Livrare"
+
+#: order/models.py:61
+#: order/migrations/0001_initial.py:39
+msgid "Shipping Tax"
+msgstr "Taxă Livrare"
+
+#: order/models.py:63
+#: order/migrations/0001_initial.py:31
+msgid "Payment Method"
+msgstr "Metoda de Plată"
+
+#: order/models.py:64
+#: order/migrations/0001_initial.py:60
+msgid "Payment Price"
+msgstr "Preț de Plată"
+
+#: order/models.py:65
+#: order/migrations/0001_initial.py:44
+msgid "Payment Tax"
+msgstr "Taxă Plată"
+
+#: order/models.py:68
+#: order/migrations/0001_initial.py:32
+msgid "Bank identication code"
+msgstr "Cod de identificare bancă"
+
+#: order/models.py:72
+#: order/migrations/0001_initial.py:61
+#: templates/manage/customer/customer_inline.html:139
+#: templates/manage/order/orders_inline.html:130
+msgid "Message"
+msgstr "Mesaj"
+
+#: order/models.py:105
+#: order/migrations/0001_initial.py:21
+msgid "Price net"
+msgstr "Preț net"
+
+#: order/models.py:106
+#: order/migrations/0001_initial.py:23
+msgid "Price gross"
+msgstr "Preț brut"
+
+#: order/models.py:114
+#: order/migrations/0001_initial.py:14
+msgid "Product quantity"
+msgstr "Cantitate produs"
+
+#: order/models.py:115
+#: order/migrations/0001_initial.py:20
+msgid "Product SKU"
+msgstr "SKU Produs"
+
+#: order/models.py:116
+#: order/migrations/0001_initial.py:13
+msgid "Product name"
+msgstr "Nume produs"
+
+#: order/models.py:117
+#: order/migrations/0001_initial.py:17
+msgid "Product price net"
+msgstr "Preț net produs"
+
+#: order/models.py:118
+#: order/migrations/0001_initial.py:19
+msgid "Product price gross"
+msgstr "Preț brut produs"
+
+#: order/models.py:119
+#: order/migrations/0001_initial.py:18
+msgid "Product tax"
+msgstr "Taxă produs"
+
+#: order/settings.py:13
+msgid "Submitted"
+msgstr "Submis"
+
+#: order/settings.py:14
+msgid "Paid"
+msgstr "Plătit"
+
+#: order/settings.py:15
+msgid "Sent"
+msgstr "Trimis"
+
+#: order/settings.py:16
+msgid "Closed"
+msgstr "Închis"
+
+#: order/settings.py:17
+msgid "Canceled"
+msgstr "Anulat"
+
+#: order/settings.py:18
+msgid "Payment Failed"
+msgstr "Plată Eșuată"
+
+#: order/settings.py:19
+msgid "Payment Flagged"
+msgstr "Plată Semnalată"
+
+#: page/models.py:16
+#: page/migrations/0001_initial.py:12
+#: portlet/models/text.py:13
+msgid "Text"
+msgstr "Text"
+
+#: page/models.py:19
+#: page/migrations/0001_initial.py:15
+msgid "File"
+msgstr "Fișier"
+
+#: payment/models.py:64
+#: payment/migrations/0001_initial.py:16
+msgid "note"
+msgstr "notă"
+
+#: payment/models.py:65
+#: payment/models.py:107
+#: payment/migrations/0001_initial.py:17
+#: payment/migrations/0001_initial.py:30
+#: shipping/models.py:56
+#: shipping/models.py:107
+#: shipping/migrations/0001_initial.py:15
+#: shipping/migrations/0001_initial.py:26
+#: templates/manage/payment/payment_method_prices.html:21
+#: templates/manage/shipping/shipping_method_prices.html:21
+msgid "Priority"
+msgstr "Prioritate"
+
+#: payment/settings.py:16
+msgid "American Express"
+msgstr "American Express"
+
+#: payment/settings.py:17
+msgid "Mastercard"
+msgstr "Mastercard"
+
+#: payment/settings.py:18
+msgid "Visacard"
+msgstr "Visacard"
+
+#: portlet/models/filter.py:16
+msgid "Show product filters"
+msgstr "Arată filtre produs"
+
+#: portlet/models/filter.py:17
+msgid "Show price filters"
+msgstr "Arată filtre preț"
+
+#: portlet/templatetags/lfs_portlets_tags.py:121
+msgid "Recent Products"
+msgstr "Produse Recente"
+
+#: portlet/templatetags/lfs_portlets_tags.py:135
+#: templates/manage/product/product.html:84
+#: templates/manage/product/related_products_inline.html:109
+msgid "Related Products"
+msgstr "Produse de Văzut"
+
+#: portlet/templatetags/lfs_portlets_tags.py:149
+#: templates/manage/manage_base.html:119
+#: templates/manage/marketing/marketing.html:13
+#: templates/manage/marketing/marketing.html:18
+#: templates/manage/marketing/topseller_inline.html:107
+msgid "Topseller"
+msgstr "Topseller"
+
+#: shipping/models.py:55
+#: shipping/migrations/0001_initial.py:25
+msgid "Note"
+msgstr "Notă"
+
+#: shipping/models.py:105
+#: shipping/migrations/0001_initial.py:13
+msgid "shipping_method"
+msgstr "shipping_method"
+
+#: tax/models.py:8
+#: tax/migrations/0001_initial.py:12
+#: templates/manage/tax/tax.html:20
+msgid "Rate"
+msgstr "Rată"
+
+#: templates/manage/dashboard.html:3
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: templates/manage/manage_base.html:65
+msgid "Logout"
+msgstr "Ieșire"
+
+#: templates/manage/manage_base.html:67
+msgid "Login"
+msgstr "Login"
+
+#: templates/manage/manage_base.html:78
+#: templates/manage/shop/shop.html:15
+#: templates/manage/shop/shop.html.py:21
+msgid "Shop"
+msgstr "Magazin"
+
+#: templates/manage/manage_base.html:80
+msgid "Preferences"
+msgstr "Preferințe"
+
+#: templates/manage/manage_base.html:81
+msgid "Actions"
+msgstr "Acțiuni"
+
+#: templates/manage/manage_base.html:82
+msgid "Shipping Methods"
+msgstr "Metode de Livrare"
+
+#: templates/manage/manage_base.html:83
+msgid "Delivery Times"
+msgstr "Timp de Livrare"
+
+#: templates/manage/manage_base.html:84
+msgid "Payment Methods"
+msgstr "Metode de Plată"
+
+#: templates/manage/manage_base.html:85
+msgid "Taxes"
+msgstr "Taxe"
+
+#: templates/manage/manage_base.html:89
+msgid "Catalog"
+msgstr "Catalog"
+
+#: templates/manage/manage_base.html:92
+msgid "Product Overview"
+msgstr "Sumar Produse"
+
+#: templates/manage/manage_base.html:99
+#: templates/manage/product/properties.html:2
+#: templates/manage/product/variants.html:4
+msgid "Property Groups"
+msgstr "Grupuri de Proprietăți"
+
+#: templates/manage/manage_base.html:105
+#: templates/manage/cart/carts_inline.html:9
+#: templates/manage/customer/customers_inline.html:9
+#: templates/manage/order/orders_inline.html:7
+#: templates/manage/reviews/reviews_inline.html:9
+msgid "Pages"
+msgstr "Pagini"
+
+#: templates/manage/manage_base.html:106
+msgid "Static blocks"
+msgstr "Blocuri statice"
+
+#: templates/manage/manage_base.html:109
+#: templates/manage/manage_base.html:111
+msgid "Customers"
+msgstr "Clienți"
+
+#: templates/manage/manage_base.html:112
+#: templates/manage/customer/customer_inline.html:122
+#: templates/manage/customer/customers_inline.html:110
+msgid "Orders"
+msgstr "Comenzi"
+
+#: templates/manage/manage_base.html:113
+msgid "Carts"
+msgstr "Coșuri"
+
+#: templates/manage/manage_base.html:114
+msgid "Reviews"
+msgstr "Recenzii"
+
+#: templates/manage/manage_base.html:117
+msgid "Marketing"
+msgstr "Marketing"
+
+#: templates/manage/manage_base.html:122
+msgid "Utils"
+msgstr "Utile"
+
+#: templates/manage/manage_base.html:124
+msgid "Miscellaneous"
+msgstr "Altele"
+
+#: templates/manage/manage_base.html:149
+msgid "Powered by"
+msgstr "Rulează"
+
+#: templates/manage/manage_base.html:151
+msgid "is a product of"
+msgstr "este un produs al"
+
+#: templates/manage/manage_base.html:152
+msgid "by"
+msgstr "de"
+
+#: templates/manage/manage_base.html:152
+msgid "All rights reserved"
+msgstr "Toate drepturile rezervate"
+
+#: templates/manage/manage_base.html:154
+msgid "Distributed under the"
+msgstr "Distribuit sub"
+
+#: templates/manage/manage_base.html:154
+msgid "BSD-License"
+msgstr "Licența BSD"
+
+#: templates/manage/utils.html:5
+msgid "Utilities"
+msgstr "Utilitare"
+
+#: templates/manage/utils.html:8
+msgid "Clear Cache"
+msgstr "Curăță Cache-ul"
+
+#: templates/manage/utils.html:11
+msgid "Set category levels"
+msgstr "Modifică nivelele de categorii"
+
+#: templates/manage/cart/cart_inline.html:13
+#: templates/manage/cart/carts_inline.html:11
+#: templates/manage/order/order_inline.html:12
+#: templates/manage/order/orders_inline.html:9
+msgid "Start"
+msgstr "Start"
+
+#: templates/manage/cart/cart_inline.html:14
+#: templates/manage/cart/carts_inline.html:12
+#: templates/manage/order/order_inline.html:13
+#: templates/manage/order/orders_inline.html:10
+msgid "End"
+msgstr "Final"
+
+#: templates/manage/cart/cart_inline.html:51
+#: templates/manage/customer/customer_inline.html:35
+#: templates/manage/order/order_inline.html:70
+#: templates/manage/product/product.html:29
+#: templates/manage/reviews/review_inline.html:42
+msgid "Overview"
+msgstr "Sumar"
+
+#: templates/manage/cart/cart_inline.html:57
+#: templates/manage/customer/customer_inline.html:41
+#: templates/manage/order/order_inline.html:110
+#: templates/manage/reviews/review_inline.html:69
+msgid "General"
+msgstr "General"
+
+#: templates/manage/cart/cart_inline.html:63
+#: templates/manage/cart/cart_inline.html:132
+#: templates/manage/cart/carts_inline.html:102
+#: templates/manage/customer/customer_inline.html:47
+#: templates/manage/customer/customer_inline.html:127
+#: templates/manage/customer/customer_inline.html:175
+#: templates/manage/customer/customers_inline.html:88
+#: templates/manage/reviews/review_inline.html:75
+#: templates/manage/reviews/reviews_inline.html:95
+msgid "ID"
+msgstr "ID"
+
+#: templates/manage/cart/cart_inline.html:99
+#: templates/manage/cart/cart_inline.html:107
+#: templates/manage/cart/cart_inline.html:157
+#: templates/manage/cart/carts_inline.html:133
+#: templates/manage/cart/carts_inline.html:137
+#: templates/manage/cart/selectable_carts_inline.html:59
+#: templates/manage/customer/customer_inline.html:149
+#: templates/manage/customer/customer_inline.html:190
+#: templates/manage/order/order_inline.html:126
+#: templates/manage/order/orders_inline.html:138
+#: templates/manage/order/selectable_orders_inline.html:60
+msgid "DATETIME_FORMAT"
+msgstr "DATETIME_FORMAT"
+
+#: templates/manage/cart/cart_inline.html:112
+#: templates/manage/cart/carts_inline.html:119
+msgid "Items"
+msgstr "Elemente"
+
+#: templates/manage/cart/cart_inline.html:120
+#: templates/manage/cart/cart_inline.html:147
+#: templates/manage/cart/carts_inline.html:115
+#: templates/manage/order/order_inline.html:153
+#: templates/manage/order/order_inline.html:266
+msgid "Total"
+msgstr "Total"
+
+#: templates/manage/cart/cart_inline.html:144
+#: templates/manage/order/order_inline.html:254
+msgid "Amount"
+msgstr "Sumă"
+
+#: templates/manage/cart/cart_inline.html:175
+msgid "This cart has no items"
+msgstr "Acest coș nu are elemente"
+
+#: templates/manage/cart/carts_inline.html:21
+#: templates/manage/cart/carts_inline.html:22
+#: templates/manage/cart/carts_inline.html:32
+#: templates/manage/cart/carts_inline.html:33
+#: templates/manage/cart/selectable_carts_inline.html:8
+#: templates/manage/cart/selectable_carts_inline.html:9
+#: templates/manage/cart/selectable_carts_inline.html:20
+#: templates/manage/cart/selectable_carts_inline.html:21
+#: templates/manage/category/products_inline.html:15
+#: templates/manage/category/selected_products.html:11
+#: templates/manage/customer/customers_inline.html:19
+#: templates/manage/customer/customers_inline.html:20
+#: templates/manage/customer/customers_inline.html:30
+#: templates/manage/customer/customers_inline.html:31
+#: templates/manage/customer/selectable_customers_inline.html:8
+#: templates/manage/customer/selectable_customers_inline.html:9
+#: templates/manage/customer/selectable_customers_inline.html:20
+#: templates/manage/customer/selectable_customers_inline.html:21
+#: templates/manage/marketing/topseller_inline.html:9
+#: templates/manage/marketing/topseller_inline.html:13
+#: templates/manage/order/orders_inline.html:21
+#: templates/manage/order/orders_inline.html:22
+#: templates/manage/order/orders_inline.html:32
+#: templates/manage/order/orders_inline.html:33
+#: templates/manage/order/selectable_orders_inline.html:9
+#: templates/manage/order/selectable_orders_inline.html:10
+#: templates/manage/order/selectable_orders_inline.html:21
+#: templates/manage/order/selectable_orders_inline.html:22
+#: templates/manage/product/accessories_inline.html:14
+#: templates/manage/product/pages_inline.html:7
+#: templates/manage/product/pages_inline.html:8
+#: templates/manage/product/pages_inline.html:19
+#: templates/manage/product/pages_inline.html:20
+#: templates/manage/product/related_products_inline.html:14
+#: templates/manage/properties/pg_products_inline.html:13
+#: templates/manage/reviews/reviews_inline.html:20
+#: templates/manage/reviews/reviews_inline.html:21
+#: templates/manage/reviews/reviews_inline.html:31
+#: templates/manage/reviews/reviews_inline.html:32
+#: templates/manage/reviews/selectable_reviews_inline.html:8
+#: templates/manage/reviews/selectable_reviews_inline.html:9
+#: templates/manage/reviews/selectable_reviews_inline.html:20
+#: templates/manage/reviews/selectable_reviews_inline.html:21
+msgid "First"
+msgstr "Primul"
+
+#: templates/manage/cart/carts_inline.html:27
+#: templates/manage/cart/carts_inline.html:28
+#: templates/manage/cart/carts_inline.html:35
+#: templates/manage/cart/carts_inline.html:36
+#: templates/manage/cart/selectable_carts_inline.html:14
+#: templates/manage/cart/selectable_carts_inline.html:15
+#: templates/manage/cart/selectable_carts_inline.html:25
+#: templates/manage/cart/selectable_carts_inline.html:26
+#: templates/manage/category/products_inline.html:16
+#: templates/manage/category/selected_products.html:12
+#: templates/manage/customer/customers_inline.html:25
+#: templates/manage/customer/customers_inline.html:26
+#: templates/manage/customer/customers_inline.html:33
+#: templates/manage/customer/customers_inline.html:34
+#: templates/manage/customer/selectable_customers_inline.html:14
+#: templates/manage/customer/selectable_customers_inline.html:15
+#: templates/manage/customer/selectable_customers_inline.html:25
+#: templates/manage/customer/selectable_customers_inline.html:26
+#: templates/manage/marketing/topseller_inline.html:11
+#: templates/manage/marketing/topseller_inline.html:14
+#: templates/manage/order/orders_inline.html:27
+#: templates/manage/order/orders_inline.html:28
+#: templates/manage/order/orders_inline.html:35
+#: templates/manage/order/orders_inline.html:36
+#: templates/manage/order/selectable_orders_inline.html:15
+#: templates/manage/order/selectable_orders_inline.html:16
+#: templates/manage/order/selectable_orders_inline.html:26
+#: templates/manage/order/selectable_orders_inline.html:27
+#: templates/manage/product/accessories_inline.html:15
+#: templates/manage/product/pages_inline.html:13
+#: templates/manage/product/pages_inline.html:14
+#: templates/manage/product/pages_inline.html:24
+#: templates/manage/product/pages_inline.html:25
+#: templates/manage/product/related_products_inline.html:15
+#: templates/manage/properties/pg_products_inline.html:14
+#: templates/manage/reviews/reviews_inline.html:26
+#: templates/manage/reviews/reviews_inline.html:27
+#: templates/manage/reviews/reviews_inline.html:34
+#: templates/manage/reviews/reviews_inline.html:35
+#: templates/manage/reviews/selectable_reviews_inline.html:14
+#: templates/manage/reviews/selectable_reviews_inline.html:15
+#: templates/manage/reviews/selectable_reviews_inline.html:25
+#: templates/manage/reviews/selectable_reviews_inline.html:26
+msgid "Previous"
+msgstr "Precedent"
+
+#: templates/manage/cart/carts_inline.html:39
+#: templates/manage/cart/selectable_carts_inline.html:30
+#: templates/manage/customer/customers_inline.html:37
+#: templates/manage/customer/selectable_customers_inline.html:30
+#: templates/manage/order/orders_inline.html:39
+#: templates/manage/order/selectable_orders_inline.html:31
+#: templates/manage/product/pages_inline.html:29
+#: templates/manage/reviews/reviews_inline.html:38
+#: templates/manage/reviews/selectable_reviews_inline.html:30
+msgid "of"
+msgstr "de"
+
+#: templates/manage/cart/carts_inline.html:45
+#: templates/manage/cart/carts_inline.html:46
+#: templates/manage/cart/carts_inline.html:58
+#: templates/manage/cart/carts_inline.html:59
+#: templates/manage/cart/selectable_carts_inline.html:36
+#: templates/manage/cart/selectable_carts_inline.html:37
+#: templates/manage/cart/selectable_carts_inline.html:47
+#: templates/manage/cart/selectable_carts_inline.html:48
+#: templates/manage/category/products_inline.html:28
+#: templates/manage/category/selected_products.html:20
+#: templates/manage/category/selected_products.html:25
+#: templates/manage/customer/customers_inline.html:43
+#: templates/manage/customer/customers_inline.html:44
+#: templates/manage/customer/customers_inline.html:56
+#: templates/manage/customer/customers_inline.html:57
+#: templates/manage/customer/selectable_customers_inline.html:36
+#: templates/manage/customer/selectable_customers_inline.html:37
+#: templates/manage/customer/selectable_customers_inline.html:47
+#: templates/manage/customer/selectable_customers_inline.html:48
+#: templates/manage/marketing/topseller_inline.html:21
+#: templates/manage/marketing/topseller_inline.html:26
+#: templates/manage/order/orders_inline.html:45
+#: templates/manage/order/orders_inline.html:46
+#: templates/manage/order/orders_inline.html:58
+#: templates/manage/order/orders_inline.html:59
+#: templates/manage/order/selectable_orders_inline.html:37
+#: templates/manage/order/selectable_orders_inline.html:38
+#: templates/manage/order/selectable_orders_inline.html:48
+#: templates/manage/order/selectable_orders_inline.html:49
+#: templates/manage/product/accessories_inline.html:27
+#: templates/manage/product/pages_inline.html:35
+#: templates/manage/product/pages_inline.html:36
+#: templates/manage/product/pages_inline.html:46
+#: templates/manage/product/pages_inline.html:47
+#: templates/manage/product/related_products_inline.html:27
+#: templates/manage/properties/pg_products_inline.html:26
+#: templates/manage/reviews/reviews_inline.html:44
+#: templates/manage/reviews/reviews_inline.html:45
+#: templates/manage/reviews/reviews_inline.html:57
+#: templates/manage/reviews/reviews_inline.html:58
+#: templates/manage/reviews/selectable_reviews_inline.html:36
+#: templates/manage/reviews/selectable_reviews_inline.html:37
+#: templates/manage/reviews/selectable_reviews_inline.html:47
+#: templates/manage/reviews/selectable_reviews_inline.html:48
+msgid "Next"
+msgstr "Următorul"
+
+#: templates/manage/cart/carts_inline.html:51
+#: templates/manage/cart/carts_inline.html:52
+#: templates/manage/cart/carts_inline.html:63
+#: templates/manage/cart/carts_inline.html:64
+#: templates/manage/cart/selectable_carts_inline.html:42
+#: templates/manage/cart/selectable_carts_inline.html:43
+#: templates/manage/cart/selectable_carts_inline.html:50
+#: templates/manage/cart/selectable_carts_inline.html:51
+#: templates/manage/category/products_inline.html:29
+#: templates/manage/category/selected_products.html:22
+#: templates/manage/category/selected_products.html:26
+#: templates/manage/customer/customers_inline.html:49
+#: templates/manage/customer/customers_inline.html:50
+#: templates/manage/customer/customers_inline.html:61
+#: templates/manage/customer/customers_inline.html:62
+#: templates/manage/customer/selectable_customers_inline.html:42
+#: templates/manage/customer/selectable_customers_inline.html:43
+#: templates/manage/customer/selectable_customers_inline.html:50
+#: templates/manage/customer/selectable_customers_inline.html:51
+#: templates/manage/marketing/topseller_inline.html:23
+#: templates/manage/marketing/topseller_inline.html:27
+#: templates/manage/order/orders_inline.html:51
+#: templates/manage/order/orders_inline.html:52
+#: templates/manage/order/orders_inline.html:63
+#: templates/manage/order/orders_inline.html:64
+#: templates/manage/order/selectable_orders_inline.html:43
+#: templates/manage/order/selectable_orders_inline.html:44
+#: templates/manage/order/selectable_orders_inline.html:51
+#: templates/manage/order/selectable_orders_inline.html:52
+#: templates/manage/product/accessories_inline.html:28
+#: templates/manage/product/pages_inline.html:41
+#: templates/manage/product/pages_inline.html:42
+#: templates/manage/product/pages_inline.html:49
+#: templates/manage/product/pages_inline.html:50
+#: templates/manage/product/related_products_inline.html:28
+#: templates/manage/properties/pg_products_inline.html:27
+#: templates/manage/reviews/reviews_inline.html:50
+#: templates/manage/reviews/reviews_inline.html:51
+#: templates/manage/reviews/reviews_inline.html:62
+#: templates/manage/reviews/reviews_inline.html:63
+#: templates/manage/reviews/selectable_reviews_inline.html:42
+#: templates/manage/reviews/selectable_reviews_inline.html:43
+#: templates/manage/reviews/selectable_reviews_inline.html:50
+#: templates/manage/reviews/selectable_reviews_inline.html:51
+msgid "Last"
+msgstr "Ultimul"
+
+#: templates/manage/category/add_category.html:25
+#: templates/manage/category/add_category.html:33
+#: templates/manage/category/manage_category.html:21
+msgid "Add category"
+msgstr "Adaugă categorie"
+
+#: templates/manage/category/add_category.html:37
+#: templates/manage/delivery_times/add.html:46
+#: templates/manage/export/add_export.html:40
+#: templates/manage/page/add_page.html:43
+#: templates/manage/payment/add_payment_method.html:26
+#: templates/manage/product/add_product.html:143
+#: templates/manage/properties/add_property.html:33
+#: templates/manage/properties/add_property_group.html:33
+#: templates/manage/shipping/add_shipping_method.html:27
+#: templates/manage/shop/add_action.html:43
+#: templates/manage/static_block/add_static_block.html:32
+#: templates/manage/tax/add_tax.html:31
+msgid "Cancel"
+msgstr "Anulează"
+
+#: templates/manage/category/category_filter.html:5
+msgid "None"
+msgstr "Nici una"
+
+#: templates/manage/category/data.html:3
+#: templates/manage/delivery_times/base.html:29
+#: templates/manage/payment/payment_method_data.html:3
+#: templates/manage/shipping/shipping_method_data.html:2
+msgid "Core data"
+msgstr "Date importante"
+
+#: templates/manage/category/data.html:10
+#: templates/manage/export/add_export.html:36
+#: templates/manage/payment/payment_method_data.html:15
+#: templates/manage/product/products_inline.html:112
+#: templates/manage/shipping/shipping_method_data.html:14
+msgid "Save"
+msgstr "Salvează"
+
+#: templates/manage/category/manage_categories_portlet.html:6
+#: templates/manage/product/categories.html:6
+msgid "Collapse all"
+msgstr "Colapsează"
+
+#: templates/manage/category/manage_categories_portlet.html:7
+#: templates/manage/product/categories.html:7
+msgid "Expand all"
+msgstr "Expandează toate"
+
+#: templates/manage/category/manage_categories_portlet.html:11
+msgid "Show current"
+msgstr "Arată elementul curent"
+
+#: templates/manage/category/manage_category.html:16
+msgid "Add top category"
+msgstr "Adaugă categorie de top"
+
+#: templates/manage/category/manage_category.html:25
+#: templates/manage/delivery_times/base.html:22
+#: templates/manage/export/export.html:25
+#: templates/manage/order/order_inline.html:73
+#: templates/manage/page/page.html:24
+#: templates/manage/payment/manage_payment.html:41
+#: templates/manage/portlets/portlets_inline.html:100
+#: templates/manage/product/product.html:45
+#: templates/manage/properties/options_inline.html:56
+#: templates/manage/properties/property.html:22
+#: templates/manage/properties/property_group.html:21
+#: templates/manage/properties/step_inline.html:69
+#: templates/manage/reviews/review_inline.html:45
+#: templates/manage/shipping/manage_shipping.html:40
+#: templates/manage/shop/action.html:24
+#: templates/manage/static_block/static_block.html:23
+#: templates/manage/tax/tax.html:26
+msgid "Delete?"
+msgstr "Șterge?"
+
+#: templates/manage/category/manage_category.html:27
+msgid "Delete category"
+msgstr "Șterge categorii"
+
+#: templates/manage/category/manage_category.html:31
+#: templates/manage/static_block/static_block.html:26
+msgid "Preview"
+msgstr "Previzualizare"
+
+#: templates/manage/category/manage_category.html:41
+#: templates/manage/category/seo.html:3
+#: templates/manage/product/product.html:86
+#: templates/manage/product/seo.html:3
+msgid "SEO"
+msgstr "SEO"
+
+#: templates/manage/category/manage_category.html:42
+#: templates/manage/product/product.html:87
+#: templates/manage/shop/shop.html:17
+msgid "Portlets"
+msgstr "Portleturi"
+
+#: templates/manage/category/products_inline.html:48
+#: templates/manage/category/selected_products.html:48
+#: templates/manage/marketing/topseller_inline.html:46
+#: templates/manage/marketing/topseller_inline.html:131
+#: templates/manage/product/accessories_inline.html:48
+#: templates/manage/product/accessories_inline.html:135
+#: templates/manage/product/product_filters_inline.html:18
+#: templates/manage/product/products_inline.html:27
+#: templates/manage/product/related_products_inline.html:47
+#: templates/manage/product/related_products_inline.html:129
+#: templates/manage/properties/pg_products_inline.html:41
+#: templates/manage/properties/pg_products_inline.html:91
+msgid "Sub type"
+msgstr "Subtip"
+
+#: templates/manage/category/products_inline.html:54
+#: templates/manage/category/selected_products.html:54
+#: templates/manage/marketing/topseller_inline.html:52
+#: templates/manage/marketing/topseller_inline.html:137
+#: templates/manage/portlets/portlets_inline.html:104
+#: templates/manage/product/accessories_inline.html:54
+#: templates/manage/product/accessories_inline.html:141
+#: templates/manage/product/categories.html:28
+#: templates/manage/product/categories_children.html:14
+#: templates/manage/product/products_inline.html:39
+#: templates/manage/product/products_inline.html:102
+#: templates/manage/product/related_products_inline.html:53
+#: templates/manage/product/related_products_inline.html:135
+#: templates/manage/properties/pg_products_inline.html:97
+#: templates/manage/properties/pg_products_inline.html:120
+msgid "Edit"
+msgstr "Editează"
+
+#: templates/manage/category/products_inline.html:88
+#: templates/manage/category/selected_products.html:85
+#: templates/manage/marketing/topseller_inline.html:85
+#: templates/manage/marketing/topseller_inline.html:90
+#: templates/manage/marketing/topseller_inline.html:179
+#: templates/manage/marketing/topseller_inline.html:184
+#: templates/manage/product/accessories_inline.html:87
+#: templates/manage/product/accessories_inline.html:92
+#: templates/manage/product/accessories_inline.html:189
+#: templates/manage/product/accessories_inline.html:194
+#: templates/manage/product/related_products_inline.html:86
+#: templates/manage/product/related_products_inline.html:91
+#: templates/manage/product/related_products_inline.html:169
+#: templates/manage/product/related_products_inline.html:174
+msgid "Edit product"
+msgstr "Editează produs"
+
+#: templates/manage/category/products_inline.html:101
+msgid "Add to category"
+msgstr "Adaugă la categorie"
+
+#: templates/manage/category/products_inline.html:104
+msgid "Selected products"
+msgstr "Produse selectate"
+
+#: templates/manage/category/selected_products.html:99
+msgid "Remove from category"
+msgstr "Șterge din categorie"
+
+#: templates/manage/category/selected_products.html:103
+msgid "This category has no products yet."
+msgstr "Această categorie nu are încă produse."
+
+#: templates/manage/category/seo.html:9
+msgid "Save SEO"
+msgstr "Salvează SEO"
+
+#: templates/manage/criteria/number_operators.html:3
+msgid "Equal"
+msgstr "Egal"
+
+#: templates/manage/criteria/number_operators.html:5
+msgid "Less than equal to"
+msgstr "Mai mic decât egal cu"
+
+#: templates/manage/criteria/number_operators.html:7
+msgid "Greater than equal to"
+msgstr "Mai mare decât egal cu"
+
+#: templates/manage/criteria/selection_operators.html:3
+msgid "Is selected"
+msgstr "Este selectat"
+
+#: templates/manage/criteria/selection_operators.html:4
+msgid "Is not selected"
+msgstr "Nu este selectat"
+
+#: templates/manage/customer/customer_inline.html:55
+#: templates/manage/reviews/review_inline.html:128
+msgid "Registriert"
+msgstr "Înregistrare"
+
+#: templates/manage/customer/customer_inline.html:70
+#: templates/manage/order/order_inline.html:167
+msgid "Invoice address"
+msgstr "Adresa de facturare"
+
+#: templates/manage/customer/customer_inline.html:73
+#: templates/manage/order/order_inline.html:164
+msgid "Shipping address"
+msgstr "Adresa de livrare"
+
+#: templates/manage/delivery_times/add.html:28
+msgid "Please fill out the form below"
+msgstr "Te rog completează formularul de mai jos"
+
+#: templates/manage/delivery_times/add.html:33
+#: templates/manage/delivery_times/add.html:37
+#: templates/manage/delivery_times/add.html:42
+msgid "Add delivery time"
+msgstr "Adaugă timp de livrare"
+
+#: templates/manage/delivery_times/base.html:19
+msgid "Add Delivery Time"
+msgstr "Adaugă Timp de Livrare"
+
+#: templates/manage/delivery_times/base.html:23
+msgid "Delete Delivery Time"
+msgstr "Șterge Timp de Livrare"
+
+#: templates/manage/delivery_times/base.html:33
+msgid "Delivery Time"
+msgstr "Timp de Livrare"
+
+#: templates/manage/delivery_times/base.html:39
+msgid "Save Delivery Time"
+msgstr "Salvează Timp de Livrare"
+
+#: templates/manage/export/add_export.html:26
+msgid "Selection"
+msgstr "Selecție"
+
+#: templates/manage/export/export.html:21
+#: templates/manage/shipping/shipping_method_criteria.html:13
+msgid "Add"
+msgstr "Adaugă"
+
+#: templates/manage/export/export.html:27
+#: templates/manage/portlets/portlets_inline.html:101
+#: templates/manage/product/images.html:69
+#: templates/manage/product/variants.html:210
+#: templates/manage/properties/options_inline.html:59
+#: templates/manage/properties/step_inline.html:72
+#: templates/manage/static_block/static_block.html:24
+msgid "Delete"
+msgstr "Șterge"
+
+#: templates/manage/export/export.html:33
+#: templates/manage/payment/manage_payment.html:49
+#: templates/manage/shipping/manage_shipping.html:47
+msgid "Data"
+msgstr "Date"
+
+#: templates/manage/export/export.html:34
+msgid "Product selection"
+msgstr "Selecții produse"
+
+#: templates/manage/marketing/topseller_inline.html:103
+msgid "Add to topseller"
+msgstr "Adaugă la topseller"
+
+#: templates/manage/marketing/topseller_inline.html:198
+msgid "Save topseller"
+msgstr "Salvează topseller"
+
+#: templates/manage/marketing/topseller_inline.html:203
+msgid "Remove from topseller"
+msgstr "Șterge de la topseller"
+
+#: templates/manage/order/order_inline.html:75
+msgid "Delete order"
+msgstr "Șterge comandă"
+
+#: templates/manage/order/order_inline.html:78
+msgid "Resend?"
+msgstr "Retrimite?"
+
+#: templates/manage/order/order_inline.html:80
+msgid "Resend order"
+msgstr "Retrimite comanda"
+
+#: templates/manage/order/order_inline.html:103
+#: templates/manage/product/product.html:61
+#: templates/manage/reviews/review_inline.html:61
+msgid "Change"
+msgstr "Modifică"
+
+#: templates/manage/order/order_inline.html:116
+msgid "Customer name"
+msgstr "Nume client"
+
+#: templates/manage/order/order_inline.html:123
+#: templates/manage/order/orders_inline.html:118
+msgid "Date"
+msgstr "Dată"
+
+#: templates/manage/order/order_inline.html:262
+msgid "Included VAT"
+msgstr "TVA Inclus"
+
+#: templates/manage/order/order_inline.html:301
+msgid "Shipping"
+msgstr "Livrare"
+
+#: templates/manage/order/order_inline.html:317
+msgid "Payment"
+msgstr "Plată"
+
+#: templates/manage/order/order_inline.html:339
+msgid "Inclusive VAT"
+msgstr "Include TVA"
+
+#: templates/manage/order/order_inline.html:348
+msgid "Message from the customer"
+msgstr "Mesaj de la client"
+
+#: templates/manage/order/order_inline.html:362
+msgid "Paypal Transaction ID"
+msgstr "ID Tranzacție Paypal"
+
+#: templates/manage/order/orders_inline.html:161
+msgid "There are no orders"
+msgstr "Nu există comenzi"
+
+#: templates/manage/page/add_page.html:29
+#: templates/manage/page/add_page.html:33
+#: templates/manage/page/add_page.html:39
+msgid "Add page"
+msgstr "Adaugă pagină"
+
+#: templates/manage/page/page.html:21
+msgid "Add Page"
+msgstr "Adaugă Pagină"
+
+#: templates/manage/page/page.html:25
+msgid "Delete Page"
+msgstr "Șterge Pagină"
+
+#: templates/manage/page/page.html:28
+msgid "Preview Page"
+msgstr "Previzualizare Pagină"
+
+#: templates/manage/page/page.html:34
+#: templates/manage/page/page.html.py:38
+msgid "Page"
+msgstr "Pagină"
+
+#: templates/manage/page/page.html:44
+msgid "Save page"
+msgstr "Salvează pagină"
+
+#: templates/manage/payment/add_payment_method.html:13
+#: templates/manage/payment/add_payment_method.html:22
+#: templates/manage/payment/manage_payment.html:37
+msgid "Add payment method"
+msgstr "Adaugă metode de plată"
+
+#: templates/manage/payment/manage_payment.html:43
+msgid "Delete payment method"
+msgstr "Șterge metode de plată"
+
+#: templates/manage/payment/manage_payment.html:50
+#: templates/manage/payment/payment_method_criteria.html:3
+#: templates/manage/shipping/manage_shipping.html:48
+#: templates/manage/shipping/shipping_method_criteria.html:3
+msgid "Criteria"
+msgstr "Criterii"
+
+#: templates/manage/payment/manage_payment.html:51
+#: templates/manage/payment/payment_method_prices.html:3
+#: templates/manage/shipping/manage_shipping.html:49
+#: templates/manage/shipping/shipping_method_prices.html:3
+msgid "Prices"
+msgstr "Prețuri"
+
+#: templates/manage/payment/payment_method_criteria.html:15
+#: templates/manage/payment/payment_price_criteria.html:18
+#: templates/manage/shipping/shipping_method_criteria.html:15
+#: templates/manage/shipping/shipping_price_criteria.html:17
+#: templates/manage/shipping/shipping_price_criteria.html:18
+msgid "Add criterion"
+msgstr "Adaugă criterii"
+
+#: templates/manage/payment/payment_method_criteria.html:28
+#: templates/manage/payment/payment_price_criteria.html:31
+#: templates/manage/shipping/shipping_method_criteria.html:28
+#: templates/manage/shipping/shipping_price_criteria.html:31
+msgid "Save criteria"
+msgstr "Salvează criterii"
+
+#: templates/manage/payment/payment_method_prices.html:8
+#: templates/manage/shipping/shipping_method_prices.html:8
+msgid "Add price"
+msgstr "Adaugă preț"
+
+#: templates/manage/payment/payment_method_prices.html:12
+#: templates/manage/shipping/shipping_method_prices.html:12
+msgid "Existing prices"
+msgstr "Prețuri existente"
+
+#: templates/manage/payment/payment_method_prices.html:39
+#: templates/manage/shipping/shipping_method_prices.html:39
+msgid "Edit criteria"
+msgstr "Editeaza criterii"
+
+#: templates/manage/payment/payment_method_prices.html:53
+#: templates/manage/shipping/shipping_method_prices.html:53
+msgid "Delete prices"
+msgstr "Șterge prețuri"
+
+#: templates/manage/payment/payment_method_prices.html:54
+#: templates/manage/shipping/shipping_method_prices.html:54
+msgid "Update prices"
+msgstr "Modifiă prețuri"
+
+#: templates/manage/payment/payment_price_criteria.html:6
+#: templates/manage/shipping/shipping_price_criteria.html:6
+msgid "Edit criteria for"
+msgstr "Editează criterii pentru"
+
+#: templates/manage/portlets/portlet_add.html:17
+#: templates/manage/portlets/portlet_edit.html:17
+#: templates/manage/portlets/portlets_inline.html:73
+msgid "Slot"
+msgstr "Slot"
+
+#: templates/manage/portlets/portlet_add.html:37
+#: templates/manage/portlets/portlet_edit.html:36
+msgid "Save portlet"
+msgstr "Salvează portlet"
+
+#: templates/manage/portlets/portlets_inline.html:51
+msgid "Blocked parent slots"
+msgstr "Sloturi părinte blocate"
+
+#: templates/manage/portlets/portlets_inline.html:65
+msgid "Save blocked parent slots"
+msgstr "Salvează sloturi părinte blocate"
+
+#: templates/manage/portlets/portlets_inline.html:70
+msgid "Slots"
+msgstr "Sloturi"
+
+#: templates/manage/portlets/portlets_inline.html:87
+msgid "Modify"
+msgstr "Modifică"
+
+#: templates/manage/portlets/portlets_inline.html:111
+msgid "There are no portlets assigned"
+msgstr "Nu exista portleturi desemnate"
+
+#: templates/manage/portlets/portlets_inline.html:116
+msgid "Add new portlet"
+msgstr "Adaugă nou portlet"
+
+#: templates/manage/portlets/portlets_inline.html:132
+msgid "Add portlet"
+msgstr "Adaugă portlet"
+
+#: templates/manage/product/accessories_inline.html:105
+msgid "Add to accessories"
+msgstr "Adaugă la accesorii"
+
+#: templates/manage/product/accessories_inline.html:109
+#: templates/manage/product/product.html:83
+msgid "Accessories"
+msgstr "Accesorii"
+
+#: templates/manage/product/accessories_inline.html:208
+msgid "Save accessories"
+msgstr "Salvează accesorii"
+
+#: templates/manage/product/accessories_inline.html:213
+msgid "Remove from accessories"
+msgstr "Șterge de la accesorii"
+
+#: templates/manage/product/add_product.html:37
+#: templates/manage/product/product.html:41
+msgid "Add product"
+msgstr "Adaugă produs"
+
+#: templates/manage/product/categories.html:10
+msgid "Show selected"
+msgstr "Arată selecție"
+
+#: templates/manage/product/categories.html:29
+#: templates/manage/product/categories_children.html:15
+msgid "Edit category"
+msgstr "Editează categorie"
+
+#: templates/manage/product/categories.html:38
+msgid "Save categories"
+msgstr "Salvează categorii"
+
+#: templates/manage/product/categories.html:42
+msgid "There are no categories"
+msgstr "Nu există categorii"
+
+#: templates/manage/product/data.html:10
+msgid "Product data"
+msgstr "Date produs"
+
+#: templates/manage/product/data.html:226
+msgid "Save data"
+msgstr "Salveaza date"
+
+#: templates/manage/product/images.html:11
+msgid "Active images"
+msgstr "Imagini active"
+
+#: templates/manage/product/images.html:67
+#: templates/manage/product/variants.html:211
+msgid "Update"
+msgstr "Modifică"
+
+#: templates/manage/product/images.html:73
+msgid "There are no images"
+msgstr "Nu există imagini"
+
+#: templates/manage/product/images.html:76
+msgid "Add images"
+msgstr "Adaugă imagini"
+
+#: templates/manage/product/product.html:47
+msgid "Delete product"
+msgstr "Șterge produs"
+
+#: templates/manage/product/product.html:52
+msgid "Preview product"
+msgstr "Previzualizare produs"
+
+#: templates/manage/product/product.html:85
+msgid "Stock"
+msgstr "Stoc"
+
+#: templates/manage/product/products_inline.html:15
+#: templates/manage/product/variants.html:149
+msgid "URL"
+msgstr "URL"
+
+#: templates/manage/product/products_inline.html:30
+msgid "For Sale"
+msgstr "La reducere"
+
+#: templates/manage/product/products_inline.html:33
+msgid "Sale Price"
+msgstr "Preț reducere"
+
+#: templates/manage/product/products_inline.html:39
+#: templates/manage/product/products_inline.html:106
+msgid "View"
+msgstr "Vezi"
+
+#: templates/manage/product/properties.html:18
+#: templates/manage/product/variants.html:19
+msgid "Update property groups"
+msgstr "Modifică grupuri de proprietăți"
+
+#: templates/manage/product/properties.html:25
+msgid "Property Values"
+msgstr "Valori Proprietăți"
+
+#: templates/manage/product/properties.html:66
+#: templates/manage/properties/properties_inline.html:99
+msgid "Update properties"
+msgstr "Modifică proprietăți"
+
+#: templates/manage/product/related_products_inline.html:105
+msgid "Add to related products"
+msgstr "Adaugă la produse relaționate"
+
+#: templates/manage/product/related_products_inline.html:187
+msgid "Remove from related products"
+msgstr "Șterge de la produse relaționate"
+
+#: templates/manage/product/stock.html:2
+#: templates/manage/product/stock.html:11
+msgid "Dimension"
+msgstr "Dimensiuni"
+
+#: templates/manage/product/stock.html:26
+msgid "kg"
+msgstr "kg"
+
+#: templates/manage/product/stock.html:43
+#: templates/manage/product/stock.html:60
+#: templates/manage/product/stock.html:77
+msgid "m"
+msgstr "m"
+
+#: templates/manage/product/stock.html:84
+msgid "Stock data"
+msgstr "Date stoc"
+
+#: templates/manage/product/stock.html:193
+msgid "Save stock"
+msgstr "Salvează stoc"
+
+#: templates/manage/product/variants.html:23
+msgid "Local properties"
+msgstr "Proprietăți locale"
+
+#: templates/manage/product/variants.html:30
+#: templates/manage/properties/add_property.html:20
+#: templates/manage/properties/add_property.html:24
+#: templates/manage/properties/add_property.html:29
+msgid "Add property"
+msgstr "Adaugă proprietate"
+
+#: templates/manage/product/variants.html:38
+#: templates/manage/product/variants.html:39
+msgid "Up"
+msgstr "Sus"
+
+#: templates/manage/product/variants.html:47
+#: templates/manage/product/variants.html:48
+msgid "Down"
+msgstr "Jos"
+
+#: templates/manage/product/variants.html:56
+msgid "Delete property"
+msgstr "Șterge proprietate"
+
+#: templates/manage/product/variants.html:66
+#: templates/manage/properties/options_inline.html:60
+msgid "Delete option"
+msgstr "Șterge opțiune"
+
+#: templates/manage/product/variants.html:78
+#: templates/manage/properties/options_inline.html:31
+msgid "Add option"
+msgstr "Adaugă opțiune"
+
+#: templates/manage/product/variants.html:130
+msgid "Add variant(s)"
+msgstr "Adaugă variant(e)"
+
+#: templates/manage/product/variants.html:146
+msgid "Pos."
+msgstr "Poz."
+
+#: templates/manage/product/variants.html:203
+msgid "Edit variant"
+msgstr "Editează variantă"
+
+#: templates/manage/product/variants.html:215
+msgid "Display type"
+msgstr "Tip afișare"
+
+#: templates/manage/product/variants.html:220
+msgid "Change variant display type"
+msgstr "Modifica tipul afișării variantelor"
+
+#: templates/manage/properties/add_property_group.html:20
+#: templates/manage/properties/property_group.html:27
+#: templates/manage/properties/property_group.html:34
+msgid "Property Group"
+msgstr "Grup Proprietăți"
+
+#: templates/manage/properties/add_property_group.html:24
+msgid "Add property Group"
+msgstr "Adaugă grup proprietăți"
+
+#: templates/manage/properties/add_property_group.html:29
+msgid "Add property group"
+msgstr "Adaugă grup proprietăți"
+
+#: templates/manage/properties/options_inline.html:3
+msgid "Options"
+msgstr "Opțiuni"
+
+#: templates/manage/properties/options_inline.html:67
+msgid "Update options"
+msgstr "Modifică opțiuni"
+
+#: templates/manage/properties/pg_product_values.html:3
+#: templates/manage/properties/property_group.html:30
+msgid "Product values"
+msgstr "Valori produse"
+
+#: templates/manage/properties/pg_product_values.html:51
+msgid "Save values"
+msgstr "Salvează valori"
+
+#: templates/manage/properties/pg_products_inline.html:73
+msgid "Add to product group"
+msgstr "Adaugă la grup de produse"
+
+#: templates/manage/properties/pg_products_inline.html:77
+msgid "Assigned products"
+msgstr "Produse desemnate"
+
+#: templates/manage/properties/pg_products_inline.html:121
+msgid "Edit Product"
+msgstr "Editează Produs"
+
+#: templates/manage/properties/pg_products_inline.html:134
+msgid "Remove from product group"
+msgstr "Șterge from grup de produse"
+
+#: templates/manage/properties/properties_inline.html:32
+msgid "All properties are assigned"
+msgstr "Toate proprietățile au fost desemnate"
+
+#: templates/manage/properties/properties_inline.html:40
+msgid "Assign properties"
+msgstr "Desemnează proprietăți"
+
+#: templates/manage/properties/properties_inline.html:47
+msgid "Assigned properties"
+msgstr "Proprietăți desemnate"
+
+#: templates/manage/properties/properties_inline.html:85
+msgid "No properties assigned"
+msgstr "Nu există proprietăți desemnate"
+
+#: templates/manage/properties/properties_inline.html:95
+msgid "Remove properties"
+msgstr "Șterge proprietăți"
+
+#: templates/manage/properties/property.html:20
+msgid "Add Property"
+msgstr "Adaugă Proprietatet"
+
+#: templates/manage/properties/property.html:23
+msgid "Delete Property"
+msgstr "Șterge Proprietate"
+
+#: templates/manage/properties/property.html:33
+msgid "Property data"
+msgstr "Date proprietate"
+
+#: templates/manage/properties/property.html:39
+msgid "Save property"
+msgstr "Salvează proprietate"
+
+#: templates/manage/properties/property.html:42
+msgid "Field type"
+msgstr "Tip câmp"
+
+#: templates/manage/properties/property.html:43
+msgid "Attention: If the field type is changed all entered product values for this property will be deleted."
+msgstr "Atenție: Dacă tipul de câmp a fost modificat toate valorile produsului pentru această proprietate au fost șterse."
+
+#: templates/manage/properties/property.html:50
+msgid "Save property type"
+msgstr "Salvează tip proprietate"
+
+#: templates/manage/properties/property_group.html:19
+msgid "Add Property Group"
+msgstr "Adaugă Grup Proprietăți"
+
+#: templates/manage/properties/property_group.html:22
+msgid "Delete Property Group"
+msgstr "Șterge Grup Proprietăți"
+
+#: templates/manage/properties/property_group.html:39
+msgid "Save property group"
+msgstr "Salvează grup proprietăți"
+
+#: templates/manage/properties/step_inline.html:11
+msgid "Save step type"
+msgstr "Salvează tip pas"
+
+#: templates/manage/properties/step_inline.html:18
+msgid "Step range"
+msgstr "Salveaza gamă de valori"
+
+#: templates/manage/properties/step_inline.html:26
+msgid "Save step"
+msgstr "Salvează pas"
+
+#: templates/manage/properties/step_inline.html:34
+msgid "Steps"
+msgstr "Pași"
+
+#: templates/manage/properties/step_inline.html:49
+msgid "Add step"
+msgstr "Adaugă pas"
+
+#: templates/manage/properties/step_inline.html:73
+msgid "Delete step"
+msgstr "Șterge pas"
+
+#: templates/manage/properties/step_inline.html:80
+msgid "Update steps"
+msgstr "Modifică pași"
+
+#: templates/manage/reviews/review_inline.html:47
+msgid "Delete review"
+msgstr "Șterge recenzie"
+
+#: templates/manage/reviews/review_inline.html:150
+#: templates/manage/reviews/reviews_inline.html:125
+msgid "Score"
+msgstr "Scor"
+
+#: templates/manage/reviews/review_inline.html:160
+#: templates/manage/reviews/reviews_inline.html:129
+msgid "Comment"
+msgstr "Comentariu"
+
+#: templates/manage/shipping/add_shipping_method.html:13
+#: templates/manage/shipping/add_shipping_method.html:17
+#: templates/manage/shipping/add_shipping_method.html:23
+#: templates/manage/shipping/manage_shipping.html:37
+msgid "Add shipping method"
+msgstr "Adaugă metodă de livrare"
+
+#: templates/manage/shipping/manage_shipping.html:42
+msgid "Delete shipping method"
+msgstr "Șterge metodă de livrare"
+
+#: templates/manage/shop/action.html:21
+#: templates/manage/shop/add_action.html:29
+#: templates/manage/shop/add_action.html:33
+#: templates/manage/shop/add_action.html:39
+msgid "Add action"
+msgstr "Adăugă acțiune"
+
+#: templates/manage/shop/action.html:25
+msgid "Delete action"
+msgstr "Șterge acțiunea"
+
+#: templates/manage/shop/action.html:31
+#: templates/manage/shop/action.html:35
+msgid "Action"
+msgstr "Acțiune"
+
+#: templates/manage/shop/action.html:41
+msgid "Save action"
+msgstr "Salvează acțiunea"
+
+#: templates/manage/shop/default_values.html:3
+#: templates/manage/shop/shop.html:16
+msgid "Default Values"
+msgstr "Valori Implicite"
+
+#: templates/manage/shop/default_values.html:10
+msgid "Format"
+msgstr "Format"
+
+#: templates/manage/shop/default_values.html:102
+msgid "Save Default Values"
+msgstr "Salvează Valorile Implicite"
+
+#: templates/manage/shop/shop.html:9
+msgid "Shop Preferences"
+msgstr "Preferințe Magazin"
+
+#: templates/manage/shop/shop.html:27
+msgid "Save shop"
+msgstr "Salvează magazinul"
+
+#: templates/manage/static_block/add_static_block.html:18
+#: templates/manage/static_block/add_static_block.html:22
+msgid "Add static block"
+msgstr "Adaugă bloc static"
+
+#: templates/manage/static_block/add_static_block.html:27
+#: templates/manage/static_block/static_block.html:40
+msgid "Save static block"
+msgstr "Salvează bloc static"
+
+#: templates/manage/static_block/static_block.html:21
+msgid "Add Static Block"
+msgstr "Adaugă Bloc Static"
+
+#: templates/manage/tax/add_tax.html:18
+#: templates/manage/tax/add_tax.html:26
+msgid "Add tax"
+msgstr "Adaugă taxa"
+
+#: templates/manage/tax/tax.html:23
+msgid "Add Tax"
+msgstr "Adaugă Taxa"
+
+#: templates/manage/tax/tax.html:27
+msgid "Delete Tax"
+msgstr "Șterge taxa"
+
+#: templates/manage/tax/tax.html:42
+msgid "Save tax"
+msgstr "Salvează taxa"
+
+#~ msgid "Orders Overview"
+#~ msgstr ""
+#~ msgid "Older"
+#~ msgstr ""
+#~ msgid "Newer"
+#~ msgstr ""
+#~ msgid "Reset Filter"
+#~ msgstr ""
+#~ msgid "Add review"
+#~ msgstr ""
+#~ msgid "View product"
+#~ msgstr ""
+#~ msgid "Review"
+#~ msgstr ""
+#~ msgid "Save review"
+#~ msgstr ""
+#~ msgid "Save images"
+#~ msgstr ""
+#~ msgid "Products for tag"
+#~ msgstr ""
+#~ msgid "Related products by tag"
+#~ msgstr ""
+#~ msgid "Products with same Tags"
+#~ msgstr ""
+

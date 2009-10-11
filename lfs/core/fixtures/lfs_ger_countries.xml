@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    
+  <object pk="1" model="core.country">
+    <field type="CharField" name="code">de</field>
+    <field type="CharField" name="name">Deutschland</field>
+  </object>
+    
+  <object pk="2" model="core.country">
+    <field type="CharField" name="code">at</field>
+    <field type="CharField" name="name">Österreich</field>
+  </object>
+
+  <object pk="3" model="core.country">
+    <field type="CharField" name="code">ch</field>
+    <field type="CharField" name="name">Schweiz</field>
+  </object>
+    
+</django-objects>

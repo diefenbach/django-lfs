@@ -1,0 +1,45 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block javascript %}
+    <script>
+        $(function() {
+            $("#id_name").livequery("keyup", function() {
+                var slug = $("#id_name").val()
+                slug = URLify(slug, 200)
+                $("#id_slug").val(slug);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block left_slot %}
+	<div id="selectable-exports-inline">
+		{{ selectable_exports_inline|safe }}
+	</div>	
+{% endblock %}
+
+{% block content %}
+    <div id="manage-tabs">
+
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Selection' %}</a></li>
+        </ul>
+
+        <div id="data">
+            <form class="lfc-form"
+                  method="post"
+                  action="{% url lfs_export_add_export %}">
+                <table>
+                    {% include "manage/lfs_form.html" %}
+                </table>
+                <input type="submit" name="save" value="{% trans 'Save' %}" />
+
+                <input type="button"
+                       onclick="window.location='{% url lfs_export_dispatcher %}'"
+                       value="{% trans 'Cancel' %}" />
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

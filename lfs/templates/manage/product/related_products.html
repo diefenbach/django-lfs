@@ -1,0 +1,31 @@
+{% load i18n %}
+{% load lfs_manage_tags %}
+
+{% if product.is_variant %}
+    <form id="related-products-update-form"
+          action="{% url lfs_manage_update_related_products product.id %}"
+          method="post">
+        <input type="checkbox" 
+               name="active_related_products" 
+               {% if product.active_related_products %}checked="checked"{% endif %} />                   
+        <label for="active_related_products">
+            {% trans 'Active related products' %}
+        </label>
+        <input class="related-products-update-button"
+               type="submit" value="Update" />
+    </form>
+{% endif %}    
+
+<h2 class="heading-middle">{% trans 'Products' %}</h2>
+
+<form id="filter-related-products-form"
+      action="{% url lfs.manage.views.manage_related_products_inline product.id %}"
+      onsubmit="return false">
+    <input class="filter-related-products-input" type="text" name="filter"/>
+    
+    {% category_filter "related-products-categories-filter" "related_products_category_filter" %}
+    
+</form>
+
+
+{{ related_products_inline }}

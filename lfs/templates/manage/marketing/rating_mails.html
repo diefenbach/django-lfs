@@ -1,0 +1,93 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+{% load lfs_manage_tags %}
+{% load lfs_tags %}
+
+{% block section %}send-rating-mails{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+{% block content %}
+
+    <h2>{% trans 'Send rating mails' %}</h2>
+
+    <form action="{% url lfs_send_rating_mails %}"
+          method="post">
+        <div>
+            <input type="checkbox"
+                   name="test"
+                   checked = "checked"><label>{% trans "Test" %} - {% trans "The mails will get to the shop notification email adresses" %}</label>
+        </div>       
+        <div>
+            <input type="checkbox"
+                   name="bcc"
+                   checked = "checked"><label>{% trans "Send copy" %} - {% trans "The mails will also send to the shop notification email adresses (if not in test mode)" %}</label>
+        </div>           
+        <div class="padding-top">
+            <input type="submit"
+                   value='{% trans "Send rating mails" %}' />
+        </div>
+    </form>
+
+    {% if display_orders_sent %}
+        <h2 class="padding-top-large">{% trans "Rating mails sent" %}</h2>
+        {% if orders_sent %}
+            <table class="lfs-manage-table">
+                <tr>
+                    <th>
+                        {% trans "ID" %}
+                    </th>
+                    <th>
+                        {% trans "Name" %}
+                    </th>
+                    <th>
+                        {% trans "E-Mail" %}
+                    </th>
+                    <th>
+                        {% trans "Date" %}
+                    </th>
+                    <th>
+                        {% trans "Date Closed" %}
+                    </th>
+                    <th class="number middle">
+                        {% trans "Price" %}
+                    </th>
+                    <th class="right small">
+                        {% trans "View" %}
+                    </th>
+                </tr>
+            {% for order in orders_sent %}
+
+                <tr>
+                    <td>
+                        {{ order.id }}
+                    </td>
+                    <td>
+                        {{ order.customer_firstname }} {{ order.customer_lastname }}
+                    </td>
+                    <td>
+                        {{ order.customer_email }}
+                    </td>
+                    <td>
+                        {{ order.created|date:_("DATETIME_FORMAT") }}
+                    </td>
+                    <td>
+                        {{ order.state_modified|date:_("DATETIME_FORMAT") }}
+                    </td>
+                    <td class="number middle">
+                        {{ order.price|currency }}
+                    </td>
+                    <td class="right small">
+                        <a href="{% url lfs_manage_order order.id %}">
+                            <img src="{{ MEDIA_URL }}lfs/icons/zoom.png"
+                                 alt='{% trans "View" %}'
+                                 title="{% trans 'View order' %}" />
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </table>
+        {% else %}
+           {% trans "No e-mails have been sent" %}
+        {% endif %}
+    {% endif %}
+
+{% endblock %}

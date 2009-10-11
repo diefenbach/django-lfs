@@ -1,0 +1,8 @@
+{% for payment_method in payment_methods %}
+    <div>
+        <a class="selectable {% ifequal current_id payment_method.id %}selected{% endifequal %}" 
+           href="{% url lfs_manage_payment_method payment_method.id %}">
+            {{payment_method.name}}
+        </a>
+    </div>    
+{% endfor %}

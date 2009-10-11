@@ -1,0 +1,122 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+{% load lfs_tags %}
+{% load lfs_manage_tags %}
+
+{% block section %}manage-product{% endblock %}
+
+{% block left_slot %}
+	<div id="pages-inline">
+		{{ pages_inline|safe }}
+	</div>
+
+    <div id="selectable-products-inline">
+        {{ selectable_products }}
+    </div>
+{% endblock %}
+
+{% block content %}
+	
+	<div id="product-filters">
+		{{ product_filters }}
+	</div>
+		
+    <div id="product">
+        <div class="site-actions">
+
+            <a class="overview"
+			   href="{% url lfs_manage_products %}">
+               {% trans 'Overview' %}
+            </a>
+
+			{% if product.is_variant %}
+				<a class="overview"
+			   	   href="{% url lfs_manage_product product.parent.id %}">
+					{% trans "Parent" %}
+				</a>					
+			{% endif %}
+			
+            <a class="add"
+               href="{% url lfs_manage_add_product %}">
+                {% trans 'Add product' %}
+            </a>
+
+            <a class="delete confirmation-link"
+               data="{% trans 'Delete?' %}"
+               href="{% url lfs_manage_delete_product product.id %}">
+               {% trans 'Delete product' %}
+            </a>
+
+            <a class="preview"
+               href="{% url lfs.manage.views.product_by_id product.id %}">
+               {% trans 'Preview product' %}
+            </a>
+
+            {% if not product.is_variant %}
+                <form style="display:inline; padding-left:15px"
+                      action="{% url lfs_change_product_subtype product.id %}"
+                      method="post">
+                    {{form.sub_type}}
+                    <input type="submit"
+                           value="{% trans 'Change' %}" />
+                </form>
+            {% endif %}
+        </div>
+        <div id="manage-tabs">
+            <ul>
+                {% if product.is_variant %}
+                    <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Variant' %}</a></li>
+                {% else %}
+                    <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Product' %}</a></li>
+                {% endif %}
+
+                {% if not product.is_variant %}
+                    <li class="ui-tabs-nav-item"><a href="{% url lfs_product_categories_tab product.id %}">{% trans 'Categories' %}</a></li>
+                {% endif %}
+
+                <li class="ui-tabs-nav-item"><a href="#images">{% trans 'Images' %}</a></li>
+
+                {% if product.is_product_with_variants %}
+                    <li class="ui-tabs-nav-item"><a href="{% url lfs_manage_product_variants_tab product.id %}">{% trans 'Variants' %}</a></li>
+                {% endif %}
+
+                <li class="ui-tabs-nav-item"><a href="{% url lfs_manage_product_accessories_tab product.id %}">{% trans 'Accessories' %}</a></li>
+                <li class="ui-tabs-nav-item"><a href="{% url lfs_manage_product_related_products_tab product.id %}">{% trans 'Related Products' %}</a></li>
+                <li class="ui-tabs-nav-item"><a href="#stock">{% trans 'Stock' %}</a></li>
+                <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>
+                <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
+
+                {% if product.is_standard %}
+                    <li class="ui-tabs-nav-item"><a href="#properties">{% trans 'Properties' %}</a></li>
+                {% endif %}
+
+            </ul>
+
+            <div id="data">
+                {{product_data|safe}}
+            </div>
+
+            <div id="images">
+                {{images|safe}}
+            </div>
+
+            <div id="stock">
+                {{stock|safe}}
+            </div>
+
+            <div id="seo">
+                {{seo|safe}}
+            </div>
+
+            {% if product.is_standard %}
+                <div id="properties">
+                    {{ properties|safe }}
+                </div>
+            {% endif %}
+
+            <div id="portlets">
+                {{ portlets|safe }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

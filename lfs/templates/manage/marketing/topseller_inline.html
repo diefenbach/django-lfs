@@ -1,0 +1,204 @@
+{% load i18n lfs_tags %}
+
+<form id="add-topseller-form"
+      action="{% url lfs_manage_add_topseller %}"
+      method="post">
+    
+    {% if page.has_previous %}
+        <a class="topseller-page-link"
+           href="{% url lfs_manage_topseller_inline %}?page=1">{% trans 'First' %}</a>
+        <a class="topseller-page-link"
+           href="{% url lfs_manage_topseller_inline %}?page={{page.previous_page_number}}">{% trans 'Previous' %}</a>
+    {% else %}
+        <span>{% trans 'First' %}</span>
+        <span>{% trans 'Previous' %}</span>
+    {% endif %}
+
+    {{page.number}} / {{paginator.num_pages}}
+
+    {% if page.has_next %}
+        <a class="topseller-page-link"
+           href="{% url lfs_manage_topseller_inline %}?page={{page.next_page_number}}">{% trans 'Next' %}</a>
+        <a class="topseller-page-link"
+           href="{% url lfs_manage_topseller_inline %}?page={{paginator.num_pages}}">{% trans 'Last' %}</a>
+       
+    {% else %}
+        <span>{% trans 'Next' %}</span>
+        <span>{% trans 'Last' %}</span>
+    {% endif %}
+
+    <table class="lfs-manage-table middle">
+        <tr>
+            <th class="checkbox">
+                <input type="checkbox"
+                       class="select-all-1" />
+            </th>
+            <th>
+                {% trans 'Name' %}
+            </th>
+            <th class="middle">
+                {% trans 'SKU' %}
+            </th>
+            <th class="small">
+                {% trans 'Active' %}
+            </th>
+            <th class="middle">
+                {% trans 'Sub type' %}
+            </th>
+            <th class="small number">
+                {% trans 'Price' %}
+            </th>                    
+            <th class="tiny right">
+                {% trans 'Edit' %}
+            </th>
+        </tr>
+        {% for product in page.object_list %}
+            <tr class="{% cycle 'even' 'odd' %}">
+                <td>
+                    <input type="checkbox"
+                           name="product-{{product.id}}"
+                           class="select-1" />
+                </td>
+                <td>
+                    {{product.get_name}}
+                </td>
+                <td>
+                    {{ product.get_sku }}
+                </td>
+                <td>
+					{% if product.is_active %}
+						<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+					{% else %}
+						<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+					{% endif %}
+                </td>
+                <td>
+                    {{product.sub_type|sub_type_name}}
+                </td>
+                <td class="number">
+                    {{product.price|currency}}
+                </td>
+				<td class="right">
+					<a href="{% url lfs_product product.slug %}">
+                        <img src="{{ MEDIA_URL }}lfs/icons/zoom.png"
+                             alt="Edit"
+                             title="{% trans 'Edit product' %}" />
+					</a>
+					<a href="{% url lfs_manage_product product.id %}">
+                        <img src="{{ MEDIA_URL }}lfs/icons/pencil.png"
+                             alt="Edit"
+                             title="{% trans 'Edit product' %}" />
+					</a>
+				</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <input type="hidden"
+           name="keep-filters"
+           value="1" />
+
+    <input type="submit"
+           id="add-topseller-button"
+           value="{% trans 'Add to topseller' %}" />
+
+</form>
+
+<h2 class="heading-middle">{% trans 'Topseller' %}</h2>
+    <form id="topseller-update-form"
+          action="{% url lfs_manage_update_topseller %}"
+          method="post">
+
+        <table class="lfs-manage-table middle">
+            <tr>
+                <th class="checkbox">
+                    <input type="checkbox"
+                           class="select-all-2" />
+                </th>
+                <th>
+                    {% trans 'Name' %}
+                </th>
+                <th class="small">
+                    {% trans 'Position' %}
+                </th>          
+                <th class="middle">
+                    {% trans 'SKU' %}
+                </th>
+                <th class="small">
+                    {% trans 'Active' %}
+                </th>                
+                <th class="middle">
+                    {% trans 'Sub type' %}
+                </th>
+                <th class="small number">
+                    {% trans 'Price' %}
+                </th>
+                <th class="tiny right">
+                    {% trans 'Edit' %}
+                </th>
+            </tr>
+    
+            {% for ts in topseller %}
+                <tr>
+                    <td>
+                        <input type="checkbox"
+                               name="product-{{ts.id}}"
+                               class="select-2" />
+                    </td>
+                    <td>
+                        {{ts.product.get_name}}
+                    </td>
+                    <td>
+                        <input class="number"
+                               type="text"
+                               size="3"
+                               name="position-{{ts.id}}"
+                               value="{{ts.position}}" />
+                    </td>   
+                    <td>
+                        {{ ts.product.get_sku }}
+                    </td>
+                    <td>
+						{% if ts.product.is_active %}
+							<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+						{% else %}
+							<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+						{% endif %}
+                    </td>
+                    <td>
+                        {{ts.product.sub_type|sub_type_name}}
+                    </td>
+                    <td class="number">
+                        {{ts.product.price|currency}}
+                    </td>                                                
+
+					<td class="right">
+						<a href="{% url lfs_product ts.product.slug %}">
+	                        <img src="{{ MEDIA_URL }}lfs/icons/zoom.png"
+	                             alt="Edit"
+	                             title="{% trans 'Edit product' %}" />
+						</a>
+						<a href="{% url lfs_manage_product ts.product.id %}">
+	                        <img src="{{ MEDIA_URL }}lfs/icons/pencil.png"
+	                             alt="Edit"
+	                             title="{% trans 'Edit product' %}" />
+						</a>
+					</td>
+                </tr>
+            {% endfor %}
+        </table>    
+
+        <input type="hidden"
+               name="keep-filters"
+               value="1" />
+
+        <input type="submit"
+               class="topseller-update-button"
+               name="save"
+               value="{% trans 'Save topseller' %}" />
+
+        <input type="submit"
+               class="topseller-update-button" 
+               name="remove"
+               value="{% trans 'Remove from topseller' %}" />
+    </form>    

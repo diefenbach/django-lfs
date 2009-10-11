@@ -1,0 +1,38 @@
+{% load i18n %}
+<form action="{% url lfs_add_portlet object_type_id object_id %}"
+      method="post">
+    <table>
+        <tr>
+            <td>
+                <label>{% trans 'Position' %}:</label>
+            </td>
+            <td>
+                <input type="text" 
+                       name="position"
+                       value="1">
+            </td>            
+        </tr>
+        <tr>
+            <td>
+                <label>{% trans 'Slot' %}:</label>
+            </td>
+            <td>
+                <select name="slot">
+                    {% for slot in slots %}
+                        <option value="{{ slot.id }}">
+                            {{ slot.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>        
+        {{ form }}
+    </table>
+    <input type="hidden"
+           name="portlet_type"
+           value="{{ portlet_type }}" />
+           
+    <input class="ajax-portlet-save-button" 
+           type="submit"
+           value="{% trans 'Save portlet' %}" />                
+</form>

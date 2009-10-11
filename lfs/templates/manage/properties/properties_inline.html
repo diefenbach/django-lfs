@@ -1,0 +1,102 @@
+{% load i18n %}
+<form id="add-property-form"
+      action="{% url lfs_assign_properties property_group.id %}"
+      method="post">
+    <h2>{% trans 'Properties' %}</h2>
+    <table class="lfs-manage-table">
+        <tr>
+            <th class="checkbox">
+                <input type="checkbox" 
+                       class="select-all-1"/>
+            </th>
+            <th>{% trans 'Name' %}</th>
+        </tr>
+        {% if properties %}
+            {% for property in properties %}
+                <tr class="{% cycle 'even' 'odd' %}">
+                    <td>
+                        <input type="checkbox" 
+                               class="select-1"
+                               name="property-id"
+                               value="{{property.id}}" />
+                    </td>
+                    <td>
+                        {{property.name}}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td></td>
+                <td>
+                    {% trans 'All properties are assigned' %}
+                </td>
+            </tr>
+        {% endif %}
+    </table>
+    {% if properties %}
+        <input type="submit"
+               id="add-property-button"
+               value="{% trans 'Assign properties' %}" />
+    {% endif %}
+</form>
+
+<form id="property-group-update-form"
+      action="{% url lfs_update_properties property_group.id %}"
+      method="post">      
+    <h2 class="heading-middle">{% trans 'Assigned properties' %}</h2>
+    <table class="lfs-manage-table">
+        <tr>
+            <th class="checkbox">
+                <input type="checkbox"
+                       class="select-all-2" />
+            </th>
+            <th width="100px">
+                {% trans 'Position' %}
+            </th>
+            <th>
+                {% trans 'Name' %}
+            </th>
+        </tr>
+        {% if gps %}
+            {% for gp in gps %}
+                <tr>
+                    <td>
+                        <input type="checkbox" 
+                               class="select-2"
+                               name="property-id" 
+                               value="{{gp.property.id}}" />
+                    </td>
+                    <td>
+                        <input class="number"
+                               type="text"
+                               size="3"
+                               name="position-{{gp.property.id}}"
+                               value="{{gp.position}}" />
+                    </td>
+                    <td>
+                        {{gp.property.name}}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="3">
+                    {% trans 'No properties assigned' %}
+                </td>
+            </tr>
+        {% endif %}
+    </table>
+
+    {% if gps %}
+        <input type="submit"
+               class="property-group-update-button"
+               name="remove"
+               value="{% trans 'Remove properties' %}" />
+        <input type="submit"
+               class="property-group-update-button"
+               name="update"
+               value="{% trans 'Update properties' %}" />
+    {% endif %}
+    
+</form>                        

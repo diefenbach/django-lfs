@@ -1,0 +1,32 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left_slot %}
+    <div id="payment-methods">
+        {{payment_methods}}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add payment method' %}</a></li>
+        </ul>
+
+        <div id="data">
+            <form method="post"
+                 enctype="multipart/form-data">
+                {% include "manage/lfs_form.html" %}
+                <div class="manage-form-buttons">                
+                    <input type="submit" 
+                           value="{% trans 'Add payment method' %}" />
+                    {% if request.META.HTTP_REFERER %}                       
+                        <input type="button"
+                               onclick="window.location='{{request.META.HTTP_REFERER}}'"
+                               value="{% trans 'Cancel' %}" />
+                    {% endif %}
+                </div>
+            </form>                   
+        </div>
+</div>    
+{% endblock %}

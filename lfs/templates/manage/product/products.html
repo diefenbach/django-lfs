@@ -1,0 +1,22 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n lfs_tags lfs_manage_tags %}
+
+{% block section %}manage-products{% endblock %}
+
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+
+	<div id="pages-inline">
+		{{ pages_inline|safe }}
+	</div>
+
+	<div id="product-filters">
+		{{ product_filters }}
+	</div>
+	
+    <div id="products-inline">
+        {{ products_inline|safe }}
+    </div>
+    
+{% endblock %}

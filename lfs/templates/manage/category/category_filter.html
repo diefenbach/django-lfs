@@ -1,0 +1,12 @@
+{% load i18n %}
+<select class="{{css_class}} categories"
+        name="{{name}}">
+    <option value="">{% trans 'All' %}</option>
+    <option value="None" {% ifequal request.session.name 'None' %}selected="selected"{% endifequal %}>{% trans 'None' %}</option>
+    {% for category in categories %}
+        <option value="{{category.id}}" {% if category.selected %}selected="selected"{% endif %}>
+            {{category.name}}
+        </option>
+        {{category.children}}
+    {% endfor %}
+</select>

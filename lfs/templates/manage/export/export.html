@@ -1,0 +1,76 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block section %}export{% endblock %}
+
+{% block left_slot %}
+	<div id="selectable-exports-inline">
+		{{ selectable_exports_inline|safe }}
+	</div>
+{% endblock %}
+
+{% block content %}
+
+	<div class="site-actions">
+	    <a class="export"
+	       href="{% url lfs_export_export slug %}">
+	       {% trans 'Export' %}</a>
+
+	    <a class="add"
+	       href="{% url lfs_export_add_export %}">
+	       {% trans 'Add' %}</a>
+
+
+        <a class="delete confirmation-link"
+           data="{% trans 'Delete?' %}"
+	       href="{% url lfs_export_delete_export export_id %}">
+	       {% trans 'Delete' %}</a>
+
+	</div>
+
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Product selection' %}</a></li>
+        </ul>
+		
+		<div id="data">
+			{{ export_data_inline|safe }}
+		</div>
+		
+		<div id="products">
+			<ul id="export-tree-root"
+				style="list-style-type: none">
+
+				{% for category in categories %}
+					<li class="category {{ category.klass }}"
+					    data="{% url lfs_export_category_state export_id category.id %}">
+						<input id="export-category-input-{{ category.id }}"
+							   class="export-category-input"
+						       type="checkbox"
+						       data="{% url lfs_export_edit_category export_id category.id %}"
+						 	   {% if category.checked %}checked="checked"{% endif %} />
+
+						<a class="category-ajax-link collapsed"
+						   id="{{ category.id }}"
+						   href="{% url lfs_export_inline export_id category.id %}">
+		  					{{ category.name }}
+						</a>
+						<span class="category-state" id="category-state-{{ category.id }}">
+							{% ifequal category.klass "half" %}(1/2){% endifequal %}
+						</span>
+						<select class="category-variants-options"
+							    data="{% url lfs_export_update_category_variants_option export_id category.id %}">
+							{% for option in category.options %}
+								<option value="{{ option.value }}"
+							            {% if option.selected %}selected="selected"{% endif %}>
+									{{ option.name }}
+								</option>
+							{% endfor %}
+						</select>
+						<div id="sub-categories-{{ category.id }}"></div>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+{% endblock %}

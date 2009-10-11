@@ -1,0 +1,55 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left_slot %}
+    <div id="portlet">
+        {{categories_portlet|safe}}
+    </div>    
+{% endblock %}
+
+{% block content %}
+	
+    <div class="site-actions">
+        <span class="label">{{category.name}}</span>
+        <a class="add" 
+           href="{% url lfs_manage_add_top_category %}">
+            {% trans 'Add top category' %}
+        </a>
+        {% if category %}
+            <a class="add" 
+               href="{% url lfs_manage_add_category category.id %}">
+                {% trans 'Add category' %}
+            </a>
+
+            <a class="delete confirmation-link"
+                 data="{% trans 'Delete?' %}" 
+                 href="{% url lfs_delete_category category.id %}">
+                 {% trans 'Delete category' %}</a>
+                 
+            <a class="preview" 
+               href="{% url lfs.catalog.views.category_view category.slug %}">
+                {% trans 'Preview' %}
+            </a>
+        {% endif %}
+    </div>
+
+    <div id="manage-tabs"
+         data="#category_{{ category.id }}">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Category' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="{% url lfs_load_products_tab category.id %}">{% trans 'Products' %}</a></li>            
+            <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>            
+            <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>            
+        </ul>
+    
+        <div id="data">
+            {{ data|safe }}
+        </div>
+        <div id="seo">
+            {{ seo|safe }}
+        </div>
+        <div id="portlets">
+            {{ portlets|safe }}
+        </div>
+    </div>
+{% endblock %}

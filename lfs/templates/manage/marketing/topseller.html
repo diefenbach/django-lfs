@@ -1,0 +1,17 @@
+{% load i18n %}
+{% load lfs_manage_tags %}
+
+<h2>{% trans 'Products' %}</h2>
+
+<form id="filter-topseller-form"
+      action="{% url lfs_manage_topseller_inline %}"
+      onsubmit="return false">
+    <input class="filter-topseller-input" type="text" name="filter"/>
+    
+    {% category_filter "topseller-categories-filter" "topseller_category_filter" %}
+    
+</form>
+
+<div id="topseller-inline">
+    {{topseller_inline}}
+</div>

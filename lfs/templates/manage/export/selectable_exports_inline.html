@@ -1,0 +1,8 @@
+{% for export in exports %}
+	<div>
+		<a class="selectable {% ifequal export_id export.id  %}selected{% endifequal %}"
+		      href="{{ export.get_absolute_url }}">
+			{{ export.name }}
+		</a>
+	</div>
+{% endfor %}

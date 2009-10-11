@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+
+    <!-- Shop -->
+    <object pk="1" model="core.shop">
+        <field type="CharField" name="name">LFS</field>
+        <field type="CharField" name="shop_owner"></field>
+        <field type="TextField" name="description"></field>
+        <field type="FileField" name="image"></field>
+        <field to="core.country" name="default_country" rel="ManyToOneRel">1</field>
+        <field to="core.country" name="countries" rel="ManyToManyRel">
+            <object pk="1"></object>
+            <object pk="2"></object>
+            <object pk="3"></object>
+        </field>
+    </object>    
+
+    <!-- Portlets -->
+    <object pk="1" model="portlets.slot">
+        <field type="CharField" name="name">Left</field>
+    </object>
+    <object pk="2" model="portlets.slot">
+        <field type="CharField" name="name">Right</field>
+    </object>
+
+    <!-- Countries -->
+    <object pk="1" model="core.country">
+      <field type="CharField" name="code">de</field>
+      <field type="CharField" name="name">Deutschland</field>
+    </object>      
+    <object pk="2" model="core.country">
+      <field type="CharField" name="code">at</field>
+      <field type="CharField" name="name">Österreich</field>
+    </object>  
+    <object pk="3" model="core.country">
+      <field type="CharField" name="code">ch</field>
+      <field type="CharField" name="name">Schweiz</field>
+    </object>
+    
+    <!-- Paymentmethod -->    
+    <object pk="1" model="payment.paymentmethod">
+        <field type="CharField" name="name">Bank Lastschrift</field>
+        <field type="TextField" name="description"></field>
+        <field type="TextField" name="note"></field>
+        <field type="IntegerField" name="priority">1</field>
+        <field type="FileField" name="image"></field>
+        <field type="BooleanField" name="active">1</field>
+        <field type="BooleanField" name="deletable">0</field>
+        <field to="tax.tax" name="tax" rel="ManyToOneRel">1</field>
+        <field type="FloatField" name="price">0.0</field>
+    </object>
+    <object pk="2" model="payment.paymentmethod">
+        <field type="CharField" name="name">Nachnahme</field>
+        <field type="TextField" name="description"></field>
+        <field type="TextField" name="note"></field>
+        <field type="IntegerField" name="priority">2</field>
+        <field type="FileField" name="image"></field>
+        <field type="BooleanField" name="active">1</field>
+        <field type="BooleanField" name="deletable">0</field>        
+        <field to="tax.tax" name="tax" rel="ManyToOneRel">1</field>
+        <field type="FloatField" name="price">17.9</field>
+    </object>
+    <object pk="3" model="payment.paymentmethod">
+        <field type="CharField" name="name">PayPal</field>
+        <field type="TextField" name="description"></field>
+        <field type="TextField" name="note"></field>
+        <field type="IntegerField" name="priority">3</field>
+        <field type="FileField" name="image"></field>
+        <field type="BooleanField" name="active">1</field>
+        <field type="BooleanField" name="deletable">0</field>        
+        <field to="tax.tax" name="tax" rel="ManyToOneRel">1</field>
+        <field type="FloatField" name="price">0.0</field>
+    </object>
+    <object pk="4" model="payment.paymentmethod">
+        <field type="CharField" name="name">Vorabüberweisung</field>
+        <field type="TextField" name="description"></field>
+        <field type="TextField" name="note"></field>
+        <field type="IntegerField" name="priority">4</field>
+        <field type="FileField" name="image"></field>
+        <field type="BooleanField" name="active">1</field>
+        <field type="BooleanField" name="deletable">0</field>
+        <field to="tax.tax" name="tax" rel="ManyToOneRel">1</field>
+        <field type="FloatField" name="price">0.0</field>
+    </object>    
+    <object pk="5" model="payment.paymentmethod">
+        <field type="CharField" name="name">Per Rechnung</field>
+        <field type="TextField" name="description"></field>
+        <field type="TextField" name="note"></field>
+        <field type="IntegerField" name="priority">5</field>
+        <field type="FileField" name="image"></field>
+        <field type="BooleanField" name="active">1</field>
+        <field type="BooleanField" name="deletable">0</field>
+        <field to="tax.tax" name="tax" rel="ManyToOneRel">1</field>
+        <field type="FloatField" name="price">0.0</field>
+    </object>    
+    
+    <!-- Taxes -->
+    <object pk="1" model="tax.tax">
+        <field type="FloatField" name="rate">19.0</field>
+        <field type="TextField" name="description"></field>
+    </object>
+    <object pk="2" model="tax.tax">
+        <field type="FloatField" name="rate">7.0</field>
+        <field type="TextField" name="description"></field>
+    </object>
+    
+</django-objects>

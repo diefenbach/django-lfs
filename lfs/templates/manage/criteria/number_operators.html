@@ -1,0 +1,8 @@
+{% load i18n %}
+<select class="criterion-operator" name="operator-{{id}}">
+    <option value="0" {% ifequal operator 0 %}selected="selected"{% endifequal %}>{% trans 'Equal' %}</option>
+    <option value="1" {% ifequal operator 1 %}selected="selected"{% endifequal %}>{% trans 'Less than' %}</option>
+    <option value="2" {% ifequal operator 2 %}selected="selected"{% endifequal %}>{% trans 'Less than equal to' %}</option>
+    <option value="3" {% ifequal operator 3 %}selected="selected"{% endifequal %}>{% trans 'Greater than' %}</option>
+    <option value="4" {% ifequal operator 4 %}selected="selected"{% endifequal %}>{% trans 'Greater than equal to' %}</option>
+</select>

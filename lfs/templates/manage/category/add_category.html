@@ -1,0 +1,48 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block javascript %}
+    <script>
+        $(function() {
+            $("#id_name").livequery("keyup", function() {
+                var slug = $("#id_name").val()
+                slug = URLify(slug, 200)
+                $("#id_slug").val(slug);
+            });
+        });
+    </script>        
+{% endblock %}
+
+{% block left_slot %}
+    <div id="portlet">
+        {{categories_portlet|safe}}
+    </div>    
+{% endblock %}
+
+{% block content %}
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add category' %}</a></li>
+        </ul>
+        <div id="data">
+            <form action="{% url lfs_manage_add_category category.id %}"
+                  method="post">
+                <table>
+                    {% include "manage/lfs_form.html" %}
+                </table>
+                <input type="submit" value="{% trans 'Add category' %}">
+                {% if  request.META.HTTP_REFERER %}                       
+                    <input type="button"
+                           onclick="window.location='{{request.META.HTTP_REFERER}}'"
+                           value="{% trans 'Cancel' %}" />
+                {% endif %}
+            </form>            
+        </div>
+    </div>
+<script>
+    $(function() {    
+        tinyMCE.execCommand('mceAddControl', true, 'id_short_description');
+        tinyMCE.execCommand('mceAddControl', true, 'id_description');
+    });    
+</script>    
+{% endblock %}

@@ -1,0 +1,104 @@
+{% load i18n %}
+{% load lfs_tags %}
+
+{% if products %}
+    {% if page_2.has_previous %}
+        <a class="category-products-page-link"
+           href="{% url lfs_manage_category_products_inline category.id %}?page_2=1&amp;keep-session=1">First</a>
+        <a class="category-products-page-link"
+           href="{% url lfs_manage_category_products_inline category.id %}?page_2={{page_2.previous_page_number}}&amp;keep-session=1">Previous</a>
+    {% else %}
+        <span>{% trans 'First' %}</span>
+        <span>{% trans 'Previous' %}</span>
+    {% endif %}
+
+    {{page_2.number}} / {{paginator_2.num_pages}}
+
+    {% if page_2.has_next %}
+        <a class="category-products-page-link"
+           href="{% url lfs_manage_category_products_inline category.id %}?page_2={{page_2.next_page_number}}&amp;keep-session=1">
+           {% trans 'Next' %}</a>
+        <a class="category-products-page-link"
+           href="{% url lfs_manage_category_products_inline category.id%}?page_2={{paginator.num_pages}}&amp;keep-session=1">{% trans 'Last' %}</a>
+   
+    {% else %}
+        <span>{% trans 'Next' %}</span>
+        <span>{% trans 'Last' %}</span>
+    {% endif %}
+
+
+    <form id="category-products-remove-form"
+          action="{% url lfs_manage_category_remove_products category.id %}"
+          method="post">
+        <table class="lfs-manage-table middle">
+            <tr>
+                <th class="checkbox">
+                    <input type="checkbox" class="select-all-2" />
+                </th>
+                <th>
+                    {% trans 'Name' %}
+                </th>
+                <th class="small">
+                    {% trans 'Active' %}
+                </th>
+                <th class="middle">
+                    {% trans 'SKU' %}
+                </th>
+                <th class="middle">
+                    {% trans 'Sub type' %}
+                </th>                
+                <th class="small number">
+                    {% trans 'Price' %}
+                </th>
+                <th class="tiny right">
+                    {% trans 'Edit' %}
+                </th>    
+            </tr>
+            {% for product in page_2.object_list %}
+                <tr>
+                    <td>
+                        <input type="checkbox" class="select-2" name="{{product.id}}" />
+                    </td>            
+                    <td>
+                        {{product.get_name}}
+                    </td>
+                    <td>
+						{% if product.is_active %}
+							<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+						{% else %}
+							<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+						{% endif %}
+                    </td>
+                    <td>
+                        {{product.get_sku}}
+                    </td>
+                    <td>
+                        {{product.sub_type|sub_type_name}}
+                    </td>                    
+                    <td class="number">
+                        {{product.price|currency}}
+                    </td>
+                    <td class="right">
+                        <a href="{% url lfs_manage_product product.id %}">
+                            <img src="{{MEDIA_URL}}lfs/icons/pencil.png" 
+                                 alt="Edit"
+                                 title="{% trans 'Edit product' %}" />
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <input type="hidden"
+               name="keep-session"
+               value="1" />
+               
+        <div class="manage-form-buttons">
+            <input type="submit"
+                   class="category-products-remove-button" 
+                   value="{% trans 'Remove from category' %}" />
+        </div>       
+    </form>
+{% else %}
+    <p>{% trans 'This category has no products yet.' %}</p>
+{% endif %}    

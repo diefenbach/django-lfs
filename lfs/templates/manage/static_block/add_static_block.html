@@ -1,0 +1,39 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left_slot %}
+    {% for static_block in static_blocks %}
+        <div>
+            <a href="{% url lfs_manage_static_block static_block.id %}">
+                {{static_block.name}}
+            </a>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add static block' %}</a></li>
+        </ul>
+
+        <div id="data">
+            <h2>{% trans 'Add static block' %}</h2>
+            <form action=""
+                  method="post">
+                {% include "manage/lfs_form.html" %}
+                <input type="submit"
+                       value="{% trans 'Save static block' %}">
+
+                {% if  request.META.HTTP_REFERER %}                       
+                    <input type="button"
+                           onclick="window.location='{{request.META.HTTP_REFERER}}'"
+                           value="{% trans 'Cancel' %}" />
+                {% endif %}
+            </form>
+        </div>
+    </div>    
+    
+    
+{% endblock %}

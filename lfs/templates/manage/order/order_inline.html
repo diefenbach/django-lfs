@@ -1,0 +1,376 @@
+{% load i18n %}
+{% load i18n lfs_tags %}
+<form action="{% url lfs_set_order_filter %}"
+      method="post">
+
+    <input type="hidden" name="came-from" value="order" />
+    <input type="hidden" name="order-id" value="{{ current_order.id }}" />
+
+    <table class="filters">
+        <tr>
+            <td></td>
+            <td class="discreet">{% trans "Start" %}</td>
+            <td class="discreet">{% trans "End" %}</td>
+            <td class="discreet">{% trans "Name" %}</td>
+            <td class="discreet">{% trans "State" %}</td>
+        </tr>
+        <tr>
+            <td>
+                <a href="{% url lfs_set_order_filters_date %}?came-from=order&amp;order-id={{ current_order.id }}&amp;start=0&amp;end=0"
+                   class="ajax-link">T</a>
+                <a href="{% url lfs_set_order_filters_date %}?came-from=order&amp;order-id={{ current_order.id }}&amp;start=1&amp;end=1"
+                   class="ajax-link">Y</a>
+                <a href="{% url lfs_set_order_filters_date %}?came-from=order&amp;order-id={{ current_order.id }}&amp;start=7&amp;end=0"
+                   class="ajax-link">W</a>
+            </td>
+            <td>
+
+                <input type="text"
+                       name="start"
+                       value="{{ start }}">
+            </td>
+            <td>
+
+                <input type="text"
+                       name="end"
+                       value="{{ end }}">
+            </td>
+            <td>
+                <input type="text"
+                       name="name"
+                       value="{{ name }}">
+            </td>
+            <td>
+                <select id="states-filter"
+                        class="ajax-change"
+                        name="state">
+                    <option value="">{% trans "All" %}</option>
+                    {% for state in states %}
+                        <option value="{{ state.id }}"
+                                {% if state.selected_filter %}selected="selected"{% endif %}>
+                            {{ state.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <input type="submit"
+                       class="ajax-save-button-2" />
+
+                <a href="{% url lfs_reset_order_filters %}?came-from=order;order-id={{ current_order.id }}"
+                   class="ajax-link reset">&nbsp;</a>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<div class="site-actions">
+
+    <a class="overview"
+       href="{% url lfs_orders %}">
+       {% trans 'Overview' %}</a>
+
+    <a class="delete confirmation-link"
+       data="{% trans 'Delete?' %}"
+       href="{% url lfs_delete_order current_order.id %}">
+       {% trans 'Delete order' %}</a>
+
+    <a class="send confirmation-link"
+       data="{% trans 'Resend?' %}"
+       href="{% url lfs_send_order current_order.id %}">
+       {% trans 'Resend order' %}
+    </a>
+    
+    <label>{% trans "State" %}: </label>
+    <form action="{% url lfs_change_order_state %}"
+          method="post"
+          class="inline">
+        <select id="states-filter"
+                name="new-state">
+            <option value="">{% trans "All" %}</option>
+            {% for state in states %}
+                <option value="{{ state.id }}"
+                        {% if state.selected_order %}selected="selected"{% endif %}>
+                    {{ state.name }}
+                </option>
+            {% endfor %}
+        </select>
+        
+        <input type="hidden" 
+               name="order-id"
+               value="{{ current_order.id }}">
+        <input type="submit"
+               class="ajax-save-button-2"
+               value='{% trans "Change" %}'>
+    </form>
+
+</div>
+<table class="lfs-manage-table">
+    <tr>
+        <th colspan="4">
+            {% trans 'General' %}
+        </th>
+    </tr>
+    <tr>
+        <td width="25%"
+   class="label">
+            {% trans 'Customer name' %}:
+        </td>
+        <td width="25%">
+            {{current_order.customer_firstname}} {{current_order.customer_lastname}}
+        </td>
+        <td width="25%"
+            class="label">
+            {% trans 'Date' %}:
+        </td>
+        <td width="25%">
+            {{current_order.created|date:_("DATETIME_FORMAT")}}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'E-mail' %}:
+        </td>
+        <td>
+            <a href="mailto:{{current_order.customer_email}}">
+                {{current_order.customer_email}}
+            </a>
+        </td>
+        <td class="label">
+            {% trans 'State' %}:
+        </td>
+        <td>
+            {{current_order.get_state_display}} {% if current_order.state_modified %}({{ current_order.state_modified|date:_("DATETIME_FORMAT") }}){% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'Phone' %}:
+        </td>
+        <td>
+            {{current_order.shipping_phone}}
+        </td>
+        <td class="label">
+            {% trans 'Total' %}:
+        </td>
+        <td>
+            {{current_order.price|currency}}
+        </td>
+    </tr>
+
+</table>
+<table class="lfs-manage-table">
+    <tr>
+        <th width="25%">
+            {% trans 'Shipping address' %}
+        </th>
+        <th width="25%">
+            {% trans 'Invoice address' %}
+        </th>
+        <th width="25%">
+            {% trans 'Shipping method' %}
+        </th>
+        <th width="25%">
+            {% trans 'Payment method' %}
+        </th>
+    </tr>
+    <tr>
+        <td>
+            <div>
+                {{current_order.shipping_firstname}} {{current_order.shipping_lastname}}
+            </div>
+            <div>
+                {{current_order.shipping_company_name}}
+            </div>
+            <div>
+                {{current_order.shipping_street}}
+            </div>
+            <div>
+                {{current_order.shipping_zip_code}} {{current_order.shipping_city}}
+            </div>
+            <div>
+                {{current_order.shipping_country}}
+            </div>
+            <div>
+                {{current_order.shipping_phone}}
+            </div>
+        </td>
+        <td>
+            <div>
+                {{current_order.invoice_firstname}} {{current_order.invoice_lastname}}
+            </div>
+            <div>
+                {{current_order.invoice_company_name}}
+            </div>
+            <div>
+                {{current_order.invoice_street}}
+            </div>
+            <div>
+                {{current_order.invoice_zip_code}} {{current_order.invoice_city}}
+            </div>
+            <div>
+                {{current_order.invoice_country}}
+            </div>
+            <div>
+                {{current_order.invoice_phone}}
+            </div>
+        </td>
+        <td>
+            <div>
+                {{current_order.shipping_method}}
+            </div>
+        </td>
+        <td>
+            <div>
+                {{current_order.payment_method.name}}
+            </div>
+            {% ifequal current_order.payment_method.id 1 %}
+                <div>
+                    {{current_order.account_number}}
+                </div>
+                <div>
+                    {{current_order.bank_identification_code}}
+                </div>
+                <div>
+                    {{current_order.bank_name}}
+                </div>
+                <div>
+                    {{current_order.depositor}}
+                </div>
+            {% endifequal %}
+        </td>
+    </tr>
+</table>
+
+<table class="lfs-manage-table">
+    <tr>
+        <th width="200px">
+            {% trans 'SKU' %}
+        </th>
+        <th>
+            {% trans 'Name' %}
+        </th>
+        <th width="80px"
+            class="number">
+            {% trans 'Amount' %}
+        </th>
+        <th width="150px"
+            class="number">
+            {% trans 'Price' %}
+        </th>
+        <th width="150px"
+            class="number">
+            {% trans 'Included VAT' %}
+        </th>
+        <th width="150px"
+            class="number">
+            {% trans 'Total' %}
+        </th>
+    </tr>
+    {% for item in current_order.items.all %}
+        <tr>
+            <td>
+               {{item.product_sku}}
+            </td>
+            <td>
+               {{item.product_name}}
+                {% for option in item.product.get_options %}
+                    {% if option.property.display_on_product %}
+                        <div>
+                            {{option.property.name}} : {{option.value|option_name}} {{ option.property.unit|safe }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td class="number">
+               {{item.product_amount}}
+            </td>
+            <td class="number">
+               {{item.product_price_gross|currency}}
+            </td>
+            <td class="number">
+               ({{item.product_tax|currency}})
+            </td>
+            <td class="number">
+               {{item.price_gross|currency}}
+            </td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td></td>
+        <td>
+            {% trans 'Shipping' %} ({{current_order.shipping_method}})
+        </td>
+        <td class="number">
+            1
+        </td>
+        <td class="number">
+            {{current_order.shipping_price|currency}}
+        </td>
+        <td></td>
+        <td class="number">
+            {{current_order.shipping_price|currency}}
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            {% trans 'Payment' %} ({{current_order.payment_method}})
+        </td>
+        <td class="number">
+            1
+        </td>
+        <td class="number">
+            {{current_order.payment_price|currency}}
+        </td>
+        <td></td>
+        <td class="number">
+            {{current_order.payment_price|currency}}
+        </td>
+    </tr>
+    <tr class="total">
+        <td colspan="6"
+            class="number total">
+            {{current_order.price|currency}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="6"
+            class="number tax">
+            <span class="total-label">{% trans 'Inclusive VAT' %}:</span>
+            {{current_order.tax|currency}}
+        </td>
+    </tr>
+</table>
+{% if current_order.message %}
+    <table class="lfs-manage-table">
+        <tr>
+            <th colspan="5">
+                {% trans 'Message from the customer' %}
+            </th>
+        </tr>
+        <tr>
+            <td colspan="5">
+                {{current_order.message}}
+            </td>
+        </tr>
+    </table>
+{% endif %}
+{% if current_order.paypalordertransaction_set.all %}
+<table class="lfs-manage-table">
+        <tr>
+            <th colspan="5">
+                {% trans 'Paypal Transaction ID' %}
+            </th>
+        </tr>
+        {% for ppt in current_order.paypalordertransaction_set.all %}
+        {% for ipn in ppt.ipn.all %}
+        <tr>
+            <td colspan="5">
+                {{ipn.txn_id}}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+    </table>
+
+{% endif %}

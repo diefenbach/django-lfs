@@ -1,0 +1,176 @@
+{% load i18n %}
+{% load lfs_tags %}
+
+<form action="{% url lfs_set_cart_filters %}"
+      method="post">
+
+	<input type="hidden" name="came-from" value="cart" />
+	<input type="hidden" name="cart-id" value="{{ cart.id }}" />
+
+    <table class="filters">
+		<tr>
+			<td></td>
+			<td class="discreet">{% trans "Start" %}</td>
+			<td class="discreet">{% trans "End" %}</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="{% url lfs_set_cart_filters_date %}?came-from=cart&amp;cart-id={{ cart.id }}&amp;start=0&amp;end=0"
+				   class="ajax-link">T</a>
+				<a href="{% url lfs_set_cart_filters_date %}?came-from=cart&amp;cart-id={{ cart.id }}&amp;start=1&amp;end=1"
+				   class="ajax-link">Y</a>
+				<a href="{% url lfs_set_cart_filters_date %}?came-from=cart&amp;cart-id={{ cart.id }}&amp;start=7&amp;end=0"
+				   class="ajax-link">W</a>
+			</td>
+			<td>
+
+				<input type="text"
+				       name="start"
+					   value="{{ start }}">
+			</td>
+			<td>
+
+				<input type="text"
+				       name="end"
+					   value="{{ end }}">
+			</td>
+			<td>
+				<input type="submit"
+				       class="ajax-save-button-2" />
+
+				<a href="{% url lfs_reset_cart_filters %}?came-from=cart;cart-id={{ cart.id }}"
+				   class="ajax-link reset">&nbsp;</a>
+			</td>
+		</tr>
+	</table>
+</form>
+
+
+<div class="site-actions">
+    <a class="overview"
+       href="{% url lfs_manage_carts %}">{% trans 'Overview' %}</a>
+</div>
+
+<table class="lfs-manage-table">
+    <tr>
+        <th colspan="2">
+            {% trans 'General' %}
+        </th>
+    </tr>
+    <tr>
+        <td class="label"
+            style="width:150px">
+            {% trans 'ID' %}:
+        </td>
+        <td>
+            {{ cart.id }}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'Customer' %}:
+        </td>
+        <td>
+			{% if customer.selected_invoice_address %}
+				<div>
+					{{ customer.selected_invoice_address.firstname }}
+					{{ customer.selected_invoice_address.lastname }}
+					(<a href="mailto:{{ customer.selected_invoice_address.email }}">{{ customer.selected_invoice_address.email }}</a>)
+				</div>
+				<div>
+					{{ customer.selected_invoice_address.street }}				
+				</div>
+				<div>
+					{{ customer.selected_invoice_address.zip_code }} {{ customer.selected_invoice_address.city }}				
+				</div>
+				<div>
+					{{ customer.selected_invoice_address.phone }}
+				</div>
+			{% else %}
+				---
+			{% endif %}
+        </td>
+    </tr>        
+    <tr>
+        <td class="label">
+            {% trans 'Creation date' %}:
+        </td>
+        <td>
+            {{ cart.creation_date|date:_("DATETIME_FORMAT") }}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'Modification date' %}:
+        </td>
+        <td>
+            {{ cart.modification_date|date:_("DATETIME_FORMAT") }}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'Items' %}:
+        </td>
+        <td>
+            {{ cart.amount_of_items }}
+        </td>
+    </tr>
+    <tr>
+        <td class="label">
+            {% trans 'Total' %}:
+        </td>
+        <td>
+            {{ total|currency }}
+        </td>
+    </tr>
+</table>
+
+{% if cart.items %}
+    <table class="lfs-manage-table">
+        <tr>
+            <th class="small">
+                {% trans 'ID' %}
+            </th>
+            <th class="middle">
+                {% trans 'Creation date' %}
+            </th>
+            <th>
+                {% trans 'Product' %}
+            </th>
+            <th class="number middle">
+                {% trans 'Price' %}
+            </th>
+            <th class="number middle">
+                {% trans 'Amount' %}
+            </th>
+            <th class="number middle">
+                {% trans 'Total' %}
+            </th>
+        </tr>
+        {% for item in cart.items %}
+            <tr class="clickable"
+                onclick="window.location='{% url lfs_manage_product item.product.id %}'">
+                <td class="small-right">
+                	{{ item.id }}
+                </td>
+                <td>
+					{{ item.creation_date|date:_("DATETIME_FORMAT") }}
+			    </td>
+                <td>
+                	{{ item.product.get_name }}
+                </td>
+                <td class="number">
+                    {{ item.product.get_price|currency }}
+                </td>
+                <td class="number">
+                    {{ item.amount }}
+                </td>
+                <td class="number">
+                    {{ item.get_price|currency }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    {% trans 'This cart has no items' %}
+{% endif %}

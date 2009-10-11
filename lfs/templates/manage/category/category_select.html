@@ -1,0 +1,11 @@
+{% load i18n %}
+<select id="selectable-products-category-filter"
+        name="category_filter">
+    <option value="">{% trans 'All' %}</option>
+    {% for category in categories %}
+        <option value="{{category.id}}" {% if category.selected %}selected="selected"{% endif %}>
+            {{category.name}}
+        </option>
+        {{category.children}}
+    {% endfor %}
+</select>
