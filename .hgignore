@@ -1,0 +1,11 @@
+syntax: glob
+*.pyc
+*.pyo
+*.DS_Store 
+*parts
+*eggs
+*develop-eggs
+*bin
+*downloads
+*.installed.cfg
+*.egg-info/
