@@ -29,6 +29,6 @@ setup(name='django-lfs',
         'setuptools',
         'django-lfstheme',
         'django-portlets',
-        'django-review',
+        'django-reviews',
       ],
       )
