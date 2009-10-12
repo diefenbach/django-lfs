@@ -2,11 +2,6 @@ syntax: glob
 *.pyc
 *.pyo
 *.DS_Store 
-*parts
-*dist
-*eggs
-*develop-eggs
-*bin
-*downloads
 *.installed.cfg
+*dist/
 *.egg-info/
