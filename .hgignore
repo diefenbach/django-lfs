@@ -3,6 +3,7 @@ syntax: glob
 *.pyo
 *.DS_Store 
 *parts
+*dist
 *eggs
 *develop-eggs
 *bin
