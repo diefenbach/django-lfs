@@ -28,6 +28,7 @@ from lfs.payment.models import PaymentMethod
 from lfs.payment.settings import PAYPAL
 from lfs.payment.settings import DIRECT_DEBIT
 from lfs.payment.settings import CREDIT_CARD
+from lfs.voucher.models import Voucher
 
 def login(request, template_name="lfs/checkout/login.html"):
     """Displays a form to login or register/login the user within the check out
@@ -121,15 +122,32 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
     selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
     payment_costs = lfs.payment.utils.get_payment_costs(request, selected_payment_method)
 
-    # cart costs
+    # Cart costs
     cart_costs = cart_utils.get_cart_costs(request, cart)
     cart_price = cart_costs["price"] + shipping_costs["price"] + payment_costs["price"]
     cart_tax = cart_costs["tax"] + shipping_costs["tax"] + payment_costs["tax"]
+
+    # Voucer
+    try:
+        voucher = Voucher.objects.get(number=request.POST.get("voucher"))
+    except Voucher.DoesNotExist:
+        display_voucher = False
+        voucher_value = 0
+        voucher_tax = 0
+    else:
+        cart_price = cart_price - voucher.get_price_gross()
+        display_voucher = True
+        voucher_value = voucher.get_price_gross(cart)
+        voucher_tax = voucher.get_tax(cart)
+        voucher.mark_as_used()
 
     return render_to_string(template_name, RequestContext(request, {
         "cart" : cart,
         "cart_price" : cart_price,
         "cart_tax" : cart_tax,
+        "display_voucher" : display_voucher,
+        "voucher_value" : voucher_value,
+        "voucher_tax" : voucher_tax,
         "shipping_price" : shipping_costs["price"],
         "payment_price" : payment_costs["price"],
         "selected_shipping_method" : selected_shipping_method,
@@ -205,7 +223,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                     selected_shipping_address.country_id = form.cleaned_data.get("shipping_country")
                     selected_shipping_address.phone = form.cleaned_data.get("shipping_phone")
                     selected_shipping_address.save()
-                    
+
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
 
@@ -242,7 +260,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             else:
                 if result.has_key("message"):
                     form._errors[result.get("message-key")] = result.get("message")
-        
+
         else: # form is not valid
             # Create or update invoice address
             if customer.selected_invoice_address is None:
@@ -298,7 +316,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                     selected_shipping_address.country_id = form.data.get("shipping_country")
                     selected_shipping_address.phone = form.data.get("shipping_phone")
                     selected_shipping_address.save()
-                    
+
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
 
@@ -403,7 +421,7 @@ def payment_inline(request, form, template_name="lfs/checkout/payment_inline.htm
     Factored out to be reusable for the starting request (which renders the
     whole checkout page and subsequent ajax requests which refresh the
     selectable payment methods.
-    
+
     Passing the form to be able to display payment forms within the several
     payment methods, e.g. credit card form.
     """
@@ -438,6 +456,15 @@ def shipping_inline(request, template_name="lfs/checkout/shipping_inline.html"):
         "selected_shipping_method" : selected_shipping_method,
     }))
 
+def check_voucher(request):
+    """
+    """
+    result = simplejson.dumps({
+        "html" : (("#cart-inline", cart_inline(request)),)
+    })
+
+    return HttpResponse(result)
+
 def changed_checkout(request):
     """
     """
@@ -445,7 +472,7 @@ def changed_checkout(request):
     customer = customer_utils.get_or_create_customer(request)
     _save_customer(request, customer)
     _save_country(request, customer)
-    
+
     result = simplejson.dumps({
         "shipping" : shipping_inline(request),
         "payment" : payment_inline(request, form),

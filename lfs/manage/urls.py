@@ -23,6 +23,16 @@ urlpatterns += patterns('lfs.manage.views.marketing',
     url(r'^send-rating-mails$', "rating_mails.send_rating_mails", name="lfs_send_rating_mails"),
 )
 
+# Voucher
+urlpatterns += patterns('lfs.manage.views.voucher',
+    url(r'^manage-vouchers$', "manage_vouchers", name="lfs_manage_vouchers"),
+    url(r'^add-voucher-group$', "add_voucher_group", name="lfs_manage_add_voucher_group"),
+    url(r'^manage-voucher-group/(?P<id>\d+)$', "voucher_group", name="lfs_manage_voucher_group"),
+    url(r'^save-voucher-group-data/(?P<id>\d+)$', "save_voucher_group_data", name="lfs_manage_save_voucher_group_data"),
+    url(r'^add-vouchers/(?P<group_id>\d+)$', "add_vouchers", name="lfs_manage_add_vouchers"),
+    url(r'^delete-vouchers/(?P<group_id>\d+)$', "delete_vouchers", name="lfs_manage_delete_vouchers"),
+)
+
 # Portlets
 urlpatterns += patterns('lfs.manage.views.lfs_portlets',
     url(r'^add-portlet/(?P<object_type_id>\d+)/(?P<object_id>\d+)$', "add_portlet", name="lfs_add_portlet"),

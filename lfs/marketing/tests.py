@@ -69,7 +69,7 @@ class TopsellerTestCase(TestCase):
         """
         self.assertEqual(self.t1.position, 1)
         
-class UtilsTestCase(TestCase):
+class TopsellerUtilsTestCase(TestCase):
     """Tests the utils of the lfs.marketing
     """
     def setUp(self):

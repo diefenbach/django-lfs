@@ -1,0 +1,8 @@
+{% for vg in voucher_groups %}
+    <div>
+        <a href="{% url lfs_manage_voucher_group vg.id %}"
+           class="selectable {% ifequal vg.id voucher_group.id %}selected{% endifequal %}">
+            {{ vg.name }}
+        </a>
+    </div>
+{% endfor %}

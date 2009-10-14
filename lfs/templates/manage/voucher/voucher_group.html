@@ -1,0 +1,39 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left_slot %}
+    <div id="navigation"
+         style="padding-top:20px">
+        {{ navigation|safe }}
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <div class="site-actions">
+        <span class="label">{{ voucher_group.name }}</span>
+        
+        <a class="add" 
+           href="{% url lfs_manage_add_voucher_group %}">{% trans 'Add voucher group' %}</a>
+        
+        <a class="delete confirmation-link"
+           data="{% trans 'Delete?' %}"
+           href="">{% trans 'Delete group' %}</a>
+
+    </div>
+
+    <div id="manage-tabs">
+
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#vouchers">{% trans 'Vouchers' %}</a></li>
+        </ul>
+
+        <div id="data">
+            {{ data_tab|safe }}
+        </div>
+        <div id="vouchers">
+            {{ vouchers_tab|safe }}
+        </div>
+    </div>    
+{% endblock %}

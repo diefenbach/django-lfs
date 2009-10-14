@@ -1,0 +1,40 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left_slot %}
+    {% for voucher_group in voucher_groups %}
+        <div>
+            <a href="{% url lfs_manage_voucher_group voucher_group.id %}"
+               class="selectable {% ifequal page.id current_id %}selected{% endifequal %}">
+                {{ voucher_group.name }}
+            </a>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block content %}
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add voucher group' %}</a></li>            
+        </ul>
+
+        <div id="data">
+            <h2>{% trans 'Add voucher group' %}</h2>
+
+            <form action="{% url lfs_manage_add_voucher_group %}"
+                  method="post"
+                  enctype="multipart/form-data">
+                {% include "manage/lfs_form.html" %}
+
+                <input type="submit"
+                       value="{% trans 'Add voucher group' %}" />
+                       
+                    {% if  request.META.HTTP_REFERER %}                       
+                        <input type="button"
+                               onclick="window.location='{{ request.META.HTTP_REFERER }}'"
+                               value="{% trans 'Cancel' %}" />
+                    {% endif %}
+            </form>
+        </div>
+    </div>    
+{% endblock %}

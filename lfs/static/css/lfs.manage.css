@@ -82,12 +82,21 @@ table.lfs-manage-table th {
     background-color: #ede9e8;
 }
 
+table.lfs-manage-table td {
+    vertical-align: middle;
+}
+
+.checkbox {
+    min-height: 20px;
+    height: 20px;
+}
+
 .padding-top {
     margin-top: 10px;
 }
 
 .padding-top-large {
-    margin-top: 20px;    
+    margin-top: 20px;
 }
 
 .middle {
@@ -100,7 +109,7 @@ td.left-slot {
 }
 
 td.middle-slot {
-  padding-top: 10px;    
+  padding-top: 10px;
 }
 
 th, td {
@@ -116,7 +125,7 @@ tr.odd {
 }
 
 tr.marked {
-    background-color: yellow;    
+    background-color: yellow;
 }
 
 /* General formats */
@@ -183,7 +192,7 @@ tr.marked {
     float: left;
 }
 
-.manage-products .navigation-pages, 
+.manage-products .navigation-pages,
 .manage-product .navigation-pages {
     float: left;
 }
@@ -209,7 +218,7 @@ tr.marked {
 }
 
 #manage-categories-categories-control {
-    font-size: 9px;    
+    font-size: 9px;
     padding: 2px 0 10px 0;
 }
 

@@ -5,6 +5,7 @@ import urllib
 
 # django imports
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.utils import simplejson
 from django.utils.functional import Promise
 from django.utils.encoding import force_unicode
@@ -88,6 +89,14 @@ def get_current_categories(request, object):
 
     return current_categories
 
+def render_to_ajax_response(html=[], message=None):
+    """Encodes given html and message to JSON and returns a HTTP response.
+    """
+    result = simplejson.dumps(
+        { "message" : message, "html" : html }, cls = LazyEncoder)
+
+    return HttpResponse(result)
+    
 def set_category_levels():
     """Creates category levels based on the position in hierarchy.
     """

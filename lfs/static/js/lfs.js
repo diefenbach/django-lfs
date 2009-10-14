@@ -274,4 +274,21 @@ $(function() {
         update_checkout()
     });
 
+    var update_html = function(data) {
+        data = JSON.parse(data);
+        for (var html in data["html"])
+            $(data["html"][html][0]).html(data["html"][html][1]);
+
+        if (data["message"]) {
+            $.jGrowl(data["message"]);
+        }
+    }
+
+    $("#voucher").livequery("change", function() {
+        var url = $(this).attr("data");
+        var voucher = $(this).attr("value");
+        $.post(url, { "voucher" : voucher }, function(data) {
+            update_html(data);
+        });
+    });
 })

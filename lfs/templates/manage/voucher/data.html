@@ -1,0 +1,12 @@
+{% load i18n %}
+<form action="{% url lfs_manage_save_voucher_group_data voucher_group.id %}"
+      method="post"
+      enctype="multipart/form-data">
+
+    {% include "manage/lfs_form.html" %}
+
+    <input type="submit"
+           class="ajax-save-button-2"
+           value="{% trans 'Save voucher group' %}">
+
+</form>

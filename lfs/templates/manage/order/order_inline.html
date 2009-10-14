@@ -295,6 +295,24 @@
             </td>
         </tr>
     {% endfor %}
+    {% if current_order.voucher_number %}
+        <tr>
+            <td></td>
+            <td>
+                {% trans 'Voucher' %} ({{ current_order.voucher_number }})
+            </td>
+            <td class="number">
+                1
+            </td>
+            <td class="number">
+                - {{ current_order.voucher_price|currency }}
+            </td>
+            <td></td>
+            <td class="number">
+                - {{ current_order.voucher_price|currency }}
+            </td>
+        </tr>        
+    {% endif %}
     <tr>
         <td></td>
         <td>

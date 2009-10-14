@@ -22,6 +22,15 @@ def get_unique_id_str():
 
 class Order(models.Model):
     """An order is created when products have been sold.
+
+    Parameters:
+    ===========
+
+    - voucher_number, voucher_value, voucher_tax
+    
+        Storing this information here assures that we have it all time, even 
+        when the involved voucher will be deleted.
+
     """
     user = models.ForeignKey(User, verbose_name=_(u"User"), blank=True, null=True)
     session = models.CharField(_(u"Session"), blank=True, max_length=100)
@@ -70,6 +79,10 @@ class Order(models.Model):
     bank_identification_code = models.CharField(_(u"Bank identication code"), blank=True, max_length=30)
     bank_name = models.CharField(_(u"Bank name"), blank=True, max_length=100)
     depositor = models.CharField(_(u"Depositor"), blank=True, max_length=100)
+
+    voucher_number = models.CharField(_(u"Voucher number"), blank=True, max_length=100)
+    voucher_price = models.FloatField(_(u"Voucher value"), default=0.0)
+    voucher_tax = models.FloatField(_(u"Voucher tax"), default=0.0)
 
     message = models.TextField(_(u"Message"), blank=True)
 
