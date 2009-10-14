@@ -33,7 +33,12 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.1.4  (2009-10-14)
+-------------------
+
 * Added 'Development Status :: 3 - Alpha' to setup.py
+
+* Added more dependencies to setup.py
 
 0.1.3  (2009-10-12)
 -------------------
