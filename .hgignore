@@ -3,5 +3,6 @@ syntax: glob
 *.pyo
 *.DS_Store 
 *.installed.cfg
+*build/
 *dist/
 *.egg-info/
