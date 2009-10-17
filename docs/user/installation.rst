@@ -1,15 +1,32 @@
 Installation
 ============
 
+Prequisites
+-----------
+
+Make sure you have installed:
+
+   * Python (we recommend 2.6.x)
+   * sqlite
+
+Installation
+------------
+
 The installation is straightforward and should last just a few minutes.
 
-1. Please download the installer from http://www.getlfs.com/downloads/lfs.tar.gz
-   and extract the tarball with tar -xzf lfs.tar.gz
-2. cd lfs 
-3. python boostrap.py
-4. bin/buildout -v
-5. Start the server: bin/django runserver
-6. Browse to the frontend: http://localhost:8000/
-7. Browse to the management interface: http://localhost:8000/manage
+   1. Get the installer: hg clone http://bitbucket.org/diefenbach/lfs-buildout-quickstart/
+   2. cd lfs-buildout-quickstart
+   3. python boostrap.py
+   4. bin/buildout -v
+   5. Start the server: bin/django runserver
+   
+Now open your browser and visit: 
 
+   * The frontend: http://localhost:8000/
+   * The management interface: http://localhost:8000/manage
+   
 That's all!
+
+What's next?
+------------
+Move on to :doc:`getting_started`.

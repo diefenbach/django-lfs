@@ -1,92 +1,106 @@
 Getting started
 ===============
 
-Basic information
------------------
-First you should go to the shop preferences and enter basic information. For
-that please enter http://localhost:8000/manage enter admin/admin and browse 
-to Shop -> Preferences.
+This document explains the first steps after the shop has been installed. For 
+installation please refer to :doc:`installation`.
 
-Go to the ``Shop´´ tab and enter following data:
+Enter basic information
+-----------------------
+At first you should go to the shop's preferences and enter basic information. 
+For that please 
 
-  * The name of your Shop. This name will be used at several places, for example
-    as the title of all HTML pages.
+   * visit http://localhost:8000/manage
+   * login with admin/admin
+   * browse to Shop / Preferences
 
-  * Shop owner. This is the name of the Shop owner. 
-  
-  * From e-mail address. This e-mail address is used for all e-mails which are
-    sent from the shop
-    
-  * Notification e-mail addresses. To this adresses all notification messages
-    will be sent. For example if a order has been submitted.
-    
-Now go to the ``Default Value´´ tab and select 
+Go to the "Shop" tab.
 
-  * Countries. All selected countries will be available for the shop customers 
-    for selection. 
-    
-  * Default Country. This country will be preselected as default country.
-  
-First category and products
----------------------------
+   * Enter a "Name". This is the name of the shop, e.g. *ACME Inc*. It will be used on several
+     places, e.g. as the title of all HTML pages.
+ 
+   * Enter the "Shop owner". This is the fullname of the shop owner, e.g. *John Doe*
+ 
+   * Enter "From e-mail address". This e-mail address is used as sender
+     for all e-mails which are sent from the shop, e.g. the order has been
+     received message to the shop customer.
+ 
+   * Enter "Notification e-mail addresses". To this adresses all notification
+     messages will be sent. For example if an order has been submitted.
+ 
+Go to the "Default Values" tab.
 
-Now go to Catalog -> Categories and add a new category. 
+   * Select *"Countries"*. All selected countries will be available to the
+     shop customers for selection.
+ 
+   * Select *"Default Country"*. This country will be preselected as default country.
+ 
+Enter first category and products
+---------------------------------
 
-Since there are no catgories yet, you will be redirected automatically to the 
-add category form. 
+Now go to Catalog / Categories and add a new category.
 
-   * Enter name and a slug (you will see, that the slug is filled automatically 
-     but you can change it of course).
-   * Enter a short description. This will be displayed when the category is 
-     displayed within a overview, e.g. when a category displays is sub 
-     cateogories.
-   * Enter a description. This will be displayed within the detail view of a
-     category when description as content is selected.
-   * Select the kind of content, this is ``products´´ (the assigned products of 
-     the category will), ``categories´´ (the sub categories of the category 
-     will be dsiplay) or ``description´´ (the description field will be 
-     displayed).
-   * Now save the category.
-   
-Now go to Catalog -> Products and add a new Product.   
-    
+Since there are no catgories yet, you will be redirected automatically to the
+add category form.
+
+   * Enter "name" and a ``slug" (you will see, that the slug is filled 
+     automatically but you can change it of course)
+   * Enter a "short description". This will be displayed when the category is
+     displayed within a overview, e.g. when a category displays is sub
+     cateogories
+   * Enter a "description". This will be displayed within the detail view of 
+     a category when description as content is selected.
+   * Select the "kind of content", this is ``products" (the assigned 
+     products of the category will), "categories" (the sub categories of the 
+     category will be dsiplay) or "description" (the description field will 
+     be displayed)
+   * Now save the category
+ 
+Now go to Catalog / Products and add a new Product.
+
 Since there is no product yet, you will redirected automatically to the add
 product form.
 
-   * Enter name and a slug (you will see, that the slug is filled automatically 
-     but you can change it of course).
-   * Enter the SKU of the product. This is the unique external id, in most cases 
-     from your ERP, of the product.
-   * Enter the price of the product.
-   * Hit "Add product"
-   
-Now you can add more data to your product. 
+   * Enter "name" and a ``slug" (you will see, that the slug is filled 
+     automatically but you can change it of course)
+   * Enter the "SKU" of the product. This is the unique external id of the 
+     product - taken from your ERP for instance
+   * Enter the "price" of the product
+   * Click "Add product"
+ 
+Now you can add more data to your product:
 
-Go to the ``Data´´ tab
+Go to the "Product" tab
 
-   * Enter a short description. This will be displayed when the product is 
+   * Enter a "short description". This will be displayed when the product is
      displayed within a overview, e.g. when a category displays it's assigned
      products.
-   * Enter a description. This will be displayed within the detail view of a
-     product.
-   * Click ``Save data´´
-   
-Go to the ``Categories´´ tab
+   * Enter a "description". This will be displayed within the detail view of 
+     a product.
+   * Click "Save data"
+ 
+Go to the "Categories" tab
 
-   * Select the above entered category and click ``Save categories´´.
+   * Select the above entered category and click "Save categories".
 
-Go to the ``Images´´ tab
+Go to the "Images" tab
 
-   * Click ``Select images´´ browse to your images and select all images you 
+   * Click "Select images" browse to your images and select all images you
      want to upload.
-     
-Go to the ``Product´´ tab, select ``active´´ and click ``Save product´´.
-Now click on ``View product´´ to view your new product.
 
-What next?
-----------
+Go to the "Product" tab
 
-Now you can add more catgories and products manage your taxes, add and/or 
-delete shipping and payment methods. Add accessories and/or related products
-to your products or add variants. Manage delivery times and stock information. 
-Add some portlets to your shop and/or categories and many more.
+   * Select "active" and click "Save product"
+   * Click on "View product" to view your new product
+
+What's next?
+------------
+
+Now you can:
+
+   * add more catgories and products
+   * add accessories and/or related products to your products
+   * add variants
+   * manage taxes
+   * manage shipping and payment methods
+   * manage delivery times and stock information
+   * Add some portlets to your shop and/or categories

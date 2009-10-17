@@ -7,21 +7,16 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   user/installation.rst
-   user/getting_started.rst
+   user/installation
+   user/getting_started
 
-
-API 
-===
+How-tos
+=======
 
 .. toctree::
    :maxdepth: 2
-   
-   api/cart
-   api/customer
-   api/payment
-   api/shipping
-
+    
+   how_to_variants
 
 Indices and tables
 ==================
