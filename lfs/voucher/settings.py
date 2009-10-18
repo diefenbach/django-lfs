@@ -5,5 +5,5 @@ PERCENTAGE = 1
 
 KIND_OF_CHOICES = (
     (ABSOLUTE, _(u"Absolute")),
-    # (PERCENTAGE, _(u"Percentage")),
+    (PERCENTAGE, _(u"Percentage")),
 )

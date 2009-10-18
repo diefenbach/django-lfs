@@ -1,4 +1,5 @@
 # Import tests from other packages
+from lfs.cart.tests import *
 from lfs.catalog.tests import *
 from lfs.marketing.tests import *
 from lfs.order.tests import *
