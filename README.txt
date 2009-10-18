@@ -30,6 +30,18 @@ A demo shop can be tried here:
 
 * http://demo.getlfs.com
 
+CREDITS
+=======
+
+   * Dirk Kommol (Demmelhuber Holz & Raum - http://www.demmelhuber.net)
+     Power user, smart adviser, sponsor, products for demo shop and much more
+
+   * Icons are from Mark James' Silk icon set 1.3
+     (http://www.famfamfam.com/lab/icons/silk/)
+
+   * The star rating is based on CSS Star Rating Redux
+     (http://komodomedia.com/blog/index.php/2007/01/20/css-star-rating-redux/)
+
 Changes
 =======
 
@@ -38,7 +50,7 @@ Changes
 
 * Added vouchers
 
-* Added price / tag methods to Cart model
+* Added price / tax methods to Cart model
 
 * Cleaned up documentation
 
