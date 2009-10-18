@@ -1,4 +1,4 @@
-Welcome to django-lfs's documentation!
+Welcome to LFS's documentation!
 ======================================
 
 
@@ -14,9 +14,10 @@ How-tos
 =======
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
     
    how_to_variants
+   how_to_filters
 
 Indices and tables
 ==================
