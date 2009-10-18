@@ -1,5 +1,5 @@
-How to add a variant
-====================
+How to add a product with variants
+==================================
 
 In this how-to you will learn how to add a product with variants.
 
@@ -10,7 +10,7 @@ In this how-to you will learn how to add a product with variants.
 3. Click on *"Add product"* in order to add new product
 4. Enter the *"Name", the "slug", the "SKU" and the "Price"* of the product and 
    click on *"Add product"*
-5. You can now enter further data as you would do for standard products. Please
+5. Now you can enter further data as you would do for standard products. Please
    note that this are in this case just default values, which can be 
    overwritten for every single variant later
 6. Change the product's type from *"Standard"* to *"Product with variants"* 
@@ -19,8 +19,8 @@ In this how-to you will learn how to add a product with variants.
 Go to the *"Variants"* tab
 
 7. Enter *"Color"* in the *"Local properties"* field and click on
-   *"Add property"*. (Please note: you can also use properties and properties
-   groups to create variants, but this is beyond that how-to.)
+   *"Add property"*. (Please note: you can also use properties and property
+   groups to create variants, but this is beyond that how-to).
 8. Enter *"Red"* into the now provided field and click on 
    *"Add option"* 
 9. Repeat that with *"Green" and "Blue"*. Please note: for convenience you can 

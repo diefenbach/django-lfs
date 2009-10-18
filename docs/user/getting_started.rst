@@ -42,14 +42,14 @@ Now go to Catalog / Categories and add a new category.
 Since there are no catgories yet, you will be redirected automatically to the
 add category form.
 
-   * Enter "name" and a ``slug" (you will see, that the slug is filled 
+   * Enter "name" and a "slug" (you will see, that the slug is filled 
      automatically but you can change it of course)
    * Enter a "short description". This will be displayed when the category is
      displayed within a overview, e.g. when a category displays is sub
      cateogories
    * Enter a "description". This will be displayed within the detail view of 
      a category when description as content is selected.
-   * Select the "kind of content", this is ``products" (the assigned 
+   * Select the "kind of content", this is "products" (the assigned 
      products of the category will), "categories" (the sub categories of the 
      category will be dsiplay) or "description" (the description field will 
      be displayed)
@@ -60,7 +60,7 @@ Now go to Catalog / Products and add a new Product.
 Since there is no product yet, you will redirected automatically to the add
 product form.
 
-   * Enter "name" and a ``slug" (you will see, that the slug is filled 
+   * Enter "name" and a "slug" (you will see, that the slug is filled 
      automatically but you can change it of course)
    * Enter the "SKU" of the product. This is the unique external id of the 
      product - taken from your ERP for instance

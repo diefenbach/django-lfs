@@ -6,8 +6,16 @@ Prequisites
 
 Make sure you have installed:
 
-   * Python (we recommend 2.6.x)
-   * sqlite
+   * Python 2.6.x http://www.python.org/download/
+   * sqlite http://www.sqlite.org/download.html
+   * mercurial http://mercurial.selenic.com/wiki
+   * git http://git-scm.com/
+   
+Please note:
+
+   * The dependency of mercurial and git will be disappear in near future. 
+   * You can - of course - use another database but we provide a filled sqlite
+     database for convenience.
 
 Installation
 ------------
