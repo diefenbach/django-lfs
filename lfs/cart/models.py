@@ -62,7 +62,7 @@ class Cart(models.Model):
         """Returns the total gross price of all items.
         """
         price = 0
-        for item in self.items.all():
+        for item in self.items():
             price += item.get_price_gross()
 
         return price
@@ -71,7 +71,7 @@ class Cart(models.Model):
         """Returns the total net price of all items.
         """
         price = 0
-        for item in self.items.all():
+        for item in self.items():
             price += item.get_price_net()
 
         return price
@@ -80,7 +80,7 @@ class Cart(models.Model):
         """Returns the total tax of all items
         """
         tax = 0
-        for item in self.items.all():
+        for item in self.items():
             tax += item.get_tax()
 
         return tax
