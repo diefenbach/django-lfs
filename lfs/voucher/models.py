@@ -54,7 +54,9 @@ class Voucher(models.Model):
             absolute value in the current currency or a percentage quotation.
 
         - tax
-            The tax of the voucher
+            The tax of the voucher. This is only taken, when the voucher is
+            ABSOLUTE. If the voucher is PERCENTAGE the total tax of the
+            discount is taken from every single product.
 
         - active
             Only active vouchers can be redeemed.
@@ -90,7 +92,7 @@ class Voucher(models.Model):
         if self.kind_of == ABSOLUTE:
             return self.value - self.get_tax()
         else:
-            return self.get_price_gross(cart) - self.get_tax(cart)
+            return cart.get_price_net() * (self.value / 100)
 
     def get_price_gross(self, cart=None):
         """Returns the gross price of the voucher.
@@ -103,13 +105,13 @@ class Voucher(models.Model):
     def get_tax(self, cart=None):
         """Returns the absolute tax of the voucher
         """
-        if self.tax:
-            if self.kind_of == ABSOLUTE:
+        if self.kind_of == ABSOLUTE:
+            if self.tax:
                 return (self.tax.rate / (100 + self.tax.rate)) * self.value
             else:
-                return (self.tax.rate / (100 + self.tax.rate)) * self.get_price_gross(cart)
+                return 0.0
         else:
-            return 0.0
+            return cart.get_tax()  * (self.value / 100)
 
     def mark_as_used(self):
         """Mark voucher as used.

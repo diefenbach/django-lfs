@@ -117,12 +117,17 @@ class VoucherTestCase(TestCase):
         self.assertEqual(tax, 0.0)
 
         # With tax
-        self.v1.tax = Tax.objects.create(rate=19.0)
-        self.v1.save()
+        # Note: If the voucher is pecentage the tax is taken from the several 
+        # products not from the voucher itself.
+        tax = Tax.objects.create(rate=19.0)
+        self.p1.tax = tax
+        self.p1.save()
+        self.p2.tax = tax
+        self.p2.save()
 
         price_gross = self.v1.get_price_gross(self.cart)
         self.assertEqual(price_gross, 11.0)
-        
+
         price_net = self.v1.get_price_net(self.cart)
         self.assertEqual("%.2f" % price_net, "%.2f" % 9.24)
 
