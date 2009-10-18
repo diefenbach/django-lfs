@@ -90,7 +90,7 @@ class Voucher(models.Model):
         if self.kind_of == ABSOLUTE:
             return self.value - self.get_tax()
         else:
-            raise NotImplemented
+            return self.get_price_gross(cart) - self.get_tax(cart)
 
     def get_price_gross(self, cart=None):
         """Returns the gross price of the voucher.
@@ -98,7 +98,7 @@ class Voucher(models.Model):
         if self.kind_of == ABSOLUTE:
             return self.value
         else:
-            raise NotImplemented
+            return cart.get_price_gross() * (self.value / 100)
 
     def get_tax(self, cart=None):
         """Returns the absolute tax of the voucher
@@ -107,7 +107,7 @@ class Voucher(models.Model):
             if self.kind_of == ABSOLUTE:
                 return (self.tax.rate / (100 + self.tax.rate)) * self.value
             else:
-                raise NotImplemented
+                return (self.tax.rate / (100 + self.tax.rate)) * self.get_price_gross(cart)
         else:
             return 0.0
 
