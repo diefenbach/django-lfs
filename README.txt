@@ -3,25 +3,22 @@ What is it?
 
 LFS is an online shop based on Python, Django and jQuery.
 
-Installation
-============
-
-For an easy installation please do the following steps:
-
-1. $ hg clone http://bitbucket.org/diefenbach/lfs-buildout-quickstart/
-2. $ cd lfs-buildout-quickstart
-3. $ python bootstrap.py
-4. $ bin/buildout -v
-5. $ bin/django runserver
-6. Browse to http://localhost:8000
-7. Browse to http://localhost:8000/manage
-
 Information
 ===========
 
 For more information please visit:
 
 * http://www.getlfs.com
+
+Documentation
+=============
+
+For the latest documentation please visit:
+
+* http://packages.python.org/django-lfs/
+
+Please note that this is work in progress and will be much more in near
+future.
 
 Demo shop
 =========
@@ -30,17 +27,20 @@ A demo shop can be tried here:
 
 * http://demo.getlfs.com
 
-CREDITS
+Credits
 =======
 
-   * Dirk Kommol (Demmelhuber Holz & Raum - http://www.demmelhuber.net)
-     Power user, smart adviser, sponsor, products for demo shop and much more
+* Dirk Kommol (Demmelhuber Holz & Raum - http://www.demmelhuber.net)
+  
+  Power user, smart adviser, sponsor, products for demo shop and much more
 
-   * Icons are from Mark James' Silk icon set 1.3
-     (http://www.famfamfam.com/lab/icons/silk/)
+* Icons are from Mark James' Silk icon set 1.3
+  
+  (http://www.famfamfam.com/lab/icons/silk/)
 
-   * The star rating is based on CSS Star Rating Redux
-     (http://komodomedia.com/blog/index.php/2007/01/20/css-star-rating-redux/)
+* The star rating is based on CSS Star Rating Redux
+  
+  (http://komodomedia.com/blog/index.php/2007/01/20/css-star-rating-redux/)
 
 Changes
 =======
