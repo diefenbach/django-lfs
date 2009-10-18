@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
+import lfs.cart.utils
 from lfs.catalog.models import Product
 
 class Cart(models.Model):
@@ -57,6 +58,34 @@ class Cart(models.Model):
 
         cart_name.strip(', ')
         return cart_name
+
+    def get_price_gross(self):
+        """Returns the total gross price of all items.
+        """
+        price = 0
+        for item in self.items.all():
+            price += item.get_price_gross()
+
+        return price
+
+    def get_price_net(self):
+        """Returns the total net price of all items.
+        """
+        price = 0
+        for item in self.items.all():
+            price += item.get_price_net()
+
+        return price
+        
+    def get_tax(self):
+        """Returns the total tax of all items
+        """
+        tax = 0
+        for item in self.items.all():
+            tax += item.get_tax()
+
+        return tax
+
 
 class CartItem(models.Model):
     """A cart item belongs to a cart. It stores the product and the amount of
