@@ -33,6 +33,17 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.2.0  (2009-10-18)
+-------------------
+
+* Added vouchers
+
+* Added price / tag methods to Cart model
+
+* Cleaned up documentation
+
+* Added first how-tos to documentation
+
 0.1.4  (2009-10-14)
 -------------------
 
