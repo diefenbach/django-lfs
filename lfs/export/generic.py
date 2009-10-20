@@ -20,5 +20,3 @@ def export(request, export):
             product.get_name().encode("utf-8"),
         ))
     return response
-    
-register(export, "Generic")
