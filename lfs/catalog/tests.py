@@ -438,7 +438,7 @@ class PropertiesTestCase(TestCase):
         """
         pgs = lfs.catalog.utils.get_property_groups(self.c1)
         pg_ids = [pg.id for pg in pgs]
-        self.assertEqual(pg_ids, [1])
+        self.assertEqual(pg_ids, [self.pg.id])
 
     def test_set_filter_1(self):
         """Tests the setting of a filter via request/view
