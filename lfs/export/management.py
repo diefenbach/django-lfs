@@ -8,7 +8,7 @@ from lfs.export.models import Script
 import lfs
 
 def register_lfs_scripts(sender, **kwargs):
-    # don't register our portlets until the table has been created by syncdb    
+    # don't register our scripts until the table has been created by syncdb    
     if sender == lfs.export.models:
         register(export_script, "Generic")
 
