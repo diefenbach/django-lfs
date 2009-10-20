@@ -130,14 +130,14 @@ class PropertiesTestCase(TestCase):
         """
         # Note p1 is already within group pg (see setUp)
         pids = [p.id for p in self.pg.products.all()]
-        self.assertEqual(pids, [1, 2])
+        self.assertEqual(pids, [self.p1.id, self.p2.id])
 
         # After adding the p1 again ...
         self.pg.products.add(self.p1.id)
 
         # ... the assigned products should still be two
         pids = [p.id for p in self.pg.products.all()]
-        self.assertEqual(pids, [1, 2])
+        self.assertEqual(pids, [self.p1.id, self.p2.id])
 
     def test_remove_product_from_group(self):
         """Tests the remove of a product from a property group.
