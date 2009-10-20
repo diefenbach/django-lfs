@@ -694,19 +694,19 @@ class CategoryTestCase(TestCase):
         """
         """
         product_ids = [p.id for p in self.c1.get_all_products()]
-        self.assertEqual(product_ids, [1, 2, 3])
+        self.assertEqual(product_ids, [self.p1.id, self.p2.id, self.p3.id])
 
         product_ids = [p.id for p in self.c11.get_all_products()]
         self.assertEqual(len(product_ids), 2)
-        self.assertEqual(product_ids, [1, 2])
+        self.assertEqual(product_ids, [self.p1.id, self.p2.id])
 
         product_ids = [p.id for p in self.c111.get_all_products()]
         self.assertEqual(len(product_ids), 2)
-        self.assertEqual(product_ids, [1, 2])
+        self.assertEqual(product_ids, [self.p1.id, self.p2.id])
 
         product_ids = [p.id for p in self.c12.get_all_products()]
         self.assertEqual(len(product_ids), 2)
-        self.assertEqual(product_ids, [2, 3])
+        self.assertEqual(product_ids, [self.p2.id, self.p3.id])
 
 class ViewsTestCase(TestCase):
     """Tests the views of the lfs.catalog.
