@@ -21,7 +21,10 @@
                 {% trans "Tax" %}
             </th>
             <th class="middle right">
-                {% trans "Expiration date" %}
+                {% trans "Start date" %}
+            </th>
+            <th class="middle right">
+                {% trans "End date" %}
             </th>
             <th class="small right">
                 {% trans "Active" %}
@@ -61,8 +64,15 @@
                     
                 </td>
                 <td class="right">
-                    {% if voucher.expiration_date %}
-                        {{ voucher.expiration_date }}
+                    {% if voucher.start_date %}
+                        {{ voucher.start_date }}
+                    {% else %}
+                        ---
+                    {% endif %}                    
+                </td>
+                <td class="right">
+                    {% if voucher.end_date %}
+                        {{ voucher.end_date }}
                     {% else %}
                         ---
                     {% endif %}                    
@@ -114,8 +124,12 @@
         {% endfor %}
     </select>
 
-    <label>{% trans "Expiration date" %}</label>:
-    <input name="expiration_date"
+    <label>{% trans "Start date" %}</label>:
+    <input name="start_date"
+           type="text" />
+
+    <label>{% trans "End date" %}</label>:
+    <input name="end_date"
            type="text" />
 
            

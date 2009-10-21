@@ -4,6 +4,7 @@ from django.contrib.sessions.backends.file import SessionStore
 from django.test import TestCase
 
 # lfs imports
+import lfs.voucher.utils
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.catalog.models import Product
@@ -11,21 +12,41 @@ from lfs.tests.utils import RequestFactory
 from lfs.tax.models import Tax
 from lfs.voucher.models import Voucher
 from lfs.voucher.models import VoucherGroup
+from lfs.voucher.models import VoucherOptions
 from lfs.voucher.settings import ABSOLUTE
 from lfs.voucher.settings import PERCENTAGE
 
 class VoucherUtilsTestCase(TestCase):
     """
     """
-    def setUp(self):
+    def test_create_vouchers_1(self):
+        """Tests the default voucher options
         """
-        """
-        pass
+        number = lfs.voucher.utils.create_voucher_number()
+        self.failUnless(len(number) == 5)
 
-    def test_create_vouchers(self):
+        letters = "ABCDEFGHIJKLMNOPQRSTUVXYZ"
+
+        for letter in number:
+            self.failIf(letter not in letters)
+
+    def test_create_vouchers_2(self):
+        """Tests the custom options.
         """
-        """
-        pass
+        VoucherOptions.objects.create(
+            number_prefix = "DH",
+            number_suffix = "XM",
+            number_length = 4,
+            number_letters = "abcdefghijklmnopqrstuvwxyz",
+            )
+
+        number = lfs.voucher.utils.create_voucher_number()
+        self.failUnless(len(number) == 8)
+
+        letters = "abcdefghijklmnopqrstuvwxyz"
+
+        for letter in number[2:-2]:
+            self.failIf(letter not in letters)
 
 class VoucherTestCase(TestCase):
     """
@@ -46,7 +67,8 @@ class VoucherTestCase(TestCase):
             number = "AAAA",
             group = self.vg,
             creator = self.request.user,
-            expiration_date = "2009-12-31",
+            start_date = "2009-12-01",
+            end_date = "2009-12-31",
             kind_of = ABSOLUTE,
             value = 10.0,
         )
@@ -64,7 +86,8 @@ class VoucherTestCase(TestCase):
         self.assertEqual(self.v1.number, "AAAA")
         self.assertEqual(self.v1.group, self.vg)
         self.assertEqual(self.v1.creator, self.request.user)
-        self.assertEqual(self.v1.expiration_date, "2009-12-31")
+        self.assertEqual(self.v1.start_date, "2009-12-01")
+        self.assertEqual(self.v1.end_date, "2009-12-31")
         self.assertEqual(self.v1.kind_of, ABSOLUTE)
         self.assertEqual(self.v1.active, True)
         self.assertEqual(self.v1.used, False)
@@ -117,7 +140,7 @@ class VoucherTestCase(TestCase):
         self.assertEqual(tax, 0.0)
 
         # With tax
-        # Note: If the voucher is pecentage the tax is taken from the several 
+        # Note: If the voucher is pecentage the tax is taken from the several
         # products not from the voucher itself.
         tax = Tax.objects.create(rate=19.0)
         self.p1.tax = tax
@@ -158,3 +181,17 @@ class VoucherTestCase(TestCase):
 
         self.assertEqual(self.v1.used, True)
         self.failIf(self.v1.used_date is None)
+        
+        
+class VoucherOptionsCase(TestCase):
+    """
+    """
+    def tests_default_values(self):
+        """
+        """
+        vo = VoucherOptions.objects.create()
+        self.assertEqual(vo.number_prefix, u"")
+        self.assertEqual(vo.number_suffix, u"")
+        self.assertEqual(vo.number_length, 5)
+        self.assertEqual(vo.number_letters, u"ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+        

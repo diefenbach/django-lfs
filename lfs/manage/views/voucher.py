@@ -99,7 +99,8 @@ def add_vouchers(request, group_id):
                     creator = request.user,
                     kind_of = request.POST.get("kind_of", 0),
                     value = request.POST.get("value", 0.0),
-                    expiration_date = request.POST.get("expiration_date"),
+                    start_date = request.POST.get("start_date"),
+                    end_date = request.POST.get("end_date"),
                     tax_id = request.POST.get("tax_id")
                 )
                 break
