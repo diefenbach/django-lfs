@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.2.0'
+version = '0.2.1'
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
@@ -32,5 +32,6 @@ setup(name='django-lfs',
         'django-pagination',
         'django-reviews',
         'django-tagging',
+        'django-paypal',
       ],
       )

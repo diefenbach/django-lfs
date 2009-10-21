@@ -16,6 +16,7 @@ from lfs.core.utils import LazyEncoder
 from lfs.core.utils import render_to_ajax_response
 from lfs.tax.models import Tax
 from lfs.voucher.forms import VoucherGroupForm
+from lfs.voucher.forms import VoucherForm
 from lfs.voucher.models import Voucher
 from lfs.voucher.models import VoucherGroup
 
@@ -65,6 +66,7 @@ def vouchers_tab(request, voucher_group, template_name="manage/voucher/vouchers.
         "voucher_group" : voucher_group,
         "vouchers" : vouchers,
         "taxes" : taxes,
+        "add_form" : VoucherForm(),
     }))
 
 # Actions
