@@ -33,6 +33,36 @@ Go to the "Default Values" tab.
      shop customers for selection.
  
    * Select *"Default Country"*. This country will be preselected as default country.
+
+Add taxes
+---------
+
+1. Go to "Shop" / "Taxes"
+2. As there are no taxes yet, you are redirected automatically to the "Add 
+   tax" tab.
+3. Enter the "Rate", for instance 19.0,
+4. Enter the "Description". This is just for internal purposes.
+5. Click on "Add tax"
+6. You can add more taxes by clicking on "Add tax" and executing steps 2. to 
+   4.
+
+Add delivery times
+------------------
+
+Delivery times are used for shipping methods and/or single products. The 
+delivery for a whole cart is calculated on base of the selected products and 
+the shipping method.
+
+1. Go to "Shop" / "Delivery times"
+2. As there are no delivery times yet, your are redirected automatically to the 
+   "Add delivery time" form.
+3. Enter "Min", the minimal delivery time.
+4. Enter "Max", the maximal delivery time.
+5. Enter the "Unit" of this delivery time.
+6. Enter the "Description". This is just for internal puposes.
+7. Click on "Add delivery time"
+8. You can add more delivery times by clicking on "Add delivery time" and 
+   executing steps 3. - 7.
  
 Enter first category and products
 ---------------------------------
