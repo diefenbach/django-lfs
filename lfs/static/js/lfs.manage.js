@@ -6,6 +6,7 @@ tinyMCE.init({
     button_tile_map : true,
     plugins : "safari, fullscreen",
     convert_urls : false,
+    forced_root_block : "",
     theme_advanced_buttons1 : "bold, italic, underline, |, justifyleft," +
                               "justifycenter, justifyright, justifyfull, |," +
                               "bullist,numlist, |, outdent, indent, |, image, |, undo," +
