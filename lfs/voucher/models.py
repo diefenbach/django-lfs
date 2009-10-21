@@ -12,6 +12,14 @@ from lfs.voucher.settings import KIND_OF_CHOICES
 from lfs.voucher.settings import ABSOLUTE
 from lfs.voucher.settings import PERCENTAGE
 
+class VoucherOptions(models.Model):
+    """Stores misc voucher options
+    """
+    number_prefix = models.CharField(max_length=20, blank=True, default="")
+    number_suffix = models.CharField(max_length=20, blank=True, default="")
+    number_length = models.IntegerField(blank=True, null=True, default=5)
+    number_letters = models.CharField(max_length=10, blank=True, default="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
 class VoucherGroup(models.Model):
     """Groups vouchers together.
     """
@@ -72,7 +80,8 @@ class Voucher(models.Model):
     group = models.ForeignKey(VoucherGroup, related_name="vouchers")
     creator = models.ForeignKey(User)
     creation_date = models.DateTimeField(auto_now_add=True)
-    expiration_date = models.DateField(blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
     kind_of = models.PositiveSmallIntegerField(choices=KIND_OF_CHOICES)
     value = models.FloatField(default=0.0)
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
