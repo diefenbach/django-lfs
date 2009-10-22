@@ -31,19 +31,33 @@ Credits
 =======
 
 * Dirk Kommol (Demmelhuber Holz & Raum - http://www.demmelhuber.net)
-  
+
   Power user, smart adviser, sponsor, products for demo shop and much more
 
 * Icons are from Mark James' Silk icon set 1.3
-  
+
   (http://www.famfamfam.com/lab/icons/silk/)
 
 * The star rating is based on CSS Star Rating Redux
-  
+
   (http://komodomedia.com/blog/index.php/2007/01/20/css-star-rating-redux/)
 
 Changes
 =======
+
+0.2.1  (2009-10-18)
+-------------------
+
+* Solved issue #1: "postgresql syncdb problem" (Michael Thornhill)
+
+* Made all tests passing for PostgreSQL (Michael Thornhill)
+
+* Take official release of django-paypal (Michael Thornhill)
+
+* Improved vouchers management
+
+* Added more documentation
+
 
 0.2.0  (2009-10-18)
 -------------------
