@@ -265,8 +265,8 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
     products = []
     for i, product in enumerate(all_products[start:start+amount]):
         # Switch to default variant if product is a "product with variants".
-        if product.is_product_with_variants() and product.has_variants():
-            product = product.get_default_variant()
+        # if product.is_product_with_variants() and product.has_variants():
+        #    product = product.get_default_variant()
         row.append(product)
         if (i+1) % amount_of_cols == 0:
             products.append(row)
