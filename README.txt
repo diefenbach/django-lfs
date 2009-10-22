@@ -45,12 +45,12 @@ Credits
 Changes
 =======
 
-0.2.2  (2009-10-18)
+0.2.2  (2009-10-22)
 -------------------
 
 * Reverted removed voucher taxes.
 
-0.2.1  (2009-10-18)
+0.2.1  (2009-10-22)
 -------------------
 
 * Solved issue #1: "postgresql syncdb problem" (Michael Thornhill)
