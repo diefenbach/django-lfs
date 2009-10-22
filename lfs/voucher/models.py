@@ -84,6 +84,7 @@ class Voucher(models.Model):
     end_date = models.DateField(blank=True, null=True)
     kind_of = models.PositiveSmallIntegerField(choices=KIND_OF_CHOICES)
     value = models.FloatField(default=0.0)
+    tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
     active = models.BooleanField(default=True)
     used = models.BooleanField(default=False)
     used_date = models.DateTimeField(blank=True, null=True)
@@ -94,13 +95,32 @@ class Voucher(models.Model):
     def __unicode__(self):
         return self.number
 
-    def get_price(self, cart=None):
+    def get_price_net(self, cart=None):
+        """Returns the net price of the voucher.
+        """
+        if self.kind_of == ABSOLUTE:
+            return self.value - self.get_tax()
+        else:
+            return cart.get_price_net() * (self.value / 100)
+
+    def get_price_gross(self, cart=None):
         """Returns the gross price of the voucher.
         """
-        if self.is_absolute():
+        if self.kind_of == ABSOLUTE:
             return self.value
         else:
             return cart.get_price_gross() * (self.value / 100)
+
+    def get_tax(self, cart=None):
+        """Returns the absolute tax of the voucher
+        """
+        if self.kind_of == ABSOLUTE:
+            if self.tax:
+                return (self.tax.rate / (100 + self.tax.rate)) * self.value
+            else:
+                return 0.0
+        else:
+            return cart.get_tax()  * (self.value / 100)
 
     def mark_as_used(self):
         """Mark voucher as used.
