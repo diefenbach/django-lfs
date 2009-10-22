@@ -93,33 +93,13 @@ class VoucherTestCase(TestCase):
         self.assertEqual(self.v1.used, False)
         self.assertEqual(self.v1.used_date, None)
         self.assertEqual(self.v1.value, 10.0)
-        self.assertEqual(self.v1.tax, None)
 
     def test_prices_absolute(self):
         """
         """
         # No tax
-        price_net = self.v1.get_price_net()
-        self.assertEqual(price_net, 10)
-
-        price_gross = self.v1.get_price_gross()
-        self.assertEqual(price_gross, 10)
-
-        tax = self.v1.get_tax()
-        self.assertEqual(tax, 0.0)
-
-        # With tax
-        self.v1.tax = Tax.objects.create(rate=19.0)
-        self.v1.save()
-
-        price_net = self.v1.get_price_net()
-        self.assertEqual("%.2f" % price_net, "%.2f" % 8.4)
-
-        price_gross = self.v1.get_price_gross()
-        self.assertEqual(price_gross, 10)
-
-        tax = self.v1.get_tax()
-        self.assertEqual("%.2f" % tax, "%.2f" % 1.6)
+        price = self.v1.get_price()
+        self.assertEqual(price, 10)
 
     def test_prices_percentage(self):
         """
@@ -129,33 +109,8 @@ class VoucherTestCase(TestCase):
         self.v1.value = 10.0
         self.v1.save()
 
-        # No tax
-        price_gross = self.v1.get_price_gross(self.cart)
-        self.assertEqual(price_gross, 11.0)
-
-        price_net = self.v1.get_price_net(self.cart)
-        self.assertEqual(price_net, 11.0)
-
-        tax = self.v1.get_tax(self.cart)
-        self.assertEqual(tax, 0.0)
-
-        # With tax
-        # Note: If the voucher is pecentage the tax is taken from the several
-        # products not from the voucher itself.
-        tax = Tax.objects.create(rate=19.0)
-        self.p1.tax = tax
-        self.p1.save()
-        self.p2.tax = tax
-        self.p2.save()
-
-        price_gross = self.v1.get_price_gross(self.cart)
-        self.assertEqual(price_gross, 11.0)
-
-        price_net = self.v1.get_price_net(self.cart)
-        self.assertEqual("%.2f" % price_net, "%.2f" % 9.24)
-
-        tax = self.v1.get_tax(self.cart)
-        self.assertEqual("%.2f" % tax, "%.2f" % 1.76)
+        price = self.v1.get_price(self.cart)
+        self.assertEqual(price, 11.0)
 
     def test_kind_of(self):
         """
