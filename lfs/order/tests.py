@@ -155,7 +155,7 @@ class OrderTestCase(TestCase):
         # Items
         self.assertEqual(len(order.items.all()), 2)
 
-        item = order.items.all()[0]
+        item = order.items.all().order_by('id')[0]
         self.assertEqual(item.product_amount, 2)
         self.assertEqual(item.product_sku, "sku-1")
         self.assertEqual(item.product_name, "Product 1")
@@ -163,7 +163,7 @@ class OrderTestCase(TestCase):
         self.assertEqual("%.2f" % item.product_price_net, "0.92")
         self.assertEqual("%.2f" % item.product_tax, "0.18")
 
-        item = order.items.all()[1]
+        item = order.items.all().order_by('id')[1]
         self.assertEqual(item.product_amount, 3)
         self.assertEqual(item.product_sku, "sku-2")
         self.assertEqual(item.product_name, "Product 2")

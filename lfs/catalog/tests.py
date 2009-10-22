@@ -130,14 +130,14 @@ class PropertiesTestCase(TestCase):
         """
         # Note p1 is already within group pg (see setUp)
         pids = [p.id for p in self.pg.products.all()]
-        self.assertEqual(pids, [1, 2])
+        self.assertEqual(pids, [self.p1.id, self.p2.id])
 
         # After adding the p1 again ...
         self.pg.products.add(self.p1.id)
 
         # ... the assigned products should still be two
         pids = [p.id for p in self.pg.products.all()]
-        self.assertEqual(pids, [1, 2])
+        self.assertEqual(pids, [self.p1.id, self.p2.id])
 
     def test_remove_product_from_group(self):
         """Tests the remove of a product from a property group.
@@ -438,7 +438,7 @@ class PropertiesTestCase(TestCase):
         """
         pgs = lfs.catalog.utils.get_property_groups(self.c1)
         pg_ids = [pg.id for pg in pgs]
-        self.assertEqual(pg_ids, [1])
+        self.assertEqual(pg_ids, [self.pg.id])
 
     def test_set_filter_1(self):
         """Tests the setting of a filter via request/view
@@ -486,7 +486,7 @@ class PropertiesTestCase(TestCase):
         """Tests various scenarious of filtering products.
         """
         sorting = "price"
-        filters = [[1, "S"]]
+        filters = [[self.pp1.id, "S"]]
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p3.id)
         self.assertEqual(products[1].id, self.p1.id)
@@ -496,15 +496,15 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(products[0].id, self.p1.id)
         self.assertEqual(products[1].id, self.p3.id)
 
-        filters = [[1, "M"]]
+        filters = [[self.pp1.id, "M"]]
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p2.id)
 
-        filters = [[2, "1"]]
+        filters = [[self.pp2.id, "1"]]
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p1.id)
 
-        filters = [[2, "2"]]
+        filters = [[self.pp2.id, "2"]]
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p2.id)
 
@@ -517,7 +517,7 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(products[2].id, self.p1.id)
 
         # Combinations
-        filters = [[1, "S"], [2, "1"]]
+        filters = [[self.pp1.id, "S"], [self.pp2.id, "1"]]
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
 
         # There need to be only one product, because p3 doesn't have a color
@@ -525,33 +525,33 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(len(products), 1)
         self.assertEqual(products[0].id, self.p1.id)
 
-        filters = [[1, "M"], [2, "2"]]
+        filters = [[self.pp1.id, "M"], [self.pp2.id, "2"]]
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p2.id)
 
         # Doesn't exist
-        filters = [[1, "M"], [2, "1"]]
+        filters = [[self.pp1.id, "M"], [self.pp2.id, "1"]]
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.failIf(len(products) != 0)
 
-        filters = [[1, "S"], [2, "2"]]
+        filters = [[self.pp1.id, "S"], [self.pp2.id, "2"]]
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.failIf(len(products) != 0)
 
         # Min / Max
         sorting = "price"
 
-        filters = [[3, [0, 9]]]
+        filters = [[self.pp3.id, [0, 9]]]
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(len(products), 0)
 
-        filters = [[3, [10, 20]]]
+        filters = [[self.pp3.id, [10, 20]]]
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(len(products), 2)
         self.assertEqual(products[0].id, self.p2.id)
         self.assertEqual(products[1].id, self.p1.id)
 
-        filters = [[3, [21, 30]]]
+        filters = [[self.pp3.id, [21, 30]]]
         sorting = "price"
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(len(products), 1)
@@ -684,29 +684,29 @@ class CategoryTestCase(TestCase):
 
         product_ids = [p.id for p in self.c111.get_products()]
         self.assertEqual(len(product_ids), 2)
-        self.assertEqual(product_ids, [1, 2])
+        self.assertEqual(product_ids, [self.p1.id, self.p2.id])
 
         product_ids = [p.id for p in self.c12.get_products()]
         self.assertEqual(len(product_ids), 2)
-        self.assertEqual(product_ids, [2, 3])
+        self.assertEqual(product_ids, [self.p2.id, self.p3.id])
 
     def test_get_all_products(self):
         """
         """
         product_ids = [p.id for p in self.c1.get_all_products()]
-        self.assertEqual(product_ids, [1, 2, 3])
+        self.assertEqual(product_ids, [self.p1.id, self.p2.id, self.p3.id])
 
         product_ids = [p.id for p in self.c11.get_all_products()]
         self.assertEqual(len(product_ids), 2)
-        self.assertEqual(product_ids, [1, 2])
+        self.assertEqual(product_ids, [self.p1.id, self.p2.id])
 
         product_ids = [p.id for p in self.c111.get_all_products()]
         self.assertEqual(len(product_ids), 2)
-        self.assertEqual(product_ids, [1, 2])
+        self.assertEqual(product_ids, [self.p1.id, self.p2.id])
 
         product_ids = [p.id for p in self.c12.get_all_products()]
         self.assertEqual(len(product_ids), 2)
-        self.assertEqual(product_ids, [2, 3])
+        self.assertEqual(product_ids, [self.p2.id, self.p3.id])
 
 class ViewsTestCase(TestCase):
     """Tests the views of the lfs.catalog.
