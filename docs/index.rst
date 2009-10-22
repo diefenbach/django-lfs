@@ -15,9 +15,11 @@ How-tos
 
 .. toctree::
    :maxdepth: 1
-    
+
+   how_to_horizontal_menu
    how_to_variants
    how_to_filters
+
 
 Indices and tables
 ==================
