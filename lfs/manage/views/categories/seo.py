@@ -17,7 +17,7 @@ class SEOForm(ModelForm):
     """
     class Meta:
         model = Category
-        fields = ("meta_keywords", "meta_description")
+        fields = ("meta_title", "meta_keywords", "meta_description")
 
 @permission_required("manage_shop", login_url="/login/")    
 def edit_seo(request, category_id, template_name="manage/category/seo.html"):

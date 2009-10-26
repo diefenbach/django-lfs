@@ -17,8 +17,11 @@ class SEOForm(ModelForm):
     """
     class Meta:
         model = Product
-        fields = ("active_meta_keywords", "meta_keywords", 
-            "active_meta_description", "meta_description")
+        fields = (
+            "active_meta_title", "meta_title", 
+            "active_meta_keywords", "meta_keywords", 
+            "active_meta_description", "meta_description",
+        )
 
 @permission_required("manage_shop", login_url="/login/")    
 def manage_seo(request, product_id, template_name="manage/product/seo.html"):

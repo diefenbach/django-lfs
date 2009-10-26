@@ -5,6 +5,27 @@
 <form action="{% url lfs_manage_product_seo product.id %}"
       method="post"
       id="product-seo-form">
+
+    <div class="field">
+        <div class="label">
+            {% if product.is_variant %}
+                {{ form.active_meta_title }}
+            {% endif %}
+            {{ form.meta_title.label_tag }}:
+        </div>
+
+        {% if field.errors %}
+            <div class="error">
+                {{ form.meta_title }}
+                {{ field.meta_title.errors }}
+            </div>
+        {% else %}
+            <div>
+                {{ form.meta_title }}
+            </div>
+        {% endif %}
+    </div>
+
     <div class="field">
         <div class="label">
             {% if product.is_variant %}

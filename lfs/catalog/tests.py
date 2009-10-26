@@ -603,6 +603,29 @@ class CategoryTestCase(TestCase):
         self.c12.products = [self.p2, self.p3]
         self.c12.save()
 
+    def test_meta_title(self):
+        """
+        """
+        self.assertEqual(self.c1.meta_title, "<name>")
+
+        self.c1.meta_title = "T1 T2 T3"
+        self.assertEqual(self.c1.get_meta_title(), "T1 T2 T3")
+
+        self.c1.meta_title = "<name> T1 T2 T3"
+        self.assertEqual(self.c1.get_meta_title(), "Category 1 T1 T2 T3")
+
+        self.c1.meta_title = "T1 <name> T2 T3"
+        self.assertEqual(self.c1.get_meta_title(), "T1 Category 1 T2 T3")
+
+        self.c1.meta_title = "T1 T2 <name> T3"
+        self.assertEqual(self.c1.get_meta_title(), "T1 T2 Category 1 T3")
+
+        self.c1.meta_title = "T1 T2 T3 <name>"
+        self.assertEqual(self.c1.get_meta_title(), "T1 T2 T3 Category 1")
+
+        self.c1.meta_title = "<name>"
+        self.assertEqual(self.c1.get_meta_title(), "Category 1")
+
     def test_meta_keywords(self):
         """
         """
@@ -1215,6 +1238,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(p.description, "")
         self.assertEqual(len(p.images.all()), 0)
 
+        self.assertEqual(p.meta_title, "<name>")
         self.assertEqual(p.meta_description, "")
         self.assertEqual(p.meta_keywords, "")
 
@@ -1449,6 +1473,41 @@ class ProductTestCase(TestCase):
         titles = [i.title for i in self.v1.get_sub_images()]
         self.assertEqual(titles, ["Image 5"])
 
+    def test_get_meta_title_1(self):
+        """Tests the correct return of meta title, foremost the replacement
+        of LFS specific tag <name>.
+        """
+        self.p1.meta_title = "T1 T2"
+        self.assertEqual(self.p1.get_meta_title(), "T1 T2")
+
+        self.p1.meta_title = "<name> T1 T2"
+        self.assertEqual(self.p1.get_meta_title(), "Product 1 T1 T2")
+
+        self.p1.meta_title = "T1 <name> T2"
+        self.assertEqual(self.p1.get_meta_title(), "T1 Product 1 T2")
+
+        self.p1.meta_title = "T1 T2 <name>"
+        self.assertEqual(self.p1.get_meta_title(), "T1 T2 Product 1")
+
+    def test_get_meta_title_2(self):
+        """Same as 1 for variants.
+        """
+        self.v1.meta_title = "<name> V1 V2"
+        self.p1.meta_title = "<name> T1 T2"
+        self.assertEqual(self.v1.get_meta_title(), "Product 1 T1 T2")
+        
+        self.v1.active_meta_title = True
+        self.assertEqual(self.v1.get_meta_title(), "Product 1 V1 V2")
+        
+        # Note: it takes the name of the product as the title of the variant
+        # is not acitve yet
+        self.v1.active_meta_title = True
+        self.assertEqual(self.v1.get_meta_title(), "Product 1 V1 V2")
+
+        # Now take the name of the variant
+        self.v1.active_name = True
+        self.assertEqual(self.v1.get_meta_title(), "Variant 1 V1 V2")
+                
     def test_get_meta_keywords_1(self):
         """Tests the correct return of meta keywords, foremost the replacement
         of LFS specific tags <name> and <short-description> for the meta fields.
@@ -1720,7 +1779,7 @@ class ProductTestCase(TestCase):
         #
         self.p1.for_sale = False
         self.p1.save()
-        
+
         self.v1.active_price = False
         self.v1.active_for_sale_price = False
         self.v1.save()
@@ -1729,10 +1788,10 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_price(), 1.0)
         self.assertEqual(self.v1.get_for_sale(), False)
 
-        # 
+        #
         self.p1.for_sale = False
         self.p1.save()
-        
+
         self.v1.active_price = False
         self.v1.active_for_sale_price = True
         self.v1.save()
@@ -1740,11 +1799,11 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_standard_price(), 1.0)
         self.assertEqual(self.v1.get_price(), 1.0)
         self.assertEqual(self.v1.get_for_sale(), False)
-            
-        #     
+
+        #
         self.p1.for_sale = False
         self.p1.save()
-        
+
         self.v1.active_price = True
         self.v1.active_for_sale_price = False
         self.v1.save()
@@ -1756,7 +1815,7 @@ class ProductTestCase(TestCase):
         #
         self.p1.for_sale = False
         self.p1.save()
-        
+
         self.v1.active_price = True
         self.v1.active_for_sale_price = True
         self.v1.save()
@@ -1764,11 +1823,11 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_standard_price(), 2.0)
         self.assertEqual(self.v1.get_price(), 2.0)
         self.assertEqual(self.v1.get_for_sale(), False)
-        
+
         #
         self.p1.for_sale = True
         self.p1.save()
-        
+
         self.v1.active_price = False
         self.v1.active_for_sale_price = False
         self.v1.save()
@@ -1776,11 +1835,11 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_standard_price(), 1.0)
         self.assertEqual(self.v1.get_price(), 0.5)
         self.assertEqual(self.v1.get_for_sale(), True)
-        
+
         #
         self.p1.for_sale = True
         self.p1.save()
-        
+
         self.v1.active_price = False
         self.v1.active_for_sale_price = True
         self.v1.save()
@@ -1788,11 +1847,11 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_standard_price(), 1.0)
         self.assertEqual(self.v1.get_price(), 1.5)
         self.assertEqual(self.v1.get_for_sale(), True)
-        
+
         #
         self.p1.for_sale = True
         self.p1.save()
-        
+
         self.v1.active_price = True
         self.v1.active_for_sale_price = False
         self.v1.save()
@@ -1804,7 +1863,7 @@ class ProductTestCase(TestCase):
         #
         self.p1.for_sale = True
         self.p1.save()
-        
+
         self.v1.active_price = True
         self.v1.active_for_sale_price = True
         self.v1.save()
@@ -1812,16 +1871,16 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_standard_price(), 2.0)
         self.assertEqual(self.v1.get_price(), 1.5)
         self.assertEqual(self.v1.get_for_sale(), True)
-        
-        # 
+
+        #
         self.p1.for_sale = True
         self.p1.save()
-        
+
         self.v1.active_for_sale = ACTIVE_FOR_SALE_STANDARD
         self.v1.save()
 
         self.assertEqual(self.v1.get_for_sale(), True)
-        
+
         self.v1.active_for_sale = ACTIVE_FOR_SALE_YES
         self.v1.save()
 
@@ -1832,15 +1891,15 @@ class ProductTestCase(TestCase):
 
         self.assertEqual(self.v1.get_for_sale(), False)
 
-        # 
+        #
         self.p1.for_sale = False
         self.p1.save()
-        
+
         self.v1.active_for_sale = ACTIVE_FOR_SALE_STANDARD
         self.v1.save()
 
         self.assertEqual(self.v1.get_for_sale(), False)
-        
+
         self.v1.active_for_sale = ACTIVE_FOR_SALE_YES
         self.v1.save()
 

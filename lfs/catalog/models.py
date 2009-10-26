@@ -89,11 +89,14 @@ class Category(models.Model):
         - product_rows, product_cols, category_cols
             Format information for the category views
 
+        - meta_title
+            Meta title of the category (HTML title)
+
         - meta_keywords
-            meta keywords of the category
+            Meta keywords of the category
 
         - meta_description
-           meta_description of the category
+           Meta description of the category
 
         - uuid
            The unique id of the category
@@ -125,6 +128,7 @@ class Category(models.Model):
     product_cols  = models.IntegerField(_(u"Product cols"), default=3)
     category_cols = models.IntegerField(_(u"Category cols"), default=3)
 
+    meta_title = models.CharField(_(u"Meta title"), max_length=100, default="<name>")
     meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
     meta_description = models.TextField(_(u"Meta description"), blank=True)
 
@@ -216,6 +220,12 @@ class Category(models.Model):
                     }
             else:
                 return self.parent.get_format_info()
+
+    def get_meta_title(self):
+        """Returns the meta keywords of the catgory.
+        """
+        mt = self.meta_title.replace("<name>", self.name)
+        return mt
 
     def get_meta_keywords(self):
         """Returns the meta keywords of the catgory.
@@ -333,7 +343,7 @@ class Product(models.Model):
             The external unique id of the product
 
         - price
-              The gross price of the product
+            The gross price of the product
 
         - effective_price:
             Only for internal usage (price filtering).
@@ -347,6 +357,9 @@ class Product(models.Model):
 
         - images
             The images of the product.
+
+        - meta_title
+            the meta title of the product (the title of the HTML page).
 
         - meta_keywords
             the meta keywords of the product.
@@ -436,6 +449,7 @@ class Product(models.Model):
     images = generic.GenericRelation("Image", verbose_name=_(u"Images"),
         object_id_field="content_id", content_type_field="content_type")
 
+    meta_title = models.CharField(_(u"Meta title"), blank=True, default="<name>", max_length=80)
     meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
     meta_description = models.TextField(_(u"Meta description"), blank=True)
 
@@ -489,6 +503,7 @@ class Product(models.Model):
     active_images = models.BooleanField(_(u"Active Images"), default=False)
     active_related_products = models.BooleanField(_(u"Active related products"), default=False)
     active_accessories = models.BooleanField(_(u"Active accessories"), default=False)
+    active_meta_title = models.BooleanField(_(u"Active meta title"), default=False)
     active_meta_description = models.BooleanField(_(u"Active meta description"), default=False)
     active_meta_keywords = models.BooleanField(_(u"Active meta keywords"), default=False)
     active_dimensions = models.BooleanField(_(u"Active dimensions"), default=False)
@@ -666,6 +681,18 @@ class Product(models.Model):
         """Returns all images of the product, except the main image.
         """
         return self.get_images()[1:]
+
+    def get_meta_title(self):
+        """Returns the meta title of the product. Takes care whether the
+        product is a variant and meta title are active or not.
+        """
+        if self.is_variant() and not self.active_meta_title:
+            mt = self.parent.meta_title
+        else:
+            mt = self.meta_title
+
+        mt = mt.replace("<name>", self.get_name())
+        return mt
 
     def get_meta_keywords(self):
         """Returns the meta keywords of the product. Takes care whether the
