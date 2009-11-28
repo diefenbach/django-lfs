@@ -49,7 +49,7 @@ def google_analytics_tracking(context):
     }
 
 @register.inclusion_tag('lfs/shop/google_analytics_ecommerce.html', takes_context=True)
-def google_analytics_ecommerce(context):
+def google_analytics_ecommerce(context, clear_session=True):
     """Returns google analytics e-commerce tracking code. This should be
     displayed on the thank-you page.
     """
@@ -58,8 +58,8 @@ def google_analytics_ecommerce(context):
     shop = lfs_get_object_or_404(Shop, pk=1)
 
     # The order is removed from the session. It has been added after the order
-    # has been payed within the checkou process. See order.utils for more.
-    if request.session.has_key("order"):
+    # has been payed within the checkout process. See order.utils for more.
+    if clear_session and request.session.has_key("order"):
         del request.session["order"]
 
     return {
