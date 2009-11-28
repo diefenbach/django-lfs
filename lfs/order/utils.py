@@ -140,7 +140,7 @@ def add_order(request):
         cart_item.product.decrease_stock_amount(cart_item.amount)
 
     cart.delete()
-    order_submitted.send(order)
+    order_submitted.send({"order" : order, "request" : request})
 
     # Note: Save order for later use in thank you page. The order will be
     # removed from the session if the thank you page has been called.

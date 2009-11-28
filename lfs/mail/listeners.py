@@ -9,7 +9,8 @@ from reviews.signals import review_added
 def order_submitted_listener(sender, **kwargs):
     """Listen to order submitted signal
     """
-    mail_utils.send_order_received_mail(sender)
+    order = sender.get("order")
+    mail_utils.send_order_received_mail(order)
 order_submitted.connect(order_submitted_listener)
 
 def customer_added_listener(sender, **kwargs):
