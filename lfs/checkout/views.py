@@ -265,28 +265,28 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             # Create or update invoice address
             if customer.selected_invoice_address is None:
                 invoice_address = Address.objects.create(
-                    firstname = form.data.get("invoice_firstname"),
-                    lastname = form.data.get("invoice_lastname"),
-                    company_name = form.data.get("invoice_company_name"),
-                    street = form.data.get("invoice_street"),
-                    zip_code = form.data.get("invoice_zip_code"),
-                    city = form.data.get("invoice_city"),
-                    country_id = form.data.get("invoice_country"),
-                    phone = form.data.get("invoice_phone"),
-                    email = form.data.get("invoice_email"),
+                    firstname = form.data.get("invoice_firstname", ""),
+                    lastname = form.data.get("invoice_lastname", ""),
+                    company_name = form.data.get("invoice_company_name", ""),
+                    street = form.data.get("invoice_street", ""),
+                    zip_code = form.data.get("invoice_zip_code", ""),
+                    city = form.data.get("invoice_city", ""),
+                    country_id = form.data.get("invoice_country", ""),
+                    phone = form.data.get("invoice_phone", ""),
+                    email = form.data.get("invoice_email", ""),
                 )
                 customer.selected_invoice_address = invoice_address
             else:
                 selected_invoice_address = customer.selected_invoice_address
-                selected_invoice_address.firstname = form.data.get("invoice_firstname")
-                selected_invoice_address.lastname = form.data.get("invoice_lastname")
-                selected_invoice_address.company_name = form.data.get("invoice_company_name")
-                selected_invoice_address.street = form.data.get("invoice_street")
-                selected_invoice_address.zip_code = form.data.get("invoice_zip_code")
-                selected_invoice_address.city = form.data.get("invoice_city")
-                selected_invoice_address.country_id = form.data.get("invoice_country")
-                selected_invoice_address.phone = form.data.get("invoice_phone")
-                selected_invoice_address.email = form.data.get("invoice_email")
+                selected_invoice_address.firstname = form.data.get("invoice_firstname", "")
+                selected_invoice_address.lastname = form.data.get("invoice_lastname", "")
+                selected_invoice_address.company_name = form.data.get("invoice_company_name", "")
+                selected_invoice_address.street = form.data.get("invoice_street", "")
+                selected_invoice_address.zip_code = form.data.get("invoice_zip_code", "")
+                selected_invoice_address.city = form.data.get("invoice_city", "")
+                selected_invoice_address.country_id = form.data.get("invoice_country", "")
+                selected_invoice_address.phone = form.data.get("invoice_phone", "")
+                selected_invoice_address.email = form.data.get("invoice_email", "")
                 selected_invoice_address.save()
 
             # If the shipping address differs from invoice firstname we create
