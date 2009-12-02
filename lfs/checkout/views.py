@@ -364,8 +364,9 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
 
         # Set the addresses country to the current selected in any case.
         country = lfs.shipping.utils.get_selected_shipping_country(request)
-        initial["shipping_country"] = country.id
-        initial["invoice_country"] = country.id
+        if country:
+            initial["shipping_country"] = country.id
+            initial["invoice_country"] = country.id
         form = checkout_form(initial=initial)
 
     cart = cart_utils.get_cart(request)

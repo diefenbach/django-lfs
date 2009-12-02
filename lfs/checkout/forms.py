@@ -19,7 +19,7 @@ class OnePageCheckoutForm(forms.Form):
     invoice_street = forms.CharField(label=_(u"Street"), max_length=100)
     invoice_zip_code = forms.CharField(label=_(u"Zip Code"), max_length=10)
     invoice_city = forms.CharField(label=_(u"City"), max_length=50)
-    invoice_country = forms.ChoiceField(label=_(u"Country"))
+    invoice_country = forms.ChoiceField(label=_(u"Country"), required=False)
     invoice_phone = forms.CharField(label=_(u"Phone"), max_length=20)
     invoice_email = forms.EmailField(label=_(u"E-mail"), required=False, max_length=50)
     
@@ -84,9 +84,6 @@ class OnePageCheckoutForm(forms.Form):
 
             if self.cleaned_data.get("shipping_city", "") == "":
                 self._errors["shipping_city"] = ErrorList([msg])
-
-            if self.cleaned_data.get("shipping_country", "") == "":
-                self._errors["shipping_country"] = ErrorList([msg])
                 
         # 1 == Direct Debit
         if self.data.get("payment_method") == "1":
