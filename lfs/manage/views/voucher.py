@@ -117,7 +117,7 @@ def options_tab(request, template_name="manage/voucher/options.html"):
     """
     try:
         voucher_options = VoucherOptions.objects.all()[0]
-    except VoucherOptions.DoesNotExist:
+    except IndexError:
         voucher_options = VoucherOptions.objects.create()
 
     form = VoucherOptionsForm(instance = voucher_options)
@@ -253,7 +253,7 @@ def save_voucher_options(request):
     """
     try:
         voucher_options = VoucherOptions.objects.all()[0]
-    except VoucherOptions.DoesNotExist:
+    except IndexError:
         voucher_options = VoucherOptions.objects.create()
 
     form = VoucherOptionsForm(instance=voucher_options, data=request.POST)
