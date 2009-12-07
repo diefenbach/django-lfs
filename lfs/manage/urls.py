@@ -52,6 +52,7 @@ urlpatterns += patterns('lfs.manage.views.voucher',
     url(r'^save-voucher-options$', "save_voucher_options", name="lfs_manage_save_voucher_options"),
     url(r'^add-vouchers/(?P<group_id>\d+)$', "add_vouchers", name="lfs_manage_add_vouchers"),
     url(r'^delete-vouchers/(?P<group_id>\d+)$', "delete_vouchers", name="lfs_manage_delete_vouchers"),
+    url(r'^set-vouchers-page$', "set_vouchers_page", name="lfs_set_vouchers_page"),
 )
 
 # Portlets

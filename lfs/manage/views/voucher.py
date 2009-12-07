@@ -91,12 +91,16 @@ def data_tab(request, voucher_group, template_name="manage/voucher/data.html"):
         "form" : form,
     }))
 
-def vouchers_tab(request, voucher_group, template_name="manage/voucher/vouchers.html"):
+def vouchers_tab(request, voucher_group, deleted=False, template_name="manage/voucher/vouchers.html"):
     """Displays the vouchers tab
     """
+    vouchers = voucher_group.vouchers.all()
+    paginator = Paginator(vouchers, 20)
+    page = paginator.page(request.REQUEST.get("page", 1))
+
     taxes = Tax.objects.all()
 
-    if request.method == "POST":
+    if request.method == "POST" and deleted == False:
         voucher_form = VoucherForm(data=request.POST)
     else:
         voucher_form = VoucherForm()
@@ -105,7 +109,7 @@ def vouchers_tab(request, voucher_group, template_name="manage/voucher/vouchers.
         "voucher_group" : voucher_group,
         "taxes" : taxes,
         "voucher_form" : voucher_form,
-        "vouchers_inline" : vouchers_inline(request, voucher_group),
+        "vouchers_inline" : vouchers_inline(request, voucher_group, vouchers, paginator, page),
     }))
 
 def options_tab(request, template_name="manage/voucher/options.html"):
@@ -122,13 +126,9 @@ def options_tab(request, template_name="manage/voucher/options.html"):
         "form" : form,
     }))
 
-def vouchers_inline(request, voucher_group, template_name="manage/voucher/vouchers_inline.html"):
+def vouchers_inline(request, voucher_group, vouchers, paginator, page, template_name="manage/voucher/vouchers_inline.html"):
     """Displays the pages of the vouchers
     """
-    vouchers = voucher_group.vouchers.all()
-    paginator = Paginator(vouchers, 20)
-    page = paginator.page(request.REQUEST.get("page", 1))
-
     return render_to_string(template_name, RequestContext(request, {
         "paginator" : paginator,
         "page" : page,
@@ -136,8 +136,24 @@ def vouchers_inline(request, voucher_group, template_name="manage/voucher/vouche
         "voucher_group" : voucher_group,
     }))
 
-
 # Actions
+@permission_required("manage_shop", login_url="/login/")
+def set_vouchers_page(request):
+    """Sets the displayed voucher page.
+    """
+    group_id = request.REQUEST.get("group");
+    voucher_group = VoucherGroup.objects.get(pk = group_id)
+    vouchers = voucher_group.vouchers.all()
+    paginator = Paginator(vouchers, 20)
+    page = paginator.page(request.REQUEST.get("page", 1))
+
+    html = (
+        ("#vouchers-inline", vouchers_inline(request, voucher_group, vouchers, paginator, page)),
+    )
+
+    return HttpResponse(
+        simplejson.dumps({ "html" : html }, cls = LazyEncoder))
+
 def manage_vouchers(request):
     """Redirects to the first voucher group or to the add voucher form.
     """
@@ -194,7 +210,7 @@ def delete_vouchers(request, group_id):
         voucher.delete()
 
     return render_to_ajax_response(
-        (("#vouchers", vouchers_tab(request, voucher_group)), ),
+        (("#vouchers", vouchers_tab(request, voucher_group, deleted=True)), ),
         _(u"Vouchers have been deleted."))
 
 def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.html"):
@@ -239,7 +255,7 @@ def save_voucher_options(request):
         voucher_options = VoucherOptions.objects.all()[0]
     except VoucherOptions.DoesNotExist:
         voucher_options = VoucherOptions.objects.create()
-            
+
     form = VoucherOptionsForm(instance=voucher_options, data=request.POST)
     if form.is_valid():
         form.save()
