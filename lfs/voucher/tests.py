@@ -1,3 +1,6 @@
+# python imports
+import datetime
+
 # django imports
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.file import SessionStore
@@ -67,8 +70,9 @@ class VoucherTestCase(TestCase):
             number = "AAAA",
             group = self.vg,
             creator = self.request.user,
-            start_date = "2009-12-01",
-            end_date = "2009-12-31",
+            start_date = datetime.date(2009, 12, 1),
+            end_date = datetime.date(2009, 12, 31),
+            effective_from = 0,
             kind_of = ABSOLUTE,
             value = 10.0,
         )
@@ -86,8 +90,9 @@ class VoucherTestCase(TestCase):
         self.assertEqual(self.v1.number, "AAAA")
         self.assertEqual(self.v1.group, self.vg)
         self.assertEqual(self.v1.creator, self.request.user)
-        self.assertEqual(self.v1.start_date, "2009-12-01")
-        self.assertEqual(self.v1.end_date, "2009-12-31")
+        self.assertEqual(self.v1.start_date, datetime.date(2009, 12, 1),)
+        self.assertEqual(self.v1.end_date, datetime.date(2009, 12, 31),)
+        self.assertEqual(self.v1.effective_from, 0.0)
         self.assertEqual(self.v1.kind_of, ABSOLUTE)
         self.assertEqual(self.v1.active, True)
         self.assertEqual(self.v1.used, False)
@@ -181,8 +186,50 @@ class VoucherTestCase(TestCase):
 
         self.assertEqual(self.v1.used, True)
         self.failIf(self.v1.used_date is None)
-        
-        
+
+    def test_is_effective(self):
+        """
+        """
+        # True
+        self.v1.start_date = datetime.date(2009, 1, 1)
+        self.v1.end_date = datetime.date(2009, 12, 31)
+        self.v1.active = True
+        self.v1.used = False
+        self.v1.effective_from = 0
+        self.assertEqual(self.v1.is_effective(self.cart), True)
+
+        # start / end
+        self.v1.start_date = datetime.date(2009, 12, 31)
+        self.v1.end_date = datetime.date(2009, 12, 31)
+        self.v1.active = True
+        self.v1.used = False
+        self.v1.effective_from = 0
+        self.assertEqual(self.v1.is_effective(self.cart), False)
+
+        # effective from
+        self.v1.start_date = datetime.date(2009, 1, 1)
+        self.v1.end_date = datetime.date(2009, 12, 31)
+        self.v1.active = True
+        self.v1.used = False
+        self.v1.effective_from = 1000
+        self.assertEqual(self.v1.is_effective(self.cart), False)
+
+        # Used
+        self.v1.start_date = datetime.date(2009, 1, 1)
+        self.v1.end_date = datetime.date(2009, 12, 31)
+        self.v1.active = True
+        self.v1.used = True
+        self.v1.effective_from = 0
+        self.assertEqual(self.v1.is_effective(self.cart), False)
+
+        # Not active
+        self.v1.start_date = datetime.date(2009, 1, 1)
+        self.v1.end_date = datetime.date(2009, 12, 31)
+        self.v1.active = False
+        self.v1.used = False
+        self.v1.effective_from = 0
+        self.assertEqual(self.v1.is_effective(self.cart), False)
+
 class VoucherOptionsCase(TestCase):
     """
     """
@@ -194,4 +241,3 @@ class VoucherOptionsCase(TestCase):
         self.assertEqual(vo.number_suffix, u"")
         self.assertEqual(vo.number_length, 5)
         self.assertEqual(vo.number_letters, u"ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-        

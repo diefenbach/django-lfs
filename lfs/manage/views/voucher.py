@@ -1,5 +1,7 @@
 # django imports
+from django import forms
 from django.contrib.auth.decorators import permission_required
+from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.http import HttpResponse
@@ -15,10 +17,42 @@ import lfs.voucher.utils
 from lfs.core.utils import LazyEncoder
 from lfs.core.utils import render_to_ajax_response
 from lfs.tax.models import Tax
-from lfs.voucher.forms import VoucherGroupForm
-from lfs.voucher.forms import VoucherForm
 from lfs.voucher.models import Voucher
 from lfs.voucher.models import VoucherGroup
+from lfs.voucher.models import VoucherOptions
+from lfs.voucher.settings import KIND_OF_CHOICES
+
+# Forms
+class VoucherOptionsForm(forms.ModelForm):
+    """Form to manage voucher options.
+    """
+    class Meta:
+        model = VoucherOptions
+
+class VoucherGroupForm(forms.ModelForm):
+    """Form to add a VoucherGroup.
+    """
+    class Meta:
+        model = VoucherGroup
+        fields = ("name", "position")
+
+class VoucherForm(forms.Form):
+    """Form to add a Voucher.
+    """
+    amount = forms.IntegerField(label=_(u"Amount"), required=True)
+    value = forms.FloatField(label=_(u"Value"), required=True)
+    start_date = forms.DateTimeField(label=_(u"Start date"), required=True)
+    end_date = forms.DateTimeField(label=_(u"End date"), required=True)
+    kind_of = forms.ChoiceField(label=_(u"Kind of"), choices=KIND_OF_CHOICES, required=True)
+    effective_from = forms.FloatField(label=_(u"Effective from"), required=True)
+    tax = forms.ChoiceField(label=_(u"Tax"), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(VoucherForm, self).__init__(*args, **kwargs)
+
+        taxes = [["", "---"]]
+        taxes.extend([(t.id, t.rate) for t in Tax.objects.all()])
+        self.fields["tax"].choices = taxes
 
 # Parts
 def voucher_group(request, id, template_name="manage/voucher/voucher_group.html"):
@@ -30,6 +64,7 @@ def voucher_group(request, id, template_name="manage/voucher/voucher_group.html"
         "voucher_group"  : voucher_group,
         "data_tab" : data_tab(request, voucher_group),
         "vouchers_tab" : vouchers_tab(request, voucher_group),
+        "options_tab" : options_tab(request),
         "navigation" : navigation(request, voucher_group),
     }))
 
@@ -59,20 +94,48 @@ def data_tab(request, voucher_group, template_name="manage/voucher/data.html"):
 def vouchers_tab(request, voucher_group, template_name="manage/voucher/vouchers.html"):
     """Displays the vouchers tab
     """
-    vouchers = voucher_group.vouchers.all()
     taxes = Tax.objects.all()
-    
+
     if request.method == "POST":
         voucher_form = VoucherForm(data=request.POST)
     else:
         voucher_form = VoucherForm()
-        
+
     return render_to_string(template_name, RequestContext(request, {
         "voucher_group" : voucher_group,
-        "vouchers" : vouchers,
         "taxes" : taxes,
         "voucher_form" : voucher_form,
+        "vouchers_inline" : vouchers_inline(request, voucher_group),
     }))
+
+def options_tab(request, template_name="manage/voucher/options.html"):
+    """Displays the vouchers options
+    """
+    try:
+        voucher_options = VoucherOptions.objects.all()[0]
+    except VoucherOptions.DoesNotExist:
+        voucher_options = VoucherOptions.objects.create()
+
+    form = VoucherOptionsForm(instance = voucher_options)
+
+    return render_to_string(template_name, RequestContext(request, {
+        "form" : form,
+    }))
+
+def vouchers_inline(request, voucher_group, template_name="manage/voucher/vouchers_inline.html"):
+    """Displays the pages of the vouchers
+    """
+    vouchers = voucher_group.vouchers.all()
+    paginator = Paginator(vouchers, 20)
+    page = paginator.page(request.REQUEST.get("page", 1))
+
+    return render_to_string(template_name, RequestContext(request, {
+        "paginator" : paginator,
+        "page" : page,
+        "vouchers" : vouchers,
+        "voucher_group" : voucher_group,
+    }))
+
 
 # Actions
 def manage_vouchers(request):
@@ -92,8 +155,8 @@ def add_vouchers(request, group_id):
     """
     voucher_group = VoucherGroup.objects.get(pk=group_id)
     form = VoucherForm(data=request.POST)
-    
-    if form.is_valid():        
+
+    if form.is_valid():
         try:
             amount = int(request.POST.get("amount", 0))
         except TypeError:
@@ -101,19 +164,18 @@ def add_vouchers(request, group_id):
 
         for i in range(0, amount):
             while 1:
-                try:
-                    Voucher.objects.create(
-                        number = lfs.voucher.utils.create_voucher_number(),
-                        group = voucher_group,
-                        creator = request.user,
-                        kind_of = request.POST.get("kind_of", 0),
-                        value = request.POST.get("value", 0.0),
-                        start_date = request.POST.get("start_date"),
-                        end_date = request.POST.get("end_date"),
-                    )
-                    break
-                except IntegrityError:
-                    pass
+                Voucher.objects.create(
+                    number = lfs.voucher.utils.create_voucher_number(),
+                    group = voucher_group,
+                    creator = request.user,
+                    kind_of = request.POST.get("kind_of", 0),
+                    value = request.POST.get("value", 0.0),
+                    start_date = request.POST.get("start_date"),
+                    end_date = request.POST.get("end_date"),
+                    effective_from = request.POST.get("effective_from"),
+                    tax_id = request.POST.get("tax"),
+                )
+                break
         msg = _(u"Vouchers have been created.")
     else:
         msg = ""
@@ -169,6 +231,23 @@ def save_voucher_group_data(request, id):
         (("#data_tab", data_tab(request, voucher_group)),
         ("#navigation", navigation(request, voucher_group)),),
         _(u"Voucher data has been save."))
+
+def save_voucher_options(request):
+    """Saves voucher options.
+    """
+    try:
+        voucher_options = VoucherOptions.objects.all()[0]
+    except VoucherOptions.DoesNotExist:
+        voucher_options = VoucherOptions.objects.create()
+            
+    form = VoucherOptionsForm(instance=voucher_options, data=request.POST)
+    if form.is_valid():
+        form.save()
+
+    return render_to_ajax_response(
+        (("#options_tab", options_tab(request)),),
+        _(u"Voucher options has been save.")
+    )
 
 def _update_positions():
     for i, voucher_group in enumerate(VoucherGroup.objects.all()):

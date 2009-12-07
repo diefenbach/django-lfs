@@ -1,7 +1,27 @@
 from django.conf.urls.defaults import *
+from django.views.generic.simple import direct_to_template
+
+urlpatterns = patterns('django.views.generic.simple',
+    (r'^products-new', 'direct_to_template', { 'template': 'manage/new/product.html' }),
+)
+
+# urlpatterns += patterns('lfs.manage.views.product.json',
+#     url(r'products-short-data', "products_short_data"),
+#     url(r'product-data/(?P<id>\d*)$', "product_data"),
+#     url(r'set-product-filter$', "set_product_filter"),
+# 
+#     url(r'set-product-data$', "set_product_data"),
+#     url(r'set-product-seo$', "set_product_seo"),
+# 
+#     url(r'get-products', "get_products"),
+#     url(r'get-related-products/(?P<id>\d*)$', "get_related_products"),
+#     url(r'add-related-products/(?P<id>\d*)$', "add_related_products"),
+#     url(r'get-product/(?P<id>\d*)$', "get_product"),
+#     url(r'save-product/(?P<id>\d*)$', "save_product"),
+# )
 
 # General
-urlpatterns = patterns('lfs.manage.views',
+urlpatterns += patterns('lfs.manage.views',
     url(r'^$', "dashboard", name="lfs_manage_dashboard"),
 )
 
@@ -29,6 +49,7 @@ urlpatterns += patterns('lfs.manage.views.voucher',
     url(r'^add-voucher-group$', "add_voucher_group", name="lfs_manage_add_voucher_group"),
     url(r'^manage-voucher-group/(?P<id>\d+)$', "voucher_group", name="lfs_manage_voucher_group"),
     url(r'^save-voucher-group-data/(?P<id>\d+)$', "save_voucher_group_data", name="lfs_manage_save_voucher_group_data"),
+    url(r'^save-voucher-options$', "save_voucher_options", name="lfs_manage_save_voucher_options"),
     url(r'^add-vouchers/(?P<group_id>\d+)$', "add_vouchers", name="lfs_manage_add_vouchers"),
     url(r'^delete-vouchers/(?P<group_id>\d+)$', "delete_vouchers", name="lfs_manage_delete_vouchers"),
 )
@@ -214,7 +235,7 @@ urlpatterns += patterns('lfs.manage.views.export',
 	url(r'^edit-product/(?P<export_id>\d*)/(?P<product_id>\d*)$', "edit_product", name="lfs_export_edit_product"),
 	url(r'^category-state/(?P<export_id>\d*)/(?P<category_id>\d*)$', "category_state", name="lfs_export_category_state"),
 	url(r'^update-export-data/(?P<export_id>\d*)$', "update_data", name="lfs_export_update_export_data"),
-	url(r'^add-export$', "add_export", name="lfs_export_add_export"),	
+	url(r'^add-export$', "add_export", name="lfs_export_add_export"),
 	url(r'^delete-export/(?P<export_id>\d*)$', "delete_export", name="lfs_export_delete_export"),
     url(r'^export-export/(?P<slug>[-\w]*)$', "export", name="lfs_export_export"),
     url(r'^update-category-variants-option/(?P<export_id>\d*)/(?P<category_id>\d*)$', "update_category_variants_option", name="lfs_export_update_category_variants_option"),

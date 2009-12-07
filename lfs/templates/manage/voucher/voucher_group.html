@@ -12,10 +12,10 @@
 
     <div class="site-actions">
         <span class="label">{{ voucher_group.name }}</span>
-        
-        <a class="add" 
+
+        <a class="add"
            href="{% url lfs_manage_add_voucher_group %}">{% trans 'Add voucher group' %}</a>
-        
+
         <a class="delete confirmation-link"
            data="{% trans 'Delete?' %}"
            href="">{% trans 'Delete group' %}</a>
@@ -27,6 +27,7 @@
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#vouchers">{% trans 'Vouchers' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#options">{% trans 'Options' %}</a></li>
         </ul>
 
         <div id="data">
@@ -35,5 +36,8 @@
         <div id="vouchers">
             {{ vouchers_tab|safe }}
         </div>
-    </div>    
+        <div id="options">
+            {{ options_tab|safe }}
+        </div>
+    </div>
 {% endblock %}

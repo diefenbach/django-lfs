@@ -34,6 +34,18 @@ Credits
 
   Power user, smart adviser, sponsor, products for demo shop and much more
 
+* Reza Muhammad (rezmuh)
+  
+  Reporting bugs
+
+* Michael Thornhill
+  
+  Integration of PayPal (django-paypal), fixing bugs,
+
+* Martin Mahner
+
+  Reporting bugs, providing patches
+
 * Icons are from Mark James' Silk icon set 1.3
 
   (http://www.famfamfam.com/lab/icons/silk/)
@@ -44,6 +56,16 @@ Credits
 
 Changes
 =======
+
+..  ()
+-------------------
+
+* Display the parent product ("product with variants") of a variant within 
+  category products instead of the default variant (Michaela Hering)
+
+* Added meta title to product's and Category's SEO tab.
+
+* Improved vouchers 
 
 0.2.2  (2009-10-22)
 -------------------

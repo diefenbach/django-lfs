@@ -58,12 +58,15 @@ def add_order(request):
     except Voucher.DoesNotExist:
         voucher = None
     else:
-        voucher_number = voucher.number
-        voucher_price = voucher.get_price_gross(cart)
-        voucher_tax = voucher.get_tax(cart)
+        if voucher.is_effective():
+            voucher_number = voucher.number
+            voucher_price = voucher.get_price_gross(cart)
+            voucher_tax = voucher.get_tax(cart)
 
-        price -= voucher_price
-        tax -= voucher_tax
+            price -= voucher_price
+            tax -= voucher_tax
+        else:
+            voucher = None
 
     order = Order.objects.create(
         user = user,

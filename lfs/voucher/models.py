@@ -18,7 +18,7 @@ class VoucherOptions(models.Model):
     number_prefix = models.CharField(max_length=20, blank=True, default="")
     number_suffix = models.CharField(max_length=20, blank=True, default="")
     number_length = models.IntegerField(blank=True, null=True, default=5)
-    number_letters = models.CharField(max_length=10, blank=True, default="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    number_letters = models.CharField(max_length=100, blank=True, default="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 class VoucherGroup(models.Model):
     """Groups vouchers together.
@@ -50,9 +50,16 @@ class Voucher(models.Model):
         - creation_date
             The date the voucher has been created
 
-        - expiration_date
+        - start_date
+            The date the voucher is going be valid. Before that date the
+            voucher can't be used.
+
+        - end_date
             The date the voucher is going to expire. After that date the
             voucher can't be used.
+
+        - effective_from
+            The cart price the voucher is from that the voucher is valid.
 
         - kind_of
             The kind of the voucher. Absolute or percentage.
@@ -81,6 +88,7 @@ class Voucher(models.Model):
     creator = models.ForeignKey(User)
     creation_date = models.DateTimeField(auto_now_add=True)
     start_date = models.DateField(blank=True, null=True)
+    effective_from = models.FloatField(default=0.0)
     end_date = models.DateField(blank=True, null=True)
     kind_of = models.PositiveSmallIntegerField(choices=KIND_OF_CHOICES)
     value = models.FloatField(default=0.0)
@@ -128,7 +136,19 @@ class Voucher(models.Model):
         self.used = True
         self.used_date = datetime.datetime.now()
         self.save()
-
+    
+    def is_effective(self, cart):
+        """Returns True if the voucher is effective.
+        """
+        if not self.used and \
+           self.active and \
+           self.start_date <= datetime.date.today() and \
+           self.end_date > datetime.date.today() and \
+           self.effective_from < cart.get_price_gross():
+            return True
+        else:
+            return False
+        
     def is_absolute(self):
         """Returns True if voucher is absolute.
         """

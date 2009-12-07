@@ -1,102 +1,19 @@
 {% load i18n %}
-<form action="{% url lfs_manage_delete_vouchers voucher_group.id %}"
-      method="post">
-      
-    <table class="lfs-manage-table checkbox middle">
-        <tr>
-            <th>
-                <input type="checkbox" 
-                       class="select-all-1">            
-            </th>
-            <th>
-                {% trans "Number" %}
-            </th>
-            <th>
-                {% trans "Type" %}
-            </th>
-            <th class="number">
-                {% trans "Value" %}
-            </th>
-            <th class="middle right">
-                {% trans "Start date" %}
-            </th>
-            <th class="middle right">
-                {% trans "End date" %}
-            </th>
-            <th class="small right">
-                {% trans "Active" %}
-            </th>
-            <th class="small right">
-                {% trans "Used" %}
-            </th>
-            <th class="middle right">
-                {% trans "Used date" %}
-            </th>
-        </tr>
-        {% for voucher in vouchers %}
-            <tr class="{% cycle 'even' 'odd' %}">
-                <td class="tiny checkbox">
-                    {% if not voucher.used %}
-                        <input type="checkbox" 
-                               class="select-1"
-                               name="voucher-ids"
-                               value="{{ voucher.id }}">
-                    {% endif %}
-                </td>
-                <td>
-                    {{ voucher.number }}
-                </td>
-                <td>
-                    {{ voucher.get_kind_of_display }}
-                </td>
-                <td class="number">
-                    {{ voucher.value }}
-                </td>
-                <td class="right">
-                    {% if voucher.start_date %}
-                        {{ voucher.start_date }}
-                    {% else %}
-                        ---
-                    {% endif %}                    
-                </td>
-                <td class="right">
-                    {% if voucher.end_date %}
-                        {{ voucher.end_date }}
-                    {% else %}
-                        ---
-                    {% endif %}                    
-                </td>
-                <td class="right">
-                    {{ voucher.active }}
-                </td>
-                <td class="right">
-                    {{ voucher.used }}
-                </td>
-                <td class="right">
-                    {{ voucher.used_date|date:_("DATE_FORMAT") }}
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
-    
-    {% if vouchers %}
-        <input class="ajax-save-button-2"
-               type="submit"
-               value='{% trans "Delete vouchers" %}' />  
-    {% endif %}
-</form>
+
+<div id="vouchers-inline">
+    {{ vouchers_inline|safe }}
+</div>
 
 <h2 style="padding-top:20px">{% trans "Add vouchers" %}</h2>
 <form action="{% url lfs_manage_add_vouchers voucher_group.id %}"
       method="post">
-    
+
     <table>
         {{ voucher_form.as_table }}
-    </table>  
-    
-    
+    </table>
+
     <input class="padding-top ajax-save-button-2"
-           type="submit" 
+           type="submit"
            value='{% trans "Add vouchers" %}'
 
 </form>
