@@ -1,0 +1,156 @@
+{% load i18n %}
+<div class="navigation-pages">
+    {% if page.has_previous %}
+        <a class="ajax-link"
+           href="{% url lfs_set_vouchers_page %}?group=1&amp;page=1">
+            <img src="{{ MEDIA_URL }}lfs/icons/resultset_first.png" 
+                 alt="{% trans 'First' %}"
+                 title="{% trans 'First' %}" />           
+        </a>
+        <a class="ajax-link"
+           href="{% url lfs_set_vouchers_page %}?group=1&amp;page={{ page.previous_page_number }}">
+            <img src="{{ MEDIA_URL }}lfs/icons/resultset_previous.png" 
+                 alt="{% trans 'Previous' %}"
+                 title="{% trans 'Previous' %}" />                                  
+        </a>
+    {% else %}
+        <span>
+            <img src="{{ MEDIA_URL }}lfs/icons/resultset_first.png" 
+                 alt="{% trans 'First' %}"
+                 title="{% trans 'First' %}" />
+        </span>
+        <span>
+            <img src="{{ MEDIA_URL }}lfs/icons/resultset_previous.png" 
+                 alt="{% trans 'Previous' %}"
+                 title="{% trans 'Previous' %}" />
+        </span>
+    {% endif %}
+
+    {{ page.number }}  {% trans 'of' %} {{ paginator.num_pages }}
+
+    {% if page.has_next %}
+        <a class="ajax-link"
+           href="{% url lfs_set_vouchers_page %}?group=1&amp;page={{ page.next_page_number }}">
+            <img src="{{ MEDIA_URL }}lfs/icons/resultset_next.png" 
+                 alt="{% trans 'Next' %}"
+                 title="{% trans 'Next' %}" />           
+        </a>
+        <a class="ajax-link"
+           href="{% url lfs_set_vouchers_page %}?group=1&amp;page={{ paginator.num_pages }}">
+            <img src="{{ MEDIA_URL }}lfs/icons/resultset_last.png" 
+                 alt="{% trans 'Last' %}"
+                 title="{% trans 'Last' %}" />
+        </a>
+    {% else %}
+        <img src="{{ MEDIA_URL }}lfs/icons/resultset_next.png" 
+             alt="{% trans 'Next' %}"
+             title="{% trans 'Next' %}" />
+        <img src="{{ MEDIA_URL }}lfs/icons/resultset_last.png" 
+             alt="{% trans 'Last' %}"
+             title="{% trans 'Last' %}" />                       
+    {% endif %}
+</div>
+
+<form action="{% url lfs_manage_delete_vouchers voucher_group.id %}"
+      method="post">
+      
+    <table class="lfs-manage-table checkbox middle">
+        <tr>
+            <th>
+                <input type="checkbox" 
+                       class="select-all-1">            
+            </th>
+            <th>
+                {% trans "Number" %}
+            </th>
+            <th>
+                {% trans "Type" %}
+            </th>
+            <th class="middle number">
+                {% trans "Value" %}
+            </th>
+            <th class="middle number">
+                {% trans "Tax" %}
+            </th>
+            <th class="middle right">
+                {% trans "Start date" %}
+            </th>
+            <th class="middle right">
+                {% trans "End date" %}
+            </th>
+            <th class="middle number">
+                {% trans "Effective from" %}
+            </th>
+            <th class="small right">
+                {% trans "Active" %}
+            </th>
+            <th class="small right">
+                {% trans "Used" %}
+            </th>
+            <th class="middle right">
+                {% trans "Used date" %}
+            </th>
+        </tr>
+        {% for voucher in page.object_list %}
+            <tr class="{% cycle 'even' 'odd' %}">
+                <td class="tiny checkbox">
+                    {% if not voucher.used %}
+                        <input type="checkbox" 
+                               class="select-1"
+                               name="voucher-ids"
+                               value="{{ voucher.id }}">
+                    {% endif %}
+                </td>
+                <td>
+                    {{ voucher.number }}
+                </td>
+                <td>
+                    {{ voucher.get_kind_of_display }}
+                </td>
+                <td class="number">
+                    {{ voucher.value }}
+                </td>
+                <td class="number">
+                    {% if voucher.tax %}
+                        {{ voucher.tax.rate }}
+                    {% else %}
+                        ---
+                    {% endif %}
+                    
+                </td>
+                <td class="right">
+                    {% if voucher.start_date %}
+                        {{ voucher.start_date }}
+                    {% else %}
+                        ---
+                    {% endif %}                    
+                </td>
+                <td class="right">
+                    {% if voucher.end_date %}
+                        {{ voucher.end_date }}
+                    {% else %}
+                        ---
+                    {% endif %}                    
+                </td>
+                <td class="number">
+                    {{ voucher.effective_from }}
+                </td>
+                <td class="right">
+                    {{ voucher.active }}
+                </td>
+                <td class="right">
+                    {{ voucher.used }}
+                </td>
+                <td class="right">
+                    {{ voucher.used_date|date:_("DATE_FORMAT") }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    
+    {% if vouchers %}
+        <input class="ajax-save-button-2"
+               type="submit"
+               value='{% trans "Delete vouchers" %}' />  
+    {% endif %}
+</form>

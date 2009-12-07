@@ -1,0 +1,16 @@
+{% load i18n %}
+
+<h2 style="padding-top:20px">{% trans "Options" %}</h2>
+<form action="{% url lfs_manage_save_voucher_options %}"
+      method="post">
+
+    <table>
+        {{ form.as_table }}
+    </table>
+
+    <input class="padding-top ajax-save-button-2"
+           type="submit"
+           value='{% trans "Save options" %}'
+
+</form>
+
