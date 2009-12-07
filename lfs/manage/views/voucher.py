@@ -177,21 +177,26 @@ def add_vouchers(request, group_id):
             amount = int(request.POST.get("amount", 0))
         except TypeError:
             amount = 0
-
+        
+        # TODO: Fix the possibility of an infinte loop.
         for i in range(0, amount):
             while 1:
-                Voucher.objects.create(
-                    number = lfs.voucher.utils.create_voucher_number(),
-                    group = voucher_group,
-                    creator = request.user,
-                    kind_of = request.POST.get("kind_of", 0),
-                    value = request.POST.get("value", 0.0),
-                    start_date = request.POST.get("start_date"),
-                    end_date = request.POST.get("end_date"),
-                    effective_from = request.POST.get("effective_from"),
-                    tax_id = request.POST.get("tax"),
-                )
-                break
+                try:
+                    Voucher.objects.create(
+                        number = lfs.voucher.utils.create_voucher_number(),
+                        group = voucher_group,
+                        creator = request.user,
+                        kind_of = request.POST.get("kind_of", 0),
+                        value = request.POST.get("value", 0.0),
+                        start_date = request.POST.get("start_date"),
+                        end_date = request.POST.get("end_date"),
+                        effective_from = request.POST.get("effective_from"),
+                        tax_id = request.POST.get("tax"),
+                    )
+                except IntegrityError:
+                    pass
+                else:
+                    break
         msg = _(u"Vouchers have been created.")
     else:
         msg = ""
