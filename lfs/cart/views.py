@@ -108,6 +108,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         "max_delivery_time" : max_delivery_time,
         "shopping_url" : shopping_url,
         "display_voucher" : display_voucher,
+        "voucher_number" : voucher_number,
         "voucher_value" : voucher_value,
         "voucher_tax" : voucher_tax,
     }))
