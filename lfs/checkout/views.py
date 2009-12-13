@@ -16,6 +16,7 @@ import lfs.core.utils
 import lfs.order.utils
 import lfs.payment.utils
 import lfs.shipping.utils
+import lfs.voucher.utils
 from lfs.cart import utils as cart_utils
 from lfs.checkout.forms import OnePageCheckoutForm
 from lfs.checkout.settings import CHECKOUT_TYPE_ANON
@@ -127,14 +128,17 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
     cart_price = cart_costs["price"] + shipping_costs["price"] + payment_costs["price"]
     cart_tax = cart_costs["tax"] + shipping_costs["tax"] + payment_costs["tax"]
 
-    # Voucer
+    # Voucher
     try:
-        voucher = Voucher.objects.get(number=request.POST.get("voucher"))
+        voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
+        voucher = Voucher.objects.get(number=voucher_number)
     except Voucher.DoesNotExist:
         display_voucher = False
         voucher_value = 0
         voucher_tax = 0
+        voucher_number = ""
     else:
+        lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
         if voucher.is_effective(cart):        
             display_voucher = True
             voucher_value = voucher.get_price_gross(cart)
@@ -398,6 +402,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
         "selected_payment_method" : selected_payment_method,
         "display_bank_account" : display_bank_account,
         "display_credit_card" : display_credit_card,
+        "voucher_number" : lfs.voucher.utils.get_current_voucher_number(request),
     }))
 
     if form._errors:
@@ -464,6 +469,9 @@ def shipping_inline(request, template_name="lfs/checkout/shipping_inline.html"):
 def check_voucher(request):
     """
     """
+    voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
+    lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
+
     result = simplejson.dumps({
         "html" : (("#cart-inline", cart_inline(request)),)
     })

@@ -62,6 +62,9 @@ def google_analytics_ecommerce(context, clear_session=True):
     if clear_session and request.session.has_key("order"):
         del request.session["order"]
 
+    if request.session.has_key("voucher"):
+        del request.session["voucher"]
+
     return {
         "order" : order,
         "ga_ecommerce_tracking" : shop.ga_ecommerce_tracking,
@@ -132,7 +135,7 @@ def breadcrumbs(context, obj):
             else:
                 objects = [{
                     "name" : obj.get_name(),
-                    "url"  : obj.get_absolute_url(),                    
+                    "url"  : obj.get_absolute_url(),
                 }]
                 while category is not None:
                     objects.insert(0, {
@@ -209,7 +212,7 @@ def product_navigation(context, product):
             pass
     else:
         temp = dict()
-    
+
     # To calculate the position we take only STANDARD_PRODUCT into account.
     # That means if the current product is a VARIANT we switch to its parent
     # product.
@@ -227,7 +230,7 @@ def product_navigation(context, product):
 
         if category.show_all_products:
             categories.extend(category.get_all_children())
-        
+
         # This is necessary as we display non active products to superusers.
         # So we have to take care for the product navigation too.
         if request.user.is_superuser:
@@ -421,7 +424,7 @@ def currency(price, arg=None):
     """
     if not price:
         price = 0.0
-        
+
     # TODO: optimize
     price = lfs.utils.misc.FormatWithCommas("%.2f", price)
     shop = lfs_get_object_or_404(Shop, pk=1)

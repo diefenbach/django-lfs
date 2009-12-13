@@ -7,9 +7,11 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
+from django.utils import simplejson
 
 # lfs imports
 import lfs.cart.utils
+import lfs.voucher.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.signals import cart_changed
 from lfs.core import utils as core_utils
@@ -20,11 +22,13 @@ from lfs.cart.models import CartItem
 from lfs.shipping import utils as shipping_utils
 from lfs.payment import utils as payment_utils
 from lfs.customer import utils as customer_utils
+from lfs.voucher.models import Voucher
 
 def cart(request, template_name="lfs/cart/cart.html"):
     """The main view of the cart.
     """
     return render_to_response(template_name, RequestContext(request, {
+        "voucher_number" : lfs.voucher.utils.get_current_voucher_number(request),
         "cart_inline" : cart_inline(request),
     }))
 
@@ -50,15 +54,38 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     shipping_costs = shipping_utils.get_shipping_costs(request,
         selected_shipping_method)
 
+    # Payment
     payment_costs = payment_utils.get_payment_costs(request,
         selected_payment_method)
 
+    # Cart costs
     cart_costs = cart_utils.get_cart_costs(request, cart)
     cart_price = \
         cart_costs["price"] + shipping_costs["price"] + payment_costs["price"]
 
     cart_tax = \
         cart_costs["tax"] + shipping_costs["tax"] + payment_costs["tax"]
+
+    # Voucher
+    try:
+        voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
+        voucher = Voucher.objects.get(number=voucher_number)
+    except Voucher.DoesNotExist:
+        display_voucher = False
+        voucher_value = 0
+        voucher_tax = 0
+        voucher_number = ""
+    else:
+        lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
+        if voucher.is_effective(cart):
+            display_voucher = True
+            voucher_value = voucher.get_price_gross(cart)
+            cart_price = cart_price - voucher_value
+            voucher_tax = voucher.get_tax(cart)
+        else:
+            display_voucher = False
+            voucher_value = 0
+            voucher_tax = 0
 
     max_delivery_time = cart_utils.get_cart_max_delivery_time(request, cart)
 
@@ -80,6 +107,9 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         "selected_country" : selected_country,
         "max_delivery_time" : max_delivery_time,
         "shopping_url" : shopping_url,
+        "display_voucher" : display_voucher,
+        "voucher_value" : voucher_value,
+        "voucher_tax" : voucher_tax,
     }))
 
 def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
@@ -162,7 +192,7 @@ def add_to_cart(request, product_id=None):
     # Only active and deliverable products can be added to the cart.
     if (product.is_active() and product.is_deliverable()) == False:
         raise Http404()
-    
+
     if product.sub_type == PRODUCT_WITH_VARIANTS:
         variant_id = request.POST.get("variant_id")
         product = lfs_get_object_or_404(Product, pk=variant_id)
@@ -288,3 +318,15 @@ def refresh_cart(request):
     customer.save()
 
     return HttpResponse(cart_inline(request))
+
+def check_voucher(request):
+    """Updates the cart after the voucher number has been changed.
+    """
+    voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
+    lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
+
+    result = simplejson.dumps({
+        "html" : (("#cart-inline", cart_inline(request)),)
+    })
+
+    return HttpResponse(result)
