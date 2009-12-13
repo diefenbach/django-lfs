@@ -67,14 +67,13 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         cart_costs["tax"] + shipping_costs["tax"] + payment_costs["tax"]
 
     # Voucher
+    voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
     try:
-        voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
         voucher = Voucher.objects.get(number=voucher_number)
     except Voucher.DoesNotExist:
         display_voucher = False
         voucher_value = 0
         voucher_tax = 0
-        voucher_number = ""
     else:
         lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
         if voucher.is_effective(cart):
