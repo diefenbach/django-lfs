@@ -110,6 +110,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         "voucher_number" : voucher_number,
         "voucher_value" : voucher_value,
         "voucher_tax" : voucher_tax,
+        "voucher_number" : lfs.voucher.utils.get_current_voucher_number(request),
     }))
 
 def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
