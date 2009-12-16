@@ -1,4 +1,5 @@
 # lfs imports
+import lfs.voucher.utils
 from lfs.cart import utils as cart_utils
 from lfs.core.signals import order_submitted
 from lfs.customer import utils as customer_utils
@@ -54,11 +55,12 @@ def add_order(request):
 
     # Add voucher if one exists
     try:
-        voucher = Voucher.objects.get(number=request.POST.get("voucher"))
+        voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
+        voucher = Voucher.objects.get(number=voucher_number)
     except Voucher.DoesNotExist:
         voucher = None
     else:
-        if voucher.is_effective():
+        if voucher.is_effective(cart):
             voucher_number = voucher.number
             voucher_price = voucher.get_price_gross(cart)
             voucher_tax = voucher.get_tax(cart)
@@ -107,6 +109,7 @@ def add_order(request):
     )
 
     if voucher:
+        voucher.mark_as_used()
         order.voucher_number = voucher_number
         order.voucher_price = voucher_price
         order.voucher_tax = voucher_tax
