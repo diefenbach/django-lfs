@@ -196,7 +196,7 @@ class VoucherTestCase(TestCase):
         self.v1.active = True
         self.v1.used = False
         self.v1.effective_from = 0
-        self.assertEqual(self.v1.is_effective(self.cart), True)
+        self.assertEqual(self.v1.is_effective(self.cart)[0], True)
 
         # start / end
         self.v1.start_date = datetime.date(2009, 12, 31)
@@ -204,7 +204,7 @@ class VoucherTestCase(TestCase):
         self.v1.active = True
         self.v1.used = False
         self.v1.effective_from = 0
-        self.assertEqual(self.v1.is_effective(self.cart), False)
+        self.assertEqual(self.v1.is_effective(self.cart)[0], False)
 
         # effective from
         self.v1.start_date = datetime.date(2009, 1, 1)
@@ -212,7 +212,7 @@ class VoucherTestCase(TestCase):
         self.v1.active = True
         self.v1.used = False
         self.v1.effective_from = 1000
-        self.assertEqual(self.v1.is_effective(self.cart), False)
+        self.assertEqual(self.v1.is_effective(self.cart)[0], False)
 
         # Used
         self.v1.start_date = datetime.date(2009, 1, 1)
@@ -220,7 +220,7 @@ class VoucherTestCase(TestCase):
         self.v1.active = True
         self.v1.used = True
         self.v1.effective_from = 0
-        self.assertEqual(self.v1.is_effective(self.cart), False)
+        self.assertEqual(self.v1.is_effective(self.cart)[0], False)
 
         # Not active
         self.v1.start_date = datetime.date(2009, 1, 1)
@@ -228,7 +228,7 @@ class VoucherTestCase(TestCase):
         self.v1.active = False
         self.v1.used = False
         self.v1.effective_from = 0
-        self.assertEqual(self.v1.is_effective(self.cart), False)
+        self.assertEqual(self.v1.is_effective(self.cart)[0], False)
 
 class VoucherOptionsCase(TestCase):
     """

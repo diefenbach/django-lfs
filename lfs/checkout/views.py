@@ -30,6 +30,7 @@ from lfs.payment.settings import PAYPAL
 from lfs.payment.settings import DIRECT_DEBIT
 from lfs.payment.settings import CREDIT_CARD
 from lfs.voucher.models import Voucher
+from lfs.voucher.settings import MESSAGES
 
 def login(request, template_name="lfs/checkout/login.html"):
     """Displays a form to login or register/login the user within the check out
@@ -136,10 +137,11 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
         display_voucher = False
         voucher_value = 0
         voucher_tax = 0
-        voucher_number = ""
+        voucher_message = MESSAGES[6]
     else:
         lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
-        if voucher.is_effective(cart):        
+        is_voucher_effective, voucher_message = voucher.is_effective(cart)
+        if is_voucher_effective:
             display_voucher = True
             voucher_value = voucher.get_price_gross(cart)
             cart_price = cart_price - voucher_value
@@ -160,6 +162,8 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
         "payment_price" : payment_costs["price"],
         "selected_shipping_method" : selected_shipping_method,
         "selected_payment_method" : selected_payment_method,
+        "voucher_number" : voucher_number,
+        "voucher_message" : voucher_message,
     }))
 
 def one_page_checkout(request, checkout_form = OnePageCheckoutForm,

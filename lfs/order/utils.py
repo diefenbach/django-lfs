@@ -60,7 +60,8 @@ def add_order(request):
     except Voucher.DoesNotExist:
         voucher = None
     else:
-        if voucher.is_effective(cart):
+        is_voucher_effective, voucher_message = voucher.is_effective(cart)
+        if is_voucher_effective:
             voucher_number = voucher.number
             voucher_price = voucher.get_price_gross(cart)
             voucher_tax = voucher.get_tax(cart)

@@ -11,6 +11,7 @@ from lfs.tax.models import Tax
 from lfs.voucher.settings import KIND_OF_CHOICES
 from lfs.voucher.settings import ABSOLUTE
 from lfs.voucher.settings import PERCENTAGE
+from lfs.voucher.settings import MESSAGES
 
 class VoucherOptions(models.Model):
     """Stores misc voucher options
@@ -136,19 +137,23 @@ class Voucher(models.Model):
         self.used = True
         self.used_date = datetime.datetime.now()
         self.save()
-    
+
     def is_effective(self, cart):
         """Returns True if the voucher is effective.
         """
-        if not self.used and \
-           self.active and \
-           self.start_date <= datetime.date.today() and \
-           self.end_date > datetime.date.today() and \
-           self.effective_from < cart.get_price_gross():
-            return True
-        else:
-            return False
-        
+        if self.active == False:
+            return (False, MESSAGES[1])
+        if self.used:
+            return (False, MESSAGES[2])
+        if self.start_date > datetime.date.today():
+            return (False, MESSAGES[3])
+        if self.end_date < datetime.date.today():
+            return (False, MESSAGES[4])
+        if self.effective_from > cart.get_price_gross():
+            return (False, MESSAGES[5])
+
+        return (True, MESSAGES[0])
+
     def is_absolute(self):
         """Returns True if voucher is absolute.
         """

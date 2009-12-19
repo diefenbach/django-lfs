@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.utils import simplejson
+from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.cart.utils
@@ -23,6 +24,7 @@ from lfs.shipping import utils as shipping_utils
 from lfs.payment import utils as payment_utils
 from lfs.customer import utils as customer_utils
 from lfs.voucher.models import Voucher
+from lfs.voucher.settings import MESSAGES
 
 def cart(request, template_name="lfs/cart/cart.html"):
     """The main view of the cart.
@@ -74,9 +76,11 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         display_voucher = False
         voucher_value = 0
         voucher_tax = 0
+        voucher_message = MESSAGES[6]
     else:
         lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
-        if voucher.is_effective(cart):
+        is_voucher_effective, voucher_message = voucher.is_effective(cart)
+        if is_voucher_effective:
             display_voucher = True
             voucher_value = voucher.get_price_gross(cart)
             cart_price = cart_price - voucher_value
@@ -111,6 +115,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         "voucher_value" : voucher_value,
         "voucher_tax" : voucher_tax,
         "voucher_number" : lfs.voucher.utils.get_current_voucher_number(request),
+        "voucher_message" : voucher_message,
     }))
 
 def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
