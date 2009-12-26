@@ -132,10 +132,10 @@ def create_paypal_link_for_order(order):
         "custom": order.uuid,
         "invoice": order.uuid,
         "item_name" : shop.shop_owner,
-        "amount" : order.price - float("%.2f" % order.tax),
+        "amount" : "%.2f" % (order.price - order.tax),
         "tax" : "%.2f" % order.tax,
     }
-    
+
     parameters = "&".join(["%s=%s" % (k, v) for (k, v) in info.items()])
     if settings.DEBUG:
         url = SANDBOX_POSTBACK_ENDPOINT + "?" + parameters
@@ -143,7 +143,7 @@ def create_paypal_link_for_order(order):
         url = POSTBACK_ENDPOINT + "?" + parameters
 
     return url
-    
+
 def create_paypal_link_for_request(request):
     """Creates paypal link for given request.
     """
