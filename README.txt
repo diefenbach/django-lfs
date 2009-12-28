@@ -57,7 +57,7 @@ Credits
 Changes
 =======
 
-..  ()
+0.2.3  (2009-12-28)
 -------------------
 
 * Display the parent product ("product with variants") of a variant within 
@@ -65,7 +65,7 @@ Changes
 
 * Added meta title to product's and Category's SEO tab.
 
-* Improved vouchers 
+* Improved vouchers
 
 0.2.2  (2009-10-22)
 -------------------
@@ -84,7 +84,6 @@ Changes
 * Improved vouchers management
 
 * Added more documentation
-
 
 0.2.0  (2009-10-18)
 -------------------
