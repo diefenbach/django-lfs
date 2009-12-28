@@ -5,21 +5,6 @@ urlpatterns = patterns('django.views.generic.simple',
     (r'^products-new', 'direct_to_template', { 'template': 'manage/new/product.html' }),
 )
 
-# urlpatterns += patterns('lfs.manage.views.product.json',
-#     url(r'products-short-data', "products_short_data"),
-#     url(r'product-data/(?P<id>\d*)$', "product_data"),
-#     url(r'set-product-filter$', "set_product_filter"),
-# 
-#     url(r'set-product-data$', "set_product_data"),
-#     url(r'set-product-seo$', "set_product_seo"),
-# 
-#     url(r'get-products', "get_products"),
-#     url(r'get-related-products/(?P<id>\d*)$', "get_related_products"),
-#     url(r'add-related-products/(?P<id>\d*)$', "add_related_products"),
-#     url(r'get-product/(?P<id>\d*)$', "get_product"),
-#     url(r'save-product/(?P<id>\d*)$', "save_product"),
-# )
-
 # General
 urlpatterns += patterns('lfs.manage.views',
     url(r'^$', "dashboard", name="lfs_manage_dashboard"),
@@ -48,6 +33,7 @@ urlpatterns += patterns('lfs.manage.views.voucher',
     url(r'^manage-vouchers$', "manage_vouchers", name="lfs_manage_vouchers"),
     url(r'^add-voucher-group$', "add_voucher_group", name="lfs_manage_add_voucher_group"),
     url(r'^manage-voucher-group/(?P<id>\d+)$', "voucher_group", name="lfs_manage_voucher_group"),
+    url(r'^delete-voucher-group/(?P<id>\d+)$', "delete_voucher_group", name="lfs_delete_voucher_group"),
     url(r'^save-voucher-group-data/(?P<id>\d+)$', "save_voucher_group_data", name="lfs_manage_save_voucher_group_data"),
     url(r'^save-voucher-options$', "save_voucher_options", name="lfs_manage_save_voucher_options"),
     url(r'^add-vouchers/(?P<group_id>\d+)$', "add_vouchers", name="lfs_manage_add_vouchers"),
@@ -359,4 +345,3 @@ urlpatterns += patterns('lfs.manage.views.utils',
     url(r'^set-category-levels$', "set_category_levels", name="lfs_set_category_levels"),
     url(r'^update-effective-price$', "update_effective_price", name="lfs_update_effective_price"),
 )
-

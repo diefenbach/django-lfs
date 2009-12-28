@@ -177,7 +177,7 @@ def add_vouchers(request, group_id):
             amount = int(request.POST.get("amount", 0))
         except TypeError:
             amount = 0
-        
+
         # TODO: Fix the possibility of an infinte loop.
         for i in range(0, amount):
             while 1:
@@ -252,6 +252,20 @@ def save_voucher_group_data(request, id):
         (("#data_tab", data_tab(request, voucher_group)),
         ("#navigation", navigation(request, voucher_group)),),
         _(u"Voucher data has been save."))
+
+def delete_voucher_group(request, id):
+    """Deletes voucher group with given id and all assigned vouchers.
+    """
+    try:
+        voucher_group = VoucherGroup.objects.get(pk=id)
+    except VoucherGroup.DoesNotExist:
+        return HttpResponseRedirect(reverse("lfs_manage_vouchers"))
+    else:
+        voucher_group.delete()
+        return lfs.core.utils.set_message_cookie(
+            url = reverse("lfs_manage_vouchers"),
+            msg = _(u"Voucher group and assigned vouchers have been deleted."),
+        )            
 
 def save_voucher_options(request):
     """Saves voucher options.
