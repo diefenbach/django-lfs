@@ -21,13 +21,23 @@
                 {{ form.active }}
             </div>
         </div>
+
+        <div class="field">
+            <div class="label">
+                {% trans "Redirect to" %}
+            </div>
+            <div>
+                <input type="text"
+                       name="redirect_to"
+                       value="{{ redirect_to }}" />
+            </div>
+        </div>
         
         <div class="field">
             <div class="label">
-                    {% if product.is_variant %}
+                {% if product.is_variant %}
                     {{ form.active_name }}
                 {% endif %}
-
                 {{ form.name.label_tag }}:
             </div>
 

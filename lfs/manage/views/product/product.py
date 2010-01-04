@@ -45,6 +45,18 @@ class ProductDataForm(ModelForm):
         fields = ("active", "name", "slug", "sku", "price", "tax",
             "short_description", "description", "for_sale", "for_sale_price")
 
+    def clean(self):
+        """
+        """
+        if self.instance:
+            redirect_to = self.data.get("redirect_to", "")
+            if redirect_to != "":
+                lfs.core.utils.set_redirect_for(self.instance.get_absolute_url(), redirect_to)
+            else:
+                lfs.core.utils.remove_redirect_for(self.instance.get_absolute_url())
+                
+        return self.cleaned_data
+
 class VariantDataForm(ModelForm):
     """Form to add and edit master data of a variant.
     """
@@ -73,7 +85,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
     """Displays the whole manage/edit form for the product with the passed id.
     """
     # NOTE: For any reason the script from swfupload (see product/images.html)
-    # calls this method (I have no idea how and why). It calls it without a 
+    # calls this method (I have no idea how and why). It calls it without a
     # product id so we have to take care of it here as a workaround.
     if not product_id:
         return HttpResponse("")
@@ -147,6 +159,7 @@ def product_data_form(request, product_id, template_name="manage/product/data.ht
     return render_to_string(template_name, RequestContext(request, {
         "product" : product,
         "form" : form,
+        "redirect_to" : lfs.core.utils.get_redirect_for(product.get_absolute_url()),
     }))
 
 @permission_required("manage_shop", login_url="/login/")
@@ -214,7 +227,7 @@ def selectable_products_inline(request, page, paginator, product_id=0, template_
         product_id = int(product_id)
     except TypeError:
         product_id = 0
-        
+
     return render_to_string(template_name, RequestContext(request, {
         "paginator" : paginator,
         "page" : page,
@@ -289,6 +302,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
     form_html = render_to_string(template_name, RequestContext(request, {
         "product" : product,
         "form" : form,
+        "redirect_to" : lfs.core.utils.get_redirect_for(product.get_absolute_url()),
     }))
 
     result = simplejson.dumps({
@@ -318,11 +332,11 @@ def reset_filters(request):
     """
     if request.session.has_key("product_filters"):
         del request.session["product_filters"]
-            
+
     products = _get_filtered_products(request)
     paginator = Paginator(products, 20)
     page = paginator.page(request.REQUEST.get("page", 1))
-    
+
     product_id = request.REQUEST.get("product-id", 0)
     html = (
         ("#product-filters", product_filters_inline(request, page, paginator, product_id)),
@@ -343,7 +357,7 @@ def save_products(request):
     products = _get_filtered_products(request)
     paginator = Paginator(products, 20)
     page = paginator.page(request.REQUEST.get("page", 1))
-    
+
     for key, value in request.POST.items():
 
         if key.startswith("id-"):

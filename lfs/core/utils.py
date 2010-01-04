@@ -4,11 +4,14 @@ import sys
 import urllib
 
 # django imports
+from django.conf import settings
+from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.utils import simplejson
 from django.utils.functional import Promise
 from django.utils.encoding import force_unicode
+from django.contrib.redirects.models import Redirect
 
 # lfs imports
 import lfs.catalog.utils
@@ -55,7 +58,7 @@ def set_message_to(response, msg):
 
     response.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
     return response
-    
+
 def set_message_cookie(url, msg):
     """Creates response object with given url and adds message cookie with passed
     message.
@@ -89,6 +92,40 @@ def get_current_categories(request, object):
 
     return current_categories
 
+def get_redirect_for(path):
+    """
+    """
+    try:
+        redirect = Redirect.objects.get(
+            site = settings.SITE_ID, old_path = path)
+    except Redirect.DoesNotExist:
+        return ""
+    else:
+        return redirect.new_path
+
+def set_redirect_for(old_path, new_path):
+    """
+    """
+    try:
+        redirect = Redirect.objects.get(site = settings.SITE_ID, old_path=old_path)
+        redirect.new_path=new_path
+        redirect.save()
+    except Redirect.DoesNotExist:
+        redirect = Redirect.objects.create(
+            site_id=settings.SITE_ID, old_path=old_path, new_path=new_path)
+
+def remove_redirect_for(old_path):
+    """
+    """
+    try:
+        redirect = Redirect.objects.get(
+            site =settings.SITE_ID, old_path=old_path)
+    except Redirect.DoesNotExist:
+        return False
+    else:
+        redirect.delete()
+        return True
+
 def render_to_ajax_response(html=[], message=None):
     """Encodes given html and message to JSON and returns a HTTP response.
     """
@@ -96,7 +133,7 @@ def render_to_ajax_response(html=[], message=None):
         { "message" : message, "html" : html }, cls = LazyEncoder)
 
     return HttpResponse(result)
-    
+
 def set_category_levels():
     """Creates category levels based on the position in hierarchy.
     """
@@ -115,11 +152,11 @@ def get_end_day(date):
     """
     """
     year, month, day = date.split("-")
-    end = datetime.datetime(int(year), int(month), int(day))    
+    end = datetime.datetime(int(year), int(month), int(day))
     end = end + datetime.timedelta(1) - datetime.timedelta(microseconds=1)
-    
+
     return end
-  
+
 def getLOL(objects, objects_per_row=3):
     """Returns a list of list of given objects.
     """
@@ -135,7 +172,7 @@ def getLOL(objects, objects_per_row=3):
         result.append(row)
 
     return result
-    
+
 class CategoryTree(object):
     """Represents a category tree.
     """
