@@ -139,6 +139,10 @@ msgstr "Slug"
 msgid "Parent"
 msgstr "Kategorie"
 
+#: core/migrations/0001_initial.py:12 templates/manage/product/product.html:35
+msgid "Base Article"
+msgstr "Basisartikel"
+
 #: catalog/models.py:114 catalog/migrations/0001_initial.py:42
 msgid "Show all products"
 msgstr "Alle Produkte anzeigen"
