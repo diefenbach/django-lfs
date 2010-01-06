@@ -17,6 +17,18 @@ class Topseller(models.Model):
         
     def __unicode__(self):
         return "%s (%s)" % (self.product.name, self.position)
+
+class FeaturedProduct(models.Model):
+    """Featured products are manually selected by the shop owner
+    """
+    product  = models.ForeignKey(Product, verbose_name=_(u"Product"))
+    position = models.PositiveSmallIntegerField(_(u"Position"), default=1)
+    
+    class Meta:
+        ordering = ["position"]
+        
+    def __unicode__(self):
+        return "%s (%s)" % (self.product.name, self.position)
         
 class OrderRatingMail(models.Model):
     """Saves whether and when a rating mail has been send for an order.
