@@ -84,3 +84,15 @@ PROPERTY_STEP_TYPE_CHOICES = (
     (PROPERTY_STEP_TYPE_FIXED_STEP,   _(u"Fixed step")),
     (PROPERTY_STEP_TYPE_MANUAL_STEPS, _(u"Manual steps")),
 )
+
+
+ 
+CATEGORY_TEMPLATES = (
+    (0,"lfs/catalog/category_products.html"),
+    (1,"lfs/catalog/category_categories.html"),
+    (2,"lfs/catalog/category_single.html"),    
+    (3,"lfs/catalog/category_block.html"),      
+)
+
+DEFAULT_CATEGORY_TEMPLATE = CATEGORY_TEMPLATES[0] 
+ 

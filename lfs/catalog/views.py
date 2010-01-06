@@ -152,12 +152,17 @@ def category_view(request, slug, start=0, template_name="lfs/catalog/category_ba
     """
     """
     category = lfs_get_object_or_404(Category, slug=slug)
-
+    render_template = category.get_category_template_name()   
     if category.content == CONTENT_PRODUCTS:
-        inline = category_products(request, slug, start)
+        if render_template!=None:
+            inline = category_products(request, slug, start,render_template)
+        else:
+            inline = category_products(request, slug, start)
     else:
-        inline = category_categories(request, slug)
-
+        if render_template!=None:
+            inline = category_categories(request, slug,render_template)
+        else:
+            inline = category_categories(request,slug)
     # Set last visited category for later use, e.g. Display breadcrumbs,
     # selected menu points, etc.
     request.session["last_category"] = category

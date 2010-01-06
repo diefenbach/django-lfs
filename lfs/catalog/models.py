@@ -35,6 +35,9 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_CHOICES
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_AUTOMATIC
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
+from lfs.catalog.settings import DEFAULT_CATEGORY_TEMPLATE
+from lfs.catalog.settings import CATEGORY_TEMPLATES
+
 from lfs.tax.models import Tax
 
 class Category(models.Model):
@@ -104,6 +107,10 @@ class Category(models.Model):
         - level
            The level of the category within the category hierachie, e.g. if it
            is a top level category the level is 1.
+           
+        - category_template
+           The name of the template to be used when rendering the category view.
+           
     """
     name = models.CharField(_(u"Name"), max_length=50)
     slug = models.SlugField(_(u"Slug"),unique=True)
@@ -135,6 +142,9 @@ class Category(models.Model):
     level = models.PositiveSmallIntegerField(default=1)
     uid = models.CharField(max_length=50)
 
+    category_template = models.CharField(_(u"Category template"), max_length=400, blank=True,null=True, choices=CATEGORY_TEMPLATES)
+    
+    
     class Meta:
         ordering = ("position", )
         verbose_name_plural = 'Categories'
@@ -328,7 +338,17 @@ class Category(models.Model):
         # TODO: Circular imports
         import lfs.core.utils
         return self.parent or lfs.core.utils.get_default_shop()
-
+        
+        
+    def get_category_template_name(self):
+        """
+        method to return the path of the template
+        """
+        if self.category_template!=None:
+            id = int(self.category_template)
+            return CATEGORY_TEMPLATES[id][1]
+        return None
+        
 class Product(models.Model):
     """A product is sold within a shop.
 
