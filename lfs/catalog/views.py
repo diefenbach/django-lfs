@@ -46,7 +46,7 @@ def select_variant_from_properties(request):
     
     try:
         product = Product.objects.get(pk = product_id)
-    except Product.DoesNotExist:
+    except:# Product.DoesNotExist:
         return HttpResponse("")
 
     options = lfs_utils.parse_properties(request)
@@ -152,17 +152,10 @@ def category_view(request, slug, start=0, template_name="lfs/catalog/category_ba
     """
     """
     category = lfs_get_object_or_404(Category, slug=slug)
-    render_template = category.get_category_template_name()   
     if category.content == CONTENT_PRODUCTS:
-        if render_template!=None:
-            inline = category_products(request, slug, start,render_template)
-        else:
-            inline = category_products(request, slug, start)
+        inline = category_products(request, slug, start)
     else:
-        if render_template!=None:
-            inline = category_categories(request, slug,render_template)
-        else:
-            inline = category_categories(request,slug)
+        inline = category_categories(request, slug)
     # Set last visited category for later use, e.g. Display breadcrumbs,
     # selected menu points, etc.
     request.session["last_category"] = category
@@ -202,7 +195,9 @@ def category_categories(request, slug, template_name="lfs/catalog/category_categ
 
     if len(row) > 0:
         categories.append(row)
-
+    render_template = category.get_category_template_name()   
+    if render_template!=None:
+        template_name = render_template    
     result = render_to_string(template_name, RequestContext(request, {
         "category" : category,
         "categories" : categories,
@@ -301,7 +296,10 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
         previous_url = "%s/%s" % (category.get_absolute_url(), start - amount)
     else:
         previous_url = None
-
+    
+    render_template = category.get_category_template_name()   
+    if render_template!=None:
+        template_name = render_template
     result = render_to_string(template_name, RequestContext(request, {
         "category" : category,
         "products" : products,
@@ -310,6 +308,7 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
         "amount_of_products" : amount_of_products,
         "pages" : pages,
         "show_pages" : amount_of_products > amount,
+        "all_products" : all_products
     }))
 
     temp[sub_cache_key] = result
