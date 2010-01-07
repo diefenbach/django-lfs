@@ -195,7 +195,7 @@ def category_categories(request, slug, template_name="lfs/catalog/category_categ
 
     if len(row) > 0:
         categories.append(row)
-    render_template = category.get_category_template_name()   
+    render_template = category.get_template_name()   
     if render_template!=None:
         template_name = render_template    
     result = render_to_string(template_name, RequestContext(request, {
@@ -297,7 +297,7 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
     else:
         previous_url = None
     
-    render_template = category.get_category_template_name()   
+    render_template = category.get_template_name()   
     if render_template!=None:
         template_name = render_template
     result = render_to_string(template_name, RequestContext(request, {
