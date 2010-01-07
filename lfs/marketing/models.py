@@ -23,6 +23,7 @@ class FeaturedProduct(models.Model):
     """
     product  = models.ForeignKey(Product, verbose_name=_(u"Product"))
     position = models.PositiveSmallIntegerField(_(u"Position"), default=1)
+    active = models.BooleanField(_(u"Active"), default=True)
     
     class Meta:
         ordering = ["position"]
