@@ -334,7 +334,6 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
 
     # TODO: Factor top_category out to a inclusion tag, so that people can
     # omit if they don't need it.
-
     return render_to_response(template_name, RequestContext(request, {
         "product_inline" : product_inline(request, product.id),
         "product" : product,
@@ -392,7 +391,8 @@ def product_inline(request, id, template_name="lfs/catalog/product_inline.html")
         variants = product.get_variants()
 
     # Reviews
-
+    if product.get_template_name()!=None:
+        template_name=product.get_template_name()
     result = render_to_string(template_name, RequestContext(request, {
         "product" : product,
         "variant" : variant,

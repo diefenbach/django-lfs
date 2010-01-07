@@ -40,7 +40,7 @@ class CategoryForm(ModelForm):
         fields = ("name", "slug", "parent", "short_description", "description", 
             "image", "active_formats", "content", "product_cols", "product_rows", 
             "category_cols", "static_block", "position", 
-            "exclude_from_navigation", "show_all_products","category_template")
+            "exclude_from_navigation", "show_all_products","template_name")
 
 @permission_required("manage_shop", login_url="/login/")
 def manage_categories(request):

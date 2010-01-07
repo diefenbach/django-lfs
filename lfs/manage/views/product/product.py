@@ -43,7 +43,7 @@ class ProductDataForm(ModelForm):
     class Meta:
         model = Product
         fields = ("active", "name", "slug", "sku", "price", "tax",
-            "short_description", "description", "for_sale", "for_sale_price")
+            "short_description", "description", "for_sale", "for_sale_price","template_name")
 
     def clean(self):
         """

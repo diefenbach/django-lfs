@@ -92,8 +92,10 @@ CATEGORY_TEMPLATES = (
     (1,"lfs/catalog/category_products_1.html"),       
     (2,"lfs/catalog/category_categories.html"),
     (3,"lfs/catalog/category_categories_1.html"),      
-
 )
+PRODUCT_TEMPLATES = (
+    (0,"lfs/catalog/product_inline.html"),
+	(1,"lfs/catalog/product_inline_topprice.html"),
+	(2,"lfs/catalog/product_inline_topdescription.html"),
 
-DEFAULT_CATEGORY_TEMPLATE = CATEGORY_TEMPLATES[0] 
- 
+) 
