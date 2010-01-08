@@ -19,6 +19,7 @@ How-tos
    how_to_horizontal_menu
    how_to_variants
    how_to_filters
+   how_to_paypal
 
 
 Indices and tables
