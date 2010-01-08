@@ -261,7 +261,27 @@ $(function() {
                 var data = JSON.parse(data);
                 $("#cart-inline").html(data["cart"]);
                 $("#shipping-inline").html(data["shipping"]);
-                $("#payment-inline").html(data["payment"]);
+                $("#payment-inline").html(data["payment"]);                
+            }
+        });
+    }
+    
+    var update_invoice_address = function() {
+        var data = $(".checkout-form").ajaxSubmit({
+            url : "/changed-invoice-country/",
+            "success" : function(data) {
+                var data = JSON.parse(data);
+                $("#invoice-address-inline").html(data["invoice_address"]);                
+            }
+        });
+    }
+    
+    var update_shipping_address = function() {
+        var data = $(".checkout-form").ajaxSubmit({
+            url : "/changed-shipping-country/",
+            "success" : function(data) {
+                var data = JSON.parse(data);
+                $("#shipping-address-inline").html(data["shipping_address"]);                
             }
         });
     }
@@ -270,7 +290,13 @@ $(function() {
         update_checkout()
     });
 
-    $("#id_shipping_country, #id_invoice_country").livequery("change", function() {
+    $("#id_invoice_country").livequery("change", function() {
+    	update_invoice_address()
+        update_checkout()
+    });
+    
+    $("#id_shipping_country").livequery("change", function() {
+    	update_shipping_address()
         update_checkout()
     });
 
