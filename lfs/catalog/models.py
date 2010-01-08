@@ -38,6 +38,8 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
 from lfs.catalog.settings import CATEGORY_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TEMPLATES
 
+
+   
 from lfs.tax.models import Tax
 
 class Category(models.Model):
@@ -142,8 +144,7 @@ class Category(models.Model):
     level = models.PositiveSmallIntegerField(default=1)
     uid = models.CharField(max_length=50)
 
-    template_name = models.CharField(_(u"Category template"), max_length=400, blank=True,null=True, choices=CATEGORY_TEMPLATES)
-    
+    template_name = models.CharField(_(u"Category template"), max_length=400,blank=True,null=True, choices=CATEGORY_TEMPLATES)
     
     class Meta:
         ordering = ("position", )
@@ -531,7 +532,7 @@ class Product(models.Model):
     active_meta_keywords = models.BooleanField(_(u"Active meta keywords"), default=False)
     active_dimensions = models.BooleanField(_(u"Active dimensions"), default=False)
 
-    template_name = models.CharField(_(u"Product template"), max_length=400, blank=True,null=True, choices=PRODUCT_TEMPLATES)
+    template_name = models.CharField(_(u"Product template"), blank=True,null=True, max_length=400,choices=PRODUCT_TEMPLATES)
 
     objects = ActiveManager()
 

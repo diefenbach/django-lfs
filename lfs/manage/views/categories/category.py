@@ -20,6 +20,7 @@ from lfs.manage.views.categories.seo import edit_seo
 from lfs.manage.views.categories.portlet import manage_categories_portlet
 from lfs.manage.views.lfs_portlets import portlets_inline
 
+
 class CategoryForm(ModelForm):
     """Process form to add/edit categories options.
     """
@@ -34,7 +35,6 @@ class CategoryForm(ModelForm):
             context = None
             
         self.fields["parent"].choices = _category_choices(context)
-        
     class Meta:
         model = Category
         fields = ("name", "slug", "parent", "short_description", "description", 
@@ -223,3 +223,4 @@ def _category_choices_children(categories, category, context, level=1):
         if context != category:
             categories.append((category.id, "%s %s" % ("-" * level, category.name)))
             _category_choices_children(categories, category, context, level+1)
+            
