@@ -8,7 +8,10 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 from lfs.payment.settings import CREDIT_CARD_TYPE_CHOICES
+from lfs.core.settings import ADDRESS_LOCALIZATION
 from lfs.core.utils import get_default_shop
+from lfs.core.models import Country
+from lfs.addresses.views import get_l10n 
 
 class OnePageCheckoutForm(forms.Form):
     """
@@ -19,6 +22,7 @@ class OnePageCheckoutForm(forms.Form):
     invoice_street = forms.CharField(label=_(u"Street"), max_length=100)
     invoice_zip_code = forms.CharField(label=_(u"Zip Code"), max_length=10)
     invoice_city = forms.CharField(label=_(u"City"), max_length=50)
+    invoice_state = forms.CharField(label=_(u"State"), max_length=50)
     invoice_country = forms.ChoiceField(label=_(u"Country"), required=False)
     invoice_phone = forms.CharField(label=_(u"Phone"), max_length=20)
     invoice_email = forms.EmailField(label=_(u"E-mail"), required=False, max_length=50)
@@ -29,6 +33,7 @@ class OnePageCheckoutForm(forms.Form):
     shipping_street = forms.CharField(label=_(u"Street"), required=False, max_length=100)
     shipping_zip_code = forms.CharField(label=_(u"Zip Code"), required=False, max_length=10)
     shipping_city = forms.CharField(label=_(u"City"), required=False, max_length=50)
+    shipping_state = forms.CharField(label=_(u"State"), required=False, max_length=50)
     shipping_country = forms.ChoiceField(label=_(u"Country"), required=False)
     shipping_phone = forms.CharField(label=_(u"Phone"), required=False, max_length=20)
 
@@ -60,6 +65,50 @@ class OnePageCheckoutForm(forms.Form):
         self.fields["credit_card_expiration_date_month"].choices = [(i, i) for i in range(1, 13)]
         self.fields["credit_card_expiration_date_year"].choices = [(i, i) for i in range(year, year+10)]
         
+        if ADDRESS_LOCALIZATION:
+            # set correct country fields and labels                        
+            initial_data = kwargs.get('initial', None) 
+            if  initial_data is not None:
+                invoice_country_id = initial_data.get('invoice_country', None)
+                if  invoice_country_id is not None:
+                    invoice_country = Country.objects.get(id=invoice_country_id)
+                    self.set_invoice_fields(invoice_country.code)
+                    
+                shipping_country_id = initial_data.get('shipping_country', None)
+                if  shipping_country_id is not None:
+                    shipping_country = Country.objects.get(id=shipping_country_id)
+                    self.set_shipping_fields(shipping_country.code)
+            
+        
+    
+    def set_invoice_fields(self, country_code):
+        l10n_obj = get_l10n(country_code)
+        if l10n_obj is not None:
+            self.set_fields('invoice', 
+                ["_company_name", "_street", "_zip_code", "_city", "_state"], 
+                l10n_obj.get_address_fields())
+            self.set_fields('invoice', ['_phone'], l10n_obj.get_phone_fields())
+            self.set_fields('invoice', ['_email'], l10n_obj.get_email_fields())
+        
+    def set_shipping_fields(self, country_code):
+        l10n_obj = get_l10n(country_code)
+        if l10n_obj is not None:
+            self.set_fields('shipping', 
+                ["_company_name", "_street", "_zip_code", "_city", "_state"], 
+                l10n_obj.get_address_fields())
+            self.set_fields('shipping', ['_phone'], l10n_obj.get_phone_fields())
+            self.set_fields('shipping', ['_email'], l10n_obj.get_email_fields())    
+        
+    def set_fields(self, prefix, suffixes,  fields):
+        assert(len(suffixes) == len(fields))
+        i = 0
+        for field in fields:
+            if field is not None:      
+                field_name = prefix+suffixes[i]       
+                if self.fields.get(field_name, None) is not None:
+                    self.fields[field_name] = field                        
+            i = i + 1
+        
     def clean(self):
         """
         """
@@ -84,6 +133,9 @@ class OnePageCheckoutForm(forms.Form):
 
             if self.cleaned_data.get("shipping_city", "") == "":
                 self._errors["shipping_city"] = ErrorList([msg])
+                
+            if self.cleaned_data.get("shipping_state", "") == "":
+                self._errors["shipping_state"] = ErrorList([msg])
                 
         # 1 == Direct Debit
         if self.data.get("payment_method") == "1":
