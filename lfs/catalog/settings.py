@@ -86,16 +86,19 @@ PROPERTY_STEP_TYPE_CHOICES = (
 )
 
 
- 
+
+PRODUCT_PATH = "lfs/catalog/categories/product"
+CATEGORY_PATH  = "lfs/catalog/categories/category"
 CATEGORY_TEMPLATES = (
-    (0,"lfs/catalog/category_products.html"),
-    (1,"lfs/catalog/category_products_1.html"),       
-    (2,"lfs/catalog/category_categories.html"),
-    (3,"lfs/catalog/category_categories_1.html"),      
+    (0,"%s/%s" % (PRODUCT_PATH ,"default.html") ) ,
+    (1,"%s/%s" % (PRODUCT_PATH ,"variant_1.html") ) ,       
+    (2,"%s/%s" % (CATEGORY_PATH,"default.html") ),
+    (3,"%s/%s" % (CATEGORY_PATH,"variant_1.html") ),      
 )
+    
 PRODUCT_TEMPLATES = (
-    (0,"lfs/catalog/product_inline.html"),
-	(1,"lfs/catalog/product_inline_topprice.html"),
-	(2,"lfs/catalog/product_inline_topdescription.html"),
+    (0,"lfs/catalog/products/product_inline.html"),
+	(1,"lfs/catalog/products/product_inline_topprice.html"),
+	(2,"lfs/catalog/products/product_inline_topdescription.html"),
 
 ) 

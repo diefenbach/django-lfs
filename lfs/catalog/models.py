@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 import lfs.catalog.utils
 from lfs.core.fields.thumbs import ImageWithThumbsField
 from lfs.core.managers import ActiveManager
-from lfs.catalog.settings import ACTIVE_FOR_SALE_CHOICES
+from lfs.catalog.settings import ACTIVE_FOR_SALE_CHOICES, CONTENT_CATEGORIES
 from lfs.catalog.settings import ACTIVE_FOR_SALE_STANDARD
 from lfs.catalog.settings import ACTIVE_FOR_SALE_YES
 from lfs.catalog.settings import PRODUCT_TYPE_CHOICES
@@ -37,7 +37,7 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
 from lfs.catalog.settings import CATEGORY_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TEMPLATES
-
+from lfs.catalog.settings import CATEGORY_PATH
 
    
 from lfs.tax.models import Tax
@@ -83,10 +83,6 @@ class Category(models.Model):
         - static_block
             A assigned static block to the category.
 
-        - content
-            decides which content will be displayed. At the moment this is either
-            sub categories or products.
-
         - active_formats
             If True product_rows, product_cols and category_cols are taken from
             the category otherwise from the parent.
@@ -130,7 +126,7 @@ class Category(models.Model):
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
 
     static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")
-    content = models.IntegerField(_(u"Content"), default=CONTENT_PRODUCTS, choices=CONTENT_CHOICES)
+    #content = models.IntegerField(_(u"Content"), default=CONTENT_PRODUCTS, choices=CONTENT_CHOICES)
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
 
     product_rows  = models.IntegerField(_(u"Product rows"), default=3)
@@ -349,7 +345,15 @@ class Category(models.Model):
             id = int(self.template_name)
             return CATEGORY_TEMPLATES[id][1]
         return None
-        
+    def get_content(self):
+        """
+        try to find out which type of content the template is rendering, depending on its path
+        """
+        if self.get_template_name()==None:
+           return CONTENT_PRODUCTS
+        if self.get_template_name().startswith(CATEGORY_PATH):
+           return CONTENT_CATEGORIES
+        return CONTENT_PRODUCTS
 class Product(models.Model):
     """A product is sold within a shop.
 

@@ -152,7 +152,7 @@ def category_view(request, slug, start=0, template_name="lfs/catalog/category_ba
     """
     """
     category = lfs_get_object_or_404(Category, slug=slug)
-    if category.content == CONTENT_PRODUCTS:
+    if category.get_content() == CONTENT_PRODUCTS:
         inline = category_products(request, slug, start)
     else:
         inline = category_categories(request, slug)
@@ -169,10 +169,10 @@ def category_view(request, slug, start=0, template_name="lfs/catalog/category_ba
         "top_category" : lfs.catalog.utils.get_current_top_category(request, category),
     }))
 
-def category_categories(request, slug, template_name="lfs/catalog/category_categories.html"):
+def category_categories(request, slug, template_name="lfs/catalog/categories/category/default.html"):
     """Displays the child categories of the category with passed slug.
-
-    This is displayed if the category's content attribute is set to categories".
+    
+    This view is called if the user chooses a template that is situated in settings.CATEGORY_PATH ".
     """
     cache_key = "category-categories-%s" % slug
 
@@ -206,10 +206,10 @@ def category_categories(request, slug, template_name="lfs/catalog/category_categ
     cache.set(cache_key, result)
     return result
 
-def category_products(request, slug, start=0, template_name="lfs/catalog/category_products.html"):
+def category_products(request, slug, start=0, template_name="lfs/catalog/categories/product/default.html"):
     """Displays the products of the category with passed slug.
-
-    This is displayed if the category's content attribute is set to products.
+    
+    This view is called if the user chooses a template that is situated in settings.PRODUCT_PATH ".
     """
     # Resets the product filters if the user navigates to another category.
     # TODO: Is this what a customer would expect?
