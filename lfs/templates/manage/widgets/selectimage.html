@@ -8,9 +8,9 @@
      {%for id,urls in choices%}     
        {%with id|stringformat:"s" as idstring%}
          {%ifequal idstring currentvalue %}
-    	   <option value="{{id}}" title="{{urls.image}}" selected="selected">{{urls.file}}</option>
+    	   <option value="{{id}}" title="{{urls.image}}" selected="selected">{{urls.name}}</option>
   	     {%else%}
-  	      <option value="{{id}}" title="{{urls.image}}">{{urls.file}}</option>  	   
+  	      <option value="{{id}}" title="{{urls.image}}">{{urls.name}}</option>  	   
   	     {%endifequal%}
   	   {%endwith%}
      {%endfor%}
