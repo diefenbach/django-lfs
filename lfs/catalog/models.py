@@ -1098,7 +1098,7 @@ class Product(models.Model):
         """
         if self.template_name!=None:
             id = int(self.template_name)
-            return PRODUCT_TEMPLATES[id][1]
+            return PRODUCT_TEMPLATES[id][1]["file"]
         return None
 
 class ProductAccessories(models.Model):
