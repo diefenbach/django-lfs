@@ -89,11 +89,14 @@ PROPERTY_STEP_TYPE_CHOICES = (
 
 PRODUCT_PATH = "lfs/catalog/categories/product"
 CATEGORY_PATH  = "lfs/catalog/categories/category"
+IMAGES_PATH = "/media/lfs/icons" # Path to template preview images
+
+
 CATEGORY_TEMPLATES = (
-    (0,"%s/%s" % (PRODUCT_PATH ,"default.html") ) ,
-    (1,"%s/%s" % (PRODUCT_PATH ,"variant_1.html") ) ,       
-    (2,"%s/%s" % (CATEGORY_PATH,"default.html") ),
-    (3,"%s/%s" % (CATEGORY_PATH,"variant_1.html") ),      
+    (0,{"file":"%s/%s" % (PRODUCT_PATH ,"default.html"),"image":IMAGES_PATH+"/zoom.png"}),
+    (1,{"file":"%s/%s" % (PRODUCT_PATH ,"variant_1.html"),"image":IMAGES_PATH+"/delete.png"}),
+    (2,{"file":"%s/%s" % (CATEGORY_PATH ,"default.html"),"image":IMAGES_PATH+"/zoom.png"}),
+    (3,{"file":"%s/%s" % (CATEGORY_PATH ,"variant_1.html"),"image":IMAGES_PATH+"/delete.png"}),
 )
     
 PRODUCT_TEMPLATES = (

@@ -171,7 +171,7 @@ def category_view(request, slug, start=0, template_name="lfs/catalog/category_ba
 
 def category_categories(request, slug, template_name="lfs/catalog/categories/category/default.html"):
     """Displays the child categories of the category with passed slug.
-    
+    	
     This view is called if the user chooses a template that is situated in settings.CATEGORY_PATH ".
     """
     cache_key = "category-categories-%s" % slug

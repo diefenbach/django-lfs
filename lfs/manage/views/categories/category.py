@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
+from lfs.catalog.settings import CATEGORY_TEMPLATES
 from lfs.core.widgets.image import LFSImageInput
 from lfs.manage import utils as manage_utils
 from lfs.manage.views.categories.products import manage_products
@@ -20,14 +21,13 @@ from lfs.manage.views.categories.seo import edit_seo
 from lfs.manage.views.categories.portlet import manage_categories_portlet
 from lfs.manage.views.lfs_portlets import portlets_inline
 
-
+from lfs.utils.widgets import SelectImage
 class CategoryForm(ModelForm):
     """Process form to add/edit categories options.
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):       
         super(CategoryForm, self).__init__(*args, **kwargs)
-        self.fields["image"].widget = LFSImageInput()
-        
+        self.fields["image"].widget = LFSImageInput()        
         # If it is used as add form there is no instance.
         try:
             context = kwargs["instance"]
@@ -35,6 +35,7 @@ class CategoryForm(ModelForm):
             context = None
             
         self.fields["parent"].choices = _category_choices(context)
+        self.fields["template_name"].widget = SelectImage(choices=CATEGORY_TEMPLATES)
     class Meta:
         model = Category
         fields = ("name", "slug", "parent", "short_description", "description", 
