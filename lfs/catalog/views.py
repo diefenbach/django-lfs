@@ -340,7 +340,7 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
         "top_category" : lfs.catalog.utils.get_current_top_category(request, product),
     }))
 
-def product_inline(request, id, template_name="lfs/catalog/product_inline.html"):
+def product_inline(request, id, template_name="lfs/catalog/products/product_inline.html"):
     """Part of the prduct view, which displays the actual data of the product.
 
     This is factored out to be able to better cached and in might in future used

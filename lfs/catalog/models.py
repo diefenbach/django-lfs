@@ -37,7 +37,7 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
 from lfs.catalog.settings import CATEGORY_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TEMPLATES
-from lfs.catalog.settings import CATEGORY_PATH
+from lfs.catalog.settings import CAT_CATEGORY_PATH
 
    
 from lfs.tax.models import Tax
@@ -342,8 +342,8 @@ class Category(models.Model):
         method to return the path of the category template
         """
         if self.template_name!=None:
-            id = int(self.template_name)
-            return CATEGORY_TEMPLATES[id][1]
+            id = int(self.template_name)                        
+            return CATEGORY_TEMPLATES[id][1]["file"]
         return None
     def get_content(self):
         """
@@ -351,7 +351,7 @@ class Category(models.Model):
         """
         if self.get_template_name()==None:
            return CONTENT_PRODUCTS
-        if self.get_template_name().startswith(CATEGORY_PATH):
+        if self.get_template_name().startswith(CAT_CATEGORY_PATH): # do we have category - templates
            return CONTENT_CATEGORIES
         return CONTENT_PRODUCTS
 class Product(models.Model):

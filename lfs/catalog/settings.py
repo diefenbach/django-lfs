@@ -86,22 +86,21 @@ PROPERTY_STEP_TYPE_CHOICES = (
 )
 
 
-
-PRODUCT_PATH = "lfs/catalog/categories/product"
-CATEGORY_PATH  = "lfs/catalog/categories/category"
+CAT_PRODUCT_PATH   = "lfs/catalog/categories/product"   # category with products
+CAT_CATEGORY_PATH  = "lfs/catalog/categories/category"  # category with subcategories
+PRODUCT_PATH       = "lfs/catalog/products"   # product templates
 IMAGES_PATH = "/media/lfs/icons" # Path to template preview images
 
-
+# template configuration for category display
 CATEGORY_TEMPLATES = (
-    (0,{"file":"%s/%s" % (PRODUCT_PATH ,"default.html"),"image":IMAGES_PATH+"/zoom.png"}),
-    (1,{"file":"%s/%s" % (PRODUCT_PATH ,"variant_1.html"),"image":IMAGES_PATH+"/delete.png"}),
-    (2,{"file":"%s/%s" % (CATEGORY_PATH ,"default.html"),"image":IMAGES_PATH+"/zoom.png"}),
-    (3,{"file":"%s/%s" % (CATEGORY_PATH ,"variant_1.html"),"image":IMAGES_PATH+"/delete.png"}),
+    (0,{"file":"%s/%s" % (CAT_PRODUCT_PATH ,"default.html"),"image":IMAGES_PATH+"/category_square.png"}),
+    (1,{"file":"%s/%s" % (CAT_PRODUCT_PATH ,"variant_1.html"),"image":IMAGES_PATH+"/category_horizontal.png"}),
+    (2,{"file":"%s/%s" % (CAT_CATEGORY_PATH ,"default.html"),"image":IMAGES_PATH+"/category_square.png"}),
+    (3,{"file":"%s/%s" % (CAT_CATEGORY_PATH ,"variant_1.html"),"image":IMAGES_PATH+"/category_horizontal.png"}),
 )
-    
+# template configuration for product display    
 PRODUCT_TEMPLATES = (
-    (0,"lfs/catalog/products/product_inline.html"),
-	(1,"lfs/catalog/products/product_inline_topprice.html"),
-	(2,"lfs/catalog/products/product_inline_topdescription.html"),
-
+    (0,{"file":"%s/%s" % (PRODUCT_PATH ,"product_inline.html"),"image":IMAGES_PATH+"/product_default.png"}),
+    (1,{"file":"%s/%s" % (PRODUCT_PATH ,"product_inline_topprice.html"),"image":IMAGES_PATH+"/product_priceup.png"}),
+    (2,{"file":"%s/%s" % (PRODUCT_PATH ,"product_inline_topdescription"),"image":IMAGES_PATH+"/product_textup.png"}),
 ) 
