@@ -102,5 +102,5 @@ CATEGORY_TEMPLATES = (
 PRODUCT_TEMPLATES = (
     (0,{"file":"%s/%s" % (PRODUCT_PATH ,"product_inline.html"),"image":IMAGES_PATH+"/product_default.png"}),
     (1,{"file":"%s/%s" % (PRODUCT_PATH ,"product_inline_topprice.html"),"image":IMAGES_PATH+"/product_priceup.png"}),
-    (2,{"file":"%s/%s" % (PRODUCT_PATH ,"product_inline_topdescription"),"image":IMAGES_PATH+"/product_textup.png"}),
+    (2,{"file":"%s/%s" % (PRODUCT_PATH ,"product_inline_topdescription.html"),"image":IMAGES_PATH+"/product_textup.png"}),
 ) 
