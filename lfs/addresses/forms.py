@@ -1,6 +1,15 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
+from lfs.addresses.models import Address
+
+
+class AddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        exclude = ("email")
+
+
 class L10NAddress():
     """ The default address format """
 

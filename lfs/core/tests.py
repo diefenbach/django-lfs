@@ -7,6 +7,7 @@ from lfs.page.tests import *
 from lfs.search.tests import *
 from lfs.shipping.tests import *
 from lfs.voucher.tests import *
+from lfs.checkout.tests import *
 
 # django imports
 from django.contrib.auth.models import User
