@@ -3,6 +3,8 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test.client import Client
 from django.core.urlresolvers import reverse
+from django.core import mail
+
 
 # lfs imports
 from lfs.core.models import Country
@@ -88,3 +90,28 @@ class AddressTestCase(TestCase):
         address_response = self.c.get(reverse('lfs_my_addresses'))
         self.assertContains(address_response, 'Smallville', status_code=200)
         self.assertContains(address_response, 'Gotham City', status_code=200)
+        
+        
+    def test_register_then_view_address(self):
+        """Check we have a customer in database after registration"""
+        # we should have one customer starting
+        self.assertEqual(len(Customer.objects.all()), 1)
+        
+        # logout joe
+        self.c.logout()        
+        
+        registration_response = self.c.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
+        self.assertEquals(registration_response.status_code, 302)
+        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
+        
+        # Test that one message has been sent.
+        self.assertEquals(len(mail.outbox), 1)
+        
+        # see if we can view the addresss page
+        address_response = self.c.get(reverse('lfs_my_addresses'))
+        self.assertContains(address_response, 'State', status_code=200)
+        
+        # we should now have 2 customers
+        self.assertEqual(len(Customer.objects.all()), 2)
+        
+        
