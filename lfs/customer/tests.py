@@ -122,7 +122,7 @@ class AddressTestCase(TestCase):
         self.assertContains(address_response, 'Ireland', status_code=200)
         self.assertContains(address_response, 'Offaly', status_code=200)
         
-    def test_change_address_de(self):
+    def test_change_invoice_address_de(self):
         address_response = self.c.get(reverse('lfs_my_addresses'))
         self.assertContains(address_response, 'Offaly', status_code=200)
         self.assertNotContains(address_response, 'Baden-Wuerttemberg', status_code=200)
@@ -130,6 +130,18 @@ class AddressTestCase(TestCase):
         
         germany = Country.objects.get(code="de")
         changed_country_response = self.c.post(reverse('lfs_changed_my_invoice_country'), {'invoice-country': [germany.id],},
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertContains(changed_country_response, 'Baden-Wuerttemberg', status_code=200)
+        self.assertContains(changed_country_response, 'Zip Code', status_code=200)
+        
+    def test_change_shipping_address_de(self):
+        address_response = self.c.get(reverse('lfs_my_addresses'))
+        self.assertContains(address_response, 'Offaly', status_code=200)
+        self.assertNotContains(address_response, 'Baden-Wuerttemberg', status_code=200)
+        self.assertNotContains(address_response, 'Zip Code', status_code=200)
+        
+        germany = Country.objects.get(code="de")
+        changed_country_response = self.c.post(reverse('lfs_changed_my_shipping_country'), {'shipping-country': [germany.id],},
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertContains(changed_country_response, 'Baden-Wuerttemberg', status_code=200)
         self.assertContains(changed_country_response, 'Zip Code', status_code=200)
