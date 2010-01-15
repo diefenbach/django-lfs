@@ -1,8 +1,8 @@
+"""W
 # django imports
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 
 from lfs.core.models import Country
 
@@ -22,3 +22,4 @@ class Address(models.Model):
     def __unicode__(self):
         return "%s / %s" % (self.line1, self.line2, self.country)
     
+"""
