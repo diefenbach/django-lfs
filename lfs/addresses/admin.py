@@ -1,3 +1,4 @@
+"""
 # django imports
 from django.contrib import admin
 
@@ -5,6 +6,7 @@ from django.contrib import admin
 from lfs.addresses.models import Address
 
 class AddressAdmin(admin.ModelAdmin):
-    """
-    """
+    pass
+   
 admin.site.register(Address, AddressAdmin)
+"""
