@@ -12,6 +12,9 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
+from django.utils import simplejson
+from django.template.loader import render_to_string
+from django.http import HttpResponse
 
 # lfs imports
 import lfs
@@ -163,10 +166,12 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
                             customer.selected_shipping_address.id
     
     if request.method == "POST":    
-        shipping_form = AddressForm(prefix="shipping", data=request.POST,
+        shipping_form = AddressForm(prefix="shipping", data=request.POST, 
+            initial=request.POST,
             instance = customer.selected_shipping_address)
         
         invoice_form = AddressForm(prefix="invoice", data=request.POST,
+            initial=request.POST,
             instance = customer.selected_invoice_address)
     
         if show_shipping_address:
@@ -188,9 +193,44 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
         
     return render_to_response(template_name, RequestContext(request, {
         "show_shipping_address" : show_shipping_address,
-        "shipping_address_form" : shipping_form,
-        "invoice_address_form" : invoice_form,
+        "shipping_address_inline" : shipping_address_inline(request, shipping_form),
+        "invoice_address_inline" : invoice_address_inline(request, invoice_form),
     }))
+    
+def shipping_address_inline(request, form, template_name="lfs/customer/shipping_address_inline.html"):        
+    """displays the shipping address with localized fields
+    """
+    return render_to_string(template_name, RequestContext(request, {
+        "form": form
+    }))
+
+
+def invoice_address_inline(request, form, template_name="lfs/customer/invoice_address_inline.html"):
+    """displays the invoice address with localized fields
+    """
+    return render_to_string(template_name, RequestContext(request, {
+        "form": form
+    }))
+
+def changed_invoice_country(request):
+    """
+    """
+    form = AddressForm(prefix="invoice", data=request.POST, initial=request.POST)
+    result = simplejson.dumps({
+        "invoice_address" : invoice_address_inline(request, form),
+    })
+    return HttpResponse(result)
+
+def changed_shipping_country(request):
+    """
+    """
+    form = AddressForm(prefix="shipping", data=request.POST, initial=request.POST)
+    result = simplejson.dumps({
+        "shipping_address" : shipping_address_inline(request, form),
+    })
+
+    return HttpResponse(result)
+    
 
 def email(request, template_name="lfs/customer/email.html"):
     """Saves the email address from the data form.

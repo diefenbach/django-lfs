@@ -8,6 +8,8 @@ from lfs.search.tests import *
 from lfs.shipping.tests import *
 from lfs.voucher.tests import *
 from lfs.checkout.tests import *
+from lfs.addresses.tests import *
+from lfs.customer.tests import *
 
 # django imports
 from django.contrib.auth.models import User
