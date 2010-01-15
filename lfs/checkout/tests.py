@@ -134,8 +134,13 @@ class CheckoutTestCase(TestCase):
         checkout_response = self.c.get(reverse('lfs_checkout'))
         self.assertContains(checkout_response, 'Smallville', status_code=200)
     
-    def test_invoice_country_changed(self):
+    def test_invoice_country_changed_ie(self):
+        checkout_response = self.c.get(reverse('lfs_checkout'))
+        self.assertNotContains(checkout_response, 'Fermanagh', status_code=200)
+        self.assertNotContains(checkout_response, 'County', status_code=200)
+        
         ireland = Country.objects.get(code="ie")
         changed_country_response = self.c.post(reverse('lfs_changed_invoice_country'), {'invoice_country': [ireland.id],},
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        print changed_country_response
+        self.assertContains(changed_country_response, 'Fermanagh', status_code=200)
+        self.assertContains(changed_country_response, 'County', status_code=200)
