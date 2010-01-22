@@ -188,18 +188,13 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
             if invoice_form.is_valid():
                 invoice_form.save()
                 return HttpResponseRedirect(reverse("lfs_my_addresses"))
-    else:
-        country = lfs.shipping.utils.get_selected_shipping_country(request)
-        initial = {}
-        if country:
-            initial["shipping-country"] = country.id
-            initial["invoice-country"] = country.id
-            
+    else:            
+        
         shipping_form = AddressForm(prefix="shipping",
-            instance=customer.selected_shipping_address, initial=initial)        
+            instance=customer.selected_shipping_address)
+        
         invoice_form = AddressForm(prefix="invoice", 
-            instance=customer.selected_invoice_address, initial=initial)
-    
+            instance=customer.selected_invoice_address)
         
     return render_to_response(template_name, RequestContext(request, {
         "show_shipping_address" : show_shipping_address,
