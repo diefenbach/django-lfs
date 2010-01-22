@@ -57,8 +57,6 @@ urlpatterns += patterns('lfs.checkout.views',
     url(r'^checkout', "one_page_checkout", name="lfs_checkout"),
     url(r'^thank-you', "thank_you",name="lfs_thank_you"),
     url(r'^changed-checkout/$', "changed_checkout", name="lfs_changed_checkout"),
-    url(r'^changed-invoice-country/$', "changed_invoice_country", name="lfs_changed_invoice_country"),
-    url(r'^changed-shipping-country/$', "changed_shipping_country", name="lfs_changed_shipping_country"),
     url(r'^check-voucher/$', "check_voucher", name="lfs_check_voucher"),    
 )
 
