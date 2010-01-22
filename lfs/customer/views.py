@@ -22,7 +22,6 @@ from lfs.customer.forms import AddressForm
 from lfs.customer.forms import EmailForm
 from lfs.customer.forms import RegisterForm
 from lfs.order.models import Order
-from lfs.customer import utils as customer_utils
 
 def login(request, template_name="lfs/customer/login.html"):
     """Custom view to login or register/login a user.
@@ -70,10 +69,6 @@ def login(request, template_name="lfs/customer/login.html"):
             # Create user
             user = User.objects.create_user(
                 username=email, email=email, password=password)
-            
-            # Create customer
-            customer = customer_utils.get_or_create_customer(request)
-            customer.user = user
         
             # Notify
             lfs.core.signals.customer_added.send(user)
