@@ -66,7 +66,7 @@ class OnePageCheckoutForm(forms.Form):
         self.fields["credit_card_expiration_date_year"].choices = [(i, i) for i in range(year, year+10)]
         
         if ADDRESS_LOCALIZATION:
-            # set correct country fields and labels
+            # set correct country fields and labels                        
             initial_data = kwargs.get('initial', None) 
             if  initial_data is not None:
                 invoice_country_id = initial_data.get('invoice_country', None)
