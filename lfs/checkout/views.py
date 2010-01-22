@@ -179,7 +179,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
 
     customer = customer_utils.get_or_create_customer(request)
     if request.method == "POST":
-        form = checkout_form(request.POST, initial=request.POST)
+        form = checkout_form(request.POST)
         if form.is_valid():
             # Create or update invoice address
             if customer.selected_invoice_address is None:
