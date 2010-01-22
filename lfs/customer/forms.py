@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 from lfs.customer.models import Address
 from lfs.customer.models import BankAccount
-from lfs.core.settings import ADDRESS_L10N
+from lfs.core.settings import ADDRESS_LOCALIZATION
 from lfs.core.models import Country
 from lfs.addresses.views import get_l10n
 
@@ -21,7 +21,7 @@ class AddressForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AddressForm, self).__init__(*args, **kwargs)        
         
-        if ADDRESS_L10N:
+        if ADDRESS_LOCALIZATION:
             # set correct country fields and labels
             initial_data = kwargs.get('initial', None) 
             if  initial_data is not None:

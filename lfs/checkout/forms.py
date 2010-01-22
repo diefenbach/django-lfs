@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 from lfs.payment.settings import CREDIT_CARD_TYPE_CHOICES
-from lfs.core.settings import ADDRESS_L10N
+from lfs.core.settings import ADDRESS_LOCALIZATION
 from lfs.core.utils import get_default_shop
 from lfs.core.models import Country
 from lfs.addresses.views import get_l10n 
@@ -65,7 +65,7 @@ class OnePageCheckoutForm(forms.Form):
         self.fields["credit_card_expiration_date_month"].choices = [(i, i) for i in range(1, 13)]
         self.fields["credit_card_expiration_date_year"].choices = [(i, i) for i in range(year, year+10)]
         
-        if ADDRESS_L10N:
+        if ADDRESS_LOCALIZATION:
             # set correct country fields and labels
             initial_data = kwargs.get('initial', None) 
             if  initial_data is not None:
