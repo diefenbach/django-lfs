@@ -317,38 +317,4 @@ $(function() {
             update_html(data);
         });
     });
-    
-    // Addresses form ##################################################################
-    var update_my_invoice_address = function() {
-        var data = $(".address-form").ajaxSubmit({
-            url : "/changed-invoice-address/",
-            "success" : function(data) {
-                var data = JSON.parse(data);
-                $("#invoice-address-inline").html(data["invoice_address"]);                
-            }
-        });
-    }
-    
-    var update_my_shipping_address = function() {
-        var data = $(".address-form").ajaxSubmit({
-            url : "/changed-shipping-address/",
-            "success" : function(data) {
-                var data = JSON.parse(data);
-                $("#shipping-address-inline").html(data["shipping_address"]);                
-            }
-        });
-    }
-    
-    $("#id_invoice-country").livequery("change", function() {
-    	update_my_invoice_address()
-    });
-    
-    
-    $("#id_shipping-country").livequery("change", function() {
-    	update_my_shipping_address()
-    });
-    
-    
-    
-    
 })

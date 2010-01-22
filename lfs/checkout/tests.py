@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 
-# lfs imports
+# test imports
 from lfs.catalog.models import Product
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem

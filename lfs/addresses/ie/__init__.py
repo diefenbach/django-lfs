@@ -55,8 +55,8 @@ class IEL10NAddress(L10NAddress):
     
     def get_address_fields(self):
         return [forms.CharField(label=_(u"Address 1"), max_length=50),
-                forms.CharField(label=_(u"Address 2"), max_length=50, required=False),
-                forms.CharField(label=_(u"Address 3"), max_length=50, required=False),
+                forms.CharField(label=_(u"Address 2"), max_length=50),
+                forms.CharField(label=_(u"Address 3"), max_length=50),
                 forms.CharField(label=_(u"Town"), max_length=50),
                 forms.CharField(label=_(u"County"), widget=IECountySelect(), max_length=50),
                ] 
