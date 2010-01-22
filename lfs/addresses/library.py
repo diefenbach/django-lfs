@@ -1,8 +1,7 @@
-import ie, gb, us, de
+import ie, gb, us
 
-country_map = { "de": de.DEL10NAddress(),
-                "gb": gb.GBL10NAddress(),
-                "ie": ie.IEL10NAddress(),
-                "us": us.USL10NAddress(),
-              }
+country_map = {"ie": ie.IEL10NAddress(),
+           "gb": gb.GBL10NAddress(),
+           "us": us.USL10NAddress(),
+           }
 
