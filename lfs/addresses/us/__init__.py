@@ -12,9 +12,5 @@ class USL10NAddress(L10NAddress):
                 forms.CharField(label=_(u"Street"), max_length=100),
                 USZipCodeField(label=_(u"Zip Code")),
                 forms.CharField(label=_(u"City"), max_length=50),
-                USStateField(label=_(u"US State"), widget=USStateSelect),
+                USStateField(label=_(u"State"), widget=USStateSelect),
                ]
-
-    
-    def get_phone_fields(self):
-        return [USPhoneNumberField(label=_(u"Phone"))]
