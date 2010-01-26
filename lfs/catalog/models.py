@@ -36,6 +36,7 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_AUTOMATIC
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
 from lfs.tax.models import Tax
+from lfs.supplier.models import Supplier
 
 class Category(models.Model):
     """A category is used to browse through the shop products. A category can
@@ -437,6 +438,9 @@ class Product(models.Model):
         - active_xxx
             If set to true the information will be taken from the variant.
             Otherwise from the parent product (only relevant for variants)
+            
+        - supplier
+            The supplier of the product
     """
     # All products
     name = models.CharField(_(u"Name"), max_length=80, blank=True)
@@ -466,6 +470,7 @@ class Product(models.Model):
     creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
 
     # Stocks
+    supplier = models.ForeignKey(Supplier, null=True, blank=True)
     deliverable = models.BooleanField(_(u"Deliverable"), default=True)
     manual_delivery_time = models.BooleanField(_(u"Manual delivery time"), default=False)
     delivery_time = models.ForeignKey("DeliveryTime", verbose_name=_(u"Delivery time"), blank=True, null=True, related_name="products_delivery_time")
