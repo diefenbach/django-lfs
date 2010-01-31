@@ -74,15 +74,15 @@ class AddressTestCase(TestCase):
             selected_invoice_address = address2,            
         )
         self.c = Client()
-        
-        # login as our customer
-        logged_in = self.c.login(username=self.username, password=self.password)
-        self.assertEqual(logged_in, True)
     
     def test_address_page(self):
         """
         Tests that we can see a shipping and an invoice address
         """
+         # login as our customer
+        logged_in = self.c.login(username=self.username, password=self.password)
+        self.assertEqual(logged_in, True)
+
         address_response = self.c.get(reverse('lfs_my_addresses'))
         self.assertContains(address_response, 'Smallville', status_code=200)
         self.assertContains(address_response, 'Gotham City', status_code=200)
@@ -92,10 +92,7 @@ class AddressTestCase(TestCase):
         """Check we have a customer in database after registration"""
         # we should have one customer starting
         self.assertEqual(len(Customer.objects.all()), 1)
-        
-        # logout joe
-        self.c.logout()        
-        
+
         registration_response = self.c.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
         self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
@@ -109,3 +106,23 @@ class AddressTestCase(TestCase):
         
         # we should now have 2 customers
         self.assertEqual(len(Customer.objects.all()), 2)
+
+    def test_create_new_address(self):
+        # test that we have only 2 addresses registered (from setUp)
+        self.assertEquals(PostalAddress.objects.count(), 2)
+
+        # register a new user
+        registration_response = self.c.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
+        self.assertEquals(registration_response.status_code, 302)
+        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
+
+        # Test that one message has been sent.
+        self.assertEquals(len(mail.outbox), 1)
+
+        # see if we can view the addresss page
+        address_data = {'invoice-firstname': 'Joe', 'invoice-lastname': 'Bloggs',
+                        'invoice-line1': 'de company name', 'invoice-line2': 'de street',
+                        'invoice-line3': '84003', 'invoice-line4': 'Dallas',
+                        'invoice-line5': 'TX', 'invoice-country': 'US'}
+        address_response = self.c.post(reverse('lfs_my_addresses'), address_data)
+        self.assertEquals(PostalAddress.objects.count(), 3)
