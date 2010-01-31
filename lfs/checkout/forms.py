@@ -53,8 +53,8 @@ class OnePageCheckoutForm(forms.Form):
         super(OnePageCheckoutForm, self).__init__(*args, **kwargs)
         
         shop = get_default_shop()
-        self.fields["invoice_country"].choices = [(c.id, c.name) for c in shop.countries.all()]
-        self.fields["shipping_country"].choices = [(c.id, c.name) for c in shop.countries.all()]
+        self.fields["invoice_country"].choices = [(c.iso, c.name) for c in shop.countries.all()]
+        self.fields["shipping_country"].choices = [(c.iso, c.name) for c in shop.countries.all()]
         
         year = datetime.now().year
         self.fields["credit_card_expiration_date_month"].choices = [(i, i) for i in range(1, 13)]
