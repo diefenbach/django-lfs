@@ -13,7 +13,6 @@ from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
-from lfs.core.models import Country
 from lfs.customer.models import Address
 from lfs.customer.models import Customer
 from lfs.order.utils import add_order
@@ -22,10 +21,13 @@ from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 
+# 3rd party imports
+from countries.models import Country
+
 class CheckoutTestCase(TestCase):
     """
     """
-    fixtures = ['lfs_shop.xml', 'lfs_all_countries.xml']
+    fixtures = ['lfs_shop.xml']
     
     def setUp(self):
         """
@@ -45,7 +47,7 @@ class CheckoutTestCase(TestCase):
             tax=tax,
         )
         
-        country = Country.objects.create(name="Middle-earth")
+        country = Country.objects.get(iso="DE")
         
         address1 = Address.objects.create(
             firstname = "John",
