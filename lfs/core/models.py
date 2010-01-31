@@ -13,18 +13,8 @@ from lfs.core.settings import ACTION_PLACE_CHOICES
 from lfs.core.settings import ACTION_PLACE_TABS
 from lfs.catalog.models import StaticBlock
 
-class Country(models.Model):
-    """Holds country relevant data for the shop.
-    """
-    code = models.CharField(_(u"Country code"), max_length=2)
-    name = models.CharField(_(u"Name"), max_length=100)
-
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural = 'Countries'
-        ordering = ("name", )
+# 3rd party imports
+from countries.models import Country
 
 class Action(models.Model):
     """A action is a link which can be displayed on several parts of the web
