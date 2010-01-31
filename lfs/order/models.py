@@ -45,7 +45,7 @@ class Order(models.Model):
 
     customer_firstname = models.CharField(_(u"firstname"), max_length=50)
     customer_lastname = models.CharField(_(u"lastname"), max_length=50)
-    customer_email = models.CharField(_(u"lastname"), max_length=50)
+    customer_email = models.CharField(_(u"email"), max_length=50)
 
     invoice_firstname = models.CharField(_(u"Invoice firstname"), max_length=50)
     invoice_lastname = models.CharField(_(u"Invoice lastname"), max_length=50)
