@@ -173,21 +173,20 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
     show_shipping_address = customer.selected_shipping_address and \
                             customer.selected_invoice_address.id != \
                             customer.selected_shipping_address.id
-    
+
     shipping_form_class = PostalAddressForm
     invoice_form_class = PostalAddressForm
+
     shipping_country = shop.default_country.iso
     invoice_country = shop.default_country.iso
 
-    if customer.selected_shipping_address is not None:
-        shipping_country = customer.selected_shipping_address.country.iso
-    if customer.selected_invoice_address is not None:
-        invoice_country = customer.selected_invoice_address.country.iso
-
-    shipping_form_class = get_postal_form_class(shipping_country)
-    invoice_form_class = get_postal_form_class(invoice_country)
-
     if request.method == "POST":
+        shipping_country = request.POST.get('shipping-country', shop.default_country.iso)
+        invoice_country = request.POST.get('invoice-country', shop.default_country.iso)
+
+        shipping_form_class = get_postal_form_class(shipping_country)
+        invoice_form_class = get_postal_form_class(invoice_country)
+
         shipping_form = shipping_form_class(prefix="shipping", data=request.POST,
             instance = customer.selected_shipping_address)
 
@@ -204,6 +203,13 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
                 invoice_form.save()
                 return HttpResponseRedirect(reverse("lfs_my_addresses"))
     else:            
+        if customer.selected_shipping_address is not None:
+            shipping_country = customer.selected_shipping_address.country.iso
+        if customer.selected_invoice_address is not None:
+            invoice_country = customer.selected_invoice_address.country.iso
+
+        shipping_form_class = get_postal_form_class(shipping_country)
+        invoice_form_class = get_postal_form_class(invoice_country)
         
         shipping_form = shipping_form_class(prefix="shipping",
             instance=customer.selected_shipping_address)
