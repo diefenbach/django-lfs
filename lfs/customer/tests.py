@@ -119,6 +119,10 @@ class AddressTestCase(TestCase):
         # Test that one message has been sent.
         self.assertEquals(len(mail.outbox), 1)
 
+        our_user = User.objects.get(email='test@test.com')
+        our_customer = Customer.objects.get(user=our_user)
+        self.assertEquals(our_customer.selected_invoice_address, None)
+
         # see if we can view the addresss page
         address_data = {'invoice-firstname': 'Joe', 'invoice-lastname': 'Bloggs',
                         'invoice-line1': 'de company name', 'invoice-line2': 'de street',
@@ -126,3 +130,8 @@ class AddressTestCase(TestCase):
                         'invoice-line5': 'TX', 'invoice-country': 'US'}
         address_response = self.c.post(reverse('lfs_my_addresses'), address_data)
         self.assertEquals(PostalAddress.objects.count(), 3)
+        self.assertRedirects(address_response, reverse('lfs_my_addresses'), status_code=302, target_status_code=200,)
+
+        # refetch our user from the database
+        our_customer = Customer.objects.get(user=our_user)
+        self.assertNotEquals(our_customer.selected_invoice_address, None)

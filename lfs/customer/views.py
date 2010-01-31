@@ -195,12 +195,14 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
 
         if show_shipping_address:
             if shipping_form.is_valid() and invoice_form.is_valid():
-                shipping_form.save()
-                invoice_form.save()
+                customer.selected_shipping_address = shipping_form.save()
+                customer.selected_invoice_address = invoice_form.save()
+                customer.save()
                 return HttpResponseRedirect(reverse("lfs_my_addresses"))
         else:
             if invoice_form.is_valid():
-                invoice_form.save()
+                customer.selected_invoice_address = invoice_form.save()
+                customer.save()
                 return HttpResponseRedirect(reverse("lfs_my_addresses"))
     else:            
         if customer.selected_shipping_address is not None:
