@@ -15,11 +15,14 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs
-from lfs.customer.forms import AddressForm
 from lfs.customer.forms import EmailForm
 from lfs.customer.forms import RegisterForm
 from lfs.order.models import Order
 from lfs.customer import utils as customer_utils
+
+# other imports
+from postal.views import get_postal_form_class
+from postal.forms import PostalAddressForm
 
 def login(request, template_name="lfs/customer/login.html"):
     """Custom view to login or register/login a user.
@@ -162,18 +165,32 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
     """
     user = request.user
     customer = lfs.customer.utils.get_customer(request)
+    shop = lfs.core.utils.get_default_shop()
     
     show_shipping_address = customer.selected_shipping_address and \
                             customer.selected_invoice_address.id != \
                             customer.selected_shipping_address.id
     
-    if request.method == "POST":    
-        shipping_form = AddressForm(prefix="shipping", data=request.POST,
+    shipping_form_class = PostalAddressForm
+    invoice_form_class = PostalAddressForm
+    shipping_country = shop.default_country.iso
+    invoice_country = shop.default_country.iso
+
+    if customer.selected_shipping_address is not None:
+        shipping_country = customer.selected_shipping_address.country.iso
+    if customer.selected_invoice_address is not None:
+        invoice_country = customer.selected_invoice_address.country.iso
+
+    shipping_form_class = get_postal_form_class(shipping_country)
+    invoice_form_class = get_postal_form_class(invoice_country)
+
+    if request.method == "POST":
+        shipping_form = shipping_form_class(prefix="shipping", data=request.POST,
             instance = customer.selected_shipping_address)
-        
-        invoice_form = AddressForm(prefix="invoice", data=request.POST,
+
+        invoice_form = invoice_form_class(prefix="invoice", data=request.POST,
             instance = customer.selected_invoice_address)
-    
+
         if show_shipping_address:
             if shipping_form.is_valid() and invoice_form.is_valid():
                 shipping_form.save()
@@ -185,10 +202,10 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
                 return HttpResponseRedirect(reverse("lfs_my_addresses"))
     else:            
         
-        shipping_form = AddressForm(prefix="shipping",
+        shipping_form = shipping_form_class(prefix="shipping",
             instance=customer.selected_shipping_address)
         
-        invoice_form = AddressForm(prefix="invoice", 
+        invoice_form = invoice_form_class(prefix="invoice", 
             instance=customer.selected_invoice_address)
         
     return render_to_response(template_name, RequestContext(request, {
