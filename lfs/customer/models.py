@@ -6,7 +6,9 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
-from lfs.core.models import Country
+
+# 3rd party imports
+from countries.models import Country
 
 class Customer(models.Model):
     """

@@ -5,12 +5,12 @@ from django.test import TestCase
 from django.test.client import Client
 
 # lfs imports
-from lfs.core.models import Country
 from lfs.order.models import Order
 from lfs.order.settings import PAID, PAYMENT_FAILED, PAYMENT_FLAGGED, SUBMITTED
 from lfs.payment.models import PayPalOrderTransaction
 
 # other imports
+from countries.models import Country
 from paypal.standard.ipn.models import PayPalIPN
 from paypal.standard.models import ST_PP_COMPLETED, ST_PP_DENIED
 import uuid
@@ -69,8 +69,7 @@ class PayPalPaymentTestCase(TestCase):
 
         PayPalIPN._postback = fake_postback
         
-        country = Country(code="ie", name="Ireland")
-        country.save()
+        country = Country.objects.get(iso="IE")
         order = Order(invoice_country=country, shipping_country=country, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()
@@ -96,8 +95,7 @@ class PayPalPaymentTestCase(TestCase):
 
         PayPalIPN._postback = fake_postback
         
-        country = Country(code="ie", name="Ireland")
-        country.save()
+        country = Country.objects.get(iso="IE")
         order = Order(invoice_country=country, shipping_country=country, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()
@@ -125,8 +123,7 @@ class PayPalPaymentTestCase(TestCase):
             return 'VERIFIED'
 
         PayPalIPN._postback = fake_postback        
-        country = Country(code="ie", name="Ireland")
-        country.save()
+        country = Country.objects.get(iso="IE")
         order = Order(invoice_country=country, shipping_country=country, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()

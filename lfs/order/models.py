@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
-from lfs.core.models import Country
 from lfs.catalog.models import Product
 from lfs.order.settings import ORDER_STATES
 from lfs.order.settings import SUBMITTED
@@ -14,6 +13,7 @@ from lfs.payment.settings import PAYPAL
 import lfs.payment.utils
 
 # other imports
+from countries.models import Country
 import uuid
 
 
