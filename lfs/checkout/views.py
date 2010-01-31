@@ -22,7 +22,6 @@ from lfs.checkout.forms import OnePageCheckoutForm
 from lfs.checkout.settings import CHECKOUT_TYPE_ANON
 from lfs.checkout.settings import CHECKOUT_TYPE_AUTH
 from lfs.customer import utils as customer_utils
-from lfs.customer.models import Address
 from lfs.customer.models import BankAccount
 from lfs.customer.forms import RegisterForm
 from lfs.payment.models import PaymentMethod
@@ -31,6 +30,9 @@ from lfs.payment.settings import DIRECT_DEBIT
 from lfs.payment.settings import CREDIT_CARD
 from lfs.voucher.models import Voucher
 from lfs.voucher.settings import MESSAGES
+
+# other imports
+from postal.models import PostalAddress
 
 def login(request, template_name="lfs/checkout/login.html"):
     """Displays a form to login or register/login the user within the check out
@@ -183,57 +185,54 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
         if form.is_valid():
             # Create or update invoice address
             if customer.selected_invoice_address is None:
-                invoice_address = Address.objects.create(
+                invoice_address = PostalAddress.objects.create(
                     firstname = form.cleaned_data.get("invoice_firstname"),
                     lastname = form.cleaned_data.get("invoice_lastname"),
-                    company_name = form.cleaned_data.get("invoice_company_name"),
-                    street = form.cleaned_data.get("invoice_street"),
-                    zip_code = form.cleaned_data.get("invoice_zip_code"),
-                    city = form.cleaned_data.get("invoice_city"),
-                    country_id = form.cleaned_data.get("invoice_country"),
-                    phone = form.cleaned_data.get("invoice_phone"),
-                    email = form.cleaned_data.get("invoice_email"),
+                    line1 = form.cleaned_data.get("invoice_line1"),
+                    line2 = form.cleaned_data.get("invoice_line2"),
+                    line3 = form.cleaned_data.get("invoice_line3"),
+                    line4 = form.cleaned_data.get("invoice_line4"),
+                    line5 = form.cleaned_data.get("invoice_line5"),
+                    country = form.cleaned_data.get("invoice_country"),
                 )
                 customer.selected_invoice_address = invoice_address
             else:
                 selected_invoice_address = customer.selected_invoice_address
                 selected_invoice_address.firstname = form.cleaned_data.get("invoice_firstname")
                 selected_invoice_address.lastname = form.cleaned_data.get("invoice_lastname")
-                selected_invoice_address.company_name = form.cleaned_data.get("invoice_company_name")
-                selected_invoice_address.street = form.cleaned_data.get("invoice_street")
-                selected_invoice_address.zip_code = form.cleaned_data.get("invoice_zip_code")
-                selected_invoice_address.city = form.cleaned_data.get("invoice_city")
-                selected_invoice_address.country_id = form.cleaned_data.get("invoice_country")
-                selected_invoice_address.phone = form.cleaned_data.get("invoice_phone")
-                selected_invoice_address.email = form.cleaned_data.get("invoice_email")
+                selected_invoice_address.line1 = form.cleaned_data.get("invoice_line1")
+                selected_invoice_address.line2 = form.cleaned_data.get("invoice_line2")
+                selected_invoice_address.line3 = form.cleaned_data.get("invoice_line3")
+                selected_invoice_address.line4 = form.cleaned_data.get("invoice_line4")
+                selected_invoice_address.line5 = form.cleaned_data.get("invoice_line5")
+                selected_invoice_address.country = form.cleaned_data.get("invoice_country")
                 selected_invoice_address.save()
 
             # If the shipping address differs from invoice firstname we create
             # or update the shipping address.
             if not form.cleaned_data.get("no_shipping"):
                 if customer.selected_shipping_address is None:
-                    shipping_address = Address.objects.create(
+                    shipping_address = PostalAddress.objects.create(
                         firstname = form.cleaned_data.get("shipping_firstname"),
                         lastname = form.cleaned_data.get("shipping_lastname"),
-                        company_name = form.cleaned_data.get("shipping_company_name"),
-                        street = form.cleaned_data.get("shipping_street"),
-                        zip_code = form.cleaned_data.get("shipping_zip_code"),
-                        city = form.cleaned_data.get("shipping_city"),
-                        country_id = form.cleaned_data.get("shipping_country"),
-                        phone = form.cleaned_data.get("shipping_phone"),
-                        email = form.cleaned_data.get("shipping_email"),
+                        line1 = form.cleaned_data.get("shipping_line1"),
+                        line2 = form.cleaned_data.get("shipping_line2"),
+                        line3 = form.cleaned_data.get("shipping_line3"),
+                        line4 = form.cleaned_data.get("shipping_line4"),
+                        line5 = form.cleaned_data.get("shipping_line5"),
+                        country = form.cleaned_data.get("shipping_country"),
                     )
                     customer.selected_shipping_address = shipping_address
                 else:
                     selected_shipping_address = customer.selected_shipping_address
                     selected_shipping_address.firstname = form.cleaned_data.get("shipping_firstname")
                     selected_shipping_address.lastname = form.cleaned_data.get("shipping_lastname")
-                    selected_shipping_address.company_name = form.cleaned_data.get("shipping_company_name")
-                    selected_shipping_address.street = form.cleaned_data.get("shipping_street")
-                    selected_shipping_address.zip_code = form.cleaned_data.get("shipping_zip_code")
-                    selected_shipping_address.city = form.cleaned_data.get("shipping_city")
-                    selected_shipping_address.country_id = form.cleaned_data.get("shipping_country")
-                    selected_shipping_address.phone = form.cleaned_data.get("shipping_phone")
+                    selected_shipping_address.line1 = form.cleaned_data.get("shipping_line1")
+                    selected_shipping_address.line2 = form.cleaned_data.get("shipping_line2")
+                    selected_shipping_address.line3 = form.cleaned_data.get("shipping_line3")
+                    selected_shipping_address.line4 = form.cleaned_data.get("shipping_line4")
+                    selected_shipping_address.line5 = form.cleaned_data.get("shipping_line5")
+                    selected_shipping_address.country = form.cleaned_data.get("shipping_country")
                     selected_shipping_address.save()
 
             # Payment method
@@ -279,26 +278,24 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                 invoice_address = Address.objects.create(
                     firstname = form.data.get("invoice_firstname", ""),
                     lastname = form.data.get("invoice_lastname", ""),
-                    company_name = form.data.get("invoice_company_name", ""),
-                    street = form.data.get("invoice_street", ""),
-                    zip_code = form.data.get("invoice_zip_code", ""),
-                    city = form.data.get("invoice_city", ""),
-                    country_id = form.data.get("invoice_country", ""),
-                    phone = form.data.get("invoice_phone", ""),
-                    email = form.data.get("invoice_email", ""),
+                    line1 = form.data.get("invoice_line1", ""),
+                    line2 = form.data.get("invoice_line2", ""),
+                    line3 = form.data.get("invoice_line3", ""),
+                    line4 = form.data.get("invoice_line4", ""),
+                    line5 = form.data.get("invoice_line5", ""),
+                    country = form.data.get("invoice_country", ""),
                 )
                 customer.selected_invoice_address = invoice_address
             else:
                 selected_invoice_address = customer.selected_invoice_address
                 selected_invoice_address.firstname = form.data.get("invoice_firstname", "")
                 selected_invoice_address.lastname = form.data.get("invoice_lastname", "")
-                selected_invoice_address.company_name = form.data.get("invoice_company_name", "")
-                selected_invoice_address.street = form.data.get("invoice_street", "")
-                selected_invoice_address.zip_code = form.data.get("invoice_zip_code", "")
-                selected_invoice_address.city = form.data.get("invoice_city", "")
+                selected_invoice_address.line1 = form.data.get("invoice_line1", "")
+                selected_invoice_address.line2 = form.data.get("invoice_line2", "")
+                selected_invoice_address.line3 = form.data.get("invoice_line3", "")
+                selected_invoice_address.line4 = form.data.get("invoice_line4", "")
+                selected_invoice_address.line5 = form.data.get("invoice_line5", "")
                 selected_invoice_address.country_id = form.data.get("invoice_country", "")
-                selected_invoice_address.phone = form.data.get("invoice_phone", "")
-                selected_invoice_address.email = form.data.get("invoice_email", "")
                 selected_invoice_address.save()
 
             # If the shipping address differs from invoice firstname we create
@@ -308,25 +305,24 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                     shipping_address = Address.objects.create(
                         firstname = form.data.get("shipping_firstname"),
                         lastname = form.data.get("shipping_lastname"),
-                        company_name = form.data.get("shipping_company_name"),
-                        street = form.data.get("shipping_street"),
-                        zip_code = form.data.get("shipping_zip_code"),
-                        city = form.data.get("shipping_city"),
+                        line1 = form.data.get("shipping_line1"),
+                        line2 = form.data.get("shipping_line2"),
+                        line3 = form.data.get("shipping_line3"),
+                        line4 = form.data.get("shipping_line4"),
+                        line5 = form.data.get("shipping_line5"),
                         country_id = form.data.get("shipping_country"),
-                        phone = form.data.get("shipping_phone"),
-                        email = form.data.get("shipping_email"),
                     )
                     customer.selected_shipping_address = shipping_address
                 else:
                     selected_shipping_address = customer.selected_shipping_address
                     selected_shipping_address.firstname = form.data.get("shipping_firstname")
                     selected_shipping_address.lastname = form.data.get("shipping_lastname")
-                    selected_shipping_address.company_name = form.data.get("shipping_company_name")
-                    selected_shipping_address.street = form.data.get("shipping_street")
-                    selected_shipping_address.zip_code = form.data.get("shipping_zip_code")
-                    selected_shipping_address.city = form.data.get("shipping_city")
+                    selected_shipping_address.line1 = form.data.get("shipping_line1")
+                    selected_shipping_address.line2 = form.data.get("shipping_line2")
+                    selected_shipping_address.line3 = form.data.get("shipping_line3")
+                    selected_shipping_address.line4 = form.data.get("shipping_line4")
+                    selected_shipping_address.line5 = form.data.get("shipping_line5")
                     selected_shipping_address.country_id = form.data.get("shipping_country")
-                    selected_shipping_address.phone = form.data.get("shipping_phone")
                     selected_shipping_address.save()
 
             # Payment method
@@ -354,23 +350,24 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             initial.update({
                 "invoice_firstname" : invoice_address.firstname,
                 "invoice_lastname" : invoice_address.lastname,
-                "invoice_street" : invoice_address.street,
-                "invoice_zip_code" : invoice_address.zip_code,
-                "invoice_city" : invoice_address.city,
-                "invoice_country" : invoice_address.country_id,
-                "invoice_phone" : invoice_address.phone,
-                "invoice_email" : invoice_address.email,
+                "invoice_line1" : invoice_address.line1,
+                "invoice_line2" : invoice_address.line2,
+                "invoice_line3" : invoice_address.line3,
+                "invoice_line4" : invoice_address.line4,
+                "invoice_line5" : invoice_address.line5,
+                "invoice_country" : invoice_address.country,
             })
         if customer.selected_shipping_address is not None:
             shipping_address = customer.selected_shipping_address
             initial.update({
                 "shipping_firstname" : shipping_address.firstname,
                 "shipping_lastname" : shipping_address.lastname,
-                "shipping_street" : shipping_address.street,
-                "shipping_zip_code" : shipping_address.zip_code,
-                "shipping_city" : shipping_address.city,
-                "shipping_phone" : shipping_address.phone,
-                "shipping_email" : shipping_address.email,
+                "shipping_line1" : shipping_address.line1,
+                "shipping_line2" : shipping_address.line2,
+                "shipping_line3" : shipping_address.line3,
+                "shipping_line4" : shipping_address.line4,
+                "shipping_line5" : shipping_address.line5,
+                "shipping_country" : shipping_address.country,
                 "no_shipping" : False,
             })
 
