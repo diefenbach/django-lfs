@@ -9,6 +9,7 @@ from lfs.payment.models import PaymentMethod
 
 # 3rd party imports
 from countries.models import Country
+from postal.models import PostalAddress
 
 class Customer(models.Model):
     """
@@ -28,8 +29,12 @@ class Customer(models.Model):
     selected_payment_method = models.ForeignKey(PaymentMethod, verbose_name=_(u"Selected payment method"), blank=True, null=True, related_name="selected_payment_method")
     selected_bank_account = models.ForeignKey("BankAccount", verbose_name=_(u"Bank account"), blank=True, null=True, related_name="selected_bank_account")
     selected_credit_card = models.ForeignKey("CreditCard", verbose_name=_(u"Credit card"), blank=True, null=True, related_name="selected_credit_card")
-    selected_shipping_address = models.ForeignKey("Address", verbose_name=_(u"Selected shipping address"), blank=True, null=True, related_name="selected_shipping_address")
-    selected_invoice_address = models.ForeignKey("Address", verbose_name=_(u"Selected invoice address"), blank=True, null=True, related_name="selected_invoice_address")
+    selected_shipping_address = models.ForeignKey(PostalAddress, verbose_name=_(u"Selected shipping address"), blank=True, null=True, related_name="selected_shipping_address")
+    selected_shipping_phone = models.CharField(_("Shipping Phone"), blank=True, max_length=20)
+    selected_shipping_email = models.EmailField(_("Shipping E-Mail"), blank=True, null=True, max_length=50)
+    selected_invoice_address = models.ForeignKey(PostalAddress, verbose_name=_(u"Selected invoice address"), blank=True, null=True, related_name="selected_invoice_address")
+    selected_invoice_phone = models.CharField(_("Invoice Phone"), blank=True, max_length=20)
+    selected_invoice_email = models.EmailField(_("Invoice E-Mail"), blank=True, null=True, max_length=50)
     selected_country = models.ForeignKey(Country, verbose_name=_(u"Selected country"), blank=True, null=True)
 
     def __unicode__(self):
@@ -54,25 +59,6 @@ class Customer(models.Model):
         else:
             self.selected_invoice_address.email = email
             self.selected_invoice_address.save()
-
-class Address(models.Model):
-    """An address which can be used as shipping and/or invoice address.
-    """
-    customer = models.ForeignKey(Customer, verbose_name=_(u"Customer"), blank=True, null=True, related_name="addresses")
-
-    firstname = models.CharField(_("Firstname"), max_length=50)
-    lastname = models.CharField(_("Lastname"), max_length=50)
-    company_name = models.CharField(_("Company name"), max_length=50, blank=True, null=True)
-    street = models.CharField(_("Street"), max_length=100)
-    zip_code = models.CharField(_("Zip code"), max_length=10)
-    city = models.CharField(_("City"), max_length=50)
-    state = models.CharField(_("State"), max_length=50, blank=True)
-    country = models.ForeignKey(Country, verbose_name=_("Country"), blank=True, null=True)
-    phone = models.CharField(_("Phone"), blank=True, max_length=20)
-    email = models.EmailField(_("E-Mail"), blank=True, null=True, max_length=50)
-
-    def __unicode__(self):
-        return "%s / %s" % (self.street, self.city)
 
 class BankAccount(models.Model):
     """Stores all shop relevant data of a bank account an belongs to a customer.
