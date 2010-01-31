@@ -4,15 +4,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
-from lfs.customer.models import Address
 from lfs.customer.models import BankAccount
-
-class AddressForm(forms.ModelForm):
-    """Form to edit addresses.
-    """
-    class Meta:
-        model = Address
-        exclude = ("customer", "email")
         
 class BankForm(forms.ModelForm):
     """Form to edit bank account
