@@ -47,7 +47,7 @@ def add_order(request):
         customer_email = user.email
     else:
         user = None
-        customer_email = invoice_address.email
+        customer_email = customer.selected_invoice_email
 
     # Calculate the totals
     price = cart_costs["price"] + shipping_costs["price"] + payment_costs["price"]
@@ -90,21 +90,23 @@ def add_order(request):
 
         invoice_firstname = invoice_address.firstname,
         invoice_lastname = invoice_address.lastname,
-        invoice_company_name = invoice_address.company_name,
-        invoice_street = invoice_address.street,
-        invoice_zip_code = invoice_address.zip_code,
-        invoice_city = invoice_address.city,
+        invoice_line1 = invoice_address.line1,
+        invoice_line2 = invoice_address.line2,
+        invoice_line3 = invoice_address.line3,
+        invoice_line4 = invoice_address.line4,
+        invoice_line5 = invoice_address.line5,
         invoice_country = invoice_address.country,
-        invoice_phone = invoice_address.phone,
+        invoice_phone = customer.selected_invoice_phone,
 
         shipping_firstname = shipping_address.firstname,
         shipping_lastname = shipping_address.lastname,
-        shipping_company_name = shipping_address.company_name,
-        shipping_street = shipping_address.street,
-        shipping_zip_code = shipping_address.zip_code,
-        shipping_city = shipping_address.city,
+        shipping_line1 = shipping_address.line1,
+        shipping_line2 = shipping_address.line2,
+        shipping_line3 = shipping_address.line3,
+        shipping_line4 = shipping_address.line4,
+        shipping_line5 = shipping_address.line5,
         shipping_country = shipping_address.country,
-        shipping_phone = shipping_address.phone,
+        shipping_phone = customer.selected_shipping_phone,
 
         message = request.POST.get("message", ""),
     )
