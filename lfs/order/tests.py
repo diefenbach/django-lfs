@@ -12,7 +12,6 @@ from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
-from lfs.core.models import Country
 from lfs.customer.models import Address
 from lfs.customer.models import Customer
 from lfs.order.utils import add_order
@@ -22,6 +21,9 @@ from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.tests.utils import DummySession
 from lfs.tests.utils import RequestFactory
+
+# 3rd party models
+from countries.models import Country
 
 class OrderTestCase(TestCase):
     """
@@ -53,7 +55,7 @@ class OrderTestCase(TestCase):
             tax=tax,
         )
         
-        country = Country.objects.create(name="Middle-earth")
+        country = Country.objects.get(iso="US")
         
         address1 = Address.objects.create(
             firstname = "John",
