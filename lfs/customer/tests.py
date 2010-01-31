@@ -5,19 +5,19 @@ from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.core import mail
 
-
 # lfs imports
-from lfs.core.models import Country
 from lfs.customer.models import Address
 from lfs.customer.models import Customer
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.payment.models import PaymentMethod
 
+#3rd party imports
+from countries.models import Country
 
 class AddressTestCase(TestCase):
     
-    fixtures = ['lfs_shop.xml', 'lfs_all_countries.xml']
+    fixtures = ['lfs_shop.xml']
     
     def setUp(self):
         """
@@ -37,7 +37,7 @@ class AddressTestCase(TestCase):
             tax=tax,
         )
         
-        country = Country.objects.get(code="ie")
+        country = Country.objects.get(iso="IE")
         
         address1 = Address.objects.create(
             firstname = "John",
