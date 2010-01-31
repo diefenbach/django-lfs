@@ -6,14 +6,14 @@ from django.core.urlresolvers import reverse
 from django.core import mail
 
 # lfs imports
-from lfs.customer.models import Address
 from lfs.customer.models import Customer
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.payment.models import PaymentMethod
 
-#3rd party imports
+# other imports
 from countries.models import Country
+from postal.models import PostalAddress
 
 class AddressTestCase(TestCase):
     
@@ -39,28 +39,24 @@ class AddressTestCase(TestCase):
         
         country = Country.objects.get(iso="IE")
         
-        address1 = Address.objects.create(
+        address1 = PostalAddress.objects.create(
             firstname = "John",
             lastname = "Doe",
-            company_name = "Doe Ltd.",
-            street = "Street 42",
-            zip_code = "2342",
-            city = "Gotham City",
+            line1 = "Doe Ltd.",
+            line2 = "Street 42",
+            line3 = "2342",
+            line4 = "Gotham City",
             country = country,
-            phone = "555-111111",
-            email = "john@doe.com",
         )
 
-        address2 = Address.objects.create(
+        address2 = PostalAddress.objects.create(
             firstname = "Jane",
             lastname = "Doe",
-            company_name = "Doe Ltd.",
-            street = "Street 43",
-            zip_code = "2443",
-            city = "Smallville",
+            line1 = "Doe Ltd.",
+            line2 = "Street 43",
+            line3 = "2443",
+            line4 = "Smallville",
             country = country,
-            phone = "666-111111",
-            email = "jane@doe.com",
         )
         
         self.username = 'joe'
