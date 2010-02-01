@@ -516,7 +516,6 @@ def invoice_address_inline(request, template_name="lfs/checkout/invoice_address_
     """displays the invoice address with localized fields
     """
     prefix = 'invoice'
-    #import ipdb; ipdb.set_trace()
     country_code = get_country_code(request, prefix)
     if country_code != '':
         customer = customer_utils.get_or_create_customer(request)
