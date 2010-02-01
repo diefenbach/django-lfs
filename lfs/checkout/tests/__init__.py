@@ -1,8 +1,9 @@
 from test_checkout import *
+from test_addresses import *
 
-import os
-from windmill.authoring import djangotest 
-from django.conf import settings
+#import os
+#from windmill.authoring import djangotest
+#from django.conf import settings
 
 #settings.RUN_WINDMILL_TESTS = True
 
