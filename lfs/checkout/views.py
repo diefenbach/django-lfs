@@ -385,8 +385,8 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
         "form" : form,
         "cart_inline" : cart_inline(request),
         "shipping_inline" : shipping_inline(request),
-        "invoice_address_inline" : invoice_address_inline(request),
-        "shipping_address_inline" : shipping_address_inline(request),
+        "invoice_address_inline" : invoice_address_inline(request, form),
+        "shipping_address_inline" : shipping_address_inline(request, form),
         "payment_inline" : payment_inline(request, form),
         "selected_payment_method" : selected_payment_method,
         "display_bank_account" : display_bank_account,
@@ -478,7 +478,7 @@ def get_country_code(request, prefix):
             country_code = shop.default_country.iso
     return country_code
 
-def shipping_address_inline(request, template_name="lfs/checkout/shipping_address_inline.html"):
+def shipping_address_inline(request, form, template_name="lfs/checkout/shipping_address_inline.html"):
     """displays the shipping address with localized fields
     """
     prefix = 'shipping'
@@ -488,7 +488,7 @@ def shipping_address_inline(request, template_name="lfs/checkout/shipping_addres
         customer = customer_utils.get_or_create_customer(request)
         address_form_class = get_postal_form_class(country_code)
         if request.method == 'POST':
-            form = address_form_class(prefix=prefix, data=request.POST)
+            shipping_address_form = address_form_class(prefix=prefix, data=request.POST)
         else:
             initial = {}
 
@@ -506,13 +506,14 @@ def shipping_address_inline(request, template_name="lfs/checkout/shipping_addres
                 })
             else:
                 initial.update({"shipping-country" : country_code,})
-            form = address_form_class(prefix=prefix, initial=initial)
+            shipping_address_form = address_form_class(prefix=prefix, initial=initial)
 
     return render_to_string(template_name, RequestContext(request, {
-        "shipping_address_form": form
+        "shipping_address_form": shipping_address_form,
+        "form": form,
     }))
 
-def invoice_address_inline(request, template_name="lfs/checkout/invoice_address_inline.html"):
+def invoice_address_inline(request, form, template_name="lfs/checkout/invoice_address_inline.html"):
     """displays the invoice address with localized fields
     """
     prefix = 'invoice'
@@ -522,7 +523,7 @@ def invoice_address_inline(request, template_name="lfs/checkout/invoice_address_
         address_form_class = get_postal_form_class(country_code)
 
         if request.method == 'POST':
-            form = address_form_class(prefix=prefix, data=request.POST)
+            invoice_address_form = address_form_class(prefix=prefix, data=request.POST)
         else:
              # If there are addresses intialize the form.
             initial = {}
@@ -540,10 +541,11 @@ def invoice_address_inline(request, template_name="lfs/checkout/invoice_address_
                 })
             else:
                 initial.update({"invoice-country" : country_code,})
-            form = address_form_class(prefix=prefix, initial=initial)
+            invoice_address_form = address_form_class(prefix=prefix, initial=initial)
 
     return render_to_string(template_name, RequestContext(request, {
-        "invoice_address_form": form
+        "invoice_address_form": invoice_address_form,
+        "form": form,
     }))
 
 def check_voucher(request):
@@ -577,16 +579,18 @@ def changed_checkout(request):
 def changed_invoice_country(request):
     """
     """
+    form = OnePageCheckoutForm(request.POST)
     result = simplejson.dumps({
-        "invoice_address" : invoice_address_inline(request),
+        "invoice_address" : invoice_address_inline(request, form),
     })
     return HttpResponse(result)
 
 def changed_shipping_country(request):
     """
     """
+    form = OnePageCheckoutForm(request.POST)
     result = simplejson.dumps({
-        "shipping_address" : shipping_address_inline(request),
+        "shipping_address" : shipping_address_inline(request, form),
     })
 
     return HttpResponse(result)
