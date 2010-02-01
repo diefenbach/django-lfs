@@ -13,26 +13,26 @@ from lfs.core.utils import get_default_shop
 class OnePageCheckoutForm(forms.Form):
     """
     """
-    invoice_firstname = forms.CharField(label=_(u"Firstname"), max_length=50)
-    invoice_lastname = forms.CharField(label=_(u"Lastname"), max_length=50)
-    invoice_line1 = forms.CharField(label=_(u"Line 1"), required=False, max_length=100)
-    invoice_line2 = forms.CharField(label=_(u"Line 2"), required=False, max_length=100)
-    invoice_line3 = forms.CharField(label=_(u"Line 3"), required=False, max_length=100)
-    invoice_line4 = forms.CharField(label=_(u"Line 4"), required=False, max_length=100)
-    invoice_line5 = forms.CharField(label=_(u"Line 5"), required=False, max_length=100)
+    invoice_firstname = forms.CharField(label=_(u"Invoice Firstname"), max_length=50)
+    invoice_lastname = forms.CharField(label=_(u"Invoice Lastname"), max_length=50)
+    invoice_line1 = forms.CharField(label=_(u"Invoice Address Line 1"), required=False, max_length=100)
+    invoice_line2 = forms.CharField(label=_(u"Invoice Address Line 2"), required=False, max_length=100)
+    invoice_line3 = forms.CharField(label=_(u"Invoice Address Line 3"), required=False, max_length=100)
+    invoice_line4 = forms.CharField(label=_(u"Invoice Address Line 4"), required=False, max_length=100)
+    invoice_line5 = forms.CharField(label=_(u"Invoice Address Line 5"), required=False, max_length=100)
     invoice_country = forms.ChoiceField(label=_(u"Country"), required=False)
-    invoice_phone = forms.CharField(label=_(u"Phone"), max_length=20)
-    invoice_email = forms.EmailField(label=_(u"E-mail"), required=False, max_length=50)
+    invoice_phone = forms.CharField(label=_(u"Invoice Phone"), max_length=20, required=False)
+    invoice_email = forms.EmailField(label=_(u"Invoice E-mail"), required=False, max_length=50)
     
-    shipping_firstname = forms.CharField(label=_(u"Firstname"), required=False, max_length=50)
-    shipping_lastname = forms.CharField(label=_(u"Lastname"), required=False, max_length=50)
-    shipping_line1 = forms.CharField(label=_(u"Line 1"), required=False, max_length=100)
-    shipping_line2 = forms.CharField(label=_(u"Line 2"), required=False, max_length=100)
-    shipping_line3 = forms.CharField(label=_(u"Line 3"), required=False, max_length=100)
-    shipping_line4 = forms.CharField(label=_(u"Line 4"), required=False, max_length=100)
-    shipping_line5 = forms.CharField(label=_(u"Line 5"), required=False, max_length=100)
+    shipping_firstname = forms.CharField(label=_(u"Shipping Firstname"), required=False, max_length=50)
+    shipping_lastname = forms.CharField(label=_(u"Shipping Lastname"), required=False, max_length=50)
+    shipping_line1 = forms.CharField(label=_(u"Shipping Address Line 1"), required=False, max_length=100)
+    shipping_line2 = forms.CharField(label=_(u"Shipping Address Line 2"), required=False, max_length=100)
+    shipping_line3 = forms.CharField(label=_(u"Shipping Address Line 3"), required=False, max_length=100)
+    shipping_line4 = forms.CharField(label=_(u"Shipping Address Line 4"), required=False, max_length=100)
+    shipping_line5 = forms.CharField(label=_(u"Shipping Address Line 5"), required=False, max_length=100)
     shipping_country = forms.ChoiceField(label=_(u"Country"), required=False)
-    shipping_phone = forms.CharField(label=_(u"Phone"), required=False, max_length=20)
+    shipping_phone = forms.CharField(label=_(u"Shipping Phone"), required=False, max_length=20)
 
     account_number = forms.CharField(label=_(u"Account Number"), required=False, max_length=30)
     bank_identification_code = forms.CharField(label=_(u"Bank Indentification Code"), required=False, max_length=30)
@@ -78,14 +78,14 @@ class OnePageCheckoutForm(forms.Form):
             if self.cleaned_data.get("shipping_lastname", "") == "":
                 self._errors["shipping_lastname"] = ErrorList([msg])
 
-            if self.cleaned_data.get("shipping_street", "") == "":
-                self._errors["shipping_street"] = ErrorList([msg])
+            if self.cleaned_data.get("shipping_line1", "") == "":
+                self._errors["shipping_line1"] = ErrorList([msg])
 
-            if self.cleaned_data.get("shipping_zip_code", "") == "":
-                self._errors["shipping_zip_code"] = ErrorList([msg])
+            if self.cleaned_data.get("shipping_line2", "") == "":
+                self._errors["shipping_line2"] = ErrorList([msg])
 
-            if self.cleaned_data.get("shipping_city", "") == "":
-                self._errors["shipping_city"] = ErrorList([msg])
+            if self.cleaned_data.get("shipping_line3", "") == "":
+                self._errors["shipping_line3"] = ErrorList([msg])
                 
         # 1 == Direct Debit
         if self.data.get("payment_method") == "1":
