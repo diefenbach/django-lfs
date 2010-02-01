@@ -19,6 +19,7 @@ from lfs.order.settings import SUBMITTED
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
+from lfs.core.models import Shop
 
 # 3rd party imports
 from countries.models import Country
@@ -27,11 +28,26 @@ from postal.models import PostalAddress
 class CheckoutTestCase(TestCase):
     """
     """
-    fixtures = ['lfs_shop.xml']
     
     def setUp(self):
         """
         """
+        ie = Country.objects.get(iso="IE")
+        gb = Country.objects.get(iso="GB")
+        de = Country.objects.get(iso="DE")
+        us = Country.objects.get(iso="US")
+        fr = Country.objects.get(iso="FR")
+
+        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
+                                          default_country=us)
+        shop.save()
+        shop.countries.add(ie)
+        shop.countries.add(gb)
+        shop.countries.add(de)
+        shop.countries.add(us)
+        shop.countries.add(fr)
+        shop.save()
+
         tax = Tax.objects.create(rate = 19)
         
         shipping_method = ShippingMethod.objects.create(
@@ -47,7 +63,6 @@ class CheckoutTestCase(TestCase):
             tax=tax,
         )
         
-        country = Country.objects.get(iso="DE")
         
         address1 = PostalAddress.objects.create(
             firstname = "John",
@@ -56,7 +71,7 @@ class CheckoutTestCase(TestCase):
             line2 = "Street 42",
             line3 = "2342",
             line4 = "Gotham City",
-            country = country,
+            country = gb,
         )
 
         address2 = PostalAddress.objects.create(
@@ -66,7 +81,7 @@ class CheckoutTestCase(TestCase):
             line2 = "Street 43",
             line3 = "2443",
             line4 = "Smallville",
-            country = country,
+            country = fr,
         )
         
         self.username = 'joe'
@@ -122,6 +137,11 @@ class CheckoutTestCase(TestCase):
         # login as our customer
         logged_in = self.c.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
+
+    def dump_response(self, http_response):
+        fo = open('tests_checkout.html', 'w')
+        fo.write(str(http_response))
+        fo.close()
         
     def test_checkout_page(self):
         """Tests that checkout page gets populated with correct details
