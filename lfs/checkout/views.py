@@ -33,6 +33,9 @@ from lfs.voucher.settings import MESSAGES
 
 # other imports
 from postal.models import PostalAddress
+from postal.views import get_postal_form_class
+from postal.forms import PostalAddressForm
+from countries.models import Country
 
 def login(request, template_name="lfs/checkout/login.html"):
     """Displays a form to login or register/login the user within the check out
@@ -181,7 +184,19 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
 
     customer = customer_utils.get_or_create_customer(request)
     if request.method == "POST":
-        form = checkout_form(request.POST)
+        # map our ajax fields to our OnePageCheckoutForm fields
+        extra_data = {}
+        prefixes = ['invoice', 'shipping']
+        for prefix in prefixes:
+            for field_name in PostalAddressForm.base_fields.keys():
+                field_value = request.POST.get(prefix + '-' + field_name, None)
+                if field_value is not None:
+                    extra_data.update({prefix + '_' + field_name:field_value})
+
+        mutable_rp = request.POST.copy()
+        mutable_rp.update(extra_data)
+        form = checkout_form(mutable_rp)
+
         if form.is_valid():
             # Create or update invoice address
             if customer.selected_invoice_address is None:
@@ -193,7 +208,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                     line3 = form.cleaned_data.get("invoice_line3"),
                     line4 = form.cleaned_data.get("invoice_line4"),
                     line5 = form.cleaned_data.get("invoice_line5"),
-                    country = form.cleaned_data.get("invoice_country"),
+                    country_iso = form.cleaned_data.get("invoice_country"),
                 )
                 customer.selected_invoice_address = invoice_address
             else:
@@ -205,7 +220,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                 selected_invoice_address.line3 = form.cleaned_data.get("invoice_line3")
                 selected_invoice_address.line4 = form.cleaned_data.get("invoice_line4")
                 selected_invoice_address.line5 = form.cleaned_data.get("invoice_line5")
-                selected_invoice_address.country = form.cleaned_data.get("invoice_country")
+                selected_invoice_address.country = Country.objects.get(iso=form.cleaned_data.get("invoice_country"))
                 selected_invoice_address.save()
 
             # If the shipping address differs from invoice firstname we create
@@ -232,22 +247,23 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                     selected_shipping_address.line3 = form.cleaned_data.get("shipping_line3")
                     selected_shipping_address.line4 = form.cleaned_data.get("shipping_line4")
                     selected_shipping_address.line5 = form.cleaned_data.get("shipping_line5")
-                    selected_shipping_address.country = form.cleaned_data.get("shipping_country")
+                    selected_shipping_address.country = Country.objects.get(iso=form.cleaned_data.get("shipping_country"))
                     selected_shipping_address.save()
 
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
 
             # 1 = Direct Debit
-            if int(form.data.get("payment_method")) == DIRECT_DEBIT:
-                bank_account = BankAccount.objects.create(
-                    account_number = form.cleaned_data.get("account_number"),
-                    bank_identification_code = form.cleaned_data.get("bank_identification_code"),
-                    bank_name = form.cleaned_data.get("bank_name"),
-                    depositor = form.cleaned_data.get("depositor"),
-                )
+            if customer.selected_payment_method_id is not None:
+                if int(customer.selected_payment_method_id) == DIRECT_DEBIT:
+                    bank_account = BankAccount.objects.create(
+                        account_number = form.cleaned_data.get("account_number"),
+                        bank_identification_code = form.cleaned_data.get("bank_identification_code"),
+                        bank_name = form.cleaned_data.get("bank_name"),
+                        depositor = form.cleaned_data.get("depositor"),
+                    )
 
-                customer.selected_bank_account = bank_account
+                    customer.selected_bank_account = bank_account
 
             # Save the selected information to the customer
             customer.save()
@@ -275,107 +291,77 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
         else: # form is not valid
             # Create or update invoice address
             if customer.selected_invoice_address is None:
-                invoice_address = Address.objects.create(
-                    firstname = form.data.get("invoice_firstname", ""),
-                    lastname = form.data.get("invoice_lastname", ""),
-                    line1 = form.data.get("invoice_line1", ""),
-                    line2 = form.data.get("invoice_line2", ""),
-                    line3 = form.data.get("invoice_line3", ""),
-                    line4 = form.data.get("invoice_line4", ""),
-                    line5 = form.data.get("invoice_line5", ""),
-                    country = form.data.get("invoice_country", ""),
+                invoice_address = PostalAddress.objects.create(
+                    firstname = form.data.get("invoice-firstname", ""),
+                    lastname = form.data.get("invoice-lastname", ""),
+                    line1 = form.data.get("invoice-line1", ""),
+                    line2 = form.data.get("invoice-line2", ""),
+                    line3 = form.data.get("invoice-line3", ""),
+                    line4 = form.data.get("invoice-line4", ""),
+                    line5 = form.data.get("invoice-line5", ""),
+                    country = Country.objects.get(iso=form.data.get("invoice-country", shop.default_country.iso)),
                 )
                 customer.selected_invoice_address = invoice_address
             else:
                 selected_invoice_address = customer.selected_invoice_address
-                selected_invoice_address.firstname = form.data.get("invoice_firstname", "")
-                selected_invoice_address.lastname = form.data.get("invoice_lastname", "")
-                selected_invoice_address.line1 = form.data.get("invoice_line1", "")
-                selected_invoice_address.line2 = form.data.get("invoice_line2", "")
-                selected_invoice_address.line3 = form.data.get("invoice_line3", "")
-                selected_invoice_address.line4 = form.data.get("invoice_line4", "")
-                selected_invoice_address.line5 = form.data.get("invoice_line5", "")
-                selected_invoice_address.country_id = form.data.get("invoice_country", "")
+                selected_invoice_address.firstname = request.POST.get("invoice-firstname")
+                selected_invoice_address.lastname = request.POST.get("invoice-lastname")
+                selected_invoice_address.line1 = request.POST.get("invoice-line1")
+                selected_invoice_address.line2 = request.POST.get("invoice-line2")
+                selected_invoice_address.line3 = request.POST.get("invoice-line3")
+                selected_invoice_address.line4 = request.POST.get("invoice-line4")
+                selected_invoice_address.line5 = request.POST.get("invoice-line5")
+                selected_invoice_address.country_iso = request.POST.get("invoice-country", shop.default_country.iso)
                 selected_invoice_address.save()
 
             # If the shipping address differs from invoice firstname we create
             # or update the shipping address.
             if not form.data.get("no_shipping"):
                 if customer.selected_shipping_address is None:
-                    shipping_address = Address.objects.create(
-                        firstname = form.data.get("shipping_firstname"),
-                        lastname = form.data.get("shipping_lastname"),
-                        line1 = form.data.get("shipping_line1"),
-                        line2 = form.data.get("shipping_line2"),
-                        line3 = form.data.get("shipping_line3"),
-                        line4 = form.data.get("shipping_line4"),
-                        line5 = form.data.get("shipping_line5"),
-                        country_id = form.data.get("shipping_country"),
+                    shipping_address = PostalAddress.objects.create(
+                        firstname = form.data.get("shipping-firstname", ""),
+                        lastname = form.data.get("shipping-lastname", ""),
+                        line1 = form.data.get("shipping-line1", ""),
+                        line2 = form.data.get("shipping-line2", ""),
+                        line3 = form.data.get("shipping-line3", ""),
+                        line4 = form.data.get("shipping-line4", ""),
+                        line5 = form.data.get("shipping-line5", ""),
+                        country = Country.objects.get(iso=form.data.get("shipping-country", shop.default_country.iso)),
                     )
                     customer.selected_shipping_address = shipping_address
                 else:
                     selected_shipping_address = customer.selected_shipping_address
-                    selected_shipping_address.firstname = form.data.get("shipping_firstname")
-                    selected_shipping_address.lastname = form.data.get("shipping_lastname")
-                    selected_shipping_address.line1 = form.data.get("shipping_line1")
-                    selected_shipping_address.line2 = form.data.get("shipping_line2")
-                    selected_shipping_address.line3 = form.data.get("shipping_line3")
-                    selected_shipping_address.line4 = form.data.get("shipping_line4")
-                    selected_shipping_address.line5 = form.data.get("shipping_line5")
-                    selected_shipping_address.country_id = form.data.get("shipping_country")
+                    selected_shipping_address.firstname = request.POST.get("shipping-firstname")
+                    selected_shipping_address.lastname = request.POST.get("shipping-lastname")
+                    selected_shipping_address.line1 = request.POST.get("shipping-line1")
+                    selected_shipping_address.line2 = request.POST.get("shipping-line2")
+                    selected_shipping_address.line3 = request.POST.get("shipping-line3")
+                    selected_shipping_address.line4 = request.POST.get("shipping-line4")
+                    selected_shipping_address.line5 = request.POST.get("shipping-line5")
+                    selected_shipping_address.country_iso = request.POST.get("shipping-country", shop.default_country.iso)
                     selected_shipping_address.save()
 
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
 
             # 1 = Direct Debit
-            if int(form.data.get("payment_method")) == DIRECT_DEBIT:
-                bank_account = BankAccount.objects.create(
-                    account_number = form.data.get("account_number"),
-                    bank_identification_code = form.data.get("bank_identification_code"),
-                    bank_name = form.data.get("bank_name"),
-                    depositor = form.data.get("depositor"),
-                )
+            if customer.selected_payment_method_id:
+                if int(customer.selected_payment_method_id) == DIRECT_DEBIT:
+                    bank_account = BankAccount.objects.create(
+                        account_number = form.data.get("account_number"),
+                        bank_identification_code = form.data.get("bank_identification_code"),
+                        bank_name = form.data.get("bank_name"),
+                        depositor = form.data.get("depositor"),
+                    )
 
-                customer.selected_bank_account = bank_account
+                    customer.selected_bank_account = bank_account
 
             # Save the selected information to the customer
             customer.save()
 
     else:
         # If there are addresses intialize the form.
-        initial = {}
-        if customer.selected_invoice_address is not None:
-            invoice_address = customer.selected_invoice_address
-            initial.update({
-                "invoice_firstname" : invoice_address.firstname,
-                "invoice_lastname" : invoice_address.lastname,
-                "invoice_line1" : invoice_address.line1,
-                "invoice_line2" : invoice_address.line2,
-                "invoice_line3" : invoice_address.line3,
-                "invoice_line4" : invoice_address.line4,
-                "invoice_line5" : invoice_address.line5,
-                "invoice_country" : invoice_address.country,
-            })
-        if customer.selected_shipping_address is not None:
-            shipping_address = customer.selected_shipping_address
-            initial.update({
-                "shipping_firstname" : shipping_address.firstname,
-                "shipping_lastname" : shipping_address.lastname,
-                "shipping_line1" : shipping_address.line1,
-                "shipping_line2" : shipping_address.line2,
-                "shipping_line3" : shipping_address.line3,
-                "shipping_line4" : shipping_address.line4,
-                "shipping_line5" : shipping_address.line5,
-                "shipping_country" : shipping_address.country,
-                "no_shipping" : False,
-            })
-
-        # Set the addresses country to the current selected in any case.
-        country = lfs.shipping.utils.get_selected_shipping_country(request)
-        if country:
-            initial["shipping_country"] = country.iso
-            initial["invoice_country"] = country.iso
+        initial = {"no_shipping" : False,}
         form = checkout_form(initial=initial)
 
     cart = cart_utils.get_cart(request)
@@ -399,6 +385,8 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
         "form" : form,
         "cart_inline" : cart_inline(request),
         "shipping_inline" : shipping_inline(request),
+        "invoice_address_inline" : invoice_address_inline(request),
+        "shipping_address_inline" : shipping_address_inline(request),
         "payment_inline" : payment_inline(request, form),
         "selected_payment_method" : selected_payment_method,
         "display_bank_account" : display_bank_account,
@@ -467,6 +455,98 @@ def shipping_inline(request, template_name="lfs/checkout/shipping_inline.html"):
         "selected_shipping_method" : selected_shipping_method,
     }))
 
+def get_country_code(request, prefix):
+    # get country_code from the request
+    country_code = request.POST.get(prefix + '-country', '')
+
+    # get country code from customer
+    if country_code == '':
+        customer = customer_utils.get_or_create_customer(request)
+        if prefix == 'invoice':
+            if customer.selected_invoice_address is not None:
+                if customer.selected_invoice_address.country is not None:
+                    country_code = customer.selected_invoice_address.country.iso
+        elif prefix == 'shipping':
+            if customer.selected_shipping_address is not None:
+                if customer.selected_shipping_address.country is not None:
+                    country_code = customer.selected_shipping_address.country.iso
+
+    # get country code from shop
+    if country_code == '':
+        shop = lfs.core.utils.get_default_shop()
+        if shop.default_country is not None:
+            country_code = shop.default_country.iso
+    return country_code
+
+def shipping_address_inline(request, template_name="lfs/checkout/shipping_address_inline.html"):
+    """displays the shipping address with localized fields
+    """
+    prefix = 'shipping'
+    country_code = get_country_code(request, prefix)
+
+    if country_code != '':
+        customer = customer_utils.get_or_create_customer(request)
+        address_form_class = get_postal_form_class(country_code)
+        if request.method == 'POST':
+            form = address_form_class(prefix=prefix, data=request.POST)
+        else:
+            initial = {}
+
+            if customer.selected_shipping_address is not None:
+                shipping_address = customer.selected_shipping_address
+                initial.update({
+                    "firstname" : shipping_address.firstname,
+                    "lastname" : shipping_address.lastname,
+                    "line1" : shipping_address.line1,
+                    "line2" : shipping_address.line2,
+                    "line3" : shipping_address.line3,
+                    "line4" : shipping_address.line4,
+                    "line5" : shipping_address.line5,
+                    "country" : shipping_address.country.iso,
+                })
+            else:
+                initial.update({"shipping-country" : country_code,})
+            form = address_form_class(prefix=prefix, initial=initial)
+
+    return render_to_string(template_name, RequestContext(request, {
+        "shipping_address_form": form
+    }))
+
+def invoice_address_inline(request, template_name="lfs/checkout/invoice_address_inline.html"):
+    """displays the invoice address with localized fields
+    """
+    prefix = 'invoice'
+    #import ipdb; ipdb.set_trace()
+    country_code = get_country_code(request, prefix)
+    if country_code != '':
+        customer = customer_utils.get_or_create_customer(request)
+        address_form_class = get_postal_form_class(country_code)
+
+        if request.method == 'POST':
+            form = address_form_class(prefix=prefix, data=request.POST)
+        else:
+             # If there are addresses intialize the form.
+            initial = {}
+            if customer.selected_invoice_address is not None:
+                invoice_address = customer.selected_invoice_address
+                initial.update({
+                    "firstname" : invoice_address.firstname,
+                    "lastname" : invoice_address.lastname,
+                    "line1" : invoice_address.line1,
+                    "line2" : invoice_address.line2,
+                    "line3" : invoice_address.line3,
+                    "line4" : invoice_address.line4,
+                    "line5" : invoice_address.line5,
+                    "country" : invoice_address.country.iso,
+                })
+            else:
+                initial.update({"invoice-country" : country_code,})
+            form = address_form_class(prefix=prefix, initial=initial)
+
+    return render_to_string(template_name, RequestContext(request, {
+        "invoice_address_form": form
+    }))
+
 def check_voucher(request):
     """
     """
@@ -495,13 +575,30 @@ def changed_checkout(request):
 
     return HttpResponse(result)
 
+def changed_invoice_country(request):
+    """
+    """
+    result = simplejson.dumps({
+        "invoice_address" : invoice_address_inline(request),
+    })
+    return HttpResponse(result)
+
+def changed_shipping_country(request):
+    """
+    """
+    result = simplejson.dumps({
+        "shipping_address" : shipping_address_inline(request),
+    })
+
+    return HttpResponse(result)
+
 def _save_country(request, customer):
     """
     """
     # Update shipping country
-    country = request.POST.get("shipping_country")
+    country = request.POST.get("shipping-country")
     if request.POST.get("no_shipping") == "on":
-        country = request.POST.get("invoice_country")
+        country = request.POST.get("invoice-country")
 
     if customer.selected_shipping_address:
         customer.selected_shipping_address.country_id = country
