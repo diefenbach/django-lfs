@@ -201,9 +201,9 @@ class CheckoutAddressesTestCase(TestCase):
                          'shipping-lastname':'schmidt',
                          'shipping-line1': 'orianenberger strasse',
                          'shipping-line2': 'de town',
-                         'shipping-line3': '12345',
-                         'shipping-line4': 'stuff',
-                         'shipping-line5': 'BE',
+                         'shipping-line3': 'stuff',
+                         'shipping-line4': 'BE',
+                         'shipping-line5': '12345',
                          'shipping-country':"DE",
                          'payment_method': BY_INVOICE,
                          }
