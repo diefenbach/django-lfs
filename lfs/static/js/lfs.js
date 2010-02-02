@@ -290,9 +290,17 @@ $(function() {
         update_checkout()
     });
 
+    $("#id_invoice-firstname,#id_invoice-lastname,#id_invoice-line1,#id_invoice-line2,#id_invoice-line3,#id_invoice-line4,#id_invoice-line5").livequery("change", function() {
+    	update_invoice_address()
+    });
+
     $("#id_invoice-country").livequery("change", function() {
     	update_invoice_address()
         update_checkout()
+    });
+
+    $("#id_shipping-firstname,#id_shipping-lastname,#id_shipping-line1,#id_shipping-line2,#id_shipping-line3,#id_shipping-line4,#id_shipping-line5").livequery("change", function() {
+    	update_shipping_address()
     });
 
     $("#id_shipping-country").livequery("change", function() {
