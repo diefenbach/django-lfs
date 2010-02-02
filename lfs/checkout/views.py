@@ -21,6 +21,7 @@ from lfs.cart import utils as cart_utils
 from lfs.checkout.forms import OnePageCheckoutForm
 from lfs.checkout.settings import CHECKOUT_TYPE_ANON
 from lfs.checkout.settings import CHECKOUT_TYPE_AUTH
+from lfs.checkout.settings import INVOICE_PREFIX, SHIPPING_PREFIX
 from lfs.customer import utils as customer_utils
 from lfs.customer.models import BankAccount
 from lfs.customer.forms import RegisterForm
@@ -186,7 +187,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
     if request.method == "POST":
         # map our ajax fields to our OnePageCheckoutForm fields
         extra_data = {}
-        prefixes = ['invoice', 'shipping']
+        prefixes = [INVOICE_PREFIX, SHIPPING_PREFIX]
         for prefix in prefixes:
             for field_name in PostalAddressForm.base_fields.keys():
                 field_value = request.POST.get(prefix + '-' + field_name, None)
@@ -199,12 +200,12 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
 
         if form.is_valid():
             # Create or update invoice address
-            save_address(request, customer, "invoice")
+            save_address(request, customer, INVOICE_PREFIX)
 
             # If the shipping address differs from invoice firstname we create
             # or update the shipping address.
             if not form.cleaned_data.get("no_shipping"):
-                save_address(request, customer, "shipping")
+                save_address(request, customer, SHIPPING_PREFIX)
 
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
@@ -246,12 +247,12 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
 
         else: # form is not valid
             # Create or update invoice address
-            save_address(request, customer, "invoice")
+            save_address(request, customer, INVOICE_PREFIX)
 
             # If the shipping address differs from invoice firstname we create
             # or update the shipping address.
             if not form.data.get("no_shipping"):
-                save_address(request, customer, "shipping")
+                save_address(request, customer, SHIPPING_PREFIX)
 
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
@@ -297,8 +298,8 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
         "form" : form,
         "cart_inline" : cart_inline(request),
         "shipping_inline" : shipping_inline(request),
-        "invoice_address_inline" : address_inline(request, "invoice", form),
-        "shipping_address_inline" : address_inline(request, "shipping", form),
+        "invoice_address_inline" : address_inline(request, INVOICE_PREFIX, form),
+        "shipping_address_inline" : address_inline(request, SHIPPING_PREFIX, form),
         "payment_inline" : payment_inline(request, form),
         "selected_payment_method" : selected_payment_method,
         "display_bank_account" : display_bank_account,
@@ -354,13 +355,15 @@ def payment_inline(request, form, template_name="lfs/checkout/payment_inline.htm
 
 def save_address(request, customer, prefix):
     shop = lfs.core.utils.get_default_shop()
+    customer = customer_utils.get_or_create_customer(request)
     customer_selected_address = None
-    if hasattr(customer, 'selected_' + prefix + '_address'):
-        customer_selected_address = getattr(customer, 'selected_' + prefix + '_address')
+    address_attribute = 'selected_' + prefix + '_address'
+    if hasattr(customer, address_attribute):
+        customer_selected_address = getattr(customer, address_attribute)
 
     if customer_selected_address is None:
         postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST)
-        customer_selected_address = postal_address_form.save()
+        setattr(customer, address_attribute, postal_address_form.save())
     else:
         customer_selected_address.firstname = request.POST.get(prefix + "-firstname")
         customer_selected_address.lastname = request.POST.get(prefix + "-lastname")
@@ -370,7 +373,8 @@ def save_address(request, customer, prefix):
         customer_selected_address.line4 = request.POST.get(prefix + "-line4")
         customer_selected_address.line5 = request.POST.get(prefix + "-line5")
         customer_selected_address.country_iso = request.POST.get(prefix + "-country", shop.default_country.iso)
-    customer_selected_address.save()
+        customer_selected_address.save()
+    customer.save()
 
 def shipping_inline(request, template_name="lfs/checkout/shipping_inline.html"):
     """Displays the selectable shipping methods of the checkout page.
@@ -394,11 +398,11 @@ def get_country_code(request, prefix):
     # get country code from customer
     if country_code == '':
         customer = customer_utils.get_or_create_customer(request)
-        if prefix == 'invoice':
+        if prefix == INVOICE_PREFIX:
             if customer.selected_invoice_address is not None:
                 if customer.selected_invoice_address.country is not None:
                     country_code = customer.selected_invoice_address.country.iso
-        elif prefix == 'shipping':
+        elif prefix == SHIPPING_PREFIX:
             if customer.selected_shipping_address is not None:
                 if customer.selected_shipping_address.country is not None:
                     country_code = customer.selected_shipping_address.country.iso
@@ -474,7 +478,7 @@ def changed_checkout(request):
     _save_country(request, customer)
 
     result = simplejson.dumps({
-        "shipping" : shipping_inline(request),
+        SHIPPING_PREFIX : shipping_inline(request),
         "payment" : payment_inline(request, form),
         "cart" : cart_inline(request),
     })
@@ -486,7 +490,7 @@ def changed_invoice_country(request):
     """
     form = OnePageCheckoutForm(request.POST)
     result = simplejson.dumps({
-        "invoice_address" : address_inline(request, "invoice", form),
+        "invoice_address" : address_inline(request, INVOICE_PREFIX, form),
     })
     return HttpResponse(result)
 
@@ -495,7 +499,7 @@ def changed_shipping_country(request):
     """
     form = OnePageCheckoutForm(request.POST)
     result = simplejson.dumps({
-        "shipping_address" : address_inline(request, "shipping", form),
+        "shipping_address" : address_inline(request, SHIPPING_PREFIX, form),
     })
 
     return HttpResponse(result)

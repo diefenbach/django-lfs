@@ -224,6 +224,38 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertEquals(registration_response.status_code, 302)
         self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
 
+        # get our new customer
+        our_customer = Customer.objects.get(user__email="test@test.com")
+        self.assertNotEqual(our_customer, None)
+        self.assertEqual(our_customer.selected_invoice_address, None)
+        self.assertEqual(our_customer.selected_shipping_address, None)
+
+        # test that an ajax request creates a new customer address
         form_data = {'invoice-country': 'IE'}
         ajax_respons = self.c.post(reverse('lfs_changed_invoice_country'), form_data)
         self.assertEquals(PostalAddress.objects.count(), 3)
+
+        # refetch our customer
+        our_customer = Customer.objects.get(user__email="test@test.com")
+        self.assertNotEqual(our_customer.selected_invoice_address, None)
+        self.assertEqual(our_customer.selected_shipping_address, None)
+
+        # test that we still have the same number of PostalAddresses after another invoice post
+        form_data = {'invoice-line1': 'my house'}
+        ajax_respons = self.c.post(reverse('lfs_changed_invoice_country'), form_data)
+        self.assertEquals(PostalAddress.objects.count(), 3)
+
+        # post some shipping address info
+        form_data = {'shipping-line1': 'de missusesss house'}
+        ajax_respons = self.c.post(reverse('lfs_changed_shipping_country'), form_data)
+        self.assertEquals(PostalAddress.objects.count(), 4)
+
+        # refetch our customer
+        our_customer = Customer.objects.get(user__email="test@test.com")
+        self.assertNotEqual(our_customer.selected_invoice_address, None)
+        self.assertNotEqual(our_customer.selected_shipping_address, None)
+
+        # test that adding more info to shipping address doesn't create a brand new one
+        form_data = {'shipping-firstname': 'charlize'}
+        ajax_respons = self.c.post(reverse('lfs_changed_shipping_country'), form_data)
+        self.assertEquals(PostalAddress.objects.count(), 4)
