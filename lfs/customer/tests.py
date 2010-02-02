@@ -107,6 +107,11 @@ class AddressTestCase(TestCase):
         # we should now have 2 customers
         self.assertEqual(len(Customer.objects.all()), 2)
 
+    def dump_response(self, http_response):
+        fo = open('tests_customers.html', 'w')
+        fo.write(str(http_response))
+        fo.close()
+
     def test_create_new_address(self):
         # test that we have only 2 addresses registered (from setUp)
         self.assertEquals(PostalAddress.objects.count(), 2)
@@ -126,8 +131,8 @@ class AddressTestCase(TestCase):
         # see if we can view the addresss page
         address_data = {'invoice-firstname': 'Joe', 'invoice-lastname': 'Bloggs',
                         'invoice-line1': 'de company name', 'invoice-line2': 'de street',
-                        'invoice-line3': '84003', 'invoice-line4': 'Dallas',
-                        'invoice-line5': 'TX', 'invoice-country': 'US'}
+                        'invoice-line3': 'Dallas', 'invoice-line4': 'TX',
+                        'invoice-line5': '84003', 'invoice-country': 'US'}
         address_response = self.c.post(reverse('lfs_my_addresses'), address_data)
         self.assertEquals(PostalAddress.objects.count(), 3)
         self.assertRedirects(address_response, reverse('lfs_my_addresses'), status_code=302, target_status_code=200,)
