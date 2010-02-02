@@ -21,6 +21,7 @@ import lfs
 from lfs.customer.forms import EmailForm
 from lfs.customer.forms import RegisterForm
 from lfs.order.models import Order
+from lfs.core.settings import LFS_ADDRESS_L10N
 from lfs.customer import utils as customer_utils
 
 # other imports
@@ -184,8 +185,9 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
         shipping_country = request.POST.get('shipping-country', shop.default_country.iso)
         invoice_country = request.POST.get('invoice-country', shop.default_country.iso)
 
-        shipping_form_class = get_postal_form_class(shipping_country)
-        invoice_form_class = get_postal_form_class(invoice_country)
+        if LFS_ADDRESS_L10N == True:
+            shipping_form_class = get_postal_form_class(shipping_country)
+            invoice_form_class = get_postal_form_class(invoice_country)
 
         shipping_form = shipping_form_class(prefix="shipping", data=request.POST,
             instance = customer.selected_shipping_address)
