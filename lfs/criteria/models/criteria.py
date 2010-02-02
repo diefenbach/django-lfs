@@ -239,7 +239,7 @@ class CountryCriterion(models.Model, Criterion):
             })
 
         return render_to_string("manage/criteria/country_criterion.html", RequestContext(request, {
-            "iso" : "ex%s" % self.iso,
+            "id" : "ex%s" % self.id,
             "operator" : self.operator,
             "value" : self.value,
             "position" : position,
