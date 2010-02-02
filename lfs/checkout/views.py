@@ -22,6 +22,7 @@ from lfs.checkout.forms import OnePageCheckoutForm
 from lfs.checkout.settings import CHECKOUT_TYPE_ANON
 from lfs.checkout.settings import CHECKOUT_TYPE_AUTH
 from lfs.checkout.settings import INVOICE_PREFIX, SHIPPING_PREFIX
+from lfs.core.settings import LFS_ADDRESS_L10N
 from lfs.customer import utils as customer_utils
 from lfs.customer.models import BankAccount
 from lfs.customer.forms import RegisterForm
@@ -427,7 +428,10 @@ def address_inline(request, prefix, form):
         address_form_class = get_postal_form_class(country_code)
 
         if request.method == 'POST':
-            address_form = address_form_class(prefix=prefix, data=request.POST,)
+            if LFS_ADDRESS_L10N == True:
+                address_form = address_form_class(prefix=prefix, data=request.POST,)
+            else:
+                address_form = PostalAddressForm(prefix=prefix, data=request.POST,)
             address_form.fields["country"].choices = [(c.iso, c.name) for c in countries]
             save_address(request, customer, prefix)
         else:
