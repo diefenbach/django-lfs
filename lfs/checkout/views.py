@@ -17,6 +17,7 @@ import lfs.order.utils
 import lfs.payment.utils
 import lfs.shipping.utils
 import lfs.voucher.utils
+from lfs.core.utils import get_default_shop
 from lfs.cart import utils as cart_utils
 from lfs.checkout.forms import OnePageCheckoutForm
 from lfs.checkout.settings import CHECKOUT_TYPE_ANON
@@ -385,8 +386,8 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
         "form" : form,
         "cart_inline" : cart_inline(request),
         "shipping_inline" : shipping_inline(request),
-        "invoice_address_inline" : invoice_address_inline(request, form),
-        "shipping_address_inline" : shipping_address_inline(request, form),
+        "invoice_address_inline" : address_inline(request, "invoice", form),
+        "shipping_address_inline" : address_inline(request, "shipping", form),
         "payment_inline" : payment_inline(request, form),
         "selected_payment_method" : selected_payment_method,
         "display_bank_account" : display_bank_account,
@@ -478,73 +479,45 @@ def get_country_code(request, prefix):
             country_code = shop.default_country.iso
     return country_code
 
-def shipping_address_inline(request, form, template_name="lfs/checkout/shipping_address_inline.html"):
-    """displays the shipping address with localized fields
-    """
-    prefix = 'shipping'
-    country_code = get_country_code(request, prefix)
 
-    if country_code != '':
-        customer = customer_utils.get_or_create_customer(request)
-        address_form_class = get_postal_form_class(country_code)
-        if request.method == 'POST':
-            shipping_address_form = address_form_class(prefix=prefix, data=request.POST)
-        else:
-            initial = {}
-
-            if customer.selected_shipping_address is not None:
-                shipping_address = customer.selected_shipping_address
-                initial.update({
-                    "firstname" : shipping_address.firstname,
-                    "lastname" : shipping_address.lastname,
-                    "line1" : shipping_address.line1,
-                    "line2" : shipping_address.line2,
-                    "line3" : shipping_address.line3,
-                    "line4" : shipping_address.line4,
-                    "line5" : shipping_address.line5,
-                    "country" : shipping_address.country.iso,
-                })
-            else:
-                initial.update({"shipping-country" : country_code,})
-            shipping_address_form = address_form_class(prefix=prefix, initial=initial)
-
-    return render_to_string(template_name, RequestContext(request, {
-        "shipping_address_form": shipping_address_form,
-        "form": form,
-    }))
-
-def invoice_address_inline(request, form, template_name="lfs/checkout/invoice_address_inline.html"):
+def address_inline(request, prefix, form):
     """displays the invoice address with localized fields
     """
-    prefix = 'invoice'
+    template_name="lfs/checkout/" + prefix + "_address_inline.html"
     country_code = get_country_code(request, prefix)
     if country_code != '':
+        shop = get_default_shop()
+        countries = shop.countries.all()
         customer = customer_utils.get_or_create_customer(request)
         address_form_class = get_postal_form_class(country_code)
 
         if request.method == 'POST':
-            invoice_address_form = address_form_class(prefix=prefix, data=request.POST)
+            address_form = address_form_class(prefix=prefix, data=request.POST,)
+            address_form.fields["country"].choices = [(c.iso, c.name) for c in countries]
         else:
              # If there are addresses intialize the form.
             initial = {}
-            if customer.selected_invoice_address is not None:
-                invoice_address = customer.selected_invoice_address
+            customer_selected_address = None
+            if hasattr(customer, 'selected_' + prefix + '_address'):
+                customer_selected_address = getattr(customer, 'selected_' + prefix + '_address')
+            if customer_selected_address is not None:
                 initial.update({
-                    "firstname" : invoice_address.firstname,
-                    "lastname" : invoice_address.lastname,
-                    "line1" : invoice_address.line1,
-                    "line2" : invoice_address.line2,
-                    "line3" : invoice_address.line3,
-                    "line4" : invoice_address.line4,
-                    "line5" : invoice_address.line5,
-                    "country" : invoice_address.country.iso,
+                    "firstname" : customer_selected_address.firstname,
+                    "lastname" : customer_selected_address.lastname,
+                    "line1" : customer_selected_address.line1,
+                    "line2" : customer_selected_address.line2,
+                    "line3" : customer_selected_address.line3,
+                    "line4" : customer_selected_address.line4,
+                    "line5" : customer_selected_address.line5,
+                    "country" : customer_selected_address.country.iso,
                 })
             else:
-                initial.update({"invoice-country" : country_code,})
-            invoice_address_form = address_form_class(prefix=prefix, initial=initial)
+                initial.update({prefix + "-country" : country_code,})
+            address_form = address_form_class(prefix=prefix, initial=initial)
+            address_form.fields["country"].choices = [(c.iso, c.name) for c in countries]
 
     return render_to_string(template_name, RequestContext(request, {
-        "invoice_address_form": invoice_address_form,
+        "address_form": address_form,
         "form": form,
     }))
 
@@ -581,7 +554,7 @@ def changed_invoice_country(request):
     """
     form = OnePageCheckoutForm(request.POST)
     result = simplejson.dumps({
-        "invoice_address" : invoice_address_inline(request, form),
+        "invoice_address" : address_inline(request, "invoice", form),
     })
     return HttpResponse(result)
 
@@ -590,7 +563,7 @@ def changed_shipping_country(request):
     """
     form = OnePageCheckoutForm(request.POST)
     result = simplejson.dumps({
-        "shipping_address" : shipping_address_inline(request, form),
+        "shipping_address" : address_inline(request, "shipping", form),
     })
 
     return HttpResponse(result)
