@@ -159,10 +159,6 @@ class CheckoutAddressesTestCase(TestCase):
 
         self.c = Client()
 
-        # login as our customer
-        logged_in = self.c.login(username=self.username, password=self.password)
-        self.assertEqual(logged_in, True)
-
     def dump_response(self, http_response):
         fo = open('tests_checkout_addresses.html', 'w')
         fo.write(str(http_response))
@@ -171,6 +167,10 @@ class CheckoutAddressesTestCase(TestCase):
     def test_checkout_page_ie(self):
         """Tests that checkout page gets populated with correct details
         """
+        # login as our customer
+        logged_in = self.c.login(username=self.username, password=self.password)
+        self.assertEqual(logged_in, True)
+
         cart_response = self.c.get(reverse('lfs_cart'))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
@@ -184,6 +184,10 @@ class CheckoutAddressesTestCase(TestCase):
 
 
     def test_address_changed_on_checkout(self):
+        # login as our customer
+        logged_in = self.c.login(username=self.username, password=self.password)
+        self.assertEqual(logged_in, True)
+
         self.assertEquals(PostalAddress.objects.count(), 2)
         cart_response = self.c.get(reverse('lfs_cart'))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
@@ -211,3 +215,15 @@ class CheckoutAddressesTestCase(TestCase):
         checkout_post_response = self.c.post(reverse('lfs_checkout'), checkout_data)
         self.dump_response(checkout_post_response)
         self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
+
+    def test_ajax_saves_postal_address(self):
+        self.assertEquals(PostalAddress.objects.count(), 2)
+
+        # register a new user
+        registration_response = self.c.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
+        self.assertEquals(registration_response.status_code, 302)
+        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
+
+        form_data = {'invoice-country': 'IE'}
+        ajax_respons = self.c.post(reverse('lfs_changed_invoice_country'), form_data)
+        self.assertEquals(PostalAddress.objects.count(), 3)
