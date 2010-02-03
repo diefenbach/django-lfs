@@ -20,6 +20,9 @@ from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.core.models import Shop
+from lfs.order.models import Order
+from lfs.payment.settings import BY_INVOICE, DIRECT_DEBIT
+
 
 # 3rd party imports
 from countries.models import Country
@@ -57,8 +60,32 @@ class CheckoutTestCase(TestCase):
             tax=tax
         )
 
-        payment_method = PaymentMethod.objects.create(
+        direct_debit = PaymentMethod.objects.create(
             name="Direct Debit",
+            active=True,
+            tax=tax,
+        )
+
+        cod = PaymentMethod.objects.create(
+            name="Cash on delivery",
+            active=True,
+            tax=tax,
+        )
+
+        paypal = PaymentMethod.objects.create(
+            name="PayPal",
+            active=True,
+            tax=tax,
+        )
+
+        prepayment = PaymentMethod.objects.create(
+            name="Prepayment",
+            active=True,
+            tax=tax,
+        )
+
+        by_invoice = PaymentMethod.objects.create(
+            name="By invoice",
             active=True,
             tax=tax,
         )
@@ -94,7 +121,7 @@ class CheckoutTestCase(TestCase):
         self.customer = Customer.objects.create(
             user = new_user,
             selected_shipping_method = shipping_method,
-            selected_payment_method = payment_method,
+            selected_payment_method = by_invoice,
             selected_shipping_address = address1,
             selected_invoice_address = address2,            
         )
@@ -133,10 +160,6 @@ class CheckoutTestCase(TestCase):
         )
         
         self.c = Client()
-        
-        # login as our customer
-        logged_in = self.c.login(username=self.username, password=self.password)
-        self.assertEqual(logged_in, True)
 
     def dump_response(self, http_response):
         fo = open('tests_checkout.html', 'w')
@@ -146,9 +169,67 @@ class CheckoutTestCase(TestCase):
     def test_checkout_page(self):
         """Tests that checkout page gets populated with correct details
         """
+        # login as our customer
+        logged_in = self.c.login(username=self.username, password=self.password)
+        self.assertEqual(logged_in, True)
+
         cart_response = self.c.get(reverse('lfs_cart'))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)        
         
         checkout_response = self.c.get(reverse('lfs_checkout'))
         self.assertContains(checkout_response, 'Smallville', status_code=200)
-    
+
+    def test_order_phone_email_set_after_checkout(self):
+        # login as our customer
+        logged_in = self.c.login(username=self.username, password=self.password)
+        self.assertEqual(logged_in, True)
+
+        # check initial database quantities
+        self.assertEquals(PostalAddress.objects.count(), 2)
+        self.assertEquals(Customer.objects.count(), 1)
+        self.assertEquals(Order.objects.count(), 0)
+
+        # check we have no invoice or shipping phone or email prior to checkout
+        our_customer = Customer.objects.all()[0]
+        self.assertEqual(our_customer.selected_invoice_phone, '')
+        self.assertEqual(our_customer.selected_invoice_email, None)
+        self.assertEqual(our_customer.selected_shipping_phone, '')
+        self.assertEqual(our_customer.selected_shipping_email, None)
+
+        checkout_data = {'invoice-firstname':'bob',
+                         'invoice-lastname':'builder',
+                         'invoice-line1': 'de company',
+                         'invoice-line2': 'de street',
+                         'invoice-line3': 'de area',
+                         'invoice-line4': 'de town',
+                         'invoice-line5': 'cork',
+                         'invoice-country':"IE",
+                         'invoice_email': 'a@a.com',
+                         'invoice_phone': '1234567',
+                         'shipping-firstname':'hans',
+                         'shipping-lastname':'schmidt',
+                         'shipping-line1': 'orianenberger strasse',
+                         'shipping-line2': 'de town',
+                         'shipping-line3': 'stuff',
+                         'shipping-line4': 'BE',
+                         'shipping-line5': '12345',
+                         'shipping-country':"DE",
+                         'payment_method': BY_INVOICE,
+                         'shipping_email': 'b@b.com',
+                         'shipping_phone': '7654321',
+                         }
+
+        checkout_post_response = self.c.post(reverse('lfs_checkout'), checkout_data)
+        self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
+
+        # check database quantities post-checkout
+        self.assertEquals(PostalAddress.objects.count(), 2)
+        self.assertEquals(Customer.objects.count(), 1)
+        self.assertEquals(Order.objects.count(), 1)
+
+        # check our customer details post checkout
+        our_customer = Customer.objects.all()[0]
+        self.assertEqual(our_customer.selected_invoice_phone, "1234567")
+        self.assertEqual(our_customer.selected_invoice_email, "a@a.com")
+        self.assertEqual(our_customer.selected_shipping_phone, '7654321')
+        self.assertEqual(our_customer.selected_shipping_email, "b@b.com")
