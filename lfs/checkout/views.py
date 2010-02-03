@@ -26,6 +26,7 @@ from lfs.core.settings import LFS_ADDRESS_L10N
 from lfs.customer import utils as customer_utils
 from lfs.customer.models import BankAccount
 from lfs.customer.forms import RegisterForm
+from lfs.customer.views import address_inline, save_address
 from lfs.payment.models import PaymentMethod
 from lfs.payment.settings import PAYPAL
 from lfs.payment.settings import DIRECT_DEBIT
@@ -370,29 +371,6 @@ def payment_inline(request, form, template_name="lfs/checkout/payment_inline.htm
         "form" : form,
     }))
 
-def save_address(request, customer, prefix):
-    shop = lfs.core.utils.get_default_shop()
-    customer = customer_utils.get_or_create_customer(request)
-    customer_selected_address = None
-    address_attribute = 'selected_' + prefix + '_address'
-    if hasattr(customer, address_attribute):
-        customer_selected_address = getattr(customer, address_attribute)
-
-    if customer_selected_address is None:
-        postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST)
-        setattr(customer, address_attribute, postal_address_form.save())
-    else:
-        customer_selected_address.firstname = request.POST.get(prefix + "-firstname")
-        customer_selected_address.lastname = request.POST.get(prefix + "-lastname")
-        customer_selected_address.line1 = request.POST.get(prefix + "-line1")
-        customer_selected_address.line2 = request.POST.get(prefix + "-line2")
-        customer_selected_address.line3 = request.POST.get(prefix + "-line3")
-        customer_selected_address.line4 = request.POST.get(prefix + "-line4")
-        customer_selected_address.line5 = request.POST.get(prefix + "-line5")
-        customer_selected_address.country_iso = request.POST.get(prefix + "-country", shop.default_country.iso)
-        customer_selected_address.save()
-    customer.save()
-
 def shipping_inline(request, template_name="lfs/checkout/shipping_inline.html"):
     """Displays the selectable shipping methods of the checkout page.
 
@@ -408,74 +386,6 @@ def shipping_inline(request, template_name="lfs/checkout/shipping_inline.html"):
         "selected_shipping_method" : selected_shipping_method,
     }))
 
-def get_country_code(request, prefix):
-    # get country_code from the request
-    country_code = request.POST.get(prefix + '-country', '')
-
-    # get country code from customer
-    if country_code == '':
-        customer = customer_utils.get_or_create_customer(request)
-        if prefix == INVOICE_PREFIX:
-            if customer.selected_invoice_address is not None:
-                if customer.selected_invoice_address.country is not None:
-                    country_code = customer.selected_invoice_address.country.iso
-        elif prefix == SHIPPING_PREFIX:
-            if customer.selected_shipping_address is not None:
-                if customer.selected_shipping_address.country is not None:
-                    country_code = customer.selected_shipping_address.country.iso
-
-    # get country code from shop
-    if country_code == '':
-        shop = lfs.core.utils.get_default_shop()
-        if shop.default_country is not None:
-            country_code = shop.default_country.iso
-    return country_code
-
-
-def address_inline(request, prefix, form):
-    """displays the invoice address with localized fields
-    """
-    template_name="lfs/checkout/" + prefix + "_address_inline.html"
-    country_code = get_country_code(request, prefix)
-    if country_code != '':
-        shop = lfs.core.utils.get_default_shop()
-        countries = shop.countries.all()
-        customer = customer_utils.get_or_create_customer(request)
-        address_form_class = get_postal_form_class(country_code)
-
-        if request.method == 'POST':
-            if LFS_ADDRESS_L10N == True:
-                address_form = address_form_class(prefix=prefix, data=request.POST,)
-            else:
-                address_form = PostalAddressForm(prefix=prefix, data=request.POST,)
-            address_form.fields["country"].choices = [(c.iso, c.name) for c in countries]
-            save_address(request, customer, prefix)
-        else:
-             # If there are addresses intialize the form.
-            initial = {}
-            customer_selected_address = None
-            if hasattr(customer, 'selected_' + prefix + '_address'):
-                customer_selected_address = getattr(customer, 'selected_' + prefix + '_address')
-            if customer_selected_address is not None:
-                initial.update({
-                    "firstname" : customer_selected_address.firstname,
-                    "lastname" : customer_selected_address.lastname,
-                    "line1" : customer_selected_address.line1,
-                    "line2" : customer_selected_address.line2,
-                    "line3" : customer_selected_address.line3,
-                    "line4" : customer_selected_address.line4,
-                    "line5" : customer_selected_address.line5,
-                    "country" : customer_selected_address.country.iso,
-                })
-            else:
-                initial.update({prefix + "-country" : country_code,})
-            address_form = address_form_class(prefix=prefix, initial=initial)
-            address_form.fields["country"].choices = [(c.iso, c.name) for c in countries]
-
-    return render_to_string(template_name, RequestContext(request, {
-        "address_form": address_form,
-        "form": form,
-    }))
 
 def check_voucher(request):
     """
