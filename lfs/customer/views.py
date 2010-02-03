@@ -29,6 +29,7 @@ from lfs.order.models import Order
 # other imports
 from postal.library import get_postal_form_class
 from postal.forms import PostalAddressForm
+from countries.models import Country
 
 def login(request, template_name="lfs/customer/login.html"):
     """Custom view to login or register/login a user.
@@ -183,6 +184,7 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
 
         mutable_data = request.POST.copy()
         mutable_data.update(extra_data)
+        print mutable_data
         
         form = AddressForm(mutable_data)
         if form.is_valid():
@@ -195,10 +197,12 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
             customer.save()
             return HttpResponseRedirect(reverse("lfs_my_addresses"))
     else:
-        initial = {"invoice_phone": customer.selected_invoice_phone,
+        initial = {}
+        if customer:
+            initial.update({"invoice_phone": customer.selected_invoice_phone,
                    "invoice_email": customer.selected_invoice_email,
                    "shipping_email": customer.selected_shipping_email,
-                   "shipping_phone": customer.selected_shipping_phone}
+                   "shipping_phone": customer.selected_shipping_phone})
         form = AddressForm(initial=initial)
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
@@ -278,6 +282,7 @@ def address_inline(request, prefix, form):
 def save_address(request, customer, prefix):
     shop = lfs.core.utils.get_default_shop()
     customer_selected_address = None
+    #import ipdb; ipdb.set_trace()
     address_attribute = 'selected_' + prefix + '_address'
     if hasattr(customer, address_attribute):
         customer_selected_address = getattr(customer, address_attribute)
@@ -293,10 +298,10 @@ def save_address(request, customer, prefix):
         customer_selected_address.line3 = request.POST.get(prefix + "-line3")
         customer_selected_address.line4 = request.POST.get(prefix + "-line4")
         customer_selected_address.line5 = request.POST.get(prefix + "-line5")
-        customer_selected_address.country_iso = request.POST.get(prefix + "-country", shop.default_country.iso)
+        customer_selected_address.country = Country.objects.get(iso=request.POST.get(prefix + "-country", shop.default_country.iso))
         customer_selected_address.save()
+        setattr(customer, address_attribute, customer_selected_address)
     customer.save()
-
 
 def email(request, template_name="lfs/customer/email.html"):
     """Saves the email address from the data form.
