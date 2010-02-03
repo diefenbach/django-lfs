@@ -25,7 +25,7 @@ from lfs.core.settings import LFS_ADDRESS_L10N
 from lfs.customer import utils as customer_utils
 
 # other imports
-from postal.views import get_postal_form_class
+from postal.library import get_postal_form_class
 from postal.forms import PostalAddressForm
 
 def login(request, template_name="lfs/customer/login.html"):
