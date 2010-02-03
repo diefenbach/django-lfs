@@ -184,8 +184,7 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
 
         mutable_data = request.POST.copy()
         mutable_data.update(extra_data)
-        print mutable_data
-        
+
         form = AddressForm(mutable_data)
         if form.is_valid():
             save_address(request, customer, INVOICE_PREFIX)
@@ -237,7 +236,7 @@ def get_country_code(request, prefix):
 def address_inline(request, prefix, form):
     """displays the invoice address with localized fields
     """
-    template_name="lfs/checkout/" + prefix + "_address_inline.html"
+    template_name="lfs/customer/" + prefix + "_address_inline.html"
     country_code = get_country_code(request, prefix)
     if country_code != '':
         shop = lfs.core.utils.get_default_shop()
@@ -282,7 +281,6 @@ def address_inline(request, prefix, form):
 def save_address(request, customer, prefix):
     shop = lfs.core.utils.get_default_shop()
     customer_selected_address = None
-    #import ipdb; ipdb.set_trace()
     address_attribute = 'selected_' + prefix + '_address'
     if hasattr(customer, address_attribute):
         customer_selected_address = getattr(customer, address_attribute)
