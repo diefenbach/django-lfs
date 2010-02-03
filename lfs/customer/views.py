@@ -23,6 +23,7 @@ from lfs.core.settings import LFS_ADDRESS_L10N
 from lfs.customer import utils as customer_utils
 from lfs.customer.forms import EmailForm
 from lfs.customer.forms import RegisterForm
+from lfs.customer.forms import AddressForm
 from lfs.order.models import Order
 
 # other imports
@@ -168,64 +169,41 @@ def account(request, template_name="lfs/customer/account.html"):
 def addresses(request, template_name="lfs/customer/addresses.html"):
     """Provides a form to edit addresses and bank account.
     """
-    user = request.user
     customer = lfs.customer.utils.get_customer(request)
     shop = lfs.core.utils.get_default_shop()
     
-    show_shipping_address = customer.selected_shipping_address and \
-                            customer.selected_invoice_address.id != \
-                            customer.selected_shipping_address.id
-
-    shipping_form_class = PostalAddressForm
-    invoice_form_class = PostalAddressForm
-
-    shipping_country = shop.default_country.iso
-    invoice_country = shop.default_country.iso
-
     if request.method == "POST":
-        shipping_country = request.POST.get('shipping-country', shop.default_country.iso)
-        invoice_country = request.POST.get('invoice-country', shop.default_country.iso)
+        extra_data = {}
+        prefixes = [INVOICE_PREFIX, SHIPPING_PREFIX]
+        for prefix in prefixes:
+            for field_name in PostalAddressForm.base_fields.keys():
+                field_value = request.POST.get(prefix + '-' + field_name, None)
+                if field_value is not None:
+                    extra_data.update({prefix + '_' + field_name:field_value})
 
-        if LFS_ADDRESS_L10N == True:
-            shipping_form_class = get_postal_form_class(shipping_country)
-            invoice_form_class = get_postal_form_class(invoice_country)
-
-        shipping_form = shipping_form_class(prefix="shipping", data=request.POST,
-            instance = customer.selected_shipping_address)
-
-        invoice_form = invoice_form_class(prefix="invoice", data=request.POST,
-            instance = customer.selected_invoice_address)
-
-        if show_shipping_address:
-            if shipping_form.is_valid() and invoice_form.is_valid():
-                customer.selected_shipping_address = shipping_form.save()
-                customer.selected_invoice_address = invoice_form.save()
-                customer.save()
-                return HttpResponseRedirect(reverse("lfs_my_addresses"))
-        else:
-            if invoice_form.is_valid():
-                customer.selected_invoice_address = invoice_form.save()
-                customer.save()
-                return HttpResponseRedirect(reverse("lfs_my_addresses"))
-    else:            
-        if customer.selected_shipping_address is not None:
-            shipping_country = customer.selected_shipping_address.country.iso
-        if customer.selected_invoice_address is not None:
-            invoice_country = customer.selected_invoice_address.country.iso
-
-        shipping_form_class = get_postal_form_class(shipping_country)
-        invoice_form_class = get_postal_form_class(invoice_country)
+        mutable_data = request.POST.copy()
+        mutable_data.update(extra_data)
         
-        shipping_form = shipping_form_class(prefix="shipping",
-            instance=customer.selected_shipping_address)
-        
-        invoice_form = invoice_form_class(prefix="invoice", 
-            instance=customer.selected_invoice_address)
-        
+        form = AddressForm(mutable_data)
+        if form.is_valid():
+            save_address(request, customer, INVOICE_PREFIX)
+            save_address(request, customer, SHIPPING_PREFIX)
+            customer.selected_invoice_phone = form.cleaned_data['invoice_phone']
+            customer.selected_invoice_email = form.cleaned_data['invoice_email']
+            customer.selected_shipping_phone = form.cleaned_data['shipping_phone']
+            customer.selected_shipping_email = form.cleaned_data['shipping_email']
+            customer.save()
+            return HttpResponseRedirect(reverse("lfs_my_addresses"))
+    else:
+        initial = {"invoice_phone": customer.selected_invoice_phone,
+                   "invoice_email": customer.selected_invoice_email,
+                   "shipping_email": customer.selected_shipping_email,
+                   "shipping_phone": customer.selected_shipping_phone}
+        form = AddressForm(initial=initial)
     return render_to_response(template_name, RequestContext(request, {
-        "show_shipping_address" : show_shipping_address,
-        "shipping_address_inline" : address_inline(request, "shipping", shipping_form),
-        "invoice_address_inline" : address_inline(request, "invoice", invoice_form),
+        "form": form,
+        "shipping_address_inline" : address_inline(request, "shipping", form),
+        "invoice_address_inline" : address_inline(request, "invoice", form),
     }))
 
 def get_country_code(request, prefix):
@@ -299,7 +277,6 @@ def address_inline(request, prefix, form):
 
 def save_address(request, customer, prefix):
     shop = lfs.core.utils.get_default_shop()
-    customer = customer_utils.get_or_create_customer(request)
     customer_selected_address = None
     address_attribute = 'selected_' + prefix + '_address'
     if hasattr(customer, address_attribute):

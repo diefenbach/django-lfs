@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.core import mail
 
 # lfs imports
+from lfs.core.models import Shop
 from lfs.customer.models import Customer
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
@@ -17,11 +18,25 @@ from postal.models import PostalAddress
 
 class AddressTestCase(TestCase):
     
-    fixtures = ['lfs_shop.xml']
-    
     def setUp(self):
         """
-        """         
+        """
+        ie = Country.objects.get(iso="IE")
+        gb = Country.objects.get(iso="GB")
+        de = Country.objects.get(iso="DE")
+        us = Country.objects.get(iso="US")
+        fr = Country.objects.get(iso="FR")
+
+        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
+                                          default_country=de)
+        shop.save()
+        shop.countries.add(ie)
+        shop.countries.add(gb)
+        shop.countries.add(de)
+        shop.countries.add(us)
+        shop.countries.add(fr)
+        shop.save()
+         
         tax = Tax.objects.create(rate = 19)
         
         shipping_method = ShippingMethod.objects.create(
@@ -132,9 +147,13 @@ class AddressTestCase(TestCase):
         address_data = {'invoice-firstname': 'Joe', 'invoice-lastname': 'Bloggs',
                         'invoice-line1': 'de company name', 'invoice-line2': 'de street',
                         'invoice-line3': 'Dallas', 'invoice-line4': 'TX',
-                        'invoice-line5': '84003', 'invoice-country': 'US'}
+                        'invoice-line5': '84003', 'invoice-country': 'US',
+                        'shipping-country': 'IE'}
         address_response = self.c.post(reverse('lfs_my_addresses'), address_data)
-        self.assertEquals(PostalAddress.objects.count(), 3)
+        
+        # We get 2 new postal addresses one shipping and one postal
+        self.assertEquals(PostalAddress.objects.count(), 4)
+        self.dump_response(address_response)
         self.assertRedirects(address_response, reverse('lfs_my_addresses'), status_code=302, target_status_code=200,)
 
         # refetch our user from the database
