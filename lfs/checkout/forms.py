@@ -33,6 +33,7 @@ class OnePageCheckoutForm(forms.Form):
     shipping_line5 = forms.CharField(label=_(u"Shipping Address Line 5"), required=False, max_length=100)
     shipping_country = forms.ChoiceField(label=_(u"Country"), required=False)
     shipping_phone = forms.CharField(label=_(u"Shipping Phone"), required=False, max_length=20)
+    shipping_email = forms.EmailField(label=_(u"Shipping E-mail"), required=False, max_length=50)
 
     account_number = forms.CharField(label=_(u"Account Number"), required=False, max_length=30)
     bank_identification_code = forms.CharField(label=_(u"Bank Indentification Code"), required=False, max_length=30)
