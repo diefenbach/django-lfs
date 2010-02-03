@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 # test imports
 from lfs.catalog.models import Product
@@ -201,6 +202,8 @@ class CheckoutAddressesTestCase(TestCase):
                          'invoice-line4': 'de town',
                          'invoice-line5': 'cork',
                          'invoice-country':"IE",
+                         'invoice_email': 'a@a.com',
+                         'invoice_phone': '1234567',
                          'shipping-firstname':'hans',
                          'shipping-lastname':'schmidt',
                          'shipping-line1': 'orianenberger strasse',
@@ -209,6 +212,8 @@ class CheckoutAddressesTestCase(TestCase):
                          'shipping-line4': 'BE',
                          'shipping-line5': '12345',
                          'shipping-country':"DE",
+                         'shipping_email': 'b@b.com',
+                         'shipping_phone': '7654321',
                          'payment_method': BY_INVOICE,
                          }
 
