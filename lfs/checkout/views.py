@@ -35,7 +35,7 @@ from lfs.voucher.settings import MESSAGES
 
 # other imports
 from postal.models import PostalAddress
-from postal.views import get_postal_form_class
+from postal.library import get_postal_form_class
 from postal.forms import PostalAddressForm
 from countries.models import Country
 
@@ -203,10 +203,18 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             # Create or update invoice address
             save_address(request, customer, INVOICE_PREFIX)
 
+            # save invoice phone and email
+            customer.selected_invoice_phone = request.POST.get("invoice_phone")
+            customer.selected_invoice_email = request.POST.get("invoice_email")
+
             # If the shipping address differs from invoice firstname we create
             # or update the shipping address.
             if not form.cleaned_data.get("no_shipping"):
                 save_address(request, customer, SHIPPING_PREFIX)
+
+                # save shipping phone and email
+                customer.selected_shipping_phone = request.POST.get("shipping_phone")
+                customer.selected_shipping_email = request.POST.get("shipping_email")
 
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
@@ -250,10 +258,18 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             # Create or update invoice address
             save_address(request, customer, INVOICE_PREFIX)
 
+            # save invoice phone and email
+            customer.selected_invoice_phone = request.POST.get("invoice_phone")
+            customer.selected_invoice_email = request.POST.get("invoice_email")
+
             # If the shipping address differs from invoice firstname we create
             # or update the shipping address.
             if not form.data.get("no_shipping"):
                 save_address(request, customer, SHIPPING_PREFIX)
+
+                # save shipping phone and email
+                customer.selected_shipping_phone = request.POST.get("shipping_phone")
+                customer.selected_shipping_email = request.POST.get("shipping_email")
 
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
