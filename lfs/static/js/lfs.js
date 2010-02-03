@@ -267,7 +267,7 @@ $(function() {
     }
 
     var update_invoice_address = function() {
-        var data = $(".checkout-form").ajaxSubmit({
+        var data = $(".checkout-form,.address-form").ajaxSubmit({
             url : "/changed-invoice-country/",
             "success" : function(data) {
                 var data = JSON.parse(data);
@@ -277,7 +277,7 @@ $(function() {
     }
 
     var update_shipping_address = function() {
-        var data = $(".checkout-form").ajaxSubmit({
+        var data = $(".checkout-form,.address-form").ajaxSubmit({
             url : "/changed-shipping-country/",
             "success" : function(data) {
                 var data = JSON.parse(data);
@@ -326,32 +326,4 @@ $(function() {
         });
     });
 
-    // Addresses form ##################################################################
-    var update_my_invoice_address = function() {
-        var data = $(".address-form").ajaxSubmit({
-            url : "/changed-invoice-address/",
-            "success" : function(data) {
-                var data = JSON.parse(data);
-                $("#invoice-address-inline").html(data["invoice_address"]);
-            }
-        });
-    }
-
-    var update_my_shipping_address = function() {
-        var data = $(".address-form").ajaxSubmit({
-            url : "/changed-shipping-address/",
-            "success" : function(data) {
-                var data = JSON.parse(data);
-                $("#shipping-address-inline").html(data["shipping_address"]);
-            }
-        });
-    }
-
-    $("#id_invoice-country").livequery("change", function() {
-    	update_my_invoice_address()
-    });
-
-    $("#id_shipping-country").livequery("change", function() {
-    	update_my_shipping_address()
-    });
 })
