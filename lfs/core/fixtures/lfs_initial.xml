@@ -7,9 +7,9 @@
         <field type="CharField" name="shop_owner"></field>
         <field type="TextField" name="description"></field>
         <field type="FileField" name="image"></field>
-        <field to="core.country" name="default_country" rel="ManyToOneRel">1</field>
-        <field to="core.country" name="countries" rel="ManyToManyRel">
-            <object pk="1"></object>
+        <field to="countries.country" name="default_country" rel="ManyToOneRel">DE</field>
+        <field to="countries.country" name="invoice_countries" rel="ManyToManyRel"><object pk="DE"></object>
+        <field to="countries.country" name="shipping_countries" rel="ManyToManyRel"><object pk="DE"></object>
         </field>
     </object>    
 
