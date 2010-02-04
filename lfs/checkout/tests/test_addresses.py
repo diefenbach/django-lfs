@@ -43,12 +43,9 @@ class CheckoutAddressesTestCase(TestCase):
 
         shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
                                           default_country=de)
-        shop.save()
-        shop.invoice_countries.add(ie)
-        shop.invoice_countries.add(gb)
-        shop.invoice_countries.add(de)
-        shop.invoice_countries.add(us)
-        shop.invoice_countries.add(fr)
+
+        for ic in Country.objects.all():
+            shop.invoice_countries.add(ic)
         shop.shipping_countries.add(ie)
         shop.shipping_countries.add(gb)
         shop.shipping_countries.add(de)
