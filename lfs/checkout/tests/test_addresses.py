@@ -56,35 +56,7 @@ class CheckoutAddressesTestCase(TestCase):
             tax=tax
         )
 
-        direct_debit = PaymentMethod.objects.create(
-            name="Direct Debit",
-            active=True,
-            tax=tax,
-        )
-
-        cod = PaymentMethod.objects.create(
-            name="Cash on delivery",
-            active=True,
-            tax=tax,
-        )
-
-        paypal = PaymentMethod.objects.create(
-            name="PayPal",
-            active=True,
-            tax=tax,
-        )
-
-        prepayment = PaymentMethod.objects.create(
-            name="Prepayment",
-            active=True,
-            tax=tax,
-        )
-
-        self.by_invoice = PaymentMethod.objects.create(
-            name="By invoice",
-            active=True,
-            tax=tax,
-        )
+        self.by_invoice = PaymentMethod.objects.get(pk=BY_INVOICE)
 
         address1 = PostalAddress.objects.create(
             firstname = "John",
