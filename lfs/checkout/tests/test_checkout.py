@@ -13,16 +13,16 @@ from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
+from lfs.core.models import Shop
+from lfs.core.utils import get_default_shop
 from lfs.customer.models import Customer
-from lfs.order.utils import add_order
+from lfs.order.models import Order
 from lfs.order.settings import SUBMITTED
+from lfs.order.utils import add_order
 from lfs.payment.models import PaymentMethod
+from lfs.payment.settings import BY_INVOICE, DIRECT_DEBIT
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
-from lfs.core.models import Shop
-from lfs.order.models import Order
-from lfs.payment.settings import BY_INVOICE, DIRECT_DEBIT
-
 
 # 3rd party imports
 from countries.models import Country
@@ -31,7 +31,7 @@ from postal.models import PostalAddress
 class CheckoutTestCase(TestCase):
     """
     """
-    
+    fixtures = ['lfs_shop.xml']
     def setUp(self):
         """
         """
@@ -41,19 +41,10 @@ class CheckoutTestCase(TestCase):
         us = Country.objects.get(iso="US")
         fr = Country.objects.get(iso="FR")
 
-        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
-                                          default_country=us)
-        shop.save()
-        shop.invoice_countries.add(ie)
-        shop.invoice_countries.add(gb)
-        shop.invoice_countries.add(de)
-        shop.invoice_countries.add(us)
-        shop.invoice_countries.add(fr)
-        shop.shipping_countries.add(ie)
-        shop.shipping_countries.add(gb)
-        shop.shipping_countries.add(de)
-        shop.shipping_countries.add(us)
-        shop.shipping_countries.add(fr)
+        shop = get_default_shop()
+
+        for ic in Country.objects.all():
+            shop.invoice_countries.add(ic)
         shop.save()
 
         tax = Tax.objects.create(rate = 19)
@@ -225,6 +216,7 @@ class CheckoutTestCase(TestCase):
                          }
 
         checkout_post_response = self.c.post(reverse('lfs_checkout'), checkout_data)
+        self.dump_response(checkout_post_response)
         self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
 
         # check database quantities post-checkout

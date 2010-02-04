@@ -14,14 +14,15 @@ from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
+from lfs.core.models import Shop
+from lfs.core.utils import get_default_shop
 from lfs.customer.models import Customer
 from lfs.order.utils import add_order
 from lfs.order.settings import SUBMITTED
 from lfs.payment.models import PaymentMethod
+from lfs.payment.settings import BY_INVOICE, DIRECT_DEBIT
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
-from lfs.core.models import Shop
-from lfs.payment.settings import BY_INVOICE, DIRECT_DEBIT
 
 # 3rd party imports
 from countries.models import Country
@@ -31,6 +32,7 @@ class CheckoutAddressesTestCase(TestCase):
     """
     Test localization of addresses on OnePageCheckoutForm
     """
+    fixtures = ['lfs_shop.xml']
 
     def setUp(self):
         """
@@ -39,18 +41,10 @@ class CheckoutAddressesTestCase(TestCase):
         gb = Country.objects.get(iso="GB")
         de = Country.objects.get(iso="DE")
         us = Country.objects.get(iso="US")
-        fr = Country.objects.get(iso="FR")
-
-        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
-                                          default_country=de)
-
+        
+        shop = get_default_shop()
         for ic in Country.objects.all():
             shop.invoice_countries.add(ic)
-        shop.shipping_countries.add(ie)
-        shop.shipping_countries.add(gb)
-        shop.shipping_countries.add(de)
-        shop.shipping_countries.add(us)
-        shop.shipping_countries.add(fr)
         shop.save()
 
         tax = Tax.objects.create(rate = 19)
