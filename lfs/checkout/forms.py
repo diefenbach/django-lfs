@@ -35,6 +35,8 @@ class OnePageCheckoutForm(forms.Form):
     shipping_phone = forms.CharField(label=_(u"Shipping Phone"), required=False, max_length=20)
     shipping_email = forms.EmailField(label=_(u"Shipping E-mail"), required=False, max_length=50)
 
+    requested_delivery_date = forms.DateField(label=_(u"Requested Delivery Date"), required=False)
+
     account_number = forms.CharField(label=_(u"Account Number"), required=False, max_length=30)
     bank_identification_code = forms.CharField(label=_(u"Bank Indentification Code"), required=False, max_length=30)
     bank_name = forms.CharField(label=_(u"Bankname"), required=False, max_length=100)
