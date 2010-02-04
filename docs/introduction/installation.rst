@@ -37,4 +37,4 @@ That's all!
 
 What's next?
 ------------
-Move on to :doc:`getting_started`.
+Move on to :doc:`/user/getting_started`.

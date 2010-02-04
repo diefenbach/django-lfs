@@ -1,26 +1,35 @@
-Welcome to LFS's documentation!
-======================================
+LFS - Lightning Fast Shop
+=========================
 
+LFC is a online-shop based on Django.
 
-Contents:
+Introduction
+============
 
 .. toctree::
+   :numbered:
    :maxdepth: 2
 
-   user/installation
-   user/getting_started
+   introduction/overview.rst
+   introduction/installation.rst
 
-How-tos
-=======
+Users
+=====
 
 .. toctree::
-   :maxdepth: 1
+   :numbered:
+   :maxdepth: 2
 
-   how_to_horizontal_menu
-   how_to_variants
-   how_to_filters
-   how_to_paypal
+   user/getting_started
 
+Developers
+==========
+
+.. toctree::
+   :numbered:
+   :maxdepth: 2
+
+   developer/howtos/index.rst
 
 Indices and tables
 ==================

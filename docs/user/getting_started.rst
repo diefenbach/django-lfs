@@ -2,10 +2,11 @@ Getting started
 ===============
 
 This document explains the first steps after the shop has been installed. For 
-installation please refer to :doc:`installation`.
+installation please refer to :doc:`/introduction/installation`.
 
 Enter basic information
 -----------------------
+
 At first you should go to the shop's preferences and enter basic information. 
 For that please 
 
