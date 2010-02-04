@@ -20,6 +20,7 @@ How-tos
    how_to_variants
    how_to_filters
    how_to_paypal
+   how_to_addresses
 
 
 Indices and tables
