@@ -29,14 +29,14 @@ def cart_changed_listener(sender, **kwargs):
     update_cart_cache(sender)
 cart_changed.connect(cart_changed_listener)
 
-def cart_deleted_listender(sender, instance, **kwargs):
+def cart_deleted_listener(sender, instance, **kwargs):
     update_cart_cache(instance)
-pre_delete.connect(cart_deleted_listender, sender=Cart)
+pre_delete.connect(cart_deleted_listener, sender=Cart)
     
 # Category
-def category_deleted_listender(sender, instance, **kwargs):
+def category_deleted_listener(sender, instance, **kwargs):
     update_category_cache(instance)
-pre_delete.connect(category_deleted_listender, sender=Category)
+pre_delete.connect(category_deleted_listener, sender=Category)
 
 def category_saved_listener(sender, instance, **kwargs):
     update_category_cache(instance)

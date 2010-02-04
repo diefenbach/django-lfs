@@ -1404,7 +1404,7 @@ class Image(models.Model):
     content = generic.GenericForeignKey(ct_field="content_type", fk_field="content_id")
 
     title = models.CharField(_(u"Title"), blank=True, max_length=100)
-    image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400)))
+    image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (300, 300), (400, 400)))
     position = models.PositiveSmallIntegerField(_(u"Position"), default=999)
 
     class Meta:

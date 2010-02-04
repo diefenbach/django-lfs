@@ -45,7 +45,7 @@ class Order(models.Model):
 
     customer_firstname = models.CharField(_(u"firstname"), max_length=50)
     customer_lastname = models.CharField(_(u"lastname"), max_length=50)
-    customer_email = models.CharField(_(u"lastname"), max_length=50)
+    customer_email = models.CharField(_(u"email"), max_length=50)
 
     invoice_firstname = models.CharField(_(u"Invoice firstname"), max_length=50)
     invoice_lastname = models.CharField(_(u"Invoice lastname"), max_length=50)
@@ -87,6 +87,9 @@ class Order(models.Model):
     message = models.TextField(_(u"Message"), blank=True)
 
     uuid = models.CharField(max_length=50, editable=False,unique=True, default=get_unique_id_str)
+    
+    # a buyer requested delivery date (e.g. for a florist to deliver flowers on a specific date)
+    requested_delivery_date = models.DateTimeField(_(u"Delivery Date"), null=True, blank=True)
 
     class Meta:
         ordering = ("-created", )
