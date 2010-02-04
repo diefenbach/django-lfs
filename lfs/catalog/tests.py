@@ -778,7 +778,7 @@ class ViewsTestCase(TestCase):
         """Tests whether the right template is used for products and sub
         category view of a category.
         """
-        url = reverse("lfs_category", kwargs={"slug": "category-1", "start": 0})
+        url = reverse("lfs_category", kwargs={"slug": "category-1" })
         response = self.client.get(url, {'sorting': ''})
         templates = [t.name for t in response.template]
         

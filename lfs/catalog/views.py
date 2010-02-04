@@ -78,7 +78,7 @@ def set_filter(request, category_slug, property_id, value=None, min=None, max=No
 
     request.session["product-filter"] = product_filter
 
-    url = reverse("lfs_category", kwargs={"slug" : category_slug, "start" : 0})
+    url = reverse("lfs_category", kwargs={"slug" : category_slug })
     return HttpResponseRedirect(url)
 
 def set_price_filter(request, category_slug):
@@ -100,7 +100,7 @@ def set_price_filter(request, category_slug):
 
     request.session["price-filter"] = {"min" : min, "max": max}
 
-    url = reverse("lfs_category", kwargs={"slug" : category_slug, "start" : 0})
+    url = reverse("lfs_category", kwargs={"slug" : category_slug })
     return HttpResponseRedirect(url)
 
 def reset_price_filter(request, category_slug):
@@ -109,7 +109,7 @@ def reset_price_filter(request, category_slug):
     if request.session.has_key("price-filter"):
         del request.session["price-filter"]
 
-    url = reverse("lfs_category", kwargs={"slug" : category_slug, "start" : 0})
+    url = reverse("lfs_category", kwargs={"slug" : category_slug })
     return HttpResponseRedirect(url)
 
 def reset_filter(request, category_slug, property_id):
@@ -121,7 +121,7 @@ def reset_filter(request, category_slug, property_id):
             del request.session["product-filter"][property_id]
             request.session["product-filter"] = request.session["product-filter"]
 
-    url = reverse("lfs_category", kwargs={"slug" : category_slug, "start" : 0})
+    url = reverse("lfs_category", kwargs={"slug" : category_slug })
     return HttpResponseRedirect(url)
 
 def reset_all_filter(request, category_slug):
@@ -133,7 +133,7 @@ def reset_all_filter(request, category_slug):
     if request.session.has_key("price-filter"):
         del request.session["price-filter"]
 
-    url = reverse("lfs_category", kwargs={"slug" : category_slug, "start" : 0})
+    url = reverse("lfs_category", kwargs={"slug" : category_slug })
     return HttpResponseRedirect(url)
 
 def set_sorting(request):
