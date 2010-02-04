@@ -781,21 +781,21 @@ class ViewsTestCase(TestCase):
         url = reverse("lfs_category", kwargs={"slug": "category-1", "start": 0})
         response = self.client.get(url, {'sorting': ''})
         templates = [t.name for t in response.template]
-
+        
         # By default the products of a category should be displayed
-        self.failIf("lfs/catalog/category_products.html" not in templates)
-        self.failIf("lfs/catalog/category_categories.html" in templates)
+        self.failIf("lfs/catalog/categories/product/default.html" not in templates)
+        self.failIf("lfs/catalog/categories/category/default.html" in templates)
 
         # Switch to categories within a category
-        self.c1.content = CONTENT_CATEGORIES
+        self.c1.template_name = 1
         self.c1.save()
 
         response = self.client.get(url, {'sorting': ''})
         templates = [t.name for t in response.template]
 
         # Now the categories template should be used
-        self.failIf("lfs/catalog/category_products.html" in templates)
-        self.failIf("lfs/catalog/category_categories.html" not in templates)
+        self.failIf("lfs/catalog/categories/product/default.html" in templates)
+        self.failIf("lfs/catalog/categories/category/default.html" not in templates)
 
     def test_product_form_dispatcher(self):
         """Tests the product dispatcher. The product dispatcher decides where to

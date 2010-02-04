@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 import lfs.catalog.utils
 from lfs.core.fields.thumbs import ImageWithThumbsField
 from lfs.core.managers import ActiveManager
-from lfs.catalog.settings import ACTIVE_FOR_SALE_CHOICES
+from lfs.catalog.settings import ACTIVE_FOR_SALE_CHOICES, CONTENT_CATEGORIES
 from lfs.catalog.settings import ACTIVE_FOR_SALE_STANDARD
 from lfs.catalog.settings import ACTIVE_FOR_SALE_YES
 from lfs.catalog.settings import PRODUCT_TYPE_CHOICES
@@ -35,6 +35,11 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_CHOICES
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_AUTOMATIC
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
+from lfs.catalog.settings import CATEGORY_TEMPLATES
+from lfs.catalog.settings import PRODUCT_TEMPLATES
+from lfs.catalog.settings import CAT_CATEGORY_PATH
+
+   
 from lfs.tax.models import Tax
 
 class Category(models.Model):
@@ -78,10 +83,6 @@ class Category(models.Model):
         - static_block
             A assigned static block to the category.
 
-        - content
-            decides which content will be displayed. At the moment this is either
-            sub categories or products.
-
         - active_formats
             If True product_rows, product_cols and category_cols are taken from
             the category otherwise from the parent.
@@ -104,6 +105,10 @@ class Category(models.Model):
         - level
            The level of the category within the category hierachie, e.g. if it
            is a top level category the level is 1.
+           
+        - template_name
+           Sets the template which renders the category view. If left to None, default template is used.
+           
     """
     name = models.CharField(_(u"Name"), max_length=50)
     slug = models.SlugField(_(u"Slug"),unique=True)
@@ -121,7 +126,7 @@ class Category(models.Model):
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
 
     static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")
-    content = models.IntegerField(_(u"Content"), default=CONTENT_PRODUCTS, choices=CONTENT_CHOICES)
+    #content = models.IntegerField(_(u"Content"), default=CONTENT_PRODUCTS, choices=CONTENT_CHOICES)
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
 
     product_rows  = models.IntegerField(_(u"Product rows"), default=3)
@@ -135,6 +140,8 @@ class Category(models.Model):
     level = models.PositiveSmallIntegerField(default=1)
     uid = models.CharField(max_length=50)
 
+    template_name = models.CharField(_(u"Category template"), max_length=400,blank=True,null=True, choices=CATEGORY_TEMPLATES)
+    
     class Meta:
         ordering = ("position", )
         verbose_name_plural = 'Categories'
@@ -328,6 +335,26 @@ class Category(models.Model):
         # TODO: Circular imports
         import lfs.core.utils
         return self.parent or lfs.core.utils.get_default_shop()
+        
+        
+    def get_template_name(self):
+        """method to return the path of the category template
+        """
+        if self.template_name != None:
+            id = int(self.template_name)                        
+            return CATEGORY_TEMPLATES[id][1]["file"]
+            
+        return None
+
+    def get_content(self):
+        """try to find out which type of content the template is rendering, 
+        depending on its path.
+        """
+        if self.get_template_name() == None:
+           return CONTENT_PRODUCTS
+        if self.get_template_name().startswith(CAT_CATEGORY_PATH): # do we have category - templates
+           return CONTENT_CATEGORIES
+        return CONTENT_PRODUCTS
 
 class Product(models.Model):
     """A product is sold within a shop.
@@ -437,6 +464,9 @@ class Product(models.Model):
         - active_xxx
             If set to true the information will be taken from the variant.
             Otherwise from the parent product (only relevant for variants)
+
+        - product_template
+            Sets the template, which renders the product content. If left to None, default template is used. 
     """
     # All products
     name = models.CharField(_(u"Name"), max_length=80, blank=True)
@@ -507,6 +537,8 @@ class Product(models.Model):
     active_meta_description = models.BooleanField(_(u"Active meta description"), default=False)
     active_meta_keywords = models.BooleanField(_(u"Active meta keywords"), default=False)
     active_dimensions = models.BooleanField(_(u"Active dimensions"), default=False)
+
+    template_name = models.CharField(_(u"Product template"), blank=True,null=True, max_length=400,choices=PRODUCT_TEMPLATES)
 
     objects = ActiveManager()
 
@@ -1062,7 +1094,14 @@ class Product(models.Model):
                 return self.categories.all()[0]
             except:
                 return None
-
+    def get_template_name(self):
+        """
+        method to return the path of the product template
+        """
+        if self.template_name!=None:
+            id = int(self.template_name)
+            return PRODUCT_TEMPLATES[id][1]["file"]
+        return None
 
 class ProductAccessories(models.Model):
     """Represents the relationship between products and accessories.

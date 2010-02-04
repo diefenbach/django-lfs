@@ -192,6 +192,7 @@ urlpatterns += patterns('lfs.manage.views.categories',
     url(r'^delete-category/(?P<id>[-\w]*)$', "delete_category", name="lfs_delete_category"),
     url(r'^products-inline/(?P<category_id>\d*)$', "products_inline", name="lfs_manage_category_products_inline"),
     url(r'^edit-category-data/(?P<category_id>\d*)$', "edit_category_data", name="lfs_manage_category_edit_data"),
+    url(r'^edit-category-view/(?P<category_id>\d*)$', "category_view", name="lfs_manage_category_view"),
     url(r'^selected-products/(?P<category_id>\d*)$', "selected_products", name="lfs_selected_products"),
     url(r'^load-products-tab/(?P<category_id>\d*)$', "products_tab", name="lfs_load_products_tab"),
 )

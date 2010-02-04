@@ -229,7 +229,21 @@
                 </div>
             {% endif %}
         </div>
-
+		<div class="field">
+            <div class="label">
+                {{ form.template_name.label_tag }}:
+            </div>
+            {% if form.template_name.errors %}
+                <div class="error">
+                    {{ form.template_name }}
+                    {{ form.template_name.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.template_name }}
+                </div>
+            {% endif %}
+        </div>
         <input type="submit"
                value="{% trans 'Save data' %}"
                id="product-data-save-button" />

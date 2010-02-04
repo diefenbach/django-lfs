@@ -43,10 +43,10 @@ def select_variant_from_properties(request):
     changed.
     """
     product_id = request.POST.get("product_id")
-    
+
     try:
         product = Product.objects.get(pk = product_id)
-    except Product.DoesNotExist:
+    except:# Product.DoesNotExist:
         return HttpResponse("")
 
     options = lfs_utils.parse_properties(request)
@@ -148,16 +148,15 @@ def set_sorting(request):
     # lfs_sorting_changed.send(category_id)
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
-def category_view(request, slug, start=0, template_name="lfs/catalog/category_base.html"):
+def category_view(request, slug, template_name="lfs/catalog/category_base.html"):
     """
     """
+    start = request.REQUEST.get("start", 0)
     category = lfs_get_object_or_404(Category, slug=slug)
-
-    if category.content == CONTENT_PRODUCTS:
+    if category.get_content() == CONTENT_PRODUCTS:
         inline = category_products(request, slug, start)
     else:
         inline = category_categories(request, slug)
-
     # Set last visited category for later use, e.g. Display breadcrumbs,
     # selected menu points, etc.
     request.session["last_category"] = category
@@ -171,10 +170,10 @@ def category_view(request, slug, start=0, template_name="lfs/catalog/category_ba
         "top_category" : lfs.catalog.utils.get_current_top_category(request, category),
     }))
 
-def category_categories(request, slug, template_name="lfs/catalog/category_categories.html"):
+def category_categories(request, slug, start=0, template_name="lfs/catalog/categories/category/default.html"):
     """Displays the child categories of the category with passed slug.
 
-    This is displayed if the category's content attribute is set to categories".
+    This view is called if the user chooses a template that is situated in settings.CATEGORY_PATH ".
     """
     cache_key = "category-categories-%s" % slug
 
@@ -197,6 +196,10 @@ def category_categories(request, slug, template_name="lfs/catalog/category_categ
 
     if len(row) > 0:
         categories.append(row)
+    render_template = category.get_template_name()
+
+    if render_template != None:
+        template_name = render_template
 
     result = render_to_string(template_name, RequestContext(request, {
         "category" : category,
@@ -206,10 +209,10 @@ def category_categories(request, slug, template_name="lfs/catalog/category_categ
     cache.set(cache_key, result)
     return result
 
-def category_products(request, slug, start=0, template_name="lfs/catalog/category_products.html"):
+def category_products(request, slug, start=0, template_name="lfs/catalog/categories/product/default.html"):
     """Displays the products of the category with passed slug.
 
-    This is displayed if the category's content attribute is set to products.
+    This view is called if the user chooses a template that is situated in settings.PRODUCT_PATH ".
     """
     # Resets the product filters if the user navigates to another category.
     # TODO: Is this what a customer would expect?
@@ -249,7 +252,7 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
     # Calculates parameters for display.
     try:
         start = int(start)
-    except ValueError:
+    except (ValueError, TypeError):
         start = 0
 
     format_info = category.get_format_info()
@@ -288,15 +291,18 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
         })
 
     if (start + amount) < amount_of_products:
-        next_url = "%s/%s" % (category.get_absolute_url(), start + amount)
+        next_url = "%s?start=%s" % (category.get_absolute_url(), start + amount)
     else:
         next_url = None
 
     if (start - amount) >= 0:
-        previous_url = "%s/%s" % (category.get_absolute_url(), start - amount)
+        previous_url = "%s?start=%s" % (category.get_absolute_url(), start - amount)
     else:
         previous_url = None
 
+    render_template = category.get_template_name()
+    if render_template!=None:
+        template_name = render_template
     result = render_to_string(template_name, RequestContext(request, {
         "category" : category,
         "products" : products,
@@ -305,6 +311,7 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
         "amount_of_products" : amount_of_products,
         "pages" : pages,
         "show_pages" : amount_of_products > amount,
+        "all_products" : all_products
     }))
 
     temp[sub_cache_key] = result
@@ -330,14 +337,13 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
 
     # TODO: Factor top_category out to a inclusion tag, so that people can
     # omit if they don't need it.
-
     return render_to_response(template_name, RequestContext(request, {
         "product_inline" : product_inline(request, product.id),
         "product" : product,
         "top_category" : lfs.catalog.utils.get_current_top_category(request, product),
     }))
 
-def product_inline(request, id, template_name="lfs/catalog/product_inline.html"):
+def product_inline(request, id, template_name="lfs/catalog/products/product_inline.html"):
     """Part of the prduct view, which displays the actual data of the product.
 
     This is factored out to be able to better cached and in might in future used
@@ -388,7 +394,8 @@ def product_inline(request, id, template_name="lfs/catalog/product_inline.html")
         variants = product.get_variants()
 
     # Reviews
-
+    if product.get_template_name()!=None:
+        template_name=product.get_template_name()
     result = render_to_string(template_name, RequestContext(request, {
         "product" : product,
         "variant" : variant,
