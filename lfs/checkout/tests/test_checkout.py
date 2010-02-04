@@ -43,8 +43,12 @@ class CheckoutTestCase(TestCase):
 
         shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
                                           default_country=us)
-        for ic in Country.objects.all():
-            shop.invoice_countries.add(ic)
+        shop.save()
+        shop.invoice_countries.add(ie)
+        shop.invoice_countries.add(gb)
+        shop.invoice_countries.add(de)
+        shop.invoice_countries.add(us)
+        shop.invoice_countries.add(fr)
         shop.shipping_countries.add(ie)
         shop.shipping_countries.add(gb)
         shop.shipping_countries.add(de)
@@ -85,7 +89,7 @@ class CheckoutTestCase(TestCase):
             tax=tax,
         )
 
-        by_invoice = PaymentMethod.objects.create(
+        self.by_invoice = PaymentMethod.objects.create(
             name="By invoice",
             active=True,
             tax=tax,
@@ -122,7 +126,7 @@ class CheckoutTestCase(TestCase):
         self.customer = Customer.objects.create(
             user = new_user,
             selected_shipping_method = shipping_method,
-            selected_payment_method = by_invoice,
+            selected_payment_method = self.by_invoice,
             selected_shipping_address = address1,
             selected_invoice_address = address2,            
         )
@@ -215,7 +219,7 @@ class CheckoutTestCase(TestCase):
                          'shipping-line4': 'BE',
                          'shipping-line5': '12345',
                          'shipping-country':"DE",
-                         'payment_method': BY_INVOICE,
+                         'payment_method': self.by_invoice.id,
                          'shipping_email': 'b@b.com',
                          'shipping_phone': '7654321',
                          }
