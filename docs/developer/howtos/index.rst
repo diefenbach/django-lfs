@@ -11,3 +11,4 @@ Here you will find some how-tos for developers.
    how_to_filters.rst
    how_to_variants.rst
    how_to_paypal.rst
+   how_to_add_own_templates.rst

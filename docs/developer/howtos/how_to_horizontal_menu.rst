@@ -8,7 +8,7 @@ actions to add one.
 
 For that please do the following steps:
 
-1. Go to LFS's management interface. 
+1. Go to LFS's management interface.
 2. Go to "Shop" / "Actions"
 3. Click on "Add action". Please note: if there are no actions yet at all you 
    will be automatically redirected to the "Add action" form.

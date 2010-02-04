@@ -1,7 +1,7 @@
 LFS - Lightning Fast Shop
 =========================
 
-LFC is a online-shop based on Django.
+LFS is a online-shop based on Django.
 
 Introduction
 ============
