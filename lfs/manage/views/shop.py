@@ -37,7 +37,7 @@ class ShopDefaultValuesForm(ModelForm):
     class Meta:
         model = Shop
         fields = ("product_cols", "product_rows", "category_cols", 
-            "default_country", "countries")
+            "default_country", "invoice_countries", "shipping_countries")
     
 @permission_required("manage_shop", login_url="/login/")
 def manage_shop(request, template_name="manage/shop/shop.html"):

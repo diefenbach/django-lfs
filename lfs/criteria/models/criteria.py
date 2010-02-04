@@ -226,7 +226,7 @@ class CountryCriterion(models.Model, Criterion):
         shop = lfs_get_object_or_404(Shop, pk=1)
 
         countries = []
-        for country in shop.countries.all():
+        for country in shop.shipping_countries.all():
             if country in self.countries.all():
                 selected = True
             else:

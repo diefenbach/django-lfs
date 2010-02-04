@@ -55,7 +55,7 @@ def change_criterion_form(request):
     DOM node.
     """
     shop = lfs_get_object_or_404(Shop, pk=1)
-    countries = shop.countries.all()
+    countries = shop.shipping_countries.all()
     
     type = request.POST.get("type", "price")
     template_name = "manage/criteria/%s_criterion.html" % type

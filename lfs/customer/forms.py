@@ -34,8 +34,8 @@ class AddressForm(forms.Form):
         super(AddressForm, self).__init__(*args, **kwargs)
         
         shop = get_default_shop()
-        self.fields["invoice_country"].choices = [(c.iso, c.name) for c in shop.countries.all()]
-        self.fields["shipping_country"].choices = [(c.iso, c.name) for c in shop.countries.all()]
+        self.fields["invoice_country"].choices = [(c.iso, c.name) for c in shop.invoice_countries.all()]
+        self.fields["shipping_country"].choices = [(c.iso, c.name) for c in shop.shipping_countries.all()]
         
 class BankForm(forms.ModelForm):
     """Form to edit bank account

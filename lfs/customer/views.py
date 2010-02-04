@@ -29,6 +29,7 @@ from lfs.order.models import Order
 # other imports
 from postal.library import get_postal_form_class
 from postal.forms import PostalAddressForm
+from postal.models import PostalAddress
 from countries.models import Country
 
 def login(request, template_name="lfs/customer/login.html"):
@@ -240,16 +241,20 @@ def address_inline(request, prefix, form):
     country_code = get_country_code(request, prefix)
     if country_code != '':
         shop = lfs.core.utils.get_default_shop()
-        countries = shop.countries.all()
+        countries = None
+        if prefix == INVOICE_PREFIX:
+            countries = shop.invoice_countries.all()
+        else:
+            countries = shop.shipping_countries.all()
         customer = customer_utils.get_or_create_customer(request)
         address_form_class = get_postal_form_class(country_code)
-
         if request.method == 'POST':
             if LFS_ADDRESS_L10N == True:
                 address_form = address_form_class(prefix=prefix, data=request.POST,)
             else:
                 address_form = PostalAddressForm(prefix=prefix, data=request.POST,)
-            address_form.fields["country"].choices = [(c.iso, c.name) for c in countries]
+            if countries is not None:
+                address_form.fields["country"].choices = [(c.iso, c.name) for c in countries]
             save_address(request, customer, prefix)
         else:
              # If there are addresses intialize the form.
@@ -271,7 +276,8 @@ def address_inline(request, prefix, form):
             else:
                 initial.update({prefix + "-country" : country_code,})
             address_form = address_form_class(prefix=prefix, initial=initial)
-            address_form.fields["country"].choices = [(c.iso, c.name) for c in countries]
+            if countries is not None:
+                address_form.fields["country"].choices = [(c.iso, c.name) for c in countries]
 
     return render_to_string(template_name, RequestContext(request, {
         "address_form": address_form,
@@ -282,12 +288,17 @@ def save_address(request, customer, prefix):
     shop = lfs.core.utils.get_default_shop()
     customer_selected_address = None
     address_attribute = 'selected_' + prefix + '_address'
+    country_iso = request.POST.get(prefix + "-country", shop.default_country.iso)
     if hasattr(customer, address_attribute):
         customer_selected_address = getattr(customer, address_attribute)
 
     if customer_selected_address is None:
         postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST)
-        setattr(customer, address_attribute, postal_address_form.save())
+        if postal_address_form.is_valid():
+            setattr(customer, address_attribute, postal_address_form.save())
+        else:
+            setattr(customer, address_attribute, PostalAddress.objects.create(
+                        country = Country.objects.get(iso=country_iso)))
     else:
         customer_selected_address.firstname = request.POST.get(prefix + "-firstname")
         customer_selected_address.lastname = request.POST.get(prefix + "-lastname")
@@ -296,7 +307,7 @@ def save_address(request, customer, prefix):
         customer_selected_address.line3 = request.POST.get(prefix + "-line3")
         customer_selected_address.line4 = request.POST.get(prefix + "-line4")
         customer_selected_address.line5 = request.POST.get(prefix + "-line5")
-        customer_selected_address.country = Country.objects.get(iso=request.POST.get(prefix + "-country", shop.default_country.iso))
+        customer_selected_address.country = Country.objects.get(iso=country_iso)
         customer_selected_address.save()
         setattr(customer, address_attribute, customer_selected_address)
     customer.save()

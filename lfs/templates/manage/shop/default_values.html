@@ -64,17 +64,31 @@
         <legend>{% trans 'Countries' %}</legend>
         <div class="field">
             <div class="label">
-                {{ form.countries.label_tag }}:
+                {{ form.invoice_countries.label_tag }}:
             </div>
-        
-            {% if form.default_country.errors %}
+            {% if form.invoice_countries.errors %}
                 <div class="error">
-                    {{ form.countries }}
-                    {{ form.countries.errors }}
+                    {{ form.invoice_countries }}
+                    {{ form.invoice_countries.errors }}
                 </div>
             {% else %}
                 <div>
-                    {{ form.countries }}
+                    {{ form.invoice_countries }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="field">
+            <div class="label">
+                {{ form.shipping_countries.label_tag }}:
+            </div>
+            {% if form.shipping_countries.errors %}
+                <div class="error">
+                    {{ form.shipping_countries }}
+                    {{ form.shipping_countries.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.shipping_countries }}
                 </div>
             {% endif %}
         </div>                
@@ -83,7 +97,6 @@
             <div class="label">
                 {{ form.default_country.label_tag }}:
             </div>
-        
             {% if form.default_country.errors %}
                 <div class="error">
                     {{ form.default_country }}
@@ -96,7 +109,6 @@
             {% endif %}
         </div>                
     </fieldset>
-        
     <input id="shop-default-values-button"
            type="submit"
            value="{% trans 'Save Default Values' %}">

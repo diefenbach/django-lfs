@@ -119,7 +119,8 @@ class Shop(models.Model):
     ga_site_tracking = models.BooleanField(_(u"Google Analytics Site Tracking"), default=False)
     ga_ecommerce_tracking = models.BooleanField(_(u"Google Analytics E-Commerce Tracking"), default=False)
 
-    countries = models.ManyToManyField(Country, verbose_name=_(u"Countries"), related_name="shops")
+    invoice_countries = models.ManyToManyField(Country, verbose_name=_(u"Invoice Countries"), related_name="invoice")
+    shipping_countries = models.ManyToManyField(Country, verbose_name=_(u"Shipping Countries"), related_name="shipping")
     default_country = models.ForeignKey(Country, verbose_name=_(u"Default country"))
     default_currency = models.CharField(_(u"Default Currency"), max_length=30, default="EUR")
 
