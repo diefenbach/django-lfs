@@ -109,6 +109,7 @@ def add_order(request):
         shipping_phone = customer.selected_shipping_phone,
 
         message = request.POST.get("message", ""),
+        requested_delivery_date = request.POST.get("requested_delivery_date", ""),
     )
 
     if voucher:
