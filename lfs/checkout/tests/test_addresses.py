@@ -86,7 +86,7 @@ class CheckoutAddressesTestCase(TestCase):
             tax=tax,
         )
 
-        by_invoice = PaymentMethod.objects.create(
+        self.by_invoice = PaymentMethod.objects.create(
             name="By invoice",
             active=True,
             tax=tax,
@@ -122,7 +122,7 @@ class CheckoutAddressesTestCase(TestCase):
         self.customer = Customer.objects.create(
             user = new_user,
             selected_shipping_method = shipping_method,
-            selected_payment_method = by_invoice,
+            selected_payment_method = self.by_invoice,
             selected_shipping_address = address1,
             selected_invoice_address = address2,
         )
@@ -216,7 +216,7 @@ class CheckoutAddressesTestCase(TestCase):
                          'shipping-country':"DE",
                          'shipping_email': 'b@b.com',
                          'shipping_phone': '7654321',
-                         'payment_method': BY_INVOICE,
+                         'payment_method': self.by_invoice.id,
                          }
 
         checkout_post_response = self.c.post(reverse('lfs_checkout'), checkout_data)
