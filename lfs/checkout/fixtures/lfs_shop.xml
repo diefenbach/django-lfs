@@ -11,11 +11,14 @@
         <field to="countries.country" name="invoice_countries" rel="ManyToManyRel">
         	<object pk="DE"></object>
         	<object pk="IE"></object>
+        	<object pk="NL"></object>
         </field>
-        <field to="countries.country" name="shipping_countries" rel="ManyToManyRel"><object pk="DE"></object>
+        <field to="countries.country" name="shipping_countries" rel="ManyToManyRel">
+        	<object pk="DE"></object>
         	<object pk="IE"></object>
         	<object pk="GB"></object>
         	<object pk="US"></object>
+        	<object pk="NL"></object>
         </field>
     </object>    
 

@@ -27,6 +27,7 @@ from lfs.tax.models import Tax
 # 3rd party imports
 from countries.models import Country
 from postal.models import PostalAddress
+from postal.library import get_postal_form_class
 
 class CheckoutTestCase(TestCase):
     """
@@ -40,11 +41,14 @@ class CheckoutTestCase(TestCase):
         de = Country.objects.get(iso="DE")
         us = Country.objects.get(iso="US")
         fr = Country.objects.get(iso="FR")
+        nl = Country.objects.get(iso="NL")
 
         shop = get_default_shop()
 
         for ic in Country.objects.all():
             shop.invoice_countries.add(ic)
+
+        shop.shipping_countries.add(nl)
         shop.save()
 
         tax = Tax.objects.create(rate = 19)
@@ -181,6 +185,68 @@ class CheckoutTestCase(TestCase):
                          'shipping-line4': 'BE',
                          'shipping-line5': '12345',
                          'shipping-country':"DE",
+                         'payment_method': self.by_invoice.id,
+                         'shipping_email': 'b@b.com',
+                         'shipping_phone': '7654321',
+                         }
+
+        checkout_post_response = self.c.post(reverse('lfs_checkout'), checkout_data)
+        self.dump_response(checkout_post_response)
+        self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
+
+        # check database quantities post-checkout
+        self.assertEquals(PostalAddress.objects.count(), 2)
+        self.assertEquals(Customer.objects.count(), 1)
+        self.assertEquals(Order.objects.count(), 1)
+
+        # check our customer details post checkout
+        our_customer = Customer.objects.all()[0]
+        self.assertEqual(our_customer.selected_invoice_phone, "1234567")
+        self.assertEqual(our_customer.selected_invoice_email, "a@a.com")
+        self.assertEqual(our_customer.selected_shipping_phone, '7654321')
+        self.assertEqual(our_customer.selected_shipping_email, "b@b.com")
+
+    def test_checkout_with_4_line_shipping_address(self):
+        # login as our customer
+        logged_in = self.c.login(username=self.username, password=self.password)
+        self.assertEqual(logged_in, True)
+
+        # test that our Netherlands form has only 4 address line fields
+        nl_form_class = get_postal_form_class("NL")
+        nl_form = nl_form_class()
+        self.assertEqual(nl_form.fields.has_key('line4'), True)
+        self.assertEqual(nl_form.fields.has_key('line5'), False)
+
+        # check initial database quantities
+        self.assertEquals(PostalAddress.objects.count(), 2)
+        self.assertEquals(Customer.objects.count(), 1)
+        self.assertEquals(Order.objects.count(), 0)
+
+        # check we have no invoice or shipping phone or email prior to checkout
+        our_customer = Customer.objects.all()[0]
+        self.assertEqual(our_customer.selected_invoice_phone, '')
+        self.assertEqual(our_customer.selected_invoice_email, None)
+        self.assertEqual(our_customer.selected_shipping_phone, '')
+        self.assertEqual(our_customer.selected_shipping_email, None)
+
+        checkout_data = {'invoice-firstname':'bob',
+                         'invoice-lastname':'builder',
+                         'invoice-line1': 'de company',
+                         'invoice-line2': 'de street',
+                         'invoice-line3': 'de area',
+                         'invoice-line4': 'de town',
+                         'invoice-line5': 'cork',
+                         'invoice-country':"NL",
+                         'invoice_email': 'a@a.com',
+                         'invoice_phone': '1234567',
+                         'shipping-firstname':'hans',
+                         'shipping-lastname':'schmidt',
+                         'shipping-line1': 'orianenberger strasse',
+                         'shipping-line2': 'de town',
+                         'shipping-line3': 'stuff',
+                         'shipping-line4': 'BE',
+                         'shipping-line5': '12345',
+                         'shipping-country':"NL",
                          'payment_method': self.by_invoice.id,
                          'shipping_email': 'b@b.com',
                          'shipping_phone': '7654321',
