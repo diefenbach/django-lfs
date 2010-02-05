@@ -57,7 +57,7 @@ class AddressTestCase(TestCase):
             tax=tax,
         )
         
-        country = Country.objects.get(iso="IE")
+        country = Country.objects.get(iso="DE")
         
         address1 = PostalAddress.objects.create(
             firstname = "John",
@@ -65,7 +65,7 @@ class AddressTestCase(TestCase):
             line1 = "Doe Ltd.",
             line2 = "Street 42",
             line3 = "2342",
-            line4 = "Gotham City",
+            line5 = "Gotham City",
             country = country,
         )
 
@@ -75,7 +75,7 @@ class AddressTestCase(TestCase):
             line1 = "Doe Ltd.",
             line2 = "Street 43",
             line3 = "2443",
-            line4 = "Smallville",
+            line5 = "Smallville",
             country = country,
         )
         
@@ -104,6 +104,7 @@ class AddressTestCase(TestCase):
         self.assertEqual(logged_in, True)
 
         address_response = self.c.get(reverse('lfs_my_addresses'))
+        self.dump_response(address_response)
         self.assertContains(address_response, 'Smallville', status_code=200)
         self.assertContains(address_response, 'Gotham City', status_code=200)
         
@@ -158,7 +159,6 @@ class AddressTestCase(TestCase):
         
         # We get 2 new postal addresses one shipping and one postal
         self.assertEquals(PostalAddress.objects.count(), 4)
-        self.dump_response(address_response)
         self.assertRedirects(address_response, reverse('lfs_my_addresses'), status_code=302, target_status_code=200,)
 
         # refetch our user from the database
