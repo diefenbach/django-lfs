@@ -187,90 +187,86 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
 
     customer = customer_utils.get_or_create_customer(request)
     if request.method == "POST":
-        # map our ajax fields to our OnePageCheckoutForm fields
-        extra_data = {}
-        prefixes = [INVOICE_PREFIX, SHIPPING_PREFIX]
-        for prefix in prefixes:
-            for field_name in PostalAddressForm.base_fields.keys():
-                field_value = request.POST.get(prefix + '-' + field_name, None)
-                if field_value is not None:
-                    extra_data.update({prefix + '_' + field_name:field_value})
-
-        mutable_rp = request.POST.copy()
-        mutable_rp.update(extra_data)
-        form = checkout_form(mutable_rp)
+        form = checkout_form(request.POST)
 
         if form.is_valid():
-            # Create or update invoice address
-            save_address(request, customer, INVOICE_PREFIX)
-
             # save invoice phone and email
             customer.selected_invoice_phone = request.POST.get("invoice_phone")
             customer.selected_invoice_email = request.POST.get("invoice_email")
 
-            # If the shipping address differs from invoice firstname we create
-            # or update the shipping address.
-            if not form.cleaned_data.get("no_shipping"):
-                save_address(request, customer, SHIPPING_PREFIX)
-
-                # save shipping phone and email
-                customer.selected_shipping_phone = request.POST.get("shipping_phone")
-                customer.selected_shipping_email = request.POST.get("shipping_email")
-
-            # Payment method
-            customer.selected_payment_method_id = request.POST.get("payment_method")
-
-            # 1 = Direct Debit
-            if customer.selected_payment_method_id is not None:
-                if int(customer.selected_payment_method_id) == DIRECT_DEBIT:
-                    bank_account = BankAccount.objects.create(
-                        account_number = form.cleaned_data.get("account_number"),
-                        bank_identification_code = form.cleaned_data.get("bank_identification_code"),
-                        bank_name = form.cleaned_data.get("bank_name"),
-                        depositor = form.cleaned_data.get("depositor"),
-                    )
-
-                    customer.selected_bank_account = bank_account
-
-            # Save the selected information to the customer
-            customer.save()
-
-            # process the payment method ...
-            result = lfs.payment.utils.process_payment(request)
-
-            payment_method = lfs.payment.utils.get_selected_payment_method(request)
-
-            # Only if the payment is succesful we create the order out of the
-            # cart.
-            if result.get("success") == True:
-                order = lfs.order.utils.add_order(request)
-
-                # TODO: Get rid of these payment specific payment stuff. This
-                # should be within payment utils.
-                if payment_method.id == PAYPAL and settings.LFS_PAYPAL_REDIRECT:
-                    return HttpResponseRedirect(order.get_pay_link())
-                else:
-                    return HttpResponseRedirect(result.get("next-url"))
+            # Create or update invoice address
+            valid_invoice_address = save_address(request, customer, INVOICE_PREFIX)
+            if valid_invoice_address == False:
+                form._errors["invoice-phone"] = "Invalid invoice address"
             else:
-                if result.has_key("message"):
-                    form._errors[result.get("message-key")] = result.get("message")
+                # If the shipping address differs from invoice firstname we create
+                # or update the shipping address.
+                valid_shipping_address = True
+                if not form.cleaned_data.get("no_shipping"):
+                    # save shipping phone and email
+                    customer.selected_shipping_phone = request.POST.get("shipping_phone")
+                    customer.selected_shipping_email = request.POST.get("shipping_email")
+
+                    valid_shipping_address = save_address(request, customer, SHIPPING_PREFIX)
+
+                if valid_shipping_address == False:
+                    form._errors["invoice-phone"] = "Invalid invoice address"
+                else:
+                    # Payment method
+                    customer.selected_payment_method_id = request.POST.get("payment_method")
+
+                    # 1 = Direct Debit
+                    if customer.selected_payment_method_id is not None:
+                        if int(customer.selected_payment_method_id) == DIRECT_DEBIT:
+                            bank_account = BankAccount.objects.create(
+                                account_number = form.cleaned_data.get("account_number"),
+                                bank_identification_code = form.cleaned_data.get("bank_identification_code"),
+                                bank_name = form.cleaned_data.get("bank_name"),
+                                depositor = form.cleaned_data.get("depositor"),
+                            )
+
+                            customer.selected_bank_account = bank_account
+
+                    # Save the selected information to the customer
+                    customer.save()
+
+                    # process the payment method ...
+                    result = lfs.payment.utils.process_payment(request)
+
+                    payment_method = lfs.payment.utils.get_selected_payment_method(request)
+
+                    # Only if the payment is successful we create the order out of the
+                    # cart.
+                    if result.get("success") == True:
+                        order = lfs.order.utils.add_order(request)
+
+                        # TODO: Get rid of these payment specific payment stuff. This
+                        # should be within payment utils.
+                        if payment_method.id == PAYPAL and settings.LFS_PAYPAL_REDIRECT:
+                            return HttpResponseRedirect(order.get_pay_link())
+                        else:
+                            return HttpResponseRedirect(result.get("next-url"))
+                    else:
+                        if result.has_key("message"):
+                            form._errors[result.get("message-key")] = result.get("message")
 
         else: # form is not valid
-            # Create or update invoice address
-            save_address(request, customer, INVOICE_PREFIX)
-
             # save invoice phone and email
             customer.selected_invoice_phone = request.POST.get("invoice_phone")
             customer.selected_invoice_email = request.POST.get("invoice_email")
+
+            # Create or update invoice address
+            save_address(request, customer, INVOICE_PREFIX)
 
             # If the shipping address differs from invoice firstname we create
             # or update the shipping address.
             if not form.data.get("no_shipping"):
-                save_address(request, customer, SHIPPING_PREFIX)
-
                 # save shipping phone and email
                 customer.selected_shipping_phone = request.POST.get("shipping_phone")
                 customer.selected_shipping_email = request.POST.get("shipping_email")
+                customer.save()
+
+                save_address(request, customer, SHIPPING_PREFIX)
 
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
