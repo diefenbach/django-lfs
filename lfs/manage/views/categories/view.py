@@ -19,11 +19,11 @@ class ViewForm(ModelForm):
     """
     def __init__(self, *args, **kwargs):
         super(ViewForm, self).__init__(*args, **kwargs)
-        self.fields["template_name"].widget = SelectImage(choices=CATEGORY_TEMPLATES)
+        self.fields["template"].widget = SelectImage(choices=CATEGORY_TEMPLATES)
 
     class Meta:
         model = Category
-        fields = ("template_name", "show_all_products", "active_formats",
+        fields = ("template", "show_all_products", "active_formats",
             "product_cols", "product_rows", "category_cols", )
 
 
