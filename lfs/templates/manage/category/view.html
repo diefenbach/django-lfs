@@ -21,13 +21,13 @@
             update_form();
         });
 
-        $("#id_template_name").change(function() {
+        $("#id_template").change(function() {
             update_form();
         });
 
         function update_form() {
-            var template_name = $("#id_template_name").selected().attr("value");
-            if (template_name == 0) {
+            var template_name = $("#id_template").selected().attr("value");
+            if (template_name == "0") {
                 $("#id_category_cols").parents(".field").hide();
 
                 if ($("#id_active_formats:checked").val() == null) {
