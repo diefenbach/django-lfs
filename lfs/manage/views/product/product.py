@@ -43,11 +43,11 @@ class ProductDataForm(ModelForm):
     """
     def __init__(self,*args, **kwargs):
         super(ProductDataForm, self).__init__(*args, **kwargs)
-        self.fields["template_name"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
+        self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
     class Meta:
         model = Product
         fields = ("active", "name", "slug", "sku", "price", "tax",
-            "short_description", "description", "for_sale", "for_sale_price","template_name")
+            "short_description", "description", "for_sale", "for_sale_price","template")
     def clean(self):
         """
         """
