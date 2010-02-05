@@ -292,8 +292,8 @@ def save_address(request, customer, prefix):
     if hasattr(customer, address_attribute):
         customer_selected_address = getattr(customer, address_attribute)
 
+    postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST)
     if customer_selected_address is None:
-        postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST)
         if postal_address_form.is_valid():
             setattr(customer, address_attribute, postal_address_form.save())
         else:
@@ -311,6 +311,7 @@ def save_address(request, customer, prefix):
         customer_selected_address.save()
         setattr(customer, address_attribute, customer_selected_address)
     customer.save()
+    return postal_address_form.is_valid()
 
 def email(request, template_name="lfs/customer/email.html"):
     """Saves the email address from the data form.
