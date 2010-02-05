@@ -106,7 +106,7 @@ class Category(models.Model):
            The level of the category within the category hierachie, e.g. if it
            is a top level category the level is 1.
            
-        - template_name
+        - template
            Sets the template which renders the category view. If left to None, default template is used.
            
     """
@@ -125,8 +125,8 @@ class Category(models.Model):
     position = models.IntegerField(_(u"Position"), default=1000)
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
 
-    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")
-    #content = models.IntegerField(_(u"Content"), default=CONTENT_PRODUCTS, choices=CONTENT_CHOICES)
+    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")    
+    template = models.PositiveSmallIntegerField(_(u"Category template"), max_length=400, blank=True, null=True, choices=CATEGORY_TEMPLATES)
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
 
     product_rows  = models.IntegerField(_(u"Product rows"), default=3)
@@ -140,8 +140,6 @@ class Category(models.Model):
     level = models.PositiveSmallIntegerField(default=1)
     uid = models.CharField(max_length=50)
 
-    template_name = models.CharField(_(u"Category template"), max_length=400,blank=True,null=True, choices=CATEGORY_TEMPLATES)
-    
     class Meta:
         ordering = ("position", )
         verbose_name_plural = 'Categories'
@@ -465,7 +463,7 @@ class Product(models.Model):
             If set to true the information will be taken from the variant.
             Otherwise from the parent product (only relevant for variants)
 
-        - product_template
+        - template
             Sets the template, which renders the product content. If left to None, default template is used. 
     """
     # All products
@@ -537,8 +535,7 @@ class Product(models.Model):
     active_meta_description = models.BooleanField(_(u"Active meta description"), default=False)
     active_meta_keywords = models.BooleanField(_(u"Active meta keywords"), default=False)
     active_dimensions = models.BooleanField(_(u"Active dimensions"), default=False)
-
-    template_name = models.CharField(_(u"Product template"), blank=True,null=True, max_length=400,choices=PRODUCT_TEMPLATES)
+    template = models.PositiveSmallIntegerField(_(u"Product template"), blank=True, null=True, max_length=400, choices=PRODUCT_TEMPLATES)
 
     objects = ActiveManager()
 
