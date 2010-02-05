@@ -322,7 +322,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
     }))
 
     if form._errors:
-        return lfs.core.utils.set_message_to(response, _(u"An error has been occured."))
+        return lfs.core.utils.set_message_to(response, _(u"An error has occured."))
     else:
         return response
 
