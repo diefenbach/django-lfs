@@ -3,6 +3,7 @@ from datetime import datetime
 
 # django imports
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 
 # lfs imports
 from lfs.caching.utils import lfs_get_object_or_404
@@ -165,7 +166,10 @@ def get_selected_shipping_country(request):
     customer = customer_utils.get_customer(request)
     if customer:
         if customer.selected_shipping_address:
-            return customer.selected_shipping_address.country
+            try:
+                return customer.selected_shipping_address.country
+            except ObjectDoesNotExist:
+                pass
         elif customer.selected_country:
             return customer.selected_country
 
