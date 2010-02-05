@@ -338,8 +338,8 @@ class Category(models.Model):
     def get_template_name(self):
         """method to return the path of the category template
         """
-        if self.template_name != None:
-            id = int(self.template_name)                        
+        if self.template != None:
+            id = int(self.template)                        
             return CATEGORY_TEMPLATES[id][1]["file"]
             
         return None
@@ -1095,8 +1095,8 @@ class Product(models.Model):
         """
         method to return the path of the product template
         """
-        if self.template_name!=None:
-            id = int(self.template_name)
+        if self.template != None:
+            id = int(self.template)
             return PRODUCT_TEMPLATES[id][1]["file"]
         return None
 

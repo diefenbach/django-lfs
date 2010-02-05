@@ -787,7 +787,7 @@ class ViewsTestCase(TestCase):
         self.failIf("lfs/catalog/categories/category/default.html" in templates)
 
         # Switch to categories within a category
-        self.c1.template_name = 1
+        self.c1.template = 1
         self.c1.save()
 
         response = self.client.get(url, {'sorting': ''})

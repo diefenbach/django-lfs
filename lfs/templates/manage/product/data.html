@@ -231,16 +231,16 @@
         </div>
 		<div class="field">
             <div class="label">
-                {{ form.template_name.label_tag }}:
+                {{ form.template.label_tag }}:
             </div>
-            {% if form.template_name.errors %}
+            {% if form.template.errors %}
                 <div class="error">
-                    {{ form.template_name }}
-                    {{ form.template_name.errors }}
+                    {{ form.template }}
+                    {{ form.template.errors }}
                 </div>
             {% else %}
                 <div>
-                    {{ form.template_name }}
+                    {{ form.template }}
                 </div>
             {% endif %}
         </div>
