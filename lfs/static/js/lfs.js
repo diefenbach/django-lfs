@@ -276,6 +276,14 @@ $(function() {
         });
     }
 
+    var save_invoice_address = function() {
+        var data = $(".checkout-form,.address-form").ajaxSubmit({
+            url : "/changed-invoice-country/",
+            "success" : function(data) {
+            }
+        });
+    }
+
     var update_shipping_address = function() {
         var data = $(".checkout-form,.address-form").ajaxSubmit({
             url : "/changed-shipping-country/",
@@ -285,6 +293,18 @@ $(function() {
             }
         });
     }
+
+    var save_shipping_address = function() {
+        var data = $(".checkout-form,.address-form").ajaxSubmit({
+            url : "/changed-shipping-country/",
+            "success" : function(data) {
+            }
+        });
+    }
+
+    $("#id_invoice-firstname,#id_invoice-lastname,#id_invoice-line1,#id_invoice-line2,#id_invoice-line3,#id_invoice-line4,#id_invoice-line5").livequery("change", function() {
+    	save_invoice_address();
+    });
 
     $(".update-checkout").livequery("click", function() {
         update_checkout();
@@ -299,6 +319,11 @@ $(function() {
     	update_shipping_address();
         update_checkout();
     });
+
+    $("#id_shipping-firstname,#id_shipping-lastname,#id_shipping-line1,#id_shipping-line2,#id_shipping-line3,#id_shipping-line4,#id_shipping-line5").livequery("change", function() {
+    	save_shipping_address();
+    });
+
 
     var update_html = function(data) {
         data = JSON.parse(data);
