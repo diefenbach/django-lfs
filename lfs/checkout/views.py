@@ -415,7 +415,7 @@ def changed_checkout(request):
 def changed_invoice_country(request):
     """
     """
-    form = OnePageCheckoutForm(request.POST)
+    form = OnePageCheckoutForm(initial=request.POST)
     result = simplejson.dumps({
         "invoice_address" : address_inline(request, INVOICE_PREFIX, form),
     })
@@ -424,7 +424,7 @@ def changed_invoice_country(request):
 def changed_shipping_country(request):
     """
     """
-    form = OnePageCheckoutForm(request.POST)
+    form = OnePageCheckoutForm(initial=request.POST)
     result = simplejson.dumps({
         "shipping_address" : address_inline(request, SHIPPING_PREFIX, form),
     })
