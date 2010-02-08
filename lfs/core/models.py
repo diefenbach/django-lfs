@@ -13,18 +13,8 @@ from lfs.core.settings import ACTION_PLACE_CHOICES
 from lfs.core.settings import ACTION_PLACE_TABS
 from lfs.catalog.models import StaticBlock
 
-class Country(models.Model):
-    """Holds country relevant data for the shop.
-    """
-    code = models.CharField(_(u"Country code"), max_length=2)
-    name = models.CharField(_(u"Name"), max_length=100)
-
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural = 'Countries'
-        ordering = ("name", )
+# 3rd party imports
+from countries.models import Country
 
 class Action(models.Model):
     """A action is a link which can be displayed on several parts of the web
@@ -129,7 +119,8 @@ class Shop(models.Model):
     ga_site_tracking = models.BooleanField(_(u"Google Analytics Site Tracking"), default=False)
     ga_ecommerce_tracking = models.BooleanField(_(u"Google Analytics E-Commerce Tracking"), default=False)
 
-    countries = models.ManyToManyField(Country, verbose_name=_(u"Countries"), related_name="shops")
+    invoice_countries = models.ManyToManyField(Country, verbose_name=_(u"Invoice Countries"), related_name="invoice")
+    shipping_countries = models.ManyToManyField(Country, verbose_name=_(u"Shipping Countries"), related_name="shipping")
     default_country = models.ForeignKey(Country, verbose_name=_(u"Default country"))
     default_currency = models.CharField(_(u"Default Currency"), max_length=30, default="EUR")
 

@@ -9,6 +9,7 @@ from lfs.shipping.tests import *
 from lfs.voucher.tests import *
 from lfs.customer.tests import *
 from lfs.checkout.tests import *
+from lfs.payment.tests import *
 
 # django imports
 from django.contrib.auth.models import User
@@ -21,10 +22,13 @@ from django.test.client import Client
 
 # lfs imports
 from lfs.core.models import Shop
-from lfs.core.models import Country
 from lfs.order.models import Order
 from lfs.tests.utils import RequestFactory
 import lfs.core.utils
+
+# 3rd party imports
+from countries.models import Country
+
 
 class ShopTestCase(TestCase):
     """Tests the views of the lfs.catalog.
@@ -44,7 +48,7 @@ class ShopTestCase(TestCase):
         self.assertEqual(shop.google_analytics_id, "")
         self.assertEqual(shop.ga_site_tracking, False)
         self.assertEqual(shop.ga_ecommerce_tracking, False)
-        self.assertEqual(shop.default_country.name, "Deutschland")
+        self.assertEqual(shop.default_country.name, u"GERMANY")
     
     def test_from_email(self):
         """

@@ -9,7 +9,6 @@ from django.template.loader import render_to_string
 # lfs imports
 from lfs import shipping
 from lfs.caching.utils import lfs_get_object_or_404
-from lfs.core.models import Country
 from lfs.core.models import Shop
 from lfs.criteria.models.criteria_objects import CriteriaObjects
 from lfs.criteria.settings import EQUAL
@@ -22,6 +21,9 @@ from lfs.criteria.settings import SELECT_OPERATORS
 from lfs.criteria.settings import IS, IS_NOT, IS_VALID, IS_NOT_VALID
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
+
+# other imports
+from countries.models import Country
 
 class Criterion(object):
     """Base class for all lfs criteria.
@@ -224,14 +226,14 @@ class CountryCriterion(models.Model, Criterion):
         shop = lfs_get_object_or_404(Shop, pk=1)
 
         countries = []
-        for country in shop.countries.all():
+        for country in shop.shipping_countries.all():
             if country in self.countries.all():
                 selected = True
             else:
                 selected = False
 
             countries.append({
-                "id" : country.id,
+                "iso" : country.iso,
                 "name" : country.name,
                 "selected" : selected,
             })

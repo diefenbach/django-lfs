@@ -46,7 +46,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         }))
 
     shop = core_utils.get_default_shop()
-    countries = shop.countries.all()
+    countries = shop.shipping_countries.all()
     selected_country = shipping_utils.get_selected_shipping_country(request)
 
     # Get default shipping method, so that we have a one in any case.

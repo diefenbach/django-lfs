@@ -5,12 +5,13 @@ from django.test import TestCase
 from django.test.client import Client
 
 # lfs imports
-from lfs.core.models import Country
 from lfs.order.models import Order
 from lfs.order.settings import PAID, PAYMENT_FAILED, PAYMENT_FLAGGED, SUBMITTED
 from lfs.payment.models import PayPalOrderTransaction
+from lfs.payment.utils import create_paypal_link_for_order
 
 # other imports
+from countries.models import Country
 from paypal.standard.ipn.models import PayPalIPN
 from paypal.standard.models import ST_PP_COMPLETED, ST_PP_DENIED
 import uuid
@@ -69,8 +70,7 @@ class PayPalPaymentTestCase(TestCase):
 
         PayPalIPN._postback = fake_postback
         
-        country = Country(code="ie", name="Ireland")
-        country.save()
+        country = Country.objects.get(iso="IE")
         order = Order(invoice_country=country, shipping_country=country, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()
@@ -96,8 +96,7 @@ class PayPalPaymentTestCase(TestCase):
 
         PayPalIPN._postback = fake_postback
         
-        country = Country(code="ie", name="Ireland")
-        country.save()
+        country = Country.objects.get(iso="IE")
         order = Order(invoice_country=country, shipping_country=country, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()
@@ -125,8 +124,7 @@ class PayPalPaymentTestCase(TestCase):
             return 'VERIFIED'
 
         PayPalIPN._postback = fake_postback        
-        country = Country(code="ie", name="Ireland")
-        country.save()
+        country = Country.objects.get(iso="IE")
         order = Order(invoice_country=country, shipping_country=country, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()
@@ -142,8 +140,28 @@ class PayPalPaymentTestCase(TestCase):
         ipn_obj = PayPalIPN.objects.all()[0]        
         self.assertEqual(ipn_obj.payment_status, ST_PP_COMPLETED)
         self.assertEqual(ipn_obj.flag, True)
-        self.assertEqual(ipn_obj.flag_info, u'Invalid receiver_email (incorrect_email@someotherbusiness.com).')
+        self.assertEqual(ipn_obj.flag_info, u'Invalid receiver_email. (incorrect_email@someotherbusiness.com)')
         order = Order.objects.all()[0]
         self.assertEqual(order.state, PAYMENT_FLAGGED)
         
-        
+    def test_correct_address_fields_set_on_checkout(self):
+        country = Country.objects.get(iso="US")
+        order = Order(invoice_firstname="bill", invoice_lastname="blah",
+                      invoice_line1="bills house", invoice_line2="bills street",
+                      invoice_line3="bills town", invoice_line4="bills state",
+                      invoice_line5="bills zip code", invoice_country=country,
+                      shipping_country=country, uuid=self.uuid)
+        self.assertEqual(order.state, SUBMITTED)
+        order.save()
+        url = create_paypal_link_for_order(order)
+
+        # test unique id
+        self.assertEqual(('custom=' + self.uuid) in url, True)
+
+        # test address stuff
+        self.assertEqual('first_name=bill' in url, True)
+        self.assertEqual('last_name=blah' in url, True)
+        self.assertEqual('address1=bills house' in url, True)
+        self.assertEqual('address2=bills street' in url, True)
+        self.assertEqual('state=bills state' in url, True)
+        self.assertEqual('zip=bills zip code' in url, True)

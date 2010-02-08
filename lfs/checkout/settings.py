@@ -8,3 +8,5 @@ CHECKOUT_TYPES = (
     (CHECKOUT_TYPE_ANON,   _(u"Anonymous only")),
     (CHECKOUT_TYPE_AUTH,   _(u"Authenticated only")),
 )
+SHIPPING_PREFIX ="shipping"
+INVOICE_PREFIX = "invoice"

@@ -30,7 +30,11 @@ class LazyEncoder(simplejson.JSONEncoder):
 def get_default_shop():
     """Returns the default shop. At the moment this the shop with id == 1.
     """
-    return lfs_get_object_or_404(Shop, pk=1)
+    try:
+        shop = Shop.objects.get(pk=1)
+    except Shop.DoesNotExist, e: # No guarantee that our shop will have pk=1 in postgres
+        shop = Shop.objects.all()[0]
+    return shop
 
 def lfs_quote(string, encoding="utf-8"):
     """Encodes string to encoding before quoting.

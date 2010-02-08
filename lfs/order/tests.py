@@ -12,8 +12,6 @@ from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
-from lfs.core.models import Country
-from lfs.customer.models import Address
 from lfs.customer.models import Customer
 from lfs.order.utils import add_order
 from lfs.order.settings import SUBMITTED
@@ -22,6 +20,10 @@ from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.tests.utils import DummySession
 from lfs.tests.utils import RequestFactory
+
+# 3rd party models
+from countries.models import Country
+from postal.models import PostalAddress
 
 class OrderTestCase(TestCase):
     """
@@ -53,30 +55,26 @@ class OrderTestCase(TestCase):
             tax=tax,
         )
         
-        country = Country.objects.create(name="Middle-earth")
+        country = Country.objects.get(iso="US")
         
-        address1 = Address.objects.create(
+        address1 = PostalAddress.objects.create(
             firstname = "John",
             lastname = "Doe",
-            company_name = "Doe Ltd.",
-            street = "Street 42",
-            zip_code = "2342",
-            city = "Gotham City",
+            line1 = "Doe Ltd.",
+            line2 = "Street 42",
+            line3 = "2342",
+            line4 = "Gotham City",
             country = country,
-            phone = "555-111111",
-            email = "john@doe.com",
         )
 
-        address2 = Address.objects.create(
+        address2 = PostalAddress.objects.create(
             firstname = "Jane",
             lastname = "Doe",
-            company_name = "Doe Ltd.",
-            street = "Street 43",
-            zip_code = "2443",
-            city = "Smallville",
+            line1 = "Doe Ltd.",
+            line2 = "Street 43",
+            line3 = "2443",
+            line4 = "Smallville",
             country = country,
-            phone = "666-111111",
-            email = "jane@doe.com",
         )
         
         self.customer = Customer.objects.create(
@@ -84,7 +82,11 @@ class OrderTestCase(TestCase):
             selected_shipping_method = shipping_method,
             selected_payment_method = payment_method,
             selected_shipping_address = address1,
-            selected_invoice_address = address2,            
+            selected_shipping_phone = "555-111111",
+            selected_shipping_email = "john@doe.com",
+            selected_invoice_address = address2,
+            selected_invoice_phone = "666-111111",
+            selected_invoice_email = "jane@doe.com",
         )
         
         p1 = Product.objects.create(
@@ -138,18 +140,18 @@ class OrderTestCase(TestCase):
         
         self.assertEqual(order.shipping_firstname, "John")
         self.assertEqual(order.shipping_lastname, "Doe")
-        self.assertEqual(order.shipping_company_name, "Doe Ltd.")
-        self.assertEqual(order.shipping_street, "Street 42")
-        self.assertEqual(order.shipping_zip_code, "2342")
-        self.assertEqual(order.shipping_city, "Gotham City")
+        self.assertEqual(order.shipping_line1, "Doe Ltd.")
+        self.assertEqual(order.shipping_line2, "Street 42")
+        self.assertEqual(order.shipping_line3, "2342")
+        self.assertEqual(order.shipping_line4, "Gotham City")
         self.assertEqual(order.shipping_phone, "555-111111")
 
         self.assertEqual(order.invoice_firstname, "Jane")
         self.assertEqual(order.invoice_lastname, "Doe")
-        self.assertEqual(order.invoice_company_name, "Doe Ltd.")
-        self.assertEqual(order.invoice_street, "Street 43")
-        self.assertEqual(order.invoice_zip_code, "2443")
-        self.assertEqual(order.invoice_city, "Smallville")
+        self.assertEqual(order.invoice_line1, "Doe Ltd.")
+        self.assertEqual(order.invoice_line2, "Street 43")
+        self.assertEqual(order.invoice_line3, "2443")
+        self.assertEqual(order.invoice_line4, "Smallville")
         self.assertEqual(order.invoice_phone, "666-111111")
 
         # Items

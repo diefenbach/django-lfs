@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
-from lfs.core.models import Country
 from lfs.catalog.models import Product
 from lfs.order.settings import ORDER_STATES
 from lfs.order.settings import SUBMITTED
@@ -14,6 +13,7 @@ from lfs.payment.settings import PAYPAL
 import lfs.payment.utils
 
 # other imports
+from countries.models import Country
 import uuid
 
 
@@ -45,25 +45,25 @@ class Order(models.Model):
 
     customer_firstname = models.CharField(_(u"firstname"), max_length=50)
     customer_lastname = models.CharField(_(u"lastname"), max_length=50)
-    customer_email = models.CharField(_(u"lastname"), max_length=50)
+    customer_email = models.CharField(_(u"email"), max_length=50)
 
     invoice_firstname = models.CharField(_(u"Invoice firstname"), max_length=50)
     invoice_lastname = models.CharField(_(u"Invoice lastname"), max_length=50)
-    invoice_company_name = models.CharField(_(u"Invoice company name"), max_length=50, blank=True)
-    invoice_street = models.CharField(_(u"Invoice street"), blank=True, max_length=100)
-    invoice_zip_code = models.CharField(_(u"Invoice zip code"), max_length=10)
-    invoice_city = models.CharField(_(u"Invoice city"), max_length=50)
-    invoice_state = models.CharField(_(u"Invoice state"), max_length=50)
+    invoice_line1 = models.CharField(_(u"Invoice Line 1"), null=True, blank=True, max_length=100)
+    invoice_line2 = models.CharField(_(u"Invoice Line 2"), null=True, blank=True, max_length=100)
+    invoice_line3 = models.CharField(_(u"Invoice Line 3"), null=True, blank=True, max_length=100)
+    invoice_line4 = models.CharField(_(u"Invoice Line 4"), null=True, blank=True, max_length=100)
+    invoice_line5 = models.CharField(_(u"Invoice Line 5"), null=True, blank=True, max_length=100)
     invoice_country = models.ForeignKey(Country, related_name="orders_invoice_country", blank=True, null=True)
     invoice_phone = models.CharField(_(u"Invoice phone"), blank=True, max_length=20)
 
     shipping_firstname = models.CharField(_(u"Shipping firstname"), max_length=50)
     shipping_lastname = models.CharField(_(u"Shipping lastname"), max_length=50)
-    shipping_company_name = models.CharField(_(u"Shipping company name"), max_length=50, blank=True)
-    shipping_street = models.CharField(_(u"Shipping street"), blank=True, max_length=100)
-    shipping_zip_code = models.CharField(_(u"Shipping zip code"), max_length=10)
-    shipping_city = models.CharField(_(u"Shipping city"), max_length=50)
-    shipping_state = models.CharField(_(u"Shipping state"), max_length=50)
+    shipping_line1 = models.CharField(_(u"Shipping Line 1"), null=True, blank=True, max_length=100)
+    shipping_line2 = models.CharField(_(u"Shipping Line 2"), null=True, blank=True, max_length=100)
+    shipping_line3 = models.CharField(_(u"Shipping Line 3"), null=True, blank=True, max_length=100)
+    shipping_line4 = models.CharField(_(u"Shipping Line 4"), null=True, blank=True, max_length=100)
+    shipping_line5 = models.CharField(_(u"Shipping Line 5"), null=True, blank=True, max_length=100)
     shipping_country = models.ForeignKey(Country, related_name="orders_shipping_country", blank=True, null=True)
     shipping_phone = models.CharField(_(u"Shipping phone"), blank=True, max_length=20)
 

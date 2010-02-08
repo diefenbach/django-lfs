@@ -13,24 +13,13 @@ from lfs.core.utils import get_default_shop
 class OnePageCheckoutForm(forms.Form):
     """
     """
-    invoice_firstname = forms.CharField(label=_(u"Firstname"), max_length=50)
-    invoice_lastname = forms.CharField(label=_(u"Lastname"), max_length=50)
-    invoice_company_name = forms.CharField(label=_(u"Company name"), required=False, max_length=50)
-    invoice_street = forms.CharField(label=_(u"Street"), max_length=100)
-    invoice_zip_code = forms.CharField(label=_(u"Zip Code"), max_length=10)
-    invoice_city = forms.CharField(label=_(u"City"), max_length=50)
-    invoice_country = forms.ChoiceField(label=_(u"Country"), required=False)
-    invoice_phone = forms.CharField(label=_(u"Phone"), max_length=20)
-    invoice_email = forms.EmailField(label=_(u"E-mail"), required=False, max_length=50)
+    invoice_phone = forms.CharField(label=_(u"Invoice Phone"), max_length=20, required=False)
+    invoice_email = forms.EmailField(label=_(u"Invoice E-mail"), required=False, max_length=50)
     
-    shipping_firstname = forms.CharField(label=_(u"Firstname"), required=False, max_length=50)
-    shipping_lastname = forms.CharField(label=_(u"Lastname"), required=False, max_length=50)
-    shipping_company_name = forms.CharField(label=_(u"Company name"), required=False, max_length=50)
-    shipping_street = forms.CharField(label=_(u"Street"), required=False, max_length=100)
-    shipping_zip_code = forms.CharField(label=_(u"Zip Code"), required=False, max_length=10)
-    shipping_city = forms.CharField(label=_(u"City"), required=False, max_length=50)
-    shipping_country = forms.ChoiceField(label=_(u"Country"), required=False)
-    shipping_phone = forms.CharField(label=_(u"Phone"), required=False, max_length=20)
+    shipping_phone = forms.CharField(label=_(u"Shipping Phone"), required=False, max_length=20)
+    shipping_email = forms.EmailField(label=_(u"Shipping E-mail"), required=False, max_length=50)
+
+    requested_delivery_date = forms.DateField(label=_(u"Requested Delivery Date"), required=False)
 
     account_number = forms.CharField(label=_(u"Account Number"), required=False, max_length=30)
     bank_identification_code = forms.CharField(label=_(u"Bank Indentification Code"), required=False, max_length=30)
@@ -52,10 +41,6 @@ class OnePageCheckoutForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(OnePageCheckoutForm, self).__init__(*args, **kwargs)
         
-        shop = get_default_shop()
-        self.fields["invoice_country"].choices = [(c.id, c.name) for c in shop.countries.all()]
-        self.fields["shipping_country"].choices = [(c.id, c.name) for c in shop.countries.all()]
-        
         year = datetime.now().year
         self.fields["credit_card_expiration_date_month"].choices = [(i, i) for i in range(1, 13)]
         self.fields["credit_card_expiration_date_year"].choices = [(i, i) for i in range(year, year+10)]
@@ -69,22 +54,6 @@ class OnePageCheckoutForm(forms.Form):
            not self.cleaned_data.get("invoice_email"):
             self._errors["invoice_email"] = ErrorList([msg])
 
-        if not self.cleaned_data.get("no_shipping"):
-            if self.cleaned_data.get("shipping_firstname", "") == "":
-                self._errors["shipping_firstname"] = ErrorList([msg])
-
-            if self.cleaned_data.get("shipping_lastname", "") == "":
-                self._errors["shipping_lastname"] = ErrorList([msg])
-
-            if self.cleaned_data.get("shipping_street", "") == "":
-                self._errors["shipping_street"] = ErrorList([msg])
-
-            if self.cleaned_data.get("shipping_zip_code", "") == "":
-                self._errors["shipping_zip_code"] = ErrorList([msg])
-
-            if self.cleaned_data.get("shipping_city", "") == "":
-                self._errors["shipping_city"] = ErrorList([msg])
-                
         # 1 == Direct Debit
         if self.data.get("payment_method") == "1":
             if self.cleaned_data.get("account_number", "") == "":
