@@ -532,7 +532,7 @@ class Product(models.Model):
         else:
             self.effective_price = self.price
 
-        super(Product, self).save()
+        super(Product, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         """Returns the absolute url of the product.
