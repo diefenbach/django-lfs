@@ -17,6 +17,18 @@ urlpatterns += patterns('lfs.manage.views.delivery_times',
     url(r'^delete-delivery-time/(?P<id>\d*)$', "delete_delivery_time", name="lfs_delete_delivery_time"),
 )
 
+# Manufacturer
+urlpatterns += patterns('lfs.manage.views.manufacturer',
+    url(r'^manage/manufacturer-dispatcher$', "manufacturer_dispatcher", name="lfs_manufacturer_dispatcher"),
+    url(r'^manage/manufacturer/(?P<manufacturer_id>\d*)$', "manage_manufacturer", name="lfs_manufacturer"),
+    url(r'^manage/update-manufacturer-data/(?P<manufacturer_id>\d*)$', "update_data", name="lfs_manufacturer_update_manufacturer_data"),
+    url(r'^manage/add-manufacturer$', "add_manufacturer", name="lfs_manufacturer_add_manufacturer"),
+    url(r'^manage/delete-manufacturer/(?P<manufacturer_id>\d*)$', "delete_manufacturer", name="lfs_manufacturer_delete_manufacturer"),
+    url(r'^manage/edit-category-manufacturer/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "edit_category", name="lfs_manufacturer_edit_category"),
+    url(r'^manage/edit-product-manufacturer/(?P<manufacturer_id>\d*)/(?P<product_id>\d*)$', "edit_product", name="lfs_manufacturer_edit_product"),
+    url(r'^manage/category-state-manufacturer/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "category_state", name="lfs_manufacturer_category_state"),
+    url(r'^manage/manufacturer-inline/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "manufacturer_inline", name="lfs_manufacturer_inline"),
+)
 
 # Marketing
 urlpatterns += patterns('lfs.manage.views.marketing',

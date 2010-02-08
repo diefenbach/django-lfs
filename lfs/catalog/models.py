@@ -41,6 +41,7 @@ from lfs.catalog.settings import CAT_CATEGORY_PATH
 
    
 from lfs.tax.models import Tax
+from lfs.manufacturer.models import Manufacturer
 
 class Category(models.Model):
     """A category is used to browse through the shop products. A category can
@@ -536,6 +537,10 @@ class Product(models.Model):
     active_meta_keywords = models.BooleanField(_(u"Active meta keywords"), default=False)
     active_dimensions = models.BooleanField(_(u"Active dimensions"), default=False)
     template = models.PositiveSmallIntegerField(_(u"Product template"), blank=True, null=True, max_length=400, choices=PRODUCT_TEMPLATES)
+    
+    # Manufacturer
+    sku_manufacturer = models.CharField(blank=True, max_length=100)
+    manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True, related_name="products")
 
     objects = ActiveManager()
 

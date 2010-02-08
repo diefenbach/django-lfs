@@ -102,6 +102,23 @@
 
         <div class="field">
             <div class="label">
+                {{ form.sku_manufacturer.label_tag }}:
+            </div>
+
+            {% if form.sku.errors %}
+                <div class="error">
+                    {{ form.sku_manufacturer }}
+                    {{ form.sku_manufacturer.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.sku_manufacturer }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
                 {% if product.is_variant %}
                     {{ form.active_price }}
                 {% endif %}
