@@ -166,10 +166,12 @@ def edit_category(request, manufacturer_id, category_id):
 
     if request.POST.get("action") == "add":
         for product in category.get_all_products():
-            manufacturer.products.add(product)
+            product.manufacturer = manufacturer
+            product.save()
     else:
         for product in category.get_all_products():
-            manufacturer.products.remove(product)
+            product.manufacturer = None
+            product.save()
 
     return HttpResponse("")
 
@@ -180,9 +182,11 @@ def edit_product(request, manufacturer_id, product_id):
     product = Product.objects.get(pk=product_id)
 
     if request.POST.get("action") == "add":
-        manufacturer.products.add(product)
+        product.manufacturer = manufacturer
+        product.save()
     else:
-        manufacturer.products.remove(product)
+        product.manufacturer = None
+        product.save()
 
     return HttpResponse("")
 
