@@ -523,7 +523,7 @@ class Product(models.Model):
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.slug)
 
-    def save(self, force_insert=False, force_update=False):
+    def save(self, *args, **kwargs):
         """Overwritten to save effective_price
         use.
         """
@@ -1333,7 +1333,7 @@ class ProductPropertyValue(models.Model):
     def __unicode__(self):
         return "%s/%s: %s" % (self.product.name, self.property.name, self.value)
 
-    def save(self, force_insert=False, force_update=False):
+    def save(self, *args, **kwargs):
         """Overwritten to save the parent id for variants. This is used to count
         the entries per filter. See catalog/utils/get_product_filters for more.
         """
@@ -1349,7 +1349,7 @@ class ProductPropertyValue(models.Model):
         else:
             self.value_as_float = self.value
 
-        super(ProductPropertyValue, self).save(force_insert, force_update)
+        super(ProductPropertyValue, self).save(*args, **kwargs)
 
 class Image(models.Model):
     """An image with a title and several sizes. Can be part of a product or
