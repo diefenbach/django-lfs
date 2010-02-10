@@ -151,7 +151,6 @@ def set_sorting(request):
 def category_view(request, slug, start=0, template_name="lfs/catalog/category_base.html"):
     """
     """
-    import ipdb; ipdb.set_trace()
     category = lfs_get_object_or_404(Category, slug=slug)
 
     if category.content == CONTENT_PRODUCTS:
