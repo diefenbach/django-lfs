@@ -267,8 +267,8 @@ $(function() {
     }
 
     var update_invoice_address = function() {
-        var data = $(".checkout-form,.address-form").ajaxSubmit({
-            url : "/changed-invoice-country/",
+        var data = $(".postal-address").ajaxSubmit({
+            url : $(".postal-address").attr("invoice"),
             "success" : function(data) {
                 var data = JSON.parse(data);
                 $("#invoice-address-inline").html(data["invoice_address"]);
@@ -277,16 +277,16 @@ $(function() {
     }
 
     var save_invoice_address = function() {
-        var data = $(".checkout-form,.address-form").ajaxSubmit({
-            url : "/changed-invoice-country/",
+        var data = $(".postal-address").ajaxSubmit({
+            url : $(".postal-address").attr("invoice"),
             "success" : function(data) {
             }
         });
     }
 
     var update_shipping_address = function() {
-        var data = $(".checkout-form,.address-form").ajaxSubmit({
-            url : "/changed-shipping-country/",
+        var data = $(".postal-address").ajaxSubmit({
+            url : $(".postal-address").attr("shipping"),
             "success" : function(data) {
                 var data = JSON.parse(data);
                 $("#shipping-address-inline").html(data["shipping_address"]);
@@ -295,8 +295,8 @@ $(function() {
     }
 
     var save_shipping_address = function() {
-        var data = $(".checkout-form,.address-form").ajaxSubmit({
-            url : "/changed-shipping-country/",
+        var data = $(".postal-address").ajaxSubmit({
+            url : $(".postal-address").attr("shipping"),
             "success" : function(data) {
             }
         });
