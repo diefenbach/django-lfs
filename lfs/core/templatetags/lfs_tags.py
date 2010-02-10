@@ -447,7 +447,7 @@ def number(price, arg=None):
     price = lfs.utils.misc.FormatWithCommas("%.2f", price)
     shop = lfs_get_object_or_404(Shop, pk=1)
 
-    if shop.default_country.code == "de":
+    if shop.default_country.iso == "DE":
         # replace . and , for german format
         a, b = price.split(".")
         a = a.replace(",", ".")
