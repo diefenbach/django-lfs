@@ -285,6 +285,9 @@ def sorting_portlet(context):
 def tabs(context, obj=None):
     """
     """
+    if obj is None:
+        obj = context.get("product") or context.get("category")
+
     request = context.get("request")
     tabs = Action.objects.filter(active=True, place=ACTION_PLACE_TABS)
     if isinstance(obj, (Product, Category)):
