@@ -47,7 +47,7 @@ def add_order(request):
         customer_email = user.email
     else:
         user = None
-        customer_email = customer.selected_invoice_email
+        customer_email = customer.selected_invoice_address.email
 
     # Calculate the totals
     price = cart_costs["price"] + shipping_costs["price"] + payment_costs["price"]
@@ -77,8 +77,8 @@ def add_order(request):
         price = price,
         tax = tax,
 
-        customer_firstname = customer.selected_invoice_firstname,
-        customer_lastname = customer.selected_invoice_lastname,
+        customer_firstname = customer.selected_invoice_address.firstname,
+        customer_lastname = customer.selected_invoice_address.lastname,
         customer_email = customer_email,
 
         shipping_method = shipping_method,
@@ -88,25 +88,25 @@ def add_order(request):
         payment_price = payment_costs["price"],
         payment_tax = payment_costs["tax"],
 
-        invoice_firstname = customer.selected_invoice_firstname,
-        invoice_lastname = customer.selected_invoice_lastname,
-        invoice_line1 = invoice_address.line1,
-        invoice_line2 = invoice_address.line2,
-        invoice_line3 = invoice_address.line3,
-        invoice_line4 = invoice_address.line4,
-        invoice_line5 = invoice_address.line5,
-        invoice_country = invoice_address.country,
-        invoice_phone = customer.selected_invoice_phone,
+        invoice_firstname = customer.selected_invoice_address.firstname,
+        invoice_lastname = customer.selected_invoice_address.lastname,
+        invoice_line1 = invoice_address.postal_address.line1,
+        invoice_line2 = invoice_address.postal_address.line2,
+        invoice_line3 = invoice_address.postal_address.line3,
+        invoice_line4 = invoice_address.postal_address.line4,
+        invoice_line5 = invoice_address.postal_address.line5,
+        invoice_country = invoice_address.postal_address.country,
+        invoice_phone = customer.selected_invoice_address.phone,
 
-        shipping_firstname = customer.selected_shipping_firstname,
-        shipping_lastname = customer.selected_shipping_lastname,
-        shipping_line1 = shipping_address.line1,
-        shipping_line2 = shipping_address.line2,
-        shipping_line3 = shipping_address.line3,
-        shipping_line4 = shipping_address.line4,
-        shipping_line5 = shipping_address.line5,
-        shipping_country = shipping_address.country,
-        shipping_phone = customer.selected_shipping_phone,
+        shipping_firstname = customer.selected_shipping_address.firstname,
+        shipping_lastname = customer.selected_shipping_address.lastname,
+        shipping_line1 = shipping_address.postal_address.line1,
+        shipping_line2 = shipping_address.postal_address.line2,
+        shipping_line3 = shipping_address.postal_address.line3,
+        shipping_line4 = shipping_address.postal_address.line4,
+        shipping_line5 = shipping_address.postal_address.line5,
+        shipping_country = shipping_address.postal_address.country,
+        shipping_phone = customer.selected_shipping_address.phone,
 
         message = request.POST.get("message", ""),
     )

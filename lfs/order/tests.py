@@ -12,7 +12,7 @@ from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
-from lfs.customer.models import Customer
+from lfs.customer.models import Customer, Address
 from lfs.order.utils import add_order
 from lfs.order.settings import SUBMITTED
 from lfs.payment.models import PaymentMethod
@@ -55,38 +55,43 @@ class OrderTestCase(TestCase):
             tax=tax,
         )
         
-        country = Country.objects.get(iso="US")
-        
-        address1 = PostalAddress.objects.create(
+        us = Country.objects.get(iso="US")
+        ie = Country.objects.get(iso="IE")
+
+        postal_address1 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 42",
             line3 = "2342",
             line4 = "Gotham City",
-            country = country,
+            country = ie,
         )
 
-        address2 = PostalAddress.objects.create(
+        address1 = Address.objects.create(firstname = "John",
+            lastname = "Doe",
+            postal_address=postal_address1,
+            phone = "555-111111",
+            email = "john@doe.com",)
+
+        postal_address2 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 43",
             line3 = "2443",
             line4 = "Smallville",
-            country = country,
+            country = us,
         )
+
+        address2 = Address.objects.create(firstname = "Jane",
+            lastname = "Doe",
+            postal_address=postal_address2,
+            phone = "666-111111",
+            email = "jane@doe.com",)
         
         self.customer = Customer.objects.create(
             session=session.session_key,
             selected_shipping_method = shipping_method,
             selected_payment_method = payment_method,
-            selected_shipping_firstname = "John",
-            selected_shipping_lastname = "Doe",
             selected_shipping_address = address1,
-            selected_shipping_phone = "555-111111",
-            selected_shipping_email = "john@doe.com",
-            selected_invoice_firstname = "Jane",
-            selected_invoice_lastname = "Doe",
             selected_invoice_address = address2,
-            selected_invoice_phone = "666-111111",
-            selected_invoice_email = "jane@doe.com",
         )
         
         p1 = Product.objects.create(

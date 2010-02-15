@@ -15,7 +15,7 @@ from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
 from lfs.core.models import Shop
 from lfs.core.utils import get_default_shop
-from lfs.customer.models import Customer
+from lfs.customer.models import Customer, Address
 from lfs.order.models import Order
 from lfs.order.settings import SUBMITTED
 from lfs.order.utils import add_order
@@ -62,7 +62,7 @@ class CheckoutTestCase(TestCase):
 
         self.by_invoice = PaymentMethod.objects.get(pk=BY_INVOICE)
         
-        address1 = PostalAddress.objects.create(
+        postal_address1 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 42",
             line3 = "2342",
@@ -70,7 +70,12 @@ class CheckoutTestCase(TestCase):
             country = gb,
         )
 
-        address2 = PostalAddress.objects.create(
+        address1 = Address.objects.create(firstname = "John",
+            lastname = "Doe",
+            postal_address=postal_address1
+        )
+
+        postal_address2 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 43",
             line3 = "2443",
@@ -78,6 +83,11 @@ class CheckoutTestCase(TestCase):
             country = fr,
         )
         
+        address2 = Address.objects.create(firstname = "Jane",
+            lastname = "Doe",
+            postal_address=postal_address2
+        )
+
         self.username = 'joe'
         self.password = 'bloggs'
     
@@ -89,11 +99,7 @@ class CheckoutTestCase(TestCase):
             user = new_user,
             selected_shipping_method = shipping_method,
             selected_payment_method = self.by_invoice,
-            selected_shipping_firstname = "John",
-            selected_shipping_lastname = "Doe",
             selected_shipping_address = address1,
-            selected_invoice_firstname = "Jane",
-            selected_invoice_lastname = "Doe",
             selected_invoice_address = address2,            
         )
         
@@ -162,10 +168,10 @@ class CheckoutTestCase(TestCase):
 
         # check we have no invoice or shipping phone or email prior to checkout
         our_customer = Customer.objects.all()[0]
-        self.assertEqual(our_customer.selected_invoice_phone, '')
-        self.assertEqual(our_customer.selected_invoice_email, None)
-        self.assertEqual(our_customer.selected_shipping_phone, '')
-        self.assertEqual(our_customer.selected_shipping_email, None)
+        self.assertEqual(our_customer.selected_invoice_address.phone, '')
+        self.assertEqual(our_customer.selected_invoice_address.email, None)
+        self.assertEqual(our_customer.selected_shipping_address.phone, '')
+        self.assertEqual(our_customer.selected_shipping_address.email, None)
 
         checkout_data = {'invoice_firstname':'bob',
                          'invoice_lastname':'builder',
@@ -200,10 +206,10 @@ class CheckoutTestCase(TestCase):
 
         # check our customer details post checkout
         our_customer = Customer.objects.all()[0]
-        self.assertEqual(our_customer.selected_invoice_phone, "1234567")
-        self.assertEqual(our_customer.selected_invoice_email, "a@a.com")
-        self.assertEqual(our_customer.selected_shipping_phone, '7654321')
-        self.assertEqual(our_customer.selected_shipping_email, "b@b.com")
+        self.assertEqual(our_customer.selected_invoice_address.phone, "1234567")
+        self.assertEqual(our_customer.selected_invoice_address.email, "a@a.com")
+        self.assertEqual(our_customer.selected_shipping_address.phone, '7654321')
+        self.assertEqual(our_customer.selected_shipping_address.email, "b@b.com")
 
     def test_checkout_with_4_line_shipping_address(self):
         # login as our customer
@@ -223,10 +229,10 @@ class CheckoutTestCase(TestCase):
 
         # check we have no invoice or shipping phone or email prior to checkout
         our_customer = Customer.objects.all()[0]
-        self.assertEqual(our_customer.selected_invoice_phone, '')
-        self.assertEqual(our_customer.selected_invoice_email, None)
-        self.assertEqual(our_customer.selected_shipping_phone, '')
-        self.assertEqual(our_customer.selected_shipping_email, None)
+        self.assertEqual(our_customer.selected_invoice_address.phone, '')
+        self.assertEqual(our_customer.selected_invoice_address.email, None)
+        self.assertEqual(our_customer.selected_shipping_address.phone, '')
+        self.assertEqual(our_customer.selected_shipping_address.email, None)
 
         checkout_data = {'invoice_firstname':'bob',
                          'invoice_lastname':'builder',
@@ -261,7 +267,7 @@ class CheckoutTestCase(TestCase):
 
         # check our customer details post checkout
         our_customer = Customer.objects.all()[0]
-        self.assertEqual(our_customer.selected_invoice_phone, "1234567")
-        self.assertEqual(our_customer.selected_invoice_email, "a@a.com")
-        self.assertEqual(our_customer.selected_shipping_phone, '7654321')
-        self.assertEqual(our_customer.selected_shipping_email, "b@b.com")
+        self.assertEqual(our_customer.selected_invoice_address.phone, "1234567")
+        self.assertEqual(our_customer.selected_invoice_address.email, "a@a.com")
+        self.assertEqual(our_customer.selected_shipping_address.phone, '7654321')
+        self.assertEqual(our_customer.selected_shipping_address.email, "b@b.com")
