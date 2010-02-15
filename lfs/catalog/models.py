@@ -39,7 +39,7 @@ from lfs.catalog.settings import CATEGORY_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import CAT_CATEGORY_PATH
 
-   
+
 from lfs.tax.models import Tax
 from lfs.manufacturer.models import Manufacturer
 
@@ -106,10 +106,10 @@ class Category(models.Model):
         - level
            The level of the category within the category hierachie, e.g. if it
            is a top level category the level is 1.
-           
+
         - template
            Sets the template which renders the category view. If left to None, default template is used.
-           
+
     """
     name = models.CharField(_(u"Name"), max_length=50)
     slug = models.SlugField(_(u"Slug"),unique=True)
@@ -126,7 +126,7 @@ class Category(models.Model):
     position = models.IntegerField(_(u"Position"), default=1000)
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
 
-    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")    
+    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")
     template = models.PositiveSmallIntegerField(_(u"Category template"), max_length=400, blank=True, null=True, choices=CATEGORY_TEMPLATES)
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
 
@@ -334,19 +334,19 @@ class Category(models.Model):
         # TODO: Circular imports
         import lfs.core.utils
         return self.parent or lfs.core.utils.get_default_shop()
-        
-        
+
+
     def get_template_name(self):
         """method to return the path of the category template
         """
         if self.template != None:
-            id = int(self.template)                        
+            id = int(self.template)
             return CATEGORY_TEMPLATES[id][1]["file"]
-            
+
         return None
 
     def get_content(self):
-        """try to find out which type of content the template is rendering, 
+        """try to find out which type of content the template is rendering,
         depending on its path.
         """
         if self.get_template_name() == None:
@@ -444,6 +444,9 @@ class Product(models.Model):
         - tax
             Tax rate of the product.
 
+        - static_block
+            A static block which has been assigned to the product.
+
         - sub_type
             Sub type of the product. At the moment that is standard, product with
             variants, variant.
@@ -465,7 +468,7 @@ class Product(models.Model):
             Otherwise from the parent product (only relevant for variants)
 
         - template
-            Sets the template, which renders the product content. If left to None, default template is used. 
+            Sets the template, which renders the product content. If left to None, default template is used.
     """
     # All products
     name = models.CharField(_(u"Name"), max_length=80, blank=True)
@@ -503,6 +506,8 @@ class Product(models.Model):
     manage_stock_amount = models.BooleanField(_(u"Manage stock amount"), default=True)
     stock_amount = models.FloatField(_(u"Stock amount"), default=0)
 
+    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="products")
+
     # Dimension
     weight = models.FloatField(_(u"Weight"), default=0.0)
     height = models.FloatField(_(u"Height"), default=0.0)
@@ -537,7 +542,7 @@ class Product(models.Model):
     active_meta_keywords = models.BooleanField(_(u"Active meta keywords"), default=False)
     active_dimensions = models.BooleanField(_(u"Active dimensions"), default=False)
     template = models.PositiveSmallIntegerField(_(u"Product template"), blank=True, null=True, max_length=400, choices=PRODUCT_TEMPLATES)
-    
+
     # Manufacturer
     sku_manufacturer = models.CharField(blank=True, max_length=100)
     manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True, related_name="products")
@@ -970,6 +975,19 @@ class Product(models.Model):
                 return self.variants.filter(active=True)[0]
             except IndexError:
                 return None
+
+    def get_static_block(self):
+        """Returns the static block of the product.
+        """
+        cache_key = "product-static-block-%s" % self.id
+        block = cache.get(cache_key)
+        if block is not None:
+            return block
+
+        block = self.static_block
+        cache.set(cache_key, block)
+
+        return block
 
     def get_variants(self):
         """Returns the variants of the product.
