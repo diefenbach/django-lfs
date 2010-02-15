@@ -77,8 +77,8 @@ def add_order(request):
         price = price,
         tax = tax,
 
-        customer_firstname = invoice_address.firstname,
-        customer_lastname = invoice_address.lastname,
+        customer_firstname = customer.selected_invoice_firstname,
+        customer_lastname = customer.selected_invoice_lastname,
         customer_email = customer_email,
 
         shipping_method = shipping_method,
@@ -88,8 +88,8 @@ def add_order(request):
         payment_price = payment_costs["price"],
         payment_tax = payment_costs["tax"],
 
-        invoice_firstname = invoice_address.firstname,
-        invoice_lastname = invoice_address.lastname,
+        invoice_firstname = customer.selected_invoice_firstname,
+        invoice_lastname = customer.selected_invoice_lastname,
         invoice_line1 = invoice_address.line1,
         invoice_line2 = invoice_address.line2,
         invoice_line3 = invoice_address.line3,
@@ -98,8 +98,8 @@ def add_order(request):
         invoice_country = invoice_address.country,
         invoice_phone = customer.selected_invoice_phone,
 
-        shipping_firstname = shipping_address.firstname,
-        shipping_lastname = shipping_address.lastname,
+        shipping_firstname = customer.selected_shipping_firstname,
+        shipping_lastname = customer.selected_shipping_lastname,
         shipping_line1 = shipping_address.line1,
         shipping_line2 = shipping_address.line2,
         shipping_line3 = shipping_address.line3,

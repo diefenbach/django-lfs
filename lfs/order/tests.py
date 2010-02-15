@@ -58,8 +58,6 @@ class OrderTestCase(TestCase):
         country = Country.objects.get(iso="US")
         
         address1 = PostalAddress.objects.create(
-            firstname = "John",
-            lastname = "Doe",
             line1 = "Doe Ltd.",
             line2 = "Street 42",
             line3 = "2342",
@@ -68,8 +66,6 @@ class OrderTestCase(TestCase):
         )
 
         address2 = PostalAddress.objects.create(
-            firstname = "Jane",
-            lastname = "Doe",
             line1 = "Doe Ltd.",
             line2 = "Street 43",
             line3 = "2443",
@@ -81,9 +77,13 @@ class OrderTestCase(TestCase):
             session=session.session_key,
             selected_shipping_method = shipping_method,
             selected_payment_method = payment_method,
+            selected_shipping_firstname = "John",
+            selected_shipping_lastname = "Doe",
             selected_shipping_address = address1,
             selected_shipping_phone = "555-111111",
             selected_shipping_email = "john@doe.com",
+            selected_invoice_firstname = "Jane",
+            selected_invoice_lastname = "Doe",
             selected_invoice_address = address2,
             selected_invoice_phone = "666-111111",
             selected_invoice_email = "jane@doe.com",

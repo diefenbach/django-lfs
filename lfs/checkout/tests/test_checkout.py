@@ -63,8 +63,6 @@ class CheckoutTestCase(TestCase):
         self.by_invoice = PaymentMethod.objects.get(pk=BY_INVOICE)
         
         address1 = PostalAddress.objects.create(
-            firstname = "John",
-            lastname = "Doe",
             line1 = "Doe Ltd.",
             line2 = "Street 42",
             line3 = "2342",
@@ -73,8 +71,6 @@ class CheckoutTestCase(TestCase):
         )
 
         address2 = PostalAddress.objects.create(
-            firstname = "Jane",
-            lastname = "Doe",
             line1 = "Doe Ltd.",
             line2 = "Street 43",
             line3 = "2443",
@@ -93,7 +89,11 @@ class CheckoutTestCase(TestCase):
             user = new_user,
             selected_shipping_method = shipping_method,
             selected_payment_method = self.by_invoice,
+            selected_shipping_firstname = "John",
+            selected_shipping_lastname = "Doe",
             selected_shipping_address = address1,
+            selected_invoice_firstname = "Jane",
+            selected_invoice_lastname = "Doe",
             selected_invoice_address = address2,            
         )
         
@@ -167,8 +167,8 @@ class CheckoutTestCase(TestCase):
         self.assertEqual(our_customer.selected_shipping_phone, '')
         self.assertEqual(our_customer.selected_shipping_email, None)
 
-        checkout_data = {'invoice-firstname':'bob',
-                         'invoice-lastname':'builder',
+        checkout_data = {'invoice_firstname':'bob',
+                         'invoice_lastname':'builder',
                          'invoice-line1': 'de company',
                          'invoice-line2': 'de street',
                          'invoice-line3': 'de area',
@@ -177,8 +177,8 @@ class CheckoutTestCase(TestCase):
                          'invoice-country':"IE",
                          'invoice_email': 'a@a.com',
                          'invoice_phone': '1234567',
-                         'shipping-firstname':'hans',
-                         'shipping-lastname':'schmidt',
+                         'shipping_firstname':'hans',
+                         'shipping_lastname':'schmidt',
                          'shipping-line1': 'orianenberger strasse',
                          'shipping-line2': 'de town',
                          'shipping-line3': 'stuff',
@@ -228,8 +228,8 @@ class CheckoutTestCase(TestCase):
         self.assertEqual(our_customer.selected_shipping_phone, '')
         self.assertEqual(our_customer.selected_shipping_email, None)
 
-        checkout_data = {'invoice-firstname':'bob',
-                         'invoice-lastname':'builder',
+        checkout_data = {'invoice_firstname':'bob',
+                         'invoice_lastname':'builder',
                          'invoice-line1': 'de company',
                          'invoice-line2': 'de street',
                          'invoice-line3': 'de area',
@@ -238,8 +238,8 @@ class CheckoutTestCase(TestCase):
                          'invoice-country':"NL",
                          'invoice_email': 'a@a.com',
                          'invoice_phone': '1234567',
-                         'shipping-firstname':'hans',
-                         'shipping-lastname':'schmidt',
+                         'shipping_firstname':'hans',
+                         'shipping_lastname':'schmidt',
                          'shipping-line1': 'orianenberger strasse',
                          'shipping-line2': 'de town',
                          'shipping-line3': 'stuff',

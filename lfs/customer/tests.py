@@ -60,8 +60,6 @@ class AddressTestCase(TestCase):
         country = Country.objects.get(iso="DE")
         
         address1 = PostalAddress.objects.create(
-            firstname = "John",
-            lastname = "Doe",
             line1 = "Doe Ltd.",
             line2 = "Street 42",
             line3 = "2342",
@@ -70,8 +68,6 @@ class AddressTestCase(TestCase):
         )
 
         address2 = PostalAddress.objects.create(
-            firstname = "Jane",
-            lastname = "Doe",
             line1 = "Doe Ltd.",
             line2 = "Street 43",
             line3 = "2443",
@@ -90,7 +86,11 @@ class AddressTestCase(TestCase):
             user = new_user,
             selected_shipping_method = shipping_method,
             selected_payment_method = payment_method,
+            selected_shipping_firstname = "John",
+            selected_shipping_lastname = "Doe",
             selected_shipping_address = address1,
+            selected_invoice_firstname = "Jane",
+            selected_invoice_lastname = "Doe",
             selected_invoice_address = address2,            
         )
         self.c = Client()
@@ -150,7 +150,7 @@ class AddressTestCase(TestCase):
         self.assertEquals(our_customer.selected_invoice_address, None)
 
         # see if we can view the addresss page
-        address_data = {'invoice-firstname': 'Joe', 'invoice-lastname': 'Bloggs',
+        address_data = {'invoice_firstname': 'Joe', 'invoice_lastname': 'Bloggs',
                         'invoice-line1': 'de company name', 'invoice-line2': 'de street',
                         'invoice-line3': 'Dallas', 'invoice-line4': 'TX',
                         'invoice-line5': '84003', 'invoice-country': 'US',

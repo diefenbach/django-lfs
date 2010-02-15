@@ -176,23 +176,16 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
     shop = lfs.core.utils.get_default_shop()
 
     if request.method == "POST":
-        extra_data = {}
-        prefixes = [INVOICE_PREFIX, SHIPPING_PREFIX]
-        for prefix in prefixes:
-            for field_name in PostalAddressForm.base_fields.keys():
-                field_value = request.POST.get(prefix + '-' + field_name, None)
-                if field_value is not None:
-                    extra_data.update({prefix + '_' + field_name:field_value})
-
-        mutable_data = request.POST.copy()
-        mutable_data.update(extra_data)
-
-        form = AddressForm(mutable_data)
+        form = AddressForm(request.POST)
         if form.is_valid():
             save_address(request, customer, INVOICE_PREFIX)
             save_address(request, customer, SHIPPING_PREFIX)
+            customer.selected_invoice_firstname = form.cleaned_data['invoice_firstname']
+            customer.selected_invoice_lastname = form.cleaned_data['invoice_lastname']
             customer.selected_invoice_phone = form.cleaned_data['invoice_phone']
             customer.selected_invoice_email = form.cleaned_data['invoice_email']
+            customer.selected_shipping_firstname = form.cleaned_data['shipping_firstname']
+            customer.selected_shipping_lastname = form.cleaned_data['shipping_lastname']
             customer.selected_shipping_phone = form.cleaned_data['shipping_phone']
             customer.selected_shipping_email = form.cleaned_data['shipping_email']
             customer.save()
@@ -200,10 +193,15 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
     else:
         initial = {}
         if customer:
-            initial.update({"invoice_phone": customer.selected_invoice_phone,
-                   "invoice_email": customer.selected_invoice_email,
-                   "shipping_email": customer.selected_shipping_email,
-                   "shipping_phone": customer.selected_shipping_phone})
+            initial.update({"invoice_firstname": customer.selected_invoice_firstname,
+                            "invoice_lastname": customer.selected_invoice_lastname,
+                            "invoice_phone": customer.selected_invoice_phone,
+                            "invoice_email": customer.selected_invoice_email,
+                            "shipping_firstname": customer.selected_shipping_firstname,
+                            "shipping_lastname": customer.selected_shipping_lastname,
+                            "shipping_phone": customer.selected_shipping_phone,
+                            "shipping_email": customer.selected_shipping_email,
+                            })
         form = AddressForm(initial=initial)
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
@@ -265,8 +263,6 @@ def address_inline(request, prefix, form):
                 customer_selected_address = getattr(customer, 'selected_' + prefix + '_address')
             if customer_selected_address is not None:
                 initial.update({
-                    "firstname" : customer_selected_address.firstname,
-                    "lastname" : customer_selected_address.lastname,
                     "line1" : customer_selected_address.line1,
                     "line2" : customer_selected_address.line2,
                     "line3" : customer_selected_address.line3,
@@ -314,8 +310,6 @@ def save_address(request, customer, prefix):
             setattr(customer, address_attribute, PostalAddress.objects.create(
                         country = Country.objects.get(iso=country_iso)))
     else:
-        customer_selected_address.firstname = request.POST.get(prefix + "-firstname")
-        customer_selected_address.lastname = request.POST.get(prefix + "-lastname")
         customer_selected_address.line1 = request.POST.get(prefix + "-line1")
         customer_selected_address.line2 = request.POST.get(prefix + "-line2")
         customer_selected_address.line3 = request.POST.get(prefix + "-line3")
