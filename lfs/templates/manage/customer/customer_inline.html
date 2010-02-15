@@ -83,25 +83,25 @@
 					(<a href="mailto:{{ customer.get_email_address }}">{{ customer.get_email_address }}</a>)
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.line1 }}
+					{{ customer.selected_invoice_address.postal_address.line1 }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.line2 }}
+					{{ customer.selected_invoice_address.postal_address.line2 }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.line3 }}
+					{{ customer.selected_invoice_address.postal_address.line3 }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.line4 }}
+					{{ customer.selected_invoice_address.postal_address.line4 }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.line5 }}
+					{{ customer.selected_invoice_address.postal_address.line5 }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.country }}
+					{{ customer.selected_invoice_address.postal_address.country }}
 				</div>
 				<div>
-					{{ customer.invoice_phone }}
+					{{ customer.selected_invoice_address.phone }}
 				</div>
 			{% else %}
 				---
@@ -114,25 +114,25 @@
 					{{ customer.selected_shipping_address.lastname }}
 				</div>
 				<div>
-					{{ customer.selected_shipping_address.line1 }}
+					{{ customer.selected_shipping_address.postal_address.line1 }}
 				</div>
 				<div>
-					{{ customer.selected_shipping_address.line2 }}
+					{{ customer.selected_shipping_address.postal_address.line2 }}
 				</div>
 				<div>
-					{{ customer.selected_shipping_address.line3 }}
+					{{ customer.selected_shipping_address.postal_address.line3 }}
 				</div>
 				<div>
-					{{ customer.selected_shipping_address.line4 }}
+					{{ customer.selected_shipping_address.postal_address.line4 }}
 				</div>
 				<div>
-					{{ customer.selected_shipping_address.line5 }}
+					{{ customer.selected_shipping_address.postal_address.line5 }}
 				</div>
 				<div>
-					{{ customer.selected_shipping_address.country }}
+					{{ customer.selected_shipping_address.postal_address.country }}
 				</div>
 				<div>
-					{{ customer.shipping_phone }}
+					{{ customer.selected_shipping_address.phone }}
 				</div>
 			{% else %}
 				---
