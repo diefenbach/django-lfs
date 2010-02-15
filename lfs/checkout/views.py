@@ -27,7 +27,7 @@ from lfs.core.settings import LFS_ADDRESS_L10N
 from lfs.customer import utils as customer_utils
 from lfs.customer.models import BankAccount
 from lfs.customer.forms import RegisterForm
-from lfs.customer.views import address_inline, save_address
+from lfs.customer.views import address_inline, save_postal_address
 from lfs.payment.models import PaymentMethod
 from lfs.payment.settings import PAYPAL
 from lfs.payment.settings import DIRECT_DEBIT
@@ -198,7 +198,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             customer.selected_invoice_email = request.POST.get("invoice_email")
 
             # Create or update invoice address
-            valid_invoice_address = save_address(request, customer, INVOICE_PREFIX)
+            valid_invoice_address = save_postal_address(request, customer, INVOICE_PREFIX)
             if valid_invoice_address == False:
                 form._errors["invoice-address"] = ErrorList([_(u"Invalid invoice address")])
             else:
@@ -212,7 +212,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                     customer.selected_shipping_phone = request.POST.get("shipping_phone")
                     customer.selected_shipping_email = request.POST.get("shipping_email")
 
-                    valid_shipping_address = save_address(request, customer, SHIPPING_PREFIX)
+                    valid_shipping_address = save_postal_address(request, customer, SHIPPING_PREFIX)
 
                 if valid_shipping_address == False:
                     form._errors["shipping-address"] = ErrorList([_(u"Invalid shipping address")])
@@ -263,7 +263,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             customer.selected_invoice_email = request.POST.get("invoice_email")
 
             # Create or update invoice address
-            save_address(request, customer, INVOICE_PREFIX)
+            save_postal_address(request, customer, INVOICE_PREFIX)
 
             # If the shipping address differs from invoice firstname we create
             # or update the shipping address.
@@ -275,7 +275,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                 customer.selected_shipping_email = request.POST.get("shipping_email")
                 customer.save()
 
-                save_address(request, customer, SHIPPING_PREFIX)
+                save_postal_address(request, customer, SHIPPING_PREFIX)
 
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")

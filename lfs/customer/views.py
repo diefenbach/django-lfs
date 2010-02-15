@@ -178,8 +178,8 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
     if request.method == "POST":
         form = AddressForm(request.POST)
         if form.is_valid():
-            save_address(request, customer, INVOICE_PREFIX)
-            save_address(request, customer, SHIPPING_PREFIX)
+            save_postal_address(request, customer, INVOICE_PREFIX)
+            save_postal_address(request, customer, SHIPPING_PREFIX)
             customer.selected_invoice_firstname = form.cleaned_data['invoice_firstname']
             customer.selected_invoice_lastname = form.cleaned_data['invoice_lastname']
             customer.selected_invoice_phone = form.cleaned_data['invoice_phone']
@@ -254,7 +254,7 @@ def address_inline(request, prefix, form):
                 address_form = PostalAddressForm(prefix=prefix, data=request.POST,)
             if countries is not None:
                 address_form.fields["country"].choices = [(c.iso, c.name) for c in countries]
-            save_address(request, customer, prefix)
+            save_postal_address(request, customer, prefix)
         else:
              # If there are addresses intialize the form.
             initial = {}
@@ -294,7 +294,7 @@ def address_inline(request, prefix, form):
         "form": form,
     }))
 
-def save_address(request, customer, prefix):
+def save_postal_address(request, customer, prefix):
     # get the shop
     shop = lfs.core.utils.get_default_shop()
 
