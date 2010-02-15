@@ -32,7 +32,7 @@
                        value="{{ redirect_to }}" />
             </div>
         </div>
-        
+
         <div class="field">
             <div class="label">
                 {% if product.is_variant %}
@@ -246,7 +246,28 @@
                 </div>
             {% endif %}
         </div>
-		<div class="field">
+
+        <div class="field">
+            <div class="label">
+                {% if product.is_variant %}
+                    {{ form.active_static_block }}
+                {% endif %}
+                {{ form.static_block.label_tag }}:
+            </div>
+
+            {% if form.static_block.errors %}
+                <div class="error">
+                    {{ form.static_block }}
+                    {{ form.static_block.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.static_block }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
             <div class="label">
                 {{ form.template.label_tag }}:
             </div>

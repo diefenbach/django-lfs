@@ -48,7 +48,7 @@ class ProductDataForm(ModelForm):
     class Meta:
         model = Product
         fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "tax",
-            "short_description", "description", "for_sale", "for_sale_price", "template")
+            "short_description", "description", "for_sale", "for_sale_price", "static_block", "template")
     def clean(self):
         """
         """
@@ -73,7 +73,7 @@ class VariantDataForm(ModelForm):
         fields = ("active", "active_name", "name", "slug", "active_sku", "sku", "sku_manufacturer",
             "active_price", "price", "active_short_description", "short_description", "active_description",
             "description", "for_sale", "for_sale_price", "active_for_sale", "active_for_sale_price",
-            "active_related_products", "template")
+            "active_related_products", "active_static_block", "static_block", "template")
 
 class ProductStockForm(ModelForm):
     """Form to add and edit stock data of a product.
