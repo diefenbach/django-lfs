@@ -16,7 +16,7 @@ from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
 from lfs.core.models import Shop
 from lfs.core.utils import get_default_shop
-from lfs.customer.models import Customer
+from lfs.customer.models import Customer, Address
 from lfs.order.utils import add_order
 from lfs.order.settings import SUBMITTED
 from lfs.payment.models import PaymentMethod
@@ -58,9 +58,7 @@ class CheckoutAddressesTestCase(TestCase):
 
         self.by_invoice = PaymentMethod.objects.get(pk=BY_INVOICE)
 
-        address1 = PostalAddress.objects.create(
-            firstname = "John",
-            lastname = "Doe",
+        postal_address1 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 42",
             line3 = "2342",
@@ -68,14 +66,22 @@ class CheckoutAddressesTestCase(TestCase):
             country = ie,
         )
 
-        address2 = PostalAddress.objects.create(
-            firstname = "Jane",
+        address1 = Address.objects.create(firstname = "John",
             lastname = "Doe",
+            postal_address=postal_address1
+        )
+
+        postal_address2 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 43",
             line3 = "2443",
             line4 = "Smallville",
             country = us,
+        )
+
+        address2 = Address.objects.create(firstname = "Jane",
+            lastname = "Doe",
+            postal_address=postal_address2
         )
 
         self.username = 'joe'
@@ -158,12 +164,13 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertEqual(logged_in, True)
 
         self.assertEquals(PostalAddress.objects.count(), 2)
+        self.assertEquals(Address.objects.count(), 2)
         cart_response = self.c.get(reverse('lfs_cart'))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
         checkout_response = self.c.get(reverse('lfs_checkout'))
-        checkout_data = {'invoice-firstname':'bob',
-                         'invoice-lastname':'builder',
+        checkout_data = {'invoice_firstname':'bob',
+                         'invoice_lastname':'builder',
                          'invoice-line1': 'de company',
                          'invoice-line2': 'de street',
                          'invoice-line3': 'de area',
@@ -172,8 +179,8 @@ class CheckoutAddressesTestCase(TestCase):
                          'invoice-country':"IE",
                          'invoice_email': 'a@a.com',
                          'invoice_phone': '1234567',
-                         'shipping-firstname':'hans',
-                         'shipping-lastname':'schmidt',
+                         'shipping_firstname':'hans',
+                         'shipping_lastname':'schmidt',
                          'shipping-line1': 'orianenberger strasse',
                          'shipping-line2': 'de town',
                          'shipping-line3': 'stuff',
@@ -189,8 +196,13 @@ class CheckoutAddressesTestCase(TestCase):
         self.dump_response(checkout_post_response)
         self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
 
+        # test we have same amount of address objects at end of checkout
+        self.assertEquals(PostalAddress.objects.count(), 2)
+        self.assertEquals(Address.objects.count(), 2)
+
     def test_ajax_saves_postal_address(self):
         self.assertEquals(PostalAddress.objects.count(), 2)
+        self.assertEquals(Address.objects.count(), 2)
 
         # register a new user
         registration_response = self.c.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
@@ -211,6 +223,7 @@ class CheckoutAddressesTestCase(TestCase):
         # refetch our customer
         our_customer = Customer.objects.get(user__email="test@test.com")
         self.assertNotEqual(our_customer.selected_invoice_address, None)
+        self.assertNotEqual(our_customer.selected_invoice_address.postal_address, None)
         self.assertEqual(our_customer.selected_shipping_address, None)
 
         # test that we still have the same number of PostalAddresses after another invoice post

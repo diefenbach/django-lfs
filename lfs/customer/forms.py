@@ -8,34 +8,16 @@ from lfs.core.utils import get_default_shop
 from lfs.customer.models import BankAccount
         
 class AddressForm(forms.Form):
-    invoice_firstname = forms.CharField(label=_(u"Invoice Firstname"), max_length=50)
-    invoice_lastname = forms.CharField(label=_(u"Invoice Lastname"), max_length=50)
-    invoice_line1 = forms.CharField(label=_(u"Invoice Address Line 1"), required=False, max_length=100)
-    invoice_line2 = forms.CharField(label=_(u"Invoice Address Line 2"), required=False, max_length=100)
-    invoice_line3 = forms.CharField(label=_(u"Invoice Address Line 3"), required=False, max_length=100)
-    invoice_line4 = forms.CharField(label=_(u"Invoice Address Line 4"), required=False, max_length=100)
-    invoice_line5 = forms.CharField(label=_(u"Invoice Address Line 5"), required=False, max_length=100)
-    invoice_country = forms.ChoiceField(label=_(u"Country"), required=False)
+    invoice_firstname = forms.CharField(label=_(u"First Name"), max_length=50)
+    invoice_lastname = forms.CharField(label=_(u"Last Name"), max_length=50)
     invoice_phone = forms.CharField(label=_(u"Invoice Phone"), max_length=20, required=False)
     invoice_email = forms.EmailField(label=_(u"Invoice E-mail"), required=False, max_length=50)
     
-    shipping_firstname = forms.CharField(label=_(u"Shipping Firstname"), required=False, max_length=50)
-    shipping_lastname = forms.CharField(label=_(u"Shipping Lastname"), required=False, max_length=50)
-    shipping_line1 = forms.CharField(label=_(u"Shipping Address Line 1"), required=False, max_length=100)
-    shipping_line2 = forms.CharField(label=_(u"Shipping Address Line 2"), required=False, max_length=100)
-    shipping_line3 = forms.CharField(label=_(u"Shipping Address Line 3"), required=False, max_length=100)
-    shipping_line4 = forms.CharField(label=_(u"Shipping Address Line 4"), required=False, max_length=100)
-    shipping_line5 = forms.CharField(label=_(u"Shipping Address Line 5"), required=False, max_length=100)
-    shipping_country = forms.ChoiceField(label=_(u"Country"), required=False)
+    shipping_firstname = forms.CharField(label=_(u"First Name"), required=False, max_length=50)
+    shipping_lastname = forms.CharField(label=_(u"Last Name"), required=False, max_length=50)
     shipping_phone = forms.CharField(label=_(u"Shipping Phone"), required=False, max_length=20)
     shipping_email = forms.EmailField(label=_(u"Shipping E-mail"), required=False, max_length=50)
     
-    def __init__(self, *args, **kwargs):
-        super(AddressForm, self).__init__(*args, **kwargs)
-        
-        shop = get_default_shop()
-        self.fields["invoice_country"].choices = [(c.iso, c.name) for c in shop.invoice_countries.all()]
-        self.fields["shipping_country"].choices = [(c.iso, c.name) for c in shop.shipping_countries.all()]
         
 class BankForm(forms.ModelForm):
     """Form to edit bank account

@@ -7,7 +7,7 @@ from django.core import mail
 
 # lfs imports
 from lfs.core.models import Shop
-from lfs.customer.models import Customer
+from lfs.customer.models import Customer, Address
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.payment.models import PaymentMethod
@@ -41,7 +41,7 @@ class AddressTestCase(TestCase):
         shop.shipping_countries.add(us)
         shop.shipping_countries.add(fr)
         shop.save()
-         
+
         tax = Tax.objects.create(rate = 19)
         
         shipping_method = ShippingMethod.objects.create(
@@ -59,9 +59,7 @@ class AddressTestCase(TestCase):
         
         country = Country.objects.get(iso="DE")
         
-        address1 = PostalAddress.objects.create(
-            firstname = "John",
-            lastname = "Doe",
+        postal_address1 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 42",
             line3 = "2342",
@@ -69,15 +67,25 @@ class AddressTestCase(TestCase):
             country = country,
         )
 
-        address2 = PostalAddress.objects.create(
-            firstname = "Jane",
+        address1 = Address.objects.create(firstname = "John",
             lastname = "Doe",
+            postal_address=postal_address1,
+            phone = "555-111111",
+            email = "john@doe.com",)
+
+        postal_address2 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 43",
             line3 = "2443",
             line5 = "Smallville",
             country = country,
         )
+
+        address2 = Address.objects.create(firstname = "Jane",
+            lastname = "Doe",
+            postal_address=postal_address2,
+            phone = "666-111111",
+            email = "jane@doe.com",)
         
         self.username = 'joe'
         self.password = 'bloggs'
@@ -121,7 +129,7 @@ class AddressTestCase(TestCase):
         # Test that one message has been sent.
         self.assertEquals(len(mail.outbox), 1)
         
-        # see if we can view the addresss page
+        # see if we can view the address page
         address_response = self.c.get(reverse('lfs_my_addresses'))
         self.assertContains(address_response, 'City', status_code=200)
         
@@ -136,6 +144,7 @@ class AddressTestCase(TestCase):
     def test_create_new_address(self):
         # test that we have only 2 addresses registered (from setUp)
         self.assertEquals(PostalAddress.objects.count(), 2)
+        self.assertEquals(Address.objects.count(), 2)
 
         # register a new user
         registration_response = self.c.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
@@ -148,9 +157,10 @@ class AddressTestCase(TestCase):
         our_user = User.objects.get(email='test@test.com')
         our_customer = Customer.objects.get(user=our_user)
         self.assertEquals(our_customer.selected_invoice_address, None)
+        self.assertEquals(our_customer.selected_shipping_address, None)
 
         # see if we can view the addresss page
-        address_data = {'invoice-firstname': 'Joe', 'invoice-lastname': 'Bloggs',
+        address_data = {'invoice_firstname': 'Joe', 'invoice_lastname': 'Bloggs',
                         'invoice-line1': 'de company name', 'invoice-line2': 'de street',
                         'invoice-line3': 'Dallas', 'invoice-line4': 'TX',
                         'invoice-line5': '84003', 'invoice-country': 'US',
@@ -159,8 +169,14 @@ class AddressTestCase(TestCase):
         
         # We get 2 new postal addresses one shipping and one postal
         self.assertEquals(PostalAddress.objects.count(), 4)
+        self.assertEquals(Address.objects.count(), 4)
         self.assertRedirects(address_response, reverse('lfs_my_addresses'), status_code=302, target_status_code=200,)
 
         # refetch our user from the database
         our_customer = Customer.objects.get(user=our_user)
         self.assertNotEquals(our_customer.selected_invoice_address, None)
+        self.assertNotEquals(our_customer.selected_shipping_address, None)
+        self.assertNotEquals(our_customer.selected_invoice_address.postal_address, None)
+        self.assertNotEquals(our_customer.selected_shipping_address.postal_address, None)
+        self.assertEquals(our_customer.selected_invoice_address.firstname, 'Joe')
+        self.assertEquals(our_customer.selected_invoice_address.lastname, 'Bloggs')

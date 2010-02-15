@@ -75,28 +75,28 @@
 				<div>
 					{{ customer.selected_invoice_address.firstname }}
 					{{ customer.selected_invoice_address.lastname }}
-					(<a href="mailto:{{ customer.selected_invoice_address.email }}">{{ customer.invoice_email }}</a>)
+					(<a href="mailto:{{ customer.selected_invoice_address.email }}">{{ customer.selected_invoice_address.email }}</a>)
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.line1 }}
+					{{ customer.selected_invoice_address.postal_address.line1 }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.line2 }}
+					{{ customer.selected_invoice_address.postal_address.line2 }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.line3 }}
+					{{ customer.selected_invoice_address.postal_address.line3 }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.line4 }}
+					{{ customer.selected_invoice_address.postal_address.line4 }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.line5 }}
+					{{ customer.selected_invoice_address.postal_address.line5 }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.country }}
+					{{ customer.selected_invoice_address.postal_address.country }}
 				</div>
 				<div>
-					{{ customer.invoice_phone }}
+					{{ customer.selected_invoice_address.phone }}
 				</div>
 			{% else %}
 				---

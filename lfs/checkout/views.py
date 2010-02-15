@@ -27,7 +27,7 @@ from lfs.core.settings import LFS_ADDRESS_L10N
 from lfs.customer import utils as customer_utils
 from lfs.customer.models import BankAccount
 from lfs.customer.forms import RegisterForm
-from lfs.customer.views import address_inline, save_address
+from lfs.customer.views import address_inline, save_postal_address
 from lfs.payment.models import PaymentMethod
 from lfs.payment.settings import PAYPAL
 from lfs.payment.settings import DIRECT_DEBIT
@@ -191,12 +191,14 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
         form = checkout_form(request.POST)
 
         if form.is_valid():
-            # save invoice phone and email
-            customer.selected_invoice_phone = request.POST.get("invoice_phone")
-            customer.selected_invoice_email = request.POST.get("invoice_email")
+            # save invoice details
+            customer.selected_invoice_address.firstname = request.POST.get("invoice_firstname")
+            customer.selected_invoice_address.lastname = request.POST.get("invoice_lastname")
+            customer.selected_invoice_address.phone = request.POST.get("invoice_phone")
+            customer.selected_invoice_address.email = request.POST.get("invoice_email")
 
             # Create or update invoice address
-            valid_invoice_address = save_address(request, customer, INVOICE_PREFIX)
+            valid_invoice_address = save_postal_address(request, customer, INVOICE_PREFIX)
             if valid_invoice_address == False:
                 form._errors["invoice-address"] = ErrorList([_(u"Invalid invoice address")])
             else:
@@ -204,11 +206,13 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                 # or update the shipping address.
                 valid_shipping_address = True
                 if not form.cleaned_data.get("no_shipping"):
-                    # save shipping phone and email
-                    customer.selected_shipping_phone = request.POST.get("shipping_phone")
-                    customer.selected_shipping_email = request.POST.get("shipping_email")
+                    # save shipping details
+                    customer.selected_shipping_address._firstname = request.POST.get("shipping_firstname")
+                    customer.selected_shipping_address.lastname = request.POST.get("shipping_lastname")
+                    customer.selected_shipping_address.phone = request.POST.get("shipping_phone")
+                    customer.selected_shipping_address.email = request.POST.get("shipping_email")
 
-                    valid_shipping_address = save_address(request, customer, SHIPPING_PREFIX)
+                    valid_shipping_address = save_postal_address(request, customer, SHIPPING_PREFIX)
 
                 if valid_shipping_address == False:
                     form._errors["shipping-address"] = ErrorList([_(u"Invalid shipping address")])
@@ -252,22 +256,26 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                             form._errors[result.get("message-key")] = result.get("message")
 
         else: # form is not valid
-            # save invoice phone and email
-            customer.selected_invoice_phone = request.POST.get("invoice_phone")
-            customer.selected_invoice_email = request.POST.get("invoice_email")
+            # save invoice details
+            customer.selected_invoice_address.firstname = request.POST.get("invoice_firstname")
+            customer.selected_invoice_address.lastname = request.POST.get("invoice_lastname")
+            customer.selected_invoice_address.phone = request.POST.get("invoice_phone")
+            customer.selected_invoice_address.email = request.POST.get("invoice_email")
 
             # Create or update invoice address
-            save_address(request, customer, INVOICE_PREFIX)
+            save_postal_address(request, customer, INVOICE_PREFIX)
 
             # If the shipping address differs from invoice firstname we create
             # or update the shipping address.
             if not form.data.get("no_shipping"):
-                # save shipping phone and email
-                customer.selected_shipping_phone = request.POST.get("shipping_phone")
-                customer.selected_shipping_email = request.POST.get("shipping_email")
+                # save shipping details
+                customer.selected_shipping_address.firstname = request.POST.get("shipping_firstname")
+                customer.selected_shipping_address.lastname = request.POST.get("shipping_lastname")
+                customer.selected_shipping_address.phone = request.POST.get("shipping_phone")
+                customer.selected_shipping_address.email = request.POST.get("shipping_email")
                 customer.save()
 
-                save_address(request, customer, SHIPPING_PREFIX)
+                save_postal_address(request, customer, SHIPPING_PREFIX)
 
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
@@ -289,9 +297,25 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
 
     else:
         # If there are addresses intialize the form.
-        initial = {"no_shipping" : False,}
+        initial = {}
+        if customer.selected_invoice_address is not None:
+            invoice_address = customer.selected_invoice_address
+            initial.update({
+                "invoice_firstname" : invoice_address.firstname,
+                "invoice_lastname" : invoice_address.lastname,
+                "invoice_phone" : invoice_address.phone,
+                "invoice_email" : invoice_address.email,
+            })
+        if customer.selected_shipping_address is not None:
+            shipping_address = customer.selected_shipping_address
+            initial.update({
+                "shipping_firstname" : shipping_address.firstname,
+                "shipping_lastname" : shipping_address.lastname,
+                "shipping_phone" : shipping_address.phone,
+                "shipping_email" : shipping_address.email,
+                "no_shipping" : False,
+            })
         form = checkout_form(initial=initial)
-
     cart = cart_utils.get_cart(request)
     if cart is None:
         return HttpResponseRedirect(reverse('lfs_cart'))
