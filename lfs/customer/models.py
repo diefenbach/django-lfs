@@ -59,6 +59,9 @@ class Customer(models.Model):
 class Address(models.Model):
     """An address which can be used as shipping and/or invoice address.
     """
+    # allow a customer to have multiple addresses to select from as invoice or shipping address
+    customer = models.ForeignKey(Customer, verbose_name=_(u"Customer"), blank=True, null=True, related_name="addresses")
+
     firstname = models.CharField(_("Firstname"), max_length=50)
     lastname = models.CharField(_("Lastname"), max_length=50)
     postal_address = models.ForeignKey(PostalAddress, verbose_name=_(u"Postal address"), blank=True, null=True)
