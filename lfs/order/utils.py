@@ -106,7 +106,7 @@ def add_order(request):
         shipping_line4 = shipping_address.postal_address.line4,
         shipping_line5 = shipping_address.postal_address.line5,
         shipping_country = shipping_address.postal_address.country,
-        shipping_phone = customer.selected_shipping_address.phone,
+        shipping_phone = shipping_address.phone,
 
         message = request.POST.get("message", ""),
     )
