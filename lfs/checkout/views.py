@@ -25,7 +25,7 @@ from lfs.checkout.settings import CHECKOUT_TYPE_AUTH
 from lfs.checkout.settings import INVOICE_PREFIX, SHIPPING_PREFIX
 from lfs.core.settings import LFS_ADDRESS_L10N
 from lfs.customer import utils as customer_utils
-from lfs.customer.models import BankAccount
+from lfs.customer.models import BankAccount, Address
 from lfs.customer.forms import RegisterForm
 from lfs.customer.views import address_inline, save_postal_address
 from lfs.payment.models import PaymentMethod
@@ -257,6 +257,8 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
 
         else: # form is not valid
             # save invoice details
+            if customer.selected_invoice_address is None:
+                customer.selected_invoice_address = Address.objects.create()
             customer.selected_invoice_address.firstname = request.POST.get("invoice_firstname")
             customer.selected_invoice_address.lastname = request.POST.get("invoice_lastname")
             customer.selected_invoice_address.phone = request.POST.get("invoice_phone")
@@ -269,6 +271,8 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             # or update the shipping address.
             if not form.data.get("no_shipping"):
                 # save shipping details
+                if customer.selected_shipping_address is None:
+                    customer.selected_shipping_address = Address.objects.create()
                 customer.selected_shipping_address.firstname = request.POST.get("shipping_firstname")
                 customer.selected_shipping_address.lastname = request.POST.get("shipping_lastname")
                 customer.selected_shipping_address.phone = request.POST.get("shipping_phone")
