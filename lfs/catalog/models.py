@@ -125,7 +125,7 @@ class Category(models.Model):
     image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400)))
     position = models.IntegerField(_(u"Position"), default=1000)
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
-    
+
     static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")
     template = models.PositiveSmallIntegerField(_(u"Category template"), max_length=400, blank=True, null=True, choices=CATEGORY_TEMPLATES)
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
@@ -505,7 +505,7 @@ class Product(models.Model):
     ordered_at = models.DateField(_(u"Ordered at"), blank=True, null=True)
     manage_stock_amount = models.BooleanField(_(u"Manage stock amount"), default=True)
     stock_amount = models.FloatField(_(u"Stock amount"), default=0)
-    
+
     static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="products")
 
     # Dimension
@@ -951,13 +951,10 @@ class Product(models.Model):
         related_products = cache.get(cache_key)
 
         if related_products is None:
-
             if self.is_variant() and not self.active_related_products:
-                related_products = self.parent.related_products.exclude(
-                    sub_type=PRODUCT_WITH_VARIANTS)
+                related_products = self.parent.related_products.all()
             else:
-                related_products = self.related_products.exclude(
-                    sub_type=PRODUCT_WITH_VARIANTS)
+                related_products = self.related_products.all()
 
             cache.set(cache_key, related_products)
 
@@ -978,14 +975,14 @@ class Product(models.Model):
                 return None
 
     def get_static_block(self):
-        """Returns the static block of the product. Takes care whether the 
+        """Returns the static block of the product. Takes care whether the
         product is a variant and meta description are active or not.
         """
         cache_key = "product-static-block-%s" % self.id
         block = cache.get(cache_key)
         if block is not None:
             return block
-        
+
         if self.is_variant() and not self.active_static_block:
             block = self.parent.static_block
         else:
