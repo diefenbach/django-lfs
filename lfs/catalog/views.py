@@ -223,7 +223,12 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
         if request.session.has_key("price-filter"):
             del request.session["price-filter"]
 
-    sorting = request.session.get("sorting", "price")
+    try:
+        default_sorting = settings.LFS_PRODUCTS_SORTING
+    except AttributeError:
+        default_sorting = "price"
+
+    sorting = request.session.get("sorting", default_sorting)
     product_filter = request.session.get("product-filter", {})
     product_filter = product_filter.items()
 
@@ -394,8 +399,9 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
         variants = product.get_variants()
 
     # Reviews
-    if product.get_template_name()!=None:
-        template_name=product.get_template_name()
+    if product.get_template_name() != None:
+        template_name = product.get_template_name()
+
     result = render_to_string(template_name, RequestContext(request, {
         "product" : product,
         "variant" : variant,
