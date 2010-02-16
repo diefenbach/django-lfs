@@ -98,8 +98,8 @@ def add_order(request):
         invoice_country = invoice_address.postal_address.country,
         invoice_phone = customer.selected_invoice_address.phone,
 
-        shipping_firstname = customer.selected_shipping_address.firstname,
-        shipping_lastname = customer.selected_shipping_address.lastname,
+        shipping_firstname = shipping_address.firstname,
+        shipping_lastname = shipping_address.lastname,
         shipping_line1 = shipping_address.postal_address.line1,
         shipping_line2 = shipping_address.postal_address.line2,
         shipping_line3 = shipping_address.postal_address.line3,
