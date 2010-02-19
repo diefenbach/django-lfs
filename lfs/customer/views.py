@@ -181,11 +181,13 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
         if form.is_valid():
             save_postal_address(request, customer, INVOICE_PREFIX)
             save_postal_address(request, customer, SHIPPING_PREFIX)
+            customer.selected_invoice_address.customer = customer
             customer.selected_invoice_address.firstname = form.cleaned_data['invoice_firstname']
             customer.selected_invoice_address.lastname = form.cleaned_data['invoice_lastname']
             customer.selected_invoice_address.phone = form.cleaned_data['invoice_phone']
             customer.selected_invoice_address.email = form.cleaned_data['invoice_email']
             customer.selected_invoice_address.save()
+            customer.selected_shipping_address.customer = customer
             customer.selected_shipping_address.firstname = form.cleaned_data['shipping_firstname']
             customer.selected_shipping_address.lastname = form.cleaned_data['shipping_lastname']
             customer.selected_shipping_address.phone = form.cleaned_data['shipping_phone']
@@ -336,7 +338,7 @@ def save_postal_address(request, customer, prefix):
                 postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST, instance=postal_address)
     if not existing_address:
         # no address exists for customer so create one
-        customer_selected_address = Address.objects.create()
+        customer_selected_address = Address.objects.create(customer=customer)
     if not existing_postal_address:
         postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST)
         postal_address, created = PostalAddress.objects.get_or_create(line1=request.POST.get(prefix + "-line1"),
