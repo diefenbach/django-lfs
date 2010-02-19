@@ -1,3 +1,6 @@
+# python imports
+import uuid
+
 # django imports
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
@@ -37,6 +40,9 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
 from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
+
+def get_unique_id_str():
+    return str(uuid.uuid4())
 
 class Category(models.Model):
     """A category is used to browse through the shop products. A category can
@@ -99,7 +105,7 @@ class Category(models.Model):
         - meta_description
            Meta description of the category
 
-        - uuid
+        - uid
            The unique id of the category
 
         - level
@@ -134,7 +140,7 @@ class Category(models.Model):
     meta_description = models.TextField(_(u"Meta description"), blank=True)
 
     level = models.PositiveSmallIntegerField(default=1)
-    uid = models.CharField(max_length=50)
+    uid = models.CharField(max_length=50, editable=False,unique=True, default=get_unique_id_str)
 
     class Meta:
         ordering = ("position", )
@@ -441,6 +447,9 @@ class Product(models.Model):
             
         - supplier
             The supplier of the product
+
+        - uid
+           The unique id of the product
     """
     # All products
     name = models.CharField(_(u"Name"), max_length=80, blank=True)
@@ -515,7 +524,7 @@ class Product(models.Model):
 
     objects = ActiveManager()
 
-    uid = models.CharField(max_length=50)
+    uid = models.CharField(max_length=50, editable=False,unique=True, default=get_unique_id_str)
 
     class Meta:
         ordering = ("name", )
@@ -1167,7 +1176,7 @@ class Property(models.Model):
     step_type = models.PositiveSmallIntegerField(_(u"Step type"), choices=PROPERTY_STEP_TYPE_CHOICES, default=PROPERTY_STEP_TYPE_AUTOMATIC)
     step = models.IntegerField(_(u"Step"), blank=True, null=True)
 
-    uid = models.CharField(max_length=50)
+    uid = models.CharField(max_length=50, editable=False,unique=True, default=get_unique_id_str)
 
     class Meta:
         verbose_name_plural = _(u"Properties")
@@ -1296,7 +1305,7 @@ class PropertyOption(models.Model):
     price = models.FloatField(_(u"Price"), blank=True, null=True, default=0.0)
     position = models.IntegerField(_(u"Position"), default=99)
 
-    uid = models.CharField(max_length=50)
+    uid = models.CharField(max_length=50, editable=False,unique=True, default=get_unique_id_str)
 
     class Meta:
         ordering = ["position"]
