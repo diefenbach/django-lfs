@@ -21,7 +21,8 @@ Users
    :maxdepth: 2
 
    user/getting_started
-
+   user/howtos/index.rst
+    
 Developers
 ==========
 
