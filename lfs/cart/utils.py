@@ -33,7 +33,12 @@ def get_cart_price(request, cart, total=False):
     return get_cart_costs(request, cart, total)["price"]
 
 def get_cart_costs(request, cart, total=False):
-    """Returns price and tax of the given cart.
+    """Returns a dictionary with price and tax of the given cart:
+
+        returns {
+            "price" : the cart's price,
+            "tax" : the cart's tax,
+        }
     """
     if cart is None:
         return {"price" : 0, "tax" : 0}
