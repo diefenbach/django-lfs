@@ -95,18 +95,55 @@ def process_payment(request):
     payment_method = get_selected_payment_method(request)
     shop = lfs.core.utils.get_default_shop()
 
-    if payment_method.id == PAYPAL and settings.LFS_PAYPAL_REDIRECT:
+    if payment_method.module != "":
+         module = lfs.core.utils.import_module(payment_method.module + ".views")
+         return module.process(request)
+
+    elif payment_method.id == PAYPAL:
+        if settings.LFS_PAYPAL_REDIRECT:
+            return {
+                "success" : True,
+                "create-order" : True,
+            }
+        else:
+            return {
+                "success" : True,
+                "create-order" : True,
+                "next-url" : reverse("lfs_thank_you"),
+            }
+    else:
         return {
             "success" : True,
-            "next-url" : "this is set within checkout.views",
+            "create-order" : True,            
+            "next-url" : reverse("lfs_thank_you"),
         }
-    elif payment_method.id == CREDIT_CARD:
-        module = lfs.core.utils.import_module(settings.LFS_CREDIT_CARD_MODULE)
-        return module.process(request)
-    return {
-        "success" : True,
-        "next-url" : reverse("lfs_thank_you"),
-    }
+
+def create_next_url(payment_method, order):
+    """Creates the next url for the passed payment method and order.
+    """
+    if payment_method.id == PAYPAL:
+        return create_paypal_link_for_order(order)
+    else:
+        module = import_module(payment_method + ".views")
+        try:
+            return module.create_next_url(order)
+        except AttributeError:
+            return ""
+        
+def create_pay_link(payment_method, order):
+    """Creates a pay link for the passed payment_method and order. 
+    
+    This can be used to display the link within the order mail and/or the 
+    thank you page after a customer has payed.
+    """
+    if payment_method.id == PAYPAL:
+        return create_paypal_link_for_order(order)
+    else:
+        module = import_module(payment_method + ".views")
+        try:
+            return module.create_pay_link(order)
+        except AttributeError:
+            return ""
 
 def create_paypal_link_for_order(order):
     """Creates paypal link for given order.

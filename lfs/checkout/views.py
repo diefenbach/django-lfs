@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs.core.utils
 import lfs.order.utils
+import lfs.payment.settings
 import lfs.payment.utils
 import lfs.shipping.utils
 import lfs.voucher.utils
@@ -256,19 +257,26 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             # process the payment method ...
             result = lfs.payment.utils.process_payment(request)
 
-            payment_method = lfs.payment.utils.get_selected_payment_method(request)
+            next_url = None
+            if result["success"] == True:
 
-            # Only if the payment is succesful we create the order out of the
-            # cart.
-            if result.get("success") == True:
-                order = lfs.order.utils.add_order(request)
+                if result.get("create-order"):
+                    order = lfs.order.utils.add_order(request)
 
-                # TODO: Get rid of these payment specific payment stuff. This
-                # should be within payment utils.
-                if payment_method.id == PAYPAL and settings.LFS_PAYPAL_REDIRECT:
-                    return HttpResponseRedirect(order.get_pay_link())
+                    if result.has_key("order-state"):
+                        order.state = result["STATE"]
+                        order.save()
+
+                    request.session["order"] = order
+
+                if result.has_key("next-url"):
+                    next_url = result["next-url"]
                 else:
-                    return HttpResponseRedirect(result.get("next-url"))
+                    payment_method = lfs.payment.utils.get_selected_payment_method(request)
+                    next_url = lfs.payment.utils.create_next_url(payment_method, order)
+
+                return HttpResponseRedirect(next_url)
+
             else:
                 if result.has_key("message"):
                     form._errors[result.get("message-key")] = result.get("message")
@@ -447,7 +455,6 @@ def payment_inline(request, form, template_name="lfs/checkout/payment_inline.htm
         selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
 
     valid_payment_methods = lfs.payment.utils.get_valid_payment_methods(request)
-    display_bank_account = DIRECT_DEBIT in [m.id for m in valid_payment_methods]
 
     return render_to_string(template_name, RequestContext(request, {
         "payment_methods" : valid_payment_methods,
