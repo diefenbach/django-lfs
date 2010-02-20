@@ -1,34 +1,34 @@
-How to manage shipping methods
-==============================
+How to manage payment methods
+=============================
 
-In this how-to you will learn how to add/edit shipping methods and how to
+In this how-to you will learn how to add/edit payment methods and how to
 add criteria and prices for them.
 
 Overview:
 ---------
 
-* You can add as many shipping methods you want.
+* You can add as many payment methods you want.
 
-* All valid shipping methods are displayed for selection to the shop customer.
+* All valid payment methods are displayed for selection to the shop customer.
   
-* A shipping method is true if all criteria of the shipping method are true.
+* A payment method is true if all criteria of the payment method are true.
 
-* Shipping methods can have many prices which are dependent of criteria. The
+* Payment methods can have many prices which are dependent of criteria. The
   first price which is valid (all criteria are true) is the current price for
-  the for the shipping method. If no price is valid the default price is taken
+  the for the payment method. If no price is valid the default price is taken
   (from data tab).
 
 Get started:
 ------------
 
 In order to add/edit a shipping method please go to Management / Shop /
-Shipping Methods.
+Payment Methods.
 
 .. image:: /images/how_to_shipping_manage.*
 
-If there are no shipping methods yet, you will automatically get to the add
-shipping method form. Otherwise the first shipping method is displayed and
-you can click on a shipping method to edit this or on ``Add shipping method``
+If there are no payment methods yet, you will automatically get to the add
+payment method form. Otherwise the first payment method is displayed and
+you can click on a payment method to edit this or on ``Add payment method``
 to add a new one.
 
 .. image:: /images/how_to_shipping_add.*
@@ -39,24 +39,24 @@ described below.
 Data
 ----
 
-The data tab contains all core data for the shipping method.
+The data tab contains all core data for the payment method.
 
 .. image:: /images/how_to_shipping_data.*
 
 * Now fill in the fields:
 
-    * **Name:** The name of the shipping method, which is displayed to the
+    * **Name:** The name of the payment method, which is displayed to the
       shop customer.
-    * **Description:** A short description of the shipping method, which is also
+    * **Description:** A short description of the payment method, which is also
       displayed to the customer.
-    * **Note:** A note of the shipping method, which is displayed on the confirmation
-      mail after the shop customer has been checked out.
-    * **Priority:** The first valid shipping method with the highest priority
+    * **Note:** A note of the payment method, which is displayed on the 
+      confirmation mail after the shop customer has been checked out.
+    * **Priority:** The first valid payment method with the highest priority
       (smaller number) method is displayed to the customer.
-    * **Image:** An image for the shipping method, which is displayed to the
+    * **Image:** An image for the payment method, which is displayed to the
       shop customer.
-    * **Tax:** The included tax of the shipping method's price.
-    * **Price:** The default price of the shipping method. This can be
+    * **Tax:** The included tax of the payment method's price.
+    * **Price:** The default price of the payment method. This can be
       overwritten within the price tab (see below).
 
 * Click on ``Save``-button
@@ -64,8 +64,8 @@ The data tab contains all core data for the shipping method.
 Criteria
 --------
 
-Optional you can add some criteria to the shipping method. Only when all
-criteria are true the shipping method is displayed to the shop customer.
+Optional you can add some criteria to the payment method. Only when all
+criteria are true the payment method is displayed to the shop customer.
 
 .. image:: /images/how_to_shipping_criteria.*
 
@@ -76,7 +76,7 @@ criteria are true the shipping method is displayed to the shop customer.
 * Select the criteria type you want, e.g. ``Weight`` (this is the weight of all cart items).
 * Select the operator, e.g. ``Less than equal to``.
 * Enter the value, e.g. 50.
-* Altogether this means the shipping method is valid if the weight of all
+* Altogether this means the payment method is valid if the weight of all
   cart items is less than or equal to 50 units.
 * You can add as many criteria you want.
 * Click on ``Save criteria``.
@@ -94,7 +94,7 @@ criteria are true the shipping method is displayed to the shop customer.
 Prices
 ------
 
-Optional you can add many prices to the shipping method and restrict them
+Optional you can add many prices to the payment method and restrict them
 with criteria.
 
 .. image:: /images/how_to_shipping_prices.*

@@ -22,6 +22,7 @@ Users
 
    user/getting_started
    user/howtos/index.rst
+   user/misc/index.rst
     
 Developers
 ==========

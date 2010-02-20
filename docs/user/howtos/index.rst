@@ -2,7 +2,7 @@
 How-tos
 =======
 
-Here you will find some how-tos for developers.
+Here you will find some how-tos for users.
 
 .. toctree::
    :maxdepth: 1
@@ -12,3 +12,4 @@ Here you will find some how-tos for developers.
    how_to_variants.rst
    how_to_paypal.rst
    how_to_shipping_method
+   how_to_payment_method
