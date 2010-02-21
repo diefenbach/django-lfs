@@ -240,7 +240,6 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
 
-            # 1 = Direct Debit
             if int(form.data.get("payment_method")) == DIRECT_DEBIT:
                 bank_account = BankAccount.objects.create(
                     account_number = form.cleaned_data.get("account_number"),
@@ -258,28 +257,12 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             result = lfs.payment.utils.process_payment(request)
 
             next_url = None
-            if result["success"] == True:
-
-                if result.get("create-order"):
-                    order = lfs.order.utils.add_order(request)
-
-                    if result.has_key("order-state"):
-                        order.state = result["STATE"]
-                        order.save()
-
-                    request.session["order"] = order
-
-                if result.has_key("next-url"):
-                    next_url = result["next-url"]
-                else:
-                    payment_method = lfs.payment.utils.get_selected_payment_method(request)
-                    next_url = lfs.payment.utils.create_next_url(payment_method, order)
-
-                return HttpResponseRedirect(next_url)
-
+            if result["accepted"] == True:
+                return HttpResponseRedirect(
+                    result.get("next-url", reverse("lfs_thank_you")))
             else:
                 if result.has_key("message"):
-                    form._errors[result.get("message-key")] = result.get("message")
+                    form._errors[result.get("message-position")] = result.get("message")
 
         else: # form is not valid
             # Create or update invoice address

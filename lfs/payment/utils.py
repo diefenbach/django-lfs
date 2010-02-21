@@ -95,26 +95,29 @@ def process_payment(request):
     payment_method = get_selected_payment_method(request)
     shop = lfs.core.utils.get_default_shop()
 
-    if payment_method.module != "":
+    if payment_method.module:
          module = lfs.core.utils.import_module(payment_method.module + ".views")
          return module.process(request)
 
     elif payment_method.id == PAYPAL:
+        order = lfs.order.utils.add_order(request)
+        order.pay_link = create_paypal_link_for_order(order)
+        order.save()
+
         if settings.LFS_PAYPAL_REDIRECT:
             return {
-                "success" : True,
-                "create-order" : True,
+                "accepted" : True,
+                "next-url" : order.pay_link,
             }
         else:
             return {
-                "success" : True,
-                "create-order" : True,
+                "accepted" : True,
                 "next-url" : reverse("lfs_thank_you"),
             }
     else:
+        order = lfs.order.utils.add_order(request)
         return {
-            "success" : True,
-            "create-order" : True,            
+            "accepted" : True,
             "next-url" : reverse("lfs_thank_you"),
         }
 
@@ -129,11 +132,11 @@ def create_next_url(payment_method, order):
             return module.create_next_url(order)
         except AttributeError:
             return ""
-        
+
 def create_pay_link(payment_method, order):
-    """Creates a pay link for the passed payment_method and order. 
-    
-    This can be used to display the link within the order mail and/or the 
+    """Creates a pay link for the passed payment_method and order.
+
+    This can be used to display the link within the order mail and/or the
     thank you page after a customer has payed.
     """
     if payment_method.id == PAYPAL:
