@@ -1,7 +1,8 @@
 How to manage shipping methods
 ==============================
 
-This how to describes how the shipping methods of the shop are managed.
+In this how-to you will learn how to add/edit shipping methods and how to
+add criteria and prices for them.
 
 Overview:
 ---------
