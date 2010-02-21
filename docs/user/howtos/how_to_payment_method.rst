@@ -4,8 +4,8 @@ How to manage payment methods
 In this how-to you will learn how to add/edit payment methods and how to
 add criteria and prices for them.
 
-Overview:
----------
+Overview
+--------
 
 * You can add as many payment methods you want.
 
@@ -18,22 +18,20 @@ Overview:
   the for the payment method. If no price is valid the default price is taken
   (from data tab).
 
-Get started:
-------------
+Get started
+-----------
 
-In order to add/edit a shipping method please go to Management / Shop /
+In order to add/edit a payment method please go to Management / Shop /
 Payment Methods.
 
-.. image:: /images/how_to_shipping_manage.*
+.. image:: /images/how_to_payment_manage.*
 
 If there are no payment methods yet, you will automatically get to the add
 payment method form. Otherwise the first payment method is displayed and
 you can click on a payment method to edit this or on ``Add payment method``
 to add a new one.
 
-.. image:: /images/how_to_shipping_add.*
-
-If you have done that you can edit or enter the data for a shipping method as
+If you have done that you can edit or enter the data for a payment method as
 described below.
 
 Data
@@ -41,7 +39,7 @@ Data
 
 The data tab contains all core data for the payment method.
 
-.. image:: /images/how_to_shipping_data.*
+.. image:: /images/how_to_payment_data.*
 
 * Now fill in the fields:
 
@@ -58,6 +56,18 @@ The data tab contains all core data for the payment method.
     * **Tax:** The included tax of the payment method's price.
     * **Price:** The default price of the payment method. This can be
       overwritten within the price tab (see below).
+    * **Module:** The dotted name of the external package which processes the
+      payment (this is for developers only).
+    * **Type:** The type of the payment method. Dependent on that additional 
+      fields for input (within the checkout process) will be displayed. There 
+      are three types at the moment:
+      
+        * Plain
+          No additional fields are displayed.
+        * Bank 
+          Fields for a bank account are displayed.
+        * Credit Card 
+          Fields for a credit card are displayed.
 
 * Click on ``Save``-button
 
@@ -67,11 +77,11 @@ Criteria
 Optional you can add some criteria to the payment method. Only when all
 criteria are true the payment method is displayed to the shop customer.
 
-.. image:: /images/how_to_shipping_criteria.*
+.. image:: /images/how_to_payment_criteria.*
 
 **To add criterion proceed as following:**
 
-* click on the ``Add criteria``-button (adds a criterion on first position) or on the 
+* Click on the ``Add criteria``-button (adds a criterion on first position) or on the
   ``plus`` button beside a criterion (adds a criterion below)
 * Select the criteria type you want, e.g. ``Weight`` (this is the weight of all cart items).
 * Select the operator, e.g. ``Less than equal to``.
@@ -97,7 +107,7 @@ Prices
 Optional you can add many prices to the payment method and restrict them
 with criteria.
 
-.. image:: /images/how_to_shipping_prices.*
+.. image:: /images/how_to_payment_prices.*
 
 **To add a price proceed as following:**
 
@@ -109,6 +119,5 @@ with criteria.
 
 **To update/delete a price proceed as following:**
 
-* to update the prices change the priority and/or the value of the price and click on ``Update prices``.
+* To update the prices change the priority and/or the value of the price and click on ``Update prices``.
 * To delete the prices select the checkboxes of the prices you want delete and click on ``Delete prices``.
-

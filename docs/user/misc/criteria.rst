@@ -3,26 +3,32 @@ Criteria
 ========
 
 Overview
---------
+========
 
-Criteria can be used on several places to restrict displayed information to
-certain situations.
+Criteria are used on several places of LFS in order to display/hide data 
+dependent on different situations. 
 
-At the moment they are used for following information:
+At the moment criteria are used within:
 
     * payment methods
-    * payment methods prices
+    * payment method's prices
     * shipping methods
-    * shipping methods prices
+    * shipping method's prices
+
+In future they might be used to provide:
+
+    * multiple product prices
+    * different product taxes
+    * discounts
 
 Types
------
+=====
 
 This paragraph describes which types of criteria exists and which operators 
 they provide.
 
 Cart Price
-^^^^^^^^^^
+-----------
 
 **Description**
 
@@ -54,7 +60,7 @@ Equal
     The cart price is equal to the entered value
     
 Combined Length And Girth
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------
 
 **Description**
 
@@ -87,7 +93,7 @@ Equal
     The criterion is true if the clag is equal to the entered value.
 
 Country
-^^^^^^^
+-------
 
 **Description**
 
@@ -109,7 +115,7 @@ Is not
     selected countries.
 
 Height
-^^^^^^
+------
 
 **Description**
 
@@ -141,7 +147,7 @@ Equal
     The total height is equal to the entered value
 
 Length
-^^^^^^
+------
 
 **Description**
 
@@ -173,7 +179,7 @@ Equal
     The criterion is true if the maximal length is equal to the entered value.
 
 Payment Method
-^^^^^^^^^^^^^^
+--------------
 
 **Description**
 
@@ -201,7 +207,7 @@ Is not valid
     valid.
 
 Shipping Method
-^^^^^^^^^^^^^^^
+---------------
 
 **Description**
 
@@ -229,7 +235,7 @@ Is not valid
     valid.
 
 User
-^^^^
+----
 
 **Description**
 
@@ -238,7 +244,7 @@ User
 **Operators**
 
 Weight
-^^^^^^
+------
 
 **Description**
 
@@ -267,7 +273,7 @@ Equal
     The total weight is equal to the entered value
 
 Width
-^^^^^
+-----
 
 **Description**
 
