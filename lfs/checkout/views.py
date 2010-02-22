@@ -181,7 +181,17 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
     customer = customer_utils.get_or_create_customer(request)
     if request.method == "POST":
         form = checkout_form(request.POST)
-        if form.is_valid():
+        
+        toc = True
+                
+        if shop.confirm_toc:
+            if not request.POST.has_key("confirm_toc"):
+                toc = False
+                if form._errors is None:
+                    form._errors = {}
+                form._errors["confirm_toc"] = _(u"Please confirm our terms and conditions")
+
+        if toc and form.is_valid():
             # Create or update invoice address
             if customer.selected_invoice_address is None:
                 invoice_address = Address.objects.create(

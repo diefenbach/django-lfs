@@ -112,6 +112,10 @@ class Shop(models.Model):
     - checkout_type
        Decides whether the customer has to login, has not to login or has the
        choice to to login or not to be able to check out.
+       
+    - confirm_toc
+       If this is activated the shop customer has to confirm terms and
+       conditions to checkout.
     """
     name = models.CharField(_(u"Name"), max_length=30)
     shop_owner = models.CharField(_(u"Shop owner"), max_length=100, blank=True)
@@ -134,6 +138,7 @@ class Shop(models.Model):
     default_currency = models.CharField(_(u"Default Currency"), max_length=30, default="EUR")
 
     checkout_type = models.PositiveSmallIntegerField(_(u"Checkout type"), choices=CHECKOUT_TYPES, default=CHECKOUT_TYPE_SELECT)
+    confirm_toc = models.BooleanField(default=False)
 
     class Meta:
         permissions = (("manage_shop", "Manage shop"),)
