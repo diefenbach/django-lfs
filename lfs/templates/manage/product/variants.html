@@ -217,6 +217,17 @@
                 <input type="submit" name="update" class="variants-update-button" value="{% trans 'Update' %}" />
             </div>
         </form>
+
+        <h2 class="heading-middle">{% trans 'Default variant' %}</h2>
+        <form action="{% url lfs_update_default_variant product.id %}"
+              method="post">
+            
+            {{ default_variant_form.as_p }}
+            
+            <input type="submit" 
+                   value="{% trans 'Change default variant' %}" 
+                   class="option-add-button" />
+        </form>
     
         <h2 class="heading-middle">{% trans 'Display type' %}</h2>
         <form action="{% url lfs.manage.views.edit_sub_type product.id %}"
