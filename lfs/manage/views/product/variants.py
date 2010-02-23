@@ -59,7 +59,7 @@ class DefaultVariantForm(ModelForm):
         instance = kwargs.get("instance")
 
         choices = [(None, "------")]
-        choices.extend([(v.id, v.get_name()) for v in instance.variants.all()])
+        choices.extend([(v.id, "%s (%s))" % (v.get_name(), v.variant_position)) for v in instance.variants.all()])
 
         self.fields["default_variant"].choices = choices
 
