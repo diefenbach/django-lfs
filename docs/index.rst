@@ -21,8 +21,14 @@ Users
    :maxdepth: 2
 
    user/getting_started
-   user/howtos/index.rst
+   user/catalog/index.rst
+   user/properties/index.rst
+   user/html/index.rst
+   user/customer/index.rst
+   user/marketing/index.rst
+   user/utils/index.rst
    user/misc/index.rst
+   user/howtos/index.rst
     
 Developers
 ==========
