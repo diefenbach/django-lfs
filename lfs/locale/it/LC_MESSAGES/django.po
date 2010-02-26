@@ -2,7 +2,7 @@
 # Copyright (C) Massimiliano Pippi
 # This file is distributed under the same license as the LFS package.
 # Massimiliano Pippi <mpippi@gmail.com>, 2009.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
@@ -218,9 +218,8 @@ msgid "Static block"
 msgstr "Blocco statico"
 
 #: catalog/models.py:130
-#, fuzzy
 msgid "Category template"
-msgstr "Colonne categoria"
+msgstr "Template categoria"
 
 #: catalog/models.py:131 catalog/migrations/0001_initial.py:49
 msgid "Active formats"
@@ -243,7 +242,7 @@ msgstr "Colonne categoria"
 
 #: catalog/models.py:137 catalog/models.py:484
 msgid "Meta title"
-msgstr ""
+msgstr "Titolo Meta"
 
 #: catalog/models.py:138 catalog/models.py:485
 #: catalog/migrations/0001_initial.py:53 catalog/migrations/0001_initial.py:86
@@ -494,9 +493,8 @@ msgid "Active short description"
 msgstr "Descrizione breve attiva"
 
 #: catalog/models.py:533
-#, fuzzy
 msgid "Active static bock"
-msgstr "Salva blocco statico"
+msgstr "Blocco statico attivo"
 
 #: catalog/models.py:534 catalog/migrations/0001_initial.py:111
 msgid "Active description"
@@ -530,9 +528,8 @@ msgid "Active accessories"
 msgstr "Accessori attivi"
 
 #: catalog/models.py:541
-#, fuzzy
 msgid "Active meta title"
-msgstr "Parole chiave Meta attive"
+msgstr "Titolo Meta attivo"
 
 #: catalog/models.py:542 catalog/migrations/0001_initial.py:116
 msgid "Active meta description"
@@ -547,9 +544,8 @@ msgid "Active dimensions"
 msgstr "Dimensioni attive"
 
 #: catalog/models.py:545
-#, fuzzy
 msgid "Product template"
-msgstr "Tasse prodotto"
+msgstr "Template prodotto"
 
 #: catalog/models.py:1149 catalog/migrations/0001_initial.py:62
 msgid "Acessory"
@@ -752,19 +748,16 @@ msgid "Manual steps"
 msgstr "Passi manuali"
 
 #: catalog/settings.py:98
-#, fuzzy
 msgid "Category with products"
-msgstr "Questa categoria non contiene ancora alcun prodotto."
+msgstr "Categoria con prodotti"
 
 #: catalog/settings.py:102
-#, fuzzy
 msgid "Category with subcategories"
-msgstr "Salva categorie"
+msgstr "Categoria con sottocategorie"
 
 #: catalog/settings.py:110
-#, fuzzy
 msgid "Default template"
-msgstr "Valori di default"
+msgstr "Template di default"
 
 #: catalog/views.py:32 catalog/views.py:59
 msgid "The product has been changed according to your selection."
@@ -1265,9 +1258,8 @@ msgid "Welcome to %s"
 msgstr "Benvenuto a %s"
 
 #: mail/utils.py:67
-#, fuzzy
 msgid "New review has been added"
-msgstr "Prezzo aggiunto"
+msgstr "E' stata aggiunta una nuova recensione"
 
 #: manage/views/actions.py:55
 msgid "Action has been saved."
@@ -1334,9 +1326,8 @@ msgid "Portlet has been saved."
 msgstr "Portlet salvata."
 
 #: manage/views/manufacturer.py:225
-#, fuzzy
 msgid "Manufacturer data has been saved."
-msgstr "Dati SEO salvati."
+msgstr "Dati del produttore salvati."
 
 #: manage/views/orders.py:133 manage/views/orders.py:163
 msgid "Filters has been set"
@@ -1507,54 +1498,47 @@ msgstr "Prezzi effettivi impostati."
 #: manage/views/voucher.py:42 templates/manage/cart/cart_inline.html:144
 #: templates/manage/order/order_inline.html:254
 msgid "Amount"
-msgstr "Importo"
+msgstr "Quantità"
 
 #: manage/views/voucher.py:43 templates/manage/voucher/vouchers_inline.html:70
 msgid "Value"
-msgstr ""
+msgstr "Valore"
 
 #: manage/views/voucher.py:44 templates/manage/voucher/vouchers_inline.html:76
-#, fuzzy
 msgid "Start date"
-msgstr "Stato"
+msgstr "Data inizio"
 
 #: manage/views/voucher.py:45 templates/manage/voucher/vouchers_inline.html:79
 msgid "End date"
-msgstr ""
+msgstr "Data fine"
 
 #: manage/views/voucher.py:46
 msgid "Kind of"
-msgstr ""
+msgstr "Tipologia"
 
 #: manage/views/voucher.py:47 templates/manage/voucher/vouchers_inline.html:82
-#, fuzzy
 msgid "Effective from"
-msgstr "Formati attivi"
+msgstr "Valido da"
 
 #: manage/views/voucher.py:200
-#, fuzzy
 msgid "Vouchers have been created."
-msgstr "Prodotti rimossi."
+msgstr "Vouchers creati"
 
 #: manage/views/voucher.py:219
-#, fuzzy
 msgid "Vouchers have been deleted."
-msgstr "Prezzi rimossi"
+msgstr "Vouchers rimossi"
 
 #: manage/views/voucher.py:254
-#, fuzzy
 msgid "Voucher data has been save."
-msgstr "Dati SEO salvati."
+msgstr "Dati del voucher salvati."
 
 #: manage/views/voucher.py:267
-#, fuzzy
 msgid "Voucher group and assigned vouchers have been deleted."
-msgstr "Gruppo proprietà rimosso"
+msgstr "Gruppo voucher e voucher relativi rimossi"
 
 #: manage/views/voucher.py:284
-#, fuzzy
 msgid "Voucher options has been save."
-msgstr "Azione salvata."
+msgstr "Opzioni del voucher salvati."
 
 #: manage/views/categories/category.py:97
 msgid "Category data have been saved."
@@ -1575,7 +1559,7 @@ msgstr "Dati SEO salvati."
 
 #: manage/views/marketing/rating_mails.py:34
 msgid "Please rate your products on "
-msgstr ""
+msgstr "Per favore dai un voto ai tuoi prodotti su"
 
 #: manage/views/marketing/topseller.py:121
 msgid "Topseller have been added."
@@ -1695,9 +1679,8 @@ msgid "Properties have been updated."
 msgstr "Proprietà aggiornate."
 
 #: marketing/models.py:37
-#, fuzzy
 msgid "Order"
-msgstr "Ordini"
+msgstr "Ordine"
 
 #: order/models.py:38 order/migrations/0001_initial.py:59
 msgid "Created"
@@ -1705,7 +1688,7 @@ msgstr "Creato"
 
 #: order/models.py:41
 msgid "State modified"
-msgstr ""
+msgstr "Stato modificato"
 
 #: order/models.py:46 order/migrations/0001_initial.py:33
 msgid "firstname"
@@ -1717,9 +1700,8 @@ msgid "lastname"
 msgstr "cognome"
 
 #: order/models.py:48
-#, fuzzy
 msgid "email"
-msgstr "E-mail"
+msgstr "email"
 
 #: order/models.py:50 order/migrations/0001_initial.py:58
 msgid "Invoice firstname"
@@ -1816,19 +1798,16 @@ msgid "Bank identication code"
 msgstr "BIC"
 
 #: order/models.py:83
-#, fuzzy
 msgid "Voucher number"
-msgstr "Numero di Conto Corrente"
+msgstr "Numero del voucher"
 
 #: order/models.py:84
-#, fuzzy
 msgid "Voucher value"
-msgstr "Valori prodotto"
+msgstr "Valore del voucher"
 
 #: order/models.py:85
-#, fuzzy
 msgid "Voucher tax"
-msgstr "Tasse prodotto"
+msgstr "Tasse del voucher"
 
 #: order/models.py:87 order/migrations/0001_initial.py:61
 #: templates/manage/customer/customer_inline.html:139
@@ -1837,9 +1816,8 @@ msgid "Message"
 msgstr "Messaggio"
 
 #: order/models.py:92
-#, fuzzy
 msgid "Delivery Date"
-msgstr "Tempo di consegna"
+msgstr "Data di consegna"
 
 #: order/models.py:123 order/migrations/0001_initial.py:21
 msgid "Price net"
@@ -1935,15 +1913,13 @@ msgstr "VISA"
 #: payment/settings.py:25
 #, fuzzy
 msgid "Plain"
-msgstr "Pagato"
+msgstr "Plain"
 
 #: payment/settings.py:26
-#, fuzzy
 msgid "Bank"
-msgstr "Nome della banca"
+msgstr "Banca"
 
 #: payment/settings.py:27
-#, fuzzy
 msgid "Credit Card"
 msgstr "Carta di credito"
 
@@ -2037,9 +2013,8 @@ msgstr "Scheda prodotto"
 
 #: templates/manage/manage_base.html:94
 #: templates/manage/manufacturer/add_manufacturer.html:26
-#, fuzzy
 msgid "Factory"
-msgstr "Categoria"
+msgstr "Produttore"
 
 #: templates/manage/manage_base.html:100
 #: templates/manage/product/properties.html:2
@@ -2083,13 +2058,12 @@ msgstr "Marketing"
 
 #: templates/manage/manage_base.html:121
 msgid "Rating Mails"
-msgstr ""
+msgstr "Messaggi email di valutazione"
 
 #: templates/manage/manage_base.html:122
 #: templates/manage/voucher/voucher_group.html:29
-#, fuzzy
 msgid "Vouchers"
-msgstr "ore"
+msgstr "Vouchers"
 
 #: templates/manage/manage_base.html:125
 msgid "Utils"
@@ -2704,45 +2678,40 @@ msgstr "Selezione prodotto"
 
 #: templates/manage/manufacturer/manufacturer.html:17
 msgid "Add Manufacturer"
-msgstr ""
+msgstr "Aggiungi produttore"
 
 #: templates/manage/manufacturer/manufacturer.html:23
-#, fuzzy
 msgid "Delete Manufacturer"
-msgstr "Cancella categoria"
+msgstr "Rimuovi produttore"
 
 #: templates/manage/manufacturer/manufacturer.html:29
 msgid "Manufacturer"
-msgstr ""
+msgstr "Produttore"
 
 #: templates/manage/marketing/rating_mails.html:10
 #: templates/manage/marketing/rating_mails.html:26
 msgid "Send rating mails"
-msgstr ""
+msgstr "Invia email di valutazione"
 
 #: templates/manage/marketing/rating_mails.html:17
-#, fuzzy
 msgid "Test"
-msgstr "Testo"
+msgstr "Test"
 
 #: templates/manage/marketing/rating_mails.html:17
-#, fuzzy
 msgid "The mails will get to the shop notification email adresses"
-msgstr "Indirizzo e-mail per le notifiche"
+msgstr "I messaggi saranno inviati agli indirizzi e-mail per le notifiche del negozio"
 
 #: templates/manage/marketing/rating_mails.html:22
 msgid "Send copy"
-msgstr ""
+msgstr "Invia una copia"
 
 #: templates/manage/marketing/rating_mails.html:22
-msgid ""
-"The mails will also send to the shop notification email adresses (if not in "
-"test mode)"
-msgstr ""
+msgid "The mails will also send to the shop notification email adresses (if not in test mode)"
+msgstr "I messaggi saranno inviati anche agli indirizzi e-mail per le notifiche del negozio"
 
 #: templates/manage/marketing/rating_mails.html:31
 msgid "Rating mails sent"
-msgstr ""
+msgstr "Email di valutazione inviate"
 
 #: templates/manage/marketing/rating_mails.html:45
 #: templates/manage/order/order_inline.html:123
@@ -2751,19 +2720,16 @@ msgid "Date"
 msgstr "Data"
 
 #: templates/manage/marketing/rating_mails.html:48
-#, fuzzy
 msgid "Date Closed"
-msgstr "Chiuso"
+msgstr "Data chiusura"
 
 #: templates/manage/marketing/rating_mails.html:82
-#, fuzzy
 msgid "View order"
-msgstr "Cancella ordine"
+msgstr "Visualizza ordine"
 
 #: templates/manage/marketing/rating_mails.html:89
-#, fuzzy
 msgid "No e-mails have been sent"
-msgstr "Filtri prodotto impostati"
+msgstr "Nessun messaggio email inviato"
 
 #: templates/manage/marketing/topseller_inline.html:103
 msgid "Add to topseller"
@@ -2805,7 +2771,7 @@ msgstr "IVA inclusa"
 
 #: templates/manage/order/order_inline.html:302
 msgid "Voucher"
-msgstr ""
+msgstr "Voucher"
 
 #: templates/manage/order/order_inline.html:319
 msgid "Shipping"
@@ -3010,7 +2976,7 @@ msgstr "Dati prodotto"
 
 #: templates/manage/product/data.html:27
 msgid "Redirect to"
-msgstr ""
+msgstr "Redireziona su"
 
 #: templates/manage/product/data.html:286
 msgid "Save data"
@@ -3034,9 +3000,8 @@ msgid "Add images"
 msgstr "Aggiungi immagini"
 
 #: templates/manage/product/product.html:35
-#, fuzzy
 msgid "Base Article"
-msgstr "Prezzo in offerta"
+msgstr "Articolo base"
 
 #: templates/manage/product/product.html:47
 msgid "Delete product"
@@ -3253,12 +3218,8 @@ msgid "Field type"
 msgstr "Tipo campo"
 
 #: templates/manage/properties/property.html:43
-msgid ""
-"Attention: If the field type is changed all entered product values for this "
-"property will be deleted."
-msgstr ""
-"Attenzione: se il tipo del campo viene cambiato, tutti i valori prodotto "
-"inseriti per questa proprietà saranno rimossi."
+msgid "Attention: If the field type is changed all entered product values for this property will be deleted."
+msgstr "Attenzione: se il tipo del campo viene cambiato, tutti i valori prodotto inseriti per questa proprietà saranno rimossi."
 
 #: templates/manage/properties/property.html:50
 msgid "Save property type"
@@ -3403,85 +3364,74 @@ msgstr "Salva tassa"
 #: templates/manage/voucher/add_voucher_group.html:22
 #: templates/manage/voucher/add_voucher_group.html:30
 #: templates/manage/voucher/voucher_group.html:17
-#, fuzzy
 msgid "Add voucher group"
-msgstr "Aggiungi gruppo proprietà"
+msgstr "Aggiungi gruppo voucher"
 
 #: templates/manage/voucher/data.html:10
-#, fuzzy
 msgid "Save voucher group"
-msgstr "Salva gruppo proprietà"
+msgstr "Salva gruppo voucher"
 
 #: templates/manage/voucher/options.html:13
-#, fuzzy
 msgid "Save options"
-msgstr "Salva azione"
+msgstr "Salva opzioni"
 
 #: templates/manage/voucher/voucher_group.html:21
-#, fuzzy
 msgid "Delete group"
-msgstr "Rimuovi prodotto"
+msgstr "Rimuovi gruppo"
 
 #: templates/manage/voucher/vouchers.html:7
 #: templates/manage/voucher/vouchers.html:17
-#, fuzzy
 msgid "Add vouchers"
-msgstr "Aggiungi prodotto"
+msgstr "Aggiungi voucher"
 
 #: templates/manage/voucher/vouchers_inline.html:88
-#, fuzzy
 msgid "Used"
-msgstr "Utente"
+msgstr "Utilizzato"
 
 #: templates/manage/voucher/vouchers_inline.html:91
-#, fuzzy
 msgid "Used date"
-msgstr "Aggiorna"
+msgstr "Data utilizzo"
 
 #: templates/manage/voucher/vouchers_inline.html:145
-#, fuzzy
 msgid "DATE_FORMAT"
-msgstr "DATETIME_FORMAT"
+msgstr "j F Y"
 
 #: templates/manage/voucher/vouchers_inline.html:154
-#, fuzzy
 msgid "Delete vouchers"
-msgstr "Cancella ordine"
+msgstr "Cancella voucher"
 
 #: voucher/settings.py:7
 msgid "Absolute"
-msgstr ""
+msgstr "Assoluto"
 
 #: voucher/settings.py:8
-#, fuzzy
 msgid "Percentage"
-msgstr "Prezzo netto"
+msgstr "Percentuale"
 
 #: voucher/settings.py:12
 msgid "The voucher is valid."
-msgstr ""
+msgstr "Il voucher è valido."
 
 #: voucher/settings.py:13
 msgid "The voucher is not active."
-msgstr ""
+msgstr "Il voucher non è attivo."
 
 #: voucher/settings.py:14
-#, fuzzy
 msgid "The voucher has been already used."
-msgstr "Cache cancellata."
+msgstr "Il voucher è già stato utilizzato."
 
 #: voucher/settings.py:15
 msgid "The voucher is not active yet."
-msgstr ""
+msgstr "Il voucher non è ancora attivo."
 
 #: voucher/settings.py:16
 msgid "The voucher is not active any more."
-msgstr ""
+msgstr "Il voucher non è più attivo."
 
 #: voucher/settings.py:17
 msgid "The voucher is not valid for this cart price."
-msgstr ""
+msgstr "Il voucher non è valido per il prezzo di questo carrello."
 
 #: voucher/settings.py:18
 msgid "The voucher doesn't exist."
-msgstr ""
+msgstr "Il voucher non esiste."
