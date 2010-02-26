@@ -2,8 +2,7 @@
 # Copyright (C) 2010 Kai Diefenbach
 # This file is distributed under the same license as the LFS package.
 # Jarek Miazga <jaroslaw.miazga@gmail.com>, 2010.
-#
-
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
@@ -21,12 +20,12 @@ msgstr ""
 #: order/migrations/0001_initial.py:57
 #: templates/manage/cart/carts_inline.html:111
 msgid "User"
-msgstr ""
+msgstr "Użytkownik"
 
 #: cart/models.py:29 cart/migrations/0001_initial.py:21 order/models.py:36
 #: order/migrations/0001_initial.py:36
 msgid "Session"
-msgstr ""
+msgstr "Sesja"
 
 #: cart/models.py:30 cart/models.py:103
 #: cart/migrations/0003_add_date_fields.py:11
@@ -39,7 +38,7 @@ msgstr ""
 #: templates/manage/reviews/review_inline.html:95
 #: templates/manage/reviews/reviews_inline.html:101
 msgid "Creation date"
-msgstr ""
+msgstr "Data utworzenia"
 
 #: cart/models.py:31 cart/models.py:104
 #: cart/migrations/0003_add_date_fields.py:17
@@ -48,14 +47,14 @@ msgstr ""
 #: templates/manage/cart/carts_inline.html:108
 #: templates/manage/customer/customer_inline.html:178
 msgid "Modification date"
-msgstr ""
+msgstr "Data modyfikacji"
 
 #: cart/models.py:100 cart/migrations/0001_initial.py:15
 #: portlet/templatetags/lfs_portlets_tags.py:79
 #: templates/manage/customer/customer_inline.html:170
 #: templates/manage/customer/customers_inline.html:113
 msgid "Cart"
-msgstr ""
+msgstr "Koszyk"
 
 #: cart/models.py:101 cart/migrations/0001_initial.py:13
 #: catalog/models.py:1086 catalog/models.py:1263 catalog/models.py:1319
@@ -67,13 +66,13 @@ msgstr ""
 #: templates/manage/reviews/review_inline.html:140
 #: templates/manage/reviews/reviews_inline.html:119
 msgid "Product"
-msgstr ""
+msgstr "Produkt"
 
 #: cart/models.py:102 cart/migrations/0001_initial.py:12
 #: catalog/models.py:1089 catalog/migrations/0001_initial.py:64
 #: templates/manage/product/accessories_inline.html:126
 msgid "Quantity"
-msgstr ""
+msgstr "Ilość"
 
 #: cart/migrations/0002_add_cart_portlet.py:13 catalog/models.py:1367
 #: catalog/migrations/0001_initial.py:155 core/models.py:46
@@ -82,7 +81,7 @@ msgstr ""
 #: templates/manage/portlets/portlets_inline.html:84
 #: templates/manage/product/images.html:35
 msgid "Title"
-msgstr ""
+msgstr "Tytuł"
 
 #: catalog/models.py:108 catalog/models.py:442 catalog/models.py:1151
 #: catalog/models.py:1290 catalog/models.py:1386
@@ -124,25 +123,27 @@ msgstr ""
 #: templates/manage/reviews/reviews_inline.html:10
 #: templates/manage/reviews/reviews_inline.html:107
 msgid "Name"
-msgstr ""
+msgstr "Imię"
 
 #: catalog/models.py:109 catalog/models.py:443
 #: catalog/migrations/0001_initial.py:40 catalog/migrations/0001_initial.py:80
 #: export/models.py:16 page/models.py:14 page/migrations/0001_initial.py:19
 #: templates/manage/product/variants.html:91
+#, fuzzy
 msgid "Slug"
-msgstr ""
+msgstr "Tytuł w adresie"
 
 #: catalog/models.py:110 catalog/models.py:495
 #: catalog/migrations/0001_initial.py:41
 #: catalog/migrations/0001_initial.py:107 core/models.py:51
 #: core/migrations/0001_initial.py:12 templates/manage/product/product.html:35
+#, fuzzy
 msgid "Parent"
-msgstr ""
+msgstr "Rodzic"
 
 #: catalog/models.py:114 catalog/migrations/0001_initial.py:42
 msgid "Show all products"
-msgstr ""
+msgstr "Pokaż wszystkie produkty"
 
 #: catalog/models.py:116 catalog/models.py:1116 catalog/models.py:1153
 #: catalog/settings.py:45 export/models.py:17
@@ -156,12 +157,12 @@ msgstr ""
 #: templates/manage/properties/pg_products.html:19
 #: templates/manage/properties/property_group.html:29
 msgid "Products"
-msgstr ""
+msgstr "Produkty"
 
 #: catalog/models.py:117 catalog/models.py:447
 #: catalog/migrations/0001_initial.py:43 catalog/migrations/0001_initial.py:84
 msgid "Short description"
-msgstr ""
+msgstr "Krótki opis"
 
 #: catalog/models.py:118 catalog/models.py:448 catalog/models.py:1408
 #: catalog/migrations/0001_initial.py:44 catalog/migrations/0001_initial.py:85
@@ -171,7 +172,7 @@ msgstr ""
 #: shipping/migrations/0001_initial.py:24 tax/models.py:9
 #: tax/migrations/0001_initial.py:14
 msgid "Description"
-msgstr ""
+msgstr "Opis"
 
 #: catalog/models.py:119 catalog/models.py:1368
 #: catalog/migrations/0001_initial.py:45
@@ -181,7 +182,7 @@ msgstr ""
 #: shipping/migrations/0001_initial.py:27
 #: templates/manage/product/images.html:32
 msgid "Image"
-msgstr ""
+msgstr "Grafika"
 
 #: catalog/models.py:120 catalog/models.py:1088 catalog/models.py:1154
 #: catalog/models.py:1243 catalog/models.py:1265 catalog/models.py:1292
@@ -204,22 +205,22 @@ msgstr ""
 #: templates/manage/properties/options_inline.html:10
 #: templates/manage/properties/properties_inline.html:55
 msgid "Position"
-msgstr ""
+msgstr "Pozycja"
 
 #: catalog/models.py:121
 msgid "Exclude from navigation"
-msgstr ""
+msgstr "Wyłącz z nawigacji"
 
 #: catalog/models.py:123 catalog/migrations/0001_initial.py:47
 #: core/models.py:123 core/migrations/0001_initial.py:24
 #: templates/manage/static_block/static_block.html:31
 #: templates/manage/static_block/static_block.html:35
 msgid "Static block"
-msgstr ""
+msgstr "Blok statyczny"
 
 #: catalog/models.py:124 catalog/migrations/0001_initial.py:48
 msgid "Content"
-msgstr ""
+msgstr "Treść"
 
 #: catalog/models.py:125 catalog/migrations/0001_initial.py:49
 msgid "Active formats"
@@ -2574,9 +2575,7 @@ msgid "Send copy"
 msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:22
-msgid ""
-"The mails will also send to the shop notification email adresses (if not in "
-"test mode)"
+msgid "The mails will also send to the shop notification email adresses (if not in test mode)"
 msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:31
@@ -3085,9 +3084,7 @@ msgid "Field type"
 msgstr ""
 
 #: templates/manage/properties/property.html:43
-msgid ""
-"Attention: If the field type is changed all entered product values for this "
-"property will be deleted."
+msgid "Attention: If the field type is changed all entered product values for this property will be deleted."
 msgstr ""
 
 #: templates/manage/properties/property.html:50
