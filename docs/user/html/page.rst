@@ -2,13 +2,18 @@
 Page
 ====
 
-* A page is a simple HTML page within your Shop. 
+Overview 
+========
+
+* A page is a simple HTML page within the shop.
 * A page can be used to display information like terms and conditions or 
   to create landing pages.
 * Pages are automatically displayed within the pages portlet.
 
 Add a page
 ==========
+
+To add a page proceed as following:
 
 1. Go to Management / HTML / Pages. 
 2. Click on ``Add page``. Please note: if there are no Static blocks yet
@@ -18,12 +23,14 @@ Add a page
 Remove a page
 =============
 
+To remove a page proceed as following:
+
 1. Browse to the page you want to delete.
 2. Click on the ``Delete page`` button and answer the confirmation question 
    with yes.
 
-Data
-====
+Data fields
+===========
 
 Title
     The title of the page. This is displayed on top of the page as well as 
@@ -36,8 +43,7 @@ Short text
     The short text of the page. This is displayed within overviews.
 
 Text
-    The main text of the page. This is display if someone browses to the
-    page.
+    The main text of the page.
     
 Active
     If this is checked the page is active. Only active pages are displayed to 
@@ -47,6 +53,6 @@ Position
     Pages are ordered by position. Lower numbers come first.
 
 File
-    A file which can be uploaded. If given a link to download this file is 
-    automatically displayed within the view of the page.
+    A file which can be uploaded. If a files has been uploaded a download link
+    is automatically displayed within the bottom of the page.
     
