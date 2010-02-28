@@ -1,3 +1,5 @@
+.. index:: Customer, Shipping Address, Invoice Address
+
 =========
 Customers
 =========
@@ -32,8 +34,8 @@ Details
 Within the customer detail view you can see several informations about a
 single customer:
 
-* The customer id and the registration status
-* The current invoice and shipping address
+* The customer id and the registration status.
+* The current invoice and shipping address.
 * The current cart of the customer, if there is one. Click on the cart row to 
   see it in detail.
 * Which orders the customer has submitted and the state of the orders. Click 

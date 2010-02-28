@@ -5,7 +5,7 @@ Products
 Overview
 ========
 
-* Products are saled to the shop customer.
+* Products are sold to the shop customer.
 * Products can belong to an arbitrary amount of categories.
 * Products can have an arbitrary amount of images.
 * Products can have portlet
@@ -23,7 +23,7 @@ Product
 -------
 
 This is the default product of LFS. Just enter the appropriate data, set it
-to active and the product is ready vor sale.
+to active and the product is ready for sale.
 
 .. _product-product-with-variant-label:
 
@@ -33,7 +33,7 @@ Product with variants
 A product with variants consists of two parts: The ``product with variant``
 which is the parent of a ``variant``.
 
-The parent can't be saled. It is just a container for the variants and provides
+The parent can't be sold. It is just a container for the variants and provides
 default data which can be inherited by the variants.
 
 The parent has/defines some ``properties`` (global or local) which are the base
@@ -46,13 +46,13 @@ Variant
 
 This is a single variant of a ``Product with variants``.
 
-* A variant can be saled to the customer.
+* A variant can be sold to the customer.
 
 * By default a variant inherits all data of the related ``Product with
   variants``.
 
 * A variant can overwrite the data from the belonging parent product. To do
-  that the fields in question have to be activated explicitely.
+  that the fields in question have to be activated explicitly.
 
 * A variant belongs to a unique combination of properties. The properties are
   defined by the ``Product with variants``.
@@ -102,7 +102,7 @@ Tax
     Shop / Taxes.
 
 For sale
-    If this is activated the default price of the product is stroken and
+    If this is activated the default price of the product is stroked and
     the for entered for sale price is displayed.
 
 Short description
@@ -117,10 +117,12 @@ Static block
     A :term:`Static Block`. This is displayed on top of the product page. Note:
     static blocks are managed central within HTML / Static blocks.
 
+.. index:: Template
+
 Product template
     The selected product template decides how the content of the page is
     structured. By default there is only one template. Developers can add
-    templates more easily (:doc:`see here for more </developer/howtos/how_to_add_own_templates>`).
+    more templates easily (:doc:`see here for more </developer/howtos/how_to_add_own_templates>`).
 
 .. _product-categories-label:
 
@@ -153,8 +155,8 @@ Images
 Within this tab you can add images to the product.
 
 Add images
-    Click on the ``Add images`` button and select as many images as you want.
-    whitin your browsers popup window. You can use shift click to select a
+    Click on the ``Add images`` button and select as many images as you want
+    within your browsers popup window. You can use shift click to select a
     range of images at once and ctrl (cmd for apple users) click to select
     more images. Now click on open to start the upload process. You will now
     see a progress bar meanwhile your images are being uploaded.
@@ -184,7 +186,7 @@ offer them to be also added to the cart.
   product.
   to enter the related products on each side of the relation.
 * Optionally you can filter the available products with the text (name) and
-  selectbox (categories) on top of the page.
+  select box (categories) on top of the page.
 * You can also navigate through the available products by clicking on the
   ``First``, ``Previous``, ``Next``, ``Last`` links.
 
@@ -228,14 +230,14 @@ Related products
 Within this tab you can add related products to the product.
 
 Related can be displayed within a :term:`portlet`. Related products are
-similar to the currend displayed product.
+similar to the current displayed product.
 
 **Generally**
 
 * Related products are not bidirectional. If you to want them to be you need
   to enter the related products on each side of the relation.
 * Optionally you can filter the available products with the text (name) and
-  selectbox (categories) on top of the page.
+  select box (categories) on top of the page.
 * You can also navigate through the available products by clicking on the
   ``First``, ``Previous``, ``Next``, ``Last`` links.
 
@@ -281,7 +283,7 @@ like the dimension, stock amount and delivery dates.
 
 **Dimension**
 
-The values of the product are considered shipping relavant, e.g. the product
+The values of the product are considered shipping relevant, e.g. the product
 within the package:
 
 Weight
@@ -299,13 +301,13 @@ Length
 **Stock data**
 
 Deliverable
-    If this is deactived the product is not deliverable at all. The shop
+    If this is deactivated the product is not deliverable at all. The shop
     customer gets a note o the product page and is not able to add the
     product to the cart.
 
 Manual delivery time
     By default the delivery time is calculated by the selected shipping method.
-    With this field the shop admin can overwrite this behaviour and can put
+    With this field the shop admin can overwrite this behavior and can put
     in a manual delivery time. For that check the checkbox and select the
     appropriate delivery time from the checkbox.
 
@@ -395,13 +397,13 @@ click on ``yes``.
 Properties
 ----------
 
-Within this tab you can add property groups to the product and add values
+Within this tab you can assign property groups to the product and add values
 to the single properties. For more about properties, please see here:
 :doc:`Properties </user/misc/properties>`.
 
 To add properties and property values to the product proceed as following:
 
-1. Select the ``Property groups`` you want to add to the product and click
+1. Select the ``Property groups`` you want to assign to the product and click
    ``Update property groups``.
 
 You will now see all properties which are assigned to the product.

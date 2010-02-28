@@ -8,3 +8,4 @@ Here you will find some miscellaneous information.
    :maxdepth: 1
 
    criteria.rst
+   properties.rst

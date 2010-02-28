@@ -1,3 +1,5 @@
+.. index:: Static Block, HTML
+
 ============
 Static Block
 ============
@@ -8,14 +10,16 @@ Overview
 * A static block is a piece of HTML which can be reused by several content
   objects like the shop, a category or a product.
 
+.. image:: /images/static_blocks.*
+
 Add a static block
 ==================
 
 To add a static block proceed as following: 
 
 1. Go to Management / HTML / Static blocks.
-2. Click on ``Add Static Block``. Please note: if there are no Static blocks yet
-   at all you will redirected automatically to the add form.
+2. Click on ``Add Static Block``. Please note: if there are no Static blocks 
+   yet at all you will redirected automatically to the add form.
 3. Fill in the form and click on ``Save static block``
 
 Remove a static block

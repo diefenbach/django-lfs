@@ -1,3 +1,5 @@
+.. index:: Property
+
 ==========
 Properties
 ==========
@@ -23,7 +25,7 @@ Filterable
 
 Unit
     The unit of the property, e.g. meter, liter or whatever you want. This is
-    just a simple string wihthout logic.
+    just a simple string without logic.
 
 Position
     The position within the management interface (deprecated)
@@ -38,7 +40,7 @@ Display no results
 Field type
     The type of the field.
 
-    Select the type you want and click ``Save property type``. Dependend on
+    Select the type you want and click ``Save property type``. Depended on
     the field type you have selected you need to enter additionally
     information.
 
@@ -67,7 +69,7 @@ Field type
                 'X' beside the step.
 
     Select field
-        The value of the propery can be selected from several options. 
+        The value of the property can be selected from several options. 
         
         You need to enter every single options for this property. For that 
         enter a position and a name. The options are ordered by position, 

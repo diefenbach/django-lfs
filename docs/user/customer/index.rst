@@ -1,13 +1,13 @@
-========
-Customer
-========
+=========
+Customers
+=========
 
-Here you will find information about the components of the customer.
+In this section all sub menu points of ``Customers`` are described.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    customers.rst
+   orders.rst
    carts.rst
    reviews.rst
-   orders.rst

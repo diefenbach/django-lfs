@@ -1,3 +1,5 @@
+.. index:: Criteria
+
 ========
 Criteria
 ========
@@ -5,8 +7,8 @@ Criteria
 Overview
 ========
 
-Criteria are used on several places of LFS in order to display/hide data 
-dependent on different situations. 
+Criteria are used on several places of LFS in order to display/hide data
+dependent on different situations.
 
 At the moment criteria are used within:
 
@@ -24,7 +26,7 @@ In future they might be used to provide:
 Types
 =====
 
-This paragraph describes which types of criteria exists and which operators 
+This paragraph describes which types of criteria exists and which operators
 they provide.
 
 Cart Price
@@ -32,7 +34,7 @@ Cart Price
 
 **Description**
 
-Provides some tests against the the total gross price of all products of the 
+Provides some tests against the the total gross price of all products of the
 cart (without other costs like shipping, payment and so on).
 
 **Value**
@@ -53,25 +55,25 @@ Greater than
     The criterion is true if the cart price is greater than the entered value.
 
 Greater than equal to
-    The criterion is true if the cart price is greater than equal to the 
+    The criterion is true if the cart price is greater than equal to the
     entered value
 
 Equal
     The cart price is equal to the entered value
-    
+
 Combined Length And Girth
 -------------------------
 
 **Description**
 
-Provides some tests agains the total combined length and girth (clag) of all 
+Provides some tests agains the total combined length and girth (clag) of all
 products within the cart. The clag is calculated as following::
 
     (2 * maximum width) + (2 * total height) + maximal length
 
 **Value**
 
-A number which describes a clag level. How this is interpreted is up to the 
+A number which describes a clag level. How this is interpreted is up to the
 used operator (see below).
 
 **Operators**
@@ -86,7 +88,7 @@ Greater than
     The criterion is true if the clag is greater than the entered value.
 
 Greater than equal to
-    The criterion is true if the clag is greater than equal to the entered 
+    The criterion is true if the clag is greater than equal to the entered
     value.
 
 Equal
@@ -107,11 +109,11 @@ An arbitrary selection out of all provided countries.
 **Operators**
 
 Is
-    The criterion is true if the shipping country of the customer is within 
+    The criterion is true if the shipping country of the customer is within
     the selected countries.
 
 Is not
-    The criterion is true if the shipping country of the customer is not within 
+    The criterion is true if the shipping country of the customer is not within
     selected countries.
 
 Height
@@ -132,15 +134,15 @@ Less than
     The criterion is true if the total height is less than the entered value.
 
 Less than equal to
-    The criterion is true if the total height is less than equal to the entered 
+    The criterion is true if the total height is less than equal to the entered
     value.
 
 Greater than
-    The criterion is true if the total height is greater than the entered 
+    The criterion is true if the total height is greater than the entered
     value.
 
 Greater than equal to
-    The criterion is true if the total height is greater than equal to the 
+    The criterion is true if the total height is greater than equal to the
     entered value.
 
 Equal
@@ -164,15 +166,15 @@ Less than
     The criterion is true if the maximal length is less than the entered value.
 
 Less than equal to
-    The criterion is true if the maximal length is less than equal to the 
+    The criterion is true if the maximal length is less than equal to the
     entered value.
 
 Greater than
-    The criterion is true if the maximal length is greater than the entered 
+    The criterion is true if the maximal length is greater than the entered
     value.
 
 Greater than equal to
-    The criterion is true if the maximal length is greater than equal to the 
+    The criterion is true if the maximal length is greater than equal to the
     entered value.
 
 Equal
@@ -199,11 +201,11 @@ Is not
     The criterion is true if the current selected payment method is not within
     the selected payment methods.
 
-Is valid 
+Is valid
     The criterion is true if all of the selected payment methods are valid.
 
-Is not valid 
-    The criterion is true if all of the selected payment methods are not 
+Is not valid
+    The criterion is true if all of the selected payment methods are not
     valid.
 
 Shipping Method
@@ -227,11 +229,11 @@ Is not
     The criterion is true if the current selected shipping method is not within
     the selected shipping methods.
 
-Is valid 
+Is valid
     The criterion is true if all of the selected shipping methods are valid.
 
-Is not valid 
-    The criterion is true if all of the selected shipping methods are not 
+Is not valid
+    The criterion is true if all of the selected shipping methods are not
     valid.
 
 User
@@ -252,7 +254,7 @@ Represents the total weight of all products within the cart.
 
 **Value**
 
-A number which describes a weight level. How this is interpreted is up to the 
+A number which describes a weight level. How this is interpreted is up to the
 used operator (see below).
 
 **Operators**
@@ -281,7 +283,7 @@ Provides some tests against the maximal height of all products within the cart.
 
 **Value**
 
-A number which describes a width level. How this is interpreted is up to the 
+A number which describes a width level. How this is interpreted is up to the
 used operator (see below).
 
 **Operators**
@@ -290,15 +292,15 @@ Less than
     The criterion is true if the maximum width is less than the entered value.
 
 Less than equal to
-    The criterion is true if the maximum width is less than equal to the 
+    The criterion is true if the maximum width is less than equal to the
     entered value.
 
 Greater than
-    The criterion is true if the maximum width is greater than the entered 
+    The criterion is true if the maximum width is greater than the entered
     value.
 
 Greater than equal to
-    The criterion is true if the maximum width is greater than equal to the 
+    The criterion is true if the maximum width is greater than equal to the
     entered value.
 
 Equal

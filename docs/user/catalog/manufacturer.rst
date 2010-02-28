@@ -8,7 +8,7 @@ Overview
 ========
 
 * The manufacturer is the producer of the product.
-* A Product can have at most one manufacturer.
+* A product can have at most one manufacturer.
 
 Add a manufacturer
 ==================

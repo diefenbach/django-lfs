@@ -2,6 +2,8 @@
 Marketing
 =========
 
+In this section all sub menu points of ``Marketing`` are described.
+
 .. toctree::
    :maxdepth: 1
 

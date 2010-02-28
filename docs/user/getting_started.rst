@@ -19,13 +19,13 @@ Go to the "Shop" tab.
    * Enter a "Name". This is the name of the shop, e.g. *ACME Inc*. It will be used on several
      places, e.g. as the title of all HTML pages.
  
-   * Enter the "Shop owner". This is the fullname of the shop owner, e.g. *John Doe*
+   * Enter the "Shop owner". This is the full name of the shop owner, e.g. *John Doe*
  
    * Enter "From e-mail address". This e-mail address is used as sender
      for all e-mails which are sent from the shop, e.g. the order has been
      received message to the shop customer.
  
-   * Enter "Notification e-mail addresses". To this adresses all notification
+   * Enter "Notification e-mail addresses". To this addresses all notification
      messages will be sent. For example if an order has been submitted.
  
 Go to the "Default Values" tab.
@@ -60,7 +60,7 @@ the shipping method.
 3. Enter "Min", the minimal delivery time.
 4. Enter "Max", the maximal delivery time.
 5. Enter the "Unit" of this delivery time.
-6. Enter the "Description". This is just for internal puposes.
+6. Enter the "Description". This is just for internal purposes.
 7. Click on "Add delivery time"
 8. You can add more delivery times by clicking on "Add delivery time" and 
    executing steps 3. - 7.
@@ -70,19 +70,19 @@ Enter first category and products
 
 Now go to Catalog / Categories and add a new category.
 
-Since there are no catgories yet, you will be redirected automatically to the
+Since there are no categories yet, you will be redirected automatically to the
 add category form.
 
    * Enter "name" and a "slug" (you will see, that the slug is filled 
      automatically but you can change it of course)
    * Enter a "short description". This will be displayed when the category is
      displayed within a overview, e.g. when a category displays is sub
-     cateogories
+     categories
    * Enter a "description". This will be displayed within the detail view of 
      a category when description as content is selected.
    * Select the "kind of content", this is "products" (the assigned 
      products of the category will), "categories" (the sub categories of the 
-     category will be dsiplay) or "description" (the description field will 
+     category will be display) or "description" (the description field will 
      be displayed)
    * Now save the category
  
@@ -128,7 +128,7 @@ What's next?
 
 Now you can:
 
-   * add more catgories and products
+   * add more categories and products
    * add accessories and/or related products to your products
    * add variants
    * manage taxes

@@ -1,3 +1,5 @@
+.. index:: Property Group
+
 ===============
 Property Groups
 ===============

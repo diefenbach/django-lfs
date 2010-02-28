@@ -1,3 +1,5 @@
+.. index:: Order, Orders
+
 ======
 Orders
 ======
@@ -16,7 +18,7 @@ You can filter and navigate through the displayed orders:
 
 .. image:: /images/orders_navigation.*
 
-* With the page navigation you can navigate through all customers.
+* With the page navigation you can navigate through all orders.
 * To filter the orders by name just fill in the name field and click ``Submit``.
 * To filter the orders by state just select the state and click ``Submit``.
 * To filter the orders by date just fill in Start and End (YYYY-MM-DD) and 

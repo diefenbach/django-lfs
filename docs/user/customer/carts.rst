@@ -1,3 +1,5 @@
+.. index:: Cart
+
 =====
 Carts
 =====
