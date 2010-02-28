@@ -15,7 +15,8 @@ Overview
 Types
 =====
 
-There are three types of products:
+There are three types of products: ``product``, ``product with variants`` and 
+``variant``. There are described in more detail below.
 
 .. _product-product-label:
 
