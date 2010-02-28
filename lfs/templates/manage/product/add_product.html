@@ -18,14 +18,9 @@
 {% block section %}manage-product{% endblock %}
 
 {% block left_slot %}
-    <form>
-        <input type="text" id="products" />
-    </form>
-
     <div id="selectable-products">
         {{selectable_products}}
     </div>
-
 {% endblock %}
 
 {% block content %}
@@ -136,7 +131,8 @@
                     <input type="hidden" id="id_sub_type" name="sub_type" value="0">
 
                     <input type="submit"
-                           id="product-add-button" />
+                           id="product-add-button"
+                           value='{% trans "Add product" %}' />
                     {% if  request.META.HTTP_REFERER %}
                         <input type="button"
                                onclick="window.location='{{request.META.HTTP_REFERER}}'"
