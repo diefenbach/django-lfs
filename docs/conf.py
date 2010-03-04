@@ -16,7 +16,12 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.append(os.path.abspath('.'))
+sys.path.append(os.path.abspath("../../../lfs_project"))
+sys.path.append(os.path.abspath("../../../parts/lfs"))
+sys.path.append(os.path.abspath("../../../parts/lfs/lfs/core/utils"))
+sys.path.append(os.path.abspath("../../../parts/django"))
+sys.path.append(os.path.abspath("../../../parts/reviews"))
+sys.path.append(os.path.abspath("../../../eggs/django_paypal-0.1.2-py2.6.egg"))
 
 # -- General configuration -----------------------------------------------------
 

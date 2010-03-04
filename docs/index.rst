@@ -50,6 +50,7 @@ How-tos
    user/howtos/how_to_paypal.rst
    user/howtos/how_to_shipping_method
    user/howtos/how_to_payment_method
+   user/howtos/how_to_export_script
 
 Developers
 ==========
@@ -57,8 +58,10 @@ Developers
 API
 ---
 
-Coming soon
+.. toctree::
+   :maxdepth: 2
 
+   developer/api/core
 
 How-tos
 -------

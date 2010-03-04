@@ -16,7 +16,7 @@ Types
 =====
 
 There are three types of products: ``product``, ``product with variants`` and 
-``variant``. There are described in more detail below.
+``variant``. There are further described in more detail.
 
 .. _product-product-label:
 
