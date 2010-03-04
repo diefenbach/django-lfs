@@ -50,7 +50,6 @@ How-tos
    user/howtos/how_to_paypal.rst
    user/howtos/how_to_shipping_method
    user/howtos/how_to_payment_method
-   user/howtos/how_to_export_script
 
 Developers
 ==========
@@ -72,7 +71,8 @@ How-tos
 
    developer/howtos/how_to_add_own_templates.rst
    developer/howtos/how_to_add_own_payment_methods.rst
-
+   developer/howtos/how_to_export_product_script
+   
 Indices and tables
 ==================
 

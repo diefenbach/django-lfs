@@ -5,7 +5,7 @@ Export
 Overview
 ========
 
-Within this tab you can define exports of products. 
+Within this tab you can export flexible selection of products.
 
 Tabs
 ====

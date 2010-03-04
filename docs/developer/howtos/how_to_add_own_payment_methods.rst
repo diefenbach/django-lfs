@@ -6,7 +6,7 @@ In this tutorial you will learn how to add own payment methods.
 Create an application
 ----------------------
 
-First you have to create a default Django application.
+First you need to create a default Django application (or use an existing one).
 
 If you do not know how to do this, please refer to the excellent 
 `Django tutorial <http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_.
