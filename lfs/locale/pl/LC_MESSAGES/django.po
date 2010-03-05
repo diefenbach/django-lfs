@@ -224,22 +224,22 @@ msgstr "Treść"
 
 #: catalog/models.py:125 catalog/migrations/0001_initial.py:49
 msgid "Active formats"
-msgstr ""
+msgstr "Aktywne formaty"
 
 #: catalog/models.py:127 catalog/migrations/0001_initial.py:50
 #: core/models.py:126 core/migrations/0001_initial.py:36
 msgid "Product rows"
-msgstr ""
+msgstr "Wiersze produktu"
 
 #: catalog/models.py:128 catalog/migrations/0001_initial.py:51
 #: core/models.py:125 core/migrations/0001_initial.py:32
 msgid "Product cols"
-msgstr ""
+msgstr "Kolumny produktu"
 
 #: catalog/models.py:129 catalog/migrations/0001_initial.py:52
 #: core/models.py:127 core/migrations/0001_initial.py:33
 msgid "Category cols"
-msgstr ""
+msgstr "Kolumny kategorii"
 
 #: catalog/models.py:131 catalog/models.py:452
 msgid "Meta title"
