@@ -5,7 +5,6 @@ import urllib
 
 # django imports
 from django.conf import settings
-from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.utils import simplejson
@@ -19,21 +18,14 @@ from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
 from lfs.catalog.models import Category
 
-class LazyEncoder(simplejson.JSONEncoder):
-    """Encodes django's lazy i18n strings.
-    """
-    def default(self, obj):
-        if isinstance(obj, Promise):
-            return force_unicode(obj)
-        return obj
-
 def get_default_shop():
-    """Returns the default shop. At the moment this the shop with id == 1.
+    """Returns the default shop.
     """
     return lfs_get_object_or_404(Shop, pk=1)
 
 def lfs_quote(string, encoding="utf-8"):
-    """Encodes string to encoding before quoting.
+    """Encodes passed string to passed encoding before quoting with
+    urllib.quote().
     """
     return urllib.quote(string.encode(encoding))
 
@@ -48,7 +40,7 @@ def import_module(module):
     return module
 
 def set_message_to(response, msg):
-    """Sets cookie to given response with given message.
+    """Sets message cookie with passed message to passed response.
     """
     # We just keep the message two seconds.
     max_age = 2
@@ -60,8 +52,8 @@ def set_message_to(response, msg):
     return response
 
 def set_message_cookie(url, msg):
-    """Creates response object with given url and adds message cookie with passed
-    message.
+    """Returns a HttpResponseRedirect object with passed url and set cookie
+    ``message`` with passed message.
     """
     # We just keep the message two seconds.
     max_age = 2
@@ -74,8 +66,18 @@ def set_message_cookie(url, msg):
 
     return response
 
+def render_to_ajax_response(html=[], message=None):
+    """Encodes given html and message to JSON and returns a HTTP response.
+    """
+    result = simplejson.dumps(
+        { "message" : message, "html" : html }, cls = LazyEncoder)
+
+    return HttpResponse(result)
+
 def get_current_categories(request, object):
-    """Returns all current categories based on given request
+    """Returns all current categories based on given request. Current
+    categories are the current selected category and all parent categories of 
+    it.
     """
     if object and object.content_type == "category":
         parents = object.get_parents()
@@ -93,7 +95,7 @@ def get_current_categories(request, object):
     return current_categories
 
 def get_redirect_for(path):
-    """
+    """Returns redirect path for the passed path.
     """
     try:
         redirect = Redirect.objects.get(
@@ -104,7 +106,7 @@ def get_redirect_for(path):
         return redirect.new_path
 
 def set_redirect_for(old_path, new_path):
-    """
+    """Sets redirect path for the passed path.
     """
     try:
         redirect = Redirect.objects.get(site = settings.SITE_ID, old_path=old_path)
@@ -114,42 +116,35 @@ def set_redirect_for(old_path, new_path):
         redirect = Redirect.objects.create(
             site_id=settings.SITE_ID, old_path=old_path, new_path=new_path)
 
-def remove_redirect_for(old_path):
-    """
+def remove_redirect_for(path):
+    """Removes the redirect path for given path.
     """
     try:
-        redirect = Redirect.objects.get(
-            site =settings.SITE_ID, old_path=old_path)
+        redirect = Redirect.objects.get(site = settings.SITE_ID, old_path=path)
     except Redirect.DoesNotExist:
         return False
     else:
         redirect.delete()
         return True
 
-def render_to_ajax_response(html=[], message=None):
-    """Encodes given html and message to JSON and returns a HTTP response.
-    """
-    result = simplejson.dumps(
-        { "message" : message, "html" : html }, cls = LazyEncoder)
-
-    return HttpResponse(result)
-
 def set_category_levels():
-    """Creates category levels based on the position in hierarchy.
+    """Sets the category levels based on the position in hierarchy.
     """
     for category in Category.objects.all():
         category.level = len(category.get_parents()) + 1
         category.save()
 
 def get_start_day(date):
-    """Takes a string such as "2009-07-23" and returns a range of this day.
+    """Takes a string such as ``2009-07-23`` and returns datetime object of
+    this day.
     """
     year, month, day = date.split("-")
     start = datetime.datetime(int(year), int(month), int(day))
     return start
 
 def get_end_day(date):
-    """
+    """Takes a string such as ``2009-07-23`` and returns a datetime object with
+    last valid second of this day: 23:59:59.
     """
     year, month, day = date.split("-")
     end = datetime.datetime(int(year), int(month), int(day))
@@ -158,7 +153,8 @@ def get_end_day(date):
     return end
 
 def getLOL(objects, objects_per_row=3):
-    """Returns a list of list of given objects.
+    """Returns a list of list of the passed objects with passed objects per
+    row.
     """
     result = []
     row = []
@@ -172,6 +168,14 @@ def getLOL(objects, objects_per_row=3):
         result.append(row)
 
     return result
+
+class LazyEncoder(simplejson.JSONEncoder):
+    """Encodes django's lazy i18n strings.
+    """
+    def default(self, obj):
+        if isinstance(obj, Promise):
+            return force_unicode(obj)
+        return obj
 
 class CategoryTree(object):
     """Represents a category tree.

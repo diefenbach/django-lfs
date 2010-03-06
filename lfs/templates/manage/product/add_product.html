@@ -133,7 +133,8 @@
                     <input type="submit"
                            id="product-add-button"
                            value='{% trans "Add product" %}' />
-                    {% if  request.META.HTTP_REFERER %}
+
+                    {% if request.META.HTTP_REFERER %}
                         <input type="button"
                                onclick="window.location='{{request.META.HTTP_REFERER}}'"
                                value="{% trans 'Cancel' %}" />
