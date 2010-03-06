@@ -1090,7 +1090,7 @@ msgstr "Zahlungsweisen"
 #: templates/manage/criteria/width_criterion.html:10
 #: templates/manage/order/order_inline.html:173
 msgid "Payment method"
-msgstr "Zahlungsweisen"
+msgstr "Zahlungsweise"
 
 #: criteria/models/criteria.py:467
 msgid "Shipping methods"
