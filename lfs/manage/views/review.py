@@ -226,10 +226,8 @@ def delete_review(request, review_id):
     else:
         review.delete()
 
-    response = HttpResponseRedirect(reverse("lfs_manage_reviews"))
-    lfs.core.utils.set_message_to(response, _(u"Review has been deleted."))
-
-    return response
+    return set_message_cookie(
+        reverse("lfs_manage_reviews"), _(u"Review has been deleted."))    
 
 def set_state(request, review_id):
     """Sets the state for given review.
