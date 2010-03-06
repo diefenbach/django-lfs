@@ -98,6 +98,10 @@ def edit_category_data(request, category_id, template_name="manage/category/data
     else:
         message = _(u"Please correct the indicated errors.")
 
+    # Delete image
+    if request.POST.get("delete_image"):
+        category.image.delete()
+
     # Update category level
     category.level = len(category.get_parents()) + 1
     category.save()
