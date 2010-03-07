@@ -277,9 +277,9 @@ def address_inline(request, prefix, form):
                 initial.update({
                     "line1" : postal_address.line1,
                     "line2" : postal_address.line2,
-                    "line3" : postal_address.line3,
-                    "line4" : postal_address.line4,
-                    "line5" : postal_address.line5,
+                    "city" : postal_address.city,
+                    "state" : postal_address.state,
+                    "code" : postal_address.code,
                     "country" : postal_address.country.iso,
                 })
             else:
@@ -330,9 +330,9 @@ def save_postal_address(request, customer, prefix):
                 postal_address = customer_selected_address.postal_address
                 postal_address.line1 = request.POST.get(prefix + "-line1")
                 postal_address.line2 = request.POST.get(prefix + "-line2")
-                postal_address.line3 = request.POST.get(prefix + "-line3")
-                postal_address.line4 = request.POST.get(prefix + "-line4")
-                postal_address.line5 = request.POST.get(prefix + "-line5")
+                postal_address.city = request.POST.get(prefix + "-city")
+                postal_address.state = request.POST.get(prefix + "-state")
+                postal_address.code = request.POST.get(prefix + "-code")
                 postal_address.country = selected_country
                 postal_address.save()
                 postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST, instance=postal_address)
@@ -343,9 +343,9 @@ def save_postal_address(request, customer, prefix):
         postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST)
         postal_address, created = PostalAddress.objects.get_or_create(line1=request.POST.get(prefix + "-line1"),
                                                        line2=request.POST.get(prefix + "-line2"),
-                                                       line3=request.POST.get(prefix + "-line3"),
-                                                       line4=request.POST.get(prefix + "-line4"),
-                                                       line5=request.POST.get(prefix + "-line5"),
+                                                       city=request.POST.get(prefix + "-city"),
+                                                       state=request.POST.get(prefix + "-state"),
+                                                       code=request.POST.get(prefix + "-code"),
                                                        country=selected_country)
     if customer_selected_address is not None:
         if postal_address is not None:

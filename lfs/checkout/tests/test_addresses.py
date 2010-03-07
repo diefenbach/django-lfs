@@ -61,8 +61,8 @@ class CheckoutAddressesTestCase(TestCase):
         postal_address1 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 42",
-            line3 = "2342",
-            line4 = "Gotham City",
+            city = "Gotham City",
+            code = "2342",
             country = ie,
         )
 
@@ -74,8 +74,8 @@ class CheckoutAddressesTestCase(TestCase):
         postal_address2 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 43",
-            line3 = "2443",
-            line4 = "Smallville",
+            city = "Smallville",
+            code = "2443",
             country = us,
         )
 
@@ -173,9 +173,9 @@ class CheckoutAddressesTestCase(TestCase):
                          'invoice_lastname':'builder',
                          'invoice-line1': 'de company',
                          'invoice-line2': 'de street',
-                         'invoice-line3': 'de area',
-                         'invoice-line4': 'de town',
-                         'invoice-line5': 'cork',
+                         'invoice-city': 'de area',
+                         'invoice-state': 'de town',
+                         'invoice-code': 'cork',
                          'invoice-country':"IE",
                          'invoice_email': 'a@a.com',
                          'invoice_phone': '1234567',
@@ -183,9 +183,9 @@ class CheckoutAddressesTestCase(TestCase):
                          'shipping_lastname':'schmidt',
                          'shipping-line1': 'orianenberger strasse',
                          'shipping-line2': 'de town',
-                         'shipping-line3': 'stuff',
-                         'shipping-line4': 'BE',
-                         'shipping-line5': '12345',
+                         'shipping-city': 'stuff',
+                         'shipping-state': 'BE',
+                         'shipping-code': '12345',
                          'shipping-country':"DE",
                          'shipping_email': 'b@b.com',
                          'shipping_phone': '7654321',
