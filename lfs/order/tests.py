@@ -61,8 +61,8 @@ class OrderTestCase(TestCase):
         postal_address1 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 42",
-            line3 = "2342",
-            line4 = "Gotham City",
+            city = "Gotham City",
+            code = "2342",
             country = ie,
         )
 
@@ -75,8 +75,8 @@ class OrderTestCase(TestCase):
         postal_address2 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 43",
-            line3 = "2443",
-            line4 = "Smallville",
+            city = "Smallville",
+            code = "2443",
             country = us,
         )
 
@@ -147,16 +147,16 @@ class OrderTestCase(TestCase):
         self.assertEqual(order.shipping_lastname, "Doe")
         self.assertEqual(order.shipping_line1, "Doe Ltd.")
         self.assertEqual(order.shipping_line2, "Street 42")
-        self.assertEqual(order.shipping_line3, "2342")
-        self.assertEqual(order.shipping_line4, "Gotham City")
+        self.assertEqual(order.shipping_city, "Gotham City")
+        self.assertEqual(order.shipping_code, "2342")
         self.assertEqual(order.shipping_phone, "555-111111")
 
         self.assertEqual(order.invoice_firstname, "Jane")
         self.assertEqual(order.invoice_lastname, "Doe")
         self.assertEqual(order.invoice_line1, "Doe Ltd.")
         self.assertEqual(order.invoice_line2, "Street 43")
-        self.assertEqual(order.invoice_line3, "2443")
-        self.assertEqual(order.invoice_line4, "Smallville")
+        self.assertEqual(order.invoice_city, "Smallville")
+        self.assertEqual(order.invoice_code, "2443")
         self.assertEqual(order.invoice_phone, "666-111111")
 
         # Items

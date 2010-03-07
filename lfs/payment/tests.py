@@ -148,8 +148,8 @@ class PayPalPaymentTestCase(TestCase):
         country = Country.objects.get(iso="US")
         order = Order(invoice_firstname="bill", invoice_lastname="blah",
                       invoice_line1="bills house", invoice_line2="bills street",
-                      invoice_line3="bills town", invoice_line4="bills state",
-                      invoice_line5="bills zip code", invoice_country=country,
+                      invoice_city="bills town", invoice_state="bills state",
+                      invoice_code="bills zip code", invoice_country=country,
                       shipping_country=country, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()

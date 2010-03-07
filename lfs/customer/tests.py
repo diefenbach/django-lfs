@@ -62,8 +62,8 @@ class AddressTestCase(TestCase):
         postal_address1 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 42",
-            line3 = "2342",
-            line5 = "Gotham City",
+            city = "Gotham City",
+            code = "2342",
             country = country,
         )
 
@@ -75,9 +75,9 @@ class AddressTestCase(TestCase):
 
         postal_address2 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
-            line2 = "Street 43",
-            line3 = "2443",
-            line5 = "Smallville",
+            line2 = "Street 43",            
+            city = "Smallville",
+            code = "2443",
             country = country,
         )
 
@@ -162,8 +162,8 @@ class AddressTestCase(TestCase):
         # see if we can view the addresss page
         address_data = {'invoice_firstname': 'Joe', 'invoice_lastname': 'Bloggs',
                         'invoice-line1': 'de company name', 'invoice-line2': 'de street',
-                        'invoice-line3': 'Dallas', 'invoice-line4': 'TX',
-                        'invoice-line5': '84003', 'invoice-country': 'US',
+                        'invoice-city': 'Dallas', 'invoice-state': 'TX',
+                        'invoice-code': '84003', 'invoice-country': 'US',
                         'shipping-country': 'IE'}
         address_response = self.c.post(reverse('lfs_my_addresses'), address_data)
         
