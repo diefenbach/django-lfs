@@ -23,8 +23,10 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
     else:
         # Products
         query = Q(active=True) & \
-                Q(name__icontains=phrase) & \
-                Q(sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS))
+                Q(name__icontains=phrase) | \
+                Q(manufacturer__name__icontains=phrase) | \
+                Q(sku_manufacturer__icontains=phrase) & \
+                Q(sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
         
         temp = Product.objects.filter(query)
         total = len(temp)
@@ -50,8 +52,10 @@ def search(request, template_name="lfs/search/search_results.html"):
     
     # Products
     query = Q(active=True) & \
-            Q(name__icontains=phrase) & \
-            Q(sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS))
+            Q(name__icontains=phrase) | \
+            Q(manufacturer__name__icontains=phrase) | \
+            Q(sku_manufacturer__icontains=phrase) & \
+            Q(sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
     products = Product.objects.filter(query)
 
     # Sorting
