@@ -33,7 +33,12 @@ def get_cart_price(request, cart, total=False):
     return get_cart_costs(request, cart, total)["price"]
 
 def get_cart_costs(request, cart, total=False):
-    """Returns price and tax of the given cart.
+    """Returns a dictionary with price and tax of the given cart:
+
+        returns {
+            "price" : the cart's price,
+            "tax" : the cart's tax,
+        }
     """
     if cart is None:
         return {"price" : 0, "tax" : 0}
@@ -42,13 +47,16 @@ def get_cart_costs(request, cart, total=False):
     cart_costs = cache.get(cache_key)
 
     if cart_costs is None:
+
+        items = cart.items()
+
         cart_price = 0
         cart_tax = 0
-        for item in cart.items():
+        for item in items:
             cart_price += item.get_price()
             cart_tax += item.get_tax()
 
-        if total:
+        if len(items) > 0 and total:
             # Shipping
             shipping_method = shipping_utils.get_selected_shipping_method(request)
             shipping_costs = shipping_utils.get_shipping_costs(request, shipping_method)

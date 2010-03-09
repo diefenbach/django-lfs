@@ -37,6 +37,7 @@
          data="#category_{{ category.id }}">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Category' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#view">{% trans 'View' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="{% url lfs_load_products_tab category.id %}">{% trans 'Products' %}</a></li>            
             <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>            
             <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>            
@@ -44,6 +45,9 @@
     
         <div id="data">
             {{ data|safe }}
+        </div>
+        <div id="view">
+            {{ view|safe }}
         </div>
         <div id="seo">
             {{ seo|safe }}

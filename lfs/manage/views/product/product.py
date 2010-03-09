@@ -18,13 +18,14 @@ import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
-from lfs.catalog.settings import VARIANT, PRODUCT_TYPE_FORM_CHOICES
+from lfs.catalog.settings import VARIANT, PRODUCT_TYPE_FORM_CHOICES, PRODUCT_TEMPLATES
 from lfs.core.utils import LazyEncoder
 from lfs.manage.views.product.images import manage_images
 from lfs.manage.views.product.seo import manage_seo
 from lfs.manage.views.product.properties import manage_properties
 from lfs.manage.views.lfs_portlets import portlets_inline
 
+from lfs.utils.widgets import SelectImage
 # Forms
 class ProductSubTypeForm(ModelForm):
     """Form to change the sub type.
@@ -40,11 +41,14 @@ class ProductSubTypeForm(ModelForm):
 class ProductDataForm(ModelForm):
     """Form to add and edit master data of a product.
     """
+    def __init__(self,*args, **kwargs):
+        super(ProductDataForm, self).__init__(*args, **kwargs)
+        self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
+
     class Meta:
         model = Product
-        fields = ("active", "name", "slug", "sku", "price", "tax",
-            "short_description", "description", "for_sale", "for_sale_price")
-
+        fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "tax",
+            "short_description", "description", "for_sale", "for_sale_price", "static_block", "template")
     def clean(self):
         """
         """
@@ -54,18 +58,22 @@ class ProductDataForm(ModelForm):
                 lfs.core.utils.set_redirect_for(self.instance.get_absolute_url(), redirect_to)
             else:
                 lfs.core.utils.remove_redirect_for(self.instance.get_absolute_url())
-                
+
         return self.cleaned_data
 
 class VariantDataForm(ModelForm):
     """Form to add and edit master data of a variant.
     """
+    def __init__(self,*args, **kwargs):
+        super(VariantDataForm, self).__init__(*args, **kwargs)
+        self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
+
     class Meta:
         model = Product
-        fields = ("active", "active_name", "name", "slug", "active_sku", "sku",
+        fields = ("active", "active_name", "name", "slug", "active_sku", "sku", "sku_manufacturer",
             "active_price", "price", "active_short_description", "short_description", "active_description",
             "description", "for_sale", "for_sale_price", "active_for_sale", "active_for_sale_price",
-            "active_related_products")
+            "active_related_products", "active_static_block", "static_block", "template")
 
 class ProductStockForm(ModelForm):
     """Form to add and edit stock data of a product.
@@ -497,7 +505,6 @@ def _get_filtered_products(request):
     if price.find("-") != -1:
         s, e = price.split("-")
         products = products.filter(price__range = (s, e))
-
     category = product_filters.get("category", "")
     if category == "None":
         products = products.filter(categories__in = []).distinct()

@@ -17,6 +17,7 @@ from lfs.core.widgets.image import LFSImageInput
 from lfs.manage import utils as manage_utils
 from lfs.manage.views.categories.products import manage_products
 from lfs.manage.views.categories.seo import edit_seo
+from lfs.manage.views.categories.view import category_view
 from lfs.manage.views.categories.portlet import manage_categories_portlet
 from lfs.manage.views.lfs_portlets import portlets_inline
 
@@ -26,25 +27,22 @@ class CategoryForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(CategoryForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
-        
-        # If it is used as add form there is no instance.
+
         try:
             context = kwargs["instance"]
         except KeyError:
             context = None
-            
+
         self.fields["parent"].choices = _category_choices(context)
-        
+
     class Meta:
         model = Category
-        fields = ("name", "slug", "parent", "short_description", "description", 
-            "image", "active_formats", "content", "product_cols", "product_rows", 
-            "category_cols", "static_block", "position", 
-            "exclude_from_navigation", "show_all_products")
+        fields = ("name", "slug", "parent", "position", "short_description",
+            "description", "exclude_from_navigation", "image", "static_block", )
 
 @permission_required("manage_shop", login_url="/login/")
 def manage_categories(request):
-    """Dispatches to the first category or to the add category form if no 
+    """Dispatches to the first category or to the add category form if no
     category exists yet.
     """
     try:
@@ -53,10 +51,10 @@ def manage_categories(request):
         url = reverse("lfs_manage_add_top_category")
     else:
         url = reverse("lfs_manage_category", kwargs={"category_id" : category.id})
-        
+
     return HttpResponseRedirect(url)
 
-@permission_required("manage_shop", login_url="/login/")    
+@permission_required("manage_shop", login_url="/login/")
 def manage_category(request, category_id, template_name="manage/category/manage_category.html"):
     """Displays the form to manage the category with given category id.
     """
@@ -68,18 +66,19 @@ def manage_category(request, category_id, template_name="manage/category/manage_
         # "products" : manage_products(request, category.id),
         "data" : category_data(request, category_id),
         "seo" : edit_seo(request, category_id),
+        "view" : category_view(request, category_id),
         "portlets" : portlets_inline(request, category),
     }))
 
 @permission_required("manage_shop", login_url="/login/")
 def category_data(request, category_id, template_name="manage/category/data.html"):
-    """Displays the core data for the category_id with passed category_id. 
-    
+    """Displays the core data for the category_id with passed category_id.
+
     This is used as a part of the whole category form.
     """
     category = Category.objects.get(pk=category_id)
     form = CategoryForm(instance=category)
-    
+
     return render_to_string(template_name, RequestContext(request, {
         "category" : category,
         "form" : form,
@@ -98,41 +97,45 @@ def edit_category_data(request, category_id, template_name="manage/category/data
         message = _(u"Category data have been saved.")
     else:
         message = _(u"Please correct the indicated errors.")
-    
+
+    # Delete image
+    if request.POST.get("delete_image"):
+        category.image.delete()
+
     # Update category level
     category.level = len(category.get_parents()) + 1
     category.save()
     for child in category.get_all_children():
         child.level = len(child.get_parents()) + 1
         child.save()
-    
+
     url = reverse("lfs_manage_category", kwargs={"category_id" : category_id})
     return HttpResponseRedirect(url)
-    
-    # There is a problem with json, when uploading an image and returning the 
-    # form json encoded. This is only occurring when the image field is not 
+
+    # There is a problem with json, when uploading an image and returning the
+    # form json encoded. This is only occurring when the image field is not
     # empty.As a workaround we call this method as "normal" reauest (not ajax).
 
     # TODO: Investigate this further
-    
+
     # form_html = render_to_string(template_name, RequestContext(request, {
     #     "category" : category,
     #     "form" : form,
     # }))
-    # 
+    #
     # result = simplejson.dumps({
     #     "message" : message,
     #     "portlet" : manage_categories_portlet(request) }, cls = LazyEncoder)
-    # 
-    # return HttpResponse(result)    
+    #
+    # return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")    
+@permission_required("manage_shop", login_url="/login/")
 def add_category(request, category_id="", template_name="manage/category/add_category.html"):
     """Provides an add form and adds a new category to category with given id.
-    """ 
+    """
     if category_id == "":
         parent = None
-    else:    
+    else:
         try:
             parent = Category.objects.get(pk=category_id)
         except ObjectDoesNotExist:
@@ -154,9 +157,9 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
             return HttpResponseRedirect(url)
     else:
         form = CategoryForm(initial={"parent" : category_id })
-            
+
     return render_to_response(template_name, RequestContext(request, {
-        "categories_portlet" : manage_categories_portlet(request, category_id),    
+        "categories_portlet" : manage_categories_portlet(request, category_id),
         "category" : parent,
         "form" : form
     }))
@@ -167,7 +170,7 @@ def delete_category(request, id):
     """
     category = lfs_get_object_or_404(Category, pk=id)
     category.delete()
-    
+
     url = reverse("lfs_manage_categories")
     return HttpResponseRedirect(url)
 
@@ -197,20 +200,20 @@ def update_category(request, category_id):
                 category.parent = parent_category
                 category.position = i
                 category.save()
-        
+
         if parent_category is not None:
             manage_utils.update_category_positions(parent_category)
-    
+
     return HttpResponse("")
-    
+
 # Privates
 def _category_choices(context):
-    """Returns categories to be used as choices for the field parent.     
+    """Returns categories to be used as choices for the field parent.
     Note: context is the category for which the form is applied.
     """
     categories = [("", "-")]
-    for category in Category.objects.filter(parent = None):        
-        if context != category:        
+    for category in Category.objects.filter(parent = None):
+        if context != category:
             categories.append((category.id, category.name))
             _category_choices_children(categories, category, context)
     return categories
@@ -223,3 +226,4 @@ def _category_choices_children(categories, category, context, level=1):
         if context != category:
             categories.append((category.id, "%s %s" % ("-" * level, category.name)))
             _category_choices_children(categories, category, context, level+1)
+

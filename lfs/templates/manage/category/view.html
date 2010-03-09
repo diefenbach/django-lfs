@@ -1,0 +1,54 @@
+{% load i18n %}
+
+<h2>{% trans 'View' %}</h2>
+
+<form action="{% url lfs_manage_category_view category.id %}"
+      method="post"
+      class="category-data-form"
+      enctype="multipart/form-data">
+
+    {% include "manage/lfs_form.html" %}
+
+    <input value="{% trans 'Save' %}"
+           type="submit"
+           class="ajax-save-button"/>
+</form>
+<script>
+    $(function() {
+        update_form();
+
+        $("#id_active_formats").click(function() {
+            update_form();
+        });
+
+        $("#id_template").change(function() {
+            update_form();
+        });
+
+        function update_form() {
+            var template_name = $("#id_template").selected().attr("value");
+            if (template_name == "0") {
+                $("#id_category_cols").parents(".field").hide();
+
+                if ($("#id_active_formats:checked").val() == null) {
+                    $("#id_product_cols, #id_product_rows").parents(".field").hide();
+                }
+
+                else {
+                    $("#id_product_cols, #id_product_rows").parents(".field").show();
+                }
+            }
+            else {
+                $("#id_show_all_products, #id_product_cols, #id_product_rows").parents(".field").hide();
+
+                if ($("#id_active_formats:checked").val() == null) {
+                    $("#id_category_cols").parents(".field").hide();
+                }
+                else {
+                    $("#id_category_cols").parents(".field").show();
+
+                }
+            }
+        }
+    })
+</script>

@@ -84,3 +84,29 @@ PROPERTY_STEP_TYPE_CHOICES = (
     (PROPERTY_STEP_TYPE_FIXED_STEP,   _(u"Fixed step")),
     (PROPERTY_STEP_TYPE_MANUAL_STEPS, _(u"Manual steps")),
 )
+
+
+CAT_PRODUCT_PATH   = "lfs/catalog/categories/product"   # category with products
+CAT_CATEGORY_PATH  = "lfs/catalog/categories/category"  # category with subcategories
+PRODUCT_PATH       = "lfs/catalog/products"   # product templates
+IMAGES_PATH        = "/media/lfs/icons" # Path to template preview images
+
+# template configuration for category display
+CATEGORY_TEMPLATES = (
+    (0,{"file":"%s/%s" % (CAT_PRODUCT_PATH ,"default.html"),
+        "image":IMAGES_PATH+"/product_default.png",
+        "name":_(u"Category with products"),
+        }),
+    (1,{"file":"%s/%s" % (CAT_CATEGORY_PATH ,"default.html"),
+        "image":IMAGES_PATH+"/category_square.png",
+        "name":_(u"Category with subcategories"),		        
+        }),
+)
+
+# template configuration for product display    
+PRODUCT_TEMPLATES = (
+    (0,{"file":"%s/%s" % (PRODUCT_PATH ,"product_inline.html"),
+        "image":IMAGES_PATH+"/product_default.png",
+        "name":_(u"Default template")
+        },),
+) 
