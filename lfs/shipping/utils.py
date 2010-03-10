@@ -3,14 +3,15 @@ from datetime import datetime
 
 # django imports
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 
 # lfs imports
+import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import Product
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
-from lfs.core.utils import get_default_shop
 from lfs.criteria import utils as criteria_utils
 from lfs.customer import utils as customer_utils
 from lfs.shipping.models import ShippingMethod
@@ -169,7 +170,7 @@ def get_selected_shipping_country(request):
         elif customer.selected_country:
             return customer.selected_country
 
-    return get_default_shop().default_country
+    return lfs.core.utils.get_default_shop().default_country
 
 def get_shipping_costs(request, shipping_method):
     """Returns a dictionary with the shipping price and tax for the passed

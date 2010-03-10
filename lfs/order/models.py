@@ -23,13 +23,18 @@ def get_unique_id_str():
 class Order(models.Model):
     """An order is created when products have been sold.
 
-    Parameters:
-    ===========
+    **Parameters**:
 
-    - voucher_number, voucher_value, voucher_tax
-    
-        Storing this information here assures that we have it all time, even 
+    voucher_number, voucher_value, voucher_tax
+
+        Storing this information here assures that we have it all time, even
         when the involved voucher will be deleted.
+
+    requested_delivery_date
+        a buyer requested delivery date (e.g. for a florist to deliver flowers on a specific date)
+
+    pay_link
+        A link to re-pay the order (e.g. for PayPal)
 
     """
     user = models.ForeignKey(User, verbose_name=_(u"User"), blank=True, null=True)
@@ -85,10 +90,9 @@ class Order(models.Model):
     voucher_tax = models.FloatField(_(u"Voucher tax"), default=0.0)
 
     message = models.TextField(_(u"Message"), blank=True)
+    pay_link = models.TextField(_(u"pay_link"), blank=True)
 
     uuid = models.CharField(max_length=50, editable=False,unique=True, default=get_unique_id_str)
-    
-    # a buyer requested delivery date (e.g. for a florist to deliver flowers on a specific date)
     requested_delivery_date = models.DateTimeField(_(u"Delivery Date"), null=True, blank=True)
 
     class Meta:
@@ -100,10 +104,7 @@ class Order(models.Model):
     def get_pay_link(self):
         """Returns a pay link for the selected payment method.
         """
-        if self.payment_method.id == PAYPAL:
-            return lfs.payment.utils.create_paypal_link_for_order(self)
-
-        return None
+        return self.pay_link
 
     def get_name(self):
         order_name = ""

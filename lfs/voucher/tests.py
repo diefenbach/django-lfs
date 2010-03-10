@@ -192,7 +192,7 @@ class VoucherTestCase(TestCase):
         """
         # True
         self.v1.start_date = datetime.date(2009, 1, 1)
-        self.v1.end_date = datetime.date(2009, 12, 31)
+        self.v1.end_date = datetime.date(2999, 12, 31)
         self.v1.active = True
         self.v1.used = False
         self.v1.effective_from = 0

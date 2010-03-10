@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
-
+from django import forms
 # lfs imports
 import lfs.caching.utils
 import lfs.core.utils
@@ -44,4 +44,6 @@ def update_effective_price(request):
         url = reverse("lfs_manage_utils"),
         msg = _(u"Effective prices have been set."),
     )
+        
+
         

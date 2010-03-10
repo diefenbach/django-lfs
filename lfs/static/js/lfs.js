@@ -224,14 +224,14 @@ $(function() {
         });
     })
 
-    if ($("#payment-method-6:checked").val() != null) {
+    if ($(".payment-method-type-2:checked").val() != null) {
         $("#credit-card").show();
     }
     else {
         $("#credit-card").hide();
     }
 
-    if ($("#payment-method-1:checked").val() != null) {
+    if ($(".payment-method-type-1:checked").val() != null) {
         $("#bank-account").show();
     }
     else {
@@ -239,13 +239,13 @@ $(function() {
     }
 
     $(".payment-methods").livequery("click", function() {
-        if ($("#payment-method-1:checked").val() != null) {
+        if ($(".payment-method-type-1:checked").val() != null) {
             $("#bank-account").slideDown("fast");
         }
         else {
             $("#bank-account").slideUp("fast");
         }
-        if ($("#payment-method-6:checked").val() != null) {
+        if ($(".payment-method-type-2:checked").val() != null) {
             $('#credit-card').slideDown("fast");
         }
         else {

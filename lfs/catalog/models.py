@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 import lfs.catalog.utils
 from lfs.core.fields.thumbs import ImageWithThumbsField
 from lfs.core.managers import ActiveManager
-from lfs.catalog.settings import ACTIVE_FOR_SALE_CHOICES
+from lfs.catalog.settings import ACTIVE_FOR_SALE_CHOICES, CONTENT_CATEGORIES
 from lfs.catalog.settings import ACTIVE_FOR_SALE_STANDARD
 from lfs.catalog.settings import ACTIVE_FOR_SALE_YES
 from lfs.catalog.settings import PRODUCT_TYPE_CHOICES
@@ -38,8 +38,13 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_CHOICES
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_AUTOMATIC
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
+from lfs.catalog.settings import CATEGORY_TEMPLATES
+from lfs.catalog.settings import PRODUCT_TEMPLATES
+from lfs.catalog.settings import CAT_CATEGORY_PATH
+
 from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
+from lfs.manufacturer.models import Manufacturer
 
 def get_unique_id_str():
     return str(uuid.uuid4())
@@ -111,6 +116,10 @@ class Category(models.Model):
         - level
            The level of the category within the category hierachie, e.g. if it
            is a top level category the level is 1.
+
+        - template
+           Sets the template which renders the category view. If left to None, default template is used.
+
     """
     name = models.CharField(_(u"Name"), max_length=50)
     slug = models.SlugField(_(u"Slug"),unique=True)
@@ -128,7 +137,7 @@ class Category(models.Model):
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
 
     static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")
-    content = models.IntegerField(_(u"Content"), default=CONTENT_PRODUCTS, choices=CONTENT_CHOICES)
+    template = models.PositiveSmallIntegerField(_(u"Category template"), max_length=400, blank=True, null=True, choices=CATEGORY_TEMPLATES)
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
 
     product_rows  = models.IntegerField(_(u"Product rows"), default=3)
@@ -336,6 +345,26 @@ class Category(models.Model):
         import lfs.core.utils
         return self.parent or lfs.core.utils.get_default_shop()
 
+
+    def get_template_name(self):
+        """method to return the path of the category template
+        """
+        if self.template != None:
+            id = int(self.template)
+            return CATEGORY_TEMPLATES[id][1]["file"]
+
+        return None
+
+    def get_content(self):
+        """try to find out which type of content the template is rendering,
+        depending on its path.
+        """
+        if self.get_template_name() == None:
+           return CONTENT_PRODUCTS
+        if self.get_template_name().startswith(CAT_CATEGORY_PATH): # do we have category - templates
+           return CONTENT_CATEGORIES
+        return CONTENT_PRODUCTS
+
 class Product(models.Model):
     """A product is sold within a shop.
 
@@ -425,6 +454,9 @@ class Product(models.Model):
         - tax
             Tax rate of the product.
 
+        - static_block
+            A static block which has been assigned to the product.
+
         - sub_type
             Sub type of the product. At the moment that is standard, product with
             variants, variant.
@@ -447,6 +479,9 @@ class Product(models.Model):
             
         - supplier
             The supplier of the product
+
+        - template
+            Sets the template, which renders the product content. If left to None, default template is used.
 
         - uid
            The unique id of the product
@@ -488,6 +523,8 @@ class Product(models.Model):
     manage_stock_amount = models.BooleanField(_(u"Manage stock amount"), default=True)
     stock_amount = models.FloatField(_(u"Stock amount"), default=0)
 
+    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="products")
+
     # Dimension
     weight = models.FloatField(_(u"Weight"), default=0.0)
     height = models.FloatField(_(u"Height"), default=0.0)
@@ -510,6 +547,7 @@ class Product(models.Model):
     active_name = models.BooleanField(_(u"Active name"), default=False)
     active_sku = models.BooleanField(_(u"Active SKU"), default=False)
     active_short_description = models.BooleanField(_(u"Active short description"), default=False)
+    active_static_block = models.BooleanField(_(u"Active static bock"), default=False)
     active_description = models.BooleanField(_(u"Active description"), default=False)
     active_price = models.BooleanField(_(u"Active price"), default=False)
     active_for_sale = models.PositiveSmallIntegerField(_("Active for sale"), choices=ACTIVE_FOR_SALE_CHOICES, default=ACTIVE_FOR_SALE_STANDARD)
@@ -521,6 +559,11 @@ class Product(models.Model):
     active_meta_description = models.BooleanField(_(u"Active meta description"), default=False)
     active_meta_keywords = models.BooleanField(_(u"Active meta keywords"), default=False)
     active_dimensions = models.BooleanField(_(u"Active dimensions"), default=False)
+    template = models.PositiveSmallIntegerField(_(u"Product template"), blank=True, null=True, max_length=400, choices=PRODUCT_TEMPLATES)
+
+    # Manufacturer
+    sku_manufacturer = models.CharField(blank=True, max_length=100)
+    manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True, related_name="products")
 
     objects = ActiveManager()
 
@@ -925,13 +968,10 @@ class Product(models.Model):
         related_products = cache.get(cache_key)
 
         if related_products is None:
-
             if self.is_variant() and not self.active_related_products:
-                related_products = self.parent.related_products.exclude(
-                    sub_type=PRODUCT_WITH_VARIANTS)
+                related_products = self.parent.related_products.all()
             else:
-                related_products = self.related_products.exclude(
-                    sub_type=PRODUCT_WITH_VARIANTS)
+                related_products = self.related_products.all()
 
             cache.set(cache_key, related_products)
 
@@ -950,6 +990,24 @@ class Product(models.Model):
                 return self.variants.filter(active=True)[0]
             except IndexError:
                 return None
+
+    def get_static_block(self):
+        """Returns the static block of the product. Takes care whether the
+        product is a variant and meta description are active or not.
+        """
+        cache_key = "product-static-block-%s" % self.id
+        block = cache.get(cache_key)
+        if block is not None:
+            return block
+
+        if self.is_variant() and not self.active_static_block:
+            block = self.parent.static_block
+        else:
+            block = self.static_block
+
+        cache.set(cache_key, block)
+
+        return block
 
     def get_variants(self):
         """Returns the variants of the product.
@@ -1076,7 +1134,14 @@ class Product(models.Model):
                 return self.categories.all()[0]
             except:
                 return None
-
+    def get_template_name(self):
+        """
+        method to return the path of the product template
+        """
+        if self.template != None:
+            id = int(self.template)
+            return PRODUCT_TEMPLATES[id][1]["file"]
+        return None
 
 class ProductAccessories(models.Model):
     """Represents the relationship between products and accessories.

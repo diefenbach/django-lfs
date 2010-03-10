@@ -32,7 +32,7 @@
                        value="{{ redirect_to }}" />
             </div>
         </div>
-        
+
         <div class="field">
             <div class="label">
                 {% if product.is_variant %}
@@ -96,6 +96,23 @@
                     {% if product.is_variant %}
                         {{ product.parent.sku }}
                     {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.sku_manufacturer.label_tag }}:
+            </div>
+
+            {% if form.sku.errors %}
+                <div class="error">
+                    {{ form.sku_manufacturer }}
+                    {{ form.sku_manufacturer.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.sku_manufacturer }}
                 </div>
             {% endif %}
         </div>
@@ -230,6 +247,41 @@
             {% endif %}
         </div>
 
+        <div class="field">
+            <div class="label">
+                {% if product.is_variant %}
+                    {{ form.active_static_block }}
+                {% endif %}
+                {{ form.static_block.label_tag }}:
+            </div>
+
+            {% if form.static_block.errors %}
+                <div class="error">
+                    {{ form.static_block }}
+                    {{ form.static_block.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.static_block }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.template.label_tag }}:
+            </div>
+            {% if form.template.errors %}
+                <div class="error">
+                    {{ form.template }}
+                    {{ form.template.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.template }}
+                </div>
+            {% endif %}
+        </div>
         <input type="submit"
                value="{% trans 'Save data' %}"
                id="product-data-save-button" />

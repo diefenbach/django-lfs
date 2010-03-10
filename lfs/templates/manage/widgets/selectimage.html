@@ -1,0 +1,22 @@
+{% load i18n %}
+
+<table>
+    <tr>
+        <td>
+            <select onchange ="document.getElementById('{{selectimageid}}').src=this.options[this.selectedIndex].title" {{ finalattrs|safe }}>
+                {% for id, urls in choices %}
+                    {% with id|stringformat:"s" as idstring %}
+                        {% ifequal id currentvalue %}
+                            <option value="{{ id }}" title="{{urls.image}}" selected="selected">{{urls.name}}</option>
+                        {% else %}
+                            <option value="{{ id }}" title="{{urls.image}}">{{urls.name}}</option>
+                        {% endifequal %}
+                    {% endwith %}
+                {% endfor %}
+            </select>
+        </td>
+        <td>
+            <img src="{{imageurl}}" id="{{selectimageid}}">
+        </td>
+    </tr>
+</table>

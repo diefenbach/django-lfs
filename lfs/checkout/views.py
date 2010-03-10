@@ -15,6 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs.core.utils
 import lfs.order.utils
+import lfs.payment.settings
 import lfs.payment.utils
 import lfs.shipping.utils
 import lfs.voucher.utils
@@ -25,7 +26,8 @@ from lfs.checkout.settings import CHECKOUT_TYPE_AUTH
 from lfs.checkout.settings import INVOICE_PREFIX, SHIPPING_PREFIX
 from lfs.core.settings import LFS_ADDRESS_L10N
 from lfs.customer import utils as customer_utils
-from lfs.customer.models import BankAccount, Address
+from lfs.customer.models import Address
+from lfs.customer.models import BankAccount
 from lfs.customer.forms import RegisterForm
 from lfs.customer.views import address_inline, save_postal_address
 from lfs.payment.models import PaymentMethod
@@ -190,7 +192,16 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
     if request.method == "POST":
         form = checkout_form(request.POST)
 
-        if form.is_valid():
+        toc = True
+                
+        if shop.confirm_toc:
+            if not request.POST.has_key("confirm_toc"):
+                toc = False
+                if form._errors is None:
+                    form._errors = {}
+                form._errors["confirm_toc"] = _(u"Please confirm our terms and conditions")
+
+        if toc and form.is_valid():
             # save invoice details
             customer.selected_invoice_address.firstname = request.POST.get("invoice_firstname")
             customer.selected_invoice_address.lastname = request.POST.get("invoice_lastname")
@@ -218,42 +229,31 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                     form._errors["shipping-address"] = ErrorList([_(u"Invalid shipping address")])
                 else:
                     # Payment method
-                    customer.selected_payment_method_id = request.POST.get("payment_method")
+					customer.selected_payment_method_id = request.POST.get("payment_method")
 
-                    # 1 = Direct Debit
-                    if customer.selected_payment_method_id is not None:
-                        if int(customer.selected_payment_method_id) == DIRECT_DEBIT:
-                            bank_account = BankAccount.objects.create(
-                                account_number = form.cleaned_data.get("account_number"),
-                                bank_identification_code = form.cleaned_data.get("bank_identification_code"),
-                                bank_name = form.cleaned_data.get("bank_name"),
-                                depositor = form.cleaned_data.get("depositor"),
-                            )
+					if int(form.data.get("payment_method")) == DIRECT_DEBIT:
+					    bank_account = BankAccount.objects.create(
+					        account_number = form.cleaned_data.get("account_number"),
+					        bank_identification_code = form.cleaned_data.get("bank_identification_code"),
+					        bank_name = form.cleaned_data.get("bank_name"),
+					        depositor = form.cleaned_data.get("depositor"),
+					    )
 
-                            customer.selected_bank_account = bank_account
+					    customer.selected_bank_account = bank_account
 
-                    # Save the selected information to the customer
-                    customer.save()
+					# Save the selected information to the customer
+					customer.save()
 
-                    # process the payment method ...
-                    result = lfs.payment.utils.process_payment(request)
+					# process the payment method ...
+					result = lfs.payment.utils.process_payment(request)
 
-                    payment_method = lfs.payment.utils.get_selected_payment_method(request)
-
-                    # Only if the payment is successful we create the order out of the
-                    # cart.
-                    if result.get("success") == True:
-                        order = lfs.order.utils.add_order(request)
-
-                        # TODO: Get rid of these payment specific payment stuff. This
-                        # should be within payment utils.
-                        if payment_method.id == PAYPAL and settings.LFS_PAYPAL_REDIRECT:
-                            return HttpResponseRedirect(order.get_pay_link())
-                        else:
-                            return HttpResponseRedirect(result.get("next-url"))
-                    else:
-                        if result.has_key("message"):
-                            form._errors[result.get("message-key")] = result.get("message")
+					next_url = None
+					if result["accepted"] == True:
+					    return HttpResponseRedirect(
+					        result.get("next-url", reverse("lfs_thank_you")))
+					else:
+					    if result.has_key("message"):
+					        form._errors[result.get("message-position")] = result.get("message")
 
         else: # form is not valid
             # save invoice details
@@ -388,7 +388,6 @@ def payment_inline(request, form, template_name="lfs/checkout/payment_inline.htm
         selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
 
     valid_payment_methods = lfs.payment.utils.get_valid_payment_methods(request)
-    display_bank_account = DIRECT_DEBIT in [m.id for m in valid_payment_methods]
 
     return render_to_string(template_name, RequestContext(request, {
         "payment_methods" : valid_payment_methods,
@@ -410,7 +409,6 @@ def shipping_inline(request, template_name="lfs/checkout/shipping_inline.html"):
         "shipping_methods" : shipping_methods,
         "selected_shipping_method" : selected_shipping_method,
     }))
-
 
 def check_voucher(request):
     """

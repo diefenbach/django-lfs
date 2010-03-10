@@ -51,6 +51,22 @@ class DisplayTypeForm(ModelForm):
         model = Product
         fields = ("variants_display_type", )
 
+class DefaultVariantForm(ModelForm):
+    """Form to edit the default variant.
+    """
+    def __init__(self, *args, **kwargs):
+        super(DefaultVariantForm, self).__init__(*args, **kwargs)
+        instance = kwargs.get("instance")
+
+        choices = [(None, "------")]
+        choices.extend([(v.id, "%s (%s)" % (v.get_name(), v.variant_position)) for v in instance.variants.all()])
+
+        self.fields["default_variant"].choices = choices
+
+    class Meta:
+        model = Product
+        fields = ("default_variant", )
+
 @permission_required("manage_shop", login_url="/login/")
 def manage_variants(request, product_id, as_string=False, template_name="manage/product/variants.html"):
     """Manages the variants of a product.
@@ -61,6 +77,7 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
     property_option_form = PropertyOptionForm()
     variant_simple_form = ProductVariantSimpleForm()
     display_type_form = DisplayTypeForm(instance=product)
+    default_variant_form = DefaultVariantForm(instance=product)
 
     # TODO: Delete cache when delete options
     cache_key = "manage-properties-variants-%s" % product_id
@@ -123,6 +140,7 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
         "property_form" : property_form,
         "variant_simple_form" : variant_simple_form,
         "display_type_form" : display_type_form,
+        "default_variant_form" : default_variant_form,
     }))
 
     if as_string:
@@ -317,6 +335,9 @@ def update_variants(request, product_id):
                 except (IndexError, ObjectDoesNotExist):
                     continue
                 else:
+                    if product.default_variant == variant:
+                        product.default_variant == None
+                        product.save()
                     variant.delete()
     elif action == "update":
         for key, value in request.POST.items():
@@ -389,6 +410,21 @@ def edit_sub_type(request, product_id):
     if form.is_valid():
         product.variants_display_type = request.POST.get("variants_display_type")
         product.save()
+
+    # Send a signal to update cache
+    product_changed.send(product)
+
+    return HttpResponse(manage_variants(request, product_id))
+
+@permission_required("manage_shop", login_url="/login/")
+def update_default_variant(request, product_id):
+    """Updates the default variant of the product with passed product_id
+    """
+    product = Product.objects.get(pk=product_id)
+
+    form = DefaultVariantForm(instance=product, data=request.POST)
+    if form.is_valid():
+        form.save()
 
     # Send a signal to update cache
     product_changed.send(product)

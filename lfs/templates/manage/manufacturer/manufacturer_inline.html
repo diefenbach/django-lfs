@@ -1,0 +1,35 @@
+<ul style="list-style-type: none">
+    {% for category in categories %}
+        <li class="category {{ category.klass }}"
+            data="{% url lfs_manufacturer_category_state manufacturer_id category.id %}">
+            <input id="factory-category-input-{{ category.id }}"
+                   class="export-category-input {{ category.klass }}"
+                   type="checkbox"
+                   data="{% url lfs_manufacturer_edit_category manufacturer_id category.id %}"
+                   {% if category.checked %}checked="checked"{% endif %} />
+
+            <a class="category-ajax-link collapsed"
+               id="{{ category.id }}"
+               href="{% url lfs_manufacturer_inline manufacturer_id category.id %}">
+                (C) {{ category.name }}
+            </a>
+
+            <span class="category-state" id="category-state-{{ category.id }}">
+                {% ifequal category.klass "half" %}(1/2){% endifequal %}
+            </span>
+            <div id="sub-categories-{{ category.id }}"></div>
+        </li>
+    {% endfor %}
+    {% for product in products %}
+        <li>
+            <input class="export-product-input"
+                   type="checkbox"
+                   data = "{% url lfs_manufacturer_edit_product manufacturer_id product.id %}"
+                   {% if product.checked %}checked="checked"{% endif %} />
+            <a class="product-ajax-link"
+               id="product-{{ product.id }}">
+                ({{ product.type }}) {{ product.name }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
