@@ -4,6 +4,19 @@ function popup(url, w, h) {
     w.focus();
 }
 
+// Update checkout
+var update_checkout = function() {
+    var data = $(".checkout-form").ajaxSubmit({
+        url : $(".checkout-form").attr("data"),
+        "success" : function(data) {
+            var data = JSON.parse(data);
+            $("#cart-inline").html(data["cart"]);
+            $("#shipping-inline").html(data["shipping"]);
+            $("#payment-inline").html(data["payment"]);
+        }
+    });
+}
+
 $(function() {
 
     // Delay plugin taken from ###############################################
@@ -252,19 +265,6 @@ $(function() {
             $('#credit-card').slideUp("fast");
         }
     })
-
-    // Update checkout
-    var update_checkout = function() {
-        var data = $(".checkout-form").ajaxSubmit({
-            url : $(".checkout-form").attr("data"),
-            "success" : function(data) {
-                var data = JSON.parse(data);
-                $("#cart-inline").html(data["cart"]);
-                $("#shipping-inline").html(data["shipping"]);
-                $("#payment-inline").html(data["payment"]);
-            }
-        });
-    }
 
     $(".update-checkout").livequery("click", function() {
         update_checkout()
