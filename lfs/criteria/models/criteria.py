@@ -1,4 +1,5 @@
 # django imports
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from django.db import models
@@ -7,6 +8,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # lfs imports
+import lfs.core.utils
 from lfs import shipping
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Country
@@ -714,3 +716,56 @@ class WidthCriterion(models.Model, Criterion):
         """Returns the value of the criterion.
         """
         return self.width
+
+class DistanceCriterion(models.Model, Criterion):
+    """
+    """
+    operator = models.PositiveIntegerField(_(u"Operator"), blank=True, null=True, choices=NUMBER_OPERATORS)
+    distance = models.FloatField(_(u"Distance"), default=0.0)
+    module = models.CharField(blank=True, max_length=100)
+
+    def __unicode__(self):
+        return "Distance: %s %s" % (self.get_operator_display(), self.distance)
+
+    @property
+    def content_type(self):
+        """Returns the content_type of the criterion as lower string.
+
+        This is for instance used to select the appropriate form for the
+        criterion.
+        """
+        return u"distance"
+
+    @property
+    def name(self):
+        """Returns the descriptive name of the criterion.
+        """
+        return _(u"Distance")
+
+    def is_valid(self, request, product=None):
+        """Returns True if the criterion is valid.
+        """
+        try:
+            m = lfs.core.utils.import_module(settings.LFS_DISTANCE_MODULE)
+            current_distance = m.get_distance(request)
+        except ImportError:
+            current_distance = 0
+
+        if self.operator == LESS_THAN and (current_distance < self.distance):
+            return True
+        if self.operator == LESS_THAN_EQUAL and (current_distance <= self.distance):
+            return True
+        if self.operator == GREATER_THAN and (current_distance > self.distance):
+            return True
+        if self.operator == GREATER_THAN_EQUAL and (current_distance >= self.distance):
+            return True
+        if self.operator == EQUAL and (current_distance == self.distance):
+            return True
+
+        return False
+
+    @property
+    def value(self):
+        """Returns the value of the criterion.
+        """
+        return self.distance
