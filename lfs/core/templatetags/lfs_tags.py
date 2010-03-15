@@ -355,6 +355,29 @@ def menu(context):
         "MEDIA_URL" : context.get("MEDIA_URL"),
     }
 
+class TopLevelCategory(Node):
+    """Calculates the current top level category.
+    """
+    def render(self, context):
+        request = context.get("request")
+        obj = context.get("product") or context.get("category")
+        
+        top_level_category = lfs.catalog.utils.get_current_top_category(request, obj)
+        context["top_level_category"] = top_level_category.name
+        return ''
+
+def do_top_level_category(parser, token):
+    """Calculates the current top level category.
+    """
+    bits = token.contents.split()
+    len_bits = len(bits)
+    if len_bits != 1:
+        raise TemplateSyntaxError(_('%s tag needs no argument') % bits[0])
+
+    return TopLevelCategory()
+
+register.tag('top_level_category', do_top_level_category)
+    
 class CartInformationNode(Node):
     """
     """
