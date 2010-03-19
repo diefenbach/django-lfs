@@ -14,12 +14,12 @@ from lfs.catalog.settings import ACTIVE_FOR_SALE_CHOICES, CONTENT_CATEGORIES
 from lfs.catalog.settings import ACTIVE_FOR_SALE_STANDARD
 from lfs.catalog.settings import ACTIVE_FOR_SALE_YES
 from lfs.catalog.settings import PRODUCT_TYPE_CHOICES
+from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import VARIANT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
 from lfs.catalog.settings import CONTENT_PRODUCTS
-from lfs.catalog.settings import CONTENT_CHOICES
 from lfs.catalog.settings import LIST
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_CHOICES
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_SINGULAR
@@ -31,6 +31,7 @@ from lfs.catalog.settings import PROPERTY_TYPE_CHOICES
 from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD
 from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
+from lfs.catalog.settings import PROPERTY_INPUT_FIELD
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_CHOICES
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_AUTOMATIC
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
@@ -1078,6 +1079,11 @@ class Product(models.Model):
         """
         return self.sub_type == STANDARD_PRODUCT
 
+    def is_configurable_product(self):
+        """Returns True if product is configurable product.
+        """
+        return self.sub_type == CONFIGURABLE_PRODUCT
+
     def is_product_with_variants(self):
         """Returns True if product is product with variants.
         """
@@ -1188,27 +1194,47 @@ class Property(models.Model):
 
     A property belongs to exactly one group xor product.
 
-    Parameters:
-        - groups, product:
-            The group or product it belongs to. A property can belong to several
-            groups and/or to one product.
-        - name:
-            Is displayed within forms.
-        - position:
-            The position of the property within a product.
-        - filterable:
-            If True the property is used for filtered navigation.
-        - display_no_results
-            If True filter ranges with no products will be displayed. Otherwise
-            they will be removed.
-        - unit:
-            Something like cm, mm, m, etc.
-        - local
-            If True the property belongs to exactly one product
-        - type
-           char field, number field or select field
-        - step
-           manuel step for filtering
+    **Parameters**:
+    groups, product:
+        The group or product it belongs to. A property can belong to several
+        groups and/or to one product.
+
+    name:
+        Is displayed within forms.
+
+    position:
+        The position of the property within a product.
+
+    filterable:
+        If True the property is used for filtered navigation.
+
+    display_no_results
+        If True filter ranges with no products will be displayed. Otherwise
+        they will be removed.
+
+    unit:
+        Something like cm, mm, m, etc.
+
+    local
+        If True the property belongs to exactly one product
+
+    type
+       char field, number field or select field
+
+    step
+       manuel step for filtering
+
+    price
+        The price of the property. Only used for configurable products.
+        
+    unit_min
+        The minimal unit of the property the shop customer can enter.
+
+    unit_max
+        The maximal unit of the property the shop customer can enter.
+
+    unit_step
+        The step width the shop customer can edit.
     """
     name = models.CharField( _(u"Name"), max_length=100)
     groups = models.ManyToManyField(PropertyGroup, verbose_name=_(u"Group"), blank=True, null=True, through="GroupsPropertiesRelation", related_name="properties")
@@ -1220,6 +1246,12 @@ class Property(models.Model):
     filterable = models.BooleanField(default=True)
     display_no_results = models.BooleanField(_(u"Display no results"), default=False)
     type = models.PositiveSmallIntegerField(_(u"Type"), choices=PROPERTY_TYPE_CHOICES, default=PROPERTY_TEXT_FIELD)
+    price = models.FloatField(_(u"Price"), blank=True, null=True)
+    
+    # Number input field
+    unit_min = models.FloatField(_(u"Min"), blank=True, null=True)
+    unit_max = models.FloatField(_(u"Max"), blank=True, null=True)
+    unit_step = models.FloatField(_(u"Step"), blank=True, null=True)
 
     step_type = models.PositiveSmallIntegerField(_(u"Step type"), choices=PROPERTY_STEP_TYPE_CHOICES, default=PROPERTY_STEP_TYPE_AUTOMATIC)
     step = models.IntegerField(_(u"Step"), blank=True, null=True)
@@ -1244,6 +1276,10 @@ class Property(models.Model):
     @property
     def is_number_field(self):
         return self.type == PROPERTY_NUMBER_FIELD
+
+    @property
+    def is_input_field(self):
+        return self.type == PROPERTY_INPUT_FIELD
 
     @property
     def is_range_step_type(self):

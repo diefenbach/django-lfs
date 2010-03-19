@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 from lfs.catalog.models import Product
+from lfs.catalog.models import Property
 
 class Cart(models.Model):
     """A cart is a container for products which are supposed to be bought by a
@@ -75,7 +76,7 @@ class Cart(models.Model):
             price += item.get_price_net()
 
         return price
-        
+
     def get_tax(self):
         """Returns the total tax of all items
         """
@@ -127,3 +128,22 @@ class CartItem(models.Model):
         """Returns the absolute tax of the product.
         """
         return self.product.get_tax() * self.amount
+
+class CartItemPropertyValue(models.Model):
+    """Stores a value for a property and item.
+
+    **Attributes**
+
+    cart_item
+        The cart item - and in this way the product - for which the value
+        should be stored.
+
+    property
+        The property for which the value should be stored.
+
+    value
+        The value which is stored.
+    """
+    cart_item = models.ForeignKey(CartItem, verbose_name=_(u"Cart item"), related_name="properties")
+    property = models.ForeignKey(Property, verbose_name = _(u"Property"))
+    value = models.CharField("Value", blank=True, max_length=100)

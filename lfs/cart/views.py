@@ -14,10 +14,13 @@ from django.utils.translation import ugettext_lazy as _
 import lfs.cart.utils
 import lfs.voucher.utils
 from lfs.caching.utils import lfs_get_object_or_404
+from lfs.cart.models import CartItemPropertyValue
 from lfs.core.signals import cart_changed
 from lfs.core import utils as core_utils
 from lfs.catalog.models import Product
+from lfs.catalog.models import Property
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
+
 from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
 from lfs.shipping import utils as shipping_utils
@@ -199,7 +202,28 @@ def add_to_cart(request, product_id=None):
     if (product.is_active() and product.is_deliverable()) == False:
         raise Http404()
 
-    if product.sub_type == PRODUCT_WITH_VARIANTS:
+    # Validate properties (They are added below)
+    if product.is_configurable_product():
+        for key, value in request.POST.items():
+            if key.startswith("property-"):
+                try:
+                    property_id = key.split("-")[1]
+                except IndexError:
+                    continue
+                try:
+                    value = float(value)
+                except ValueError:
+                    value = 0.0
+                property = Property.objects.get(pk=property_id)
+
+                # validate property's value
+                if property.is_input_field:
+                    if (value < property.unit_min) or (value > property.unit_max):
+                        msg = "%s must be between %s and %s %s" % (property.name, property.unit_min, property.unit_max, property.unit)
+                        return lfs.core.utils.set_message_cookie(
+                            product.get_absolute_url(), msg)
+
+    elif product.is_product_with_variants:
         variant_id = request.POST.get("variant_id")
         product = lfs_get_object_or_404(Product, pk=variant_id)
 
@@ -210,14 +234,44 @@ def add_to_cart(request, product_id=None):
 
     cart = cart_utils.get_or_create_cart(request)
 
-    try:
-        cart_item = CartItem.objects.get(cart = cart, product = product)
-    except ObjectDoesNotExist:
+    # Add properties to cart item
+    if product.is_configurable_product():
+
+        # TODO: Check existence and increase amount
         cart_item = CartItem(cart=cart, product=product, amount=quantity)
         cart_item.save()
+
+        for key, value in request.POST.items():
+            if key.startswith("property-"):
+                try:
+                    property_id = key.split("-")[1]
+                except IndexError:
+                    continue
+                try:
+                    value = float(value)
+                except ValueError:
+                    value = 0.0
+                property = Property.objects.get(pk=property_id)
+
+                # validate property's value
+                if property.is_input_field:
+                    if (value < property.unit_min) or (value > property.unit_max):
+                        msg = "%s must be between %s and %s %s" % (property.name, property.unit_min, property.unit_max, property.unit)
+                        return lfs.core.utils.set_message_cookie(
+                            product.get_absolute_url(), msg)
+
+                cpv = CartItemPropertyValue.objects.create(
+                    cart_item=cart_item, property_id=property_id, value=value)
+
     else:
-        cart_item.amount += quantity
-        cart_item.save()
+        try:
+            cart_item = CartItem.objects.get(cart = cart, product = product)
+        except ObjectDoesNotExist:
+            cart_item = CartItem(cart=cart, product=product, amount=quantity)
+            cart_item.save()
+        else:
+            cart_item.amount += quantity
+            cart_item.save()
 
     cart_items = [cart_item]
 

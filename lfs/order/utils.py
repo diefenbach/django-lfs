@@ -5,6 +5,7 @@ from lfs.core.signals import order_submitted
 from lfs.customer import utils as customer_utils
 from lfs.order.models import Order
 from lfs.order.models import OrderItem
+from lfs.order.models import OrderItemPropertyValue
 from lfs.payment import utils as payment_utils
 from lfs.shipping import utils as shipping_utils
 from lfs.voucher.models import Voucher
@@ -128,7 +129,7 @@ def add_order(request):
 
     # Copy cart items
     for cart_item in cart.cartitem_set.all():
-        OrderItem.objects.create(
+        order_item = OrderItem.objects.create(
             order=order,
 
             price_net = cart_item.get_price_net(),
@@ -146,6 +147,12 @@ def add_order(request):
 
         cart_item.product.decrease_stock_amount(cart_item.amount)
 
+        # Copy properties to order
+        if cart_item.product.is_configurable_product():
+            for cpv in cart_item.properties.all():
+                OrderItemPropertyValue.objects.create(
+                    order_item=order_item, property=cpv.property, value=cpv.value)
+
     cart.delete()
     order_submitted.send({"order" : order, "request" : request})
 
@@ -154,4 +161,3 @@ def add_order(request):
     request.session["order"] = order
 
     return order
-

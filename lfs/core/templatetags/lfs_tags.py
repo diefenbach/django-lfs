@@ -18,6 +18,7 @@ from lfs.cart import utils as cart_utils
 from lfs.catalog.models import Category
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import STANDARD_PRODUCT
+from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.page.models import Page
 from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
@@ -236,12 +237,12 @@ def product_navigation(context, product):
         if request.user.is_superuser:
             products = Product.objects.filter(
                 categories__in = categories,
-                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS),
+                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT),
             ).order_by(sorting)
         else:
             products = Product.objects.filter(
                 categories__in = categories,
-                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS),
+                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT),
                 active = True,
             ).order_by(sorting)
 

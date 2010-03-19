@@ -280,6 +280,12 @@
                         </div>
                     {% endif %}
                 {% endfor %}
+                
+                {% for ipv in item.properties.all %}
+                    <div>
+                       {{ ipv.property.name }} : {{ ipv.value }} {{ ipv.property.unit }}
+                    </div>
+                {% endfor %}
             </td>
             <td class="number">
                {{item.product_amount}}

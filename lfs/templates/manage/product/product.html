@@ -86,9 +86,8 @@
                 <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>
                 <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
 
-                {% if product.is_standard %}
+
                     <li class="ui-tabs-nav-item"><a href="#properties">{% trans 'Properties' %}</a></li>
-                {% endif %}
 
             </ul>
 
@@ -108,11 +107,11 @@
                 {{seo|safe}}
             </div>
 
-            {% if product.is_standard %}
+
                 <div id="properties">
                     {{ properties|safe }}
                 </div>
-            {% endif %}
+
 
             <div id="portlets">
                 {{ portlets|safe }}
