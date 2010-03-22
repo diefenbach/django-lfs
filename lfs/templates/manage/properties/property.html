@@ -34,6 +34,15 @@
 
             <form action="{% url lfs_manage_shop_property property.id %}"
                   method="post">
+                <div class="field">
+                    <div class="label">
+                        {% trans "ID" %}
+                    </div>        
+                    <div>
+                        {{ property.id }}
+                    </div>
+                </div>
+                
                 {% include "manage/lfs_form.html" %}
                 <input type="submit"
                        value="{% trans 'Save property' %}">

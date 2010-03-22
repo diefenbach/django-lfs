@@ -1,3 +1,5 @@
+import re
+
 # django imports
 from django.core.cache import cache
 from django.contrib.auth.models import User
@@ -86,6 +88,19 @@ class Cart(models.Model):
 
         return tax
 
+    def get_item(self, product, properties):
+        """Returns the item for passed product and properties or None if there
+        is none.
+        """
+        for item in CartItem.objects.filter(product=product):
+            item_props = {}
+            for pv in item.properties.all():
+                item_props[unicode(pv.id)] = pv.value
+
+            if item_props == properties:
+                return item
+
+        return None
 
 class CartItem(models.Model):
     """A cart item belongs to a cart. It stores the product and the amount of
@@ -119,10 +134,35 @@ class CartItem(models.Model):
         """
         return self.product.get_price_net() * self.amount
 
-    def get_price_gross(self):
+    def get_price_gross(self, standard=False):
         """Returns the gross price of the product.
         """
-        return self.product.get_price_gross() * self.amount
+        if standard or not self.product.is_configurable_product():
+            return self.product.get_price_gross() * self.amount
+        else:
+            return self.get_calculated_price() * self.amount
+
+    def get_calculated_price(self):
+        """Returns the calculated gross price of the product.
+        """
+        pc = self.product.price_calculation
+        tokens = self.product.price_calculation.split(" ")
+
+        for token in tokens:
+            if token.startswith("property"):
+                mo = re.match("property\((\d+)\)", token)
+                ppv = self.properties.filter(property__id=mo.groups()[0])[0]
+                value = ppv.value
+                pc = pc.replace(token, str(value))
+            elif token.startswith("number"):
+                mo = re.match("number\((\d+)\)", token)
+                pc = pc.replace(token, mo.groups()[0])
+            elif token.startswith("product"):
+                mo = re.match("product\((.+)\)", token)
+                value = getattr(self.product, mo.groups()[0])
+                pc = pc.replace(token, str(value))
+
+        return eval(pc)
 
     def get_tax(self):
         """Returns the absolute tax of the product.

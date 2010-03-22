@@ -83,7 +83,7 @@ def manage_property(request, id, template_name="manage/properties/property.html"
 
     else:
         form = PropertyDataForm(instance=property)
-
+    
     return render_to_response(template_name, RequestContext(request, {
         "property" : property,
         "properties" : Property.objects.filter(local=False),

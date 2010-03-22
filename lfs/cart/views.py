@@ -203,6 +203,7 @@ def add_to_cart(request, product_id=None):
         raise Http404()
 
     # Validate properties (They are added below)
+    properties_dict = {}
     if product.is_configurable_product():
         for key, value in request.POST.items():
             if key.startswith("property-"):
@@ -216,10 +217,23 @@ def add_to_cart(request, product_id=None):
                     value = 0.0
                 property = Property.objects.get(pk=property_id)
 
+                properties_dict[property_id] = unicode(value)
+
                 # validate property's value
                 if property.is_input_field:
+
                     if (value < property.unit_min) or (value > property.unit_max):
-                        msg = "%s must be between %s and %s %s" % (property.name, property.unit_min, property.unit_max, property.unit)
+                        msg = "%s must be between %s and %s %s." % (property.name, property.unit_min, property.unit_max, property.unit)
+                        return lfs.core.utils.set_message_cookie(
+                            product.get_absolute_url(), msg)
+
+                    steps = []
+                    for x in range(property.unit_min, property.unit_max, property.unit_step):
+                        steps.append(x)
+                    steps.append(property.unit_max)
+
+                    if value not in steps:
+                        msg = _(u"Your entered value for %s (%s) is not in valid step width, which is %s." % (property.name, value, property.unit_step))
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
@@ -237,28 +251,18 @@ def add_to_cart(request, product_id=None):
     # Add properties to cart item
     if product.is_configurable_product():
 
-        # TODO: Check existence and increase amount
-        cart_item = CartItem(cart=cart, product=product, amount=quantity)
-        cart_item.save()
+        # if a product with same properties already exist we increase the
+        # amount. Otherwise we create a new one.
+        cart_item = cart.get_item(product, properties_dict)
+        if cart_item:
+            cart_item.amount += quantity
+            cart_item.save()
+        else:
+            cart_item = CartItem(cart=cart, product=product, amount=quantity)
+            cart_item.save()
 
-        for key, value in request.POST.items():
-            if key.startswith("property-"):
-                try:
-                    property_id = key.split("-")[1]
-                except IndexError:
-                    continue
-                try:
-                    value = float(value)
-                except ValueError:
-                    value = 0.0
+            for property_id, value in properties_dict.items():
                 property = Property.objects.get(pk=property_id)
-
-                # validate property's value
-                if property.is_input_field:
-                    if (value < property.unit_min) or (value > property.unit_max):
-                        msg = "%s must be between %s and %s %s" % (property.name, property.unit_min, property.unit_max, property.unit)
-                        return lfs.core.utils.set_message_cookie(
-                            product.get_absolute_url(), msg)
 
                 cpv = CartItemPropertyValue.objects.create(
                     cart_item=cart_item, property_id=property_id, value=value)

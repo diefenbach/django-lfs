@@ -116,3 +116,11 @@ PRODUCT_TEMPLATES = (
         "name":_(u"Default template")
         },),
 ) 
+
+CP_PRICE_SUM = 1
+CP_PRICE_CALC = 2
+
+CP_PRICES = (
+    (CP_PRICE_SUM, ("Sume")),
+    (CP_PRICE_CALC, ("Calculated")),
+)

@@ -6,9 +6,9 @@
 {% block section %}manage-product{% endblock %}
 
 {% block left_slot %}
-	<div id="pages-inline">
-		{{ pages_inline|safe }}
-	</div>
+    <div id="pages-inline">
+        {{ pages_inline|safe }}
+    </div>
 
     <div id="selectable-products-inline">
         {{ selectable_products }}
@@ -16,26 +16,26 @@
 {% endblock %}
 
 {% block content %}
-	
-	<div id="product-filters">
-		{{ product_filters }}
-	</div>
-		
+
+    <div id="product-filters">
+        {{ product_filters }}
+    </div>
+
     <div id="product">
         <div class="site-actions">
 
             <a class="overview"
-			   href="{% url lfs_manage_products %}">
+               href="{% url lfs_manage_products %}">
                {% trans 'Overview' %}
             </a>
 
-			{% if product.is_variant %}
-				<a class="overview"
-			   	   href="{% url lfs_manage_product product.parent.id %}">
-					{% trans "Base Article" %}
-				</a>					
-			{% endif %}
-			
+            {% if product.is_variant %}
+                <a class="overview"
+                   href="{% url lfs_manage_product product.parent.id %}">
+                    {% trans "Base Article" %}
+                </a>
+            {% endif %}
+
             <a class="add"
                href="{% url lfs_manage_add_product %}">
                 {% trans 'Add product' %}

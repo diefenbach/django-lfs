@@ -31,7 +31,7 @@
             </h3>
             {% for property in property_group.properties %}
                 <div>
-                    {% ifequal property.type 1 %}
+                    {% if property.display_text_field %}
                         <div class="field">
                             <div class="label">
                                 {{property.name}}:
@@ -40,7 +40,8 @@
                                    name="property-{{property.id}}"
                                    value="{{property.value}}" />
                         </div>
-                    {% else %}
+                    {% endif %}  
+                    {% if property.display_select_field %}
                         <div class="field">
                             <div class="label">
                                 {{property.name}}:
@@ -55,12 +56,22 @@
                                 {% endfor %}
                             </select>
                         </div>
-                    {% endifequal %}
+                    {% endif %}
+                    {% if property.display_input_field %}
+                        <div class="field">
+                            <div class="label">
+                                {{ property.name }}:
+                            </div>
+                            <div>
+                                {% trans "Input field" %}
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>    
     {% endfor %}
-
+    
     <div class="lfs-buttons">
         <input type="submit"
                value="{% trans 'Update properties' %}" />

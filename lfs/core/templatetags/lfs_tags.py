@@ -491,7 +491,7 @@ def quantity(quantity):
     if str(quantity).find(".") == -1:
         return quantity
     else:
-        return int(quantity)
+        return int(float(quantity))
 
 @register.filter
 def sub_type_name(sub_type, arg=None):

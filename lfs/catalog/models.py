@@ -1,4 +1,7 @@
-# django imports
+# python imports
+import re
+
+# # django imports
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
@@ -375,6 +378,10 @@ class Product(models.Model):
         - effective_price:
             Only for internal usage (price filtering).
 
+        - price unit
+            The unit of the product's price. Could be per piece, per meter,
+            etc.
+
         - short_description
             The short description of the product. This is used within overviews.
 
@@ -477,6 +484,7 @@ class Product(models.Model):
     sku = models.CharField(_(u"SKU"), blank=True, max_length=30)
     price = models.FloatField(_(u"Price"), default=0.0)
     effective_price = models.FloatField(_(u"Price"), blank=True)
+    price_unit = models.CharField(blank=True, max_length=10)
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
     images = generic.GenericRelation("Image", verbose_name=_(u"Images"),
@@ -544,6 +552,10 @@ class Product(models.Model):
     active_meta_keywords = models.BooleanField(_(u"Active meta keywords"), default=False)
     active_dimensions = models.BooleanField(_(u"Active dimensions"), default=False)
     template = models.PositiveSmallIntegerField(_(u"Product template"), blank=True, null=True, max_length=400, choices=PRODUCT_TEMPLATES)
+
+    # Price calculation
+    active_price_calculation = models.BooleanField(_(u"Active price calculation"), default=False)
+    price_calculation = models.CharField(_(u"Price Calculation"), blank=True, max_length=100)
 
     # Manufacturer
     sku_manufacturer = models.CharField(blank=True, max_length=100)
@@ -865,7 +877,8 @@ class Product(models.Model):
         return object.for_sale_price
 
     def get_price_gross(self):
-        """Returns the real gross price of the product.
+        """Returns the real gross price of the product. This is the base of
+        all price and tax calculations :-)
         """
         object = self
 
@@ -874,14 +887,35 @@ class Product(models.Model):
 
         if object.get_for_sale():
             if object.is_variant() and not object.active_for_sale_price:
-                return object.parent.get_for_sale_price()
+                price = object.parent.get_for_sale_price()
             else:
-                return object.get_for_sale_price()
+                price = object.get_for_sale_price()
         else:
             if object.is_variant() and not object.active_price:
-                return object.parent.price
+                price = object.parent.price
             else:
-                return object.price
+                price = object.price
+
+        return price
+
+    def calculate_price(self, price):
+        """Calulates the price by given entered price calculation.
+        """
+        pc = self.price_calculation
+        tokens = self.price_calculation.split(" ")
+
+        for token in tokens:
+            if token.startswith("property"):
+                mo = re.match("property\((\d+)\)")
+                import pdb; pdb.set_trace()
+                ppv = ProductPropertyValue.objects.get(product=self, property_id=mo.groups()[0])
+
+        try:
+            mult = float(self.price_calculation)
+        except:
+            mult = 1
+
+        return mult * price
 
     def get_price_net(self):
         """Returns the real net price of the product. Takes care whether the
@@ -908,6 +942,20 @@ class Product(models.Model):
         """
         properties = self.get_global_properties()
         properties.extend(self.get_local_properties())
+
+        return properties
+
+    def get_property_input_fields(self):
+        """Returns all properties which are `input types`.
+        """
+        # global
+        properties = []
+        for property_group in self.property_groups.all():
+            properties.extend(property_group.properties.filter(type=PROPERTY_INPUT_FIELD).order_by("groupspropertiesrelation"))
+
+        # local
+        for property in self.properties.filter(type=PROPERTY_INPUT_FIELD).order_by("productspropertiesrelation"):
+            properties.append(property)
 
         return properties
 
@@ -1226,7 +1274,7 @@ class Property(models.Model):
 
     price
         The price of the property. Only used for configurable products.
-        
+
     unit_min
         The minimal unit of the property the shop customer can enter.
 
@@ -1247,7 +1295,7 @@ class Property(models.Model):
     display_no_results = models.BooleanField(_(u"Display no results"), default=False)
     type = models.PositiveSmallIntegerField(_(u"Type"), choices=PROPERTY_TYPE_CHOICES, default=PROPERTY_TEXT_FIELD)
     price = models.FloatField(_(u"Price"), blank=True, null=True)
-    
+
     # Number input field
     unit_min = models.FloatField(_(u"Min"), blank=True, null=True)
     unit_max = models.FloatField(_(u"Max"), blank=True, null=True)

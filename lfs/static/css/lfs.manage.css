@@ -432,7 +432,7 @@ select.categories {
 }
 
 /* input fields */
-#id_name, #id_slug, #id_sku, #id_shop_owner, #id_from_email, #id_title {
+#id_name, #id_slug, #id_sku, #id_shop_owner, #id_from_email, #id_title, #id_redirect_to, #id_sku_manufacturer, #redirect_to {
     width: 300px;
 }
 
