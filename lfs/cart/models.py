@@ -92,7 +92,7 @@ class Cart(models.Model):
         """Returns the item for passed product and properties or None if there
         is none.
         """
-        for item in CartItem.objects.filter(product=product):
+        for item in CartItem.objects.filter(cart=self, product=product):
             item_props = {}
             for pv in item.properties.all():
                 item_props[unicode(pv.id)] = pv.value
