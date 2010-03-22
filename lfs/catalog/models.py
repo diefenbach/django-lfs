@@ -535,7 +535,7 @@ class Product(models.Model):
     active_price = models.BooleanField(_(u"Active price"), default=False)
     active_for_sale = models.PositiveSmallIntegerField(_("Active for sale"), choices=ACTIVE_FOR_SALE_CHOICES, default=ACTIVE_FOR_SALE_STANDARD)
     active_for_sale_price = models.BooleanField(_(u"Active for sale price"), default=False)
-    active_images = models.BooleanField(_(u"Active Images"), default=False)
+    active_images = models.IntegerField(default=0)
     active_related_products = models.BooleanField(_(u"Active related products"), default=False)
     active_accessories = models.BooleanField(_(u"Active accessories"), default=False)
     active_meta_title = models.BooleanField(_(u"Active meta title"), default=False)
@@ -707,12 +707,27 @@ class Product(models.Model):
 
         if images is None:
             images = []
-            if self.is_variant() and not self.active_images:
+            if self.is_variant() and self.active_images == 0:
                 object = self.parent
-            else:
+            elif self.is_variant() and self.active_images == 1:
                 object = self
-
-            images = object.images.all()
+            elif self.is_variant() and self.active_images == 2:
+                object = self
+                object1 = self.parent
+            else:
+                object = self.parent
+            
+            if self.active_images == 0:
+                images = object.images.all()
+            elif self.active_images == 1:
+                images = object.images.all()
+            elif self.active_images == 2:
+                a = set(object.images.all())
+                b = set(object1.images.all())
+                images = list(set(a | b))
+            else:
+                object = self.parent
+            
             cache.set(cache_key, images)
 
         return images
