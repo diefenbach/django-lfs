@@ -96,7 +96,3 @@ urlpatterns += patterns('lfs.search.views',
 urlpatterns += patterns('',
     (r'^tagging/', include('lfs.tagging.urls')),
 )
-
-urlpatterns += patterns('',
-    (r'^haystack/', include('haystack.urls')),
-)
