@@ -3255,11 +3255,11 @@ msgstr ""
 
 #: templates/manage/voucher/vouchers.html:30
 msgid "Used"
-msgstr ""
+msgstr "Użyty"
 
 #: templates/manage/voucher/vouchers.html:33
 msgid "Used date"
-msgstr ""
+msgstr "Data użycia"
 
 #: templates/manage/voucher/vouchers.html:76
 msgid "DATE_FORMAT"
