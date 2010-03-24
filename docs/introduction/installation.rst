@@ -29,7 +29,7 @@ The installation is straightforward and should last just a few minutes.
    3. python bootstrap.py
    4. customize your buildout.cfg
 	- e.g. if you want to use postgresql as backend db just replace "sqlite3" with "psycopg2" in the "eggs" section under the "[django]" part;
-	- *NOTE: if you fill fine with using sqlite or you don't need any customization you can skip this step*	
+	- *NOTE: if you feel fine with using sqlite or you don't need any customization you can skip this step*	
 	- *NOTE: to learn more about using 'buildout' go to http://www.buildout.org/docs/index.html*
    5. bin/buildout -v
    6. if you are using sqlite skip this step, otherwise execute this:
