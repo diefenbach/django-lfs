@@ -1,0 +1,22 @@
+{% load i18n %}
+<h2>{% trans 'Core data' %}</h2>
+
+<form method="post"
+      class="ajax-form"
+      action="{% url lfs_manage_save_discount_data discount.id %}"
+      enctype="multipart/form-data">
+
+    {% include "manage/lfs_form.html" %}
+    
+    <div class="manage-form-buttons">
+        <input class="ajax-form-button" 
+               type="submit" 
+               value="{% trans 'Save' %}" />
+    </div>           
+</form>
+<script type="text/javascript">
+    $(function() {
+        tinyMCE.execCommand('mceAddControl', true, 'id_description');
+        tinyMCE.execCommand('mceAddControl', true, 'id_note');
+    });
+</script>

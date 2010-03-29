@@ -1,4 +1,5 @@
 # lfs imports
+import lfs.discounts.utils
 import lfs.voucher.utils
 from lfs.cart import utils as cart_utils
 from lfs.core.signals import order_submitted
@@ -52,6 +53,12 @@ def add_order(request):
     # Calculate the totals
     price = cart_costs["price"] + shipping_costs["price"] + payment_costs["price"]
     tax = cart_costs["tax"] + shipping_costs["tax"] + payment_costs["tax"]
+
+    # Discounts
+    discounts = lfs.discounts.utils.get_valid_discounts(request)
+    for discount in discounts:
+        price = price - discount["price"]
+        tax = tax - discount["tax"]
 
     # Add voucher if one exists
     try:
@@ -145,6 +152,22 @@ def add_order(request):
         )
 
         cart_item.product.decrease_stock_amount(cart_item.amount)
+
+    for discount in discounts:
+        OrderItem.objects.create(
+            order=order,
+
+            price_net = discount["price"] - discount["tax"],
+            price_gross = discount["price"],
+            tax = discount["tax"],
+
+            product_sku = discount["sku"],
+            product_name = discount["name"],
+            product_amount= 1,
+            product_price_net = discount["price"] - discount["tax"],
+            product_price_gross = discount["price"],
+            product_tax = discount["tax"],
+        )
 
     cart.delete()
     order_submitted.send({"order" : order, "request" : request})
