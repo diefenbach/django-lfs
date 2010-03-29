@@ -898,6 +898,17 @@ class Product(models.Model):
 
         return price
 
+    def get_price_with_unit(self):
+        """Returns the formatted gross price of the product
+        """
+        from lfs.core.templatetags.lfs_tags import currency
+        price = currency(self.get_price())
+        
+        if self.price_unit:
+            price += " / " + self.price_unit 
+
+        return price
+
     def calculate_price(self, price):
         """Calulates the price by given entered price calculation.
         """
