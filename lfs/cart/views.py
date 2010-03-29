@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs.cart.utils
 import lfs.voucher.utils
+import lfs.discounts.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.cart.models import CartItemPropertyValue
 from lfs.core.signals import cart_changed
@@ -71,6 +72,11 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     cart_tax = \
         cart_costs["tax"] + shipping_costs["tax"] + payment_costs["tax"]
 
+    # Discounts
+    discounts = lfs.discounts.utils.get_valid_discounts(request)
+    for discount in discounts:
+        cart_price = cart_price - discount["price"]
+    
     # Voucher
     voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
     try:
@@ -113,6 +119,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         "selected_country" : selected_country,
         "max_delivery_time" : max_delivery_time,
         "shopping_url" : shopping_url,
+        "discounts" : discounts,
         "display_voucher" : display_voucher,
         "voucher_number" : voucher_number,
         "voucher_value" : voucher_value,
