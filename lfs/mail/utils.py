@@ -32,7 +32,7 @@ def send_order_received_mail(order):
     })
 
     mail.attach_alternative(html, "text/html")
-    mail.send()
+    mail.send(fail_silently=True)
 
 def send_customer_added(user):
     """Sends a mail to a newly registered user.
@@ -57,7 +57,7 @@ def send_customer_added(user):
     })
 
     mail.attach_alternative(html, "text/html")
-    mail.send()
+    mail.send(fail_silently=True)
 
 def send_review_added(review):
     """Sends a mail to shop admins that a new review has been added
@@ -88,4 +88,4 @@ def send_review_added(review):
     })
 
     mail.attach_alternative(html, "text/html")
-    mail.send()
+    mail.send(fail_silently=True)

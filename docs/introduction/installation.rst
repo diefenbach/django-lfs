@@ -27,8 +27,15 @@ The installation is straightforward and should last just a few minutes.
    1. Get the installer: hg clone http://bitbucket.org/diefenbach/lfs-buildout-quickstart/
    2. cd lfs-buildout-quickstart
    3. python bootstrap.py
-   4. bin/buildout -v
-   5. Start the server: bin/django runserver
+   4. customize your buildout.cfg
+	- e.g. if you want to use postgresql as backend db just replace "sqlite3" with "psycopg2" in the "eggs" section under the "[django]" part;
+	- *NOTE: if you feel fine with using sqlite or you don't need any customization you can skip this step*	
+	- *NOTE: to learn more about using 'buildout' go to http://www.buildout.org/docs/index.html*
+   5. bin/buildout -v
+   6. if you are using sqlite skip this step, otherwise execute this:
+	- bin/django loaddata path/to/your/eggs/django_lfs-xxx/lfs/core/fixtures/lfs_initial.xml
+   7. bin/django syncdb
+   8. Start the server: bin/django runserver
    
 Now open your browser and visit: 
 
