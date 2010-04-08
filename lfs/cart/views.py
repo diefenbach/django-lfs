@@ -76,7 +76,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     discounts = lfs.discounts.utils.get_valid_discounts(request)
     for discount in discounts:
         cart_price = cart_price - discount["price"]
-    
+
     # Voucher
     voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
     try:
@@ -219,6 +219,7 @@ def add_to_cart(request, product_id=None):
                 except IndexError:
                     continue
                 try:
+                    value = value.replace(",", ".")
                     value = float(value)
                 except ValueError:
                     value = 0.0
@@ -234,8 +235,11 @@ def add_to_cart(request, product_id=None):
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
+                    # calculate valid steps
                     steps = []
-                    for x in range(property.unit_min, property.unit_max, property.unit_step):
+                    x = property.unit_min
+                    while x < property.unit_max:
+                        x = x + property.unit_step
                         steps.append(x)
                     steps.append(property.unit_max)
 
