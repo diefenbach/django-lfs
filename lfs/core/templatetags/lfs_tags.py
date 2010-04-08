@@ -467,6 +467,19 @@ def currency(price, arg=None):
     return price
 
 @register.filter
+def decimal_l10n(value):
+    """Localizes 
+    """
+    shop = lfs_get_object_or_404(Shop, pk=1)
+    if shop.default_country.code == "de":
+        # replace . and , for german format
+        a, b = value.split(".")
+        a = a.replace(",", ".")
+        value = "%s,%s" % (a, b)
+
+    return value
+
+@register.filter
 def number(price, arg=None):
     """
     """
