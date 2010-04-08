@@ -239,10 +239,11 @@ def add_to_cart(request, product_id=None):
                     steps = []
                     x = property.unit_min
                     while x < property.unit_max:
+                        steps.append("%.2f" % x)
                         x = x + property.unit_step
-                        steps.append(x)
-                    steps.append(property.unit_max)
+                    steps.append("%.2f" % property.unit_max)
 
+                    value = "%.2f" % value
                     if value not in steps:
                         msg = _(u"Your entered value for %s (%s) is not in valid step width, which is %s." % (property.name, value, property.unit_step))
                         return lfs.core.utils.set_message_cookie(
