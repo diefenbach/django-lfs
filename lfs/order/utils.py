@@ -163,16 +163,16 @@ def add_order(request):
     for discount in discounts:
         OrderItem.objects.create(
             order=order,
-            price_net = discount["price"] - discount["tax"],
-            price_gross = discount["price"],
-            tax = discount["tax"],
+            price_net = -(discount["price"] - discount["tax"]),
+            price_gross = -discount["price"],
+            tax = -discount["tax"],
 
             product_sku = discount["sku"],
             product_name = discount["name"],
             product_amount= 1,
-            product_price_net = discount["price"] - discount["tax"],
-            product_price_gross = discount["price"],
-            product_tax = discount["tax"],
+            product_price_net = -(discount["price"] - discount["tax"]),
+            product_price_gross = -discount["price"],
+            product_tax = -discount["tax"],
         )
 
     cart.delete()
