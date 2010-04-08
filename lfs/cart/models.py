@@ -140,7 +140,10 @@ class CartItem(models.Model):
         if standard or not self.product.is_configurable_product():
             return self.product.get_price_gross() * self.amount
         else:
-            return self.get_calculated_price() * self.amount
+            try:
+                return self.get_calculated_price() * self.amount
+            except:
+                return self.product.get_price_gross() * self.amount
 
     def get_calculated_price(self):
         """Returns the calculated gross price of the product.
