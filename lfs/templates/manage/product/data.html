@@ -224,6 +224,27 @@
                     {% endif %}
                 </div>
             {% endif %}
+
+            {% if product.is_configurable_product %}
+                <div class="field">
+                    <div class="label">
+                        {{ form.active_price_calculation }}
+                        {{ form.price_calculation.label_tag }}:
+                    </div>
+
+                    {% if form.price.errors %}
+                        <div class="error">
+                            {{ form.price_calculation }}
+                            {{ form.price_calculation.errors }}
+                        </div>
+                    {% else %}
+                        <div>
+                            {{ form.price_calculation }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
         </fieldset>
         <div class="field">
             <div class="label">
