@@ -95,7 +95,7 @@ class Cart(models.Model):
         for item in CartItem.objects.filter(cart=self, product=product):
             item_props = {}
             for pv in item.properties.all():
-                item_props[unicode(pv.id)] = pv.value
+                item_props[unicode(pv.property.id)] = pv.value
 
             if item_props == properties:
                 return item
