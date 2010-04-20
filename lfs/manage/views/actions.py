@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs.core.utils
 from lfs.core.models import Action
+from lfs.core.models import ActionGroup
 
 class ActionForm(ModelForm):
     """Form to edit an action.
@@ -59,7 +60,7 @@ def manage_action(request, id, template_name="manage/shop/action.html"):
     
     return render_to_response(template_name, RequestContext(request, {
         "action" : action,
-        "actions" : Action.objects.all(),
+        "groups" : ActionGroup.objects.all(),
         "form" : form,
         "current_id" : int(id),
     }))
@@ -101,6 +102,7 @@ def delete_action(request, id):
 def _update_positions():
     """Updates the positions of all actions.
     """
-    for i, action in enumerate(Action.objects.all()):
-        action.position = (i+1)*10
-        action.save()
+    for group in ActionGroup.objects.all():
+        for i, action in enumerate(group.actions.all()):
+            action.position = (i + 1) * 10
+            action.save()
