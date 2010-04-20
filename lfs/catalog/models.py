@@ -1484,15 +1484,23 @@ class File(models.Model):
 class StaticBlock(models.Model):
     """A block of static HTML which can be assigned to content objects.
 
-    Attributes:
-        - name
-          The name of the static block.
-        - html
-          The static HTML of the block.
+    **Attributes**:
+
+    name
+        The name of the static block.
+
+    html
+        The static HTML of the block.
+
+    display_files
+        If True the files are displayed for download within the static block.
+        
+    files
+        The files of the static block.        
     """
     name = models.CharField(_(u"Name"), max_length=30)
-    html = models.TextField( _(u"HTML"), blank=True)
-
+    display_files = models.BooleanField(_(u"Display files"), default=True)
+    html = models.TextField(_(u"HTML"), blank=True)
     files = generic.GenericRelation(File, verbose_name=_(u"Files"),
         object_id_field="content_id", content_type_field="content_type")
 
