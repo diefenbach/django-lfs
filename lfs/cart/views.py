@@ -1,4 +1,5 @@
 # django imports
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import Http404
@@ -331,9 +332,13 @@ def add_to_cart(request, product_id=None):
 
     # Save the cart to update modification date
     cart.save()
+    
+    try:
+        url_name = settings.LFS_AFTER_ADD_TO_CART
+    except AttributeError:
+        url_name = "lfs.cart.views.added_to_cart"
 
-    url = reverse("lfs.cart.views.added_to_cart")
-    return HttpResponseRedirect(url)
+    return HttpResponseRedirect(reverse(url_name))
 
 def delete_cart_item(request, cart_item_id):
     """Deletes the cart item with the given id.
