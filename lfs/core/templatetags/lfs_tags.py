@@ -313,10 +313,11 @@ def tabs(context, obj=None):
     tabs = Action.objects.filter(active=True, group=1)
     if isinstance(obj, (Product, Category)):
         top_category = lfs.catalog.utils.get_current_top_category(request, obj)
-        for tab in tabs:
-            if top_category.get_absolute_url().find(tab.link) != -1:
-                tab.selected = True
-                break
+        if top_category:
+            for tab in tabs:
+                if top_category.get_absolute_url().find(tab.link) != -1:
+                    tab.selected = True
+                    break
     else:
         for tab in tabs:
             if request.path.find(tab.link) != -1:
