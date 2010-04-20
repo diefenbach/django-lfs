@@ -17,12 +17,22 @@ import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.cart.views import add_to_cart
 from lfs.catalog.models import Category
+from lfs.catalog.models import File
 from lfs.catalog.models import Product
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT
 from lfs.catalog.settings import SELECT
 from lfs.catalog.settings import CONTENT_PRODUCTS
 from lfs.core.utils import LazyEncoder
 from lfs.utils import misc as lfs_utils
+
+def file(request, language=None, id=None):
+    """Delivers files to the browser.
+    """
+    file = lfs_get_object_or_404(File, pk=id)
+    response = HttpResponse(file.file, mimetype='application/binary')
+    response['Content-Disposition'] = 'attachment; filename=%s' % file.title
+
+    return response
 
 def select_variant(request):
     """This is called via an ajax call if the combination of properties are

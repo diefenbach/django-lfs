@@ -222,6 +222,18 @@ function uploadComplete(file) {
     }
 }
 
+function uploadFilesComplete(file) {
+    if (this.getStats().files_queued === 0) {
+        document.getElementById(this.customSettings.cancelButtonId).disabled = true;
+        url = $("#files-form").attr("data");
+        $.get(url, function(data) {
+            var data = JSON.parse(data)
+            $("#files").html(data["files"]);
+            $.jGrowl(data["message"]);
+        });
+    }
+}
+
 // This event comes from the Queue Plugin
 function queueComplete(numFilesUploaded) {
     var status = document.getElementById("divStatus");

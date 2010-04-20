@@ -3,6 +3,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -1436,6 +1437,50 @@ class Image(models.Model):
     def __unicode__(self):
         return self.title
 
+class File(models.Model):
+    """A downloadable file.
+
+    **Attributes:**
+
+    title
+        The title of the image. Used within the title tag of the file.
+
+    slug
+        The URL of the file.
+
+    content
+        The content object the file belongs to (optional).
+
+    position
+        The ordinal number within the content object. Used to order the files.
+
+    description
+        A long description of the file. Can be used within the content
+        (optional).
+
+    file
+        The binary file.
+    """
+    title = models.CharField(blank=True, max_length=100)
+    slug = models.SlugField()
+
+    content_type = models.ForeignKey(ContentType, verbose_name=_(u"Content type"), related_name="files", blank=True, null=True)
+    content_id = models.PositiveIntegerField(_(u"Content id"), blank=True, null=True)
+    content = generic.GenericForeignKey(ct_field="content_type", fk_field="content_id")
+
+    position = models.SmallIntegerField(default=999)
+    description = models.CharField(blank=True, max_length=100)
+    file = models.FileField(upload_to="files")
+
+    class Meta:
+        ordering = ("position", )
+
+    def __unicode__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("lfs_file", kwargs={"id" : self.id})
+
 class StaticBlock(models.Model):
     """A block of static HTML which can be assigned to content objects.
 
@@ -1447,6 +1492,9 @@ class StaticBlock(models.Model):
     """
     name = models.CharField(_(u"Name"), max_length=30)
     html = models.TextField( _(u"HTML"), blank=True)
+
+    files = generic.GenericRelation(File, verbose_name=_(u"Files"),
+        object_id_field="content_id", content_type_field="content_type")
 
     def __unicode__(self):
         return self.name
