@@ -84,7 +84,7 @@ def add_action(request, template_name="manage/shop/add_action.html"):
 
     return render_to_response(template_name, RequestContext(request, {
         "form" : form,
-        "actions" : Action.objects.all(),        
+        "groups" : ActionGroup.objects.all(),
     }))
 
 @permission_required("manage_shop", login_url="/login/")
