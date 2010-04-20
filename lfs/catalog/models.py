@@ -1211,7 +1211,7 @@ class ProductAccessories(models.Model):
           The proposed amount of accessories for the product.
     """
     product = models.ForeignKey("Product", verbose_name=_(u"Product"), related_name="productaccessories_product")
-    accessory = models.ForeignKey("Product", verbose_name=_(u"Acessory"), related_name="productaccessories_accessory")
+    accessory = models.ForeignKey("Product", verbose_name=_(u"Accessory"), related_name="productaccessories_accessory")
     position = models.IntegerField( _(u"Position"), default=999)
     quantity = models.FloatField(_(u"Quantity"), default=1)
 
