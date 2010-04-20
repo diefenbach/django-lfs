@@ -320,6 +320,9 @@ urlpatterns += patterns('lfs.manage.views.static_blocks',
     url(r'^preview-static-block/(?P<id>\d*)$', "preview_static_block", name="lfs_preview_static_block"),
     url(r'^manage-static-blocks$', "manage_static_blocks", name="lfs_manage_static_blocks"),
     url(r'^manage-static-block/(?P<id>\d*)$', "manage_static_block", name="lfs_manage_static_block"),
+    url(r'^add_files/(?P<id>[-\w]*)', "add_files", name="lfs_add_files_to_static_block"),
+    url(r'^update_files/(?P<id>[-\w]*)', "update_files", name="lfs_manage_update_files_sb"),
+    url(r'^reload_files/(?P<id>[-\w]*)', "reload_files", name="lfs_reload_files"),    
 )
 
 # Reviews

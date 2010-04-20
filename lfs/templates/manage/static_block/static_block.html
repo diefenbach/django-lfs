@@ -2,20 +2,22 @@
 {% load i18n %}
 
 {% block left_slot %}
-    {% for static_block in static_blocks %}
-        <div>
-            <a href="{% url lfs_manage_static_block static_block.id %}"
-               class="selectable {% ifequal static_block.id current_id %}selected{% endifequal %}">
-                {{static_block.name}}
-            </a>
-        </div>
-    {% endfor %}
+    <div class="navigation-left">
+        {% for static_block in static_blocks %}
+            <div class="navigation-left-item">
+                <a href="{% url lfs_manage_static_block static_block.id %}"
+                   class="selectable {% ifequal static_block.id current_id %}selected{% endifequal %}">
+                    {{ static_block.name }}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block content %}
 
     <div class="site-actions">
-        <span class="label">{{static_block.name}}</span>
+        <span class="label">{{ static_block.name }}</span>
         
         <a class="add" 
            href="{% url lfs_add_static_block %}">{% trans 'Add Static Block' %}</a>
@@ -29,6 +31,7 @@
     <div id="manage-tabs">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Static block' %}</a></li>            
+            <li class="ui-tabs-nav-item"><a href="#files">{% trans 'Files' %}</a></li>            
         </ul>
 
         <div id="data">
@@ -40,7 +43,11 @@
                        value="{% trans 'Save static block' %}">
             </form>
         </div>
-    </div>    
-    
-    
+        <div id="files">
+            {{ files }}
+        </div>
+    </div>
+    <script type="text/javascript">
+        tinyMCE.execCommand('mceAddControl', true, 'id_html');
+    </script>
 {% endblock %}

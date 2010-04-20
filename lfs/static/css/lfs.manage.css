@@ -88,6 +88,35 @@ table.lfs-manage-table td {
     vertical-align: middle;
 }
 
+.lfs-manage-table.full {
+    width: 100%;
+}
+
+.lfs-manage-table.half {
+    width: 50%;
+}
+
+.lfs-manage-table .large {
+    width: 300px;
+}
+
+.lfs-manage-table .middle {
+    width: 200px;
+}
+
+.lfs-manage-table .small {
+    width: 100px;
+}
+
+.lfs-manage-table .tiny {
+    width: 1px;
+}
+
+.lfs-manage-table .right-padding {
+    text-align: right;
+    padding-right: 10px;
+}
+
 .checkbox {
     min-height: 20px;
     height: 20px;
@@ -409,10 +438,15 @@ span.delete {
     background: url(/media/lfs/icons/delete.png) no-repeat;
 }
 
+div.navigation-left {
+    padding-top: 55px;    
+}
+
 div.action-groups {
     padding-top: 45px;
 }
 
+div.navigation-left-item a,
 div.action a {
     padding: 4px 0 4px 20px;
 }

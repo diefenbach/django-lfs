@@ -1,0 +1,114 @@
+{% load i18n %}
+<h2>{% trans 'Files' %}</h2>
+
+{% if static_block.files.all %}
+    <form id="product-files-update-form"
+          action="{% url lfs_manage_update_files_sb static_block.id %}"
+          method="post">
+
+        <table class="lfs-manage-table half">
+            <tr>
+                <th class="tiny">
+                    <input type="checkbox" 
+                           class="delete-all" />
+                </th>
+                <th>
+                    {% trans 'Title' %}
+                </th>
+                <th class="right-padding">
+                    {% trans 'Position' %}
+                </th>
+            </tr>
+            {% for file in static_block.files.all %}
+                <tr>
+                    <td>
+                        <input type="checkbox"
+                               class="delete"
+                               name="delete-{{ file.id }}"
+                               style="float:left" />                
+                    </td>
+                    <td>
+                        <input type="text" name="title-{{ file.id }}" value="{{ file.title }}" />                
+                    </td>
+                    <td class="right-padding">
+                        <input type="text" name="position-{{ file.id }}" value="{{ file.position }}" size="3" />
+                    </td>
+                </tr>
+            {% endfor %}    
+        </table>
+        <div class="manage-form-buttons">
+            <input class="ajax-save-button"
+                   type="submit" name="update" value="{% trans 'Update' %}" />
+            <input class="ajax-save-button"
+                   type="submit" name="delete" value="{% trans 'Delete' %}" />
+        </div>
+    </form>    
+{% else %}
+    <span>{% trans 'There are no files' %}</span>
+{% endif %}
+
+<h2 class="heading-middle">{% trans 'Add files' %}</h2>
+
+<form id="files-form"
+      action="."
+      data="{% url lfs_reload_files static_block.id %}"
+      method="post"
+      enctype="multipart/form-data">
+
+    <div class="fieldset flash" id="fsUploadProgressFiles"></div>
+    <div>
+        <span id="spanButtonPlaceHolderFiles"></span>
+        <input id="btnUpload"
+               type="button"
+               value='{% trans "Select Files" %}'
+               style="width: 100px; height: 22px; font-size: 8pt;" />
+
+        <input id="btnCancel"
+               type="button"
+               value="Cancel All Uploads"
+               onclick="swfu.cancelQueue();"
+               disabled="disabled"
+               style="margin-left: 2px; font-size: 8pt; height: 29px;" />
+    </div>
+
+</form>
+<script>
+    var swfu;
+
+    var settings = {
+        flash_url : "{{ MEDIA_URL }}lfs/swfupload/swfupload.swf",
+        upload_url: "{% url lfs_add_files_to_static_block static_block.id %}",
+        file_size_limit : "100 MB",
+        file_types : "*.*",
+        file_types_description : "All Files",
+        file_upload_limit : 100,
+        file_queue_limit : 0,
+        custom_settings : {
+            progressTarget : "fsUploadProgressFiles",
+            cancelButtonId : "btnCancel"
+        },
+        debug: false,
+
+        // Button settings
+        button_width: "100",
+        button_height: "22",
+        button_placeholder_id: "spanButtonPlaceHolderFiles",
+        button_text_left_padding: 0,
+        button_text_top_padding: 13,
+        button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
+        button_cursor : SWFUpload.CURSOR.HAND,
+
+        // The event handler functions are defined in handlers.js
+        file_queued_handler : fileQueued,
+        file_queue_error_handler : fileQueueError,
+        file_dialog_complete_handler : fileDialogComplete,
+        upload_start_handler : uploadStart,
+        upload_progress_handler : uploadProgress,
+        upload_error_handler : uploadError,
+        upload_success_handler : uploadSuccess,
+        upload_complete_handler : uploadFilesComplete,
+        queue_complete_handler : queueComplete  // Queue plugin event
+    };
+
+    swfu = new SWFUpload(settings);
+</script>
