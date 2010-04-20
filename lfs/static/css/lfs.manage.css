@@ -407,6 +407,23 @@ span.delete {
     background: url(/media/lfs/icons/delete.png) no-repeat;
 }
 
+div.action-groups {
+    padding-top: 45px;
+}
+
+div.action a {
+    padding: 4px 0 4px 20px;
+}
+
+h2.action-group {
+    text-decoration: none;
+    border-bottom: none;
+    font-size: 110%;
+    font-weight: bold;
+    padding: 5px 0 0 0;
+    margin: 0;
+}
+
 /* Forms */
 .field {
     margin-bottom:10px;

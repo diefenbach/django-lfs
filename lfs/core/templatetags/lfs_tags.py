@@ -24,7 +24,6 @@ from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
 from lfs.core.models import Shop
 from lfs.core.models import Action
-from lfs.core.settings import ACTION_PLACE_TABS
 from lfs.shipping import utils as shipping_utils
 
 register = template.Library()
@@ -281,6 +280,27 @@ def sorting_portlet(context):
         "MEDIA_URL" : context.get("MEDIA_URL"),
     }
 
+class ActionsNode(Node):
+    def __init__(self, group_id):
+        self.group_id = group_id
+
+    def render(self, context):
+        request = context.get("request")
+        context["actions"] = Action.objects.filter(active=True, group=self.group_id)
+        return ''
+
+def do_actions(parser, token):
+    """Returns the actions for the group with the given id.
+    """
+    bits = token.contents.split()
+    len_bits = len(bits)
+    if len_bits != 2:
+        raise TemplateSyntaxError(_('%s tag needs group id as argument') % bits[0])
+
+    return ActionsNode(bits[1])
+
+register.tag('actions', do_actions)
+
 @register.inclusion_tag('lfs/shop/tabs.html', takes_context=True)
 def tabs(context, obj=None):
     """
@@ -289,7 +309,7 @@ def tabs(context, obj=None):
         obj = context.get("product") or context.get("category")
 
     request = context.get("request")
-    tabs = Action.objects.filter(active=True, place=ACTION_PLACE_TABS)
+    tabs = Action.objects.filter(active=True, group=1)
     if isinstance(obj, (Product, Category)):
         top_category = lfs.catalog.utils.get_current_top_category(request, obj)
         if top_category:
@@ -362,7 +382,7 @@ class TopLevelCategory(Node):
     def render(self, context):
         request = context.get("request")
         obj = context.get("product") or context.get("category")
-        
+
         top_level_category = lfs.catalog.utils.get_current_top_category(request, obj)
         context["top_level_category"] = top_level_category.name
         return ''
@@ -378,7 +398,7 @@ def do_top_level_category(parser, token):
     return TopLevelCategory()
 
 register.tag('top_level_category', do_top_level_category)
-    
+
 class CartInformationNode(Node):
     """
     """

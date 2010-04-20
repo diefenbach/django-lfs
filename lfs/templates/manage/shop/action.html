@@ -2,14 +2,21 @@
 {% load i18n %}
 
 {% block left_slot %}
-    {% for action in actions %}
-        <div>
-            <a href="{% url lfs_manage_action action.id %}"
-               class="selectable {% ifequal action.id current_id %}selected{% endifequal %}">
-                {{action.title}}
-            </a>
-        </div>
-    {% endfor %}
+    <div class="action-groups">
+        {% for group in groups %}
+            {% if group.actions.all %}
+                <h2 class="action-group">{{ group.name }}</h2>
+                {% for action in group.actions.all %}
+                    <div class="action">
+                        <a href="{% url lfs_manage_action action.id %}"
+                           class="selectable {% ifequal action.id current_id %}selected{% endifequal %}">
+                            {{ action.title }}
+                        </a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block content %}
