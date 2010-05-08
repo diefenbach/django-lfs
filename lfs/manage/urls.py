@@ -256,6 +256,16 @@ urlpatterns += patterns('lfs.manage.views',
     url(r'^save-shipping-method-criteria/(?P<shipping_method_id>\d*)$', "save_shipping_method_criteria", name="lfs_manage_save_shipping_method_criteria"),
 )
 
+# Discounts
+urlpatterns += patterns('lfs.manage.views.discounts',
+    url(r'^discounts$', "manage_discounts", name="lfs_manage_discounts"),
+    url(r'^discount/(?P<id>\d*)$', "manage_discount", name="lfs_manage_discount"),
+    url(r'^add-discount', "add_discount", name="lfs_manage_add_discount"),
+    url(r'^save-discount-data/(?P<id>\d*)$', "save_discount_data", name="lfs_manage_save_discount_data"),
+    url(r'^delete-discount/(?P<id>\d*)$', "delete_discount", name="lfs_manage_delete_discount"),
+    url(r'^save-discount-criteria/(?P<id>\d*)$', "save_discount_criteria", name="lfs_manage_save_discount_criteria"),
+)
+
 # Pages
 urlpatterns += patterns('lfs.manage.views.page',
     url(r'^add-page$', "add_page", name="lfs_add_page"),
