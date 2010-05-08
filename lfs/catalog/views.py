@@ -1,3 +1,6 @@
+# python imports
+import urllib
+
 # django imports
 from django.conf import settings
 from django.core.cache import cache
@@ -412,12 +415,17 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
     if product.get_template_name() != None:
         template_name = product.get_template_name()
 
+    message = request.COOKIES.get("message")
+    if message:
+        message = urllib.unquote(message)
+
     result = render_to_string(template_name, RequestContext(request, {
         "product" : product,
         "variant" : variant,
         "variants" : variants,
         "product_accessories" : variant.get_accessories(),
-        "properties" : properties
+        "properties" : properties,
+        "message" : message,
     }))
 
     cache.set(cache_key, result)

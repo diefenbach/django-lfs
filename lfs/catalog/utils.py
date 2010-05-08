@@ -1,6 +1,9 @@
 """Provides several utilities for catalog related stuff.
 """
 
+# python imports
+import re
+
 # django imports
 from django.core.cache import cache
 from django.db import connection
@@ -8,9 +11,9 @@ from django.db import connection
 # import lfs
 import lfs.catalog.models
 from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
+from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
-
 
 # TODO implement this methods.
 # Category
@@ -510,7 +513,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         products = lfs.catalog.models.Product.objects.filter(
             active=True,
             categories__in=categories, 
-            sub_type__in=[STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS])
+            sub_type__in=[STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT])
 
     if price_filter:
         matched_product_ids = []

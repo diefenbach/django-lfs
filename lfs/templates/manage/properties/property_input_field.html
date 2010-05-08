@@ -1,0 +1,16 @@
+{% load i18n %}
+<h2 class="heading-middle">{% trans 'Validators' %}</h2>
+
+<form id="shop-property-step-type-form"
+      action="{% url lfs_save_input_field_validators property.id %}"
+      method="post">
+      
+      <table>
+          {{ input_type_form }}
+      </table>
+
+    <input type="submit" 
+           value="{% trans 'Save validators' %}" 
+           class="shop-property-input-button" 
+           name="Save"/>    
+   </form>

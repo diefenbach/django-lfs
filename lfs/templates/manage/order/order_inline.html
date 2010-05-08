@@ -280,12 +280,20 @@
                         </div>
                     {% endif %}
                 {% endfor %}
+                
+                {% if item.product.is_configurable_product %}
+                    {% for ipv in item.properties.all %}
+                        <div>
+                           {{ ipv.property.name }} : {{ ipv.value }} {{ ipv.property.unit }}
+                        </div>
+                    {% endfor %}                    
+                {% endif %}
             </td>
             <td class="number">
                {{item.product_amount}}
             </td>
             <td class="number">
-               {{item.product_price_gross|currency}}
+               {{item.product_price_gross|currency}}{% if item.product.price_unit %} / {{ item.product.price_unit }}{% endif %}
             </td>
             <td class="number">
                ({{item.product_tax|currency}})

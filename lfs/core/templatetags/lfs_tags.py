@@ -18,6 +18,7 @@ from lfs.cart import utils as cart_utils
 from lfs.catalog.models import Category
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import STANDARD_PRODUCT
+from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.page.models import Page
 from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
@@ -235,12 +236,12 @@ def product_navigation(context, product):
         if request.user.is_superuser:
             products = Product.objects.filter(
                 categories__in = categories,
-                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS),
+                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT),
             ).order_by(sorting)
         else:
             products = Product.objects.filter(
                 categories__in = categories,
-                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS),
+                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT),
                 active = True,
             ).order_by(sorting)
 
@@ -487,6 +488,19 @@ def currency(price, arg=None):
     return price
 
 @register.filter
+def decimal_l10n(value):
+    """Localizes 
+    """
+    shop = lfs_get_object_or_404(Shop, pk=1)
+    if shop.default_country.code == "de":
+        # replace . and , for german format
+        a, b = value.split(".")
+        a = a.replace(",", ".")
+        value = "%s,%s" % (a, b)
+
+    return value
+
+@register.filter
 def number(price, arg=None):
     """
     """
@@ -511,7 +525,7 @@ def quantity(quantity):
     if str(quantity).find(".") == -1:
         return quantity
     else:
-        return int(quantity)
+        return int(float(quantity))
 
 @register.filter
 def sub_type_name(sub_type, arg=None):
