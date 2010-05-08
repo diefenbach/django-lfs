@@ -4,31 +4,11 @@
     <form id="active-images-update-form"
           action="{% url lfs_manage_update_active_images product.id %}"
           method="post">
-        <input type="radio" 
+        <input type="checkbox" 
                name="active_images"
-               value="active_parent_images"
-               id="active_parent_images"
-               {% ifequal product.active_images 0 %}checked="checked"{% endifequal %} />                   
+               {% if product.active_images %}checked="checked"{% endif %} />                   
         <label for="active_accessories">
-            Nur Bilder von Basisartikel anzeigen
-        </label>
-        
-        <input type="radio" 
-               name="active_images"
-               value="active_variant_images"
-               id="active_variant_images"
-               {% ifequal product.active_images 1 %}checked="checked"{% endifequal %} />                   
-        <label for="active_accessories">
-            Nur Bilder von Variante anzeigen
-        </label>
-        
-        <input type="radio" 
-               name="active_images"
-               value="active_parent_variant_images"
-               id="active_parent_variant_images"
-               {% ifequal product.active_images 2 %}checked="checked"{% endifequal %} />                   
-        <label for="active_accessories">
-            Bilder vom Basisartikel und Variante anzeigen
+            {% trans 'Active images' %}
         </label>
         <input class="images-update-button"
                type="submit" value="Update" />
