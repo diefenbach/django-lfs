@@ -19,8 +19,8 @@ Glossary
         see :term:`Slot`
     
     Static Block
-        A static block is a piece of HTML which can be reused by several content
-        objects like the shop, a category or a product.
+        A static block is a piece of HTML which can be reused from several 
+        content objects like the shop, a category or a product.
         
     Templates
         Templates are used to structure the content (text, image, files, sub pages)

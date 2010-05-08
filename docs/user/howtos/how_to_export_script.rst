@@ -2,14 +2,14 @@ How to create a export script
 =============================
 
 Overview
-========
+--------
 
 LFS provides a generic export engine for products :doc:`(see here for more)
 </user/utils/export>`. In this tutorial you will learn how to create your own 
 scripts to format the data like you want to.
 
 Step by Step
-============
+------------
 
 In order to create a new export script you should first create a new Django
 application (or use an existing one). This is beyond this tutorial. If you do
@@ -47,8 +47,7 @@ the products, like so:
 
     register(export, "acme.com")
 
-The code explained
-------------------
+**The code explained**
 
 1-6
     Some simple Python and Django imports. These may vary for your code.
@@ -75,7 +74,7 @@ The code explained
 
 
 Getting ready
-=============
+-------------
 
 Now you can go the management interface, create a new export, select the
 products and your newly script and call it via the ``Export`` button.

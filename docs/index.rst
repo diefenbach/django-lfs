@@ -22,6 +22,7 @@ Management reference
 .. toctree::
    :maxdepth: 2
 
+   user/shop/index.rst
    user/catalog/index.rst
    user/properties/index.rst
    user/html/index.rst
@@ -50,6 +51,7 @@ How-tos
    user/howtos/how_to_paypal.rst
    user/howtos/how_to_shipping_method
    user/howtos/how_to_payment_method
+   user/howtos/how_to_export_script
 
 Developers
 ==========

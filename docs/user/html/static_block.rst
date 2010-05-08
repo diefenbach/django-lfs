@@ -7,7 +7,7 @@ Static Block
 Overview
 ========
 
-* A static block is a piece of HTML which can be reused by several content
+* A static block is a piece of HTML which can be reused from several content
   objects like the shop, a category or a product.
 
 .. image:: /images/static_blocks.*

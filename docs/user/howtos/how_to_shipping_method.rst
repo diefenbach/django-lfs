@@ -1,3 +1,7 @@
+.. index:: Shipping method, Shipping methods
+
+.. _howto-shipping-methods:
+
 How to manage shipping methods
 ==============================
 
@@ -112,3 +116,6 @@ with criteria.
 * to update the prices change the priority and/or the value of the price and click on ``Update prices``.
 * To delete the prices select the checkboxes of the prices you want delete and click on ``Delete prices``.
 
+.. seealso::
+
+    * :ref:`Manage shipping methods <management-shipping-methods>`
