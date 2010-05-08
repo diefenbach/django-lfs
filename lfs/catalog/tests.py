@@ -1408,12 +1408,20 @@ class ProductTestCase(TestCase):
         self.assertEqual(image.instance.title, "Image 2")
 
         # Switch to own images
-        self.v1.active_images = True
+        self.v1.active_images = 1
         self.v1.save()
 
         # We get the image of the variant now
         image = self.v1.get_image()
         self.assertEqual(image.instance.title, "Image 4")
+        
+        # Switch to own images
+        self.v1.active_images = 2
+        self.v1.save()
+
+        # We get the image of the variant now
+        image = self.v1.get_image()
+        self.assertEqual(image.instance.title, "Image 1")
 
     def test_get_images(self):
         """
@@ -1437,12 +1445,20 @@ class ProductTestCase(TestCase):
         self.assertEqual(titles, ["Image 2", "Image 3", "Image 1"])
 
         # Switch to own images
-        self.v1.active_images = True
+        self.v1.active_images = 1
         self.v1.save()
 
         # We get the images of the variant now
         titles = [i.title for i in self.v1.get_images()]
         self.assertEqual(titles, ["Image 4", "Image 5"])
+        
+        # Switch to images from parent and variant
+        self.v1.active_images = 2
+        self.v1.save()
+
+        # We get the images of the variant now
+        titles = [i.title for i in self.v1.get_images()]
+        self.assertEqual(titles, ["Image 2", "Image 3", "Image 1", "Image 4", "Image 5"])
 
     def test_get_sub_images(self):
         """
@@ -1466,12 +1482,20 @@ class ProductTestCase(TestCase):
         self.assertEqual(titles, ["Image 3", "Image 1"])
 
         # Switch to own images
-        self.v1.active_images = True
+        self.v1.active_images = 1
         self.v1.save()
 
         # We get the images of the variant now
         titles = [i.title for i in self.v1.get_sub_images()]
         self.assertEqual(titles, ["Image 5"])
+        
+        # Switch to own images
+        self.v1.active_images = 2
+        self.v1.save()
+
+        # We get the images of the variant now
+        titles = [i.title for i in self.v1.get_sub_images()]
+        self.assertEqual(titles, ["Image 2", "Image 3", "Image 4", "Image 5"])
 
     def test_get_meta_title_1(self):
         """Tests the correct return of meta title, foremost the replacement

@@ -115,10 +115,16 @@ def update_active_images(request, product_id):
     """Updates the images activity state for product variants.
     """
     product = Product.objects.get(pk=product_id)
-    if request.POST.get("active_images"):
-        product.active_images = True
+    selected_active_images = request.POST['active_images']
+
+    if selected_active_images == "active_variant_images":
+        product.active_images = 1
+    elif selected_active_images == "active_parent_images":
+        product.active_images = 0
+    elif selected_active_images == "active_parent_variant_images":
+        product.active_images = 2
     else:
-        product.active_images = False
+        product.active_images = 0
     product.save()
 
     return lfs.core.utils.set_message_cookie(
