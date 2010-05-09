@@ -2,6 +2,10 @@
 {% load i18n %}
 
 {% block left_slot %}
+    <div class="navigation-left-title">
+        {% trans "Taxes" %}
+    </div>
+
     {% for tax in taxes %}
         <div>
             <a href="{% url lfs_manage_tax tax.id %}"

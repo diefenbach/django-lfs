@@ -1,3 +1,8 @@
+{% load i18n %}
+<div class="navigation-left-title">
+    {% trans "Payment methods" %}
+</div>
+
 {% for payment_method in payment_methods %}
     <div>
         <a class="selectable {% ifequal current_id payment_method.id %}selected{% endifequal %}" 

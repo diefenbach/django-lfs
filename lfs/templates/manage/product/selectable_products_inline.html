@@ -2,11 +2,12 @@
 
 <br clear="both" />
 {% for product in page.object_list %}
-    <div style="padding-bottom:2px">
+    <div>
         <a class="selectable {% if product.is_variant %}variant{% endif %} {% ifequal product_id product.id %}selected{% endifequal %}"
            id="selectable-product-id_{{ product.id }}"
            href="{% url lfs.manage.views.manage_product product.id %}?page={{ page.number }}">
-            {{product.get_name}}
+            {{ product.get_name }}
         </a>
     </div>
 {% endfor %}
+</div>

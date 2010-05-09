@@ -2,6 +2,9 @@
 {% load i18n %}
 
 {% block left_slot %}
+    <div class="navigation-left-title">
+        {% trans "Pages" %}
+    </div>
     {% for page in pages %}
         <div>
             <a href="{% url lfs_manage_page page.id %}"

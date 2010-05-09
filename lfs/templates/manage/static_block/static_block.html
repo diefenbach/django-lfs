@@ -2,9 +2,12 @@
 {% load i18n %}
 
 {% block left_slot %}
+    <div class="navigation-left-title">
+        {% trans "Static blocks" %}
+    </div>
     <div class="navigation-left">
         {% for static_block in static_blocks %}
-            <div class="navigation-left-item">
+            <div>
                 <a href="{% url lfs_manage_static_block static_block.id %}"
                    class="selectable {% ifequal static_block.id current_id %}selected{% endifequal %}">
                     {{ static_block.name }}

@@ -14,10 +14,13 @@
 {% endblock %}
 
 {% block left_slot %}
-    <div class="action-groups">
+    <div class="navigation-left-title">
+        {% trans "Actions" %}
+    </div>
+    <div class="navigation-left action-groups">
         {% for group in groups %}
             {% if group.actions.all %}
-                <h2 class="action-group">{{ group.name }}</h2>
+                <div class="action-group">{{ group.name }}</div>
                 {% for action in group.actions.all %}
                     <div class="action">
                         <a href="{% url lfs_manage_action action.id %}"

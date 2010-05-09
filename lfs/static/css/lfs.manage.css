@@ -135,12 +135,12 @@ table.lfs-manage-table td {
 }
 
 td.left-slot {
-  padding: 10px 20px 0 0;
+  padding: 20px 20px 0 0;
   width: 200px;
 }
 
 td.middle-slot {
-  padding-top: 10px;
+    padding-top:20px;
 }
 
 th, td {
@@ -424,8 +424,17 @@ body.manage-product ul.manage-categories.root {
     width: 80px;
 }
 
+.navigation-left-title {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.navigation-left a {
+    padding: 2px 0;
+}
+
 div.site-actions {
-    margin: 20px 0;
+    margin-bottom: 20px;
 }
 
 div.site-actions img {
@@ -438,26 +447,12 @@ span.delete {
     background: url(/media/lfs/icons/delete.png) no-repeat;
 }
 
-div.navigation-left {
-    padding-top: 55px;    
-}
-
-div.action-groups {
-    padding-top: 45px;
-}
-
-div.navigation-left-item a,
 div.action a {
     padding: 4px 0 4px 20px;
 }
 
-h2.action-group {
-    text-decoration: none;
-    border-bottom: none;
-    font-size: 110%;
+.action-group {
     font-weight: bold;
-    padding: 5px 0 0 0;
-    margin: 0;
 }
 
 /* Forms */

@@ -14,6 +14,9 @@
 {% endblock %}
 
 {% block left_slot %}
+    <div class="navigation-left-title">
+        {% trans "Delivery times" %}
+    </div>
     {% for delivery_time in delivery_times %}
         <div>
             <a href="{% url lfs_manage_delivery_time delivery_time.id %}">
@@ -24,10 +27,6 @@
 {% endblock %}
 
 {% block content %}
-    <div class="site-actions">
-        <span class="label">{% trans 'Please fill out the form below' %}</span>        
-    </div>
-
     <div id="manage-tabs">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add delivery time' %}</a></li>            
