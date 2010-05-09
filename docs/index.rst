@@ -79,6 +79,7 @@ How-tos
    developer/howtos/how_to_add_own_templates.rst
    developer/howtos/how_to_add_own_payment_methods.rst
    developer/howtos/how_to_export_product_script
+   developer/howtos/how_to_add_action_groups
    
 Indices and tables
 ==================
