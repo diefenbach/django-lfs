@@ -56,6 +56,11 @@ How-tos
 Developers
 ==========
 
+.. toctree::
+   :maxdepth: 1
+
+   developer/settings
+
 API
 ---
 
