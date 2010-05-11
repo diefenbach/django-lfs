@@ -2,6 +2,9 @@
 {% load i18n %}
 
 {% block left_slot %}
+    <div class="navigation-left-title">
+        {% trans "Properties" %}
+    </div>
     {% for property in properties %}
         <div>
             <a href="{% url lfs_manage_shop_property property.id %}"
