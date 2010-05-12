@@ -332,7 +332,7 @@ def add_to_cart(request, product_id=None):
 
     # Save the cart to update modification date
     cart.save()
-    
+
     try:
         url_name = settings.LFS_AFTER_ADD_TO_CART
     except AttributeError:

@@ -48,6 +48,7 @@ urlpatterns += patterns('lfs.catalog.views',
     url(r'^select-variant$', "select_variant", name="lfs_select_variant"),
     url(r'^select-variant-from-properties$', "select_variant_from_properties", name="lfs_select_variant_from_properties"),    
     url(r'^file/(?P<id>[-\w]*)', "file", name="lfs_file"),    
+    url(r'^calculate-price/(?P<id>[-\w]*)', "calculate_price", name="lfs_calculate_price"),
 )
 
 # Checkout

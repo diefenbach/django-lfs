@@ -169,5 +169,5 @@ def _udpate_positions(group_id):
     """
     """
     for i, gp in enumerate(GroupsPropertiesRelation.objects.filter(group=group_id)):
-        gp.position = i+1
+        gp.position = (i+1) * 10
         gp.save()    

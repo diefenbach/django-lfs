@@ -2,6 +2,9 @@
 {% load i18n %}
 
 {% block left_slot %}
+    <div class="navigation-left-title">
+        {% trans "Property groups" %}
+    </div>
     {% for property_group in property_groups %}
         <div>
             <a href="{% url lfs_manage_property_group property_group.id %}"

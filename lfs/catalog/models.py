@@ -43,8 +43,6 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
 from lfs.catalog.settings import CATEGORY_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import CAT_CATEGORY_PATH
-
-
 from lfs.tax.models import Tax
 from lfs.manufacturer.models import Manufacturer
 
@@ -904,9 +902,9 @@ class Product(models.Model):
         """
         from lfs.core.templatetags.lfs_tags import currency
         price = currency(self.get_price())
-        
+
         if self.price_unit:
-            price += " / " + self.price_unit 
+            price += " / " + self.price_unit
 
         return price
 
@@ -919,7 +917,6 @@ class Product(models.Model):
         for token in tokens:
             if token.startswith("property"):
                 mo = re.match("property\((\d+)\)")
-                import pdb; pdb.set_trace()
                 ppv = ProductPropertyValue.objects.get(product=self, property_id=mo.groups()[0])
 
         try:
@@ -967,6 +964,20 @@ class Product(models.Model):
 
         # local
         for property in self.properties.filter(type=PROPERTY_INPUT_FIELD).order_by("productspropertiesrelation"):
+            properties.append(property)
+
+        return properties
+
+    def get_property_select_fields(self):
+        """Returns all properties which are `select types`.
+        """
+        # global
+        properties = []
+        for property_group in self.property_groups.all():
+            properties.extend(property_group.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("groupspropertiesrelation"))
+
+        # local
+        for property in self.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("productspropertiesrelation"):
             properties.append(property)
 
         return properties
@@ -1243,6 +1254,9 @@ class PropertyGroup(models.Model):
     name = models.CharField(blank=True, max_length=50)
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="property_groups")
 
+    class Meta:
+        ordering = ("name", )
+
     def __unicode__(self):
         return self.name
 
@@ -1320,7 +1334,7 @@ class Property(models.Model):
 
     class Meta:
         verbose_name_plural = _(u"Properties")
-        ordering = ["position"]
+        ordering = ["name"]
 
     def __unicode__(self):
         return self.name
@@ -1589,9 +1603,9 @@ class StaticBlock(models.Model):
 
     display_files
         If True the files are displayed for download within the static block.
-        
+
     files
-        The files of the static block.        
+        The files of the static block.
     """
     name = models.CharField(_(u"Name"), max_length=30)
     display_files = models.BooleanField(_(u"Display files"), default=True)

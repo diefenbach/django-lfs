@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
+from lfs.catalog.models import PropertyOption
 
 class Cart(models.Model):
     """A cart is a container for products which are supposed to be bought by a
@@ -137,14 +138,22 @@ class CartItem(models.Model):
     def get_price_gross(self, standard=False):
         """Returns the gross price of the product.
         """
-        if not self.product.is_configurable_product() or \
-           not self.product.active_price_calculation:
-            return self.product.get_price_gross() * self.amount
+        if not self.product.is_configurable_product():
+            price = self.product.get_price_gross()
         else:
-            try:                
-                return self.get_calculated_price() * self.amount
-            except:
-                return self.product.get_price_gross() * self.amount
+            if self.product.active_price_calculation:
+                try:                
+                    price = self.get_calculated_price()
+                except:
+                    price = self.product.get_price_gross()
+            else:
+                price = self.product.get_price_gross()
+                for property in self.properties.all():
+                    value = int(float(property.value))
+                    option = PropertyOption.objects.get(pk=value)
+                    price += option.price
+            
+        return price * self.amount
 
     def get_calculated_price(self):
         """Returns the calculated gross price of the product.
@@ -169,9 +178,10 @@ class CartItem(models.Model):
         return eval(pc)
 
     def get_tax(self):
-        """Returns the absolute tax of the product.
+        """Returns the absolute tax of the item.
         """
-        return self.product.get_tax() * self.amount
+        rate = self.product.get_tax_rate()
+        return self.get_price_gross() * (rate / (rate + 100)) * self.amount
 
 class CartItemPropertyValue(models.Model):
     """Stores a value for a property and item.

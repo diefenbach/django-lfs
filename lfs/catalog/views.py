@@ -22,10 +22,12 @@ from lfs.cart.views import add_to_cart
 from lfs.catalog.models import Category
 from lfs.catalog.models import File
 from lfs.catalog.models import Product
+from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT
 from lfs.catalog.settings import SELECT
 from lfs.catalog.settings import CONTENT_PRODUCTS
 from lfs.core.utils import LazyEncoder
+from lfs.core.templatetags import lfs_tags
 from lfs.utils import misc as lfs_utils
 
 def file(request, language=None, id=None):
@@ -47,6 +49,28 @@ def select_variant(request):
     result = simplejson.dumps({
         "product" : product_inline(request, variant_id),
         "message" : msg,
+    }, cls = LazyEncoder)
+
+    return HttpResponse(result)
+
+def calculate_price(request, id):
+    """
+    """
+    product = Product.objects.get(pk = id)
+
+    price = product.get_price()
+    for key, option_id in request.POST.items():
+        if key.startswith("property"):
+            try:
+                po = PropertyOption.objects.get(pk=option_id)
+            except (ValueError, PropertyOption.DoesNotExist):
+                pass
+            else:
+                price += po.price
+
+    result = simplejson.dumps({
+        "price" : lfs_tags.currency(price),
+        "message" : _("Price has been changed according to your selection."),
     }, cls = LazyEncoder)
 
     return HttpResponse(result)

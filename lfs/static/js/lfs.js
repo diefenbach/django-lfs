@@ -62,15 +62,6 @@ $(function() {
         $("#id_score").val($(this).attr("data"));
     });
 
-    // General ################################################################
-    // $().ajaxSend(function(r,s){
-    //     $("#spinner").show()
-    // });
-    //
-    // $().ajaxStop(function(r,s){
-    //     $("#spinner").hide()
-    // });
-
     // Product ################################################################
 
     $("a.product-image").lightBox({
@@ -113,6 +104,23 @@ $(function() {
             success : function(data) {
                 var data = JSON.parse(data);
                 $("#product-inline").html(data["product"]);
+                $.jGrowl(data["message"]);
+
+                // Re-bind lightbox
+                $("a.product-image").lightBox({
+                    "txtImage" : "Bild",
+                    "txtOf" : " von "
+                });
+            }
+        });
+    });
+
+    $("select.cp-property").livequery("change", function() {
+        $("#product-form").ajaxSubmit({
+            url : $("#cp-url").attr("data"),
+            success : function(data) {
+                var data = JSON.parse(data);
+                $(".standard-price-value").html(data["price"]);
                 $.jGrowl(data["message"]);
 
                 // Re-bind lightbox

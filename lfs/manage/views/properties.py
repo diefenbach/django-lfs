@@ -24,7 +24,7 @@ class PropertyDataForm(ModelForm):
     """
     class Meta:
         model = Property
-        fields = ["name", "filterable", "price", "unit", "position", "display_on_product", "display_no_results"]
+        fields = ["name", "filterable", "unit", "position", "display_on_product", "display_no_results"]
 
 class PropertyTypeForm(ModelForm):
     """Form to manage property type.
@@ -75,7 +75,7 @@ def manage_property(request, id, template_name="manage/properties/property.html"
         form = PropertyDataForm(instance=property, data=request.POST)
         if form.is_valid():
             new_property = form.save()
-
+            
             return lfs.core.utils.set_message_cookie(
                 url = reverse("lfs_manage_shop_property", kwargs={"id" : property.id}),
                 msg = _(u"Property type has been saved."),
@@ -300,6 +300,7 @@ def add_option(request, property_id):
             else:
                 option.position = request.POST.get("position-%s" % option_id, 99)
                 option.name = request.POST.get("name-%s" % option_id, "")
+                option.price = request.POST.get("price-%s" % option_id, "")
                 option.save()
         message = _(u"Options have been update.")
 
@@ -331,5 +332,5 @@ def _update_positions(property):
     """Updates position of options of given property.
     """
     for i, option in enumerate(property.options.all()):
-        option.position = i+1
+        option.position = (i+1) * 10
         option.save()

@@ -489,7 +489,7 @@ def currency(price, arg=None):
 
 @register.filter
 def decimal_l10n(value):
-    """Localizes 
+    """Localizes
     """
     shop = lfs_get_object_or_404(Shop, pk=1)
     if shop.default_country.code == "de":
@@ -529,7 +529,7 @@ def quantity(quantity):
 
 @register.filter
 def sub_type_name(sub_type, arg=None):
-    """
+    """Returns the sub type name for the sub type with passed sub_type id.
     """
     try:
         return PRODUCT_TYPE_LOOKUP[sub_type]
@@ -538,17 +538,40 @@ def sub_type_name(sub_type, arg=None):
 
 @register.filter
 def multiply(score, pixel):
-    """
+    """Returns the result of score * pixel
     """
     return score * pixel
 
 @register.filter
 def option_name(option_id):
+    """Returns the option name for option with passed id.
     """
-    """
+    try:
+        option_id = "%.0f" % float(option_id)
+    except ValueError:
+        pass
+
     try:
         option = PropertyOption.objects.get(pk=option_id)
     except (PropertyOption.DoesNotExist, ValueError):
         return option_id
     else:
         return option.name
+        
+def option_name_for_property_value(property_value):
+    """Returns the value or the option name for passed property_value
+    """
+    if property_value.property.is_select_field:
+        try:
+            option_id = int(float(property_value.value))
+        except ValueError:
+            return property_value.value
+
+        try:
+            option = PropertyOption.objects.get(pk=option_id)
+        except (PropertyOption.DoesNotExist, ValueError):
+            return option_id
+        else:
+            return option.name
+
+    return property_value.value        
