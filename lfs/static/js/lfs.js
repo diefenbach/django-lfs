@@ -72,13 +72,13 @@ $(function() {
     // Hack to make the change event on radio buttons for IE working
     // http://stackoverflow.com/questions/208471/getting-jquery-to-recognise-change-in-ie
     if ($.browser.msie) {
-        $("input.variant").livequery("click", function() {
+        $("input.variant").live("click", function() {
             this.blur();
             this.focus();
         });
     };
 
-    $("input.variant").livequery("change", function() {
+    $("input.variant").live("change", function() {
         var url = $(this).parents("table.product-variants").attr("data");
         var variant_id = $(this).attr("value");
         $("#product-form").ajaxSubmit({
@@ -98,7 +98,7 @@ $(function() {
         });
     });
 
-    $("select.property").livequery("change", function() {
+    $("select.property").live("change", function() {
         $("#product-form").ajaxSubmit({
             url : $("#product-form").attr("data"),
             success : function(data) {
@@ -115,7 +115,7 @@ $(function() {
         });
     });
 
-    $("select.cp-property").livequery("change", function() {
+    $("select.cp-property").live("change", function() {
         $("#product-form").ajaxSubmit({
             url : $("#cp-url").attr("data"),
             success : function(data) {
@@ -133,7 +133,7 @@ $(function() {
     });
 
     // Cart ###################################################################
-    $(".add-accessory-link").livequery("click", function() {
+    $(".add-accessory-link").live("click", function() {
         var url = $(this).attr("href");
         $.post(url, function(data) {
             $("#cart-items").html(data);
@@ -141,7 +141,7 @@ $(function() {
         return false;
     });
 
-    $(".delete-cart-item").livequery("click", function() {
+    $(".delete-cart-item").live("click", function() {
         var url = $(this).attr("href");
         $.post(url, function(data) {
             $("#cart-inline").html(data);
@@ -150,7 +150,7 @@ $(function() {
     });
 
     // TODO: Optimize
-    $(".cart-amount").livequery("change", function() {
+    $(".cart-amount").live("change", function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {
@@ -159,7 +159,7 @@ $(function() {
         })
     });
 
-    $(".cart-country").livequery("change", function() {
+    $(".cart-country").live("change", function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {
@@ -168,7 +168,7 @@ $(function() {
         })
     });
 
-    $(".cart-shipping-method").livequery("change", function() {
+    $(".cart-shipping-method").live("change", function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {
@@ -177,7 +177,7 @@ $(function() {
         })
     });
 
-    $(".cart-payment-method").livequery("change", function() {
+    $(".cart-payment-method").live("change", function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {
@@ -187,7 +187,7 @@ $(function() {
     });
 
     // Search ##################################################################
-    $("#search-input").livequery("blur", function(e) {
+    $("#search-input").live("blur", function(e) {
         window.setTimeout(function() {
             $("#livesearch-result").hide();
         }, 200);
@@ -227,7 +227,7 @@ $(function() {
         table.show();
     }
 
-    $("#id_no_shipping").livequery("click", function() {
+    $("#id_no_shipping").live("click", function() {
         var table = $('.shipping-address');
         if ($("#id_no_shipping:checked").val() != null) {
             table.slideUp("fast");
@@ -259,7 +259,7 @@ $(function() {
         $("#bank-account").hide();
     }
 
-    $(".payment-methods").livequery("click", function() {
+    $(".payment-methods").live("click", function() {
         if ($(".payment-method-type-1:checked").val() != null) {
             $("#bank-account").slideDown("fast");
         }
@@ -274,11 +274,11 @@ $(function() {
         }
     })
 
-    $(".update-checkout").livequery("click", function() {
+    $(".update-checkout").live("click", function() {
         update_checkout()
     });
 
-    $("#id_shipping_country, #id_invoice_country").livequery("change", function() {
+    $("#id_shipping_country, #id_invoice_country").live("change", function() {
         update_checkout()
     });
 
@@ -292,7 +292,7 @@ $(function() {
         }
     }
 
-    $("#voucher").livequery("change", function() {
+    $("#voucher").live("change", function() {
         var url = $(this).attr("data");
         var voucher = $(this).attr("value");
         $.post(url, { "voucher" : voucher }, function(data) {
