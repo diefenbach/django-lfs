@@ -24,7 +24,6 @@ from lfs.checkout.forms import OnePageCheckoutForm
 from lfs.checkout.settings import CHECKOUT_TYPE_ANON
 from lfs.checkout.settings import CHECKOUT_TYPE_AUTH
 from lfs.checkout.settings import INVOICE_PREFIX, SHIPPING_PREFIX
-from lfs.core.settings import LFS_ADDRESS_L10N
 from lfs.customer import utils as customer_utils
 from lfs.customer.models import Address
 from lfs.customer.models import BankAccount
@@ -218,7 +217,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                 valid_shipping_address = True
                 if not form.cleaned_data.get("no_shipping"):
                     # save shipping details
-                    customer.selected_shipping_address._firstname = request.POST.get("shipping_firstname")
+                    customer.selected_shipping_address.firstname = request.POST.get("shipping_firstname")
                     customer.selected_shipping_address.lastname = request.POST.get("shipping_lastname")
                     customer.selected_shipping_address.phone = request.POST.get("shipping_phone")
                     customer.selected_shipping_address.email = request.POST.get("shipping_email")
