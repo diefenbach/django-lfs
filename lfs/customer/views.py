@@ -20,7 +20,7 @@ from django.http import HttpResponse
 # lfs imports
 import lfs
 from lfs.checkout.settings import INVOICE_PREFIX, SHIPPING_PREFIX
-from lfs.core.settings import LFS_ADDRESS_L10N
+from lfs.core.settings import POSTAL_ADDRESS_L10N
 from lfs.customer import utils as customer_utils
 from lfs.customer.forms import EmailForm
 from lfs.customer.forms import RegisterForm
@@ -258,7 +258,7 @@ def address_inline(request, prefix, form):
         customer = customer_utils.get_or_create_customer(request)
         address_form_class = get_postal_form_class(country_code)
         if request.method == 'POST':
-            if LFS_ADDRESS_L10N == True:
+            if POSTAL_ADDRESS_L10N == True:
                 address_form = address_form_class(prefix=prefix, data=request.POST,)
             else:
                 address_form = PostalAddressForm(prefix=prefix, data=request.POST,)
@@ -326,7 +326,7 @@ def save_postal_address(request, customer, prefix):
             existing_address = True
             if customer_selected_address.postal_address is not None:
                 # we have an existing address so we update it
-                exising_postal_address = True
+                existing_postal_address = True
                 postal_address = customer_selected_address.postal_address
                 postal_address.line1 = request.POST.get(prefix + "-line1")
                 postal_address.line2 = request.POST.get(prefix + "-line2")
@@ -341,7 +341,7 @@ def save_postal_address(request, customer, prefix):
         customer_selected_address = Address.objects.create(customer=customer)
     if not existing_postal_address:
         postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST)
-        postal_address, created = PostalAddress.objects.get_or_create(line1=request.POST.get(prefix + "-line1"),
+        postal_address = PostalAddress.objects.create(line1=request.POST.get(prefix + "-line1"),
                                                        line2=request.POST.get(prefix + "-line2"),
                                                        city=request.POST.get(prefix + "-city"),
                                                        state=request.POST.get(prefix + "-state"),

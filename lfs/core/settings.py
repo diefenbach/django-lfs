@@ -5,4 +5,4 @@ ACTION_PLACE_TABS = 1
 ACTION_PLACE_CHOICES = [
     (ACTION_PLACE_TABS, _(u"Top Menu")),
 ]
-LFS_ADDRESS_L10N = getattr(settings, 'LFS_ADDRESS_L10N', True)
+POSTAL_ADDRESS_L10N = getattr(settings, 'POSTAL_ADDRESS_L10N', True)

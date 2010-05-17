@@ -26,6 +26,8 @@ from lfs.customer import utils as customer_utils
 from lfs.voucher.models import Voucher
 from lfs.voucher.settings import MESSAGES
 
+from countries.models import Country
+
 def cart(request, template_name="lfs/cart/cart.html"):
     """The main view of the cart.
     """
@@ -283,14 +285,17 @@ def refresh_cart(request):
     customer = customer_utils.get_or_create_customer(request)
 
     # Update country
-    country = request.POST.get("country")
+    country_iso = request.POST.get("country")
+    country = Country.objects.get(iso=country_iso)
     if customer.selected_shipping_address:
-        customer.selected_shipping_address.country_id = country
+        customer.selected_shipping_address.postal_address.country = country
+        customer.selected_shipping_address.postal_address.save()
         customer.selected_shipping_address.save()
     if customer.selected_invoice_address:
-        customer.selected_invoice_address.country_id = country
+        customer.selected_invoice_address.postal_address.country = country
+        customer.selected_invoice_address.postal_address.save()
         customer.selected_invoice_address.save()
-    customer.selected_country_id = country
+    customer.selected_country_id = country_iso
 
     # NOTE: The customer has to be saved already here in order to calculate
     # a possible new valid shippig method below, which coulb be triggered by

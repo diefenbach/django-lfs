@@ -156,6 +156,33 @@ class CheckoutTestCase(TestCase):
         checkout_response = self.c.get(reverse('lfs_checkout'))
         self.assertContains(checkout_response, 'Smallville', status_code=200)
 
+    def test_checkout_country_after_cart_country_change(self):
+        """Tests that checkout page gets populated with correct details
+        """
+        # login as our customer
+        logged_in = self.c.login(username=self.username, password=self.password)
+        self.assertEqual(logged_in, True)
+
+        cart_response = self.c.get(reverse('lfs_cart'))
+        self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
+        user = User.objects.get(username=self.username)
+        customer = Customer.objects.get(user=user)
+        fr = Country.objects.get(iso="FR")
+        self.assertEquals(customer.selected_invoice_address.postal_address.country, fr)
+
+        # change the country in the cart
+        de = Country.objects.get(iso="DE")
+        cart_response = self.c.post('/refresh-cart', {'country': de.iso})
+        customer = Customer.objects.get(user=user)
+        self.assertEquals(customer.selected_shipping_address.postal_address.country, de)
+        self.assertEquals(customer.selected_invoice_address.postal_address.country, de)
+
+        cart_response = self.c.get(reverse('lfs_cart'))
+        self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
+
+        checkout_response = self.c.get(reverse('lfs_checkout'))
+        self.assertContains(checkout_response, '<option value="DE" selected="selected">GERMANY</option>', status_code=200)
+
     def test_order_phone_email_set_after_checkout(self):
         # login as our customer
         logged_in = self.c.login(username=self.username, password=self.password)
