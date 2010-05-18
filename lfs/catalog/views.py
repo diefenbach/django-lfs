@@ -1,5 +1,6 @@
 # python imports
 import urllib
+import math
 
 # django imports
 from django.conf import settings
@@ -22,6 +23,7 @@ from lfs.cart.views import add_to_cart
 from lfs.catalog.models import Category
 from lfs.catalog.models import File
 from lfs.catalog.models import Product
+from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT
 from lfs.catalog.settings import SELECT
@@ -49,6 +51,34 @@ def select_variant(request):
     result = simplejson.dumps({
         "product" : product_inline(request, variant_id),
         "message" : msg,
+    }, cls = LazyEncoder)
+
+    return HttpResponse(result)
+
+def calculate_packing(request, id, quantity=None, as_string=False, template_name="lfs/catalog/packing_result.html"):
+    """
+    """
+    product = Product.objects.get(pk = id)
+    
+    if quantity is None:
+        quantity = float(request.POST.get("quantity"))
+
+    packs = math.ceil(quantity / product.packing_unit)
+    real_quantity = packs * product.packing_unit
+    price = real_quantity * product.get_price()
+
+    html = render_to_string(template_name, RequestContext(request, {
+        "price" : price,
+        "product" : product,
+        "packs" : int(packs),
+        "real_quantity" : real_quantity,
+    }))
+
+    if as_string:
+        return html
+
+    result = simplejson.dumps({
+        "html" : html,
     }, cls = LazyEncoder)
 
     return HttpResponse(result)
@@ -443,6 +473,11 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
     if message:
         message = urllib.unquote(message)
 
+    if product.active_packing_unit:
+        packing_result = calculate_packing(request, id, 1, True)
+    else:
+        packing_result = ""
+
     result = render_to_string(template_name, RequestContext(request, {
         "product" : product,
         "variant" : variant,
@@ -450,6 +485,7 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
         "product_accessories" : variant.get_accessories(),
         "properties" : properties,
         "message" : message,
+        "packing_result" : packing_result,
     }))
 
     cache.set(cache_key, result)

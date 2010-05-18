@@ -85,7 +85,7 @@ table.lfs-manage-table th {
 }
 
 table.lfs-manage-table td {
-    vertical-align: middle;
+    vertical-align: top;
 }
 
 .lfs-manage-table.full {

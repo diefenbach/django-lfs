@@ -141,6 +141,10 @@ class OrderItem(models.Model):
     def __unicode__(self):
         return "%s" % self.product_name
 
+    @property
+    def amount(self):
+        return self.product_amount
+
 class OrderItemPropertyValue(models.Model):
     """Stores a value for a property and order item.
 

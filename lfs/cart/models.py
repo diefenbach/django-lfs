@@ -7,6 +7,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
+import lfs.catalog.utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
@@ -116,7 +117,7 @@ class CartItem(models.Model):
     """
     cart = models.ForeignKey(Cart, verbose_name=_(u"Cart"))
     product = models.ForeignKey(Product, verbose_name=_(u"Product"))
-    amount = models.IntegerField(_(u"Quantity"), blank=True, null=True)
+    amount = models.FloatField(_(u"Quantity"), blank=True, null=True)
     creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
     modification_date = models.DateTimeField(_(u"Modification date"), auto_now=True, auto_now_add=True)
 
@@ -140,6 +141,10 @@ class CartItem(models.Model):
         """
         if not self.product.is_configurable_product():
             price = self.product.get_price_gross()
+
+            if self.product.active_packing_unit:
+                amount = lfs.catalog.utils.calculate_real_amount(self.product, self.amount)
+                return self.product.get_price_gross() * amount
         else:
             if self.product.active_price_calculation:
                 try:                
@@ -181,7 +186,7 @@ class CartItem(models.Model):
         """Returns the absolute tax of the item.
         """
         rate = self.product.get_tax_rate()
-        return self.get_price_gross() * (rate / (rate + 100)) * self.amount
+        return self.get_price_gross() * (rate / (rate + 100))
 
 class CartItemPropertyValue(models.Model):
     """Stores a value for a property and item.

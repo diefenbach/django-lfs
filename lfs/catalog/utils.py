@@ -1,8 +1,6 @@
-"""Provides several utilities for catalog related stuff.
-"""
-
 # python imports
 import re
+import math
 
 # django imports
 from django.core.cache import cache
@@ -681,3 +679,14 @@ def calculate_quantity(product_ids, property_id, min, max):
         amount += 1
 
     return amount
+    
+def calculate_packages(product, quantity):
+    """
+    """
+    return math.ceil(quantity / product.packing_unit)
+ 
+def calculate_real_amount(product, quantity):
+    """
+    """
+    packages = calculate_packages(product, quantity)
+    return packages * product.packing_unit
