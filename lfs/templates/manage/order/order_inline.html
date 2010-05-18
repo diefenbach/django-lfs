@@ -284,13 +284,19 @@
                 {% if item.product.is_configurable_product %}
                     {% for ipv in item.properties.all %}
                         <div>
-                           {{ ipv.property.name }} : {{ ipv.value }} {{ ipv.property.unit }}
+                           {{ ipv.property.name }} : {{ ipv|option_name_for_property_value }} {{ ipv.property.unit }}
                         </div>
                     {% endfor %}                    
                 {% endif %}
             </td>
             <td class="number">
-               {{item.product_amount}}
+               {{item.product_amount}} {{ item.product.price_unit }}
+                {% if item.product.active_packing_unit %} 
+                    <span class="packing-unit">
+                        ({{ item|packages }} {{ item.product.packing_unit_unit }})
+                    </span>
+                {% endif %}
+               
             </td>
             <td class="number">
                {{item.product_price_gross|currency}}{% if item.product.price_unit %} / {{ item.product.price_unit }}{% endif %}

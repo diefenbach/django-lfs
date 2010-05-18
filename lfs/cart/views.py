@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.cart.utils
+import lfs.catalog.utils
 import lfs.voucher.utils
 import lfs.discounts.utils
 from lfs.caching.utils import lfs_get_object_or_404
@@ -259,6 +260,9 @@ def add_to_cart(request, product_id=None):
     except TypeError:
         quantity = 1
 
+    if product.active_packing_unit:
+        quantity = lfs.catalog.utils.calculate_real_amount(product, quantity)
+
     cart = cart_utils.get_or_create_cart(request)
 
     # Add properties to cart item
@@ -374,11 +378,17 @@ def refresh_cart(request):
 
     # Update Amounts
     for item in cart.items():
-        amount = request.POST.get("amount-cart-item_%s" % item.id, 0)
+        amount = request.POST.get("amount-cart-item_%s" % item.id, 0)        
         try:
-            item.amount = int(amount)
+            amount = float(amount)
         except ValueError:
-            item.amount = 1
+            amount = 1
+        
+        if item.product.active_packing_unit:
+            item.amount = lfs.catalog.utils.calculate_real_amount(item.product, float(amount))
+        else:
+            item.amount = int(float(amount))
+
         item.save()
 
     # IMPORTANT: We have to send the signal already here, because the valid

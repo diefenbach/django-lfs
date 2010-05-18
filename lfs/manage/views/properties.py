@@ -75,7 +75,7 @@ def manage_property(request, id, template_name="manage/properties/property.html"
         form = PropertyDataForm(instance=property, data=request.POST)
         if form.is_valid():
             new_property = form.save()
-            
+
             return lfs.core.utils.set_message_cookie(
                 url = reverse("lfs_manage_shop_property", kwargs={"id" : property.id}),
                 msg = _(u"Property type has been saved."),
@@ -83,7 +83,7 @@ def manage_property(request, id, template_name="manage/properties/property.html"
 
     else:
         form = PropertyDataForm(instance=property)
-    
+
     return render_to_response(template_name, RequestContext(request, {
         "property" : property,
         "properties" : Property.objects.filter(local=False),
@@ -120,8 +120,8 @@ def update_property_type(request, id):
 def input_field(request, property, template_name="manage/properties/property_input_field.html"):
     """Displays the form of the input field propery type
     """
-
     input_type_form = InputFieldForm(instance=property)
+
     return render_to_string(template_name, RequestContext(request, {
         "property" : property,
         "input_type_form" : input_type_form,

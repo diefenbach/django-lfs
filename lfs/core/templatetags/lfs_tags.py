@@ -1,20 +1,18 @@
+# python imports
+import math
+
 # django imports
 from django import template
-from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.template import RequestContext
-from django.template import Library, Node, TemplateSyntaxError
-from django.template.loader import render_to_string
+from django.template import Node, TemplateSyntaxError
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.catalog.utils
 import lfs.utils.misc
 from lfs.caching.utils import lfs_get_object_or_404
-from lfs.cart import utils as cart_utils
 from lfs.catalog.models import Category
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import STANDARD_PRODUCT
@@ -356,26 +354,26 @@ def top_level_categories(context):
         "categories" : categories,
     }
 
-@register.inclusion_tag('lfs/shop/menu.html', takes_context=True)
-def menu(context):
-    """
-    """
-    request = context.get("request")
-    current_categories = get_current_categories(request)
-
-    categories = []
-    for category in Category.objects.filter(parent = None):
-        categories.append({
-            "id" : category.id,
-            "slug" : category.slug,
-            "name" : category.name,
-            "selected" : category in current_categories
-        })
-
-    return {
-        "categories" : categories,
-        "MEDIA_URL" : context.get("MEDIA_URL"),
-    }
+# @register.inclusion_tag('lfs/shop/menu.html', takes_context=True)
+# def menu(context):
+#     """
+#     """
+#     request = context.get("request")
+#     current_categories = get_current_categories(request)
+# 
+#     categories = []
+#     for category in Category.objects.filter(parent = None):
+#         categories.append({
+#             "id" : category.id,
+#             "slug" : category.slug,
+#             "name" : category.name,
+#             "selected" : category in current_categories
+#         })
+# 
+#     return {
+#         "categories" : categories,
+#         "MEDIA_URL" : context.get("MEDIA_URL"),
+#     }
 
 class TopLevelCategory(Node):
     """Calculates the current top level category.
@@ -522,7 +520,7 @@ def quantity(quantity):
 
     Means "1.0" is transformed to "1", whereas "1.1" is not transformed at all.
     """
-    if str(quantity).find(".") == -1:
+    if str(quantity).find(".0") == -1:
         return quantity
     else:
         return int(float(quantity))
@@ -547,7 +545,7 @@ def option_name(option_id):
     """Returns the option name for option with passed id.
     """
     try:
-        option_id = "%.0f" % float(option_id)
+        option_id = int(float(option_id))
     except ValueError:
         pass
 
@@ -557,7 +555,8 @@ def option_name(option_id):
         return option_id
     else:
         return option.name
-        
+
+@register.filter
 def option_name_for_property_value(property_value):
     """Returns the value or the option name for passed property_value
     """
@@ -575,3 +574,10 @@ def option_name_for_property_value(property_value):
             return option.name
 
     return property_value.value        
+    
+@register.filter
+def packages(cart_item):
+    """Returns the packages based on product's package unit and cart items 
+    amount.
+    """
+    return int(math.ceil(cart_item.amount / cart_item.product.packing_unit))

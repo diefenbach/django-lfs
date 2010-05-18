@@ -187,7 +187,58 @@
         </div>
 
     </fieldset>
+    <fieldset>        
+        <div class="field">
+            <div class="label">
+                {{ form.active_packing_unit.label_tag }}:
+            </div>
 
+            {% if form.ordered_at.errors %}
+                <div class="error">
+                    {{ form.active_packing_unit }}
+                    {{ form.active_packing_unit.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.active_packing_unit }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.packing_unit.label_tag }}:
+            </div>
+
+            {% if form.ordered_at.errors %}
+                <div class="error">
+                    {{ form.packing_unit }}
+                    {{ form.packing_unit.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.packing_unit }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.packing_unit_unit.label_tag }}:
+            </div>
+
+            {% if form.ordered_at.errors %}
+                <div class="error">
+                    {{ form.packing_unit_unit }}
+                    {{ form.packing_unit_unit.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.packing_unit_unit }}
+                </div>
+            {% endif %}
+        </div>
+    </fieldset>
     <input class="product-stock-button"
            type="submit"
            value="{% trans 'Save stock' %}" />

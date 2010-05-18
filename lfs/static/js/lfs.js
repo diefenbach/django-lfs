@@ -115,7 +115,17 @@ $(function() {
         });
     });
 
-    $("select.cp-property").live("change", function() {
+    $(".product-quantity").livequery("change", function() {
+        $("#product-form").ajaxSubmit({
+            url : $("#packing-url").attr("data"),
+            success : function(data) {
+                var data = JSON.parse(data);
+                $(".packing-result").html(data["html"]);
+            }
+        });
+    });
+
+    $("select.cp-property").livequery("change", function() {
         $("#product-form").ajaxSubmit({
             url : $("#cp-url").attr("data"),
             success : function(data) {

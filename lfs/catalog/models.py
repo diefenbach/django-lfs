@@ -514,6 +514,10 @@ class Product(models.Model):
     manage_stock_amount = models.BooleanField(_(u"Manage stock amount"), default=True)
     stock_amount = models.FloatField(_(u"Stock amount"), default=0)
 
+    active_packing_unit = models.BooleanField(_(u"Active packing unit"), default=False)
+    packing_unit = models.FloatField(_(u"Packing unit"), blank=True, null=True)
+    packing_unit_unit = models.CharField(_(u"Unit"), blank=True, max_length=30)
+
     static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="products")
 
     # Dimension
