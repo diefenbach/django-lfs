@@ -131,7 +131,7 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, blank=True, null=True)
 
     # Values of the product at the time the orders has been created
-    product_amount = models.IntegerField(_(u"Product quantity"), blank=True, null=True)
+    product_amount = models.FloatField(_(u"Product quantity"), blank=True, null=True)
     product_sku = models.CharField(_(u"Product SKU"), blank=True, max_length=100)
     product_name = models.CharField(_(u"Product name"), blank=True, max_length=100)
     product_price_net = models.FloatField(_(u"Product price net"), default=0.0)
