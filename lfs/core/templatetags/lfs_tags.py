@@ -489,6 +489,7 @@ def currency(price, arg=None):
 def decimal_l10n(value):
     """Localizes
     """
+    value = str(value)
     shop = lfs_get_object_or_404(Shop, pk=1)
     if shop.default_country.code == "de":
         # replace . and , for german format
