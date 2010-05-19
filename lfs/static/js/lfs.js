@@ -115,7 +115,7 @@ $(function() {
         });
     });
 
-    $(".product-quantity").livequery("change", function() {
+    $(".product-quantity").livequery("keyup", function() {
         $("#product-form").ajaxSubmit({
             url : $("#packing-url").attr("data"),
             success : function(data) {
