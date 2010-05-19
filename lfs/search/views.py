@@ -24,7 +24,6 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
         # Products
         query = Q(active=True) & \
                 Q(name__icontains=phrase) | \
-                Q(description__icontains=phrase) | \
                 Q(manufacturer__name__icontains=phrase) | \
                 Q(sku_manufacturer__icontains=phrase) & \
                 Q(sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
@@ -54,7 +53,6 @@ def search(request, template_name="lfs/search/search_results.html"):
     # Products
     query = Q(active=True) & \
             Q(name__icontains=phrase) | \
-            Q(description__icontains=phrase) | \
             Q(manufacturer__name__icontains=phrase) | \
             Q(sku_manufacturer__icontains=phrase) & \
             Q(sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
