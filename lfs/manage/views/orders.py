@@ -19,6 +19,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.core.utils
+import lfs.core.signals
 import lfs.order.settings
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
@@ -298,9 +299,16 @@ def change_order_state(request):
     state_id = request.POST.get("new-state")
     order = get_object_or_404(Order, pk=order_id)
 
-    order.state = state_id
-    order.state_modified = datetime.now()
-    order.save()
+    try:
+        order.state = int(state_id)
+    except ValueError:
+        pass
+    else:
+        order.state_modified = datetime.now()
+        order.save()
+
+    if order.state == lfs.order.settings.SENT:
+        lfs.core.signals.order_sent.send({"order" : order, "request" : request})
 
     msg = _(u"State has been changed")
 
