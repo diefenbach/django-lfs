@@ -447,13 +447,7 @@ def payment_inline(request, form, template_name="lfs/checkout/payment_inline.htm
     Passing the form to be able to display payment forms within the several
     payment methods, e.g. credit card form.
     """
-    # Payment
-    try:
-        selected_payment_method_id = request.POST.get("payment_method")
-        selected_payment_method = PaymentMethod.objects.get(pk=selected_payment_method_id)
-    except PaymentMethod.DoesNotExist:
-        selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
-
+    selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
     valid_payment_methods = lfs.payment.utils.get_valid_payment_methods(request)
 
     return render_to_string(template_name, RequestContext(request, {
