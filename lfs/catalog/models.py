@@ -1,11 +1,13 @@
 # python imports
+import re
 import uuid
 
-# django imports
+# # django imports
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -17,6 +19,7 @@ from lfs.catalog.settings import ACTIVE_FOR_SALE_CHOICES, CONTENT_CATEGORIES
 from lfs.catalog.settings import ACTIVE_FOR_SALE_STANDARD
 from lfs.catalog.settings import ACTIVE_FOR_SALE_YES
 from lfs.catalog.settings import PRODUCT_TYPE_CHOICES
+from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import VARIANT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
@@ -34,6 +37,7 @@ from lfs.catalog.settings import PROPERTY_TYPE_CHOICES
 from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD
 from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
+from lfs.catalog.settings import PROPERTY_INPUT_FIELD
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_CHOICES
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_AUTOMATIC
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
@@ -41,7 +45,6 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
 from lfs.catalog.settings import CATEGORY_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import CAT_CATEGORY_PATH
-
 from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
@@ -384,6 +387,10 @@ class Product(models.Model):
         - effective_price:
             Only for internal usage (price filtering).
 
+        - price unit
+            The unit of the product's price. Could be per piece, per meter,
+            etc.
+
         - short_description
             The short description of the product. This is used within overviews.
 
@@ -492,6 +499,7 @@ class Product(models.Model):
     sku = models.CharField(_(u"SKU"), blank=True, max_length=30)
     price = models.FloatField(_(u"Price"), default=0.0)
     effective_price = models.FloatField(_(u"Price"), blank=True)
+    price_unit = models.CharField(blank=True, max_length=10)
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
     images = generic.GenericRelation("Image", verbose_name=_(u"Images"),
@@ -522,6 +530,10 @@ class Product(models.Model):
     ordered_at = models.DateField(_(u"Ordered at"), blank=True, null=True)
     manage_stock_amount = models.BooleanField(_(u"Manage stock amount"), default=True)
     stock_amount = models.FloatField(_(u"Stock amount"), default=0)
+
+    active_packing_unit = models.BooleanField(_(u"Active packing unit"), default=False)
+    packing_unit = models.FloatField(_(u"Packing unit"), blank=True, null=True)
+    packing_unit_unit = models.CharField(_(u"Unit"), blank=True, max_length=30)
 
     static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="products")
 
@@ -560,6 +572,10 @@ class Product(models.Model):
     active_meta_keywords = models.BooleanField(_(u"Active meta keywords"), default=False)
     active_dimensions = models.BooleanField(_(u"Active dimensions"), default=False)
     template = models.PositiveSmallIntegerField(_(u"Product template"), blank=True, null=True, max_length=400, choices=PRODUCT_TEMPLATES)
+
+    # Price calculation
+    active_price_calculation = models.BooleanField(_(u"Active price calculation"), default=False)
+    price_calculation = models.CharField(_(u"Price Calculation"), blank=True, max_length=100)
 
     # Manufacturer
     sku_manufacturer = models.CharField(blank=True, max_length=100)
@@ -881,7 +897,8 @@ class Product(models.Model):
         return object.for_sale_price
 
     def get_price_gross(self):
-        """Returns the real gross price of the product.
+        """Returns the real gross price of the product. This is the base of
+        all price and tax calculations :-)
         """
         object = self
 
@@ -890,14 +907,45 @@ class Product(models.Model):
 
         if object.get_for_sale():
             if object.is_variant() and not object.active_for_sale_price:
-                return object.parent.get_for_sale_price()
+                price = object.parent.get_for_sale_price()
             else:
-                return object.get_for_sale_price()
+                price = object.get_for_sale_price()
         else:
             if object.is_variant() and not object.active_price:
-                return object.parent.price
+                price = object.parent.price
             else:
-                return object.price
+                price = object.price
+
+        return price
+
+    def get_price_with_unit(self):
+        """Returns the formatted gross price of the product
+        """
+        from lfs.core.templatetags.lfs_tags import currency
+        price = currency(self.get_price())
+
+        if self.price_unit:
+            price += " / " + self.price_unit
+
+        return price
+
+    def calculate_price(self, price):
+        """Calulates the price by given entered price calculation.
+        """
+        pc = self.price_calculation
+        tokens = self.price_calculation.split(" ")
+
+        for token in tokens:
+            if token.startswith("property"):
+                mo = re.match("property\((\d+)\)")
+                ppv = ProductPropertyValue.objects.get(product=self, property_id=mo.groups()[0])
+
+        try:
+            mult = float(self.price_calculation)
+        except:
+            mult = 1
+
+        return mult * price
 
     def get_price_net(self):
         """Returns the real net price of the product. Takes care whether the
@@ -924,6 +972,34 @@ class Product(models.Model):
         """
         properties = self.get_global_properties()
         properties.extend(self.get_local_properties())
+
+        return properties
+
+    def get_property_input_fields(self):
+        """Returns all properties which are `input types`.
+        """
+        # global
+        properties = []
+        for property_group in self.property_groups.all():
+            properties.extend(property_group.properties.filter(type=PROPERTY_INPUT_FIELD).order_by("groupspropertiesrelation"))
+
+        # local
+        for property in self.properties.filter(type=PROPERTY_INPUT_FIELD).order_by("productspropertiesrelation"):
+            properties.append(property)
+
+        return properties
+
+    def get_property_select_fields(self):
+        """Returns all properties which are `select types`.
+        """
+        # global
+        properties = []
+        for property_group in self.property_groups.all():
+            properties.extend(property_group.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("groupspropertiesrelation"))
+
+        # local
+        for property in self.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("productspropertiesrelation"):
+            properties.append(property)
 
         return properties
 
@@ -1095,6 +1171,11 @@ class Product(models.Model):
         """
         return self.sub_type == STANDARD_PRODUCT
 
+    def is_configurable_product(self):
+        """Returns True if product is configurable product.
+        """
+        return self.sub_type == CONFIGURABLE_PRODUCT
+
     def is_product_with_variants(self):
         """Returns True if product is product with variants.
         """
@@ -1163,7 +1244,7 @@ class ProductAccessories(models.Model):
           The proposed amount of accessories for the product.
     """
     product = models.ForeignKey("Product", verbose_name=_(u"Product"), related_name="productaccessories_product")
-    accessory = models.ForeignKey("Product", verbose_name=_(u"Acessory"), related_name="productaccessories_accessory")
+    accessory = models.ForeignKey("Product", verbose_name=_(u"Accessory"), related_name="productaccessories_accessory")
     position = models.IntegerField( _(u"Position"), default=999)
     quantity = models.FloatField(_(u"Quantity"), default=1)
 
@@ -1194,6 +1275,9 @@ class PropertyGroup(models.Model):
     name = models.CharField(blank=True, max_length=50)
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="property_groups")
 
+    class Meta:
+        ordering = ("name", )
+
     def __unicode__(self):
         return self.name
 
@@ -1205,27 +1289,47 @@ class Property(models.Model):
 
     A property belongs to exactly one group xor product.
 
-    Parameters:
-        - groups, product:
-            The group or product it belongs to. A property can belong to several
-            groups and/or to one product.
-        - name:
-            Is displayed within forms.
-        - position:
-            The position of the property within a product.
-        - filterable:
-            If True the property is used for filtered navigation.
-        - display_no_results
-            If True filter ranges with no products will be displayed. Otherwise
-            they will be removed.
-        - unit:
-            Something like cm, mm, m, etc.
-        - local
-            If True the property belongs to exactly one product
-        - type
-           char field, number field or select field
-        - step
-           manuel step for filtering
+    **Parameters**:
+    groups, product:
+        The group or product it belongs to. A property can belong to several
+        groups and/or to one product.
+
+    name:
+        Is displayed within forms.
+
+    position:
+        The position of the property within a product.
+
+    filterable:
+        If True the property is used for filtered navigation.
+
+    display_no_results
+        If True filter ranges with no products will be displayed. Otherwise
+        they will be removed.
+
+    unit:
+        Something like cm, mm, m, etc.
+
+    local
+        If True the property belongs to exactly one product
+
+    type
+       char field, number field or select field
+
+    step
+       manuel step for filtering
+
+    price
+        The price of the property. Only used for configurable products.
+
+    unit_min
+        The minimal unit of the property the shop customer can enter.
+
+    unit_max
+        The maximal unit of the property the shop customer can enter.
+
+    unit_step
+        The step width the shop customer can edit.
     """
     name = models.CharField( _(u"Name"), max_length=100)
     groups = models.ManyToManyField(PropertyGroup, verbose_name=_(u"Group"), blank=True, null=True, through="GroupsPropertiesRelation", related_name="properties")
@@ -1237,6 +1341,12 @@ class Property(models.Model):
     filterable = models.BooleanField(default=True)
     display_no_results = models.BooleanField(_(u"Display no results"), default=False)
     type = models.PositiveSmallIntegerField(_(u"Type"), choices=PROPERTY_TYPE_CHOICES, default=PROPERTY_TEXT_FIELD)
+    price = models.FloatField(_(u"Price"), blank=True, null=True)
+
+    # Number input field
+    unit_min = models.FloatField(_(u"Min"), blank=True, null=True)
+    unit_max = models.FloatField(_(u"Max"), blank=True, null=True)
+    unit_step = models.FloatField(_(u"Step"), blank=True, null=True)
 
     step_type = models.PositiveSmallIntegerField(_(u"Step type"), choices=PROPERTY_STEP_TYPE_CHOICES, default=PROPERTY_STEP_TYPE_AUTOMATIC)
     step = models.IntegerField(_(u"Step"), blank=True, null=True)
@@ -1245,7 +1355,7 @@ class Property(models.Model):
 
     class Meta:
         verbose_name_plural = _(u"Properties")
-        ordering = ["position"]
+        ordering = ["name"]
 
     def __unicode__(self):
         return self.name
@@ -1261,6 +1371,10 @@ class Property(models.Model):
     @property
     def is_number_field(self):
         return self.type == PROPERTY_NUMBER_FIELD
+
+    @property
+    def is_input_field(self):
+        return self.type == PROPERTY_INPUT_FIELD
 
     @property
     def is_range_step_type(self):
@@ -1453,17 +1567,72 @@ class Image(models.Model):
     def __unicode__(self):
         return self.title
 
+class File(models.Model):
+    """A downloadable file.
+
+    **Attributes:**
+
+    title
+        The title of the image. Used within the title tag of the file.
+
+    slug
+        The URL of the file.
+
+    content
+        The content object the file belongs to (optional).
+
+    position
+        The ordinal number within the content object. Used to order the files.
+
+    description
+        A long description of the file. Can be used within the content
+        (optional).
+
+    file
+        The binary file.
+    """
+    title = models.CharField(blank=True, max_length=100)
+    slug = models.SlugField()
+
+    content_type = models.ForeignKey(ContentType, verbose_name=_(u"Content type"), related_name="files", blank=True, null=True)
+    content_id = models.PositiveIntegerField(_(u"Content id"), blank=True, null=True)
+    content = generic.GenericForeignKey(ct_field="content_type", fk_field="content_id")
+
+    position = models.SmallIntegerField(default=999)
+    description = models.CharField(blank=True, max_length=100)
+    file = models.FileField(upload_to="files")
+
+    class Meta:
+        ordering = ("position", )
+
+    def __unicode__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("lfs_file", kwargs={"id" : self.id})
+
 class StaticBlock(models.Model):
     """A block of static HTML which can be assigned to content objects.
 
-    Attributes:
-        - name
-          The name of the static block.
-        - html
-          The static HTML of the block.
+    **Attributes**:
+
+    name
+        The name of the static block.
+
+    html
+        The static HTML of the block.
+
+    display_files
+        If True the files are displayed for download within the static block.
+
+    files
+        The files of the static block.
     """
     name = models.CharField(_(u"Name"), max_length=30)
-    html = models.TextField( _(u"HTML"), blank=True)
+    display_files = models.BooleanField(_(u"Display files"), default=True)
+    html = models.TextField(_(u"HTML"), blank=True)
+    files = generic.GenericRelation(File, verbose_name=_(u"Files"),
+        object_id_field="content_id", content_type_field="content_type")
 
     def __unicode__(self):
         return self.name

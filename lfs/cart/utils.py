@@ -68,6 +68,12 @@ def get_cart_costs(request, cart, total=False):
             payment_costs = payment_utils.get_payment_costs(request, payment_method)
             cart_price += payment_costs["price"]
             cart_tax += payment_costs["tax"]
+            
+            # Discounts
+            import lfs.discounts.utils
+            discounts = lfs.discounts.utils.get_valid_discounts(request)
+            for discount in discounts:
+                cart_price = cart_price - discount["price"]
 
         cart_costs = {"price" : cart_price, "tax" : cart_tax}
         cache.set(cache_key, cart_costs)

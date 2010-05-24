@@ -14,6 +14,9 @@
 {% endblock %}
 
 {% block left_slot %}
+    <div class="navigation-left-title">
+        {% trans "Manufacturer" %}
+    </div>
     <div id="selectable-factories-inline">
         {{ selectable_manufacturers_inline|safe }}
     </div>  

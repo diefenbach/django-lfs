@@ -3,6 +3,7 @@ from lfs.criteria.models.criteria_objects import CriteriaObjects
 from lfs.criteria.models.criteria import CountryCriterion
 from lfs.criteria.models.criteria import CombinedLengthAndGirthCriterion
 from lfs.criteria.models.criteria import CartPriceCriterion
+from lfs.criteria.models.criteria import DistanceCriterion
 from lfs.criteria.models.criteria import HeightCriterion
 from lfs.criteria.models.criteria import LengthCriterion
 from lfs.criteria.models.criteria import PaymentMethodCriterion
@@ -106,10 +107,14 @@ def save_criteria(request, object):
                except (TypeError, ValueError):
                    value = 0.0               
                c = WeightCriterion.objects.create(operator=operator, weight=value)               
-               
-               
            elif type_ == "user":
-               UserCriterion.objects.create(operator=operator)
+               c = UserCriterion.objects.create(operator=operator)
+           elif type_ == "distance":
+               try:
+                   value = float(value)
+               except (TypeError, ValueError):
+                   value = 0.0
+               c = DistanceCriterion.objects.create(operator=operator, distance=value)               
            
            position = request.POST.get("position-%s" % id)
            CriteriaObjects.objects.create(content=object, criterion=c, position=position)

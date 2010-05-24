@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<h2 class="heading-middle">{% trans 'Options' %}</h2>    
+<h2 class="heading-middle">{% trans 'Options' %}</h2>
 <form id="shop-property-options-form"
       action="{% url lfs_add_shop_property_option property.id %}"
       method="post">
@@ -11,6 +11,9 @@
             </th>
             <th>
                 {% trans 'Name' %}
+            </th>
+            <th>
+                {% trans 'Price (optional)' %}
             </th>
             <th></th>
         </tr>
@@ -27,6 +30,10 @@
                        name="name"/>
             </td>
             <td>
+                <input type="text"
+                       name="price"/>
+            </td>
+            <td>
                 <input type="submit"
                        value="{% trans 'Add option' %}"
                        name="add"
@@ -36,35 +43,40 @@
         {% for option in property.options.all %}
             <tr>
                 <td>
-                    <input type="hidden" 
+                    <input type="hidden"
                            name="option"
-                           value="{{option.id}}" />
-                           
+                           value="{{ option.id }}" />
+
                     <input class="number"
                            type="text"
                            size="3"
-                           name="position-{{option.id}}"
-                           value="{{option.position}}" />                                    
+                           name="position-{{ option.id }}"
+                           value="{{ option.position }}" />
                 </td>
                 <td>
                     <input type="text"
-                           name="name-{{option.id}}"
-                           value="{{option.name}}" />
-                    </td>
+                           name="name-{{ option.id }}"
+                           value="{{ option.name }}" />
+                </td>
+                <td>
+                    <input type="text"
+                           name="price-{{ option.id }}"
+                           value="{{ option.price }}" />
+                </td>
                 <td>
                     <a class="confirmation-link"
-                       data="{% trans 'Delete?' %}" 
+                       data="{% trans 'Delete?' %}"
                        href="{% url lfs_delete_shop_property_option option.id %}">
-                        <img src="{{MEDIA_URL}}lfs/icons/cross.png"
+                        <img src="{{ MEDIA_URL }}lfs/icons/cross.png"
                              alt="{% trans 'Delete' %}"
                              title="{% trans 'Delete option' %}" />
                     </a>
                 </td>
             </tr>
-        {% endfor %}                        
+        {% endfor %}
     </table>
-    <input type="submit" 
-           value="{% trans 'Update options' %}" 
+    <input type="submit"
+           value="{% trans 'Update options' %}"
            name="update"
            class="shop-property-add-option-button" />
 </form>

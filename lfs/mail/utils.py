@@ -9,8 +9,31 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs.core.utils
 
+def send_order_sent_mail(order):
+    """Sends an order has been sent mail to the shop customer
+    """
+    shop = lfs.core.utils.get_default_shop()
+
+    subject = _(u"Your order has been received")
+    from_email = shop.from_email
+    to = [order.customer_email]
+    bcc = shop.get_notification_emails()
+
+    # text
+    text = render_to_string("lfs/mail/order_sent_mail.txt", {"order" : order})
+    mail = EmailMultiAlternatives(
+        subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
+
+    # html
+    html = render_to_string("lfs/mail/order_sent_mail.html", {
+        "order" : order
+    })
+
+    mail.attach_alternative(html, "text/html")
+    mail.send(fail_silently=True)
+
 def send_order_received_mail(order):
-    """Sends and order received mail to the shop customer.
+    """Sends an order received mail to the shop customer.
 
     Customer information is taken from the provided order.
     """
@@ -32,7 +55,7 @@ def send_order_received_mail(order):
     })
 
     mail.attach_alternative(html, "text/html")
-    mail.send()
+    mail.send(fail_silently=True)
 
 def send_customer_added(user):
     """Sends a mail to a newly registered user.
@@ -57,7 +80,7 @@ def send_customer_added(user):
     })
 
     mail.attach_alternative(html, "text/html")
-    mail.send()
+    mail.send(fail_silently=True)
 
 def send_review_added(review):
     """Sends a mail to shop admins that a new review has been added
@@ -88,4 +111,4 @@ def send_review_added(review):
     })
 
     mail.attach_alternative(html, "text/html")
-    mail.send()
+    mail.send(fail_silently=True)

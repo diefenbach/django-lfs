@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 from lfs.catalog.models import Product
+from lfs.catalog.models import Property
 from lfs.order.settings import ORDER_STATES
 from lfs.order.settings import SUBMITTED
 from lfs.shipping.models import ShippingMethod
@@ -130,7 +131,7 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, blank=True, null=True)
 
     # Values of the product at the time the orders has been created
-    product_amount = models.IntegerField(_(u"Product quantity"), blank=True, null=True)
+    product_amount = models.FloatField(_(u"Product quantity"), blank=True, null=True)
     product_sku = models.CharField(_(u"Product SKU"), blank=True, max_length=100)
     product_name = models.CharField(_(u"Product name"), blank=True, max_length=100)
     product_price_net = models.FloatField(_(u"Product price net"), default=0.0)
@@ -139,3 +140,26 @@ class OrderItem(models.Model):
 
     def __unicode__(self):
         return "%s" % self.product_name
+
+    @property
+    def amount(self):
+        return self.product_amount
+
+class OrderItemPropertyValue(models.Model):
+    """Stores a value for a property and order item.
+
+    **Attributes**
+
+    order_item
+        The order item - and in this way the product - for which the value
+        should be stored.
+
+    property
+        The property for which the value should be stored.
+
+    value
+        The value which is stored.
+    """
+    order_item = models.ForeignKey(OrderItem, verbose_name=_(u"Order item"), related_name="properties")
+    property = models.ForeignKey(Property, verbose_name = _(u"Property"))
+    value = models.CharField("Value", blank=True, max_length=100)

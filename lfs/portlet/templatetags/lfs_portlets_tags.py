@@ -150,7 +150,7 @@ def lfs_topseller_portlet(context, title=None, limit=5):
 
     portlet = TopsellerPortlet()
     portlet.title = title
-    portlet.limi = limit
+    portlet.limit = limit
 
     return {
         "html" : portlet.render(context)

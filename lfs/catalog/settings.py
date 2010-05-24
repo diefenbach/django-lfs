@@ -12,22 +12,26 @@ ACTIVE_FOR_SALE_CHOICES = [
 STANDARD_PRODUCT = "0"
 PRODUCT_WITH_VARIANTS = "1"
 VARIANT = "2"
+CONFIGURABLE_PRODUCT = "3"
 
 PRODUCT_TYPE_LOOKUP = {
     STANDARD_PRODUCT : _(u"Standard"),
     PRODUCT_WITH_VARIANTS : _(u"Product with variants"),
     VARIANT : _(u"Variant"),
+    CONFIGURABLE_PRODUCT : _(u"Configurable product")
 }
 
 PRODUCT_TYPE_CHOICES = [
     (STANDARD_PRODUCT, _(u"Standard")),
     (PRODUCT_WITH_VARIANTS, _(u"Product with variants")),
     (VARIANT, _(u"Variant")),
+    (CONFIGURABLE_PRODUCT, _(u"Configurable product")),
 ]
 
 PRODUCT_TYPE_FORM_CHOICES = [
     (STANDARD_PRODUCT, _(u"Standard")),
     (PRODUCT_WITH_VARIANTS, _(u"Product with variants")),
+    (CONFIGURABLE_PRODUCT, _(u"Configurable product")),
 ]
 
 
@@ -68,11 +72,13 @@ DELIVERY_TIME_UNIT_SINGULAR = {
 PROPERTY_NUMBER_FIELD = 1
 PROPERTY_TEXT_FIELD = 2
 PROPERTY_SELECT_FIELD = 3
+PROPERTY_INPUT_FIELD = 4
 
 PROPERTY_TYPE_CHOICES = (
     (PROPERTY_NUMBER_FIELD, _(u"Number field")),
     (PROPERTY_TEXT_FIELD, _(u"Text field")),
     (PROPERTY_SELECT_FIELD, _(u"Select field")),
+    (PROPERTY_INPUT_FIELD, _(u"Input field")),    
 )
 
 PROPERTY_STEP_TYPE_AUTOMATIC  = 1
@@ -110,3 +116,11 @@ PRODUCT_TEMPLATES = (
         "name":_(u"Default template")
         },),
 ) 
+
+CP_PRICE_SUM = 1
+CP_PRICE_CALC = 2
+
+CP_PRICES = (
+    (CP_PRICE_SUM, ("Sume")),
+    (CP_PRICE_CALC, ("Calculated")),
+)

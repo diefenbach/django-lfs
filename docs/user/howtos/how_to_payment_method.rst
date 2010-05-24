@@ -1,3 +1,8 @@
+.. index:: Payment method, Payment methods
+
+.. _howto-payment-methods:
+
+=============================
 How to manage payment methods
 =============================
 
@@ -5,7 +10,7 @@ In this how-to you will learn how to add/edit payment methods and how to
 add criteria and prices for them.
 
 Overview
---------
+========
 
 * You can add as many payment methods you want.
 
@@ -19,7 +24,7 @@ Overview
   (from data tab).
 
 Get started
------------
+===========
 
 In order to add/edit a payment method please go to Management / Shop /
 Payment Methods.
@@ -35,7 +40,7 @@ If you have done that you can edit or enter the data for a payment method as
 described below.
 
 Data
-----
+====
 
 The data tab contains all core data for the payment method.
 
@@ -72,7 +77,7 @@ The data tab contains all core data for the payment method.
 * Click on ``Save``-button
 
 Criteria
---------
+========
 
 Optional you can add some criteria to the payment method. Only when all
 criteria are true the payment method is displayed to the shop customer.
@@ -102,7 +107,7 @@ criteria are true the payment method is displayed to the shop customer.
 * Click on ``Save criteria``.
 
 Prices
-------
+======
 
 Optional you can add many prices to the payment method and restrict them
 with criteria.
@@ -121,3 +126,7 @@ with criteria.
 
 * To update the prices change the priority and/or the value of the price and click on ``Update prices``.
 * To delete the prices select the checkboxes of the prices you want delete and click on ``Delete prices``.
+
+.. seealso::
+
+    * :ref:`Manage shipping methods <management-payment-methods>`

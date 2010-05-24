@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.core.utils
+import lfs.discounts.utils
 import lfs.order.utils
 import lfs.payment.settings
 import lfs.payment.utils
@@ -138,6 +139,11 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
     cart_costs = cart_utils.get_cart_costs(request, cart)
     cart_price = cart_costs["price"] + shipping_costs["price"] + payment_costs["price"]
     cart_tax = cart_costs["tax"] + shipping_costs["tax"] + payment_costs["tax"]
+    
+    discounts = lfs.discounts.utils.get_valid_discounts(request)
+    for discount in discounts:
+        cart_price = cart_price - discount["price"]
+        cart_tax = cart_tax - discount["tax"]
 
     # Voucher
     try:
@@ -166,6 +172,7 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
         "cart_price" : cart_price,
         "cart_tax" : cart_tax,
         "display_voucher" : display_voucher,
+        "discounts" : discounts,        
         "voucher_value" : voucher_value,
         "voucher_tax" : voucher_tax,
         "shipping_price" : shipping_costs["price"],
@@ -379,13 +386,7 @@ def payment_inline(request, form, template_name="lfs/checkout/payment_inline.htm
     Passing the form to be able to display payment forms within the several
     payment methods, e.g. credit card form.
     """
-    # Payment
-    try:
-        selected_payment_method_id = request.POST.get("payment_method")
-        selected_payment_method = PaymentMethod.objects.get(pk=selected_payment_method_id)
-    except PaymentMethod.DoesNotExist:
-        selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
-
+    selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
     valid_payment_methods = lfs.payment.utils.get_valid_payment_methods(request)
 
     return render_to_string(template_name, RequestContext(request, {

@@ -4,6 +4,19 @@ function popup(url, w, h) {
     w.focus();
 }
 
+// Update checkout
+var update_checkout = function() {
+    var data = $(".checkout-form").ajaxSubmit({
+        url : $(".checkout-form").attr("data"),
+        "success" : function(data) {
+            var data = JSON.parse(data);
+            $("#cart-inline").html(data["cart"]);
+            $("#shipping-inline").html(data["shipping"]);
+            $("#payment-inline").html(data["payment"]);
+        }
+    });
+}
+
 $(function() {
 
     // Delay plugin taken from ###############################################
@@ -100,6 +113,33 @@ $(function() {
             success : function(data) {
                 var data = JSON.parse(data);
                 $("#product-inline").html(data["product"]);
+                $.jGrowl(data["message"]);
+
+                // Re-bind lightbox
+                $("a.product-image").lightBox({
+                    "txtImage" : "Bild",
+                    "txtOf" : " von "
+                });
+            }
+        });
+    });
+
+    $(".product-quantity").livequery("keyup", function() {
+        $("#product-form").ajaxSubmit({
+            url : $("#packing-url").attr("data"),
+            success : function(data) {
+                var data = JSON.parse(data);
+                $(".packing-result").html(data["html"]);
+            }
+        });
+    });
+
+    $("select.cp-property").livequery("change", function() {
+        $("#product-form").ajaxSubmit({
+            url : $("#cp-url").attr("data"),
+            success : function(data) {
+                var data = JSON.parse(data);
+                $(".standard-price-value").html(data["price"]);
                 $.jGrowl(data["message"]);
 
                 // Re-bind lightbox
@@ -253,19 +293,6 @@ $(function() {
         }
     })
 
-    // Update checkout
-    var update_checkout = function() {
-        var data = $(".checkout-form").ajaxSubmit({
-            url : $(".checkout-form").attr("data"),
-            "success" : function(data) {
-                var data = JSON.parse(data);
-                $("#cart-inline").html(data["cart"]);
-                $("#shipping-inline").html(data["shipping"]);
-                $("#payment-inline").html(data["payment"]);
-            }
-        });
-    }
-
     var update_invoice_address = function() {
         var data = $(".postal-address").ajaxSubmit({
             url : $(".postal-address").attr("invoice"),
@@ -342,5 +369,4 @@ $(function() {
             update_html(data);
         });
     });
-
 })

@@ -1,0 +1,36 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left_slot %}
+    <div class="navigation-left-title">
+        {% trans "Discounts" %}
+    </div>
+    <div id="discounts">
+        {{ navigation }}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add discount' %}</a></li>
+        </ul>
+
+        <div id="data">
+            <h2>{% trans 'Add discount' %}</h2>
+            <form method="post"
+                 enctype="multipart/form-data">
+                {% include "manage/lfs_form.html" %}
+                <div class="manage-form-buttons">                
+                    <input type="submit" 
+                           value="{% trans 'Add discount' %}" />
+                    {% if  request.META.HTTP_REFERER %}                       
+                        <input type="button"
+                               onclick="window.location='{{request.META.HTTP_REFERER}}'"
+                               value="{% trans 'Cancel' %}" />
+                    {% endif %}
+                </div>
+            </form>                   
+        </div>
+</div>    
+{% endblock %}

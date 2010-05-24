@@ -1,4 +1,5 @@
 # django imports
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import Http404
@@ -12,12 +13,17 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.cart.utils
+import lfs.catalog.utils
 import lfs.voucher.utils
+import lfs.discounts.utils
 from lfs.caching.utils import lfs_get_object_or_404
+from lfs.cart.models import CartItemPropertyValue
 from lfs.core.signals import cart_changed
 from lfs.core import utils as core_utils
 from lfs.catalog.models import Product
+from lfs.catalog.models import Property
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
+
 from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
 from lfs.shipping import utils as shipping_utils
@@ -70,6 +76,11 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     cart_tax = \
         cart_costs["tax"] + shipping_costs["tax"] + payment_costs["tax"]
 
+    # Discounts
+    discounts = lfs.discounts.utils.get_valid_discounts(request)
+    for discount in discounts:
+        cart_price = cart_price - discount["price"]
+
     # Voucher
     voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
     try:
@@ -112,6 +123,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         "selected_country" : selected_country,
         "max_delivery_time" : max_delivery_time,
         "shopping_url" : shopping_url,
+        "discounts" : discounts,
         "display_voucher" : display_voucher,
         "voucher_number" : voucher_number,
         "voucher_value" : voucher_value,
@@ -201,7 +213,47 @@ def add_to_cart(request, product_id=None):
     if (product.is_active() and product.is_deliverable()) == False:
         raise Http404()
 
-    if product.sub_type == PRODUCT_WITH_VARIANTS:
+    # Validate properties (They are added below)
+    properties_dict = {}
+    if product.is_configurable_product():
+        for key, value in request.POST.items():
+            if key.startswith("property-"):
+                try:
+                    property_id = key.split("-")[1]
+                except IndexError:
+                    continue
+                try:
+                    value = value.replace(",", ".")
+                    value = float(value)
+                except ValueError:
+                    value = 0.0
+                property = Property.objects.get(pk=property_id)
+
+                properties_dict[property_id] = unicode(value)
+
+                # validate property's value
+                if property.is_input_field:
+
+                    if (value < property.unit_min) or (value > property.unit_max):
+                        msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name" : property.name, "min" : property.unit_min, "max" : property.unit_max, "unit" : property.unit }
+                        return lfs.core.utils.set_message_cookie(
+                            product.get_absolute_url(), msg)
+
+                    # calculate valid steps
+                    steps = []
+                    x = property.unit_min
+                    while x < property.unit_max:
+                        steps.append("%.2f" % x)
+                        x = x + property.unit_step
+                    steps.append("%.2f" % property.unit_max)
+
+                    value = "%.2f" % value
+                    if value not in steps:
+                        msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": property.name, "value": value, "step" : property.unit_step }
+                        return lfs.core.utils.set_message_cookie(
+                            product.get_absolute_url(), msg)
+
+    elif product.is_product_with_variants:
         variant_id = request.POST.get("variant_id")
         product = lfs_get_object_or_404(Product, pk=variant_id)
 
@@ -210,16 +262,39 @@ def add_to_cart(request, product_id=None):
     except TypeError:
         quantity = 1
 
+    if product.active_packing_unit:
+        quantity = lfs.catalog.utils.calculate_real_amount(product, quantity)
+
     cart = cart_utils.get_or_create_cart(request)
 
-    try:
-        cart_item = CartItem.objects.get(cart = cart, product = product)
-    except ObjectDoesNotExist:
-        cart_item = CartItem(cart=cart, product=product, amount=quantity)
-        cart_item.save()
+    # Add properties to cart item
+    if product.is_configurable_product():
+
+        # if a product with same properties already exist we increase the
+        # amount. Otherwise we create a new one.
+        cart_item = cart.get_item(product, properties_dict)
+        if cart_item:
+            cart_item.amount += quantity
+            cart_item.save()
+        else:
+            cart_item = CartItem(cart=cart, product=product, amount=quantity)
+            cart_item.save()
+
+            for property_id, value in properties_dict.items():
+                property = Property.objects.get(pk=property_id)
+
+                cpv = CartItemPropertyValue.objects.create(
+                    cart_item=cart_item, property_id=property_id, value=value)
+
     else:
-        cart_item.amount += quantity
-        cart_item.save()
+        try:
+            cart_item = CartItem.objects.get(cart = cart, product = product)
+        except ObjectDoesNotExist:
+            cart_item = CartItem(cart=cart, product=product, amount=quantity)
+            cart_item.save()
+        else:
+            cart_item.amount += quantity
+            cart_item.save()
 
     cart_items = [cart_item]
 
@@ -264,8 +339,12 @@ def add_to_cart(request, product_id=None):
     # Save the cart to update modification date
     cart.save()
 
-    url = reverse("lfs.cart.views.added_to_cart")
-    return HttpResponseRedirect(url)
+    try:
+        url_name = settings.LFS_AFTER_ADD_TO_CART
+    except AttributeError:
+        url_name = "lfs.cart.views.added_to_cart"
+
+    return HttpResponseRedirect(reverse(url_name))
 
 def delete_cart_item(request, cart_item_id):
     """Deletes the cart item with the given id.
@@ -304,11 +383,17 @@ def refresh_cart(request):
 
     # Update Amounts
     for item in cart.items():
-        amount = request.POST.get("amount-cart-item_%s" % item.id, 0)
+        amount = request.POST.get("amount-cart-item_%s" % item.id, 0)        
         try:
-            item.amount = int(amount)
+            amount = float(amount)
         except ValueError:
-            item.amount = 1
+            amount = 1
+        
+        if item.product.active_packing_unit:
+            item.amount = lfs.catalog.utils.calculate_real_amount(item.product, float(amount))
+        else:
+            item.amount = int(float(amount))
+
         item.save()
 
     # IMPORTANT: We have to send the signal already here, because the valid

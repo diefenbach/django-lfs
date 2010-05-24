@@ -1,30 +1,28 @@
+# python imports
+import math
+
 # django imports
 from django import template
-from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.template import RequestContext
-from django.template import Library, Node, TemplateSyntaxError
-from django.template.loader import render_to_string
+from django.template import Node, TemplateSyntaxError
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.catalog.utils
 import lfs.utils.misc
 from lfs.caching.utils import lfs_get_object_or_404
-from lfs.cart import utils as cart_utils
 from lfs.catalog.models import Category
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import STANDARD_PRODUCT
+from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.page.models import Page
 from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
 from lfs.core.models import Shop
 from lfs.core.models import Action
-from lfs.core.settings import ACTION_PLACE_TABS
 from lfs.shipping import utils as shipping_utils
 
 register = template.Library()
@@ -236,12 +234,12 @@ def product_navigation(context, product):
         if request.user.is_superuser:
             products = Product.objects.filter(
                 categories__in = categories,
-                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS),
+                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT),
             ).order_by(sorting)
         else:
             products = Product.objects.filter(
                 categories__in = categories,
-                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS),
+                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT),
                 active = True,
             ).order_by(sorting)
 
@@ -281,6 +279,27 @@ def sorting_portlet(context):
         "MEDIA_URL" : context.get("MEDIA_URL"),
     }
 
+class ActionsNode(Node):
+    def __init__(self, group_id):
+        self.group_id = group_id
+
+    def render(self, context):
+        request = context.get("request")
+        context["actions"] = Action.objects.filter(active=True, group=self.group_id)
+        return ''
+
+def do_actions(parser, token):
+    """Returns the actions for the group with the given id.
+    """
+    bits = token.contents.split()
+    len_bits = len(bits)
+    if len_bits != 2:
+        raise TemplateSyntaxError(_('%s tag needs group id as argument') % bits[0])
+
+    return ActionsNode(bits[1])
+
+register.tag('actions', do_actions)
+
 @register.inclusion_tag('lfs/shop/tabs.html', takes_context=True)
 def tabs(context, obj=None):
     """
@@ -289,13 +308,14 @@ def tabs(context, obj=None):
         obj = context.get("product") or context.get("category")
 
     request = context.get("request")
-    tabs = Action.objects.filter(active=True, place=ACTION_PLACE_TABS)
+    tabs = Action.objects.filter(active=True, group=1)
     if isinstance(obj, (Product, Category)):
         top_category = lfs.catalog.utils.get_current_top_category(request, obj)
-        for tab in tabs:
-            if top_category.get_absolute_url().find(tab.link) != -1:
-                tab.selected = True
-                break
+        if top_category:
+            for tab in tabs:
+                if top_category.get_absolute_url().find(tab.link) != -1:
+                    tab.selected = True
+                    break
     else:
         for tab in tabs:
             if request.path.find(tab.link) != -1:
@@ -334,26 +354,49 @@ def top_level_categories(context):
         "categories" : categories,
     }
 
-@register.inclusion_tag('lfs/shop/menu.html', takes_context=True)
-def menu(context):
-    """
-    """
-    request = context.get("request")
-    current_categories = get_current_categories(request)
+# @register.inclusion_tag('lfs/shop/menu.html', takes_context=True)
+# def menu(context):
+#     """
+#     """
+#     request = context.get("request")
+#     current_categories = get_current_categories(request)
+# 
+#     categories = []
+#     for category in Category.objects.filter(parent = None):
+#         categories.append({
+#             "id" : category.id,
+#             "slug" : category.slug,
+#             "name" : category.name,
+#             "selected" : category in current_categories
+#         })
+# 
+#     return {
+#         "categories" : categories,
+#         "MEDIA_URL" : context.get("MEDIA_URL"),
+#     }
 
-    categories = []
-    for category in Category.objects.filter(parent = None):
-        categories.append({
-            "id" : category.id,
-            "slug" : category.slug,
-            "name" : category.name,
-            "selected" : category in current_categories
-        })
+class TopLevelCategory(Node):
+    """Calculates the current top level category.
+    """
+    def render(self, context):
+        request = context.get("request")
+        obj = context.get("product") or context.get("category")
 
-    return {
-        "categories" : categories,
-        "MEDIA_URL" : context.get("MEDIA_URL"),
-    }
+        top_level_category = lfs.catalog.utils.get_current_top_category(request, obj)
+        context["top_level_category"] = top_level_category.name
+        return ''
+
+def do_top_level_category(parser, token):
+    """Calculates the current top level category.
+    """
+    bits = token.contents.split()
+    len_bits = len(bits)
+    if len_bits != 1:
+        raise TemplateSyntaxError(_('%s tag needs no argument') % bits[0])
+
+    return TopLevelCategory()
+
+register.tag('top_level_category', do_top_level_category)
 
 class CartInformationNode(Node):
     """
@@ -443,6 +486,20 @@ def currency(price, arg=None):
     return price
 
 @register.filter
+def decimal_l10n(value):
+    """Localizes
+    """
+    value = str(value)
+    shop = lfs_get_object_or_404(Shop, pk=1)
+    if shop.default_country.code == "de":
+        # replace . and , for german format
+        a, b = value.split(".")
+        a = a.replace(",", ".")
+        value = "%s,%s" % (a, b)
+
+    return value
+
+@register.filter
 def number(price, arg=None):
     """
     """
@@ -464,14 +521,14 @@ def quantity(quantity):
 
     Means "1.0" is transformed to "1", whereas "1.1" is not transformed at all.
     """
-    if str(quantity).find(".") == -1:
+    if str(quantity).find(".0") == -1:
         return quantity
     else:
-        return int(quantity)
+        return int(float(quantity))
 
 @register.filter
 def sub_type_name(sub_type, arg=None):
-    """
+    """Returns the sub type name for the sub type with passed sub_type id.
     """
     try:
         return PRODUCT_TYPE_LOOKUP[sub_type]
@@ -480,17 +537,48 @@ def sub_type_name(sub_type, arg=None):
 
 @register.filter
 def multiply(score, pixel):
-    """
+    """Returns the result of score * pixel
     """
     return score * pixel
 
 @register.filter
 def option_name(option_id):
+    """Returns the option name for option with passed id.
     """
-    """
+    try:
+        option_id = int(float(option_id))
+    except ValueError:
+        pass
+
     try:
         option = PropertyOption.objects.get(pk=option_id)
     except (PropertyOption.DoesNotExist, ValueError):
         return option_id
     else:
         return option.name
+
+@register.filter
+def option_name_for_property_value(property_value):
+    """Returns the value or the option name for passed property_value
+    """
+    if property_value.property.is_select_field:
+        try:
+            option_id = int(float(property_value.value))
+        except ValueError:
+            return property_value.value
+
+        try:
+            option = PropertyOption.objects.get(pk=option_id)
+        except (PropertyOption.DoesNotExist, ValueError):
+            return option_id
+        else:
+            return option.name
+
+    return property_value.value        
+    
+@register.filter
+def packages(cart_item):
+    """Returns the packages based on product's package unit and cart items 
+    amount.
+    """
+    return int(math.ceil(cart_item.amount / cart_item.product.packing_unit))

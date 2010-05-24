@@ -2,6 +2,9 @@
 {% load i18n %}
 
 {% block left_slot %}
+    <div class="navigation-left-title">
+        {% trans "Properties" %}
+    </div>
     {% for property in properties %}
         <div>
             <a href="{% url lfs_manage_shop_property property.id %}"
@@ -34,6 +37,15 @@
 
             <form action="{% url lfs_manage_shop_property property.id %}"
                   method="post">
+                <div class="field">
+                    <div class="label">
+                        {% trans "ID" %}
+                    </div>        
+                    <div>
+                        {{ property.id }}
+                    </div>
+                </div>
+                
                 {% include "manage/lfs_form.html" %}
                 <input type="submit"
                        value="{% trans 'Save property' %}">
@@ -60,6 +72,12 @@
                 <div id="steps">
                     {{ steps|safe }}
                 </div>            
+            {% endif %}
+
+            {% if property.is_input_field %}
+                <div id="input_field">
+                    {{ input_field|safe }}
+                </div>                    
             {% endif %}
             
         </div>

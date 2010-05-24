@@ -1,6 +1,7 @@
 # django imports
 from django import forms
 from django.db import models
+from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # portlets
@@ -27,18 +28,23 @@ class CategoriesPortlet(Portlet):
         # Calculate current categories
         request = context.get("request")
 
-        object = context.get("category") or context.get("product")
+        product = context.get("product")
+        category = context.get("category")
+        object = category or product
+
         current_categories = lfs.core.utils.get_current_categories(request, object)
 
         ct = lfs.core.utils.CategoryTree(
             current_categories, self.start_level, self.expand_level)
         category_tree = ct.get_category_tree()
 
-        return render_to_string("lfs/portlets/categories.html", {
+        return render_to_string("lfs/portlets/categories.html", RequestContext(request, {
             "title" : self.title,
             "categories" : category_tree,
             "MEDIA_URL" : context.get("MEDIA_URL"),
-        })
+            "product" : product,
+            "category" : category,
+        }))
 
     def form(self, **kwargs):
         """

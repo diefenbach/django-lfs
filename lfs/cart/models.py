@@ -1,3 +1,5 @@
+import re
+
 # django imports
 from django.core.cache import cache
 from django.contrib.auth.models import User
@@ -5,7 +7,10 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
+import lfs.catalog.utils
 from lfs.catalog.models import Product
+from lfs.catalog.models import Property
+from lfs.catalog.models import PropertyOption
 
 class Cart(models.Model):
     """A cart is a container for products which are supposed to be bought by a
@@ -75,7 +80,7 @@ class Cart(models.Model):
             price += item.get_price_net()
 
         return price
-        
+
     def get_tax(self):
         """Returns the total tax of all items
         """
@@ -85,6 +90,19 @@ class Cart(models.Model):
 
         return tax
 
+    def get_item(self, product, properties):
+        """Returns the item for passed product and properties or None if there
+        is none.
+        """
+        for item in CartItem.objects.filter(cart=self, product=product):
+            item_props = {}
+            for pv in item.properties.all():
+                item_props[unicode(pv.property.id)] = pv.value
+
+            if item_props == properties:
+                return item
+
+        return None
 
 class CartItem(models.Model):
     """A cart item belongs to a cart. It stores the product and the amount of
@@ -99,7 +117,7 @@ class CartItem(models.Model):
     """
     cart = models.ForeignKey(Cart, verbose_name=_(u"Cart"))
     product = models.ForeignKey(Product, verbose_name=_(u"Product"))
-    amount = models.IntegerField(_(u"Quantity"), blank=True, null=True)
+    amount = models.FloatField(_(u"Quantity"), blank=True, null=True)
     creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
     modification_date = models.DateTimeField(_(u"Modification date"), auto_now=True, auto_now_add=True)
 
@@ -118,12 +136,73 @@ class CartItem(models.Model):
         """
         return self.product.get_price_net() * self.amount
 
-    def get_price_gross(self):
+    def get_price_gross(self, standard=False):
         """Returns the gross price of the product.
         """
-        return self.product.get_price_gross() * self.amount
+        if not self.product.is_configurable_product():
+            price = self.product.get_price_gross()
+
+            if self.product.active_packing_unit:
+                amount = lfs.catalog.utils.calculate_real_amount(self.product, self.amount)
+                return self.product.get_price_gross() * amount
+        else:
+            if self.product.active_price_calculation:
+                try:                
+                    price = self.get_calculated_price()
+                except:
+                    price = self.product.get_price_gross()
+            else:
+                price = self.product.get_price_gross()
+                for property in self.properties.all():
+                    value = int(float(property.value))
+                    option = PropertyOption.objects.get(pk=value)
+                    price += option.price
+            
+        return price * self.amount
+
+    def get_calculated_price(self):
+        """Returns the calculated gross price of the product.
+        """
+        pc = self.product.price_calculation
+        tokens = self.product.price_calculation.split(" ")
+
+        for token in tokens:
+            if token.startswith("property"):
+                mo = re.match("property\((\d+)\)", token)
+                ppv = self.properties.filter(property__id=mo.groups()[0])[0]
+                value = ppv.value
+                pc = pc.replace(token, str(value))
+            elif token.startswith("number"):
+                mo = re.match("number\((\d+)\)", token)
+                pc = pc.replace(token, mo.groups()[0])
+            elif token.startswith("product"):
+                mo = re.match("product\((.+)\)", token)
+                value = getattr(self.product, mo.groups()[0])
+                pc = pc.replace(token, str(value))
+
+        return eval(pc)
 
     def get_tax(self):
-        """Returns the absolute tax of the product.
+        """Returns the absolute tax of the item.
         """
-        return self.product.get_tax() * self.amount
+        rate = self.product.get_tax_rate()
+        return self.get_price_gross() * (rate / (rate + 100))
+
+class CartItemPropertyValue(models.Model):
+    """Stores a value for a property and item.
+
+    **Attributes**
+
+    cart_item
+        The cart item - and in this way the product - for which the value
+        should be stored.
+
+    property
+        The property for which the value should be stored.
+
+    value
+        The value which is stored.
+    """
+    cart_item = models.ForeignKey(CartItem, verbose_name=_(u"Cart item"), related_name="properties")
+    property = models.ForeignKey(Property, verbose_name = _(u"Property"))
+    value = models.CharField("Value", blank=True, max_length=100)

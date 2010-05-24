@@ -1,0 +1,64 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left_slot %}
+    <div class="navigation-left-title">
+        {% trans "Discounts" %}
+    </div>
+
+    <div id="discounts">
+        {{ navigation|safe }}
+    </div>
+    
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        $(function() {
+            $(".criteria").sortable({
+                placeholder: "droppable-hover",
+                items : "div",
+                opacity: .9,
+                axis: "y",
+                placeholder: "droppable-hover",
+                update:function() {
+                    update_positions();
+                }
+            });    
+        });
+    </script>        
+{% endblock %}
+
+{% block content %}
+    
+    <div class="site-actions">
+        <span class="label">
+            {{ discount.name }}
+        </span>
+
+        <a class="add"
+           href="{% url lfs_manage_add_discount %}">
+            {% trans 'Add discount' %}</a>
+
+        <a class="delete confirmation-link" 
+           data="{% trans 'Delete?' %}"
+           href="{% url lfs_manage_delete_discount discount.id %}">
+            {% trans 'Delete discount' %}</a>
+    </div>
+            
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#criteria">{% trans 'Criteria' %}</a></li>
+        </ul>
+
+        <div id="data">
+            {{ data }}
+        </div>
+
+        <div id="criteria">
+            {{ criteria }}
+        </div>
+        
+    </div>
+{% endblock %}

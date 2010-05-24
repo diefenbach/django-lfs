@@ -47,8 +47,10 @@ class ProductDataForm(ModelForm):
 
     class Meta:
         model = Product
-        fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "tax",
-            "short_description", "description", "for_sale", "for_sale_price", "static_block", "template")
+        fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "price_unit", "tax",
+            "short_description", "description", "for_sale", "for_sale_price", "static_block", "template",
+            "active_price_calculation", "price_calculation")
+
     def clean(self):
         """
         """
@@ -82,7 +84,8 @@ class ProductStockForm(ModelForm):
         model = Product
         fields = ("weight", "width", "height", "length", "manage_stock_amount",
                   "stock_amount", "manual_delivery_time", "delivery_time",
-                  "deliverable", "order_time", "ordered_at", "active_dimensions")
+                  "deliverable", "order_time", "ordered_at", "active_dimensions", 
+                  "packing_unit", "packing_unit_unit", "active_packing_unit")
 
     def __init__(self, *args, **kwargs):
         super(ProductStockForm, self).__init__(*args, **kwargs)

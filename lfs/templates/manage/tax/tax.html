@@ -1,13 +1,16 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
-
 {% block left_slot %}
+    <div class="navigation-left-title">
+        {% trans "Taxes" %}
+    </div>
+
     {% for tax in taxes %}
-        <div>        
+        <div>
             <a href="{% url lfs_manage_tax tax.id %}"
                class="selectable {% ifequal tax.id current_id %}selected{% endifequal %}">
-               {{tax.rate}}%
+               {{ tax.rate }}%
             </a>
         </div>
     {% endfor %}
@@ -17,11 +20,11 @@
 
     <div class="site-actions">
 
-        <span class="label">{% trans 'Rate' %}: {{tax.rate}}%</span>
-        
-        <a class="add" 
+        <span class="label">{% trans 'Rate' %}: {{ tax.rate }}%</span>
+
+        <a class="add"
            href="{% url lfs_add_tax %}">{% trans 'Add Tax' %}</a>
-        
+
         <a class="delete confirmation-link"
            data="{% trans 'Delete?' %}"
            href="{% url lfs_delete_tax tax.id %}">{% trans 'Delete Tax' %}</a>
@@ -39,14 +42,14 @@
                   enctype="multipart/form-data">
                 {% include "manage/lfs_form.html" %}
                 <input type="submit"
-                       value="{% trans 'Save tax' %}">
+                       value="{% trans 'Add tax' %}">
             </form>
         </div>
-    </div>    
-    
+    </div>
+
     <script>
-        $(function() {    
+        $(function() {
             tinyMCE.execCommand('mceAddControl', true, 'id_body');
-        });    
-    </script>        
+        });
+    </script>
 {% endblock %}

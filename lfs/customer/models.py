@@ -55,7 +55,14 @@ class Customer(models.Model):
         else:
             self.selected_invoice_address.email = email
             self.selected_invoice_address.save()
-
+    
+    def get_selected_shipping_address(self):
+        """Returns the selected shipping address.
+        """
+        return self.selected_shipping_address or \
+               self.selected_invoice_address or \
+               None
+        
 class Address(models.Model):
     """An address which can be used as shipping and/or invoice address.
     """

@@ -14,9 +14,9 @@ Overview
 Global properties
 -----------------
 
-* Global properites are organized with property groups (which are assigned to 
+* Global properties are organized with property groups (which are assigned to 
   products).
-* Global properites can be used to create product filters.
+* Global properties can be used to create product filters.
 * Global properties can be used to create variants.
 
 .. note:: 
@@ -26,7 +26,7 @@ Global properties
 Local properties
 -----------------
 
-* Local properites are organized on a single product.
+* Local properties are organized on a single product.
 * Local properties can be used to create variants.
 
 More information 

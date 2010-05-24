@@ -1,3 +1,5 @@
+@import url "tinymce_style.css";
+
 /* Defaults */
 body {
     font-size: 12px;
@@ -83,7 +85,36 @@ table.lfs-manage-table th {
 }
 
 table.lfs-manage-table td {
-    vertical-align: middle;
+    vertical-align: top;
+}
+
+.lfs-manage-table.full {
+    width: 100%;
+}
+
+.lfs-manage-table.half {
+    width: 50%;
+}
+
+.lfs-manage-table .large {
+    width: 300px;
+}
+
+.lfs-manage-table .middle {
+    width: 200px;
+}
+
+.lfs-manage-table .small {
+    width: 100px;
+}
+
+.lfs-manage-table .tiny {
+    width: 1px;
+}
+
+.lfs-manage-table .right-padding {
+    text-align: right;
+    padding-right: 10px;
 }
 
 .checkbox {
@@ -104,12 +135,12 @@ table.lfs-manage-table td {
 }
 
 td.left-slot {
-  padding: 10px 20px 0 0;
+  padding: 20px 20px 0 0;
   width: 200px;
 }
 
 td.middle-slot {
-  padding-top: 10px;
+    padding-top:20px;
 }
 
 th, td {
@@ -393,8 +424,17 @@ body.manage-product ul.manage-categories.root {
     width: 80px;
 }
 
+.navigation-left-title {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.navigation-left a {
+    padding: 2px 0;
+}
+
 div.site-actions {
-    margin: 20px 0;
+    margin-bottom: 20px;
 }
 
 div.site-actions img {
@@ -405,6 +445,14 @@ span.delete {
     margin: 0 0 0 10px;
     padding-left: 20px;
     background: url(/media/lfs/icons/delete.png) no-repeat;
+}
+
+div.action a {
+    padding: 4px 0 4px 20px;
+}
+
+.action-group {
+    font-weight: bold;
 }
 
 /* Forms */
@@ -432,7 +480,7 @@ select.categories {
 }
 
 /* input fields */
-#id_name, #id_slug, #id_sku, #id_shop_owner, #id_from_email, #id_title {
+#id_name, #id_slug, #id_sku, #id_shop_owner, #id_from_email, #id_title, #id_redirect_to, #id_sku_manufacturer, #redirect_to {
     width: 300px;
 }
 

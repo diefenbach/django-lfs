@@ -7,7 +7,7 @@ Criteria
 Overview
 ========
 
-Criteria are used on several places of LFS in order to display/hide data
+Criteria are used on several places within LFS in order to display/hide data
 dependent on different situations.
 
 At the moment criteria are used within:
@@ -16,12 +16,12 @@ At the moment criteria are used within:
     * payment method's prices
     * shipping methods
     * shipping method's prices
-
+    * discounts
+    
 In future they might be used to provide:
 
     * multiple product prices
     * different product taxes
-    * discounts
 
 Types
 =====

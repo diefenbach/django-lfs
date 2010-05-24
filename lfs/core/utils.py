@@ -1,5 +1,6 @@
 # python imports
 import datetime
+import re
 import sys
 import urllib
 

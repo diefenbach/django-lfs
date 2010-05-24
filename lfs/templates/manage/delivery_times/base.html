@@ -2,6 +2,10 @@
 {% load i18n %}
 
 {% block left_slot %}
+    <div class="navigation-left-title">
+        {% trans "Delivery times" %}
+    </div>
+
     {% for delivery_time in delivery_times %}
         <div>
             <a href="{% url lfs_manage_delivery_time delivery_time.id %}"

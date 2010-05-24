@@ -16,27 +16,50 @@ from lfs.catalog.models import StaticBlock
 # 3rd party imports
 from countries.models import Country
 
-class Action(models.Model):
-    """A action is a link which can be displayed on several parts of the web
+class ActionGroup(models.Model):
+    """Actions of a action group can be displayed on several parts of the web
     page.
 
-    Instance variables:
+    **Attributes**:
 
-    - title
-      The title of the menu tab
-    - link
-      The link to the object
-    - active
-      If true the tab is displayed.
-    - position
-      the position of the tab within the menu.
-    - parent
-      Parent tab to create a tree
+    name
+        The name of the group.
     """
+    name = models.CharField(blank=True, max_length=100, unique=True)
+
+    class Meta:
+        ordering = ("name", )
+
+    def __unicode__(self):
+        return self.name
+
+    def get_actions(self):
+        """Returns the actions of this group.
+        """
+        return self.actions.filter(active=True)
+
+class Action(models.Model):
+    """A action is a link which belongs to a action groups.
+
+    **Attributes**:
+    
+    group
+        The belonging group.
+    title
+        The title of the menu tab.
+    link
+        The link to the object.
+    active
+        If true the tab is displayed.
+    position
+        the position of the tab within the menu.
+    parent
+        Parent tab to create a tree.
+    """
+    group = models.ForeignKey(ActionGroup, verbose_name=_(u"Group"), related_name="actions")
     title = models.CharField(_(u"Title"), max_length=40)
     link = models.CharField(_(u"Link"), blank=True, max_length=100)
     active = models.BooleanField(_(u"Active"), default=False)
-    place = models.PositiveSmallIntegerField(blank=True, null=True, choices=ACTION_PLACE_CHOICES, default=ACTION_PLACE_TABS)
     position = models.IntegerField(_(u"Position"), default=999)
     parent = models.ForeignKey("self", verbose_name=_(u"Parent"), blank=True, null=True)
 
@@ -44,7 +67,7 @@ class Action(models.Model):
         return self.title
 
     class Meta:
-        ordering=("position",)
+        ordering=("position", )
 
 class Shop(models.Model):
     """Holds all shop related information.

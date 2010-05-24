@@ -154,6 +154,10 @@ urlpatterns += patterns('lfs.manage.views.properties',
     url(r'^save-shop-property-step-type/(?P<property_id>\d*)', "save_step_type", name="lfs_save_shop_property_step_type"),
     url(r'^delete-shop-property-option/(?P<id>\d*)', "delete_option", name="lfs_delete_shop_property_option"),
     url(r'^delete-shop-property-step/(?P<id>\d*)', "delete_step", name="lfs_delete_shop_property_step"),
+    
+    url(r'^save-input-field-validators/(?P<property_id>\d*)', "save_input_field_validators", name="lfs_save_input_field_validators"),
+
+    
 )
 
 # Product properties
@@ -256,6 +260,16 @@ urlpatterns += patterns('lfs.manage.views',
     url(r'^save-shipping-method-criteria/(?P<shipping_method_id>\d*)$', "save_shipping_method_criteria", name="lfs_manage_save_shipping_method_criteria"),
 )
 
+# Discounts
+urlpatterns += patterns('lfs.manage.views.discounts',
+    url(r'^discounts$', "manage_discounts", name="lfs_manage_discounts"),
+    url(r'^discount/(?P<id>\d*)$', "manage_discount", name="lfs_manage_discount"),
+    url(r'^add-discount', "add_discount", name="lfs_manage_add_discount"),
+    url(r'^save-discount-data/(?P<id>\d*)$', "save_discount_data", name="lfs_manage_save_discount_data"),
+    url(r'^delete-discount/(?P<id>\d*)$', "delete_discount", name="lfs_manage_delete_discount"),
+    url(r'^save-discount-criteria/(?P<id>\d*)$', "save_discount_criteria", name="lfs_manage_save_discount_criteria"),
+)
+
 # Pages
 urlpatterns += patterns('lfs.manage.views.page',
     url(r'^add-page$', "add_page", name="lfs_add_page"),
@@ -306,6 +320,9 @@ urlpatterns += patterns('lfs.manage.views.static_blocks',
     url(r'^preview-static-block/(?P<id>\d*)$', "preview_static_block", name="lfs_preview_static_block"),
     url(r'^manage-static-blocks$', "manage_static_blocks", name="lfs_manage_static_blocks"),
     url(r'^manage-static-block/(?P<id>\d*)$', "manage_static_block", name="lfs_manage_static_block"),
+    url(r'^add_files/(?P<id>[-\w]*)', "add_files", name="lfs_add_files_to_static_block"),
+    url(r'^update_files/(?P<id>[-\w]*)', "update_files", name="lfs_manage_update_files_sb"),
+    url(r'^reload_files/(?P<id>[-\w]*)', "reload_files", name="lfs_reload_files"),    
 )
 
 # Reviews

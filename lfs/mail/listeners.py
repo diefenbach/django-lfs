@@ -1,13 +1,21 @@
 # lfs imports
 from lfs.core.signals import customer_added
 from lfs.core.signals import order_submitted
+from lfs.core.signals import order_sent
 from lfs.mail import utils as mail_utils
 
 # reviews imports
 from reviews.signals import review_added
 
+def order_sent_listener(sender, **kwargs):
+    """Listen to order payed signal.
+    """
+    order = sender.get("order")
+    mail_utils.send_order_sent_mail(order)
+order_sent.connect(order_sent_listener)
+
 def order_submitted_listener(sender, **kwargs):
-    """Listen to order submitted signal
+    """Listen to order submitted signal.
     """
     order = sender.get("order")
     mail_utils.send_order_received_mail(order)

@@ -2,20 +2,30 @@
 {% load i18n %}
 
 {% block left_slot %}
-    {% for action in actions %}
-        <div>
-            <a href="{% url lfs_manage_action action.id %}"
-               class="selectable {% ifequal action.id current_id %}selected{% endifequal %}">
-                {{action.title}}
-            </a>
-        </div>
-    {% endfor %}
+    <div class="navigation-left-title">
+        {% trans "Actions" %}
+    </div>
+    <div class="navigation-left action-groups">
+        {% for group in groups %}
+            {% if group.actions.all %}
+                <div class="action-group">{{ group.name }}</div>
+                {% for action in group.actions.all %}
+                    <div class="action">
+                        <a href="{% url lfs_manage_action action.id %}"
+                           class="selectable {% ifequal action.id current_id %}selected{% endifequal %}">
+                            {{ action.title }}
+                        </a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block content %}
 
     <div class="site-actions">
-        <span class="label">{{action.title}}</span>
+        <span class="label">{{ action.title }}</span>
         
         <a class="add" 
            href="{% url lfs_add_action %}">{% trans 'Add action' %}</a>

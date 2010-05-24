@@ -24,17 +24,6 @@
 
         <div class="field">
             <div class="label">
-                {% trans "Redirect to" %}
-            </div>
-            <div>
-                <input type="text"
-                       name="redirect_to"
-                       value="{{ redirect_to }}" />
-            </div>
-        </div>
-
-        <div class="field">
-            <div class="label">
                 {% if product.is_variant %}
                     {{ form.active_name }}
                 {% endif %}
@@ -56,157 +45,207 @@
             {% endif %}
         </div>
 
-        <div class="field">
-            <div class="label">
-                {{ form.slug.label_tag }}:
-            </div>
+        <fieldset>
+            <legend>{% trans "Urls" %}</legend>
 
-            {% if form.slug.errors %}
-                <div class="error">
-                    {{ form.slug }}
-                    {{ form.slug.errors }}
-                </div>
-            {% else %}
-                <div>
-                    {{ form.slug }}
-                    {% if product.is_variant %}
-                        {{ product.parent.slug }}
-                    {% endif %}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="field">
-            <div class="label">
-                {% if product.is_variant %}
-                    {{ form.active_sku }}
-                {% endif %}
-
-                {{ form.sku.label_tag }}:
-            </div>
-
-            {% if form.sku.errors %}
-                <div class="error">
-                    {{ form.sku }}
-                    {{ form.sku.errors }}
-                </div>
-            {% else %}
-                <div>
-                    {{ form.sku }}
-                    {% if product.is_variant %}
-                        {{ product.parent.sku }}
-                    {% endif %}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="field">
-            <div class="label">
-                {{ form.sku_manufacturer.label_tag }}:
-            </div>
-
-            {% if form.sku.errors %}
-                <div class="error">
-                    {{ form.sku_manufacturer }}
-                    {{ form.sku_manufacturer.errors }}
-                </div>
-            {% else %}
-                <div>
-                    {{ form.sku_manufacturer }}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="field">
-            <div class="label">
-                {% if product.is_variant %}
-                    {{ form.active_price }}
-                {% endif %}
-
-                {{ form.price.label_tag }}:
-            </div>
-
-            {% if form.price.errors %}
-                <div class="error">
-                    {{ form.price }}
-                    {{ form.price.errors }}
-                </div>
-            {% else %}
-                <div>
-                    {{ form.price }}
-                    {% if product.is_variant %}
-                        {{ product.parent.price|currency }}
-                    {% endif %}
-                </div>
-            {% endif %}
-        </div>
-
-        {% if not product.is_variant %}
             <div class="field">
                 <div class="label">
-                    {{ form.tax.label_tag }}:
+                    {{ form.slug.label_tag }}:
                 </div>
 
-                {% if form.tax.errors %}
+                {% if form.slug.errors %}
                     <div class="error">
-                        {{ form.tax }}
-                        {{ form.tax.errors }}
+                        {{ form.slug }}
+                        {{ form.slug.errors }}
                     </div>
                 {% else %}
                     <div>
-                        {{ form.tax }}
+                        {{ form.slug }}
+                        {% if product.is_variant %}
+                            {{ product.parent.slug }}
+                        {% endif %}
                     </div>
                 {% endif %}
             </div>
-        {% endif %}
 
-        {% if product.is_variant %}
             <div class="field">
                 <div class="label">
-                    {{ form.for_sale.label_tag }}:
+                    {% trans "Redirect to" %}
                 </div>
                 <div>
-                    {{ form.active_for_sale }}
+                    <input type="text"
+                           id="redirect_to"
+                           name="redirect_to"
+                           value="{{ redirect_to }}" />
+                </div>
+            </div>
 
-                    {% if product.parent.for_sale %}
-                        {% trans 'Yes' %}
+        </fieldset>
+
+        <fieldset>
+            <legend>{% trans "Article numbers" %}</legend>
+            <div class="field">
+                <div class="label">
+                    {% if product.is_variant %}
+                        {{ form.active_sku }}
+                    {% endif %}
+
+                    {{ form.sku.label_tag }}:
+                </div>
+
+                {% if form.sku.errors %}
+                    <div class="error">
+                        {{ form.sku }}
+                        {{ form.sku.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.sku }}
+                        {% if product.is_variant %}
+                            {{ product.parent.sku }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="field">
+                <div class="label">
+                    {{ form.sku_manufacturer.label_tag }}:
+                </div>
+
+                {% if form.sku.errors %}
+                    <div class="error">
+                        {{ form.sku_manufacturer }}
+                        {{ form.sku_manufacturer.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.sku_manufacturer }}
+                    </div>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>{% trans "Prices" %}</legend>
+            <div class="field">
+                <div class="label">
+                    {% if product.is_variant %}
+                        {{ form.active_price }}
+                    {% endif %}
+
+                    {{ form.price.label_tag }}:
+                </div>
+
+                {% if form.price.errors %}
+                    <div class="error">
+                        {{ form.price }}
+                        {{ form.price.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.price }}
+                        {% if product.is_variant %}
+                            {{ product.parent.price|currency }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if product.is_variant %}
+                <div class="field">
+                    <div class="label">
+                        {{ form.for_sale.label_tag }}:
+                    </div>
+                    <div>
+                        {{ form.active_for_sale }}
+
+                        {% if product.parent.for_sale %}
+                            {% trans 'Yes' %}
+                        {% else %}
+                            {% trans 'No' %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="label">
+                        {{ form.active_for_sale_price }}
+                        {{ form.for_sale_price.label_tag }}:
+                    </div>
+                    <div>
+                        {{ form.for_sale_price }}
+                        {{ product.parent.for_sale_price|currency }}
+                    </div>
+
+                </div>
+            {% else %}
+                <div class="field">
+
+                    <div class="label">
+                        {{ form.for_sale }}
+                        {{ form.for_sale.label_tag }}:
+                    </div>
+
+                    {% if form.for_sale_price.errors %}
+                        <div class="error">
+                            {{ form.for_sale_price }}
+                            {{ form.for_sale_price.errors }}
+                        </div>
                     {% else %}
-                        {% trans 'No' %}
+                        <div>
+                            {{ form.for_sale_price }}
+                        </div>
                     {% endif %}
                 </div>
-            </div>
+            {% endif %}
+
             <div class="field">
                 <div class="label">
-                    {{ form.active_for_sale_price }}
-                    {{ form.for_sale_price.label_tag }}:
+                    {{ form.price_unit.label_tag }}:
                 </div>
                 <div>
-                    {{ form.for_sale_price }}
-                    {{ product.parent.for_sale_price|currency }}
+                    {{ form.price_unit }}
                 </div>
-
             </div>
-        {% else %}
-            <div class="field">
+            {% if not product.is_variant %}
+                <div class="field">
+                    <div class="label">
+                        {{ form.tax.label_tag }}:
+                    </div>
 
-                <div class="label">
-                    {{ form.for_sale }}
-                    {{ form.for_sale.label_tag }}:
+                    {% if form.tax.errors %}
+                        <div class="error">
+                            {{ form.tax }}
+                            {{ form.tax.errors }}
+                        </div>
+                    {% else %}
+                        <div>
+                            {{ form.tax }}
+                        </div>
+                    {% endif %}
                 </div>
+            {% endif %}
 
-                {% if form.for_sale_price.errors %}
-                    <div class="error">
-                        {{ form.for_sale_price }}
-                        {{ form.for_sale_price.errors }}
+            {% if product.is_configurable_product %}
+                <div class="field">
+                    <div class="label">
+                        {{ form.active_price_calculation }}
+                        {{ form.price_calculation.label_tag }}:
                     </div>
-                {% else %}
-                    <div>
-                        {{ form.for_sale_price }}
-                    </div>
-                {% endif %}
-            </div>
-        {% endif %}
 
+                    {% if form.price.errors %}
+                        <div class="error">
+                            {{ form.price_calculation }}
+                            {{ form.price_calculation.errors }}
+                        </div>
+                    {% else %}
+                        <div>
+                            {{ form.price_calculation }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+        </fieldset>
         <div class="field">
             <div class="label">
                 {% if product.is_variant %}

@@ -28,6 +28,17 @@ to active and the product is ready for sale.
 
 .. _product-product-with-variant-label:
 
+Configurable product
+--------------------
+
+Configurable products can be used in two ways.
+
+With properties with options.
+
+With properties with input field
+
+The price of configurable products can calculated individually.
+
 Product with variants
 ---------------------
 
