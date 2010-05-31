@@ -147,7 +147,7 @@ class CartItem(models.Model):
                 return self.product.get_price_gross() * amount
         else:
             if self.product.active_price_calculation:
-                try:                
+                try:
                     price = self.get_calculated_price()
                 except:
                     price = self.product.get_price_gross()
@@ -157,7 +157,7 @@ class CartItem(models.Model):
                     value = int(float(property.value))
                     option = PropertyOption.objects.get(pk=value)
                     price += option.price
-            
+
         return price * self.amount
 
     def get_calculated_price(self):
@@ -187,6 +187,31 @@ class CartItem(models.Model):
         """
         rate = self.product.get_tax_rate()
         return self.get_price_gross() * (rate / (rate + 100))
+
+    def get_properties(self):
+        """Returns properties of the cart item. Resolves option names for
+        select fields.
+        """
+        properties = []
+        for property_value in self.properties.all():
+            property = property_value.property
+
+            if property.is_select_field:
+                option = PropertyOption.objects.get(pk=int(float(property_value.value)))
+                value = option.name
+                price = option.price
+            else:
+                value = property_value.value
+                price = ""
+
+            properties.append({
+                "name" : property_value.property.name,
+                "unit" : property_value.property.unit,
+                "value" : property_value.value,
+                "price" : price
+            })
+
+        return properties
 
 class CartItemPropertyValue(models.Model):
     """Stores a value for a property and item.
