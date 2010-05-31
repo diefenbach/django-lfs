@@ -503,7 +503,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
 
         # As we factored out the ids of all matching products now, we get the
         # product instances in the correct order
-        products = lfs.catalog.models.Product.objects.filter(pk__in=matched_product_ids)
+        products = lfs.catalog.models.Product.objects.filter(pk__in=matched_product_ids).distinct()
     else:
         categories = [category]
         if category.show_all_products:
@@ -511,7 +511,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         products = lfs.catalog.models.Product.objects.filter(
             active=True,
             categories__in=categories, 
-            sub_type__in=[STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT])
+            sub_type__in=[STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT]).distinct()
 
     if price_filter:
         matched_product_ids = []
