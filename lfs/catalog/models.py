@@ -305,7 +305,7 @@ class Category(models.Model):
 
         products = lfs.catalog.models.Product.objects.distinct().filter(
             active=True,
-            categories__in = categories).exclude(sub_type=VARIANT)
+            categories__in = categories).exclude(sub_type=VARIANT).distinct()
 
         cache.set(cache_key, products)
         return products
@@ -476,6 +476,18 @@ class Product(models.Model):
 
         - template
             Sets the template, which renders the product content. If left to None, default template is used.
+
+        - active_price_calculation
+            If True the price will be calculated by the field price_calculation
+
+        - price_calculation
+            Formula to calculate price of the product.
+
+        - sku_manufacturer
+            The product's article ID of the manufacturer (external article id)
+
+        - manufacturer
+            The manufacturer of the product.
     """
     # All products
     name = models.CharField(_(u"Name"), max_length=80, blank=True)
@@ -844,14 +856,14 @@ class Product(models.Model):
         except KeyError:
             return False
 
-    def get_price(self):
+    def get_price(self, with_properties=True):
         """Returns the price of the product. At the moment this is just the
         gross price. Later this could be the net or the gross price dependent on
         selected shop options.
         """
-        return self.get_price_gross()
+        return self.get_price_gross(with_properties)
 
-    def get_standard_price(self):
+    def get_standard_price(self, with_properties=True):
         """Returns always the standard price for the product. Independent
         whether the product is for sale or not. If you want the real price of
         the product use get_price instead.
@@ -864,9 +876,20 @@ class Product(models.Model):
         if object.is_variant() and not object.active_price:
             object = object.parent
 
-        return object.price
+        price = object.price
+        if with_properties and object.is_configurable_product():
+            for property in object.get_property_select_fields():
+                ppv = ProductPropertyValue.objects.get(product=self, property=property)
+                try:
+                    po = PropertyOption.objects.get(pk = ppv.value)
+                except PropertyOption.DoesNotExist:
+                    pass
+                else:
+                    price += po.price
 
-    def get_for_sale_price(self):
+        return price
+
+    def get_for_sale_price(self, with_properties=True):
         """returns the sale price for the product.
         """
         object = self
@@ -877,11 +900,28 @@ class Product(models.Model):
         if object.is_variant() and not object.active_for_sale_price:
             object = object.parent
 
-        return object.for_sale_price
+        price = object.for_sale_price
+        if with_properties and object.is_configurable_product():
+            for property in object.get_property_select_fields():
+                ppv = ProductPropertyValue.objects.get(product=self, property=property)
+                try:
+                    po = PropertyOption.objects.get(pk = ppv.value)
+                except PropertyOption.DoesNotExist:
+                    pass
+                else:
+                    price += po.price
 
-    def get_price_gross(self):
+        return price
+
+    def get_price_gross(self, with_properties=True):
         """Returns the real gross price of the product. This is the base of
-        all price and tax calculations :-)
+        all price and tax calculations.
+
+        **Parameters:**
+
+        with_properties
+            If True the prices of the default property options are added.
+
         """
         object = self
 
@@ -898,6 +938,16 @@ class Product(models.Model):
                 price = object.parent.price
             else:
                 price = object.price
+
+        if with_properties and object.is_configurable_product():
+            for property in object.get_property_select_fields():
+                ppv = ProductPropertyValue.objects.get(product=self, property=property)
+                try:
+                    po = PropertyOption.objects.get(pk = ppv.value)
+                except PropertyOption.DoesNotExist:
+                    pass
+                else:
+                    price += po.price
 
         return price
 
@@ -1273,6 +1323,7 @@ class Property(models.Model):
     A property belongs to exactly one group xor product.
 
     **Parameters**:
+
     groups, product:
         The group or product it belongs to. A property can belong to several
         groups and/or to one product.
