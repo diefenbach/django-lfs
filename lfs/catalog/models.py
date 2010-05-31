@@ -45,6 +45,7 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
 from lfs.catalog.settings import CATEGORY_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import CAT_CATEGORY_PATH
+from lfs.catalog.settings import THUMBNAIL_SIZES
 from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
@@ -1558,7 +1559,7 @@ class Image(models.Model):
     content = generic.GenericForeignKey(ct_field="content_type", fk_field="content_id")
 
     title = models.CharField(_(u"Title"), blank=True, max_length=100)
-    image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (300, 300), (400, 400)))
+    image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=THUMBNAIL_SIZES)
     position = models.PositiveSmallIntegerField(_(u"Position"), default=999)
 
     class Meta:

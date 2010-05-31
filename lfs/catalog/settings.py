@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 ACTIVE_FOR_SALE_STANDARD = 0
@@ -124,3 +125,5 @@ CP_PRICES = (
     (CP_PRICE_SUM, ("Sume")),
     (CP_PRICE_CALC, ("Calculated")),
 )
+
+THUMBNAIL_SIZES = getattr(settings, 'LFS_THUMBNAIL_SIZES', ((60, 60), (100, 100), (200, 200), (300, 300), (400, 400)))
