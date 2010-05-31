@@ -23,6 +23,7 @@ from lfs.cart.views import add_to_cart
 from lfs.catalog.models import Category
 from lfs.catalog.models import File
 from lfs.catalog.models import Product
+from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT
@@ -59,7 +60,7 @@ def calculate_packing(request, id, quantity=None, as_string=False, template_name
     """
     """
     product = Product.objects.get(pk = id)
-    
+
     if quantity is None:
         quantity = float(request.POST.get("quantity"))
 
@@ -88,7 +89,7 @@ def calculate_price(request, id):
     """
     product = Product.objects.get(pk = id)
 
-    price = product.get_price()
+    property_price = 0
     for key, option_id in request.POST.items():
         if key.startswith("property"):
             try:
@@ -96,10 +97,21 @@ def calculate_price(request, id):
             except (ValueError, PropertyOption.DoesNotExist):
                 pass
             else:
-                price += po.price
+                property_price += po.price
+
+    for_sale_price = product.get_for_sale_price(with_properties=False)
+    for_sale_price += property_price
+
+    for_sale_standard_price = product.get_standard_price(with_properties=False)
+    for_sale_standard_price += property_price
+
+    price = product.get_price(with_properties=False)
+    price += property_price
 
     result = simplejson.dumps({
         "price" : lfs_tags.currency(price),
+        "for-sale-price" : lfs_tags.currency(for_sale_price),
+        "for-sale-standard-price" : lfs_tags.currency(for_sale_standard_price),
         "message" : _("Price has been changed according to your selection."),
     }, cls = LazyEncoder)
 
@@ -441,7 +453,8 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
 
     properties = []
     variants = []
-    if product.variants_display_type == SELECT:
+
+    if product.is_variant and product.variants_display_type == SELECT:
         # Get all properties (sorted). We need to traverse through all
         # property/options to select the options of the current variant.
         for property in product.get_properties():
@@ -454,6 +467,31 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
                 options.append({
                     "id"   : property_option.id,
                     "name" : property_option.name,
+                    "selected" : selected
+                })
+            properties.append({
+                "id" : property.id,
+                "name" : property.name,
+                "options" : options
+            })
+    elif product.is_configurable_product:
+        for property in product.get_property_select_fields():
+            options = []
+
+            try:
+                ppv = ProductPropertyValue.objects.get(product=product, property=property)
+            except ProductPropertyValue.DoesNotExist:
+                pass
+
+            for property_option in property.options.all():
+                if ppv.value == str(property_option.id):
+                    selected = True
+                else:
+                    selected = False
+                options.append({
+                    "id"   : property_option.id,
+                    "name" : property_option.name,
+                    "price" : property_option.price,
                     "selected" : selected
                 })
             properties.append({
