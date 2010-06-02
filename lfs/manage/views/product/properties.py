@@ -13,10 +13,10 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyGroup
-from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
+from lfs.catalog.settings import PROPERTY_FLOAT_FIELD
+from lfs.catalog.settings import PROPERTY_INTEGER_FIELD
 from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD
-from lfs.catalog.settings import PROPERTY_INPUT_FIELD
 from lfs.core.signals import product_removed_property_group
 
 @permission_required("manage_shop", login_url="/login/")
@@ -53,9 +53,8 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                 "type" : property.type,
                 "options" : options,
                 "value" : value,
-                "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
+                "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_INTEGER_FIELD, PROPERTY_FLOAT_FIELD),
                 "display_select_field" : property.type == PROPERTY_SELECT_FIELD,
-                "display_input_field"  : property.type == PROPERTY_INPUT_FIELD,
             })
 
         product_property_groups.append({

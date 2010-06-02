@@ -8,7 +8,6 @@ from django.db import connection
 
 # import lfs
 import lfs.catalog.models
-from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
@@ -382,7 +381,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
 
         # Transform to float for later sorting, see below
         property = properties_mapping[row[0]]
-        if property.type == PROPERTY_NUMBER_FIELD:
+        if property.is_decimal_field:
             value = float(row[1])
         else:
             value = row[1]

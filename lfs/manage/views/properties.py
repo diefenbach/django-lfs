@@ -24,7 +24,8 @@ class PropertyDataForm(ModelForm):
     """
     class Meta:
         model = Property
-        fields = ["name", "filterable", "unit", "position", "display_on_product", "display_no_results"]
+        fields = ["name", "filterable", "display_no_results", "configurable",
+            "required", "display_on_product", "unit"]
 
 class PropertyTypeForm(ModelForm):
     """Form to manage property type.
@@ -40,8 +41,8 @@ class StepTypeForm(ModelForm):
         model = Property
         fields = ["step_type"]
 
-class InputFieldForm(ModelForm):
-    """Form to manage the step type of a property.
+class NumberFieldForm(ModelForm):
+    """Form to manage the number field.
     """
     class Meta:
         model = Property
@@ -84,6 +85,8 @@ def manage_property(request, id, template_name="manage/properties/property.html"
     else:
         form = PropertyDataForm(instance=property)
 
+    display_step_form = property.is_number_field and property.filterable
+    
     return render_to_response(template_name, RequestContext(request, {
         "property" : property,
         "properties" : Property.objects.filter(local=False),
@@ -92,8 +95,9 @@ def manage_property(request, id, template_name="manage/properties/property.html"
         "current_id" : int(id),
         "options" : options_inline(request, id),
         "steps" : steps_inline(request, id),
-        "input_field" : input_field(request, property),
-    }))
+        "number_field" : number_field(request, property),
+        "display_step_form" : display_step_form,
+      }))
 
 @permission_required("manage_shop", login_url="/login/")
 def update_property_type(request, id):
@@ -117,17 +121,17 @@ def update_property_type(request, id):
     )
 
 @permission_required("manage_shop", login_url="/login/")
-def input_field(request, property, template_name="manage/properties/property_input_field.html"):
+def number_field(request, property, template_name="manage/properties/property_number_field.html"):
     """Displays the form of the input field propery type
     """
-    input_type_form = InputFieldForm(instance=property)
+    number_field_form = NumberFieldForm(instance=property)
 
     return render_to_string(template_name, RequestContext(request, {
         "property" : property,
-        "input_type_form" : input_type_form,
+        "number_field_form" : number_field_form,
     }))
 
-def save_input_field_validators(request, property_id):
+def save_number_field_validators(request, property_id):
     """
     """
     property = get_object_or_404(Property, pk=property_id)

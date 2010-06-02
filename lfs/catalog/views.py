@@ -57,15 +57,18 @@ def select_variant(request):
     return HttpResponse(result)
 
 def calculate_packing(request, id, quantity=None, as_string=False, template_name="lfs/catalog/packing_result.html"):
-    """
+    """Calculates the actual amount of pieces to buy on base on packing
+    information.
     """
     product = Product.objects.get(pk = id)
 
     if quantity is None:
         quantity = float(request.POST.get("quantity"))
 
-    packs = math.ceil(quantity / product.packing_unit)
-    real_quantity = packs * product.packing_unit
+    packing_amount, packing_unit= product.get_packing_info()
+
+    packs = math.ceil(quantity / packing_amount)
+    real_quantity = packs * packing_amount
     price = real_quantity * product.get_price()
 
     html = render_to_string(template_name, RequestContext(request, {
@@ -73,6 +76,7 @@ def calculate_packing(request, id, quantity=None, as_string=False, template_name
         "product" : product,
         "packs" : int(packs),
         "real_quantity" : real_quantity,
+        "unit" : packing_unit,
     }))
 
     if as_string:
@@ -85,7 +89,7 @@ def calculate_packing(request, id, quantity=None, as_string=False, template_name
     return HttpResponse(result)
 
 def calculate_price(request, id):
-    """
+    """Calculates the price of the product on base of choosen properties.
     """
     product = Product.objects.get(pk = id)
 
@@ -454,54 +458,59 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
     properties = []
     variants = []
 
-    if product.is_variant and product.variants_display_type == SELECT:
-        # Get all properties (sorted). We need to traverse through all
-        # property/options to select the options of the current variant.
-        for property in product.get_properties():
-            options = []
-            for property_option in property.options.all():
-                if variant.has_option(property, property_option):
-                    selected = True
-                else:
-                    selected = False
-                options.append({
-                    "id"   : property_option.id,
-                    "name" : property_option.name,
-                    "selected" : selected
+    if product.is_product_with_variants():
+        if product.variants_display_type == SELECT:
+            # Get all properties (sorted). We need to traverse through all
+            # property/options to select the options of the current variant.
+            for property in product.get_properties():
+                options = []
+                for property_option in property.options.all():
+                    if variant.has_option(property, property_option):
+                        selected = True
+                    else:
+                        selected = False
+                    options.append({
+                        "id"   : property_option.id,
+                        "name" : property_option.name,
+                        "selected" : selected
+                    })
+                properties.append({
+                    "id" : property.id,
+                    "name" : property.name,
+                    "options" : options
                 })
-            properties.append({
-                "id" : property.id,
-                "name" : property.name,
-                "options" : options
-            })
+        else:
+            properties = product.get_properties()
+            variants = product.get_variants()
+
     elif product.is_configurable_product:
-        for property in product.get_property_select_fields():
+        for property in product.get_configurable_properties():
             options = []
 
             try:
                 ppv = ProductPropertyValue.objects.get(product=product, property=property)
             except ProductPropertyValue.DoesNotExist:
-                pass
+                ppv = None
 
             for property_option in property.options.all():
-                if ppv.value == str(property_option.id):
+                if ppv and ppv.value == str(property_option.id):
                     selected = True
                 else:
                     selected = False
+
                 options.append({
                     "id"   : property_option.id,
                     "name" : property_option.name,
                     "price" : property_option.price,
-                    "selected" : selected
+                    "selected" : selected,
                 })
+
             properties.append({
+                "obj" : property,
                 "id" : property.id,
                 "name" : property.name,
-                "options" : options
+                "options" : options,
             })
-    else:
-        properties = product.get_properties()
-        variants = product.get_variants()
 
     # Reviews
     if product.get_template_name() != None:

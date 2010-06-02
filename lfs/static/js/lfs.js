@@ -18,7 +18,6 @@ var update_checkout = function() {
 }
 
 $(function() {
-
     // Delay plugin taken from ###############################################
     // http://ihatecode.blogspot.com/2008/04/jquery-time-delay-event-binding-plugin.html
 
@@ -114,6 +113,8 @@ $(function() {
             }
         });
     });
+
+    $(".product-quantity").attr("autocomplete", "off");
 
     $(".product-quantity").livequery("keyup", function() {
         $("#product-form").ajaxSubmit({

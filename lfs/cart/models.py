@@ -125,7 +125,7 @@ class CartItem(models.Model):
         ordering = ['id']
 
     def get_price(self):
-        """
+        """Convenient method to return the gross price of the product.
         """
         return self.get_price_gross()
 
@@ -207,7 +207,7 @@ class CartItem(models.Model):
             properties.append({
                 "name" : property_value.property.name,
                 "unit" : property_value.property.unit,
-                "value" : property_value.value,
+                "value" : value,
                 "price" : price
             })
 

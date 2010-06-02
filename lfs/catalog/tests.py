@@ -15,9 +15,10 @@ from lfs.catalog.settings import DELIVERY_TIME_UNIT_HOURS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_WEEKS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_MONTHS
-from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
-from lfs.catalog.settings import PROPERTY_TEXT_FIELD
+from lfs.catalog.settings import PROPERTY_FLOAT_FIELD
+from lfs.catalog.settings import PROPERTY_INTEGER_FIELD
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD
+from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import LIST
 from lfs.catalog.models import Category
@@ -115,7 +116,7 @@ class PropertiesTestCase(TestCase):
         self.ppv22 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp2, value="2")
 
         # A property with floats
-        self.pp3 = Property.objects.create(name="Length", type=PROPERTY_NUMBER_FIELD)
+        self.pp3 = Property.objects.create(name="Length", type=PROPERTY_FLOAT_FIELD)
         self.ppv31 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp3, value=10.0)
         self.ppv32 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp3, value=20.0)
         self.ppv32 = ProductPropertyValue.objects.create(product=self.p3, property=self.pp3, value=30.0)
@@ -1663,14 +1664,14 @@ class ProductTestCase(TestCase):
         option = self.v1.get_option(property_id = "dummy")
         self.assertEqual(option, None)
 
-    def test_get_options(self):
+    def test_get_variant_properties(self):
         """
         """
-        options = self.v1.get_options()
+        options = self.v1.get_variant_properties()
         self.failIf(self.ppv_color_red not in options)
         self.failIf(self.ppv_size_m not in options)
 
-        options = self.v2.get_options()
+        options = self.v2.get_variant_properties()
         self.failIf(self.ppv_color_green not in options)
         self.failIf(self.ppv_size_l not in options)
 

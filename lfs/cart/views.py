@@ -230,7 +230,7 @@ def add_to_cart(request, product_id=None):
                 properties_dict[property_id] = unicode(value)
 
                 # validate property's value
-                if property.is_input_field:
+                if property.is_number_field:
 
                     if (value < property.unit_min) or (value > property.unit_max):
                         msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name" : property.name, "min" : property.unit_min, "max" : property.unit_max, "unit" : property.unit }

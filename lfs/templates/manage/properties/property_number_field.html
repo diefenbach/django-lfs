@@ -2,11 +2,11 @@
 <h2 class="heading-middle">{% trans 'Validators' %}</h2>
 
 <form id="shop-property-step-type-form"
-      action="{% url lfs_save_input_field_validators property.id %}"
+      action="{% url lfs_save_number_field_validators property.id %}"
       method="post">
       
       <table>
-          {{ input_type_form }}
+          {{ number_field_form }}
       </table>
 
     <input type="submit" 
