@@ -28,12 +28,12 @@ def get_current_category_id(request):
 def get_current_top_category(request, obj):
     """Returns the current top category of a product.
     """
-    
+
     if obj.__class__.__name__.lower() == "product":
         category = get_current_product_category(request, obj)
     else:
         category = obj
-    
+
     if category is None:
         return category
 
@@ -381,7 +381,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
 
         # Transform to float for later sorting, see below
         property = properties_mapping[row[0]]
-        if property.is_decimal_field:
+        if property.is_float_field:
             value = float(row[1])
         else:
             value = row[1]
@@ -449,7 +449,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         # Generate filter
         temp = []
         for f in filters:
-            if len(f[1]) == 1:
+            if not isinstance(f[1], list):
                 temp.append("property_id='%s' AND value='%s'" % (f[0], f[1]))
             else:
                 temp.append("property_id='%s' AND value_as_float BETWEEN '%s' AND '%s'" % (f[0], f[1][0], f[1][1]))
@@ -509,7 +509,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
             categories.extend(category.get_all_children())
         products = lfs.catalog.models.Product.objects.filter(
             active=True,
-            categories__in=categories, 
+            categories__in=categories,
             sub_type__in=[STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT]).distinct()
 
     if price_filter:
@@ -678,12 +678,12 @@ def calculate_quantity(product_ids, property_id, min, max):
         amount += 1
 
     return amount
-    
+
 def calculate_packages(product, quantity):
     """
     """
     return math.ceil(quantity / product.packing_unit)
- 
+
 def calculate_real_amount(product, quantity):
     """
     """

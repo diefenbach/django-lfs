@@ -154,9 +154,13 @@ class CartItem(models.Model):
             else:
                 price = self.product.get_price_gross()
                 for property in self.properties.all():
-                    value = int(float(property.value))
-                    option = PropertyOption.objects.get(pk=value)
-                    price += option.price
+                    if property.property.is_select_field:
+                        try:
+                            option = PropertyOption.objects.get(pk=int(float(property.value)))
+                        except (PropertyOption.DoesNotExist, AttributeError):
+                            pass
+                        else:
+                            price += option.price
 
         return price * self.amount
 

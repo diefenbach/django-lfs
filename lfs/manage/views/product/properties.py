@@ -25,8 +25,9 @@ def manage_properties(request, product_id, template_name="manage/product/propert
     """
     product = get_object_or_404(Product, pk=product_id)
 
-    # Generate list of product property groups; used for enter value
-    product_property_groups = []
+    # Generate list of properties. For entering values.
+    configurables = []
+    filterables = []
     for property_group in product.property_groups.all():
         properties = []
         for property in property_group.properties.order_by("groupspropertiesrelation"):
@@ -57,14 +58,22 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                 "display_select_field" : property.type == PROPERTY_SELECT_FIELD,
             })
 
-        product_property_groups.append({
-            "id"   : property_group.id,
-            "name" : property_group.name,
-            "properties" : properties,
-        })
+        if property.configurable:
+            configurables.append({
+                "id"   : property_group.id,
+                "name" : property_group.name,
+                "properties" : properties,
+            })
+
+        if not property.configurable and property.filterable:
+            filterables.append({
+                "id"   : property_group.id,
+                "name" : property_group.name,
+                "properties" : properties,
+            })
 
     # Generate list of all property groups; used for group selection
-    product_property_group_ids = [p["id"] for p in product_property_groups]
+    product_property_group_ids = [p.id for p in product.property_groups.all()]
     shop_property_groups = []
     for property_group in PropertyGroup.objects.all():
 
@@ -76,7 +85,9 @@ def manage_properties(request, product_id, template_name="manage/product/propert
 
     return render_to_string(template_name, RequestContext(request, {
         "product" : product,
-        "product_property_groups" : product_property_groups,
+        "filterables" : filterables,
+        "configurables" : configurables,
+        "product_property_groups" : product.property_groups.all(),
         "shop_property_groups" : shop_property_groups,
     }))
 

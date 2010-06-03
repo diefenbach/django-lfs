@@ -1348,10 +1348,12 @@ class PropertyGroup(models.Model):
 
     Can belong to several products, products can have several groups
 
-    Attributes:
-        - name
-          The name of the property group.
-        - products
+    **Attributes**:
+    
+    name
+        The name of the property group.
+    
+    products
           The assigned products of the property group.
     """
     name = models.CharField(blank=True, max_length=50)
@@ -1362,6 +1364,16 @@ class PropertyGroup(models.Model):
 
     def __unicode__(self):
         return self.name
+        
+    def get_configurable_properties(self):
+        """Returns all configurable properties of the property group.
+        """
+        return self.properties.filter(configurable=True)
+
+    def get_filterable_properties(self):
+        """Returns all filterable properties of the property group.
+        """
+        return self.properties.filter(filterable=True)
 
 class Property(models.Model):
     """Represents a property of a product like color or size.
@@ -1469,7 +1481,7 @@ class Property(models.Model):
         return self.type in (PROPERTY_FLOAT_FIELD, PROPERTY_INTEGER_FIELD)
 
     @property
-    def is_decimal_field(self):
+    def is_float_field(self):
         return self.type == PROPERTY_FLOAT_FIELD
 
     @property
@@ -1596,18 +1608,22 @@ class ProductPropertyValue(models.Model):
     """Stores the value resp. selected option of a product/property combination.
     This is some kind of EAV.
 
-    Attributes:
-        - product
-          The product for which the value is stored.
-        - parent_id
-          If the product is an variant this stores the parent id of it, if the
-          product is no variant it stores the id of the product itself. This is
-          just used to calculate the filters properly.
-        - property
-          The property for which the value is stored.
-        - value
-          The value for the product/property pair. Dependent of the property
-          type the value is either a number, a text or an id of an option.
+    *Attributes*:
+
+    product
+        The product for which the value is stored.
+
+    parent_id
+        If the product is an variant this stores the parent id of it, if the
+        product is no variant it stores the id of the product itself. This is
+        just used to calculate the filters properly.
+
+    property
+        The property for which the value is stored.
+
+    value
+        The value for the product/property pair. Dependent of the property
+        type the value is either a number, a text or an id of an option.
     """
     product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="property_values")
     parent_id = models.IntegerField(blank=True, null=True)
