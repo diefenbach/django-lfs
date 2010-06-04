@@ -842,6 +842,7 @@ class Product(models.Model):
                 value = ppv.value
             properties.append({
                 "name"  : ppv.property.name,
+                "title" : ppv.property.title,
                 "value" : value,
                 "unit"  : ppv.property.unit,
             })
@@ -1392,7 +1393,10 @@ class Property(models.Model):
         groups and/or to one product.
 
     name:
-        Is displayed within forms.
+        Internal name of the property.
+
+    title:
+        Displayed to the customer.
 
     position:
         The position of the property within a product.
@@ -1439,6 +1443,7 @@ class Property(models.Model):
 
     """
     name = models.CharField( _(u"Name"), max_length=100)
+    title = models.CharField( _(u"Title"), max_length=100)
     groups = models.ManyToManyField(PropertyGroup, verbose_name=_(u"Group"), blank=True, null=True, through="GroupsPropertiesRelation", related_name="properties")
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), blank=True, null=True, through="ProductsPropertiesRelation", related_name="properties")
     position = models.IntegerField(_(u"Position"), blank=True, null=True)

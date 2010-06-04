@@ -210,6 +210,7 @@ class CartItem(models.Model):
 
             properties.append({
                 "name" : property_value.property.name,
+                "title" : property_value.property.title,
                 "unit" : property_value.property.unit,
                 "value" : value,
                 "price" : price

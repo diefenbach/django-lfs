@@ -480,6 +480,7 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
                 properties.append({
                     "id" : property.id,
                     "name" : property.name,
+                    "title" : property.title,
                     "options" : options
                 })
         else:
@@ -512,6 +513,7 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
                 "obj" : property,
                 "id" : property.id,
                 "name" : property.name,
+                "title" : property.title,
                 "options" : options,
             })
 
