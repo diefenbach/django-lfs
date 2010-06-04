@@ -22,7 +22,8 @@ from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import VARIANT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
-from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
+from lfs.catalog.settings import CAT_CATEGORY_PATH
+from lfs.catalog.settings import CATEGORY_TEMPLATES
 from lfs.catalog.settings import CONTENT_PRODUCTS
 from lfs.catalog.settings import LIST
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_CHOICES
@@ -31,7 +32,7 @@ from lfs.catalog.settings import DELIVERY_TIME_UNIT_HOURS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_WEEKS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_MONTHS
-from lfs.catalog.settings import PROPERTY_TYPE_CHOICES
+from lfs.catalog.settings import PROPERTY_FIELD_CHOICES
 from lfs.catalog.settings import PROPERTY_FLOAT_FIELD
 from lfs.catalog.settings import PROPERTY_INTEGER_FIELD
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD
@@ -40,9 +41,10 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_CHOICES
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_AUTOMATIC
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
-from lfs.catalog.settings import CATEGORY_TEMPLATES
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DISPLAY
 from lfs.catalog.settings import PRODUCT_TEMPLATES
-from lfs.catalog.settings import CAT_CATEGORY_PATH
+from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
 from lfs.tax.models import Tax
 from lfs.manufacturer.models import Manufacturer
 
@@ -828,7 +830,7 @@ class Product(models.Model):
             return properties
 
         properties = []
-        for ppv in self.property_values.filter(property__display_on_product=True).order_by("property__position"):
+        for ppv in self.property_values.filter(property__display_on_product=True, type=PROPERTY_VALUE_TYPE_DISPLAY).order_by("property__position"):
             if ppv.property.is_select_field:
                 try:
                     po = PropertyOption.objects.get(pk=int(float(ppv.value)))
@@ -848,7 +850,7 @@ class Product(models.Model):
         return properties
 
     def get_variant_properties(self):
-        """Returns the property value of a variant in the correct ordering 
+        """Returns the property value of a variant in the correct ordering
         of the properties.
         """
         cache_key = "variant-properties-%s" % self.id
@@ -896,12 +898,12 @@ class Product(models.Model):
             return False
 
     def _get_default_properties_price(self, object):
-        """Returns the total price of all default properties
+        """Returns the total price of all default properties.
         """
         price = 0
         for property in object.get_configurable_properties():
             try:
-                ppv = ProductPropertyValue.objects.get(product=self, property=property)
+                ppv = ProductPropertyValue.objects.get(product=self, property=property, type=PROPERTY_VALUE_TYPE_DEFAULT)
                 po = PropertyOption.objects.get(pk = ppv.value)
             except (ObjectDoesNotExist, ValueError):
                 if property.required:
@@ -1349,10 +1351,10 @@ class PropertyGroup(models.Model):
     Can belong to several products, products can have several groups
 
     **Attributes**:
-    
+
     name
         The name of the property group.
-    
+
     products
           The assigned products of the property group.
     """
@@ -1364,7 +1366,7 @@ class PropertyGroup(models.Model):
 
     def __unicode__(self):
         return self.name
-        
+
     def get_configurable_properties(self):
         """Returns all configurable properties of the property group.
         """
@@ -1446,7 +1448,7 @@ class Property(models.Model):
     filterable = models.BooleanField(default=True)
     display_no_results = models.BooleanField(_(u"Display no results"), default=False)
     configurable = models.BooleanField(default=False)
-    type = models.PositiveSmallIntegerField(_(u"Type"), choices=PROPERTY_TYPE_CHOICES, default=PROPERTY_TEXT_FIELD)
+    type = models.PositiveSmallIntegerField(_(u"Type"), choices=PROPERTY_FIELD_CHOICES, default=PROPERTY_TEXT_FIELD)
     price = models.FloatField(_(u"Price"), blank=True, null=True)
 
     # Number input field
@@ -1624,15 +1626,20 @@ class ProductPropertyValue(models.Model):
     value
         The value for the product/property pair. Dependent of the property
         type the value is either a number, a text or an id of an option.
+
+    type
+        The type of the product value, which is on of "filter value",
+        "default value", "display value".
     """
     product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="property_values")
-    parent_id = models.IntegerField(blank=True, null=True)
+    parent_id = models.IntegerField(_(u"Parent"), blank=True, null=True)
     property = models.ForeignKey("Property", verbose_name=_(u"Property"), related_name="property_values")
-    value = models.CharField(blank=True, max_length=100)
-    value_as_float = models.FloatField(blank=True, null=True)
+    value = models.CharField(_(u"Value"), blank=True, max_length=100)
+    value_as_float = models.FloatField(_(u"Value as float"), blank=True, null=True)
+    type = models.PositiveSmallIntegerField(_(u"Type"))
 
     class Meta:
-        unique_together = ("product", "property", "value")
+        unique_together = ("product", "property", "value", "type")
 
     def __unicode__(self):
         return "%s/%s: %s" % (self.product.name, self.property.name, self.value)

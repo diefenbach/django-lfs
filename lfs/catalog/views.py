@@ -26,7 +26,10 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
-from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT
+from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
+from lfs.catalog.settings import VARIANT
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DISPLAY
 from lfs.catalog.settings import SELECT
 from lfs.catalog.settings import CONTENT_PRODUCTS
 from lfs.core.utils import LazyEncoder
@@ -488,7 +491,7 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
             options = []
 
             try:
-                ppv = ProductPropertyValue.objects.get(product=product, property=property)
+                ppv = ProductPropertyValue.objects.get(product=product, property=property, type=PROPERTY_VALUE_TYPE_DEFAULT)
             except ProductPropertyValue.DoesNotExist:
                 ppv = None
 

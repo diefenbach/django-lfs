@@ -11,6 +11,7 @@ import lfs.catalog.models
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 
 # TODO implement this methods.
 # Category
@@ -269,9 +270,10 @@ def get_product_filters(category, product_filter, price_filter, sorting):
     cursor = connection.cursor()
     cursor.execute("""SELECT property_id, min(value_as_float), max(value_as_float)
                       FROM catalog_productpropertyvalue
-                      WHERE product_id IN (%s)
+                      WHERE type=%s
+                      AND product_id IN (%s)
                       AND property_id IN (%s)
-                      GROUP BY property_id""" % (product_ids, property_ids))
+                      GROUP BY property_id""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
 
 
     for row in cursor.fetchall():
@@ -314,14 +316,14 @@ def get_product_filters(category, product_filter, price_filter, sorting):
             "items" : items,
         })
 
-
     ########## Select Fields ###################################################
     # Count entries for current filter
     cursor = connection.cursor()
     cursor.execute("""SELECT property_id, value, parent_id
                       FROM catalog_productpropertyvalue
-                      WHERE product_id IN (%s)
-                      AND property_id IN (%s)""" % (product_ids, property_ids))
+                      WHERE type=%s
+                      AND product_id IN (%s)
+                      AND property_id IN (%s)""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
 
     already_count = {}
     amount = {}
@@ -351,7 +353,8 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                       FROM catalog_productpropertyvalue
                       WHERE product_id IN (%s)
                       AND property_id IN (%s)
-                      GROUP BY property_id, value""" % (product_ids, property_ids))
+                      AND type=%s
+                      GROUP BY property_id, value""" % (product_ids, property_ids, PROPERTY_VALUE_TYPE_FILTER))
 
     # Group properties and values (for displaying)
     set_filters = dict(product_filter)
@@ -465,9 +468,9 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         cursor.execute("""
             SELECT product_id, count(*)
             FROM catalog_productpropertyvalue
-            WHERE product_id IN (%s) and %s
+            WHERE product_id IN (%s) and %s and type=%s
             GROUP BY product_id
-            HAVING count(*)=%s""" % (product_ids, fstr, len(filters)))
+            HAVING count(*)=%s""" % (product_ids, fstr, PROPERTY_VALUE_TYPE_FILTER, len(filters)))
 
         matched_product_ids = [row[0] for row in cursor.fetchall()]
 
@@ -482,9 +485,9 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
             cursor.execute("""
                 SELECT product_id, count(*)
                 FROM catalog_productpropertyvalue
-                WHERE product_id IN (%s) and %s
+                WHERE product_id IN (%s) and %s and type=%s
                 GROUP BY product_id
-                HAVING count(*)=%s""" % (all_variant_ids, fstr, len(filters)))
+                HAVING count(*)=%s""" % (all_variant_ids, PROPERTY_VALUE_TYPE_FILTER, fstr, len(filters)))
 
             # Get the parent ids of the variants as the "product with variants"
             # should be displayed and not the variants.
