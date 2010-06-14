@@ -25,7 +25,7 @@ class PagesPortlet(Portlet):
         cache_key = "pages"
         pages = cache.get(cache_key)
         if pages is None:
-            pages = Page.objects.active()
+            pages = Page.objects.filter(active=True, exclude_from_navigation=False)
             cache.set(cache_key, pages)
         
         return render_to_string("lfs/portlets/pages.html", {
