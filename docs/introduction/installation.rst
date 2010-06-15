@@ -18,6 +18,12 @@ Please note:
    * The dependency of mercurial and git will be disappear in near future. 
    * You can - of course - use another database but we provide a filled sqlite
      database for convenience.
+   * If you encounter compilation problems during ``bin/buildout -v`` on a
+     Debian or Ubuntu server make sure you have the build tools and
+     Python dev packages installed::
+
+        apt-get install build-essential
+        apt-get install python-dev
 
 Installation
 ------------
