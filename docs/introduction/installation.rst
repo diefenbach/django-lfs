@@ -25,6 +25,7 @@ Please note:
         apt-get install build-essential
         apt-get install python-dev
         apt-get install python-all-dev
+        aptg-et install python-profiler (multiverse repository)
 
 Installation
 ------------
