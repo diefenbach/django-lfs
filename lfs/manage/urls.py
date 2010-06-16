@@ -32,6 +32,10 @@ urlpatterns += patterns('lfs.manage.views.manufacturer',
 
 # Marketing
 urlpatterns += patterns('lfs.manage.views.marketing',
+    url(r'^featured$', "marketing.manage_featured_page", name="lfs_manage_featured"),
+    url(r'^add-featured$', "featured.add_featured", name="lfs_manage_add_featured"),
+    url(r'^update-featured$', "featured.update_featured", name="lfs_manage_update_featured"),
+    url(r'^featured-inline$', "featured.manage_featured_inline", name="lfs_manage_featured_inline"),
     url(r'^marketing$', "marketing.manage_marketing", name="lfs_manage_marketing"),
     url(r'^manage-rating-mails$', "rating_mails.manage_rating_mails", name="lfs_manage_rating_mails"),
     url(r'^add-topseller$', "topseller.add_topseller", name="lfs_manage_add_topseller"),

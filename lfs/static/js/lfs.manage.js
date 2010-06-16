@@ -994,6 +994,54 @@ $(function() {
         });
     });
 
+    // Marketing / Featured
+    $("#add-featured-button").livequery("click", function() {
+        $("#add-featured-form").ajaxSubmit({
+            "success": function(data) {
+                var data = JSON.parse(data)
+                $("#featured-inline").html(data["html"]);
+                $.jGrowl(data["message"]);
+            }
+        });
+        return false;
+    })
+
+    $(".featured-update-button").livequery("click", function() {
+        var action = $(this).attr("name");
+        $("#featured-update-form").ajaxSubmit({
+            data : {"action" : action},
+            "success": function(data) {
+                var data = JSON.parse(data);
+                $("#featured-inline").html(data["html"]);
+                $.jGrowl(data["message"]);
+            }
+        });
+        return false;
+    });
+
+    $(".featured-page-link").livequery("click", function() {
+        var url = $(this).attr("href");
+        $.get(url, function(data) {
+            $("#featured-inline").html(data)
+        });
+        return false;
+    });
+
+    $(".filter-featured-input").livequery("keyup", function() {
+        $("#filter-featured-form").ajaxSubmit({
+            target: "#featured-inline"
+        });
+        return false;
+    });
+
+    $(".featured-categories-filter").livequery("change", function() {
+        $("#filter-featured-form").ajaxSubmit({
+            "success": function(data) {
+                $("#featured-inline").html(data);
+            }
+        });
+    });
+
     // Shop
     $("#shop-default-values-button").livequery("click", function() {
         $("#shop-default-values-form").ajaxSubmit({

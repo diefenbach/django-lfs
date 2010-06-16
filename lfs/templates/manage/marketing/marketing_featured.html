@@ -1,0 +1,26 @@
+{% extends "manage/manage_base.html" %}
+
+{% load i18n %}
+{% load lfs_tags lfs_manage_tags %}
+
+{% block section %}manage-product{% endblock %}
+
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    
+    <div class="site-actions">
+        <span class="label">{% trans 'Featured Products' %}</span>
+    </div>
+    <div id="product">
+        <div id="manage-tabs">
+            <ul>
+                <li class="ui-tabs-nav-item"><a href="#featured">{% trans 'Featured Products' %}</a></li>                
+            </ul>
+
+            <div id="featured">
+                {{featured|safe}}
+            </div>                        
+        </div>
+    </div>
+{% endblock %}
