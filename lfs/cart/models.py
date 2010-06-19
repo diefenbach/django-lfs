@@ -174,7 +174,11 @@ class CartItem(models.Model):
             if token.startswith("property"):
                 mo = re.match("property\((\d+)\)", token)
                 ppv = self.properties.filter(property__id=mo.groups()[0])[0]
-                value = ppv.value
+                if ppv.property.is_select_field:
+                    po = PropertyOption.objects.get(pk=ppv.value)
+                    value = po.price
+                else:
+                    value = ppv.value
                 pc = pc.replace(token, str(value))
             elif token.startswith("number"):
                 mo = re.match("number\((\d+)\)", token)
@@ -197,21 +201,25 @@ class CartItem(models.Model):
         select fields.
         """
         properties = []
-        for property_value in self.properties.all():
-            property = property_value.property
+        for property in self.product.get_properties():
+            try:
+                cipv = CartItemPropertyValue.objects.get(cart_item=self, property=property)
+            except CartItemPropertyValue.DoesNotExist:
+                continue
 
             if property.is_select_field:
-                option = PropertyOption.objects.get(pk=int(float(property_value.value)))
+                option = PropertyOption.objects.get(pk=int(float(cipv.value)))
                 value = option.name
                 price = option.price
             else:
-                value = property_value.value
+                format_string = "%%.%sf" % property.decimal_places
+                value = format_string % float(cipv.value)
                 price = ""
 
             properties.append({
-                "name" : property_value.property.name,
-                "title" : property_value.property.title,
-                "unit" : property_value.property.unit,
+                "name" : property.name,
+                "title" : property.title,
+                "unit" : property.unit,
                 "value" : value,
                 "price" : price
             })
