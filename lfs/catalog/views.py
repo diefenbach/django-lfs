@@ -105,7 +105,8 @@ def calculate_price(request, id):
             except (ValueError, PropertyOption.DoesNotExist):
                 pass
             else:
-                property_price += po.price
+                if po.property.add_price:
+                    property_price += po.price
 
     for_sale_price = product.get_for_sale_price(with_properties=False)
     for_sale_price += property_price
