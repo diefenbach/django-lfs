@@ -52,7 +52,7 @@
             </form>
 
             <h2 class="heading-middle">{% trans 'Field type' %}</h2>
-            <p class="attention">{% trans 'Attention: If the field type is changed all entered product values for this property will be deleted.' %}</p>
+            {# <p class="attention">{% trans 'Attention: If the field type is changed all entered product values for this property will be deleted.' %}</p> #}
             <form action="{% url lfs_update_shop_property_type property.id %}"
                   method="post">
 
@@ -62,7 +62,13 @@
                        value="{% trans 'Save property type' %}">
             </form>
 
+
             {% if property.is_select_field %}
+
+                <div id="select_field">
+                    {{ select_field|safe }}
+                </div>
+
                 <div id="options">
                     {{ options|safe }}
                 </div>

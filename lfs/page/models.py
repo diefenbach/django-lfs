@@ -15,6 +15,7 @@ class Page(models.Model):
     short_text = models.TextField(blank=True)
     body = models.TextField(_(u"Text"), blank=True)
     active = models.BooleanField(_(u"Active"), default=False)
+    exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
     position = models.IntegerField(_(u"Position"), default=999)
     file = models.FileField(_(u"File"), blank=True, upload_to="files")
     

@@ -161,7 +161,7 @@ class CartItem(models.Model):
                             pass
                         else:
                             price += option.price
-
+                            
         return price * self.amount
 
     def get_calculated_price(self):
@@ -220,6 +220,7 @@ class CartItem(models.Model):
                 "name" : property.name,
                 "title" : property.title,
                 "unit" : property.unit,
+                "display_price" : property.display_price,
                 "value" : value,
                 "price" : price
             })

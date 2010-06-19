@@ -1,3 +1,4 @@
+import datetime
 # python imports
 import urllib
 import math
@@ -428,11 +429,13 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
 
     # TODO: Factor top_category out to a inclusion tag, so that people can
     # omit if they don't need it.
-    return render_to_response(template_name, RequestContext(request, {
+    result =  render_to_response(template_name, RequestContext(request, {
         "product_inline" : product_inline(request, product.id),
         "product" : product,
         "top_category" : lfs.catalog.utils.get_current_top_category(request, product),
     }))
+
+    return result
 
 def product_inline(request, id, template_name="lfs/catalog/products/product_inline.html"):
     """Part of the prduct view, which displays the actual data of the product.
@@ -481,7 +484,8 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
                     "id" : property.id,
                     "name" : property.name,
                     "title" : property.title,
-                    "options" : options
+                    "unit" : property.unit,
+                    "options" : options,
                 })
         else:
             properties = product.get_properties()
@@ -514,6 +518,8 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
                 "id" : property.id,
                 "name" : property.name,
                 "title" : property.title,
+                "unit" : property.unit,
+                "display_price" : property.display_price,
                 "options" : options,
             })
 

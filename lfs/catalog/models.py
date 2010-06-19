@@ -33,8 +33,7 @@ from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_WEEKS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_MONTHS
 from lfs.catalog.settings import PROPERTY_FIELD_CHOICES
-from lfs.catalog.settings import PROPERTY_FLOAT_FIELD
-from lfs.catalog.settings import PROPERTY_INTEGER_FIELD
+from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD
 from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_CHOICES
@@ -379,9 +378,12 @@ class Product(models.Model):
         - effective_price:
             Only for internal usage (price filtering).
 
-        - price unit
-            The unit of the product's price. Could be per piece, per meter,
-            etc.
+        - unit
+            The unit of the product. This is displayed beside the quantity
+            field.
+
+        - price_unit
+            The unit of the product's price. This is displayed beside the price
 
         - short_description
             The short description of the product. This is used within overviews.
@@ -497,7 +499,8 @@ class Product(models.Model):
     sku = models.CharField(_(u"SKU"), blank=True, max_length=30)
     price = models.FloatField(_(u"Price"), default=0.0)
     effective_price = models.FloatField(_(u"Price"), blank=True)
-    price_unit = models.CharField(blank=True, max_length=10)
+    price_unit = models.CharField(blank=True, max_length=20)
+    unit = models.CharField(blank=True, max_length=20)
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
     images = generic.GenericRelation("Image", verbose_name=_(u"Images"),
@@ -903,19 +906,23 @@ class Product(models.Model):
         """
         price = 0
         for property in object.get_configurable_properties():
-            try:
-                ppv = ProductPropertyValue.objects.get(product=self, property=property, type=PROPERTY_VALUE_TYPE_DEFAULT)
-                po = PropertyOption.objects.get(pk = ppv.value)
-            except (ObjectDoesNotExist, ValueError):
-                if property.required:
-                    try:
-                        po = property.options.all()[0]
-                    except Property.DoesNotExist:
-                        continue
-                    else:
-                        price += po.price
-            else:
-                price += po.price
+            if property.add_price:
+                # Try to get the default value of the property
+                try:
+                    ppv = ProductPropertyValue.objects.get(product=self, property=property, type=PROPERTY_VALUE_TYPE_DEFAULT)
+                    po = PropertyOption.objects.get(pk = ppv.value)
+                except (ObjectDoesNotExist, ValueError):
+                    # If there is no explicit default value try to get the first 
+                    # option.
+                    if property.required:
+                        try:
+                            po = property.options.all()[0]
+                        except IndexError:
+                            continue
+                        else:
+                            price += po.price
+                else:
+                    price += po.price
 
         return price
 
@@ -1438,8 +1445,18 @@ class Property(models.Model):
     unit_step
         The step width the shop customer can edit.
 
+    decimal_places
+        The decimal places of a number field.
+
     required
         If True the field is required (for configurable properties).
+
+    display_price
+        If True the option price is displayed (for select field)
+
+    add_price
+        if True the option price is added to the product price (for select
+        field)
 
     """
     name = models.CharField( _(u"Name"), max_length=100)
@@ -1455,11 +1472,14 @@ class Property(models.Model):
     configurable = models.BooleanField(default=False)
     type = models.PositiveSmallIntegerField(_(u"Type"), choices=PROPERTY_FIELD_CHOICES, default=PROPERTY_TEXT_FIELD)
     price = models.FloatField(_(u"Price"), blank=True, null=True)
+    display_price = models.BooleanField(_(u"Display price"), default=True)
+    add_price = models.BooleanField(_(u"Add price"), default=True)
 
     # Number input field
     unit_min = models.FloatField(_(u"Min"), blank=True, null=True)
     unit_max = models.FloatField(_(u"Max"), blank=True, null=True)
     unit_step = models.FloatField(_(u"Step"), blank=True, null=True)
+    decimal_places = models.PositiveSmallIntegerField(_(u"Decimal places"), default=0)
 
     required = models.BooleanField(default=False)
 
@@ -1485,15 +1505,7 @@ class Property(models.Model):
 
     @property
     def is_number_field(self):
-        return self.type in (PROPERTY_FLOAT_FIELD, PROPERTY_INTEGER_FIELD)
-
-    @property
-    def is_float_field(self):
-        return self.type == PROPERTY_FLOAT_FIELD
-
-    @property
-    def is_integer_field(self):
-        return self.type == PROPERTY_INTEGER_FIELD
+        return self.type == PROPERTY_NUMBER_FIELD
 
     @property
     def is_range_step_type(self):

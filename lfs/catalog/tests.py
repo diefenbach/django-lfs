@@ -15,8 +15,7 @@ from lfs.catalog.settings import DELIVERY_TIME_UNIT_HOURS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_WEEKS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_MONTHS
-from lfs.catalog.settings import PROPERTY_FLOAT_FIELD
-from lfs.catalog.settings import PROPERTY_INTEGER_FIELD
+from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD
 from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import STANDARD_PRODUCT
@@ -116,7 +115,7 @@ class PropertiesTestCase(TestCase):
         self.ppv22 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp2, value="2")
 
         # A property with floats
-        self.pp3 = Property.objects.create(name="Length", type=PROPERTY_FLOAT_FIELD)
+        self.pp3 = Property.objects.create(name="Length", type=PROPERTY_NUMBER_FIELD)
         self.ppv31 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp3, value=10.0)
         self.ppv32 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp3, value=20.0)
         self.ppv32 = ProductPropertyValue.objects.create(product=self.p3, property=self.pp3, value=30.0)

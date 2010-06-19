@@ -153,7 +153,7 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
 
     total = 0
     for cart_item in cart_items:
-        total += (cart_item.product.get_price() * cart_item.amount)
+        total += (cart_item.get_price() * cart_item.amount)
 
     return render_to_string(template_name, {
         "total" : total,
@@ -225,12 +225,12 @@ def add_to_cart(request, product_id=None):
                 except Property.DoesNotExist:
                     continue
 
-                if property.is_float_field:
+                if property.is_number_field:
                     try:
                         value = float(value)
                     except ValueError:
                         value = 0.0
-                elif property.is_integer_field:
+                elif property.is_number_field:
                     try:
                         value = int(value)
                     except ValueError:

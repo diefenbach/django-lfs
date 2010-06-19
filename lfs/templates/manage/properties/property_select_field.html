@@ -1,0 +1,14 @@
+{% load i18n %}
+<h2 class="heading-middle">{% trans 'Select field properties' %}</h2>
+
+<form id="shop-property-select-type-form"
+      action="{% url lfs_save_select_field property.id %}"
+      method="post">
+
+    {% include "manage/lfs_form.html" %}
+
+    <input type="submit"
+           value="{% trans 'Save' %}"
+           class="shop-property-input-button"
+           name="Save"/>
+   </form>

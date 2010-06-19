@@ -198,14 +198,6 @@
                 </div>
             {% endif %}
 
-            <div class="field">
-                <div class="label">
-                    {{ form.price_unit.label_tag }}:
-                </div>
-                <div>
-                    {{ form.price_unit }}
-                </div>
-            </div>
             {% if not product.is_variant %}
                 <div class="field">
                     <div class="label">
@@ -246,6 +238,28 @@
             {% endif %}
 
         </fieldset>
+        
+        <fieldset>
+            <legend>{% trans "Units" %}</legend>
+            <div class="field">
+                <div class="label">
+                    {{ form.unit.label_tag }}:
+                </div>
+                <div>
+                    {{ form.unit }}
+                </div>
+            </div>
+            <div class="field">
+                <div class="label">
+                    {{ form.price_unit.label_tag }}:
+                </div>
+                <div>
+                    {{ form.price_unit }}
+                </div>
+            </div>
+            
+        </fieldset>
+        
         <div class="field">
             <div class="label">
                 {% if product.is_variant %}

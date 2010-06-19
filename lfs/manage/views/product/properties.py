@@ -13,8 +13,7 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyGroup
-from lfs.catalog.settings import PROPERTY_FLOAT_FIELD
-from lfs.catalog.settings import PROPERTY_INTEGER_FIELD
+from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
 from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
@@ -61,7 +60,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                 "name" : property.name,
                 "type" : property.type,
                 "options" : options,
-                "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_INTEGER_FIELD, PROPERTY_FLOAT_FIELD),
+                "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
                 "display_select_field" : property.type == PROPERTY_SELECT_FIELD,
             })
 
@@ -103,7 +102,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                 "name" : property.name,
                 "type" : property.type,
                 "options" : options,
-                "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_INTEGER_FIELD, PROPERTY_FLOAT_FIELD),
+                "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
                 "display_select_field" : property.type == PROPERTY_SELECT_FIELD,
             })
 
@@ -145,7 +144,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                 "name" : property.name,
                 "type" : property.type,
                 "options" : options,
-                "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_INTEGER_FIELD, PROPERTY_FLOAT_FIELD),
+                "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
                 "display_select_field" : property.type == PROPERTY_SELECT_FIELD,
             })
 

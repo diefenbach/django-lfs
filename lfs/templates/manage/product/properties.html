@@ -69,7 +69,7 @@
 
         <div class="lfs-buttons">
             <input type="submit"
-                   value="{% trans 'Update properties' %}" />
+                   value="{% trans 'Update default values' %}" />
         </div>
     </form>    
 {% endif %}
@@ -78,7 +78,7 @@
     <form action="{% url lfs_update_product_properties product.id %}"
           method="post">
 
-        <h2>{% trans "Filter Values" %}</h2>
+        <h2 class="heading-middle">{% trans "Filter Values" %}</h2>
         {% for property_group in filterables %}
             <div>
                 {% if property_group.properties %}
@@ -122,7 +122,7 @@
 
         <div class="lfs-buttons">
             <input type="submit"
-                   value="{% trans 'Update properties' %}" />
+                   value="{% trans 'Update filter values' %}" />
         </div>
     </form>
 {% endif %}
@@ -131,7 +131,7 @@
     <form action="{% url lfs_update_product_properties product.id %}"
           method="post">
 
-        <h2>{% trans "Displayed Values" %}</h2>
+        <h2 class="heading-middle">{% trans "Displayed Values" %}</h2>
         {% for property_group in displayables %}
             <div>
                 {% if property_group.properties %}
@@ -175,7 +175,7 @@
 
         <div class="lfs-buttons">
             <input type="submit"
-                   value="{% trans 'Update properties' %}" />
+                   value="{% trans 'Update displayed values' %}" />
         </div>
     </form>
 {% endif %}

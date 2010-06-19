@@ -295,6 +295,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                 "position" : property.position,
                 "object" : property,
                 "name" : property.name,
+                "title" : property.title,
                 "unit" : property.unit,
                 "items" : [{"min" : float(values[0]), "max" : float(values[1])}],
                 "show_reset" : True,
@@ -310,6 +311,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
             "position" : property.position,
             "object" : property,
             "name" : property.name,
+            "title" : property.title,
             "unit" : property.unit,
             "show_reset" : False,
             "show_quantity" : True,
@@ -384,7 +386,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
 
         # Transform to float for later sorting, see below
         property = properties_mapping[row[0]]
-        if property.is_float_field:
+        if property.is_number_field:
             value = float(row[1])
         else:
             value = row[1]
@@ -427,6 +429,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
             "unit" : property.unit,
             "show_reset" : str(property_id) in set_filter_keys,
             "name"  : property.name,
+            "title" : property.title,
             "items" : values
         })
 

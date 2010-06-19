@@ -24,7 +24,7 @@ class PropertyDataForm(ModelForm):
     """
     class Meta:
         model = Property
-        fields = ["name", "title", "filterable", "display_no_results", 
+        fields = ["name", "title", "filterable", "display_no_results",
             "configurable", "required", "display_on_product", "unit"]
 
 class PropertyTypeForm(ModelForm):
@@ -41,12 +41,19 @@ class StepTypeForm(ModelForm):
         model = Property
         fields = ["step_type"]
 
+class SelectFieldForm(ModelForm):
+    """Form to manage attributes for select field.
+    """
+    class Meta:
+        model = Property
+        fields = ["display_price", "add_price"]
+
 class NumberFieldForm(ModelForm):
     """Form to manage the number field.
     """
     class Meta:
         model = Property
-        fields = ["unit_min", "unit_max", "unit_step"]
+        fields = ["decimal_places", "unit_min", "unit_max", "unit_step"]
 
 class StepForm(ModelForm):
     """Form to manage step range.
@@ -86,7 +93,7 @@ def manage_property(request, id, template_name="manage/properties/property.html"
         form = PropertyDataForm(instance=property)
 
     display_step_form = property.is_number_field and property.filterable
-    
+
     return render_to_response(template_name, RequestContext(request, {
         "property" : property,
         "properties" : Property.objects.filter(local=False),
@@ -94,8 +101,10 @@ def manage_property(request, id, template_name="manage/properties/property.html"
         "type_form" : PropertyTypeForm(instance=property),
         "current_id" : int(id),
         "options" : options_inline(request, id),
+        "select_field"
         "steps" : steps_inline(request, id),
         "number_field" : number_field(request, property),
+        "select_field" : select_field(request, property),
         "display_step_form" : display_step_form,
       }))
 
@@ -121,6 +130,27 @@ def update_property_type(request, id):
     )
 
 @permission_required("manage_shop", login_url="/login/")
+def select_field(request, property, template_name="manage/properties/property_select_field.html"):
+    """Displays the form of the select field propery type.
+    """
+    form = SelectFieldForm(instance=property)
+
+    return render_to_string(template_name, RequestContext(request, {
+        "property" : property,
+        "form" : form,
+    }))
+
+def save_select_field(request, property_id):
+    """
+    """
+    property = get_object_or_404(Property, pk=property_id)
+
+    form = SelectFieldForm(instance=property, data=request.POST)
+    property = form.save()
+
+    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+
+@permission_required("manage_shop", login_url="/login/")
 def number_field(request, property, template_name="manage/properties/property_number_field.html"):
     """Displays the form of the input field propery type
     """
@@ -136,7 +166,7 @@ def save_number_field_validators(request, property_id):
     """
     property = get_object_or_404(Property, pk=property_id)
 
-    form = InputFieldForm(instance=property, data=request.POST)
+    form = NumberFieldForm(instance=property, data=request.POST)
     property = form.save()
 
     # result = simplejson.dumps({
@@ -290,8 +320,9 @@ def add_option(request, property_id):
 
     if request.POST.get("action") == "add":
         name = request.POST.get("name", "")
+        price = request.POST.get("price", 0)
         if name != "":
-            option = PropertyOption.objects.create(name=name, property_id=property_id)
+            option = PropertyOption.objects.create(name=name, price=price, property_id=property_id)
         message = _(u"Option has been added.")
     else:
 
