@@ -14,7 +14,7 @@ class PageTestCase(TestCase):
     """Unit tests for lfs.page
     """
     fixtures = ['lfs_shop.xml', "lfs_user.xml"]
-        
+
     def setUp(self):
         """
         """
@@ -22,13 +22,13 @@ class PageTestCase(TestCase):
 
         self.user = User.objects.get(username="admin")
         self.request = DummyRequest(user=self.user)
-        
+
         self.page = Page.objects.create(
             title = "Page Title",
             slug = "page-title",
             body = "<p>This is a body</p>"
         )
-        
+
     def test_add_page(self):
         """Tests to add a page.
         """
@@ -37,13 +37,19 @@ class PageTestCase(TestCase):
         self.assertEqual(self.page.body, "<p>This is a body</p>")
         self.assertEqual(self.page.active, False)
         self.assertEqual(self.page.position, 999)
-        
+
     def test_page_view(self):
         """Tests page view.
         """
         url = reverse("lfs_page_view", kwargs={"slug" : self.page.slug})
         response = self.client.get(url)
-        
+
+        self.failIf(response.content.find("We are sorry") == -1)
+
+        self.page.active = True
+        self.page.save()
+
+        response = self.client.get(url)
         self.failIf(response.content.find("Page Title") == -1)
         self.failIf(response.content.find("<p>This is a body</p>") == -1)
 
@@ -52,9 +58,9 @@ class PageTestCase(TestCase):
         """
         pages = Page.objects.active()
         self.assertEqual(len(pages), 0)
-        
+
         self.page.active=True
         self.page.save()
-        
+
         pages = Page.objects.active()
         self.assertEqual(len(pages), 1)
