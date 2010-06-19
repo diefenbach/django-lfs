@@ -117,13 +117,16 @@ $(function() {
     $(".product-quantity").attr("autocomplete", "off");
 
     $(".product-quantity").livequery("keyup", function() {
-        $("#product-form").ajaxSubmit({
-            url : $("#packing-url").attr("data"),
-            success : function(data) {
-                var data = JSON.parse(data);
-                $(".packing-result").html(data["html"]);
-            }
-        });
+        var url = $("#packing-url").attr("data")
+        if (url) {
+            $("#product-form").ajaxSubmit({
+                url : url,
+                success : function(data) {
+                    var data = JSON.parse(data);
+                    $(".packing-result").html(data["html"]);
+                }
+            });
+        }
     });
 
     $("select.cp-property").livequery("change", function() {
@@ -134,7 +137,7 @@ $(function() {
                 $(".standard-price-value").html(data["price"]);
                 $(".for-sale-price-value").html(data["for-sale-price"]);
                 $(".for-sale-standard-price-value").html(data["for-sale-standard-price"]);
-                $.jGrowl(data["message"]);
+                // $.jGrowl(data["message"]);
 
                 // Re-bind lightbox
                 $("a.product-image").lightBox({
