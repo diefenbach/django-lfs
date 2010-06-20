@@ -22,7 +22,8 @@ from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import VARIANT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
-from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
+from lfs.catalog.settings import CAT_CATEGORY_PATH
+from lfs.catalog.settings import CATEGORY_TEMPLATES
 from lfs.catalog.settings import CONTENT_PRODUCTS
 from lfs.catalog.settings import LIST
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_CHOICES
@@ -31,18 +32,18 @@ from lfs.catalog.settings import DELIVERY_TIME_UNIT_HOURS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_WEEKS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_MONTHS
-from lfs.catalog.settings import PROPERTY_TYPE_CHOICES
-from lfs.catalog.settings import PROPERTY_TEXT_FIELD
-from lfs.catalog.settings import PROPERTY_SELECT_FIELD
+from lfs.catalog.settings import PROPERTY_FIELD_CHOICES
 from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
-from lfs.catalog.settings import PROPERTY_INPUT_FIELD
+from lfs.catalog.settings import PROPERTY_SELECT_FIELD
+from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_CHOICES
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_AUTOMATIC
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
-from lfs.catalog.settings import CATEGORY_TEMPLATES
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DISPLAY
 from lfs.catalog.settings import PRODUCT_TEMPLATES
-from lfs.catalog.settings import CAT_CATEGORY_PATH
+from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
 from lfs.tax.models import Tax
 from lfs.manufacturer.models import Manufacturer
 
@@ -305,7 +306,7 @@ class Category(models.Model):
 
         products = lfs.catalog.models.Product.objects.distinct().filter(
             active=True,
-            categories__in = categories).exclude(sub_type=VARIANT)
+            categories__in = categories).exclude(sub_type=VARIANT).distinct()
 
         cache.set(cache_key, products)
         return products
@@ -377,9 +378,12 @@ class Product(models.Model):
         - effective_price:
             Only for internal usage (price filtering).
 
-        - price unit
-            The unit of the product's price. Could be per piece, per meter,
-            etc.
+        - unit
+            The unit of the product. This is displayed beside the quantity
+            field.
+
+        - price_unit
+            The unit of the product's price. This is displayed beside the price
 
         - short_description
             The short description of the product. This is used within overviews.
@@ -476,6 +480,18 @@ class Product(models.Model):
 
         - template
             Sets the template, which renders the product content. If left to None, default template is used.
+
+        - active_price_calculation
+            If True the price will be calculated by the field price_calculation
+
+        - price_calculation
+            Formula to calculate price of the product.
+
+        - sku_manufacturer
+            The product's article ID of the manufacturer (external article id)
+
+        - manufacturer
+            The manufacturer of the product.
     """
     # All products
     name = models.CharField(_(u"Name"), max_length=80, blank=True)
@@ -483,7 +499,8 @@ class Product(models.Model):
     sku = models.CharField(_(u"SKU"), blank=True, max_length=30)
     price = models.FloatField(_(u"Price"), default=0.0)
     effective_price = models.FloatField(_(u"Price"), blank=True)
-    price_unit = models.CharField(blank=True, max_length=10)
+    price_unit = models.CharField(blank=True, max_length=20)
+    unit = models.CharField(blank=True, max_length=20)
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
     images = generic.GenericRelation("Image", verbose_name=_(u"Images"),
@@ -806,27 +823,67 @@ class Product(models.Model):
         except KeyError:
             return None
 
-    def get_options(self):
-        """Returns the property value of a Variant in the correct
-        ordering of the properties.
+    def get_displayed_properties(self):
+        """Returns properties with ``display_on_product`` is True.
         """
-        cache_key = "product-property-values-%s" % self.id
-        options = cache.get(cache_key)
-        if options is None:
-            temp = []
-            for property_value in self.property_values.all():
-                temp.append((property_value, property_value.property.position))
+        cache_key = "displayed-properties-%s" % self.id
 
-            # TODO: Optimize
-            temp.sort(lambda a,b: cmp(a[1], b[1]))
+        properties = cache.get(cache_key)
+        if properties:
+            return properties
 
-            options = []
-            for option in temp:
-                options.append(option[0])
+        properties = []
+        for ppv in self.property_values.filter(property__display_on_product=True, type=PROPERTY_VALUE_TYPE_DISPLAY).order_by("property__position"):
+            if ppv.property.is_select_field:
+                try:
+                    po = PropertyOption.objects.get(pk=int(float(ppv.value)))
+                except (PropertyOption.DoesNotExist, ValueError):
+                    continue
+                else:
+                    value = po.name
+            else:
+                value = ppv.value
+            properties.append({
+                "name"  : ppv.property.name,
+                "title" : ppv.property.title,
+                "value" : value,
+                "unit"  : ppv.property.unit,
+            })
 
-            cache.set(cache_key, options)
+        cache.set(cache_key, properties)
+        return properties
 
-        return options
+    def get_variant_properties(self):
+        """Returns the property value of a variant in the correct ordering
+        of the properties.
+        """
+        cache_key = "variant-properties-%s" % self.id
+
+        properties = cache.get(cache_key)
+        if properties:
+            return properties
+
+        properties = []
+
+        for ppv in self.property_values.order_by("property__position"):
+            if ppv.property.is_select_field:
+                try:
+                    po = PropertyOption.objects.get(pk=int(float(ppv.value)))
+                except PropertyOption.DoesNotExist:
+                    continue
+                else:
+                    value = po.name
+            else:
+                value = ppv.value
+            properties.append({
+                "name"  : ppv.property.name,
+                "value" : value,
+                "unit"  : ppv.property.unit,
+            })
+
+        cache.set(cache_key, properties)
+
+        return properties
 
     def has_option(self, property, option):
         """Returns True if the variant has the given property / option
@@ -844,14 +901,39 @@ class Product(models.Model):
         except KeyError:
             return False
 
-    def get_price(self):
+    def _get_default_properties_price(self, object):
+        """Returns the total price of all default properties.
+        """
+        price = 0
+        for property in object.get_configurable_properties():
+            if property.add_price:
+                # Try to get the default value of the property
+                try:
+                    ppv = ProductPropertyValue.objects.get(product=self, property=property, type=PROPERTY_VALUE_TYPE_DEFAULT)
+                    po = PropertyOption.objects.get(pk = ppv.value)
+                except (ObjectDoesNotExist, ValueError):
+                    # If there is no explicit default value try to get the first 
+                    # option.
+                    if property.required:
+                        try:
+                            po = property.options.all()[0]
+                        except IndexError:
+                            continue
+                        else:
+                            price += po.price
+                else:
+                    price += po.price
+
+        return price
+
+    def get_price(self, with_properties=True):
         """Returns the price of the product. At the moment this is just the
         gross price. Later this could be the net or the gross price dependent on
         selected shop options.
         """
-        return self.get_price_gross()
+        return self.get_price_gross(with_properties)
 
-    def get_standard_price(self):
+    def get_standard_price(self, with_properties=True):
         """Returns always the standard price for the product. Independent
         whether the product is for sale or not. If you want the real price of
         the product use get_price instead.
@@ -864,9 +946,13 @@ class Product(models.Model):
         if object.is_variant() and not object.active_price:
             object = object.parent
 
-        return object.price
+        price = object.price
+        if with_properties and object.is_configurable_product():
+            price += self._get_default_properties_price(object)
 
-    def get_for_sale_price(self):
+        return price
+
+    def get_for_sale_price(self, with_properties=True):
         """returns the sale price for the product.
         """
         object = self
@@ -877,11 +963,21 @@ class Product(models.Model):
         if object.is_variant() and not object.active_for_sale_price:
             object = object.parent
 
-        return object.for_sale_price
+        price = object.for_sale_price
+        if with_properties and object.is_configurable_product():
+            price += self._get_default_properties_price(object)
 
-    def get_price_gross(self):
+        return price
+
+    def get_price_gross(self, with_properties=True):
         """Returns the real gross price of the product. This is the base of
-        all price and tax calculations :-)
+        all price and tax calculations.
+
+        **Parameters:**
+
+        with_properties
+            If True the prices of the default property options are added.
+
         """
         object = self
 
@@ -898,6 +994,9 @@ class Product(models.Model):
                 price = object.parent.price
             else:
                 price = object.price
+
+        if with_properties and object.is_configurable_product():
+            price += self._get_default_properties_price(object)
 
         return price
 
@@ -958,20 +1057,6 @@ class Product(models.Model):
 
         return properties
 
-    def get_property_input_fields(self):
-        """Returns all properties which are `input types`.
-        """
-        # global
-        properties = []
-        for property_group in self.property_groups.all():
-            properties.extend(property_group.properties.filter(type=PROPERTY_INPUT_FIELD).order_by("groupspropertiesrelation"))
-
-        # local
-        for property in self.properties.filter(type=PROPERTY_INPUT_FIELD).order_by("productspropertiesrelation"):
-            properties.append(property)
-
-        return properties
-
     def get_property_select_fields(self):
         """Returns all properties which are `select types`.
         """
@@ -982,6 +1067,20 @@ class Product(models.Model):
 
         # local
         for property in self.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("productspropertiesrelation"):
+            properties.append(property)
+
+        return properties
+
+    def get_configurable_properties(self):
+        """Returns all properties which are configurable.
+        """
+        # global
+        properties = []
+        for property_group in self.property_groups.all():
+            properties.extend(property_group.properties.filter(configurable=True).order_by("groupspropertiesrelation"))
+
+        # local
+        for property in self.properties.filter(configurable=True).order_by("productspropertiesrelation"):
             properties.append(property)
 
         return properties
@@ -1149,6 +1248,16 @@ class Product(models.Model):
         else:
             return self.height
 
+    def get_packing_info(self):
+        """Returns the packing info of the product as list:
+        """
+        if self.is_variant():
+            obj = self.parent
+        else:
+            obj = self
+
+        return (obj.packing_unit, obj.packing_unit_unit)
+
     def is_standard(self):
         """Returns True if product is standard product.
         """
@@ -1249,10 +1358,12 @@ class PropertyGroup(models.Model):
 
     Can belong to several products, products can have several groups
 
-    Attributes:
-        - name
-          The name of the property group.
-        - products
+    **Attributes**:
+
+    name
+        The name of the property group.
+
+    products
           The assigned products of the property group.
     """
     name = models.CharField(blank=True, max_length=50)
@@ -1264,6 +1375,16 @@ class PropertyGroup(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_configurable_properties(self):
+        """Returns all configurable properties of the property group.
+        """
+        return self.properties.filter(configurable=True)
+
+    def get_filterable_properties(self):
+        """Returns all filterable properties of the property group.
+        """
+        return self.properties.filter(filterable=True)
+
 class Property(models.Model):
     """Represents a property of a product like color or size.
 
@@ -1273,12 +1394,16 @@ class Property(models.Model):
     A property belongs to exactly one group xor product.
 
     **Parameters**:
+
     groups, product:
         The group or product it belongs to. A property can belong to several
         groups and/or to one product.
 
     name:
-        Is displayed within forms.
+        Internal name of the property.
+
+    title:
+        Displayed to the customer.
 
     position:
         The position of the property within a product.
@@ -1286,9 +1411,15 @@ class Property(models.Model):
     filterable:
         If True the property is used for filtered navigation.
 
+    configurable
+        if True the property is used for configurable product.
+
     display_no_results
         If True filter ranges with no products will be displayed. Otherwise
         they will be removed.
+
+    display_on_product
+        If True the property is displayed as an attribute on the product.
 
     unit:
         Something like cm, mm, m, etc.
@@ -1313,8 +1444,23 @@ class Property(models.Model):
 
     unit_step
         The step width the shop customer can edit.
+
+    decimal_places
+        The decimal places of a number field.
+
+    required
+        If True the field is required (for configurable properties).
+
+    display_price
+        If True the option price is displayed (for select field)
+
+    add_price
+        if True the option price is added to the product price (for select
+        field)
+
     """
     name = models.CharField( _(u"Name"), max_length=100)
+    title = models.CharField( _(u"Title"), max_length=100)
     groups = models.ManyToManyField(PropertyGroup, verbose_name=_(u"Group"), blank=True, null=True, through="GroupsPropertiesRelation", related_name="properties")
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), blank=True, null=True, through="ProductsPropertiesRelation", related_name="properties")
     position = models.IntegerField(_(u"Position"), blank=True, null=True)
@@ -1323,13 +1469,19 @@ class Property(models.Model):
     local = models.BooleanField(default=False)
     filterable = models.BooleanField(default=True)
     display_no_results = models.BooleanField(_(u"Display no results"), default=False)
-    type = models.PositiveSmallIntegerField(_(u"Type"), choices=PROPERTY_TYPE_CHOICES, default=PROPERTY_TEXT_FIELD)
+    configurable = models.BooleanField(default=False)
+    type = models.PositiveSmallIntegerField(_(u"Type"), choices=PROPERTY_FIELD_CHOICES, default=PROPERTY_TEXT_FIELD)
     price = models.FloatField(_(u"Price"), blank=True, null=True)
+    display_price = models.BooleanField(_(u"Display price"), default=True)
+    add_price = models.BooleanField(_(u"Add price"), default=True)
 
     # Number input field
     unit_min = models.FloatField(_(u"Min"), blank=True, null=True)
     unit_max = models.FloatField(_(u"Max"), blank=True, null=True)
     unit_step = models.FloatField(_(u"Step"), blank=True, null=True)
+    decimal_places = models.PositiveSmallIntegerField(_(u"Decimal places"), default=0)
+
+    required = models.BooleanField(default=False)
 
     step_type = models.PositiveSmallIntegerField(_(u"Step type"), choices=PROPERTY_STEP_TYPE_CHOICES, default=PROPERTY_STEP_TYPE_AUTOMATIC)
     step = models.IntegerField(_(u"Step"), blank=True, null=True)
@@ -1354,10 +1506,6 @@ class Property(models.Model):
     @property
     def is_number_field(self):
         return self.type == PROPERTY_NUMBER_FIELD
-
-    @property
-    def is_input_field(self):
-        return self.type == PROPERTY_INPUT_FIELD
 
     @property
     def is_range_step_type(self):
@@ -1479,27 +1627,36 @@ class ProductPropertyValue(models.Model):
     """Stores the value resp. selected option of a product/property combination.
     This is some kind of EAV.
 
-    Attributes:
-        - product
-          The product for which the value is stored.
-        - parent_id
-          If the product is an variant this stores the parent id of it, if the
-          product is no variant it stores the id of the product itself. This is
-          just used to calculate the filters properly.
-        - property
-          The property for which the value is stored.
-        - value
-          The value for the product/property pair. Dependent of the property
-          type the value is either a number, a text or an id of an option.
+    *Attributes*:
+
+    product
+        The product for which the value is stored.
+
+    parent_id
+        If the product is an variant this stores the parent id of it, if the
+        product is no variant it stores the id of the product itself. This is
+        just used to calculate the filters properly.
+
+    property
+        The property for which the value is stored.
+
+    value
+        The value for the product/property pair. Dependent of the property
+        type the value is either a number, a text or an id of an option.
+
+    type
+        The type of the product value, which is on of "filter value",
+        "default value", "display value".
     """
     product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="property_values")
-    parent_id = models.IntegerField(blank=True, null=True)
+    parent_id = models.IntegerField(_(u"Parent"), blank=True, null=True)
     property = models.ForeignKey("Property", verbose_name=_(u"Property"), related_name="property_values")
-    value = models.CharField(blank=True, max_length=100)
-    value_as_float = models.FloatField(blank=True, null=True)
+    value = models.CharField(_(u"Value"), blank=True, max_length=100)
+    value_as_float = models.FloatField(_(u"Value as float"), blank=True, null=True)
+    type = models.PositiveSmallIntegerField(_(u"Type"))
 
     class Meta:
-        unique_together = ("product", "property", "value")
+        unique_together = ("product", "property", "value", "type")
 
     def __unicode__(self):
         return "%s/%s: %s" % (self.product.name, self.property.name, self.value)

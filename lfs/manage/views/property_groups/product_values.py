@@ -25,7 +25,7 @@ def product_values(request, property_group_id, template_name="manage/properties/
         for property in all_properties:
             # Try to get the value, if it already exists.
             try:
-                ppv = ProductPropertyValue.objects.get(property = property, product=product)
+                ppv = ProductPropertyValue.objects.get(property = property, product=product, type=1)
             except ProductPropertyValue.DoesNotExist:
                 value = ""
             else: 

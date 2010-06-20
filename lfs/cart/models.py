@@ -125,7 +125,7 @@ class CartItem(models.Model):
         ordering = ['id']
 
     def get_price(self):
-        """
+        """Convenient method to return the gross price of the product.
         """
         return self.get_price_gross()
 
@@ -147,17 +147,21 @@ class CartItem(models.Model):
                 return self.product.get_price_gross() * amount
         else:
             if self.product.active_price_calculation:
-                try:                
+                try:
                     price = self.get_calculated_price()
                 except:
                     price = self.product.get_price_gross()
             else:
                 price = self.product.get_price_gross()
                 for property in self.properties.all():
-                    value = int(float(property.value))
-                    option = PropertyOption.objects.get(pk=value)
-                    price += option.price
-            
+                    if property.property.is_select_field:
+                        try:
+                            option = PropertyOption.objects.get(pk=int(float(property.value)))
+                        except (PropertyOption.DoesNotExist, AttributeError):
+                            pass
+                        else:
+                            price += option.price
+                            
         return price * self.amount
 
     def get_calculated_price(self):
@@ -170,7 +174,11 @@ class CartItem(models.Model):
             if token.startswith("property"):
                 mo = re.match("property\((\d+)\)", token)
                 ppv = self.properties.filter(property__id=mo.groups()[0])[0]
-                value = ppv.value
+                if ppv.property.is_select_field:
+                    po = PropertyOption.objects.get(pk=ppv.value)
+                    value = po.price
+                else:
+                    value = ppv.value
                 pc = pc.replace(token, str(value))
             elif token.startswith("number"):
                 mo = re.match("number\((\d+)\)", token)
@@ -187,6 +195,37 @@ class CartItem(models.Model):
         """
         rate = self.product.get_tax_rate()
         return self.get_price_gross() * (rate / (rate + 100))
+
+    def get_properties(self):
+        """Returns properties of the cart item. Resolves option names for
+        select fields.
+        """
+        properties = []
+        for property in self.product.get_properties():
+            try:
+                cipv = CartItemPropertyValue.objects.get(cart_item=self, property=property)
+            except CartItemPropertyValue.DoesNotExist:
+                continue
+
+            if property.is_select_field:
+                option = PropertyOption.objects.get(pk=int(float(cipv.value)))
+                value = option.name
+                price = option.price
+            else:
+                format_string = "%%.%sf" % property.decimal_places
+                value = format_string % float(cipv.value)
+                price = ""
+
+            properties.append({
+                "name" : property.name,
+                "title" : property.title,
+                "unit" : property.unit,
+                "display_price" : property.display_price,
+                "value" : value,
+                "price" : price
+            })
+
+        return properties
 
 class CartItemPropertyValue(models.Model):
     """Stores a value for a property and item.

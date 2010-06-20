@@ -8,10 +8,10 @@ from django.db import connection
 
 # import lfs
 import lfs.catalog.models
-from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 
 # TODO implement this methods.
 # Category
@@ -29,12 +29,12 @@ def get_current_category_id(request):
 def get_current_top_category(request, obj):
     """Returns the current top category of a product.
     """
-    
+
     if obj.__class__.__name__.lower() == "product":
         category = get_current_product_category(request, obj)
     else:
         category = obj
-    
+
     if category is None:
         return category
 
@@ -270,9 +270,10 @@ def get_product_filters(category, product_filter, price_filter, sorting):
     cursor = connection.cursor()
     cursor.execute("""SELECT property_id, min(value_as_float), max(value_as_float)
                       FROM catalog_productpropertyvalue
-                      WHERE product_id IN (%s)
+                      WHERE type=%s
+                      AND product_id IN (%s)
                       AND property_id IN (%s)
-                      GROUP BY property_id""" % (product_ids, property_ids))
+                      GROUP BY property_id""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
 
 
     for row in cursor.fetchall():
@@ -294,6 +295,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                 "position" : property.position,
                 "object" : property,
                 "name" : property.name,
+                "title" : property.title,
                 "unit" : property.unit,
                 "items" : [{"min" : float(values[0]), "max" : float(values[1])}],
                 "show_reset" : True,
@@ -309,20 +311,21 @@ def get_product_filters(category, product_filter, price_filter, sorting):
             "position" : property.position,
             "object" : property,
             "name" : property.name,
+            "title" : property.title,
             "unit" : property.unit,
             "show_reset" : False,
             "show_quantity" : True,
             "items" : items,
         })
 
-
     ########## Select Fields ###################################################
     # Count entries for current filter
     cursor = connection.cursor()
     cursor.execute("""SELECT property_id, value, parent_id
                       FROM catalog_productpropertyvalue
-                      WHERE product_id IN (%s)
-                      AND property_id IN (%s)""" % (product_ids, property_ids))
+                      WHERE type=%s
+                      AND product_id IN (%s)
+                      AND property_id IN (%s)""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
 
     already_count = {}
     amount = {}
@@ -352,7 +355,8 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                       FROM catalog_productpropertyvalue
                       WHERE product_id IN (%s)
                       AND property_id IN (%s)
-                      GROUP BY property_id, value""" % (product_ids, property_ids))
+                      AND type=%s
+                      GROUP BY property_id, value""" % (product_ids, property_ids, PROPERTY_VALUE_TYPE_FILTER))
 
     # Group properties and values (for displaying)
     set_filters = dict(product_filter)
@@ -382,7 +386,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
 
         # Transform to float for later sorting, see below
         property = properties_mapping[row[0]]
-        if property.type == PROPERTY_NUMBER_FIELD:
+        if property.is_number_field:
             value = float(row[1])
         else:
             value = row[1]
@@ -425,6 +429,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
             "unit" : property.unit,
             "show_reset" : str(property_id) in set_filter_keys,
             "name"  : property.name,
+            "title" : property.title,
             "items" : values
         })
 
@@ -450,7 +455,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         # Generate filter
         temp = []
         for f in filters:
-            if len(f[1]) == 1:
+            if not isinstance(f[1], list):
                 temp.append("property_id='%s' AND value='%s'" % (f[0], f[1]))
             else:
                 temp.append("property_id='%s' AND value_as_float BETWEEN '%s' AND '%s'" % (f[0], f[1][0], f[1][1]))
@@ -466,9 +471,9 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         cursor.execute("""
             SELECT product_id, count(*)
             FROM catalog_productpropertyvalue
-            WHERE product_id IN (%s) and %s
+            WHERE product_id IN (%s) and %s and type=%s
             GROUP BY product_id
-            HAVING count(*)=%s""" % (product_ids, fstr, len(filters)))
+            HAVING count(*)=%s""" % (product_ids, fstr, PROPERTY_VALUE_TYPE_FILTER, len(filters)))
 
         matched_product_ids = [row[0] for row in cursor.fetchall()]
 
@@ -483,9 +488,9 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
             cursor.execute("""
                 SELECT product_id, count(*)
                 FROM catalog_productpropertyvalue
-                WHERE product_id IN (%s) and %s
+                WHERE product_id IN (%s) and %s and type=%s
                 GROUP BY product_id
-                HAVING count(*)=%s""" % (all_variant_ids, fstr, len(filters)))
+                HAVING count(*)=%s""" % (all_variant_ids, PROPERTY_VALUE_TYPE_FILTER, fstr, len(filters)))
 
             # Get the parent ids of the variants as the "product with variants"
             # should be displayed and not the variants.
@@ -510,7 +515,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
             categories.extend(category.get_all_children())
         products = lfs.catalog.models.Product.objects.filter(
             active=True,
-            categories__in=categories, 
+            categories__in=categories,
             sub_type__in=[STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT]).distinct()
 
     if price_filter:
@@ -679,12 +684,12 @@ def calculate_quantity(product_ids, property_id, min, max):
         amount += 1
 
     return amount
-    
+
 def calculate_packages(product, quantity):
     """
     """
     return math.ceil(quantity / product.packing_unit)
- 
+
 def calculate_real_amount(product, quantity):
     """
     """

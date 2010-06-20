@@ -1,3 +1,4 @@
+import datetime
 # python imports
 import urllib
 import math
@@ -23,9 +24,13 @@ from lfs.cart.views import add_to_cart
 from lfs.catalog.models import Category
 from lfs.catalog.models import File
 from lfs.catalog.models import Product
+from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
-from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT
+from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
+from lfs.catalog.settings import VARIANT
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DISPLAY
 from lfs.catalog.settings import SELECT
 from lfs.catalog.settings import CONTENT_PRODUCTS
 from lfs.core.utils import LazyEncoder
@@ -56,15 +61,18 @@ def select_variant(request):
     return HttpResponse(result)
 
 def calculate_packing(request, id, quantity=None, as_string=False, template_name="lfs/catalog/packing_result.html"):
-    """
+    """Calculates the actual amount of pieces to buy on base on packing
+    information.
     """
     product = Product.objects.get(pk = id)
-    
+
     if quantity is None:
         quantity = float(request.POST.get("quantity"))
 
-    packs = math.ceil(quantity / product.packing_unit)
-    real_quantity = packs * product.packing_unit
+    packing_amount, packing_unit= product.get_packing_info()
+
+    packs = math.ceil(quantity / packing_amount)
+    real_quantity = packs * packing_amount
     price = real_quantity * product.get_price()
 
     html = render_to_string(template_name, RequestContext(request, {
@@ -72,6 +80,7 @@ def calculate_packing(request, id, quantity=None, as_string=False, template_name
         "product" : product,
         "packs" : int(packs),
         "real_quantity" : real_quantity,
+        "unit" : packing_unit,
     }))
 
     if as_string:
@@ -84,11 +93,11 @@ def calculate_packing(request, id, quantity=None, as_string=False, template_name
     return HttpResponse(result)
 
 def calculate_price(request, id):
-    """
+    """Calculates the price of the product on base of choosen properties.
     """
     product = Product.objects.get(pk = id)
 
-    price = product.get_price()
+    property_price = 0
     for key, option_id in request.POST.items():
         if key.startswith("property"):
             try:
@@ -96,10 +105,22 @@ def calculate_price(request, id):
             except (ValueError, PropertyOption.DoesNotExist):
                 pass
             else:
-                price += po.price
+                if po.property.add_price:
+                    property_price += po.price
+
+    for_sale_price = product.get_for_sale_price(with_properties=False)
+    for_sale_price += property_price
+
+    for_sale_standard_price = product.get_standard_price(with_properties=False)
+    for_sale_standard_price += property_price
+
+    price = product.get_price(with_properties=False)
+    price += property_price
 
     result = simplejson.dumps({
         "price" : lfs_tags.currency(price),
+        "for-sale-price" : lfs_tags.currency(for_sale_price),
+        "for-sale-standard-price" : lfs_tags.currency(for_sale_standard_price),
         "message" : _("Price has been changed according to your selection."),
     }, cls = LazyEncoder)
 
@@ -409,11 +430,13 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
 
     # TODO: Factor top_category out to a inclusion tag, so that people can
     # omit if they don't need it.
-    return render_to_response(template_name, RequestContext(request, {
+    result =  render_to_response(template_name, RequestContext(request, {
         "product_inline" : product_inline(request, product.id),
         "product" : product,
         "top_category" : lfs.catalog.utils.get_current_top_category(request, product),
     }))
+
+    return result
 
 def product_inline(request, id, template_name="lfs/catalog/products/product_inline.html"):
     """Part of the prduct view, which displays the actual data of the product.
@@ -441,29 +464,65 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
 
     properties = []
     variants = []
-    if product.variants_display_type == SELECT:
-        # Get all properties (sorted). We need to traverse through all
-        # property/options to select the options of the current variant.
-        for property in product.get_properties():
+
+    if product.is_product_with_variants():
+        if product.variants_display_type == SELECT:
+            # Get all properties (sorted). We need to traverse through all
+            # property/options to select the options of the current variant.
+            for property in product.get_properties():
+                options = []
+                for property_option in property.options.all():
+                    if variant.has_option(property, property_option):
+                        selected = True
+                    else:
+                        selected = False
+                    options.append({
+                        "id"   : property_option.id,
+                        "name" : property_option.name,
+                        "selected" : selected
+                    })
+                properties.append({
+                    "id" : property.id,
+                    "name" : property.name,
+                    "title" : property.title,
+                    "unit" : property.unit,
+                    "options" : options,
+                })
+        else:
+            properties = product.get_properties()
+            variants = product.get_variants()
+
+    elif product.is_configurable_product:
+        for property in product.get_configurable_properties():
             options = []
+
+            try:
+                ppv = ProductPropertyValue.objects.get(product=product, property=property, type=PROPERTY_VALUE_TYPE_DEFAULT)
+            except ProductPropertyValue.DoesNotExist:
+                ppv = None
+
             for property_option in property.options.all():
-                if variant.has_option(property, property_option):
+                if ppv and ppv.value == str(property_option.id):
                     selected = True
                 else:
                     selected = False
+
                 options.append({
                     "id"   : property_option.id,
                     "name" : property_option.name,
-                    "selected" : selected
+                    "price" : property_option.price,
+                    "selected" : selected,
                 })
+
             properties.append({
+                "obj" : property,
                 "id" : property.id,
                 "name" : property.name,
-                "options" : options
+                "title" : property.title,
+                "unit" : property.unit,
+                "display_price" : property.display_price,
+                "options" : options,
             })
-    else:
-        properties = product.get_properties()
-        variants = product.get_variants()
 
     # Reviews
     if product.get_template_name() != None:

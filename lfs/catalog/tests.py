@@ -16,10 +16,12 @@ from lfs.catalog.settings import DELIVERY_TIME_UNIT_WEEKS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_MONTHS
 from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
-from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD
+from lfs.catalog.settings import PROPERTY_TEXT_FIELD
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import LIST
+
 from lfs.catalog.models import Category
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import GroupsPropertiesRelation
@@ -103,22 +105,22 @@ class PropertiesTestCase(TestCase):
         self.pg.save()
 
         self.pp1 = Property.objects.create(name="Size", type=PROPERTY_TEXT_FIELD)
-        self.ppv11 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp1, value="S")
-        self.ppv12 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp1, value="M")
-        self.ppv13 = ProductPropertyValue.objects.create(product=self.p3, property=self.pp1, value="S")
+        self.ppv11 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp1, value="S", type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv12 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp1, value="M", type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv13 = ProductPropertyValue.objects.create(product=self.p3, property=self.pp1, value="S", type=PROPERTY_VALUE_TYPE_FILTER)
 
         # A property with options
         self.pp2 = Property.objects.create(name="Color", type=PROPERTY_SELECT_FIELD)
         self.po1 = PropertyOption.objects.create(id="1", property=self.pp2, name="Red", position=1)
         self.po2 = PropertyOption.objects.create(id="2", property=self.pp2, name="Blue", position=2)
-        self.ppv21 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp2, value="1")
-        self.ppv22 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp2, value="2")
+        self.ppv21 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp2, value="1", type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv22 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp2, value="2", type=PROPERTY_VALUE_TYPE_FILTER)
 
         # A property with floats
         self.pp3 = Property.objects.create(name="Length", type=PROPERTY_NUMBER_FIELD)
-        self.ppv31 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp3, value=10.0)
-        self.ppv32 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp3, value=20.0)
-        self.ppv32 = ProductPropertyValue.objects.create(product=self.p3, property=self.pp3, value=30.0)
+        self.ppv31 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp3, value=10.0, type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv32 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp3, value=20.0, type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv32 = ProductPropertyValue.objects.create(product=self.p3, property=self.pp3, value=30.0, type=PROPERTY_VALUE_TYPE_FILTER)
 
         # Assign groups and properties
         self.gpr1 = GroupsPropertiesRelation.objects.create(group = self.pg, property=self.pp1)
@@ -154,9 +156,9 @@ class PropertiesTestCase(TestCase):
         GroupsPropertiesRelation.objects.create(group=self.pg2, property=self.pp3)
 
         # And some values
-        ProductPropertyValue.objects.create(product=self.p1, property=self.pp3, value="31")
-        ProductPropertyValue.objects.create(product=self.p2, property=self.pp3, value="32")
-        ProductPropertyValue.objects.create(product=self.p3, property=self.pp3, value="33")
+        ProductPropertyValue.objects.create(product=self.p1, property=self.pp3, value="31", type=PROPERTY_VALUE_TYPE_FILTER)
+        ProductPropertyValue.objects.create(product=self.p2, property=self.pp3, value="32", type=PROPERTY_VALUE_TYPE_FILTER)
+        ProductPropertyValue.objects.create(product=self.p3, property=self.pp3, value="33", type=PROPERTY_VALUE_TYPE_FILTER)
 
         ppvs = ProductPropertyValue.objects.filter(product=self.p1)
         self.assertEqual(len(ppvs), 4)
@@ -749,7 +751,7 @@ class ViewsTestCase(TestCase):
 
         # Add a variant with color = red
         self.v1 = Product.objects.create(name="Variant 1", slug="variant-1", sub_type=VARIANT, parent=self.p1, active=True)
-        ProductPropertyValue.objects.create(product=self.v1, property=color, value=str(red.id))
+        ProductPropertyValue.objects.create(product=self.v1, property=color, value=str(red.id), type=PROPERTY_VALUE_TYPE_FILTER)
 
     def test_set_sorting(self):
         """Tests setting and deleting of the sorting session.
@@ -1178,13 +1180,13 @@ class ProductTestCase(TestCase):
             active=True,
         )
 
-        self.ppv_color_red = ProductPropertyValue.objects.create(product=self.v1, property=self.color, value=self.red.id)
-        self.ppv_size_m = ProductPropertyValue.objects.create(product=self.v1, property=self.size, value=self.m.id)
+        self.ppv_color_red = ProductPropertyValue.objects.create(product=self.v1, property=self.color, value=self.red.id, type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv_size_m = ProductPropertyValue.objects.create(product=self.v1, property=self.size, value=self.m.id, type=PROPERTY_VALUE_TYPE_FILTER)
 
         # Add a variant with color = green, size = l
         self.v2 = Product.objects.create(name="Variant 2", slug="variant-2", sub_type=VARIANT, parent=self.p1, active=True)
-        self.ppv_color_green = ProductPropertyValue.objects.create(product=self.v2, property=color, value=self.green.id)
-        self.ppv_size_l = ProductPropertyValue.objects.create(product=self.v2, property=size, value=self.l.id)
+        self.ppv_color_green = ProductPropertyValue.objects.create(product=self.v2, property=color, value=self.green.id, type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv_size_l = ProductPropertyValue.objects.create(product=self.v2, property=size, value=self.l.id, type=PROPERTY_VALUE_TYPE_FILTER)
 
         # Add related products to p1
         self.p1.related_products.add(self.p2, self.p3)
@@ -1663,16 +1665,17 @@ class ProductTestCase(TestCase):
         option = self.v1.get_option(property_id = "dummy")
         self.assertEqual(option, None)
 
-    def test_get_options(self):
+    def test_get_variant_properties(self):
         """
         """
-        options = self.v1.get_options()
-        self.failIf(self.ppv_color_red not in options)
-        self.failIf(self.ppv_size_m not in options)
+        options = [p["value"] for p in self.v1.get_variant_properties()]
+        
+        self.failIf(str(self.ppv_color_red.value) not in options)
+        self.failIf(str(self.ppv_size_m.value) not in options)
 
-        options = self.v2.get_options()
-        self.failIf(self.ppv_color_green not in options)
-        self.failIf(self.ppv_size_l not in options)
+        options = [p["value"] for p in self.v2.get_variant_properties()]
+        self.failIf(str(self.ppv_color_green.value) not in options)
+        self.failIf(str(self.ppv_size_l.value) not in options)
 
     def test_has_option(self):
         """

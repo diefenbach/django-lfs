@@ -11,39 +11,105 @@
                 {% trans 'Name' %}
             </th>
             {% for property in all_properties %}
-                <th>
-                    {{property.name}}
+                <th colspan="3">
+                    {{ property.name }}
                 </th>
-            {% endfor %}            
+            {% endfor %}
+            <th></th>
+        </tr>
+        <tr>
+            <th>
+            </th>
+            {% for property in all_properties %}
+                <th>
+                    {% trans "Display" %}
+                </th>
+                <th>
+                    {% trans "Filter" %}
+                </th>
+                <th>
+                    {% trans "Default" %}
+                </th>
+            {% endfor %}
+            <th class="right-padding">
+                {% trans "Manage" %}
+            </th>
         </tr>
         {% for product in products %}
             <tr class="{% cycle 'even' 'odd' %}">
                 <td>
-					
-                    {{product.name}}
+                    <a href="{% url lfs_manage_product product.id %}">
+                        {{ product.name }}
+                    </a>
                     <input type="hidden"
                            name="product-id"
-                           value="{{product.id}}" />
+                           value="{{ product.id }}" />
                 </td>
-                {% for property in product.properties %}
+                {% for property in product.properties %}                    
                     <td>
                         {% if property.is_select_field %}
-                            <select name="property-{{product.id}}-{{property.id}}">
+                            <select name="property-2-{{ product.id }}-{{ property.id }}">
                                 <option value="">-----</option>
                                 {% for option in property.options %}
-                                    <option value="{{option.id}}"
+                                    <option value="{{ option.id }}"
                                             {% if option.selected %}selected="selected"{% endif %}>
-                                        {{option.name}}
+                                        {{ option.name }}
                                     </option>
                                 {% endfor %}
                             </select>
                         {% else %}
-                            <input type="text" 
-                                   name="property-{{product.id}}-{{property.id}}"
-                                   value="{{property.value}}" />
+                            <input type="text"
+                                   name="property-{{ product.id }}-{{ property.id }}"
+                                   value="{{ property.value }}" />
                         {% endif %}
                     </td>
                 {% endfor %}
+                {% for property in product.properties %}
+                    <td>
+                        {% if property.is_select_field %}
+                            <select multiple="multiple" name="property-0-{{ product.id }}-{{ property.id }}">
+                                {% for option in property.options %}
+                                    <option value="{{ option.id }}"
+                                            {% if option.selected %}selected="selected"{% endif %}>
+                                        {{ option.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            <input type="text"
+                                   name="property-{{ product.id }}-{{ property.id }}"
+                                   value="{{ property.value }}" />
+                        {% endif %}
+                    </td>
+                {% endfor %}
+                {% for property in product.properties %}
+                    <td>
+                        {% if property.is_select_field %}
+                            <select multiple="multiple" name="property-2-{{ product.id }}-{{ property.id }}">
+                                {% for option in property.options %}
+                                    <option value="{{ option.id }}"
+                                            {% if option.selected %}selected="selected"{% endif %}>
+                                        {{ option.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            <input type="text"
+                                   name="property-{{ product.id }}-{{ property.id }}"
+                                   value="{{ property.value }}" />
+                        {% endif %}
+                    </td>
+                {% endfor %}
+                <td class="right-padding">
+                    <a href="{% url lfs_manage_product product.id %}">
+                        <img src="{{ MEDIA_URL }}lfs/icons/pencil.png" 
+                             alt="{% trans 'Edit' %}" />
+                    </a>                    
+                    <a href="{% url lfs_product_by_id product.id %}">
+                        <img src="{{ MEDIA_URL }}lfs/icons/zoom.png"
+                             alt="{% trans 'View' %}" />
+                    </a>                    
+                </td>
             </tr>
         {% endfor %}
     </table>

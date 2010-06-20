@@ -59,3 +59,21 @@ class CartModelsTestCase(TestCase):
         """
         items = self.cart.items()
         self.assertEqual(len(items), 2)
+        
+class CartItemTestCase(TestCase):
+    """
+    """
+    def setUp(self):
+        self.tax = Tax.objects.create(rate=19.0)
+        
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, tax=self.tax)
+        self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=100.0, tax=self.tax)
+        
+        self.cart = Cart.objects.create()
+        self.item = CartItem.objects.create(cart=self.cart, product=self.p1, amount=1)
+        
+    def test_get_properties(self):
+        """
+        """
+        result = self.item.get_properties()
+        self.assertEqual(result, [])

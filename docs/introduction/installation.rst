@@ -18,6 +18,14 @@ Please note:
    * The dependency of mercurial will be disappear in near future.
    * You can - of course - use another database but we provide a pre filled sqlite
      database for convenience.
+   * If you encounter problems during ``bin/buildout -v`` or on the first
+     run on a Debian or Ubuntu server make sure you have the build tools and
+     Python dev packages installed::
+
+        apt-get install build-essential
+        apt-get install python-dev
+        apt-get install python-all-dev
+        aptg-et install python-profiler (multiverse repository)
 
 Installation
 ============
