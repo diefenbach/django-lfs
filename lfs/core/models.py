@@ -2,6 +2,7 @@
 import re
 
 # django imports
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -9,8 +10,6 @@ from django.utils.translation import ugettext_lazy as _
 from lfs.checkout.settings import CHECKOUT_TYPES
 from lfs.checkout.settings import CHECKOUT_TYPE_SELECT
 from lfs.core.fields.thumbs import ImageWithThumbsField
-from lfs.core.settings import ACTION_PLACE_CHOICES
-from lfs.core.settings import ACTION_PLACE_TABS
 from lfs.catalog.models import StaticBlock
 
 class Country(models.Model):
@@ -52,7 +51,7 @@ class Action(models.Model):
     """A action is a link which belongs to a action groups.
 
     **Attributes**:
-    
+
     group
         The belonging group.
     title
@@ -135,7 +134,7 @@ class Shop(models.Model):
     - checkout_type
        Decides whether the customer has to login, has not to login or has the
        choice to to login or not to be able to check out.
-       
+
     - confirm_toc
        If this is activated the shop customer has to confirm terms and
        conditions to checkout.
@@ -177,6 +176,19 @@ class Shop(models.Model):
             "product_rows" : self.product_rows,
             "category_cols" : self.category_cols,
         }
+
+    def get_default_country(self):
+        """Returns the default country of the shop.
+        """
+        cache_key = "default-country-%s" % self.id
+        default_country = cache.get(cache_key)
+        if default_country:
+            return default_country
+
+        default_country = self.default_country
+        cache.set(cache_key, default_country)
+
+        return default_country
 
     def get_notification_emails(self):
         """Returns the notification e-mail addresses as list

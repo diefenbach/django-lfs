@@ -45,6 +45,7 @@ class ShopTestCase(TestCase):
         self.assertEqual(shop.ga_site_tracking, False)
         self.assertEqual(shop.ga_ecommerce_tracking, False)
         self.assertEqual(shop.default_country.name, "Deutschland")
+        self.assertEqual(shop.get_default_country().name, "Deutschland")
     
     def test_from_email(self):
         """

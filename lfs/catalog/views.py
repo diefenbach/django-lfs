@@ -363,7 +363,12 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
         # Switch to default variant if product is a "product with variants".
         # if product.is_product_with_variants() and product.has_variants():
         #    product = product.get_default_variant()
-        row.append(product)
+        row.append({
+            "obj" : product,
+            "image" : product.get_image(),
+            "price" : product.get_price(),
+            "standard_price" : product.get_standard_price(),
+        })
         if (i+1) % amount_of_cols == 0:
             products.append(row)
             row = []
@@ -394,8 +399,9 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
         previous_url = None
 
     render_template = category.get_template_name()
-    if render_template!=None:
+    if render_template != None:
         template_name = render_template
+        
     result = render_to_string(template_name, RequestContext(request, {
         "category" : category,
         "products" : products,
@@ -413,7 +419,7 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
 
 def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
     """Main view to display a product.
-    """
+    """    
     product = lfs_get_object_or_404(Product, slug=slug)
 
     if (request.user.is_superuser or product.is_active()) == False:
@@ -536,7 +542,22 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
         packing_result = calculate_packing(request, id, 1, True)
     else:
         packing_result = ""
-
+    
+    
+    # import Cheetah.Django
+    # print datetime.datetime.now()
+    # result = Cheetah.Django.render("lfs/catalog/products/cheetah.tmpl", 
+    #     product=product, 
+    #     variant=variant, 
+    #     variants=variants, 
+    #     product_accessories=variant.get_accessories(),
+    #     properties=properties,
+    #     message=message,
+    #     packing_result=packing_result)
+    # print datetime.datetime.now()
+    # 
+    # return result
+    
     result = render_to_string(template_name, RequestContext(request, {
         "product" : product,
         "variant" : variant,

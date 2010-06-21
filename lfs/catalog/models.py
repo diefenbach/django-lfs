@@ -912,7 +912,7 @@ class Product(models.Model):
                     ppv = ProductPropertyValue.objects.get(product=self, property=property, type=PROPERTY_VALUE_TYPE_DEFAULT)
                     po = PropertyOption.objects.get(pk = ppv.value)
                 except (ObjectDoesNotExist, ValueError):
-                    # If there is no explicit default value try to get the first 
+                    # If there is no explicit default value try to get the first
                     # option.
                     if property.required:
                         try:
@@ -1141,13 +1141,22 @@ class Product(models.Model):
         This is either a selected variant or the first added variant. If the
         product has no variants it is None.
         """
+        cache_key = "default-variant-%s" % self.id
+        default_variant = cache.get(cache_key)
+
+        if default_variant is not None:
+            return default_variant
+
         if self.default_variant is not None:
-            return self.default_variant
+            default_variant = self.default_variant
         else:
             try:
-                return self.variants.filter(active=True)[0]
+                default_variant = self.variants.filter(active=True)[0]
             except IndexError:
                 return None
+
+        cache.set(cache_key, default_variant)
+        return default_variant
 
     def get_static_block(self):
         """Returns the static block of the product. Takes care whether the
