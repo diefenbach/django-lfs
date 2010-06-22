@@ -366,6 +366,7 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
         row.append({
             "obj" : product,
             "slug" : product.slug,
+            "name" : product.get_name(),
             "image" : product.get_image(),
             "price" : product.get_price(),
             "standard_price" : product.get_standard_price(),
