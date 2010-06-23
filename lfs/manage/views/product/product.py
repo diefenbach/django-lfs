@@ -47,9 +47,9 @@ class ProductDataForm(ModelForm):
 
     class Meta:
         model = Product
-        fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "price_unit", "tax",
+        fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "tax",
             "short_description", "description", "for_sale", "for_sale_price", "static_block", "template",
-            "active_price_calculation", "price_calculation")
+            "active_price_calculation", "price_calculation", "price_unit", "unit")
 
     def clean(self):
         """

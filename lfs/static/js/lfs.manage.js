@@ -21,17 +21,16 @@ tinyMCE.init({
 })
 
 function mark_selected() {
-	$("ul.manage-categories a").each(function() {
-		$(this).css("font-weight", "normal");
-	});
+    $("ul.manage-categories a").each(function() {
+        $(this).css("font-weight", "normal");
+    });
 
-	$("ul.manage-categories input:checked").each(function() {
-		$(this).parents("li:gt(0)").each(function() {
-			$(this).children("a:first").css("font-weight", "bold");
-		});
-	});
+    $("ul.manage-categories input:checked").each(function() {
+        $(this).parents("li:gt(0)").each(function() {
+            $(this).children("a:first").css("font-weight", "bold");
+        });
+    });
 }
-
 
 function update_positions() {
     var position = 0;
@@ -42,22 +41,6 @@ function update_positions() {
 };
 
 $(function() {
-    // function setConfirmUnload(on) {
-    //     window.onbeforeunload = (on) ? function() {return ""} : null;
-    // }
-    // $(':input', "form").bind("change", function() { setConfirmUnload(true); });
-
-    // Critera
-
-    // $('#spinner')
-    //     .hide()  // hide it initially
-    //     .ajaxStart(function() {
-    //         $(this).show();
-    //     })
-    //     .ajaxStop(function() {
-    //         $(this).hide();
-    //     });
-
     var message = $.cookie("message");
 
     if (message != null) {
@@ -233,23 +216,6 @@ $(function() {
         }
     });
 
-    // There are some problems with json, when uploading an image with the form
-
-    // Categories / Data
-    // $(".category-data-save-button").livequery("click", function() {
-    //     tinyMCE.execCommand('mceRemoveControl', false, 'id_description');
-    //     $(".category-data-form").ajaxSubmit({
-    //         success: function(data) {
-    //             data = JSON.parse(data);
-    //             $("#data").html(data["data"]);
-    //             $("#portlet").html(data["portlet"]);
-    //             tinyMCE.execCommand('mceAddControl', true, 'id_description');
-    //             $.jGrowl(data["message"]);
-    //         }
-    //     });
-    //     return false;
-    // })
-
     // Categories / Products
     $(".category-products-page-link").livequery("click", function() {
         var url = $(this).attr("href");
@@ -338,14 +304,6 @@ $(function() {
             });
         }, 500);
     });
-
-    // $(".products-category-filter").livequery("change", function() {
-    //     $(this).parents("form:first").ajaxSubmit({
-    //         "success": function(data) {
-    //             $("#products-inline").html(data);
-    //         }
-    //     });
-    // });
 
     $(".products-reset-link").livequery("click", function() {
         var url = $(this).attr("href");
@@ -451,60 +409,60 @@ $(function() {
     })
 
     // Mark parent categories with selected children categories
-	$(".product-categories-save-button").livequery("click", function() {
-		mark_selected()
-	})
+    $(".product-categories-save-button").livequery("click", function() {
+        mark_selected()
+    })
 
     // Show selected categories - expands all categories which have a selected
     // sub category.
-	$(".show-selected").livequery("click", function() {
+    $(".show-selected").livequery("click", function() {
 
-		$("a:eq(0)", "#manage-product-categories-control").click()
+        $("a:eq(0)", "#manage-product-categories-control").click()
 
-		$("ul.manage-categories input:checked").parents("ul.manage-categories:hidden").each(function() {
-		    $(this).show()
-		});
+        $("ul.manage-categories input:checked").parents("ul.manage-categories:hidden").each(function() {
+            $(this).show()
+        });
 
-		$("ul.manage-categories input:checked").parents("li.expandable:gt(0)").each(function() {
-		    $(this).removeClass("expandable");
-		    $(this).addClass("collapsable");
-		});
+        $("ul.manage-categories input:checked").parents("li.expandable:gt(0)").each(function() {
+            $(this).removeClass("expandable");
+            $(this).addClass("collapsable");
+        });
 
-		$("ul.manage-categories input:checked").parents("li:gt(0)").children(".hitarea").each(function() {
-		    $(this).removeClass("expandable-hitarea");
-		    $(this).addClass("collapsable-hitarea");
-		});
+        $("ul.manage-categories input:checked").parents("li:gt(0)").children(".hitarea").each(function() {
+            $(this).removeClass("expandable-hitarea");
+            $(this).addClass("collapsable-hitarea");
+        });
 
-		return false;
-	})
+        return false;
+    })
 
     // Shows current category in category manage tree (manage category)
-	$(".show-current").livequery("click", function() {
+    $(".show-current").livequery("click", function() {
 
         $("a:eq(0)", "#manage-categories-categories-control").click()
 
         var category = $("#manage-tabs").attr("data")
-		$(category).parents("ul.menu:hidden").each(function() {
-		    $(this).show()
-		});
+        $(category).parents("ul.menu:hidden").each(function() {
+            $(this).show()
+        });
 
-		$(category).parents("li.expandable").each(function() {
-		    $(this).removeClass("expandable");
-		    $(this).addClass("collapsable");
-		});
+        $(category).parents("li.expandable").each(function() {
+            $(this).removeClass("expandable");
+            $(this).addClass("collapsable");
+        });
 
-		$(category).parents("li.lastExpandable").each(function() {
-		    $(this).addClass("lastCollapsable");
-		    $(this).removeClass("lastExpandable");
-		});
+        $(category).parents("li.lastExpandable").each(function() {
+            $(this).addClass("lastCollapsable");
+            $(this).removeClass("lastExpandable");
+        });
 
-		$(category).parents("li").children(".hitarea").each(function() {
-		    $(this).removeClass("expandable-hitarea");
-		    $(this).addClass("collapsable-hitarea");
-		});
+        $(category).parents("li").children(".hitarea").each(function() {
+            $(this).removeClass("expandable-hitarea");
+            $(this).addClass("collapsable-hitarea");
+        });
 
-		return false;
-	})
+        return false;
+    })
 
     // Product / Variants
     $(".property-add-button").livequery("click", function() {
@@ -877,25 +835,6 @@ $(function() {
         return false;
     });
 
-
-    // $(".ajax-form-button").livequery("click", function() {
-    //     $(this).parents("form:first").ajaxSubmit({
-    //         "success": function(data) {
-    //             data = JSON.parse(data);
-    //             if (data["state"] == "success") {
-    //                 $("#shipping-methods").html(data["methods"]);
-    //                 $("#data").html(data["form"]);
-    //                 $.jGrowl(data["message"])
-    //             }
-    //             else {
-    //                 $("#data").html(data["form"]);
-    //                 $.jGrowl(data["message"]);
-    //             }
-    //         }
-    //     });
-    //     return false;
-    // })
-
     // Static blocks
     var confirmation;
     $(".confirmation-link-no").livequery("click", function() {
@@ -1055,93 +994,124 @@ $(function() {
     })
 
     // Export #############################################################
-	// Traverses though all parent categories of given clicked knot
-	// (category) and call updates state (none, full, half) and checking.
-	// Calls "lfs_export_category_state"
-	var update_parent_categories = function(knot) {
-		knot.parents("li.category").each(function() {
-			// url = lfs_export_category_state category id
-			var url = $(this).attr("data")
-	        $.post(url, function(data) {
-	            data = JSON.parse(data);
-				// Sets 1/2
+    // Traverses though all parent categories of given clicked knot
+    // (category) and call updates state (none, full, half) and checking.
+    // Calls "lfs_export_category_state"
+    var update_parent_categories = function(knot) {
+        knot.parents("li.category").each(function() {
+            // url = lfs_export_category_state category id
+            var url = $(this).attr("data")
+            $.post(url, function(data) {
+                data = JSON.parse(data);
+                // Sets 1/2
                 $(data["html"][0]).html(data["html"][1]);
-				// Sets checking
+                // Sets checking
                 $(data["checkbox"][0]).attr("checked", data["checkbox"][1]);
-	        })
-		});
-	};
+            })
+        });
+    };
 
-	// Deletes all states of child categories of given knot
-	var update_sub_categories = function(knot) {
-		knot.parent().find(".category-state").html("");
-	};
+    // Deletes all states of child categories of given knot
+    var update_sub_categories = function(knot) {
+        knot.parent().find(".category-state").html("");
+    };
 
-	$(function() {
-	    $(".category-ajax-link").livequery("click", function() {
-	        var url = $(this).attr("href");
+    $(function() {
+        $(".category-ajax-link").livequery("click", function() {
+            var url = $(this).attr("href");
 
-			// Loads children of clicked category.
-			if ($(this).hasClass("collapsed")) {
-		        $.post(url, function(data) {
-		            data = JSON.parse(data);
-		            for (var html in data["html"])
-		                $(data["html"][html][0]).html(data["html"][html][1]);
-		        })
-				$(this).removeClass("collapsed");
-				$(this).addClass("expanded");
-			}
-			// Removes children of clicked category.
-			else {
-				$(this).siblings("div").html("")
-				$(this).removeClass("expanded");
-				$(this).addClass("collapsed");
-			}
-	        return false;
-	    });
+            // Loads children of clicked category.
+            if ($(this).hasClass("collapsed")) {
+                $.post(url, function(data) {
+                    data = JSON.parse(data);
+                    for (var html in data["html"])
+                        $(data["html"][html][0]).html(data["html"][html][1]);
+                })
+                $(this).removeClass("collapsed");
+                $(this).addClass("expanded");
+            }
+            // Removes children of clicked category.
+            else {
+                $(this).siblings("div").html("")
+                $(this).removeClass("expanded");
+                $(this).addClass("collapsed");
+            }
+            return false;
+        });
 
-		$(".export-category-input").livequery("click", function() {
+        $(".export-category-input").livequery("click", function() {
 
-			// select / deselect all child nodes
-			var input = $(this);
-			var parent_checked = this.checked;
-			$(this).parent().find("input").each(function() { this.checked = parent_checked; })
+            // select / deselect all child nodes
+            var input = $(this);
+            var parent_checked = this.checked;
+            $(this).parent().find("input").each(function() { this.checked = parent_checked; })
 
-			// Updates child and parent categories of clicked category
-			var url = $(this).attr("data");
-			if (parent_checked == true) {
-				$.post(url, {"action" : "add"}, function(data) {
-					update_sub_categories(input);
-					update_parent_categories(input);
-				});
-			}
-			else {
-				$.post(url, {"action" : "remove"}, function(data) {
-					update_sub_categories(input);
-					update_parent_categories(input);
-				});
-			}
-		});
+            // Updates child and parent categories of clicked category
+            var url = $(this).attr("data");
+            if (parent_checked == true) {
+                $.post(url, {"action" : "add"}, function(data) {
+                    update_sub_categories(input);
+                    update_parent_categories(input);
+                });
+            }
+            else {
+                $.post(url, {"action" : "remove"}, function(data) {
+                    update_sub_categories(input);
+                    update_parent_categories(input);
+                });
+            }
+        });
 
-		$(".export-product-input").livequery("click", function() {
-			// Add / Remove product
-			var input = $(this);
-			var url = $(this).attr("data");
-			var checked = this.checked;
+        $(".export-product-input").livequery("click", function() {
+            // Add / Remove product
+            var input = $(this);
+            var url = $(this).attr("data");
+            var checked = this.checked;
 
-			// Updates parent catgories of clicked product
-			if (checked == true) {
-				$.post(url, {"action" : "add"}, function(data) { update_parent_categories(input) } );
-			}
-			else {
-				$.post(url, {"action" : "remove"}, function(data) { update_parent_categories(input) });
-			}
-		});
-	});
+            // Updates parent catgories of clicked product
+            if (checked == true) {
+                $.post(url, {"action" : "add"}, function(data) { update_parent_categories(input) } );
+            }
+            else {
+                $.post(url, {"action" : "remove"}, function(data) { update_parent_categories(input) });
+            }
+        });
+    });
 
     $(".category-variants-options").livequery("change", function() {
-	    var url = $(this).attr("data");
-	    var variants_option = $(this).val();
+        var url = $(this).attr("data");
+        var variants_option = $(this).val();
         $.post(url, { "variants_option" : variants_option });
     });
+
+    // Product / Properties Form
+    
+    // No results
+    var toggle_no_results = function(checked) {
+        if (checked) {
+            $("#id_display_no_results").parents(".field").show();
+        }
+        else {
+            $("#id_display_no_results").parents(".field").hide();
+        }
+    }
+    toggle_no_results($("#id_filterable").attr("checked"));
+    $("#id_filterable").click(function() {
+        toggle_no_results(this.checked)
+    });
+    
+    // Required
+    var toggle_required = function(checked) {
+        if (checked) {
+            $("#id_required").parents(".field").show();
+        }
+        else {
+            $("#id_required").parents(".field").hide();
+        }
+    }
+    toggle_required($("#id_configurable").attr("checked"));
+    $("#id_configurable").click(function() {
+        toggle_required(this.checked)
+    });
+
 })

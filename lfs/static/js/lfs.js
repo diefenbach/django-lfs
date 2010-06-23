@@ -18,7 +18,6 @@ var update_checkout = function() {
 }
 
 $(function() {
-
     // Delay plugin taken from ###############################################
     // http://ihatecode.blogspot.com/2008/04/jquery-time-delay-event-binding-plugin.html
 
@@ -124,14 +123,19 @@ $(function() {
         });
     });
 
+    $(".product-quantity").attr("autocomplete", "off");
+
     $(".product-quantity").livequery("keyup", function() {
-        $("#product-form").ajaxSubmit({
-            url : $("#packing-url").attr("data"),
-            success : function(data) {
-                var data = JSON.parse(data);
-                $(".packing-result").html(data["html"]);
-            }
-        });
+        var url = $("#packing-url").attr("data")
+        if (url) {
+            $("#product-form").ajaxSubmit({
+                url : url,
+                success : function(data) {
+                    var data = JSON.parse(data);
+                    $(".packing-result").html(data["html"]);
+                }
+            });
+        }
     });
 
     $("select.cp-property").livequery("change", function() {
@@ -140,7 +144,9 @@ $(function() {
             success : function(data) {
                 var data = JSON.parse(data);
                 $(".standard-price-value").html(data["price"]);
-                $.jGrowl(data["message"]);
+                $(".for-sale-price-value").html(data["for-sale-price"]);
+                $(".for-sale-standard-price-value").html(data["for-sale-standard-price"]);
+                // $.jGrowl(data["message"]);
 
                 // Re-bind lightbox
                 $("a.product-image").lightBox({
