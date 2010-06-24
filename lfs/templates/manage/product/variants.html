@@ -31,6 +31,7 @@
     </form>
 
     {% for property in local_properties %}
+        {{property.name}}
         {% if not forloop.first %}
             <a href="{% url lfs.manage.views.change_property_position %}?product_id={{product.id}}&amp;property_id={{property.id}}&amp;direction=up"
                class="property-change-button">
@@ -55,17 +56,17 @@
                    alt="delete" 
                    title="{% trans 'Delete property' %}"/>            
         </a>
-        {{property.name}}
         <div class="property-options">
             {% for option in property.options.all %}
                 <div>
+                    {{option.name}}
                     <a href="{% url lfs.manage.views.delete_property_option product.id option.id %}"
                        class="property-change-button">
                         <image src="{{MEDIA_URL}}lfs/icons/cross.png" 
                                alt="delete" 
                                title="{% trans 'Delete option' %}"/>
                     
-                    </a>{{option.name}}
+                    </a>
                 </div>
             {% endfor %}
             <div>
