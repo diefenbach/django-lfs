@@ -19,6 +19,7 @@ from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyGroup
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import VARIANT, PROPERTY_SELECT_FIELD
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
 import lfs.catalog.utils
 from lfs.manage import utils as manage_utils
 
@@ -308,7 +309,7 @@ def add_variants(request, product_id):
         # Save the value for this product and property
         for option in options:
             property_id, option_id = option.split("|")
-            pvo = ProductPropertyValue(product = variant, property_id = property_id, value=option_id)
+            pvo = ProductPropertyValue(product = variant, property_id = property_id, value=option_id, type=PROPERTY_VALUE_TYPE_VARIANT)
             pvo.save()
 
     from lfs.manage.views.product.product import selectable_products_inline
