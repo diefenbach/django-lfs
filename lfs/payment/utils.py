@@ -97,7 +97,13 @@ def process_payment(request):
 
     if payment_method.module:
          module = lfs.core.utils.import_module(payment_method.module + ".views")
-         return module.process(request)
+         result = module.process(request)
+         if result["accepted"] == True:
+             order = lfs.order.utils.add_order(request)
+             # TODO: this has to be returned from the module
+             order.state = 1
+             order.save()
+         return result
 
     elif payment_method.id == PAYPAL:
         order = lfs.order.utils.add_order(request)
