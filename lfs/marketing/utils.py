@@ -18,6 +18,8 @@ from django.db import connection
 def calculate_product_sales():
     """Calculates and saves total product sales.
     """
+    ProductSales.objects.all().delete()
+
     products = {}
     for order_item in OrderItem.objects.all():
         if order_item.product.is_variant():
