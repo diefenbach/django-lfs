@@ -1,6 +1,9 @@
 # django imports
 import django.dispatch
 
+# Shop
+shop_changed = django.dispatch.Signal()
+
 # Catalog
 cart_changed = django.dispatch.Signal()
 category_changed = django.dispatch.Signal()

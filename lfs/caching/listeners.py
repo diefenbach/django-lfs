@@ -15,6 +15,7 @@ from lfs.core.models import Shop
 from lfs.core.signals import cart_changed
 from lfs.core.signals import product_changed
 from lfs.core.signals import category_changed
+from lfs.core.signals import shop_changed
 from lfs.core.signals import topseller_changed
 from lfs.marketing.models import Topseller
 from lfs.order.models import OrderItem
@@ -23,6 +24,11 @@ from lfs.shipping.models import ShippingMethod
 
 # reviews imports
 from reviews.signals import review_added
+
+# Shop
+def shop_changed_listener(sender, **kwargs):
+    clear_cache()
+shop_changed.connect(shop_changed_listener)
 
 # Cart
 def cart_changed_listener(sender, **kwargs):
