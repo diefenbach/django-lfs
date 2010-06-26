@@ -129,18 +129,18 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
 def stock(request, product_id, template_name="manage/product/stock.html"):
     """Displays and updates product's stock data.
     """
+    # prefix="stock" because <input name="length" doesn't seem to work with IE
     product = lfs_get_object_or_404(Product, pk=product_id)
 
     if request.method == "POST":
-        form = ProductStockForm(instance=product, data=request.POST)
+        form = ProductStockForm(prefix="stock", instance=product, data=request.POST)
         if form.is_valid():
             form.save()
-            form = ProductStockForm(instance=product)
             message = _(u"Product stock data has been saved.")
         else:
             message = _(u"Please correct the indicated errors.")
     else:
-        form = ProductStockForm(instance=product)
+        form = ProductStockForm(prefix="stock", instance=product)
 
     result = render_to_string(template_name, RequestContext(request, {
         "product" : product,
@@ -306,9 +306,9 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
         else:
             form = ProductDataForm(instance=product)
 
-        message = "Productdata has been saved."
+        message = _(u"Productdata has been saved.")
     else:
-        message = "Please correct the indicated errors."
+        message = _(u"Please correct the indicated errors.")
 
     form_html = render_to_string(template_name, RequestContext(request, {
         "product" : product,
@@ -320,7 +320,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
         "selectable_products" : selectable_products_inline(request, page, paginator, product_id),
         "form" : form_html,
         "message" : message,
-    })
+    }, cls = LazyEncoder)
 
     return HttpResponse(result)
 
