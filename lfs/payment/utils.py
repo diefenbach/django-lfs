@@ -7,10 +7,11 @@ from django.core.urlresolvers import reverse
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
+from lfs.core.signals import order_submitted
 from lfs.criteria import utils as criteria_utils
 from lfs.customer import utils as customer_utils
+from lfs.order.settings import PAID
 from lfs.payment.models import PaymentMethod
-from lfs.payment.settings import CREDIT_CARD
 from lfs.payment.settings import PAYPAL
 
 # other imports
@@ -101,19 +102,18 @@ def process_payment(request):
          if result["accepted"] == True:
              order = lfs.order.utils.add_order(request)
              # TODO: this has to be returned from the module
-             order.state = 1
+             order.state = PAID
              order.save()
+             order_submitted.send({"order" : order, "request" : request})
          return result
 
     elif payment_method.id == PAYPAL:
         order = lfs.order.utils.add_order(request)
-        order.pay_link = create_paypal_link_for_order(order)
-        order.save()
-
+        order_submitted.send({"order" : order, "request" : request})
         if settings.LFS_PAYPAL_REDIRECT:
             return {
                 "accepted" : True,
-                "next-url" : order.pay_link,
+                "next-url" : order.get_pay_link(),
             }
         else:
             return {
@@ -122,39 +122,44 @@ def process_payment(request):
             }
     else:
         order = lfs.order.utils.add_order(request)
+        order_submitted.send({"order" : order, "request" : request})
         return {
             "accepted" : True,
             "next-url" : reverse("lfs_thank_you"),
         }
 
-def create_next_url(payment_method, order):
+def get_next_url(payment_method, order):
     """Creates the next url for the passed payment method and order.
     """
     if payment_method.id == PAYPAL:
-        return create_paypal_link_for_order(order)
-    else:
-        module = import_module(payment_method + ".views")
+        return get_paypal_link_for_order(order)
+    elif payment_method.module:
+        module = lfs.core.utils.import_module.import_module(payment_method + ".views")
         try:
-            return module.create_next_url(order)
+            return module.get_next_url(order)
         except AttributeError:
-            return ""
+            return None
+    else:
+        return None
 
-def create_pay_link(payment_method, order):
+def get_pay_link(payment_method, order):
     """Creates a pay link for the passed payment_method and order.
 
     This can be used to display the link within the order mail and/or the
     thank you page after a customer has payed.
     """
     if payment_method.id == PAYPAL:
-        return create_paypal_link_for_order(order)
-    else:
-        module = import_module(payment_method + ".views")
+        return get_paypal_link_for_order(order)
+    elif payment_method.module:
+        module = lfs.core.utils.import_module(payment_method.module + ".views")
         try:
-            return module.create_pay_link(order)
+            return module.get_pay_link(order)
         except AttributeError:
             return ""
+    else:
+        return ""
 
-def create_paypal_link_for_order(order):
+def get_paypal_link_for_order(order):
     """Creates paypal link for given order.
     """
     shop = lfs_get_object_or_404(Shop, pk=1)
@@ -180,48 +185,6 @@ def create_paypal_link_for_order(order):
         "item_name" : shop.shop_owner,
         "amount" : "%.2f" % (order.price - order.tax),
         "tax" : "%.2f" % order.tax,
-    }
-
-    parameters = "&".join(["%s=%s" % (k, v) for (k, v) in info.items()])
-    if settings.DEBUG:
-        url = SANDBOX_POSTBACK_ENDPOINT + "?" + parameters
-    else:
-        url = POSTBACK_ENDPOINT + "?" + parameters
-
-    return url
-
-def create_paypal_link_for_request(request):
-    """Creates paypal link for given request.
-    """
-    shop = lfs_get_object_or_404(Shop, pk=1)
-    current_site = Site.objects.get(id=settings.SITE_ID)
-
-    customer = lfs.customer.utils.get_customer(request)
-    invoice_address = customer.selected_invoice_address
-
-    cart = lfs.cart.utils.get_cart(request)
-    cart_price, cart_tax = lfs.cart.utils.get_cart_costs()
-
-    info = {
-        "cmd" : "_xclick",
-        "upload" : "1",
-        "business" : settings.PAYPAL_RECEIVER_EMAIL,
-        "currency_code" : shop.default_currency,
-        "notify_url" : "http://" + current_site.domain + reverse('paypal-ipn'),
-        "return" : "http://" + current_site.domain + reverse('paypal-pdt'),
-        "first_name" : invoice_address.firstname,
-        "last_name" : invoice_address.lastname,
-        "address1" : invoice_address.street,
-        "address2" : "",
-        "city" : invoice_address.city,
-        "state" : invoice_address.state,
-        "zip" : invoice_address.zip_code,
-        "no_shipping" : "1",
-        "custom": cart.id,
-        "invoice": cart.id,
-        "item_name" : shop.shop_owner,
-        "amount" : "%.2f" % (cart_price - cart_tax),
-        "tax" : "%.2f" % cart_tax,
     }
 
     parameters = "&".join(["%s=%s" % (k, v) for (k, v) in info.items()])
