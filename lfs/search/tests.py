@@ -22,9 +22,9 @@ class SearchTestCase(TestCase):
         url = reverse("lfs_search")
         
         # Must be found
-        response = self.client.get(url, {"phrase" : "Product"})
+        response = self.client.get(url, {"q" : "Product"})
         self.failIf(response.content.find("Product 1") == -1)
 
         # Must not be found
-        response = self.client.get(url, {"phrase" : "Hurz"})
+        response = self.client.get(url, {"q" : "Hurz"})
         self.failIf(response.content.find("Product 1") != -1)

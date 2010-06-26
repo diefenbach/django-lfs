@@ -217,9 +217,9 @@ $(function() {
                 $("#livesearch-result").hide();
             }
             else {
-                var phrase = $("#search-input").attr("value");
+                var q = $("#search-input").attr("value");
                 var url = $("#search-input").attr("data");
-                $.get(url, {"phrase" : phrase}, function(data) {
+                $.get(url, {"q" : q}, function(data) {
                     data = JSON.parse(data);
                     if (data["state"] == "success") {
                         $("#livesearch-result").html(data["products"]);
