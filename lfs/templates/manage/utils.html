@@ -3,12 +3,15 @@
 
 {% block content %}
     <h2 class="heading-middle">{% trans 'Utilities' %}</h2>
-	<ul>
-		<li>
-			<a href="{% url lfs_clear_cache %}">{% trans 'Clear Cache' %}</a>
-		</li>
-		<li>
-			<a href="{% url lfs_set_category_levels %}">{% trans 'Set category levels' %}</a>
-		</li>
-	</ul>
+    <ul>
+        <li>
+            <a href="{% url lfs_clear_cache %}">{% trans 'Clear Cache' %}</a>
+        </li>
+        <li>
+            <a href="{% url lfs_set_category_levels %}">{% trans 'Set category levels' %}</a>
+        </li>
+        <li>
+            <a href="{% url lfs_reindex_topseller %}">{% trans 'Reindex topseller' %}</a>
+        </li>
+    </ul>
 {% endblock %}

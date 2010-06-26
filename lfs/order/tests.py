@@ -27,19 +27,19 @@ class OrderTestCase(TestCase):
     """
     """
     fixtures = ['lfs_shop.xml']
-    
+
     def setUp(self):
         """
         """
         session = SessionStore()
-        
+
         rf = RequestFactory()
         self.request = rf.get('/')
         self.request.session = session
         self.request.user = AnonymousUser()
 
         tax = Tax.objects.create(rate = 19)
-        
+
         shipping_method = ShippingMethod.objects.create(
             name="Standard",
             active=True,
@@ -52,9 +52,9 @@ class OrderTestCase(TestCase):
             active=True,
             tax=tax,
         )
-        
+
         country = Country.objects.create(name="Middle-earth")
-        
+
         address1 = Address.objects.create(
             firstname = "John",
             lastname = "Doe",
@@ -78,15 +78,15 @@ class OrderTestCase(TestCase):
             phone = "666-111111",
             email = "jane@doe.com",
         )
-        
+
         self.customer = Customer.objects.create(
             session=session.session_key,
             selected_shipping_method = shipping_method,
             selected_payment_method = payment_method,
             selected_shipping_address = address1,
-            selected_invoice_address = address2,            
+            selected_invoice_address = address2,
         )
-        
+
         p1 = Product.objects.create(
             name="Product 1",
             slug="product-1",
@@ -94,7 +94,7 @@ class OrderTestCase(TestCase):
             price=1.1,
             tax = tax,
         )
-            
+
         p2 = Product.objects.create(
             name="Product 2",
             slug="product-2",
@@ -102,11 +102,11 @@ class OrderTestCase(TestCase):
             price=2.2,
             tax = tax,
         )
-        
+
         cart = Cart.objects.create(
             session = session.session_key
         )
-        
+
         item = CartItem.objects.create(
             cart = cart,
             product = p1,
@@ -118,7 +118,7 @@ class OrderTestCase(TestCase):
             product = p2,
             amount = 3,
         )
-        
+
     def test_add_order(self):
         """Tests the general adding of an order via the add_order method
         """
@@ -135,7 +135,7 @@ class OrderTestCase(TestCase):
         self.assertEqual(order.payment_method.name, "Direct Debit")
         self.assertEqual(order.payment_price, 0.0)
         self.assertEqual(order.payment_tax, 0.0)
-        
+
         self.assertEqual(order.shipping_firstname, "John")
         self.assertEqual(order.shipping_lastname, "Doe")
         self.assertEqual(order.shipping_company_name, "Doe Ltd.")
@@ -170,7 +170,36 @@ class OrderTestCase(TestCase):
         self.assertEqual("%.2f" % item.product_price_gross, "2.20")
         self.assertEqual("%.2f" % item.product_price_net, "1.85")
         self.assertEqual("%.2f" % item.product_tax, "0.35")
-        
+
         # The cart should be deleted after the order has been created
         cart = cart_utils.get_cart(self.request)
         self.assertEqual(cart, None)
+
+    def test_pay_link(self):
+        """Tests empty pay link.
+        """
+        from lfs.payment.utils import process_payment
+        result = process_payment(self.request)
+
+        order = result.get("order")
+        self.assertEqual(order.pay_link, "")
+        self.assertEqual(order.get_pay_link(), "")
+
+    def test_paypal_link(self):
+        """Tests created paypal link.
+        """
+        payment_method = PaymentMethod.objects.create(
+            id = 3,
+            name="PayPal",
+            active=True,
+        )
+        
+        self.customer.selected_payment_method = payment_method
+        self.customer.save()
+        
+        from lfs.payment.utils import process_payment
+        result = process_payment(self.request)
+
+        order = result.get("order")
+        self.failIf(order.pay_link.find("paypal") == -1)
+        self.failIf(order.get_pay_link().find("paypal") == -1)

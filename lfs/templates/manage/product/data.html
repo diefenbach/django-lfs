@@ -238,28 +238,29 @@
             {% endif %}
 
         </fieldset>
-        
-        <fieldset>
-            <legend>{% trans "Units" %}</legend>
-            <div class="field">
-                <div class="label">
-                    {{ form.unit.label_tag }}:
+
+        {% if not product.is_variant %}
+            <fieldset>
+                <legend>{% trans "Units" %}</legend>
+                <div class="field">
+                    <div class="label">
+                        {{ form.unit.label_tag }}:
+                    </div>
+                    <div>
+                        {{ form.unit }}
+                    </div>
                 </div>
-                <div>
-                    {{ form.unit }}
+                <div class="field">
+                    <div class="label">
+                        {{ form.price_unit.label_tag }}:
+                    </div>
+                    <div>
+                        {{ form.price_unit }}
+                    </div>
                 </div>
-            </div>
-            <div class="field">
-                <div class="label">
-                    {{ form.price_unit.label_tag }}:
-                </div>
-                <div>
-                    {{ form.price_unit }}
-                </div>
-            </div>
-            
-        </fieldset>
-        
+            </fieldset>
+        {% endif %}
+
         <div class="field">
             <div class="label">
                 {% if product.is_variant %}
