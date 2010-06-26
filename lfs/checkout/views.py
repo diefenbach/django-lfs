@@ -211,6 +211,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                     country_id = form.cleaned_data.get("invoice_country"),
                     phone = form.cleaned_data.get("invoice_phone"),
                     email = form.cleaned_data.get("invoice_email"),
+                    customer = customer,
                 )
                 customer.selected_invoice_address = invoice_address
             else:
@@ -224,6 +225,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                 selected_invoice_address.country_id = form.cleaned_data.get("invoice_country")
                 selected_invoice_address.phone = form.cleaned_data.get("invoice_phone")
                 selected_invoice_address.email = form.cleaned_data.get("invoice_email")
+                selected_invoice_address.customer = customer
                 selected_invoice_address.save()
 
             # If the shipping address differs from invoice firstname we create
@@ -240,6 +242,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                         country_id = form.cleaned_data.get("shipping_country"),
                         phone = form.cleaned_data.get("shipping_phone"),
                         email = form.cleaned_data.get("shipping_email"),
+                        customer = customer,
                     )
                     customer.selected_shipping_address = shipping_address
                 else:
@@ -252,6 +255,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                     selected_shipping_address.city = form.cleaned_data.get("shipping_city")
                     selected_shipping_address.country_id = form.cleaned_data.get("shipping_country")
                     selected_shipping_address.phone = form.cleaned_data.get("shipping_phone")
+                    selected_shipping_address.customer = customer
                     selected_shipping_address.save()
 
             # Payment method
