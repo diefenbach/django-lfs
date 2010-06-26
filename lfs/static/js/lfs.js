@@ -170,7 +170,10 @@ $(function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {
-                $("#cart-inline").html(data);
+                var data = JSON.parse(data);
+                $("#cart-inline").html(data["html"]);
+                if (data["message"])
+                    $.jGrowl(data["message"]);
             }
         })
     });
