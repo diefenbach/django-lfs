@@ -398,7 +398,10 @@ def refresh_cart(request):
         else:
             item.amount = int(float(amount))
 
-        item.save()
+        if int(amount) == 0:
+            item.delete()
+        else:
+            item.save()
 
     # IMPORTANT: We have to send the signal already here, because the valid
     # shipping methods might be dependent on the price.
