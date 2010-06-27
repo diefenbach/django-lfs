@@ -33,5 +33,6 @@ setup(name='django-lfs',
         'django-reviews==0.2.1',
         'django-tagging==0.3.1',
         'django-paypal==0.1.2',
+        'django-contact-form',
       ],
       )
