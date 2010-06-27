@@ -148,9 +148,9 @@ class Shop(models.Model):
     image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400)))
     static_block = models.ForeignKey(StaticBlock, verbose_name=_(u"Static block"), blank=True, null=True, related_name="shops")
 
-    product_cols = models.IntegerField(_(u"Product cols"), default=3)
-    product_rows = models.IntegerField(_(u"Product rows"), default=3)
-    category_cols = models.IntegerField(_(u"Category cols"), default=3)
+    product_cols = models.IntegerField(_(u"Product cols"), default=1)
+    product_rows = models.IntegerField(_(u"Product rows"), default=10)
+    category_cols = models.IntegerField(_(u"Category cols"), default=1)
     google_analytics_id = models.CharField(_(u"Google Analytics ID"), blank=True, max_length=20)
     ga_site_tracking = models.BooleanField(_(u"Google Analytics Site Tracking"), default=False)
     ga_ecommerce_tracking = models.BooleanField(_(u"Google Analytics E-Commerce Tracking"), default=False)
