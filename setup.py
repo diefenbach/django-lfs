@@ -28,7 +28,7 @@ setup(name='django-lfs',
       install_requires=[
         'setuptools',
         'django-lfstheme==0.5.0',
-        'django-portlets==1.0',
+        'django-portlets<=1.0',
         'django-pagination==1.0.7',
         'django-reviews==0.2.1',
         'django-tagging==0.3.1',
