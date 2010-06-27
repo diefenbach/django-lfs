@@ -16,3 +16,7 @@ Credits
 * The star rating is based on CSS Star Rating Redux
 
   (http://komodomedia.com/blog/index.php/2007/01/20/css-star-rating-redux/)
+  
+* The contact form is based on James Bennet's django-contact form
+  
+  (http://bitbucket.org/ubernostrum/django-contact-form/)
