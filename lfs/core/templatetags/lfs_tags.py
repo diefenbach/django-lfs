@@ -280,12 +280,12 @@ def sorting_portlet(context):
     }
 
 class ActionsNode(Node):
-    def __init__(self, group_id):
-        self.group_id = group_id
+    def __init__(self, group_name):
+        self.group_name = group_name
 
     def render(self, context):
         request = context.get("request")
-        context["actions"] = Action.objects.filter(active=True, group=self.group_id)
+        context["actions"] = Action.objects.filter(active=True, group__name=self.group_name)
         return ''
 
 def do_actions(parser, token):
