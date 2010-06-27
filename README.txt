@@ -27,7 +27,12 @@ A demo shop can be tried here:
 Changes
 =======
 
-0.5.0 beta 1 (2009-12-28) 
+0.5.0 beta 2 (2010-06-27)
+-------------------------
+
+* Cleaned up contact form
+
+0.5.0 beta 1 (2009-12-27) 
 -------------------------
 
 * First public beta release
