@@ -2,19 +2,24 @@
 from django.core.management.base import BaseCommand
 
 SHOP_DESCRIPTION = """
-<h1>Welcome to LFS</h1>
-<p>LFS is an online shop based on Python, Django and jQuery.</p>
+<h1 class="first-heading">Welcome to LFS!</h1>
+<p>LFS is an online shop based on <a href="http://www.python.org/" target="_blank">Python</a>, 
+<a href="http://www.djangoproject.com/" target="_blank">Django</a> and 
+<a href="http://jquery.com/" target="_blank">jQuery</a>.</p>
+
 <h1>Login</h1>
-<p>Go to the&nbsp;<a href="/manage">management interface</a>&nbsp;to start to add content.</p>
-<h1>Information</h1>
-<p>You can find more information on following pages:</p>
+<p>Go to the <a href="/manage">management interface</a> to start to add content.</p>
+
+<h1>Information &amp; Help</h1>
+<p>You can find more information and help on following places:</p>
 <ul>
 <li><a href="http://www.getlfs.com" target="_blank">Official page</a></li>
 <li><a href="http://packages.python.org/django-lfs/index.html" target="_blank">Documentation on PyPI</a></li>
+<li><a href="http://pypi.python.org/pypi/django-lfs" target="_blank">Releases on PyPI</a></li>
 <li><a href="http://bitbucket.org/diefenbach/django-lfs" target="_blank">Source code on bitbucket.org</a></li>
-<li><a href="http://twitter.com/lfsproject" target="_blank">Twitter</a></li>
-<li><a href="irc://irc.freenode.net/django-lfs" target="_blank">IRC</a></li>
 <li><a href="http://groups.google.com/group/django-lfs" target="_blank">Google Group</a></li>
+<li><a href="http://twitter.com/lfsproject" target="_blank">lfsproject on Twitter</a></li>
+<li><a href="irc://irc.freenode.net/django-lfs" target="_blank">IRC</a></li>
 </ul>
 """
 
@@ -49,7 +54,10 @@ class Command(BaseCommand):
 
         # Actions
         tabs = ActionGroup.objects.create(name="Tabs")
+        footer = ActionGroup.objects.create(name="Footer")
         Action.objects.create(group=tabs, title="Contact", link="/contact", active=True, position=1)
+        Action.objects.create(group=footer, title="Terms and Conditions", link="/page/terms-and-conditions", active=True, position=1)
+        Action.objects.create(group=footer, title="Imprint", link="/page/imprint", active=True, position=2)
 
         # Portlets
         left_slot = Slot.objects.create(name="Left")
@@ -74,4 +82,5 @@ class Command(BaseCommand):
         ShippingMethod.objects.create(name="Standard", priority=1, active=1)
 
         # Pages
-        Page.objects.create(title="Terms and Conditions", slug="terms-and-conditions", active=1, body="Enter your terms and conditions")
+        Page.objects.create(title="Terms and Conditions", slug="terms-and-conditions", active=1, body="Enter your terms and conditions here.")
+        Page.objects.create(title="Imprint", slug="imprint", active=1, body="Enter your imprint here.")
