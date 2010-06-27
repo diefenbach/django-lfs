@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
-from lfs.contact_form.forms import ContactForm
+from contact_form.forms import ContactForm
 
 
 def contact_form(request, form_class=ContactForm,

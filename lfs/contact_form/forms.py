@@ -3,21 +3,20 @@ A base contact form for allowing users to send email messages through
 a web interface, and a subclass demonstrating useful functionality.
 
 """
-
-
 from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
 from django.template import loader
 from django.template import RequestContext
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.models import Site
-
 
 # I put this on all required fields, because it's easier to pick up
 # on them with CSS or JavaScript if they have a class of "required"
 # in the HTML. Your mileage may vary.
 attrs_dict = { 'class': 'required' }
 
+import lfs.core.utils
 
 class ContactForm(forms.Form):
     """
@@ -136,19 +135,20 @@ class ContactForm(forms.Form):
             raise TypeError("Keyword argument 'request' must be supplied")
         super(ContactForm, self).__init__(data=data, files=files, *args, **kwargs)
         self.request = request
+        self.shop = lfs.core.utils.get_default_shop()
     
     name = forms.CharField(max_length=100,
                            widget=forms.TextInput(attrs=attrs_dict),
-                           label=u'Your name')
+                           label=_(u'Your name'))
     email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict,
                                                                maxlength=200)),
-                             label=u'Your email address')
+                             label=_(u'Your email address'))
     body = forms.CharField(widget=forms.Textarea(attrs=attrs_dict),
-                              label=u'Your message')
+                              label=_(u'Your message'))
     
-    from_email = settings.DEFAULT_FROM_EMAIL
+    from_email = self.shop.from_email
     
-    recipient_list = [mail_tuple[1] for mail_tuple in settings.MANAGERS]
+    recipient_list = self.shop.get_notification_mails()
 
     subject_template_name = "contact_form/contact_form_subject.txt"
     
