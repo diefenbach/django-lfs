@@ -5,6 +5,7 @@ from django.views.generic.simple import direct_to_template
 # lfs imports
 from lfs.core.sitemap import ProductSitemap
 from lfs.core.sitemap import CategorySitemap
+from lfs.contact_form.forms import ContactForm
 
 # Robots
 urlpatterns = patterns('django.views.generic.simple',
@@ -62,8 +63,8 @@ urlpatterns += patterns('lfs.checkout.views',
     url(r'^check-voucher/$', "check_voucher", name="lfs_check_voucher"),    
 )
 
-urlpatterns += patterns('lfs.contact_form.views',
-    url(r'^contact/$', "contact_form", name='contact_form'),
+urlpatterns += patterns('contact_form.views',
+    url(r'^contact/$', "contact_form", { "form_class" : ContactForm }, name='contact_form'),
     url(r'^sent/$', direct_to_template, { 'template': 'contact_form/contact_form_sent.html' }, name='contact_form_sent'),
 )
 
