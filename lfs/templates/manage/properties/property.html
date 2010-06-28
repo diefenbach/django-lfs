@@ -68,10 +68,16 @@
                 </div>
             {% endif %}
 
-            {% if property.is_number_field %}
+            {% if display_step_form %}
                 <div id="steps">
                     {{ steps|safe }}
                 </div>            
+            {% endif %}
+
+            {% if property.is_number_field %}
+                <div id="number_field">
+                    {{ number_field|safe }}
+                </div>
             {% endif %}
 
             {% if property.is_input_field %}

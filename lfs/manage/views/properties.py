@@ -101,7 +101,6 @@ def manage_property(request, id, template_name="manage/properties/property.html"
         "type_form" : PropertyTypeForm(instance=property),
         "current_id" : int(id),
         "options" : options_inline(request, id),
-        "select_field"
         "steps" : steps_inline(request, id),
         "number_field" : number_field(request, property),
         "select_field" : select_field(request, property),
