@@ -19,7 +19,7 @@
 
     <div class="site-actions">
         <span class="label">{{property.name}}</span>
-        <a class="add" 
+        <a class="add"
            href="{% url lfs_add_shop_property %}">{% trans 'Add Property' %}</a>
         <a class="delete confirmation-link"
            data="{% trans 'Delete?' %}"
@@ -27,7 +27,7 @@
     </div>
 
     <div id="manage-tabs">
-        
+
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Property' %}</a></li>
         </ul>
@@ -40,46 +40,52 @@
                 <div class="field">
                     <div class="label">
                         {% trans "ID" %}
-                    </div>        
+                    </div>
                     <div>
                         {{ property.id }}
                     </div>
                 </div>
-                
+
                 {% include "manage/lfs_form.html" %}
                 <input type="submit"
                        value="{% trans 'Save property' %}">
             </form>
-            
+
             <h2 class="heading-middle">{% trans 'Field type' %}</h2>
-            <p class="attention">{% trans 'Attention: If the field type is changed all entered product values for this property will be deleted.' %}</p>
+            {# <p class="attention">{% trans 'Attention: If the field type is changed all entered product values for this property will be deleted.' %}</p> #}
             <form action="{% url lfs_update_shop_property_type property.id %}"
                   method="post">
 
                 {{ type_form.type }}
-                
+
                 <input type="submit"
                        value="{% trans 'Save property type' %}">
             </form>
-            
+
+
             {% if property.is_select_field %}
+
+                <div id="select_field">
+                    {{ select_field|safe }}
+                </div>
+
                 <div id="options">
                     {{ options|safe }}
                 </div>
             {% endif %}
 
-            {% if property.is_number_field %}
+            {% if display_step_form %}
                 <div id="steps">
                     {{ steps|safe }}
-                </div>            
+                </div>
             {% endif %}
 
-            {% if property.is_input_field %}
-                <div id="input_field">
-                    {{ input_field|safe }}
-                </div>                    
+            {% if property.is_number_field %}
+                <div id="number_field">
+                    {{ number_field|safe }}
+                </div>
             {% endif %}
-            
+
         </div>
-    </div>        
+    </div>
 {% endblock %}
