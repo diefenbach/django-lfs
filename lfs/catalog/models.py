@@ -877,6 +877,7 @@ class Product(models.Model):
                 value = ppv.value
             properties.append({
                 "name"  : ppv.property.name,
+                "title" : ppv.property.title,
                 "value" : value,
                 "unit"  : ppv.property.unit,
             })
@@ -1054,6 +1055,8 @@ class Product(models.Model):
         """
         properties = self.get_global_properties()
         properties.extend(self.get_local_properties())
+
+        properties.sort(lambda a, b: cmp(a.position, b.position))
 
         return properties
 
