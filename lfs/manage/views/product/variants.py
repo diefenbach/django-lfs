@@ -158,6 +158,7 @@ def add_property(request, product_id):
     property_form = PropertyForm(data=request.POST)
     if property_form.is_valid():
         property = property_form.save(commit=False)
+        property.title = property.name
         property.type = PROPERTY_SELECT_FIELD
         property.local = True
 
