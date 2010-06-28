@@ -37,7 +37,7 @@
                         {% if property.display_text_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.name }}:
+                                    {{ property.title }}:
                                 </div>
                                 <input type="text"
                                        name="property-{{ property.id }}"
@@ -47,7 +47,7 @@
                         {% if property.display_select_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.name }}:
+                                    {{ property.title }}:
                                 </div>
                                 <select name="property-{{ property.id }}">
                                     <option>-----</option>
