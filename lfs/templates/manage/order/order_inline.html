@@ -275,14 +275,14 @@
                {{ item.product_name }}
                 {% for property in item.product.get_displayed_properties %}
                     <div>
-                        {{ property.name }} : {{ property.value }} {{ property.unit|safe }}
+                        {{ property.title }} : {{ property.value }} {{ property.unit|safe }}
                     </div>
                 {% endfor %}
                 
                 {% if item.product.is_configurable_product %}
                     {% for property in item.get_properties %}
                         <div>
-                            {{ property.name }} : {{ property.value }} {{ property.unit|safe }} ({{ property.price|currency }})
+                            {{ property.title }} : {{ property.value }} {{ property.unit|safe }} ({{ property.price|currency }})
                         </div>
                     {% endfor %}
                 {% endif %}
