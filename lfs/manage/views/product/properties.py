@@ -42,15 +42,20 @@ def manage_properties(request, product_id, template_name="manage/product/propert
 
                 display_configurables = True
 
-                # Try to get the value, if it already exists.
-                ppvs = ProductPropertyValue.objects.filter(property = property, product=product, type=PROPERTY_VALUE_TYPE_DEFAULT)
-                value_ids = [ppv.value for ppv in ppvs]
+                try:
+                    ppv = ProductPropertyValue.objects.get(property = property, product=product, type=PROPERTY_VALUE_TYPE_DEFAULT)
+                except ProductPropertyValue.DoesNotExist:
+                    ppv_id = None
+                    ppv_value = ""
+                else:
+                    ppv_id = ppv.id
+                    ppv_value = ppv.value
 
                 # Mark selected options
                 options = []
                 for option in property.options.all():
 
-                    if str(option.id) in value_ids:
+                    if str(option.id) == ppv_id:
                         selected = True
                     else:
                         selected = False
@@ -69,6 +74,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     "options" : options,
                     "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
                     "display_select_field" : property.type == PROPERTY_SELECT_FIELD,
+                    "value" : ppv_value,
                 })
 
             configurables.append({
@@ -222,9 +228,8 @@ def update_properties(request, product_id):
         ProductPropertyValue.objects.filter(product = product_id, property = property_id, type=type).delete()
 
         for value in request.POST.getlist(key):
-            if not property.is_valid_value(value):
-                value = 0
-            ProductPropertyValue.objects.create(product=product, property = property, value=value, type=type)
+            if property.is_valid_value(value):
+                ProductPropertyValue.objects.create(product=product, property = property, value=value, type=type)
 
     url = reverse("lfs_manage_product", kwargs={"product_id" : product_id})
     return HttpResponseRedirect(url)
