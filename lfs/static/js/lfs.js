@@ -186,7 +186,8 @@ $(function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {
-                $("#cart-inline").html(data);
+                var data = JSON.parse(data);
+                $("#cart-inline").html(data["html"]);
             }
         })
     });
@@ -195,7 +196,8 @@ $(function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {
-                $("#cart-inline").html(data);
+                var data = JSON.parse(data);
+                $("#cart-inline").html(data["html"]);
             }
         })
     });
@@ -204,7 +206,8 @@ $(function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {
-                $("#cart-inline").html(data);
+                var data = JSON.parse(data);
+                $("#cart-inline").html(data["html"]);
             }
         })
     });
