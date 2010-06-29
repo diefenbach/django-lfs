@@ -42,6 +42,7 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DISPLAY
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
 from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
 from lfs.tax.models import Tax
@@ -865,7 +866,7 @@ class Product(models.Model):
 
         properties = []
 
-        for ppv in self.property_values.order_by("property__position"):
+        for ppv in self.property_values.filter(type=PROPERTY_VALUE_TYPE_VARIANT).order_by("property__position"):
             if ppv.property.is_select_field:
                 try:
                     po = PropertyOption.objects.get(pk=int(float(ppv.value)))
