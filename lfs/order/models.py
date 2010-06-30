@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
+import lfs.payment.utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
 from lfs.order.settings import ORDER_STATES
@@ -11,12 +12,10 @@ from lfs.order.settings import SUBMITTED
 from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
 from lfs.payment.settings import PAYPAL
-import lfs.payment.utils
 
 # other imports
 from countries.models import Country
 import uuid
-
 
 def get_unique_id_str():
     return str(uuid.uuid4())
@@ -105,7 +104,7 @@ class Order(models.Model):
     def get_pay_link(self):
         """Returns a pay link for the selected payment method.
         """
-        return self.pay_link
+        return lfs.payment.utils.get_pay_link(self.payment_method, self)
 
     def get_name(self):
         order_name = ""

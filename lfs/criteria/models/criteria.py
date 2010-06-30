@@ -750,7 +750,7 @@ class DistanceCriterion(models.Model, Criterion):
         try:
             m = lfs.core.utils.import_module(settings.LFS_DISTANCE_MODULE)
             current_distance = m.get_distance(request)
-        except ImportError:
+        except (ImportError, AttributeError):
             current_distance = 0
 
         if self.operator == LESS_THAN and (current_distance < self.distance):

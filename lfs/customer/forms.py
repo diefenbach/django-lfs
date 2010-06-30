@@ -1,6 +1,7 @@
 # django imports
 from django import forms
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -55,7 +56,7 @@ class RegisterForm(forms.Form):
         """Validates that the entered e-mail is unique.
         """
         email = self.cleaned_data.get("email")
-        if email and User.objects.filter(email=email).count() > 0:
+        if email and User.objects.filter(Q(email=email) | Q(username=email)).count() > 0:
             raise forms.ValidationError(
                 _(u"That email address is already in use."))
 

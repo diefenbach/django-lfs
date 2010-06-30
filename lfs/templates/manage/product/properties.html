@@ -37,17 +37,17 @@
                         {% if property.display_text_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.name }}:
+                                    {{ property.name }} ({{ property.title }}):
                                 </div>
                                 <input type="text"
                                        name="property-{{ property.id }}"
                                        value="{{ property.value }}" />
                             </div>
-                        {% endif %}
+                        {% endif %}                        
                         {% if property.display_select_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.name }}:
+                                    {{ property.title }}:
                                 </div>
                                 <select name="property-{{ property.id }}">
                                     <option>-----</option>
@@ -91,7 +91,7 @@
                         {% if property.display_text_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.name }}:
+                                    {{ property.title }}:
                                 </div>
                                 <input type="text"
                                        name="property-{{ property.id }}"
@@ -101,7 +101,7 @@
                         {% if property.display_select_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.name }}:
+                                    {{ property.name }} ({{ property.title }}):
                                 </div>
                                 <select multiple="multiple" name="property-{{ property.id }}">
                                     {% for option in property.options %}
@@ -144,7 +144,7 @@
                         {% if property.display_text_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.name }}:
+                                    {{ property.name }} ({{ property.title }}):
                                 </div>
                                 <input type="text"
                                        name="property-{{ property.id }}"
@@ -154,7 +154,7 @@
                         {% if property.display_select_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.name }}:
+                                    {{ property.title }}:
                                 </div>
                                 <select multiple="multiple" name="property-{{ property.id }}">
                                     {% for option in property.options %}

@@ -5,6 +5,7 @@ from django.views.generic.simple import direct_to_template
 # lfs imports
 from lfs.core.sitemap import ProductSitemap
 from lfs.core.sitemap import CategorySitemap
+from lfs.contact_form.forms import ContactForm
 
 # Robots
 urlpatterns = patterns('django.views.generic.simple',
@@ -25,7 +26,7 @@ urlpatterns += patterns('lfs.core.views',
 urlpatterns += patterns('lfs.cart.views',
     url(r'^add-to-cart$', "add_to_cart"),
     url(r'^add-accessory-to-cart/(?P<product_id>\d*)/(?P<quantity>.*)$', "add_accessory_to_cart", name="lfs_add_accessory_to_cart"),
-    url(r'^added-to-cart$', "added_to_cart"),
+    url(r'^added-to-cart$', "added_to_cart", name="lfs_added_to_cart"),
     url(r'^delete-cart-item/(?P<cart_item_id>\d*)$', "delete_cart_item", name="lfs_delete_cart_item"),
     url(r'^refresh-cart$', "refresh_cart"),
     url(r'^cart$', "cart", name="lfs_cart"),
@@ -62,6 +63,11 @@ urlpatterns += patterns('lfs.checkout.views',
     url(r'^changed-invoice-country/$', "changed_invoice_country", name="lfs_changed_invoice_country"),
     url(r'^changed-shipping-country/$', "changed_shipping_country", name="lfs_changed_shipping_country"),
     url(r'^check-voucher/$', "check_voucher", name="lfs_check_voucher"),    
+)
+
+urlpatterns += patterns('contact_form.views',
+    url(r'^contact/$', "contact_form", { "form_class" : ContactForm }, name='contact_form'),
+    url(r'^sent/$', direct_to_template, { 'template': 'contact_form/contact_form_sent.html' }, name='contact_form_sent'),
 )
 
 # Customer

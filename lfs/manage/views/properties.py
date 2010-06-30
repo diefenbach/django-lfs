@@ -24,7 +24,7 @@ class PropertyDataForm(ModelForm):
     """
     class Meta:
         model = Property
-        fields = ["name", "title", "filterable", "display_no_results",
+        fields = ["position", "name", "title", "filterable", "display_no_results",
             "configurable", "required", "display_on_product", "unit"]
 
 class PropertyTypeForm(ModelForm):
@@ -101,7 +101,6 @@ def manage_property(request, id, template_name="manage/properties/property.html"
         "type_form" : PropertyTypeForm(instance=property),
         "current_id" : int(id),
         "options" : options_inline(request, id),
-        "select_field"
         "steps" : steps_inline(request, id),
         "number_field" : number_field(request, property),
         "select_field" : select_field(request, property),

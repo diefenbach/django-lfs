@@ -20,7 +20,11 @@ var update_checkout = function() {
 $(function() {
     // Delay plugin taken from ###############################################
     // http://ihatecode.blogspot.com/2008/04/jquery-time-delay-event-binding-plugin.html
-
+   
+   var h = $("#content").height();
+   $(".left-slot").height(h)
+   $(".middle-slot").height(h)
+   
    $.fn.delay = function(options) {
         var timer;
         var delayImpl = function(eventObj) {
@@ -179,7 +183,10 @@ $(function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {
-                $("#cart-inline").html(data);
+                var data = JSON.parse(data);
+                $("#cart-inline").html(data["html"]);
+                if (data["message"])
+                    $.jGrowl(data["message"]);
             }
         })
     });
@@ -188,7 +195,8 @@ $(function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {
-                $("#cart-inline").html(data);
+                var data = JSON.parse(data);
+                $("#cart-inline").html(data["html"]);
             }
         })
     });
@@ -197,7 +205,8 @@ $(function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {
-                $("#cart-inline").html(data);
+                var data = JSON.parse(data);
+                $("#cart-inline").html(data["html"]);
             }
         })
     });
@@ -206,7 +215,8 @@ $(function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {
-                $("#cart-inline").html(data);
+                var data = JSON.parse(data);
+                $("#cart-inline").html(data["html"]);
             }
         })
     });
@@ -226,9 +236,9 @@ $(function() {
                 $("#livesearch-result").hide();
             }
             else {
-                var phrase = $("#search-input").attr("value");
+                var q = $("#search-input").attr("value");
                 var url = $("#search-input").attr("data");
-                $.get(url, {"phrase" : phrase}, function(data) {
+                $.get(url, {"q" : q}, function(data) {
                     data = JSON.parse(data);
                     if (data["state"] == "success") {
                         $("#livesearch-result").html(data["products"]);

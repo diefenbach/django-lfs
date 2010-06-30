@@ -43,6 +43,7 @@ from lfs.catalog.settings import PROPERTY_STEP_TYPE_MANUAL_STEPS
 from lfs.catalog.settings import PROPERTY_STEP_TYPE_FIXED_STEP
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DISPLAY
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
 from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import THUMBNAIL_SIZES
 from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
@@ -882,7 +883,7 @@ class Product(models.Model):
 
         properties = []
 
-        for ppv in self.property_values.order_by("property__position"):
+        for ppv in self.property_values.filter(type=PROPERTY_VALUE_TYPE_VARIANT).order_by("property__position"):
             if ppv.property.is_select_field:
                 try:
                     po = PropertyOption.objects.get(pk=int(float(ppv.value)))
@@ -894,6 +895,7 @@ class Product(models.Model):
                 value = ppv.value
             properties.append({
                 "name"  : ppv.property.name,
+                "title" : ppv.property.title,
                 "value" : value,
                 "unit"  : ppv.property.unit,
             })
@@ -1071,6 +1073,8 @@ class Product(models.Model):
         """
         properties = self.get_global_properties()
         properties.extend(self.get_local_properties())
+
+        properties.sort(lambda a, b: cmp(a.position, b.position))
 
         return properties
 
@@ -1672,7 +1676,7 @@ class ProductPropertyValue(models.Model):
 
     type
         The type of the product value, which is on of "filter value",
-        "default value", "display value".
+        "default value", "display value", "variant value"
     """
     product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="property_values")
     parent_id = models.IntegerField(_(u"Parent"), blank=True, null=True)

@@ -70,7 +70,11 @@ def send_customer_added(user):
     # text
     text = render_to_string("lfs/mail/new_user_mail.txt", {
         "user" : user, "shop" : shop})
-
+    
+    # subject    
+    subject = render_to_string("lfs/mail/new_user_mail_subject.txt", {
+        "user" : user, "shop" : shop})
+    
     mail = EmailMultiAlternatives(
         subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
 

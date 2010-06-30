@@ -14,18 +14,18 @@ from lfs.catalog.settings import STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIAN
 def livesearch(request, template_name="lfs/search/livesearch_results.html"):
     """
     """
-    phrase = request.GET.get("phrase", "")
+    q = request.GET.get("q", "")
 
-    if phrase == "":
+    if q == "":
         result = simplejson.dumps({
             "state" : "failure",
         })
     else:
         # Products
         query = Q(active=True) & \
-                Q(name__icontains=phrase) | \
-                Q(manufacturer__name__icontains=phrase) | \
-                Q(sku_manufacturer__icontains=phrase) & \
+                Q(name__icontains=q) | \
+                Q(manufacturer__name__icontains=q) | \
+                Q(sku_manufacturer__icontains=q) & \
                 Q(sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
         
         temp = Product.objects.filter(query)
@@ -34,7 +34,7 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
         
         products = render_to_string(template_name, RequestContext(request, {
             "products" : products,
-            "phrase" : phrase,
+            "q" : q,
             "total" : total,
         }))
         
@@ -45,16 +45,16 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
     return HttpResponse(result)
     
 def search(request, template_name="lfs/search/search_results.html"):
-    """Returns the search result according to given phrase (via get request) 
+    """Returns the search result according to given query (via get request) 
     ordered by the globally set sorting.
     """
-    phrase = request.GET.get("phrase", "")
+    q = request.GET.get("q", "")
     
     # Products
     query = Q(active=True) & \
-            Q(name__icontains=phrase) | \
-            Q(manufacturer__name__icontains=phrase) | \
-            Q(sku_manufacturer__icontains=phrase) & \
+            Q(name__icontains=q) | \
+            Q(manufacturer__name__icontains=q) | \
+            Q(sku_manufacturer__icontains=q) & \
             Q(sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
     products = Product.objects.filter(query)
 
@@ -69,6 +69,6 @@ def search(request, template_name="lfs/search/search_results.html"):
         
     return render_to_response(template_name, RequestContext(request, {
         "products" : products,
-        "phrase" : phrase,
+        "q" : q,
         "total" : total,
     }))

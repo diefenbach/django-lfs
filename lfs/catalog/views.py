@@ -366,6 +366,7 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
         row.append({
             "obj" : product,
             "slug" : product.slug,
+            "name" : product.get_name(),
             "image" : product.get_image(),
             "price" : product.get_price(),
             "standard_price" : product.get_standard_price(),
@@ -505,12 +506,14 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
 
             try:
                 ppv = ProductPropertyValue.objects.get(product=product, property=property, type=PROPERTY_VALUE_TYPE_DEFAULT)
+                ppv_value = ppv.value
             except ProductPropertyValue.DoesNotExist:
                 ppv = None
-
+                ppv_value = ""
+                
             for property_option in property.options.all():
-                if ppv and ppv.value == str(property_option.id):
-                    selected = True
+                if ppv_value == str(property_option.id):
+                    selected = True                    
                 else:
                     selected = False
 
@@ -529,6 +532,7 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
                 "unit" : property.unit,
                 "display_price" : property.display_price,
                 "options" : options,
+                "value" : ppv_value,
             })
 
     # Reviews

@@ -9,7 +9,7 @@
         <div>
             <a href="{% url lfs_manage_shop_property property.id %}"
                class="selectable {% ifequal property.id current_id %}selected{% endifequal %}">
-                {{property.name}}
+                {{ property.title }}
             </a>
         </div>
     {% endfor %}
@@ -18,7 +18,7 @@
 {% block content %}
 
     <div class="site-actions">
-        <span class="label">{{property.name}}</span>
+        <span class="label">{{ property.title }}</span>
         <a class="add"
            href="{% url lfs_add_shop_property %}">{% trans 'Add Property' %}</a>
         <a class="delete confirmation-link"

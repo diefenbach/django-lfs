@@ -27,132 +27,143 @@ def manage_properties(request, product_id, template_name="manage/product/propert
     """
     product = get_object_or_404(Product, pk=product_id)
 
-    # Generate list of properties. For entering values.
+    # Generate lists of properties. For entering values.
     display_configurables = False
-    configurables = []
-    for property_group in product.property_groups.all():
-        properties = []
-        for property in property_group.properties.filter(configurable=True).order_by("groupspropertiesrelation"):
-
-            display_configurables = True
-
-            # Try to get the value, if it already exists.
-            ppvs = ProductPropertyValue.objects.filter(property = property, product=product, type=PROPERTY_VALUE_TYPE_DEFAULT)
-            value_ids = [ppv.value for ppv in ppvs]
-
-            # Mark selected options
-            options = []
-            for option in property.options.all():
-
-                if str(option.id) in value_ids:
-                    selected = True
-                else:
-                    selected = False
-
-                options.append({
-                    "id"       : option.id,
-                    "name"     : option.name,
-                    "selected" : selected,
-                })
-
-            properties.append({
-                "id" : property.id,
-                "name" : property.name,
-                "type" : property.type,
-                "options" : options,
-                "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
-                "display_select_field" : property.type == PROPERTY_SELECT_FIELD,
-            })
-
-        configurables.append({
-            "id"   : property_group.id,
-            "name" : property_group.name,
-            "properties" : properties,
-        })
-
     display_filterables = False
-    filterables = []
-    for property_group in product.property_groups.all():
-        properties = []
-        for property in property_group.properties.filter(filterable=True).order_by("groupspropertiesrelation"):
-
-            display_filterables = True
-
-            # Try to get the value, if it already exists.
-            ppvs = ProductPropertyValue.objects.filter(property = property, product=product, type=PROPERTY_VALUE_TYPE_FILTER)
-            value_ids = [ppv.value for ppv in ppvs]
-
-            # Mark selected options
-            options = []
-            for option in property.options.all():
-
-                if str(option.id) in value_ids:
-                    selected = True
-                else:
-                    selected = False
-
-                options.append({
-                    "id"       : option.id,
-                    "name"     : option.name,
-                    "selected" : selected,
-                })
-
-            properties.append({
-                "id" : property.id,
-                "name" : property.name,
-                "type" : property.type,
-                "options" : options,
-                "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
-                "display_select_field" : property.type == PROPERTY_SELECT_FIELD,
-            })
-
-        filterables.append({
-            "id"   : property_group.id,
-            "name" : property_group.name,
-            "properties" : properties,
-        })
-
     display_displayables = False
+    configurables = []
+    filterables = []
     displayables = []
-    for property_group in product.property_groups.all():
-        properties = []
-        for property in property_group.properties.filter(display_on_product=True).order_by("groupspropertiesrelation"):
 
-            display_displayables = True
+    if not product.is_product_with_variants():
+        for property_group in product.property_groups.all():
+            properties = []
+            for property in property_group.properties.filter(configurable=True).order_by("groupspropertiesrelation"):
 
-            # Try to get the value, if it already exists.
-            ppvs = ProductPropertyValue.objects.filter(property = property, product=product, type=PROPERTY_VALUE_TYPE_DISPLAY)
-            value_ids = [ppv.value for ppv in ppvs]
+                display_configurables = True
 
-            # Mark selected options
-            options = []
-            for option in property.options.all():
-
-                if str(option.id) in value_ids:
-                    selected = True
+                try:
+                    ppv = ProductPropertyValue.objects.get(property = property, product=product, type=PROPERTY_VALUE_TYPE_DEFAULT)
+                except ProductPropertyValue.DoesNotExist:
+                    ppv_id = None
+                    ppv_value = ""
                 else:
-                    selected = False
+                    ppv_id = ppv.id
+                    ppv_value = ppv.value
 
-                options.append({
-                    "id"       : option.id,
-                    "name"     : option.name,
-                    "selected" : selected,
+                # Mark selected options
+                options = []
+                for option in property.options.all():
+
+                    if str(option.id) == ppv_id:
+                        selected = True
+                    else:
+                        selected = False
+
+                    options.append({
+                        "id"       : option.id,
+                        "name"     : option.name,
+                        "selected" : selected,
+                    })
+
+                properties.append({
+                    "id" : property.id,
+                    "name" : property.name,
+                    "title" : property.title,
+                    "type" : property.type,
+                    "options" : options,
+                    "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
+                    "display_select_field" : property.type == PROPERTY_SELECT_FIELD,
+                    "value" : ppv_value,
                 })
 
-            properties.append({
-                "id" : property.id,
-                "name" : property.name,
-                "type" : property.type,
-                "options" : options,
-                "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
-                "display_select_field" : property.type == PROPERTY_SELECT_FIELD,
+            configurables.append({
+                "id"   : property_group.id,
+                "name" : property_group.name,
+                "properties" : properties,
             })
 
-        displayables.append({
-            "id"   : property_group.id,
-            "name" : property_group.name,
-            "properties" : properties,
-        })
+        for property_group in product.property_groups.all():
+            properties = []
+            for property in property_group.properties.filter(filterable=True).order_by("groupspropertiesrelation"):
+
+                display_filterables = True
+
+                # Try to get the value, if it already exists.
+                ppvs = ProductPropertyValue.objects.filter(property = property, product=product, type=PROPERTY_VALUE_TYPE_FILTER)
+                value_ids = [ppv.value for ppv in ppvs]
+
+                # Mark selected options
+                options = []
+                for option in property.options.all():
+
+                    if str(option.id) in value_ids:
+                        selected = True
+                    else:
+                        selected = False
+
+                    options.append({
+                        "id"       : option.id,
+                        "name"     : option.name,
+                        "selected" : selected,
+                    })
+
+                properties.append({
+                    "id" : property.id,
+                    "name" : property.name,
+                    "title" : property.title,
+                    "type" : property.type,
+                    "options" : options,
+                    "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
+                    "display_select_field" : property.type == PROPERTY_SELECT_FIELD,
+                })
+
+            filterables.append({
+                "id"   : property_group.id,
+                "name" : property_group.name,
+                "properties" : properties,
+            })
+
+        for property_group in product.property_groups.all():
+            properties = []
+            for property in property_group.properties.filter(display_on_product=True).order_by("groupspropertiesrelation"):
+
+                display_displayables = True
+
+                # Try to get the value, if it already exists.
+                ppvs = ProductPropertyValue.objects.filter(property = property, product=product, type=PROPERTY_VALUE_TYPE_DISPLAY)
+                value_ids = [ppv.value for ppv in ppvs]
+
+                # Mark selected options
+                options = []
+                for option in property.options.all():
+
+                    if str(option.id) in value_ids:
+                        selected = True
+                    else:
+                        selected = False
+
+                    options.append({
+                        "id"       : option.id,
+                        "name"     : option.name,
+                        "selected" : selected,
+                    })
+
+                properties.append({
+                    "id" : property.id,
+                    "name" : property.name,
+                    "title" : property.title,
+                    "type" : property.type,
+                    "options" : options,
+                    "display_text_field"   : property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
+                    "display_select_field" : property.type == PROPERTY_SELECT_FIELD,
+                })
+
+            displayables.append({
+                "id"   : property_group.id,
+                "name" : property_group.name,
+                "properties" : properties,
+            })
 
     # Generate list of all property groups; used for group selection
     product_property_group_ids = [p.id for p in product.property_groups.all()]
@@ -217,9 +228,8 @@ def update_properties(request, product_id):
         ProductPropertyValue.objects.filter(product = product_id, property = property_id, type=type).delete()
 
         for value in request.POST.getlist(key):
-            if not property.is_valid_value(value):
-                value = 0
-            ProductPropertyValue.objects.create(product=product, property = property, value=value, type=type)
+            if property.is_valid_value(value):
+                ProductPropertyValue.objects.create(product=product, property = property, value=value, type=type)
 
     url = reverse("lfs_manage_product", kwargs={"product_id" : product_id})
     return HttpResponseRedirect(url)

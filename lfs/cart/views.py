@@ -391,19 +391,28 @@ def refresh_cart(request):
     customer.save()
 
     # Update Amounts
+    message = ""
     for item in cart.items():
         amount = request.POST.get("amount-cart-item_%s" % item.id, 0)
         try:
             amount = float(amount)
+            if item.product.manage_stock_amount and amount > item.product.stock_amount:
+                message = _(u"Sorry, but there are only %(amount)s article(s) in stock.") % {"amount" : item.product.stock_amount}
+                amount = item.product.stock_amount
         except ValueError:
             amount = 1
 
         if item.product.active_packing_unit:
             item.amount = lfs.catalog.utils.calculate_real_amount(item.product, float(amount))
         else:
-            item.amount = int(float(amount))
+            item.amount = amount
 
-        item.save()
+        if amount < 0:
+            item.amount = 1.0
+        elif amount == 0:
+            item.delete()
+        else:
+            item.save()
 
     # IMPORTANT: We have to send the signal already here, because the valid
     # shipping methods might be dependent on the price.
@@ -422,7 +431,12 @@ def refresh_cart(request):
     # Last but not least we save the customer ...
     customer.save()
 
-    return HttpResponse(cart_inline(request))
+    result = simplejson.dumps({
+        "html" : cart_inline(request),
+        "message" : message,
+    })
+
+    return HttpResponse(result)
 
 def check_voucher(request):
     """Updates the cart after the voucher number has been changed.

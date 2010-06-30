@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
+from lfs.core.signals import shop_changed
 from lfs.core.utils import LazyEncoder
 from lfs.core.widgets.image import LFSImageInput
 from lfs.manage.views.lfs_portlets import portlets_inline
@@ -47,7 +48,7 @@ def manage_shop(request, template_name="manage/shop/shop.html"):
     if request.method == "POST":
         form = ShopForm(instance=shop, data=request.POST, files=request.FILES)
         if form.is_valid():
-            form.save()
+            form.save()            
             return lfs.core.utils.set_message_cookie(
                 url = reverse("lfs_manage_shop"),
                 msg = _(u"Shop data has been saved."),
@@ -85,7 +86,8 @@ def save_default_values(request):
     form = ShopDefaultValuesForm(instance=shop, data=request.POST)
     
     if form.is_valid():
-        form.save()    
+        shop = form.save()
+        shop_changed.send(shop)
         message = _(u"Shop default values have been saved.")
     else:
         message = _(u"Please correct the indicated errors.")

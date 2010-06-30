@@ -211,9 +211,13 @@ class CartItem(models.Model):
                 option = PropertyOption.objects.get(pk=int(float(cipv.value)))
                 value = option.name
                 price = option.price
-            else:
+            else:                
                 format_string = "%%.%sf" % property.decimal_places
-                value = format_string % float(cipv.value)
+                try:
+                    value = format_string % float(cipv.value)
+                except ValueError:
+                    value = "%.2f" % float(cipv.value)
+
                 price = ""
 
             properties.append({
