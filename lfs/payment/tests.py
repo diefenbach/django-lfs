@@ -8,7 +8,7 @@ from django.test.client import Client
 from lfs.order.models import Order
 from lfs.order.settings import PAID, PAYMENT_FAILED, PAYMENT_FLAGGED, SUBMITTED
 from lfs.payment.models import PayPalOrderTransaction
-from lfs.payment.utils import create_paypal_link_for_order
+from lfs.payment.utils import get_paypal_link_for_order
 
 # other imports
 from countries.models import Country
@@ -153,7 +153,7 @@ class PayPalPaymentTestCase(TestCase):
                       shipping_country=country, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()
-        url = create_paypal_link_for_order(order)
+        url = get_paypal_link_for_order(order)
 
         # test unique id
         self.assertEqual(('custom=' + self.uuid) in url, True)
