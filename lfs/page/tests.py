@@ -38,9 +38,19 @@ class PageTestCase(TestCase):
         self.assertEqual(self.page.active, False)
         self.assertEqual(self.page.position, 999)
 
-    def test_page_view(self):
-        """Tests page view.
+    def test_page_view_1(self):
+        """Tests page view as superuser.
         """
+        url = reverse("lfs_page_view", kwargs={"slug" : self.page.slug})
+        response = self.client.get(url)
+        self.failIf(response.content.find("Page Title") == -1)
+        self.failIf(response.content.find("<p>This is a body</p>") == -1)
+
+    def test_page_view_2(self):
+        """Tests page view as anonymous.
+        """
+        self.client.logout()
+
         url = reverse("lfs_page_view", kwargs={"slug" : self.page.slug})
         response = self.client.get(url)
 
