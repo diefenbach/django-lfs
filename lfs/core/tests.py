@@ -38,9 +38,9 @@ class ShopTestCase(TestCase):
         
         self.assertEqual(shop.name, "LFS")
         self.assertEqual(shop.shop_owner, "John Doe")
-        self.assertEqual(shop.product_cols, 3)
-        self.assertEqual(shop.product_rows, 3)
-        self.assertEqual(shop.category_cols, 3)
+        self.assertEqual(shop.product_cols, 1)
+        self.assertEqual(shop.product_rows, 10)
+        self.assertEqual(shop.category_cols, 1)
         self.assertEqual(shop.google_analytics_id, "")
         self.assertEqual(shop.ga_site_tracking, False)
         self.assertEqual(shop.ga_ecommerce_tracking, False)
