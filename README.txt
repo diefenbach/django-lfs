@@ -27,7 +27,7 @@ A demo shop can be tried here:
 Changes
 =======
 
-0.5.0 beta 3 (2010-06-27)
+0.5.0 beta 3 (2010-06-30)
 -------------------------
 
 * Bugfix manage property form: display validators for float field
