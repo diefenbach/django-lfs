@@ -27,6 +27,19 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.5.0 beta 3 (2010-06-27)
+-------------------------
+
+* Bugfix manage property form: display validators for float field
+* Bugfix: Using property title instead of name
+* Bugfix Product.get_variant_properties: display only variant properties
+* Bugfix order_inline.html: display product.unit instead of price_unit; 
+  display title of property
+* Bugfix cart: inject correct html after refresh the cart
+* Check also for existing username within RegisterForm
+* Take subject for new_user_mail from template
+* Display default value for configurable properties
+
 0.5.0 beta 2 (2010-06-27)
 -------------------------
 
