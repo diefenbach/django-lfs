@@ -1691,7 +1691,7 @@ class ProductPropertyValue(models.Model):
     def __unicode__(self):
         return "%s/%s: %s" % (self.product.name, self.property.name, self.value)
 
-    def save(self, force_insert=False, force_update=False):
+    def save(self, *args, **kwargs):
         """Overwritten to save the parent id for variants. This is used to count
         the entries per filter. See catalog/utils/get_product_filters for more.
         """
