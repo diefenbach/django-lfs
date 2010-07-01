@@ -26,18 +26,18 @@ Product
 This is the default product of LFS. Just enter the appropriate data, set it
 to active and the product is ready for sale.
 
-.. _product-product-with-variant-label:
+.. _product-configurable-product-label:
 
 Configurable product
 --------------------
 
-Configurable products can be used in two ways.
+* A configurable product is a product with several properties
+* Properties can be a selection or a input field
+* Properties can be price changing
+* The price of an configurable product is usually calculated by the product's 
+  base price plus all selected/entered values of its properties
 
-With properties with options.
-
-With properties with input field
-
-The price of configurable products can calculated individually.
+.. _product-product-with-variant-label:
 
 Product with variants
 ---------------------
@@ -418,7 +418,10 @@ To add properties and property values to the product proceed as following:
 1. Select the ``Property groups`` you want to assign to the product and click
    ``Update property groups``.
 
-You will now see all properties which are assigned to the product.
+You will now see all properties which are assigned to the product. 
 
 2. Enter the values for every assigned property and click on ``Update
    properties``
+
+Dependend on the kind of the property you can add values for the default value,
+the filter value and the displayed value.
