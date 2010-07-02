@@ -48,6 +48,7 @@ How-tos
    user/howtos/how_to_horizontal_menu.rst
    user/howtos/how_to_filters.rst
    user/howtos/how_to_variants.rst
+   user/howtos/how_to_configurable_product.rst
    user/howtos/how_to_paypal.rst
    user/howtos/how_to_shipping_method
    user/howtos/how_to_payment_method
