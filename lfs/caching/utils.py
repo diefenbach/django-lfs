@@ -60,11 +60,19 @@ def lfs_get_object_or_404(klass, *args, **kwargs):
     Note: Like with get(), an MultipleObjectsReturned will be raised if more than one
     object is found.
     """
+    cache_key = "%s-%s" % (klass.__name__.lower(), kwargs.values()[0])
+    object = cache.get(cache_key)
+    if object is not None:
+        return object
+        
+    queryset = _get_queryset(klass)
     try:
-        return lfs_get_object(klass, *args, **kwargs)
+        object = queryset.get(*args, **kwargs)
+        cache.set(cache_key, object)
+        return object
     except queryset.model.DoesNotExist:
         raise Http404('No %s matches the given query.' % queryset.model._meta.object_name)
-        
+
 def clear_cache():
     """Clears the complete cache.
     """
