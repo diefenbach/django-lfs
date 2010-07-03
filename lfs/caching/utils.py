@@ -7,7 +7,7 @@ from django.shortcuts import _get_queryset
 
 def key_from_instance(instance):
     opts = instance._meta
-    return '%s.%s:%s' % (opts.app_label, opts.module_name, instance.pk)    
+    return '%s.%s:%s' % (opts.app_label, opts.module_name, instance.pk)
 
 class SimpleCacheQuerySet(QuerySet):
     def filter(self, *args, **kwargs):
@@ -16,17 +16,17 @@ class SimpleCacheQuerySet(QuerySet):
             if val in kwargs:
                 pk = kwargs[val]
                 break
-        if pk is not None:            
-            opts = self.model._meta            
+        if pk is not None:
+            opts = self.model._meta
             key = '%s.%s:%s' % (opts.app_label, opts.module_name, pk)
             obj = cache.get(key)
             if obj is not None:
                 self._result_cache = [obj]
         return super(SimpleCacheQuerySet, self).filter(*args, **kwargs)
-        
+
 class SimpleCacheManager(models.Manager):
     def get_query_set(self):
-        return SimpleCacheQuerySet(self.model)        
+        return SimpleCacheQuerySet(self.model)
 
 def lfs_get_object(klass, *args, **kwargs):
     """
@@ -43,11 +43,16 @@ def lfs_get_object(klass, *args, **kwargs):
     object = cache.get(cache_key)
     if object is not None:
         return object
-        
+
     queryset = _get_queryset(klass)
-    object = queryset.get(*args, **kwargs)
-    cache.set(cache_key, object)
-    return object
+
+    try:
+        object = queryset.get(*args, **kwargs)
+    except queryset.model.DoesNotExist:
+        return None
+    else:
+        cache.set(cache_key, object)
+        return object
 
 def lfs_get_object_or_404(klass, *args, **kwargs):
     """
@@ -64,14 +69,15 @@ def lfs_get_object_or_404(klass, *args, **kwargs):
     object = cache.get(cache_key)
     if object is not None:
         return object
-        
+
     queryset = _get_queryset(klass)
     try:
         object = queryset.get(*args, **kwargs)
-        cache.set(cache_key, object)
-        return object
     except queryset.model.DoesNotExist:
         raise Http404('No %s matches the given query.' % queryset.model._meta.object_name)
+    else:
+        cache.set(cache_key, object)
+        return object
 
 def clear_cache():
     """Clears the complete cache.
@@ -80,7 +86,7 @@ def clear_cache():
     try:
         cache._cache.flush_all()
     except AttributeError:
-        pass            
+        pass
     else:
         return
 
@@ -92,4 +98,3 @@ def clear_cache():
         cache._expire_info.clear()
     except AttributeError:
         pass
-        
