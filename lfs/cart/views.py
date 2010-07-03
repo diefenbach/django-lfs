@@ -392,8 +392,10 @@ def refresh_cart(request):
         try:
             amount = float(amount)
             if item.product.manage_stock_amount and amount > item.product.stock_amount:
-                message = _(u"Sorry, but there are only %(amount)s article(s) in stock.") % {"amount" : item.product.stock_amount}
                 amount = item.product.stock_amount
+                if amount < 0:
+                    amount = 0
+                message = _(u"Sorry, but there are only %(amount)s article(s) in stock.") % {"amount" : amount}
         except ValueError:
             amount = 1
 
@@ -402,9 +404,7 @@ def refresh_cart(request):
         else:
             item.amount = amount
 
-        if amount < 0:
-            item.amount = 1.0
-        elif amount == 0:
+        if amount == 0:
             item.delete()
         else:
             item.save()
