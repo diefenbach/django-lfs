@@ -242,7 +242,7 @@ def add_to_cart(request, product_id=None):
                 if property.is_number_field:
 
                     if (value < property.unit_min) or (value > property.unit_max):
-                        msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name" : property.name, "min" : property.unit_min, "max" : property.unit_max, "unit" : property.unit }
+                        msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name" : property.title, "min" : property.unit_min, "max" : property.unit_max, "unit" : property.unit }
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
@@ -256,7 +256,7 @@ def add_to_cart(request, product_id=None):
 
                     value = "%.2f" % value
                     if value not in steps:
-                        msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": property.name, "value": value, "step" : property.unit_step }
+                        msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": property.title, "value": value, "step" : property.unit_step }
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
