@@ -23,9 +23,9 @@ from lfs.core import utils as core_utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
-
 from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
+from lfs.core.utils import l10n_float
 from lfs.shipping import utils as shipping_utils
 from lfs.payment import utils as payment_utils
 from lfs.customer import utils as customer_utils
@@ -226,18 +226,10 @@ def add_to_cart(request, product_id=None):
                     continue
 
                 if property.is_number_field:
-                    try:
-                        value = float(value)
-                    except ValueError:
-                        value = 0.0
-                elif property.is_number_field:
-                    try:
-                        value = int(value)
-                    except ValueError:
-                        value = 0
+                    value = l10n_float(value)
 
                 properties_dict[property_id] = unicode(value)
-
+                                
                 # validate property's value
                 if property.is_number_field:
 
