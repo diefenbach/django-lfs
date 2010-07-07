@@ -9,7 +9,7 @@
         <div>
             <a href="{% url lfs_manage_shop_property property.id %}"
                class="selectable {% ifequal property.id current_id %}selected{% endifequal %}">
-                {{ property.title }}
+                {{ property.name }}
             </a>
         </div>
     {% endfor %}
