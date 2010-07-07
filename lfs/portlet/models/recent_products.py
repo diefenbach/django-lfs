@@ -40,7 +40,7 @@ class RecentProductsPortlet(Portlet):
             if slug == slug_not_to_display:
                 continue
             product = lfs_get_object(Product, slug=slug)
-            if product.is_product_with_variants() and product.has_variants():
+            if product and product.is_product_with_variants() and product.has_variants():
                 product = product.get_default_variant()
             products.append(product)
 
