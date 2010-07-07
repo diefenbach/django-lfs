@@ -202,6 +202,7 @@ def add_to_cart(request, product_id=None):
     """Adds the amount of the product with given id to the cart. If the product
     is already within the cart the amount is increased.
     """
+    import pdb; pdb.set_trace()
     if product_id is None:
         product_id = request.REQUEST.get("product_id")
 
@@ -260,7 +261,7 @@ def add_to_cart(request, product_id=None):
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
-    elif product.is_product_with_variants:
+    elif product.is_product_with_variants():
         variant_id = request.POST.get("variant_id")
         product = lfs_get_object_or_404(Product, pk=variant_id)
 
