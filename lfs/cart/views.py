@@ -202,7 +202,6 @@ def add_to_cart(request, product_id=None):
     """Adds the amount of the product with given id to the cart. If the product
     is already within the cart the amount is increased.
     """
-    import pdb; pdb.set_trace()
     if product_id is None:
         product_id = request.REQUEST.get("product_id")
 
