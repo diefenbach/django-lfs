@@ -1,0 +1,975 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+  <object pk="3" model="core.country">
+    <field type="CharField" name="code">af</field>
+    <field type="CharField" name="name">Afghanistan</field>
+  </object>
+  <object pk="6" model="core.country">
+    <field type="CharField" name="code">al</field>
+    <field type="CharField" name="name">Albania</field>
+  </object>
+  <object pk="61" model="core.country">
+    <field type="CharField" name="code">dz</field>
+    <field type="CharField" name="name">Algeria</field>
+  </object>
+  <object pk="12" model="core.country">
+    <field type="CharField" name="code">as</field>
+    <field type="CharField" name="name">American Samoa</field>
+  </object>
+  <object pk="1" model="core.country">
+    <field type="CharField" name="code">ad</field>
+    <field type="CharField" name="name">Andorra</field>
+  </object>
+  <object pk="9" model="core.country">
+    <field type="CharField" name="code">ao</field>
+    <field type="CharField" name="name">Angola</field>
+  </object>
+  <object pk="5" model="core.country">
+    <field type="CharField" name="code">ai</field>
+    <field type="CharField" name="name">Anguilla</field>
+  </object>
+  <object pk="10" model="core.country">
+    <field type="CharField" name="code">aq</field>
+    <field type="CharField" name="name">Antarctica</field>
+  </object>
+  <object pk="4" model="core.country">
+    <field type="CharField" name="code">ag</field>
+    <field type="CharField" name="name">Antigua and Barbuda</field>
+  </object>
+  <object pk="11" model="core.country">
+    <field type="CharField" name="code">ar</field>
+    <field type="CharField" name="name">Argentina</field>
+  </object>
+  <object pk="7" model="core.country">
+    <field type="CharField" name="code">am</field>
+    <field type="CharField" name="name">Armenia</field>
+  </object>
+  <object pk="15" model="core.country">
+    <field type="CharField" name="code">aw</field>
+    <field type="CharField" name="name">Aruba</field>
+  </object>
+  <object pk="14" model="core.country">
+    <field type="CharField" name="code">au</field>
+    <field type="CharField" name="name">Australia</field>
+  </object>
+  <object pk="13" model="core.country">
+    <field type="CharField" name="code">at</field>
+    <field type="CharField" name="name">Austria</field>
+  </object>
+  <object pk="17" model="core.country">
+    <field type="CharField" name="code">az</field>
+    <field type="CharField" name="name">Azerbaijan</field>
+  </object>
+  <object pk="31" model="core.country">
+    <field type="CharField" name="code">bs</field>
+    <field type="CharField" name="name">Bahamas</field>
+  </object>
+  <object pk="24" model="core.country">
+    <field type="CharField" name="code">bh</field>
+    <field type="CharField" name="name">Bahrain</field>
+  </object>
+  <object pk="20" model="core.country">
+    <field type="CharField" name="code">bd</field>
+    <field type="CharField" name="name">Bangladesh</field>
+  </object>
+  <object pk="19" model="core.country">
+    <field type="CharField" name="code">bb</field>
+    <field type="CharField" name="name">Barbados</field>
+  </object>
+  <object pk="35" model="core.country">
+    <field type="CharField" name="code">by</field>
+    <field type="CharField" name="name">Belarus</field>
+  </object>
+  <object pk="21" model="core.country">
+    <field type="CharField" name="code">be</field>
+    <field type="CharField" name="name">Belgium</field>
+  </object>
+  <object pk="36" model="core.country">
+    <field type="CharField" name="code">bz</field>
+    <field type="CharField" name="name">Belize</field>
+  </object>
+  <object pk="26" model="core.country">
+    <field type="CharField" name="code">bj</field>
+    <field type="CharField" name="name">Benin</field>
+  </object>
+  <object pk="27" model="core.country">
+    <field type="CharField" name="code">bm</field>
+    <field type="CharField" name="name">Bermuda</field>
+  </object>
+  <object pk="32" model="core.country">
+    <field type="CharField" name="code">bt</field>
+    <field type="CharField" name="name">Bhutan</field>
+  </object>
+  <object pk="29" model="core.country">
+    <field type="CharField" name="code">bo</field>
+    <field type="CharField" name="name">Bolivia</field>
+  </object>
+  <object pk="18" model="core.country">
+    <field type="CharField" name="code">ba</field>
+    <field type="CharField" name="name">Bosnia and Herzegovina</field>
+  </object>
+  <object pk="34" model="core.country">
+    <field type="CharField" name="code">bw</field>
+    <field type="CharField" name="name">Botswana</field>
+  </object>
+  <object pk="33" model="core.country">
+    <field type="CharField" name="code">bv</field>
+    <field type="CharField" name="name">Bouvet Island</field>
+  </object>
+  <object pk="30" model="core.country">
+    <field type="CharField" name="code">br</field>
+    <field type="CharField" name="name">Brazil</field>
+  </object>
+  <object pk="105" model="core.country">
+    <field type="CharField" name="code">io</field>
+    <field type="CharField" name="name">British Indian Ocean Territory</field>
+  </object>
+  <object pk="28" model="core.country">
+    <field type="CharField" name="code">bn</field>
+    <field type="CharField" name="name">Brunei Darussalam</field>
+  </object>
+  <object pk="23" model="core.country">
+    <field type="CharField" name="code">bg</field>
+    <field type="CharField" name="name">Bulgaria</field>
+  </object>
+  <object pk="22" model="core.country">
+    <field type="CharField" name="code">bf</field>
+    <field type="CharField" name="name">Burkina Faso</field>
+  </object>
+  <object pk="25" model="core.country">
+    <field type="CharField" name="code">bi</field>
+    <field type="CharField" name="name">Burundi</field>
+  </object>
+  <object pk="116" model="core.country">
+    <field type="CharField" name="code">kh</field>
+    <field type="CharField" name="name">Cambodia</field>
+  </object>
+  <object pk="46" model="core.country">
+    <field type="CharField" name="code">cm</field>
+    <field type="CharField" name="name">Cameroon</field>
+  </object>
+  <object pk="37" model="core.country">
+    <field type="CharField" name="code">ca</field>
+    <field type="CharField" name="name">Canada</field>
+  </object>
+  <object pk="52" model="core.country">
+    <field type="CharField" name="code">cv</field>
+    <field type="CharField" name="name">Cape Verde</field>
+  </object>
+  <object pk="123" model="core.country">
+    <field type="CharField" name="code">ky</field>
+    <field type="CharField" name="name">Cayman Islands</field>
+  </object>
+  <object pk="40" model="core.country">
+    <field type="CharField" name="code">cf</field>
+    <field type="CharField" name="name">Central African Republic</field>
+  </object>
+  <object pk="209" model="core.country">
+    <field type="CharField" name="code">td</field>
+    <field type="CharField" name="name">Chad</field>
+  </object>
+  <object pk="45" model="core.country">
+    <field type="CharField" name="code">cl</field>
+    <field type="CharField" name="name">Chile</field>
+  </object>
+  <object pk="47" model="core.country">
+    <field type="CharField" name="code">cn</field>
+    <field type="CharField" name="name">China</field>
+  </object>
+  <object pk="53" model="core.country">
+    <field type="CharField" name="code">cx</field>
+    <field type="CharField" name="name">Christmas Island</field>
+  </object>
+  <object pk="38" model="core.country">
+    <field type="CharField" name="code">cc</field>
+    <field type="CharField" name="name">Cocos (Keeling) Islands</field>
+  </object>
+  <object pk="48" model="core.country">
+    <field type="CharField" name="code">co</field>
+    <field type="CharField" name="name">Colombia</field>
+  </object>
+  <object pk="118" model="core.country">
+    <field type="CharField" name="code">km</field>
+    <field type="CharField" name="name">Comoros</field>
+  </object>
+  <object pk="41" model="core.country">
+    <field type="CharField" name="code">cg</field>
+    <field type="CharField" name="name">Congo</field>
+  </object>
+  <object pk="39" model="core.country">
+    <field type="CharField" name="code">cd</field>
+    <field type="CharField" name="name">Congo The Democratic Republic of</field>
+  </object>
+  <object pk="44" model="core.country">
+    <field type="CharField" name="code">ck</field>
+    <field type="CharField" name="name">Cook Islands</field>
+  </object>
+  <object pk="49" model="core.country">
+    <field type="CharField" name="code">cr</field>
+    <field type="CharField" name="name">Costa Rica</field>
+  </object>
+  <object pk="43" model="core.country">
+    <field type="CharField" name="code">ci</field>
+    <field type="CharField" name="name">Cote d'Ivoire</field>
+  </object>
+  <object pk="97" model="core.country">
+    <field type="CharField" name="code">hr</field>
+    <field type="CharField" name="name">Croatia</field>
+  </object>
+  <object pk="51" model="core.country">
+    <field type="CharField" name="code">cu</field>
+    <field type="CharField" name="name">Cuba</field>
+  </object>
+  <object pk="54" model="core.country">
+    <field type="CharField" name="code">cy</field>
+    <field type="CharField" name="name">Cyprus</field>
+  </object>
+  <object pk="55" model="core.country">
+    <field type="CharField" name="code">cz</field>
+    <field type="CharField" name="name">Czech Republic</field>
+  </object>
+  <object pk="58" model="core.country">
+    <field type="CharField" name="code">dk</field>
+    <field type="CharField" name="name">Denmark</field>
+  </object>
+  <object pk="57" model="core.country">
+    <field type="CharField" name="code">dj</field>
+    <field type="CharField" name="name">Djibouti</field>
+  </object>
+  <object pk="59" model="core.country">
+    <field type="CharField" name="code">dm</field>
+    <field type="CharField" name="name">Dominica</field>
+  </object>
+  <object pk="60" model="core.country">
+    <field type="CharField" name="code">do</field>
+    <field type="CharField" name="name">Dominican Republic</field>
+  </object>
+  <object pk="62" model="core.country">
+    <field type="CharField" name="code">ec</field>
+    <field type="CharField" name="name">Ecuador</field>
+  </object>
+  <object pk="64" model="core.country">
+    <field type="CharField" name="code">eg</field>
+    <field type="CharField" name="name">Egypt</field>
+  </object>
+  <object pk="205" model="core.country">
+    <field type="CharField" name="code">sv</field>
+    <field type="CharField" name="name">El Salvador</field>
+  </object>
+  <object pk="87" model="core.country">
+    <field type="CharField" name="code">gq</field>
+    <field type="CharField" name="name">Equatorial Guinea</field>
+  </object>
+  <object pk="66" model="core.country">
+    <field type="CharField" name="code">er</field>
+    <field type="CharField" name="name">Eritrea</field>
+  </object>
+  <object pk="63" model="core.country">
+    <field type="CharField" name="code">ee</field>
+    <field type="CharField" name="name">Estonia</field>
+  </object>
+  <object pk="68" model="core.country">
+    <field type="CharField" name="code">et</field>
+    <field type="CharField" name="name">Ethiopia</field>
+  </object>
+  <object pk="71" model="core.country">
+    <field type="CharField" name="code">fk</field>
+    <field type="CharField" name="name">Falkland Islands (Malvinas)</field>
+  </object>
+  <object pk="73" model="core.country">
+    <field type="CharField" name="code">fo</field>
+    <field type="CharField" name="name">Faroe Islands</field>
+  </object>
+  <object pk="70" model="core.country">
+    <field type="CharField" name="code">fj</field>
+    <field type="CharField" name="name">Fiji</field>
+  </object>
+  <object pk="69" model="core.country">
+    <field type="CharField" name="code">fi</field>
+    <field type="CharField" name="name">Finland</field>
+  </object>
+  <object pk="74" model="core.country">
+    <field type="CharField" name="code">fr</field>
+    <field type="CharField" name="name">France</field>
+  </object>
+  <object pk="79" model="core.country">
+    <field type="CharField" name="code">gf</field>
+    <field type="CharField" name="name">French Guiana</field>
+  </object>
+  <object pk="172" model="core.country">
+    <field type="CharField" name="code">pf</field>
+    <field type="CharField" name="name">French Polynesia</field>
+  </object>
+  <object pk="210" model="core.country">
+    <field type="CharField" name="code">tf</field>
+    <field type="CharField" name="name">French Southern Territories</field>
+  </object>
+  <object pk="75" model="core.country">
+    <field type="CharField" name="code">ga</field>
+    <field type="CharField" name="name">Gabon</field>
+  </object>
+  <object pk="84" model="core.country">
+    <field type="CharField" name="code">gm</field>
+    <field type="CharField" name="name">Gambia</field>
+  </object>
+  <object pk="78" model="core.country">
+    <field type="CharField" name="code">ge</field>
+    <field type="CharField" name="name">Georgia</field>
+  </object>
+  <object pk="56" model="core.country">
+    <field type="CharField" name="code">de</field>
+    <field type="CharField" name="name">Germany</field>
+  </object>
+  <object pk="81" model="core.country">
+    <field type="CharField" name="code">gh</field>
+    <field type="CharField" name="name">Ghana</field>
+  </object>
+  <object pk="82" model="core.country">
+    <field type="CharField" name="code">gi</field>
+    <field type="CharField" name="name">Gibraltar</field>
+  </object>
+  <object pk="88" model="core.country">
+    <field type="CharField" name="code">gr</field>
+    <field type="CharField" name="name">Greece</field>
+  </object>
+  <object pk="83" model="core.country">
+    <field type="CharField" name="code">gl</field>
+    <field type="CharField" name="name">Greenland</field>
+  </object>
+  <object pk="77" model="core.country">
+    <field type="CharField" name="code">gd</field>
+    <field type="CharField" name="name">Grenada</field>
+  </object>
+  <object pk="86" model="core.country">
+    <field type="CharField" name="code">gp</field>
+    <field type="CharField" name="name">Guadeloupe</field>
+  </object>
+  <object pk="91" model="core.country">
+    <field type="CharField" name="code">gu</field>
+    <field type="CharField" name="name">Guam</field>
+  </object>
+  <object pk="90" model="core.country">
+    <field type="CharField" name="code">gt</field>
+    <field type="CharField" name="name">Guatemala</field>
+  </object>
+  <object pk="80" model="core.country">
+    <field type="CharField" name="code">gg</field>
+    <field type="CharField" name="name">Guernsey</field>
+  </object>
+  <object pk="85" model="core.country">
+    <field type="CharField" name="code">gn</field>
+    <field type="CharField" name="name">Guinea</field>
+  </object>
+  <object pk="92" model="core.country">
+    <field type="CharField" name="code">gw</field>
+    <field type="CharField" name="name">Guinea-Bissau</field>
+  </object>
+  <object pk="93" model="core.country">
+    <field type="CharField" name="code">gy</field>
+    <field type="CharField" name="name">Guyana</field>
+  </object>
+  <object pk="98" model="core.country">
+    <field type="CharField" name="code">ht</field>
+    <field type="CharField" name="name">Haiti</field>
+  </object>
+  <object pk="95" model="core.country">
+    <field type="CharField" name="code">hm</field>
+    <field type="CharField" name="name">Heard Island and McDonald Islands</field>
+  </object>
+  <object pk="230" model="core.country">
+    <field type="CharField" name="code">va</field>
+    <field type="CharField" name="name">Holy See (Vatican City State)</field>
+  </object>
+  <object pk="96" model="core.country">
+    <field type="CharField" name="code">hn</field>
+    <field type="CharField" name="name">Honduras</field>
+  </object>
+  <object pk="94" model="core.country">
+    <field type="CharField" name="code">hk</field>
+    <field type="CharField" name="name">Hong Kong</field>
+  </object>
+  <object pk="99" model="core.country">
+    <field type="CharField" name="code">hu</field>
+    <field type="CharField" name="name">Hungary</field>
+  </object>
+  <object pk="108" model="core.country">
+    <field type="CharField" name="code">is</field>
+    <field type="CharField" name="name">Iceland</field>
+  </object>
+  <object pk="104" model="core.country">
+    <field type="CharField" name="code">in</field>
+    <field type="CharField" name="name">India</field>
+  </object>
+  <object pk="100" model="core.country">
+    <field type="CharField" name="code">id</field>
+    <field type="CharField" name="name">Indonesia</field>
+  </object>
+  <object pk="107" model="core.country">
+    <field type="CharField" name="code">ir</field>
+    <field type="CharField" name="name">Iran Islamic Republic of</field>
+  </object>
+  <object pk="106" model="core.country">
+    <field type="CharField" name="code">iq</field>
+    <field type="CharField" name="name">Iraq</field>
+  </object>
+  <object pk="101" model="core.country">
+    <field type="CharField" name="code">ie</field>
+    <field type="CharField" name="name">Ireland</field>
+  </object>
+  <object pk="103" model="core.country">
+    <field type="CharField" name="code">im</field>
+    <field type="CharField" name="name">Isle of Man</field>
+  </object>
+  <object pk="102" model="core.country">
+    <field type="CharField" name="code">il</field>
+    <field type="CharField" name="name">Israel</field>
+  </object>
+  <object pk="109" model="core.country">
+    <field type="CharField" name="code">it</field>
+    <field type="CharField" name="name">Italy</field>
+  </object>
+  <object pk="111" model="core.country">
+    <field type="CharField" name="code">jm</field>
+    <field type="CharField" name="name">Jamaica</field>
+  </object>
+  <object pk="113" model="core.country">
+    <field type="CharField" name="code">jp</field>
+    <field type="CharField" name="name">Japan</field>
+  </object>
+  <object pk="110" model="core.country">
+    <field type="CharField" name="code">je</field>
+    <field type="CharField" name="name">Jersey</field>
+  </object>
+  <object pk="112" model="core.country">
+    <field type="CharField" name="code">jo</field>
+    <field type="CharField" name="name">Jordan</field>
+  </object>
+  <object pk="124" model="core.country">
+    <field type="CharField" name="code">kz</field>
+    <field type="CharField" name="name">Kazakhstan</field>
+  </object>
+  <object pk="114" model="core.country">
+    <field type="CharField" name="code">ke</field>
+    <field type="CharField" name="name">Kenya</field>
+  </object>
+  <object pk="117" model="core.country">
+    <field type="CharField" name="code">ki</field>
+    <field type="CharField" name="name">Kiribati</field>
+  </object>
+  <object pk="120" model="core.country">
+    <field type="CharField" name="code">kp</field>
+    <field type="CharField" name="name">Korea Democratic People's Republic of</field>
+  </object>
+  <object pk="121" model="core.country">
+    <field type="CharField" name="code">kr</field>
+    <field type="CharField" name="name">Korea Republic of</field>
+  </object>
+  <object pk="122" model="core.country">
+    <field type="CharField" name="code">kw</field>
+    <field type="CharField" name="name">Kuwait</field>
+  </object>
+  <object pk="115" model="core.country">
+    <field type="CharField" name="code">kg</field>
+    <field type="CharField" name="name">Kyrgyzstan</field>
+  </object>
+  <object pk="125" model="core.country">
+    <field type="CharField" name="code">la</field>
+    <field type="CharField" name="name">Lao People's Democratic Republic</field>
+  </object>
+  <object pk="134" model="core.country">
+    <field type="CharField" name="code">lv</field>
+    <field type="CharField" name="name">Latvia</field>
+  </object>
+  <object pk="126" model="core.country">
+    <field type="CharField" name="code">lb</field>
+    <field type="CharField" name="name">Lebanon</field>
+  </object>
+  <object pk="131" model="core.country">
+    <field type="CharField" name="code">ls</field>
+    <field type="CharField" name="name">Lesotho</field>
+  </object>
+  <object pk="130" model="core.country">
+    <field type="CharField" name="code">lr</field>
+    <field type="CharField" name="name">Liberia</field>
+  </object>
+  <object pk="135" model="core.country">
+    <field type="CharField" name="code">ly</field>
+    <field type="CharField" name="name">Libyan Arab Jamahiriya</field>
+  </object>
+  <object pk="128" model="core.country">
+    <field type="CharField" name="code">li</field>
+    <field type="CharField" name="name">Liechtenstein</field>
+  </object>
+  <object pk="132" model="core.country">
+    <field type="CharField" name="code">lt</field>
+    <field type="CharField" name="name">Lithuania</field>
+  </object>
+  <object pk="133" model="core.country">
+    <field type="CharField" name="code">lu</field>
+    <field type="CharField" name="name">Luxembourg</field>
+  </object>
+  <object pk="145" model="core.country">
+    <field type="CharField" name="code">mo</field>
+    <field type="CharField" name="name">Macao</field>
+  </object>
+  <object pk="141" model="core.country">
+    <field type="CharField" name="code">mk</field>
+    <field type="CharField" name="name">Macedonia the former Yugoslavian Republic of</field>
+  </object>
+  <object pk="139" model="core.country">
+    <field type="CharField" name="code">mg</field>
+    <field type="CharField" name="name">Madagascar</field>
+  </object>
+  <object pk="153" model="core.country">
+    <field type="CharField" name="code">mw</field>
+    <field type="CharField" name="name">Malawi</field>
+  </object>
+  <object pk="155" model="core.country">
+    <field type="CharField" name="code">my</field>
+    <field type="CharField" name="name">Malaysia</field>
+  </object>
+  <object pk="152" model="core.country">
+    <field type="CharField" name="code">mv</field>
+    <field type="CharField" name="name">Maldives</field>
+  </object>
+  <object pk="142" model="core.country">
+    <field type="CharField" name="code">ml</field>
+    <field type="CharField" name="name">Mali</field>
+  </object>
+  <object pk="150" model="core.country">
+    <field type="CharField" name="code">mt</field>
+    <field type="CharField" name="name">Malta</field>
+  </object>
+  <object pk="140" model="core.country">
+    <field type="CharField" name="code">mh</field>
+    <field type="CharField" name="name">Marshall Islands</field>
+  </object>
+  <object pk="147" model="core.country">
+    <field type="CharField" name="code">mq</field>
+    <field type="CharField" name="name">Martinique</field>
+  </object>
+  <object pk="148" model="core.country">
+    <field type="CharField" name="code">mr</field>
+    <field type="CharField" name="name">Mauritania</field>
+  </object>
+  <object pk="151" model="core.country">
+    <field type="CharField" name="code">mu</field>
+    <field type="CharField" name="name">Mauritius</field>
+  </object>
+  <object pk="240" model="core.country">
+    <field type="CharField" name="code">yt</field>
+    <field type="CharField" name="name">Mayotte</field>
+  </object>
+  <object pk="154" model="core.country">
+    <field type="CharField" name="code">mx</field>
+    <field type="CharField" name="name">Mexico</field>
+  </object>
+  <object pk="72" model="core.country">
+    <field type="CharField" name="code">fm</field>
+    <field type="CharField" name="name">Micronesia Federated States of</field>
+  </object>
+  <object pk="138" model="core.country">
+    <field type="CharField" name="code">md</field>
+    <field type="CharField" name="name">Moldova Republic of</field>
+  </object>
+  <object pk="137" model="core.country">
+    <field type="CharField" name="code">mc</field>
+    <field type="CharField" name="name">Monaco</field>
+  </object>
+  <object pk="144" model="core.country">
+    <field type="CharField" name="code">mn</field>
+    <field type="CharField" name="name">Mongolia</field>
+  </object>
+  <object pk="149" model="core.country">
+    <field type="CharField" name="code">ms</field>
+    <field type="CharField" name="name">Montserrat</field>
+  </object>
+  <object pk="136" model="core.country">
+    <field type="CharField" name="code">ma</field>
+    <field type="CharField" name="name">Morocco</field>
+  </object>
+  <object pk="156" model="core.country">
+    <field type="CharField" name="code">mz</field>
+    <field type="CharField" name="name">Mozambique</field>
+  </object>
+  <object pk="143" model="core.country">
+    <field type="CharField" name="code">mm</field>
+    <field type="CharField" name="name">Myanmar</field>
+  </object>
+  <object pk="157" model="core.country">
+    <field type="CharField" name="code">na</field>
+    <field type="CharField" name="name">Namibia</field>
+  </object>
+  <object pk="166" model="core.country">
+    <field type="CharField" name="code">nr</field>
+    <field type="CharField" name="name">Nauru</field>
+  </object>
+  <object pk="165" model="core.country">
+    <field type="CharField" name="code">np</field>
+    <field type="CharField" name="name">Nepal</field>
+  </object>
+  <object pk="163" model="core.country">
+    <field type="CharField" name="code">nl</field>
+    <field type="CharField" name="name">Netherlands</field>
+  </object>
+  <object pk="8" model="core.country">
+    <field type="CharField" name="code">an</field>
+    <field type="CharField" name="name">Netherlands Antilles</field>
+  </object>
+  <object pk="158" model="core.country">
+    <field type="CharField" name="code">nc</field>
+    <field type="CharField" name="name">New Caledonia</field>
+  </object>
+  <object pk="168" model="core.country">
+    <field type="CharField" name="code">nz</field>
+    <field type="CharField" name="name">New Zealand</field>
+  </object>
+  <object pk="162" model="core.country">
+    <field type="CharField" name="code">ni</field>
+    <field type="CharField" name="name">Nicaragua</field>
+  </object>
+  <object pk="159" model="core.country">
+    <field type="CharField" name="code">ne</field>
+    <field type="CharField" name="name">Niger</field>
+  </object>
+  <object pk="161" model="core.country">
+    <field type="CharField" name="code">ng</field>
+    <field type="CharField" name="name">Nigeria</field>
+  </object>
+  <object pk="167" model="core.country">
+    <field type="CharField" name="code">nu</field>
+    <field type="CharField" name="name">Niue</field>
+  </object>
+  <object pk="160" model="core.country">
+    <field type="CharField" name="code">nf</field>
+    <field type="CharField" name="name">Norfolk Island</field>
+  </object>
+  <object pk="146" model="core.country">
+    <field type="CharField" name="code">mp</field>
+    <field type="CharField" name="name">Northern Mariana Islands</field>
+  </object>
+  <object pk="164" model="core.country">
+    <field type="CharField" name="code">no</field>
+    <field type="CharField" name="name">Norway</field>
+  </object>
+  <object pk="16" model="core.country">
+    <field type="CharField" name="code">ax</field>
+    <field type="CharField" name="name">Oland Islands</field>
+  </object>
+  <object pk="169" model="core.country">
+    <field type="CharField" name="code">om</field>
+    <field type="CharField" name="name">Oman</field>
+  </object>
+  <object pk="175" model="core.country">
+    <field type="CharField" name="code">pk</field>
+    <field type="CharField" name="name">Pakistan</field>
+  </object>
+  <object pk="182" model="core.country">
+    <field type="CharField" name="code">pw</field>
+    <field type="CharField" name="name">Palau</field>
+  </object>
+  <object pk="180" model="core.country">
+    <field type="CharField" name="code">ps</field>
+    <field type="CharField" name="name">Palestinian Territory occupied</field>
+  </object>
+  <object pk="170" model="core.country">
+    <field type="CharField" name="code">pa</field>
+    <field type="CharField" name="name">Panama</field>
+  </object>
+  <object pk="173" model="core.country">
+    <field type="CharField" name="code">pg</field>
+    <field type="CharField" name="name">Papua New Guinea</field>
+  </object>
+  <object pk="183" model="core.country">
+    <field type="CharField" name="code">py</field>
+    <field type="CharField" name="name">Paraguay</field>
+  </object>
+  <object pk="171" model="core.country">
+    <field type="CharField" name="code">pe</field>
+    <field type="CharField" name="name">Peru</field>
+  </object>
+  <object pk="174" model="core.country">
+    <field type="CharField" name="code">ph</field>
+    <field type="CharField" name="name">Philippines</field>
+  </object>
+  <object pk="178" model="core.country">
+    <field type="CharField" name="code">pn</field>
+    <field type="CharField" name="name">Pitcairn</field>
+  </object>
+  <object pk="176" model="core.country">
+    <field type="CharField" name="code">pl</field>
+    <field type="CharField" name="name">Poland</field>
+  </object>
+  <object pk="181" model="core.country">
+    <field type="CharField" name="code">pt</field>
+    <field type="CharField" name="name">Portugal</field>
+  </object>
+  <object pk="179" model="core.country">
+    <field type="CharField" name="code">pr</field>
+    <field type="CharField" name="name">Puerto Rico</field>
+  </object>
+  <object pk="184" model="core.country">
+    <field type="CharField" name="code">qa</field>
+    <field type="CharField" name="name">Qatar</field>
+  </object>
+  <object pk="185" model="core.country">
+    <field type="CharField" name="code">re</field>
+    <field type="CharField" name="name">Reunion</field>
+  </object>
+  <object pk="186" model="core.country">
+    <field type="CharField" name="code">ro</field>
+    <field type="CharField" name="name">Romania</field>
+  </object>
+  <object pk="187" model="core.country">
+    <field type="CharField" name="code">ru</field>
+    <field type="CharField" name="name">Russian Federation</field>
+  </object>
+  <object pk="188" model="core.country">
+    <field type="CharField" name="code">rw</field>
+    <field type="CharField" name="name">Rwanda</field>
+  </object>
+  <object pk="195" model="core.country">
+    <field type="CharField" name="code">sh</field>
+    <field type="CharField" name="name">Saint Helena</field>
+  </object>
+  <object pk="119" model="core.country">
+    <field type="CharField" name="code">kn</field>
+    <field type="CharField" name="name">Saint Kitts and Nevis</field>
+  </object>
+  <object pk="127" model="core.country">
+    <field type="CharField" name="code">lc</field>
+    <field type="CharField" name="name">Saint Lucia</field>
+  </object>
+  <object pk="177" model="core.country">
+    <field type="CharField" name="code">pm</field>
+    <field type="CharField" name="name">Saint Pierre and Miquelon</field>
+  </object>
+  <object pk="231" model="core.country">
+    <field type="CharField" name="code">vc</field>
+    <field type="CharField" name="name">Saint Vincent and the Grenadines</field>
+  </object>
+  <object pk="238" model="core.country">
+    <field type="CharField" name="code">ws</field>
+    <field type="CharField" name="name">Samoa</field>
+  </object>
+  <object pk="200" model="core.country">
+    <field type="CharField" name="code">sm</field>
+    <field type="CharField" name="name">San Marino</field>
+  </object>
+  <object pk="204" model="core.country">
+    <field type="CharField" name="code">st</field>
+    <field type="CharField" name="name">Sao Tome and Principe</field>
+  </object>
+  <object pk="189" model="core.country">
+    <field type="CharField" name="code">sa</field>
+    <field type="CharField" name="name">Saudi Arabia</field>
+  </object>
+  <object pk="201" model="core.country">
+    <field type="CharField" name="code">sn</field>
+    <field type="CharField" name="name">Senegal</field>
+  </object>
+  <object pk="50" model="core.country">
+    <field type="CharField" name="code">cs</field>
+    <field type="CharField" name="name">Serbia and Montenegro</field>
+  </object>
+  <object pk="191" model="core.country">
+    <field type="CharField" name="code">sc</field>
+    <field type="CharField" name="name">Seychelles</field>
+  </object>
+  <object pk="199" model="core.country">
+    <field type="CharField" name="code">sl</field>
+    <field type="CharField" name="name">Sierra Leone</field>
+  </object>
+  <object pk="194" model="core.country">
+    <field type="CharField" name="code">sg</field>
+    <field type="CharField" name="name">Singapore</field>
+  </object>
+  <object pk="198" model="core.country">
+    <field type="CharField" name="code">sk</field>
+    <field type="CharField" name="name">Slovakia</field>
+  </object>
+  <object pk="196" model="core.country">
+    <field type="CharField" name="code">si</field>
+    <field type="CharField" name="name">Slovenia</field>
+  </object>
+  <object pk="190" model="core.country">
+    <field type="CharField" name="code">sb</field>
+    <field type="CharField" name="name">Solomon Islands</field>
+  </object>
+  <object pk="202" model="core.country">
+    <field type="CharField" name="code">so</field>
+    <field type="CharField" name="name">Somalia</field>
+  </object>
+  <object pk="241" model="core.country">
+    <field type="CharField" name="code">za</field>
+    <field type="CharField" name="name">South Africa</field>
+  </object>
+  <object pk="89" model="core.country">
+    <field type="CharField" name="code">gs</field>
+    <field type="CharField" name="name">South Georgia and the South Sandwich Islands</field>
+  </object>
+  <object pk="67" model="core.country">
+    <field type="CharField" name="code">es</field>
+    <field type="CharField" name="name">Spain</field>
+  </object>
+  <object pk="129" model="core.country">
+    <field type="CharField" name="code">lk</field>
+    <field type="CharField" name="name">Sri Lanka</field>
+  </object>
+  <object pk="192" model="core.country">
+    <field type="CharField" name="code">sd</field>
+    <field type="CharField" name="name">Sudan</field>
+  </object>
+  <object pk="203" model="core.country">
+    <field type="CharField" name="code">sr</field>
+    <field type="CharField" name="name">Suriname</field>
+  </object>
+  <object pk="197" model="core.country">
+    <field type="CharField" name="code">sj</field>
+    <field type="CharField" name="name">Svalbard and Jan Mayen</field>
+  </object>
+  <object pk="207" model="core.country">
+    <field type="CharField" name="code">sz</field>
+    <field type="CharField" name="name">Swaziland</field>
+  </object>
+  <object pk="193" model="core.country">
+    <field type="CharField" name="code">se</field>
+    <field type="CharField" name="name">Sweden</field>
+  </object>
+  <object pk="42" model="core.country">
+    <field type="CharField" name="code">ch</field>
+    <field type="CharField" name="name">Switzerland</field>
+  </object>
+  <object pk="206" model="core.country">
+    <field type="CharField" name="code">sy</field>
+    <field type="CharField" name="name">Syrian Arab Republic</field>
+  </object>
+  <object pk="222" model="core.country">
+    <field type="CharField" name="code">tw</field>
+    <field type="CharField" name="name">Taiwan</field>
+  </object>
+  <object pk="213" model="core.country">
+    <field type="CharField" name="code">tj</field>
+    <field type="CharField" name="name">Tajikistan</field>
+  </object>
+  <object pk="223" model="core.country">
+    <field type="CharField" name="code">tz</field>
+    <field type="CharField" name="name">Tanzania United Republic of</field>
+  </object>
+  <object pk="212" model="core.country">
+    <field type="CharField" name="code">th</field>
+    <field type="CharField" name="name">Thailand</field>
+  </object>
+  <object pk="215" model="core.country">
+    <field type="CharField" name="code">tl</field>
+    <field type="CharField" name="name">Timor-Leste</field>
+  </object>
+  <object pk="211" model="core.country">
+    <field type="CharField" name="code">tg</field>
+    <field type="CharField" name="name">Togo</field>
+  </object>
+  <object pk="214" model="core.country">
+    <field type="CharField" name="code">tk</field>
+    <field type="CharField" name="name">Tokelau</field>
+  </object>
+  <object pk="218" model="core.country">
+    <field type="CharField" name="code">to</field>
+    <field type="CharField" name="name">Tonga</field>
+  </object>
+  <object pk="220" model="core.country">
+    <field type="CharField" name="code">tt</field>
+    <field type="CharField" name="name">Trinidad and Tobago</field>
+  </object>
+  <object pk="217" model="core.country">
+    <field type="CharField" name="code">tn</field>
+    <field type="CharField" name="name">Tunisia</field>
+  </object>
+  <object pk="219" model="core.country">
+    <field type="CharField" name="code">tr</field>
+    <field type="CharField" name="name">Turkey</field>
+  </object>
+  <object pk="216" model="core.country">
+    <field type="CharField" name="code">tm</field>
+    <field type="CharField" name="name">Turkmenistan</field>
+  </object>
+  <object pk="208" model="core.country">
+    <field type="CharField" name="code">tc</field>
+    <field type="CharField" name="name">Turks and Caicos Islands</field>
+  </object>
+  <object pk="221" model="core.country">
+    <field type="CharField" name="code">tv</field>
+    <field type="CharField" name="name">Tuvalu</field>
+  </object>
+  <object pk="225" model="core.country">
+    <field type="CharField" name="code">ug</field>
+    <field type="CharField" name="name">Uganda</field>
+  </object>
+  <object pk="224" model="core.country">
+    <field type="CharField" name="code">ua</field>
+    <field type="CharField" name="name">Ukraine</field>
+  </object>
+  <object pk="2" model="core.country">
+    <field type="CharField" name="code">ae</field>
+    <field type="CharField" name="name">United Arab Emirates</field>
+  </object>
+  <object pk="76" model="core.country">
+    <field type="CharField" name="code">gb</field>
+    <field type="CharField" name="name">United Kingdom</field>
+  </object>
+  <object pk="227" model="core.country">
+    <field type="CharField" name="code">us</field>
+    <field type="CharField" name="name">United States</field>
+  </object>
+  <object pk="226" model="core.country">
+    <field type="CharField" name="code">um</field>
+    <field type="CharField" name="name">United States Minor Outlying Islands</field>
+  </object>
+  <object pk="228" model="core.country">
+    <field type="CharField" name="code">uy</field>
+    <field type="CharField" name="name">Uruguay</field>
+  </object>
+  <object pk="229" model="core.country">
+    <field type="CharField" name="code">uz</field>
+    <field type="CharField" name="name">Uzbekistan</field>
+  </object>
+  <object pk="236" model="core.country">
+    <field type="CharField" name="code">vu</field>
+    <field type="CharField" name="name">Vanuatu</field>
+  </object>
+  <object pk="232" model="core.country">
+    <field type="CharField" name="code">ve</field>
+    <field type="CharField" name="name">Venezuela</field>
+  </object>
+  <object pk="235" model="core.country">
+    <field type="CharField" name="code">vn</field>
+    <field type="CharField" name="name">Viet Nam</field>
+  </object>
+  <object pk="233" model="core.country">
+    <field type="CharField" name="code">vg</field>
+    <field type="CharField" name="name">Virgin Islands British</field>
+  </object>
+  <object pk="234" model="core.country">
+    <field type="CharField" name="code">vi</field>
+    <field type="CharField" name="name">Virgin Islands U.S.</field>
+  </object>
+  <object pk="237" model="core.country">
+    <field type="CharField" name="code">wf</field>
+    <field type="CharField" name="name">Wallis and Futuna</field>
+  </object>
+  <object pk="65" model="core.country">
+    <field type="CharField" name="code">eh</field>
+    <field type="CharField" name="name">Western Sahara</field>
+  </object>
+  <object pk="239" model="core.country">
+    <field type="CharField" name="code">ye</field>
+    <field type="CharField" name="name">Yemen</field>
+  </object>
+  <object pk="242" model="core.country">
+    <field type="CharField" name="code">zm</field>
+    <field type="CharField" name="name">Zambia</field>
+  </object>
+  <object pk="243" model="core.country">
+    <field type="CharField" name="code">zw</field>
+    <field type="CharField" name="name">Zimbabwe</field>
+  </object>
+</django-objects>

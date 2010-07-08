@@ -23,9 +23,9 @@ from lfs.core import utils as core_utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
-
 from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
+from lfs.core.utils import l10n_float
 from lfs.shipping import utils as shipping_utils
 from lfs.payment import utils as payment_utils
 from lfs.customer import utils as customer_utils
@@ -228,23 +228,15 @@ def add_to_cart(request, product_id=None):
                     continue
 
                 if property.is_number_field:
-                    try:
-                        value = float(value)
-                    except ValueError:
-                        value = 0.0
-                elif property.is_number_field:
-                    try:
-                        value = int(value)
-                    except ValueError:
-                        value = 0
+                    value = l10n_float(value)
 
                 properties_dict[property_id] = unicode(value)
-
+                                
                 # validate property's value
                 if property.is_number_field:
 
                     if (value < property.unit_min) or (value > property.unit_max):
-                        msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name" : property.name, "min" : property.unit_min, "max" : property.unit_max, "unit" : property.unit }
+                        msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name" : property.title, "min" : property.unit_min, "max" : property.unit_max, "unit" : property.unit }
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
@@ -258,11 +250,11 @@ def add_to_cart(request, product_id=None):
 
                     value = "%.2f" % value
                     if value not in steps:
-                        msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": property.name, "value": value, "step" : property.unit_step }
+                        msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": property.title, "value": value, "step" : property.unit_step }
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
-    elif product.is_product_with_variants:
+    elif product.is_product_with_variants():
         variant_id = request.POST.get("variant_id")
         product = lfs_get_object_or_404(Product, pk=variant_id)
 
@@ -397,8 +389,10 @@ def refresh_cart(request):
         try:
             amount = float(amount)
             if item.product.manage_stock_amount and amount > item.product.stock_amount:
-                message = _(u"Sorry, but there are only %(amount)s article(s) in stock.") % {"amount" : item.product.stock_amount}
                 amount = item.product.stock_amount
+                if amount < 0:
+                    amount = 0
+                message = _(u"Sorry, but there are only %(amount)s article(s) in stock.") % {"amount" : amount}
         except ValueError:
             amount = 1
 
@@ -407,9 +401,7 @@ def refresh_cart(request):
         else:
             item.amount = amount
 
-        if amount < 0:
-            item.amount = 1.0
-        elif amount == 0:
+        if amount == 0:
             item.delete()
         else:
             item.save()

@@ -1,7 +1,6 @@
-import datetime
 # python imports
-import urllib
 import math
+import urllib
 
 # django imports
 from django.conf import settings
@@ -25,12 +24,10 @@ from lfs.catalog.models import Category
 from lfs.catalog.models import File
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
-from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import VARIANT
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
-from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DISPLAY
 from lfs.catalog.settings import SELECT
 from lfs.catalog.settings import CONTENT_PRODUCTS
 from lfs.core.utils import LazyEncoder

@@ -1,6 +1,5 @@
 # python imports
 import datetime
-import re
 import sys
 import urllib
 
@@ -18,6 +17,19 @@ import lfs.catalog.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
 from lfs.catalog.models import Category
+
+def l10n_float(string):
+    """Takes a country specfic decimal value as string and returns a float.
+    """
+
+    # TODO: Implement a proper transformation with babel or similar
+    if settings.LANGUAGE_CODE == "de":
+        string = string.replace(",", ".")
+
+    try:
+        return float(string)
+    except ValueError:
+        return 0.0
 
 def get_default_shop():
     """Returns the default shop.
@@ -81,7 +93,7 @@ def render_to_ajax_response(html=[], message=None):
 
 def get_current_categories(request, object):
     """Returns all current categories based on given request. Current
-    categories are the current selected category and all parent categories of 
+    categories are the current selected category and all parent categories of
     it.
     """
     if object and object.content_type == "category":

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    <object pk="1" model="core.country">
+        <field type="CharField" name="name">Deutschland</field>
+            <field type="CharField" name="code">de</field>
+    </object>
+    <object pk="2" model="core.country">
+        <field type="CharField" name="name">Österreich</field>
+        <field type="CharField" name="code">at</field>
+    </object>
+    <object pk="3" model="core.country">
+        <field type="CharField" name="name">USA</field>
+        <field type="CharField" name="code">us</field>        
+    </object>
+    <object pk="1" model="core.shop">
+        <field type="CharField" name="name">LFS</field>
+        <field type="CharField" name="shop_owner">John Doe</field>
+        <field type="TextField" name="description"></field>
+        <field type="FileField" name="image"></field>
+        <field to="core.country" name="default_country" rel="ManyToOneRel">1</field>
+        <field to="core.country" name="countries" rel="ManyToManyRel"><object pk="1"></object></field>
+    </object>
+</django-objects>

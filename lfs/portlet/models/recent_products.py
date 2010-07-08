@@ -10,6 +10,7 @@ from portlets.utils import register_portlet
 
 # lfs imports
 from lfs.catalog.models import Product
+from lfs.caching.utils import lfs_get_object
 
 class RecentProductsPortlet(Portlet):
     """A portlet to display recent visited products.
@@ -38,14 +39,10 @@ class RecentProductsPortlet(Portlet):
         for slug in request.session.get("RECENT_PRODUCTS", [])[:limit]:
             if slug == slug_not_to_display:
                 continue
-            try:
-                product = Product.objects.get(slug=slug)
-            except Product.DoesNotExist:
-                pass
-            else:
-                if product.is_product_with_variants() and product.has_variants():
-                    product = product.get_default_variant()
-                products.append(product)
+            product = lfs_get_object(Product, slug=slug)
+            if product and product.is_product_with_variants() and product.has_variants():
+                product = product.get_default_variant()
+            products.append(product)
 
         return render_to_string("lfs/portlets/recent_products.html", {
             "title" : self.title,

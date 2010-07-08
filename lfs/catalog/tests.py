@@ -19,6 +19,7 @@ from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD
 from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import LIST
 
@@ -783,7 +784,7 @@ class ViewsTestCase(TestCase):
         url = reverse("lfs_category", kwargs={"slug": "category-1" })
         response = self.client.get(url, {'sorting': ''})
         templates = [t.name for t in response.template]
-        
+
         # By default the products of a category should be displayed
         self.failIf("lfs/catalog/categories/product/default.html" not in templates)
         self.failIf("lfs/catalog/categories/category/default.html" in templates)
@@ -1497,10 +1498,10 @@ class ProductTestCase(TestCase):
         self.v1.meta_title = "<name> V1 V2"
         self.p1.meta_title = "<name> T1 T2"
         self.assertEqual(self.v1.get_meta_title(), "Product 1 T1 T2")
-        
+
         self.v1.active_meta_title = True
         self.assertEqual(self.v1.get_meta_title(), "Product 1 V1 V2")
-        
+
         # Note: it takes the name of the product as the title of the variant
         # is not acitve yet
         self.v1.active_meta_title = True
@@ -1509,7 +1510,7 @@ class ProductTestCase(TestCase):
         # Now take the name of the variant
         self.v1.active_name = True
         self.assertEqual(self.v1.get_meta_title(), "Variant 1 V1 V2")
-                
+
     def test_get_meta_keywords_1(self):
         """Tests the correct return of meta keywords, foremost the replacement
         of LFS specific tags <name> and <short-description> for the meta fields.
@@ -1668,10 +1669,15 @@ class ProductTestCase(TestCase):
     def test_get_variant_properties(self):
         """
         """
+        # First add some variant property values
+        ppv_color_red = ProductPropertyValue.objects.create(product=self.v1, property=self.color, value=self.red.id, type=PROPERTY_VALUE_TYPE_VARIANT)
+        ppv_size_m = ProductPropertyValue.objects.create(product=self.v1, property=self.size, value=self.m.id, type=PROPERTY_VALUE_TYPE_VARIANT)
+        ppv_color_green = ProductPropertyValue.objects.create(product=self.v2, property=self.color, value=self.green.id, type=PROPERTY_VALUE_TYPE_VARIANT)
+        ppv_size_l = ProductPropertyValue.objects.create(product=self.v2, property=self.size, value=self.l.id, type=PROPERTY_VALUE_TYPE_VARIANT)
+
         options = [p["value"] for p in self.v1.get_variant_properties()]
-        
-        self.failIf(str(self.ppv_color_red.value) not in options)
-        self.failIf(str(self.ppv_size_m.value) not in options)
+        self.failIf(str(ppv_color_red.value) not in options)
+        self.failIf(str(ppv_size_m.value) not in options)
 
         options = [p["value"] for p in self.v2.get_variant_properties()]
         self.failIf(str(self.ppv_color_green.value) not in options)

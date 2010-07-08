@@ -14,6 +14,7 @@ from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
 from lfs.customer.models import Address
 from lfs.customer.models import Customer
+from lfs.order.models import Order
 from lfs.order.utils import add_order
 from lfs.order.settings import SUBMITTED
 from lfs.payment.models import PaymentMethod
@@ -189,8 +190,7 @@ class OrderTestCase(TestCase):
         from lfs.payment.utils import process_payment
         result = process_payment(self.request)
 
-        order = result.get("order")
-        self.assertEqual(order.pay_link, "")
+        order = Order.objects.filter()[0]
         self.assertEqual(order.get_pay_link(), "")
 
     def test_paypal_link(self):
@@ -208,6 +208,5 @@ class OrderTestCase(TestCase):
         from lfs.payment.utils import process_payment
         result = process_payment(self.request)
 
-        order = result.get("order")
-        self.failIf(order.pay_link.find("paypal") == -1)
+        order = Order.objects.filter()[0]
         self.failIf(order.get_pay_link().find("paypal") == -1)

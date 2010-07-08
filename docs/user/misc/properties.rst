@@ -18,6 +18,7 @@ Global properties
   products).
 * Global properties can be used to create product filters.
 * Global properties can be used to create variants.
+* Global properties can be used to create configurable products.
 
 .. note:: 
 

@@ -1,5 +1,6 @@
 # django imports
 from django import forms
+from django.core.cache import cache
 from django.db import models
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -31,6 +32,16 @@ class CategoriesPortlet(Portlet):
         product = context.get("product")
         category = context.get("category")
         object = category or product
+        
+        if object is None:
+            object_id = None
+        else:
+            object_id = object.id
+        
+        cache_key = "categories-portlet-%s-%s" % (object.__class__.__name__, object_id)
+        result = cache.get(cache_key)
+        if result is not None:
+            return result
 
         current_categories = lfs.core.utils.get_current_categories(request, object)
 
@@ -38,13 +49,16 @@ class CategoriesPortlet(Portlet):
             current_categories, self.start_level, self.expand_level)
         category_tree = ct.get_category_tree()
 
-        return render_to_string("lfs/portlets/categories.html", RequestContext(request, {
+        result = render_to_string("lfs/portlets/categories.html", RequestContext(request, {
             "title" : self.title,
             "categories" : category_tree,
             "MEDIA_URL" : context.get("MEDIA_URL"),
             "product" : product,
             "category" : category,
         }))
+
+        cache.set(cache_key, result)
+        return result
 
     def form(self, **kwargs):
         """
