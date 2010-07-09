@@ -1,5 +1,6 @@
 # django imports
 from django import template
+from django.core.cache import cache
 from django.utils.translation import ugettext_lazy as _
 
 # portlets imports
@@ -28,40 +29,46 @@ def lfs_portlet_slot(context, slot_name):
                context.get("product") or \
                lfs.core.utils.get_default_shop()
 
-    try:
-        slot = Slot.objects.get(name=slot_name)
-    except Slot.DoesNotExist:
-        return { "portlets" : [] }
+    cache_key = "lfs-portlet-slot-%s-%s-%s" % (slot_name, instance.__class__.__name__, instance.id)
+    temp = cache.get(cache_key)
 
-    # Get portlets for given instance
-    temp = portlets.utils.get_portlets(slot, instance)
-
-    # Get inherited portlets
-    try:
-        instance.get_parent_for_portlets()
-    except AttributeError:
-        instance = None
-
-    while instance:
-        # If the portlets are blocked no portlets should be added
-        if portlets.utils.is_blocked(instance, slot):
-            break
-
-        # If the instance has no get_parent_for_portlets, there are no portlets
+    if temp is None:
         try:
-            instance = instance.get_parent_for_portlets()
+            slot = Slot.objects.get(name=slot_name)
+        except Slot.DoesNotExist:
+            return { "portlets" : [] }
+
+        # Get portlets for given instance
+        temp = portlets.utils.get_portlets(slot, instance)
+
+        # Get inherited portlets
+        try:
+            instance.get_parent_for_portlets()
         except AttributeError:
-            break
+            instance = None
 
-        # If there is no parent for portlets, there are no portlets to add
-        if instance is None:
-            break
+        while instance:
+            # If the portlets are blocked no portlets should be added
+            if portlets.utils.is_blocked(instance, slot):
+                break
 
-        parent_portlets = portlets.utils.get_portlets(slot, instance)
-        parent_portlets.reverse()
-        for p in parent_portlets:
-            if p not in temp:
-                temp.insert(0, p)
+            # If the instance has no get_parent_for_portlets, there are no portlets
+            try:
+                instance = instance.get_parent_for_portlets()
+            except AttributeError:
+                break
+
+            # If there is no parent for portlets, there are no portlets to add
+            if instance is None:
+                break
+
+            parent_portlets = portlets.utils.get_portlets(slot, instance)
+            parent_portlets.reverse()
+            for p in parent_portlets:
+                if p not in temp:
+                    temp.insert(0, p)
+
+            cache.set(cache_key, temp)
 
     rendered_portlets = []
     for portlet in temp:
