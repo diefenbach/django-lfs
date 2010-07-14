@@ -288,7 +288,7 @@
                 {% if item.product.is_configurable_product %}
                     {% for property in item.properties.all %}
                         <div>
-                            {{ property.property.title }} : {{ property.value }} {{ property.property.unit|safe }}
+                            {{ property.property.title }} : {{ property|option_name_for_property_value }} {{ property.property.unit|safe }}
                             {% if property.display_price %}
                                 ({{ property.price|currency }})
                             {% endif %}
