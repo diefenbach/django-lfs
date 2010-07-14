@@ -1814,6 +1814,11 @@ class DeliveryTime(models.Model):
     def __unicode__(self):
         return self.round().as_string()
 
+    def __gt__(self, other):
+        if self.max > other.max:
+            return True
+        return False
+
     def __add__(self, other):
         """Adds to delivery times.
         """
