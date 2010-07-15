@@ -8,6 +8,7 @@ import lfs.payment.utils
 from lfs.core.models import Country
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
+from lfs.catalog.models import PropertyOption
 from lfs.order.settings import ORDER_STATES
 from lfs.order.settings import SUBMITTED
 from lfs.shipping.models import ShippingMethod
@@ -143,6 +144,43 @@ class OrderItem(models.Model):
     @property
     def amount(self):
         return self.product_amount
+
+    def get_properties(self):
+        """Returns properties of the order item. Resolves option names for
+        select fields.
+        """
+        properties = []
+        for property_value in self.properties.all():
+
+            if property_value.property.is_select_field:
+                try:
+                    option = PropertyOption.objects.get(pk=int(float(property_value.value)))
+                except (PropertyOption.DoesNotExist, ValueError):
+                    value = property_value.value
+                    price = 0.0
+                else:
+                    value = option.name
+                    price = option.price
+                
+            else:                
+                format_string = "%%.%sf" % property_value.property.decimal_places
+                try:
+                    value = format_string % float(property_value.value)
+                except ValueError:
+                    value = "%.2f" % float(property_value.value)
+
+                price = ""
+
+            properties.append({
+                "name" : property_value.property.name,
+                "title" : property_value.property.title,
+                "unit" : property_value.property.unit,
+                "display_price" : property_value.property.display_price,
+                "value" : value,
+                "price" : price
+            })
+
+        return properties
 
 class OrderItemPropertyValue(models.Model):
     """Stores a value for a property and order item.
