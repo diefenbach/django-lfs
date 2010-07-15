@@ -46,6 +46,7 @@ class VoucherForm(forms.Form):
     kind_of = forms.ChoiceField(label=_(u"Kind of"), choices=KIND_OF_CHOICES, required=True)
     effective_from = forms.FloatField(label=_(u"Effective from"), required=True)
     tax = forms.ChoiceField(label=_(u"Tax"), required=False)
+    limit = forms.IntegerField(label=_(u"Limit"), initial=1, required=True)
 
     def __init__(self, *args, **kwargs):
         super(VoucherForm, self).__init__(*args, **kwargs)
@@ -192,6 +193,7 @@ def add_vouchers(request, group_id):
                         end_date = request.POST.get("end_date"),
                         effective_from = request.POST.get("effective_from"),
                         tax_id = request.POST.get("tax"),
+                        limit = request.POST.get("limit")
                     )
                 except IntegrityError:
                     pass
@@ -265,7 +267,7 @@ def delete_voucher_group(request, id):
         return lfs.core.utils.set_message_cookie(
             url = reverse("lfs_manage_vouchers"),
             msg = _(u"Voucher group and assigned vouchers have been deleted."),
-        )            
+        )
 
 def save_voucher_options(request):
     """Saves voucher options.

@@ -87,8 +87,11 @@
             <th class="small right">
                 {% trans "Used" %}
             </th>
+            <th class="small right">
+                {% trans "Limit" %}
+            </th>
             <th class="middle right">
-                {% trans "Used date" %}
+                {% trans "Last used date" %}
             </th>
         </tr>
         {% for voucher in page.object_list %}
@@ -139,10 +142,17 @@
                     {{ voucher.active }}
                 </td>
                 <td class="right">
-                    {{ voucher.used }}
+                    {{ voucher.used_amount }}
                 </td>
                 <td class="right">
-                    {{ voucher.used_date|date:_("DATE_FORMAT") }}
+                    {% ifequal voucher.limit 0 %}
+                        ---
+                    {% else %}
+                        {{ voucher.limit }}
+                    {% endifequal %}                    
+                </td>
+                <td class="right">
+                    {{ voucher.last_used_date|date:_("DATE_FORMAT") }}
                 </td>
             </tr>
         {% endfor %}
