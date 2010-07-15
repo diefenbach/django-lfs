@@ -25,8 +25,8 @@ class Command(BaseCommand):
             voucher.save()
 
         # This mus be done with execute because the old fields are not there
-        # anymore (and therefore can't access via attribute) after the user has
-        # upgraded to the latest version
+        # anymore (and therefore can't be accessed via attribute) after the user
+        # has upgraded to the latest version.
         db.execute("update voucher_voucher set used_amount = 1 where used = 1")
         db.execute("update voucher_voucher set used_amount = 0 where used = 0")
         db.execute("update voucher_voucher set last_used_date = used_date")
