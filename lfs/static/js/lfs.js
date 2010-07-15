@@ -20,11 +20,7 @@ var update_checkout = function() {
 $(function() {
     // Delay plugin taken from ###############################################
     // http://ihatecode.blogspot.com/2008/04/jquery-time-delay-event-binding-plugin.html
-   
-   var hm = $("#middle-slot").height();
-   $(".left-slot").height(h)
-   $(".middle-slot").height(h)
-   
+
    $.fn.delay = function(options) {
         var timer;
         var delayImpl = function(eventObj) {
