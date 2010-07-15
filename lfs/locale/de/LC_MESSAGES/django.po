@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-15 04:28-0500\n"
+"POT-Creation-Date: 2010-07-15 08:14-0500\n"
 "PO-Revision-Date: 2009-02-22 07:20+0100\n"
 "Last-Translator: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
 "Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
@@ -445,7 +445,7 @@ msgstr "Produktart"
 
 #: catalog/models.py:553 templates/manage/product/variants.html:222
 msgid "Default variant"
-msgstr "Variante bearbeiten"
+msgstr "Standard Variante"
 
 #: catalog/models.py:554
 msgid "Variants display type"
