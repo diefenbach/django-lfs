@@ -1,4 +1,5 @@
 # django imports
+from django.http import Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 
@@ -15,7 +16,7 @@ def page_view(request, slug, template_name="lfs/page/page.html"):
             "page" : page
         }))
 
-    raise Http404('No %s matches the given query.' % page.model._meta.object_name)
+    raise Http404('No Page matches the given query.')
 
 def pages_view(request, template_name="lfs/page/pages.html"):
     """Displays an overview of all pages.
