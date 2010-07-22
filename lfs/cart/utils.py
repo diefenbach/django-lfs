@@ -27,12 +27,12 @@ def get_cart_max_delivery_time(request, cart):
     return max_delivery_time
 
 # TODO: Remove cart from signature?
-def get_cart_price(request, cart, total=False):
+def get_cart_price(request, cart, total=False, cached=True):
     """Returns price of the given cart.
     """
-    return get_cart_costs(request, cart, total)["price"]
+    return get_cart_costs(request, cart, total, cached)["price"]
 
-def get_cart_costs(request, cart, total=False):
+def get_cart_costs(request, cart, total=False, cached=True):
     """Returns a dictionary with price and tax of the given cart:
 
         returns {
@@ -44,7 +44,11 @@ def get_cart_costs(request, cart, total=False):
         return {"price" : 0, "tax" : 0}
 
     cache_key = "cart-costs-%s-%s" % (total, cart.id)
-    cart_costs = cache.get(cache_key)
+
+    if cached:
+        cart_costs = cache.get(cache_key)
+    else:
+        cart_costs = None
 
     if cart_costs is None:
 
