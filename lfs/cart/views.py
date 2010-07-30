@@ -22,7 +22,6 @@ from lfs.core.signals import cart_changed
 from lfs.core import utils as core_utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
-from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
 from lfs.core.utils import l10n_float
@@ -306,7 +305,7 @@ def add_to_cart(request, product_id=None):
         elif product.stock_amount == 1:
             message = _(u"Sorry, but '%(product)s' is only one time available." % {"product": product.name})
         else:
-            message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": product.name, "amount" : amount}
+            message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": product.name, "amount" : product.stock_amount}
         cart_item.amount = product.stock_amount
         cart_item.save()
 
