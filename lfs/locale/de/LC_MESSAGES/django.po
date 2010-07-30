@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-03 02:11-0500\n"
+"POT-Creation-Date: 2010-07-30 06:21-0500\n"
 "PO-Revision-Date: 2009-02-22 07:20+0100\n"
 "Last-Translator: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
 "Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
@@ -16,12 +16,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cart/models.py:33 criteria/models/criteria.py:583 order/models.py:40
+#: cart/models.py:33 criteria/models/criteria.py:583 order/models.py:41
 #: templates/manage/cart/carts_inline.html:111
 msgid "User"
 msgstr "Benutzer"
 
-#: cart/models.py:34 order/models.py:41
+#: cart/models.py:34 order/models.py:42
 msgid "Session"
 msgstr "Session"
 
@@ -62,22 +62,22 @@ msgstr "Produkt"
 msgid "Quantity"
 msgstr "Menge"
 
-#: cart/models.py:249
+#: cart/models.py:255
 msgid "Cart item"
 msgstr "Artikel"
 
-#: cart/models.py:250 catalog/models.py:1555 catalog/models.py:1579
+#: cart/models.py:256 catalog/models.py:1555 catalog/models.py:1579
 #: catalog/models.py:1601 catalog/models.py:1625 catalog/models.py:1666
-#: order/models.py:163 templates/manage/properties/property.html:32
+#: order/models.py:201 templates/manage/properties/property.html:32
 msgid "Property"
 msgstr "Eigenschaften"
 
-#: cart/views.py:245
+#: cart/views.py:243
 #, python-format
 msgid "%(name)s must be between %(min)s and %(max)s %(unit)s."
 msgstr "%(name)s muß zwischen %(min)s und %(max)s %(unit)s liegen."
 
-#: cart/views.py:259
+#: cart/views.py:257
 #, python-format
 msgid ""
 "Your entered value for %(name)s (%(value)s) is not in valid step width, "
@@ -86,10 +86,19 @@ msgstr ""
 "Ihre Eingabe für %(name)s (%(value)s) ist nicht in der gültigen "
 "Schrittweite. Diese ist: %(step)s"
 
-#: cart/views.py:398
+#: cart/views.py:305 cart/views.py:408
 #, python-format
-msgid "Sorry, but there are only %(amount)s article(s) in stock."
-msgstr "Es tut uns leid, aber es sind nur noch %(amount)s Artikel auf Lager."
+msgid "Sorry, but '%(product)s' is not available anymore."
+msgstr "Es tut uns leid, '%(product)s' ist nicht mehr im Lager."
+
+#: cart/views.py:307 cart/views.py:410
+#, python-format
+msgid "Sorry, but '%(product)s' is only one time available."
+msgstr "Es tut uns leid, '%(product)s' ist nur noch einmal im Lager."
+
+#: cart/views.py:309 cart/views.py:412
+msgid "Sorry, but '%(product)s' is only %(amount)s times available."
+msgstr "Es tut uns leid, '%(product)s' ist nur noch %(amount)s Mal im Lager."
 
 #: catalog/models.py:119 catalog/models.py:498 catalog/models.py:1475
 #: catalog/models.py:1627 catalog/models.py:1784 core/models.py:19
@@ -244,7 +253,7 @@ msgid "SKU"
 msgstr "Artikelnummer"
 
 #: catalog/models.py:501 catalog/models.py:502 catalog/models.py:1487
-#: catalog/models.py:1628 criteria/models/criteria.py:51 order/models.py:48
+#: catalog/models.py:1628 criteria/models/criteria.py:51 order/models.py:49
 #: payment/models.py:81 payment/models.py:121 shipping/models.py:60
 #: shipping/models.py:106 templates/manage/cart/cart_inline.html:141
 #: templates/manage/category/products_inline.html:51
@@ -432,7 +441,7 @@ msgid "Width"
 msgstr "Breite"
 
 #: catalog/models.py:548 discounts/models.py:44 manage/views/voucher.py:48
-#: order/models.py:49 order/models.py:126 payment/models.py:80
+#: order/models.py:50 order/models.py:127 payment/models.py:80
 #: shipping/models.py:59 templates/manage/tax/tax.html:35
 #: templates/manage/tax/tax.html.py:39
 #: templates/manage/voucher/vouchers_inline.html:73 voucher/models.py:96
@@ -758,15 +767,15 @@ msgstr "Kategorie mit Unterkategorien"
 msgid "Default template"
 msgstr "Standard-Schablone"
 
-#: catalog/views.py:54 catalog/views.py:147
+#: catalog/views.py:51 catalog/views.py:144
 msgid "The product has been changed according to your selection."
 msgstr "Das Produkt wurde gemäß Ihrer Auswahl geändert."
 
-#: catalog/views.py:124
+#: catalog/views.py:121
 msgid "Price has been changed according to your selection."
 msgstr "Der Preis wurde gemäß Ihrer Auswahl geändert."
 
-#: catalog/views.py:144 catalog/views.py:587
+#: catalog/views.py:141 catalog/views.py:584
 msgid "The choosen combination of properties is not deliverable."
 msgstr "Die gewählte Kombination von Eigenschaften ist nicht lieferbar"
 
@@ -834,7 +843,7 @@ msgstr "Bankleitzahl"
 msgid "Bankname"
 msgstr "Name der Bank"
 
-#: checkout/forms.py:39 customer/models.py:90 order/models.py:86
+#: checkout/forms.py:39 customer/models.py:90 order/models.py:87
 msgid "Depositor"
 msgstr "Kontoinhaber"
 
@@ -1170,7 +1179,7 @@ msgstr "Kunde"
 msgid "Zip code"
 msgstr "PLZ"
 
-#: customer/models.py:74 order/models.py:45
+#: customer/models.py:74 order/models.py:46
 #: templates/manage/customer/customer_inline.html:133
 #: templates/manage/order/order_inline.html:15
 #: templates/manage/order/order_inline.html:83
@@ -1180,7 +1189,7 @@ msgstr "PLZ"
 msgid "State"
 msgstr "Status"
 
-#: customer/models.py:87 order/models.py:83
+#: customer/models.py:87 order/models.py:84
 msgid "Account number"
 msgstr "Kontonnummer"
 
@@ -1188,7 +1197,7 @@ msgstr "Kontonnummer"
 msgid "Bank identification code"
 msgstr "Bankleitzahl"
 
-#: customer/models.py:89 order/models.py:85
+#: customer/models.py:89 order/models.py:86
 msgid "Bank name"
 msgstr "Name der Bank"
 
@@ -1479,7 +1488,7 @@ msgstr "Standardwerte Shop wurden gespeichert."
 
 #: manage/views/shop.py:93 manage/views/categories/category.py:99
 #: manage/views/categories/seo.py:40 manage/views/categories/view.py:44
-#: manage/views/product/product.py:141 manage/views/product/product.py:311
+#: manage/views/product/product.py:153 manage/views/product/product.py:323
 msgid "Please correct the indicated errors."
 msgstr "Bitte korrigieren Sie die angezeigten Fehler."
 
@@ -1641,27 +1650,27 @@ msgstr "Bilder wurden aktualisiert."
 msgid "Active images has been updated."
 msgstr "Bilderstatus wurden aktualisiert."
 
-#: manage/views/product/product.py:139
+#: manage/views/product/product.py:151
 msgid "Product stock data has been saved."
 msgstr "Produkt-Lagerdaten wurden gespeichert."
 
-#: manage/views/product/product.py:275
+#: manage/views/product/product.py:287
 msgid "Sub type has been changed."
 msgstr "Produkttyp wurden gespeichert."
 
-#: manage/views/product/product.py:309
+#: manage/views/product/product.py:321
 msgid "Productdata has been saved."
 msgstr "Produktdaten wurden gespeichert."
 
-#: manage/views/product/product.py:359
+#: manage/views/product/product.py:371
 msgid "Product filters have been reset"
 msgstr "Produktfilter wurden gespeichert."
 
-#: manage/views/product/product.py:412
+#: manage/views/product/product.py:424
 msgid "Products have been saved"
 msgstr "Produkte wurden gespeichert."
 
-#: manage/views/product/product.py:447
+#: manage/views/product/product.py:459
 msgid "Product filters have been set"
 msgstr "Produktfilter wurden gespeichert."
 
@@ -1725,176 +1734,176 @@ msgstr "Verkäufe"
 msgid "Order"
 msgstr "Bestellung"
 
-#: order/models.py:43
+#: order/models.py:44
 msgid "Created"
 msgstr "Erstellt am"
 
-#: order/models.py:46
+#: order/models.py:47
 msgid "State modified"
 msgstr "Der Status wurde geändert"
 
-#: order/models.py:51
+#: order/models.py:52
 msgid "firstname"
 msgstr "Vorname"
 
-#: order/models.py:52
+#: order/models.py:53
 msgid "lastname"
 msgstr "Nachname"
 
-#: order/models.py:53
+#: order/models.py:54
 msgid "email"
 msgstr "E-Mail"
 
-#: order/models.py:55
+#: order/models.py:56
 msgid "Invoice firstname"
 msgstr "Vorname Rechnungsadresse"
 
-#: order/models.py:56
+#: order/models.py:57
 msgid "Invoice lastname"
 msgstr "Nachname Rechnungsadresse"
 
-#: order/models.py:57
+#: order/models.py:58
 msgid "Invoice company name"
 msgstr "Nachname Firmenname"
 
-#: order/models.py:58
+#: order/models.py:59
 msgid "Invoice street"
 msgstr "Straße Rechnungsadresse"
 
-#: order/models.py:59
+#: order/models.py:60
 msgid "Invoice zip code"
 msgstr "PLZ Rechnungsadresse"
 
-#: order/models.py:60
+#: order/models.py:61
 msgid "Invoice city"
 msgstr "Stadt Rechnungsadresse"
 
-#: order/models.py:61
+#: order/models.py:62
 msgid "Invoice state"
 msgstr "Rechnungsstatus"
 
-#: order/models.py:63
+#: order/models.py:64
 msgid "Invoice phone"
 msgstr "Telefon Rechnungsadresse"
 
-#: order/models.py:65
+#: order/models.py:66
 msgid "Shipping firstname"
 msgstr "Vorname Lieferadresse"
 
-#: order/models.py:66
+#: order/models.py:67
 msgid "Shipping lastname"
 msgstr "Nachname Lieferadresse"
 
-#: order/models.py:67
+#: order/models.py:68
 msgid "Shipping company name"
 msgstr "Firmenname Lieferadresse"
 
-#: order/models.py:68
+#: order/models.py:69
 msgid "Shipping street"
 msgstr "Straße Lieferadresse"
 
-#: order/models.py:69
+#: order/models.py:70
 msgid "Shipping zip code"
 msgstr "PLZ Lieferadresse"
 
-#: order/models.py:70
+#: order/models.py:71
 msgid "Shipping city"
 msgstr "Stadt Lieferadresse"
 
-#: order/models.py:71
+#: order/models.py:72
 msgid "Shipping state"
 msgstr "Lieferungsstatus"
 
-#: order/models.py:73
+#: order/models.py:74
 msgid "Shipping phone"
 msgstr "Telefon Lieferadresse"
 
-#: order/models.py:75
+#: order/models.py:76
 msgid "Shipping Method"
 msgstr "Lieferarten"
 
-#: order/models.py:76
+#: order/models.py:77
 msgid "Shipping Price"
 msgstr "Preis Lieferung"
 
-#: order/models.py:77
+#: order/models.py:78
 msgid "Shipping Tax"
 msgstr "MwSt. Lieferung"
 
-#: order/models.py:79
+#: order/models.py:80
 msgid "Payment Method"
 msgstr "Zahlungsweise"
 
-#: order/models.py:80
+#: order/models.py:81
 msgid "Payment Price"
 msgstr "Preise Zahlmethode"
 
-#: order/models.py:81
+#: order/models.py:82
 msgid "Payment Tax"
 msgstr "MwSt Bezahlmethode"
 
-#: order/models.py:84
+#: order/models.py:85
 msgid "Bank identication code"
 msgstr "Bankleitzahl"
 
-#: order/models.py:88
+#: order/models.py:89
 msgid "Voucher number"
 msgstr "Gutscheinnummer"
 
-#: order/models.py:89
+#: order/models.py:90
 msgid "Voucher value"
 msgstr "Gutscheinwert"
 
-#: order/models.py:90
+#: order/models.py:91
 msgid "Voucher tax"
 msgstr "Gutschein MwSt."
 
-#: order/models.py:92 templates/manage/customer/customer_inline.html:139
+#: order/models.py:93 templates/manage/customer/customer_inline.html:139
 #: templates/manage/order/orders_inline.html:130
 msgid "Message"
 msgstr "Nachricht"
 
-#: order/models.py:93
+#: order/models.py:94
 msgid "pay_link"
 msgstr "Bezahllink"
 
-#: order/models.py:96
+#: order/models.py:97
 msgid "Delivery Date"
 msgstr "Lieferdatum"
 
-#: order/models.py:124
+#: order/models.py:125
 msgid "Price net"
 msgstr "Preis netto"
 
-#: order/models.py:125
+#: order/models.py:126
 msgid "Price gross"
 msgstr "Preis brutto"
 
-#: order/models.py:133
+#: order/models.py:134
 msgid "Product quantity"
 msgstr "Anzahl Produkt"
 
-#: order/models.py:134
+#: order/models.py:135
 msgid "Product SKU"
 msgstr "Artikelnummer"
 
-#: order/models.py:135
+#: order/models.py:136
 msgid "Product name"
 msgstr "Produktname"
 
-#: order/models.py:136
+#: order/models.py:137
 msgid "Product price net"
 msgstr "Produktpreis netto"
 
-#: order/models.py:137
+#: order/models.py:138
 msgid "Product price gross"
 msgstr "Produktpreis brutto"
 
-#: order/models.py:138
+#: order/models.py:139
 msgid "Product tax"
 msgstr "Mwst Produkt"
 
-#: order/models.py:162
+#: order/models.py:200
 msgid "Order item"
 msgstr "Artikel"
 
