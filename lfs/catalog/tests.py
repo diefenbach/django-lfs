@@ -1257,7 +1257,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(p.delivery_time, None)
         self.assertEqual(p.order_time, None)
         self.assertEqual(p.ordered_at, None)
-        self.assertEqual(p.manage_stock_amount, True)
+        self.assertEqual(p.manage_stock_amount, False)
         self.assertEqual(p.stock_amount, 0)
 
         self.assertEqual(p.weight, 0)
@@ -1286,13 +1286,13 @@ class ProductTestCase(TestCase):
     def test_decrease_stock_amount(self):
         """Tests the decreasing of the stock amount
         """
-        # By default the stock amount is managed by LFS and the stock amount
-        # is decrease when a product has been sold.
+        # By default the stock amount is not managed by LFS and the stock 
+        # amount is not decrease when a product has been sold.
         self.p1.decrease_stock_amount(1)
-        self.assertEqual(self.p1.stock_amount, 1)
+        self.assertEqual(self.p1.stock_amount, 2)
 
-        # Now we remove the management of the stock amount
-        self.p1.manage_stock_amount = False
+        # Now we add the management of the stock amount
+        self.p1.manage_stock_amount = True
         self.p1.save()
 
         # We try to decrease the stock amount ...
