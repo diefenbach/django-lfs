@@ -25,12 +25,12 @@ The installation is straightforward and should last just a few minutes.
    6. Enter your database settings to lfs_project/settings.py
    7. $ bin/django syndb
    8. $ bin/django lfs_init
-   9. Browse to http://localhost:8000/
+   9. $ bin/django runserver
+   10. Browse to http://localhost:8000/
 
 That's all!
 
-Please note:
-============
+**Please note**:
 
 * If you encounter problems during ``bin/buildout -v`` or on the first
   run on a Debian or Ubuntu server make sure you have the build tools and
