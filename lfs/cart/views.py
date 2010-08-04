@@ -153,7 +153,7 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
 
     total = 0
     for cart_item in cart_items:
-        total += (cart_item.get_price() * cart_item.amount)
+        total += cart_item.get_price()
 
     return render_to_string(template_name, {
         "total" : total,
@@ -208,7 +208,7 @@ def add_to_cart(request, product_id=None):
     product = lfs_get_object_or_404(Product, pk=product_id)
 
     # Only active and deliverable products can be added to the cart.
-    if (product.is_active() and product.is_deliverable()) == False:
+    if (product.is_active() and product.deliverable) == False:
         raise Http404()
 
     try:

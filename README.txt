@@ -27,6 +27,12 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.5.0 beta 5 (2010-07-31)
+-------------------------
+
+* Bugfix add_to_cart: display correct stock amount if not enough products are within stock.
+* Added more tests
+
 0.5.0 beta 4 (2010-07-30)
 -------------------------
 
