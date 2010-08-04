@@ -153,7 +153,7 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
 
     total = 0
     for cart_item in cart_items:
-        total += (cart_item.get_price() * cart_item.amount)
+        total += cart_item.get_price()
 
     return render_to_string(template_name, {
         "total" : total,

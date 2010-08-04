@@ -10,6 +10,7 @@ import lfs.cart.utils
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.cart.views import add_to_cart
+from lfs.cart.views import added_to_cart_items
 from lfs.cart.views import refresh_cart
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import Product
@@ -291,7 +292,7 @@ class RefreshCartTestCase(TestCase):
         # If the product is ordered the customer can add it into cart again
         self.p1.order_time = self.dt
         self.p1.save()
-        
+
         result = simplejson.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
         self.assertEqual(cart.amount_of_items, 2.0)
@@ -300,7 +301,7 @@ class RefreshCartTestCase(TestCase):
         self.p1.order_time = None
         self.p1.manage_stock_amount = False
         self.p1.save()
-        
+
         result = simplejson.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
         self.assertEqual(cart.amount_of_items, 2.0)
@@ -343,11 +344,11 @@ class RefreshCartTestCase(TestCase):
 
         # And the amount of the item is still 2.0
         self.assertEqual(cart.amount_of_items, 2.0)
-        
+
         # If the product is ordered the customer can add it into cart again
         self.p1.order_time = self.dt
         self.p1.save()
-        
+
         result = simplejson.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
         self.assertEqual(cart.amount_of_items, 3.0)
@@ -356,11 +357,11 @@ class RefreshCartTestCase(TestCase):
         self.p1.order_time = None
         self.p1.manage_stock_amount = False
         self.p1.save()
-        
+
         result = simplejson.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
         self.assertEqual(cart.amount_of_items, 3.0)
-        
+
     def test_amount_4(self):
         """Manage stock amount; refresh to 2 but no product is there anymore.
         """
@@ -391,3 +392,54 @@ class RefreshCartTestCase(TestCase):
         result = simplejson.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "Sorry, but 'Product 1' is not available anymore.")
         self.assertEqual(cart.amount_of_items, 0.0)
+
+class AddedToCartTestCase(TestCase):
+    """
+    """
+    fixtures = ['lfs_shop.xml']
+
+    def setUp(self):
+        """
+        """
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, active=True, manage_stock_amount=False)
+        from django.contrib.auth.models import User
+
+        self.dt = DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
+        self.user = User.objects.create(username="doe")
+        self.session = SessionStore()
+
+    def test_totals_1(self):
+        """Add a product without quantity to cart (implicit 1)
+        """
+        rf = RequestFactory()
+        request = rf.post("/", {"product_id" : self.p1.id})
+        request.session = self.session
+        request.user = self.user
+
+        # Added product_1 to cart
+        add_to_cart(request)
+        response = added_to_cart_items(request)
+        self.failIf(response.find("Total: 10,00 EUR") == -1)
+
+        # Added product_1 to cart again
+        add_to_cart(request)
+        response = added_to_cart_items(request)
+        self.failIf(response.find("Total: 20,00 EUR") == -1)
+
+    def test_totals_2(self):
+        """Add a product with explicit quantity to cart
+        """
+        rf = RequestFactory()
+        request = rf.post("/", {"product_id" : self.p1.id, "quantity" : 2})
+        request.session = self.session
+        request.user = self.user
+
+        # Added product_1 two times to cart
+        add_to_cart(request)
+        response = added_to_cart_items(request)
+        self.failIf(response.find("Total: 20,00 EUR") == -1)
+
+        # Added product_1 two times to cart again
+        add_to_cart(request)
+        response = added_to_cart_items(request)
+        self.failIf(response.find("Total: 40,00 EUR") == -1)
