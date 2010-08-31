@@ -16,7 +16,8 @@ class RedirectFallbackMiddleware(object):
     def process_response(self, request, response):
         if response.status_code != 404:
             return response # No need to check for a redirect for non-404 responses.        
-        path = urlparse(request.get_full_path()).path
+        parsed_url = urlparse(request.get_full_path())
+        path = parsed_url.path
         
         try:
             r = Redirect.objects.get(site__id__exact=settings.SITE_ID, old_path=path)
@@ -32,7 +33,8 @@ class RedirectFallbackMiddleware(object):
         if r is not None:
             if r.new_path == '':
                 return http.HttpResponseGone()
-            return http.HttpResponsePermanentRedirect(r.new_path)
+            new_path = r.new_path + "?" + parsed_url.query
+            return http.HttpResponsePermanentRedirect(new_path)
 
         # No redirect was found. Return the response.
         return response
