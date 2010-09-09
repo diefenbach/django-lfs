@@ -366,13 +366,12 @@ def refresh_cart(request):
 
     # Update country
     country_iso = request.POST.get("country")
-    country = Country.objects.get(iso=country_iso)
     if customer.selected_shipping_address:
-        customer.selected_shipping_address.postal_address.country = country
+        customer.selected_shipping_address.postal_address.country = country_iso
         customer.selected_shipping_address.postal_address.save()
         customer.selected_shipping_address.save()
     if customer.selected_invoice_address:
-        customer.selected_invoice_address.postal_address.country = country
+        customer.selected_invoice_address.postal_address.country = country_iso
         customer.selected_invoice_address.postal_address.save()
         customer.selected_invoice_address.save()
     customer.selected_country_id = country_iso

@@ -228,12 +228,12 @@ def get_country_code(request, prefix):
             if customer.selected_invoice_address is not None:
                 if customer.selected_invoice_address.postal_address is not None:
                     if customer.selected_invoice_address.postal_address.country is not None:
-                        country_code = customer.selected_invoice_address.postal_address.country.iso
+                        country_code = customer.selected_invoice_address.postal_address.country.code
         elif prefix == SHIPPING_PREFIX:
             if customer.selected_shipping_address is not None:
                 if customer.selected_shipping_address.postal_address is not None:
-                    if customer.selected_shipping_address.postal_address.country is not None:
-                        country_code = customer.selected_shipping_address.postal_address.country.iso
+                    if customer.selected_shipping_address.postal_address.country is not None: 
+                        country_code = customer.selected_shipping_address.postal_address.country.code
 
     # get country code from shop
     if country_code == '':
@@ -280,7 +280,7 @@ def address_inline(request, prefix, form):
                     "city" : postal_address.city,
                     "state" : postal_address.state,
                     "code" : postal_address.code,
-                    "country" : postal_address.country.iso,
+                    "country" : postal_address.country.code,
                 })
             else:
                 initial.update({prefix + "-country" : country_code,})
@@ -333,7 +333,7 @@ def save_postal_address(request, customer, prefix):
                 postal_address.city = request.POST.get(prefix + "-city")
                 postal_address.state = request.POST.get(prefix + "-state")
                 postal_address.code = request.POST.get(prefix + "-code")
-                postal_address.country = selected_country
+                postal_address.country = selected_country.iso
                 postal_address.save()
                 postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST, instance=postal_address)
     if not existing_address:

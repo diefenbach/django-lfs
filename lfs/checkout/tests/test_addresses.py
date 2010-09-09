@@ -63,7 +63,7 @@ class CheckoutAddressesTestCase(TestCase):
             line2 = "Street 42",
             city = "Gotham City",
             code = "2342",
-            country = ie,
+            country = "IE",
         )
 
         address1 = Address.objects.create(firstname = "John",
@@ -76,7 +76,7 @@ class CheckoutAddressesTestCase(TestCase):
             line2 = "Street 43",
             city = "Smallville",
             code = "2443",
-            country = us,
+            country = "US",
         )
 
         address2 = Address.objects.create(firstname = "Jane",

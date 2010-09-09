@@ -57,14 +57,13 @@ class AddressTestCase(TestCase):
             tax=tax,
         )
         
-        country = Country.objects.get(iso="DE")
         
         postal_address1 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",
             line2 = "Street 42",
             city = "Gotham City",
             code = "2342",
-            country = country,
+            country = "DE",
         )
 
         address1 = Address.objects.create(firstname = "John",
@@ -78,7 +77,7 @@ class AddressTestCase(TestCase):
             line2 = "Street 43",            
             city = "Smallville",
             code = "2443",
-            country = country,
+            country = "DE",
         )
 
         address2 = Address.objects.create(firstname = "Jane",

@@ -11,6 +11,8 @@ from lfs.payment import utils as payment_utils
 from lfs.shipping import utils as shipping_utils
 from lfs.voucher.models import Voucher
 
+from countries.models import Country
+
 def add_order(request):
     """Adds an order based on current cart for the current customer.
 
@@ -103,7 +105,7 @@ def add_order(request):
         invoice_city = invoice_address.postal_address.city,
         invoice_state = invoice_address.postal_address.state,
         invoice_code = invoice_address.postal_address.code,
-        invoice_country = invoice_address.postal_address.country,
+        invoice_country = Country.objects.get(iso=invoice_address.postal_address.country.code),
         invoice_phone = customer.selected_invoice_address.phone,
 
         shipping_firstname = shipping_address.firstname,
@@ -113,7 +115,7 @@ def add_order(request):
         shipping_city = shipping_address.postal_address.city,
         shipping_state = shipping_address.postal_address.state,
         shipping_code = shipping_address.postal_address.code,
-        shipping_country = shipping_address.postal_address.country,
+        shipping_country = Country.objects.get(iso=shipping_address.postal_address.country.code),
         shipping_phone = shipping_address.phone,
 
         message = request.POST.get("message", ""),

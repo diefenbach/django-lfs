@@ -67,7 +67,7 @@ class CheckoutTestCase(TestCase):
             line2 = "Street 42",
             city = "2342",
             state = "Gotham City",
-            country = gb,
+            country = "GB",
         )
 
         address1 = Address.objects.create(firstname = "John",
@@ -80,7 +80,7 @@ class CheckoutTestCase(TestCase):
             line2 = "Street 43",
             city = "2443",
             state = "Smallville",
-            country = fr,
+            country = "FR",
         )
         
         address2 = Address.objects.create(firstname = "Jane",
@@ -170,15 +170,15 @@ class CheckoutTestCase(TestCase):
         user = User.objects.get(username=self.username)
         customer = Customer.objects.get(user=user)
         fr = Country.objects.get(iso="FR")
-        self.assertEquals(customer.selected_invoice_address.postal_address.country, fr)
+        self.assertEquals(customer.selected_invoice_address.postal_address.country.code, "FR")
 
         # change the country in the cart
         de = Country.objects.get(iso="DE")
         cart_response = self.c.post('/refresh-cart', {'country': de.iso, "amount-cart-item_%s" % self.item1.id: 1, "amount-cart-item_%s" % self.item2.id: 1 })
         
         customer = Customer.objects.get(user=user)
-        self.assertEquals(customer.selected_shipping_address.postal_address.country, de)
-        self.assertEquals(customer.selected_invoice_address.postal_address.country, de)
+        self.assertEquals(customer.selected_shipping_address.postal_address.country.code, "DE")
+        self.assertEquals(customer.selected_invoice_address.postal_address.country.code, "DE")
 
         cart_response = self.c.get(reverse('lfs_cart'))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
