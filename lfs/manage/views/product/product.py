@@ -77,6 +77,18 @@ class VariantDataForm(ModelForm):
             "description", "for_sale", "for_sale_price", "active_for_sale", "active_for_sale_price",
             "active_related_products", "active_static_block", "static_block", "template")
 
+    def clean(self):
+        """
+        """
+        if self.instance:
+            redirect_to = self.data.get("redirect_to", "")
+            if redirect_to != "":
+                lfs.core.utils.set_redirect_for(self.instance.get_absolute_url(), redirect_to)
+            else:
+                lfs.core.utils.remove_redirect_for(self.instance.get_absolute_url())
+
+        return self.cleaned_data
+
 class ProductStockForm(ModelForm):
     """Form to add and edit stock data of a product.
     """

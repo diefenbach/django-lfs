@@ -208,9 +208,15 @@ class CartItem(models.Model):
                 continue
 
             if property.is_select_field:
-                option = PropertyOption.objects.get(pk=int(float(cipv.value)))
-                value = option.name
-                price = option.price
+                try:
+                    option = PropertyOption.objects.get(pk=int(float(cipv.value)))
+                except (PropertyOption.DoesNotExist, ValueError):
+                    value = cipv.value
+                    price = 0.0
+                else:
+                    value = option.name
+                    price = option.price
+                
             else:                
                 format_string = "%%.%sf" % property.decimal_places
                 try:

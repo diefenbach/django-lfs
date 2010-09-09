@@ -22,10 +22,10 @@ from lfs.core.signals import cart_changed
 from lfs.core import utils as core_utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
-from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
 from lfs.core.utils import l10n_float
+from lfs.core.utils import LazyEncoder
 from lfs.shipping import utils as shipping_utils
 from lfs.payment import utils as payment_utils
 from lfs.customer import utils as customer_utils
@@ -155,7 +155,7 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
 
     total = 0
     for cart_item in cart_items:
-        total += (cart_item.get_price() * cart_item.amount)
+        total += cart_item.get_price()
 
     return render_to_string(template_name, {
         "total" : total,
@@ -210,8 +210,13 @@ def add_to_cart(request, product_id=None):
     product = lfs_get_object_or_404(Product, pk=product_id)
 
     # Only active and deliverable products can be added to the cart.
-    if (product.is_active() and product.is_deliverable()) == False:
+    if (product.is_active() and product.deliverable) == False:
         raise Http404()
+
+    try:
+        quantity = float(request.POST.get("quantity", 1))
+    except TypeError:
+        quantity = 1
 
     # Validate properties (They are added below)
     properties_dict = {}
@@ -231,7 +236,7 @@ def add_to_cart(request, product_id=None):
                     value = l10n_float(value)
 
                 properties_dict[property_id] = unicode(value)
-                                
+
                 # validate property's value
                 if property.is_number_field:
 
@@ -257,11 +262,6 @@ def add_to_cart(request, product_id=None):
     elif product.is_product_with_variants():
         variant_id = request.POST.get("variant_id")
         product = lfs_get_object_or_404(Product, pk=variant_id)
-
-    try:
-        quantity = float(request.POST.get("quantity", 1))
-    except TypeError:
-        quantity = 1
 
     if product.active_packing_unit:
         quantity = lfs.catalog.utils.calculate_real_amount(product, quantity)
@@ -298,6 +298,18 @@ def add_to_cart(request, product_id=None):
             cart_item.save()
 
     cart_items = [cart_item]
+
+    # Check stock amount
+    message = ""
+    if product.manage_stock_amount and cart_item.amount > product.stock_amount and not product.order_time:
+        if product.stock_amount == 0:
+            message = _(u"Sorry, but '%(product)s' is not available anymore." % {"product": product.name})
+        elif product.stock_amount == 1:
+            message = _(u"Sorry, but '%(product)s' is only one time available." % {"product": product.name})
+        else:
+            message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": product.name, "amount" : product.stock_amount}
+        cart_item.amount = product.stock_amount
+        cart_item.save()
 
     # Add selected accessories to cart
     for key, value in request.POST.items():
@@ -345,7 +357,10 @@ def add_to_cart(request, product_id=None):
     except AttributeError:
         url_name = "lfs.cart.views.added_to_cart"
 
-    return HttpResponseRedirect(reverse(url_name))
+    if message:
+        return lfs.core.utils.set_message_cookie(reverse(url_name), message)
+    else:
+        return HttpResponseRedirect(reverse(url_name))
 
 def delete_cart_item(request, cart_item_id):
     """Deletes the cart item with the given id.
@@ -387,11 +402,18 @@ def refresh_cart(request):
         amount = request.POST.get("amount-cart-item_%s" % item.id, 0)
         try:
             amount = float(amount)
-            if item.product.manage_stock_amount and amount > item.product.stock_amount:
+            if item.product.manage_stock_amount and amount > item.product.stock_amount and not item.product.order_time:
                 amount = item.product.stock_amount
                 if amount < 0:
                     amount = 0
-                message = _(u"Sorry, but there are only %(amount)s article(s) in stock.") % {"amount" : amount}
+
+                if amount == 0:
+                    message = _(u"Sorry, but '%(product)s' is not available anymore." % {"product": item.product.name})
+                elif amount == 1:
+                    message = _(u"Sorry, but '%(product)s' is only one time available." % {"product": item.product.name})
+                else:
+                    message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": item.product.name, "amount" : amount}
+
         except ValueError:
             amount = 1
 
@@ -425,7 +447,7 @@ def refresh_cart(request):
     result = simplejson.dumps({
         "html" : cart_inline(request),
         "message" : message,
-    })
+    }, cls = LazyEncoder)
 
     return HttpResponse(result)
 

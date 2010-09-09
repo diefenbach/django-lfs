@@ -83,6 +83,9 @@ class Voucher(models.Model):
 
         - used_date
             The date the voucher has been redeemed.
+            
+        - The quanity of how often the voucher can be used. Let it empty 
+          the voucher can be used unlimited.
     """
     number = models.CharField(max_length=100, unique=True)
     group = models.ForeignKey(VoucherGroup, related_name="vouchers")
@@ -95,8 +98,9 @@ class Voucher(models.Model):
     value = models.FloatField(default=0.0)
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
     active = models.BooleanField(default=True)
-    used = models.BooleanField(default=False)
-    used_date = models.DateTimeField(blank=True, null=True)
+    used_amount = models.PositiveSmallIntegerField(default=0)
+    last_used_date = models.DateTimeField(blank=True, null=True)
+    limit = models.PositiveSmallIntegerField(blank=True, null=True, default=1)
 
     class Meta:
         ordering = ("creation_date", "number")
@@ -134,8 +138,8 @@ class Voucher(models.Model):
     def mark_as_used(self):
         """Mark voucher as used.
         """
-        self.used = True
-        self.used_date = datetime.datetime.now()
+        self.used_amount += 1
+        self.last_used_date = datetime.datetime.now()
         self.save()
 
     def is_effective(self, cart):
@@ -143,7 +147,7 @@ class Voucher(models.Model):
         """
         if self.active == False:
             return (False, MESSAGES[1])
-        if self.used:
+        if (self.limit > 0) and (self.used_amount >= self.limit):
             return (False, MESSAGES[2])
         if self.start_date > datetime.date.today():
             return (False, MESSAGES[3])

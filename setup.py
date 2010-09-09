@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.5.0b3'
+version = '0.5.0b5'
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
@@ -25,14 +25,15 @@ setup(name='django-lfs',
       packages=find_packages(exclude=['ez_setup']),
       include_package_data=True,
       zip_safe=False,
+      dependency_links = ["http://pypi.iqpp.de/"],
       install_requires=[
         'setuptools',
-        'django-lfstheme >0.4.0,<=0.5.0',
-        'django-portlets >0.9,<=1.0',
+        'django-lfstheme == 0.5.0b4',
+        'django-portlets == 1.0b4',
         'django-pagination == 1.0.7',
         'django-reviews == 0.2.1',
         'django-tagging == 0.3.1',
         'django-paypal == 0.1.2',
-        'django-contact-form',
+        'django-contact-form == 0.3',
       ],
       )

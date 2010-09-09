@@ -546,7 +546,7 @@ class Product(models.Model):
     delivery_time = models.ForeignKey("DeliveryTime", verbose_name=_(u"Delivery time"), blank=True, null=True, related_name="products_delivery_time")
     order_time = models.ForeignKey("DeliveryTime", verbose_name=_(u"Order time"), blank=True, null=True, related_name="products_order_time")
     ordered_at = models.DateField(_(u"Ordered at"), blank=True, null=True)
-    manage_stock_amount = models.BooleanField(_(u"Manage stock amount"), default=True)
+    manage_stock_amount = models.BooleanField(_(u"Manage stock amount"), default=False)
     stock_amount = models.FloatField(_(u"Stock amount"), default=0)
 
     active_packing_unit = models.BooleanField(_(u"Active packing unit"), default=False)
@@ -1319,9 +1319,9 @@ class Product(models.Model):
     def is_deliverable(self):
         """Returns the deliverable state of the product.
         """
-        if self.is_variant():
-            return self.parent.deliverable
-        else:
+        if self.manage_stock_amount and self.stock_amount <= 0 and not self.order_time:
+            return False
+        else:    
             return self.deliverable
 
     # 3rd party contracts
@@ -1830,6 +1830,11 @@ class DeliveryTime(models.Model):
 
     def __unicode__(self):
         return self.round().as_string()
+
+    def __gt__(self, other):
+        if self.max > other.max:
+            return True
+        return False
 
     def __add__(self, other):
         """Adds to delivery times.

@@ -82,6 +82,10 @@ def get_product_delivery_time(request, product_slug, for_cart=False):
             except AttributeError:
                 delivery_time = None
 
+    # TODO: Define default delivery time for the shop
+    if delivery_time is None:
+        delivery_time = DeliveryTime(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
+
     # Calculate the total delivery time if the product is not on stock.
     if (product.stock_amount <= 0) and (product.order_time):
 
@@ -99,10 +103,6 @@ def get_product_delivery_time(request, product_slug, for_cart=False):
         # Calculate the total delivery time.
         delivery_time += order_time_left
         delivery_time = delivery_time.as_reasonable_unit()
-
-    # TODO: Define default delivery time for the shop
-    if delivery_time is None:
-        delivery_time = DeliveryTime(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
 
     delivery_time = delivery_time.round()
     shippings[product_key] = delivery_time

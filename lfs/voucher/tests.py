@@ -75,6 +75,7 @@ class VoucherTestCase(TestCase):
             effective_from = 0,
             kind_of = ABSOLUTE,
             value = 10.0,
+            limit = 2,
         )
 
         self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0)
@@ -95,8 +96,8 @@ class VoucherTestCase(TestCase):
         self.assertEqual(self.v1.effective_from, 0.0)
         self.assertEqual(self.v1.kind_of, ABSOLUTE)
         self.assertEqual(self.v1.active, True)
-        self.assertEqual(self.v1.used, False)
-        self.assertEqual(self.v1.used_date, None)
+        self.assertEqual(self.v1.used_amount, 0)
+        self.assertEqual(self.v1.last_used_date, None)
         self.assertEqual(self.v1.value, 10.0)
         self.assertEqual(self.v1.tax, None)
 
@@ -179,54 +180,63 @@ class VoucherTestCase(TestCase):
     def test_mark_as_used(self):
         """
         """
-        self.assertEqual(self.v1.used, False)
-        self.assertEqual(self.v1.used_date, None)
+        self.assertEqual(self.v1.used_amount, 0)
+        self.assertEqual(self.v1.last_used_date, None)
 
         self.v1.mark_as_used()
 
-        self.assertEqual(self.v1.used, True)
-        self.failIf(self.v1.used_date is None)
+        self.assertEqual(self.v1.used_amount, 1)
+        self.failIf(self.v1.last_used_date is None)
 
     def test_is_effective(self):
         """
         """
+        current_year = datetime.datetime.now().year
+
         # True
-        self.v1.start_date = datetime.date(2009, 1, 1)
+        self.v1.start_date = datetime.date(2000, 1, 1)
         self.v1.end_date = datetime.date(2999, 12, 31)
         self.v1.active = True
-        self.v1.used = False
+        self.v1.used_amount = 1
         self.v1.effective_from = 0
         self.assertEqual(self.v1.is_effective(self.cart)[0], True)
 
         # start / end
-        self.v1.start_date = datetime.date(2009, 12, 31)
-        self.v1.end_date = datetime.date(2009, 12, 31)
+        self.v1.start_date = datetime.date(current_year, 12, 31)
+        self.v1.end_date = datetime.date(current_year, 12, 31)
         self.v1.active = True
-        self.v1.used = False
+        self.v1.used_amount = 1
         self.v1.effective_from = 0
         self.assertEqual(self.v1.is_effective(self.cart)[0], False)
 
         # effective from
-        self.v1.start_date = datetime.date(2009, 1, 1)
-        self.v1.end_date = datetime.date(2009, 12, 31)
+        self.v1.start_date = datetime.date(current_year, 1, 1)
+        self.v1.end_date = datetime.date(current_year, 12, 31)
         self.v1.active = True
-        self.v1.used = False
+        self.v1.used_amount = 1
         self.v1.effective_from = 1000
         self.assertEqual(self.v1.is_effective(self.cart)[0], False)
 
         # Used
-        self.v1.start_date = datetime.date(2009, 1, 1)
-        self.v1.end_date = datetime.date(2009, 12, 31)
+        self.v1.start_date = datetime.date(current_year, 1, 1)
+        self.v1.end_date = datetime.date(current_year, 12, 31)
         self.v1.active = True
-        self.v1.used = True
+        self.v1.used_amount = 1
         self.v1.effective_from = 0
+        self.assertEqual(self.v1.is_effective(self.cart)[0], True)
+
+        self.v1.mark_as_used()
         self.assertEqual(self.v1.is_effective(self.cart)[0], False)
 
+        # unlimited amount
+        self.limit = 0
+        self.assertEqual(self.v1.is_effective(self.cart)[0], True)
+
         # Not active
-        self.v1.start_date = datetime.date(2009, 1, 1)
-        self.v1.end_date = datetime.date(2009, 12, 31)
+        self.v1.start_date = datetime.date(current_year, 1, 1)
+        self.v1.end_date = datetime.date(current_year, 12, 31)
         self.v1.active = False
-        self.v1.used = False
+        self.v1.used_amount = 1
         self.v1.effective_from = 0
         self.assertEqual(self.v1.is_effective(self.cart)[0], False)
 

@@ -71,7 +71,7 @@ def google_analytics_ecommerce(context, clear_session=True):
 
 def _get_shipping(context, product):
     request = context.get("request")
-    if product.deliverable == False:
+    if product.is_deliverable() == False:
         return {
             "deliverable" : False,
             "delivery_time" : shipping_utils.get_product_delivery_time(request, product.slug)

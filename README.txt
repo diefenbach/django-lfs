@@ -27,6 +27,30 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.5.0 beta 5 (2010-07-31)
+-------------------------
+
+* Bugfix add_to_cart: display correct stock amount if not enough products are within stock.
+* Added more tests
+
+0.5.0 beta 4 (2010-07-30)
+-------------------------
+
+* Bugfix pages: caching page_view
+* Bugfix cart: display correct stock amount within growl message
+* Bugfix product_inline: display property title within error message
+* Bugfix order_received_mail.html: display the correct selected values of a configurable product
+* Bugfix cart: calculation of maximum delivery date
+* Bugfix redirect: save redirect url for variants
+* Bugfix lfs.page.views: added missing import of Http404
+* Bugfix: restrict adding to cart if the product is not deliverable. Issue #37
+* Added french translations (Jacques Seite)
+* Added get_properties method to OrderItem
+* Added optional cached parameter to cart/utils/get_cart_price and cart/utils/get_cart_costs
+* Removed javascript which dynamically sets the height of the slots.
+* Changed properties management: display name instead of title within left portlet
+* Improved lfs.portlet: caching
+
 0.5.0 beta 3 (2010-06-30)
 -------------------------
 

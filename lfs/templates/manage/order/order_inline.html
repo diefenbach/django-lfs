@@ -301,9 +301,9 @@
                 {% endfor %}
 
                 {% if item.product.is_configurable_product %}
-                    {% for property in item.properties.all %}
+                    {% for property in item.get_properties %}                    
                         <div>
-                            {{ property.property.title }} : {{ property.value }} {{ property.property.unit|safe }}
+                            {{ property.title }} : {{ property.value }} {{ property.unit|safe }}
                             {% if property.display_price %}
                                 ({{ property.price|currency }})
                             {% endif %}
