@@ -110,6 +110,7 @@ class CheckoutTestCase(TestCase):
             sku="sku-1",
             price=1.1,
             tax = tax,
+            stock_amount=100,
         )
             
         p2 = Product.objects.create(
@@ -118,19 +119,20 @@ class CheckoutTestCase(TestCase):
             sku="sku-2",
             price=2.2,
             tax = tax,
+            stock_amount=50,
         )
         
         cart = Cart.objects.create(
             user=new_user
         )
         
-        item = CartItem.objects.create(
+        self.item1 = CartItem.objects.create(
             cart = cart,
             product = p1,
             amount = 2,
         )
 
-        item = CartItem.objects.create(
+        self.item2 = CartItem.objects.create(
             cart = cart,
             product = p2,
             amount = 3,
@@ -172,7 +174,8 @@ class CheckoutTestCase(TestCase):
 
         # change the country in the cart
         de = Country.objects.get(iso="DE")
-        cart_response = self.c.post('/refresh-cart', {'country': de.iso})
+        cart_response = self.c.post('/refresh-cart', {'country': de.iso, "amount-cart-item_%s" % self.item1.id: 1, "amount-cart-item_%s" % self.item2.id: 1 })
+        
         customer = Customer.objects.get(user=user)
         self.assertEquals(customer.selected_shipping_address.postal_address.country, de)
         self.assertEquals(customer.selected_invoice_address.postal_address.country, de)
