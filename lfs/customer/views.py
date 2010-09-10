@@ -312,12 +312,9 @@ def save_postal_address(request, customer, prefix):
 
     # get the country for the address
     country_iso = request.POST.get(prefix + "-country", shop.default_country.iso)
-    selected_country = Country.objects.get(iso=country_iso)
-
     customer_selected_address = None
     address_attribute = 'selected_' + prefix + '_address'
     postal_address = None
-    postal_address_form = None
     existing_address = False
     existing_postal_address = False
     if hasattr(customer, address_attribute):
@@ -333,20 +330,18 @@ def save_postal_address(request, customer, prefix):
                 postal_address.city = request.POST.get(prefix + "-city")
                 postal_address.state = request.POST.get(prefix + "-state")
                 postal_address.code = request.POST.get(prefix + "-code")
-                postal_address.country = selected_country.iso
+                postal_address.country = country_iso
                 postal_address.save()
-                postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST, instance=postal_address)
     if not existing_address:
         # no address exists for customer so create one
         customer_selected_address = Address.objects.create(customer=customer)
     if not existing_postal_address:
-        postal_address_form = PostalAddressForm(prefix=prefix,data=request.POST)
         postal_address = PostalAddress.objects.create(line1=request.POST.get(prefix + "-line1"),
                                                        line2=request.POST.get(prefix + "-line2"),
                                                        city=request.POST.get(prefix + "-city"),
                                                        state=request.POST.get(prefix + "-state"),
                                                        code=request.POST.get(prefix + "-code"),
-                                                       country=selected_country)
+                                                       country=country_iso)
     if customer_selected_address is not None:
         if postal_address is not None:
             setattr(customer_selected_address, 'postal_address', postal_address)
