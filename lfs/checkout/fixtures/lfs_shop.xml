@@ -1,24 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
-
+    <object pk="1" model="core.country">
+        <field type="CharField" name="name">Deutschland</field>
+            <field type="CharField" name="code">de</field>
+    </object>
+    <object pk="2" model="core.country">
+        <field type="CharField" name="name">Österreich</field>
+        <field type="CharField" name="code">at</field>
+    </object>
+    <object pk="3" model="core.country">
+        <field type="CharField" name="name">USA</field>
+        <field type="CharField" name="code">us</field>        
+    </object>
+    <object pk="4" model="core.country">
+        <field type="CharField" name="name">Netherlands</field>
+        <field type="CharField" name="code">nl</field>        
+    </object>
+    <object pk="5" model="core.country">
+        <field type="CharField" name="name">Ireland</field>
+        <field type="CharField" name="code">ie</field>        
+    </object>
+    <object pk="6" model="core.country">
+        <field type="CharField" name="name">Great Britain</field>
+        <field type="CharField" name="code">gb</field>        
+    </object>
+    <object pk="7" model="core.country">
+        <field type="CharField" name="name">France</field>
+        <field type="CharField" name="code">fr</field>        
+    </object>
     <!-- Shop -->
     <object pk="1" model="core.shop">
         <field type="CharField" name="name">LFS</field>
         <field type="CharField" name="shop_owner"></field>
         <field type="TextField" name="description"></field>
         <field type="FileField" name="image"></field>
-        <field to="countries.country" name="default_country" rel="ManyToOneRel">DE</field>
-        <field to="countries.country" name="invoice_countries" rel="ManyToManyRel">
-        	<object pk="DE"></object>
-        	<object pk="IE"></object>
-        	<object pk="NL"></object>
+        <field to="core.country" name="default_country" rel="ManyToOneRel">1</field>
+        <field to="core.country" name="invoice_countries" rel="ManyToManyRel">
+        	<object pk="1"></object>
+        	<object pk="2"></object>
+        	<object pk="3"></object>
         </field>
-        <field to="countries.country" name="shipping_countries" rel="ManyToManyRel">
-        	<object pk="DE"></object>
-        	<object pk="IE"></object>
-        	<object pk="GB"></object>
-        	<object pk="US"></object>
-        	<object pk="NL"></object>
+        <field to="core.country" name="shipping_countries" rel="ManyToManyRel">
+        	<object pk="1"></object>
+        	<object pk="2"></object>
+        	<object pk="3"></object>
+        	<object pk="4"></object>
+        	<object pk="5"></object>
         </field>
     </object>    
 

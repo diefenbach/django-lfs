@@ -239,7 +239,7 @@ def get_country_code(request, prefix):
     if country_code == '':
         shop = lfs.core.utils.get_default_shop()
         if shop.default_country is not None:
-            country_code = shop.default_country.iso
+            country_code = shop.default_country.code
     return country_code
 
 
@@ -263,7 +263,7 @@ def address_inline(request, prefix, form):
             else:
                 address_form = PostalAddressForm(prefix=prefix, data=request.POST,)
             if countries is not None:
-                address_form.fields["country"].choices = [(c.iso, c.name) for c in countries]
+                address_form.fields["country"].choices = [(c.code, c.name) for c in countries]
             save_postal_address(request, customer, prefix)
         else:
              # If there are addresses intialize the form.
@@ -286,7 +286,7 @@ def address_inline(request, prefix, form):
                 initial.update({prefix + "-country" : country_code,})
             address_form = address_form_class(prefix=prefix, initial=initial)
             if countries is not None:
-                address_form.fields["country"].choices = [(c.iso, c.name) for c in countries]
+                address_form.fields["country"].choices = [(c.code, c.name) for c in countries]
 
     # Removes fields from address form if requested via settings.
     for i in range(1, 6):
@@ -311,7 +311,7 @@ def save_postal_address(request, customer, prefix):
     shop = lfs.core.utils.get_default_shop()
 
     # get the country for the address
-    country_iso = request.POST.get(prefix + "-country", shop.default_country.iso)
+    country_iso = request.POST.get(prefix + "-country", shop.default_country.code)
     customer_selected_address = None
     address_attribute = 'selected_' + prefix + '_address'
     postal_address = None

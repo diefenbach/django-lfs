@@ -17,14 +17,16 @@ from postal.models import PostalAddress
 
 class AddressTestCase(TestCase):
     
+    fixtures = ['lfs_shop.xml']
+    
     def setUp(self):
         """
         """
-        ie = Country.objects.get(iso="IE")
-        gb = Country.objects.get(iso="GB")
-        de = Country.objects.get(iso="DE")
-        us = Country.objects.get(iso="US")
-        fr = Country.objects.get(iso="FR")
+        ie = Country.objects.get(code="ie")
+        gb = Country.objects.get(code="gb")
+        de = Country.objects.get(code="de")
+        us = Country.objects.get(code="us")
+        fr = Country.objects.get(code="fr")
 
         shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
                                           default_country=de)

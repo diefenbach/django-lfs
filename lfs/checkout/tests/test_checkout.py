@@ -35,12 +35,12 @@ class CheckoutTestCase(TestCase):
     def setUp(self):
         """
         """
-        ie = Country.objects.get(iso="IE")
-        gb = Country.objects.get(iso="GB")
-        de = Country.objects.get(iso="DE")
-        us = Country.objects.get(iso="US")
-        fr = Country.objects.get(iso="FR")
-        nl = Country.objects.get(iso="NL")
+        ie = Country.objects.get(code="ie")
+        gb = Country.objects.get(code="gb")
+        de = Country.objects.get(code="de")
+        us = Country.objects.get(code="us")
+        fr = Country.objects.get(code="fr")
+        nl = Country.objects.get(code="nl")
 
         shop = get_default_shop()
 
@@ -168,22 +168,22 @@ class CheckoutTestCase(TestCase):
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
         user = User.objects.get(username=self.username)
         customer = Customer.objects.get(user=user)
-        fr = Country.objects.get(iso="FR")
+        fr = Country.objects.get(code="fr")
         self.assertEquals(customer.selected_invoice_address.postal_address.country.code, "FR")
 
         # change the country in the cart
-        de = Country.objects.get(iso="DE")
-        cart_response = self.c.post('/refresh-cart', {'country': de.iso, "amount-cart-item_%s" % self.item1.id: 1, "amount-cart-item_%s" % self.item2.id: 1 })
+        de = Country.objects.get(code="de")
+        cart_response = self.c.post('/refresh-cart', {'country': de.code.lower(), "amount-cart-item_%s" % self.item1.id: 1, "amount-cart-item_%s" % self.item2.id: 1 })
         
         customer = Customer.objects.get(user=user)
-        self.assertEquals(customer.selected_shipping_address.postal_address.country.code, "DE")
-        self.assertEquals(customer.selected_invoice_address.postal_address.country.code, "DE")
+        self.assertEquals(customer.selected_shipping_address.postal_address.country.code.lower(), "de")
+        self.assertEquals(customer.selected_invoice_address.postal_address.country.code.lower(), "de")
 
         cart_response = self.c.get(reverse('lfs_cart'))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
         checkout_response = self.c.get(reverse('lfs_checkout'))
-        self.assertContains(checkout_response, '<option value="DE" selected="selected">GERMANY</option>', status_code=200)
+        self.assertContains(checkout_response, '<option value="de" selected="selected">Deutschland</option>', status_code=200)
 
     def test_order_phone_email_set_after_checkout(self):
         # login as our customer

@@ -104,7 +104,7 @@ def add_order(request):
         invoice_city = invoice_address.postal_address.city,
         invoice_state = invoice_address.postal_address.state,
         invoice_code = invoice_address.postal_address.code,
-        invoice_country = Country.objects.get(iso=invoice_address.postal_address.country.code),
+        invoice_country = Country.objects.get(code=invoice_address.postal_address.country.code.lower()),
         invoice_phone = customer.selected_invoice_address.phone,
 
         shipping_firstname = shipping_address.firstname,
@@ -114,7 +114,7 @@ def add_order(request):
         shipping_city = shipping_address.postal_address.city,
         shipping_state = shipping_address.postal_address.state,
         shipping_code = shipping_address.postal_address.code,
-        shipping_country = Country.objects.get(iso=shipping_address.postal_address.country.code),
+        shipping_country = Country.objects.get(code=shipping_address.postal_address.country.code.lower()),
         shipping_phone = shipping_address.phone,
 
         message = request.POST.get("message", ""),

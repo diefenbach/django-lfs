@@ -57,8 +57,8 @@ class OrderTestCase(TestCase):
             tax=tax,
         )
         
-        us = Country.objects.get(iso="US")
-        ie = Country.objects.get(iso="IE")
+        us = Country.objects.get(code="us")
+        ie = Country.objects.get(code="ie")
 
         postal_address1 = PostalAddress.objects.create(
             line1 = "Doe Ltd.",

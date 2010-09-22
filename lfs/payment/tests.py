@@ -70,7 +70,7 @@ class PayPalPaymentTestCase(TestCase):
 
         PayPalIPN._postback = fake_postback
         
-        country = Country.objects.get(iso="IE")
+        country = Country.objects.get(code="ie")
         order = Order(invoice_country=country, shipping_country=country, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()
@@ -96,7 +96,7 @@ class PayPalPaymentTestCase(TestCase):
 
         PayPalIPN._postback = fake_postback
         
-        country = Country.objects.get(iso="IE")
+        country = Country.objects.get(code="ie")
         order = Order(invoice_country=country, shipping_country=country, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()
@@ -124,7 +124,7 @@ class PayPalPaymentTestCase(TestCase):
             return 'VERIFIED'
 
         PayPalIPN._postback = fake_postback        
-        country = Country.objects.get(iso="IE")
+        country = Country.objects.get(code="ie")
         order = Order(invoice_country=country, shipping_country=country, uuid=self.uuid)
         self.assertEqual(order.state, SUBMITTED)
         order.save()
@@ -145,7 +145,7 @@ class PayPalPaymentTestCase(TestCase):
         self.assertEqual(order.state, PAYMENT_FLAGGED)
         
     def test_correct_address_fields_set_on_checkout(self):
-        country = Country.objects.get(iso="US")
+        country = Country.objects.get(code="us")
         order = Order(invoice_firstname="bill", invoice_lastname="blah",
                       invoice_line1="bills house", invoice_line2="bills street",
                       invoice_city="bills town", invoice_state="bills state",

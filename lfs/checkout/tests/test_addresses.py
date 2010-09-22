@@ -36,10 +36,10 @@ class CheckoutAddressesTestCase(TestCase):
     def setUp(self):
         """
         """
-        ie = Country.objects.get(iso="IE")
-        gb = Country.objects.get(iso="GB")
-        de = Country.objects.get(iso="DE")
-        us = Country.objects.get(iso="US")
+        ie = Country.objects.get(code="ie")
+        gb = Country.objects.get(code="gb")
+        de = Country.objects.get(code="de")
+        us = Country.objects.get(code="us")
         
         shop = get_default_shop()
         for ic in Country.objects.all():

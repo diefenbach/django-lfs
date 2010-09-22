@@ -388,11 +388,15 @@ def refresh_cart(request):
         customer.selected_invoice_address.postal_address.country = country_iso
         customer.selected_invoice_address.postal_address.save()
         customer.selected_invoice_address.save()
-    customer.selected_country_id = country_iso
+    
+    if country_iso:
+        selected_country = Country.objects.get(code=country_iso.lower())
+        customer.selected_country_id = selected_country.id
 
     # NOTE: The customer has to be saved already here in order to calculate
     # a possible new valid shippig method below, which coulb be triggered by
     # the changing of the shipping country.
+    
     customer.save()
 
     # Update Amounts
