@@ -21,14 +21,10 @@ from django.test import TestCase
 from django.test.client import Client
 
 # lfs imports
-from lfs.core.models import Shop
+from lfs.core.models import Shop, Country
 from lfs.order.models import Order
 from lfs.tests.utils import RequestFactory
 import lfs.core.utils
-
-# 3rd party imports
-from countries.models import Country
-
 
 class ShopTestCase(TestCase):
     """Tests the views of the lfs.catalog.

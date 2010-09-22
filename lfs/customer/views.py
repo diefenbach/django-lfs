@@ -21,6 +21,7 @@ from django.http import HttpResponse
 import lfs
 from lfs.checkout.settings import INVOICE_PREFIX, SHIPPING_PREFIX
 from lfs.core.settings import POSTAL_ADDRESS_L10N
+from lfs.core.models import Country
 from lfs.customer import utils as customer_utils
 from lfs.customer.forms import EmailForm
 from lfs.customer.forms import RegisterForm
@@ -32,7 +33,6 @@ from lfs.order.models import Order
 from postal.library import get_postal_form_class
 from postal.forms import PostalAddressForm
 from postal.models import PostalAddress
-from countries.models import Country
 
 def login(request, template_name="lfs/customer/login.html"):
     """Custom view to login or register/login a user.

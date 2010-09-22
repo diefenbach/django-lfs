@@ -5,13 +5,13 @@ from django.test import TestCase
 from django.test.client import Client
 
 # lfs imports
+from lfs.core.models import Country
 from lfs.order.models import Order
 from lfs.order.settings import PAID, PAYMENT_FAILED, PAYMENT_FLAGGED, SUBMITTED
 from lfs.payment.models import PayPalOrderTransaction
 from lfs.payment.utils import get_paypal_link_for_order
 
 # other imports
-from countries.models import Country
 from paypal.standard.ipn.models import PayPalIPN
 from paypal.standard.models import ST_PP_COMPLETED, ST_PP_DENIED
 import uuid

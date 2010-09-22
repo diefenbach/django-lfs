@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 import lfs.core.utils
 from lfs import shipping
 from lfs.caching.utils import lfs_get_object_or_404
-from lfs.core.models import Shop
+from lfs.core.models import Shop, Country
 from lfs.criteria.models.criteria_objects import CriteriaObjects
 from lfs.criteria.settings import EQUAL
 from lfs.criteria.settings import LESS_THAN
@@ -23,9 +23,6 @@ from lfs.criteria.settings import SELECT_OPERATORS
 from lfs.criteria.settings import IS, IS_NOT, IS_VALID, IS_NOT_VALID
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
-
-# other imports
-from countries.models import Country
 
 class Criterion(object):
     """Base class for all lfs criteria.

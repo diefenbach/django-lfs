@@ -4,11 +4,11 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
+from lfs.core.models import Country
 from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
 
 # 3rd party imports
-from countries.models import Country
 from postal.models import PostalAddress
 
 class Customer(models.Model):

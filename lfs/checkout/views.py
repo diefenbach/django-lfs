@@ -26,6 +26,7 @@ from lfs.checkout.settings import CHECKOUT_TYPE_ANON
 from lfs.checkout.settings import CHECKOUT_TYPE_AUTH
 from lfs.checkout.settings import INVOICE_PREFIX, SHIPPING_PREFIX
 from lfs.customer import utils as customer_utils
+from lfs.core.models import Country
 from lfs.customer.models import Address
 from lfs.customer.models import BankAccount
 from lfs.customer.forms import RegisterForm
@@ -41,7 +42,6 @@ from lfs.voucher.settings import MESSAGES
 from postal.models import PostalAddress
 from postal.library import get_postal_form_class
 from postal.forms import PostalAddressForm
-from countries.models import Country
 
 def login(request, template_name="lfs/checkout/login.html"):
     """Displays a form to login or register/login the user within the check out

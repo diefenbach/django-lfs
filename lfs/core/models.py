@@ -12,8 +12,18 @@ from lfs.checkout.settings import CHECKOUT_TYPE_SELECT
 from lfs.core.fields.thumbs import ImageWithThumbsField
 from lfs.catalog.models import StaticBlock
 
-# 3rd party imports
-from countries.models import Country
+class Country(models.Model):
+    """Holds country relevant data for the shop.
+    """
+    code = models.CharField(_(u"Country code"), max_length=2)
+    name = models.CharField(_(u"Name"), max_length=100)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Countries'
+        ordering = ("name", )
 
 class ActionGroup(models.Model):
     """Actions of a action group can be displayed on several parts of the web

@@ -24,6 +24,7 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import Property
 from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
+from lfs.core.models import Country
 from lfs.core.utils import l10n_float
 from lfs.core.utils import LazyEncoder
 from lfs.shipping import utils as shipping_utils
@@ -31,8 +32,6 @@ from lfs.payment import utils as payment_utils
 from lfs.customer import utils as customer_utils
 from lfs.voucher.models import Voucher
 from lfs.voucher.settings import MESSAGES
-
-from countries.models import Country
 
 def cart(request, template_name="lfs/cart/cart.html"):
     """The main view of the cart.

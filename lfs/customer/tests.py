@@ -6,14 +6,13 @@ from django.core.urlresolvers import reverse
 from django.core import mail
 
 # lfs imports
-from lfs.core.models import Shop
+from lfs.core.models import Shop, Country
 from lfs.customer.models import Customer, Address
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.payment.models import PaymentMethod
 
 # other imports
-from countries.models import Country
 from postal.models import PostalAddress
 
 class AddressTestCase(TestCase):

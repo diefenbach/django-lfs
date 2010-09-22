@@ -13,7 +13,7 @@ from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
-from lfs.core.models import Shop
+from lfs.core.models import Shop, Country
 from lfs.core.utils import get_default_shop
 from lfs.customer.models import Customer, Address
 from lfs.order.models import Order
@@ -25,7 +25,6 @@ from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 
 # 3rd party imports
-from countries.models import Country
 from postal.models import PostalAddress
 from postal.library import get_postal_form_class
 

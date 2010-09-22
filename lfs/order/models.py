@@ -8,6 +8,7 @@ import lfs.payment.utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
+from lfs.core.models import Country
 from lfs.order.settings import ORDER_STATES
 from lfs.order.settings import SUBMITTED
 from lfs.shipping.models import ShippingMethod
@@ -15,7 +16,6 @@ from lfs.payment.models import PaymentMethod
 from lfs.payment.settings import PAYPAL
 
 # other imports
-from countries.models import Country
 import uuid
 
 def get_unique_id_str():
