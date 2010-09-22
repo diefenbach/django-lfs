@@ -196,7 +196,7 @@ class OrderTestCase(TestCase):
     def test_paypal_link(self):
         """Tests created paypal link.
         """
-        payment_method = PaymentMethod.objects.create(
+        payment_method, created = PaymentMethod.objects.get_or_create(
             id = 3,
             name="PayPal",
             active=True,
