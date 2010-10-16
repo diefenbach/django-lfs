@@ -8,6 +8,7 @@ from lfs.cart.models import CartItem
 from lfs.cart.models import Cart
 from lfs.payment import utils as payment_utils
 from lfs.shipping import utils as shipping_utils
+from lfs.voucher.models import Voucher
 
 def get_cart_max_delivery_time(request, cart):
     """Returns the delivery time object with the maximal delivery time of all
@@ -72,12 +73,22 @@ def get_cart_costs(request, cart, total=False, cached=True):
             payment_costs = payment_utils.get_payment_costs(request, payment_method)
             cart_price += payment_costs["price"]
             cart_tax += payment_costs["tax"]
-            
+
             # Discounts
             import lfs.discounts.utils
             discounts = lfs.discounts.utils.get_valid_discounts(request)
             for discount in discounts:
                 cart_price = cart_price - discount["price"]
+
+            # Vouchers
+            try:
+                voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
+                voucher = Voucher.objects.get(number=voucher_number)
+            except Voucher.DoesNotExist:
+                pass
+            else:
+                voucher_value = voucher.get_price_gross(cart)
+                cart_price = cart_price - voucher_value
 
         cart_costs = {"price" : cart_price, "tax" : cart_tax}
         cache.set(cache_key, cart_costs)
