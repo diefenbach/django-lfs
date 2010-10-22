@@ -2,7 +2,10 @@
 # Based on django-thumbs by Antonio Melé
 
 # python imports
-from PIL import Image
+try:
+    from PIL import Image
+except ImportError:
+    import Image
 import cStringIO
 
 # django imports
