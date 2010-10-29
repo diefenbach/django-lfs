@@ -1,8 +1,8 @@
 from StringIO import StringIO
 try:
-    from PIL import Image, ImageFile
-except ImportError:
     import ImageFile, Image
+except ImportError:
+    from PIL import Image, ImageFile
 
 def scale_to_min_size(image, min_width, min_height):
     """Returns an image, that isn't smaller than min_width and min_height.    

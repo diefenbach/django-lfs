@@ -3,9 +3,10 @@
 
 # python imports
 try:
-    from PIL import Image
-except ImportError:
     import Image
+except ImportError:
+    from PIL import Image
+
 import cStringIO
 
 # django imports
