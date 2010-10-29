@@ -51,12 +51,11 @@ def search(request, template_name="lfs/search/search_results.html"):
     q = request.GET.get("q", "")
     
     # Products
-    query = Q(active=True) & \
-            Q(name__icontains=q) | \
+    query = Q(name__icontains=q) | \
             Q(manufacturer__name__icontains=q) | \
             Q(sku_manufacturer__icontains=q) & \
             Q(sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
-    products = Product.objects.filter(query)
+    products = Product.objects.filter(query).filter(active=True)
 
     # Sorting
     sorting = request.session.get("sorting")    
