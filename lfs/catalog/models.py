@@ -20,6 +20,7 @@ from lfs.catalog.settings import ACTIVE_FOR_SALE_STANDARD
 from lfs.catalog.settings import ACTIVE_FOR_SALE_YES
 from lfs.catalog.settings import PRODUCT_TYPE_CHOICES
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT
+from lfs.catalog.settings import CUSTOMIZABLE_PRICE_PRODUCT
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import VARIANT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
@@ -965,7 +966,10 @@ class Product(models.Model):
         if object.is_variant() and not object.active_price:
             object = object.parent
 
-        price = object.price
+        if object.is_customizable_price_product():
+            price = object.get_custom_price()
+        else:
+            price = object.price
         if with_properties and object.is_configurable_product():
             price += self._get_default_properties_price(object)
 
@@ -988,6 +992,12 @@ class Product(models.Model):
 
         return price
 
+    def get_custom_price(self):
+        raise Exception("You must define a function custom_price in an inherited class")
+
+    def get_custom_sale_price(self):
+        raise Exception("You must define a function custom_sale_price in an inherited class")
+
     def get_price_gross(self, with_properties=True):
         """Returns the real gross price of the product. This is the base of
         all price and tax calculations.
@@ -1006,11 +1016,15 @@ class Product(models.Model):
         if object.get_for_sale():
             if object.is_variant() and not object.active_for_sale_price:
                 price = object.parent.get_for_sale_price()
+            elif object.is_customizable_price_product():
+                price = object.get_custom_sale_price()
             else:
                 price = object.get_for_sale_price()
         else:
             if object.is_variant() and not object.active_price:
                 price = object.parent.price
+            elif object.is_customizable_price_product():
+                price = object.get_custom_price()
             else:
                 price = object.price
 
@@ -1302,6 +1316,11 @@ class Product(models.Model):
         """Returns True if product is product with variants.
         """
         return self.sub_type == PRODUCT_WITH_VARIANTS
+
+    def is_customizable_price_product(self):
+        """Returns True if product is a customizable price product.
+        """
+        return self.sub_type == CUSTOMIZABLE_PRICE_PRODUCT
 
     def is_variant(self):
         """Returns True if product is variant.
