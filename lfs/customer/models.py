@@ -8,9 +8,6 @@ from lfs.core.models import Country
 from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
 
-# 3rd party imports
-from postal.models import PostalAddress
-
 class Customer(models.Model):
     """
     * A customer holds all shop customer related information and is assigned to
