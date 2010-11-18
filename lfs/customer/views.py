@@ -30,9 +30,8 @@ from lfs.customer.models import Address
 from lfs.order.models import Order
 
 # other imports
-from postal.library import get_postal_form_class
+from postal.library import form_factory
 from postal.forms import PostalAddressForm
-from postal.models import PostalAddress
 
 def login(request, template_name="lfs/customer/login.html"):
     """Custom view to login or register/login a user.
@@ -179,8 +178,8 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
     if request.method == "POST":
         form = AddressForm(request.POST)
         if form.is_valid():
-            save_postal_address(request, customer, INVOICE_PREFIX)
-            save_postal_address(request, customer, SHIPPING_PREFIX)
+            save_address(request, customer, INVOICE_PREFIX)
+            save_address(request, customer, SHIPPING_PREFIX)
             customer.selected_invoice_address.customer = customer
             customer.selected_invoice_address.firstname = form.cleaned_data['invoice_firstname']
             customer.selected_invoice_address.lastname = form.cleaned_data['invoice_lastname']
@@ -226,14 +225,12 @@ def get_country_code(request, prefix):
         customer = customer_utils.get_or_create_customer(request)
         if prefix == INVOICE_PREFIX:
             if customer.selected_invoice_address is not None:
-                if customer.selected_invoice_address.postal_address is not None:
-                    if customer.selected_invoice_address.postal_address.country is not None:
-                        country_code = customer.selected_invoice_address.postal_address.country.code
+                if customer.selected_invoice_address.country is not None:
+                    country_code = customer.selected_invoice_address.country.code
         elif prefix == SHIPPING_PREFIX:
             if customer.selected_shipping_address is not None:
-                if customer.selected_shipping_address.postal_address is not None:
-                    if customer.selected_shipping_address.postal_address.country is not None: 
-                        country_code = customer.selected_shipping_address.postal_address.country.code
+                if customer.selected_shipping_address.country is not None: 
+                    country_code = customer.selected_shipping_address.country.code
 
     # get country code from shop
     if country_code == '':
@@ -256,7 +253,7 @@ def address_inline(request, prefix, form):
         else:
             countries = shop.shipping_countries.all()
         customer = customer_utils.get_or_create_customer(request)
-        address_form_class = get_postal_form_class(country_code)
+        address_form_class = form_factory(country_code)
         if request.method == 'POST':
             if POSTAL_ADDRESS_L10N == True:
                 address_form = address_form_class(prefix=prefix, data=request.POST,)
@@ -264,23 +261,21 @@ def address_inline(request, prefix, form):
                 address_form = PostalAddressForm(prefix=prefix, data=request.POST,)
             if countries is not None:
                 address_form.fields["country"].choices = [(c.code, c.name) for c in countries]
-            save_postal_address(request, customer, prefix)
+            save_address(request, customer, prefix)
         else:
              # If there are addresses intialize the form.
             initial = {}
-            postal_address = None
+            customer_selected_address = None
             if hasattr(customer, 'selected_' + prefix + '_address'):
                 customer_selected_address = getattr(customer, 'selected_' + prefix + '_address')
-                if customer_selected_address is not None:
-                    postal_address = customer_selected_address.postal_address
-            if postal_address is not None:
+            if customer_selected_address is not None:
                 initial.update({
-                    "line1" : postal_address.line1,
-                    "line2" : postal_address.line2,
-                    "city" : postal_address.city,
-                    "state" : postal_address.state,
-                    "code" : postal_address.code,
-                    "country" : postal_address.country.code,
+                    "line1" : customer_selected_address.company_name,
+                    "line2" : customer_selected_address.street,
+                    "city" : customer_selected_address.city,
+                    "state" : customer_selected_address.state,
+                    "code" : customer_selected_address.zip_code,
+                    "country" : customer_selected_address.country.code,
                 })
             else:
                 initial.update({prefix + "-country" : country_code,})
@@ -306,7 +301,7 @@ def address_inline(request, prefix, form):
         "form": form,
     }))
 
-def save_postal_address(request, customer, prefix):
+def save_address(request, customer, prefix):
     # get the shop
     shop = lfs.core.utils.get_default_shop()
 
@@ -314,41 +309,38 @@ def save_postal_address(request, customer, prefix):
     country_iso = request.POST.get(prefix + "-country", shop.default_country.code)
     customer_selected_address = None
     address_attribute = 'selected_' + prefix + '_address'
-    postal_address = None
     existing_address = False
-    existing_postal_address = False
     if hasattr(customer, address_attribute):
         customer_selected_address = getattr(customer, address_attribute)
         if customer_selected_address is not None:
             existing_address = True
-            if customer_selected_address.postal_address is not None:
-                # we have an existing address so we update it
-                existing_postal_address = True
-                postal_address = customer_selected_address.postal_address
-                postal_address.line1 = request.POST.get(prefix + "-line1")
-                postal_address.line2 = request.POST.get(prefix + "-line2")
-                postal_address.city = request.POST.get(prefix + "-city")
-                postal_address.state = request.POST.get(prefix + "-state")
-                postal_address.code = request.POST.get(prefix + "-code")
-                postal_address.country = country_iso
-                postal_address.save()
+            customer_selected_address.company_name = request.POST.get(prefix + "-line1")
+            customer_selected_address.street = request.POST.get(prefix + "-line2")
+            customer_selected_address.city = request.POST.get(prefix + "-city")
+            customer_selected_address.state = request.POST.get(prefix + "-state")
+            customer_selected_address.zip_code = request.POST.get(prefix + "-code")
+            customer_selected_address.country = Country.objects.get(code=country_iso)
+            customer_selected_address.save()
     if not existing_address:
         # no address exists for customer so create one
-        customer_selected_address = Address.objects.create(customer=customer)
-    if not existing_postal_address:
-        postal_address = PostalAddress.objects.create(line1=request.POST.get(prefix + "-line1"),
-                                                       line2=request.POST.get(prefix + "-line2"),
-                                                       city=request.POST.get(prefix + "-city"),
-                                                       state=request.POST.get(prefix + "-state"),
-                                                       code=request.POST.get(prefix + "-code"),
-                                                       country=country_iso)
+        customer_selected_address = Address.objects.create( customer=customer,
+                                                            company_name=request.POST.get(prefix + "-line1", ""),
+                                                            street=request.POST.get(prefix + "-line2", ""),
+                                                            city=request.POST.get(prefix + "-city", ""),
+                                                            state=request.POST.get(prefix + "-state", ""),
+                                                            zip_code=request.POST.get(prefix + "-code", ""),
+                                                            country=Country.objects.get(code=country_iso))
     if customer_selected_address is not None:
-        if postal_address is not None:
-            setattr(customer_selected_address, 'postal_address', postal_address)
-            customer_selected_address.save()
-        setattr(customer, address_attribute, customer_selected_address)
-        customer.save()
-    return postal_address
+        customer_selected_address.company_name=request.POST.get(prefix + "-line1", "")
+        customer_selected_address.street=request.POST.get(prefix + "-line2", "")
+        customer_selected_address.city=request.POST.get(prefix + "-city", "")
+        customer_selected_address.state=request.POST.get(prefix + "-state", "")
+        customer_selected_address.zip_code=request.POST.get(prefix + "-code", "")
+        customer_selected_address.country=Country.objects.get(code=country_iso)
+        customer_selected_address.save()
+    setattr(customer, address_attribute, customer_selected_address)
+    customer.save()
+    return customer_selected_address
 
 def email(request, template_name="lfs/customer/email.html"):
     """Saves the email address from the data form.
