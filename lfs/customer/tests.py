@@ -12,9 +12,6 @@ from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.payment.models import PaymentMethod
 
-# other imports
-from postal.models import PostalAddress
-
 class AddressTestCase(TestCase):
     
     fixtures = ['lfs_shop.xml']
@@ -58,32 +55,23 @@ class AddressTestCase(TestCase):
             tax=tax,
         )
         
-        
-        postal_address1 = PostalAddress.objects.create(
-            line1 = "Doe Ltd.",
-            line2 = "Street 42",
-            city = "Gotham City",
-            code = "2342",
-            country = "DE",
-        )
-
         address1 = Address.objects.create(firstname = "John",
             lastname = "Doe",
-            postal_address=postal_address1,
+            company_name = "Doe Ltd.",
+            street = "Street 42",
+            city = "Gotham City",
+            zip_code = "2342",
+            country = de,
             phone = "555-111111",
             email = "john@doe.com",)
 
-        postal_address2 = PostalAddress.objects.create(
-            line1 = "Doe Ltd.",
-            line2 = "Street 43",            
-            city = "Smallville",
-            code = "2443",
-            country = "DE",
-        )
-
         address2 = Address.objects.create(firstname = "Jane",
             lastname = "Doe",
-            postal_address=postal_address2,
+            company_name = "Doe Ltd.",
+            street = "Street 43",
+            city = "Smallville",
+            zip_code = "2443",
+            country = de,
             phone = "666-111111",
             email = "jane@doe.com",)
         
@@ -143,7 +131,6 @@ class AddressTestCase(TestCase):
 
     def test_create_new_address(self):
         # test that we have only 2 addresses registered (from setUp)
-        self.assertEquals(PostalAddress.objects.count(), 2)
         self.assertEquals(Address.objects.count(), 2)
 
         # register a new user
@@ -163,12 +150,10 @@ class AddressTestCase(TestCase):
         address_data = {'invoice_firstname': 'Joe', 'invoice_lastname': 'Bloggs',
                         'invoice-line1': 'de company name', 'invoice-line2': 'de street',
                         'invoice-city': 'Dallas', 'invoice-state': 'TX',
-                        'invoice-code': '84003', 'invoice-country': 'US',
-                        'shipping-country': 'IE'}
+                        'invoice-code': '84003', 'invoice-country': 'us',
+                        'shipping-country': 'ie'}
         address_response = self.c.post(reverse('lfs_my_addresses'), address_data)
-        
-        # We get 2 new postal addresses one shipping and one postal
-        self.assertEquals(PostalAddress.objects.count(), 4)
+
         self.assertEquals(Address.objects.count(), 4)
         self.assertRedirects(address_response, reverse('lfs_my_addresses'), status_code=302, target_status_code=200,)
 
@@ -176,7 +161,5 @@ class AddressTestCase(TestCase):
         our_customer = Customer.objects.get(user=our_user)
         self.assertNotEquals(our_customer.selected_invoice_address, None)
         self.assertNotEquals(our_customer.selected_shipping_address, None)
-        self.assertNotEquals(our_customer.selected_invoice_address.postal_address, None)
-        self.assertNotEquals(our_customer.selected_shipping_address.postal_address, None)
         self.assertEquals(our_customer.selected_invoice_address.firstname, 'Joe')
         self.assertEquals(our_customer.selected_invoice_address.lastname, 'Bloggs')
