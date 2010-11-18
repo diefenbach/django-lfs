@@ -166,7 +166,7 @@ def get_selected_shipping_country(request):
     customer = customer_utils.get_customer(request)
     if customer:
         if customer.selected_shipping_address:
-            return customer.selected_shipping_address.postal_address.country
+            return customer.selected_shipping_address.country
         elif customer.selected_country:
             return customer.selected_country
 
