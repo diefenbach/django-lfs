@@ -78,22 +78,22 @@
 					(<a href="mailto:{{ customer.selected_invoice_address.email }}">{{ customer.selected_invoice_address.email }}</a>)
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.postal_address.line1 }}
+					{{ customer.selected_invoice_address.company_name }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.postal_address.line2 }}
+					{{ customer.selected_invoice_address.street }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.postal_address.city }}
+					{{ customer.selected_invoice_address.city }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.postal_address.state }}
+					{{ customer.selected_invoice_address.state }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.postal_address.code }}
+					{{ customer.selected_invoice_address.zip_code }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.postal_address.country }}
+					{{ customer.selected_invoice_address.country }}
 				</div>
 				<div>
 					{{ customer.selected_invoice_address.phone }}
