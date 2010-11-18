@@ -24,9 +24,6 @@ from lfs.tax.models import Tax
 from lfs.tests.utils import DummySession
 from lfs.tests.utils import RequestFactory
 
-# 3rd party models
-from postal.models import PostalAddress
-
 class OrderTestCase(TestCase):
     """
     """
@@ -60,31 +57,23 @@ class OrderTestCase(TestCase):
         us = Country.objects.get(code="us")
         ie = Country.objects.get(code="ie")
 
-        postal_address1 = PostalAddress.objects.create(
-            line1 = "Doe Ltd.",
-            line2 = "Street 42",
-            city = "Gotham City",
-            code = "2342",
-            country = "IE",
-        )
-
         address1 = Address.objects.create(firstname = "John",
             lastname = "Doe",
-            postal_address=postal_address1,
+            company_name = "Doe Ltd.",
+            street = "Street 42",
+            city = "Gotham City",
+            zip_code = "2342",
+            country = ie,
             phone = "555-111111",
             email = "john@doe.com",)
 
-        postal_address2 = PostalAddress.objects.create(
-            line1 = "Doe Ltd.",
-            line2 = "Street 43",
-            city = "Smallville",
-            code = "2443",
-            country = "US",
-        )
-
         address2 = Address.objects.create(firstname = "Jane",
             lastname = "Doe",
-            postal_address=postal_address2,
+            company_name = "Doe Ltd.",
+            street = "Street 43",
+            city = "Smallville",
+            zip_code = "2443",
+            country = us,
             phone = "666-111111",
             email = "jane@doe.com",)
         
