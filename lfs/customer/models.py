@@ -62,21 +62,25 @@ class Customer(models.Model):
         return self.selected_shipping_address or \
                self.selected_invoice_address or \
                None
-        
+
 class Address(models.Model):
     """An address which can be used as shipping and/or invoice address.
     """
-    # allow a customer to have multiple addresses to select from as invoice or shipping address
     customer = models.ForeignKey(Customer, verbose_name=_(u"Customer"), blank=True, null=True, related_name="addresses")
 
     firstname = models.CharField(_("Firstname"), max_length=50)
     lastname = models.CharField(_("Lastname"), max_length=50)
-    postal_address = models.ForeignKey(PostalAddress, verbose_name=_(u"Postal address"), blank=True, null=True)
+    company_name = models.CharField(_("Company name"), max_length=50, blank=True, null=True)
+    street = models.CharField(_("Street"), max_length=100)
+    zip_code = models.CharField(_("Zip code"), max_length=10)
+    city = models.CharField(_("City"), max_length=50)
+    state = models.CharField(_("State"), max_length=50, blank=True)
+    country = models.ForeignKey(Country, verbose_name=_("Country"), blank=True, null=True)
     phone = models.CharField(_("Phone"), blank=True, max_length=20)
     email = models.EmailField(_("E-Mail"), blank=True, null=True, max_length=50)
 
     def __unicode__(self):
-        return "%s %s / %s" % (self.firstname, self.lastname, self.postal_address)
+        return "%s / %s" % (self.street, self.city)
 
 class BankAccount(models.Model):
     """Stores all shop relevant data of a bank account an belongs to a customer.
