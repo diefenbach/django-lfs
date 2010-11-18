@@ -83,22 +83,22 @@
 					(<a href="mailto:{{ customer.get_email_address }}">{{ customer.get_email_address }}</a>)
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.postal_address.line1 }}
+					{{ customer.selected_invoice_address.company_name }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.postal_address.line2 }}
+					{{ customer.selected_invoice_address.street }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.postal_address.city }}
+					{{ customer.selected_invoice_address.city }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.postal_address.state }}
+					{{ customer.selected_invoice_address.state }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.postal_address.code }}
+					{{ customer.selected_invoice_address.zip_code }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.postal_address.country }}
+					{{ customer.selected_invoice_address.country }}
 				</div>
 				<div>
 					{{ customer.selected_invoice_address.phone }}
@@ -114,22 +114,22 @@
 					{{ customer.selected_shipping_address.lastname }}
 				</div>
 				<div>
-					{{ customer.selected_shipping_address.postal_address.line1 }}
+					{{ customer.selected_shipping_address.company_name }}
 				</div>
 				<div>
-					{{ customer.selected_shipping_address.postal_address.line2 }}
+					{{ customer.selected_shipping_address.street }}
 				</div>
 				<div>
-					{{ customer.selected_shipping_address.postal_address.city }}
+					{{ customer.selected_shipping_address.city }}
 				</div>
 				<div>
-					{{ customer.selected_shipping_address.postal_address.state }}
+					{{ customer.selected_shipping_address.state }}
 				</div>
 				<div>
-					{{ customer.selected_shipping_address.postal_address.code }}
+					{{ customer.selected_shipping_address.zip_code }}
 				</div>
 				<div>
-					{{ customer.selected_shipping_address.postal_address.country }}
+					{{ customer.selected_shipping_address.country }}
 				</div>
 				<div>
 					{{ customer.selected_shipping_address.phone }}
