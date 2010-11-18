@@ -459,19 +459,21 @@ def _save_country(request, customer):
     """
     """
     # Update shipping country
-    country = request.POST.get("shipping-country")
+    country_iso = request.POST.get("shipping-country", None)
     if request.POST.get("no_shipping") == "on":
-        country = request.POST.get("invoice-country")
+        country_iso = request.POST.get("invoice-country", None)
 
-    if customer.selected_shipping_address:
-        customer.selected_shipping_address.country_id = country
-        customer.selected_shipping_address.save()
-    customer.selected_country_id = country
-    customer.save()
+    if country_iso is not None:
+        country = Country.objects.get(code=country_iso)
+        if customer.selected_shipping_address:
+            customer.selected_shipping_address.country = country
+            customer.selected_shipping_address.save()
+        customer.selected_country = country
+        customer.save()
 
-    lfs.shipping.utils.update_to_valid_shipping_method(request, customer)
-    lfs.payment.utils.update_to_valid_payment_method(request, customer)
-    customer.save()
+        lfs.shipping.utils.update_to_valid_shipping_method(request, customer)
+        lfs.payment.utils.update_to_valid_payment_method(request, customer)
+        customer.save()
 
 def _save_customer(request, customer):
     """
