@@ -24,9 +24,6 @@ from lfs.payment.settings import BY_INVOICE, DIRECT_DEBIT
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 
-# 3rd party imports
-from postal.models import PostalAddress
-
 class CheckoutAddressesTestCase(TestCase):
     """
     Test localization of addresses on OnePageCheckoutForm
@@ -57,30 +54,22 @@ class CheckoutAddressesTestCase(TestCase):
 
         self.by_invoice = PaymentMethod.objects.get(pk=BY_INVOICE)
 
-        postal_address1 = PostalAddress.objects.create(
-            line1 = "Doe Ltd.",
-            line2 = "Street 42",
-            city = "Gotham City",
-            code = "2342",
-            country = "IE",
-        )
-
         address1 = Address.objects.create(firstname = "John",
             lastname = "Doe",
-            postal_address=postal_address1
-        )
-
-        postal_address2 = PostalAddress.objects.create(
-            line1 = "Doe Ltd.",
-            line2 = "Street 43",
-            city = "Smallville",
-            code = "2443",
-            country = "US",
+            company_name = "Doe Ltd.",
+            street = "Street 42",
+            city = "Gotham City",
+            zip_code = "2342",
+            country = ie,
         )
 
         address2 = Address.objects.create(firstname = "Jane",
             lastname = "Doe",
-            postal_address=postal_address2
+            company_name = "Doe Ltd.",
+            street = "Street 43",
+            city = "Smallville",
+            zip_code = "2443",
+            country = us,
         )
 
         self.username = 'joe'
@@ -162,7 +151,6 @@ class CheckoutAddressesTestCase(TestCase):
         logged_in = self.c.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
-        self.assertEquals(PostalAddress.objects.count(), 2)
         self.assertEquals(Address.objects.count(), 2)
         cart_response = self.c.get(reverse('lfs_cart'))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
@@ -175,7 +163,7 @@ class CheckoutAddressesTestCase(TestCase):
                          'invoice-city': 'de area',
                          'invoice-state': 'de town',
                          'invoice-code': 'cork',
-                         'invoice-country':"IE",
+                         'invoice-country':"ie",
                          'invoice_email': 'a@a.com',
                          'invoice_phone': '1234567',
                          'shipping_firstname':'hans',
@@ -185,7 +173,7 @@ class CheckoutAddressesTestCase(TestCase):
                          'shipping-city': 'stuff',
                          'shipping-state': 'BE',
                          'shipping-code': '12345',
-                         'shipping-country':"DE",
+                         'shipping-country':"de",
                          'shipping_email': 'b@b.com',
                          'shipping_phone': '7654321',
                          'payment_method': self.by_invoice.id,
@@ -196,11 +184,9 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
 
         # test we have same amount of address objects at end of checkout
-        self.assertEquals(PostalAddress.objects.count(), 2)
         self.assertEquals(Address.objects.count(), 2)
 
-    def test_ajax_saves_postal_address(self):
-        self.assertEquals(PostalAddress.objects.count(), 2)
+    def test_ajax_saves_address(self):
         self.assertEquals(Address.objects.count(), 2)
 
         # register a new user
@@ -215,25 +201,29 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertEqual(our_customer.selected_shipping_address, None)
 
         # test that an ajax request creates a new customer address
-        form_data = {'invoice-country': 'IE'}
+        form_data = {'invoice-country': 'ie'}
         ajax_respons = self.c.post(reverse('lfs_changed_invoice_country'), form_data)
-        self.assertEquals(PostalAddress.objects.count(), 3)
+        self.assertEquals(Address.objects.count(), 3)
 
         # refetch our customer
         our_customer = Customer.objects.get(user__email="test@test.com")
         self.assertNotEqual(our_customer.selected_invoice_address, None)
-        self.assertNotEqual(our_customer.selected_invoice_address.postal_address, None)
         self.assertEqual(our_customer.selected_shipping_address, None)
 
-        # test that we still have the same number of PostalAddresses after another invoice post
-        form_data = {'invoice-line1': 'my house'}
+        # test that we still have the same number of Addresses after another invoice post
+        form_data = {'invoice-line1': 'my house',
+                     'invoice-line2': 'a street',
+                     'invoice-city': 'a city',
+                     'invoice-code': 'a code',
+                     'invoice-state': 'a state',
+                     }
         ajax_respons = self.c.post(reverse('lfs_changed_invoice_country'), form_data)
-        self.assertEquals(PostalAddress.objects.count(), 3)
+        self.assertEquals(Address.objects.count(), 3)
 
         # post some shipping address info
         form_data = {'shipping-line1': 'de missusesss house'}
         ajax_respons = self.c.post(reverse('lfs_changed_shipping_country'), form_data)
-        self.assertEquals(PostalAddress.objects.count(), 4)
+        self.assertEquals(Address.objects.count(), 4)
 
         # refetch our customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -241,6 +231,10 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertNotEqual(our_customer.selected_shipping_address, None)
 
         # test that adding more info to shipping address doesn't create a brand new one
-        form_data = {'shipping-firstname': 'charlize'}
+        form_data = {'shipping-firstname': 'charlize',
+                     'shipping-line2': 'a street',
+                     'shipping-city': 'a city',
+                     'shipping-code': 'a code',
+                     'shipping-state': 'a state',}
         ajax_respons = self.c.post(reverse('lfs_changed_shipping_country'), form_data)
-        self.assertEquals(PostalAddress.objects.count(), 4)
+        self.assertEquals(Address.objects.count(), 4)
