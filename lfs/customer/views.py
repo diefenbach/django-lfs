@@ -314,11 +314,11 @@ def save_address(request, customer, prefix):
         customer_selected_address = getattr(customer, address_attribute)
         if customer_selected_address is not None:
             existing_address = True
-            customer_selected_address.company_name = request.POST.get(prefix + "-line1")
-            customer_selected_address.street = request.POST.get(prefix + "-line2")
-            customer_selected_address.city = request.POST.get(prefix + "-city")
-            customer_selected_address.state = request.POST.get(prefix + "-state")
-            customer_selected_address.zip_code = request.POST.get(prefix + "-code")
+            customer_selected_address.company_name = request.POST.get(prefix + "-line1", "")
+            customer_selected_address.street = request.POST.get(prefix + "-line2", "")
+            customer_selected_address.city = request.POST.get(prefix + "-city", "")
+            customer_selected_address.state = request.POST.get(prefix + "-state", "")
+            customer_selected_address.zip_code = request.POST.get(prefix + "-code", "")
             customer_selected_address.country = Country.objects.get(code=country_iso)
             customer_selected_address.save()
     if not existing_address:
@@ -330,14 +330,6 @@ def save_address(request, customer, prefix):
                                                             state=request.POST.get(prefix + "-state", ""),
                                                             zip_code=request.POST.get(prefix + "-code", ""),
                                                             country=Country.objects.get(code=country_iso))
-    if customer_selected_address is not None:
-        customer_selected_address.company_name=request.POST.get(prefix + "-line1", "")
-        customer_selected_address.street=request.POST.get(prefix + "-line2", "")
-        customer_selected_address.city=request.POST.get(prefix + "-city", "")
-        customer_selected_address.state=request.POST.get(prefix + "-state", "")
-        customer_selected_address.zip_code=request.POST.get(prefix + "-code", "")
-        customer_selected_address.country=Country.objects.get(code=country_iso)
-        customer_selected_address.save()
     setattr(customer, address_attribute, customer_selected_address)
     customer.save()
     return customer_selected_address
