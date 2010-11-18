@@ -21,6 +21,7 @@ from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
 from lfs.catalog.settings import STANDARD_PRODUCT
+from lfs.catalog.settings import CUSTOMIZABLE_PRICE_PRODUCT
 from lfs.catalog.settings import LIST
 
 from lfs.catalog.models import Category
@@ -2202,3 +2203,44 @@ class ProductAccessoriesTestCase(TestCase):
 
         self.assertEqual(pa1.get_price(), 2.0)
         self.assertEqual(pa2.get_price(), 6.0)
+
+class MyCustomProduct(Product):
+    def get_custom_price(self):
+        return 13.0
+
+    def get_custom_sale_price(self):
+        return 10.0
+
+class CustomizablePriceProductTestCase(TestCase):
+    """Tests CustomizablePriceProduct.
+    """
+    def setUp(self):
+        """
+        """
+        self.p1 = Product.objects.create(name=u"Product 1", slug=u"product-1", price=5.0, active=True, sub_type=CUSTOMIZABLE_PRICE_PRODUCT)
+        self.p2 = Product.objects.create(name=u"Product 2", slug=u"product-2", price=6.0, active=True, sub_type=CUSTOMIZABLE_PRICE_PRODUCT, for_sale=True, for_sale_price=3.0)
+
+    def test_get_price(self):
+        """ Tests to show that normal products cannot be CUSTOMIZABLE_PRICE_PRODUCTS (inheritance is required)
+        """
+        # A normal product should raise an exception on get_custom_price
+        self.assertRaises(Exception, self.p1.get_price)
+        self.assertRaises(Exception, self.p1.get_standard_price)
+
+        # a normal product that is for sale should raise an exception
+        self.assertRaises(Exception, self.p2.get_price)
+        self.assertRaises(Exception, self.p2.get_standard_price)
+
+    def test_custom_get_price(self):
+        """Tests to show that CUSTOMIZABLE_PRICE_PRODUCTS return the correct values
+        """
+        cp1 = MyCustomProduct.objects.create(name=u"Custom Product 1", slug=u"custom-product-1", price=5.0, active=True, sub_type=CUSTOMIZABLE_PRICE_PRODUCT)
+        cp2 = MyCustomProduct.objects.create(name=u"Custom Product 2", slug=u"custom-product-2", price=6.0, active=True, sub_type=CUSTOMIZABLE_PRICE_PRODUCT, for_sale=True, for_sale_price=3.0)
+
+        # A custom product should return a custom price
+        self.assertEqual(cp1.get_price(), 13.0)
+        self.assertEqual(cp1.get_standard_price(), 13.0)
+
+        # a custom product that is for sale should return the sale price (as defined in get_custom_sale_price)
+        self.assertEqual(cp2.get_price(), 10.0)
+        self.assertEqual(cp1.get_standard_price(), 13.0)
