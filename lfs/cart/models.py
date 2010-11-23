@@ -35,6 +35,9 @@ class Cart(models.Model):
     creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
     modification_date = models.DateTimeField(_(u"Modification date"), auto_now=True, auto_now_add=True)
 
+    def __unicode__(self):
+        return "%s, %s"%(self.user, self.session)
+
     def items(self):
         """Returns the items of the cart.
         """
@@ -123,6 +126,9 @@ class CartItem(models.Model):
 
     class Meta:
         ordering = ['id']
+
+    def __unicode__(self):
+        return "Product: %s, Quantity: %f, Cart: %s"%(self.product, self.amount, self.cart)
 
     def get_price(self):
         """Convenient method to return the gross price of the product.
