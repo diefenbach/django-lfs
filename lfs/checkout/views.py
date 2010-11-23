@@ -207,6 +207,8 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
 
         if toc and form.is_valid():
             # save invoice details
+            if customer.selected_invoice_address is None:
+                customer.selected_invoice_address = Address.objects.create(customer=customer)
             customer.selected_invoice_address.firstname = request.POST.get("invoice_firstname")
             customer.selected_invoice_address.lastname = request.POST.get("invoice_lastname")
             customer.selected_invoice_address.phone = request.POST.get("invoice_phone")
