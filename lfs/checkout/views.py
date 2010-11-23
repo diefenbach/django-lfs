@@ -224,6 +224,8 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                 valid_shipping_address = True
                 if not form.cleaned_data.get("no_shipping"):
                     # save shipping details
+                    if customer.selected_shipping_address is None:
+                        customer.selected_shipping_address = Address.objects.create(customer=customer)
                     customer.selected_shipping_address.firstname = request.POST.get("shipping_firstname")
                     customer.selected_shipping_address.lastname = request.POST.get("shipping_lastname")
                     customer.selected_shipping_address.phone = request.POST.get("shipping_phone")
