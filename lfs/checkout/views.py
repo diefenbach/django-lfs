@@ -207,8 +207,6 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
 
         if toc and form.is_valid():
             # save invoice details
-            if customer.selected_invoice_address is None:
-                customer.selected_invoice_address = Address.objects.create(customer=customer, country=shop.default_country)
             customer.selected_invoice_address.firstname = request.POST.get("invoice_firstname")
             customer.selected_invoice_address.lastname = request.POST.get("invoice_lastname")
             customer.selected_invoice_address.phone = request.POST.get("invoice_phone")
@@ -224,8 +222,6 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                 valid_shipping_address = True
                 if not form.cleaned_data.get("no_shipping"):
                     # save shipping details
-                    if customer.selected_shipping_address is None:
-                        customer.selected_shipping_address = Address.objects.create(customer=customer, country=shop.default_country)
                     customer.selected_shipping_address.firstname = request.POST.get("shipping_firstname")
                     customer.selected_shipping_address.lastname = request.POST.get("shipping_lastname")
                     customer.selected_shipping_address.phone = request.POST.get("shipping_phone")
@@ -265,8 +261,6 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
 
         else: # form is not valid
             # save invoice details
-            if customer.selected_invoice_address is None:
-                customer.selected_invoice_address = Address.objects.create(customer=customer)
             customer.selected_invoice_address.firstname = request.POST.get("invoice_firstname")
             customer.selected_invoice_address.lastname = request.POST.get("invoice_lastname")
             customer.selected_invoice_address.phone = request.POST.get("invoice_phone")
@@ -279,8 +273,6 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             # or update the shipping address.
             if not form.data.get("no_shipping"):
                 # save shipping details
-                if customer.selected_shipping_address is None:
-                    customer.selected_shipping_address = Address.objects.create(customer=customer)
                 customer.selected_shipping_address.firstname = request.POST.get("shipping_firstname")
                 customer.selected_shipping_address.lastname = request.POST.get("shipping_lastname")
                 customer.selected_shipping_address.phone = request.POST.get("shipping_phone")
@@ -310,23 +302,26 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
     else:
         # If there are addresses intialize the form.
         initial = {}
-        if customer.selected_invoice_address is not None:
-            invoice_address = customer.selected_invoice_address
-            initial.update({
-                "invoice_firstname" : invoice_address.firstname,
-                "invoice_lastname" : invoice_address.lastname,
-                "invoice_phone" : invoice_address.phone,
-                "invoice_email" : invoice_address.email,
-            })
-        if customer.selected_shipping_address is not None:
-            shipping_address = customer.selected_shipping_address
-            initial.update({
-                "shipping_firstname" : shipping_address.firstname,
-                "shipping_lastname" : shipping_address.lastname,
-                "shipping_phone" : shipping_address.phone,
-                "shipping_email" : shipping_address.email,
-                "no_shipping" : False,
-            })
+        if customer.selected_invoice_address is None:
+            customer.selected_invoice_address = Address.objects.create(customer=customer, country=shop.default_country)
+        invoice_address = customer.selected_invoice_address
+        initial.update({
+            "invoice_firstname" : invoice_address.firstname,
+            "invoice_lastname" : invoice_address.lastname,
+            "invoice_phone" : invoice_address.phone,
+            "invoice_email" : invoice_address.email,
+            "invoice_country" : invoice_address.country,
+        })
+        if customer.selected_shipping_address is None:
+            customer.selected_shipping_address = Address.objects.create(customer=customer, country=shop.default_country)
+        shipping_address = customer.selected_shipping_address
+        initial.update({
+            "shipping_firstname" : shipping_address.firstname,
+            "shipping_lastname" : shipping_address.lastname,
+            "shipping_phone" : shipping_address.phone,
+            "shipping_email" : shipping_address.email,
+            "no_shipping" : False,
+        })
         form = checkout_form(initial=initial)
     cart = cart_utils.get_cart(request)
     if cart is None:

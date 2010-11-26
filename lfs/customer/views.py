@@ -263,7 +263,7 @@ def address_inline(request, prefix, form):
                 address_form.fields["country"].choices = [(c.code, c.name) for c in countries]
             save_address(request, customer, prefix)
         else:
-             # If there are addresses intialize the form.
+            # If there are addresses intialize the form.
             initial = {}
             customer_selected_address = None
             if hasattr(customer, 'selected_' + prefix + '_address'):
@@ -277,9 +277,10 @@ def address_inline(request, prefix, form):
                     "code" : customer_selected_address.zip_code,
                     "country" : customer_selected_address.country.code,
                 })
+                address_form = address_form_class(prefix=prefix, initial=initial)
             else:
-                initial.update({prefix + "-country" : country_code,})
-            address_form = address_form_class(prefix=prefix, initial=initial)
+                address_form = address_form_class(prefix=prefix)
+                address_form.fields["country"].initial = country_code
             if countries is not None:
                 address_form.fields["country"].choices = [(c.code, c.name) for c in countries]
 
@@ -295,7 +296,6 @@ def address_inline(request, prefix, form):
     # if request via ajax don't display validity errors
     if request.is_ajax():
         address_form._errors = {}
-
     return render_to_string(template_name, RequestContext(request, {
         "address_form": address_form,
         "form": form,
