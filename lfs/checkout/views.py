@@ -304,6 +304,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
         initial = {}
         if customer.selected_invoice_address is None:
             customer.selected_invoice_address = Address.objects.create(customer=customer, country=shop.default_country)
+            customer.save()
         invoice_address = customer.selected_invoice_address
         initial.update({
             "invoice_firstname" : invoice_address.firstname,
@@ -314,6 +315,7 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
         })
         if customer.selected_shipping_address is None:
             customer.selected_shipping_address = Address.objects.create(customer=customer, country=shop.default_country)
+            customer.save()
         shipping_address = customer.selected_shipping_address
         initial.update({
             "shipping_firstname" : shipping_address.firstname,
