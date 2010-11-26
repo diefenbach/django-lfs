@@ -50,3 +50,9 @@ E-Mail
 
 DEFAULT_FROM_EMAIL
     The sender e-mail address for the contact form.
+
+LFS_SEND_ORDER_MAIL_ON_CHECKOUT
+    Send details of order after customer completes checkout screen
+
+LFS_SEND_ORDER_MAIL_ON_PAYMENT
+    Send details of order after customer successfully pays for an order

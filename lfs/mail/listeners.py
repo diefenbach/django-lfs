@@ -1,3 +1,5 @@
+from django.conf import settings
+
 # lfs imports
 from lfs.core.signals import customer_added
 from lfs.core.signals import order_submitted
@@ -18,7 +20,8 @@ def order_submitted_listener(sender, **kwargs):
     """Listen to order submitted signal.
     """
     order = sender.get("order")
-    mail_utils.send_order_received_mail(order)
+    if getattr(settings, 'LFS_SEND_ORDER_MAIL_ON_CHECKOUT', True):
+        mail_utils.send_order_received_mail(order)
 order_submitted.connect(order_submitted_listener)
 
 def customer_added_listener(sender, **kwargs):

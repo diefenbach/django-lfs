@@ -1,6 +1,10 @@
+# django imports
+from django.conf import settings
+
 # lfs imports
 from lfs.order.models import Order
 from lfs.order.settings import PAID, PAYMENT_FAILED, PAYMENT_FLAGGED
+from lfs.mail import utils as mail_utils
 from models import PayPalOrderTransaction
 
 # other imports
@@ -18,6 +22,9 @@ def mark_payment(pp_obj, order_state=PAID):
         if order is not None:
             order.state = order_state
         order.save()
+        if getattr(settings, 'LFS_SEND_ORDER_MAIL_ON_PAYMENT', False):
+            mail_utils.send_order_received_mail(order)
+
     except Order.DoesNotExist, e:
         logging.error(e)
     return order

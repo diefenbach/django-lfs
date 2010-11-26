@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404
 from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.core import mail
 
 # test imports
 from lfs.catalog.models import Product
@@ -218,6 +220,11 @@ class CheckoutTestCase(TestCase):
 
         checkout_post_response = self.c.post(reverse('lfs_checkout'), checkout_data)
         self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
+
+        # check that an order email got sent
+        self.assertEqual(getattr(settings, 'LFS_SEND_ORDER_MAIL_ON_CHECKOUT', True), True)
+        self.assertEqual(getattr(settings, 'LFS_SEND_ORDER_MAIL_ON_PAYMENT', False), False)
+        self.assertEqual(len(mail.outbox), 1)
 
         # check database quantities post-checkout
         self.assertEquals(Address.objects.count(), 2)
