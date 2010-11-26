@@ -14,14 +14,12 @@ STANDARD_PRODUCT = "0"
 PRODUCT_WITH_VARIANTS = "1"
 VARIANT = "2"
 CONFIGURABLE_PRODUCT = "3"
-CUSTOMIZABLE_PRICE_PRODUCT = "4"
 
 PRODUCT_TYPE_LOOKUP = {
     STANDARD_PRODUCT : _(u"Standard"),
     PRODUCT_WITH_VARIANTS : _(u"Product with variants"),
     VARIANT : _(u"Variant"),
-    CONFIGURABLE_PRODUCT : _(u"Configurable product"),
-    CUSTOMIZABLE_PRICE_PRODUCT : _(u"Customizable price product")
+    CONFIGURABLE_PRODUCT : _(u"Configurable product")
 }
 
 PRODUCT_TYPE_CHOICES = [
@@ -29,14 +27,12 @@ PRODUCT_TYPE_CHOICES = [
     (PRODUCT_WITH_VARIANTS, _(u"Product with variants")),
     (VARIANT, _(u"Variant")),
     (CONFIGURABLE_PRODUCT, _(u"Configurable product")),
-    (CUSTOMIZABLE_PRICE_PRODUCT, _(u"Customizable price product")),
 ]
 
 PRODUCT_TYPE_FORM_CHOICES = [
     (STANDARD_PRODUCT, _(u"Standard")),
     (PRODUCT_WITH_VARIANTS, _(u"Product with variants")),
     (CONFIGURABLE_PRODUCT, _(u"Configurable product")),
-    (CUSTOMIZABLE_PRICE_PRODUCT, _(u"Customizable price product")),
 ]
 
 
@@ -113,7 +109,7 @@ CATEGORY_TEMPLATES = (
         }),
     (1,{"file":"%s/%s" % (CAT_CATEGORY_PATH ,"default.html"),
         "image":IMAGES_PATH+"/category_square.png",
-        "name":_(u"Category with subcategories"),
+        "name":_(u"Category with subcategories"),		        
         }),
 )
 
