@@ -20,7 +20,7 @@ from lfs.order.models import Order
 from lfs.order.settings import SUBMITTED
 from lfs.order.utils import add_order
 from lfs.payment.models import PaymentMethod
-from lfs.payment.settings import BY_INVOICE, DIRECT_DEBIT
+from lfs.payment.settings import BY_INVOICE
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 
