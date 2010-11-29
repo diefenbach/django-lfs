@@ -497,7 +497,7 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
             properties = product.get_properties()
             variants = product.get_variants()
 
-    elif product.is_configurable_product:
+    elif product.is_configurable_product():
         for property in product.get_configurable_properties():
             options = []
 
