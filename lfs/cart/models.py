@@ -140,7 +140,7 @@ class CartItem(models.Model):
         multiplication of the product's price and the amount of the product
         within in the cart.
         """
-        return self.product.get_price_net() * self.amount
+        return (self.get_price_gross() * self.amount) - (self.get_tax() * self.amount)
 
     def get_price_gross(self, standard=False):
         """Returns the gross price of the product.
