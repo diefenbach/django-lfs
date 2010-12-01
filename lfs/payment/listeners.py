@@ -20,11 +20,11 @@ def mark_payment(pp_obj, order_state=PAID):
         order_uuid = pp_obj.custom
         order = Order.objects.get(uuid=order_uuid)
         if order is not None:
+            if order.state != PAID and order_state == PAID:
+                if getattr(settings, 'LFS_SEND_ORDER_MAIL_ON_PAYMENT', False):
+                    mail_utils.send_order_received_mail(order)
             order.state = order_state
-        order.save()
-        if getattr(settings, 'LFS_SEND_ORDER_MAIL_ON_PAYMENT', False):
-            mail_utils.send_order_received_mail(order)
-
+            order.save()
     except Order.DoesNotExist, e:
         logging.error(e)
     return order
