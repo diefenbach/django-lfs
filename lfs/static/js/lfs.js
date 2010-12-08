@@ -73,8 +73,8 @@ $(function() {
     // Product ################################################################
 
     $("a.product-image").lightBox({
-        "txtImage" : "Bild",
-        "txtOf" : " von "
+        "txtImage" : "Image",
+        "txtOf" : " of "
     });
 
     // Hack to make the change event on radio buttons for IE working
@@ -99,8 +99,8 @@ $(function() {
 
                 // Re-bind lightbox
                 $("a.product-image").lightBox({
-                    "txtImage" : "Bild",
-                    "txtOf" : " von "
+                    "txtImage" : "Image",
+                    "txtOf" : " of "
                 });
             }
         });
@@ -116,8 +116,8 @@ $(function() {
 
                 // Re-bind lightbox
                 $("a.product-image").lightBox({
-                    "txtImage" : "Bild",
-                    "txtOf" : " von "
+                    "txtImage" : "Image",
+                    "txtOf" : " of "
                 });
             }
         });
@@ -150,8 +150,8 @@ $(function() {
 
                 // Re-bind lightbox
                 $("a.product-image").lightBox({
-                    "txtImage" : "Bild",
-                    "txtOf" : " von "
+                    "txtImage" : "Image",
+                    "txtOf" : " of "
                 });
             }
         });
