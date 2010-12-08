@@ -197,18 +197,18 @@ class CheckoutAddressesTestCase(TestCase):
         # get our new customer
         our_customer = Customer.objects.get(user__email="test@test.com")
         self.assertNotEqual(our_customer, None)
-        self.assertEqual(our_customer.selected_invoice_address, None)
-        self.assertEqual(our_customer.selected_shipping_address, None)
+        self.assertNotEqual(our_customer.selected_invoice_address, None)
+        self.assertNotEqual(our_customer.selected_shipping_address, None)
 
         # test that an ajax request creates a new customer address
         form_data = {'invoice-country': 'ie'}
         ajax_respons = self.c.post(reverse('lfs_changed_invoice_country'), form_data)
-        self.assertEquals(Address.objects.count(), 3)
+        self.assertEquals(Address.objects.count(), 4)
 
         # refetch our customer
         our_customer = Customer.objects.get(user__email="test@test.com")
         self.assertNotEqual(our_customer.selected_invoice_address, None)
-        self.assertEqual(our_customer.selected_shipping_address, None)
+        self.assertNotEqual(our_customer.selected_shipping_address, None)
 
         # test that we still have the same number of Addresses after another invoice post
         form_data = {'invoice-line1': 'my house',
@@ -218,7 +218,7 @@ class CheckoutAddressesTestCase(TestCase):
                      'invoice-state': 'a state',
                      }
         ajax_respons = self.c.post(reverse('lfs_changed_invoice_country'), form_data)
-        self.assertEquals(Address.objects.count(), 3)
+        self.assertEquals(Address.objects.count(), 4)
 
         # post some shipping address info
         form_data = {'shipping-line1': 'de missusesss house'}

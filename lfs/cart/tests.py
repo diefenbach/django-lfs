@@ -26,6 +26,7 @@ from lfs.voucher.settings import PERCENTAGE
 class CartModelsTestCase(TestCase):
     """
     """
+    fixtures = ['lfs_shop.xml']
     def setUp(self):
         """
         """
@@ -89,6 +90,7 @@ class CartItemTestCase(TestCase):
 class AddToCartTestCase(TestCase):
     """Test case for add_to_cart view.
     """
+    fixtures = ['lfs_shop.xml']
     def setUp(self):
         """
         """

@@ -28,7 +28,7 @@ from lfs.tests.utils import create_request
 class ShippingMethodTestCase(TestCase):
     """Unit tests for lfs.shipping
     """
-    fixtures = ["lfs_user.xml"]
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
     
     def setUp(self):
         """

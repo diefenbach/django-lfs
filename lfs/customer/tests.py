@@ -143,8 +143,8 @@ class AddressTestCase(TestCase):
 
         our_user = User.objects.get(email='test@test.com')
         our_customer = Customer.objects.get(user=our_user)
-        self.assertEquals(our_customer.selected_invoice_address, None)
-        self.assertEquals(our_customer.selected_shipping_address, None)
+        self.assertNotEquals(our_customer.selected_invoice_address, None)
+        self.assertNotEquals(our_customer.selected_shipping_address, None)
 
         # see if we can view the addresss page
         address_data = {'invoice_firstname': 'Joe', 'invoice_lastname': 'Bloggs',
