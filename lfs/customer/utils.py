@@ -2,7 +2,8 @@
 from django.core.exceptions import ObjectDoesNotExist
 
 # lfs imports
-from lfs.customer.models import Customer
+from lfs.customer.models import Customer, Address
+from lfs.core.utils import get_default_shop
 
 def get_or_create_customer(request):
     """Get or creates the customer object.
@@ -23,7 +24,9 @@ def create_customer(request):
     customer = Customer(session = request.session.session_key)
     if request.user.is_authenticated():
         customer.user = request.user
-
+    shop = get_default_shop()
+    customer.selected_invoice_address = Address.objects.create(customer=customer, country=shop.default_country)
+    customer.selected_shipping_address = Address.objects.create(customer=customer, country=shop.default_country)
     customer.save()
     return customer
 
