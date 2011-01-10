@@ -184,7 +184,8 @@ class Shop(models.Model):
             return default_country
 
         default_country = self.default_country
-        cache.set(cache_key, default_country)
+        if cache:
+            cache.set(cache_key, default_country)
 
         return default_country
 
