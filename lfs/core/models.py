@@ -1,6 +1,3 @@
-# python imports
-import re
-
 # django imports
 from django.core.cache import cache
 from django.db import models
@@ -197,6 +194,7 @@ class Shop(models.Model):
     def get_notification_emails(self):
         """Returns the notification e-mail addresses as list
         """
+        import re
         adresses = re.split("[\s,]+", self.notification_emails)
         return adresses
 
