@@ -10,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 import lfs.payment.settings
 from lfs.payment.models import PaymentMethod
 from lfs.core.utils import get_default_shop
+from lfs.core.models import Country
 
 class OnePageCheckoutForm(forms.Form):
     """
@@ -65,6 +66,24 @@ class OnePageCheckoutForm(forms.Form):
 
             if self.cleaned_data.get("shipping_lastname", "") == "":
                 self._errors["shipping_lastname"] = ErrorList([msg])
+
+        # check that shipping country is in the shops shipping countries list
+        shop = get_default_shop()
+        shipping_countries = shop.shipping_countries.all()
+        shipping_country = None
+        if not self.cleaned_data.get("no_shipping"):
+            shipping_country_code = self.data.get("shipping-country", None)
+            if shipping_country_code:
+                shipping_country = Country.objects.get(code=shipping_country_code.lower())
+        else:
+            shipping_country_code = self.data.get("invoice-country", None)
+            if shipping_country_code:
+                shipping_country = Country.objects.get(code=shipping_country_code.lower())
+        if shipping_country:
+            if shipping_country not in shipping_countries:
+                msg = _(u"Invalid shipping country.")
+                #self._errors["all"] = ErrorList([msg])
+                raise forms.ValidationError("Invalid Shipping Country")
 
 		# Check data of selected payment method        
         payment_method_id = self.data.get("payment_method")        
