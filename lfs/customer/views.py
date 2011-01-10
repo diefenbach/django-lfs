@@ -260,7 +260,7 @@ def address_inline(request, prefix, form):
             else:
                 address_form = PostalAddressForm(prefix=prefix, data=request.POST,)
             if countries is not None:
-                address_form.fields["country"].choices = [(c.code, c.name) for c in countries]
+                address_form.fields["country"].choices = [(c.code.upper(), c.name) for c in countries]
             save_address(request, customer, prefix)
         else:
             # If there are addresses intialize the form.
@@ -275,14 +275,14 @@ def address_inline(request, prefix, form):
                     "city" : customer_selected_address.city,
                     "state" : customer_selected_address.state,
                     "code" : customer_selected_address.zip_code,
-                    "country" : customer_selected_address.country.code,
+                    "country" : customer_selected_address.country.code.upper(),
                 })
                 address_form = address_form_class(prefix=prefix, initial=initial)
             else:
                 address_form = address_form_class(prefix=prefix)
                 address_form.fields["country"].initial = country_code
             if countries is not None:
-                address_form.fields["country"].choices = [(c.code, c.name) for c in countries]
+                address_form.fields["country"].choices = [(c.code.upper(), c.name) for c in countries]
 
     # Removes fields from address form if requested via settings.
     for i in range(1, 6):
@@ -319,7 +319,7 @@ def save_address(request, customer, prefix):
             customer_selected_address.city = request.POST.get(prefix + "-city", "")
             customer_selected_address.state = request.POST.get(prefix + "-state", "")
             customer_selected_address.zip_code = request.POST.get(prefix + "-code", "")
-            customer_selected_address.country = Country.objects.get(code=country_iso)
+            customer_selected_address.country = Country.objects.get(code=country_iso.lower())
             customer_selected_address.save()
     if not existing_address:
         # no address exists for customer so create one
@@ -329,7 +329,7 @@ def save_address(request, customer, prefix):
                                                             city=request.POST.get(prefix + "-city", ""),
                                                             state=request.POST.get(prefix + "-state", ""),
                                                             zip_code=request.POST.get(prefix + "-code", ""),
-                                                            country=Country.objects.get(code=country_iso))
+                                                            country=Country.objects.get(code=country_iso.lower()))
     setattr(customer, address_attribute, customer_selected_address)
     customer.save()
     return customer_selected_address
