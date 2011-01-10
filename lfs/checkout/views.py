@@ -459,7 +459,7 @@ def _save_country(request, customer):
         country_iso = request.POST.get("invoice-country", None)
 
     if country_iso is not None:
-        country = Country.objects.get(code=country_iso)
+        country = Country.objects.get(code=country_iso.lower())
         if customer.selected_shipping_address:
             customer.selected_shipping_address.country = country
             customer.selected_shipping_address.save()
