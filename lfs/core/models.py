@@ -1,6 +1,3 @@
-# python imports
-import re
-
 # django imports
 from django.core.cache import cache
 from django.db import models
@@ -194,8 +191,11 @@ class Shop(models.Model):
     def get_notification_emails(self):
         """Returns the notification e-mail addresses as list
         """
-        adresses = re.split("[\s,]+", self.notification_emails)
-        return adresses
+        addresses = []
+        for a in self.notification_emails.split(','):
+            if a not in addresses:
+                addresses.append(a.strip())
+        return addresses
 
     def get_parent_for_portlets(self):
         """Implements contract for django-portlets. Returns always None as there
