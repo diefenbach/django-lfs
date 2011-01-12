@@ -109,17 +109,17 @@ def process_payment(request):
 
     elif payment_method.id == PAYPAL:
         order = lfs.order.utils.add_order(request)
-        order_submitted.send({"order" : order, "request" : request})
-        if settings.LFS_PAYPAL_REDIRECT:
-            return {
-                "accepted" : True,
-                "next-url" : order.get_pay_link(),
-            }
-        else:
-            return {
-                "accepted" : True,
-                "next-url" : reverse("lfs_thank_you"),
-            }
+        if order: # if we have no cart then the order will be None
+            order_submitted.send({"order" : order, "request" : request})
+            if settings.LFS_PAYPAL_REDIRECT:
+                return {
+                    "accepted" : True,
+                    "next-url" : order.get_pay_link(),
+                }
+        return {
+            "accepted" : True,
+            "next-url" : reverse("lfs_thank_you"),
+        }
     else:
         order = lfs.order.utils.add_order(request)
         order_submitted.send({"order" : order, "request" : request})
