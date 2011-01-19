@@ -179,11 +179,9 @@ class Shop(models.Model):
         """Returns the default country of the shop.
         """
         cache_key = "default-country-%s" % self.id
-        default_country = None
-        if cache:
-            default_country = cache.get(cache_key)
-            if default_country:
-                return default_country
+        default_country = cache.get(cache_key)
+        if default_country:
+            return default_country
 
         default_country = self.default_country
         if cache:
