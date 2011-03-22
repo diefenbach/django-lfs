@@ -35,7 +35,7 @@ def manage_featured_inline(
     """
     """
     featured = FeaturedProduct.objects.all()
-    featured_ids = [f.id for f in featured]
+    featured_ids = [f.product.id for f in featured]
     
     r = request.REQUEST
     s = request.session
