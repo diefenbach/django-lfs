@@ -334,6 +334,7 @@ def save_address(request, customer, prefix):
     customer.save()
     return customer_selected_address
 
+@login_required
 def email(request, template_name="lfs/customer/email.html"):
     """Saves the email address from the data form.
     """
@@ -350,6 +351,7 @@ def email(request, template_name="lfs/customer/email.html"):
         "email_form": email_form
     }))
 
+@login_required
 def password(request, template_name="lfs/customer/password.html"):
     """Changes the password of current user.
     """
