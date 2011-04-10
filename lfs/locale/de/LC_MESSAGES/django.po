@@ -7,14 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-30 06:21-0500\n"
+"POT-Creation-Date: 2011-04-10 16:44-0500\n"
 "PO-Revision-Date: 2009-02-22 07:20+0100\n"
 "Last-Translator: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
 "Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: cart/models.py:33 criteria/models/criteria.py:583 order/models.py:41
 #: templates/manage/cart/carts_inline.html:111
@@ -72,12 +73,12 @@ msgstr "Artikel"
 msgid "Property"
 msgstr "Eigenschaften"
 
-#: cart/views.py:243
+#: cart/views.py:242
 #, python-format
 msgid "%(name)s must be between %(min)s and %(max)s %(unit)s."
 msgstr "%(name)s muß zwischen %(min)s und %(max)s %(unit)s liegen."
 
-#: cart/views.py:257
+#: cart/views.py:256
 #, python-format
 msgid ""
 "Your entered value for %(name)s (%(value)s) is not in valid step width, "
@@ -86,17 +87,18 @@ msgstr ""
 "Ihre Eingabe für %(name)s (%(value)s) ist nicht in der gültigen "
 "Schrittweite. Diese ist: %(step)s"
 
-#: cart/views.py:305 cart/views.py:408
+#: cart/views.py:304 cart/views.py:407
 #, python-format
 msgid "Sorry, but '%(product)s' is not available anymore."
 msgstr "Es tut uns leid, '%(product)s' ist nicht mehr im Lager."
 
-#: cart/views.py:307 cart/views.py:410
+#: cart/views.py:306 cart/views.py:409
 #, python-format
 msgid "Sorry, but '%(product)s' is only one time available."
 msgstr "Es tut uns leid, '%(product)s' ist nur noch einmal im Lager."
 
-#: cart/views.py:309 cart/views.py:412
+#: cart/views.py:308 cart/views.py:411
+#, python-format
 msgid "Sorry, but '%(product)s' is only %(amount)s times available."
 msgstr "Es tut uns leid, '%(product)s' ist nur noch %(amount)s Mal im Lager."
 
@@ -3597,12 +3599,3 @@ msgstr "Der Gutschein ist für diesen Preis nicht gültig."
 #: voucher/settings.py:18
 msgid "The voucher doesn't exist."
 msgstr "Dieser Gutschein existiert nicht"
-
-#~ msgid "Content"
-#~ msgstr "Inhalt"
-
-#~ msgid "Acessory"
-#~ msgstr "Zubehör"
-
-#~ msgid "Active Price"
-#~ msgstr " Bilder"
