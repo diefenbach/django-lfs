@@ -319,9 +319,15 @@ def add_option(request, property_id):
 
     if request.POST.get("action") == "add":
         name = request.POST.get("name", "")
-        price = request.POST.get("price", 0)
+        price = request.POST.get("price", "")
+        try:
+            price = float(price)
+        except ValueError:
+            price = None
+
         if name != "":
             option = PropertyOption.objects.create(name=name, price=price, property_id=property_id)
+
         message = _(u"Option has been added.")
     else:
 
@@ -332,9 +338,14 @@ def add_option(request, property_id):
             except PropertyOption.DoesNotExist:
                 pass
             else:
+                try:
+                    price = float(request.POST.get("price-%s" % option_id, ""))
+                except ValueError:
+                    price = None
+
                 option.position = request.POST.get("position-%s" % option_id, 99)
                 option.name = request.POST.get("name-%s" % option_id, "")
-                option.price = request.POST.get("price-%s" % option_id, "")
+                option.price = price
                 option.save()
         message = _(u"Options have been update.")
 

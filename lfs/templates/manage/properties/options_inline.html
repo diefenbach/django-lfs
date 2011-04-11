@@ -61,7 +61,7 @@
                 <td>
                     <input type="text"
                            name="price-{{ option.id }}"
-                           value="{{ option.price }}" />
+                           value="{% if option.price %}{{ option.price }}{% endif %}" />
                 </td>
                 <td>
                     <a class="confirmation-link"
