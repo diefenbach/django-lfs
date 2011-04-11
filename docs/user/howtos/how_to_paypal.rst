@@ -37,4 +37,4 @@ In this how-to you will learn how to setup paypal for your shop
 
 8. Deploy your site to a live internet site for testing (Paypal servers must be able to see your site).
 
-9. When you are finished testing your site and ready to go live, set up a live Paypal Business account and repeat steps 5-9
+9. When you are finished testing your site and ready to go live, set up a live Paypal Business account (Website Payments Standard account has been reported to work) and repeat steps 5-8
