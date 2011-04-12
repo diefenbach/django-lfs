@@ -52,8 +52,7 @@ class ProductDataForm(ModelForm):
             "active_price_calculation", "price_calculation", "price_unit", "unit")
 
     def clean(self):
-        """
-        """
+        super(ProductDataForm, self).clean()
         if self.instance:
             redirect_to = self.data.get("redirect_to", "")
             if redirect_to != "":
