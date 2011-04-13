@@ -29,7 +29,7 @@ class DiscountForm(ModelForm):
     class Meta:
         model = Discount
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_discounts(request):
     """Dispatches to the first discount or to the add discount method 
     form if there is no discount yet.
@@ -43,7 +43,7 @@ def manage_discounts(request):
 
     return HttpResponseRedirect(url)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_discount(request, id, template_name="manage/discounts/discount.html"):
     """The main view to manage the discount with given id.
     
@@ -60,7 +60,7 @@ def manage_discount(request, id, template_name="manage/discounts/discount.html")
     }))
 
 # Parts of the manage discount view.
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def navigation(request, template_name="manage/discounts/navigation.html"):
     """Returns the navigation for the discount view.
     """
@@ -74,7 +74,7 @@ def navigation(request, template_name="manage/discounts/navigation.html"):
         "discounts" : Discount.objects.all(),
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def discount_data(request, id, template_name="manage/discounts/data.html"):
     """Returns the discount data as html.
     
@@ -87,7 +87,7 @@ def discount_data(request, id, template_name="manage/discounts/data.html"):
         "discount" : discount,
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def discount_criteria(request, id, template_name="manage/discounts/criteria.html"):
     """Returns the criteria of the discount with passed id as HTML. 
     
@@ -108,7 +108,7 @@ def discount_criteria(request, id, template_name="manage/discounts/criteria.html
     }))
 
 # Actions    
-@permission_required("manage_shop", login_url="/login/")    
+@permission_required("core.manage_shop", login_url="/login/")    
 def add_discount(request, template_name="manage/discounts/add_discount.html"):
     """Provides an add form and saves a new discount method.
     """
@@ -128,7 +128,7 @@ def add_discount(request, template_name="manage/discounts/add_discount.html"):
         "form" : form,
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def save_discount_criteria(request, id):
     """Saves the criteria for the discount with given id. The criteria 
     are passed via request body.
@@ -144,7 +144,7 @@ def save_discount_criteria(request, id):
     }
     return HttpResponse(simplejson.dumps(result))
 
-@permission_required("manage_shop", login_url="/login/")    
+@permission_required("core.manage_shop", login_url="/login/")    
 def save_discount_data(request, id):
     """Saves discount data (via request body) to the discount with passed
     id.
@@ -168,7 +168,7 @@ def save_discount_data(request, id):
         msg = _(u"Discount data has been saved."),
     )            
  
-@permission_required("manage_shop", login_url="/login/")   
+@permission_required("core.manage_shop", login_url="/login/")   
 def delete_discount(request, id):
     """Deletes discount with passed id.    
     """

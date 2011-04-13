@@ -62,7 +62,7 @@ class StepForm(ModelForm):
         model = Property
         fields = ["step"]
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_properties(request):
     """The main view to manage properties.
     """
@@ -74,7 +74,7 @@ def manage_properties(request):
 
     return HttpResponseRedirect(url)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_property(request, id, template_name="manage/properties/property.html"):
     """
     """
@@ -107,7 +107,7 @@ def manage_property(request, id, template_name="manage/properties/property.html"
         "display_step_form" : display_step_form,
       }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def update_property_type(request, id):
     """Updates the type of the property.
 
@@ -128,7 +128,7 @@ def update_property_type(request, id):
         msg = _(u"Property type has been changed."),
     )
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def select_field(request, property, template_name="manage/properties/property_select_field.html"):
     """Displays the form of the select field propery type.
     """
@@ -149,7 +149,7 @@ def save_select_field(request, property_id):
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def number_field(request, property, template_name="manage/properties/property_number_field.html"):
     """Displays the form of the input field propery type
     """
@@ -175,7 +175,7 @@ def save_number_field_validators(request, property_id):
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def steps_inline(request, property_id, template_name="manage/properties/step_inline.html"):
     """Display the steps of a propety. Factored out for Ajax requests.
     """
@@ -220,7 +220,7 @@ def save_step_type(request, property_id):
 
     return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def add_step(request, property_id):
     """Adds a step to property with passed property id resp. updates steps of
     property with passed property id dependent on the given action parameter.
@@ -252,7 +252,7 @@ def add_step(request, property_id):
 
     return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def delete_step(request, id):
     """Deletes step with given id.
     """
@@ -267,7 +267,7 @@ def delete_step(request, id):
 
     return HttpResponseRedirect(url)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def options_inline(request, property_id, template_name="manage/properties/options_inline.html"):
     """Display the options of a propety. Factored out for Ajax requests.
     """
@@ -276,7 +276,7 @@ def options_inline(request, property_id, template_name="manage/properties/option
         "property" : property,
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def add_property(request, template_name="manage/properties/add_property.html"):
     """Adds a new property.
     """
@@ -297,7 +297,7 @@ def add_property(request, template_name="manage/properties/add_property.html"):
         "properties" : Property.objects.filter(local=False),
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def delete_property(request, id):
     """Deletes the property with given id.
     """
@@ -311,7 +311,7 @@ def delete_property(request, id):
 
     return HttpResponseRedirect(url)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def add_option(request, property_id):
     """Adds option to property with passed property id.
     """
@@ -319,9 +319,15 @@ def add_option(request, property_id):
 
     if request.POST.get("action") == "add":
         name = request.POST.get("name", "")
-        price = request.POST.get("price", 0)
+        price = request.POST.get("price", "")
+        try:
+            price = float(price)
+        except ValueError:
+            price = None
+
         if name != "":
             option = PropertyOption.objects.create(name=name, price=price, property_id=property_id)
+
         message = _(u"Option has been added.")
     else:
 
@@ -332,9 +338,14 @@ def add_option(request, property_id):
             except PropertyOption.DoesNotExist:
                 pass
             else:
+                try:
+                    price = float(request.POST.get("price-%s" % option_id, ""))
+                except ValueError:
+                    price = None
+
                 option.position = request.POST.get("position-%s" % option_id, 99)
                 option.name = request.POST.get("name-%s" % option_id, "")
-                option.price = request.POST.get("price-%s" % option_id, "")
+                option.price = price
                 option.save()
         message = _(u"Options have been update.")
 
@@ -346,7 +357,7 @@ def add_option(request, property_id):
 
     return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def delete_option(request, id):
     """Deletes option with given id.
     """

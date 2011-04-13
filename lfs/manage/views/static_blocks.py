@@ -26,7 +26,7 @@ class StaticBlockForm(ModelForm):
     class Meta:
         model = StaticBlock
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_static_blocks(request):
     """Dispatches to the first static block or to the add static block form.
     """
@@ -38,7 +38,7 @@ def manage_static_blocks(request):
 
     return HttpResponseRedirect(url)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_static_block(request, id, template_name="manage/static_block/static_block.html"):
     """Displays the main form to manage static blocks.
     """
@@ -62,7 +62,7 @@ def manage_static_block(request, id, template_name="manage/static_block/static_b
         "current_id" : int(id),
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def files(request, sb, template_name="manage/static_block/files.html"):
     """Displays the files tab of the passed static block.
     """
@@ -155,7 +155,7 @@ def add_files(request, id):
 
     return HttpResponse("nix")
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def add_static_block(request, template_name="manage/static_block/add_static_block.html"):
     """Provides a form to add a new static block.
     """
@@ -175,7 +175,7 @@ def add_static_block(request, template_name="manage/static_block/add_static_bloc
         "static_blocks" : StaticBlock.objects.all(),
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def preview_static_block(request, id, template_name="manage/static_block/preview.html"):
     """Displays a preview of an static block
     """
@@ -185,7 +185,7 @@ def preview_static_block(request, id, template_name="manage/static_block/preview
         "static_block" : sb,
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def delete_static_block(request, id):
     """Deletes static block with passed id.
     """

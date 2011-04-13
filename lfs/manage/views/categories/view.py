@@ -27,9 +27,9 @@ class ViewForm(ModelForm):
             "product_cols", "product_rows", "category_cols", )
 
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def category_view(request, category_id, template_name="manage/category/view.html"):
-    """Displays the view data for the category  with passed category id.
+    """Displays the view data for the category with passed category id.
 
     This is used as a part of the whole category form.
     """
@@ -52,7 +52,7 @@ def category_view(request, category_id, template_name="manage/category/view.html
 
     if request.is_ajax():
         return HttpResponse(simplejson.dumps({
-            "seo" : view_html,
+            "view" : view_html,
             "message" : message,
         }, cls = LazyEncoder))
     else:
