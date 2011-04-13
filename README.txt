@@ -27,6 +27,22 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.5.0 beta 7 (2011-04-13)
+-------------------------
+
+* Improved error message for checkout form (Andres Vargas / zodman); issue #87
+* Fixed invalid HTML; issue #81
+* Bugfix: correct display of cart within shop view after cart has been updated; issue #82
+* Bugfix: save and display correct text of TextPortlets; issue #39
+* Fixed requried permission from "manage_shop" to "core.manage_shop"; issue #84
+* Fixed Integration Error when adding Product with existing slug; issue #42
+* Bugfix: made option price optional (as stated within form)
+* Updated documentation; issue #60
+* Added transifex config file
+* Added translations for mexican spanish (Andres Vargas)
+* Updated spain translations
+* Updated german translations
+
 0.5.0 beta 6 (2010-10-16)
 -------------------------
 
