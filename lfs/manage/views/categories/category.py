@@ -40,7 +40,7 @@ class CategoryForm(ModelForm):
         fields = ("name", "slug", "parent", "position", "short_description",
             "description", "exclude_from_navigation", "image", "static_block", )
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_categories(request):
     """Dispatches to the first category or to the add category form if no
     category exists yet.
@@ -54,7 +54,7 @@ def manage_categories(request):
 
     return HttpResponseRedirect(url)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_category(request, category_id, template_name="manage/category/manage_category.html"):
     """Displays the form to manage the category with given category id.
     """
@@ -70,7 +70,7 @@ def manage_category(request, category_id, template_name="manage/category/manage_
         "portlets" : portlets_inline(request, category),
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def category_data(request, category_id, template_name="manage/category/data.html"):
     """Displays the core data for the category_id with passed category_id.
 
@@ -85,7 +85,7 @@ def category_data(request, category_id, template_name="manage/category/data.html
     }))
 
 # Actions
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def edit_category_data(request, category_id, template_name="manage/category/data.html"):
     """Updates the category data.
     """
@@ -129,7 +129,7 @@ def edit_category_data(request, category_id, template_name="manage/category/data
     #
     # return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def add_category(request, category_id="", template_name="manage/category/add_category.html"):
     """Provides an add form and adds a new category to category with given id.
     """
@@ -164,7 +164,7 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
         "form" : form
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def delete_category(request, id):
     """Deletes category with given id.
     """
@@ -174,7 +174,7 @@ def delete_category(request, id):
     url = reverse("lfs_manage_categories")
     return HttpResponseRedirect(url)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def update_category(request, category_id):
     """Updates category with given id. This is called after a position change
     has been taken place.

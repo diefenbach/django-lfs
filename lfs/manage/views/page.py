@@ -30,7 +30,7 @@ class PageAddForm(PageForm):
         model = Page
         exclude = ("position",)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_pages(request):
     """Dispatches to the first page or to the form to add a page (if there is no
     page yet).
@@ -43,7 +43,7 @@ def manage_pages(request):
 
     return HttpResponseRedirect(url)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_page(request, id, template_name="manage/page/page.html"):
     """Provides a form to edit the page with the passed id.
     """
@@ -72,7 +72,7 @@ def manage_page(request, id, template_name="manage/page/page.html"):
         "current_id" : int(id),
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def add_page(request, template_name="manage/page/add_page.html"):
     """Provides a form to add a new page.
     """
@@ -94,7 +94,7 @@ def add_page(request, template_name="manage/page/add_page.html"):
         "pages" : Page.objects.all(),
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def delete_page(request, id):
     """Deletes the page with passed id.
     """

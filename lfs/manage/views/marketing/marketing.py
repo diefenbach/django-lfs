@@ -17,7 +17,7 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 from lfs.manage.views.marketing.topseller import manage_topseller
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_marketing(request, template_name="manage/marketing/marketing.html"):
     """Displays the main manage/edit form for marketing.
     """    

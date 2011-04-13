@@ -40,7 +40,7 @@ class ShopDefaultValuesForm(ModelForm):
         fields = ("product_cols", "product_rows", "category_cols", 
             "default_country", "countries")
     
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_shop(request, template_name="manage/shop/shop.html"):
     """Displays the form to manage shop data.
     """
@@ -63,7 +63,7 @@ def manage_shop(request, template_name="manage/shop/shop.html"):
         "portlets" : portlets_inline(request, shop),
     }))
 
-@permission_required("manage_shop", login_url="/login/")    
+@permission_required("core.manage_shop", login_url="/login/")    
 def default_values_part(request, template_name="manage/shop/default_values.html"):
     """Displays the default value part of the shop form.
     """
