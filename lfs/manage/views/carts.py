@@ -19,7 +19,7 @@ from lfs.cart.models import Cart
 from lfs.core.utils import LazyEncoder
 from lfs.customer.models import Customer
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def carts_view(request, template_name="manage/cart/carts.html"):
     """Base view to display carts overview.
     """
@@ -85,7 +85,7 @@ def carts_inline(request, as_string=False, template_name="manage/cart/carts_inli
 
         return HttpResponse(result)
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def cart_view(request, cart_id, template_name="manage/cart/cart.html"):
     """Displays cart with provided cart id.
     """

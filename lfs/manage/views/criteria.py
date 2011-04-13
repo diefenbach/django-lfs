@@ -28,7 +28,7 @@ class UserCriterionForm(ModelForm):
     class Meta:
         model = UserCriterion
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def add_criterion(request, template_name="manage/criteria/price_criterion.html"):
     """Adds a new criterion form. By default it adds the form for the price 
     criterion. 
@@ -46,7 +46,7 @@ def add_criterion(request, template_name="manage/criteria/price_criterion.html")
         "id" : "%s%s" % (now.strftime("%s"), now.microsecond),
     })))
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def change_criterion_form(request):
     """Changes the changed criterion form to the given type (via request body) 
     form.

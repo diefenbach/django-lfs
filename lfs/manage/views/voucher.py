@@ -138,7 +138,7 @@ def vouchers_inline(request, voucher_group, vouchers, paginator, page, template_
     }))
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def set_vouchers_page(request):
     """Sets the displayed voucher page.
     """

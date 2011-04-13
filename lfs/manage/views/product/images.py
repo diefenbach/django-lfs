@@ -17,7 +17,7 @@ from lfs.catalog.models import Product
 from lfs.core.signals import product_changed
 from lfs.core.utils import LazyEncoder
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def manage_images(request, product_id, as_string=False, template_name="manage/product/images.html"):
     """
     """
@@ -38,7 +38,7 @@ def manage_images(request, product_id, as_string=False, template_name="manage/pr
         return HttpResponse(result)
 
 # Actions
-# @permission_required("core.manage_shop", login_url="/login/")
+# @permission_required("manage_shop", login_url="/login/")
 def add_image(request, product_id):
     """Adds an image to product with passed product_id.
     """
@@ -56,7 +56,7 @@ def add_image(request, product_id):
     product_changed.send(product, request=request)
     return HttpResponse(manage_images(request, product_id, as_string=True))
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def update_images(request, product_id):
     """Saves/deletes images with given ids (passed by request body).
     """
@@ -110,7 +110,7 @@ def update_images(request, product_id):
 
     return HttpResponse(result)
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def update_active_images(request, product_id):
     """Updates the images activity state for product variants.
     """

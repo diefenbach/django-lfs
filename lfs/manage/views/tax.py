@@ -19,7 +19,7 @@ class TaxForm(ModelForm):
     class Meta:
         model = Tax
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def manage_taxes(request):
     """Dispatches to the first tax or to the add tax form.
     """
@@ -31,7 +31,7 @@ def manage_taxes(request):
     
     return HttpResponseRedirect(url)
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def manage_tax(request, id, template_name="manage/tax/tax.html"):
     """Displays the main form to manage taxes.
     """
@@ -54,7 +54,7 @@ def manage_tax(request, id, template_name="manage/tax/tax.html"):
         "current_id" : int(id),
     }))
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def add_tax(request, template_name="manage/tax/add_tax.html"):
     """Provides a form to add a new tax.
     """
@@ -75,7 +75,7 @@ def add_tax(request, template_name="manage/tax/add_tax.html"):
         "taxes" : Tax.objects.all(),        
     }))
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def delete_tax(request, id):
     """Deletes tax with passed id.
     """

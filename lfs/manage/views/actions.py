@@ -27,7 +27,7 @@ class ActionAddForm(ActionForm):
         model = Action
         exclude = ("parent", "place")
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def manage_actions(request):
     """Dispatches to the first action or to the form to add a action (if there is no 
     action yet).
@@ -40,7 +40,7 @@ def manage_actions(request):
     
     return HttpResponseRedirect(url)
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def manage_action(request, id, template_name="manage/shop/action.html"):
     """Provides a form to edit the action with the passed id.
     """
@@ -65,7 +65,7 @@ def manage_action(request, id, template_name="manage/shop/action.html"):
         "current_id" : int(id),
     }))
 
-@permission_required("core.manage_shop", login_url="/login/")    
+@permission_required("manage_shop", login_url="/login/")    
 def add_action(request, template_name="manage/shop/add_action.html"):
     """Provides a form to add a new action.
     """
@@ -87,7 +87,7 @@ def add_action(request, template_name="manage/shop/add_action.html"):
         "groups" : ActionGroup.objects.all(),
     }))
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def delete_action(request, id):
     """Deletes the action with passed id.
     """

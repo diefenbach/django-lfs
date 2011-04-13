@@ -23,7 +23,7 @@ from lfs.core.utils import LazyEncoder
 # review imports
 from reviews.models import Review
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def review(request, review_id, template_name="manage/reviews/review.html"):
     """Displays review with provided review id.
     """
@@ -55,7 +55,7 @@ def review_inline(request, review_id, as_string=False, template_name="manage/rev
 
         return HttpResponse(result)
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def reviews(request, template_name="manage/reviews/reviews.html"):
     """Base view to display reviews overview.
     """
@@ -63,7 +63,7 @@ def reviews(request, template_name="manage/reviews/reviews.html"):
         "reviews_inline" : reviews_inline(request, as_string=True),
     }))
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def reviews_inline(request, as_string=False, template_name="manage/reviews/reviews_inline.html"):
     """Displays carts overview.
     """

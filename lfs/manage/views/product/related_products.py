@@ -17,7 +17,7 @@ from lfs.catalog.settings import VARIANT
 from lfs.core.utils import LazyEncoder
 
 # Parts
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def manage_related_products(
     request, product_id, template_name="manage/product/related_products.html"):
     """
@@ -30,7 +30,7 @@ def manage_related_products(
         "related_products_inline" : inline,
     }))
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def manage_related_products_inline(
     request, product_id, as_string=False, template_name="manage/product/related_products_inline.html"):
     """View which shows all related products for the product with the passed id.
@@ -105,14 +105,14 @@ def manage_related_products_inline(
         return HttpResponse(result)
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def load_tab(request, product_id):
     """
     """
     related_products = manage_related_products(request, product_id)
     return HttpResponse(related_products)
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def add_related_products(request, product_id):
     """Adds passed related products (by request body) to product with passed id.
     """
@@ -138,7 +138,7 @@ def add_related_products(request, product_id):
     
     return HttpResponse(result)
 
-@permission_required("core.manage_shop", login_url="/login/") 
+@permission_required("manage_shop", login_url="/login/") 
 def remove_related_products(request, product_id):
     """Removes passed related products from product with passed id.
     """
@@ -164,7 +164,7 @@ def remove_related_products(request, product_id):
     
     return HttpResponse(result)
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("manage_shop", login_url="/login/")
 def update_related_products(request, product_id):
     """Updates related products.
     """
