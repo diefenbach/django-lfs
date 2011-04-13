@@ -136,8 +136,13 @@ class CartItem(models.Model):
         """
         return self.product.get_price_net() * self.amount
 
-    def get_price_gross(self, standard=False):
-        """Returns the gross price of the product.
+    def get_price_gross(self):
+        """Returns the gross item price.
+        """
+        return self.get_product_price_gross() * self.amount
+
+    def get_product_price_gross(self):
+        """Returns the product item price. Based on selected properties, etc.
         """
         if not self.product.is_configurable_product():
             price = self.product.get_price_gross()
@@ -152,17 +157,16 @@ class CartItem(models.Model):
                 except:
                     price = self.product.get_price_gross()
             else:
-                price = self.product.get_price_gross()
+                price = self.product.get_price_gross(with_properties=False)
                 for property in self.properties.all():
                     if property.property.is_select_field:
                         try:
                             option = PropertyOption.objects.get(pk=int(float(property.value)))
-                        except (PropertyOption.DoesNotExist, AttributeError):
+                        except (PropertyOption.DoesNotExist, AttributeError, ValueError):
                             pass
                         else:
                             price += option.price
-                            
-        return price * self.amount
+        return price
 
     def get_calculated_price(self):
         """Returns the calculated gross price of the product.
@@ -216,8 +220,8 @@ class CartItem(models.Model):
                 else:
                     value = option.name
                     price = option.price
-                
-            else:                
+
+            else:
                 format_string = "%%.%sf" % property.decimal_places
                 try:
                     value = format_string % float(cipv.value)

@@ -148,7 +148,7 @@ def add_order(request):
             product_name = cart_item.product.get_name(),
             product_amount=cart_item.amount,
             product_price_net = cart_item.product.get_price_net(),
-            product_price_gross = cart_item.product.get_price_gross(),
+            product_price_gross = cart_item.get_product_price_gross(),
             product_tax = cart_item.product.get_tax(),
         )
 
