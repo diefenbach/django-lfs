@@ -19,7 +19,7 @@ class SEOForm(ModelForm):
         model = Category
         fields = ("meta_title", "meta_keywords", "meta_description")
 
-@permission_required("manage_shop", login_url="/login/")    
+@permission_required("core.manage_shop", login_url="/login/")    
 def edit_seo(request, category_id, template_name="manage/category/seo.html"):
     """Displays an edit form for category seo fields and saves the entered 
     values. 

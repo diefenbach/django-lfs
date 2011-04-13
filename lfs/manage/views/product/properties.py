@@ -21,7 +21,7 @@ from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DISPLAY
 from lfs.core.signals import product_removed_property_group
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_properties(request, product_id, template_name="manage/product/properties.html"):
     """
     """
@@ -188,7 +188,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
         "shop_property_groups" : shop_property_groups,
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def update_property_groups(request, product_id):
     """Updates property groups for the product with passed id.
     """
@@ -210,7 +210,7 @@ def update_property_groups(request, product_id):
     url = reverse("lfs_manage_product", kwargs={"product_id" : product_id})
     return HttpResponseRedirect(url)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def update_properties(request, product_id):
     """Updates properties for product with passed id.
     """

@@ -22,7 +22,7 @@ from lfs.core.utils import LazyEncoder
 from lfs.customer.models import Customer
 from lfs.order.models import Order
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def customer(request, customer_id, template_name="manage/customer/customer.html"):
     """Displays customer with provided customer id.
     """
@@ -64,7 +64,7 @@ def customer_inline(request, customer_id, as_string=False, template_name="manage
 
         return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def customers(request, template_name="manage/customer/customers.html"):
     """Base view to display customers overview.
     """
@@ -72,7 +72,7 @@ def customers(request, template_name="manage/customer/customers.html"):
         "customers_inline" : customers_inline(request, as_string=True),
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def customers_inline(request, as_string=False, template_name="manage/customer/customers_inline.html"):
     """Displays carts overview.
     """

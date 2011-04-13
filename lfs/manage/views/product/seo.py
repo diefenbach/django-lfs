@@ -23,7 +23,7 @@ class SEOForm(ModelForm):
             "active_meta_description", "meta_description",
         )
 
-@permission_required("manage_shop", login_url="/login/")    
+@permission_required("core.manage_shop", login_url="/login/")    
 def manage_seo(request, product_id, template_name="manage/product/seo.html"):
     """
     """

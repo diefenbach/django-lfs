@@ -19,7 +19,7 @@ from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 
 # Parts
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_products(request, category_id, template_name="manage/category/products.html"):
     """
     """
@@ -31,7 +31,7 @@ def manage_products(request, category_id, template_name="manage/category/product
         "products_inline" : inline,
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def products_inline(request, category_id, as_string=False, 
     template_name="manage/category/products_inline.html"):
     """Displays the products-tab of a category.
@@ -93,14 +93,14 @@ def products_inline(request, category_id, as_string=False,
         return HttpResponse(result)
 
 # Actions
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def products_tab(request, category_id):
     """Returns the products tab for given category id.
     """
     result = manage_products(request, category_id)
     return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def selected_products(request, category_id, as_string=False, template_name="manage/category/selected_products.html"):
     """The selected products part of the products-tab of a category.
     
@@ -148,7 +148,7 @@ def selected_products(request, category_id, as_string=False, template_name="mana
         return HttpResponse(result)
 
 # Actions
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def add_products(request, category_id):
     """Adds products (passed via request body) to category with passed id.
     """
@@ -177,7 +177,7 @@ def add_products(request, category_id):
     
     return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def remove_products(request, category_id):
     """Removes product (passed via request body) from category with passed id.
     """

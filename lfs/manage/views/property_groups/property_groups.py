@@ -28,7 +28,7 @@ class PropertyGroupForm(ModelForm):
         model = PropertyGroup
         fields = ["name"]
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_property_groups(request):
     """The main view to manage properties.
     """    
@@ -40,7 +40,7 @@ def manage_property_groups(request):
     
     return HttpResponseRedirect(url)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_property_group(request, id, template_name="manage/properties/property_group.html"):
     """Edits property group with given id.
     """
@@ -66,7 +66,7 @@ def manage_property_group(request, id, template_name="manage/properties/property
         "current_id" : int(id),
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def properties_inline(request, id, template_name="manage/properties/properties_inline.html"):
     """
     """
@@ -85,7 +85,7 @@ def properties_inline(request, id, template_name="manage/properties/properties_i
         "gps" : gps,
     }))
 
-@permission_required("manage_shop", login_url="/login/")    
+@permission_required("core.manage_shop", login_url="/login/")    
 def add_property_group(request, template_name="manage/properties/add_property_group.html"):
     """Adds a new property group
     """
@@ -105,7 +105,7 @@ def add_property_group(request, template_name="manage/properties/add_property_gr
         "property_groups" : PropertyGroup.objects.all(),        
     }))
 
-@permission_required("manage_shop", login_url="/login/")    
+@permission_required("core.manage_shop", login_url="/login/")    
 def delete_property_group(request, id):
     """Deletes the property group with passed id.
     """
@@ -117,7 +117,7 @@ def delete_property_group(request, id):
         msg = _(u"Property group has been deleted."),
     )            
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def assign_properties(request, group_id):
     """Assignes given properties (via request body) to passed group id.
     """
@@ -135,7 +135,7 @@ def assign_properties(request, group_id):
         
     return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def update_properties(request, group_id):
     """Update or Removes given properties (via request body) from passed group id.
     """

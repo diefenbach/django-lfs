@@ -26,7 +26,7 @@ from lfs.core.utils import LazyEncoder
 from lfs.mail import utils as mail_utils
 from lfs.order.models import Order
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_orders(request, template_name="manage/order/manage_orders.html"):
     """Dispatches to the first order or the order overview.
     """
@@ -38,7 +38,7 @@ def manage_orders(request, template_name="manage/order/manage_orders.html"):
         return HttpResponseRedirect(
             reverse("lfs_manage_order", kwargs={"order_id" : order.id}))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def orders_view(request, template_name="manage/order/orders.html"):
     """Main view to display an order overview.
     """
@@ -194,7 +194,7 @@ def reset_order_filters(request):
 
     return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def order_view(request, order_id, template_name="manage/order/order.html"):
     """Displays order with provided order id.
     """
@@ -232,7 +232,7 @@ def order_inline(request, order_id, as_string=False, template_name="manage/order
     else:
         return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def selectable_orders_inline(request, as_string=False,
     template_name="manage/order/selectable_orders_inline.html"):
     """Displays the selectable orders for the order view. (Used to switch
@@ -265,7 +265,7 @@ def selectable_orders_inline(request, as_string=False,
         return HttpResponse(result)
 
 # Actions
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def delete_order(request, order_id):
     """Deletes order with provided order id.
     """
@@ -280,7 +280,7 @@ def delete_order(request, order_id):
 
     return HttpResponseRedirect(url)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def send_order(request, order_id):
     """Sends order with passed order id to the customer of this order.
     """

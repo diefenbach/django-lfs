@@ -13,7 +13,7 @@ from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import PropertyGroup
 from lfs.core.utils import LazyEncoder
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def product_values(request, property_group_id, template_name="manage/properties/pg_product_values.html"):
     """Renders the products values part of the property groups management views.
     """

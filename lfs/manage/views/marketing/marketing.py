@@ -18,7 +18,7 @@ from django.utils.translation import ugettext_lazy as _
 from lfs.manage.views.marketing.topseller import manage_topseller
 from lfs.manage.views.marketing.featured import manage_featured
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_marketing(request, template_name="manage/marketing/marketing.html"):
     """Displays the main manage/edit form for marketing.
     """    
@@ -28,7 +28,7 @@ def manage_marketing(request, template_name="manage/marketing/marketing.html"):
         "topseller" : topseller,
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_featured_page(request, template_name="manage/marketing/marketing_featured.html"):
     """Displays the main manage/edit form for featured products.
     """

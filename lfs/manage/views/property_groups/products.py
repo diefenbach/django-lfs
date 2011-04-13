@@ -19,7 +19,7 @@ from lfs.core.utils import LazyEncoder
 from lfs.core.signals import product_removed_property_group
 from product_values import product_values
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def products(request, product_group_id, template_name="manage/properties/pg_products.html"):
     """Renders the products tab of the property groups management views.
     """
@@ -31,7 +31,7 @@ def products(request, product_group_id, template_name="manage/properties/pg_prod
         "products_inline" : inline,
     }))
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def products_inline(request, product_group_id, as_string=False, 
     template_name="manage/properties/pg_products_inline.html"):
     """Renders the products tab of the property groups management views.
@@ -101,7 +101,7 @@ def products_inline(request, product_group_id, as_string=False,
     else:
         return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def assign_products(request, group_id):
     """Assign products to given property group with given property_group_id.
     """
@@ -121,7 +121,7 @@ def assign_products(request, group_id):
         
     return HttpResponse(result)
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def remove_products(request, group_id):
     """Remove products from given property group with given property_group_id.
     """
