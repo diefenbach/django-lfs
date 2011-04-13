@@ -853,6 +853,7 @@ $(function() {
 
     // Portlets
     $(".portlet-edit-button").livequery("click", function() {
+        tinyMCE.execCommand('mceRemoveControl', false, 'id_portlet-text');
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#dialog").html(data);
