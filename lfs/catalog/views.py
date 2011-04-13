@@ -104,19 +104,17 @@ def calculate_price(request, id):
             else:
                 if po.property.add_price:
                     property_price += po.price
-
-    for_sale_price = product.get_for_sale_price(with_properties=False)
-    for_sale_price += property_price
-
-    for_sale_standard_price = product.get_standard_price(with_properties=False)
-    for_sale_standard_price += property_price
-
-    price = product.get_price(with_properties=False)
-    price += property_price
+    
+    if product.is_for_sale():
+        for_sale_standard_price = product.get_standard_price(with_properties=False)
+        for_sale_standard_price += property_price
+    
+    else:    
+        price = product.get_price(with_properties=False)
+        price += property_price
 
     result = simplejson.dumps({
         "price" : lfs_tags.currency(price),
-        "for-sale-price" : lfs_tags.currency(for_sale_price),
         "for-sale-standard-price" : lfs_tags.currency(for_sale_standard_price),
         "message" : _("Price has been changed according to your selection."),
     }, cls = LazyEncoder)

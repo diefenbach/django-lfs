@@ -949,6 +949,12 @@ class Product(models.Model):
         """Returns the price of the product. At the moment this is just the
         gross price. Later this could be the net or the gross price dependent on
         selected shop options.
+
+        **Parameters:**
+        
+        with_properties
+            If the instance is a configurable product and with_properties is 
+            True the prices of the default properties are added to the price.
         """
         return self.get_price_gross(with_properties)
 
@@ -956,6 +962,12 @@ class Product(models.Model):
         """Returns always the standard price for the product. Independent
         whether the product is for sale or not. If you want the real price of
         the product use get_price instead.
+        
+        **Parameters:**
+        
+        with_properties
+            If the instance is a configurable product and with_properties is 
+            True the prices of the default properties are added to the price.
         """
         object = self
 
@@ -971,7 +983,7 @@ class Product(models.Model):
 
         return price
 
-    def get_for_sale_price(self, with_properties=True):
+    def _get_for_sale_price(self):
         """returns the sale price for the product.
         """
         object = self
@@ -982,20 +994,17 @@ class Product(models.Model):
         if object.is_variant() and not object.active_for_sale_price:
             object = object.parent
 
-        price = object.for_sale_price
-        if with_properties and object.is_configurable_product():
-            price += self._get_default_properties_price(object)
-
-        return price
+        return object.for_sale_price
 
     def get_price_gross(self, with_properties=True):
         """Returns the real gross price of the product. This is the base of
         all price and tax calculations.
 
         **Parameters:**
-
+        
         with_properties
-            If True the prices of the default property options are added.
+            If the instance is a configurable product and with_properties is 
+            True the prices of the default properties are added to the price.
 
         """
         object = self
@@ -1005,9 +1014,9 @@ class Product(models.Model):
 
         if object.get_for_sale():
             if object.is_variant() and not object.active_for_sale_price:
-                price = object.parent.get_for_sale_price()
+                price = object.parent._get_for_sale_price()
             else:
-                price = object.get_for_sale_price()
+                price = object._get_for_sale_price()
         else:
             if object.is_variant() and not object.active_price:
                 price = object.parent.price
