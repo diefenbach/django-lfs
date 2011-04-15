@@ -163,7 +163,7 @@
                         {{property.name}}
                     </th>
                 {% endfor %}    
-                <th class="number">
+                <th>
                     {% trans 'Price' %}
                 </th>
                 {% for variant in variants %}
@@ -185,6 +185,7 @@
                             <input type="text" name="sku-{{variant.id}}" value="{{variant.sku}}" />
                         </td>
                         <td>
+                            <input type="checkbox" name="active-name-{{variant.id}}" {% if variant.active_name %}checked="checked"{% endif %} />
                             <input type="text" name="name-{{variant.id}}" value="{{variant.name}}" />
                         </td>
 
@@ -201,6 +202,7 @@
                             </td>
                         {% endfor %}
                         <td class="number">
+                            <input class="number" type="checkbox" name="active-price-{{variant.id}}" {% if variant.active_price %}checked="checked"{% endif %} />
                             <input class="number" type="text" name="price-{{variant.id}}" value="{{variant.price}}" />
                         </td>
                         <td>

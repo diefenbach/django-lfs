@@ -113,7 +113,9 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
                 "slug" : variant.slug,
                 "sku" : variant.sku,
                 "name" : variant.name,
+                "active_name" : variant.active_name,
                 "price" : variant.price,
+                "active_price" : variant.active_price,
                 "position" : variant.variant_position,
                 "properties" : properties
             })
@@ -364,6 +366,21 @@ def update_variants(request, product_id):
                         variant.active = True
                     else:
                         variant.active = False
+                    
+                    # active-price    
+                    active_price = request.POST.get("active-price-%s" % id)
+                    import pdb; pdb.set_trace()
+                    if active_price:
+                        variant.active_price = True
+                    else:
+                        variant.active_price = False
+
+                    # active-name    
+                    active_name = request.POST.get("active-name-%s" % id)
+                    if active_name:
+                        variant.active_name = True
+                    else:
+                        variant.active_name = False
 
                     # position
                     position = request.POST.get("position-%s" % id)
