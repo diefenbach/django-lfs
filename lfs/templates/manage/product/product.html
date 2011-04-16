@@ -65,11 +65,7 @@
         </div>
         <div id="manage-tabs">
             <ul>
-                {% if product.is_variant %}
-                    <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Variant' %}</a></li>
-                {% else %}
-                    <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Product' %}</a></li>
-                {% endif %}
+                <li class="ui-tabs-nav-item"><a href="#data">{{ product.get_name }}</a></li>
 
                 {% if not product.is_variant %}
                     <li class="ui-tabs-nav-item"><a href="{% url lfs_product_categories_tab product.id %}">{% trans 'Categories' %}</a></li>
