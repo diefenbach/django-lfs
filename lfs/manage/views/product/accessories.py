@@ -78,7 +78,7 @@ def manage_accessories_inline(
         s["accessories-amount"] = int(r.get("accessories-amount", 
                                       s.get("accessories-amount")))
     except TypeError:
-        s["accessories-amount"] = 10
+        s["accessories-amount"] = 25
     
     filters = Q()
     if filter_:
