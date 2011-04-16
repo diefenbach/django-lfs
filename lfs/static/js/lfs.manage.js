@@ -20,6 +20,14 @@ tinyMCE.init({
     content_css : "/media/tinymce_styles.css"
 })
 
+function align_related_product_buttons() {
+    var hl  = $("#related-products-left").height();
+    var hr = $("#related-products-right").height();
+    var h = Math.max(hl, hr)
+    $("#related-products-left").height(h);
+    $("#related-products-right").height(h);
+}
+
 function mark_selected() {
     $("ul.manage-categories a").each(function() {
         $(this).css("font-weight", "normal");
@@ -577,6 +585,7 @@ $(function() {
                 var data = JSON.parse(data)
                 $("#related-products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
+                align_related_product_buttons()
             }
         });
         return false;
@@ -588,6 +597,7 @@ $(function() {
                 var data = JSON.parse(data);
                 $("#related-products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
+                align_related_product_buttons()
             }
         });
         return false;

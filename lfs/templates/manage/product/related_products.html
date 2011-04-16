@@ -16,12 +16,12 @@
     </form>
 {% endif %}    
 
-<h2 class="heading-middle">{% trans 'Products' %}</h2>
+<h2 class="heading-first">{% trans 'Products' %}</h2>
 
 <form id="filter-related-products-form"
       action="{% url lfs.manage.views.manage_related_products_inline product.id %}"
       onsubmit="return false">
-    <input class="filter-related-products-input" type="text" name="filter"/>
+    <label>Filter:</label><input class="filter-related-products-input" type="text" name="filter"/>
     
     {% category_filter "related-products-categories-filter" "related_products_category_filter" %}
     
