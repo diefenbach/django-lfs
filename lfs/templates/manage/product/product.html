@@ -6,6 +6,20 @@
 {% block section %}manage-product{% endblock %}
 
 {% block left_slot %}
+    <form action="{% url lfs_set_product_name_filter %}"
+          method="post">
+
+        <input type="text"
+               name="name"
+               id="product-name-filter" 
+               style="width:100%" 
+               value="{{ name_filter_value }}" />
+               
+        <input type="hidden"
+               name="product-id"
+               value="{{ product.id }}" />               
+    </form>
+    
     <div id="pages-inline">
         {{ pages_inline|safe }}
     </div>
@@ -17,17 +31,6 @@
 {% endblock %}
 
 {% block content %}    
-    <form action="{% url lfs_set_product_name_filter %}"
-          method="post">
-        <input type="text"
-               name="name"
-               id="product-name-filter" />
-               
-    <input type="hidden"
-           name="product-id"
-           value="{{ product.id }}">
-               
-    </form>
     
     {# <div id="product-filters"> #}
     {#     {{ product_filters }} #}
