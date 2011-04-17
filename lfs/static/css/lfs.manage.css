@@ -434,11 +434,12 @@ body.manage-product ul.manage-categories.root {
 }
 
 div.site-actions {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    line-height:25px;
 }
 
 div.site-actions img {
-    position: relative; top: 3px;
+/*    position: relative; top: 3px;*/
 }
 
 span.delete {
@@ -574,4 +575,9 @@ button {
 .dialog-buttons {
     float: right;
     padding-top:10px;
+}
+
+.ajax-loading {
+    position: relative; top: 2px; left: 10px;
+    display: none;
 }
