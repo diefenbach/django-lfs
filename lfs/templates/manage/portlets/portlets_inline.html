@@ -1,49 +1,5 @@
 {% load i18n %}
 
-
-{# <div id="parent-portlets"> #}
-{#     {% if parent_slots %} #}
-{#         <h2>{% trans 'Inherited portlets' %}</h2> #}
-{#     {% endif %} #}
-{#      #}
-{#     {% for obj in parent_slots %} #}
-{#         {% for slot in obj.items %} #}
-{#             {% if slot.portlets %} #}
-{#                 <h3 {% if forloop.first %}class="first-heading"{% endif %}> #}
-{#                     {% trans 'Slot' %}: {{ slot.name }} #}
-{#                 </h3> #}
-{#  #}
-{#                 <table class="lfs-manage-table"> #}
-{#                     <tr> #}
-{#                         <th> #}
-{#                             {% trans 'Object' %} #}
-{#                         </th> #}
-{#                         <th> #}
-{#                             {% trans 'Type' %} #}
-{#                         </th> #}
-{#                         <th> #}
-{#                             {% trans 'Title' %} #}
-{#                         </th> #}
-{#                     </tr> #}
-{#                     {% for portlet in slot.portlets %} #}
-{#                         <tr> #}
-{#                             <td> #}
-{#                                 object #}
-{#                             </td> #}
-{#                             <td> #}
-{#                                 {{ portlet.type }} #}
-{#                             </td> #}
-{#                             <td> #}
-{#                                 {{ portlet.title }} #}
-{#                             </td> #}
-{#                         </tr> #}
-{#                     {% endfor %} #}
-{#                 </table> #}
-{#             {% endif %} #}
-{#         {% endfor %}         #}
-{#     {% endfor %} #}
-{# </div> #}
-
 {% if parent_for_portlets %}
     <form class="portlets-form"
           action="{% url lfs_update_portlets object_type_id, object.id %}"
@@ -77,14 +33,14 @@
 
         <table class="lfs-manage-table">
             <tr>
-                <th width="100px">
+                <th class="small">
                     {% trans 'Type' %}
                 </th>
-                <th width="200px">
+                <th class="middle">
                     {% trans 'Title' %}
                 </th>
-                <th>
-                    {% trans 'Modify' %}
+                <th class="tiny right-padding">
+                    {% trans 'Manage' %}
                 </th>
             </tr>
             {% for portlet in slot.portlets %}
@@ -95,12 +51,12 @@
                     <td>
                         {{ portlet.title }}
                     </td>
-                    <td>
-                        <a class="confirmation-link"
-                           data="{% trans 'Delete?' %}"
+                    <td class="right">
+                        <a class="delete delete-link"
+                           dialog_message='{% trans "Do you really want to delete this portlet?" %}'
                            href="{% url lfs_delete_portlet portlet.pa_id %}">{% trans 'Delete' %}
-                        </a> /
-                        <a class="portlet-edit-button"
+                        </a>
+                        <a class="edit portlet-edit-button"
                            href="{% url lfs_edit_portlet portlet.pa_id %}">{% trans 'Edit' %}
                         </a>
                     </td>

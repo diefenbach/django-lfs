@@ -76,7 +76,7 @@ $(function() {
         closeOnEscape: true,
         modal: true,
         width: 800,
-        height: 600,
+        height: 680,
         draggable: false,
         resizable: false,
     });
@@ -904,6 +904,7 @@ $(function() {
         $.get(url, function(data) {
             $("#dialog").html(data);
             $("#dialog").dialog("open");
+            $(".button").button();
             tinyMCE.execCommand('mceAddControl', true, 'id_portlet-text');
         });
         return false;
@@ -914,6 +915,7 @@ $(function() {
             success : function(data) {
                 $("#dialog").html(data);
                 $("#dialog").dialog("open");
+                $(".button").button();                
                 tinyMCE.execCommand('mceAddControl', true, 'id_portlet-text');
         }});
         return false;
@@ -1171,6 +1173,7 @@ $(function() {
 
     $(".delete-link").live("click", function() {
         $("#delete-url").html($(this).attr("href"));
+        $("#delete-dialog > p.message").html($(this).attr("dialog_message"));
         $("#delete-dialog").dialog("open");
         return false;
     });
@@ -1183,4 +1186,7 @@ $(function() {
             window.location = url;
         }
     });
+    
+    $('#manage-tabs').tabs('select', 7)    
+    $("input.button").button();
 })
