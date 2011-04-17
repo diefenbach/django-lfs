@@ -20,7 +20,8 @@ tinyMCE.init({
     content_css : "/media/tinymce_styles.css"
 })
 
-function align_related_product_buttons() {
+function align_related_products_buttons() {
+
     var hl  = $("#related-products-left").height();
     var hr = $("#related-products-right").height();
     var h = Math.max(hl, hr)
@@ -69,7 +70,7 @@ $(function() {
         delay: "200"
     });
 
-    $('#manage-tabs > ul').tabs({ cookie: { expires: 30 } });
+    $('#manage-tabs').tabs();
 
     $("#dialog").dialog({
         autoOpen: false,
@@ -77,14 +78,27 @@ $(function() {
         modal: true,
         width: 800,
         height: 600,
-        overlay: {
-            opacity: 0.7,
-            background: "black"
-        }
+        draggable: false,
+        resizable: false,
+    });
+
+    $("#product-name-filter").live("keyup", function() {
+        $(this).parents("form:first").ajaxSubmit({
+            success : function(data) {
+                data = JSON.parse(data);
+                for (var html in data["html"])
+                    $(data["html"][html][0]).html(data["html"][html][1]);
+
+                if (data["message"]) {
+                    $.jGrowl(data["message"]);
+                }
+            }
+        })
+        return false;
     });
 
     // Generic ajax save button
-    $(".ajax-save-button").livequery("click", function() {
+    $(".ajax-save-button").live("click", function() {
         var action = $(this).attr("name")
         tinyMCE.execCommand('mceRemoveControl', false, 'id_text');
         $(this).parents("form:first").ajaxSubmit({
@@ -101,7 +115,7 @@ $(function() {
     });
 
     // Generic ajax save button
-    $(".ajax-save-button-2").livequery("click", function() {
+    $(".ajax-save-button-2").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
                 data = JSON.parse(data);
@@ -117,7 +131,7 @@ $(function() {
     });
 
     // Generic ajax link
-    $(".ajax-link").livequery("click", function() {
+    $(".ajax-link").live("click", function() {
         var url = $(this).attr("href");
         $.post(url, function(data) {
             data = JSON.parse(data);
@@ -132,7 +146,7 @@ $(function() {
     });
 
     // Criteria
-    $(".edit-price-criteria-button").livequery("click", function() {
+    $(".edit-price-criteria-button").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#dialog").html(data);
@@ -141,7 +155,7 @@ $(function() {
         return false;
     });
 
-    $(".criterion-add-first-button").livequery("click", function() {
+    $(".criterion-add-first-button").live("click", function() {
         var position = $(this).siblings(".position").val()
         var url = $(this).attr("href");
         $.post(url, function(data) {
@@ -151,7 +165,7 @@ $(function() {
         return false;
     });
 
-    $(".criterion-add-button").livequery("click", function() {
+    $(".criterion-add-button").live("click", function() {
         var criterion = $(this).parents("tr:first");
         var url = $(this).attr("href");
         $.post(url, function(data) {
@@ -161,7 +175,7 @@ $(function() {
         return false
     });
 
-    $("select.criterion-type").livequery("change", function() {
+    $("select.criterion-type").live("change", function() {
         var type = $(this).selected().val();
         var target = $(this).parents("tr:first");
         $.post("/manage/change-criterion", {"type" : type}, function(data) {
@@ -170,7 +184,7 @@ $(function() {
         });
     });
 
-    $(".criterion-save-button").livequery("click", function() {
+    $(".criterion-save-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
                 data = JSON.parse(data);
@@ -182,7 +196,7 @@ $(function() {
         return false;
     });
 
-    $(".price-criterion-save-button").livequery("click", function() {
+    $(".price-criterion-save-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
                 data = JSON.parse(data);
@@ -194,46 +208,34 @@ $(function() {
         return false;
     });
 
-    $(".criterion-delete-button").livequery("click", function() {
+    $(".criterion-delete-button").live("click", function() {
         $(this).parents("tr.criterion:first").remove();
     });
 
     // General
-    $(".delete-all").livequery("click", function() {
+    $(".delete-all").live("click", function() {
         var checked = this.checked;
         $(".delete").each(function() {
             this.checked = checked;
         });
     });
 
-    $(".select-all-1").livequery("click", function() {
+    $(".select-all-1").live("click", function() {
         var checked = this.checked;
         $(".select-1").each(function() {
             this.checked = checked;
         });
     });
 
-    $(".select-all-2").livequery("click", function() {
+    $(".select-all-2").live("click", function() {
         var checked = this.checked;
         $(".select-2").each(function() {
             this.checked = checked;
         });
     });
 
-    $("ul.menu").sortable({
-        items : ">li",
-        axis: "y",
-        update : function(evt, el) {
-            var id = $(this).attr("id");
-            var categories = $(this).sortable("toArray", {});
-            $.post("/shops/manage/update-category/" + id, {"categories" : categories}, function(data) {
-                $.jGrowl("Categories has been updated.");
-            });
-        }
-    });
-
     // Categories / Products
-    $(".category-products-page-link").livequery("click", function() {
+    $(".category-products-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#products-inline").html(data)
@@ -241,7 +243,7 @@ $(function() {
         return false;
     });
 
-    $(".category-products-add-button").livequery("click", function() {
+    $(".category-products-add-button").live("click", function() {
         $("#category-products-add-form").ajaxSubmit({
             success: function(data) {
                 var data = JSON.parse(data);
@@ -252,7 +254,7 @@ $(function() {
         return false;
     })
 
-    $(".category-products-remove-button").livequery("click", function() {
+    $(".category-products-remove-button").live("click", function() {
         $("#category-products-remove-form").ajaxSubmit({
             success: function(data) {
                 $("#products-inline").html(data);
@@ -262,7 +264,7 @@ $(function() {
         return false;
     });
 
-    $(".category-products-filter-input").livequery("keyup", function() {
+    $(".category-products-filter-input").live("keyup", function() {
         $("#category-products-filter-form").ajaxSubmit({
             "success": function(data) {
                 $("#products-inline").html(data);
@@ -270,7 +272,7 @@ $(function() {
         });
     });
 
-    $(".category-products-categories-filter").livequery("change", function() {
+    $(".category-products-amount").live("change", function() {
         $("#category-products-filter-form").ajaxSubmit({
             "success": function(data) {
                 $("#products-inline").html(data);
@@ -278,7 +280,15 @@ $(function() {
         });
     });
 
-    $(".category-selected-products-filter-input").livequery("keyup", function() {
+    $(".category-products-categories-filter").live("change", function() {
+        $("#category-products-filter-form").ajaxSubmit({
+            "success": function(data) {
+                $("#products-inline").html(data);
+            }
+        });
+    });
+
+    $(".category-selected-products-filter-input").live("keyup", function() {
         $("#category-selected-products-filter-form").ajaxSubmit({
             "success": function(data) {
                 $("#selected-products").html(data);
@@ -286,7 +296,7 @@ $(function() {
         });
     });
 
-    $(".category-products-categories-filter-2").livequery("change", function() {
+    $(".category-products-categories-filter-2").live("change", function() {
         $("#category-selected-products-filter-form").ajaxSubmit({
             "success": function(data) {
                 $("#selected-products").html(data);
@@ -295,7 +305,7 @@ $(function() {
     });
 
     // Categories / SEO
-    $(".category-seo-button").livequery("click", function() {
+    $(".category-seo-button").live("click", function() {
         $("#category-seo-form").ajaxSubmit({
             success: function(data) {
                 data = JSON.parse(data);
@@ -307,7 +317,7 @@ $(function() {
     })
 
     // Products (Overview)
-    $(".products-name-filter").livequery("keyup", function() {
+    $(".products-name-filter").live("keyup", function() {
         var form = $(this).parents("form:first");
 
         try { clearTimeout(timeout); } catch(e) {}
@@ -321,7 +331,7 @@ $(function() {
         }, 500);
     });
 
-    $(".products-reset-link").livequery("click", function() {
+    $(".products-reset-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#products-inline").html(data);
@@ -333,7 +343,7 @@ $(function() {
     });
 
     // Product / Selectable Products
-    $("#selectable-products-filter-input").livequery("keyup", function() {
+    $("#selectable-products-filter-input").live("keyup", function() {
         $("#selectable-products-filter-form").ajaxSubmit({
             "success": function(data) {
                 $("#selectable-products").html(data);
@@ -341,7 +351,7 @@ $(function() {
         });
     });
 
-    $(".selectable-products-category-filter").livequery("change", function() {
+    $(".selectable-products-category-filter").live("change", function() {
         $("#selectable-products-filter-form").ajaxSubmit({
             "success": function(data) {
                 $("#selectable-products").html(data);
@@ -349,7 +359,7 @@ $(function() {
         });
     });
 
-    $(".selectable-products-page-link").livequery("click", function() {
+    $(".selectable-products-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#selectable-products").html(data)
@@ -357,7 +367,7 @@ $(function() {
         return false;
     });
 
-    $(".selectable-products-reset-link").livequery("click", function() {
+    $(".selectable-products-reset-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#selectable-products-filter-input").val("");
@@ -369,21 +379,21 @@ $(function() {
     });
 
     // Product / Images
-    $(".upload-file:last").livequery("change", function() {
+    $(".upload-file:last").live("change", function() {
         var name = $(this).attr("name");
         var number = parseInt(name.split("_")[1])
         number += 1;
         $(this).parent().after("<div><input type='file' class='upload-file' name='file_" + number + "' /></div>");
     });
 
-    $("#product-images-save-button").livequery("click", function() {
+    $("#product-images-save-button").live("click", function() {
         $("#product-images-form").ajaxSubmit({
             target : "#images"
         });
         return false;
     });
 
-    $(".product-images-update-button").livequery("click", function() {
+    $(".product-images-update-button").live("click", function() {
         var action = $(this).attr("name")
         $("#product-images-update-form").ajaxSubmit({
             data : {"action" : action},
@@ -397,7 +407,7 @@ $(function() {
     });
 
     // Product / Data
-    $("#product-data-save-button").livequery("click", function() {
+    $("#product-data-save-button").live("click", function() {
         tinyMCE.execCommand('mceRemoveControl', false, 'id_short_description');
         tinyMCE.execCommand('mceRemoveControl', false, 'id_description');
         $("#product-data-form").ajaxSubmit({
@@ -414,7 +424,7 @@ $(function() {
     })
 
     // Product / Categories
-    $(".product-categories-save-button").livequery("click", function() {
+    $(".product-categories-save-button").live("click", function() {
         $("#product-categories-save-form").ajaxSubmit({
             success: function(data) {
                 var data = JSON.parse(data)
@@ -425,13 +435,13 @@ $(function() {
     })
 
     // Mark parent categories with selected children categories
-    $(".product-categories-save-button").livequery("click", function() {
+    $(".product-categories-save-button").live("click", function() {
         mark_selected()
     })
 
     // Show selected categories - expands all categories which have a selected
     // sub category.
-    $(".show-selected").livequery("click", function() {
+    $(".show-selected").live("click", function() {
 
         $("a:eq(0)", "#manage-product-categories-control").click()
 
@@ -453,7 +463,7 @@ $(function() {
     })
 
     // Shows current category in category manage tree (manage category)
-    $(".show-current").livequery("click", function() {
+    $(".show-current").live("click", function() {
 
         $("a:eq(0)", "#manage-categories-categories-control").click()
 
@@ -481,7 +491,7 @@ $(function() {
     })
 
     // Product / Variants
-    $(".property-add-button").livequery("click", function() {
+    $(".property-add-button").live("click", function() {
         $("#property-add-form").ajaxSubmit({
             success: function(data) {
                 $("#variants").html(data);
@@ -490,7 +500,7 @@ $(function() {
         return false;
     });
 
-    $(".variants-add-button").livequery("click", function() {
+    $(".variants-add-button").live("click", function() {
         $(".variants-add-form").ajaxSubmit({
             success: function(data) {
                 data = JSON.parse(data);
@@ -501,7 +511,7 @@ $(function() {
         return false;
     })
 
-    $(".variants-update-button").livequery("click", function() {
+    $(".variants-update-button").live("click", function() {
         var action = $(this).attr("name")
         $("#variants-form").ajaxSubmit({
             data : {"action" : action},
@@ -514,7 +524,7 @@ $(function() {
         return false;
     });
 
-    $(".option-add-button").livequery("click", function() {
+    $(".option-add-button").live("click", function() {
         var form = $(this).parents("form:first");
         form.ajaxSubmit({
             "success": function(data) {
@@ -524,7 +534,7 @@ $(function() {
         return false;
     })
 
-    $(".property-change-button").livequery("click", function() {
+    $(".property-change-button").live("click", function() {
         var href = $(this).attr("href")
         $.post(href, function(data) {
             $("#variants").html(data);
@@ -533,7 +543,7 @@ $(function() {
     })
 
     // Product / Accessories
-    $("#add-accessories-button").livequery("click", function() {
+    $("#add-accessories-button").live("click", function() {
         $("#add-accessories-form").ajaxSubmit({
             "success": function(data) {
                 var data = JSON.parse(data);
@@ -545,7 +555,7 @@ $(function() {
         return false;
     })
 
-    $(".accessories-update-button").livequery("click", function() {
+    $(".accessories-update-button").live("click", function() {
         var action = $(this).attr("name");
         $("#accessories-update-form").ajaxSubmit({
             data : {"action" : action},
@@ -559,7 +569,7 @@ $(function() {
         return false;
     })
 
-    $(".accessories-page-link").livequery("click", function() {
+    $(".accessories-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#accessories-inline").html(data)
@@ -568,7 +578,7 @@ $(function() {
         return false;
     });
 
-    $(".filter-accessories-input").livequery("keyup", function() {
+    $(".filter-accessories-input").live("keyup", function() {
         $("#filter-accessories-form").ajaxSubmit({
             "type": "post",
             "success": function(data) {
@@ -578,7 +588,7 @@ $(function() {
         });
     });
 
-    $(".accessories-categories-filter").livequery("change", function() {
+    $(".accessories-categories-filter").live("change", function() {
         $("#filter-accessories-form").ajaxSubmit({
             "target": "#accessories-inline",
             "success": function(data) {
@@ -588,41 +598,41 @@ $(function() {
         });
     });
 
-    $("#accessories-amount").livequery("change", function() {
+    $("#accessories-amount").live("change", function() {
         $("#filter-accessories-form").ajaxSubmit({
             "target": "#accessories-inline",
             "success": function(data) {
                 align_accessories_buttons();
-            }            
+            }
         });
     });
 
     // Product / Related Products
-    $("#add-related-products-button").livequery("click", function() {
+    $("#add-related-products-button").live("click", function() {
         $("#add-related-products-form").ajaxSubmit({
             "success": function(data) {
                 var data = JSON.parse(data)
                 $("#related-products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
-                align_related_product_buttons()
+                align_related_products_buttons()
             }
         });
         return false;
     })
 
-    $("#remove-related-products-button").livequery("click", function() {
+    $("#remove-related-products-button").live("click", function() {
         $("#remove-related-products-form").ajaxSubmit({
             "success": function(data) {
                 var data = JSON.parse(data);
                 $("#related-products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
-                align_related_product_buttons()
+                align_related_products_buttons()
             }
         });
         return false;
     })
 
-    $(".related-products-update-button").livequery("click", function() {
+    $(".related-products-update-button").live("click", function() {
         $("#related-products-update-form").ajaxSubmit({
             "success": function(data) {
                 var data = JSON.parse(data);
@@ -633,7 +643,7 @@ $(function() {
         return false;
     });
 
-    $(".related-products-page-link").livequery("click", function() {
+    $(".related-products-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#related-products-inline").html(data)
@@ -641,14 +651,14 @@ $(function() {
         return false;
     });
 
-    $(".filter-related-products-input").livequery("keyup", function() {
+    $(".filter-related-products-input").live("keyup", function() {
         $("#filter-related-products-form").ajaxSubmit({
             target: "#related-products-inline"
         });
         return false;
     });
 
-    $(".related-products-categories-filter").livequery("change", function() {
+    $(".related-products-categories-filter").live("change", function() {
         $("#filter-related-products-form").ajaxSubmit({
             "success": function(data) {
                 $("#related-products-inline").html(data);
@@ -656,17 +666,17 @@ $(function() {
         });
     });
 
-    $("#related-products-amount").livequery("change", function() {
+    $("#related-products-amount").live("change", function() {
         $("#filter-related-products-form").ajaxSubmit({
             "target": "#related-products-inline",
             "success": function(data) {
-                align_related_product_buttons();
-            }            
+                align_related_products_buttons();
+            }
         });
     });
 
     // Select products
-    $("input.select-1").livequery("click", function(e) {
+    $("input.select-1").live("click", function(e) {
         if ($(this).is(":checked")) {
             $(this).parents("tr:first").addClass("marked");
 
@@ -699,7 +709,7 @@ $(function() {
     });
 
     // Product / SEO
-    $(".seo-save-button").livequery("click", function() {
+    $(".seo-save-button").live("click", function() {
         $("#product-seo-form").ajaxSubmit({
             "type": "post",
             "success": function(data) {
@@ -712,7 +722,7 @@ $(function() {
     })
 
     // Shipping/Payment Price
-    $(".price-button").livequery("click", function() {
+    $(".price-button").live("click", function() {
         var action = $(this).attr("name");
         $(this).parents("form:first").ajaxSubmit({
             data : {"action" : action},
@@ -726,7 +736,7 @@ $(function() {
     });
 
     // Product / Dimension
-    $(".product-stock-button").livequery("click", function() {
+    $(".product-stock-button").live("click", function() {
         $("#product-stock-form").ajaxSubmit({
             "type": "post",
             "success": function(data) {
@@ -740,7 +750,7 @@ $(function() {
     })
 
     // PropertyGroup
-    $("#add-property-button").livequery("click", function() {
+    $("#add-property-button").live("click", function() {
         $("#add-property-form").ajaxSubmit({
             "success": function(data) {
                 var data = JSON.parse(data)
@@ -751,7 +761,7 @@ $(function() {
         return false;
     })
 
-    $(".property-group-update-button").livequery("click", function() {
+    $(".property-group-update-button").live("click", function() {
         var action = $(this).attr("name");
         $("#property-group-update-form").ajaxSubmit({
             data : {"action" : action},
@@ -765,7 +775,7 @@ $(function() {
     })
 
     // PropertyGroup / Products
-    $("#add-products-button").livequery("click", function() {
+    $("#add-products-button").live("click", function() {
         $("#add-products-form").ajaxSubmit({
             "success": function(data) {
                 var data = JSON.parse(data);
@@ -777,7 +787,7 @@ $(function() {
         return false;
     })
 
-    $(".products-update-button").livequery("click", function() {
+    $(".products-update-button").live("click", function() {
         $("#products-update-form").ajaxSubmit({
             success : function(data) {
                 var data = JSON.parse(data);
@@ -788,7 +798,7 @@ $(function() {
         return false;
     })
 
-    $(".products-page-link").livequery("click", function() {
+    $(".products-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#products-inline").html(data)
@@ -796,7 +806,7 @@ $(function() {
         return false;
     });
 
-    $(".filter-products-input").livequery("keyup", function() {
+    $(".filter-products-input").live("keyup", function() {
         $("#filter-products-form").ajaxSubmit({
             "type": "post",
             "success": function(data) {
@@ -805,14 +815,14 @@ $(function() {
         });
     });
 
-    $(".products-categories-filter").livequery("change", function() {
+    $(".products-categories-filter").live("change", function() {
         $("#filter-products-form").ajaxSubmit({
             "target": "#products-inline"
         });
     });
 
     // PropertyGroup / Product Property Values
-    $("#update-product-values-button").livequery("click", function() {
+    $("#update-product-values-button").live("click", function() {
         $("#update-product-values-form").ajaxSubmit({
             success : function(data) {
                 var data = JSON.parse(data);
@@ -824,7 +834,7 @@ $(function() {
     })
 
     // Shop Property Options
-    $(".shop-property-add-option-button").livequery("click", function() {
+    $(".shop-property-add-option-button").live("click", function() {
         var action = $(this).attr("name");
         $(this).parents("form:first").ajaxSubmit({
             data : {"action" : action},
@@ -838,7 +848,7 @@ $(function() {
     });
 
     // Shop Property Steps
-    $(".shop-property-add-step-button").livequery("click", function() {
+    $(".shop-property-add-step-button").live("click", function() {
         var action = $(this).attr("name");
         $(this).parents("form:first").ajaxSubmit({
             data : {"action" : action},
@@ -851,7 +861,7 @@ $(function() {
         return false;
     });
 
-    $(".shop-property-save-step-button").livequery("click", function() {
+    $(".shop-property-save-step-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success: function(data) {
                 data = JSON.parse(data)
@@ -862,7 +872,7 @@ $(function() {
         return false;
     });
 
-    $(".shop-property-save-step-type-button").livequery("click", function() {
+    $(".shop-property-save-step-type-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success: function(data) {
                 data = JSON.parse(data)
@@ -875,12 +885,12 @@ $(function() {
 
     // Static blocks
     var confirmation;
-    $(".confirmation-link-no").livequery("click", function() {
+    $(".confirmation-link-no").live("click", function() {
         $(this).parent().replaceWith(confirmation);
         return false;
     });
 
-    $(".confirmation-link").livequery("click", function() {
+    $(".confirmation-link").live("click", function() {
         confirmation = $(this);
         var url = $(this).attr("href");
         var data = $(this).attr("data");
@@ -890,7 +900,7 @@ $(function() {
     });
 
     // Portlets
-    $(".portlet-edit-button").livequery("click", function() {
+    $(".portlet-edit-button").live("click", function() {
         tinyMCE.execCommand('mceRemoveControl', false, 'id_portlet-text');
         var url = $(this).attr("href");
         $.get(url, function(data) {
@@ -901,7 +911,7 @@ $(function() {
         return false;
     });
 
-    $(".portlet-add-button").livequery("click", function() {
+    $(".portlet-add-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
                 $("#dialog").html(data);
@@ -911,7 +921,7 @@ $(function() {
         return false;
     });
 
-    $(".ajax-portlet-save-button").livequery("click", function() {
+    $(".ajax-portlet-save-button").live("click", function() {
         tinyMCE.execCommand('mceRemoveControl', false, 'id_portlet-text');
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
@@ -925,7 +935,7 @@ $(function() {
     });
 
     // Marketing / Topseller
-    $("#add-topseller-button").livequery("click", function() {
+    $("#add-topseller-button").live("click", function() {
         $("#add-topseller-form").ajaxSubmit({
             "success": function(data) {
                 var data = JSON.parse(data)
@@ -936,7 +946,7 @@ $(function() {
         return false;
     })
 
-    $(".topseller-update-button").livequery("click", function() {
+    $(".topseller-update-button").live("click", function() {
         var action = $(this).attr("name");
         $("#topseller-update-form").ajaxSubmit({
             data : {"action" : action},
@@ -949,7 +959,7 @@ $(function() {
         return false;
     });
 
-    $(".topseller-page-link").livequery("click", function() {
+    $(".topseller-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#topseller-inline").html(data)
@@ -957,14 +967,14 @@ $(function() {
         return false;
     });
 
-    $(".filter-topseller-input").livequery("keyup", function() {
+    $(".filter-topseller-input").live("keyup", function() {
         $("#filter-topseller-form").ajaxSubmit({
             target: "#topseller-inline"
         });
         return false;
     });
 
-    $(".topseller-categories-filter").livequery("change", function() {
+    $(".topseller-categories-filter").live("change", function() {
         $("#filter-topseller-form").ajaxSubmit({
             "success": function(data) {
                 $("#topseller-inline").html(data);
@@ -973,7 +983,7 @@ $(function() {
     });
 
     // Marketing / Featured
-    $("#add-featured-button").livequery("click", function() {
+    $("#add-featured-button").live("click", function() {
         $("#add-featured-form").ajaxSubmit({
             "success": function(data) {
                 var data = JSON.parse(data)
@@ -984,7 +994,7 @@ $(function() {
         return false;
     })
 
-    $(".featured-update-button").livequery("click", function() {
+    $(".featured-update-button").live("click", function() {
         var action = $(this).attr("name");
         $("#featured-update-form").ajaxSubmit({
             data : {"action" : action},
@@ -997,7 +1007,7 @@ $(function() {
         return false;
     });
 
-    $(".featured-page-link").livequery("click", function() {
+    $(".featured-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#featured-inline").html(data)
@@ -1005,14 +1015,14 @@ $(function() {
         return false;
     });
 
-    $(".filter-featured-input").livequery("keyup", function() {
+    $(".filter-featured-input").live("keyup", function() {
         $("#filter-featured-form").ajaxSubmit({
             target: "#featured-inline"
         });
         return false;
     });
 
-    $(".featured-categories-filter").livequery("change", function() {
+    $(".featured-categories-filter").live("change", function() {
         $("#filter-featured-form").ajaxSubmit({
             "success": function(data) {
                 $("#featured-inline").html(data);
@@ -1021,7 +1031,7 @@ $(function() {
     });
 
     // Shop
-    $("#shop-default-values-button").livequery("click", function() {
+    $("#shop-default-values-button").live("click", function() {
         $("#shop-default-values-form").ajaxSubmit({
             "success": function(data) {
                 var data = JSON.parse(data)
@@ -1056,7 +1066,7 @@ $(function() {
     };
 
     $(function() {
-        $(".category-ajax-link").livequery("click", function() {
+        $(".category-ajax-link").live("click", function() {
             var url = $(this).attr("href");
 
             // Loads children of clicked category.
@@ -1078,7 +1088,7 @@ $(function() {
             return false;
         });
 
-        $(".export-category-input").livequery("click", function() {
+        $(".export-category-input").live("click", function() {
 
             // select / deselect all child nodes
             var input = $(this);
@@ -1101,7 +1111,7 @@ $(function() {
             }
         });
 
-        $(".export-product-input").livequery("click", function() {
+        $(".export-product-input").live("click", function() {
             // Add / Remove product
             var input = $(this);
             var url = $(this).attr("data");
@@ -1117,14 +1127,14 @@ $(function() {
         });
     });
 
-    $(".category-variants-options").livequery("change", function() {
+    $(".category-variants-options").live("change", function() {
         var url = $(this).attr("data");
         var variants_option = $(this).val();
         $.post(url, { "variants_option" : variants_option });
     });
 
     // Product / Properties Form
-    
+
     // No results
     var toggle_no_results = function(checked) {
         if (checked) {
@@ -1138,7 +1148,7 @@ $(function() {
     $("#id_filterable").click(function() {
         toggle_no_results(this.checked)
     });
-    
+
     // Required
     var toggle_required = function(checked) {
         if (checked) {
@@ -1153,9 +1163,33 @@ $(function() {
         toggle_required(this.checked)
     });
 
-    $("#manage-tabs > ul" ).bind( "tabsshow", function(event, ui) {
-        align_related_product_buttons();
-        align_accessories_buttons();
+    // $("#manage-tabs").bind("tabsshow", function(event, ui) {
+    //     align_related_products_buttons();
+    //     align_accessories_buttons();
+    // });
+
+    $("#delete-dialog").dialog({
+        autoOpen: false,
+        closeOnEscape: true,
+        modal: true,
+        draggable: false,
+        resizable: false,
     });
 
+    $(".delete-link").live("click", function() {
+        $("#delete-url").html($(this).attr("href"));
+        $("#delete-dialog").dialog("open");
+        return false;
+    });
+
+    var buttons = $("#delete-dialog button").live("click", function(e) {
+        $("#delete-dialog").dialog("close");
+        var yes = buttons.index(this) === 0;
+        var url = $("#delete-url").html();
+        if (yes) {
+            window.location = url;
+        }
+    });
+
+    $("input.button, button.button").button();
 })
