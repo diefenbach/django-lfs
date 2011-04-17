@@ -28,7 +28,7 @@
             <span><img src="{{ MEDIA_URL }}lfs/icons/resultset_previous.png" alt='{% trans "Previous" %}' /></span>
         {% endif %}
     </div>
-    
+
     <table class="lfs-manage-table" style="margin-top:20px">
         <tr>
             <td width="50%">
@@ -62,7 +62,7 @@
                                                class="select-1" />
                                     </td>
                                     <td>
-                                        <a href="{% url lfs_manage_product product.id %}">                                                                                
+                                        <a href="{% url lfs_manage_product product.id %}">
                                             {{ product.get_name }}
                                         </a>
                                     </td>
@@ -85,17 +85,18 @@
                            value="1" />
 
                     <input type="submit"
+                           class="button"
                            id="add-accessories-button"
                            value="{% trans 'Add to accessories' %}" />
 
-                </form>                
+                </form>
             </td>
             <td width="50%">
                 <h2>{% trans 'Accessories' %}</h2>
                 <form id="accessories-update-form"
                       action="{% url lfs.manage.views.remove_accessories product.id %}"
                       method="post">
-                    <div id="accessories-right" style="padding-bottom:10px">                      
+                    <div id="accessories-right" style="padding-bottom:10px">
                         <table class="lfs-manage-table">
                             <tr>
                                 <th class="checkbox">
@@ -108,7 +109,7 @@
                                 <th class="middle">
                                     {% trans 'SKU' %}
                                 </th>
-                                <th class="tiny">
+                                <th class="tiny right-padding">
                                     {% trans 'Position' %}
                                 </th>
                                 <th class="small">
@@ -127,15 +128,15 @@
                                                class="select-2"/>
                                     </td>
                                     <td>
-                                        <a href="{% url lfs_manage_product product_accessory.accessory.id %}">                                        
+                                        <a href="{% url lfs_manage_product product_accessory.accessory.id %}">
                                             {{ product_accessory.accessory.get_name }}
-                                        </a>    
+                                        </a>
                                     </td>
                                     <td>
                                         {{ product_accessory.accessory.get_sku }}
                                     </td>
                                     <td>
-                                        <input class="number"
+                                        <input class="number right-padding"
                                                type="text"
                                                size="3"
                                                name="position-{{ product_accessory.accessory.id }}"
@@ -158,21 +159,26 @@
                                 </tr>
                             {% endfor %}
                         </table>
-                    </div>    
+                    </div>
                     <input type="hidden"
                            name="keep-filters"
                            value="1" />
 
                     <input type="submit"
-                           class="accessories-update-button"
+                           class="button accessories-update-button"
                            name="save"
                            value="{% trans 'Save accessories' %}" />
 
                     <input type="submit"
-                           class="accessories-update-button"
+                           class="button accessories-update-button"
                            name="remove"
                            value="{% trans 'Remove from accessories' %}" />
-                </form>                
+                </form>
             </td>
         </tr>
 </div>
+
+<script>        
+    align_accessories_buttons();
+    $("input.button").button();
+</script>

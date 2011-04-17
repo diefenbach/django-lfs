@@ -239,7 +239,11 @@
             {% endif %}
         </div>
     </fieldset>
-    <input class="product-stock-button"
+    <input class="button product-stock-button"
            type="submit"
            value="{% trans 'Save stock' %}" />
 </form>
+
+<script>
+    $("input.button").button();    
+</script>

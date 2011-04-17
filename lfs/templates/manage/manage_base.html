@@ -6,12 +6,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <title>{% block title %}{% endblock %}</title>
+        
         <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/widgets.css" />
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/css/lfs.manage.css" />
-        <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery/jquery-ui-themeroller/jquery-ui-themeroller.css" />
+        <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery-ui-1.8.11.custom/css/smoothness/jquery-ui-1.8.11.custom.css" />
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery/jquery.jgrowl.css" />
-        <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery/superfish/superfish.css" />
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery/jquery-treeview/jquery.treeview.css" />
+        <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery/superfish/superfish.css" />
+        
 
         <script type="text/javascript" src="/admin/jsi18n/"></script>
         <script type="text/javascript" src="{% admin_media_prefix %}js/core.js"></script>
@@ -21,22 +23,21 @@
         <script type="text/javascript" src="{% admin_media_prefix %}js/urlify.js"></script>
         <script type="text/javascript" src="{{MEDIA_URL }}lfs/tiny_mce/jscripts/tiny_mce/tiny_mce.js"></script>
 
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.pack.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.livequery.pack.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery-1.5.2.min.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery-ui-1.8.11.custom/js/jquery-ui-1.8.11.custom.min.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.fileupload-4.2.1/jquery.fileupload-ui.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.fileupload-4.2.1/jquery.fileupload.js"></script>
+        
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.form.pack.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.jgrowl_minimized.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.cookie.pack.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery-treeview/jquery.treeview.js"></script>
+
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/superfish/superfish.js"></script>
 
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery-ui-personalized-1.5.3.packed.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/js/lfs.manage.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/js/json2.js"></script>
 
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/swfupload/swfupload.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/swfupload/swfupload.queue.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/swfupload/fileprogress.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/swfupload/handlers.js"></script>
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/swfupload/default.css" />
 
         {% block javascript %}{% endblock %}
@@ -135,7 +136,7 @@
                 </tr>
             </table>
         </div>
-        
+
         <table class="main">
             <tr>
                 {% block left-slot-wrapper %}
@@ -154,12 +155,22 @@
                 <p>{% trans 'Powered by' %} <a target="_blank" href="http://www.getlfs.com">LFS</a> &mdash; Lightning Fast Shop</p>
                 <p>
                     <a target="_blank" href="http://www.getlfs.com">LFS</a> {% trans 'is a product of' %} <a target="_blank" href="http://www.iqpp.de">iqplusplus</a>
-                    &mdash; &copy; 2009 {% trans 'by' %} <a target="_blank" href="http://www.iqpp.de">iqplusplus</a> &mdash; {% trans 'All rights reserved' %}
+                    &mdash; &copy; 2009 - 2011 {% trans 'by' %} <a target="_blank" href="http://www.iqpp.de">iqplusplus</a> &mdash; {% trans 'All rights reserved' %}
                 </p>
                 <p>{% trans 'Distributed under the' %} <a target="_blank" href="http://www.opensource.org/licenses/bsd-license.php">{% trans 'BSD-License' %}</a></p>
             </div>
         {% endblock %}
 
         <div id="dialog" title="LFS Dialog"></div>
+
+        <div class="delete-dialog" title='{% trans "Confirmation" %}' id="delete-dialog">
+            <p>{% trans "Do you really want to delete this object?" %}</p>
+            <div class="dialog-buttons">
+                <button class="button">{% trans "Yes" %}</button>
+                <button class="button">{% trans "No" %}</button>
+            </div>
+            <div style="display:none" id="delete-url">url</div>
+        </div>
+
     </body>
 </html>

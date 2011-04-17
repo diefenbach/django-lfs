@@ -84,6 +84,7 @@
                            value="1" />
 
                     <input type="submit"
+                           class="button"
                            id="add-related-products-button"
                            value="{% trans 'Add to related products' %}" />
 
@@ -144,6 +145,7 @@
                            value="1" />
 
                     <input type="submit"
+                           class="button"
                            id="remove-related-products-button"
                            value="{% trans 'Remove from related products' %}" />
                 </form>
@@ -152,3 +154,8 @@
     </table>
 
 </div>
+
+<script>
+    align_related_products_buttons();
+    $("input.button").button();
+</script>

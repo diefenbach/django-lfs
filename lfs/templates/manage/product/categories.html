@@ -34,7 +34,7 @@
             {% endfor %}
         </ul>
         <div class="manage-form-buttons">
-            <input class="product-categories-save-button"
+            <input class="button product-categories-save-button"
                    type="submit" value="{% trans 'Save categories' %}" />
         </div>
     </form>
@@ -44,6 +44,7 @@
 
 
 <script>
+    $("input.button").button();
 	$(function() {
 		$("ul.manage-categories.root").treeview({
 			collapsed: true,
@@ -51,7 +52,6 @@
    			cookieId: "manage-product-categories",
 			control: "#manage-product-categories-control",
 		})
-
 		mark_selected();
 	})
 </script>

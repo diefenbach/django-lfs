@@ -61,7 +61,7 @@
     
         <div class="middle">
             <input type="submit"
-                   class="ajax-save-button"
+                   class="button ajax-save-button"
                    value="{% trans 'Save blocked parent slots' %}" />
         </div>           
     </form>
@@ -98,10 +98,10 @@
                     <td>
                         <a class="confirmation-link"
                            data="{% trans 'Delete?' %}"
-                           href="{% url lfs_delete_portlet portlet.pa_id %}">{% trans 'Delete' %}</a>
+                           href="{% url lfs_delete_portlet portlet.pa_id %}">{% trans 'Delete' %}
                         </a> /
                         <a class="portlet-edit-button"
-                           href="{% url lfs_edit_portlet portlet.pa_id %}">{% trans 'Edit' %}</a>
+                           href="{% url lfs_edit_portlet portlet.pa_id %}">{% trans 'Edit' %}
                         </a>
                     </td>
                 </tr>
@@ -127,7 +127,11 @@
         {% endfor %}
     </select>
 
-    <input class="portlet-add-button"
+    <input class="button portlet-add-button"
            type="submit"
            value="{% trans 'Add portlet' %}" />
 </form>
+
+<script>
+    $("input.button").button();
+</script>

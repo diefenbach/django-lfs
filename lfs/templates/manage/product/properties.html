@@ -14,7 +14,8 @@
     </select>
 
     <div class="lfs-buttons">
-        <input type="submit"
+        <input class="button"
+               type="submit"
                value="{% trans 'Update property groups' %}">
     </div>
 </form>
@@ -30,7 +31,7 @@
                 {% if property_group.properties %}
                     <h3>
                         {{ property_group.name }}
-                    </h3>                    
+                    </h3>
                 {% endif %}
                 {% for property in property_group.properties %}
                     <div>
@@ -43,7 +44,7 @@
                                        name="property-{{ property.id }}"
                                        value="{{ property.value }}" />
                             </div>
-                        {% endif %}                        
+                        {% endif %}
                         {% if property.display_select_field %}
                             <div class="field">
                                 <div class="label">
@@ -71,7 +72,7 @@
             <input type="submit"
                    value="{% trans 'Update default values' %}" />
         </div>
-    </form>    
+    </form>
 {% endif %}
 
 {% if display_filterables %}
@@ -84,7 +85,7 @@
                 {% if property_group.properties %}
                     <h3>
                         {{ property_group.name }}
-                    </h3>                    
+                    </h3>
                 {% endif %}
                 {% for property in property_group.properties %}
                     <div>
@@ -137,7 +138,7 @@
                 {% if property_group.properties %}
                     <h3>
                         {{ property_group.name }}
-                    </h3>                    
+                    </h3>
                 {% endif %}
                 {% for property in property_group.properties %}
                     <div>
@@ -174,9 +175,13 @@
         <input type="hidden" name="type" value="2" />
 
         <div class="lfs-buttons">
-            <input type="submit"
+            <input class="button"
+                   type="submit"
                    value="{% trans 'Update displayed values' %}" />
         </div>
     </form>
 {% endif %}
 
+<script>
+    $("input.button").button();
+</script>

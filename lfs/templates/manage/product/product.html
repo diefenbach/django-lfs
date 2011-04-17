@@ -16,11 +16,22 @@
     </div>
 {% endblock %}
 
-{% block content %}
-
-    <div id="product-filters">
-        {{ product_filters }}
-    </div>
+{% block content %}    
+    <form action="{% url lfs_set_product_name_filter %}"
+          method="post">
+        <input type="text"
+               name="name"
+               id="product-name-filter" />
+               
+    <input type="hidden"
+           name="product-id"
+           value="{{ product.id }}">
+               
+    </form>
+    
+    {# <div id="product-filters"> #}
+    {#     {{ product_filters }} #}
+    {# </div> #}
 
     <div id="product">
         <div class="site-actions">
@@ -42,8 +53,7 @@
                 {% trans 'Add product' %}
             </a>
 
-            <a class="delete confirmation-link"
-               data="{% trans 'Delete?' %}"
+            <a class="delete delete-link"
                href="{% url lfs_manage_delete_product product.id %}">
                {% trans 'Delete product' %}
             </a>
@@ -65,27 +75,24 @@
         </div>
         <div id="manage-tabs">
             <ul>
-                <li class="ui-tabs-nav-item"><a href="#data">{{ product.get_name }}</a></li>
+                <li><a href="#data">{{ product.get_name }}</a></li>
 
                 {% if not product.is_variant %}
-                    <li class="ui-tabs-nav-item"><a href="{% url lfs_product_categories_tab product.id %}">{% trans 'Categories' %}</a></li>
+                    <li><a href="{% url lfs_product_categories_tab product.id %}">{% trans 'Categories' %}</a></li>
                 {% endif %}
 
-                <li class="ui-tabs-nav-item"><a href="#images">{% trans 'Images' %}</a></li>
+                <li><a href="#images">{% trans 'Images' %}</a></li>
 
                 {% if product.is_product_with_variants %}
                     <li class="ui-tabs-nav-item"><a href="{% url lfs_manage_product_variants_tab product.id %}">{% trans 'Variants' %}</a></li>
                 {% endif %}
 
-                <li class="ui-tabs-nav-item"><a href="{% url lfs_manage_product_accessories_tab product.id %}">{% trans 'Accessories' %}</a></li>
-                <li class="ui-tabs-nav-item"><a href="{% url lfs_manage_product_related_products_tab product.id %}">{% trans 'Related Products' %}</a></li>
-                <li class="ui-tabs-nav-item"><a href="#stock">{% trans 'Stock' %}</a></li>
-                <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>
-                <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
-
-
-                    <li class="ui-tabs-nav-item"><a href="#properties">{% trans 'Properties' %}</a></li>
-
+                <li><a href="{% url lfs_manage_product_accessories_tab product.id %}">{% trans 'Accessories' %}</a></li>
+                <li><a href="{% url lfs_manage_product_related_products_tab product.id %}">{% trans 'Related Products' %}</a></li>
+                <li><a href="#stock">{% trans 'Stock' %}</a></li>
+                <li><a href="#seo">{% trans 'SEO' %}</a></li>
+                <li><a href="#portlets">{% trans 'Portlets' %}</a></li>
+                <li><a href="#properties">{% trans 'Properties' %}</a></li>
             </ul>
 
             <div id="data">

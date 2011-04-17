@@ -21,7 +21,6 @@ tinyMCE.init({
 })
 
 function align_related_products_buttons() {
-
     var hl  = $("#related-products-left").height();
     var hr = $("#related-products-right").height();
     var h = Math.max(hl, hr)
@@ -190,7 +189,6 @@ $(function() {
                 data = JSON.parse(data);
                 $("#criteria").html(data["criteria"]);
                 $.jGrowl(data["message"]);
-                // $(':input', "form").bind("change", function() { setConfirmUnload(false); });
             }
         })
         return false;
@@ -1163,11 +1161,6 @@ $(function() {
         toggle_required(this.checked)
     });
 
-    // $("#manage-tabs").bind("tabsshow", function(event, ui) {
-    //     align_related_products_buttons();
-    //     align_accessories_buttons();
-    // });
-
     $("#delete-dialog").dialog({
         autoOpen: false,
         closeOnEscape: true,
@@ -1190,6 +1183,4 @@ $(function() {
             window.location = url;
         }
     });
-
-    $("input.button, button.button").button();
 })
