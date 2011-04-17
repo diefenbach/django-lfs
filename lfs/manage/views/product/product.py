@@ -95,7 +95,7 @@ class ProductStockForm(ModelForm):
         model = Product
         fields = ("weight", "width", "height", "length", "manage_stock_amount",
                   "stock_amount", "manual_delivery_time", "delivery_time",
-                  "deliverable", "order_time", "ordered_at", "active_dimensions", 
+                  "deliverable", "order_time", "ordered_at", "active_dimensions",
                   "packing_unit", "packing_unit_unit", "active_packing_unit")
 
     def __init__(self, *args, **kwargs):
@@ -425,6 +425,38 @@ def save_products(request):
     result = simplejson.dumps({
         "html" : html,
         "message" : msg,
+    }, cls = LazyEncoder)
+
+    return HttpResponse(result)
+
+@permission_required("core.manage_shop", login_url="/login/")
+def set_name_filter(request):
+    """Sets product filters given by passed request.
+    """
+    product_filters = request.session.get("product_filters", {})
+
+    if request.POST.get("name", "") != "":
+        product_filters["name"] = request.POST.get("name")
+    else:
+        if product_filters.get("name"):
+            del product_filters["name"]
+
+    request.session["product_filters"] = product_filters
+
+    products = _get_filtered_products(request)
+    paginator = Paginator(products, 20)
+    page = paginator.page(request.REQUEST.get("page", 1))
+
+    product_id = request.REQUEST.get("product-id", 0)
+
+    html = (
+        ("#products-inline", products_inline(request, page, paginator)),
+        ("#selectable-products-inline", selectable_products_inline(request, page, paginator, product_id)),
+        ("#pages-inline", pages_inline(request, page, paginator)),
+    )
+
+    result = simplejson.dumps({
+        "html" : html,
     }, cls = LazyEncoder)
 
     return HttpResponse(result)

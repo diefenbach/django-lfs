@@ -30,7 +30,7 @@ def manage_related_products(
     for value in (10, 25, 50, 100):
         amount_options.append({
             "value" : value,
-            "selected" : value == request.session.get("accessories-amount")
+            "selected" : value == request.session.get("related-products-amount")
         })
 
     return render_to_string(template_name, RequestContext(request, {
