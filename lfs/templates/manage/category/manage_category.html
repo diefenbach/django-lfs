@@ -18,8 +18,8 @@
                href="{% url lfs_manage_add_category category.id %}">
                 {% trans 'Add category' %}
             </a>
-            <a class="delete confirmation-link"
-                 data="{% trans 'Delete?' %}"
+            <a class="delete delete-link"
+                 dialog_message="{% trans 'Do you really want to delete this category?' %}"
                  href="{% url lfs_delete_category category.id %}">
                  {% trans 'Delete category' %}</a>
             <a class="preview"
