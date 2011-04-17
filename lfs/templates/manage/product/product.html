@@ -54,7 +54,8 @@
             </a>
 
             <a class="delete delete-link"
-               href="{% url lfs_manage_delete_product product.id %}">
+               href="{% url lfs_manage_delete_product product.id %}"
+               dialog_message='{% trans "Do you really want to delete this product?" %}'>
                {% trans 'Delete product' %}
             </a>
 
