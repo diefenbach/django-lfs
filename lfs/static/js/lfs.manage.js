@@ -20,6 +20,14 @@ tinyMCE.init({
     content_css : "/media/tinymce_styles.css"
 })
 
+function hide_ajax_loading() {
+    $(".ajax-loading").hide();
+};
+
+function show_ajax_loading() {
+    $(".ajax-loading").show();
+};
+
 function align_related_products_buttons() {
     var hl  = $("#related-products-left").height();
     var hr = $("#related-products-right").height();
@@ -103,7 +111,7 @@ $(function() {
     $("#product-name-filter").live("keyup", function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 for (var html in data["html"])
                     $(data["html"][html][0]).html(data["html"][html][1]);
 
@@ -122,7 +130,7 @@ $(function() {
         $(this).parents("form:first").ajaxSubmit({
             data : {"action" : action},
             success : function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 for (var html in data["html"])
                     $(data["html"][html][0]).html(data["html"][html][1]);
                 tinyMCE.execCommand('mceAddControl', true, 'id_text');
@@ -136,7 +144,7 @@ $(function() {
     $(".ajax-save-button-2").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 for (var html in data["html"])
                     $(data["html"][html][0]).html(data["html"][html][1]);
 
@@ -152,7 +160,7 @@ $(function() {
     $(".ajax-link").live("click", function() {
         var url = $(this).attr("href");
         $.post(url, function(data) {
-            data = JSON.parse(data);
+            data = $.parseJSON(data);
             for (var html in data["html"])
                 $(data["html"][html][0]).html(data["html"][html][1]);
 
@@ -205,7 +213,7 @@ $(function() {
     $(".criterion-save-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 $("#criteria").html(data["criteria"]);
                 $.jGrowl(data["message"]);
             }
@@ -216,7 +224,7 @@ $(function() {
     $(".price-criterion-save-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 $("#prices").html(data["prices"]);
                 $("#price-criteria").html(data["criteria"]);
                 $.jGrowl(data["message"]);
@@ -263,7 +271,7 @@ $(function() {
     $(".category-products-add-button").live("click", function() {
         $("#category-products-add-form").ajaxSubmit({
             success: function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#products-inline").html(data["products"]);
                 $.jGrowl(data["message"]);
             }
@@ -325,7 +333,7 @@ $(function() {
     $(".category-seo-button").live("click", function() {
         $("#category-seo-form").ajaxSubmit({
             success: function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 $("#seo").html(data["seo"]);
                 $.jGrowl(data["message"]);
             }
@@ -415,7 +423,7 @@ $(function() {
         $("#product-images-update-form").ajaxSubmit({
             data : {"action" : action},
             success : function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#images").html(data["images"]);
                 $.jGrowl(data["message"]);
             }
@@ -429,7 +437,7 @@ $(function() {
         tinyMCE.execCommand('mceRemoveControl', false, 'id_description');
         $("#product-data-form").ajaxSubmit({
             "success": function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#data").html(data["form"]);
                 $("#selectable-products").html(data["selectable_products"]);
                 tinyMCE.execCommand('mceAddControl', true, 'id_description');
@@ -444,7 +452,7 @@ $(function() {
     $(".product-categories-save-button").live("click", function() {
         $("#product-categories-save-form").ajaxSubmit({
             success: function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $.jGrowl(data["message"]);
             }
         });
@@ -520,7 +528,7 @@ $(function() {
     $(".variants-add-button").live("click", function() {
         $(".variants-add-form").ajaxSubmit({
             success: function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 $("#variants").html(data["properties"]);
                 $("#selectable-products").html(data["selectable_products"]);
             }
@@ -533,7 +541,7 @@ $(function() {
         $("#variants-form").ajaxSubmit({
             data : {"action" : action},
             success: function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#variants").html(data["properties"]);
                 $("#selectable-products").html(data["selectable_products"]);
             }
@@ -561,26 +569,30 @@ $(function() {
 
     // Product / Accessories
     $("#add-accessories-button").live("click", function() {
+        show_ajax_loading()
         $("#add-accessories-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#accessories-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
                 align_accessories_buttons();
+                hide_ajax_loading();
             }
         });
         return false;
     })
 
     $(".accessories-update-button").live("click", function() {
+        show_ajax_loading();
         var action = $(this).attr("name");
         $("#accessories-update-form").ajaxSubmit({
             data : {"action" : action},
             success : function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#accessories-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
                 align_accessories_buttons();
+                hide_ajax_loading();
             }
         });
         return false;
@@ -628,7 +640,7 @@ $(function() {
     $("#add-related-products-button").live("click", function() {
         $("#add-related-products-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#related-products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
                 align_related_products_buttons()
@@ -640,7 +652,7 @@ $(function() {
     $("#remove-related-products-button").live("click", function() {
         $("#remove-related-products-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#related-products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
                 align_related_products_buttons()
@@ -652,7 +664,7 @@ $(function() {
     $(".related-products-update-button").live("click", function() {
         $("#related-products-update-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#related-products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -730,7 +742,7 @@ $(function() {
         $("#product-seo-form").ajaxSubmit({
             "type": "post",
             "success": function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#seo-inline").html(data["seo_inline"]);
                 $.jGrowl(data["message"]);
             }
@@ -744,7 +756,7 @@ $(function() {
         $(this).parents("form:first").ajaxSubmit({
             data : {"action" : action},
             success: function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#prices").html(data["prices"]);
                 $.jGrowl(data["message"]);
             }
@@ -757,7 +769,7 @@ $(function() {
         $("#product-stock-form").ajaxSubmit({
             "type": "post",
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#stock").html(data["html"]);
                 DateTimeShortcuts.init();
                 $.jGrowl(data["message"]);
@@ -770,7 +782,7 @@ $(function() {
     $("#add-property-button").live("click", function() {
         $("#add-property-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#properties").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -783,7 +795,7 @@ $(function() {
         $("#property-group-update-form").ajaxSubmit({
             data : {"action" : action},
             success : function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#properties").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -795,7 +807,7 @@ $(function() {
     $("#add-products-button").live("click", function() {
         $("#add-products-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#products-inline").html(data["products_inline"]);
                 $("#product-values").html(data["product_values_inline"]);
                 $.jGrowl(data["message"]);
@@ -807,7 +819,7 @@ $(function() {
     $(".products-update-button").live("click", function() {
         $("#products-update-form").ajaxSubmit({
             success : function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -842,7 +854,7 @@ $(function() {
     $("#update-product-values-button").live("click", function() {
         $("#update-product-values-form").ajaxSubmit({
             success : function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#product-values").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -856,7 +868,7 @@ $(function() {
         $(this).parents("form:first").ajaxSubmit({
             data : {"action" : action},
             success: function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#options").html(data["options"]);
                 $.jGrowl(data["message"]);
             }
@@ -870,7 +882,7 @@ $(function() {
         $(this).parents("form:first").ajaxSubmit({
             data : {"action" : action},
             success: function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#steps").html(data["steps"]);
                 $.jGrowl(data["message"]);
             }
@@ -881,7 +893,7 @@ $(function() {
     $(".shop-property-save-step-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success: function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#steps").html(data["steps"]);
                 $.jGrowl(data["message"]);
             }
@@ -892,7 +904,7 @@ $(function() {
     $(".shop-property-save-step-type-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success: function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#steps").html(data["steps"]);
                 $.jGrowl(data["message"]);
             }
@@ -945,7 +957,7 @@ $(function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
                 $("#dialog").dialog("close");
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 $("#portlets").html(data["html"])
                 $.jGrowl(data["message"]);
             }
@@ -957,7 +969,7 @@ $(function() {
     $("#add-topseller-button").live("click", function() {
         $("#add-topseller-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#topseller-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -970,7 +982,7 @@ $(function() {
         $("#topseller-update-form").ajaxSubmit({
             data : {"action" : action},
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#topseller-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -1005,7 +1017,7 @@ $(function() {
     $("#add-featured-button").live("click", function() {
         $("#add-featured-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#featured-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -1018,7 +1030,7 @@ $(function() {
         $("#featured-update-form").ajaxSubmit({
             data : {"action" : action},
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#featured-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -1053,7 +1065,7 @@ $(function() {
     $("#shop-default-values-button").live("click", function() {
         $("#shop-default-values-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#default-values").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -1070,7 +1082,7 @@ $(function() {
             // url = lfs_export_category_state category id
             var url = $(this).attr("data")
             $.post(url, function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 // Sets 1/2
                 $(data["html"][0]).html(data["html"][1]);
                 // Sets checking
@@ -1091,7 +1103,7 @@ $(function() {
             // Loads children of clicked category.
             if ($(this).hasClass("collapsed")) {
                 $.post(url, function(data) {
-                    data = JSON.parse(data);
+                    data = $.parseJSON(data);
                     for (var html in data["html"])
                         $(data["html"][html][0]).html(data["html"][html][1]);
                 })

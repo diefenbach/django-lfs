@@ -103,7 +103,7 @@
             onLoadAll: function(files) {
                 var url = $("#files").attr("data");
                 $.get(url, function(data) {
-                    data = JSON.parse(data);
+                    data = $.parseJSON(data);
                     $("#images").html(data["images"]);
                     $.jGrowl(data["message"]);
                 });
