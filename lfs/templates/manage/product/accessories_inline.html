@@ -103,7 +103,7 @@
                                     <input type="checkbox"
                                            class="select-all-2" />
                                 </th>
-                                <th>
+                                <th style="padding-right:5px">
                                     {% trans 'Name' %}
                                 </th>
                                 <th class="middle">
@@ -127,7 +127,7 @@
                                                name="accessory-{{ product_accessory.accessory.id }}"
                                                class="select-2"/>
                                     </td>
-                                    <td>
+                                    <td style="padding-right:5px">
                                         <a href="{% url lfs_manage_product product_accessory.accessory.id %}">
                                             {{ product_accessory.accessory.get_name }}
                                         </a>
