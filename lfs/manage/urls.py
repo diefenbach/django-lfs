@@ -81,6 +81,7 @@ urlpatterns += patterns('lfs.manage.views',
     url(r'^products-inline$', "products_inline", name="lfs_products_inline"),
     url(r'^save-products$', "save_products", name="lfs_manage_save_products"),
     url(r'^set-product-filters$', "set_filters", name="lfs_set_product_filters"),
+    url(r'^set-product-name-filter$', "set_name_filter", name="lfs_set_product_name_filter"),
     url(r'^reset-product-filters$', "reset_filters", name="lfs_reset_product_filters"),
     url(r'^set-products-page$', "set_products_page", name="lfs_set_products_page"),
 )
