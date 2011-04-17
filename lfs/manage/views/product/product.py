@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db import IntegrityError
+from django.db.models import Q
 from django.forms import ModelForm
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
@@ -133,7 +134,8 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
         "stock" : stock(request, product_id),
         "portlets" : portlets_inline(request, product),
         "properties" : manage_properties(request, product_id),
-        "form" : ProductSubTypeForm(instance=product)
+        "form" : ProductSubTypeForm(instance=product),
+        "name_filter_value" : request.session.get("product_filters", {}).get("name", ""),
     }))
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -533,7 +535,7 @@ def _get_filtered_products(request):
     # Filter
     name = product_filters.get("name", "")
     if name != "":
-        products = products.filter(name__icontains=name)
+        products = products.filter(Q(name__icontains=name) | Q(sku__icontains=name))
 
     active = product_filters.get("active", "")
     if active != "":
