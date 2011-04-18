@@ -22,20 +22,22 @@
                       method="post">
 
                     {% include "manage/lfs_form.html" %}
+                    
+                    <div class="buttons">
+                        <input class="button"
+                               type="submit"
+                               id="product-add-button"
+                               value='{% trans "Add product" %}' />
 
-                    <input class="button"
-                           type="submit"
-                           id="product-add-button"
-                           value='{% trans "Add product" %}' />
-
-                    <input type="hidden"
-                           name="next"
-                           value="{{ next }}" />
+                        <input type="hidden"
+                               name="next"
+                               value="{{ next }}" />
                            
-                    <input type="button"
-                           class="button"
-                           onclick="window.location='{{ next }}'"
-                           value="{% trans 'Cancel' %}" />
+                        <input type="button"
+                               class="button"
+                               onclick="window.location='{{ next }}'"
+                               value="{% trans 'Cancel' %}" />
+                    </div>
                 </form>
             </div>
         </div>

@@ -585,3 +585,7 @@ button {
     position: relative; top: 2px; left: 10px;
     display: none;
 }
+
+form div.buttons {
+    margin-top:25px;
+}
