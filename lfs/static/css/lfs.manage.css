@@ -218,6 +218,10 @@ tr.marked {
     position:relative; top:3px;
 }
 
+.manage-product .navigation-pages {
+    width: 100%;
+}
+
 .manage-products .navigation-pages {
     margin: 19px 5px 0 0;
     float: left;

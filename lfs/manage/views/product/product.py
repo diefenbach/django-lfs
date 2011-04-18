@@ -28,6 +28,14 @@ from lfs.manage.views.lfs_portlets import portlets_inline
 
 from lfs.utils.widgets import SelectImage
 # Forms
+
+class ProductAddForm(ModelForm):
+    """Form to add a new product.
+    """
+    class Meta:
+        model = Product
+        fields = ("name", "slug")
+
 class ProductSubTypeForm(ModelForm):
     """Form to change the sub type.
     """
@@ -263,16 +271,17 @@ def add_product(request, template_name="manage/product/add_product.html"):
     """Shows a simplified product form and adds a new product.
     """
     if request.method == "POST":
-        form = ProductDataForm(request.POST)
+        form = ProductAddForm(request.POST)
         if form.is_valid():
             new_product = form.save()
             url = reverse("lfs_manage_product", kwargs={"product_id" : new_product.id})
             return HttpResponseRedirect(url)
     else:
-        form = ProductDataForm()
+        form = ProductAddForm()
 
     return render_to_response(template_name, RequestContext(request, {
-        "form" : form
+        "form" : form,
+        "next" : request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
     }))
 
 @permission_required("core.manage_shop", login_url="/login/")

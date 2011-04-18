@@ -82,7 +82,13 @@
         </div>
         <div id="product-tabs">
             <ul>
-                <li><a href="#data">{{ product.get_name }}</a></li>
+                <li>
+                    {% if product.get_name %}
+                        <a href="#data">{{ product.get_name }}</a>
+                    {% else %}
+                        <a href="#data">{% trans "Product" %}</a>
+                    {% endif %}
+                </li>
 
                 {% if not product.is_variant %}
                     <li><a href="{% url lfs_product_categories_tab product.id %}">{% trans 'Categories' %}</a></li>

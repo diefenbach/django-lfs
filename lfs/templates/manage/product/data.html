@@ -12,38 +12,41 @@
 <form id="product-data-form"
       action="{% url lfs.manage.views.edit_product_data product.id %}"
       method="post">
-
-        <div class="field">
-            <div class="label">
-                {{ form.active.label_tag }}:
-            </div>
-            <div>
-                {{ form.active }}
-            </div>
-        </div>
-
-        <div class="field">
-            <div class="label">
-                {% if product.is_variant %}
-                    {{ form.active_name }}
-                {% endif %}
-                {{ form.name.label_tag }}:
-            </div>
-
-            {% if form.name.errors %}
-                <div class="error">
-                    {{ form.name }}
-                    {{ form.name.errors }}
+      
+        <fieldset>
+            <legend>{% trans "General" %}</legend>
+            <div class="field">
+                <div class="label">
+                    {{ form.active.label_tag }}:
                 </div>
-            {% else %}
                 <div>
-                    {{ form.name }}
-                    {% if product.is_variant %}
-                        {{ product.parent.name }}
-                    {% endif %}
+                    {{ form.active }}
                 </div>
-            {% endif %}
-        </div>
+            </div>
+
+            <div class="field">
+                <div class="label">
+                    {% if product.is_variant %}
+                        {{ form.active_name }}
+                    {% endif %}
+                    {{ form.name.label_tag }}:
+                </div>
+
+                {% if form.name.errors %}
+                    <div class="error">
+                        {{ form.name }}
+                        {{ form.name.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.name }}
+                        {% if product.is_variant %}
+                            {{ product.parent.name }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>            
+        </fieldset>
 
         <fieldset>
             <legend>{% trans "Urls" %}</legend>
@@ -301,42 +304,45 @@
             {% endif %}
         </div>
 
-        <div class="field">
-            <div class="label">
-                {% if product.is_variant %}
-                    {{ form.active_static_block }}
+        <fieldset>
+            <legend>{% trans "Appearance" %}</legend>
+            <div class="field">
+                <div class="label">
+                    {% if product.is_variant %}
+                        {{ form.active_static_block }}
+                    {% endif %}
+                    {{ form.static_block.label_tag }}:
+                </div>
+
+                {% if form.static_block.errors %}
+                    <div class="error">
+                        {{ form.static_block }}
+                        {{ form.static_block.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.static_block }}
+                    </div>
                 {% endif %}
-                {{ form.static_block.label_tag }}:
             </div>
 
-            {% if form.static_block.errors %}
-                <div class="error">
-                    {{ form.static_block }}
-                    {{ form.static_block.errors }}
+            <div class="field">
+                <div class="label">
+                    {{ form.template.label_tag }}:
                 </div>
-            {% else %}
-                <div>
-                    {{ form.static_block }}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="field">
-            <div class="label">
-                {{ form.template.label_tag }}:
+                {% if form.template.errors %}
+                    <div class="error">
+                        {{ form.template }}
+                        {{ form.template.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.template }}
+                    </div>
+                {% endif %}
             </div>
-            {% if form.template.errors %}
-                <div class="error">
-                    {{ form.template }}
-                    {{ form.template.errors }}
-                </div>
-            {% else %}
-                <div>
-                    {{ form.template }}
-                </div>
-            {% endif %}
-        </div>
-        <input class="button" 
+        </fieldset>
+        <input class="button"
                type="submit"
                value="{% trans 'Save data' %}"
                id="product-data-save-button" />
