@@ -25,7 +25,7 @@ class ActionAddForm(ActionForm):
     """
     class Meta:
         model = Action
-        exclude = ("parent", "place")
+        fields = ("title", "group")
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_actions(request):
