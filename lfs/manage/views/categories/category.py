@@ -21,8 +21,15 @@ from lfs.manage.views.categories.view import category_view
 from lfs.manage.views.categories.portlet import manage_categories_portlet
 from lfs.manage.views.lfs_portlets import portlets_inline
 
+class CategoryAddForm(ModelForm):
+    """Process form to add a category.
+    """
+    class Meta:
+        model = Category
+        fields = ("name", "slug")
+
 class CategoryForm(ModelForm):
-    """Process form to add/edit categories options.
+    """Process form to edit a category.
     """
     def __init__(self, *args, **kwargs):
         super(CategoryForm, self).__init__(*args, **kwargs)
@@ -142,7 +149,7 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
             parent = None
 
     if request.method == "POST":
-        form = CategoryForm(data = request.POST, files=request.FILES)
+        form = CategoryAddForm(data = request.POST)
         if form.is_valid():
             new_category = form.save(commit=False)
             new_category.parent = parent
@@ -156,7 +163,7 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
             url = reverse("lfs_manage_category", kwargs={"category_id" : new_category.id})
             return HttpResponseRedirect(url)
     else:
-        form = CategoryForm(initial={"parent" : category_id })
+        form = CategoryAddForm(initial={"parent" : category_id })
 
     return render_to_response(template_name, RequestContext(request, {
         "categories_portlet" : manage_categories_portlet(request, category_id),
