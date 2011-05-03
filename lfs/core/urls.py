@@ -65,11 +65,6 @@ urlpatterns += patterns('lfs.checkout.views',
     url(r'^check-voucher/$', "check_voucher", name="lfs_check_voucher"),    
 )
 
-urlpatterns += patterns('contact_form.views',
-    url(r'^contact/$', "contact_form", { "form_class" : ContactForm }, name='contact_form'),
-    url(r'^sent/$', direct_to_template, { 'template': 'contact_form/contact_form_sent.html' }, name='contact_form_sent'),
-)
-
 # Customer
 urlpatterns += patterns('lfs.customer.views',
     url(r'^login',  "login", name="lfs_login"),
@@ -106,4 +101,8 @@ urlpatterns += patterns('lfs.search.views',
 # Tagging
 urlpatterns += patterns('',
     (r'^tagging/', include('lfs.tagging.urls')),
+)
+
+urlpatterns += patterns('',
+    (r'^contact/', include('lfs_contact.urls')),
 )
