@@ -8,13 +8,16 @@
       enctype="multipart/form-data">
 
     {% include "manage/lfs_form.html" %}
-
-    <input value="{% trans 'Save' %}"
-           type="submit"
-           class="ajax-save-button"/>
+    
+    <div class="buttons">
+        <input value="{% trans 'Save View' %}"
+               type="submit"
+               class="ajax-save-button button" />
+    </div>
 </form>
 <script>
     $(function() {
+        $(".button").button();        
         update_form();
 
         $("#id_active_formats").click(function() {
@@ -29,7 +32,7 @@
             var template_name = $("#id_template").selected().attr("value");
             if (template_name == "0") {
                 $("#id_category_cols").parents(".field").hide();
-
+                $("#id_show_all_products").parents(".field").show();
                 if ($("#id_active_formats:checked").val() == null) {
                     $("#id_product_cols, #id_product_rows").parents(".field").hide();
                 }

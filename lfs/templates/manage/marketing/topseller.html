@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load lfs_manage_tags %}
 
-<h2>{% trans 'Products' %}</h2>
+<h2>{% trans "Product Selection" %}</h2>
 
 <form id="filter-topseller-form"
       action="{% url lfs_manage_topseller_inline %}"
@@ -9,9 +9,17 @@
     <input class="filter-topseller-input" type="text" name="filter"/>
     
     {% category_filter "topseller-categories-filter" "topseller_category_filter" %}
+
+    <select id="topseller-amount"
+            name="topseller-amount">
+        {% for option in amount_options %}
+            <option {% if option.selected %}selected="selected"{% endif %} 
+                    value="{{ option.value }}">{{ option.value }}</option>
+        {% endfor %}
+    </select>
     
 </form>
 
 <div id="topseller-inline">
-    {{topseller_inline}}
+    {{ topseller_inline }}
 </div>

@@ -13,6 +13,13 @@ import lfs.core.utils
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import Product
 
+class DeliveryTimeAddForm(ModelForm):
+    """Form to edit add a delivery time.
+    """
+    class Meta:
+        model = DeliveryTime
+        fields = ("min", "max", "unit")
+
 class DeliveryTimeForm(ModelForm):
     """Form to edit a delivery time.
     """
@@ -60,7 +67,7 @@ def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
     """Provides a form to add a new delivery time.
     """
     if request.method == "POST":
-        form = DeliveryTimeForm(data=request.POST)
+        form = DeliveryTimeAddForm(data=request.POST)
         if form.is_valid():
             delivery_time = form.save()
 
@@ -70,11 +77,12 @@ def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
             )            
 
     else:
-        form = DeliveryTimeForm()
+        form = DeliveryTimeAddForm()
 
     return render_to_response(template_name, RequestContext(request, {
         "form" : form,
         "delivery_times" : DeliveryTime.objects.all(),        
+        "next" : request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
     }))
 
 @permission_required("core.manage_shop", login_url="/login/")

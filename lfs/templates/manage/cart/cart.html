@@ -1,6 +1,7 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block title %}{% trans "Manage Cart" %}{{ cart.id }}{% endblock %}
 {% block section %}manage-cart{% endblock %}
 
 {% block left_slot %}
@@ -10,9 +11,66 @@
 {% endblock %}
 
 {% block content %}
+    <div class="site-actions">
+        <table cellpadding="0" cellspacing="0">
+            <tr>
+                <td style="vertical-align:middle; padding-left:10px">
+                    <a class="overview"
+                       href="{% url lfs_manage_carts %}">{% trans 'Overview' %}</a>
+                </td>
+                <td>
+                    <form action="{% url lfs_set_cart_filters %}"
+                          method="post">
 
-	<div id="cart-inline">
-		{{ cart_inline|safe }}
-	</div>
+                    	<input type="hidden" name="came-from" value="cart" />
+                    	<input type="hidden" name="cart-id" value="{{ cart.id }}" />
 
+                        <table>
+                    		<tr>
+                    			<td>
+                    				<a href="{% url lfs_set_cart_filters_date %}?came-from=cart&amp;cart-id={{ cart.id }}&amp;start=0&amp;end=0"
+                    				   class="ajax-link">T</a>
+                    				<a href="{% url lfs_set_cart_filters_date %}?came-from=cart&amp;cart-id={{ cart.id }}&amp;start=1&amp;end=1"
+                    				   class="ajax-link">Y</a>
+                    				<a href="{% url lfs_set_cart_filters_date %}?came-from=cart&amp;cart-id={{ cart.id }}&amp;start=7&amp;end=0"
+                    				   class="ajax-link">W</a>
+                    			</td>
+                    			<td>
+
+                    				<input type="text"
+                    				       name="start"
+                    					   value="{{ start }}">
+                    			</td>
+                    			<td>
+
+                    				<input type="text"
+                    				       name="end"
+                    					   value="{{ end }}">
+                    			</td>
+                    			<td>
+                    				<input type="submit"
+                    				       class="ajax-save-button-2" />
+
+                    				<a href="{% url lfs_reset_cart_filters %}?came-from=cart;cart-id={{ cart.id }}"
+                    				   class="ajax-link reset">&nbsp;</a>
+                    			</td>
+                    		</tr>
+                    	</table>
+                    </form>                    
+                </td>
+            </tr>
+        </table>           
+    </div>
+
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#cart">{% trans 'Cart' %}</a></li>
+        </ul>
+		
+		<div id="cart">
+        	<div id="cart-inline">
+        		{{ cart_inline|safe }}
+        	</div>
+		</div>
+    </div>
 {% endblock %}

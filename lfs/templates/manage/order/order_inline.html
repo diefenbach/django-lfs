@@ -63,47 +63,6 @@
     </table>
 </form>
 
-<div class="site-actions">
-
-    <a class="overview"
-       href="{% url lfs_orders %}">
-       {% trans 'Overview' %}</a>
-
-    <a class="delete confirmation-link"
-       data="{% trans 'Delete?' %}"
-       href="{% url lfs_delete_order current_order.id %}">
-       {% trans 'Delete order' %}</a>
-
-    <a class="send confirmation-link"
-       data="{% trans 'Resend?' %}"
-       href="{% url lfs_send_order current_order.id %}">
-       {% trans 'Resend order' %}
-    </a>
-
-    <label>{% trans "State" %}: </label>
-    <form action="{% url lfs_change_order_state %}"
-          method="post"
-          class="inline">
-        <select id="states-filter"
-                name="new-state">
-            <option value="">{% trans "All" %}</option>
-            {% for state in states %}
-                <option value="{{ state.id }}"
-                        {% if state.selected_order %}selected="selected"{% endif %}>
-                    {{ state.name }}
-                </option>
-            {% endfor %}
-        </select>
-
-        <input type="hidden"
-               name="order-id"
-               value="{{ current_order.id }}">
-        <input type="submit"
-               class="ajax-save-button-2"
-               value='{% trans "Change" %}'>
-    </form>
-
-</div>
 <table class="lfs-manage-table">
     <tr>
         <th colspan="4">

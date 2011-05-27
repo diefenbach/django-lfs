@@ -1,48 +1,46 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block title %}{% trans "Manage Category" %}{% endblock %}
+{% block section %}manage-category{% endblock %}
 {% block left_slot %}
-    <div id="portlet">
-        {{categories_portlet|safe}}
-    </div>    
+    {{ categories_portlet|safe }}
 {% endblock %}
 
 {% block content %}
-	
     <div class="site-actions">
-        <span class="label">{{category.name}}</span>
-        <a class="add" 
+        <a class="add"
            href="{% url lfs_manage_add_top_category %}">
-            {% trans 'Add top category' %}
+            {% trans 'Add Top Category' %}
         </a>
         {% if category %}
-            <a class="add" 
+            <a class="add"
                href="{% url lfs_manage_add_category category.id %}">
-                {% trans 'Add category' %}
+                {% trans 'Add Category' %}
             </a>
-
-            <a class="delete confirmation-link"
-                 data="{% trans 'Delete?' %}" 
+            <a class="delete delete-link"
+                 dialog_message="{{ dialog_message }}"
                  href="{% url lfs_delete_category category.id %}">
-                 {% trans 'Delete category' %}</a>
-                 
-            <a class="preview" 
+                 {% trans 'Delete Category' %}</a>
+            <a class="preview popup-link"
                href="{% url lfs.catalog.views.category_view category.slug %}">
-                {% trans 'Preview' %}
+                {% trans 'View Category' %}
+            </a>
+            <a class="preview"
+               href="{% url lfs.catalog.views.category_view category.slug %}">
+                {% trans 'Goto Category' %}
             </a>
         {% endif %}
     </div>
-
-    <div id="manage-tabs"
+    <div id="category-tabs"
          data="#category_{{ category.id }}">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Category' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#data">{{ category.name }}</a></li>
             <li class="ui-tabs-nav-item"><a href="#view">{% trans 'View' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="{% url lfs_load_products_tab category.id %}">{% trans 'Products' %}</a></li>            
-            <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>            
-            <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>            
+            <li class="ui-tabs-nav-item"><a href="{% url lfs_load_products_tab category.id %}">{% trans 'Products' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
         </ul>
-    
         <div id="data">
             {{ data|safe }}
         </div>

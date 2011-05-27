@@ -21,8 +21,15 @@ from lfs.manage.views.categories.view import category_view
 from lfs.manage.views.categories.portlet import manage_categories_portlet
 from lfs.manage.views.lfs_portlets import portlets_inline
 
+class CategoryAddForm(ModelForm):
+    """Process form to add a category.
+    """
+    class Meta:
+        model = Category
+        fields = ("name", "slug")
+
 class CategoryForm(ModelForm):
-    """Process form to add/edit categories options.
+    """Process form to edit a category.
     """
     def __init__(self, *args, **kwargs):
         super(CategoryForm, self).__init__(*args, **kwargs)
@@ -63,11 +70,11 @@ def manage_category(request, category_id, template_name="manage/category/manage_
     return render_to_response(template_name, RequestContext(request, {
         "categories_portlet" : manage_categories_portlet(request, category_id),
         "category" : category,
-        # "products" : manage_products(request, category.id),
         "data" : category_data(request, category_id),
         "seo" : edit_seo(request, category_id),
         "view" : category_view(request, category_id),
         "portlets" : portlets_inline(request, category),
+        "dialog_message" : _("Do you really want to delete the category <b>'%(name)s'</b> and all its sub categories?" % { "name" : category.name }),
     }))
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -142,7 +149,7 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
             parent = None
 
     if request.method == "POST":
-        form = CategoryForm(data = request.POST, files=request.FILES)
+        form = CategoryAddForm(data = request.POST)
         if form.is_valid():
             new_category = form.save(commit=False)
             new_category.parent = parent
@@ -156,12 +163,12 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
             url = reverse("lfs_manage_category", kwargs={"category_id" : new_category.id})
             return HttpResponseRedirect(url)
     else:
-        form = CategoryForm(initial={"parent" : category_id })
+        form = CategoryAddForm(initial={"parent" : category_id })
 
     return render_to_response(template_name, RequestContext(request, {
-        "categories_portlet" : manage_categories_portlet(request, category_id),
+        "next" : request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
         "category" : parent,
-        "form" : form
+        "form" : form,
     }))
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -224,6 +231,6 @@ def _category_choices_children(categories, category, context, level=1):
     """
     for category in category.category_set.all():
         if context != category:
-            categories.append((category.id, "%s %s" % ("-" * level, category.name)))
+            categories.append((category.id, "%s %s" % ("-" * level * 5, category.name)))
             _category_choices_children(categories, category, context, level+1)
 

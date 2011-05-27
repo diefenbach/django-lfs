@@ -44,7 +44,7 @@ def add_image(request, product_id):
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
     if request.method == "POST":
-        for file_content in request.FILES.values():
+        for file_content in request.FILES.getlist("file"):
             image = Image(content=product, title=file_content.name)
             image.image.save(file_content.name, file_content, save=True)
 
@@ -54,7 +54,9 @@ def add_image(request, product_id):
         image.save()
 
     product_changed.send(product, request=request)
-    return HttpResponse(manage_images(request, product_id, as_string=True))
+
+    result = simplejson.dumps({"name": file_content.name, "type":"image/jpeg", "size":"123456789"})
+    return HttpResponse(result)
 
 @permission_required("core.manage_shop", login_url="/login/")
 def update_images(request, product_id):

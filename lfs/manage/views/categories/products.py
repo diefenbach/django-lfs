@@ -25,10 +25,19 @@ def manage_products(request, category_id, template_name="manage/category/product
     """
     category = Category.objects.get(pk=category_id)
     inline = products_inline(request, category_id, True)
+
+    # amount options
+    amount_options = []
+    for value in (10, 25, 50, 100):
+        amount_options.append({
+            "value" : value,
+            "selected" : value == request.session.get("category-products-amount")
+        })
     
     return render_to_string(template_name, RequestContext(request, {
         "category" : category,
         "products_inline" : inline,
+        "amount_options" : amount_options,
     }))
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -53,10 +62,17 @@ def products_inline(request, category_id, as_string=False,
         page = 1
         filter_ = ""
         category_filter = ""
+    
+    s = request.session    
+    s["page"] = page
+    s["filter"] = filter_
+    s["category_filter"] = category_filter
 
-    request.session["page"] = page
-    request.session["filter"] = filter_
-    request.session["category_filter"] = category_filter
+    try:
+        s["category-products-amount"] = int(request.REQUEST.get("category-products-amount",
+                                      s.get("category-products-amount")))
+    except TypeError:
+        s["category-products-amount"] = 25
     
     filters = Q()
     if filter_:
@@ -64,6 +80,8 @@ def products_inline(request, category_id, as_string=False,
     if category_filter:
         if category_filter == "None":
             filters &= Q(categories=None)
+        elif category_filter == "All":
+            pass
         else:
             category_temp = lfs_get_object_or_404(Category, pk=category_filter)
             categories_temp = [category_temp]
@@ -74,7 +92,7 @@ def products_inline(request, category_id, as_string=False,
     selectable_products = Product.objects.filter(
         filters).exclude(sub_type=VARIANT)
 
-    paginator = Paginator(selectable_products.exclude(pk__in = product_ids), 6)
+    paginator = Paginator(selectable_products.exclude(pk__in = product_ids), s["category-products-amount"])
     try:
         page = paginator.page(page)
     except:
@@ -121,6 +139,11 @@ def selected_products(request, category_id, as_string=False, template_name="mana
 
     request.session["page_2"] = page_2
     request.session["filter_2"] = filter_2
+
+    try:
+        request.session["category-products-amount"] = int(request.REQUEST.get("category-products-amount", request.session.get("category-products-amount")))
+    except TypeError:
+        request.session["category-products-amount"] = 25
     
     filters = Q(categories=category)
     if filter_2:
@@ -128,7 +151,7 @@ def selected_products(request, category_id, as_string=False, template_name="mana
         
     products = Product.objects.filter(filters).exclude(sub_type=VARIANT)
         
-    paginator_2 = Paginator(products, 6)
+    paginator_2 = Paginator(products, request.session["category-products-amount"])
     try:
         page_2 = paginator_2.page(page_2)
     except:

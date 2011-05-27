@@ -1,8 +1,8 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n lfs_tags lfs_manage_tags %}
 
+{% block title %}{% trans "Manage Products" %}{% endblock %}
 {% block section %}manage-products{% endblock %}
-
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
@@ -14,9 +14,18 @@
 	<div id="product-filters">
 		{{ product_filters }}
 	</div>
-	
-    <div id="products-inline">
-        {{ products_inline|safe }}
+        
+    <div id="manage-tabs">
+        <ul>
+            <li><a href="#products">{% trans 'Products' %}</a></li>                
+        </ul>
+        <div id="products">
+            <div id="products-inline">
+                {{ products_inline|safe }}
+            </div>
+        </div>                        
     </div>
-    
+
 {% endblock %}
+
+

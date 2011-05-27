@@ -1,15 +1,6 @@
 {% load i18n %}
 
 <h2>{% trans 'Categories' %}</h2>
-
-<div id="manage-product-categories-control">
-	<a href="#">{% trans "Collapse all" %}</a> |
-	<a href="#">{% trans "Expand all" %}</a> |
-	<a href="#"></a>
-	<a class="show-selected"
-	   href="#">{% trans "Show selected" %}</a>
-</div>
-
 {% if categories %}
     <form id="product-categories-save-form"
           action="{% url lfs_manage_product_categories product.id %}"
@@ -19,22 +10,17 @@
                 <li>
                     <input type="checkbox"
                            name="categories"
-                           value="{{category.id}}"
+                           value="{{ category.id }}"
                            {% if category.checked %}checked="checked"{% endif %} />
-                    <a href="{{category.url}}">
-                        {{category.name}}</a>
                     <a href="{% url lfs_manage_category category.id %}">
-                        <img src="{{MEDIA_URL}}lfs/icons/pencil.png"
-                             alt="{% trans 'Edit' %}"
-                             title="{% trans 'Edit category' %}" />
+                        {{ category.name }}
                     </a>
-
-                    {{category.children}}
+                    {{ category.children }}
                 </li>
             {% endfor %}
         </ul>
         <div class="manage-form-buttons">
-            <input class="product-categories-save-button"
+            <input class="button product-categories-save-button"
                    type="submit" value="{% trans 'Save categories' %}" />
         </div>
     </form>
@@ -44,14 +30,5 @@
 
 
 <script>
-	$(function() {
-		$("ul.manage-categories.root").treeview({
-			collapsed: true,
-			persist: "cookie",
-   			cookieId: "manage-product-categories",
-			control: "#manage-product-categories-control",
-		})
-
-		mark_selected();
-	})
+    $("input.button").button();
 </script>

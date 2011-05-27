@@ -13,8 +13,9 @@
         {% endfor %}
     </select>
 
-    <div class="lfs-buttons">
-        <input type="submit"
+    <div class="buttons">
+        <input class="button"
+               type="submit"
                value="{% trans 'Update property groups' %}">
     </div>
 </form>
@@ -27,23 +28,27 @@
 
         {% for property_group in configurables %}
             <div>
-                {% if property_group.properties %}
-                    <h3>
+            <fieldset>
+                <legend>
+                    <a href="{% url lfs_manage_property_group property_group.id %}">
                         {{ property_group.name }}
-                    </h3>                    
-                {% endif %}
+                    </a>
+                </legend>
                 {% for property in property_group.properties %}
                     <div>
                         {% if property.display_text_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.name }} ({{ property.title }}):
+                                    <a href="{% url lfs_manage_shop_property property.id %}">
+                                        {{ property.name }}:
+                                    </a>
                                 </div>
                                 <input type="text"
+                                       class="button"
                                        name="property-{{ property.id }}"
                                        value="{{ property.value }}" />
                             </div>
-                        {% endif %}                        
+                        {% endif %}
                         {% if property.display_select_field %}
                             <div class="field">
                                 <div class="label">
@@ -62,16 +67,17 @@
                         {% endif %}
                     </div>
                 {% endfor %}
-            </div>
+            </fieldset>
         {% endfor %}
 
         <input type="hidden" name="type" value="1" />
 
-        <div class="lfs-buttons">
+        <div class="buttons">
             <input type="submit"
+                   class="button"    
                    value="{% trans 'Update default values' %}" />
         </div>
-    </form>    
+    </form>
 {% endif %}
 
 {% if display_filterables %}
@@ -80,18 +86,20 @@
 
         <h2 class="heading-middle">{% trans "Filter Values" %}</h2>
         {% for property_group in filterables %}
-            <div>
-                {% if property_group.properties %}
-                    <h3>
+            <fieldset>
+                <legend>
+                    <a href="{% url lfs_manage_property_group property_group.id %}">
                         {{ property_group.name }}
-                    </h3>                    
-                {% endif %}
+                    </a>
+                </legend>
                 {% for property in property_group.properties %}
                     <div>
                         {% if property.display_text_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.title }}:
+                                    <a href="{% url lfs_manage_shop_property property.id %}">
+                                        {{ property.name }}:
+                                    </a>
                                 </div>
                                 <input type="text"
                                        name="property-{{ property.id }}"
@@ -101,7 +109,9 @@
                         {% if property.display_select_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.name }} ({{ property.title }}):
+                                    <a href="{% url lfs_manage_shop_property property.id %}">
+                                        {{ property.name }}:
+                                    </a>
                                 </div>
                                 <select multiple="multiple" name="property-{{ property.id }}">
                                     {% for option in property.options %}
@@ -115,13 +125,14 @@
                         {% endif %}
                     </div>
                 {% endfor %}
-            </div>
+            </fieldset>
         {% endfor %}
 
         <input type="hidden" name="type" value="0" />
 
-        <div class="lfs-buttons">
+        <div class="buttons">
             <input type="submit"
+                   class="button"
                    value="{% trans 'Update filter values' %}" />
         </div>
     </form>
@@ -133,18 +144,20 @@
 
         <h2 class="heading-middle">{% trans "Displayed Values" %}</h2>
         {% for property_group in displayables %}
-            <div>
-                {% if property_group.properties %}
-                    <h3>
+            <fieldset>
+                <legend>
+                    <a href="{% url lfs_manage_property_group property_group.id %}">
                         {{ property_group.name }}
-                    </h3>                    
-                {% endif %}
+                    </a>
+                </legend>
                 {% for property in property_group.properties %}
                     <div>
                         {% if property.display_text_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.name }} ({{ property.title }}):
+                                    <a href="{% url lfs_manage_shop_property property.id %}">
+                                        {{ property.name }}:
+                                    </a>
                                 </div>
                                 <input type="text"
                                        name="property-{{ property.id }}"
@@ -168,15 +181,19 @@
                         {% endif %}
                     </div>
                 {% endfor %}
-            </div>
+            </fieldset>
         {% endfor %}
 
         <input type="hidden" name="type" value="2" />
 
-        <div class="lfs-buttons">
-            <input type="submit"
+        <div class="buttons">
+            <input class="button"
+                   type="submit"
                    value="{% trans 'Update displayed values' %}" />
         </div>
     </form>
 {% endif %}
 
+<script>
+    $("input.button").button();
+</script>

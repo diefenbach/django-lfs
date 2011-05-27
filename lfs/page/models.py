@@ -10,13 +10,13 @@ from lfs.core.models import Shop
 class Page(models.Model):
     """An simple HTML page, which may have an optional file to download.
     """
+    active = models.BooleanField(_(u"Active"), default=False)
     title = models.CharField(_(u"Title"), max_length=100)
     slug = models.CharField(_(u"Slug"), max_length=100)
+    position = models.IntegerField(_(u"Position"), default=999)
+    exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
     short_text = models.TextField(blank=True)
     body = models.TextField(_(u"Text"), blank=True)
-    active = models.BooleanField(_(u"Active"), default=False)
-    exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
-    position = models.IntegerField(_(u"Position"), default=999)
     file = models.FileField(_(u"File"), blank=True, upload_to="files")
     
     objects = ActiveManager()

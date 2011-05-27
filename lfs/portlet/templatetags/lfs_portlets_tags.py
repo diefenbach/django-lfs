@@ -39,7 +39,7 @@ def lfs_portlet_slot(context, slot_name):
             return { "portlets" : [] }
 
         # Get portlets for given instance
-        temp = portlets.utils.get_portlets(slot, instance)
+        temp = portlets.utils.get_portlets(instance, slot)
 
         # Get inherited portlets
         try:
@@ -62,7 +62,7 @@ def lfs_portlet_slot(context, slot_name):
             if instance is None:
                 break
 
-            parent_portlets = portlets.utils.get_portlets(slot, instance)
+            parent_portlets = portlets.utils.get_portlets(instance, slot)
             parent_portlets.reverse()
             for p in parent_portlets:
                 if p not in temp:

@@ -1,21 +1,10 @@
 {% load i18n %}
-
-<div class="manage-categories-portlet">
-
-	<div id="manage-categories-categories-control">
-		<a href="#">{% trans "Collapse all" %}</a> |
-		<a href="#">{% trans "Expand all" %}</a>
-		<a href="#"></a> | 
-		<a class="show-current"
-		   data="#category_{{ category_id }}"
-		   href="#">{% trans "Show current" %}</a>
-	</div>
-	
-    <ul class="root menu">
+<h2 class="navigation-title">{% trans "Categories" %}</h2>
+<div class="navigation-body manage-categories-portlet">
+    <ul class="manage-categories-tree">
         {% for category in categories %}
-            <li {% if category.is_current %}class="current-item"{% endif %}
-                id="category_{{category.id}}">
-                <a class="manage-category-link" 
+            <li id="category_{{ category.id }}">
+                <a class="selectable {% if category.is_current %}selected{% endif %}"
                    href="{% url lfs_manage_category category.id %}">
                     {{ category.name }}
                 </a>
@@ -24,15 +13,3 @@
         {% endfor %}
     </ul>
 </div>
-
-
-<script>
-	$(function() {
-		$("ul.menu").treeview({
-			collapsed: true,
-			persist: "cookie",
-   			cookieId: "manage-categories-categories",
-			control: "#manage-categories-categories-control",
-		})
-	})
-</script>

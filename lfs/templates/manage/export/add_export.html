@@ -1,23 +1,8 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
-{% block javascript %}
-    <script>
-        $(function() {
-            $("#id_name").livequery("keyup", function() {
-                var slug = $("#id_name").val()
-                slug = URLify(slug, 200)
-                $("#id_slug").val(slug);
-            });
-        });
-    </script>
-{% endblock %}
-
-{% block left_slot %}
-	<div id="selectable-exports-inline">
-		{{ selectable_exports_inline|safe }}
-	</div>	
-{% endblock %}
+{% block section %}add-export{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
     <div id="manage-tabs">
@@ -33,13 +18,26 @@
                 <table>
                     {% include "manage/lfs_form.html" %}
                 </table>
-                <input type="submit" name="save" value="{% trans 'Save' %}" />
-
-                <input type="button"
-                       onclick="window.location='{% url lfs_export_dispatcher %}'"
-                       value="{% trans 'Cancel' %}" />
-
+                <div class="buttons">
+                    <input type="submit" 
+                           name="save" 
+                           class="button"
+                           value="{% trans 'Save' %}" />
+                    <input type="button"
+                           class="button"
+                           onclick="window.location='{% url lfs_export_dispatcher %}'"
+                           value="{% trans 'Cancel' %}" />
+                </div>           
             </form>
         </div>
     </div>
+    <script>
+        $(function() {
+            $("#id_name").live("keyup", function() {
+                var slug = $("#id_name").val()
+                slug = URLify(slug, 200)
+                $("#id_slug").val(slug);
+            });
+        });
+    </script>
 {% endblock %}

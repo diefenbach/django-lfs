@@ -1,38 +1,8 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
-{% block javascript %}
-    <script>
-        $(function() {
-            $("#id_title").livequery("keyup", function() {
-                var slug = $("#id_title").val()
-                slug = URLify(slug, 200)
-                $("#id_slug").val(slug);
-            });
-        });
-    </script>
-{% endblock %}
-
-{% block left_slot %}
-    <div class="navigation-left-title">
-        {% trans "Actions" %}
-    </div>
-    <div class="navigation-left action-groups">
-        {% for group in groups %}
-            {% if group.actions.all %}
-                <div class="action-group">{{ group.name }}</div>
-                {% for action in group.actions.all %}
-                    <div class="action">
-                        <a href="{% url lfs_manage_action action.id %}"
-                           class="selectable {% ifequal action.id current_id %}selected{% endifequal %}">
-                            {{ action.title }}
-                        </a>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endfor %}
-    </div>
-{% endblock %}
+{% block section %}add-action{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
     <div id="manage-tabs">
@@ -41,24 +11,29 @@
         </ul>
 
         <div id="data">
-            <h2>{% trans 'Add action' %}</h2>
+            <h2>{% trans 'Data' %}</h2>
             <form action="{% url lfs_add_action %}"
-                  method="post"
-                  enctype="multipart/form-data">
-                {% include "manage/lfs_form.html" %}
-                <input type="submit"
-                       value="{% trans 'Add action' %}" />
-                    {% if request.META.HTTP_REFERER %}
-                        <input type="button"
-                               onclick="window.location='{{request.META.HTTP_REFERER}}'"
-                               value="{% trans 'Cancel' %}" />
-                    {% else %}
-                        <input type="button"
-                               onclick="window.location='{% url lfs_manage_actions %}'"
-                               value="{% trans 'Cancel' %}" />
+                  method="post">
 
-                    {% endif %}
+                {% include "manage/lfs_form.html" %}
+                
+                <div class="buttons">
+                    <input type="submit"
+                           class="button"
+                           value="{% trans 'Add' %}" />
+
+                    <input type="button"
+                           class="button"
+                           onclick="window.location='{{request.META.HTTP_REFERER}}'"
+                           value="{% trans 'Cancel' %}" />
+                </div>
+
             </form>
         </div>
     </div>
+    <script>
+        $(function() {
+            $(".button").button();
+        });
+    </script>    
 {% endblock %}

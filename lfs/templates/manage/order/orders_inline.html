@@ -1,4 +1,5 @@
 {% load i18n lfs_tags %}
+<h2>{% trans "Orders" %}</h2>
 <form action="{% url lfs_set_order_filter %}"
       method="POST">
 	
@@ -114,19 +115,19 @@
 	</table>
     <table class="lfs-manage-table">	
         <tr>
-            <th style="width:400px">
+            <th class="small">
                 {% trans 'Date' %}
             </th>
-            <th style="width:200px">
+            <th class="middle">
 				{% trans "Name" %}
 			</th>
-            <th>
+            <th class="small">
                 {% trans 'State' %}
             </th>
-            <th class="number">
+            <th class="tiny right-padding">
                 {% trans 'Price' %}
             </th>
-            <th class="number">
+            <th class="small right-padding">
                 {% trans 'Message' %}
             </th>
         </tr>
@@ -146,7 +147,7 @@
 	                <td class="number">
 	                    {{order.price|currency}}
 	                </td>
-	                <td class="number">
+	                <td class="right-padding">
 	                    {% if order.message %}
 	                        Yes
 	                    {% else %}

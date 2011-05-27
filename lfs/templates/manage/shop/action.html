@@ -1,11 +1,12 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block section %}manage-action{% endblock %}
 {% block left_slot %}
-    <div class="navigation-left-title">
+    <h2 class="navigation-title">
         {% trans "Actions" %}
-    </div>
-    <div class="navigation-left action-groups">
+    </h2>
+    <div class="navigation-body">
         {% for group in groups %}
             {% if group.actions.all %}
                 <div class="action-group">{{ group.name }}</div>
@@ -25,13 +26,11 @@
 {% block content %}
 
     <div class="site-actions">
-        <span class="label">{{ action.title }}</span>
-        
         <a class="add" 
            href="{% url lfs_add_action %}">{% trans 'Add action' %}</a>
         
-        <a class="delete confirmation-link"
-           data="{% trans 'Delete?' %}"
+        <a class="delete delete-link"
+           dialog_message="{% trans 'Do you really want to delete this action?' %}"
            href="{% url lfs_delete_action action.id %}">{% trans 'Delete action' %}</a>
     </div>
 
@@ -42,7 +41,7 @@
         </ul>
 
         <div id="data">
-            <h2>{% trans 'Action' %}</h2>
+            <h2>{% trans 'Data' %}</h2>
             <form action="{% url lfs_manage_action action.id %}"
                   method="post"
                   enctype="multipart/form-data">

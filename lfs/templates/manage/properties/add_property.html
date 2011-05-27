@@ -1,41 +1,28 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
-{% block left_slot %}
-    <div class="navigation-left-title">
-        {% trans "Properties" %}
-    </div>
-    {% for property in properties %}
-        <div>
-            <a href="{% url lfs_manage_shop_property property.id %}"
-               class="selectable {% ifequal property.id current_id %}selected{% endifequal %}">
-                {{property.name}}
-            </a>
-        </div>
-    {% endfor %}
-{% endblock %}
-
+{% block section %}add-property{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
 {% block content %}
-
     <div id="manage-tabs">
-        
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add property' %}</a></li>            
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add property' %}</a></li>
         </ul>
-
         <div id="data">
             <h2>{% trans 'Add property' %}</h2>
             <form action="{% url lfs_add_shop_property %}"
                   method="post">
                 {% include "manage/lfs_form.html" %}
                 <input type="submit"
+                       class="button"
                        value="{% trans 'Add property' %}" />
-                    {% if  request.META.HTTP_REFERER %}                       
+                    {% if  request.META.HTTP_REFERER %}
                         <input type="button"
+                               class="button"
                                onclick="window.location='{{request.META.HTTP_REFERER}}'"
                                value="{% trans 'Cancel' %}" />
                     {% endif %}
             </form>
         </div>
-    </div>        
+    </div>
 {% endblock %}

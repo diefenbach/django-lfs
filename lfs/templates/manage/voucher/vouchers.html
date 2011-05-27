@@ -1,5 +1,7 @@
 {% load i18n %}
 
+<h2>{% trans "Vouchers" %}</h2>
+
 <div id="vouchers-inline">
     {{ vouchers_inline|safe }}
 </div>
@@ -8,13 +10,12 @@
 <form action="{% url lfs_manage_add_vouchers voucher_group.id %}"
       method="post">
 
-    <table>
-        {{ voucher_form.as_table }}
-    </table>
+    {% include "manage/lfs_form.html" %}
 
-    <input class="padding-top ajax-save-button-2"
-           type="submit"
-           value='{% trans "Add vouchers" %}'
-
+    <div class="buttons">
+        <input class="padding-top ajax-save-button-2 button"
+               type="submit"
+               value='{% trans "Add vouchers" %}'
+    </div>           
 </form>
 

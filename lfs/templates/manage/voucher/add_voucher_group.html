@@ -1,16 +1,8 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
-{% block left_slot %}
-    {% for voucher_group in voucher_groups %}
-        <div>
-            <a href="{% url lfs_manage_voucher_group voucher_group.id %}"
-               class="selectable {% ifequal page.id current_id %}selected{% endifequal %}">
-                {{ voucher_group.name }}
-            </a>
-        </div>
-    {% endfor %}
-{% endblock %}
+{% block section %}add-voucher-group{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
     <div id="manage-tabs">
@@ -27,10 +19,12 @@
                 {% include "manage/lfs_form.html" %}
 
                 <input type="submit"
+                       class="button"
                        value="{% trans 'Add voucher group' %}" />
                        
                     {% if  request.META.HTTP_REFERER %}                       
                         <input type="button"
+                               class="button"
                                onclick="window.location='{{ request.META.HTTP_REFERER }}'"
                                value="{% trans 'Cancel' %}" />
                     {% endif %}

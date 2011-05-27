@@ -1,47 +1,54 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block title %}{% trans "Manage Delivery Time" %}{% endblock %}
+{% block section %}manage-delivery-time{% endblock %}
 {% block left_slot %}
-    <div class="navigation-left-title">
+    <h2 class="navigation-title">
         {% trans "Delivery times" %}
+    </h2>
+    <div class="navigation-body">
+        {% for delivery_time in delivery_times %}
+            <div>
+                <a href="{% url lfs_manage_delivery_time delivery_time.id %}"
+                   class="selectable {% ifequal delivery_time.id current_id %}selected{% endifequal %}">
+                    {{ delivery_time.name }}
+                </a>
+            </div>
+        {% endfor %}
     </div>
-
-    {% for delivery_time in delivery_times %}
-        <div>
-            <a href="{% url lfs_manage_delivery_time delivery_time.id %}"
-               class="selectable {% ifequal delivery_time.id current_id %}selected{% endifequal %}">
-                {{delivery_time.name}}
-            </a>
-        </div>
-    {% endfor %}
 {% endblock %}
 
 {% block content %}
 
     <div class="site-actions">
-        <a class="add" 
+        <a class="add"
            href="{% url lfs_add_delivery_time %}">{% trans 'Add Delivery Time' %}</a>
-        
-        <a class="delete confirmation-link"
-           data="{% trans 'Delete?' %}"
+
+        <a class="delete delete-link"
+           dialog_message="{% trans 'Do you really want to delete this delivery time?' %}"
            href="{% url lfs_delete_delivery_time delivery_time.id %}">{% trans 'Delete Delivery Time' %}</a>
     </div>
 
     <div id="manage-tabs">
-        
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Core data' %}</a></li>            
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Delivery Time' %}</a></li>
         </ul>
 
         <div id="data">
-            <h2>{% trans 'Delivery Time' %}</h2>
+            <h2>{% trans 'Data' %}</h2>
             <form action="{% url lfs_manage_delivery_time delivery_time.id %}"
                   method="post"
                   enctype="multipart/form-data">
+
                 {% include "manage/lfs_form.html" %}
-                <input type="submit"
-                       value="{% trans 'Save Delivery Time' %}">
+                
+                <div class="buttons">
+                    <input type="submit"
+                           class="button"
+                           value="{% trans 'Save Delivery Time' %}">
+                </div>
             </form>
         </div>
-    </div>    
+    </div>
 {% endblock %}

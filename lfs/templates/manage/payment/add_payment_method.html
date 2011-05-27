@@ -1,30 +1,34 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
-{% block left_slot %}
-    <div id="payment-methods">
-        {{payment_methods}}
-    </div>
-{% endblock %}
+{% block title %}{% trans "Add Payment Method" %}{% endblock %}
+{% block section %}add-payment-method{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
     <div id="manage-tabs">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add payment method' %}</a></li>
         </ul>
-
         <div id="data">
-            <form method="post"
-                 enctype="multipart/form-data">
+            <h2>{% trans "Add Payment Method" %}</h2>
+            <form method="post">
+
                 {% include "manage/lfs_form.html" %}
+
                 <div class="manage-form-buttons">                
                     <input type="submit" 
+                           class="button"
                            value="{% trans 'Add payment method' %}" />
-                    {% if request.META.HTTP_REFERER %}                       
-                        <input type="button"
-                               onclick="window.location='{{request.META.HTTP_REFERER}}'"
-                               value="{% trans 'Cancel' %}" />
-                    {% endif %}
+                           
+                    <input type="button"
+                           class="button"
+                           onclick="window.location='{{ next }}'"
+                           value="{% trans 'Cancel' %}" />
+                           
+                    <input type="hidden"
+                           name="next"
+                           value="{{ next }}" />                    
                 </div>
             </form>                   
         </div>

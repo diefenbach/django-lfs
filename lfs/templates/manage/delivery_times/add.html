@@ -1,50 +1,36 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
-{% block javascript %}
-    <script>
-        $(function() {
-            $("#id_title").livequery("keyup", function() {
-                var slug = $("#id_title").val()
-                slug = URLify(slug, 200)
-                $("#id_slug").val(slug);
-            });
-        });
-    </script>        
-{% endblock %}
-
-{% block left_slot %}
-    <div class="navigation-left-title">
-        {% trans "Delivery times" %}
-    </div>
-    {% for delivery_time in delivery_times %}
-        <div>
-            <a href="{% url lfs_manage_delivery_time delivery_time.id %}">
-                {{delivery_time.name}}
-            </a>
-        </div>
-    {% endfor %}
-{% endblock %}
+{% block title %}{% trans "Add Delivery Time" %}{% endblock %}
+{% block section %}add-delivery-time{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add delivery time' %}</a></li>            
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add delivery time' %}</a></li>
         </ul>
-
         <div id="data">
             <h2>{% trans 'Add delivery time' %}</h2>
             <form action="{% url lfs_add_delivery_time %}"
                   method="post">
+
                 {% include "manage/lfs_form.html" %}
-                <input type="submit"
-                       value="{% trans 'Add delivery time' %}" />
-                    {% if  request.META.HTTP_REFERER %}                       
-                        <input type="button"
-                               onclick="window.location='{{request.META.HTTP_REFERER}}'"
-                               value="{% trans 'Cancel' %}" />
-                    {% endif %}
+                
+                <div class="buttons">
+                    <input type="submit"
+                           class="button"
+                           value="{% trans 'Add Delivery Time' %}" />
+                    <input type="button"
+                           class="button"
+                           onclick="window.location='{{ next }}'"
+                           value="{% trans 'Cancel' %}" />
+                    <input type="hidden"
+                           name="next"
+                           value="{{ next }}" />
+                </div>
+                       
             </form>
         </div>
-    </div>    
+    </div>
 {% endblock %}

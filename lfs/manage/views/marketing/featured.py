@@ -24,9 +24,18 @@ def manage_featured(
     """
     """
     inline = manage_featured_inline(request, as_string=True)
+
+    # amount options
+    amount_options = []
+    for value in (10, 25, 50, 100):
+        amount_options.append({
+            "value" : value,
+            "selected" : value == request.session.get("featured-amount")
+        })
     
     return render_to_string(template_name, RequestContext(request, {
         "featured_inline" : inline,
+        "amount_options" : amount_options,
     }))
 
 @permission_required("manage_shop", login_url="/login/")
@@ -62,6 +71,11 @@ def manage_featured_inline(
     s["featured_products_page"] = page
     s["filter"] = filter_
     s["featured_category_filter"] = category_filter
+
+    try:
+        s["featured-amount"] = int(r.get("featured-amount", s.get("featured-amount")))
+    except TypeError:
+        s["featured-amount"] = 25
     
     filters = Q()
     if filter_:
@@ -73,6 +87,8 @@ def manage_featured_inline(
     if category_filter:
         if category_filter == "None":
             filters &= Q(categories=None)
+        elif category_filter == "All":
+            pass
         else:
             # First we collect all sub categories and using the `in` operator
             category = lfs_get_object_or_404(Category, pk=category_filter)
@@ -81,7 +97,7 @@ def manage_featured_inline(
             filters &= Q(categories__in = categories)
     
     products = Product.objects.filter(filters).exclude(pk__in = featured_ids)        
-    paginator = Paginator(products, 6)
+    paginator = Paginator(products, s["featured-amount"])
     
     total = products.count()
     try:

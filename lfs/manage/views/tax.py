@@ -73,6 +73,7 @@ def add_tax(request, template_name="manage/tax/add_tax.html"):
     return render_to_response(template_name, RequestContext(request, {
         "form" : form,
         "taxes" : Tax.objects.all(),        
+        "next" : request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
     }))
 
 @permission_required("core.manage_shop", login_url="/login/")

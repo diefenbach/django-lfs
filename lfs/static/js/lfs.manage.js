@@ -1,24 +1,59 @@
-tinyMCE.init({
-    mode: "none",
-    theme : "advanced",
-    height : "400",
-    tab_focus : ":prev,:next",
-    button_tile_map : true,
-    plugins : "safari, fullscreen",
-    convert_urls : false,
-    forced_root_block : "",
-    theme_advanced_buttons1 : "bold, italic, underline, |, justifyleft," +
-                              "justifycenter, justifyright, justifyfull, |," +
-                              "bullist,numlist, |, outdent, indent, |, image, |, undo," +
-                              "redo, |, code, link, unlink, styleselect, formatselect, |," +
-                              "removeformat, fullscreen",
-    theme_advanced_buttons2: "",
-    theme_advanced_buttons3: "",
-    theme_advanced_buttons4: "",
-    theme_advanced_toolbar_location : "top",
-    theme_advanced_toolbar_align : "left",
-    content_css : "/media/tinymce_styles.css"
-})
+function popup(url, w, h) {
+    w = window.open(url, "Preview", "height=" + h +", width=" + w +", screenX=500, screenY=150, scrollbars=yes, resizable=yes");
+    w.focus();
+}
+
+function disable_enter_key(e) {
+     var key;
+     if(window.event)
+          key = window.event.keyCode;
+     else
+          key = e.which;
+     if(key == 13)
+          return false;
+     else
+          return true;
+}    
+
+function hide_ajax_loading() {
+    $(".ajax-loading").hide();
+};
+
+function show_ajax_loading() {
+    $(".ajax-loading").show();
+};
+
+function align_related_products_buttons() {
+    var hl  = $("#related-products-left").height();
+    var hr = $("#related-products-right").height();
+    var h = Math.max(hl, hr)
+    $("#related-products-left").height(h);
+    $("#related-products-right").height(h);
+}
+
+function align_accessories_buttons() {
+    var hl  = $("#accessories-left").height();
+    var hr = $("#accessories-right").height();
+    var h = Math.max(hl, hr)
+    $("#accessories-left").height(h);
+    $("#accessories-right").height(h);
+}
+
+function align_topsellers_buttons() {
+    var hl  = $("#topseller-left").height();
+    var hr = $("#topseller-right").height();
+    var h = Math.max(hl, hr)
+    $("#topseller-left").height(h);
+    $("#topseller-right").height(h);
+}
+
+function align_buttons(id) {
+    var hl  = $(id + "-left").height();
+    var hr = $(id  + "-right").height();
+    var h = Math.max(hl, hr)
+    $(id + "-left").height(h);
+    $(id + "-right").height(h);
+}
 
 function mark_selected() {
     $("ul.manage-categories a").each(function() {
@@ -53,42 +88,48 @@ $(function() {
         delay: "200"
     });
 
-    $('#manage-tabs > ul').tabs({ cookie: { expires: 30 } });
+    $(".popup-link").live("click", function() {
+        var url = $(this).attr("href");
+        popup(url, "1024", "1000");
+        return false;
+    });
+
+    // General product tabs
+    $('#manage-tabs').tabs();
+
+    // Product tabs
+    $('#product-tabs').tabs();
+    $('#product-tabs').bind('tabsshow', function(event, ui) {
+        $.cookie("product_tab", ui.index);
+    });
+    var product_tab_cookie = $.cookie("product_tab");
+    index = (product_tab_cookie != null) ? parseInt(product_tab_cookie) : 0;
+    $('#product-tabs').tabs('select', index)
+
+    // Category tabs
+    $('#category-tabs').tabs();
+    $('#category-tabs').bind('tabsshow', function(event, ui) {
+        $.cookie("category_tab", ui.index);
+    });
+    var category_tab_cookie = $.cookie("category_tab");
+    index = (category_tab_cookie != null) ? parseInt(category_tab_cookie) : 0;
+    $('#category-tabs').tabs('select', index)
 
     $("#dialog").dialog({
         autoOpen: false,
         closeOnEscape: true,
         modal: true,
         width: 800,
-        height: 600,
-        overlay: {
-            opacity: 0.7,
-            background: "black"
-        }
+        height: 680,
+        draggable: false,
+        resizable: false,
+        position: ["center", 200],
     });
 
-    // Generic ajax save button
-    $(".ajax-save-button").livequery("click", function() {
-        var action = $(this).attr("name")
-        tinyMCE.execCommand('mceRemoveControl', false, 'id_text');
-        $(this).parents("form:first").ajaxSubmit({
-            data : {"action" : action},
-            success : function(data) {
-                data = JSON.parse(data);
-                for (var html in data["html"])
-                    $(data["html"][html][0]).html(data["html"][html][1]);
-                tinyMCE.execCommand('mceAddControl', true, 'id_text');
-                $.jGrowl(data["message"]);
-            }
-        })
-        return false;
-    });
-
-    // Generic ajax save button
-    $(".ajax-save-button-2").livequery("click", function() {
+    $("#product-name-filter").live("keyup", function(evt) {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 for (var html in data["html"])
                     $(data["html"][html][0]).html(data["html"][html][1]);
 
@@ -100,11 +141,47 @@ $(function() {
         return false;
     });
 
+    // Generic ajax save button
+    $(".ajax-save-button").live("click", function() {
+        var action = $(this).attr("name")
+        $(this).parents("form:first").ajaxSubmit({
+            data : {"action" : action},
+            success : function(data) {
+                data = $.parseJSON(data);
+                for (var html in data["html"])
+                    $(data["html"][html][0]).html(data["html"][html][1]);
+                $.jGrowl(data["message"]);
+            }
+        })
+        return false;
+    });
+
+    // Generic ajax save button
+    $(".ajax-save-button-2").live("click", function() {
+        show_ajax_loading();
+        var action = $(this).attr("name")
+        $(this).parents("form:first").ajaxSubmit({
+            data : {"action" : action},
+            success : function(data) {
+                data = $.parseJSON(data);
+                for (var html in data["html"])
+                    $(data["html"][html][0]).html(data["html"][html][1]);
+
+                hide_ajax_loading();
+
+                if (data["message"]) {
+                    $.jGrowl(data["message"]);
+                };
+            }
+        })
+        return false;
+    });
+
     // Generic ajax link
-    $(".ajax-link").livequery("click", function() {
+    $(".ajax-link").live("click", function() {
         var url = $(this).attr("href");
         $.post(url, function(data) {
-            data = JSON.parse(data);
+            data = $.parseJSON(data);
             for (var html in data["html"])
                 $(data["html"][html][0]).html(data["html"][html][1]);
 
@@ -116,7 +193,7 @@ $(function() {
     });
 
     // Criteria
-    $(".edit-price-criteria-button").livequery("click", function() {
+    $(".edit-price-criteria-button").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#dialog").html(data);
@@ -125,7 +202,7 @@ $(function() {
         return false;
     });
 
-    $(".criterion-add-first-button").livequery("click", function() {
+    $(".criterion-add-first-button").live("click", function() {
         var position = $(this).siblings(".position").val()
         var url = $(this).attr("href");
         $.post(url, function(data) {
@@ -135,7 +212,7 @@ $(function() {
         return false;
     });
 
-    $(".criterion-add-button").livequery("click", function() {
+    $(".criterion-add-button").live("click", function() {
         var criterion = $(this).parents("tr:first");
         var url = $(this).attr("href");
         $.post(url, function(data) {
@@ -145,7 +222,7 @@ $(function() {
         return false
     });
 
-    $("select.criterion-type").livequery("change", function() {
+    $("select.criterion-type").live("change", function() {
         var type = $(this).selected().val();
         var target = $(this).parents("tr:first");
         $.post("/manage/change-criterion", {"type" : type}, function(data) {
@@ -154,22 +231,21 @@ $(function() {
         });
     });
 
-    $(".criterion-save-button").livequery("click", function() {
+    $(".criterion-save-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 $("#criteria").html(data["criteria"]);
                 $.jGrowl(data["message"]);
-                // $(':input', "form").bind("change", function() { setConfirmUnload(false); });
             }
         })
         return false;
     });
 
-    $(".price-criterion-save-button").livequery("click", function() {
+    $(".price-criterion-save-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 $("#prices").html(data["prices"]);
                 $("#price-criteria").html(data["criteria"]);
                 $.jGrowl(data["message"]);
@@ -178,46 +254,42 @@ $(function() {
         return false;
     });
 
-    $(".criterion-delete-button").livequery("click", function() {
+    $(".criterion-delete-button").live("click", function() {
         $(this).parents("tr.criterion:first").remove();
     });
 
     // General
-    $(".delete-all").livequery("click", function() {
+    $(".delete-all").live("click", function() {
         var checked = this.checked;
         $(".delete").each(function() {
             this.checked = checked;
         });
     });
 
-    $(".select-all-1").livequery("click", function() {
+    $(".select-all").live("click", function() {
+        var checked = this.checked;
+        var selector = ".select-" + $(this).attr("value")
+        $(selector).each(function() {
+            this.checked = checked;
+        });
+    });
+
+    $(".select-all-1").live("click", function() {
         var checked = this.checked;
         $(".select-1").each(function() {
             this.checked = checked;
         });
     });
 
-    $(".select-all-2").livequery("click", function() {
+    $(".select-all-2").live("click", function() {
         var checked = this.checked;
         $(".select-2").each(function() {
             this.checked = checked;
         });
     });
 
-    $("ul.menu").sortable({
-        items : ">li",
-        axis: "y",
-        update : function(evt, el) {
-            var id = $(this).attr("id");
-            var categories = $(this).sortable("toArray", {});
-            $.post("/shops/manage/update-category/" + id, {"categories" : categories}, function(data) {
-                $.jGrowl("Categories has been updated.");
-            });
-        }
-    });
-
     // Categories / Products
-    $(".category-products-page-link").livequery("click", function() {
+    $(".category-products-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#products-inline").html(data)
@@ -225,10 +297,10 @@ $(function() {
         return false;
     });
 
-    $(".category-products-add-button").livequery("click", function() {
+    $(".category-products-add-button").live("click", function() {
         $("#category-products-add-form").ajaxSubmit({
             success: function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#products-inline").html(data["products"]);
                 $.jGrowl(data["message"]);
             }
@@ -236,7 +308,7 @@ $(function() {
         return false;
     })
 
-    $(".category-products-remove-button").livequery("click", function() {
+    $(".category-products-remove-button").live("click", function() {
         $("#category-products-remove-form").ajaxSubmit({
             success: function(data) {
                 $("#products-inline").html(data);
@@ -246,7 +318,7 @@ $(function() {
         return false;
     });
 
-    $(".category-products-filter-input").livequery("keyup", function() {
+    $(".category-products-filter-input").live("keyup", function() {
         $("#category-products-filter-form").ajaxSubmit({
             "success": function(data) {
                 $("#products-inline").html(data);
@@ -254,7 +326,7 @@ $(function() {
         });
     });
 
-    $(".category-products-categories-filter").livequery("change", function() {
+    $(".category-products-amount").live("change", function() {
         $("#category-products-filter-form").ajaxSubmit({
             "success": function(data) {
                 $("#products-inline").html(data);
@@ -262,7 +334,15 @@ $(function() {
         });
     });
 
-    $(".category-selected-products-filter-input").livequery("keyup", function() {
+    $(".category-products-categories-filter").live("change", function() {
+        $("#category-products-filter-form").ajaxSubmit({
+            "success": function(data) {
+                $("#products-inline").html(data);
+            }
+        });
+    });
+
+    $(".category-selected-products-filter-input").live("keyup", function() {
         $("#category-selected-products-filter-form").ajaxSubmit({
             "success": function(data) {
                 $("#selected-products").html(data);
@@ -270,7 +350,7 @@ $(function() {
         });
     });
 
-    $(".category-products-categories-filter-2").livequery("change", function() {
+    $(".category-products-categories-filter-2").live("change", function() {
         $("#category-selected-products-filter-form").ajaxSubmit({
             "success": function(data) {
                 $("#selected-products").html(data);
@@ -279,10 +359,10 @@ $(function() {
     });
 
     // Categories / SEO
-    $(".category-seo-button").livequery("click", function() {
+    $(".category-seo-button").live("click", function() {
         $("#category-seo-form").ajaxSubmit({
             success: function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 $("#seo").html(data["seo"]);
                 $.jGrowl(data["message"]);
             }
@@ -291,7 +371,7 @@ $(function() {
     })
 
     // Products (Overview)
-    $(".products-name-filter").livequery("keyup", function() {
+    $(".products-name-filter").live("keyup", function() {
         var form = $(this).parents("form:first");
 
         try { clearTimeout(timeout); } catch(e) {}
@@ -305,7 +385,7 @@ $(function() {
         }, 500);
     });
 
-    $(".products-reset-link").livequery("click", function() {
+    $(".products-reset-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#products-inline").html(data);
@@ -317,7 +397,7 @@ $(function() {
     });
 
     // Product / Selectable Products
-    $("#selectable-products-filter-input").livequery("keyup", function() {
+    $("#selectable-products-filter-input").live("keyup", function() {
         $("#selectable-products-filter-form").ajaxSubmit({
             "success": function(data) {
                 $("#selectable-products").html(data);
@@ -325,7 +405,7 @@ $(function() {
         });
     });
 
-    $(".selectable-products-category-filter").livequery("change", function() {
+    $(".selectable-products-category-filter").live("change", function() {
         $("#selectable-products-filter-form").ajaxSubmit({
             "success": function(data) {
                 $("#selectable-products").html(data);
@@ -333,7 +413,7 @@ $(function() {
         });
     });
 
-    $(".selectable-products-page-link").livequery("click", function() {
+    $(".selectable-products-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#selectable-products").html(data)
@@ -341,7 +421,7 @@ $(function() {
         return false;
     });
 
-    $(".selectable-products-reset-link").livequery("click", function() {
+    $(".selectable-products-reset-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#selectable-products-filter-input").val("");
@@ -353,26 +433,26 @@ $(function() {
     });
 
     // Product / Images
-    $(".upload-file:last").livequery("change", function() {
+    $(".upload-file:last").live("change", function() {
         var name = $(this).attr("name");
         var number = parseInt(name.split("_")[1])
         number += 1;
         $(this).parent().after("<div><input type='file' class='upload-file' name='file_" + number + "' /></div>");
     });
 
-    $("#product-images-save-button").livequery("click", function() {
+    $("#product-images-save-button").live("click", function() {
         $("#product-images-form").ajaxSubmit({
             target : "#images"
         });
         return false;
     });
 
-    $(".product-images-update-button").livequery("click", function() {
+    $(".product-images-update-button").live("click", function() {
         var action = $(this).attr("name")
         $("#product-images-update-form").ajaxSubmit({
             data : {"action" : action},
             success : function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#images").html(data["images"]);
                 $.jGrowl(data["message"]);
             }
@@ -381,16 +461,13 @@ $(function() {
     });
 
     // Product / Data
-    $("#product-data-save-button").livequery("click", function() {
-        tinyMCE.execCommand('mceRemoveControl', false, 'id_short_description');
-        tinyMCE.execCommand('mceRemoveControl', false, 'id_description');
+    $("#product-data-save-button").live("click", function() {
+        tinymce.triggerSave();
         $("#product-data-form").ajaxSubmit({
             "success": function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#data").html(data["form"]);
                 $("#selectable-products").html(data["selectable_products"]);
-                tinyMCE.execCommand('mceAddControl', true, 'id_description');
-                tinyMCE.execCommand('mceAddControl', true, 'id_short_description');
                 $.jGrowl(data["message"])
             }
         });
@@ -398,10 +475,10 @@ $(function() {
     })
 
     // Product / Categories
-    $(".product-categories-save-button").livequery("click", function() {
+    $(".product-categories-save-button").live("click", function() {
         $("#product-categories-save-form").ajaxSubmit({
             success: function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $.jGrowl(data["message"]);
             }
         });
@@ -409,13 +486,13 @@ $(function() {
     })
 
     // Mark parent categories with selected children categories
-    $(".product-categories-save-button").livequery("click", function() {
+    $(".product-categories-save-button").live("click", function() {
         mark_selected()
     })
 
     // Show selected categories - expands all categories which have a selected
     // sub category.
-    $(".show-selected").livequery("click", function() {
+    $(".show-selected").live("click", function() {
 
         $("a:eq(0)", "#manage-product-categories-control").click()
 
@@ -437,7 +514,7 @@ $(function() {
     })
 
     // Shows current category in category manage tree (manage category)
-    $(".show-current").livequery("click", function() {
+    $(".show-current").live("click", function() {
 
         $("a:eq(0)", "#manage-categories-categories-control").click()
 
@@ -465,7 +542,7 @@ $(function() {
     })
 
     // Product / Variants
-    $(".property-add-button").livequery("click", function() {
+    $(".property-add-button").live("click", function() {
         $("#property-add-form").ajaxSubmit({
             success: function(data) {
                 $("#variants").html(data);
@@ -474,10 +551,10 @@ $(function() {
         return false;
     });
 
-    $(".variants-add-button").livequery("click", function() {
+    $(".variants-add-button").live("click", function() {
         $(".variants-add-form").ajaxSubmit({
             success: function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 $("#variants").html(data["properties"]);
                 $("#selectable-products").html(data["selectable_products"]);
             }
@@ -485,12 +562,12 @@ $(function() {
         return false;
     })
 
-    $(".variants-update-button").livequery("click", function() {
+    $(".variants-update-button").live("click", function() {
         var action = $(this).attr("name")
         $("#variants-form").ajaxSubmit({
             data : {"action" : action},
             success: function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#variants").html(data["properties"]);
                 $("#selectable-products").html(data["selectable_products"]);
             }
@@ -498,7 +575,7 @@ $(function() {
         return false;
     });
 
-    $(".option-add-button").livequery("click", function() {
+    $(".option-add-button").live("click", function() {
         var form = $(this).parents("form:first");
         form.ajaxSubmit({
             "success": function(data) {
@@ -508,7 +585,7 @@ $(function() {
         return false;
     })
 
-    $(".property-change-button").livequery("click", function() {
+    $(".property-change-button").live("click", function() {
         var href = $(this).attr("href")
         $.post(href, function(data) {
             $("#variants").html(data);
@@ -517,86 +594,103 @@ $(function() {
     })
 
     // Product / Accessories
-    $("#add-accessories-button").livequery("click", function() {
+    $("#add-accessories-button").live("click", function() {
+        show_ajax_loading()
         $("#add-accessories-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#accessories-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
+                align_accessories_buttons();
+                hide_ajax_loading();
             }
         });
         return false;
     })
 
-    $(".accessories-update-button").livequery("click", function() {
+    $(".accessories-update-button").live("click", function() {
+        show_ajax_loading();
         var action = $(this).attr("name");
         $("#accessories-update-form").ajaxSubmit({
             data : {"action" : action},
             success : function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#accessories-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
+                align_accessories_buttons();
+                hide_ajax_loading();
             }
         });
         return false;
     })
 
-    $(".accessories-page-link").livequery("click", function() {
+    $(".accessories-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#accessories-inline").html(data)
+            align_accessories_buttons();
         });
         return false;
     });
 
-    $(".filter-accessories-input").livequery("keyup", function() {
+    $(".filter-accessories-input").live("keyup", function() {
         $("#filter-accessories-form").ajaxSubmit({
             "type": "post",
             "success": function(data) {
                 $("#accessories-inline").html(data);
+                align_accessories_buttons();
             }
         });
     });
 
-    $(".accessories-categories-filter").livequery("change", function() {
+    $(".accessories-categories-filter").live("change", function() {
         $("#filter-accessories-form").ajaxSubmit({
-            "target": "#accessories-inline"
+            "target": "#accessories-inline",
+            "success": function(data) {
+                $("#accessories-inline").html(data);
+                align_accessories_buttons();
+            }
         });
     });
 
-    $("#accessories-amount").livequery("change", function() {
+    $("#accessories-amount").live("change", function() {
         $("#filter-accessories-form").ajaxSubmit({
-            "target": "#accessories-inline"
+            "target": "#accessories-inline",
+            "success": function(data) {
+                align_accessories_buttons();
+            }
         });
     });
 
     // Product / Related Products
-    $("#add-related-products-button").livequery("click", function() {
+    $("#add-related-products-button").live("click", function() {
         $("#add-related-products-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#related-products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
+                align_related_products_buttons()
             }
         });
         return false;
     })
 
-    $("#remove-related-products-button").livequery("click", function() {
+    $("#remove-related-products-button").live("click", function() {
         $("#remove-related-products-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#related-products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
+                align_related_products_buttons()
             }
         });
         return false;
     })
 
-    $(".related-products-update-button").livequery("click", function() {
+    $(".related-products-update-button").live("click", function() {
         $("#related-products-update-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#related-products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -604,7 +698,7 @@ $(function() {
         return false;
     });
 
-    $(".related-products-page-link").livequery("click", function() {
+    $(".related-products-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#related-products-inline").html(data)
@@ -612,14 +706,14 @@ $(function() {
         return false;
     });
 
-    $(".filter-related-products-input").livequery("keyup", function() {
+    $(".filter-related-products-input").live("keyup", function() {
         $("#filter-related-products-form").ajaxSubmit({
             target: "#related-products-inline"
         });
         return false;
     });
 
-    $(".related-products-categories-filter").livequery("change", function() {
+    $(".related-products-categories-filter").live("change", function() {
         $("#filter-related-products-form").ajaxSubmit({
             "success": function(data) {
                 $("#related-products-inline").html(data);
@@ -627,8 +721,17 @@ $(function() {
         });
     });
 
+    $("#related-products-amount").live("change", function() {
+        $("#filter-related-products-form").ajaxSubmit({
+            "target": "#related-products-inline",
+            "success": function(data) {
+                align_related_products_buttons();
+            }
+        });
+    });
+
     // Select products
-    $("input.select-1").livequery("click", function(e) {
+    $("input.select-1").live("click", function(e) {
         if ($(this).is(":checked")) {
             $(this).parents("tr:first").addClass("marked");
 
@@ -661,11 +764,11 @@ $(function() {
     });
 
     // Product / SEO
-    $(".seo-save-button").livequery("click", function() {
+    $(".seo-save-button").live("click", function() {
         $("#product-seo-form").ajaxSubmit({
             "type": "post",
             "success": function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#seo-inline").html(data["seo_inline"]);
                 $.jGrowl(data["message"]);
             }
@@ -674,12 +777,12 @@ $(function() {
     })
 
     // Shipping/Payment Price
-    $(".price-button").livequery("click", function() {
+    $(".price-button").live("click", function() {
         var action = $(this).attr("name");
         $(this).parents("form:first").ajaxSubmit({
             data : {"action" : action},
             success: function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#prices").html(data["prices"]);
                 $.jGrowl(data["message"]);
             }
@@ -688,11 +791,11 @@ $(function() {
     });
 
     // Product / Dimension
-    $(".product-stock-button").livequery("click", function() {
+    $(".product-stock-button").live("click", function() {
         $("#product-stock-form").ajaxSubmit({
             "type": "post",
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#stock").html(data["html"]);
                 DateTimeShortcuts.init();
                 $.jGrowl(data["message"]);
@@ -702,10 +805,10 @@ $(function() {
     })
 
     // PropertyGroup
-    $("#add-property-button").livequery("click", function() {
+    $("#add-property-button").live("click", function() {
         $("#add-property-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#properties").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -713,12 +816,12 @@ $(function() {
         return false;
     })
 
-    $(".property-group-update-button").livequery("click", function() {
+    $(".property-group-update-button").live("click", function() {
         var action = $(this).attr("name");
         $("#property-group-update-form").ajaxSubmit({
             data : {"action" : action},
             success : function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#properties").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -727,10 +830,10 @@ $(function() {
     })
 
     // PropertyGroup / Products
-    $("#add-products-button").livequery("click", function() {
+    $("#add-products-button").live("click", function() {
         $("#add-products-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#products-inline").html(data["products_inline"]);
                 $("#product-values").html(data["product_values_inline"]);
                 $.jGrowl(data["message"]);
@@ -739,10 +842,10 @@ $(function() {
         return false;
     })
 
-    $(".products-update-button").livequery("click", function() {
+    $(".products-update-button").live("click", function() {
         $("#products-update-form").ajaxSubmit({
             success : function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -750,7 +853,7 @@ $(function() {
         return false;
     })
 
-    $(".products-page-link").livequery("click", function() {
+    $(".products-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#products-inline").html(data)
@@ -758,7 +861,7 @@ $(function() {
         return false;
     });
 
-    $(".filter-products-input").livequery("keyup", function() {
+    $(".filter-products-input").live("keyup", function() {
         $("#filter-products-form").ajaxSubmit({
             "type": "post",
             "success": function(data) {
@@ -767,17 +870,17 @@ $(function() {
         });
     });
 
-    $(".products-categories-filter").livequery("change", function() {
+    $(".products-categories-filter").live("change", function() {
         $("#filter-products-form").ajaxSubmit({
             "target": "#products-inline"
         });
     });
 
     // PropertyGroup / Product Property Values
-    $("#update-product-values-button").livequery("click", function() {
+    $("#update-product-values-button").live("click", function() {
         $("#update-product-values-form").ajaxSubmit({
             success : function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#product-values").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -786,12 +889,12 @@ $(function() {
     })
 
     // Shop Property Options
-    $(".shop-property-add-option-button").livequery("click", function() {
+    $(".shop-property-add-option-button").live("click", function() {
         var action = $(this).attr("name");
         $(this).parents("form:first").ajaxSubmit({
             data : {"action" : action},
             success: function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#options").html(data["options"]);
                 $.jGrowl(data["message"]);
             }
@@ -800,12 +903,12 @@ $(function() {
     });
 
     // Shop Property Steps
-    $(".shop-property-add-step-button").livequery("click", function() {
+    $(".shop-property-add-step-button").live("click", function() {
         var action = $(this).attr("name");
         $(this).parents("form:first").ajaxSubmit({
             data : {"action" : action},
             success: function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#steps").html(data["steps"]);
                 $.jGrowl(data["message"]);
             }
@@ -813,10 +916,10 @@ $(function() {
         return false;
     });
 
-    $(".shop-property-save-step-button").livequery("click", function() {
+    $(".shop-property-save-step-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success: function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#steps").html(data["steps"]);
                 $.jGrowl(data["message"]);
             }
@@ -824,10 +927,10 @@ $(function() {
         return false;
     });
 
-    $(".shop-property-save-step-type-button").livequery("click", function() {
+    $(".shop-property-save-step-type-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success: function(data) {
-                data = JSON.parse(data)
+                data = $.parseJSON(data)
                 $("#steps").html(data["steps"]);
                 $.jGrowl(data["message"]);
             }
@@ -837,12 +940,12 @@ $(function() {
 
     // Static blocks
     var confirmation;
-    $(".confirmation-link-no").livequery("click", function() {
+    $(".confirmation-link-no").live("click", function() {
         $(this).parent().replaceWith(confirmation);
         return false;
     });
 
-    $(".confirmation-link").livequery("click", function() {
+    $(".confirmation-link").live("click", function() {
         confirmation = $(this);
         var url = $(this).attr("href");
         var data = $(this).attr("data");
@@ -852,33 +955,31 @@ $(function() {
     });
 
     // Portlets
-    $(".portlet-edit-button").livequery("click", function() {
-        tinyMCE.execCommand('mceRemoveControl', false, 'id_portlet-text');
+    $(".portlet-edit-button").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#dialog").html(data);
             $("#dialog").dialog("open");
-            tinyMCE.execCommand('mceAddControl', true, 'id_portlet-text');
+            $(".button").button();
         });
         return false;
     });
 
-    $(".portlet-add-button").livequery("click", function() {
+    $(".portlet-add-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
                 $("#dialog").html(data);
                 $("#dialog").dialog("open");
-                tinyMCE.execCommand('mceAddControl', true, 'id_portlet-text');
+                $(".button").button();
         }});
         return false;
     });
 
-    $(".ajax-portlet-save-button").livequery("click", function() {
-        tinyMCE.execCommand('mceRemoveControl', false, 'id_portlet-text');
+    $(".ajax-portlet-save-button").live("click", function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
                 $("#dialog").dialog("close");
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 $("#portlets").html(data["html"])
                 $.jGrowl(data["message"]);
             }
@@ -887,10 +988,10 @@ $(function() {
     });
 
     // Marketing / Topseller
-    $("#add-topseller-button").livequery("click", function() {
+    $("#add-topseller-button").live("click", function() {
         $("#add-topseller-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#topseller-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -898,12 +999,12 @@ $(function() {
         return false;
     })
 
-    $(".topseller-update-button").livequery("click", function() {
+    $(".topseller-update-button").live("click", function() {
         var action = $(this).attr("name");
         $("#topseller-update-form").ajaxSubmit({
             data : {"action" : action},
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#topseller-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -911,7 +1012,7 @@ $(function() {
         return false;
     });
 
-    $(".topseller-page-link").livequery("click", function() {
+    $(".topseller-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#topseller-inline").html(data)
@@ -919,14 +1020,14 @@ $(function() {
         return false;
     });
 
-    $(".filter-topseller-input").livequery("keyup", function() {
+    $(".filter-topseller-input").live("keyup", function() {
         $("#filter-topseller-form").ajaxSubmit({
             target: "#topseller-inline"
         });
         return false;
     });
 
-    $(".topseller-categories-filter").livequery("change", function() {
+    $(".topseller-categories-filter").live("change", function() {
         $("#filter-topseller-form").ajaxSubmit({
             "success": function(data) {
                 $("#topseller-inline").html(data);
@@ -934,11 +1035,20 @@ $(function() {
         });
     });
 
+    $("#topseller-amount").live("change", function() {
+        $("#filter-topseller-form").ajaxSubmit({
+            "target": "#topseller-inline",
+            "success": function(data) {
+                align_accessories_buttons();
+            }
+        });
+    });
+
     // Marketing / Featured
-    $("#add-featured-button").livequery("click", function() {
+    $("#add-featured-button").live("click", function() {
         $("#add-featured-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#featured-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -946,12 +1056,12 @@ $(function() {
         return false;
     })
 
-    $(".featured-update-button").livequery("click", function() {
+    $(".featured-update-button").live("click", function() {
         var action = $(this).attr("name");
         $("#featured-update-form").ajaxSubmit({
             data : {"action" : action},
             "success": function(data) {
-                var data = JSON.parse(data);
+                var data = $.parseJSON(data);
                 $("#featured-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -959,7 +1069,7 @@ $(function() {
         return false;
     });
 
-    $(".featured-page-link").livequery("click", function() {
+    $(".featured-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#featured-inline").html(data)
@@ -967,14 +1077,14 @@ $(function() {
         return false;
     });
 
-    $(".filter-featured-input").livequery("keyup", function() {
+    $(".filter-featured-input").live("keyup", function() {
         $("#filter-featured-form").ajaxSubmit({
             target: "#featured-inline"
         });
         return false;
     });
 
-    $(".featured-categories-filter").livequery("change", function() {
+    $(".featured-categories-filter").live("change", function() {
         $("#filter-featured-form").ajaxSubmit({
             "success": function(data) {
                 $("#featured-inline").html(data);
@@ -982,11 +1092,20 @@ $(function() {
         });
     });
 
+    $("#featured-amount").live("change", function() {
+        $("#filter-featured-form").ajaxSubmit({
+            "target": "#featured-inline",
+            "success": function(data) {
+                align_buttons("#featured");
+            }
+        });
+    });
+
     // Shop
-    $("#shop-default-values-button").livequery("click", function() {
+    $("#shop-default-values-button").live("click", function() {
         $("#shop-default-values-form").ajaxSubmit({
             "success": function(data) {
-                var data = JSON.parse(data)
+                var data = $.parseJSON(data)
                 $("#default-values").html(data["html"]);
                 $.jGrowl(data["message"]);
             }
@@ -1003,7 +1122,7 @@ $(function() {
             // url = lfs_export_category_state category id
             var url = $(this).attr("data")
             $.post(url, function(data) {
-                data = JSON.parse(data);
+                data = $.parseJSON(data);
                 // Sets 1/2
                 $(data["html"][0]).html(data["html"][1]);
                 // Sets checking
@@ -1018,13 +1137,13 @@ $(function() {
     };
 
     $(function() {
-        $(".category-ajax-link").livequery("click", function() {
+        $(".category-ajax-link").live("click", function() {
             var url = $(this).attr("href");
 
             // Loads children of clicked category.
             if ($(this).hasClass("collapsed")) {
                 $.post(url, function(data) {
-                    data = JSON.parse(data);
+                    data = $.parseJSON(data);
                     for (var html in data["html"])
                         $(data["html"][html][0]).html(data["html"][html][1]);
                 })
@@ -1040,7 +1159,7 @@ $(function() {
             return false;
         });
 
-        $(".export-category-input").livequery("click", function() {
+        $(".export-category-input").live("click", function() {
 
             // select / deselect all child nodes
             var input = $(this);
@@ -1063,7 +1182,7 @@ $(function() {
             }
         });
 
-        $(".export-product-input").livequery("click", function() {
+        $(".export-product-input").live("click", function() {
             // Add / Remove product
             var input = $(this);
             var url = $(this).attr("data");
@@ -1079,14 +1198,14 @@ $(function() {
         });
     });
 
-    $(".category-variants-options").livequery("change", function() {
+    $(".category-variants-options").live("change", function() {
         var url = $(this).attr("data");
         var variants_option = $(this).val();
         $.post(url, { "variants_option" : variants_option });
     });
 
     // Product / Properties Form
-    
+
     // No results
     var toggle_no_results = function(checked) {
         if (checked) {
@@ -1100,7 +1219,7 @@ $(function() {
     $("#id_filterable").click(function() {
         toggle_no_results(this.checked)
     });
-    
+
     // Required
     var toggle_required = function(checked) {
         if (checked) {
@@ -1115,4 +1234,44 @@ $(function() {
         toggle_required(this.checked)
     });
 
+    $("#delete-dialog").dialog({
+        autoOpen: false,
+        closeOnEscape: true,
+        modal: true,
+        draggable: false,
+        resizable: false,
+        position: ["center", 200],
+    });
+
+    $(".delete-link").live("click", function() {
+        $("#delete-url").html($(this).attr("href"));
+        $("#delete-dialog > p.message").html($(this).attr("dialog_message"));
+        $("#delete-dialog").dialog("open");
+        return false;
+    });
+
+    var buttons = $("#delete-dialog button").live("click", function(e) {
+        $("#delete-dialog").dialog("close");
+        var yes = buttons.index(this) === 0;
+        var url = $("#delete-url").html();
+        if (yes) {
+            window.location = url;
+        }
+    });
+
+    $("input.button").button();
+
+
+    $(".property-edit-mode").live("click", function() {
+        var em = $.cookie("property-edit-mode");
+        if (em == "true") {
+            $(".property-edit-field").hide();
+            $.cookie("property-edit-mode", false);
+        }
+        else {
+            $(".property-edit-field").show();
+            $.cookie("property-edit-mode", true);
+        }
+        return false;
+    })
 })

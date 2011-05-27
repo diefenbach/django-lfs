@@ -1,4 +1,4 @@
-<ul style="list-style-type: none">
+<ul class="manufacturer-tree">
     {% for category in categories %}
         <li class="category {{ category.klass }}"
             data="{% url lfs_manufacturer_category_state manufacturer_id category.id %}">

@@ -23,11 +23,18 @@ from lfs.shipping.models import ShippingMethod
 from lfs.shipping.models import ShippingMethodPrice
 from lfs.shipping import utils as shipping_utils
 
-class ShippingForm(ModelForm):
+class ShippingMethodAddForm(ModelForm):
+    """Form to add a shipping method.
+    """
+    class Meta:
+        model = ShippingMethod
+        fields = ["name"]
+
+class ShippingMethodForm(ModelForm):
     """
     """
     def __init__(self, *args, **kwargs):
-        super(ShippingForm, self).__init__(*args, **kwargs)
+        super(ShippingMethodForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
 
     class Meta:
@@ -93,7 +100,7 @@ def shipping_method_data(request, shipping_id,
     shipping_method = ShippingMethod.objects.get(pk=shipping_id)
         
     return render_to_string(template_name, RequestContext(request, {
-        "form" : ShippingForm(instance=shipping_method),
+        "form" : ShippingMethodForm(instance=shipping_method),
         "shipping_method" : shipping_method,
     }))
 
@@ -165,7 +172,7 @@ def add_shipping_method(request,
     """Provides an add form and saves a new shipping method.
     """
     if request.method == "POST":
-        form = ShippingForm(data=request.POST, files=request.FILES)
+        form = ShippingMethodAddForm(data=request.POST)
         if form.is_valid():
             new_shipping_method = form.save()
             return lfs.core.utils.set_message_cookie(
@@ -174,11 +181,11 @@ def add_shipping_method(request,
                 msg = _(u"Shipping method has been added."),
             )            
     else:
-        form = ShippingForm()
+        form = ShippingMethodAddForm()
         
     return render_to_response(template_name, RequestContext(request, {
-        "shipping_methods" : shipping_methods(request),
         "form" : form,
+        "next" : request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
     }))
 
 # Actions
@@ -305,7 +312,7 @@ def save_shipping_method_data(request, shipping_method_id):
     This is called via an AJAX request and returns JSON encoded data.
     """
     shipping_method = ShippingMethod.objects.get(pk=shipping_method_id)
-    shipping_form = ShippingForm(instance=shipping_method, data=request.POST, files=request.FILES)
+    shipping_form = ShippingMethodForm(instance=shipping_method, data=request.POST, files=request.FILES)
 
     form = render_to_string(
         "manage/shipping/shipping_method_data.html", RequestContext(request, {

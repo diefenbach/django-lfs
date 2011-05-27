@@ -1,13 +1,13 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
-{% block section %}factory{% endblock %}
+{% block title %}{% trans "Manage Manufacturer" %}{% endblock %}
+{% block section %}manage-manufacturer{% endblock %}
 
 {% block left_slot %}
-    <div class="navigation-left-title">
-        {% trans "Manufacturer" %}
-    </div>
-    <div id="selectable-factories-inline">
+    <h2 class="navigation-title">{% trans "Manufacturers" %}</h2>
+    <div class="navigation-body"
+         id="selectable-manufacturers">
         {{ selectable_manufacturers_inline|safe }}
     </div>
 {% endblock %}
@@ -20,8 +20,8 @@
            {% trans 'Add Manufacturer' %}</a>
 
 
-        <a class="delete confirmation-link"
-           data="{% trans 'Delete?' %}"
+        <a class="delete delete-link"
+           dialog_message="{% trans 'Do you really want to delete this manufacturer?' %}"
            href="{% url lfs_manufacturer_delete_manufacturer manufacturer_id %}">
            {% trans 'Delete Manufacturer' %}</a>
 
@@ -30,7 +30,7 @@
     <div id="manage-tabs">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Manufacturer' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Product selection' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Products' %}</a></li>
         </ul>
         
         <div id="data">
@@ -38,8 +38,8 @@
         </div>
         
         <div id="products">
-            <ul id="factory-tree-root"
-                style="list-style-type: none">
+            <h2>{% trans "Products" %}</h2>
+            <ul class="manufacturer-tree">
 
                 {% for category in categories %}
                     <li class="category {{ category.klass }}"

@@ -1,204 +1,171 @@
 {% load i18n lfs_tags %}
 
-<form id="add-featured-form"
-      action="{% url lfs_manage_add_featured %}"
-      method="post">
-    
+<div style="padding-top:8px">
     {% if page.has_previous %}
         <a class="featured-page-link"
-           href="{% url lfs_manage_featured_inline %}?page=1">{% trans 'First' %}</a>
+           href="{% url lfs_manage_featured_inline %}?page=1"><img src="{{ MEDIA_URL }}lfs/icons/resultset_first.png" alt='{% trans "First" %}' /></a>
         <a class="featured-page-link"
-           href="{% url lfs_manage_featured_inline %}?page={{page.previous_page_number}}">{% trans 'Previous' %}</a>
+           href="{% url lfs_manage_featured_inline %}?page={{ page.previous_page_number }}"><img src="{{ MEDIA_URL }}lfs/icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
     {% else %}
-        <span>{% trans 'First' %}</span>
-        <span>{% trans 'Previous' %}</span>
+        <img src="{{ MEDIA_URL }}lfs/icons/resultset_first.png" alt='{% trans "First" %}' />
+        <img src="{{ MEDIA_URL }}lfs/icons/resultset_previous.png" alt='{% trans "Previous" %}' />
     {% endif %}
 
-    {{page.number}} / {{paginator.num_pages}}
+    <span style="position: relative; top:-4px ">
+        {{ page.number }} {% trans "of" %} {{ paginator.num_pages }}
+    </span>
 
     {% if page.has_next %}
         <a class="featured-page-link"
-           href="{% url lfs_manage_featured_inline %}?page={{page.next_page_number}}">{% trans 'Next' %}</a>
+           href="{% url lfs_manage_featured_inline %}?page={{ page.next_page_number }}"><img src="{{ MEDIA_URL }}lfs/icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
         <a class="featured-page-link"
-           href="{% url lfs_manage_featured_inline %}?page={{paginator.num_pages}}">{% trans 'Last' %}</a>
-       
+           href="{% url lfs_manage_featured_inline %}?page={{ paginator.num_pages }}"><img src="{{ MEDIA_URL }}lfs/icons/resultset_last.png" alt='{% trans "Last" %}' /></a>
     {% else %}
-        <span>{% trans 'Next' %}</span>
-        <span>{% trans 'Last' %}</span>
+        <span><img src="{{ MEDIA_URL }}lfs/icons/resultset_next.png" alt='{% trans "Next" %}' /></span>
+        <span><img src="{{ MEDIA_URL }}lfs/icons/resultset_last.png" alt='{% trans "Last" %}' /></span>
     {% endif %}
+</div>
+<table class="lfs-manage-table" style="margin-top:20px">
+    <tr>
+        <td width="50%">
+            <h2>{% trans 'Products' %}</h2>
+            <form id="add-featured-form"
+                  action="{% url lfs_manage_add_featured %}"
+                  method="post">            
+                <div id="featured-left" style="padding-bottom:10px">
+                    <table class="lfs-manage-table">
+                        <tr>
+                            <th class="checkbox">
+                                <input type="checkbox"
+                                       class="select-all-1" />
+                            </th>
+                            <th>
+                                {% trans 'Name' %}
+                            </th>
+                            <th class="small">
+                                {% trans 'SKU' %}
+                            </th>
+                            <th class="tiny right-padding">
+                                {% trans 'Active' %}
+                            </th>
+                        </tr>
+                        {% for product in page.object_list %}
+                            <tr class="{% cycle 'even' 'odd' %}">
+                                <td>
+                                    <input type="checkbox"
+                                           name="product-{{ product.id }}"
+                                           class="select-1" />
+                                </td>
+                                <td>
+                                    <a href="{% url lfs_manage_product product.id %}">
+                                        {{ product.get_name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ product.get_sku }}
+                                </td>
+                                <td class="right-padding">
+                					{% if product.is_active %}
+                						<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+                					{% else %}
+                						<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+                					{% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>    
+                <input type="hidden"
+                       name="keep-filters"
+                       value="1" />
 
-    <table class="lfs-manage-table middle">
-        <tr>
-            <th class="checkbox">
-                <input type="checkbox"
-                       class="select-all-1" />
-            </th>
-            <th>
-                {% trans 'Name' %}
-            </th>
-            <th class="middle">
-                {% trans 'SKU' %}
-            </th>
-            <th class="small">
-                {% trans 'Active' %}
-            </th>
-            <th class="middle">
-                {% trans 'Sub type' %}
-            </th>
-            <th class="small number">
-                {% trans 'Price' %}
-            </th>                    
-            <th class="tiny right">
-                {% trans 'Edit' %}
-            </th>
-        </tr>
-        {% for product in page.object_list %}
-            <tr class="{% cycle 'even' 'odd' %}">
-                <td>
-                    <input type="checkbox"
-                           name="product-{{product.id}}"
-                           class="select-1" />
-                </td>
-                <td>
-                    {{product.get_name}}
-                </td>
-                <td>
-                    {{ product.get_sku }}
-                </td>
-                <td>
-					{% if product.is_active %}
-						<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
-					{% else %}
-						<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
-					{% endif %}
-                </td>
-                <td>
-                    {{product.sub_type|sub_type_name}}
-                </td>
-                <td class="number">
-                    {{product.price|currency}}
-                </td>
-				<td class="right">
-					<a href="{% url lfs_product product.slug %}">
-                        <img src="{{ MEDIA_URL }}lfs/icons/zoom.png"
-                             alt="Edit"
-                             title="{% trans 'Edit product' %}" />
-					</a>
-					<a href="{% url lfs_manage_product product.id %}">
-                        <img src="{{ MEDIA_URL }}lfs/icons/pencil.png"
-                             alt="Edit"
-                             title="{% trans 'Edit product' %}" />
-					</a>
-				</td>
-            </tr>
-        {% endfor %}
-    </table>
+                <input type="submit"
+                       id="add-featured-button"
+                       class="button"
+                       value="{% trans 'Add to Featured Products' %}" />
+            </form>
+        </td>
+        <td width="50%">
+            <h2>{% trans 'Featured products' %}</h2>
+            <form id="featured-update-form"
+                  action="{% url lfs_manage_update_featured %}"
+                  method="post">                
+                <div id="featured-right" style="padding-bottom:10px">  
+                    <table class="lfs-manage-table">
+                        <tr>
+                            <th class="checkbox">
+                                <input type="checkbox"
+                                       class="select-all-2" />
+                            </th>
+                            <th>
+                                {% trans 'Name' %}
+                            </th>
+                            <th class="small">
+                                {% trans 'SKU' %}
+                            </th>
+                            <th class="small">
+                                {% trans 'Position' %}
+                            </th>
+                            <th class="tiny right-padding">
+                                {% trans 'Active' %}
+                            </th>
+                        </tr>
 
-    <input type="hidden"
-           name="keep-filters"
-           value="1" />
+                        {% for ts in featured %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox"
+                                           name="product-{{ ts.id }}"
+                                           class="select-2" />
+                                </td>
+                                <td>
+                                    <a href="{% url lfs_manage_product product.id %}">                                    
+                                        {% if ts.product.get_name %}
+                                            {{ ts.product.get_name }}
+                                        {% else %}
+                                            ---        
+                                        {% endif %}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ ts.product.get_sku }}
+                                </td>
+                                <td>
+                                    <input class="number"
+                                           type="text"
+                                           size="3"
+                                           name="position-{{ ts.id }}"
+                                           value="{{ ts.position }}" />
+                                </td>
+                                <td class="right-padding">
+            						{% if ts.product.is_active %}
+            							<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+            						{% else %}
+            							<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+            						{% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>    
+                <input type="hidden"
+                       name="keep-filters"
+                       value="1" />
 
-    <input type="submit"
-           id="add-featured-button"
-           value="{% trans 'Add to Featured Products' %}" />
+                <input type="submit"
+                       class="featured-update-button button"
+                       name="save"
+                       value="{% trans 'Save Featured' %}" />
 
-</form>
-
-<h2 class="heading-middle">{% trans 'Featured' %}</h2>
-    <form id="featured-update-form"
-          action="{% url lfs_manage_update_featured %}"
-          method="post">
-
-        <table class="lfs-manage-table middle">
-            <tr>
-                <th class="checkbox">
-                    <input type="checkbox"
-                           class="select-all-2" />
-                </th>
-                <th>
-                    {% trans 'Name' %}
-                </th>
-                <th class="small">
-                    {% trans 'Position' %}
-                </th>          
-                <th class="middle">
-                    {% trans 'SKU' %}
-                </th>
-                <th class="small">
-                    {% trans 'Active' %}
-                </th>                
-                <th class="middle">
-                    {% trans 'Sub type' %}
-                </th>
-                <th class="small number">
-                    {% trans 'Price' %}
-                </th>
-                <th class="tiny right">
-                    {% trans 'Edit' %}
-                </th>
-            </tr>
-    
-            {% for ts in featured %}
-                <tr>
-                    <td>
-                        <input type="checkbox"
-                               name="product-{{ts.id}}"
-                               class="select-2" />
-                    </td>
-                    <td>
-                        {{ts.product.get_name}}
-                    </td>
-                    <td>
-                        <input class="number"
-                               type="text"
-                               size="3"
-                               name="position-{{ts.id}}"
-                               value="{{ts.position}}" />
-                    </td>   
-                    <td>
-                        {{ ts.product.get_sku }}
-                    </td>
-                    <td>
-						{% if ts.product.is_active %}
-							<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
-						{% else %}
-							<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
-						{% endif %}
-                    </td>
-                    <td>
-                        {{ts.product.sub_type|sub_type_name}}
-                    </td>
-                    <td class="number">
-                        {{ts.product.price|currency}}
-                    </td>                                                
-
-					<td class="right">
-						<a href="{% url lfs_product ts.product.slug %}">
-	                        <img src="{{ MEDIA_URL }}lfs/icons/zoom.png"
-	                             alt="Edit"
-	                             title="{% trans 'Edit product' %}" />
-						</a>
-						<a href="{% url lfs_manage_product ts.product.id %}">
-	                        <img src="{{ MEDIA_URL }}lfs/icons/pencil.png"
-	                             alt="Edit"
-	                             title="{% trans 'Edit product' %}" />
-						</a>
-					</td>
-                </tr>
-            {% endfor %}
-        </table>    
-
-        <input type="hidden"
-               name="keep-filters"
-               value="1" />
-
-        <input type="submit"
-               class="featured-update-button"
-               name="save"
-               value="{% trans 'Save Featured' %}" />
-
-        <input type="submit"
-               class="featured-update-button" 
-               name="remove"
-               value="{% trans 'Remove from Featured' %}" />
-    </form>    
+                <input type="submit"
+                       class="featured-update-button button"
+                       name="remove"
+                       value="{% trans 'Remove from Featured' %}" />
+            </form>
+        </td>
+    </tr>
+</table>
+<script>        
+    align_buttons("#featured");
+    $("input.button").button();
+</script>

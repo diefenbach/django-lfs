@@ -4,7 +4,6 @@
 
 <form action="{% url lfs_manage_save_discount_criteria discount.id %}"
       method="post">
-
     <div class="top-buttons">
         <a class="criterion-add-first-button"
            href="{% url lfs_add_criterion %}">
@@ -18,12 +17,12 @@
 
     <table class="criteria">
         {% for criterion in criteria %}
-            {{criterion|safe}}
+            {{ criterion|safe }}
         {% endfor %}
     </table>  
 
-    <div class="manage-form-buttons">
-        <input class="criterion-save-button" 
+    <div class="buttons">
+        <input class="criterion-save-button button" 
                type="submit" 
                value="{% trans 'Save criteria' %}" />
     </div>

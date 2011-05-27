@@ -1,57 +1,65 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block section %}manage-page{% endblock %}
 {% block left_slot %}
-    <div class="navigation-left-title">
+    <h2 class="navigation-title">
         {% trans "Pages" %}
+    </h2>
+    <div class="navigation-body">
+        {% for page in pages %}
+            <div>
+                <a href="{% url lfs_manage_page page.id %}"
+                   class="selectable {% ifequal page.id current_id %}selected{% endifequal %}">
+                    {{page.title}}
+                </a>
+            </div>
+        {% endfor %}
     </div>
-    {% for page in pages %}
-        <div>
-            <a href="{% url lfs_manage_page page.id %}"
-               class="selectable {% ifequal page.id current_id %}selected{% endifequal %}">
-                {{page.title}}
-            </a>
-        </div>
-    {% endfor %}
 {% endblock %}
 
 {% block content %}
 
     <div class="site-actions">
-        <span class="label">{{page.title}}</span>
-        
-        <a class="add" 
+        <a class="add"
            href="{% url lfs_add_page %}">{% trans 'Add Page' %}</a>
-        
-        <a class="delete confirmation-link"
-           data="{% trans 'Delete?' %}"
+
+        <a class="delete delete-link"
+           dialog_message="{% trans 'Do you really want to delete this page?' %}"
            href="{% url lfs_delete_page page.id %}">{% trans 'Delete Page' %}</a>
 
-        <a class="preview" 
-           href="{% url lfs_page_view page.slug %}">{% trans 'Preview Page' %}</a>
+        <a class="view popup-link"
+           href="{% url lfs_page_view page.slug %}">{% trans 'View Page' %}</a>
+
+        <a class="goto"
+           href="{% url lfs_page_view page.slug %}">{% trans 'Goto Page' %}</a>
     </div>
 
     <div id="manage-tabs">
-        
+
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Page' %}</a></li>            
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Page' %}</a></li>
         </ul>
 
         <div id="data">
-            <h2>{% trans 'Page' %}</h2>
+            <h2>{% trans 'Data' %}</h2>
             <form action="{% url lfs_manage_page page.id %}"
-                  method="post"
-                  enctype="multipart/form-data">
+                  method="post">
+
                 {% include "manage/lfs_form.html" %}
-                <input type="submit"
-                       value="{% trans 'Save page' %}">
+
+                <div class="buttons">
+                    <input type="submit"
+                           class="button"
+                           value="{% trans 'Save data' %}">
+                </div>
             </form>
         </div>
-    </div>    
-    
+    </div>
     <script>
-        $(function() {    
-            tinyMCE.execCommand('mceAddControl', true, 'id_body');
-        });    
-    </script>        
+        $(function() {
+            addEditor("#id_short_text")
+            addEditor("#id_body")
+        });
+    </script>
 {% endblock %}

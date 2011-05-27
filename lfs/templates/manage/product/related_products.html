@@ -1,6 +1,8 @@
 {% load i18n %}
 {% load lfs_manage_tags %}
 
+<h2 class="heading-first">{% trans 'Related products' %}</h2>
+
 {% if product.is_variant %}
     <form id="related-products-update-form"
           action="{% url lfs_manage_update_related_products product.id %}"
@@ -16,16 +18,21 @@
     </form>
 {% endif %}    
 
-<h2 class="heading-middle">{% trans 'Products' %}</h2>
-
 <form id="filter-related-products-form"
       action="{% url lfs.manage.views.manage_related_products_inline product.id %}"
       onsubmit="return false">
     <input class="filter-related-products-input" type="text" name="filter"/>
     
     {% category_filter "related-products-categories-filter" "related_products_category_filter" %}
+
+    <select id="related-products-amount"
+            name="related-products-amount">
+        {% for option in amount_options %}
+            <option {% if option.selected %}selected="selected"{% endif %} 
+                    value="{{ option.value }}">{{ option.value }}</option>
+        {% endfor %}
+    </select>
     
 </form>
-
 
 {{ related_products_inline }}
