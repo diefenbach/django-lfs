@@ -6,35 +6,36 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <title>{% block title %}{% endblock %}</title>
-        
+
         <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/widgets.css" />
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/css/lfs.manage.css" />
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery-ui-1.8.11.custom/css/smoothness/jquery-ui-1.8.11.custom.css" />
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery/jquery.jgrowl.css" />
-        <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery/jquery-treeview/jquery.treeview.css" />
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery/superfish/superfish.css" />
-        
+
 
         <script type="text/javascript" src="/admin/jsi18n/"></script>
         <script type="text/javascript" src="{% admin_media_prefix %}js/core.js"></script>
         <script type="text/javascript" src="{% admin_media_prefix %}js/calendar.js"></script>
         <script type="text/javascript" src="{% admin_media_prefix %}js/admin/DateTimeShortcuts.js"></script>
-
         <script type="text/javascript" src="{% admin_media_prefix %}js/urlify.js"></script>
-        <script type="text/javascript" src="{{MEDIA_URL }}lfs/tiny_mce/jscripts/tiny_mce/tiny_mce.js"></script>
 
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery-1.5.2.min.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery-ui-1.8.11.custom/js/jquery-ui-1.8.11.custom.min.js"></script>
+
+        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/tiny_mce-3.4.2/jquery.tinymce.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/js/lfs_tinymce.js"></script>
+
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.fileupload-4.2.1/jquery.fileupload-ui.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.fileupload-4.2.1/jquery.fileupload.js"></script>
-        
+
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.form.pack.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.jgrowl_minimized.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.cookie.pack.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery-treeview/jquery.treeview.js"></script>
 
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/superfish/superfish.js"></script>
         <script type="text/javascript" src="{{ MEDIA_URL }}lfs/js/lfs.manage.js"></script>
+
         {% block javascript %}{% endblock %}
 
     </head>
@@ -73,22 +74,22 @@
                             width="100%">
                             <li><a>{% trans 'Shop' %}</a>
                                 <ul>
-                                    <li><a href="{% url lfs_manage_shop %}">{% trans 'Preferences' %}</a></li>
                                     <li><a href="{% url lfs_manage_actions %}">{% trans 'Actions' %}</a></li>
-                                    <li><a href="{% url lfs.manage.views.manage_shipping %}">{% trans 'Shipping Methods' %}</a></li>
                                     <li><a href="{% url lfs_manage_delivery_times %}">{% trans 'Delivery Times' %}</a></li>
-                                    <li><a href="{% url lfs_manage_payment %}">{% trans 'Payment Methods' %}</a></li>
-                                    <li><a href="{% url lfs_manage_taxes %}">{% trans 'Taxes' %}</a></li>
                                     <li><a href="{% url lfs_manage_discounts %}">{% trans 'Discounts' %}</a></li>
+                                    <li><a href="{% url lfs_manufacturer_dispatcher %}">{% trans 'Manufacturers' %}</a></li>
+                                    <li><a href="{% url lfs_manage_payment %}">{% trans 'Payment Methods' %}</a></li>
+                                    <li><a href="{% url lfs_manage_shop %}">{% trans 'Preferences' %}</a></li>
+                                    <li><a href="{% url lfs.manage.views.manage_shipping %}">{% trans 'Shipping Methods' %}</a></li>
+                                    <li><a href="{% url lfs_manage_taxes %}">{% trans 'Taxes' %}</a></li>
                                 </ul>
 
                             </li>
                             <li><a>{% trans 'Catalog' %}</a>
                                 <ul>
-                                    <li><a href="{% url lfs_manage_product_dispatcher %}">{% trans 'Products' %}</a></li>
-                                    <li><a href="{% url lfs_manage_products %}">{% trans 'Product Overview' %}</a></li>
                                     <li><a href="{% url lfs_manage_categories %}">{% trans 'Categories' %}</a></li>
-                                    <li><a href="{% url lfs_manufacturer_dispatcher %}">{% trans 'Manufacturer' %}</a></li>
+                                    <li><a href="{% url lfs_manage_product_dispatcher %}">{% trans 'Products' %}</a></li>
+                                    <li><a href="{% url lfs_manage_products %}">{% trans 'Products Overview' %}</a></li>
                                 </ul>
                             </li>
                             <li><a>{% trans 'Properties' %}</a>
@@ -106,24 +107,24 @@
                             </li>
                             <li><a>{% trans 'Customers' %}</a>
                                 <ul>
+                                    <li><a href="{% url lfs_manage_carts %}">{% trans 'Carts' %}</a></li>
                                     <li><a href="{% url lfs_manage_customers %}">{% trans 'Customers' %}</a></li>
                                     <li><a href="{% url lfs_orders %}">{% trans 'Orders' %}</a></li>
-                                    <li><a href="{% url lfs_manage_carts %}">{% trans 'Carts' %}</a></li>
                                     <li><a href="{% url lfs_manage_reviews %}">{% trans 'Reviews' %}</a></li>
                                 </ul>
                             </li>
                             <li><a>{% trans 'Marketing' %}</a>
                                 <ul>
                                 	<li><a href="{% url lfs_manage_featured %}">{% trans 'Featured' %}</a></li>
-                                    <li><a href="{% url lfs_manage_marketing %}">{% trans 'Topseller' %}</a></li>
                                     <li><a href="{% url lfs_manage_rating_mails %}">{% trans 'Rating Mails' %}</a></li>
+                                    <li><a href="{% url lfs_manage_marketing %}">{% trans 'Topseller' %}</a></li>
                                     <li><a href="{% url lfs_manage_vouchers %}">{% trans 'Vouchers' %}</a></li>
                                 </ul>
                             </li>
                             <li><a>{% trans 'Utils' %}</a>
                                 <ul>
-                                    <li><a href="{% url lfs_manage_utils %}">{% trans 'Miscellaneous' %}</a></li>
                                     <li><a href="{% url lfs_export_dispatcher %}">{% trans 'Export' %}</a></li>
+                                    <li><a href="{% url lfs_manage_utils %}">{% trans 'Miscellaneous' %}</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -136,7 +137,9 @@
             <tr>
                 {% block left-slot-wrapper %}
                     <td class="left-slot">
-                        {% block left_slot %}{% endblock %}
+                        <div class="navigation-wrapper">
+                            {% block left_slot %}{% endblock %}
+                        </div>
                     </td>
                 {% endblock %}
                 <td class="middle-slot">
@@ -158,7 +161,7 @@
 
         <div id="dialog" title="LFS Dialog"></div>
 
-        <div class="delete-dialog" title='{% trans "Confirmation" %}' id="delete-dialog">
+        <div class="delete-dialog" title='{% trans "Please Confirm" %}' id="delete-dialog">
             <p class="message">{% trans "Do you really want to delete this object?" %}</p>
             <div class="dialog-buttons">
                 <button class="button">{% trans "Yes" %}</button>

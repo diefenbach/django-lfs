@@ -16,6 +16,7 @@ def category_filter(context, css_class="", name="category"):
     different views.
     """
     request = context.get("request")
+    selected = request.session.get("product_filters", {}).get("category")
     categories = []
     for category in Category.objects.filter(parent = None):        
         children = category_filter_children(request, category, name)
@@ -23,10 +24,10 @@ def category_filter(context, css_class="", name="category"):
             "id" : category.id,
             "name" : category.name,
             "children" : children,
-            "selected" : str(category.id) == request.session.get("product_filters", {}).get("category")
+            "selected" : str(category.id) == selected,
         })
 
-    result = {"categories" : categories, "css_class" : css_class, "name" : name }
+    result = {"categories" : categories, "css_class" : css_class, "name" : name, "selected" : selected }
     return result
 
 # NOTE: The reason why not to use another inclusion_tag is that the request is 
@@ -40,7 +41,7 @@ def category_filter_children(request, category, name="category_filter", level=1)
         children = category_filter_children(request, category, name, level+1)
         categories.append({
             "id" : category.id,
-            "name" : "%s%s" % ("&nbsp;" * level*5, category.name),
+            "name" : "%s%s" % ("&nbsp;" * level * 5, category.name),
             "children" : children,
             "level" : level,
             "selected" : str(category.id) == request.session.get("product_filters", {}).get("category")

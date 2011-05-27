@@ -1,4 +1,5 @@
 {% extends "manage/manage_base.html" %}
+{% load i18n %}
 
 {% block section %}manage-order{% endblock %}
 
@@ -9,7 +10,55 @@
 {% endblock %}
 
 {% block content %}
-	<div id="order-inline">
-		{{ order_inline|safe }}
-	</div>
+    <div class="site-actions">
+
+        <a class="overview"
+           href="{% url lfs_orders %}">
+           {% trans 'Overview' %}</a>
+
+        <a class="delete delete-link"
+           dialog_message="{% trans 'Do you really want to delete this order?' %}"
+           href="{% url lfs_delete_order current_order.id %}">
+           {% trans 'Delete order' %}</a>
+
+        <a class="send delete-link"
+           dialog_message="{% trans 'Do you really want to resend this order?' %}"
+           href="{% url lfs_send_order current_order.id %}">
+           {% trans 'Resend order' %}
+        </a>
+
+        <label>{% trans "State" %}: </label>
+        <form action="{% url lfs_change_order_state %}"
+              method="post"
+              class="inline">
+            <select id="states-filter"
+                    name="new-state">
+                <option value="">{% trans "All" %}</option>
+                {% for state in states %}
+                    <option value="{{ state.id }}"
+                            {% if state.selected_order %}selected="selected"{% endif %}>
+                        {{ state.name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <input type="hidden"
+                   name="order-id"
+                   value="{{ current_order.id }}">
+            <input type="submit"
+                   class="ajax-save-button-2"
+                   value='{% trans "Change" %}'>
+        </form>
+    </div>
+
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#order">{% trans 'Order' %}</a></li>
+        </ul>
+    	<div id="order">    	    
+        	<div id="order-inline">
+        		{{ order_inline|safe }}
+        	</div>
+    	</div>
+    </div>
 {% endblock %}

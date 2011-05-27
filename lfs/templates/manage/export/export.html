@@ -4,7 +4,9 @@
 {% block section %}export{% endblock %}
 
 {% block left_slot %}
-	<div id="selectable-exports-inline">
+    <h2 class="navigation-title">{% trans "Exports" %}</h2>    
+	<div id="selectable-exports-inline"
+	     class="navigation-body">
 		{{ selectable_exports_inline|safe }}
 	</div>
 {% endblock %}
@@ -12,26 +14,24 @@
 {% block content %}
 
 	<div class="site-actions">
-	    <a class="export"
-	       href="{% url lfs_export_export slug %}">
-	       {% trans 'Export' %}</a>
-
 	    <a class="add"
 	       href="{% url lfs_export_add_export %}">
-	       {% trans 'Add' %}</a>
+	       {% trans 'Add Export' %}</a>
 
-
-        <a class="delete confirmation-link"
-           data="{% trans 'Delete?' %}"
+        <a class="delete delete-link"
+           data="{% trans 'Do you really want to delete this export?' %}"
 	       href="{% url lfs_export_delete_export export_id %}">
-	       {% trans 'Delete' %}</a>
+	       {% trans 'Delete Export' %}</a>
 
+	    <a class="export"
+	       href="{% url lfs_export_export slug %}">
+	       {% trans 'Download Export' %}</a>
 	</div>
 
     <div id="manage-tabs">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Product selection' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Products' %}</a></li>
         </ul>
 		
 		<div id="data">
@@ -39,6 +39,7 @@
 		</div>
 		
 		<div id="products">
+		    <h2>{% trans "Products" %}</h2>
 			<ul id="export-tree-root"
 				style="list-style-type: none">
 

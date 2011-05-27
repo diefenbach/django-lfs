@@ -96,26 +96,24 @@
 	</tr>
 	</table>
 </form>
-<table class="lfs-manage-table">
+<table class="lfs-manage-table" style="margin-top:20px">
     <tr>
-        <th class="tiny">
+        <th class="small">
             {% trans 'ID' %}
         </th>
-        <th style="width:150px">
+        <th class="middle" nowrap="nowrap">
             {% trans 'Creation date' %}
         </th>
-        <th style="width:150px">
+        <th class="middle" nowrap="nowrap">
             {% trans 'Modification date' %}
         </th>
-        <th style="width:100px; padding-right:20px">
+        <th style="small">
             {% trans 'User' %}
         </th>
-        <th class="number"
-            style="width:100px; padding-right:20px">
+        <th class="small right-padding">
             {% trans 'Total' %}
         </th>
-        <th class="number"
-            style="width:40px; padding-right:20px">
+        <th class="small right-padding">
             {% trans 'Items' %}
         </th>
         <th>
@@ -129,13 +127,11 @@
             <td>
                 {{ cart.id }}
             </td>
-            <td>
+            <td nowrap="nowrap">
                 {{ cart.creation_date|date:_("DATETIME_FORMAT") }}
             </td>
-            <td>
-                <a href="{% url lfs_manage_cart cart.id %}">
-                    {{ cart.modification_date|date:_("DATETIME_FORMAT") }}
-                </a>
+            <td nowrap="nowrap">
+                {{ cart.modification_date|date:_("DATETIME_FORMAT") }}
             </td>
             <td>
                 {% if cart.customer.selected_invoice_address %}
@@ -145,10 +141,10 @@
 					---
                 {% endif %}
             </td>
-            <td class="number" style="padding-right:20px" nowrap="nowrap">
+            <td class="number" nowrap="nowrap">
                 {{ cart.total|currency }}
             </td>
-            <td class="number" style="padding-right:20px">
+            <td class="right-padding">
                 {{ cart.amount_of_items }}
             </td>
             <td>

@@ -2,10 +2,19 @@
 {% load i18n %}
 {% load lfs_tags %}
 
+{% block title %}{% trans "Manage customers" %}{% endblock %}
+{% block section %}manage-customers{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
-	<div id="customers-inline">
-		{{ customers_inline|safe }}
-	</div>
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#customers">{% trans 'Customers' %}</a></li>
+        </ul>
+    	<div id="customers">
+    	    <div id="customers-inline">
+    		    {{ customers_inline|safe }}
+    		</div>
+    	</div>
+    </div>
 {% endblock %}

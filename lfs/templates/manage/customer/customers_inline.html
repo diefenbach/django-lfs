@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load lfs_tags %}
 
+<h2>{% trans "Customers" %}</h2>
 <form action="{% url lfs_set_customer_filters %}"
       method="POST">
 
@@ -82,22 +83,22 @@
 </form>
 <table class="lfs-manage-table">
     <tr>
-        <th class="tiny">
+        <th class="tiny right-padding">
 			<a class="ajax-link"
 			   href='{% url lfs_set_customer_ordering "id" %}'>
             	{% trans 'ID' %}
            	</a>
         </th>
-        <th class="middle">
-			<a class="ajax-link"
-			   href='{% url lfs_set_customer_ordering "lastname" %}'>
-            	{% trans 'Lastname' %}
-			</a>
-        </th>
-        <th class="middle">
+        <th>
 			<a class="ajax-link" 
 			   href='{% url lfs_set_customer_ordering "firstname" %}'>
             	{% trans 'Firstname' %}
+			</a>
+        </th>
+        <th>
+			<a class="ajax-link"
+			   href='{% url lfs_set_customer_ordering "lastname" %}'>
+            	{% trans 'Lastname' %}
 			</a>
         </th>
         <th class="middle">
@@ -106,10 +107,10 @@
             	{% trans 'E-Mail' %}
 			</a>	
         </th>
-        <th class="number">
+        <th class="tiny right-padding">
             {% trans 'Orders' %}
         </th>
-        <th class="number">
+        <th class="number right-padding">
             {% trans 'Cart' %}
         </th>
     </tr>
@@ -117,22 +118,22 @@
     {% for customer in customers %}
         <tr class="clickable"
             onclick="window.location='{% url lfs_manage_customer customer.customer.id %}'">
-            <td>
+            <td class="tiny right-padding">
                	{{ customer.customer.id }}
-            </td>
-            <td>
-                {{ customer.customer.selected_invoice_address.lastname  }}
             </td>
             <td>
 				{{ customer.customer.selected_invoice_address.firstname }}
             </td>
             <td>
+                {{ customer.customer.selected_invoice_address.lastname  }}
+            </td>
+            <td>
 				{{ customer.customer.get_email_address }}
             </td>
-            <td class="number">
+            <td class="right-padding">
 				{{ customer.orders }}
             </td>
-            <td class="number">
+            <td class="right-padding">
 				{% if customer.cart_price %}
 					{{ customer.cart_price|currency }}
 				{% endif %}

@@ -19,6 +19,13 @@ from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.models import FilterStep
 
+class PropertyAddForm(ModelForm):
+    """Form to add a property.
+    """
+    class Meta:
+        model = Property
+        fields = ["name"]
+
 class PropertyDataForm(ModelForm):
     """Form to manage core data of a property.
     """
@@ -281,7 +288,7 @@ def add_property(request, template_name="manage/properties/add_property.html"):
     """Adds a new property.
     """
     if request.method == "POST":
-        form = PropertyDataForm(data=request.POST)
+        form = PropertyAddForm(data=request.POST)
         if form.is_valid():
             property = form.save()
 
@@ -290,7 +297,7 @@ def add_property(request, template_name="manage/properties/add_property.html"):
                 msg = _(u"Property has been added."),
             )
     else:
-        form = PropertyDataForm()
+        form = PropertyAddForm()
 
     return render_to_response(template_name, RequestContext(request, {
         "form" : form,

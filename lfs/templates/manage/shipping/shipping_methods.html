@@ -1,13 +1,16 @@
 {% load i18n %}
-<div class="navigation-left-title">
-    {% trans "Shipping methods" %}
-</div>
 
-{% for shipping_method in shipping_methods %}
-    <div>
-        <a class="selectable {% ifequal current_id shipping_method.id %}selected{% endifequal %}"
-           href="{% url lfs.manage.views.manage_shipping_method shipping_method.id %}">
-            {{shipping_method.name}}
-        </a>
-    </div>
-{% endfor %}
+<h2 class="navigation-title">
+    {% trans "Shipping methods" %}
+</h2>
+
+<div class="navigation-body">
+    {% for shipping_method in shipping_methods %}
+        <div>
+            <a class="selectable {% ifequal current_id shipping_method.id %}selected{% endifequal %}"
+               href="{% url lfs.manage.views.manage_shipping_method shipping_method.id %}">
+                {{shipping_method.name}}
+            </a>
+        </div>
+    {% endfor %}
+</div>

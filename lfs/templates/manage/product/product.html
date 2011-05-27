@@ -3,6 +3,7 @@
 {% load lfs_tags %}
 {% load lfs_manage_tags %}
 
+{% block title %}{% trans "Manage Product" %}{% endblock %}
 {% block section %}manage-product{% endblock %}
 
 {% block left_slot %}
@@ -11,39 +12,29 @@
 
         <input type="text"
                name="name"
-               id="product-name-filter" 
-               style="width:100%" 
+               id="product-name-filter"
+               style="width:100%"
+               onKeyPress="return disable_enter_key()"
                value="{{ name_filter_value }}" />
-               
+
         <input type="hidden"
                name="product-id"
-               value="{{ product.id }}" />               
+               value="{{ product.id }}" />
     </form>
-    
+
     <div id="pages-inline">
         {{ pages_inline|safe }}
     </div>
 
-    <div class="navigation-left"
+    <div class="navigation-body"
          id="selectable-products-inline">
         {{ selectable_products }}
     </div>
 {% endblock %}
 
-{% block content %}    
-    
-    {# <div id="product-filters"> #}
-    {#     {{ product_filters }} #}
-    {# </div> #}
-
+{% block content %}
     <div id="product">
         <div class="site-actions">
-
-            <a class="overview"
-               href="{% url lfs_manage_products %}">
-               {% trans 'Overview' %}
-            </a>
-
             {% if product.is_variant %}
                 <a class="overview"
                    href="{% url lfs_manage_product product.parent.id %}">
@@ -53,31 +44,39 @@
 
             <a class="add"
                href="{% url lfs_manage_add_product %}">
-                {% trans 'Add product' %}
+                {% trans 'Add Product' %}
             </a>
 
             <a class="delete delete-link"
                href="{% url lfs_manage_delete_product product.id %}"
                dialog_message='{% trans "Do you really want to delete this product?" %}'>
-               {% trans 'Delete product' %}
+               {% trans 'Delete Product' %}
             </a>
 
-            <a class="preview"
+            <a class="view popup-link"
                href="{% url lfs.manage.views.product_by_id product.id %}">
-               {% trans 'Preview product' %}
+               {% trans 'View Product' %}
             </a>
+
+            <a class="goto"
+               href="{% url lfs.manage.views.product_by_id product.id %}">
+               {% trans 'Goto Product' %}
+            </a>
+
 
             {% if not product.is_variant %}
                 <form style="display:inline; padding-left:15px"
                       action="{% url lfs_change_product_subtype product.id %}"
                       method="post">
-                    {{form.sub_type}}
+
+                    {{ form.sub_type }}
+
                     <input type="submit"
                            value="{% trans 'Change' %}" />
                 </form>
-                
+
             <img class="ajax-loading" src="{{ MEDIA_URL }}lfs/img/ajax-loader.gif" alt="" style="padding:0; margin:0" />
-                
+
             {% endif %}
         </div>
         <div id="product-tabs">
@@ -109,26 +108,24 @@
             </ul>
 
             <div id="data">
-                {{product_data|safe}}
+                {{ product_data|safe }}
             </div>
 
             <div id="images">
-                {{images|safe}}
+                {{ images|safe }}
             </div>
 
             <div id="stock">
-                {{stock|safe}}
+                {{ stock|safe }}
             </div>
 
             <div id="seo">
-                {{seo|safe}}
+                {{ seo|safe }}
             </div>
 
-
-                <div id="properties">
-                    {{ properties|safe }}
-                </div>
-
+            <div id="properties">
+                {{ properties|safe }}
+            </div>
 
             <div id="portlets">
                 {{ portlets|safe }}

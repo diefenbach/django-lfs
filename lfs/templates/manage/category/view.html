@@ -8,13 +8,16 @@
       enctype="multipart/form-data">
 
     {% include "manage/lfs_form.html" %}
-
-    <input value="{% trans 'Save' %}"
-           type="submit"
-           class="ajax-save-button"/>
+    
+    <div class="buttons">
+        <input value="{% trans 'Save View' %}"
+               type="submit"
+               class="ajax-save-button button" />
+    </div>
 </form>
 <script>
     $(function() {
+        $(".button").button();        
         update_form();
 
         $("#id_active_formats").click(function() {

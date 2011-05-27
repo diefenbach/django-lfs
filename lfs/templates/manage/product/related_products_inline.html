@@ -1,7 +1,7 @@
 {% load i18n lfs_tags %}
 
 <div id="related-products-inline">
-    <div style="padding-top:8px">
+    <div class="navigation-pages-inline">
         {% if page.has_previous %}
             <a class="related-products-page-link"
                href="{% url lfs.manage.views.manage_related_products_inline product.id%}?page=1"><img src="{{ MEDIA_URL }}lfs/icons/resultset_first.png" alt='{% trans "First" %}' /></a>

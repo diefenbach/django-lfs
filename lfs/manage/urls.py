@@ -19,15 +19,15 @@ urlpatterns += patterns('lfs.manage.views.delivery_times',
 
 # Manufacturer
 urlpatterns += patterns('lfs.manage.views.manufacturer',
-    url(r'^manage/manufacturer-dispatcher$', "manufacturer_dispatcher", name="lfs_manufacturer_dispatcher"),
-    url(r'^manage/manufacturer/(?P<manufacturer_id>\d*)$', "manage_manufacturer", name="lfs_manufacturer"),
-    url(r'^manage/update-manufacturer-data/(?P<manufacturer_id>\d*)$', "update_data", name="lfs_manufacturer_update_manufacturer_data"),
-    url(r'^manage/add-manufacturer$', "add_manufacturer", name="lfs_manufacturer_add_manufacturer"),
-    url(r'^manage/delete-manufacturer/(?P<manufacturer_id>\d*)$', "delete_manufacturer", name="lfs_manufacturer_delete_manufacturer"),
-    url(r'^manage/edit-category-manufacturer/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "edit_category", name="lfs_manufacturer_edit_category"),
-    url(r'^manage/edit-product-manufacturer/(?P<manufacturer_id>\d*)/(?P<product_id>\d*)$', "edit_product", name="lfs_manufacturer_edit_product"),
-    url(r'^manage/category-state-manufacturer/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "category_state", name="lfs_manufacturer_category_state"),
-    url(r'^manage/manufacturer-inline/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "manufacturer_inline", name="lfs_manufacturer_inline"),
+    url(r'^manufacturer-dispatcher$', "manufacturer_dispatcher", name="lfs_manufacturer_dispatcher"),
+    url(r'^manufacturer/(?P<manufacturer_id>\d*)$', "manage_manufacturer", name="lfs_manufacturer"),
+    url(r'^update-manufacturer-data/(?P<manufacturer_id>\d*)$', "update_data", name="lfs_manufacturer_update_manufacturer_data"),
+    url(r'^add-manufacturer$', "add_manufacturer", name="lfs_manufacturer_add_manufacturer"),
+    url(r'^delete-manufacturer/(?P<manufacturer_id>\d*)$', "delete_manufacturer", name="lfs_manufacturer_delete_manufacturer"),
+    url(r'^edit-category-manufacturer/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "edit_category", name="lfs_manufacturer_edit_category"),
+    url(r'^edit-product-manufacturer/(?P<manufacturer_id>\d*)/(?P<product_id>\d*)$', "edit_product", name="lfs_manufacturer_edit_product"),
+    url(r'^category-state-manufacturer/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "category_state", name="lfs_manufacturer_category_state"),
+    url(r'^manufacturer-inline/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "manufacturer_inline", name="lfs_manufacturer_inline"),
 )
 
 # Marketing
@@ -126,8 +126,8 @@ urlpatterns += patterns('lfs.manage.views.product.variants',
 
 # Property Groups
 urlpatterns += patterns('lfs.manage.views.property_groups.property_groups',
-    url(r'^manage-property-groups', "manage_property_groups", name="lfs_manage_property_groups"),
-    url(r'^manage-property-group/(?P<id>\d*)', "manage_property_group", name="lfs_manage_property_group"),
+    url(r'^property-groups', "manage_property_groups", name="lfs_manage_property_groups"),
+    url(r'^property-group/(?P<id>\d*)', "manage_property_group", name="lfs_manage_property_group"),
     url(r'^add-property-group', "add_property_group", name="lfs_add_property_group"),
     url(r'^delete-property-group/(?P<id>\d*)', "delete_property_group", name="lfs_delete_property_group"),
     url(r'^assign-properties/(?P<group_id>\d*)', "assign_properties", name="lfs_assign_properties"),
@@ -148,8 +148,8 @@ urlpatterns += patterns('lfs.manage.views.property_groups.product_values',
 
 # Shop Properties
 urlpatterns += patterns('lfs.manage.views.properties',
-    url(r'^manage-shop-properties$', "manage_properties", name="lfs_manage_shop_properties"),
-    url(r'^manage-shop-property/(?P<id>\d*)', "manage_property", name="lfs_manage_shop_property"),
+    url(r'^shop-properties$', "manage_properties", name="lfs_manage_shop_properties"),
+    url(r'^shop-property/(?P<id>\d*)', "manage_property", name="lfs_manage_shop_property"),
     url(r'^update-shop-property-type/(?P<id>\d*)', "update_property_type", name="lfs_update_shop_property_type"),
     url(r'^add-shop-property$', "add_property", name="lfs_add_shop_property"),
     url(r'^delete-shop-property/(?P<id>\d*)', "delete_property", name="lfs_delete_shop_property"),
@@ -355,7 +355,7 @@ urlpatterns += patterns('lfs.manage.views.review',
 
 # Shop
 urlpatterns += patterns('lfs.manage.views.shop',
-    url(r'^manage-shop$', "manage_shop", name="lfs_manage_shop"),
+    url(r'^shop$', "manage_shop", name="lfs_manage_shop"),
     url(r'^save-shop-default-values$', "save_default_values", name="lfs_save_shop_default_values"),
 )
 

@@ -109,7 +109,13 @@
             {% endif %}
         </div>                
     </fieldset>
-    <input id="shop-default-values-button"
-           type="submit"
-           value="{% trans 'Save Default Values' %}">
+    <div class="buttons">
+        <input id="shop-default-values-button"
+               class="button"
+               type="submit"
+               value="{% trans 'Save Default Values' %}">
+    </div>
 </form>
+<script>
+    $(".button").button();
+</script>

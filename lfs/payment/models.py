@@ -71,11 +71,11 @@ class PaymentMethod(models.Model):
     payment method is valid. It is valid if all criteria are true. Only active
     and valid payment methods are provided to the shop customer.
     """
-    name = models.CharField(_(u"Name"), blank=True, max_length=50)
     active = models.BooleanField(_(u"Active"), default=False)
+    priority = models.IntegerField(_(u"Priority"), default=0)
+    name = models.CharField(_(u"Name"), max_length=50)
     description = models.TextField(_(u"Description"), blank=True)
     note = models.TextField(_(u"note"), blank=True)
-    priority = models.IntegerField(_(u"Priority"), default=0)
     image = models.ImageField(_(u"Image"), upload_to="images", blank=True, null=True)
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
     price = models.FloatField(_(u"Price"), default=0.0)

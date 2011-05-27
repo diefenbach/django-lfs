@@ -29,6 +29,13 @@ class VoucherOptionsForm(forms.ModelForm):
     class Meta:
         model = VoucherOptions
 
+class VoucherGroupAddForm(forms.ModelForm):
+    """Form to add a VoucherGroup.
+    """
+    class Meta:
+        model = VoucherGroup
+        fields = ("name",)
+
 class VoucherGroupForm(forms.ModelForm):
     """Form to add a VoucherGroup.
     """
@@ -109,7 +116,7 @@ def vouchers_tab(request, voucher_group, deleted=False, template_name="manage/vo
     return render_to_string(template_name, RequestContext(request, {
         "voucher_group" : voucher_group,
         "taxes" : taxes,
-        "voucher_form" : voucher_form,
+        "form" : voucher_form,
         "vouchers_inline" : vouchers_inline(request, voucher_group, vouchers, paginator, page),
     }))
 
@@ -224,7 +231,7 @@ def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.h
     """Adds a voucher group
     """
     if request.method == "POST":
-        form = VoucherGroupForm(data=request.POST)
+        form = VoucherGroupAddForm(data=request.POST)
         if form.is_valid():
             voucher_group = form.save(commit=False)
             voucher_group.creator = request.user
@@ -232,7 +239,7 @@ def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.h
             url = reverse("lfs_manage_voucher_group", kwargs={"id" : voucher_group.id })
             return HttpResponseRedirect(url)
     else:
-        form = VoucherGroupForm()
+        form = VoucherGroupAddForm()
 
     return render_to_response(template_name, RequestContext(request, {
         "form" : form,

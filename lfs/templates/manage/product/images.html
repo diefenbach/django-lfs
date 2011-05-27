@@ -1,5 +1,7 @@
 {% load i18n %}
 
+<h2 class="heading-first">{% trans 'Images' %}</h2>
+
 {% if product.is_variant %}
     <form id="active-images-update-form"
           action="{% url lfs_manage_update_active_images product.id %}"
@@ -10,19 +12,17 @@
         <label for="active_accessories">
             {% trans 'Active images' %}
         </label>
-        <input class="button images-update-button"
+        <input class="images-update-button"
                type="submit" value="Update" />
     </form>
 {% endif %}
-
-<h2 class="heading-first">{% trans 'Images' %}</h2>
 
 {% if product.images.all %}
     <form id="product-images-update-form"
           action="{% url lfs_manage_update_images product.id %}"
           method="post">
 
-        <table class="lfs-manage-table">
+        <table class="lfs-manage-table images">
             <tr>
                 <th class="tiny">
                     <input type="checkbox"

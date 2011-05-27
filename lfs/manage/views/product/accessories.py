@@ -90,6 +90,8 @@ def manage_accessories_inline(
     if category_filter:
         if category_filter == "None":
             filters &= Q(categories=None)
+        elif category_filter == "All":
+            pass
         else:
             # First we collect all sub categories and using the `in` operator
             category = lfs_get_object_or_404(Category, pk=category_filter)

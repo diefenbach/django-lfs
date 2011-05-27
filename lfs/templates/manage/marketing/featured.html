@@ -1,17 +1,25 @@
 {% load i18n %}
 {% load lfs_manage_tags %}
 
-<h2>{% trans 'Products' %}</h2>
+<h2>{% trans 'Product Selection' %}</h2>
 
 <form id="filter-featured-form"
       action="{% url lfs_manage_featured_inline %}"
       onsubmit="return false">
     <input class="filter-featured-input" type="text" name="filter"/>
-    
+
     {% category_filter "featured-categories-filter" "featured_category_filter" %}
+    
+    <select id="featured-amount"
+            name="featured-amount">
+        {% for option in amount_options %}
+            <option {% if option.selected %}selected="selected"{% endif %} 
+                    value="{{ option.value }}">{{ option.value }}</option>
+        {% endfor %}
+    </select>
     
 </form>
 
 <div id="featured-inline">
-    {{featured_inline}}
+    {{ featured_inline }}
 </div>

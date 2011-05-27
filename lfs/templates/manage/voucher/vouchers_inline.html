@@ -54,43 +54,43 @@
 <form action="{% url lfs_manage_delete_vouchers voucher_group.id %}"
       method="post">
       
-    <table class="lfs-manage-table checkbox middle">
+    <table class="lfs-manage-table middle">
         <tr>
-            <th>
+            <th class="tiny">
                 <input type="checkbox" 
                        class="select-all-1">            
             </th>
-            <th>
+            <th class="small">
                 {% trans "Number" %}
             </th>
-            <th>
+            <th class="small">
                 {% trans "Type" %}
             </th>
-            <th class="middle number">
+            <th class="tiny right">
                 {% trans "Value" %}
             </th>
-            <th class="middle number">
+            <th class="tiny right-padding">
                 {% trans "Tax" %}
             </th>
-            <th class="middle right">
+            <th class="small right-padding">
                 {% trans "Start date" %}
             </th>
-            <th class="middle right">
+            <th class="small right-padding">
                 {% trans "End date" %}
             </th>
-            <th class="middle number">
+            <th class="small number">
                 {% trans "Effective from" %}
             </th>
-            <th class="small right">
+            <th class="tiny right">
                 {% trans "Active" %}
             </th>
-            <th class="small right">
+            <th class="tiny right">
                 {% trans "Used" %}
             </th>
-            <th class="small right">
+            <th class="tiny right">
                 {% trans "Limit" %}
             </th>
-            <th class="middle right">
+            <th class="small right-padding">
                 {% trans "Last used date" %}
             </th>
         </tr>
@@ -113,13 +113,12 @@
                 <td class="number">
                     {{ voucher.value }}
                 </td>
-                <td class="number">
+                <td class="right-padding">
                     {% if voucher.tax %}
                         {{ voucher.tax.rate }}
                     {% else %}
                         ---
-                    {% endif %}
-                    
+                    {% endif %}                    
                 </td>
                 <td class="right">
                     {% if voucher.start_date %}
@@ -159,8 +158,11 @@
     </table>
     
     {% if vouchers %}
-        <input class="ajax-save-button-2"
+        <input class="ajax-save-button-2 button"
                type="submit"
                value='{% trans "Delete vouchers" %}' />  
     {% endif %}
 </form>
+<script>
+    $(".button").button();
+</script>

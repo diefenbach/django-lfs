@@ -1,17 +1,10 @@
 {% extends "manage/manage_base.html" %}
-
 {% load i18n %}
-{% load lfs_tags lfs_manage_tags %}
 
-{% block section %}manage-product{% endblock %}
-
+{% block section %}manage-featured-products{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
-{% block content %}
-    
-    <div class="site-actions">
-        <span class="label">{% trans 'Featured Products' %}</span>
-    </div>
+{% block content %}    
     <div id="product">
         <div id="manage-tabs">
             <ul>
@@ -19,7 +12,7 @@
             </ul>
 
             <div id="featured">
-                {{featured|safe}}
+                {{ featured|safe }}
             </div>                        
         </div>
     </div>

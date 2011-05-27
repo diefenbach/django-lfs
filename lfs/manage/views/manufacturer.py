@@ -27,7 +27,7 @@ class ManufacturerDataForm(ModelForm):
         model = Manufacturer
 
 def manage_manufacturer(request, manufacturer_id, template_name="manage/manufacturer/manufacturer.html"):
-    """The main view to display factories.
+    """The main view to display manufacturers.
     """
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
 
@@ -64,10 +64,10 @@ def manufacturer_data_inline(request, manufacturer_id, form,
 
 def selectable_manufacturers_inline(request, manufacturer_id,
     template_name="manage/manufacturer/selectable_manufacturers_inline.html"):
-    """Displays all selectable factories.
+    """Displays all selectable manufacturers.
     """
     return render_to_string(template_name, RequestContext(request, {
-        "factories" : Manufacturer.objects.all(),
+        "manufacturers" : Manufacturer.objects.all(),
         "manufacturer_id" : int(manufacturer_id),
     }))
 
@@ -132,6 +132,7 @@ def add_manufacturer(request, template_name="manage/manufacturer/add_manufacture
     return render_to_response(template_name, RequestContext(request, {
         "form" : form,
         "selectable_manufacturers_inline" : selectable_manufacturers_inline(request, 0),
+        "next" : request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
     }))
 
 # Actions
@@ -226,7 +227,7 @@ def update_data(request, manufacturer_id):
 
     html = (
         ("#data", manufacturer_data_inline(request, manufacturer_id, form)),
-        ("#selectable-factories-inline", selectable_manufacturers_inline(request, manufacturer_id)),
+        ("#selectable-manufacturers", selectable_manufacturers_inline(request, manufacturer_id)),
     )
 
     result = simplejson.dumps({

@@ -6,5 +6,13 @@
       method="post"
       id="category-seo-form">
         {% include "manage/lfs_form.html" %}
-    <input type="submit" value="{% trans 'Save SEO' %}" class="category-seo-button" />
+    
+    <div class="buttons">
+        <input type="submit" 
+               value="{% trans 'Save SEO' %}" 
+               class="category-seo-button button" />
+    </div>
 </form>
+<script>
+    $(".button").button();        
+</script>

@@ -122,7 +122,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
         return HttpResponse("")
 
     product = lfs_get_object_or_404(Product, pk=product_id)
-    products = _get_filtered_products(request)
+    products = _get_filtered_products_for_product_view(request)
     paginator = Paginator(products, 20)
     page = paginator.page(request.REQUEST.get("page", 1))
 
@@ -143,7 +143,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
         "portlets" : portlets_inline(request, product),
         "properties" : manage_properties(request, product_id),
         "form" : ProductSubTypeForm(instance=product),
-        "name_filter_value" : request.session.get("product_filters", {}).get("name", ""),
+        "name_filter_value" : request.session.get("product_filters", {}).get("product_name", ""),
     }))
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -219,8 +219,7 @@ def products_inline(request, page, paginator, template_name="manage/product/prod
     }))
 
 @permission_required("core.manage_shop", login_url="/login/")
-def product_filters_inline(request, page, paginator, product_id=0,
-    template_name="manage/product/product_filters_inline.html"):
+def product_filters_inline(request, page, paginator, product_id=0, template_name="manage/product/product_filters_inline.html"):
     """
     """
     product_filters = request.session.get("product_filters", {})
@@ -230,7 +229,17 @@ def product_filters_inline(request, page, paginator, product_id=0,
     except TypeError:
         product_id = 0
 
+    # amount options
+    amount = product_filters.get("amount", "25")
+    amount_options = []
+    for value in ("10", "25", "50", "100"):
+        amount_options.append({
+            "value" : value,
+            "selected" : value == amount
+        })
+
     return render_to_string(template_name, RequestContext(request, {
+        "amount_options" : amount_options,
         "name" : product_filters.get("name", ""),
         "price" : product_filters.get("price", ""),
         "active" : product_filters.get("active", ""),
@@ -312,7 +321,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
     """Edits the product with given.
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
-    products = _get_filtered_products(request)
+    products = _get_filtered_products_for_product_view(request)
     paginator = Paginator(products, 20)
     page = paginator.page(request.REQUEST.get("page", 1))
 
@@ -391,47 +400,62 @@ def save_products(request):
     paginator = Paginator(products, 20)
     page = paginator.page(request.REQUEST.get("page", 1))
 
-    for key, value in request.POST.items():
+    if request.POST.get("action") == "delete":
+        for key, value in request.POST.items():
+            if key.startswith("delete-"):
+                id = key.split("-")[1]
 
-        if key.startswith("id-"):
-            id = value
+                try:
+                    product = Product.objects.get(pk=id)
+                except Product.DoesNotExist:
+                    continue
+                else:
+                    product.delete()
+        msg = _(u"Products have been deleted.")
 
-            try:
-                product = Product.objects.get(pk=id)
-            except Product.DoesNotExist:
-                continue
+    elif request.POST.get("action") == "save":
+        for key, value in request.POST.items():
+            if key.startswith("id-"):
+                id = value
 
-            product.name = request.POST.get("name-%s" % id, "")
-            product.sku = request.POST.get("sku-%s" % id, "")
-            product.slug = request.POST.get("slug-%s" % id, "")
+                try:
+                    product = Product.objects.get(pk=id)
+                except Product.DoesNotExist:
+                    continue
 
-            try:
-                product.price = float(request.POST.get("price-%s" % id, 0))
-            except ValueError:
-                product.price = 0
-            try:
-                product.for_sale_price = \
-                    float(request.POST.get("for_sale_price-%s" % id, 0))
-            except ValueError:
-                product.for_sale_price = 0
+                product.name = request.POST.get("name-%s" % id, "")
+                product.sku = request.POST.get("sku-%s" % id, "")
+                product.slug = request.POST.get("slug-%s" % id, "")
+                product.sub_type = request.POST.get("sub_type-%s" % id, 0)
 
-            if request.POST.get("for_sale-%s" % id):
-                product.for_sale = True
-            else:
-                product.for_sale = False
+                try:
+                    product.price = float(request.POST.get("price-%s" % id, 0))
+                except ValueError:
+                    product.price = 0
+                try:
+                    product.for_sale_price = \
+                        float(request.POST.get("for_sale_price-%s" % id, 0))
+                except ValueError:
+                    product.for_sale_price = 0
 
-            if request.POST.get("active-%s" % id):
-                product.active = True
-            else:
-                product.active = False
+                if request.POST.get("for_sale-%s" % id):
+                    product.for_sale = True
+                else:
+                    product.for_sale = False
 
-            try:
-                product.save()
-            except IntegrityError:
-                pass
+                if request.POST.get("active-%s" % id):
+                    product.active = True
+                else:
+                    product.active = False
+
+                try:
+                    product.save()
+                except IntegrityError:
+                    pass
+
+                msg = _(u"Products have been saved")
 
     html = (("#products-inline", products_inline(request, page, paginator)),)
-    msg = _(u"Products have been saved")
 
     result = simplejson.dumps({
         "html" : html,
@@ -447,14 +471,14 @@ def set_name_filter(request):
     product_filters = request.session.get("product_filters", {})
 
     if request.POST.get("name", "") != "":
-        product_filters["name"] = request.POST.get("name")
+        product_filters["product_name"] = request.POST.get("name")
     else:
-        if product_filters.get("name"):
-            del product_filters["name"]
+        if product_filters.get("product_name"):
+            del product_filters["product_name"]
 
     request.session["product_filters"] = product_filters
 
-    products = _get_filtered_products(request)
+    products = _get_filtered_products_for_product_view(request)
     paginator = Paginator(products, 20)
     page = paginator.page(request.REQUEST.get("page", 1))
 
@@ -477,7 +501,7 @@ def set_filters(request):
     """Sets product filters given by passed request.
     """
     product_filters = request.session.get("product_filters", {})
-    for name in ("name", "active", "price", "category", "for_sale", "sub_type"):
+    for name in ("name", "active", "price", "category", "for_sale", "sub_type", "amount"):
         if request.POST.get(name, "") != "":
             product_filters[name] = request.POST.get(name)
         else:
@@ -486,8 +510,13 @@ def set_filters(request):
 
     request.session["product_filters"] = product_filters
 
+    try:
+        amount = int(product_filters.get("amount", 25))
+    except TypeError:
+        amount = 25
+
     products = _get_filtered_products(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, amount)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     product_id = request.REQUEST.get("product-id", 0)
@@ -511,8 +540,14 @@ def set_filters(request):
 def set_products_page(request):
     """Sets the displayed product page.
     """
-    products = _get_filtered_products(request)
-    paginator = Paginator(products, 20)
+    try:
+        product_filters = request.session.get("product_filters", {})
+        amount = int(product_filters.get("amount", 25))
+    except TypeError:
+        amount = 25
+
+    products = _get_filtered_products_for_product_view(request)
+    paginator = Paginator(products, amount)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     html = (
@@ -533,6 +568,23 @@ def product_by_id(request, product_id):
     url = reverse("lfs.catalog.views.product_view", kwargs={"slug" : product.slug})
     return HttpResponseRedirect(url)
 
+def _get_filtered_products_for_product_view(request):
+    """
+    """
+    products = Product.objects.all()
+    product_ordering = request.session.get("product-ordering", "id")
+    product_ordering_order = request.session.get("product-ordering-order", "")
+
+    # Filter
+    product_filters = request.session.get("product_filters", {})
+    name = product_filters.get("product_name", "")
+    if name != "":
+        products = products.filter(Q(name__icontains=name) | Q(sku__icontains=name))
+    
+    products = products.exclude(sub_type="2")    
+    products = products.order_by("%s%s" % (product_ordering_order, product_ordering))
+    return products
+    
 def _get_filtered_products(request):
     """
     """
@@ -564,7 +616,9 @@ def _get_filtered_products(request):
         products = products.filter(price__range = (s, e))
     category = product_filters.get("category", "")
     if category == "None":
-        products = products.filter(categories__in = []).distinct()
+        products = products.filter(categories = None).distinct()
+    elif category == "All":
+        products = products.filter().distinct()
     elif category != "":
         category = lfs_get_object_or_404(Category, pk=category)
         categories = [category]

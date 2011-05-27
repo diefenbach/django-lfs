@@ -51,21 +51,26 @@ class Action(models.Model):
 
     group
         The belonging group.
+
     title
         The title of the menu tab.
+
     link
         The link to the object.
+
     active
         If true the tab is displayed.
+
     position
         the position of the tab within the menu.
+
     parent
         Parent tab to create a tree.
     """
-    group = models.ForeignKey(ActionGroup, verbose_name=_(u"Group"), related_name="actions")
+    active = models.BooleanField(_(u"Active"), default=False)
     title = models.CharField(_(u"Title"), max_length=40)
     link = models.CharField(_(u"Link"), blank=True, max_length=100)
-    active = models.BooleanField(_(u"Active"), default=False)
+    group = models.ForeignKey(ActionGroup, verbose_name=_(u"Group"), related_name="actions")
     position = models.IntegerField(_(u"Position"), default=999)
     parent = models.ForeignKey("self", verbose_name=_(u"Parent"), blank=True, null=True)
 

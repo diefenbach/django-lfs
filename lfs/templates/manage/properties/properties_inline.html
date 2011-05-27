@@ -18,10 +18,10 @@
                         <input type="checkbox" 
                                class="select-1"
                                name="property-id"
-                               value="{{property.id}}" />
+                               value="{{ property.id }}" />
                     </td>
                     <td>
-                        {{property.name}}
+                        {{ property.name }}
                     </td>
                 </tr>
             {% endfor %}
@@ -35,9 +35,12 @@
         {% endif %}
     </table>
     {% if properties %}
-        <input type="submit"
-               id="add-property-button"
-               value="{% trans 'Assign properties' %}" />
+        <div class="buttons">
+            <input type="submit"
+                   id="add-property-button"
+                   class="button"
+                   value="{% trans 'Assign properties' %}" />
+        </div>
     {% endif %}
 </form>
 
@@ -65,17 +68,17 @@
                         <input type="checkbox" 
                                class="select-2"
                                name="property-id" 
-                               value="{{gp.property.id}}" />
+                               value="{{ gp.property.id }}" />
                     </td>
                     <td>
                         <input class="number"
                                type="text"
                                size="3"
-                               name="position-{{gp.property.id}}"
-                               value="{{gp.position}}" />
+                               name="position-{{ gp.property.id }}"
+                               value="{{ gp.position }}" />
                     </td>
                     <td>
-                        {{gp.property.name}}
+                        {{ gp.property.name }}
                     </td>
                 </tr>
             {% endfor %}
@@ -89,14 +92,18 @@
     </table>
 
     {% if gps %}
-        <input type="submit"
-               class="property-group-update-button"
-               name="remove"
-               value="{% trans 'Remove properties' %}" />
-        <input type="submit"
-               class="property-group-update-button"
-               name="update"
-               value="{% trans 'Update properties' %}" />
-    {% endif %}
-    
+        <div class="buttons">
+            <input type="submit"
+                   class="property-group-update-button button"
+                   name="remove"
+                   value="{% trans 'Remove properties' %}" />
+            <input type="submit"
+                   class="property-group-update-button button"
+                   name="update"
+                   value="{% trans 'Update properties' %}" />
+            </div>
+    {% endif %}    
 </form>                        
+<script>
+    $(".button").button();
+</script>

@@ -1,9 +1,10 @@
 {% load i18n %}
 
-{% if parent_for_portlets %}
+{% if parent_for_portlets %}    
     <form class="portlets-form"
           action="{% url lfs_update_portlets object_type_id, object.id %}"
-          method="post">
+          method="post"
+          style="padding-bottom:25px">
         <h2>{% trans 'Blocked parent slots' %}</h2>
         {% for slot in slots.items %}
             <div>
@@ -15,7 +16,7 @@
             </div>
         {% endfor %}
     
-        <div class="middle">
+        <div class="buttons">
             <input type="submit"
                    class="button ajax-save-button"
                    value="{% trans 'Save blocked parent slots' %}" />
@@ -23,7 +24,7 @@
     </form>
 {% endif %}
         
-<h2 class="heading-middle">{% trans 'Slots' %}</h2>
+<h2>{% trans 'Slots' %}</h2>
 {% for slot in slots.items %}
     <h3 {% if forloop.first %}class="first-heading"{% endif %}>
         {% trans 'Slot' %}: {{ slot.name }}
@@ -51,12 +52,12 @@
                     <td>
                         {{ portlet.title }}
                     </td>
-                    <td class="right">
-                        <a class="delete delete-link"
+                    <td class="right-padding management">
+                        <a class="delete-link"
                            dialog_message='{% trans "Do you really want to delete this portlet?" %}'
                            href="{% url lfs_delete_portlet portlet.pa_id %}">{% trans 'Delete' %}
-                        </a>
-                        <a class="edit portlet-edit-button"
+                        </a> |
+                        <a class="portlet-edit-button"
                            href="{% url lfs_edit_portlet portlet.pa_id %}">{% trans 'Edit' %}
                         </a>
                     </td>

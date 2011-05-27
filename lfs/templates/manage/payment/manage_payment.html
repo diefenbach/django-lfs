@@ -1,44 +1,23 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block title %}{% trans "Manage Payment Methods" %}{% endblock %}
+{% block section %}manage-payment-methods{% endblock %}
 {% block left_slot %}
     <div id="payment-methods">
-        {{payment_methods}}
-    </div>
-    
+        {{ payment_methods }}
+    </div>    
 {% endblock %}
 
-{% block javascript %}
-    <script type="text/javascript">
-        $(function() {
-            $(".criteria").sortable({
-                placeholder: "droppable-hover",
-                items : "div",
-                opacity: .9,
-                axis: "y",
-                placeholder: "droppable-hover",
-                update:function() {
-                    update_positions();
-                }
-            });    
-        });
-    </script>        
-{% endblock %}
-
-{% block content %}
-    
+{% block content %}    
     <div class="site-actions">
-        <span class="label">
-            {{payment_method.name}}
-        </span>
-
         <a class="add"
            href="{% url lfs_add_payment_method %}">
-            {% trans 'Add payment method' %}</a>
+            {% trans 'Add Payment Method' %}</a>
         
         {% if payment_method.deletable %}
-            <a class="delete confirmation-link"
-               data="{% trans 'Delete?' %}"
+            <a class="delete delete-link"
+               dialog_message="{% trans 'Do you really want to delete this payment method?' %}"
                href="{% url lfs_delete_payment_method payment_method.id %}">
                 {% trans 'Delete payment method' %}</a>            
         {% endif %}    
@@ -46,23 +25,21 @@
             
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Payment Method' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#criteria">{% trans 'Criteria' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#prices">{% trans 'Prices' %}</a></li>            
         </ul>
 
         <div id="data">
-            {{data}}
+            {{ data }}
         </div>
 
         <div id="criteria">
-            {{method_criteria}}
+            {{ method_criteria }}
         </div>
 
         <div id="prices">
-            {{method_prices}}
-        </div>
-        
+            {{ method_prices }}
+        </div>        
     </div>
-
 {% endblock %}

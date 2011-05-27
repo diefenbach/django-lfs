@@ -16,8 +16,7 @@ from lfs.catalog.models import Product
 from lfs.marketing.models import OrderRatingMail
 
 @permission_required("core.manage_shop", login_url="/login/")
-def manage_rating_mails(request, orders_sent=[],
-    template_name="manage/marketing/rating_mails.html"):
+def manage_rating_mails(request, orders_sent=[], template_name="manage/marketing/rating_mails.html"):
     """Displays the manage view for rating mails
     """
     return render_to_response(template_name, RequestContext(request, {}))

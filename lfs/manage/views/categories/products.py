@@ -80,6 +80,8 @@ def products_inline(request, category_id, as_string=False,
     if category_filter:
         if category_filter == "None":
             filters &= Q(categories=None)
+        elif category_filter == "All":
+            pass
         else:
             category_temp = lfs_get_object_or_404(Category, pk=category_filter)
             categories_temp = [category_temp]

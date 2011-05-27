@@ -22,10 +22,13 @@
         {% endfor %}
     </table>
 
-    <div class="manage-form-buttons">
-        <input class="criterion-save-button" 
+    <div class="buttons">
+        <input class="criterion-save-button button" 
                type="submit" 
                value="{% trans 'Save criteria' %}" />
     </div>
 
 </form>
+<script>
+    $(".button").button();
+</script>

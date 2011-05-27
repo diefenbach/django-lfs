@@ -9,7 +9,7 @@
         <a class="criterion-add-first-button"
            href="{% url lfs_add_criterion %}">
             <img class="icon-padding" 
-                 src="{{MEDIA_URL}}/lfs/icons/add.png"
+                 src="{{ MEDIA_URL }}/lfs/icons/add.png"
                  alt="{% trans 'Add' %}" />
             
             {% trans 'Add criterion' %}
@@ -18,14 +18,17 @@
 
     <table class="criteria">
         {% for criterion in criteria %}
-            {{criterion|safe}}
+            {{ criterion|safe }}
         {% endfor %}
     </table>  
 
     <div class="manage-form-buttons">
-        <input class="criterion-save-button" 
+        <input class="criterion-save-button button" 
                type="submit" 
                value="{% trans 'Save criteria' %}" />
     </div>
 
 </form>
+<script>
+    $(".button").button();
+</script>

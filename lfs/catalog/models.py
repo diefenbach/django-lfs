@@ -511,9 +511,9 @@ class Product(models.Model):
            The unique id of the product
     """
     # All products
-    name = models.CharField(_(u"Name"), max_length=80, blank=True)
-    slug = models.SlugField(_(u"Slug"), unique=True, max_length=80)
-    sku = models.CharField(_(u"SKU"), blank=True, max_length=30)
+    name = models.CharField(_(u"Name"), help_text=_(u"The name of the product."), max_length=80, blank=True)
+    slug = models.SlugField(_(u"Slug"), help_text=_(u"The unique last part of the Product's URL."), unique=True, max_length=80)
+    sku = models.CharField(_(u"SKU"), help_text=_(u"Your unique article number of the product."), blank=True, max_length=30)
     price = models.FloatField(_(u"Price"), default=0.0)
     effective_price = models.FloatField(_(u"Price"), blank=True)
     price_unit = models.CharField(blank=True, max_length=20)
@@ -746,7 +746,7 @@ class Product(models.Model):
         """Returns the first image (the main image) of the product.
         """
         try:
-            return self.get_images()[0].image
+            return self.get_images()[0]
         except IndexError:
             return None
 

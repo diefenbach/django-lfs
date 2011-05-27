@@ -1,30 +1,34 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block title %}{% trans "Manage Category" %}{% endblock %}
+{% block section %}manage-category{% endblock %}
 {% block left_slot %}
-    <div id="portlet">
-        {{ categories_portlet|safe }}
-    </div>
+    {{ categories_portlet|safe }}
 {% endblock %}
 
 {% block content %}
     <div class="site-actions">
         <a class="add"
            href="{% url lfs_manage_add_top_category %}">
-            {% trans 'Add top category' %}
+            {% trans 'Add Top Category' %}
         </a>
         {% if category %}
             <a class="add"
                href="{% url lfs_manage_add_category category.id %}">
-                {% trans 'Add category' %}
+                {% trans 'Add Category' %}
             </a>
             <a class="delete delete-link"
-                 dialog_message="{% trans 'Do you really want to delete this category?' %}"
+                 dialog_message="{{ dialog_message }}"
                  href="{% url lfs_delete_category category.id %}">
-                 {% trans 'Delete category' %}</a>
+                 {% trans 'Delete Category' %}</a>
+            <a class="preview popup-link"
+               href="{% url lfs.catalog.views.category_view category.slug %}">
+                {% trans 'View Category' %}
+            </a>
             <a class="preview"
                href="{% url lfs.catalog.views.category_view category.slug %}">
-                {% trans 'Preview' %}
+                {% trans 'Goto Category' %}
             </a>
         {% endif %}
     </div>
@@ -37,7 +41,6 @@
             <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
         </ul>
-
         <div id="data">
             {{ data|safe }}
         </div>

@@ -1,30 +1,11 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
-{% block javascript %}
-    <script>
-        $(function() {
-            $("#id_name").livequery("keyup", function() {
-                var slug = $("#id_name").val()
-                slug = URLify(slug, 200)
-                $("#id_slug").val(slug);
-            });
-        });
-    </script>
-{% endblock %}
-
-{% block left_slot %}
-    <div class="navigation-left-title">
-        {% trans "Manufacturer" %}
-    </div>
-    <div id="selectable-factories-inline">
-        {{ selectable_manufacturers_inline|safe }}
-    </div>  
-{% endblock %}
+{% block section %}add-manufacturer{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
     <div id="manage-tabs">
-
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Manufacturer' %}</a></li>
         </ul>
@@ -36,13 +17,30 @@
                 <table>
                     {% include "manage/lfs_form.html" %}
                 </table>
-                <input type="submit" name="save" value="{% trans 'Save' %}" />
+
+                <input type="submit" 
+                       class="button"
+                       name="save" 
+                       value="{% trans 'Save' %}" />
 
                 <input type="button"
-                       onclick="window.location='{% url lfs_manufacturer_dispatcher %}'"
+                       class="button"
+                       onclick="window.location='{{ next }}'"
                        value="{% trans 'Cancel' %}" />
 
+                <input type="hidden"
+                       name="next"
+                       value="{{ next }}" />
             </form>
         </div>
     </div>
+    <script>
+        $(function() {
+            $("#id_name").live("keyup", function() {
+                var slug = $("#id_name").val()
+                slug = URLify(slug, 200)
+                $("#id_slug").val(slug);
+            });
+        });
+    </script>    
 {% endblock %}

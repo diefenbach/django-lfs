@@ -4,12 +4,6 @@
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
-
-    <div class="site-actions">
-        <span class="label">{% trans 'Shop Preferences' %}</span>
-    </div>
-
-
     <div id="manage-tabs">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Shop' %}</a></li>
@@ -18,13 +12,17 @@
         </ul>
 
         <div id="data">
-            <h2>{% trans 'Shop' %}</h2>
+            <h2>{% trans 'Data' %}</h2>
             <form action="{% url lfs_manage_shop %}"
                   method="post"
                   enctype="multipart/form-data">
                 {% include "manage/lfs_form.html" %}
-                <input type="submit"
-                       value="{% trans 'Save shop' %}">
+                
+                <div class="buttons">
+                    <input type="submit"
+                           class="button"
+                           value="{% trans 'Save shop' %}" />
+                </div>
             </form>
         </div>
         <div id="default-values">
@@ -36,7 +34,7 @@
     </div>
     <script>
         $(function() {
-            tinyMCE.execCommand('mceAddControl', true, 'id_description');
+            addEditor('#id_description');
         });
     </script>
 

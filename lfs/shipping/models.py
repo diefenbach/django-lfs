@@ -50,12 +50,12 @@ class ShippingMethod(models.Model):
     - delivery_time
        Reference to a delivery_time   
     """
+    active = models.BooleanField(_(u"Active"), default=False)
+    priority = models.IntegerField(_(u"Priority"), default=0)
     name = models.CharField(_(u"Name"), max_length=50)
     description = models.TextField(_(u"Description"), blank=True)
     note = models.TextField(_(u"Note"), blank=True)
-    priority = models.IntegerField(_(u"Priority"), default=0)
     image = models.ImageField(_(u"Image"), upload_to="images", blank=True, null=True)
-    active = models.BooleanField(_(u"Active"), default=False)
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
     price = models.FloatField(_(u"Price"), default=0.0)
     delivery_time = models.ForeignKey(DeliveryTime, verbose_name=_(u"Delivery time"), blank=True, null=True)

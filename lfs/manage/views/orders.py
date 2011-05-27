@@ -198,13 +198,27 @@ def reset_order_filters(request):
 def order_view(request, order_id, template_name="manage/order/order.html"):
     """Displays order with provided order id.
     """
+    order_filters = request.session.get("order-filters", {})
+    order = lfs_get_object_or_404(Order, pk=order_id)
+
+    states = []
+    state_id = order_filters.get("state")
+    for state in lfs.order.settings.ORDER_STATES:
+        states.append({
+            "id"   : state[0],
+            "name" : state[1],
+            "selected_filter" : state_id == str(state[0]),
+            "selected_order" : order.state == state[0],
+        })
+
     return render_to_response(template_name, RequestContext(request, {
         "order_inline" : order_inline(request, order_id, as_string=True),
         "selectable_orders" : selectable_orders_inline(request, as_string=True),
+        "states" : states,
     }));
 
 def order_inline(request, order_id, as_string=False, template_name="manage/order/order_inline.html"):
-    """
+    """Displays the details of an order.
     """
     order_filters = request.session.get("order-filters", {})
     order = lfs_get_object_or_404(Order, pk=order_id)

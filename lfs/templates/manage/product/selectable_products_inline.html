@@ -1,6 +1,5 @@
 {% load i18n %}
 
-<br clear="both" />
 {% for product in page.object_list %}
     <div>
         <a class="selectable {% if product.is_variant %}variant{% endif %} {% ifequal product_id product.id %}selected{% endifequal %}"
