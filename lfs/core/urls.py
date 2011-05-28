@@ -5,7 +5,6 @@ from django.views.generic.simple import direct_to_template
 # lfs imports
 from lfs.core.sitemap import ProductSitemap
 from lfs.core.sitemap import CategorySitemap
-from lfs.contact_form.forms import ContactForm
 
 # Robots
 urlpatterns = patterns('django.views.generic.simple',
