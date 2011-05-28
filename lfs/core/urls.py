@@ -103,5 +103,5 @@ urlpatterns += patterns('',
 )
 
 urlpatterns += patterns('',
-    (r'^contact/', include('lfs_contact.urls')),
+    (r'', include('lfs_contact.urls')),
 )
