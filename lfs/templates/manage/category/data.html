@@ -7,7 +7,128 @@
       class="category-data-form"
       enctype="multipart/form-data">
 
-    {% include "manage/lfs_form.html" %}
+    <fieldset>
+        <legend>{% trans "General" %}</legend>
+        <div class="field">
+            <div class="label">
+                {{ form.exclude_from_navigation.label_tag }}:
+            </div>
+            <div>
+                {{ form.exclude_from_navigation }}
+            </div>
+        </div>
+        <div class="field">
+            <div class="label">
+                {{ form.name.label_tag }}:
+            </div>
+            {% if field.errors %}
+                <div class="error">
+                    {{ form.name }}
+                    {{ form.name.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.name }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="field">
+            <div class="label">
+                {{ form.slug.label_tag }}:
+            </div>
+            {% if field.errors %}
+                <div class="error">
+                    {{ form.slug }}
+                    {{ form.slug.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.slug }}
+                </div>
+            {% endif %}
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>{% trans "Position" %}</legend>
+        <div class="field">
+            <div class="label">
+                {{ form.parent.label_tag }}:
+            </div>
+            {% if field.errors %}
+                <div class="error">
+                    {{ form.parent }}
+                    {{ form.parent.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.parent }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="field">
+            <div class="label">
+                {{ form.position.label_tag }}:
+            </div>
+            {% if field.errors %}
+                <div class="error">
+                    {{ form.position }}
+                    {{ form.position.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.position }}
+                </div>
+            {% endif %}
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>{% trans "Content" %}</legend>
+            <div class="field">
+                <div class="label">
+                    {{ form.description.label_tag }}:
+                </div>
+                {% if field.errors %}
+                    <div class="error">
+                        {{ form.description }}
+                        {{ form.description.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.description }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="field">
+                <div class="label">
+                    {{ form.image.label_tag }}:
+                </div>
+                {% if field.errors %}
+                    <div class="error">
+                        {{ form.image }}
+                        {{ form.image.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.image }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="field">
+                <div class="label">
+                    {{ form.static_block.label_tag }}:
+                </div>
+                {% if field.errors %}
+                    <div class="error">
+                        {{ form.static_block }}
+                        {{ form.static_block.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.static_block }}
+                    </div>
+                {% endif %}
+            </div>
+    </fieldset>
 
     <div class="buttons">
         <input value="{% trans 'Save data' %}"
@@ -22,4 +143,3 @@
         addEditor('#id_short_description');
     });
 </script>
-
