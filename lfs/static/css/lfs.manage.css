@@ -94,11 +94,14 @@ table.lfs-manage-table {
 table.lfs-manage-table th {
     min-height: 20px;
     height: 20px;
-    background-color: #ede9e8;
+    border: 1px solid #aaa;
+    background-color: #ddd;
+    padding: 0 5px;
 }
 
 table.lfs-manage-table td {
     vertical-align: middle;
+    padding-left: 6px;    
 }
 
 table.lfs-manage-table.images td {
@@ -221,7 +224,7 @@ tr.odd {
 
 .navigation-pages {
     padding: 0 0px 3px 0px;
-    background-color: #ede9e8;
+    background-color: #ddd;
     border: 1px solid #aaa;
     text-align:center;
     width: 170px;
@@ -244,7 +247,7 @@ tr.odd {
     position: relative;
     top: 10px;
     width: 170px;
-    background-color: #ede9e8;
+    background-color: #ddd;
     border: 1px solid #aaa;
     text-align:center;    
 }
