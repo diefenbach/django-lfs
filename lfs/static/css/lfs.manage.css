@@ -702,8 +702,6 @@ ul.manufacturer-tree ul {
     min-width: 100px;
 }
 
-#active-images-update-form,
-#accessories-update-form,
-#related-products-update-form {
+#active-images-update-form {
     margin-bottom: 15px;
 }
