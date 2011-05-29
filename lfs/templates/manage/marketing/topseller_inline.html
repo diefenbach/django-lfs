@@ -66,11 +66,11 @@
                                     {{ product.sku }}
                                 </td>
                                 <td class="right-padding">
-                					{% if product.is_active %}
-                						<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
-                					{% else %}
-                						<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
-                					{% endif %}
+                                    {% if product.is_active %}
+                                        <img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+                                    {% else %}
+                                        <img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
@@ -136,11 +136,11 @@
                                                value="{{ ts.position }}" />
                                     </td>
                                     <td class="right-padding">
-                						{% if ts.product.is_active %}
-                							<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
-                						{% else %}
-                							<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
-                						{% endif %}
+                                        {% if ts.product.is_active %}
+                                            <img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+                                        {% else %}
+                                            <img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -164,6 +164,6 @@
     </tr>
 </table>
 <script>
-    align_topsellers_buttons();
+    align_buttons("#topseller");
     $(".button").button();
 </script>

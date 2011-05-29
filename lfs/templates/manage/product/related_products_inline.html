@@ -8,8 +8,8 @@
             <a class="related-products-page-link"
                href="{% url lfs.manage.views.manage_related_products_inline product.id%}?page={{ page.previous_page_number }}"><img src="{{ MEDIA_URL }}lfs/icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
         {% else %}
-            <span><img src="{{ MEDIA_URL }}lfs/icons/resultset_first.png" alt='{% trans "First" %}' /></span>
-            <span><img src="{{ MEDIA_URL }}lfs/icons/resultset_previous.png" alt='{% trans "Previous" %}' /></span>
+            <img src="{{ MEDIA_URL }}lfs/icons/resultset_first.png" alt='{% trans "First" %}' />
+            <img src="{{ MEDIA_URL }}lfs/icons/resultset_previous.png" alt='{% trans "Previous" %}' /></span>
         {% endif %}
 
         <span style="position: relative; top:-4px ">
@@ -156,6 +156,6 @@
 </div>
 
 <script>
-    align_related_products_buttons();
+    align_buttons("#related-products");
     $("input.button").button();
 </script>

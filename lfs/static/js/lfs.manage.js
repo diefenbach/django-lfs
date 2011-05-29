@@ -23,30 +23,6 @@ function show_ajax_loading() {
     $(".ajax-loading").show();
 };
 
-function align_related_products_buttons() {
-    var hl  = $("#related-products-left").height();
-    var hr = $("#related-products-right").height();
-    var h = Math.max(hl, hr)
-    $("#related-products-left").height(h);
-    $("#related-products-right").height(h);
-}
-
-function align_accessories_buttons() {
-    var hl  = $("#accessories-left").height();
-    var hr = $("#accessories-right").height();
-    var h = Math.max(hl, hr)
-    $("#accessories-left").height(h);
-    $("#accessories-right").height(h);
-}
-
-function align_topsellers_buttons() {
-    var hl  = $("#topseller-left").height();
-    var hr = $("#topseller-right").height();
-    var h = Math.max(hl, hr)
-    $("#topseller-left").height(h);
-    $("#topseller-right").height(h);
-}
-
 function align_buttons(id) {
     var hl  = $(id + "-left").height();
     var hr = $(id  + "-right").height();
@@ -601,7 +577,6 @@ $(function() {
                 var data = $.parseJSON(data);
                 $("#accessories-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
-                align_accessories_buttons();
                 hide_ajax_loading();
             }
         });
@@ -617,7 +592,6 @@ $(function() {
                 var data = $.parseJSON(data);
                 $("#accessories-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
-                align_accessories_buttons();
                 hide_ajax_loading();
             }
         });
@@ -628,7 +602,6 @@ $(function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#accessories-inline").html(data)
-            align_accessories_buttons();
         });
         return false;
     });
@@ -638,7 +611,6 @@ $(function() {
             "type": "post",
             "success": function(data) {
                 $("#accessories-inline").html(data);
-                align_accessories_buttons();
             }
         });
     });
@@ -648,7 +620,6 @@ $(function() {
             "target": "#accessories-inline",
             "success": function(data) {
                 $("#accessories-inline").html(data);
-                align_accessories_buttons();
             }
         });
     });
@@ -657,7 +628,6 @@ $(function() {
         $("#filter-accessories-form").ajaxSubmit({
             "target": "#accessories-inline",
             "success": function(data) {
-                align_accessories_buttons();
             }
         });
     });
@@ -669,7 +639,6 @@ $(function() {
                 var data = $.parseJSON(data)
                 $("#related-products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
-                align_related_products_buttons()
             }
         });
         return false;
@@ -681,7 +650,6 @@ $(function() {
                 var data = $.parseJSON(data);
                 $("#related-products-inline").html(data["html"]);
                 $.jGrowl(data["message"]);
-                align_related_products_buttons()
             }
         });
         return false;
@@ -723,10 +691,7 @@ $(function() {
 
     $("#related-products-amount").live("change", function() {
         $("#filter-related-products-form").ajaxSubmit({
-            "target": "#related-products-inline",
-            "success": function(data) {
-                align_related_products_buttons();
-            }
+            "target": "#related-products-inline"
         });
     });
 
@@ -1037,10 +1002,7 @@ $(function() {
 
     $("#topseller-amount").live("change", function() {
         $("#filter-topseller-form").ajaxSubmit({
-            "target": "#topseller-inline",
-            "success": function(data) {
-                align_accessories_buttons();
-            }
+            "target": "#topseller-inline"
         });
     });
 
@@ -1094,10 +1056,7 @@ $(function() {
 
     $("#featured-amount").live("change", function() {
         $("#filter-featured-form").ajaxSubmit({
-            "target": "#featured-inline",
-            "success": function(data) {
-                align_buttons("#featured");
-            }
+            "target": "#featured-inline"
         });
     });
 
