@@ -116,6 +116,9 @@ def edit_category_data(request, category_id, template_name="manage/category/data
         child.level = len(child.get_parents()) + 1
         child.save()
 
+    # Update positions
+    manage_utils.update_category_positions(category.parent)
+
     url = reverse("lfs_manage_category", kwargs={"category_id" : category_id})
     return HttpResponseRedirect(url)
 
@@ -176,42 +179,13 @@ def delete_category(request, id):
     """Deletes category with given id.
     """
     category = lfs_get_object_or_404(Category, pk=id)
+    parent = category.parent
     category.delete()
+
+    manage_utils.update_category_positions(parent)
 
     url = reverse("lfs_manage_categories")
     return HttpResponseRedirect(url)
-
-@permission_required("core.manage_shop", login_url="/login/")
-def update_category(request, category_id):
-    """Updates category with given id. This is called after a position change
-    has been taken place.
-    """
-    try:
-        if category_id == "":
-            parent_category = None
-        else:
-            parent_category = Category.objects.get(pk=category_id)
-    except ObjectDoesNotExist:
-        pass
-    else:
-        sorted_category_ids = request.POST.getlist("categories")
-        for i, category_id in enumerate(sorted_category_ids):
-            if category_id == "":
-                continue
-            try:
-                id = category_id.split("_")[1]
-                category = Category.objects.get(pk=id)
-            except ValueError, ObjectDoesNotExist:
-                continue
-            else:
-                category.parent = parent_category
-                category.position = i
-                category.save()
-
-        if parent_category is not None:
-            manage_utils.update_category_positions(parent_category)
-
-    return HttpResponse("")
 
 # Privates
 def _category_choices(context):
@@ -233,4 +207,3 @@ def _category_choices_children(categories, category, context, level=1):
         if context != category:
             categories.append((category.id, "%s %s" % ("-" * level * 5, category.name)))
             _category_choices_children(categories, category, context, level+1)
-

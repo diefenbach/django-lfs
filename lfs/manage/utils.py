@@ -19,9 +19,9 @@ def cartesian_product(*seqin):
                     yield item
         else:
             yield comb
-    
+
     return rloop(seqin, [])
-    
+
 if __name__ == "__main__":
     for x in cartesian_product([u'5|11', u'7|15', u'6|12']):
         print x
@@ -29,8 +29,6 @@ if __name__ == "__main__":
 def update_category_positions(category):
     """Updates the position of the children of the passed category.
     """
-    i = 1
-    for child in Category.objects.filter(parent=category):
-        child.position = i
-        child.save()        
-        i+= 2
+    for i, child in enumerate(Category.objects.filter(parent=category)):
+        child.position = (i+1) * 10
+        child.save()
