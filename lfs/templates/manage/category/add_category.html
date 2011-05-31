@@ -13,6 +13,7 @@
             <h2>{% trans "Add category" %}</h2>
             <form action="{% url lfs_manage_add_category category.id %}"
                   method="post">
+                {% csrf_token %}  
                 <table>
                     {% include "manage/lfs_form.html" %}
                 </table>

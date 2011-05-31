@@ -20,7 +20,7 @@
                 <form id="product-data-form"
                       action="{% url lfs.manage.views.add_product %}"
                       method="post">
-
+                    {% csrf_token %}  
                     {% include "manage/lfs_form.html" %}
 
                     <div class="buttons">

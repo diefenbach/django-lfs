@@ -16,7 +16,7 @@
             <form action="{% url lfs_manage_shop %}"
                   method="post"
                   enctype="multipart/form-data">
-
+                {% csrf_token %}  
                 <fieldset>
                     <legend>{% trans "General" %}</legend>
                     <div class="field">

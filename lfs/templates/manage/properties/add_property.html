@@ -12,6 +12,7 @@
             <h2>{% trans 'Add property' %}</h2>
             <form action="{% url lfs_add_shop_property %}"
                   method="post">
+                {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
                 <input type="submit"
                        class="button"

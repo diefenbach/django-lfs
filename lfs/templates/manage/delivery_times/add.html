@@ -14,9 +14,9 @@
             <h2>{% trans 'Add delivery time' %}</h2>
             <form action="{% url lfs_add_delivery_time %}"
                   method="post">
-
+                {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
-                
+
                 <div class="buttons">
                     <input type="submit"
                            class="button"
@@ -29,7 +29,7 @@
                            name="next"
                            value="{{ next }}" />
                 </div>
-                       
+
             </form>
         </div>
     </div>

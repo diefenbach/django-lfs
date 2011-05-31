@@ -14,7 +14,7 @@
             <h2>{% trans 'Data' %}</h2>
             <form action="{% url lfs_add_action %}"
                   method="post">
-
+                {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
                 
                 <div class="buttons">

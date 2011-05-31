@@ -38,9 +38,8 @@
         <div id="data">
             <h2>{% trans 'Data' %}</h2>
             <form action="{% url lfs_manage_delivery_time delivery_time.id %}"
-                  method="post"
-                  enctype="multipart/form-data">
-
+                  method="post">
+                {% csrf_token %}  
                 {% include "manage/lfs_form.html" %}
                 
                 <div class="buttons">

@@ -13,6 +13,9 @@
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery/jquery.jgrowl.css" />
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery/superfish/superfish.css" />
 
+        <script type="text/javascript">
+            window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
+        </script>
 
         <script type="text/javascript" src="/admin/jsi18n/"></script>
         <script type="text/javascript" src="{% admin_media_prefix %}js/core.js"></script>

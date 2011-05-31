@@ -37,7 +37,8 @@
             <h2>{% trans 'Data' %}</h2>
             <form action="{% url lfs_manage_tax tax.id %}"
                   method="post">
-
+                
+                {% csrf_token %}    
                 {% include "manage/lfs_form.html" %}
 
                 <div class="buttons">                

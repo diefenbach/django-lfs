@@ -3,9 +3,8 @@
 
 <form method="post"
       class="ajax-form"
-      action="{% url lfs_manage_save_discount_data discount.id %}"
-      enctype="multipart/form-data">
-
+      action="{% url lfs_manage_save_discount_data discount.id %}">
+    {% csrf_token %}  
     {% include "manage/lfs_form.html" %}
     
     <div class="buttons">

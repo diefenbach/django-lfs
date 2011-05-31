@@ -77,6 +77,7 @@
 
 <div id="content">
     <form id="file_upload" action="{% url lfs_manage_add_image product.id %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
         <input class="button" type="file" name="file" multiple>
     </form>
     <table id="files" data="{% url lfs_manage_images product.id %}" msg='{% trans "Uploading images:" %}'></table>

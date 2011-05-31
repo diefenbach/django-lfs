@@ -14,7 +14,7 @@
             <h2>{% trans 'Add discount' %}</h2>
             <form method="post"
                  enctype="multipart/form-data">
-                 
+                {% csrf_token %} 
                 {% include "manage/lfs_form.html" %}
 
                 <div class="buttons">

@@ -3,6 +3,7 @@
 
 <form action="{% url lfs_update_product_property_groups product.id %}"
       method="post">
+    {% csrf_token %}  
     <select name="selected-property-groups"
             multiple="multiple">
         {% for property_group in shop_property_groups %}
@@ -27,7 +28,6 @@
         <h2 class="heading-middle">{% trans 'Default Values' %}</h2>
 
         {% for property_group in configurables %}
-            <div>
             <fieldset>
                 <legend>
                     <a href="{% url lfs_manage_property_group property_group.id %}">

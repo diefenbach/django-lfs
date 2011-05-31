@@ -14,6 +14,7 @@
             <form action="{% url lfs_add_page %}"
                   method="post"
                   enctype="multipart/form-data">
+                {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
                 
                 <div class="buttons">

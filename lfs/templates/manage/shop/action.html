@@ -45,6 +45,7 @@
             <form action="{% url lfs_manage_action action.id %}"
                   method="post"
                   enctype="multipart/form-data">
+                {% csrf_token %}  
                 {% include "manage/lfs_form.html" %}
                 <input type="submit"
                        value="{% trans 'Save action' %}">

@@ -14,10 +14,8 @@
             <form class="lfc-form"
                   method="post"
                   action="{% url lfs_manufacturer_add_manufacturer %}">
-                <table>
-                    {% include "manage/lfs_form.html" %}
-                </table>
-
+                {% csrf_token %}  
+                {% include "manage/lfs_form.html" %}
                 <input type="submit" 
                        class="button"
                        name="save" 

@@ -16,6 +16,7 @@
             <h2>{% trans 'Add property Group' %}</h2>
             <form action="{% url lfs_add_property_group %}"
                   method="post">
+                {% csrf_token %}  
                 {% include "manage/lfs_form.html" %}
 
                 <input type="submit"

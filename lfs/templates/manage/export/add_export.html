@@ -15,6 +15,7 @@
             <form class="lfc-form"
                   method="post"
                   action="{% url lfs_export_add_export %}">
+                {% csrf_token %}
                 <table>
                     {% include "manage/lfs_form.html" %}
                 </table>

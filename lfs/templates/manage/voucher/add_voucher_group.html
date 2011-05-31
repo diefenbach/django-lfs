@@ -14,8 +14,8 @@
             <h2>{% trans 'Add voucher group' %}</h2>
 
             <form action="{% url lfs_manage_add_voucher_group %}"
-                  method="post"
-                  enctype="multipart/form-data">
+                  method="post">
+                {% csrf_token %}  
                 {% include "manage/lfs_form.html" %}
 
                 <input type="submit"

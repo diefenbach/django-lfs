@@ -22,7 +22,7 @@
                 <select class="category-products-amount"
                         name="category-products-amount">
                     {% for option in amount_options %}
-                        <option {% if option.selected %}selected="selected"{% endif %} 
+                        <option {% if option.selected %}selected="selected"{% endif %}
                                 value="{{ option.value }}">{{ option.value }}</option>
                     {% endfor %}
                 </select>

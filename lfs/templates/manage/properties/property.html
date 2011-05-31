@@ -36,7 +36,7 @@
 
             <form action="{% url lfs_manage_shop_property property.id %}"
                   method="post">
-
+                {% csrf_token %}  
                 {% include "manage/lfs_form.html" %}
                 
                 <div class="buttons">

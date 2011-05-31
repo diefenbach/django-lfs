@@ -6,9 +6,10 @@
       method="post"
       class="category-data-form"
       enctype="multipart/form-data">
+    {% csrf_token %}
 
     {% include "manage/lfs_form.html" %}
-    
+
     <div class="buttons">
         <input value="{% trans 'Save View' %}"
                type="submit"
@@ -17,7 +18,7 @@
 </form>
 <script>
     $(function() {
-        $(".button").button();        
+        $(".button").button();
         update_form();
 
         $("#id_active_formats").click(function() {
