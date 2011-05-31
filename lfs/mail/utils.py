@@ -6,12 +6,11 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-# lfs imports
-import lfs.core.utils
 
 def send_order_sent_mail(order):
     """Sends an order has been sent mail to the shop customer
     """
+    import lfs.core.utils
     shop = lfs.core.utils.get_default_shop()
 
     subject = _(u"Your order has been received")
@@ -37,6 +36,7 @@ def send_order_received_mail(order):
 
     Customer information is taken from the provided order.
     """
+    import lfs.core.utils
     shop = lfs.core.utils.get_default_shop()
 
     subject = _(u"Your order has been received")
@@ -60,6 +60,7 @@ def send_order_received_mail(order):
 def send_customer_added(user):
     """Sends a mail to a newly registered user.
     """
+    import lfs.core.utils
     shop = lfs.core.utils.get_default_shop()
     subject = _(u"Welcome to %s" % shop.name)
 
@@ -89,6 +90,7 @@ def send_customer_added(user):
 def send_review_added(review):
     """Sends a mail to shop admins that a new review has been added
     """
+    import lfs.core.utils
     shop = lfs.core.utils.get_default_shop()
 
     subject = _(u"New review has been added")
