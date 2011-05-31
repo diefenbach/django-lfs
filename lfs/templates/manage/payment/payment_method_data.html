@@ -9,12 +9,12 @@
 
     {% csrf_token %}
     {% include "manage/lfs_form.html" %}
-    
+
     <div class="manage-form-buttons">
-        <input class="ajax-form-button button" 
-               type="submit" 
+        <input class="ajax-form-button button"
+               type="submit"
                value="{% trans 'Save Payment Method' %}" />
-    </div>           
+    </div>
 </form>
 <script type="text/javascript">
     $(function() {
