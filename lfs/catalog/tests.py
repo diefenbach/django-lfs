@@ -1393,7 +1393,7 @@ class ProductTestCase(TestCase):
         """
         """
         image = self.p1.get_image()
-        self.assertEqual(image.instance.title, "Image 1")
+        self.assertEqual(image.title, "Image 1")
 
         # We change the position of the image
         self.i1.position = 5
@@ -1404,11 +1404,11 @@ class ProductTestCase(TestCase):
 
         # We get another main images
         image = self.p1.get_image()
-        self.assertEqual(image.instance.title, "Image 2")
+        self.assertEqual(image.title, "Image 2")
 
         # By default variants inherit images of parent product
         image = self.v1.get_image()
-        self.assertEqual(image.instance.title, "Image 2")
+        self.assertEqual(image.title, "Image 2")
 
         # Switch to own images
         self.v1.active_images = True
@@ -1416,7 +1416,7 @@ class ProductTestCase(TestCase):
 
         # We get the image of the variant now
         image = self.v1.get_image()
-        self.assertEqual(image.instance.title, "Image 4")
+        self.assertEqual(image.title, "Image 4")
 
     def test_get_images(self):
         """

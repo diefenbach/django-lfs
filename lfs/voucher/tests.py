@@ -229,7 +229,7 @@ class VoucherTestCase(TestCase):
         self.assertEqual(self.v1.is_effective(self.cart)[0], False)
 
         # unlimited amount
-        self.limit = 0
+        self.v1.limit = 0
         self.assertEqual(self.v1.is_effective(self.cart)[0], True)
 
         # Not active
