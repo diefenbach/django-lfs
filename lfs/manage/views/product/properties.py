@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
+from django.views.decorators.http import require_POST
 
 # lfs imports
 from lfs.catalog.models import Product
@@ -23,7 +24,8 @@ from lfs.core.signals import product_removed_property_group
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_properties(request, product_id, template_name="manage/product/properties.html"):
-    """
+    """Displays the UI for manage the properties for the product with passed
+    product_id.
     """
     product = get_object_or_404(Product, pk=product_id)
 
@@ -54,8 +56,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                 # Mark selected options
                 options = []
                 for option in property.options.all():
-
-                    if str(option.id) == ppv_id:
+                    if str(option.id) == ppv_value:
                         selected = True
                     else:
                         selected = False
@@ -188,6 +189,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
         "shop_property_groups" : shop_property_groups,
     }))
 
+@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def update_property_groups(request, product_id):
     """Updates property groups for the product with passed id.
@@ -210,11 +212,13 @@ def update_property_groups(request, product_id):
     url = reverse("lfs_manage_product", kwargs={"product_id" : product_id})
     return HttpResponseRedirect(url)
 
+@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def update_properties(request, product_id):
     """Updates properties for product with passed id.
     """
     type = request.POST.get("type")
+    ProductPropertyValue.objects.filter(product = product_id, type=type).delete()
 
     # Update property values
     for key in request.POST.keys():
@@ -224,8 +228,6 @@ def update_properties(request, product_id):
         property_id = key.split("-")[1]
         property = get_object_or_404(Property, pk=property_id)
         product = get_object_or_404(Product, pk=product_id)
-
-        ProductPropertyValue.objects.filter(product = product_id, property = property_id, type=type).delete()
 
         for value in request.POST.getlist(key):
             if property.is_valid_value(value):
