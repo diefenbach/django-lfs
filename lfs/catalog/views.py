@@ -105,11 +105,11 @@ def calculate_price(request, id):
                 if po.property.add_price:
                     property_price += po.price
     
-    if product.is_for_sale():
+    if product.for_sale:
         for_sale_standard_price = product.get_standard_price(with_properties=False)
-        for_sale_standard_price += property_price
-    
+        for_sale_standard_price += property_price    
     else:    
+        for_sale_standard_price = 0
         price = product.get_price(with_properties=False)
         price += property_price
 
