@@ -69,6 +69,7 @@
                       action="{% url lfs_change_product_subtype product.id %}"
                       method="post">
 
+                    {% csrf_token %}
                     {{ form.sub_type }}
 
                     <input type="submit"

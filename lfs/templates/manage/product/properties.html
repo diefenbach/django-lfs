@@ -3,7 +3,7 @@
 
 <form action="{% url lfs_update_product_property_groups product.id %}"
       method="post">
-    {% csrf_token %}  
+    {% csrf_token %}
     <select name="selected-property-groups"
             multiple="multiple">
         {% for property_group in shop_property_groups %}
@@ -25,7 +25,8 @@
     <form action="{% url lfs_update_product_properties product.id %}"
           method="post">
 
-        <h2 class="heading-middle">{% trans 'Default Values' %}</h2>
+        {% csrf_token %}
+        <h2 class="heading-middle">{% trans 'Default values' %}</h2>
 
         {% for property_group in configurables %}
             <fieldset>
@@ -57,7 +58,7 @@
                                 <select name="property-{{ property.id }}">
                                     <option>-----</option>
                                     {% for option in property.options %}
-                                        <option value="{{ option.id }}"
+                                        <option value="{{ option.id }}"                                                
                                                 {% if option.selected %}selected="selected"{% endif %}>
                                             {{ option.name }}
                                         </option>
@@ -74,7 +75,7 @@
 
         <div class="buttons">
             <input type="submit"
-                   class="button"    
+                   class="button"
                    value="{% trans 'Update default values' %}" />
         </div>
     </form>
@@ -83,8 +84,8 @@
 {% if display_filterables %}
     <form action="{% url lfs_update_product_properties product.id %}"
           method="post">
-
-        <h2 class="heading-middle">{% trans "Filter Values" %}</h2>
+        {% csrf_token %}
+        <h2 class="heading-middle">{% trans "Filter values" %}</h2>
         {% for property_group in filterables %}
             <fieldset>
                 <legend>
@@ -141,8 +142,8 @@
 {% if display_displayables %}
     <form action="{% url lfs_update_product_properties product.id %}"
           method="post">
-
-        <h2 class="heading-middle">{% trans "Displayed Values" %}</h2>
+        {% csrf_token %}
+        <h2 class="heading-middle">{% trans "Displayed values" %}</h2>
         {% for property_group in displayables %}
             <fieldset>
                 <legend>
@@ -167,7 +168,7 @@
                         {% if property.display_select_field %}
                             <div class="field">
                                 <div class="label">
-                                    {{ property.title }}:
+                                    {{ property.name }}:
                                 </div>
                                 <select multiple="multiple" name="property-{{ property.id }}">
                                     {% for option in property.options %}
