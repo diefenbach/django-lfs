@@ -4,13 +4,16 @@
 <form id="shop-property-step-type-form"
       action="{% url lfs_save_number_field_validators property.id %}"
       method="post">
-      
+
+      {% csrf_token %}
       <table>
           {{ number_field_form }}
       </table>
 
-    <input type="submit" 
-           value="{% trans 'Save validators' %}" 
-           class="shop-property-input-button" 
-           name="Save"/>    
-   </form>
+     <div class="buttons">
+         <input type="submit"
+                value="{% trans 'Save validators' %}"
+                class="button shop-property-input-button"
+                name="Save"/>
+    </div>
+</form>

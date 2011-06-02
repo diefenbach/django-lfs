@@ -13,6 +13,7 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_POST
 
 # lfs imports
 import lfs.core.utils
@@ -306,6 +307,7 @@ def change_subtype(request, product_id):
         msg = _(u"Sub type has been changed."),
     )
 
+@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def delete_product(request, product_id):
     """Deletes product with passed id.
@@ -316,6 +318,7 @@ def delete_product(request, product_id):
     url = reverse("lfs_manage_product_dispatcher")
     return HttpResponseRedirect(url)
 
+@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def edit_product_data(request, product_id, template_name="manage/product/data.html"):
     """Edits the product with given.
@@ -392,6 +395,7 @@ def reset_filters(request):
         {"html" : html, "message" : msg, }, cls = LazyEncoder)
     return HttpResponse(result)
 
+@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def save_products(request):
     """Saves products with passed ids (by request body).

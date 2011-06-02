@@ -12,6 +12,7 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_POST
 
 # lfs imports
 import lfs.core.utils
@@ -167,7 +168,8 @@ def save_discount_data(request, id):
         url = reverse("lfs_manage_discount", kwargs={"id" : id}),
         msg = _(u"Discount data has been saved."),
     )            
- 
+
+@require_POST 
 @permission_required("core.manage_shop", login_url="/login/")   
 def delete_discount(request, id):
     """Deletes discount with passed id.    

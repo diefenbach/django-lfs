@@ -36,9 +36,9 @@
 
             <form action="{% url lfs_manage_shop_property property.id %}"
                   method="post">
-                {% csrf_token %}  
+                {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
-                
+
                 <div class="buttons">
                     <input type="submit"
                            class="button"
@@ -47,20 +47,15 @@
             </form>
 
             <h2 class="heading-middle">{% trans 'Field type' %}</h2>
-            {# <p class="attention">{% trans 'Attention: If the field type is changed all entered product values for this property will be deleted.' %}</p> #}
             <form action="{% url lfs_update_shop_property_type property.id %}"
                   method="post">
-
+                {% csrf_token %}
                 {{ type_form.type }}
-
                 <input type="submit"
                        class="button"
                        value="{% trans 'Save property type' %}">
             </form>
-
-
             {% if property.is_select_field %}
-
                 <div id="select_field">
                     {{ select_field|safe }}
                 </div>
@@ -69,19 +64,16 @@
                     {{ options|safe }}
                 </div>
             {% endif %}
-
             {% if display_step_form %}
                 <div id="steps">
                     {{ steps|safe }}
                 </div>
             {% endif %}
-
             {% if property.is_number_field %}
                 <div id="number_field">
                     {{ number_field|safe }}
                 </div>
             {% endif %}
-
         </div>
     </div>
 {% endblock %}

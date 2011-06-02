@@ -166,11 +166,15 @@
 
         <div class="delete-dialog" title='{% trans "Please Confirm" %}' id="delete-dialog">
             <p class="message">{% trans "Do you really want to delete this object?" %}</p>
-            <div class="dialog-buttons">
-                <button class="button">{% trans "Yes" %}</button>
-                <button class="button">{% trans "No" %}</button>
-            </div>
-            <div style="display:none" id="delete-url">url</div>
+            
+            <form action="."
+                  method="POST">
+                {% csrf_token %}
+                <div class="dialog-buttons">
+                    <button class="button">{% trans "Yes" %}</button>
+                    <button class="dialog-close-button button">{% trans "No" %}</button>
+                </div>
+            </form>
         </div>
 
     </body>

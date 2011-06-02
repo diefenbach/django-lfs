@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
+from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -174,14 +175,15 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
         "form" : form,
     }))
 
+@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def delete_category(request, id):
     """Deletes category with given id.
     """
+    import pdb; pdb.set_trace()
     category = lfs_get_object_or_404(Category, pk=id)
     parent = category.parent
     category.delete()
-
     manage_utils.update_category_positions(parent)
 
     url = reverse("lfs_manage_categories")

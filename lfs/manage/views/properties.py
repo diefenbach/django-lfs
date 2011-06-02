@@ -10,6 +10,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_POST
 
 # lfs imports
 import lfs.core.utils
@@ -83,7 +84,7 @@ def manage_properties(request):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_property(request, id, template_name="manage/properties/property.html"):
-    """
+    """The main view to manage the property with passed id.
     """
     property = get_object_or_404(Property, pk=id)
     if request.method == "POST":
@@ -114,6 +115,7 @@ def manage_property(request, id, template_name="manage/properties/property.html"
         "display_step_form" : display_step_form,
       }))
 
+@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def update_property_type(request, id):
     """Updates the type of the property.
@@ -146,8 +148,9 @@ def select_field(request, property, template_name="manage/properties/property_se
         "form" : form,
     }))
 
+@require_POST
 def save_select_field(request, property_id):
-    """
+    """Saves the data of a property select field.
     """
     property = get_object_or_404(Property, pk=property_id)
 
@@ -167,18 +170,15 @@ def number_field(request, property, template_name="manage/properties/property_nu
         "number_field_form" : number_field_form,
     }))
 
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
 def save_number_field_validators(request, property_id):
-    """
+    """Saves the validators for the property with passed property_id.
     """
     property = get_object_or_404(Property, pk=property_id)
 
     form = NumberFieldForm(instance=property, data=request.POST)
     property = form.save()
-
-    # result = simplejson.dumps({
-    #     "steps" : steps_inline(request, property_id),
-    #     "message" : _(u"Validators have been saved."),
-    # }, cls = LazyEncoder)
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
@@ -197,6 +197,8 @@ def steps_inline(request, property_id, template_name="manage/properties/step_inl
         "step_type_form" : step_type_form,
     }))
 
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
 def save_step(request, property_id):
     """Save the steps of the property with given id.
     """
@@ -212,6 +214,8 @@ def save_step(request, property_id):
 
     return HttpResponse(result)
 
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
 def save_step_type(request, property_id):
     """Save the step type of the property with given id.
     """
@@ -227,6 +231,7 @@ def save_step_type(request, property_id):
 
     return HttpResponse(result)
 
+@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def add_step(request, property_id):
     """Adds a step to property with passed property id resp. updates steps of
@@ -304,6 +309,7 @@ def add_property(request, template_name="manage/properties/add_property.html"):
         "properties" : Property.objects.filter(local=False),
     }))
 
+@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def delete_property(request, id):
     """Deletes the property with given id.
@@ -318,6 +324,7 @@ def delete_property(request, id):
 
     return HttpResponseRedirect(url)
 
+@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def add_option(request, property_id):
     """Adds option to property with passed property id.
@@ -334,8 +341,9 @@ def add_option(request, property_id):
 
         if name != "":
             option = PropertyOption.objects.create(name=name, price=price, property_id=property_id)
-
-        message = _(u"Option has been added.")
+            message = _(u"Option has been added.")
+        else:
+            message = _(u"Option could not be added.")
     else:
 
         for option_id in request.POST.getlist("option"):

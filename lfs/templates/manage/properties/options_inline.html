@@ -37,7 +37,7 @@
                 <input type="submit"
                        value="{% trans 'Add option' %}"
                        name="add"
-                       class="shop-property-add-option-button" />
+                       class="button shop-property-add-option-button" />
             </td>
         </tr>
         {% for option in property.options.all %}
@@ -75,8 +75,13 @@
             </tr>
         {% endfor %}
     </table>
-    <input type="submit"
-           value="{% trans 'Update options' %}"
-           name="update"
-           class="shop-property-add-option-button" />
+    <div class="buttons">
+        <input type="submit"
+               value="{% trans 'Update options' %}"
+               name="update"
+               class="button shop-property-add-option-button" />
+    </div>
 </form>
+<script>
+    $(".button").button();
+</script>

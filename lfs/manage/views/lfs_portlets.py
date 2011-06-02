@@ -1,4 +1,5 @@
 # django imports
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError
@@ -8,6 +9,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_POST
 
 # portlets imports
 import portlets.utils
@@ -20,7 +22,7 @@ from portlets.models import Slot
 import lfs.core.utils
 from lfs.core.utils import LazyEncoder
 
-@login_required
+@permission_required("core.manage_shop", login_url="/login/")
 def portlets_inline(request, obj, template_name="manage/portlets/portlets_inline.html"):
     """Displays the assigned portlets for given object.
     """
@@ -41,7 +43,7 @@ def portlets_inline(request, obj, template_name="manage/portlets/portlets_inline
         "object_type_id" : ct.id,
     }))
 
-@login_required
+@permission_required("core.manage_shop", login_url="/login/")
 def update_portlets(request, object_type_id, object_id):
     """Update portlets blocking.
     """
@@ -76,7 +78,7 @@ def update_portlets(request, object_type_id, object_id):
     )
     return HttpResponse(result)
 
-@login_required
+@permission_required("core.manage_shop", login_url="/login/")
 def add_portlet(request, object_type_id, object_id, template_name="manage/portlets/portlet_add.html"):
     """Form and logic to add a new portlet to the object with given type and id.
     """
@@ -87,22 +89,7 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
     # Get the portlet type
     portlet_type = request.REQUEST.get("portlet_type", "")
 
-    if request.method == "GET":
-
-        try:
-            portlet_ct = ContentType.objects.filter(model=portlet_type.lower())[0]
-            mc = portlet_ct.model_class()
-            form = mc().form(prefix="portlet")
-            return render_to_response(template_name, RequestContext(request, {
-                "form" : form,
-                "object_id" : object_id,
-                "object_type_id" : object_ct.id,
-                "portlet_type" : portlet_type,
-                "slots" : Slot.objects.all(),
-            }))
-        except ContentType.DoesNotExist:
-            pass
-    else:
+    if request.method == "POST":
         try:
             ct = ContentType.objects.filter(model=portlet_type.lower())[0]
             mc = ct.model_class()
@@ -125,8 +112,23 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
 
         except ContentType.DoesNotExist:
             pass
+    else:
+        try:
+            portlet_ct = ContentType.objects.filter(model=portlet_type.lower())[0]
+            mc = portlet_ct.model_class()
+            form = mc().form(prefix="portlet")
+            return render_to_response(template_name, RequestContext(request, {
+                "form" : form,
+                "object_id" : object_id,
+                "object_type_id" : object_ct.id,
+                "portlet_type" : portlet_type,
+                "slots" : Slot.objects.all(),
+            }))
+        except ContentType.DoesNotExist:
+            pass
 
-@login_required
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
 def delete_portlet(request, portletassignment_id):
     """Deletes a portlet for given portlet assignment.
     """
@@ -140,7 +142,7 @@ def delete_portlet(request, portletassignment_id):
             request.META.get("HTTP_REFERER"),
             msg = _(u"Portlet has been deleted."))
 
-@login_required
+@permission_required("core.manage_shop", login_url="/login/")
 def edit_portlet(request, portletassignment_id, template_name="manage/portlets/portlet_edit.html"):
     """Form and logic to edit the portlet of the given portlet assignment.
     """
@@ -149,23 +151,7 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
     except PortletAssignment.DoesNotExist:
         return ""
 
-    if request.method == "GET":
-        slots = []
-        for slot in Slot.objects.all():
-            slots.append({
-                "id" : slot.id,
-                "name" : slot.name,
-                "selected" : slot.id == pa.slot.id,
-            })
-
-        form = pa.portlet.form(prefix="portlet")
-        return render_to_response(template_name, RequestContext(request, {
-            "form" : form,
-            "portletassigment_id" : pa.id,
-            "slots" : slots,
-            "position" : pa.position,
-        }))
-    else:
+    if request.method == "POST":
         form = pa.portlet.form(prefix="portlet", data=request.POST)
         portlet = form.save()
 
@@ -182,3 +168,19 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
             cls = LazyEncoder
         )
         return HttpResponse(result)
+    else:
+        slots = []
+        for slot in Slot.objects.all():
+            slots.append({
+                "id" : slot.id,
+                "name" : slot.name,
+                "selected" : slot.id == pa.slot.id,
+            })
+
+        form = pa.portlet.form(prefix="portlet")
+        return render_to_response(template_name, RequestContext(request, {
+            "form" : form,
+            "portletassigment_id" : pa.id,
+            "slots" : slots,
+            "position" : pa.position,
+        }))

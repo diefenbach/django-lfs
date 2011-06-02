@@ -13,7 +13,7 @@ function disable_enter_key(e) {
           return false;
      else
           return true;
-}    
+}
 
 function hide_ajax_loading() {
     $(".ajax-loading").hide();
@@ -1186,19 +1186,15 @@ $(function() {
     });
 
     $(".delete-link").live("click", function() {
-        $("#delete-url").html($(this).attr("href"));
+        $("#delete-dialog > form").attr("action", $(this).attr("href"));
         $("#delete-dialog > p.message").html($(this).attr("dialog_message"));
         $("#delete-dialog").dialog("open");
         return false;
     });
 
-    var buttons = $("#delete-dialog button").live("click", function(e) {
+    $(".dialog-close-button").live("click", function() {
         $("#delete-dialog").dialog("close");
-        var yes = buttons.index(this) === 0;
-        var url = $("#delete-url").html();
-        if (yes) {
-            window.location = url;
-        }
+        return false;
     });
 
     $("input.button").button();

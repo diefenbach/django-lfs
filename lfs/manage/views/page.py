@@ -7,6 +7,7 @@ from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_POST
 
 # lfs imports
 import lfs.core.utils
@@ -94,6 +95,7 @@ def add_page(request, template_name="manage/page/add_page.html"):
         "pages" : Page.objects.all(),
     }))
 
+@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def delete_page(request, id):
     """Deletes the page with passed id.

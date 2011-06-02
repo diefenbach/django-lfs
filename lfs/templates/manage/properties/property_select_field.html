@@ -5,10 +5,11 @@
       action="{% url lfs_save_select_field property.id %}"
       method="post">
 
+    {% csrf_token %}
     {% include "manage/lfs_form.html" %}
 
     <input type="submit"
            value="{% trans 'Save' %}"
-           class="shop-property-input-button"
+           class="button shop-property-input-button"
            name="Save"/>
-   </form>
+</form>

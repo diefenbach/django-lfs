@@ -11,6 +11,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.utils import simplejson
+from django.views.decorators.http import require_POST
 
 # lfs imports
 import lfs.voucher.utils
@@ -214,6 +215,8 @@ def add_vouchers(request, group_id):
         (("#vouchers", vouchers_tab(request, voucher_group)), ),
         msg)
 
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")   
 def delete_vouchers(request, group_id):
     """Deletes checked vouchers.
     """
@@ -262,6 +265,8 @@ def save_voucher_group_data(request, id):
         ("#navigation", navigation(request, voucher_group)),),
         _(u"Voucher data has been save."))
 
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")   
 def delete_voucher_group(request, id):
     """Deletes voucher group with given id and all assigned vouchers.
     """

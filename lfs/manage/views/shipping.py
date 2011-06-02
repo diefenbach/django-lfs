@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_POST
 
 # lfs imports
 import lfs.core.utils
@@ -329,6 +330,7 @@ def save_shipping_method_data(request, shipping_method_id):
         msg = _(u"Shipping method has been saved."),
     )            
  
+@require_POST 
 @permission_required("core.manage_shop", login_url="/login/")   
 def delete_shipping_method(request, shipping_method_id):
     """Deletes shipping method with passed shipping id.
