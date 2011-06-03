@@ -2,14 +2,17 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 from django.forms import ModelForm
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
 from django.utils import simplejson
+from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
+import lfs.catalog.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.signals import product_changed
 from lfs.catalog.models import Product
@@ -20,9 +23,8 @@ from lfs.catalog.models import PropertyGroup
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import VARIANT, PROPERTY_SELECT_FIELD
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
-import lfs.catalog.utils
+from lfs.core.utils import LazyEncoder
 from lfs.manage import utils as manage_utils
-
 
 class PropertyOptionForm(ModelForm):
     """Form to add/edit property options.
@@ -89,7 +91,7 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
         variants = []
         for variant in product.variants.all().order_by("variant_position"):
             properties = []
-            for property in product.get_properties():
+            for property in product.get_property_select_fields():
                 options = []
                 for property_option in property.options.all():
                     if variant.has_option(property, property_option):
@@ -114,6 +116,7 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
                 "sku" : variant.sku,
                 "name" : variant.name,
                 "price" : variant.price,
+                "active_price" : variant.active_price,
                 "position" : variant.variant_position,
                 "properties" : properties
             })
@@ -136,7 +139,7 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
         "variants" : variants,
         "shop_property_groups" : shop_property_groups,
         "local_properties" : product.get_local_properties(),
-        "all_properties" : product.get_properties(),
+        "all_properties" : product.get_property_select_fields(),
         "property_option_form" : property_option_form,
         "property_form" : property_form,
         "variant_simple_form" : variant_simple_form,
@@ -303,9 +306,12 @@ def add_variants(request, product_id):
 
         slug = "%s%s" % (product.slug, slug)
         sku = "%s-%s" % (product.sku, i+1)
-
+        
         variant = Product(slug=slug, sku=sku, parent=product, price=price, variant_position=i+1, sub_type=VARIANT)
-        variant.save()
+        try:
+            variant.save()
+        except IntegrityError:
+            continue
 
         # Save the value for this product and property
         for option in options:
@@ -365,6 +371,13 @@ def update_variants(request, product_id):
                     else:
                         variant.active = False
 
+                    # active price
+                    active_price = request.POST.get("active_price-%s" % id)
+                    if active_price:
+                        variant.active_price = True
+                    else:
+                        variant.active_price = False
+
                     # position
                     position = request.POST.get("position-%s" % id)
                     try:
@@ -416,7 +429,12 @@ def edit_sub_type(request, product_id):
     # Send a signal to update cache
     product_changed.send(product)
 
-    return HttpResponse(manage_variants(request, product_id))
+    result = simplejson.dumps({
+        "html" : manage_variants(request, product_id, as_string=True),
+        "message" : _(u"Sup type has been saved."),
+    }, cls = LazyEncoder)
+
+    return HttpResponse(result)
 
 @permission_required("core.manage_shop", login_url="/login/")
 def update_default_variant(request, product_id):
@@ -431,7 +449,12 @@ def update_default_variant(request, product_id):
     # Send a signal to update cache
     product_changed.send(product)
 
-    return HttpResponse(manage_variants(request, product_id))
+    result = simplejson.dumps({
+        "html" : manage_variants(request, product_id, as_string=True),
+        "message" : _(u"Default variant has been saved."),
+    }, cls = LazyEncoder)
+
+    return HttpResponse(result)
 
 def _refresh_property_positions(product_id):
     """

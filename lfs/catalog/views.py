@@ -472,7 +472,7 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
         if product.variants_display_type == SELECT:
             # Get all properties (sorted). We need to traverse through all
             # property/options to select the options of the current variant.
-            for property in product.get_properties():
+            for property in product.get_property_select_fields():
                 options = []
                 for property_option in property.options.all():
                     if variant.has_option(property, property_option):
@@ -492,7 +492,7 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
                     "options" : options,
                 })
         else:
-            properties = product.get_properties()
+            properties = product.get_property_select_fields()
             variants = product.get_variants()
 
     elif product.is_configurable_product():
