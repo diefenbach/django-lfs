@@ -452,10 +452,6 @@ a.edit {
     margin: 6px 0 20px 0;
 }
 
-div.manage-form-buttons {
-    padding-top: 20px;
-}
-
 #message {
     border: 1px solid red;
     display: none;
@@ -533,6 +529,10 @@ select.categories {
 #id_priority, #id_price, #id_for_sale_price, #id_tax, #id_module, #id_link, #id_parent, #id_static_block, #id_price_unit, #id_template, #id_meta_title,
 #id_type, #id_step_type {
     width: 300px;
+}
+
+#id_default_variant, #id_variants_display_type {
+    width: 200px;    
 }
 
 /* portlets */
