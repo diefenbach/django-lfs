@@ -534,11 +534,26 @@ $(function() {
         return false;
     });
 
+    $(".ajax-button").live("click", function() {
+        var form = $(this).parents("form:first");
+        form.ajaxSubmit({
+            "success": function(data) {
+                data = $.parseJSON(data);
+                $("#variants").html(data["html"]);
+                if (data["message"])
+                    $.jGrowl(data["message"]);
+            }
+        });
+        return false;
+    })
+
     $(".option-add-button").live("click", function() {
         var form = $(this).parents("form:first");
         form.ajaxSubmit({
             "success": function(data) {
-                $("#variants").html(data);
+                data = $.parseJSON(data);
+                $("#variants").html(data["html"]);
+                $.jGrowl(data["message"]);
             }
         });
         return false;
