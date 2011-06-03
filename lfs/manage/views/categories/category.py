@@ -180,7 +180,6 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
 def delete_category(request, id):
     """Deletes category with given id.
     """
-    import pdb; pdb.set_trace()
     category = lfs_get_object_or_404(Category, pk=id)
     parent = category.parent
     category.delete()
