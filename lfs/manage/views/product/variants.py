@@ -338,7 +338,7 @@ def update_variants(request, product_id):
                     continue
                 else:
                     if product.default_variant == variant:
-                        product.default_variant == None
+                        product.default_variant = None
                         product.save()
                     variant.delete()
     elif action == "update":
