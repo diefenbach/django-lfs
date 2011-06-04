@@ -33,7 +33,7 @@
           action="{% url lfs.manage.views.add_property product.id %}"
           method="post">
         {{ property_form.name }}
-        <input class="ajax-button"
+        <input class="ajax-save-button"
                type="submit"
                value="{% trans 'Add property' %}" />
     </form>
@@ -87,7 +87,7 @@
                     {{ property_option_form.name }}
                     <input type="hidden" name="property_id" value="{{ property.id }}" />
                     <input type="submit"
-                           class="ajax-button"
+                           class="ajax-save-button"
                            value="{% trans 'Add option' %}" />
                 </form>
             </div>
@@ -260,7 +260,7 @@
             <div class="buttons">
                 <input type="submit"
                        value="{% trans 'Change variant display type' %}"
-                       class="button ajax-button" />
+                       class="button ajax-save-button" />
             </div>
         </form>
     {% endif %}

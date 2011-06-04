@@ -107,6 +107,7 @@ $(function() {
 
     // Generic ajax save button
     $(".ajax-save-button").live("click", function() {
+        show_ajax_loading();
         var action = $(this).attr("name")
         $(this).parents("form:first").ajaxSubmit({
             data : {"action" : action},
@@ -119,6 +120,7 @@ $(function() {
                     $("#dialog").dialog("close");
                 }
                 $.jGrowl(data["message"]);
+                hide_ajax_loading();
             }
         })
         return false;
@@ -480,21 +482,6 @@ $(function() {
             $(this).addClass("collapsable-hitarea");
         });
 
-        return false;
-    })
-
-    $(".ajax-button").live("click", function() {
-        show_ajax_loading();
-        var form = $(this).parents("form:first");
-        form.ajaxSubmit({
-            "success": function(data) {
-                data = $.parseJSON(data);
-                $("#variants").html(data["html"]);
-                if (data["message"])
-                    $.jGrowl(data["message"]);
-                hide_ajax_loading();                    
-            }
-        });
         return false;
     })
 
