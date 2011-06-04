@@ -117,6 +117,8 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
                 "name" : variant.name,
                 "price" : variant.price,
                 "active_price" : variant.active_price,
+                "active_sku" : variant.active_sku,
+                "active_name" : variant.active_name,
                 "position" : variant.variant_position,
                 "properties" : properties
             })
@@ -401,12 +403,13 @@ def update_variants(request, product_id):
                     else:
                         variant.active = False
 
-                    # active price
-                    active_price = request.POST.get("active_price-%s" % id)
-                    if active_price:
-                        variant.active_price = True
-                    else:
-                        variant.active_price = False
+                    # active attributes
+                    for name in ("active_price", "active_sku", "active_name"):
+                        value = request.POST.get("%s-%s" % (name, id))
+                        if value:
+                            setattr(variant, name, True)
+                        else:
+                            setattr(variant, name, False)
 
                     # position
                     position = request.POST.get("position-%s" % id)

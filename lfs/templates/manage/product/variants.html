@@ -153,26 +153,24 @@
               method="post">
             <table>
                 <th>
-                    <input type="checkbox" 
-                           class="select-all"
-                           value="delete" />
+                    <input type="checkbox" class="select-all" value="delete" />
                 </th>
                 <th>
                     {% trans 'Pos.' %}
                 </th>
                 <th>
-                    <input type="checkbox" 
-                           class="select-all" 
-                           value="active" />
+                    <input type="checkbox" class="select-all" value="active" />
                     {% trans 'Active' %}
                 </th>
                 <th>
                     {% trans 'URL' %}
                 </th>
                 <th>
+                    <input type="checkbox" class="select-all" value="active_sku" />
                     {% trans 'SKU' %}
                 </th>
                 <th>
+                    <input type="checkbox" class="select-all" value="active_name" />
                     {% trans 'Name' %}
                 </th>
                 {% for property in all_properties %}
@@ -205,9 +203,11 @@
                             <input type="text" name="slug-{{ variant.id }}" value="{{ variant.slug }}" />
                         </td>
                         <td>
+                            <input type="checkbox" class="select-active_sku" name="active_sku-{{ variant.id }}" {% if variant.active_sku %}checked="checked"{% endif %} />
                             <input type="text" name="sku-{{ variant.id }}" value="{{ variant.sku }}" />
                         </td>
                         <td>
+                            <input type="checkbox" class="select-active_name" name="active_name-{{ variant.id }}" {% if variant.active_name %}checked="checked"{% endif %} />
                             <input type="text" name="name-{{ variant.id }}" value="{{ variant.name }}" />
                         </td>
 
