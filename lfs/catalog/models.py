@@ -1445,7 +1445,7 @@ class Property(models.Model):
         Displayed to the customer.
 
     position:
-        The position of the property within a product.
+        The position of the property within the management interface.
 
     filterable:
         If True the property is used for filtered navigation.
@@ -1529,7 +1529,7 @@ class Property(models.Model):
 
     class Meta:
         verbose_name_plural = _(u"Properties")
-        ordering = ["name"]
+        ordering = ["position"]
 
     def __unicode__(self):
         return self.name
