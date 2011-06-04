@@ -333,7 +333,7 @@ def add_variants(request, product_id):
         slug = "%s%s" % (product.slug, slug)
         sku = "%s-%s" % (product.sku, i+1)
 
-        variant = Product(slug=slug, sku=sku, parent=product, price=price, variant_position=i+1, sub_type=VARIANT)
+        variant = Product(slug=slug, sku=sku, parent=product, price=price, variant_position=(i+1)*10, sub_type=VARIANT)
         try:
             variant.save()
         except IntegrityError:
@@ -351,7 +351,7 @@ def add_variants(request, product_id):
         "html" : html,
         "message" : _(u"Variants have been added."),
     }, cls = LazyEncoder)
-    
+
     return HttpResponse(result)
 
 @permission_required("core.manage_shop", login_url="/login/")
