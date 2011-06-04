@@ -364,7 +364,7 @@ def product_dispatcher(request):
     on the manage products link.
     """
     try:
-        product = Product.objects.all()[0]
+        product = Product.objects.exclude(sub_type=VARIANT)[0]
         url = reverse("lfs_manage_product", kwargs={"product_id" : product.id})
     except IndexError:
         url = reverse("lfs_manage_add_product")
