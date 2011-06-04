@@ -32,8 +32,8 @@ class PropertyDataForm(ModelForm):
     """
     class Meta:
         model = Property
-        fields = ["position", "name", "title", "filterable", "display_no_results",
-            "configurable", "required", "display_on_product", "unit"]
+        fields = ["position", "name", "title", "unit", "filterable", "display_no_results",
+            "configurable", "required", "display_on_product", "display_price"]
 
 class PropertyTypeForm(ModelForm):
     """Form to manage property type.
@@ -54,7 +54,7 @@ class SelectFieldForm(ModelForm):
     """
     class Meta:
         model = Property
-        fields = ["display_price", "add_price"]
+        fields = ["add_price"]
 
 class NumberFieldForm(ModelForm):
     """Form to manage the number field.
