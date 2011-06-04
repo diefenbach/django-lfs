@@ -22,15 +22,15 @@
         <a class="add" 
            href="{% url lfs_add_property_group %}">{% trans 'Add Property Group' %}</a>
         <a class="delete delete-link"
-           data="{% trans 'Delete?' %}"
+           dialog_message="{% trans 'Do you really want to delete this property group?' %}"
            href="{% url lfs_delete_property_group property_group.id %}">{% trans 'Delete Property Group' %}</a>
     </div>
 
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#properties">{% trans 'Properties' %}</a></li>            
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Property Group' %}</a></li>            
             <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Products' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#properties">{% trans 'Properties' %}</a></li>            
         </ul>
 
         <div id="data">
