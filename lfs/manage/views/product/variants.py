@@ -179,7 +179,12 @@ def add_property(request, product_id):
             product_property.position = i
             product_property.save()
 
-    return HttpResponse(manage_variants(request, product_id))
+    result = simplejson.dumps({
+        "html" : manage_variants(request, product_id, as_string=True),
+        "message" : _(u"Property has been added."),
+    }, cls = LazyEncoder)
+
+    return HttpResponse(result)
 
 @permission_required("core.manage_shop", login_url="/login/")
 def delete_property(request, product_id, property_id):
@@ -193,7 +198,15 @@ def delete_property(request, product_id, property_id):
     else:
         property.delete()
 
-    return HttpResponse(manage_variants(request, product_id))
+    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
+
+    result = simplejson.dumps({
+        "html" : html,
+        "message" : _(u"Property has been deleted."),
+        "close-dialog" : True,
+    }, cls = LazyEncoder)
+
+    return HttpResponse(result)
 
 @permission_required("core.manage_shop", login_url="/login/")
 def change_property_position(request):
@@ -244,7 +257,12 @@ def add_property_option(request, product_id):
             option.position = i
             option.save()
 
-    return HttpResponse(manage_variants(request, product_id))
+    result = simplejson.dumps({
+        "html" : manage_variants(request, product_id, as_string=True),
+        "message" : _(u"Option has been added."),
+    }, cls = LazyEncoder)
+
+    return HttpResponse(result)
 
 @permission_required("core.manage_shop", login_url="/login/")
 def delete_property_option(request, product_id, option_id):
@@ -258,7 +276,15 @@ def delete_property_option(request, product_id, option_id):
     else:
         property_option.delete()
 
-    return HttpResponse(manage_variants(request, product_id))
+    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
+
+    result = simplejson.dumps({
+        "html" : html,
+        "message" : _(u"Property has been deleted."),
+        "close-dialog" : True,
+    }, cls = LazyEncoder)
+
+    return HttpResponse(result)
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_variants(request, product_id):
@@ -306,7 +332,7 @@ def add_variants(request, product_id):
 
         slug = "%s%s" % (product.slug, slug)
         sku = "%s-%s" % (product.sku, i+1)
-        
+
         variant = Product(slug=slug, sku=sku, parent=product, price=price, variant_position=i+1, sub_type=VARIANT)
         try:
             variant.save()
@@ -384,6 +410,14 @@ def update_variants(request, product_id):
                         variant.variant_position = int(position)
                     except ValueError:
                         variant.variant_position = 10
+
+                    # default variant
+                    try:
+                        product.default_variant_id = int(request.POST.get("default_variant"))
+                    except TypeError:
+                        pass
+                    else:
+                        product.save()
 
                 variant.save()
 

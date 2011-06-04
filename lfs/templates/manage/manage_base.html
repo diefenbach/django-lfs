@@ -171,7 +171,7 @@
                   method="POST">
                 {% csrf_token %}
                 <div class="dialog-buttons">
-                    <button class="button">{% trans "Yes" %}</button>
+                    <button class="dialog-yes-button button">{% trans "Yes" %}</button>
                     <button class="dialog-close-button button">{% trans "No" %}</button>
                 </div>
             </form>
@@ -179,3 +179,6 @@
 
     </body>
 </html>
+<script>
+    $(".button").button();
+</script>

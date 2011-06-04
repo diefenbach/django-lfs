@@ -27,13 +27,13 @@
           action="{% url lfs.manage.views.add_property product.id %}"
           method="post">
         {{ property_form.name }}
-        <input class="property-add-button"
+        <input class="ajax-button"
                type="submit"
                value="{% trans 'Add property' %}" />
     </form>
 
     {% for property in local_properties %}
-        {{ property.name }}
+        <div style="font-weight:bold">{{ property.name }}</div>
         {% if not forloop.first %}
             <a href="{% url lfs.manage.views.change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=up"
                class="property-change-button property-edit-field">
@@ -53,7 +53,9 @@
         {% endif %}
 
         <a href="{% url lfs.manage.views.delete_property product.id property.id %}"
-           class="property-change-button property-edit-field">
+           class="property-change-button property-edit-field delete-link"
+           dialog_message="{% trans 'Do you really want to delete this property and all its options?' %}"
+           dialog_yes_button_class="ajax-save-button">
             <image src="{{ MEDIA_URL }}lfs/icons/cross.png"
                    alt="delete"
                    title="{% trans 'Delete property' %}"/>
@@ -63,7 +65,9 @@
                 <div>
                     {{ option.name }}
                     <a href="{% url lfs.manage.views.delete_property_option product.id option.id %}"
-                       class="property-change-button property-edit-field">
+                       class="property-change-button property-edit-field delete-link"
+                       dialog_message="{% trans 'Do you really want to delete this option?' %}"
+                       dialog_yes_button_class="ajax-save-button">
                         <image src="{{ MEDIA_URL }}lfs/icons/cross.png"
                                alt="delete"
                                title="{% trans 'Delete option' %}"/>
@@ -77,7 +81,7 @@
                     {{ property_option_form.name }}
                     <input type="hidden" name="property_id" value="{{ property.id }}" />
                     <input type="submit"
-                           class="option-add-button"
+                           class="ajax-button"
                            value="{% trans 'Add option' %}" />
                 </form>
             </div>
@@ -143,12 +147,17 @@
               method="post">
             <table>
                 <th>
-                    <input type="checkbox" class="delete-all" />
+                    <input type="checkbox" 
+                           class="select-all"
+                           value="delete" />
                 </th>
                 <th>
                     {% trans 'Pos.' %}
                 </th>
                 <th>
+                    <input type="checkbox" 
+                           class="select-all" 
+                           value="active" />
                     {% trans 'Active' %}
                 </th>
                 <th>
@@ -166,19 +175,25 @@
                     </th>
                 {% endfor %}
                 <th colspan="2">
+                    <input type="checkbox" 
+                           class="select-all" 
+                           value="price" />
                     {% trans 'Price' %}
+                </th>
+                <th>
+                    {% trans 'Default' %}
                 </th>
                 {% for variant in variants %}
                     <tr>
                         <td>
                             <input type="hidden" name="variant-{{ variant.id }}" />
-                            <input type="checkbox" class="delete" name="delete-{{ variant.id }}" />
+                            <input type="checkbox" class="select-delete" name="delete-{{ variant.id }}" />
                         </td>
                         <td>
                             <input type="text" name="position-{{ variant.id }}" value="{{ variant.position }}" size="3" />
                         </td>
                         <td>
-                            <input type="checkbox" name="active-{{ variant.id }}" {% if variant.active %}checked="checked"{% endif %} />
+                            <input type="checkbox" class="select-active" name="active-{{ variant.id }}" {% if variant.active %}checked="checked"{% endif %} />
                         </td>
                         <td>
                             <input type="text" name="slug-{{ variant.id }}" value="{{ variant.slug }}" />
@@ -203,10 +218,13 @@
                             </td>
                         {% endfor %}
                         <td>
-                            <input type="checkbox" name="active_price-{{ variant.id }}" {% if variant.active_price %}checked="checked"{% endif %} />
+                            <input type="checkbox" class="select-price" name="active_price-{{ variant.id }}" {% if variant.active_price %}checked="checked"{% endif %} />
                         </td>
                         <td class="number">
                             <input class="number" type="text" name="price-{{ variant.id }}" value="{{ variant.price }}" />
+                        </td>
+                        <td>
+                            <input type="radio" name="default_variant" value="{{ variant.id }}" {% if product.default_variant.id == variant.id %}checked="checked"{% endif %} />
                         </td>
                         <td>
                             <a href="{% url lfs_manage_product variant.id %}">
@@ -221,26 +239,6 @@
             <div class="buttons">
                 <input type="submit" name="delete" class="button variants-update-button" value="{% trans 'Delete' %}" />
                 <input type="submit" name="update" class="button variants-update-button" value="{% trans 'Update' %}" />
-            </div>
-        </form>
-
-        <h2 class="heading-middle">{% trans 'Default variant' %}</h2>
-        <form action="{% url lfs_update_default_variant product.id %}"
-              method="post">
-
-            <div class="field">
-                <div class="label">
-                    {{ default_variant_form.default_variant.label_tag }}:
-                </div>    
-                <div>
-                    {{ default_variant_form.default_variant }}
-                </div>
-            </div>
-
-            <div class="buttons">
-                <input type="submit"
-                       value="{% trans 'Save default variant' %}"
-                       class="button ajax-button" />
             </div>
         </form>
 

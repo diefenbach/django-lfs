@@ -114,28 +114,11 @@ $(function() {
                 data = $.parseJSON(data);
                 for (var html in data["html"])
                     $(data["html"][html][0]).html(data["html"][html][1]);
+                if (data["close-dialog"]) {
+                    $("#delete-dialog").dialog("close");
+                    $("#dialog").dialog("close");
+                }
                 $.jGrowl(data["message"]);
-            }
-        })
-        return false;
-    });
-
-    // Generic ajax save button
-    $(".ajax-save-button-2").live("click", function() {
-        show_ajax_loading();
-        var action = $(this).attr("name")
-        $(this).parents("form:first").ajaxSubmit({
-            data : {"action" : action},
-            success : function(data) {
-                data = $.parseJSON(data);
-                for (var html in data["html"])
-                    $(data["html"][html][0]).html(data["html"][html][1]);
-
-                hide_ajax_loading();
-
-                if (data["message"]) {
-                    $.jGrowl(data["message"]);
-                };
             }
         })
         return false;
@@ -501,15 +484,6 @@ $(function() {
     })
 
     // Product / Variants
-    $(".property-add-button").live("click", function() {
-        $("#property-add-form").ajaxSubmit({
-            success: function(data) {
-                $("#variants").html(data);
-            }
-        });
-        return false;
-    });
-
     $(".variants-add-button").live("click", function() {
         $(".variants-add-form").ajaxSubmit({
             success: function(data) {
@@ -547,25 +521,13 @@ $(function() {
         return false;
     })
 
-    $(".option-add-button").live("click", function() {
-        var form = $(this).parents("form:first");
-        form.ajaxSubmit({
-            "success": function(data) {
-                data = $.parseJSON(data);
-                $("#variants").html(data["html"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    })
-
-    $(".property-change-button").live("click", function() {
-        var href = $(this).attr("href")
-        $.post(href, function(data) {
-            $("#variants").html(data);
-        });
-        return false;
-    })
+    // $(".property-change-button").live("click", function() {
+    //     var href = $(this).attr("href")
+    //     $.post(href, function(data) {
+    //         $("#variants").html(data);
+    //     });
+    //     return false;
+    // })
 
     // Product / Accessories
     $("#add-accessories-button").live("click", function() {
@@ -1203,6 +1165,7 @@ $(function() {
     $(".delete-link").live("click", function() {
         $("#delete-dialog > form").attr("action", $(this).attr("href"));
         $("#delete-dialog > p.message").html($(this).attr("dialog_message"));
+        $(".dialog-yes-button").addClass($(this).attr("dialog_yes_button_class"));
         $("#delete-dialog").dialog("open");
         return false;
     });
