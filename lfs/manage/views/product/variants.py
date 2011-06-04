@@ -345,11 +345,13 @@ def add_variants(request, product_id):
             pvo = ProductPropertyValue(product = variant, property_id = property_id, value=option_id, type=PROPERTY_VALUE_TYPE_VARIANT)
             pvo.save()
 
-    from lfs.manage.views.product.product import selectable_products_inline
-    result = simplejson.dumps({
-        "properties" : manage_variants(request, product_id, as_string=True),
-    })
+    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
+    result = simplejson.dumps({
+        "html" : html,
+        "message" : _(u"Variants have been added."),
+    }, cls = LazyEncoder)
+    
     return HttpResponse(result)
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -361,6 +363,7 @@ def update_variants(request, product_id):
 
     action = request.POST.get("action")
     if action == "delete":
+        message = _(u"Variants have been deleted.")
         for key in request.POST.keys():
             if key.startswith("delete-"):
                 try:
@@ -374,6 +377,7 @@ def update_variants(request, product_id):
                         product.save()
                     variant.delete()
     elif action == "update":
+        message = _(u"Variants have been saved.")
         for key, value in request.POST.items():
             if key.startswith("variant-"):
                 id = key.split("-")[1]
@@ -446,8 +450,7 @@ def update_variants(request, product_id):
 
     result = simplejson.dumps({
         "html" : html,
-        "message" : _(u"Variants have been saved."),
-        "close-dialog" : True,
+        "message" : message,
     }, cls = LazyEncoder)
 
     return HttpResponse(result)
