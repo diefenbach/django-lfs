@@ -91,7 +91,7 @@ def manage_property(request, id, template_name="manage/properties/property.html"
         form = PropertyDataForm(instance=property, data=request.POST)
         if form.is_valid():
             new_property = form.save()
-
+            _update_property_positions()
             return lfs.core.utils.set_message_cookie(
                 url = reverse("lfs_manage_shop_property", kwargs={"id" : property.id}),
                 msg = _(u"Property type has been saved."),
@@ -296,7 +296,9 @@ def add_property(request, template_name="manage/properties/add_property.html"):
         form = PropertyAddForm(data=request.POST)
         if form.is_valid():
             property = form.save()
-
+            property.position = 1000
+            property.save()
+            _update_property_positions()
             return lfs.core.utils.set_message_cookie(
                 url = reverse("lfs_manage_shop_property", kwargs={"id" : property.id}),
                 msg = _(u"Property has been added."),
@@ -320,6 +322,7 @@ def delete_property(request, id):
         url = request.META.get("HTTP_REFERER", reverse("lfs_manage_shop_property"))
     else:
         property.delete()
+        _update_property_positions()
         url = reverse("lfs_manage_shop_properties")
 
     return HttpResponseRedirect(url)
@@ -387,6 +390,13 @@ def delete_option(request, id):
         _update_positions(property)
 
     return HttpResponseRedirect(url)
+
+def _update_property_positions():
+    """Updates position of options of given property.
+    """
+    for i, property in enumerate(Property.objects.exclude(local=True)):
+        property.position = (i+1) * 10
+        property.save()
 
 def _update_positions(property):
     """Updates position of options of given property.
