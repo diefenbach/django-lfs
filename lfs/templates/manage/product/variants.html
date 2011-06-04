@@ -21,7 +21,13 @@
         </div>
     </form>
 
-    <h2 class="heading-middle">{% trans 'Local properties' %} <a href="" class="discreet property-edit-mode">[{% trans "Edit" %}]</a></h2>
+    <h2 class="heading-middle">{% trans 'Local properties' %}
+        <a href="" class="discreet property-edit-mode">
+            <img src="{{ MEDIA_URL }}lfs/icons/pencil.png"
+                 alt="Edit"
+                 title="{% trans 'Edit variant' %}" />
+        </a>
+    </h2>
     <form id="property-add-form"
           class="property-edit-field"
           action="{% url lfs.manage.views.add_property product.id %}"
@@ -237,8 +243,8 @@
                 {% endfor %}
             </table>
             <div class="buttons">
-                <input type="submit" name="delete" class="button variants-update-button" value="{% trans 'Delete' %}" />
-                <input type="submit" name="update" class="button variants-update-button" value="{% trans 'Update' %}" />
+                <input type="submit" name="delete" class="button ajax-save-button" value="{% trans 'Delete' %}" />
+                <input type="submit" name="update" class="button ajax-save-button" value="{% trans 'Save' %}" />
             </div>
         </form>
 

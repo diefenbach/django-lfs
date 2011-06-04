@@ -495,19 +495,6 @@ $(function() {
         return false;
     })
 
-    $(".variants-update-button").live("click", function() {
-        var action = $(this).attr("name")
-        $("#variants-form").ajaxSubmit({
-            data : {"action" : action},
-            success: function(data) {
-                data = $.parseJSON(data)
-                $("#variants").html(data["properties"]);
-                $("#selectable-products").html(data["selectable_products"]);
-            }
-        })
-        return false;
-    });
-
     $(".ajax-button").live("click", function() {
         var form = $(this).parents("form:first");
         form.ajaxSubmit({

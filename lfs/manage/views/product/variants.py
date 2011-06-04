@@ -442,10 +442,13 @@ def update_variants(request, product_id):
     # Send a signal to update cache
     product_changed.send(product)
 
-    from lfs.manage.views.product.product import selectable_products_inline
+    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
+
     result = simplejson.dumps({
-        "properties" : manage_variants(request, product_id, as_string=True),
-    })
+        "html" : html,
+        "message" : _(u"Variants have been saved."),
+        "close-dialog" : True,
+    }, cls = LazyEncoder)
 
     return HttpResponse(result)
 
