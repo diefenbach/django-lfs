@@ -360,14 +360,14 @@ td.management {
 a.add {
     margin: 0 10px;
     padding-left: 18px;
-    background: url(/media/lfs/icons/add.png) no-repeat;
+    background: url(../icons/add.png) no-repeat;
 }
 
 
 a.delete {
     margin: 0 10px;
     padding-left: 20px;
-    background: url(/media/lfs/icons/delete.png) no-repeat;
+    background: url(../icons/delete.png) no-repeat;
 }
 
 a.export {
@@ -378,56 +378,56 @@ a.export {
 a.overview {
     margin: 0 10px;
     padding-left: 20px;
-    background: url(/media/lfs/icons/arrow_up.png) no-repeat;
+    background: url(../icons/arrow_up.png) no-repeat;
 }
 
 a.preview {
     margin: 0 10px;
     padding-left: 18px;
-    background: url(/media/lfs/icons/zoom.png) no-repeat;
+    background: url(../icons/zoom.png) no-repeat;
 }
 
 a.reset {
     margin: 0 10px;
     padding-left: 18px;
-    background: url(/media/lfs/icons/cancel.png) no-repeat;
+    background: url(../icons/cancel.png) no-repeat;
 }
 
 a.send {
     margin: 0 10px;
     padding-left: 22px;
-    background: url(/media/lfs/icons/email.png) no-repeat;
+    background: url(../icons/email.png) no-repeat;
 }
 
 a.first {
     padding-left: 15px;
-    background: url(/media/lfs/icons/resultset_first.png) no-repeat;
+    background: url(../icons/resultset_first.png) no-repeat;
 }
 
 a.previous {
     padding-left: 15px;
-    background: url(/media/lfs/icons/resultset_previous.png) no-repeat;
+    background: url(../icons/resultset_previous.png) no-repeat;
 }
 
 a.next {
     padding-left: 15px;
-    background: url(/media/lfs/icons/resultset_next.png) no-repeat;
+    background: url(../icons/resultset_next.png) no-repeat;
 }
 
 a.last {
     padding-left: 15px;
-    background: url(/media/lfs/icons/resultset_last.png) no-repeat;
+    background: url(../icons/resultset_last.png) no-repeat;
 }
 
 a.view {
     padding-left: 20px;
-    background: url(/media/lfs/icons/zoom.png) no-repeat;
+    background: url(../icons/zoom.png) no-repeat;
 }
 
 a.edit {
     margin-right:10px;
     padding-left: 20px;
-    background: url(/media/lfs/icons/pencil.png) no-repeat;
+    background: url(../icons/pencil.png) no-repeat;
 }
 
 
@@ -493,7 +493,7 @@ div.site-actions img {
 span.delete {
     margin: 0 0 0 10px;
     padding-left: 20px;
-    background: url(/media/lfs/icons/delete.png) no-repeat;
+    background: url(../icons/delete.png) no-repeat;
 }
 
 div.action a {
