@@ -1,4 +1,5 @@
 # django imports
+from django.conf import settings
 from django.core.cache import cache
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -183,7 +184,7 @@ class Shop(models.Model):
     def get_default_country(self):
         """Returns the default country of the shop.
         """
-        cache_key = "default-country-%s" % self.id
+        cache_key = "%s-default-country-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         default_country = cache.get(cache_key)
         if default_country:
             return default_country

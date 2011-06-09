@@ -1,4 +1,5 @@
 # django imports
+from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -12,7 +13,7 @@ def manage_categories_portlet(request, category_id,
     template_name="manage/category/manage_categories_portlet.html"):
     """Returns a management portlet of all categories.
     """
-    cache_key = "manage-category-portlet"
+    cache_key = "%s-manage-category-portlet"%settings.CACHE_MIDDLEWARE_KEY_PREFIX
     result = cache.get(cache_key)
     if result is not None:
         return result

@@ -1,6 +1,7 @@
 import re
 
 # django imports
+from django.conf import settings
 from django.core.cache import cache
 from django.contrib.auth.models import User
 from django.db import models
@@ -41,7 +42,7 @@ class Cart(models.Model):
     def items(self):
         """Returns the items of the cart.
         """
-        cache_key = "cart-items-%s" % self.id
+        cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         items = cache.get(cache_key)
         if items is None:
             items = CartItem.objects.filter(cart=self)

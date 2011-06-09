@@ -1,4 +1,5 @@
 # django imports
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
@@ -44,7 +45,7 @@ def get_cart_costs(request, cart, total=False, cached=True):
     if cart is None:
         return {"price" : 0, "tax" : 0}
 
-    cache_key = "cart-costs-%s-%s" % (total, cart.id)
+    cache_key = "%s-cart-costs-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, total, cart.id)
 
     if cached:
         cart_costs = cache.get(cache_key)
@@ -123,19 +124,21 @@ def get_cart(request):
 
     if user.is_authenticated():
         try:
-            cart = cache.get("cart-%s" % user)
+            cache_key = "%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user)
+            cart = cache.get(cache_key)
             if cart is None:
                 cart = Cart.objects.get(user = user)
-                cache.set("cart-%s" % user, cart)
+                cache.set(cache_key, cart)
             return cart
         except ObjectDoesNotExist:
             return None
     else:
         try:
-            cart = cache.get("cart-%s" % session_key)
+            cache_key = "%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, session_key)
+            cart = cache.get(cache_key)
             if cart is None:
                 cart = Cart.objects.get(session = session_key)
-                cache.set("cart-%s" % session_key, cart)
+                cache.set(cache_key, cart)
             return cart
         except ObjectDoesNotExist:
             return None

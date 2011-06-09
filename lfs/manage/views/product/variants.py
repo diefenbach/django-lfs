@@ -1,4 +1,5 @@
 # django imports
+from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
@@ -83,7 +84,7 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
     default_variant_form = DefaultVariantForm(instance=product)
 
     # TODO: Delete cache when delete options
-    cache_key = "manage-properties-variants-%s" % product_id
+    cache_key = "%s-manage-properties-variants-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product_id)
     variants = cache.get(cache_key)
     # Get all properties. We need to traverse through all property / options
     # in order to select the options of the current variant.
@@ -293,7 +294,7 @@ def add_variants(request, product_id):
     """Adds variants to product with passed product_id based on property/option-
     combinations passed within request body.
     """
-    cache.delete("variants%s" % product_id)
+    cache.delete("%s-variants%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product_id))
 
     product = Product.objects.get(pk=product_id)
 

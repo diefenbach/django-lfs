@@ -1,4 +1,5 @@
 # django imports
+from django.conf import settings
 from django import forms
 from django.core.cache import cache
 from django.db import models
@@ -38,7 +39,7 @@ class CategoriesPortlet(Portlet):
         else:
             object_id = object.id
         
-        cache_key = "categories-portlet-%s-%s" % (object.__class__.__name__, object_id)
+        cache_key = "%s-categories-portlet-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, object.__class__.__name__, object_id)
         result = cache.get(cache_key)
         if result is not None:
             return result

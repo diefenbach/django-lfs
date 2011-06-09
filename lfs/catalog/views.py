@@ -258,7 +258,7 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
 
     This view is called if the user chooses a template that is situated in settings.CATEGORY_PATH ".
     """
-    cache_key = "category-categories-%s" % slug
+    cache_key = "%s-category-categories-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
 
     result = cache.get(cache_key)
     if result is not None:
@@ -315,8 +315,8 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
     product_filter = request.session.get("product-filter", {})
     product_filter = product_filter.items()
 
-    cache_key = "category-products-%s" % slug
-    sub_cache_key = "start-%s-sorting-%s" % (start, sorting)
+    cache_key = "%s-category-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    sub_cache_key = "%s-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
 
     filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter]
     if filter_key:
@@ -448,7 +448,7 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
     This is factored out to be able to better cached and in might in future used
     used to be updated via ajax requests.
     """
-    cache_key = "product-inline-%s-%s" % (request.user.is_superuser, id)
+    cache_key = "%s-product-inline-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, request.user.is_superuser, id)
     result = cache.get(cache_key)
     if result is not None:
         return result

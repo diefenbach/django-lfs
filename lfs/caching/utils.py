@@ -1,6 +1,7 @@
 # django imports
 from django.db import models
 from django.db.models.query import QuerySet
+from django.conf import settings
 from django.core.cache import cache
 from django.http import Http404
 from django.shortcuts import _get_queryset
@@ -18,7 +19,7 @@ class SimpleCacheQuerySet(QuerySet):
                 break
         if pk is not None:
             opts = self.model._meta
-            key = '%s.%s:%s' % (opts.app_label, opts.module_name, pk)
+            key = '%s.%s.%s:%s' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, opts.app_label, opts.module_name, pk)
             obj = cache.get(key)
             if obj is not None:
                 self._result_cache = [obj]
@@ -39,7 +40,7 @@ def lfs_get_object(klass, *args, **kwargs):
     Note: Like with get(), an MultipleObjectsReturned will be raised if more than one
     object is found.
     """
-    cache_key = "%s-%s" % (klass.__name__.lower(), kwargs.values()[0])
+    cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, klass.__name__.lower(), kwargs.values()[0])
     object = cache.get(cache_key)
     if object is not None:
         return object
@@ -65,7 +66,7 @@ def lfs_get_object_or_404(klass, *args, **kwargs):
     Note: Like with get(), an MultipleObjectsReturned will be raised if more than one
     object is found.
     """
-    cache_key = "%s-%s" % (klass.__name__.lower(), kwargs.values()[0])
+    cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, klass.__name__.lower(), kwargs.values()[0])
     object = cache.get(cache_key)
     if object is not None:
         return object

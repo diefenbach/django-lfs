@@ -1,5 +1,6 @@
 # django imports
 from django import template
+from django.conf import settings
 from django.core.cache import cache
 from django.utils.translation import ugettext_lazy as _
 
@@ -29,7 +30,7 @@ def lfs_portlet_slot(context, slot_name):
                context.get("product") or \
                lfs.core.utils.get_default_shop()
 
-    cache_key = "lfs-portlet-slot-%s-%s-%s" % (slot_name, instance.__class__.__name__, instance.id)
+    cache_key = "%s-lfs-portlet-slot-%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slot_name, instance.__class__.__name__, instance.id)
     temp = cache.get(cache_key)
 
     if temp is None:
