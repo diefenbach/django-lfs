@@ -31,9 +31,6 @@ class ShopTestCase(TestCase):
     """
     fixtures = ['lfs_shop.xml']
 
-    def test_awesomeness(self):
-        self.assertEqual(1, 0)
-
     def test_shop_defaults(self):
         """Tests the shop values right after creation of an instance
         """
