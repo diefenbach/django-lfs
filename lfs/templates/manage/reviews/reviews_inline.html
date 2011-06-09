@@ -166,19 +166,19 @@
             </td>
             <td>
 				{% if review.comment %}
-					<img src="/media/lfs/icons/tick.png"
+					<img src="{{ MEDIA_URL }}lfs/icons/tick.png"
 					     alt="{% trans 'Yes' %}">
 				{% else %}				
-					<img src="/media/lfs/icons/delete.png"
+					<img src="{{ MEDIA_URL }}lfs/icons/delete.png"
 					     alt="{% trans 'No' %}">
 				{% endif %}				
             </td>
             <td>
 				{% if review.active %}
-					<img src="/media/lfs/icons/tick.png"
+					<img src="{{ MEDIA_URL }}lfs/icons/tick.png"
 					     alt="{% trans 'Yes' %}">
 				{% else %}				
-					<img src="/media/lfs/icons/delete.png"
+					<img src="{{ MEDIA_URL }}/icons/delete.png"
 					     alt="{% trans 'No' %}">
 				{% endif %}				
             </td>
