@@ -41,7 +41,8 @@
                             <tr>
                                 <th class="checkbox">
                                     <input type="checkbox"
-                                           class="select-all-1" />
+                                           class="select-all"
+                                           value="accessories" />
                                 </th>
                                 <th class="middle">
                                     {% trans 'Name' %}
@@ -58,7 +59,7 @@
                                     <td>
                                         <input type="checkbox"
                                                name="product-{{ product.id }}"
-                                               class="select-1" />
+                                               class="select-accessories" />
                                     </td>
                                     <td>
                                         <a href="{% url lfs_manage_product product.id %}">
@@ -100,7 +101,8 @@
                             <tr>
                                 <th class="checkbox">
                                     <input type="checkbox"
-                                           class="select-all-2" />
+                                           class="select-all"
+                                           value="selected-accessories" />
                                 </th>
                                 <th style="padding-right:5px">
                                     {% trans 'Name' %}
@@ -124,7 +126,7 @@
                                     <td>
                                         <input type="checkbox"
                                                name="accessory-{{ product_accessory.accessory.id }}"
-                                               class="select-2"/>
+                                               class="select-selected-accessories"/>
                                     </td>
                                     <td style="padding-right:5px">
                                         <a href="{% url lfs_manage_product product_accessory.accessory.id %}">

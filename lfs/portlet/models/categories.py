@@ -12,7 +12,7 @@ from portlets.models import Portlet
 import lfs.core.utils
 
 class CategoriesPortlet(Portlet):
-    """A portlet to display categories.
+    """Portlet to display categories.
     """
     start_level = models.PositiveSmallIntegerField(default=1)
     expand_level = models.PositiveSmallIntegerField(default=1)
@@ -52,7 +52,6 @@ class CategoriesPortlet(Portlet):
         result = render_to_string("lfs/portlets/categories.html", RequestContext(request, {
             "title" : self.title,
             "categories" : category_tree,
-            "MEDIA_URL" : context.get("MEDIA_URL"),
             "product" : product,
             "category" : category,
         }))
@@ -61,12 +60,10 @@ class CategoriesPortlet(Portlet):
         return result
 
     def form(self, **kwargs):
-        """
-        """
         return CategoriesPortletForm(instance=self, **kwargs)
 
 class CategoriesPortletForm(forms.ModelForm):
-    """
+    """Form for CategoriesPortlet.
     """
     class Meta:
         model = CategoriesPortlet

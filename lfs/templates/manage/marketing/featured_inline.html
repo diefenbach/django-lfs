@@ -37,7 +37,8 @@
                         <tr>
                             <th class="checkbox">
                                 <input type="checkbox"
-                                       class="select-all-1" />
+                                       class="select-all"
+                                       value="products" />
                             </th>
                             <th>
                                 {% trans 'Name' %}
@@ -54,7 +55,7 @@
                                 <td>
                                     <input type="checkbox"
                                            name="product-{{ product.id }}"
-                                           class="select-1" />
+                                           class="select-products" />
                                 </td>
                                 <td>
                                     <a href="{% url lfs_manage_product product.id %}">
@@ -95,7 +96,8 @@
                         <tr>
                             <th class="checkbox">
                                 <input type="checkbox"
-                                       class="select-all-2" />
+                                       class="select-all"
+                                       value="featured-products" />
                             </th>
                             <th>
                                 {% trans 'Name' %}
@@ -116,7 +118,7 @@
                                 <td>
                                     <input type="checkbox"
                                            name="product-{{ ts.id }}"
-                                           class="select-2" />
+                                           class="select-featured-products" />
                                 </td>
                                 <td>
                                     <a href="{% url lfs_manage_product product.id %}">                                    

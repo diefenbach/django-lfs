@@ -1,5 +1,6 @@
 # django imports
 from django import forms
+from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # portlets imports
@@ -7,7 +8,7 @@ from portlets.models import Portlet
 from portlets.utils import register_portlet
 
 class CartPortlet(Portlet):
-    """A portlet to display news.
+    """Portlet to display the cart.
     """
     class Meta:
         app_label = 'portlet'
@@ -29,20 +30,17 @@ class CartPortlet(Portlet):
             amount_of_items = cart.amount_of_items
             price = lfs.cart.utils.get_cart_price(request, cart, total=True)
         
-        return render_to_string("lfs/portlets/cart.html", {
+        return render_to_string("lfs/portlets/cart.html", RequestContext(request, {
             "title" : self.title,
             "amount_of_items" : amount_of_items,
             "price" : price,
-            "MEDIA_URL" : context.get("MEDIA_URL"),
-        })
+        }))
         
     def form(self, **kwargs):
-        """
-        """
         return CartPortletForm(instance=self, **kwargs)
         
 class CartPortletForm(forms.ModelForm):
-    """
+    """Form for CartPortlet.
     """
     class Meta:
         model = CartPortlet

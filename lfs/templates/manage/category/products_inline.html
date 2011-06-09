@@ -40,7 +40,8 @@
                         <tr>
                             <th class="checkbox">
                                 <input type="checkbox"
-                                       class="select-all-1" />
+                                       class="select-all"
+                                       value="products" />
                             </th>
                             <th>
                                 {% trans 'Name' %}
@@ -56,7 +57,7 @@
                             <tr class="{% cycle 'even' 'odd' %}">
                                 <td>
                                     <input type="checkbox"
-                                           class="select-1"
+                                           class="select-products"
                                            name="{{ product.id }}" />
                                 </td>
                                 <td>

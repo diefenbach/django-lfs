@@ -58,7 +58,8 @@
         <tr>
             <th class="tiny">
                 <input type="checkbox" 
-                       class="select-all-1">            
+                       class="select-all"
+                       value="vouchers">            
             </th>
             <th class="small">
                 {% trans "Number" %}
@@ -99,7 +100,7 @@
                 <td class="tiny checkbox">
                     {% if not voucher.used %}
                         <input type="checkbox" 
-                               class="select-1"
+                               class="select-vouchers"
                                name="voucher-ids"
                                value="{{ voucher.id }}">
                     {% endif %}

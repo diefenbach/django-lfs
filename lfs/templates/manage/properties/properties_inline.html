@@ -12,7 +12,8 @@
                         <tr>
                             <th class="checkbox">
                                 <input type="checkbox" 
-                                       class="select-all-1"/>
+                                       class="select-all"
+                                       value="properties" />
                             </th>
                             <th>{% trans 'Name' %}</th>
                         </tr>
@@ -21,7 +22,7 @@
                                 <tr class="{% cycle 'even' 'odd' %}">
                                     <td>
                                         <input type="checkbox" 
-                                               class="select-1"
+                                               class="select-properties"
                                                name="property-id"
                                                value="{{ property.id }}" />
                                     </td>
@@ -58,7 +59,8 @@
                         <tr>
                             <th class="checkbox">
                                 <input type="checkbox"
-                                       class="select-all-2" />
+                                       class="select-all"
+                                       value="assigned-products" />
                             </th>
                             <th width="100px">
                                 {% trans 'Position' %}
@@ -72,7 +74,7 @@
                                 <tr>
                                     <td>
                                         <input type="checkbox" 
-                                               class="select-2"
+                                               class="select-assigned-products"
                                                name="property-id" 
                                                value="{{ gp.property.id }}" />
                                     </td>

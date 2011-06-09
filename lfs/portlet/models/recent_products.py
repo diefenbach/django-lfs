@@ -2,18 +2,18 @@
 from django import forms
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # portlets imports
 from portlets.models import Portlet
-from portlets.utils import register_portlet
 
 # lfs imports
 from lfs.catalog.models import Product
 from lfs.caching.utils import lfs_get_object
 
 class RecentProductsPortlet(Portlet):
-    """A portlet to display recent visited products.
+    """Portlet to display recent visited products.
     """
     class Meta:
         app_label = 'portlet'
@@ -44,19 +44,16 @@ class RecentProductsPortlet(Portlet):
                 product = product.get_default_variant()
             products.append(product)
 
-        return render_to_string("lfs/portlets/recent_products.html", {
+        return render_to_string("lfs/portlets/recent_products.html", RequestContext(request, {
             "title" : self.title,
             "products" : products,
-            "MEDIA_URL" : context.get("MEDIA_URL"),
-        })
+        }))
 
     def form(self, **kwargs):
-        """
-        """
         return RecentProductsForm(instance=self, **kwargs)
 
 class RecentProductsForm(forms.ModelForm):
-    """
+    """Form for the RecentProductsPortlet.
     """
     class Meta:
         model = RecentProductsPortlet

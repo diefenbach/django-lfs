@@ -208,31 +208,10 @@ $(function() {
     });
 
     // General
-    $(".delete-all").live("click", function() {
-        var checked = this.checked;
-        $(".delete").each(function() {
-            this.checked = checked;
-        });
-    });
-
     $(".select-all").live("click", function() {
         var checked = this.checked;
         var selector = ".select-" + $(this).attr("value")
         $(selector).each(function() {
-            this.checked = checked;
-        });
-    });
-
-    $(".select-all-1").live("click", function() {
-        var checked = this.checked;
-        $(".select-1").each(function() {
-            this.checked = checked;
-        });
-    });
-
-    $(".select-all-2").live("click", function() {
-        var checked = this.checked;
-        $(".select-2").each(function() {
             this.checked = checked;
         });
     });

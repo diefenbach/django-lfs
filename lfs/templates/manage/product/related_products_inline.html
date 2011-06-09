@@ -40,7 +40,8 @@
                             <tr>
                                 <th class="checkbox">
                                     <input type="checkbox"
-                                           class="select-all-1" />
+                                           class="select-all"
+                                           value="related-products" />
                                 </th>
                                 <th class="middle">
                                     {% trans 'Name' %}
@@ -57,7 +58,7 @@
                                     <td>
                                         <input type="checkbox"
                                                name="product-{{ product.id }}"
-                                               class="select-1" />
+                                               class="select-related-products" />
                                     </td>
                                     <td>
                                         <a href="{% url lfs_manage_product product.id %}">
@@ -100,7 +101,8 @@
                             <tr>
                                 <th class="checkbox">
                                     <input type="checkbox"
-                                           class="select-all-2" />
+                                           class="select-all"
+                                           value="selected-related-products" />
                                 </th>
                                 <th class="middle">
                                     {% trans 'Name' %}
@@ -118,7 +120,7 @@
                                     <td>
                                         <input type="checkbox"
                                                name="product-{{ related_product.id }}"
-                                               class="select-2" />
+                                               class="select-selected-related-products" />
                                     </td>
                                     <td>
                                         <a href="{% url lfs_manage_product related_product.id %}">

@@ -16,7 +16,9 @@
         <table>
             <tr>
                 <th>
-                    <input type="checkbox" class="select-all-1" />
+                    <input type="checkbox" 
+                           class="select-all"
+                           value="prices" />
                 </th>
                 <th>
                     {% trans 'Priority' %}
@@ -28,7 +30,7 @@
             {% for price in prices  %}
             <tr>
                 <td>
-                    <input type="checkbox" name="delete-{{ price.id }}" class="select-1" />
+                    <input type="checkbox" name="delete-{{ price.id }}" class="select-prices" />
                 </td>
                 <td>
                     <input type="text" size="5" name="priority-{{ price.id }}" value="{{ price.priority }}" />
