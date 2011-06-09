@@ -8,7 +8,7 @@ from portlets.models import Portlet
 from portlets.utils import register_portlet
 
 class CartPortlet(Portlet):
-    """A portlet to display news.
+    """Portlet to display the cart.
     """
     class Meta:
         app_label = 'portlet'
@@ -37,12 +37,10 @@ class CartPortlet(Portlet):
         }))
         
     def form(self, **kwargs):
-        """
-        """
         return CartPortletForm(instance=self, **kwargs)
         
 class CartPortletForm(forms.ModelForm):
-    """
+    """Form for CartPortlet.
     """
     class Meta:
         model = CartPortlet

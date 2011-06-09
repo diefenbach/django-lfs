@@ -10,7 +10,7 @@ from portlets.models import Portlet
 import lfs.shipping.utils
 
 class DeliveryTimePortlet(Portlet):
-    """A portlet to display delivery time.
+    """Portlet to display delivery time.
     """
     class Meta:
         app_label = 'portlet'
@@ -40,8 +40,6 @@ class DeliveryTimePortlet(Portlet):
         return render_to_string("lfs/portlets/delivery_time.html", RequestContext(request, d))
 
     def form(self, **kwargs):
-        """
-        """
         return DeliveryTimeForm(instance=self, **kwargs)
 
 class DeliveryTimeForm(forms.ModelForm):

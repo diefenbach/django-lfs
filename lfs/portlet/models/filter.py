@@ -66,8 +66,6 @@ class FilterPortlet(Portlet):
         }))
 
     def form(self, **kwargs):
-        """
-        """
         return FilterPortletForm(instance=self, **kwargs)
 
 class FilterPortletForm(forms.ModelForm):

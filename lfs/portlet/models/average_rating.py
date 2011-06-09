@@ -10,7 +10,7 @@ from portlets.models import Portlet
 import reviews.utils
 
 class AverageRatingPortlet(Portlet):
-    """A portlet to display recent visited products.
+    """Portlet to display the average rating for a product.
     """
     class Meta:
         app_label = 'portlet'
@@ -38,12 +38,10 @@ class AverageRatingPortlet(Portlet):
         }))
 
     def form(self, **kwargs):
-        """
-        """
         return AverageRatingForm(instance=self, **kwargs)
 
 class AverageRatingForm(forms.ModelForm):
-    """
+    """Form for the AverageRatingPortlet.
     """
     class Meta:
         model = AverageRatingPortlet

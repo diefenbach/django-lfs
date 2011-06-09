@@ -10,7 +10,7 @@ from portlets.models import Portlet
 
 
 class TextPortlet(Portlet):
-    """A simple portlet to display some text.
+    """Portlet to display some text.
     """
     text = models.TextField(_(u"Text"), blank=True)
 
@@ -30,8 +30,6 @@ class TextPortlet(Portlet):
         }))
 
     def form(self, **kwargs):
-        """
-        """
         return TextPortletForm(instance=self, **kwargs)
 
 

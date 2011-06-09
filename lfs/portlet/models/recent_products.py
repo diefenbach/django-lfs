@@ -13,7 +13,7 @@ from lfs.catalog.models import Product
 from lfs.caching.utils import lfs_get_object
 
 class RecentProductsPortlet(Portlet):
-    """A portlet to display recent visited products.
+    """Portlet to display recent visited products.
     """
     class Meta:
         app_label = 'portlet'
@@ -50,12 +50,10 @@ class RecentProductsPortlet(Portlet):
         }))
 
     def form(self, **kwargs):
-        """
-        """
         return RecentProductsForm(instance=self, **kwargs)
 
 class RecentProductsForm(forms.ModelForm):
-    """
+    """Form for the RecentProductsPortlet.
     """
     class Meta:
         model = RecentProductsPortlet

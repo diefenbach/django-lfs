@@ -11,7 +11,7 @@ from portlets.models import Portlet
 from lfs.page.models import Page
 
 class PagesPortlet(Portlet):
-    """A portlet to display pages.
+    """Portlet to display pages.
     """
     class Meta:
         app_label = 'portlet'
@@ -36,12 +36,10 @@ class PagesPortlet(Portlet):
         }))
 
     def form(self, **kwargs):
-        """
-        """
         return PagesForm(instance=self, **kwargs)
 
 class PagesForm(forms.ModelForm):
-    """
+    """Form for the PagesPortlet.
     """
     class Meta:
         model = PagesPortlet
