@@ -143,7 +143,7 @@ def add_files(request, id):
     """
     static_block = lfs_get_object_or_404(StaticBlock, pk=id)
     if request.method == "POST":
-        for file_content in request.FILES.values():
+        for file_content in request.FILES.getlist("file"):
             file = File(content=static_block, title=file_content.name)
             file.file.save(file_content.name, file_content, save=True)
 
@@ -154,7 +154,8 @@ def add_files(request, id):
         file.position = (i + 1) * 10
         file.save()
 
-    return HttpResponse("nix")
+    result = simplejson.dumps({"name": file_content.name, "type":"image/jpeg", "size":"123456789"})
+    return HttpResponse(result)
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_static_block(request, template_name="manage/static_block/add_static_block.html"):

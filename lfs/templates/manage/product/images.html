@@ -26,7 +26,8 @@
             <tr>
                 <th class="tiny">
                     <input type="checkbox"
-                           class="delete-all" />
+                           class="select-all"
+                           value="delete-images" />
                 </th>
                 <th class="tiny" style="padding: 0 10px">
                     {% trans 'Image' %}
@@ -42,7 +43,7 @@
                 <tr>
                     <td>
                         <input type="checkbox"
-                               class="delete"
+                               class="select-delete-images"
                                name="delete-{{ image.id }}"
                                style="float:left" />
                     </td>

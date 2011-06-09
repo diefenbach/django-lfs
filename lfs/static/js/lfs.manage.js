@@ -208,13 +208,6 @@ $(function() {
     });
 
     // General
-    $(".delete-all").live("click", function() {
-        var checked = this.checked;
-        $(".delete").each(function() {
-            this.checked = checked;
-        });
-    });
-
     $(".select-all").live("click", function() {
         var checked = this.checked;
         var selector = ".select-" + $(this).attr("value")
