@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 
 # portlets imports
 from portlets.models import Portlet
-from portlets.utils import register_portlet
+
 
 class RelatedProductsPortlet(Portlet):
     """Portlet to display related products.
@@ -20,6 +20,7 @@ class RelatedProductsPortlet(Portlet):
         """Renders the portlet as html.
         """
         product = context.get("product")
+        request = context.get("request")
 
         return render_to_string("lfs/portlets/related_products.html", RequestContext(request, {
             "title" : self.title,
