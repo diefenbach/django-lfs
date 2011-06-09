@@ -2090,6 +2090,7 @@ class ProductTestCase(TestCase):
 
         # Now we set the default variant to Variant 2
         self.p1.default_variant = self.v2
+        self.p1.save()
         default_variant = self.p1.get_default_variant()
         self.assertEqual(default_variant.id, self.v2.id)
 
