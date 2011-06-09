@@ -102,6 +102,11 @@ urlpatterns += patterns('',
     (r'^tagging/', include('lfs.tagging.urls')),
 )
 
+# Tagging
+urlpatterns += patterns('',
+    (r'^api/', include('lfs.core.api.urls')),
+)
+
 urlpatterns += patterns('',
     (r'', include('lfs_contact.urls')),
 )
