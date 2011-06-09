@@ -1,5 +1,6 @@
 # django imports
 from django import forms
+from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # portlets imports
@@ -34,10 +35,9 @@ class DeliveryTimePortlet(Portlet):
                 "title" : self.title,
                 "deliverable" : info["deliverable"],
                 "delivery_time" : info["delivery_time"],
-                "MEDIA_URL" : context.get("MEDIA_URL"),
             }
 
-        return render_to_string("lfs/portlets/delivery_time.html", d)
+        return render_to_string("lfs/portlets/delivery_time.html", RequestContext(request, d))
 
     def form(self, **kwargs):
         """

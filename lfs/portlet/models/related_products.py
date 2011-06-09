@@ -1,5 +1,6 @@
 # django imports
 from django import forms
+from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # portlets imports
@@ -20,11 +21,10 @@ class RelatedProductsPortlet(Portlet):
         """
         product = context.get("product")
 
-        return render_to_string("lfs/portlets/related_products.html", {
+        return render_to_string("lfs/portlets/related_products.html", RequestContext(request, {
             "title" : self.title,
             "product" : product,
-            "MEDIA_URL" : context.get("MEDIA_URL"),
-        })
+        }))
 
     def form(self, **kwargs):
         """

@@ -52,7 +52,6 @@ class CategoriesPortlet(Portlet):
         result = render_to_string("lfs/portlets/categories.html", RequestContext(request, {
             "title" : self.title,
             "categories" : category_tree,
-            "MEDIA_URL" : context.get("MEDIA_URL"),
             "product" : product,
             "category" : category,
         }))
