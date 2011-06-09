@@ -223,20 +223,6 @@ $(function() {
         });
     });
 
-    $(".select-all-1").live("click", function() {
-        var checked = this.checked;
-        $(".select-1").each(function() {
-            this.checked = checked;
-        });
-    });
-
-    $(".select-all-2").live("click", function() {
-        var checked = this.checked;
-        $(".select-2").each(function() {
-            this.checked = checked;
-        });
-    });
-
     // Categories / Products
     $(".category-products-page-link").live("click", function() {
         var url = $(this).attr("href");

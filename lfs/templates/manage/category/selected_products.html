@@ -34,7 +34,9 @@
         <table class="lfs-manage-table">
             <tr>
                 <th class="checkbox">
-                    <input type="checkbox" class="select-all-2" />
+                    <input type="checkbox" 
+                           class="select-all" 
+                           value="selected-products" />
                 </th>
                 <th>
                     {% trans 'Name' %}
@@ -49,7 +51,7 @@
             {% for product in page_2.object_list %}
                 <tr class="{% cycle 'even' 'odd' %}">
                     <td>
-                        <input type="checkbox" class="select-2" name="{{ product.id }}" />
+                        <input type="checkbox" class="select-selected-products" name="{{ product.id }}" />
                     </td>
                     <td>
                         <a href="{% url lfs_manage_product product.id %}">
