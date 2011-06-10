@@ -9,3 +9,8 @@ ACTION_PLACE_CHOICES = [
     (ACTION_PLACE_FOOTER, _(u"Footer")),
 ]
 POSTAL_ADDRESS_L10N = getattr(settings, 'POSTAL_ADDRESS_L10N', True)
+
+LFS_DEFAULT_PRICE_CALCULATOR="lfs.gross_price.GrossPriceCalculator"
+LFS_PRICE_CALCULATORS = ['lfs.gross_price.GrossPriceCalculator',
+                         'lfs.net_price.NetPriceCalculator',
+                         'lfs.stock_image_licencing.StockImagePriceCalculator']

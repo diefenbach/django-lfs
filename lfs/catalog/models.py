@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.utils.importlib import import_module
 
 # lfs imports
 import lfs.catalog.utils
@@ -51,6 +52,7 @@ from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
 from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
+import lfs.core.settings as lfs_settings
 
 def get_unique_id_str():
     return str(uuid.uuid4())
@@ -511,6 +513,7 @@ class Product(models.Model):
         - uid
            The unique id of the product
     """
+
     # All products
     name = models.CharField(_(u"Name"), help_text=_(u"The name of the product."), max_length=80, blank=True)
     slug = models.SlugField(_(u"Slug"), help_text=_(u"The unique last part of the Product's URL."), unique=True, max_length=80)
@@ -959,6 +962,13 @@ class Product(models.Model):
         """
         return self.get_price_gross(with_properties)
 
+
+    def get_price_calculator(self, request=None):
+        module_str, price_calculator_str = lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR.rsplit('.', 1)
+        mod = import_module(module_str)
+        price_calculator_class = getattr(mod, price_calculator_str)
+        return price_calculator_class(request, self)
+
     def get_standard_price(self, with_properties=True):
         """Returns always the standard price for the product. Independent
         whether the product is for sale or not. If you want the real price of
@@ -1059,10 +1069,9 @@ class Product(models.Model):
         return mult * price
 
     def get_price_net(self):
-        """Returns the real net price of the product. Takes care whether the
-        product is for sale.
-        """
-        return self.get_price_gross() - self.get_tax()
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.get_price_net()
 
     def get_global_properties(self):
         """Returns all global properties for the product.
