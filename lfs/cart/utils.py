@@ -11,6 +11,7 @@ from lfs.payment import utils as payment_utils
 from lfs.shipping import utils as shipping_utils
 from lfs.voucher.models import Voucher
 
+
 def get_cart_max_delivery_time(request, cart):
     """Returns the delivery time object with the maximal delivery time of all
     products within the cart. Takes the selected shipping method into account.
@@ -28,11 +29,13 @@ def get_cart_max_delivery_time(request, cart):
             max_delivery_time = delivery_time
     return max_delivery_time
 
+
 # TODO: Remove cart from signature?
 def get_cart_price(request, cart, total=False, cached=True):
     """Returns price of the given cart.
     """
     return get_cart_costs(request, cart, total, cached)["price"]
+
 
 def get_cart_costs(request, cart, total=False, cached=True):
     """Returns a dictionary with price and tax of the given cart:
@@ -43,7 +46,7 @@ def get_cart_costs(request, cart, total=False, cached=True):
         }
     """
     if cart is None:
-        return {"price" : 0, "tax" : 0}
+        return {"price": 0, "tax": 0}
 
     cache_key = "%s-cart-costs-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, total, cart.id)
 
@@ -91,10 +94,11 @@ def get_cart_costs(request, cart, total=False, cached=True):
                 voucher_value = voucher.get_price_gross(cart)
                 cart_price = cart_price - voucher_value
 
-        cart_costs = {"price" : cart_price, "tax" : cart_tax}
+        cart_costs = {"price": cart_price, "tax": cart_tax}
         cache.set(cache_key, cart_costs)
 
     return cart_costs
+
 
 def get_or_create_cart(request):
     """Returns the cart of the current user. If no cart exists it creates a new
@@ -106,15 +110,17 @@ def get_or_create_cart(request):
 
     return cart
 
+
 def create_cart(request):
     """Creates a cart for the current session and/or user.
     """
-    cart = Cart(session = request.session.session_key)
+    cart = Cart(session=request.session.session_key)
     if request.user.is_authenticated():
         cart.user = request.user
 
     cart.save()
     return cart
+
 
 def get_cart(request):
     """Returns the cart of the current customer or None.
@@ -127,7 +133,7 @@ def get_cart(request):
             cache_key = "%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user)
             cart = cache.get(cache_key)
             if cart is None:
-                cart = Cart.objects.get(user = user)
+                cart = Cart.objects.get(user=user)
                 cache.set(cache_key, cart)
             return cart
         except ObjectDoesNotExist:
@@ -137,11 +143,12 @@ def get_cart(request):
             cache_key = "%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, session_key)
             cart = cache.get(cache_key)
             if cart is None:
-                cart = Cart.objects.get(session = session_key)
+                cart = Cart.objects.get(session=session_key)
                 cache.set(cache_key, cart)
             return cart
         except ObjectDoesNotExist:
             return None
+
 
 def get_go_on_shopping_url(request):
     """Calculates the go on shopping url.
@@ -151,6 +158,7 @@ def get_go_on_shopping_url(request):
         return lc.get_absolute_url()
     else:
         return reverse("lfs_shop_view")
+
 
 def update_cart_after_login(request):
     """Updates the cart after login.
@@ -162,16 +170,16 @@ def update_cart_after_login(request):
        to the user cart.
     """
     try:
-        session_cart = Cart.objects.get(session = request.session.session_key)
+        session_cart = Cart.objects.get(session=request.session.session_key)
         try:
-            user_cart = Cart.objects.get(user = request.user)
+            user_cart = Cart.objects.get(user=request.user)
         except ObjectDoesNotExist:
             session_cart.user = request.user
             session_cart.save()
         else:
             for session_cart_item in session_cart.items():
                 try:
-                    user_cart_item = CartItem.objects.get(cart = user_cart, product = session_cart_item.product)
+                    user_cart_item = CartItem.objects.get(cart=user_cart, product=session_cart_item.product)
                 except ObjectDoesNotExist:
                     session_cart_item.cart = user_cart
                     session_cart_item.save()

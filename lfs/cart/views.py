@@ -33,13 +33,15 @@ from lfs.customer import utils as customer_utils
 from lfs.voucher.models import Voucher
 from lfs.voucher.settings import MESSAGES
 
+
 def cart(request, template_name="lfs/cart/cart.html"):
     """The main view of the cart.
     """
     return render_to_response(template_name, RequestContext(request, {
-        "voucher_number" : lfs.voucher.utils.get_current_voucher_number(request),
-        "cart_inline" : cart_inline(request),
+        "voucher_number": lfs.voucher.utils.get_current_voucher_number(request),
+        "cart_inline": cart_inline(request),
     }))
+
 
 def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     """The actual content of the cart. This is factored out to be reused within
@@ -49,7 +51,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     shopping_url = lfs.cart.utils.get_go_on_shopping_url(request)
     if cart is None:
         return render_to_string(template_name, RequestContext(request, {
-            "shopping_url" : shopping_url,
+            "shopping_url": shopping_url,
         }))
 
     shop = core_utils.get_default_shop()
@@ -108,28 +110,29 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     max_delivery_date = cart_utils.get_cart_max_delivery_time(request, cart)
 
     return render_to_string(template_name, RequestContext(request, {
-        "cart" : cart,
-        "max_delivery_date" : max_delivery_date,
-        "cart_price" : cart_price,
-        "cart_tax" : cart_tax,
-        "shipping_methods" : shipping_utils.get_valid_shipping_methods(request),
-        "selected_shipping_method" : selected_shipping_method,
-        "shipping_price" : shipping_costs["price"],
-        "payment_methods" : payment_utils.get_valid_payment_methods(request),
-        "selected_payment_method" : selected_payment_method,
-        "payment_price" : payment_costs["price"],
-        "countries" : countries,
-        "selected_country" : selected_country,
-        "max_delivery_time" : max_delivery_time,
-        "shopping_url" : shopping_url,
-        "discounts" : discounts,
-        "display_voucher" : display_voucher,
-        "voucher_number" : voucher_number,
-        "voucher_value" : voucher_value,
-        "voucher_tax" : voucher_tax,
-        "voucher_number" : lfs.voucher.utils.get_current_voucher_number(request),
-        "voucher_message" : voucher_message,
+        "cart": cart,
+        "max_delivery_date": max_delivery_date,
+        "cart_price": cart_price,
+        "cart_tax": cart_tax,
+        "shipping_methods": shipping_utils.get_valid_shipping_methods(request),
+        "selected_shipping_method": selected_shipping_method,
+        "shipping_price": shipping_costs["price"],
+        "payment_methods": payment_utils.get_valid_payment_methods(request),
+        "selected_payment_method": selected_payment_method,
+        "payment_price": payment_costs["price"],
+        "countries": countries,
+        "selected_country": selected_country,
+        "max_delivery_time": max_delivery_time,
+        "shopping_url": shopping_url,
+        "discounts": discounts,
+        "display_voucher": display_voucher,
+        "voucher_number": voucher_number,
+        "voucher_value": voucher_value,
+        "voucher_tax": voucher_tax,
+        "voucher_number": lfs.voucher.utils.get_current_voucher_number(request),
+        "voucher_message": voucher_message,
     }))
+
 
 def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
     """Shows the product that has been added to the cart.
@@ -141,11 +144,12 @@ def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
         accessories = []
 
     return render_to_response(template_name, RequestContext(request, {
-        "plural" : len(cart_items) > 1,
-        "shopping_url" : request.META.get("HTTP_REFERER", "/"),
-        "product_accessories" : accessories,
-        "cart_items" : added_to_cart_items(request),
+        "plural": len(cart_items) > 1,
+        "shopping_url": request.META.get("HTTP_REFERER", "/"),
+        "product_accessories": accessories,
+        "cart_items": added_to_cart_items(request),
     }))
+
 
 def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.html"):
     """Displays the added items for the added-to-cart view.
@@ -157,9 +161,10 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
         total += cart_item.get_price()
 
     return render_to_string(template_name, {
-        "total" : total,
-        "cart_items" : cart_items,
+        "total": total,
+        "cart_items": cart_items,
     })
+
 
 # Actions
 def add_accessory_to_cart(request, product_id, quantity=1):
@@ -198,6 +203,7 @@ def add_accessory_to_cart(request, product_id, quantity=1):
 
     cart_changed.send(cart, request=request)
     return HttpResponse(added_to_cart_items(request))
+
 
 def add_to_cart(request, product_id=None):
     """Adds the amount of the product with given id to the cart. If the product
@@ -240,7 +246,7 @@ def add_to_cart(request, product_id=None):
                 if property.is_number_field:
 
                     if (value < property.unit_min) or (value > property.unit_max):
-                        msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name" : property.title, "min" : property.unit_min, "max" : property.unit_max, "unit" : property.unit }
+                        msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name": property.title, "min": property.unit_min, "max": property.unit_max, "unit": property.unit}
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
@@ -254,7 +260,7 @@ def add_to_cart(request, product_id=None):
 
                     value = "%.2f" % value
                     if value not in steps:
-                        msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": property.title, "value": value, "step" : property.unit_step }
+                        msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": property.title, "value": value, "step": property.unit_step}
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
@@ -288,7 +294,7 @@ def add_to_cart(request, product_id=None):
 
     else:
         try:
-            cart_item = CartItem.objects.get(cart = cart, product = product)
+            cart_item = CartItem.objects.get(cart=cart, product=product)
         except ObjectDoesNotExist:
             cart_item = CartItem(cart=cart, product=product, amount=quantity)
             cart_item.save()
@@ -306,7 +312,7 @@ def add_to_cart(request, product_id=None):
         elif product.stock_amount == 1:
             message = _(u"Sorry, but '%(product)s' is only one time available." % {"product": product.name})
         else:
-            message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": product.name, "amount" : product.stock_amount}
+            message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": product.name, "amount": product.stock_amount}
         cart_item.amount = product.stock_amount
         cart_item.save()
 
@@ -327,9 +333,9 @@ def add_to_cart(request, product_id=None):
                 quantity = 1
 
             try:
-                cart_item = CartItem.objects.get(cart = cart, product = accessory)
+                cart_item = CartItem.objects.get(cart=cart, product=accessory)
             except ObjectDoesNotExist:
-                cart_item = CartItem(cart=cart, product = accessory, amount=quantity)
+                cart_item = CartItem(cart=cart, product=accessory, amount=quantity)
                 cart_item.save()
             else:
                 cart_item.amount += quantity
@@ -361,6 +367,7 @@ def add_to_cart(request, product_id=None):
     else:
         return HttpResponseRedirect(reverse(url_name))
 
+
 def delete_cart_item(request, cart_item_id):
     """Deletes the cart item with the given id.
     """
@@ -370,6 +377,7 @@ def delete_cart_item(request, cart_item_id):
     cart_changed.send(cart, request=request)
 
     return HttpResponse(cart_inline(request))
+
 
 def refresh_cart(request):
     """Refreshes the cart after some changes has been taken place: the amount
@@ -412,7 +420,7 @@ def refresh_cart(request):
                 elif amount == 1:
                     message = _(u"Sorry, but '%(product)s' is only one time available." % {"product": item.product.name})
                 else:
-                    message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": item.product.name, "amount" : amount}
+                    message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": item.product.name, "amount": amount}
 
         except ValueError:
             amount = 1
@@ -445,11 +453,12 @@ def refresh_cart(request):
     customer.save()
 
     result = simplejson.dumps({
-        "html" : cart_inline(request),
-        "message" : message,
-    }, cls = LazyEncoder)
+        "html": cart_inline(request),
+        "message": message,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def check_voucher(request):
     """Updates the cart after the voucher number has been changed.
@@ -458,7 +467,7 @@ def check_voucher(request):
     lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
 
     result = simplejson.dumps({
-        "html" : (("#cart-inline", cart_inline(request)),)
+        "html": (("#cart-inline", cart_inline(request)),)
     })
 
     return HttpResponse(result)
