@@ -34,6 +34,7 @@ from lfs.core.utils import LazyEncoder
 from lfs.core.templatetags import lfs_tags
 from lfs.utils import misc as lfs_utils
 
+
 def file(request, language=None, id=None):
     """Delivers files to the browser.
     """
@@ -43,6 +44,7 @@ def file(request, language=None, id=None):
 
     return response
 
+
 def select_variant(request):
     """This is called via an ajax call if the combination of properties are
     changed.
@@ -51,48 +53,50 @@ def select_variant(request):
     msg = _(u"The product has been changed according to your selection.")
 
     result = simplejson.dumps({
-        "product" : product_inline(request, variant_id),
-        "message" : msg,
-    }, cls = LazyEncoder)
+        "product": product_inline(request, variant_id),
+        "message": msg,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def calculate_packing(request, id, quantity=None, as_string=False, template_name="lfs/catalog/packing_result.html"):
     """Calculates the actual amount of pieces to buy on base on packing
     information.
     """
-    product = Product.objects.get(pk = id)
+    product = Product.objects.get(pk=id)
 
     if quantity is None:
         quantity = float(request.POST.get("quantity"))
 
-    packing_amount, packing_unit= product.get_packing_info()
+    packing_amount, packing_unit = product.get_packing_info()
 
     packs = math.ceil(quantity / packing_amount)
     real_quantity = packs * packing_amount
     price = real_quantity * product.get_price()
 
     html = render_to_string(template_name, RequestContext(request, {
-        "price" : price,
-        "product" : product,
-        "packs" : int(packs),
-        "real_quantity" : real_quantity,
-        "unit" : packing_unit,
+        "price": price,
+        "product": product,
+        "packs": int(packs),
+        "real_quantity": real_quantity,
+        "unit": packing_unit,
     }))
 
     if as_string:
         return html
 
     result = simplejson.dumps({
-        "html" : html,
-    }, cls = LazyEncoder)
+        "html": html,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def calculate_price(request, id):
     """Calculates the price of the product on base of choosen properties.
     """
-    product = Product.objects.get(pk = id)
+    product = Product.objects.get(pk=id)
 
     property_price = 0
     for key, option_id in request.POST.items():
@@ -104,22 +108,23 @@ def calculate_price(request, id):
             else:
                 if po.property.add_price:
                     property_price += po.price
-    
+
     if product.for_sale:
         for_sale_standard_price = product.get_standard_price(with_properties=False)
-        for_sale_standard_price += property_price    
-    else:    
+        for_sale_standard_price += property_price
+    else:
         for_sale_standard_price = 0
         price = product.get_price(with_properties=False)
         price += property_price
 
     result = simplejson.dumps({
-        "price" : lfs_tags.currency(price),
-        "for-sale-standard-price" : lfs_tags.currency(for_sale_standard_price),
-        "message" : _("Price has been changed according to your selection."),
-    }, cls = LazyEncoder)
+        "price": lfs_tags.currency(price),
+        "for-sale-standard-price": lfs_tags.currency(for_sale_standard_price),
+        "message": _("Price has been changed according to your selection."),
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def select_variant_from_properties(request):
     """This is called via an ajax call if the combination of properties are
@@ -128,8 +133,8 @@ def select_variant_from_properties(request):
     product_id = request.POST.get("product_id")
 
     try:
-        product = Product.objects.get(pk = product_id)
-    except:# Product.DoesNotExist:
+        product = Product.objects.get(pk=product_id)
+    except:  # Product.DoesNotExist:
         return HttpResponse("")
 
     options = lfs_utils.parse_properties(request)
@@ -142,11 +147,12 @@ def select_variant_from_properties(request):
         msg = _(u"The product has been changed according to your selection.")
 
     result = simplejson.dumps({
-        "product" : product_inline(request, variant.id),
-        "message" : msg,
-    }, cls = LazyEncoder)
+        "product": product_inline(request, variant.id),
+        "message": msg,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def set_filter(request, category_slug, property_id, value=None, min=None, max=None):
     """Saves the given filter to session. Redirects to the category with given
@@ -161,8 +167,9 @@ def set_filter(request, category_slug, property_id, value=None, min=None, max=No
 
     request.session["product-filter"] = product_filter
 
-    url = reverse("lfs_category", kwargs={"slug" : category_slug })
+    url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
+
 
 def set_price_filter(request, category_slug):
     """Saves the given price filter to session. Redirects to the category with
@@ -181,55 +188,60 @@ def set_price_filter(request, category_slug):
     except TypeError:
         max = "0"
 
-    request.session["price-filter"] = {"min" : min, "max": max}
+    request.session["price-filter"] = {"min": min, "max": max}
 
-    url = reverse("lfs_category", kwargs={"slug" : category_slug })
+    url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
+
 
 def reset_price_filter(request, category_slug):
     """Resets the price filter. Redirects to the category with given slug.
     """
-    if request.session.has_key("price-filter"):
+    if "price-filter" in request.session:
         del request.session["price-filter"]
 
-    url = reverse("lfs_category", kwargs={"slug" : category_slug })
+    url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
+
 
 def reset_filter(request, category_slug, property_id):
     """Resets product filter with given property id. Redirects to the category
     with given slug.
     """
-    if request.session.has_key("product-filter"):
-        if request.session["product-filter"].has_key(property_id):
+    if "product-filter" in request.session:
+        if "property_id" in request.session["product-filter"]:
             del request.session["product-filter"][property_id]
             request.session["product-filter"] = request.session["product-filter"]
 
-    url = reverse("lfs_category", kwargs={"slug" : category_slug })
+    url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
+
 
 def reset_all_filter(request, category_slug):
     """Resets all product filter. Redirects to the category with given slug.
     """
-    if request.session.has_key("product-filter"):
+    if "product-filter" in request.session:
         del request.session["product-filter"]
 
-    if request.session.has_key("price-filter"):
+    if "price-filter" in request.session:
         del request.session["price-filter"]
 
-    url = reverse("lfs_category", kwargs={"slug" : category_slug })
+    url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
+
 
 def set_sorting(request):
     """Saves the given sortings (by request body) to session.
     """
     sorting = request.POST.get("sorting", "")
-    if sorting == "" and request.session.has_key("sorting"):
+    if sorting == "" and "sorting" in request.session:
         del request.session["sorting"]
     else:
         request.session["sorting"] = sorting
 
     # lfs_sorting_changed.send(category_id)
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+
 
 def category_view(request, slug, template_name="lfs/catalog/category_base.html"):
     """
@@ -248,10 +260,11 @@ def category_view(request, slug, template_name="lfs/catalog/category_base.html")
     # omit if they don't need it.
 
     return render_to_response(template_name, RequestContext(request, {
-        "category" : category,
-        "category_inline" : inline,
-        "top_category" : lfs.catalog.utils.get_current_top_category(request, category),
+        "category": category,
+        "category_inline": inline,
+        "top_category": lfs.catalog.utils.get_current_top_category(request, category),
     }))
+
 
 def category_categories(request, slug, start=0, template_name="lfs/catalog/categories/category/default.html"):
     """Displays the child categories of the category with passed slug.
@@ -273,7 +286,7 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
     row = []
     for i, children in enumerate(category.get_children()):
         row.append(children)
-        if (i+1) % amount_of_cols == 0:
+        if (i + 1) % amount_of_cols == 0:
             categories.append(row)
             row = []
 
@@ -285,12 +298,13 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
         template_name = render_template
 
     result = render_to_string(template_name, RequestContext(request, {
-        "category" : category,
-        "categories" : categories,
+        "category": category,
+        "categories": categories,
     }))
 
     cache.set(cache_key, result)
     return result
+
 
 def category_products(request, slug, start=0, template_name="lfs/catalog/categories/product/default.html"):
     """Displays the products of the category with passed slug.
@@ -301,9 +315,9 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
     # TODO: Is this what a customer would expect?
     last_category = request.session.get("last_category")
     if (last_category is None) or (last_category.slug != slug):
-        if request.session.has_key("product-filter"):
+        if "product-filter" in request.session:
             del request.session["product-filter"]
-        if request.session.has_key("price-filter"):
+        if "price-filter" in request.session:
             del request.session["price-filter"]
 
     try:
@@ -354,20 +368,20 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
     # Calculate products
     row = []
     products = []
-    for i, product in enumerate(all_products[start:start+amount]):
+    for i, product in enumerate(all_products[start:start + amount]):
         # Switch to default variant if product is a "product with variants".
         # if product.is_product_with_variants() and product.has_variants():
         #    product = product.get_default_variant()
         row.append({
-            "obj" : product,
-            "slug" : product.slug,
-            "name" : product.get_name(),
-            "image" : product.get_image().image,
-            "price" : product.get_price(),
-            "standard_price" : product.get_standard_price(),
-            "price_unit" : product.price_unit,
+            "obj": product,
+            "slug": product.slug,
+            "name": product.get_name(),
+            "image": product.get_image().image,
+            "price": product.get_price(),
+            "standard_price": product.get_standard_price(),
+            "price_unit": product.price_unit,
         })
-        if (i+1) % amount_of_cols == 0:
+        if (i + 1) % amount_of_cols == 0:
             products.append(row)
             row = []
 
@@ -378,12 +392,12 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
 
     # Calculate urls
     pages = []
-    for i in range(0, amount_of_products/amount+1):
-        page_start = i*amount
+    for i in range(0, amount_of_products / amount + 1):
+        page_start = i * amount
         pages.append({
-            "name" : i+1,
-            "start" : page_start,
-            "selected" : start == page_start,
+            "name": i + 1,
+            "start": page_start,
+            "selected": start == page_start,
         })
 
     if (start + amount) < amount_of_products:
@@ -401,19 +415,20 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
         template_name = render_template
 
     result = render_to_string(template_name, RequestContext(request, {
-        "category" : category,
-        "products" : products,
-        "next_url" : next_url,
-        "previous_url" : previous_url,
-        "amount_of_products" : amount_of_products,
-        "pages" : pages,
-        "show_pages" : amount_of_products > amount,
-        "all_products" : all_products
+        "category": category,
+        "products": products,
+        "next_url": next_url,
+        "previous_url": previous_url,
+        "amount_of_products": amount_of_products,
+        "pages": pages,
+        "show_pages": amount_of_products > amount,
+        "all_products": all_products,
     }))
 
     temp[sub_cache_key] = result
     cache.set(cache_key, temp)
     return result
+
 
 def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
     """Main view to display a product.
@@ -429,18 +444,19 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
         recent.remove(slug)
     recent.insert(0, slug)
     if len(recent) > settings.LFS_RECENT_PRODUCTS_LIMIT:
-        recent = recent[:settings.LFS_RECENT_PRODUCTS_LIMIT+1]
+        recent = recent[:settings.LFS_RECENT_PRODUCTS_LIMIT + 1]
     request.session["RECENT_PRODUCTS"] = recent
 
     # TODO: Factor top_category out to a inclusion tag, so that people can
     # omit if they don't need it.
-    result =  render_to_response(template_name, RequestContext(request, {
-        "product_inline" : product_inline(request, product.id),
-        "product" : product,
-        "top_category" : lfs.catalog.utils.get_current_top_category(request, product),
+    result = render_to_response(template_name, RequestContext(request, {
+        "product_inline": product_inline(request, product.id),
+        "product": product,
+        "top_category": lfs.catalog.utils.get_current_top_category(request, product),
     }))
 
     return result
+
 
 def product_inline(request, id, template_name="lfs/catalog/products/product_inline.html"):
     """Part of the prduct view, which displays the actual data of the product.
@@ -481,16 +497,16 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
                     else:
                         selected = False
                     options.append({
-                        "id"   : property_option.id,
-                        "name" : property_option.name,
-                        "selected" : selected
+                        "id": property_option.id,
+                        "name": property_option.name,
+                        "selected": selected,
                     })
                 properties.append({
-                    "id" : property.id,
-                    "name" : property.name,
-                    "title" : property.title,
-                    "unit" : property.unit,
-                    "options" : options,
+                    "id": property.id,
+                    "name": property.name,
+                    "title": property.title,
+                    "unit": property.unit,
+                    "options": options,
                 })
         else:
             properties = product.get_property_select_fields()
@@ -506,29 +522,29 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
             except ProductPropertyValue.DoesNotExist:
                 ppv = None
                 ppv_value = ""
-                
+
             for property_option in property.options.all():
                 if ppv_value == str(property_option.id):
-                    selected = True                    
+                    selected = True
                 else:
                     selected = False
 
                 options.append({
-                    "id"   : property_option.id,
-                    "name" : property_option.name,
-                    "price" : property_option.price,
-                    "selected" : selected,
+                    "id": property_option.id,
+                    "name": property_option.name,
+                    "price": property_option.price,
+                    "selected": selected,
                 })
 
             properties.append({
-                "obj" : property,
-                "id" : property.id,
-                "name" : property.name,
-                "title" : property.title,
-                "unit" : property.unit,
-                "display_price" : property.display_price,
-                "options" : options,
-                "value" : ppv_value,
+                "obj": property,
+                "id": property.id,
+                "name": property.name,
+                "title": property.title,
+                "unit": property.unit,
+                "display_price": property.display_price,
+                "options": options,
+                "value": ppv_value,
             })
 
     # Reviews
@@ -545,17 +561,18 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
         packing_result = ""
 
     result = render_to_string(template_name, RequestContext(request, {
-        "product" : product,
-        "variant" : variant,
-        "variants" : variants,
-        "product_accessories" : variant.get_accessories(),
-        "properties" : properties,
-        "message" : message,
-        "packing_result" : packing_result,
+        "product": product,
+        "variant": variant,
+        "variants": variants,
+        "product_accessories": variant.get_accessories(),
+        "properties": properties,
+        "message": message,
+        "packing_result": packing_result,
     }))
 
     cache.set(cache_key, result)
     return result
+
 
 def product_form_dispatcher(request):
     """Dispatches to the added-to-cart view or to the selected variant.
@@ -580,26 +597,28 @@ def product_form_dispatcher(request):
 
             return lfs.core.utils.set_message_cookie(
                 variant.get_absolute_url(),
-                msg = _(u"The choosen combination of properties is not deliverable.")
+                msg=_(u"The choosen combination of properties is not deliverable.")
             )
 
         return HttpResponseRedirect(variant.get_absolute_url())
+
 
 # NOT used at moment
 def get_category_nodes(request):
     """Returns the category tree as JSON for extJS.
     """
     categories = []
-    for category in Category.objects.filter(parent = None):
+    for category in Category.objects.filter(parent=None):
         temp = _get_children_nodes(category)
         categories.append({
-            "id" : category.slug,
-            "text" : category.name,
-            "leaf" : len(temp) == 0,
-            "children" : temp
+            "id": category.slug,
+            "text": category.name,
+            "leaf": len(temp) == 0,
+            "children": temp
         })
 
     return HttpResponse(simplejson.dumps(categories))
+
 
 def _get_children_nodes(category):
     """
@@ -608,10 +627,10 @@ def _get_children_nodes(category):
     for category in category.category_set.all():
         temp = _get_children_nodes(category)
         children.append({
-            "id" : category.slug,
-            "text" : category.name,
-            "leaf" : len(temp) == 0,
-            "children" : temp,
+            "id": category.slug,
+            "text": category.name,
+            "leaf": len(temp) == 0,
+            "children": temp,
         })
 
     return children

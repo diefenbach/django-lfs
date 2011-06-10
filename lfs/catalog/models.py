@@ -52,8 +52,10 @@ from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
 
+
 def get_unique_id_str():
     return str(uuid.uuid4())
+
 
 class Category(models.Model):
     """A category is used to browse through the shop products. A category can
@@ -128,12 +130,12 @@ class Category(models.Model):
 
     """
     name = models.CharField(_(u"Name"), max_length=50)
-    slug = models.SlugField(_(u"Slug"),unique=True)
+    slug = models.SlugField(_(u"Slug"), unique=True)
     parent = models.ForeignKey("self", verbose_name=_(u"Parent"), blank=True, null=True)
 
     # If selected it shows products of the sub categories within the product
     # view. If not it shows only direct products of the category.
-    show_all_products = models.BooleanField(_(u"Show all products"),default=True)
+    show_all_products = models.BooleanField(_(u"Show all products"), default=True)
 
     products = models.ManyToManyField("Product", verbose_name=_(u"Products"), blank=True, related_name="categories")
     short_description = models.TextField(_(u"Short description"), blank=True)
@@ -146,8 +148,8 @@ class Category(models.Model):
     template = models.PositiveSmallIntegerField(_(u"Category template"), max_length=400, blank=True, null=True, choices=CATEGORY_TEMPLATES)
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
 
-    product_rows  = models.IntegerField(_(u"Product rows"), default=3)
-    product_cols  = models.IntegerField(_(u"Product cols"), default=3)
+    product_rows = models.IntegerField(_(u"Product rows"), default=3)
+    product_cols = models.IntegerField(_(u"Product cols"), default=3)
     category_cols = models.IntegerField(_(u"Category cols"), default=3)
 
     meta_title = models.CharField(_(u"Meta title"), max_length=100, default="<name>")
@@ -155,7 +157,7 @@ class Category(models.Model):
     meta_description = models.TextField(_(u"Meta description"), blank=True)
 
     level = models.PositiveSmallIntegerField(default=1)
-    uid = models.CharField(max_length=50, editable=False,unique=True, default=get_unique_id_str)
+    uid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
 
     class Meta:
         ordering = ("position", )
@@ -167,7 +169,7 @@ class Category(models.Model):
     def get_absolute_url(self):
         """Returns the absolute_url.
         """
-        return ("lfs.catalog.views.category_view", (), {"slug" : self.slug})
+        return ("lfs.catalog.views.category_view", (), {"slug": self.slug})
     get_absolute_url = models.permalink(get_absolute_url)
 
     @property
@@ -216,9 +218,9 @@ class Category(models.Model):
         """
         if self.active_formats == True:
             return {
-                "product_cols"  : self.product_cols,
-                "product_rows"  : self.product_rows,
-                "category_cols" : self.category_cols,
+                "product_cols": self.product_cols,
+                "product_rows": self.product_rows,
+                "category_cols": self.category_cols,
             }
         else:
             if self.parent is None:
@@ -231,14 +233,14 @@ class Category(models.Model):
                 except ObjectDoesNotExist:
                     return {
                         "product_cols": 3,
-                        "product_rows" : 3,
-                        "category_cols" : 3,
+                        "product_rows": 3,
+                        "category_cols": 3,
                     }
                 else:
                     return {
                         "product_cols": shop.product_cols,
-                        "product_rows" : shop.product_rows,
-                        "category_cols" : shop.category_cols,
+                        "product_rows": shop.product_rows,
+                        "category_cols": shop.category_cols,
                     }
             else:
                 return self.parent.get_format_info()
@@ -318,7 +320,7 @@ class Category(models.Model):
 
         products = lfs.catalog.models.Product.objects.distinct().filter(
             active=True,
-            categories__in = categories).exclude(sub_type=VARIANT).distinct()
+            categories__in=categories).exclude(sub_type=VARIANT).distinct()
 
         cache.set(cache_key, products)
         return products
@@ -351,7 +353,6 @@ class Category(models.Model):
         import lfs.core.utils
         return self.parent or lfs.core.utils.get_default_shop()
 
-
     def get_template_name(self):
         """method to return the path of the category template
         """
@@ -366,10 +367,11 @@ class Category(models.Model):
         depending on its path.
         """
         if self.get_template_name() == None:
-           return CONTENT_PRODUCTS
-        if self.get_template_name().startswith(CAT_CATEGORY_PATH): # do we have category - templates
-           return CONTENT_CATEGORIES
+            return CONTENT_PRODUCTS
+        if self.get_template_name().startswith(CAT_CATEGORY_PATH):
+            return CONTENT_CATEGORIES
         return CONTENT_PRODUCTS
+
 
 class Product(models.Model):
     """A product is sold within a shop.
@@ -489,7 +491,7 @@ class Product(models.Model):
         - active_xxx
             If set to true the information will be taken from the variant.
             Otherwise from the parent product (only relevant for variants)
-            
+
         - supplier
             The supplier of the product
 
@@ -602,7 +604,7 @@ class Product(models.Model):
 
     objects = ActiveManager()
 
-    uid = models.CharField(max_length=50, editable=False,unique=True, default=get_unique_id_str)
+    uid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
 
     class Meta:
         ordering = ("name", )
@@ -624,7 +626,7 @@ class Product(models.Model):
     def get_absolute_url(self):
         """Returns the absolute url of the product.
         """
-        return ("lfs.catalog.views.product_view", (), {"slug" : self.slug})
+        return ("lfs.catalog.views.product_view", (), {"slug": self.slug})
     get_absolute_url = models.permalink(get_absolute_url)
 
     @property
@@ -863,10 +865,10 @@ class Product(models.Model):
             else:
                 value = ppv.value
             properties.append({
-                "name"  : ppv.property.name,
-                "title" : ppv.property.title,
-                "value" : value,
-                "unit"  : ppv.property.unit,
+                "name": ppv.property.name,
+                "title": ppv.property.title,
+                "value": value,
+                "unit": ppv.property.unit,
             })
 
         cache.set(cache_key, properties)
@@ -895,10 +897,10 @@ class Product(models.Model):
             else:
                 value = ppv.value
             properties.append({
-                "name"  : ppv.property.name,
-                "title" : ppv.property.title,
-                "value" : value,
-                "unit"  : ppv.property.unit,
+                "name": ppv.property.name,
+                "title": ppv.property.title,
+                "value": value,
+                "unit": ppv.property.unit,
             })
 
         cache.set(cache_key, properties)
@@ -930,7 +932,7 @@ class Product(models.Model):
                 # Try to get the default value of the property
                 try:
                     ppv = ProductPropertyValue.objects.get(product=self, property=property, type=PROPERTY_VALUE_TYPE_DEFAULT)
-                    po = PropertyOption.objects.get(pk = ppv.value)
+                    po = PropertyOption.objects.get(pk=ppv.value)
                 except (ObjectDoesNotExist, ValueError):
                     # If there is no explicit default value try to get the first
                     # option.
@@ -952,9 +954,9 @@ class Product(models.Model):
         selected shop options.
 
         **Parameters:**
-        
+
         with_properties
-            If the instance is a configurable product and with_properties is 
+            If the instance is a configurable product and with_properties is
             True the prices of the default properties are added to the price.
         """
         return self.get_price_gross(with_properties)
@@ -963,11 +965,11 @@ class Product(models.Model):
         """Returns always the standard price for the product. Independent
         whether the product is for sale or not. If you want the real price of
         the product use get_price instead.
-        
+
         **Parameters:**
-        
+
         with_properties
-            If the instance is a configurable product and with_properties is 
+            If the instance is a configurable product and with_properties is
             True the prices of the default properties are added to the price.
         """
         object = self
@@ -1002,9 +1004,9 @@ class Product(models.Model):
         all price and tax calculations.
 
         **Parameters:**
-        
+
         with_properties
-            If the instance is a configurable product and with_properties is 
+            If the instance is a configurable product and with_properties is
             True the prices of the default properties are added to the price.
 
         """
@@ -1143,7 +1145,7 @@ class Product(models.Model):
         """Returns the absolute tax of the product.
         """
         tax_rate = self.get_tax_rate()
-        return (tax_rate/(tax_rate+100)) * self.get_price_gross()
+        return (tax_rate / (tax_rate + 100)) * self.get_price_gross()
 
     def has_related_products(self):
         """Returns True if the product has related products.
@@ -1331,7 +1333,7 @@ class Product(models.Model):
         """
         if self.manage_stock_amount and self.stock_amount <= 0 and not self.order_time:
             return False
-        else:    
+        else:
             return self.deliverable
 
     # 3rd party contracts
@@ -1347,14 +1349,15 @@ class Product(models.Model):
                 return self.categories.all()[0]
             except:
                 return None
+
     def get_template_name(self):
-        """
-        method to return the path of the product template
+        """Method to return the path of the product template
         """
         if self.template != None:
             id = int(self.template)
             return PRODUCT_TEMPLATES[id][1]["file"]
         return None
+
 
 class ProductAccessories(models.Model):
     """Represents the relationship between products and accessories.
@@ -1377,7 +1380,7 @@ class ProductAccessories(models.Model):
     """
     product = models.ForeignKey("Product", verbose_name=_(u"Product"), related_name="productaccessories_product")
     accessory = models.ForeignKey("Product", verbose_name=_(u"Accessory"), related_name="productaccessories_accessory")
-    position = models.IntegerField( _(u"Position"), default=999)
+    position = models.IntegerField(_(u"Position"), default=999)
     quantity = models.FloatField(_(u"Quantity"), default=1)
 
     class Meta:
@@ -1392,6 +1395,7 @@ class ProductAccessories(models.Model):
         and the quantity in which the accessory is offered.
         """
         return self.accessory.get_price() * self.quantity
+
 
 class PropertyGroup(models.Model):
     """Groups product properties together.
@@ -1424,6 +1428,7 @@ class PropertyGroup(models.Model):
         """Returns all filterable properties of the property group.
         """
         return self.properties.filter(filterable=True)
+
 
 class Property(models.Model):
     """Represents a property of a product like color or size.
@@ -1499,8 +1504,8 @@ class Property(models.Model):
         field)
 
     """
-    name = models.CharField( _(u"Name"), max_length=100)
-    title = models.CharField( _(u"Title"), max_length=100)
+    name = models.CharField(_(u"Name"), max_length=100)
+    title = models.CharField(_(u"Title"), max_length=100)
     groups = models.ManyToManyField(PropertyGroup, verbose_name=_(u"Group"), blank=True, null=True, through="GroupsPropertiesRelation", related_name="properties")
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), blank=True, null=True, through="ProductsPropertiesRelation", related_name="properties")
     position = models.IntegerField(_(u"Position"), blank=True, null=True)
@@ -1526,7 +1531,7 @@ class Property(models.Model):
     step_type = models.PositiveSmallIntegerField(_(u"Step type"), choices=PROPERTY_STEP_TYPE_CHOICES, default=PROPERTY_STEP_TYPE_AUTOMATIC)
     step = models.IntegerField(_(u"Step"), blank=True, null=True)
 
-    uid = models.CharField(max_length=50, editable=False,unique=True, default=get_unique_id_str)
+    uid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
 
     class Meta:
         verbose_name_plural = _(u"Properties")
@@ -1569,6 +1574,7 @@ class Property(models.Model):
                 return False
         return True
 
+
 class FilterStep(models.Model):
     """A step to build filter ranges for a property.
 
@@ -1588,6 +1594,7 @@ class FilterStep(models.Model):
     def __unicode__(self):
         return "%s %s" % (self.property.name, self.start)
 
+
 class GroupsPropertiesRelation(models.Model):
     """Represents the m:n relationship between Groups and Properties.
 
@@ -1604,11 +1611,12 @@ class GroupsPropertiesRelation(models.Model):
     """
     group = models.ForeignKey(PropertyGroup, verbose_name=_(u"Group"), related_name="groupproperties")
     property = models.ForeignKey(Property, verbose_name=_(u"Property"))
-    position = models.IntegerField( _(u"Position"), default=999)
+    position = models.IntegerField(_(u"Position"), default=999)
 
     class Meta:
         ordering = ("position", )
         unique_together = ("group", "property")
+
 
 class ProductsPropertiesRelation(models.Model):
     """Represents the m:n relationship between Products and Properties.
@@ -1626,11 +1634,12 @@ class ProductsPropertiesRelation(models.Model):
     """
     product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="productsproperties")
     property = models.ForeignKey(Property, verbose_name=_(u"Property"))
-    position = models.IntegerField( _(u"Position"), default=999)
+    position = models.IntegerField(_(u"Position"), default=999)
 
     class Meta:
         ordering = ("position", )
         unique_together = ("product", "property")
+
 
 class PropertyOption(models.Model):
     """Represents a choosable option of a ``Property`` like red, green, blue.
@@ -1651,17 +1660,18 @@ class PropertyOption(models.Model):
     """
     property = models.ForeignKey(Property, verbose_name=_(u"Property"), related_name="options")
 
-    name = models.CharField( _(u"Name"), max_length=100)
+    name = models.CharField(_(u"Name"), max_length=100)
     price = models.FloatField(_(u"Price"), blank=True, null=True, default=0.0)
     position = models.IntegerField(_(u"Position"), default=99)
 
-    uid = models.CharField(max_length=50, editable=False,unique=True, default=get_unique_id_str)
+    uid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
 
     class Meta:
         ordering = ["position"]
 
     def __unicode__(self):
         return self.name
+
 
 class ProductPropertyValue(models.Model):
     """Stores the value resp. selected option of a product/property combination.
@@ -1719,6 +1729,7 @@ class ProductPropertyValue(models.Model):
 
         super(ProductPropertyValue, self).save(*args, **kwargs)
 
+
 class Image(models.Model):
     """An image with a title and several sizes. Can be part of a product or
     category.
@@ -1746,6 +1757,7 @@ class Image(models.Model):
 
     def __unicode__(self):
         return self.title
+
 
 class File(models.Model):
     """A downloadable file.
@@ -1789,7 +1801,8 @@ class File(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("lfs_file", kwargs={"id" : self.id})
+        return reverse("lfs_file", kwargs={"id": self.id})
+
 
 class StaticBlock(models.Model):
     """A block of static HTML which can be assigned to content objects.
@@ -1816,6 +1829,7 @@ class StaticBlock(models.Model):
 
     def __unicode__(self):
         return self.name
+
 
 class DeliveryTime(models.Model):
     """Selectable delivery times.
@@ -1883,11 +1897,11 @@ class DeliveryTime(models.Model):
             max_new = self.max - days
             min_new = self.min - days
         elif self.unit == DELIVERY_TIME_UNIT_WEEKS:
-            max_new = self.max - (days/7.0)
-            min_new = self.min - (days/7.0)
+            max_new = self.max - (days / 7.0)
+            min_new = self.min - (days / 7.0)
         elif self.unit == DELIVERY_TIME_UNIT_MONTHS:
-            max_new = self.max - (days/30.0)
-            min_new = self.min - (days/30.0)
+            max_new = self.max - (days / 30.0)
+            min_new = self.min - (days / 30.0)
 
         if min_new < 0:
             min_new = 0
@@ -1912,7 +1926,7 @@ class DeliveryTime(models.Model):
             max = self.max * 24 * 30
             min = self.min * 24 * 30
 
-        return DeliveryTime(min=min, max=max, unit = DELIVERY_TIME_UNIT_HOURS)
+        return DeliveryTime(min=min, max=max, unit=DELIVERY_TIME_UNIT_HOURS)
 
     def as_days(self):
         """Returns the delivery time in days.
@@ -1930,7 +1944,7 @@ class DeliveryTime(models.Model):
             max = self.max * 30
             min = self.min * 30
 
-        return DeliveryTime(min=min, max=max, unit = DELIVERY_TIME_UNIT_DAYS)
+        return DeliveryTime(min=min, max=max, unit=DELIVERY_TIME_UNIT_DAYS)
 
     def as_weeks(self):
         """Returns the delivery time in weeks.
@@ -1948,7 +1962,7 @@ class DeliveryTime(models.Model):
             max = self.max * 4
             min = self.min * 4
 
-        return DeliveryTime(min=min, max=max, unit = DELIVERY_TIME_UNIT_WEEKS)
+        return DeliveryTime(min=min, max=max, unit=DELIVERY_TIME_UNIT_WEEKS)
 
     def as_months(self):
         """Returns the delivery time in months.
@@ -1966,7 +1980,7 @@ class DeliveryTime(models.Model):
             max = self.max
             min = self.min
 
-        return DeliveryTime(min=min, max=max, unit = DELIVERY_TIME_UNIT_MONTHS)
+        return DeliveryTime(min=min, max=max, unit=DELIVERY_TIME_UNIT_MONTHS)
 
     def as_reasonable_unit(self):
         """Returns the delivery time as reasonable unit based on the max hours.

@@ -1,5 +1,4 @@
 # python imports
-import re
 import math
 
 # django imports
@@ -14,17 +13,6 @@ from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 
-# TODO implement this methods.
-# Category
-def get_current_category_slug(request):
-    """Returns the current category.
-    """
-    pass
-
-def get_current_category_id(request):
-    """Returns the current category.
-    """
-    pass
 
 # TODO: Add unit test
 def get_current_top_category(request, obj):
@@ -44,26 +32,6 @@ def get_current_top_category(request, obj):
 
     return category
 
-def get_current_category(request):
-    """Returns the current category.
-    """
-    pass
-
-# Product
-def get_current_product_slug(request):
-    """Returns the current product id
-    """
-    pass
-
-def get_current_product_id(request):
-    """Returns the current product id
-    """
-    pass
-
-def get_current_product(request):
-    """Returns the current product
-    """
-    pass
 
 def get_current_product_category(request, product):
     """Returns product category based on actual categories of the given product
@@ -99,6 +67,7 @@ def get_current_product_category(request, product):
         request.session["last_category"] = category
         return category
 
+
 def get_property_groups(category):
     """Returns all property groups for given category
     """
@@ -113,6 +82,7 @@ def get_property_groups(category):
 
     cache.set(cache_key, pgs)
     return pgs
+
 
 def get_price_filters(category, product_filter, price_filter):
     """Creates price filter links based on the min and max price of the
@@ -137,12 +107,11 @@ def get_price_filters(category, product_filter, price_filter):
         max = price_filter["max"]
         products = lfs.catalog.models.Product.objects.filter(
             effective_price__range=(min, max), pk__in=product_ids)
-        quantity = len(products)
 
         return {
-            "show_reset" : True,
-            "show_quantity" : False,
-            "items" : [{"min" : float(min), "max" : float(max)}],
+            "show_reset": True,
+            "show_quantity": False,
+            "items": [{"min": float(min), "max": float(max)}],
             }
 
     product_ids_str = ", ".join([str(p.id) for p in all_products])
@@ -181,13 +150,13 @@ def get_price_filters(category, product_filter, price_filter):
     for n, i in enumerate(range(0, int(pmax), step)):
         if i > pmax:
             break
-        min = i+1
-        max = i+step
+        min = i + 1
+        max = i + step
         products = lfs.catalog.models.Product.objects.filter(effective_price__range=(min, max), pk__in=product_ids)
         result.append({
-            "min" : min,
-            "max" : max,
-            "quantity" : len(products),
+            "min": min,
+            "max": max,
+            "quantity": len(products),
         })
 
     # return result
@@ -196,17 +165,18 @@ def get_price_filters(category, product_filter, price_filter):
     for n, f in enumerate(result):
         if f["quantity"] == 0:
             try:
-                result[n+1]["min"] = f["min"]
+                result[n + 1]["min"] = f["min"]
             except IndexError:
                 pass
             continue
         new_result.append(f)
 
     return {
-        "show_reset" : False,
-        "show_quantity" : True,
-        "items" : new_result,
+        "show_reset": False,
+        "show_quantity": True,
+        "items": new_result,
     }
+
 
 def get_product_filters(category, product_filter, price_filter, sorting):
     """Returns the next product filters based on products which are in the given
@@ -225,7 +195,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
     else:
         ck_product_filter = ""
 
-    cache_key = "%s-productfilters-%s-%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, 
+    cache_key = "%s-productfilters-%s-%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
         category.slug, ck_product_filter, ck_price_filter, sorting)
 
     result = cache.get(cache_key)
@@ -253,7 +223,6 @@ def get_product_filters(category, product_filter, price_filter, sorting):
     # Create dict out of already set filters
     set_filters = dict(product_filter)
 
-
     cursor = connection.cursor()
     cursor.execute("""SELECT DISTINCT property_id
                       FROM catalog_productpropertyvalue""")
@@ -276,7 +245,6 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                       AND property_id IN (%s)
                       GROUP BY property_id""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
 
-
     for row in cursor.fetchall():
 
         property = properties_mapping[row[0]]
@@ -292,15 +260,15 @@ def get_product_filters(category, product_filter, price_filter, sorting):
         if str(row[0]) in set_filters.keys():
             values = set_filters[str(row[0])]
             result.append({
-                "id" : row[0],
-                "position" : property.position,
-                "object" : property,
-                "name" : property.name,
-                "title" : property.title,
-                "unit" : property.unit,
-                "items" : [{"min" : float(values[0]), "max" : float(values[1])}],
-                "show_reset" : True,
-                "show_quantity" : False,
+                "id": row[0],
+                "position": property.position,
+                "object": property,
+                "name": property.name,
+                "title": property.title,
+                "unit": property.unit,
+                "items": [{"min": float(values[0]), "max": float(values[1])}],
+                "show_reset": True,
+                "show_quantity": False,
             })
             continue
 
@@ -308,15 +276,15 @@ def get_product_filters(category, product_filter, price_filter, sorting):
         items = calculate_steps(product_ids, property, row[1], row[2])
 
         result.append({
-            "id" : row[0],
-            "position" : property.position,
-            "object" : property,
-            "name" : property.name,
-            "title" : property.title,
-            "unit" : property.unit,
-            "show_reset" : False,
-            "show_quantity" : True,
-            "items" : items,
+            "id": row[0],
+            "position": property.position,
+            "object": property,
+            "name": property.name,
+            "title": property.title,
+            "unit": property.unit,
+            "show_reset": False,
+            "show_quantity": True,
+            "items": items,
         })
 
     ########## Select Fields ###################################################
@@ -340,14 +308,14 @@ def get_product_filters(category, product_filter, price_filter, sorting):
         # But we want to count color:red just one time. As the product with
         # variants is displayed at not the variants.
 
-        if already_count.has_key("%s%s%s" % (row[2], row[0], row[1])):
+        if "%s%s%s" % (row[2], row[0], row[1]) in already_count:
             continue
         already_count["%s%s%s" % (row[2], row[0], row[1])] = 1
 
-        if not amount.has_key(row[0]):
+        if row[0] not in amount:
             amount[row[0]] = {}
 
-        if not amount[row[0]].has_key(row[1]):
+        if row[1] not in amount[row[0]]:
             amount[row[0]][row[1]] = 0
 
         amount[row[0]][row[1]] += 1
@@ -372,7 +340,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
         if property.filterable == False:
             continue
 
-        if properties.has_key(row[0]) == False:
+        if row[0] in properties == False:
             properties[row[0]] = []
 
         # If the property is a select field we want to display the name of the
@@ -396,20 +364,20 @@ def get_product_filters(category, product_filter, price_filter, sorting):
         if str(row[0]) in set_filters.keys():
             if str(row[1]) in set_filters.values():
                 properties[row[0]] = [{
-                    "id"       : row[0],
-                    "value"    : value,
-                    "name"     : name,
-                    "quantity" : amount[row[0]][row[1]],
-                    "show_quantity" : False,
+                    "id": row[0],
+                    "value": value,
+                    "name": name,
+                    "quantity": amount[row[0]][row[1]],
+                    "show_quantity": False,
                 }]
             continue
         else:
             properties[row[0]].append({
-                "id"       : row[0],
-                "value"    : value,
-                "name"     : name,
-                "quantity" : amount[row[0]][row[1]],
-                "show_quantity" : True,
+                "id": row[0],
+                "value": value,
+                "name": name,
+                "quantity": amount[row[0]][row[1]],
+                "show_quantity": True,
             })
 
     # Transform the group properties into a list of dicts
@@ -425,19 +393,20 @@ def get_product_filters(category, product_filter, price_filter, sorting):
         values.sort(lambda a, b: cmp(a["value"], b["value"]))
 
         result.append({
-            "id"    : property_id,
-            "position" : property.position,
-            "unit" : property.unit,
-            "show_reset" : str(property_id) in set_filter_keys,
-            "name"  : property.name,
-            "title" : property.title,
-            "items" : values
+            "id": property_id,
+            "position": property.position,
+            "unit": property.unit,
+            "show_reset": str(property_id) in set_filter_keys,
+            "name": property.name,
+            "title": property.title,
+            "items": values,
         })
 
     result.sort(lambda a, b: cmp(a["position"], b["position"]))
     cache.set(cache_key, result)
 
     return result
+
 
 def get_filtered_products_for_category(category, filters, price_filter, sorting):
     """Returns products for given categories and current filters sorted by
@@ -557,6 +526,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
 
     return products
 
+
 def get_option_mapping():
     """Returns a dictionary with property id to property name.
     """
@@ -564,6 +534,7 @@ def get_option_mapping():
     for option in lfs.catalog.models.PropertyOption.objects.all():
         options[str(option.id)] = option
     return options
+
 
 def get_property_mapping():
     """Returns a dictionary with property id to property name.
@@ -573,6 +544,7 @@ def get_property_mapping():
         properties[property.id] = property
 
     return properties
+
 
 def calculate_steps(product_ids, property, min, max):
     """
@@ -587,16 +559,16 @@ def calculate_steps(product_ids, property, min, max):
 
     filter_steps = lfs.catalog.models.FilterStep.objects.filter(property=property.id)
     if property.is_steps_step_type:
-        for i, step in enumerate(filter_steps[:len(filter_steps)-1]):
+        for i, step in enumerate(filter_steps[:len(filter_steps) - 1]):
             min = step.start
             if i != 0:
                 min += 1.0
-            max = filter_steps[i+1].start
+            max = filter_steps[i + 1].start
 
             result.append({
-                "min" : min,
-                "max" : max,
-                "quantity" : calculate_quantity(product_ids, property.id, min, max)
+                "min": min,
+                "max": max,
+                "quantity": calculate_quantity(product_ids, property.id, min, max)
             })
     else:
         if property.is_automatic_step_type:
@@ -630,13 +602,13 @@ def calculate_steps(product_ids, property, min, max):
         for n, i in enumerate(range(0, int(max), step)):
             if i > max:
                 break
-            min = i+1
-            max = i+step
+            min = i + 1
+            max = i + step
 
             result.append({
-                "min" : min,
-                "max" : max,
-                "quantity" : calculate_quantity(product_ids, property.id, min, max)
+                "min": min,
+                "max": max,
+                "quantity": calculate_quantity(product_ids, property.id, min, max),
             })
 
     if property.display_no_results:
@@ -647,13 +619,14 @@ def calculate_steps(product_ids, property, min, max):
         for n, f in enumerate(result):
             if f["quantity"] == 0:
                 try:
-                    result[n+1]["min"] = f["min"]
+                    result[n + 1]["min"] = f["min"]
                 except IndexError:
                     pass
                 continue
             new_result.append(f)
 
         return new_result
+
 
 def calculate_quantity(product_ids, property_id, min, max):
     """Calculate the amount of products for given parameters.
@@ -678,7 +651,7 @@ def calculate_quantity(product_ids, property_id, min, max):
         # But we want to count color:red just one time. As the product with
         # variants is displayed at not the variants.
 
-        if already_count.has_key("%s%s%s" % (row[2], row[0], row[1])):
+        if "%s%s%s" % (row[2], row[0], row[1]) in already_count:
             continue
         already_count["%s%s%s" % (row[2], row[0], row[1])] = 1
 
@@ -686,10 +659,12 @@ def calculate_quantity(product_ids, property_id, min, max):
 
     return amount
 
+
 def calculate_packages(product, quantity):
     """
     """
     return math.ceil(quantity / product.packing_unit)
+
 
 def calculate_real_amount(product, quantity):
     """
