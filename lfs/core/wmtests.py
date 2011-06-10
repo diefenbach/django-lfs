@@ -1,13 +1,19 @@
-from windmill.authoring import  WindmillTestClient
+import os
+import datetime
 
-def setup_module(module):
-    pass
-    
+from django.conf import settings
+from windmill.authoring import djangotest
 
-def test_recordingSuite0():
-    client = WindmillTestClient(__name__)
-    client.type(text=u'Search stuff', id=u'id_search')
-    return
 
-def teardown_module(module):
-    pass
+class TestProjectWindmillTest(djangotest.WindmillDjangoUnitTest):
+    test_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'windmilltests')
+    browser = 'chrome'
+    settings.TESTING = True
+
+    def setUp(self):
+        # check that object counts are at zero
+        super(TestProjectWindmillTest, self).setUp()
+
+    def tearDown(self):
+        # check for new objects in database
+        pass
