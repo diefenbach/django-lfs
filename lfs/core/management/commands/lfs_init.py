@@ -3,8 +3,8 @@ from django.core.management.base import BaseCommand
 
 SHOP_DESCRIPTION = """
 <h1 class="first-heading">Welcome to LFS!</h1>
-<p>LFS is an online shop based on <a href="http://www.python.org/" target="_blank">Python</a>, 
-<a href="http://www.djangoproject.com/" target="_blank">Django</a> and 
+<p>LFS is an online shop based on <a href="http://www.python.org/" target="_blank">Python</a>,
+<a href="http://www.djangoproject.com/" target="_blank">Django</a> and
 <a href="http://jquery.com/" target="_blank">jQuery</a>.</p>
 
 <h1>Login</h1>
@@ -22,6 +22,7 @@ SHOP_DESCRIPTION = """
 <li><a href="irc://irc.freenode.net/django-lfs" target="_blank">IRC</a></li>
 </ul>
 """
+
 
 class Command(BaseCommand):
     args = ''

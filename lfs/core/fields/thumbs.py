@@ -17,6 +17,7 @@ from django.db.models.fields.files import ImageFieldFile
 # lfs imports
 from lfs.utils.images import scale_to_max_size
 
+
 def generate_thumb(img, thumb_size, format):
     """
     Generates a thumbnail image and returns a ContentFile object with the thumbnail
@@ -30,7 +31,7 @@ def generate_thumb(img, thumb_size, format):
     format      format of the original image ('jpeg','gif','png',...)
                 (this format will be used for the generated thumbnail, too)
     """
-    img.seek(0) # see http://code.djangoproject.com/ticket/8222 for details
+    img.seek(0)
     image = Image.open(img)
 
     # Convert to RGB if necessary
@@ -42,11 +43,12 @@ def generate_thumb(img, thumb_size, format):
     io = cStringIO.StringIO()
 
     # PNG and GIF are the same, JPG is JPEG
-    if format.upper()=='JPG':
+    if format.upper() == 'JPG':
         format = 'JPEG'
 
     new_image.save(io, format)
     return ContentFile(io.getvalue())
+
 
 class ImageWithThumbsFieldFile(ImageFieldFile):
     """
@@ -61,21 +63,21 @@ class ImageWithThumbsFieldFile(ImageFieldFile):
                 if not self:
                     return ''
                 else:
-                    split = self.url.rsplit('.',1)
-                    thumb_url = '%s.%sx%s.%s' % (split[0],w,h,split[1])
+                    split = self.url.rsplit('.', 1)
+                    thumb_url = '%s.%sx%s.%s' % (split[0], w, h, split[1])
                     return thumb_url
 
             for size in self.sizes:
-                (w,h) = size
-                setattr(self, 'url_%sx%s' % (w,h), get_size(self, size))
+                (w, h) = size
+                setattr(self, 'url_%sx%s' % (w, h), get_size(self, size))
 
     def save(self, name, content, save=True):
         super(ImageWithThumbsFieldFile, self).save(name, content, save)
         if self.sizes:
             for size in self.sizes:
-                (w,h) = size
-                split = self.name.rsplit('.',1)
-                thumb_name = '%s.%sx%s.%s' % (split[0],w,h,split[1])
+                (w, h) = size
+                split = self.name.rsplit('.', 1)
+                thumb_name = '%s.%sx%s.%s' % (split[0], w, h, split[1])
 
                 # you can use another thumbnailing function if you like
                 thumb_content = generate_thumb(self.file, size, split[1])
@@ -86,17 +88,18 @@ class ImageWithThumbsFieldFile(ImageFieldFile):
                     raise ValueError('There is already a file named %s' % thumb_name)
 
     def delete(self, save=True):
-        name=self.name
+        name = self.name
         super(ImageWithThumbsFieldFile, self).delete(save)
         if self.sizes:
             for size in self.sizes:
-                (w,h) = size
-                split = name.rsplit('.',1)
-                thumb_name = '%s.%sx%s.%s' % (split[0],w,h,split[1])
+                (w, h) = size
+                split = name.rsplit('.', 1)
+                thumb_name = '%s.%sx%s.%s' % (split[0], w, h, split[1])
                 try:
                     self.storage.delete(thumb_name)
                 except:
                     pass
+
 
 class ImageWithThumbsField(ImageField):
     attr_class = ImageWithThumbsFieldFile
@@ -143,9 +146,9 @@ class ImageWithThumbsField(ImageField):
 
     """
     def __init__(self, verbose_name=None, name=None, width_field=None, height_field=None, sizes=None, **kwargs):
-        self.verbose_name=verbose_name
-        self.name=name
-        self.width_field=width_field
-        self.height_field=height_field
+        self.verbose_name = verbose_name
+        self.name = name
+        self.width_field = width_field
+        self.height_field = height_field
         self.sizes = sizes
         super(ImageField, self).__init__(**kwargs)

@@ -8,6 +8,7 @@ from lfs.voucher.models import Voucher
 # south imports
 from south.db import db
 
+
 class Command(BaseCommand):
     args = ''
     help = 'Migrations for LFS'

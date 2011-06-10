@@ -1,6 +1,7 @@
 # django imports
 from django.db import models
 
+
 class ActiveManager(models.Manager):
     """An extended manager to return active objects.
     """

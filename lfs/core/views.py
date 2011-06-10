@@ -1,5 +1,6 @@
 # python imports
-import sys, traceback
+import sys
+import traceback
 
 # django imports
 from django.conf import settings
@@ -13,13 +14,15 @@ from django.template import RequestContext
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
 
+
 def shop_view(request, template_name="lfs/shop/shop.html"):
     """Displays the shop.
     """
     shop = lfs_get_object_or_404(Shop, pk=1)
     return render_to_response(template_name, RequestContext(request, {
-        "shop" : shop
+        "shop": shop
     }))
+
 
 def server_error(request):
     """Own view in order to pass RequestContext and send an error message.

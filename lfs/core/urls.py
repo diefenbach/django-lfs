@@ -8,12 +8,12 @@ from lfs.core.sitemap import CategorySitemap
 
 # Robots
 urlpatterns = patterns('django.views.generic.simple',
-    (r'^robots.txt', 'direct_to_template', { 'template': 'lfs/shop/robots.txt' }),
+    (r'^robots.txt', 'direct_to_template', {'template': 'lfs/shop/robots.txt'}),
 )
 
 # Sitemaps
 urlpatterns += patterns("django.contrib.sitemaps.views",
-    url(r'^sitemap.xml$', 'sitemap', {'sitemaps': {"products": ProductSitemap, "categories" : CategorySitemap }})
+    url(r'^sitemap.xml$', 'sitemap', {'sitemaps': {"products": ProductSitemap, "categories": CategorySitemap}})
 )
 
 # Shop
@@ -29,7 +29,7 @@ urlpatterns += patterns('lfs.cart.views',
     url(r'^delete-cart-item/(?P<cart_item_id>\d*)$', "delete_cart_item", name="lfs_delete_cart_item"),
     url(r'^refresh-cart$', "refresh_cart"),
     url(r'^cart$', "cart", name="lfs_cart"),
-    url(r'^check-voucher-cart/$', "check_voucher", name="lfs_check_voucher_cart"),    
+    url(r'^check-voucher-cart/$', "check_voucher", name="lfs_check_voucher_cart"),
 )
 
 # Catalog
@@ -46,8 +46,8 @@ urlpatterns += patterns('lfs.catalog.views',
     url(r'^reset-product-filter/(?P<category_slug>[-\w]+)/(?P<property_id>\d+)', "reset_filter", name="lfs_reset_product_filter"),
     url(r'^reset-all-product-filter/(?P<category_slug>[-\w]+)', "reset_all_filter", name="lfs_reset_all_product_filter"),
     url(r'^select-variant$', "select_variant", name="lfs_select_variant"),
-    url(r'^select-variant-from-properties$', "select_variant_from_properties", name="lfs_select_variant_from_properties"),    
-    url(r'^file/(?P<id>[-\w]*)', "file", name="lfs_file"),    
+    url(r'^select-variant-from-properties$', "select_variant_from_properties", name="lfs_select_variant_from_properties"),
+    url(r'^file/(?P<id>[-\w]*)', "file", name="lfs_file"),
     url(r'^calculate-price/(?P<id>[-\w]*)', "calculate_price", name="lfs_calculate_price"),
     url(r'^calculate-packing/(?P<id>[-\w]*)', "calculate_packing", name="lfs_calculate_packing"),
 )
@@ -57,16 +57,16 @@ urlpatterns += patterns('lfs.checkout.views',
     url(r'^checkout-dispatcher', "checkout_dispatcher", name="lfs_checkout_dispatcher"),
     url(r'^checkout-login', "login", name="lfs_checkout_login"),
     url(r'^checkout', "one_page_checkout", name="lfs_checkout"),
-    url(r'^thank-you', "thank_you",name="lfs_thank_you"),
+    url(r'^thank-you', "thank_you", name="lfs_thank_you"),
     url(r'^changed-checkout/$', "changed_checkout", name="lfs_changed_checkout"),
     url(r'^changed-invoice-country/$', "changed_invoice_country", name="lfs_changed_invoice_country"),
     url(r'^changed-shipping-country/$', "changed_shipping_country", name="lfs_changed_shipping_country"),
-    url(r'^check-voucher/$', "check_voucher", name="lfs_check_voucher"),    
+    url(r'^check-voucher/$', "check_voucher", name="lfs_check_voucher"),
 )
 
 # Customer
 urlpatterns += patterns('lfs.customer.views',
-    url(r'^login',  "login", name="lfs_login"),
+    url(r'^login', "login", name="lfs_login"),
     url(r'^logout', "logout", name="lfs_logout"),
     url(r'^my-account', "account", name="lfs_my_account"),
     url(r'^my-addresses', "addresses", name="lfs_my_addresses"),

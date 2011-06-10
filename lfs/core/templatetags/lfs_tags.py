@@ -27,13 +27,13 @@ from lfs.shipping import utils as shipping_utils
 
 register = template.Library()
 
+
 @register.inclusion_tag('lfs/portlets/category_children.html', takes_context=True)
 def category_children(context, categories):
     """
     """
-    return {
-        "categories" : categories,
-    }
+    return {"categories": categories}
+
 
 @register.inclusion_tag('lfs/shop/google_analytics_tracking.html', takes_context=True)
 def google_analytics_tracking(context):
@@ -42,9 +42,10 @@ def google_analytics_tracking(context):
     """
     shop = lfs_get_object_or_404(Shop, pk=1)
     return {
-        "ga_site_tracking" : shop.ga_site_tracking,
-        "google_analytics_id" : shop.google_analytics_id,
+        "ga_site_tracking": shop.ga_site_tracking,
+        "google_analytics_id": shop.google_analytics_id,
     }
+
 
 @register.inclusion_tag('lfs/shop/google_analytics_ecommerce.html', takes_context=True)
 def google_analytics_ecommerce(context, clear_session=True):
@@ -57,41 +58,45 @@ def google_analytics_ecommerce(context, clear_session=True):
 
     # The order is removed from the session. It has been added after the order
     # has been payed within the checkout process. See order.utils for more.
-    if clear_session and request.session.has_key("order"):
+    if clear_session and "order" in request.session:
         del request.session["order"]
 
-    if request.session.has_key("voucher"):
+    if "voucher" in request.session:
         del request.session["voucher"]
 
     return {
-        "order" : order,
-        "ga_ecommerce_tracking" : shop.ga_ecommerce_tracking,
-        "google_analytics_id" : shop.google_analytics_id,
+        "order": order,
+        "ga_ecommerce_tracking": shop.ga_ecommerce_tracking,
+        "google_analytics_id": shop.google_analytics_id,
     }
+
 
 def _get_shipping(context, product):
     request = context.get("request")
     if product.is_deliverable() == False:
         return {
-            "deliverable" : False,
-            "delivery_time" : shipping_utils.get_product_delivery_time(request, product.slug)
+            "deliverable": False,
+            "delivery_time": shipping_utils.get_product_delivery_time(request, product.slug)
         }
     else:
         return {
-            "deliverable" : True,
-            "delivery_time" : shipping_utils.get_product_delivery_time(request, product.slug)
+            "deliverable": True,
+            "delivery_time": shipping_utils.get_product_delivery_time(request, product.slug)
         }
+
 
 @register.inclusion_tag('lfs/shipping/shipping_tag.html', takes_context=True)
 def shipping(context, variant):
     return _get_shipping(context, variant)
+
 
 @register.inclusion_tag('lfs/catalog/sorting.html', takes_context=True)
 def sorting(context):
     """
     """
     request = context.get("request")
-    return {"current" : request.session.get("sorting")}
+    return {"current": request.session.get("sorting")}
+
 
 @register.inclusion_tag('lfs/catalog/breadcrumbs.html', takes_context=True)
 def breadcrumbs(context, obj):
@@ -106,14 +111,14 @@ def breadcrumbs(context, obj):
         objects = []
         while obj is not None:
             objects.insert(0, {
-                "name" : obj.name,
-                "url"  : obj.get_absolute_url(),
+                "name": obj.name,
+                "url": obj.get_absolute_url(),
             })
             obj = obj.parent
 
         result = {
-            "objects" : objects,
-            "MEDIA_URL" : context.get("MEDIA_URL"),
+            "objects": objects,
+            "MEDIA_URL": context.get("MEDIA_URL"),
         }
         cache.set(cache_key, result)
 
@@ -132,39 +137,40 @@ def breadcrumbs(context, obj):
                 return []
             else:
                 objects = [{
-                    "name" : obj.get_name(),
-                    "url"  : obj.get_absolute_url(),
+                    "name": obj.get_name(),
+                    "url": obj.get_absolute_url(),
                 }]
                 while category is not None:
                     objects.insert(0, {
-                        "name" : category.name,
-                        "url" : category.get_absolute_url(),
+                        "name": category.name,
+                        "url": category.get_absolute_url(),
                     })
                     category = category.parent
 
         result = {
-            "objects" : objects,
-            "MEDIA_URL" : context.get("MEDIA_URL"),
+            "objects": objects,
+            "MEDIA_URL": context.get("MEDIA_URL"),
         }
 
     elif isinstance(obj, Page):
         objects = []
         objects.append({
             "name": _(u"Information"),
-            "get_absolute_url" : reverse("lfs_pages")})
+            "get_absolute_url": reverse("lfs_pages")}),
         objects.append({"name": obj.title})
 
         result = {
-            "objects" : objects,
-            "MEDIA_URL" : context.get("MEDIA_URL"),
+            "objects": objects,
+            "MEDIA_URL": context.get("MEDIA_URL"),
         }
     else:
         result = {
-            "objects" : ({ "name" : obj }, ),
-            "MEDIA_URL" : context.get("MEDIA_URL"),
+            "objects": ({"name": obj},),
+            "MEDIA_URL": context.get("MEDIA_URL"),
         }
 
     return result
+
 
 @register.inclusion_tag('lfs/catalog/filter_navigation.html', takes_context=True)
 def filter_navigation(context, category):
@@ -186,11 +192,12 @@ def filter_navigation(context, category):
         set_product_filters, set_price_filters)
 
     return {
-        "category" : category,
-        "product_filters" : product_filters,
-        "set_price_filters" : set_price_filters,
-        "price_filters" : price_filters,
+        "category": category,
+        "product_filters": product_filters,
+        "set_price_filters": set_price_filters,
+        "price_filters": price_filters,
     }
+
 
 @register.inclusion_tag('lfs/catalog/product_navigation.html', takes_context=True)
 def product_navigation(context, product):
@@ -202,7 +209,7 @@ def product_navigation(context, product):
     slug = product.slug
 
     cache_key = "product-navigation-%s" % slug
-    temp = None # cache.get(cache_key)
+    temp = None  # cache.get(cache_key)
     if temp is not None:
         try:
             return temp[sorting]
@@ -220,7 +227,7 @@ def product_navigation(context, product):
 
     category = lfs.catalog.utils.get_current_product_category(request, product)
     if category is None:
-        return {"display" : False }
+        return {"display": False}
     else:
         # First we collect all sub categories. This and using the in operator makes
         # batching more easier
@@ -233,37 +240,37 @@ def product_navigation(context, product):
         # So we have to take care for the product navigation too.
         if request.user.is_superuser:
             products = Product.objects.filter(
-                categories__in = categories,
-                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT),
+                categories__in=categories,
+                sub_type__in=(STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT),
             ).order_by(sorting)
         else:
             products = Product.objects.filter(
-                categories__in = categories,
-                sub_type__in = (STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT),
-                active = True,
+                categories__in=categories,
+                sub_type__in=(STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT),
+                active=True,
             ).order_by(sorting)
 
         product_slugs = [p.slug for p in products]
         product_index = product_slugs.index(slug)
 
         if product_index > 0:
-            previous = product_slugs[product_index-1]
+            previous = product_slugs[product_index - 1]
         else:
             previous = None
 
         total = len(product_slugs)
-        if product_index < total-1:
-            next = product_slugs[product_index+1]
+        if product_index < total - 1:
+            next = product_slugs[product_index + 1]
         else:
             next = None
 
         result = {
-            "display" : True,
-            "previous" : previous,
-            "next" : next,
-            "current" : product_index+1,
-            "total" : total,
-            "MEDIA_URL" : context.get("MEDIA_URL"),
+            "display": True,
+            "previous": previous,
+            "next": next,
+            "current": product_index + 1,
+            "total": total,
+            "MEDIA_URL": context.get("MEDIA_URL"),
         }
 
         temp[sorting] = result
@@ -271,13 +278,15 @@ def product_navigation(context, product):
 
         return result
 
+
 @register.inclusion_tag('lfs/catalog/sorting_portlet.html', takes_context=True)
 def sorting_portlet(context):
     request = context.get("request")
     return {
-        "current" : request.session.get("sorting"),
-        "MEDIA_URL" : context.get("MEDIA_URL"),
+        "current": request.session.get("sorting"),
+        "MEDIA_URL": context.get("MEDIA_URL"),
     }
+
 
 class ActionsNode(Node):
     def __init__(self, group_name):
@@ -288,6 +297,7 @@ class ActionsNode(Node):
         context["actions"] = Action.objects.filter(active=True, group__name=self.group_name)
         return ''
 
+
 def do_actions(parser, token):
     """Returns the actions for the group with the given id.
     """
@@ -297,8 +307,8 @@ def do_actions(parser, token):
         raise TemplateSyntaxError(_('%s tag needs group id as argument') % bits[0])
 
     return ActionsNode(bits[1])
-
 register.tag('actions', do_actions)
+
 
 @register.inclusion_tag('lfs/shop/tabs.html', takes_context=True)
 def tabs(context, obj=None):
@@ -323,9 +333,10 @@ def tabs(context, obj=None):
                 break
 
     return {
-        "tabs" : tabs,
-        "MEDIA_URL" : context.get("MEDIA_URL"),
+        "tabs": tabs,
+        "MEDIA_URL": context.get("MEDIA_URL"),
     }
+
 
 @register.inclusion_tag('lfs/catalog/top_level_categories.html', takes_context=True)
 def top_level_categories(context):
@@ -345,35 +356,15 @@ def top_level_categories(context):
             current = False
 
         categories.append({
-            "url" : category.get_absolute_url(),
-            "name" : category.name,
-            "current" : current,
+            "url": category.get_absolute_url(),
+            "name": category.name,
+            "current": current,
         })
 
     return {
-        "categories" : categories,
+        "categories": categories,
     }
 
-# @register.inclusion_tag('lfs/shop/menu.html', takes_context=True)
-# def menu(context):
-#     """
-#     """
-#     request = context.get("request")
-#     current_categories = get_current_categories(request)
-# 
-#     categories = []
-#     for category in Category.objects.filter(parent = None):
-#         categories.append({
-#             "id" : category.id,
-#             "slug" : category.slug,
-#             "name" : category.name,
-#             "selected" : category in current_categories
-#         })
-# 
-#     return {
-#         "categories" : categories,
-#         "MEDIA_URL" : context.get("MEDIA_URL"),
-#     }
 
 class TopLevelCategory(Node):
     """Calculates the current top level category.
@@ -386,6 +377,7 @@ class TopLevelCategory(Node):
         context["top_level_category"] = top_level_category.name
         return ''
 
+
 def do_top_level_category(parser, token):
     """Calculates the current top level category.
     """
@@ -395,8 +387,8 @@ def do_top_level_category(parser, token):
         raise TemplateSyntaxError(_('%s tag needs no argument') % bits[0])
 
     return TopLevelCategory()
-
 register.tag('top_level_category', do_top_level_category)
+
 
 class CartInformationNode(Node):
     """
@@ -415,6 +407,7 @@ class CartInformationNode(Node):
         context["cart_price"] = price
         return ''
 
+
 def do_cart_information(parser, token):
     """Calculates cart informations.
     """
@@ -424,8 +417,8 @@ def do_cart_information(parser, token):
         raise TemplateSyntaxError(_('%s tag needs no argument') % bits[0])
 
     return CartInformationNode()
-
 register.tag('cart_information', do_cart_information)
+
 
 class CurrentCategoryNode(Node):
     """
@@ -438,6 +431,7 @@ class CurrentCategoryNode(Node):
             lfs.catalog.utils.get_current_product_category(request, product)
         return ''
 
+
 def do_current_category(parser, token):
     """Calculates current category.
     """
@@ -447,8 +441,8 @@ def do_current_category(parser, token):
         raise TemplateSyntaxError(_('%s tag needs product as argument') % bits[0])
 
     return CurrentCategoryNode()
-
 register.tag('current_category', do_current_category)
+
 
 # TODO: Move this to shop utils or similar
 def get_slug_from_request(request):
@@ -463,6 +457,7 @@ def get_slug_from_request(request):
         slug = request.path.split("/")[-2]
 
     return slug
+
 
 @register.filter
 def currency(price, arg=None):
@@ -485,6 +480,7 @@ def currency(price, arg=None):
 
     return price
 
+
 @register.filter
 def decimal_l10n(value):
     """Localizes
@@ -498,6 +494,7 @@ def decimal_l10n(value):
         value = "%s,%s" % (a, b)
 
     return value
+
 
 @register.filter
 def number(price, arg=None):
@@ -515,6 +512,7 @@ def number(price, arg=None):
 
     return price
 
+
 @register.filter
 def quantity(quantity):
     """Removes the decimal places when they are zero.
@@ -526,6 +524,7 @@ def quantity(quantity):
     else:
         return int(float(quantity))
 
+
 @register.filter
 def sub_type_name(sub_type, arg=None):
     """Returns the sub type name for the sub type with passed sub_type id.
@@ -535,11 +534,13 @@ def sub_type_name(sub_type, arg=None):
     except KeyError:
         return ""
 
+
 @register.filter
 def multiply(score, pixel):
     """Returns the result of score * pixel
     """
     return score * pixel
+
 
 @register.filter
 def option_name(option_id):
@@ -556,6 +557,7 @@ def option_name(option_id):
         return option_id
     else:
         return option.name
+
 
 @register.filter
 def option_name_for_property_value(property_value):
@@ -574,11 +576,12 @@ def option_name_for_property_value(property_value):
         else:
             return option.name
 
-    return property_value.value        
-    
+    return property_value.value
+
+
 @register.filter
 def packages(cart_item):
-    """Returns the packages based on product's package unit and cart items 
+    """Returns the packages based on product's package unit and cart items
     amount.
     """
     return int(math.ceil(cart_item.amount / cart_item.product.packing_unit))

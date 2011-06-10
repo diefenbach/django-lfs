@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.safestring import mark_safe
 
+
 class LFSFileInput(forms.FileInput):
     """A custom file widget which displays the current file.
     """

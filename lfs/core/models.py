@@ -9,6 +9,7 @@ from lfs.checkout.settings import CHECKOUT_TYPE_SELECT
 from lfs.core.fields.thumbs import ImageWithThumbsField
 from lfs.catalog.models import StaticBlock
 
+
 class Country(models.Model):
     """Holds country relevant data for the shop.
     """
@@ -21,6 +22,7 @@ class Country(models.Model):
     class Meta:
         verbose_name_plural = 'Countries'
         ordering = ("name", )
+
 
 class ActionGroup(models.Model):
     """Actions of a action group can be displayed on several parts of the web
@@ -43,6 +45,7 @@ class ActionGroup(models.Model):
         """Returns the actions of this group.
         """
         return self.actions.filter(active=True)
+
 
 class Action(models.Model):
     """A action is a link which belongs to a action groups.
@@ -78,7 +81,8 @@ class Action(models.Model):
         return self.title
 
     class Meta:
-        ordering=("position", )
+        ordering = ("position", )
+
 
 class Shop(models.Model):
     """Holds all shop related information.
@@ -144,7 +148,7 @@ class Shop(models.Model):
     name = models.CharField(_(u"Name"), max_length=30)
     shop_owner = models.CharField(_(u"Shop owner"), max_length=100, blank=True)
     from_email = models.EmailField(_(u"From e-mail address"))
-    notification_emails  = models.TextField(_(u"Notification email addresses"))
+    notification_emails = models.TextField(_(u"Notification email addresses"))
 
     description = models.TextField(_(u"Description"), blank=True)
     image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400)))
@@ -175,9 +179,9 @@ class Shop(models.Model):
         """
         """
         return {
-            "product_cols" : self.product_cols,
-            "product_rows" : self.product_rows,
-            "category_cols" : self.category_cols,
+            "product_cols": self.product_cols,
+            "product_rows": self.product_rows,
+            "category_cols": self.category_cols,
         }
 
     def get_default_country(self):

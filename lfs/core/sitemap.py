@@ -6,6 +6,7 @@ from django.contrib.sitemaps import Sitemap
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 
+
 class ProductSitemap(Sitemap):
     """Google's XML sitemap for products.
     """
@@ -17,7 +18,8 @@ class ProductSitemap(Sitemap):
 
     def lastmod(self, obj):
         return obj.creation_date
-        
+
+
 class CategorySitemap(Sitemap):
     """Google's XML sitemap for products.
     """

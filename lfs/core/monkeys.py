@@ -7,6 +7,7 @@ from django.contrib import auth
 from lfs.cart import utils as cart_utils
 from lfs.customer import utils as customer_utils
 
+
 def lfs_login(request, user):
     """
     Persist a user id and a backend in the request. This way a user doesn't
@@ -31,9 +32,9 @@ def lfs_login(request, user):
     request.session[BACKEND_SESSION_KEY] = user.backend
     if hasattr(request, 'user'):
         request.user = user
-    
+
     ### LFS stuff
     cart_utils.update_cart_after_login(request)
     customer_utils.update_customer_after_login(request)
-    
+
 auth.login = lfs_login

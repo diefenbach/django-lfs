@@ -26,6 +26,7 @@ from lfs.order.models import Order
 from lfs.tests.utils import RequestFactory
 import lfs.core.utils
 
+
 class ShopTestCase(TestCase):
     """Tests the views of the lfs.catalog.
     """
@@ -86,6 +87,7 @@ class ShopTestCase(TestCase):
             shop.get_notification_emails(),
             ["john@doe.com", "jane@doe.com"])
 
+
 class TagsTestCase(TestCase):
     """
     """
@@ -107,7 +109,7 @@ class TagsTestCase(TestCase):
         self.failIf(content.find("pageTracker") != -1)
 
         # Enter a google_analytics_id
-        shop.google_analytics_id="UA-XXXXXXXXXX"
+        shop.google_analytics_id = "UA-XXXXXXXXXX"
         shop.save()
 
         # But this is not enough
@@ -140,15 +142,15 @@ class TagsTestCase(TestCase):
         template = get_template_from_string(
             """{% load lfs_tags %}{% google_analytics_ecommerce %}""")
 
-        content = template.render(Context({"request" : request}))
+        content = template.render(Context({"request": request}))
         self.failIf(content.find("pageTracker") != -1)
 
         # Enter a google_analytics_id
-        shop.google_analytics_id="UA-XXXXXXXXXX"
+        shop.google_analytics_id = "UA-XXXXXXXXXX"
         shop.save()
 
         # But this is not enough
-        content = template.render(Context({"request" : request}))
+        content = template.render(Context({"request": request}))
         self.failIf(content.find("pageTracker") != -1)
 
         # It has to be activated first
@@ -156,12 +158,12 @@ class TagsTestCase(TestCase):
         shop.save()
 
         # But this is still not enough
-        content = template.render(Context({"request" : request}))
+        content = template.render(Context({"request": request}))
         self.failIf(content.find("pageTracker") != -1)
 
         # There has to be an order within the session
         session["order"] = Order()
 
         # Now it works and "pageTracker" is found
-        content = template.render(Context({"request" : request}))
+        content = template.render(Context({"request": request}))
         self.failIf(content.find("pageTracker") == -1)
