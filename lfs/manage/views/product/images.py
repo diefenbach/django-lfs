@@ -63,7 +63,7 @@ def update_images(request, product_id):
     """Saves/deletes images with given ids (passed by request body).
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
-    
+
     action = request.POST.get("action")
     if action == "delete":
         message = _(u"Images has been deleted.")
@@ -100,7 +100,7 @@ def update_images(request, product_id):
 
     # Refresh positions
     for i, image in enumerate(product.images.all()):
-        image.position = i+1
+        image.position = (i + 1) * 10
         image.save()
 
     product_changed.send(product, request=request)
@@ -108,6 +108,52 @@ def update_images(request, product_id):
     result = simplejson.dumps({
         "images" : manage_images(request, product_id, as_string=True),
         "message" : message,
+    }, cls = LazyEncoder)
+
+    return HttpResponse(result)
+
+@permission_required("core.manage_shop", login_url="/login/")
+def move_image(request, id):
+    """Moves the image with passed id up or down.
+
+    **Parameters:**
+
+        id
+            The id of the image which should be edited.
+
+    **Query String:**
+
+        direction
+            The direction in which the image should be moved. One of 0 (up)
+            or 1 (down).
+
+    **Permission:**
+
+        edit (of the belonging content object)
+    """
+    image = Image.objects.get(pk=id)
+    product = image.content
+
+    direction = request.GET.get("direction", 0)
+
+    if direction == "1":
+        image.position += 15
+    else:
+        image.position -= 15
+        if image.position < 0:
+            image.position = 10
+
+    image.save()
+
+    # Refresh positions
+    for i, image in enumerate(product.images.all()):
+        image.position = (i + 1) * 10
+        image.save()
+
+    html = [["#images", manage_images(request, product.id, as_string=True)]]
+
+    result = simplejson.dumps({
+         "html": html,
     }, cls = LazyEncoder)
 
     return HttpResponse(result)

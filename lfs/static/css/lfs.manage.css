@@ -357,6 +357,19 @@ td.management {
 }
 
 
+.up {
+    margin: 0 4px;
+    padding-left: 16px;
+    background: url(../icons/arrow_up.png) no-repeat;
+    text-decoration: none;
+}
+
+.down {
+    margin: 0 4px;
+    padding-left: 16px;
+    background: url(../icons/arrow_down.png) no-repeat;
+    text-decoration: none;
+}
 a.add {
     margin: 0 10px;
     padding-left: 18px;
