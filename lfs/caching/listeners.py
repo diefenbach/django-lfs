@@ -1,4 +1,5 @@
 # django imports
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.db.models.signals import post_save
@@ -58,10 +59,10 @@ def order_item_listener(sender, instance, **kwargs):
     calculated automatically on base of OrderItems, hence we have to take of
     that.
     """
-    cache.delete("topseller")
+    cache.delete("%s-topseller"%settings.CACHE_MIDDLEWARE_KEY_PREFIX)
     try:
         for category in instance.product.get_categories(with_parents=True):
-            cache.delete("topseller-%s" % category.id)
+            cache.delete("%s-topseller-%s" %(settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.id))
     except: 
         pass # fail silently        
 pre_delete.connect(order_item_listener, sender=OrderItem)
@@ -69,8 +70,8 @@ post_save.connect(order_item_listener, sender=OrderItem)
 
 # Page
 def page_saved_listener(sender, instance, **kwargs):
-    cache.delete("page-%s" % instance.slug)
-    cache.delete("pages")
+    cache.delete("%s-page-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.slug))
+    cache.delete("%s-pages"%settings.CACHE_MIDDLEWARE_KEY_PREFIX)
 post_save.connect(page_saved_listener, sender=Page)
 
 # Product
@@ -85,13 +86,13 @@ post_save.connect(product_saved_listener, sender=Product)
 
 # Shipping Method
 def shipping_method_saved_listener(sender, instance, **kwargs):
-    cache.delete("shipping-delivery-time")
-    cache.delete("shipping-delivery-time-cart")
+    cache.delete("%s-shipping-delivery-time"%settings.CACHE_MIDDLEWARE_KEY_PREFIX)
+    cache.delete("%s-shipping-delivery-time-cart"%settings.CACHE_MIDDLEWARE_KEY_PREFIX)
 post_save.connect(shipping_method_saved_listener, sender=ShippingMethod)
 
 # Shop
 def shop_saved_listener(sender, instance, **kwargs):
-    cache.delete("shop-%s" % instance.id)
+    cache.delete("%s-shop-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
 post_save.connect(shop_saved_listener, sender=Shop)
 
 # Static blocks
@@ -123,22 +124,22 @@ def update_category_cache(instance):
     # (1000s) and the shop admin changes a category.
     clear_cache()
     return
-    cache.delete("category-breadcrumbs-%s" % instance.slug)
-    cache.delete("category-products-%s" % instance.slug)
-    cache.delete("category-all-products-%s" % instance.slug)
-    cache.delete("category-categories-%s" % instance.slug)
+    cache.delete("%s-category-breadcrumbs-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.slug))
+    cache.delete("%s-category-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.slug))
+    cache.delete("%s-category-all-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.slug))
+    cache.delete("%s-category-categories-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.slug))
 
     for category in Category.objects.all():
-        cache.delete("categories-portlet-%s" % category.slug)
+        cache.delete("%s-categories-portlet-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.slug))
 
-    cache.delete("category-%s" % instance.id) 
-    cache.delete("category-%s" % instance.slug)
+    cache.delete("%s-category-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
+    cache.delete("%s-category-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.slug))
 
-    cache.delete("category-all-children-%s" % instance.id)
-    cache.delete("category-children-%s" % instance.id)
-    cache.delete("category-parents-%s" % instance.id)
-    cache.delete("category-products-%s" % instance.id)
-    cache.delete("category-all-products-%s" % instance.id)
+    cache.delete("%s-category-all-children-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
+    cache.delete("%s-category-children-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
+    cache.delete("%s-category-parents-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
+    cache.delete("%s-category-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
+    cache.delete("%s-category-all-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
     
     # Note: As this is called "pre-saved" newly created categories don't have
     # the many-to-many attribute "products", hence we have to take care of it 
@@ -156,58 +157,58 @@ def update_product_cache(instance):
         parent = instance.parent
     else:
         parent = instance
-    
-    cache.delete("product-%s" % parent.id)
-    cache.delete("product-%s" % parent.slug)
-    cache.delete("product-inline-%s" % parent.id)
-    cache.delete("product-images-%s" % parent.id)
-    cache.delete("related-products-%s" % parent.id)    
-    cache.delete("manage-properties-variants-%s" % parent.id)
-    cache.delete("product-categories-%s-False" % parent.id)
-    cache.delete("product-categories-%s-True" % parent.id)
-    cache.delete("product-navigation-%s" % parent.slug)
+
+    cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
+    cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.slug))
+    cache.delete("%s-product-inline-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
+    cache.delete("%s-product-images-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
+    cache.delete("%s-related-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
+    cache.delete("%s-manage-properties-variants-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
+    cache.delete("%s-product-categories-%s-False" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
+    cache.delete("%s-product-categories-%s-True" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
+    cache.delete("%s-product-navigation-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.slug))
     
     try:
-        c = cache.get("shipping-delivery-time")
-        del c["product-%s" % parent.slug]
-        cache.set("shipping-delivery-time", c)
+        c = cache.get("%s-shipping-delivery-time"%settings.CACHE_MIDDLEWARE_KEY_PREFIX)
+        del c["%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.slug)]
+        cache.set("%s-shipping-delivery-time"%settings.CACHE_MIDDLEWARE_KEY_PREFIX, c)
     except (KeyError, TypeError):
         pass
-    
+
     for variant in parent.get_variants():
-        cache.delete("product-%s" % variant.id)
-        cache.delete("product-%s" % parent.slug)
-        cache.delete("product-inline-%s" % variant.id)
-        cache.delete("product-images-%s" % variant.id)
-        cache.delete("related-products-%s" % variant.id)
-        cache.delete("product-categories-%s-False" % variant.id)
-        cache.delete("product-categories-%s-True" % variant.id)
-        cache.delete("product-navigation-%s" % variant.slug)
-        cache.delete("product-shipping-%s" % variant.slug)
+        cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
+        cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.slug))
+        cache.delete("%s-product-inline-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
+        cache.delete("%s-product-images-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
+        cache.delete("%s-related-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
+        cache.delete("%s-product-categories-%s-False" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
+        cache.delete("%s-product-categories-%s-True" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
+        cache.delete("%s-product-navigation-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.slug))
+        cache.delete("%s-product-shipping-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.slug))
 
 def update_cart_cache(instance):
     """Deletes all cart relevant caches.
     """
-    cache.delete("cart-%s" % instance.user)
-    cache.delete("cart-%s" % instance.session)
-    cache.delete("cart-items-%s" % instance.id)
-    cache.delete("cart-costs-True-%s" % instance.id)
-    cache.delete("cart-costs-False-%s" % instance.id)
-    cache.delete("shipping-delivery-time-cart")
-    cache.delete("shipping-delivery-time")
+    cache.delete("%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.user))
+    cache.delete("%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.session))
+    cache.delete("%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
+    cache.delete("%s-cart-costs-True-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
+    cache.delete("%s-cart-costs-False-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
+    cache.delete("%s-shipping-delivery-time-cart"%settings.CACHE_MIDDLEWARE_KEY_PREFIX)
+    cache.delete("%s-shipping-delivery-time"%settings.CACHE_MIDDLEWARE_KEY_PREFIX)
         
 def update_static_block_cache(instance):
     """Deletes all static block relevant caches.
     """
-    cache.delete("static-block-%s" % instance.id)
+    cache.delete("%s-static-block-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
     
     for category in instance.categories.all():
-        cache.delete("category-inline-%s" % category.slug)
+        cache.delete("%s-category-inline-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.slug))
 
 def update_topseller_cache(topseller):
     """Deletes all topseller relevant caches.
     """
-    cache.delete("topseller")
+    cache.delete("%s-topseller"%settings.CACHE_MIDDLEWARE_KEY_PREFIX)
     product = topseller.product
     for category in product.get_categories(with_parents=True):
-        cache.delete("topseller-%s" % category.id)
+        cache.delete("%s-topseller-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.id))

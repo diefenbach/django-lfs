@@ -2,6 +2,7 @@
 from datetime import datetime
 
 # django imports
+from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -31,9 +32,9 @@ def get_product_delivery_time(request, product_slug, for_cart=False):
     """
     # TODO: Need a reasonable chaching here
     if for_cart:
-        cache_key = "shipping-delivery-time-cart-%s" % (request.user.id)
+        cache_key = "%s-shipping-delivery-time-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, request.user.id)
     else:
-        cache_key = "shipping-delivery-time"
+        cache_key = "%s-shipping-delivery-time"%settings.CACHE_MIDDLEWARE_KEY_PREFIX
 
     shippings = None # cache.get(cache_key)
     if shippings is None:

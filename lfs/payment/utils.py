@@ -188,7 +188,7 @@ def get_paypal_link_for_order(order):
     }
 
     parameters = "&".join(["%s=%s" % (k, v) for (k, v) in info.items()])
-    if settings.DEBUG:
+    if getattr(settings, 'PAYPAL_DEBUG', settings.DEBUG):
         url = SANDBOX_POSTBACK_ENDPOINT + "?" + parameters
     else:
         url = POSTBACK_ENDPOINT + "?" + parameters

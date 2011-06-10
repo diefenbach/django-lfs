@@ -3,6 +3,7 @@ import re
 import math
 
 # django imports
+from django.conf import settings
 from django.core.cache import cache
 from django.db import connection
 
@@ -101,7 +102,7 @@ def get_current_product_category(request, product):
 def get_property_groups(category):
     """Returns all property groups for given category
     """
-    cache_key = "category-property-groups-%s" % category.id
+    cache_key = "%s-category-property-groups-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.id)
     pgs = cache.get(cache_key)
     if pgs is not None:
         return pgs
@@ -224,7 +225,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
     else:
         ck_product_filter = ""
 
-    cache_key = "productfilters-%s-%s-%s-%s" % (
+    cache_key = "%s-productfilters-%s-%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, 
         category.slug, ck_product_filter, ck_price_filter, sorting)
 
     result = cache.get(cache_key)

@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import timedelta
 
 # django imports
+from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Q
 
@@ -49,7 +50,7 @@ def get_orders(days=14):
 def get_topseller(limit=5):
     """Returns products with the most sales. Limited by given limit.
     """
-    cache_key = "topseller"
+    cache_key = "%s-topseller"%settings.CACHE_MIDDLEWARE_KEY_PREFIX
     topseller = cache.get(cache_key)
     if topseller is not None:
         return topseller
@@ -93,7 +94,7 @@ def get_topseller_for_category(category, limit=5):
     """
     # TODO: Check Django 1.1's aggregation
 
-    cache_key = "topseller-%s" % category.id
+    cache_key = "%s-topseller-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.id)
     topseller = cache.get(cache_key)
     if topseller is not None:
         return topseller

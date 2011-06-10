@@ -10,6 +10,7 @@ from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 # lfs imports
 import lfs.catalog.utils
@@ -183,7 +184,7 @@ class Category(models.Model):
                 children.append(category)
                 _get_all_children(category, children)
 
-        cache_key = "category-all-children-%s" % self.id
+        cache_key = "%s-category-all-children-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         children = cache.get(cache_key)
         if children is not None:
             return children
@@ -199,7 +200,7 @@ class Category(models.Model):
     def get_children(self):
         """Returns the first level child categories.
         """
-        cache_key = "category-children-%s" % self.id
+        cache_key = "%s-category-children-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
 
         categories = cache.get(cache_key)
         if categories is not None:
@@ -277,7 +278,7 @@ class Category(models.Model):
     def get_parents(self):
         """Returns all parent categories.
         """
-        cache_key = "category-parents-%s" % self.id
+        cache_key = "%s-category-parents-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         parents = cache.get(cache_key)
         if parents is not None:
             return parents
@@ -294,7 +295,7 @@ class Category(models.Model):
     def get_products(self):
         """Returns the direct products of the category.
         """
-        cache_key = "category-products-%s" % self.id
+        cache_key = "%s-category-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         products = cache.get(cache_key)
         if products is not None:
             return products
@@ -307,7 +308,7 @@ class Category(models.Model):
     def get_all_products(self):
         """Returns the direct products and all products of the sub categories
         """
-        cache_key = "category-all-products-%s" % self.id
+        cache_key = "%s-category-all-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         products = cache.get(cache_key)
         if products is not None:
             return products
@@ -332,7 +333,7 @@ class Category(models.Model):
     def get_static_block(self):
         """Returns the static block of the category.
         """
-        cache_key = "static-block-%s" % self.id
+        cache_key = "%s-static-block-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         blocks = cache.get(cache_key)
         if blocks is not None:
             return blocks
@@ -666,7 +667,7 @@ class Product(models.Model):
     def get_categories(self, with_parents=False):
         """Returns the categories of the product.
         """
-        cache_key = "product-categories-%s-%s" % (self.id, with_parents)
+        cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id, with_parents)
         categories = cache.get(cache_key)
 
         if categories is not None:
@@ -753,7 +754,7 @@ class Product(models.Model):
     def get_images(self):
         """Returns all images of the product, including the main image.
         """
-        cache_key = "product-images-%s" % self.id
+        cache_key = "%s-product-images-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         images = cache.get(cache_key)
 
         if images is None:
@@ -830,12 +831,12 @@ class Product(models.Model):
     def get_option(self, property_id):
         """Returns the id of the selected option for property with passed id.
         """
-        options = cache.get("productpropertyvalue%s" % self.id)
+        options = cache.get("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id))
         if options is None:
             options = {}
             for pvo in self.property_values.all():
                 options[pvo.property_id] = pvo.value
-            cache.set("productpropertyvalue%s" % self.id, options)
+            cache.set("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id), options)
         try:
             return options[property_id]
         except KeyError:
@@ -844,7 +845,7 @@ class Product(models.Model):
     def get_displayed_properties(self):
         """Returns properties with ``display_on_product`` is True.
         """
-        cache_key = "displayed-properties-%s" % self.id
+        cache_key = "%s-displayed-properties-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
 
         properties = cache.get(cache_key)
         if properties:
@@ -875,7 +876,7 @@ class Product(models.Model):
         """Returns the property value of a variant in the correct ordering
         of the properties.
         """
-        cache_key = "variant-properties-%s" % self.id
+        cache_key = "%s-variant-properties-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
 
         properties = cache.get(cache_key)
         if properties:
@@ -908,12 +909,12 @@ class Product(models.Model):
         """Returns True if the variant has the given property / option
         combination.
         """
-        options = cache.get("productpropertyvalue%s" % self.id)
+        options = cache.get("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id))
         if options is None:
             options = {}
             for pvo in self.property_values.all():
                 options[pvo.property_id] = pvo.value
-            cache.set("productpropertyvalue%s" % self.id, options)
+            cache.set("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id), options)
 
         try:
             return options[property.id] == str(option.id)
@@ -1152,7 +1153,7 @@ class Product(models.Model):
     def get_related_products(self):
         """Returns the related products of the product.
         """
-        cache_key = "related-products-%s" % self.id
+        cache_key = "%s-related-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         related_products = cache.get(cache_key)
 
         if related_products is None:
@@ -1171,7 +1172,7 @@ class Product(models.Model):
         This is either a selected variant or the first added variant. If the
         product has no variants it is None.
         """
-        cache_key = "default-variant-%s" % self.id
+        cache_key = "%s-default-variant-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         default_variant = cache.get(cache_key)
 
         if default_variant is not None:
@@ -1192,7 +1193,7 @@ class Product(models.Model):
         """Returns the static block of the product. Takes care whether the
         product is a variant and meta description are active or not.
         """
-        cache_key = "product-static-block-%s" % self.id
+        cache_key = "%s-product-static-block-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         block = cache.get(cache_key)
         if block is not None:
             return block

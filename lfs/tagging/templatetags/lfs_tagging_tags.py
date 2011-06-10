@@ -1,5 +1,6 @@
 # django imports
 from django import template
+from django.conf import settings
 from django.core.cache import cache
 
 # lfs imports
@@ -35,7 +36,7 @@ def _get_related_products_by_tags(product_id, num=None):
     See there for more.
     """
     # Try to get it out of cache
-    cache_key = "related-products-by-tags-%s" % product_id
+    cache_key = "%s-related-products-by-tags-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product_id)
     related_products = cache.get(cache_key)    
     if related_products is not None:
         return {"related_products" : related_products}

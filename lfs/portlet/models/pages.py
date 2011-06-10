@@ -1,5 +1,6 @@
 # django imports
 from django import forms
+from django.conf import settings
 from django.core.cache import cache
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -24,7 +25,7 @@ class PagesPortlet(Portlet):
         """
         request = context.get("request")
 
-        cache_key = "pages"
+        cache_key = "%s-pages"%settings.CACHE_MIDDLEWARE_KEY_PREFIX
         pages = cache.get(cache_key)
         if pages is None:
             pages = Page.objects.filter(active=True, exclude_from_navigation=False)

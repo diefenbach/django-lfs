@@ -3,6 +3,7 @@ import math
 
 # django imports
 from django import template
+from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -103,7 +104,7 @@ def breadcrumbs(context, obj):
     """
     """
     if isinstance(obj, Category):
-        cache_key = "category-breadcrumbs-%s" % obj.slug
+        cache_key = "%s-category-breadcrumbs-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, obj.slug)
         objects = cache.get(cache_key)
         if objects is not None:
             return objects
@@ -208,8 +209,9 @@ def product_navigation(context, product):
 
     slug = product.slug
 
-    cache_key = "product-navigation-%s" % slug
-    temp = None  # cache.get(cache_key)
+    cache_key = "%s-product-navigation-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    temp = None # cache.get(cache_key)
+
     if temp is not None:
         try:
             return temp[sorting]
