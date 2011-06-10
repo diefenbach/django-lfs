@@ -1,19 +1,13 @@
-import os
-import datetime
+from windmill.authoring import  WindmillTestClient
 
-from django.conf import settings
-from windmill.authoring import djangotest 
-
-
-class TestProjectWindmillTest(djangotest.WindmillDjangoUnitTest): 
-    test_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'windmilltests')
-    browser = 'chrome'
-    settings.TESTING = True
+def setup_module(module):
+    pass
     
-    def setUp(self):
-        # set up our shop here
-        super(TestProjectWindmillTest, self).setUp()
-        
-    def tearDown(self):
-        # test for changes to shop here
-        pass
+
+def test_recordingSuite0():
+    client = WindmillTestClient(__name__)
+    client.type(text=u'Search stuff', id=u'id_search')
+    return
+
+def teardown_module(module):
+    pass
