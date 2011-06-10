@@ -1,15 +1,41 @@
 {% load i18n %}
 <h2 class="navigation-title">{% trans "Categories" %}</h2>
 <div class="navigation-body manage-categories-portlet">
-    <ul class="manage-categories-tree">
+    <ol class="manage-categories-tree sortable">
         {% for category in categories %}
             <li id="category_{{ category.id }}">
-                <a class="selectable {% if category.is_current %}selected{% endif %}"
-                   href="{% url lfs_manage_category category.id %}">
-                    {{ category.name }}
-                </a>
-                {{ category.children }}
+                <div>
+                    <a class="selectable {% if category.is_current %}selected{% endif %}"
+                       href="{% url lfs_manage_category category.id %}">
+                        {{ category.name }}
+                    </a>
+                    {{ category.children }}
+                </div>
             </li>
         {% endfor %}
-    </ul>
+    </ol>
 </div>
+
+
+<script>
+
+	$(document).ready(function(){
+
+		$('ol.sortable').nestedSortable({
+			disableNesting: 'no-nest',
+			forcePlaceholderSize: true,
+			handle: 'div',
+			helper:	'clone',
+			items: 'li',
+			maxLevels: 3,
+			opacity: .6,
+			placeholder: 'placeholder',
+			revert: 250,
+			tabSize: 25,
+			tolerance: 'pointer',
+			toleranceElement: '> div'
+		});
+
+    });
+
+</script>
