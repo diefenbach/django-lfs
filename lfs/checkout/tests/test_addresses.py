@@ -181,7 +181,7 @@ class CheckoutAddressesTestCase(TestCase):
                          }
 
         checkout_post_response = self.c.post(reverse('lfs_checkout'), checkout_data)
-        self.dump_response(checkout_post_response)
+        #self.dump_response(checkout_post_response)
         self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
 
         # test we have same amount of address objects at end of checkout
