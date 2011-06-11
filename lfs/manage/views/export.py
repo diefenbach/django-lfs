@@ -24,12 +24,14 @@ from lfs.export.models import CategoryOption
 from lfs.export.settings import CATEGORY_VARIANTS_CHOICES
 from lfs.export.settings import CATEGORY_VARIANTS_NONE
 
+
 class ExportDataForm(ModelForm):
     """Form to manage selection data.
     """
     class Meta:
         model = Export
         exclude = ("products", )
+
 
 def manage_export(request, export_id, template_name="manage/export/export.html"):
     """The main view to display exports.
@@ -43,7 +45,7 @@ def manage_export(request, export_id, template_name="manage/export/export.html")
         options = []
 
         try:
-            category_option = CategoryOption.objects.get(export = export, category = category)
+            category_option = CategoryOption.objects.get(export=export, category=category)
         except CategoryOption.DoesNotExist:
             variants_option = None
         else:
@@ -51,30 +53,31 @@ def manage_export(request, export_id, template_name="manage/export/export.html")
 
         for option in CATEGORY_VARIANTS_CHOICES:
             options.append({
-                "name" : option[1],
-                "value" : option[0],
-                "selected" : option[0] == variants_option,
+                "name": option[1],
+                "value": option[0],
+                "selected": option[0] == variants_option,
             })
 
         # Checking state
         checked, klass = _get_category_state(export, category)
 
         categories.append({
-            "id" : category.id,
-            "name" : category.name,
-            "checked" : checked,
-            "klass" : klass,
-            "options" : options,
+            "id": category.id,
+            "name": category.name,
+            "checked": checked,
+            "klass": klass,
+            "options": options,
         })
 
     data_form = ExportDataForm(instance=export)
     return render_to_response(template_name, RequestContext(request, {
-        "categories" : categories,
-        "export_id" : export_id,
-        "slug" : export.slug,
-        "selectable_exports_inline" : selectable_exports_inline(request, export_id),
-        "export_data_inline" : export_data_inline(request, export_id, data_form),
+        "categories": categories,
+        "export_id": export_id,
+        "slug": export.slug,
+        "selectable_exports_inline": selectable_exports_inline(request, export_id),
+        "export_data_inline": export_data_inline(request, export_id, data_form),
     }))
+
 
 # Parts
 def export_data_inline(request, export_id, form,
@@ -82,18 +85,20 @@ def export_data_inline(request, export_id, form,
     """Displays the data form of the current export.
     """
     return render_to_string(template_name, RequestContext(request, {
-        "export_id" : export_id,
-        "form" : form,
+        "export_id": export_id,
+        "form": form,
     }))
+
 
 def selectable_exports_inline(request, export_id,
     template_name="manage/export/selectable_exports_inline.html"):
     """Displays all selectable exports.
     """
     return render_to_string(template_name, RequestContext(request, {
-        "exports" : Export.objects.all(),
-        "export_id" : int(export_id),
+        "exports": Export.objects.all(),
+        "export_id": int(export_id),
     }))
+
 
 def export_inline(request, export_id, category_id,
     template_name="manage/export/export_inline.html"):
@@ -111,10 +116,10 @@ def export_inline(request, export_id, category_id,
             type = "V"
 
         products.append({
-            "id" : product.id,
-            "name" : product.get_name(),
-            "checked" : product in selected_products,
-            "type" : type,
+            "id": product.id,
+            "name": product.get_name(),
+            "checked": product in selected_products,
+            "type": type,
         })
 
     categories = []
@@ -124,7 +129,7 @@ def export_inline(request, export_id, category_id,
         options = []
 
         try:
-            category_option = CategoryOption.objects.get(export = export, category = category)
+            category_option = CategoryOption.objects.get(export=export, category=category)
         except CategoryOption.DoesNotExist:
             variants_option = None
         else:
@@ -132,31 +137,32 @@ def export_inline(request, export_id, category_id,
 
         for option in CATEGORY_VARIANTS_CHOICES:
             options.append({
-                "name" : option[1],
-                "value" : option[0],
-                "selected" : option[0] == variants_option,
+                "name": option[1],
+                "value": option[0],
+                "selected": option[0] == variants_option,
             })
 
         checked, klass = _get_category_state(export, category)
 
         categories.append({
-            "id" : category.id,
-            "name" : category.name,
-            "checked" : checked,
-            "klass" : klass,
-            "options" : options,
+            "id": category.id,
+            "name": category.name,
+            "checked": checked,
+            "klass": klass,
+            "options": options,
         })
 
     result = render_to_string(template_name, RequestContext(request, {
-        "categories" : categories,
-        "products" : products,
-        "export_id" : export_id,
+        "categories": categories,
+        "products": products,
+        "export_id": export_id,
     }))
 
     html = (("#sub-categories-%s" % category_id, result),)
 
     return HttpResponse(
-        simplejson.dumps({ "html" : html }))
+        simplejson.dumps({"html": html}))
+
 
 def add_export(request, template_name="manage/export/add_export.html"):
     """Form and logic to add a export.
@@ -166,15 +172,16 @@ def add_export(request, template_name="manage/export/add_export.html"):
         if form.is_valid():
             new_export = form.save()
             return HttpResponseRedirect(
-                reverse("lfs_export", kwargs={ "export_id" : new_export.id }))
+                reverse("lfs_export", kwargs={"export_id": new_export.id}))
 
     else:
         form = ExportDataForm()
 
     return render_to_response(template_name, RequestContext(request, {
-        "form" : form,
-        "selectable_exports_inline" : selectable_exports_inline(request, 0),
+        "form": form,
+        "selectable_exports_inline": selectable_exports_inline(request, 0),
     }))
+
 
 # Actions
 def export_dispatcher(request):
@@ -186,7 +193,8 @@ def export_dispatcher(request):
         return HttpResponseRedirect(reverse("lfs_export_add_export"))
     else:
         return HttpResponseRedirect(
-            reverse("lfs_export", kwargs = {"export_id" : export.id }))
+            reverse("lfs_export", kwargs={"export_id": export.id}))
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -201,6 +209,7 @@ def delete_export(request, export_id):
         export.delete()
 
     return HttpResponseRedirect(reverse("lfs_export_dispatcher"))
+
 
 def edit_category(request, export_id, category_id):
     """Adds/Removes products of given category to given export.
@@ -217,6 +226,7 @@ def edit_category(request, export_id, category_id):
 
     return HttpResponse("")
 
+
 def edit_product(request, export_id, product_id):
     """Adds/Removes given product to given export.
     """
@@ -230,12 +240,14 @@ def edit_product(request, export_id, product_id):
 
     return HttpResponse("")
 
+
 def export(request, slug):
     """Exports the export with passed export id.
     """
     export = get_object_or_404(Export, slug=slug)
     module = lfs.core.utils.import_module(export.script.module)
     return getattr(module, export.script.method)(request, export)
+
 
 def category_state(request, export_id, category_id):
     """Sets the state (klass and checking) for given category for given
@@ -255,10 +267,11 @@ def category_state(request, export_id, category_id):
 
     return HttpResponse(
         simplejson.dumps({
-            "html" : html,
-            "checkbox" : checkbox
+            "html": html,
+            "checkbox": checkbox
         })
     )
+
 
 def update_category_variants_option(request, export_id, category_id):
     """Stores / deletes options for the variants handling of category with
@@ -280,7 +293,7 @@ def update_category_variants_option(request, export_id, category_id):
         return HttpResponse("")
 
     try:
-        category_option = CategoryOption.objects.get(export = export, category = category)
+        category_option = CategoryOption.objects.get(export=export, category=category)
     except CategoryOption.DoesNotExist:
         category_option = None
 
@@ -290,12 +303,13 @@ def update_category_variants_option(request, export_id, category_id):
     else:
         if category_option is None:
             CategoryOption.objects.create(
-                export = export, category = category, variants_option = variants_option)
+                export=export, category=category, variants_option=variants_option)
         else:
             category_option.variants_option = variants_option
             category_option.save()
 
     return HttpResponse("")
+
 
 def update_data(request, export_id):
     """Updates data of export with given export id.
@@ -314,11 +328,12 @@ def update_data(request, export_id):
     )
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : msg
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": msg
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def _get_category_state(export, category):
     """Calculates the state for given category for given export.

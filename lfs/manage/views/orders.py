@@ -27,6 +27,7 @@ from lfs.core.utils import LazyEncoder
 from lfs.mail import utils as mail_utils
 from lfs.order.models import Order
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_orders(request, template_name="manage/order/manage_orders.html"):
     """Dispatches to the first order or the order overview.
@@ -37,15 +38,17 @@ def manage_orders(request, template_name="manage/order/manage_orders.html"):
         return HttpResponseRedirect(reverse("lfs_orders"))
     else:
         return HttpResponseRedirect(
-            reverse("lfs_manage_order", kwargs={"order_id" : order.id}))
+            reverse("lfs_manage_order", kwargs={"order_id": order.id}))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def orders_view(request, template_name="manage/order/orders.html"):
     """Main view to display an order overview.
     """
     return render_to_response(template_name, RequestContext(request, {
-        "orders_inline" : orders_inline(request, as_string=True),
+        "orders_inline": orders_inline(request, as_string=True),
     }))
+
 
 def orders_inline(request, as_string=False, template_name="manage/order/orders_inline.html"):
     """Displays the orders. This is factored out in order to reload it via
@@ -67,18 +70,18 @@ def orders_inline(request, as_string=False, template_name="manage/order/orders_i
     state_id = order_filters.get("state")
     for state in lfs.order.settings.ORDER_STATES:
         states.append({
-            "id"   : state[0],
-            "name" : state[1],
-            "selected" : state_id == str(state[0]),
+            "id": state[0],
+            "name": state[1],
+            "selected": state_id == str(state[0]),
         })
 
     result = render_to_string(template_name, RequestContext(request, {
-        "paginator" : paginator,
-        "page" : page,
-        "states" : states,
-        "start" : order_filters.get("start", ""),
-        "end" : order_filters.get("end", ""),
-        "name" : order_filters.get("name", ""),
+        "paginator": paginator,
+        "page": page,
+        "states": states,
+        "start": order_filters.get("start", ""),
+        "end": order_filters.get("end", ""),
+        "name": order_filters.get("name", ""),
     }))
 
     if as_string:
@@ -87,10 +90,11 @@ def orders_inline(request, as_string=False, template_name="manage/order/orders_i
         html = (("#orders-inline", result),)
 
         result = simplejson.dumps({
-            "html" : html,
-        }, cls = LazyEncoder)
+            "html": html,
+        }, cls=LazyEncoder)
 
         return HttpResponse(result)
+
 
 def set_order_filters(request):
     """Sets order filters given by passed request.
@@ -135,11 +139,12 @@ def set_order_filters(request):
     msg = _(u"Filters has been set")
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : msg,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": msg,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def set_order_filters_date(request):
     """Sets the date filter by given short cut link
@@ -165,16 +170,17 @@ def set_order_filters_date(request):
     msg = _(u"Filters has been set")
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : msg,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": msg,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def reset_order_filters(request):
     """resets order filter.
     """
-    if request.session.has_key("order-filters"):
+    if "order-filters" in request.session:
         del request.session["order-filters"]
 
     if request.REQUEST.get("came-from") == "order":
@@ -189,11 +195,12 @@ def reset_order_filters(request):
     msg = _(u"Filters has been reset")
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : msg,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": msg,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def order_view(request, order_id, template_name="manage/order/order.html"):
@@ -206,17 +213,18 @@ def order_view(request, order_id, template_name="manage/order/order.html"):
     state_id = order_filters.get("state")
     for state in lfs.order.settings.ORDER_STATES:
         states.append({
-            "id"   : state[0],
-            "name" : state[1],
-            "selected_filter" : state_id == str(state[0]),
-            "selected_order" : order.state == state[0],
+            "id": state[0],
+            "name": state[1],
+            "selected_filter": state_id == str(state[0]),
+            "selected_order": order.state == state[0],
         })
 
     return render_to_response(template_name, RequestContext(request, {
-        "order_inline" : order_inline(request, order_id, as_string=True),
-        "selectable_orders" : selectable_orders_inline(request, as_string=True),
-        "states" : states,
-    }));
+        "order_inline": order_inline(request, order_id, as_string=True),
+        "selectable_orders": selectable_orders_inline(request, as_string=True),
+        "states": states,
+    }))
+
 
 def order_inline(request, order_id, as_string=False, template_name="manage/order/order_inline.html"):
     """Displays the details of an order.
@@ -228,24 +236,25 @@ def order_inline(request, order_id, as_string=False, template_name="manage/order
     state_id = order_filters.get("state")
     for state in lfs.order.settings.ORDER_STATES:
         states.append({
-            "id"   : state[0],
-            "name" : state[1],
-            "selected_filter" : state_id == str(state[0]),
-            "selected_order" : order.state == state[0],
+            "id": state[0],
+            "name": state[1],
+            "selected_filter": state_id == str(state[0]),
+            "selected_order": order.state == state[0],
         })
 
     result = render_to_string(template_name, RequestContext(request, {
-        "current_order" : order,
-        "start" : order_filters.get("start", ""),
-        "end" : order_filters.get("end", ""),
-        "name" : order_filters.get("name", ""),
-        "states" : states,
+        "current_order": order,
+        "start": order_filters.get("start", ""),
+        "end": order_filters.get("end", ""),
+        "name": order_filters.get("name", ""),
+        "states": states,
     }))
 
     if as_string:
         return result
     else:
         return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def selectable_orders_inline(request, as_string=False,
@@ -265,19 +274,20 @@ def selectable_orders_inline(request, as_string=False,
     page = paginator.page(page)
 
     result = render_to_string(template_name, RequestContext(request, {
-        "orders" : orders,
-        "paginator" : paginator,
-        "page" : page,
+        "orders": orders,
+        "paginator": paginator,
+        "page": page,
     }))
 
     if as_string:
         return result
     else:
         result = simplejson.dumps({
-            "html" : (("#selectable-orders", result),),
-        }, cls = LazyEncoder)
+            "html": (("#selectable-orders", result),),
+        }, cls=LazyEncoder)
 
         return HttpResponse(result)
+
 
 # Actions
 @require_POST
@@ -290,11 +300,12 @@ def delete_order(request, order_id):
 
     try:
         order = Order.objects.all()[0]
-        url = reverse("lfs_manage_order", kwargs={"order_id" : order.id})
+        url = reverse("lfs_manage_order", kwargs={"order_id": order.id})
     except IndexError:
         url = reverse("lfs_manage_orders")
 
     return HttpResponseRedirect(url)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def send_order(request, order_id):
@@ -304,9 +315,10 @@ def send_order(request, order_id):
     mail_utils.send_order_received_mail(order)
 
     return lfs.core.utils.set_message_cookie(
-        url = reverse("lfs_manage_order", kwargs={"order_id" : order.id}),
-        msg = _(u"Order has been sent."),
+        url=reverse("lfs_manage_order", kwargs={"order_id": order.id}),
+        msg=_(u"Order has been sent."),
     )
+
 
 def change_order_state(request):
     """Changes the state of an order, given by request post variables.
@@ -324,7 +336,7 @@ def change_order_state(request):
         order.save()
 
     if order.state == lfs.order.settings.SENT:
-        lfs.core.signals.order_sent.send({"order" : order, "request" : request})
+        lfs.core.signals.order_sent.send({"order": order, "request": request})
 
     msg = _(u"State has been changed")
 
@@ -334,11 +346,12 @@ def change_order_state(request):
     )
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : msg,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": msg,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def _get_filtered_orders(order_filters):
     """
@@ -348,7 +361,7 @@ def _get_filtered_orders(order_filters):
     # name
     name = order_filters.get("name", "")
     if name != "":
-        f  = Q(customer_lastname__icontains=name)
+        f = Q(customer_lastname__icontains=name)
         f |= Q(customer_firstname__icontains=name)
         orders = orders.filter(f)
 

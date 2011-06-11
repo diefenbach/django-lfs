@@ -14,6 +14,7 @@ from lfs.catalog.models import Category
 from lfs.catalog.settings import CATEGORY_TEMPLATES
 from lfs.utils.widgets import SelectImage
 
+
 class ViewForm(ModelForm):
     """Form to add/edit seo properties of a category.
     """
@@ -46,14 +47,14 @@ def category_view(request, category_id, template_name="manage/category/view.html
         form = ViewForm(instance=category)
 
     view_html = render_to_string(template_name, RequestContext(request, {
-        "category" : category,
-        "form" : form,
+        "category": category,
+        "form": form,
     }))
 
     if request.is_ajax():
         return HttpResponse(simplejson.dumps({
-            "view" : view_html,
-            "message" : message,
-        }, cls = LazyEncoder))
+            "view": view_html,
+            "message": message,
+        }, cls=LazyEncoder))
     else:
         return view_html

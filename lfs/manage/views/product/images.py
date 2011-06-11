@@ -17,6 +17,7 @@ from lfs.catalog.models import Product
 from lfs.core.signals import product_changed
 from lfs.core.utils import LazyEncoder
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_images(request, product_id, as_string=False, template_name="manage/product/images.html"):
     """
@@ -24,18 +25,19 @@ def manage_images(request, product_id, as_string=False, template_name="manage/pr
     product = lfs_get_object_or_404(Product, pk=product_id)
 
     result = render_to_string(template_name, RequestContext(request, {
-        "product" : product,
+        "product": product,
     }))
 
     if as_string:
         return result
     else:
         result = simplejson.dumps({
-            "images" : result,
-            "message" : _(u"Images has been added."),
-        }, cls = LazyEncoder)
+            "images": result,
+            "message": _(u"Images has been added."),
+        }, cls=LazyEncoder)
 
         return HttpResponse(result)
+
 
 # Actions
 # @permission_required("core.manage_shop", login_url="/login/")
@@ -50,13 +52,14 @@ def add_image(request, product_id):
 
     # Refresh positions
     for i, image in enumerate(product.images.all()):
-        image.position = i+1
+        image.position = i + 1
         image.save()
 
     product_changed.send(product, request=request)
 
-    result = simplejson.dumps({"name": file_content.name, "type":"image/jpeg", "size":"123456789"})
+    result = simplejson.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def update_images(request, product_id):
@@ -106,11 +109,12 @@ def update_images(request, product_id):
     product_changed.send(product, request=request)
 
     result = simplejson.dumps({
-        "images" : manage_images(request, product_id, as_string=True),
-        "message" : message,
-    }, cls = LazyEncoder)
+        "images": manage_images(request, product_id, as_string=True),
+        "message": message,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def move_image(request, id):
@@ -154,9 +158,10 @@ def move_image(request, id):
 
     result = simplejson.dumps({
          "html": html,
-    }, cls = LazyEncoder)
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def update_active_images(request, product_id):
@@ -170,6 +175,6 @@ def update_active_images(request, product_id):
     product.save()
 
     return lfs.core.utils.set_message_cookie(
-        url = reverse("lfs_manage_product", kwargs={"product_id": product.id}),
-        msg = _(u"Active images has been updated."),
+        url=reverse("lfs_manage_product", kwargs={"product_id": product.id}),
+        msg=_(u"Active images has been updated."),
     )

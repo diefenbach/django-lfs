@@ -15,11 +15,13 @@ import lfs.marketing.utils
 from lfs.catalog.models import Product
 from lfs.marketing.models import OrderRatingMail
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_rating_mails(request, orders_sent=[], template_name="manage/marketing/rating_mails.html"):
     """Displays the manage view for rating mails
     """
     return render_to_response(template_name, RequestContext(request, {}))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def send_rating_mails(request):
@@ -60,9 +62,9 @@ def send_rating_mails(request):
 
             # text
             text = render_to_string("lfs/reviews/rating_mail.txt", {
-                "order" : order,
-                "content_type_id" : ctype.id,
-                "site" : site,
+                "order": order,
+                "content_type_id": ctype.id,
+                "site": site,
             })
 
             mail = EmailMultiAlternatives(
@@ -75,22 +77,22 @@ def send_rating_mails(request):
                     product = product.parent
 
                 order_items.append({
-                    "product_id" : product.id,
-                    "product_name" : product.name,
+                    "product_id": product.id,
+                    "product_name": product.name,
                 })
 
             # html
             html = render_to_string("lfs/reviews/rating_mail.html", {
-                "order" : order,
-                "order_items" : order_items,
-                "content_type_id" : ctype.id,
-                "site" : site,
+                "order": order,
+                "order_items": order_items,
+                "content_type_id": ctype.id,
+                "site": site,
             })
 
             mail.attach_alternative(html, "text/html")
             mail.send()
 
         return render_to_response("manage/marketing/rating_mails.html", RequestContext(request, {
-            "display_orders_sent" : True,
-            "orders_sent" : orders_sent
+            "display_orders_sent": True,
+            "orders_sent": orders_sent
         }))

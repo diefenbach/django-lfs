@@ -22,14 +22,16 @@ from lfs.core.utils import LazyEncoder
 from lfs.customer.models import Customer
 from lfs.order.models import Order
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def customer(request, customer_id, template_name="manage/customer/customer.html"):
     """Displays customer with provided customer id.
     """
     return render_to_response(template_name, RequestContext(request, {
-        "customer_inline" : customer_inline(request, customer_id, as_string=True),
-        "selectable_customers_inline" : selectable_customers_inline(request, customer_id, as_string=True),
-    }));
+        "customer_inline": customer_inline(request, customer_id, as_string=True),
+        "selectable_customers_inline": selectable_customers_inline(request, customer_id, as_string=True),
+    }))
+
 
 def customer_inline(request, customer_id, as_string=False, template_name="manage/customer/customer_inline.html"):
     """Displays customer with provided customer id.
@@ -46,11 +48,11 @@ def customer_inline(request, customer_id, as_string=False, template_name="manage
         cart_price = None
 
     result = render_to_string(template_name, RequestContext(request, {
-        "customer" : customer,
-        "orders" : orders,
-        "cart" : cart,
-        "cart_price" : cart_price,
-        "name" : customer_filters.get("name", ""),
+        "customer": customer,
+        "orders": orders,
+        "cart": cart,
+        "cart_price": cart_price,
+        "name": customer_filters.get("name", ""),
     }))
 
     if as_string:
@@ -59,26 +61,28 @@ def customer_inline(request, customer_id, as_string=False, template_name="manage
         html = (("#customer-inline", result),)
 
         result = simplejson.dumps({
-            "html" : html,
-        }, cls = LazyEncoder)
+            "html": html,
+        }, cls=LazyEncoder)
 
         return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def customers(request, template_name="manage/customer/customers.html"):
     """Base view to display customers overview.
     """
     return render_to_response(template_name, RequestContext(request, {
-        "customers_inline" : customers_inline(request, as_string=True),
+        "customers_inline": customers_inline(request, as_string=True),
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def customers_inline(request, as_string=False, template_name="manage/customer/customers_inline.html"):
     """Displays carts overview.
     """
-    customer_filters = request.session.get("customer-filters", {})    
+    customer_filters = request.session.get("customer-filters", {})
     ordering = request.session.get("customer-ordering", "id")
-    
+
     temp = _get_filtered_customers(request, customer_filters)
 
     paginator = Paginator(temp, 30)
@@ -96,18 +100,18 @@ def customers_inline(request, as_string=False, template_name="manage/customer/cu
 
         orders = Order.objects.filter(session=customer.session)
         customers.append({
-            "customer" : customer,
-            "orders" : len(orders),
-            "cart_price" : cart_price,
+            "customer": customer,
+            "orders": len(orders),
+            "cart_price": cart_price,
         })
 
     result = render_to_string(template_name, RequestContext(request, {
-        "customers" : customers,
-        "page" : page,
-        "paginator" : paginator,
-        "start" : customer_filters.get("start", ""),
-        "end" : customer_filters.get("end", ""),
-        "ordering" : ordering,
+        "customers": customers,
+        "page": page,
+        "paginator": paginator,
+        "start": customer_filters.get("start", ""),
+        "end": customer_filters.get("end", ""),
+        "ordering": ordering,
     }))
 
     if as_string:
@@ -116,10 +120,11 @@ def customers_inline(request, as_string=False, template_name="manage/customer/cu
         html = (("#customers-inline", result),)
 
         result = simplejson.dumps({
-            "html" : html,
-        }, cls = LazyEncoder)
+            "html": html,
+        }, cls=LazyEncoder)
 
         return HttpResponse(result)
+
 
 def selectable_customers_inline(request, customer_id=0, as_string=False,
     template_name="manage/customer/selectable_customers_inline.html"):
@@ -137,19 +142,20 @@ def selectable_customers_inline(request, customer_id=0, as_string=False,
     page = paginator.page(page)
 
     result = render_to_string(template_name, RequestContext(request, {
-        "paginator" : paginator,
-        "page" : page,
-        "customer_id" : int(customer_id),
+        "paginator": paginator,
+        "page": page,
+        "customer_id": int(customer_id),
     }))
 
     if as_string:
         return result
     else:
         result = simplejson.dumps({
-            "html" : (("#selectable-customers-inline", result),),
-        }, cls = LazyEncoder)
+            "html": (("#selectable-customers-inline", result),),
+        }, cls=LazyEncoder)
 
         return HttpResponse(result)
+
 
 def set_ordering(request, ordering):
     """Sets customer ordering given by passed request.
@@ -160,7 +166,7 @@ def set_ordering(request, ordering):
         ordering = "selected_invoice_address__firstname"
     elif ordering == "email":
         ordering = "selected_invoice_address__email"
-        
+
     if ordering == request.session.get("customer-ordering"):
         if request.session.get("customer-ordering-order") == "":
             request.session["customer-ordering-order"] = "-"
@@ -180,11 +186,12 @@ def set_ordering(request, ordering):
         html = (("#customers-inline", customers_inline(request, as_string=True)),)
 
     result = simplejson.dumps({
-        "html" : html,
-    }, cls = LazyEncoder)
+        "html": html,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
-    
+
+
 def set_customer_filters(request):
     """Sets customer filters given by passed request.
     """
@@ -210,16 +217,17 @@ def set_customer_filters(request):
     msg = _(u"Customer filters have been set")
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : msg,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": msg,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def reset_customer_filters(request):
     """Resets all customer filters.
     """
-    if request.session.has_key("customer-filters"):
+    if "customer-filters" in request.session:
         del request.session["customer-filters"]
 
     if request.REQUEST.get("came-from") == "customer":
@@ -234,27 +242,28 @@ def reset_customer_filters(request):
     msg = _(u"Customer filters has been reset")
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : msg,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": msg,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def _get_filtered_customers(request, customer_filters):
     """
     """
     customer_ordering = request.session.get("customer-ordering", "id")
     customer_ordering_order = request.session.get("customer-ordering-order", "")
-    
+
     customers = Customer.objects.exclude(selected_invoice_address=None)
-    
+
     # Filter
     name = customer_filters.get("name", "")
     if name != "":
-        f  = Q(selected_invoice_address__lastname__icontains=name)
+        f = Q(selected_invoice_address__lastname__icontains=name)
         f |= Q(selected_invoice_address__firstname__icontains=name)
         customers = customers.filter(f)
-    
+
     # Ordering
     customers = customers.order_by("%s%s" % (customer_ordering_order, customer_ordering))
 

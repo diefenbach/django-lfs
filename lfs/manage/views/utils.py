@@ -12,11 +12,13 @@ import lfs.core.utils
 import lfs.catalog.models
 import lfs.marketing.utils
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def utilities(request, template_name="manage/utils.html"):
     """Displays the utility view.
     """
     return render_to_response(template_name, RequestContext(request, {}))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def reindex_topseller(request):
@@ -24,9 +26,10 @@ def reindex_topseller(request):
     """
     lfs.marketing.utils.calculate_product_sales()
     return lfs.core.utils.set_message_cookie(
-        url = reverse("lfs_manage_utils"),
-        msg = _(u"Topseller have been reindexed."),
+        url=reverse("lfs_manage_utils"),
+        msg=_(u"Topseller have been reindexed."),
     )
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def clear_cache(request):
@@ -34,9 +37,10 @@ def clear_cache(request):
     """
     lfs.caching.utils.clear_cache()
     return lfs.core.utils.set_message_cookie(
-        url = reverse("lfs_manage_utils"),
-        msg = _(u"Cache has been cleared."),
+        url=reverse("lfs_manage_utils"),
+        msg=_(u"Cache has been cleared."),
     )
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def set_category_levels(request):
@@ -44,9 +48,10 @@ def set_category_levels(request):
     """
     lfs.core.utils.set_category_levels()
     return lfs.core.utils.set_message_cookie(
-        url = reverse("lfs_manage_utils"),
-        msg = _(u"Categoy levels have been created."),
+        url=reverse("lfs_manage_utils"),
+        msg=_(u"Categoy levels have been created."),
     )
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def update_effective_price(request):
@@ -56,6 +61,6 @@ def update_effective_price(request):
         product.save()
 
     return lfs.core.utils.set_message_cookie(
-        url = reverse("lfs_manage_utils"),
-        msg = _(u"Effective prices have been set."),
+        url=reverse("lfs_manage_utils"),
+        msg=_(u"Effective prices have been set."),
     )

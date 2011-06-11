@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
 
 urlpatterns = patterns('django.views.generic.simple',
-    (r'^products-new', 'direct_to_template', { 'template': 'manage/new/product.html' }),
+    (r'^products-new', 'direct_to_template', {'template': 'manage/new/product.html'}),
 )
 
 # General
@@ -160,11 +160,9 @@ urlpatterns += patterns('lfs.manage.views.properties',
     url(r'^save-shop-property-step-type/(?P<property_id>\d*)', "save_step_type", name="lfs_save_shop_property_step_type"),
     url(r'^delete-shop-property-option/(?P<id>\d*)', "delete_option", name="lfs_delete_shop_property_option"),
     url(r'^delete-shop-property-step/(?P<id>\d*)', "delete_step", name="lfs_delete_shop_property_step"),
-    
+
     url(r'^save-number-field-validators/(?P<property_id>\d*)', "save_number_field_validators", name="lfs_save_number_field_validators"),
     url(r'^save-select-field/(?P<property_id>\d*)', "save_select_field", name="lfs_save_select_field"),
-
-    
 )
 
 # Product properties
@@ -239,15 +237,15 @@ urlpatterns += patterns('lfs.manage.views.customer',
 
 # Export
 urlpatterns += patterns('lfs.manage.views.export',
-	url(r'^export-dispatcher$', "export_dispatcher", name="lfs_export_dispatcher"),
-	url(r'^export/(?P<export_id>\d*)$', "manage_export", name="lfs_export"),
-	url(r'^export-inline/(?P<export_id>\d*)/(?P<category_id>\d*)$', "export_inline", name="lfs_export_inline"),
-	url(r'^edit-category/(?P<export_id>\d*)/(?P<category_id>\d*)$', "edit_category", name="lfs_export_edit_category"),
-	url(r'^edit-product/(?P<export_id>\d*)/(?P<product_id>\d*)$', "edit_product", name="lfs_export_edit_product"),
-	url(r'^category-state/(?P<export_id>\d*)/(?P<category_id>\d*)$', "category_state", name="lfs_export_category_state"),
-	url(r'^update-export-data/(?P<export_id>\d*)$', "update_data", name="lfs_export_update_export_data"),
-	url(r'^add-export$', "add_export", name="lfs_export_add_export"),
-	url(r'^delete-export/(?P<export_id>\d*)$', "delete_export", name="lfs_export_delete_export"),
+    url(r'^export-dispatcher$', "export_dispatcher", name="lfs_export_dispatcher"),
+    url(r'^export/(?P<export_id>\d*)$', "manage_export", name="lfs_export"),
+    url(r'^export-inline/(?P<export_id>\d*)/(?P<category_id>\d*)$', "export_inline", name="lfs_export_inline"),
+    url(r'^edit-category/(?P<export_id>\d*)/(?P<category_id>\d*)$', "edit_category", name="lfs_export_edit_category"),
+    url(r'^edit-product/(?P<export_id>\d*)/(?P<product_id>\d*)$', "edit_product", name="lfs_export_edit_product"),
+    url(r'^category-state/(?P<export_id>\d*)/(?P<category_id>\d*)$', "category_state", name="lfs_export_category_state"),
+    url(r'^update-export-data/(?P<export_id>\d*)$', "update_data", name="lfs_export_update_export_data"),
+    url(r'^add-export$', "add_export", name="lfs_export_add_export"),
+    url(r'^delete-export/(?P<export_id>\d*)$', "delete_export", name="lfs_export_delete_export"),
     url(r'^export-export/(?P<slug>[-\w]*)$', "export", name="lfs_export_export"),
     url(r'^update-category-variants-option/(?P<export_id>\d*)/(?P<category_id>\d*)$', "update_category_variants_option", name="lfs_export_update_category_variants_option"),
 )
@@ -328,7 +326,7 @@ urlpatterns += patterns('lfs.manage.views.static_blocks',
     url(r'^manage-static-block/(?P<id>\d*)$', "manage_static_block", name="lfs_manage_static_block"),
     url(r'^add_files/(?P<id>[-\w]*)', "add_files", name="lfs_add_files_to_static_block"),
     url(r'^update_files/(?P<id>[-\w]*)', "update_files", name="lfs_manage_update_files_sb"),
-    url(r'^reload_files/(?P<id>[-\w]*)', "reload_files", name="lfs_reload_files"),    
+    url(r'^reload_files/(?P<id>[-\w]*)', "reload_files", name="lfs_reload_files"),
 )
 
 # Reviews

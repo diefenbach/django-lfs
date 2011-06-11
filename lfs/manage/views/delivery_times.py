@@ -14,6 +14,7 @@ import lfs.core.utils
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import Product
 
+
 class DeliveryTimeAddForm(ModelForm):
     """Form to edit add a delivery time.
     """
@@ -21,11 +22,13 @@ class DeliveryTimeAddForm(ModelForm):
         model = DeliveryTime
         fields = ("min", "max", "unit")
 
+
 class DeliveryTimeForm(ModelForm):
     """Form to edit a delivery time.
     """
     class Meta:
         model = DeliveryTime
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_delivery_times(request):
@@ -40,6 +43,7 @@ def manage_delivery_times(request):
 
     return HttpResponseRedirect(url)
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_delivery_time(request, id, template_name="manage/delivery_times/base.html"):
     """Provides a form to edit the delivery time with the passed id.
@@ -50,18 +54,19 @@ def manage_delivery_time(request, id, template_name="manage/delivery_times/base.
         if form.is_valid():
             new_delivery_time = form.save()
             return lfs.core.utils.set_message_cookie(
-                url = reverse("lfs_manage_delivery_time", kwargs={"id" : id}),
-                msg = _(u"Delivery time has been saved."),
+                url=reverse("lfs_manage_delivery_time", kwargs={"id": id}),
+                msg=_(u"Delivery time has been saved."),
             )
     else:
         form = DeliveryTimeForm(instance=delivery_time)
 
     return render_to_response(template_name, RequestContext(request, {
-        "delivery_time" : delivery_time,
-        "delivery_times" : DeliveryTime.objects.all(),
-        "form" : form,
-        "current_id" : int(id),
+        "delivery_time": delivery_time,
+        "delivery_times": DeliveryTime.objects.all(),
+        "form": form,
+        "current_id": int(id),
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
@@ -73,18 +78,19 @@ def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
             delivery_time = form.save()
 
             return lfs.core.utils.set_message_cookie(
-                url = reverse("lfs_manage_delivery_time", kwargs={"id" : delivery_time.id}),
-                msg = _(u"Delivery time has been added."),
+                url=reverse("lfs_manage_delivery_time", kwargs={"id": delivery_time.id}),
+                msg=_(u"Delivery time has been added."),
             )
 
     else:
         form = DeliveryTimeAddForm()
 
     return render_to_response(template_name, RequestContext(request, {
-        "form" : form,
-        "delivery_times" : DeliveryTime.objects.all(),
-        "next" : request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
+        "form": form,
+        "delivery_times": DeliveryTime.objects.all(),
+        "next": request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
     }))
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -105,6 +111,6 @@ def delete_delivery_time(request, id):
     delivery_time.delete()
 
     return lfs.core.utils.set_message_cookie(
-        url = reverse("lfs_manage_delivery_times"),
-        msg = _(u"Delivery time has been deleted."),
+        url=reverse("lfs_manage_delivery_times"),
+        msg=_(u"Delivery time has been deleted."),
     )

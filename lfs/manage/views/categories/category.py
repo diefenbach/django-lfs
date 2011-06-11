@@ -22,12 +22,14 @@ from lfs.manage.views.categories.view import category_view
 from lfs.manage.views.categories.portlet import manage_categories_portlet
 from lfs.manage.views.lfs_portlets import portlets_inline
 
+
 class CategoryAddForm(ModelForm):
     """Process form to add a category.
     """
     class Meta:
         model = Category
         fields = ("name", "slug")
+
 
 class CategoryForm(ModelForm):
     """Process form to edit a category.
@@ -48,6 +50,7 @@ class CategoryForm(ModelForm):
         fields = ("name", "slug", "parent", "position", "short_description",
             "description", "exclude_from_navigation", "image", "static_block", )
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_categories(request):
     """Dispatches to the first category or to the add category form if no
@@ -58,9 +61,10 @@ def manage_categories(request):
     except IndexError:
         url = reverse("lfs_manage_add_top_category")
     else:
-        url = reverse("lfs_manage_category", kwargs={"category_id" : category.id})
+        url = reverse("lfs_manage_category", kwargs={"category_id": category.id})
 
     return HttpResponseRedirect(url)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_category(request, category_id, template_name="manage/category/manage_category.html"):
@@ -69,14 +73,15 @@ def manage_category(request, category_id, template_name="manage/category/manage_
     category = Category.objects.get(pk=category_id)
 
     return render_to_response(template_name, RequestContext(request, {
-        "categories_portlet" : manage_categories_portlet(request, category_id),
-        "category" : category,
-        "data" : category_data(request, category_id),
-        "seo" : edit_seo(request, category_id),
-        "view" : category_view(request, category_id),
-        "portlets" : portlets_inline(request, category),
-        "dialog_message" : _("Do you really want to delete the category <b>'%(name)s'</b> and all its sub categories?" % { "name" : category.name }),
+        "categories_portlet": manage_categories_portlet(request, category_id),
+        "category": category,
+        "data": category_data(request, category_id),
+        "seo": edit_seo(request, category_id),
+        "view": category_view(request, category_id),
+        "portlets": portlets_inline(request, category),
+        "dialog_message": _("Do you really want to delete the category <b>'%(name)s'</b> and all its sub categories?" % {"name": category.name}),
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def category_data(request, category_id, template_name="manage/category/data.html"):
@@ -88,9 +93,10 @@ def category_data(request, category_id, template_name="manage/category/data.html
     form = CategoryForm(instance=category)
 
     return render_to_string(template_name, RequestContext(request, {
-        "category" : category,
-        "form" : form,
+        "category": category,
+        "form": form,
     }))
+
 
 # Actions
 @permission_required("core.manage_shop", login_url="/login/")
@@ -120,25 +126,9 @@ def edit_category_data(request, category_id, template_name="manage/category/data
     # Update positions
     manage_utils.update_category_positions(category.parent)
 
-    url = reverse("lfs_manage_category", kwargs={"category_id" : category_id})
+    url = reverse("lfs_manage_category", kwargs={"category_id": category_id})
     return HttpResponseRedirect(url)
 
-    # There is a problem with json, when uploading an image and returning the
-    # form json encoded. This is only occurring when the image field is not
-    # empty.As a workaround we call this method as "normal" reauest (not ajax).
-
-    # TODO: Investigate this further
-
-    # form_html = render_to_string(template_name, RequestContext(request, {
-    #     "category" : category,
-    #     "form" : form,
-    # }))
-    #
-    # result = simplejson.dumps({
-    #     "message" : message,
-    #     "portlet" : manage_categories_portlet(request) }, cls = LazyEncoder)
-    #
-    # return HttpResponse(result)
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_category(request, category_id="", template_name="manage/category/add_category.html"):
@@ -153,27 +143,28 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
             parent = None
 
     if request.method == "POST":
-        form = CategoryAddForm(data = request.POST)
+        form = CategoryAddForm(data=request.POST)
         if form.is_valid():
             new_category = form.save(commit=False)
             new_category.parent = parent
             new_category.position = 999
             if parent:
-                new_category.level = parent.level+1
+                new_category.level = parent.level + 1
             new_category.save()
 
             # Update positions
             manage_utils.update_category_positions(parent)
-            url = reverse("lfs_manage_category", kwargs={"category_id" : new_category.id})
+            url = reverse("lfs_manage_category", kwargs={"category_id": new_category.id})
             return HttpResponseRedirect(url)
     else:
-        form = CategoryAddForm(initial={"parent" : category_id })
+        form = CategoryAddForm(initial={"parent": category_id})
 
     return render_to_response(template_name, RequestContext(request, {
-        "next" : request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
-        "category" : parent,
-        "form" : form,
+        "next": request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
+        "category": parent,
+        "form": form,
     }))
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -188,17 +179,19 @@ def delete_category(request, id):
     url = reverse("lfs_manage_categories")
     return HttpResponseRedirect(url)
 
+
 # Privates
 def _category_choices(context):
     """Returns categories to be used as choices for the field parent.
     Note: context is the category for which the form is applied.
     """
     categories = [("", "-")]
-    for category in Category.objects.filter(parent = None):
+    for category in Category.objects.filter(parent=None):
         if context != category:
             categories.append((category.id, category.name))
             _category_choices_children(categories, category, context)
     return categories
+
 
 def _category_choices_children(categories, category, context, level=1):
     """Adds the children of the given category to categories.
@@ -207,4 +200,4 @@ def _category_choices_children(categories, category, context, level=1):
     for category in category.category_set.all():
         if context != category:
             categories.append((category.id, "%s %s" % ("-" * level * 5, category.name)))
-            _category_choices_children(categories, category, context, level+1)
+            _category_choices_children(categories, category, context, level + 1)

@@ -24,12 +24,14 @@ from lfs.payment.models import PaymentMethod
 from lfs.payment.models import PaymentMethodPrice
 from lfs.payment import utils as payment_utils
 
+
 class PaymentMethodAddForm(ModelForm):
     """Form to add a payment method.
     """
     class Meta:
         model = PaymentMethod
         fields = ("name", )
+
 
 class PaymentMethodForm(ModelForm):
     """Form to edit a payment method.
@@ -41,6 +43,7 @@ class PaymentMethodForm(ModelForm):
     class Meta:
         model = PaymentMethod
         exclude = ("deletable", )
+
 
 # Starting pages. This pages are called directly via a request
 @permission_required("core.manage_shop", login_url="/login/")
@@ -54,8 +57,9 @@ def manage_payment(request):
         url = reverse("lfs_add_payment_method")
     else:
         url = reverse("lfs_manage_payment_method",
-            kwargs={"payment_method_id" : payment_method.id})
+            kwargs={"payment_method_id": payment_method.id})
     return HttpResponseRedirect(url)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_payment_method(request, payment_method_id,
@@ -68,12 +72,13 @@ def manage_payment_method(request, payment_method_id,
     payment_method = PaymentMethod.objects.get(pk=payment_method_id)
 
     return render_to_response(template_name, RequestContext(request, {
-        "payment_method" : payment_method,
-        "payment_methods" : payment_methods(request),
-        "data" : payment_method_data(request, payment_method_id),
-        "method_criteria" : payment_method_criteria(request, payment_method_id),
-        "method_prices" : payment_method_prices(request, payment_method_id),
+        "payment_method": payment_method,
+        "payment_methods": payment_methods(request),
+        "data": payment_method_data(request, payment_method_id),
+        "method_criteria": payment_method_criteria(request, payment_method_id),
+        "method_prices": payment_method_prices(request, payment_method_id),
     }))
+
 
 # Parts of the manage payment view.
 @permission_required("core.manage_shop", login_url="/login/")
@@ -88,9 +93,10 @@ def payment_methods(request, template_name="manage/payment/payment_methods.html"
         current_id = ""
 
     return render_to_string(template_name, RequestContext(request, {
-        "current_id" : current_id,
-        "payment_methods" : PaymentMethod.objects.all(),
+        "current_id": current_id,
+        "payment_methods": PaymentMethod.objects.all(),
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def payment_method_data(request, payment_id,
@@ -102,9 +108,10 @@ def payment_method_data(request, payment_id,
     payment_method = PaymentMethod.objects.get(pk=payment_id)
 
     return render_to_string(template_name, RequestContext(request, {
-        "form" : PaymentMethodForm(instance=payment_method),
-        "payment_method" : payment_method,
+        "form": PaymentMethodForm(instance=payment_method),
+        "payment_method": payment_method,
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def payment_method_criteria(request, payment_method_id,
@@ -123,9 +130,10 @@ def payment_method_criteria(request, payment_method_id,
         criteria.append(criterion_html)
 
     return render_to_string(template_name, RequestContext(request, {
-        "payment_method" : payment_method,
-        "criteria" : criteria,
+        "payment_method": payment_method,
+        "criteria": criteria,
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def payment_method_prices(request, payment_method_id,
@@ -137,9 +145,10 @@ def payment_method_prices(request, payment_method_id,
     payment_method = get_object_or_404(PaymentMethod, pk=payment_method_id)
 
     return render_to_string(template_name, RequestContext(request, {
-        "payment_method" : payment_method,
-        "prices" : payment_method.prices.all(),
-    }));
+        "payment_method": payment_method,
+        "prices": payment_method.prices.all(),
+    }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def payment_price_criteria(request, payment_price_id, as_string=False,
@@ -159,14 +168,15 @@ def payment_price_criteria(request, payment_price_id, as_string=False,
 
     if as_string:
         return render_to_string(template_name, RequestContext(request, {
-            "payment_price" : payment_price,
-            "criteria" : criteria,
+            "payment_price": payment_price,
+            "criteria": criteria,
         }))
     else:
         return render_to_response(template_name, RequestContext(request, {
-            "payment_price" : payment_price,
-            "criteria" : criteria,
+            "payment_price": payment_price,
+            "criteria": criteria,
         }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_payment_method(request,
@@ -178,21 +188,20 @@ def add_payment_method(request,
         if form.is_valid():
             new_payment_method = form.save()
             return lfs.core.utils.set_message_cookie(
-                url = reverse("lfs_manage_payment_method",
-                    kwargs={"payment_method_id" : new_payment_method.id}),
-                msg = _(u"Payment method has been added."),
+                url=reverse("lfs_manage_payment_method", kwargs={"payment_method_id": new_payment_method.id}),
+                msg=_(u"Payment method has been added."),
             )
     else:
         form = PaymentMethodAddForm()
 
     return render_to_response(template_name, RequestContext(request, {
-        "payment_methods" : payment_methods(request),
-        "form" : form,
-        "next" : request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
+        "payment_methods": payment_methods(request),
+        "form": form,
+        "next": request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
     }))
 
-# Actions
 
+# Actions
 @permission_required("core.manage_shop", login_url="/login/")
 def save_payment_method_criteria(request, payment_method_id):
     """Saves the criteria for the payment method with given id. The criteria
@@ -204,10 +213,11 @@ def save_payment_method_criteria(request, payment_method_id):
 
     criteria = payment_method_criteria(request, payment_method_id)
     result = {
-        "criteria" : criteria,
-        "message" : "Modifications have been changed"
+        "criteria": criteria,
+        "message": "Modifications have been changed"
     }
     return HttpResponse(simplejson.dumps(result))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def save_payment_price_criteria(request, payment_price_id):
@@ -221,11 +231,12 @@ def save_payment_price_criteria(request, payment_price_id):
     prices = payment_method_prices(request, payment_price.payment_method.id)
     criteria = payment_price_criteria(request, payment_price_id, as_string=True)
     result = {
-        "criteria" : criteria,
-        "prices" : prices,
-        "message" : "Modifications have been changed"
+        "criteria": criteria,
+        "prices": prices,
+        "message": "Modifications have been changed"
     }
     return HttpResponse(simplejson.dumps(result))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_payment_price(request, payment_method_id):
@@ -243,16 +254,16 @@ def add_payment_price(request, payment_method_id):
     payment_method.prices.create(price=price)
 
     for i, price in enumerate(payment_method.prices.all()):
-        price.priority = i+1
+        price.priority = i + 1
         price.save()
 
     message = _(u"Price has been added")
     prices = payment_method_prices(request, payment_method_id)
 
     result = simplejson.dumps({
-        "message" : message,
-        "prices" : prices
-    }, cls = LazyEncoder)
+        "message": message,
+        "prices": prices
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
 
@@ -296,17 +307,18 @@ def update_payment_prices(request, payment_method_id):
                     price.save()
 
         for i, price in enumerate(payment_method.prices.all()):
-            price.priority = i+1
+            price.priority = i + 1
             price.save()
 
     prices = payment_method_prices(request, payment_method_id)
 
     result = simplejson.dumps({
-        "message" : message,
-        "prices" : prices
-    }, cls = LazyEncoder)
+        "message": message,
+        "prices": prices
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def save_payment_method_data(request, payment_method_id):
@@ -320,30 +332,18 @@ def save_payment_method_data(request, payment_method_id):
 
     form = render_to_string(
         "manage/payment/payment_method_data.html", RequestContext(request, {
-        "form" : payment_form,
-        "payment_method" : payment_method,
+        "form": payment_form,
+        "payment_method": payment_method,
     }))
 
     if payment_form.is_valid():
         payment_form.save()
-        # result = simplejson.dumps({
-        #     "state" : "success",
-        #     "form" : form,
-        #     "methods" : payment_methods(request),
-        #     "message" : _(u"Shipping has been saved.")
-        # }, cls = LazyEncoder)
-    # else:
-    #     result = simplejson.dumps({
-    #         "state" : "failure",
-    #         "form" : form,
-    #         "message" : _(u"Please correct errors below.")
-    #     }, cls = LazyEncoder)
 
     return lfs.core.utils.set_message_cookie(
-        url = reverse("lfs_manage_payment_method",
-            kwargs={"payment_method_id" : payment_method.id}),
-        msg = _(u"Payment method has been saved."),
+        url=reverse("lfs_manage_payment_method", kwargs={"payment_method_id": payment_method.id}),
+        msg=_(u"Payment method has been saved."),
     )
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -365,6 +365,6 @@ def delete_payment_method(request, payment_method_id):
         payment_method.delete()
 
     return lfs.core.utils.set_message_cookie(
-        url = reverse("lfs_manage_payment"),
-        msg = _(u"Payment method has been deleted."),
+        url=reverse("lfs_manage_payment"),
+        msg=_(u"Payment method has been deleted."),
     )

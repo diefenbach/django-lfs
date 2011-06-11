@@ -19,13 +19,15 @@ from lfs.cart.models import Cart
 from lfs.core.utils import LazyEncoder
 from lfs.customer.models import Customer
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def carts_view(request, template_name="manage/cart/carts.html"):
     """Base view to display carts overview.
     """
     return render_to_response(template_name, RequestContext(request, {
-        "carts_inline" : carts_inline(request, as_string=True),
+        "carts_inline": carts_inline(request, as_string=True),
     }))
+
 
 def carts_inline(request, as_string=False, template_name="manage/cart/carts_inline.html"):
     """Displays carts overview.
@@ -55,23 +57,23 @@ def carts_inline(request, as_string=False, template_name="manage/cart/carts_inli
             customer = None
 
         carts.append({
-            "id" : cart.id,
-            "amount_of_items" : cart.amount_of_items,
-            "session" : cart.session,
-            "user" : cart.user,
-            "total" : total,
-            "products" : ", ".join(products),
-            "creation_date" : cart.creation_date,
-            "modification_date" : cart.modification_date,
-            "customer" : customer,
+            "id": cart.id,
+            "amount_of_items": cart.amount_of_items,
+            "session": cart.session,
+            "user": cart.user,
+            "total": total,
+            "products": ", ".join(products),
+            "creation_date": cart.creation_date,
+            "modification_date": cart.modification_date,
+            "customer": customer,
         })
 
     result = render_to_string(template_name, RequestContext(request, {
-        "carts" : carts,
-        "page" : page,
-        "paginator" : paginator,
-        "start" : cart_filters.get("start", ""),
-        "end" : cart_filters.get("end", ""),
+        "carts": carts,
+        "page": page,
+        "paginator": paginator,
+        "start": cart_filters.get("start", ""),
+        "end": cart_filters.get("end", ""),
     }))
 
     if as_string:
@@ -80,19 +82,21 @@ def carts_inline(request, as_string=False, template_name="manage/cart/carts_inli
         html = (("#carts-inline", result),)
 
         result = simplejson.dumps({
-            "html" : html,
-        }, cls = LazyEncoder)
+            "html": html,
+        }, cls=LazyEncoder)
 
         return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def cart_view(request, cart_id, template_name="manage/cart/cart.html"):
     """Displays cart with provided cart id.
     """
     return render_to_response(template_name, RequestContext(request, {
-        "cart_inline" : cart_inline(request, cart_id, as_string=True),
-        "selectable_carts_inline" : selectable_carts_inline(request, cart_id, as_string=True),
-    }));
+        "cart_inline": cart_inline(request, cart_id, as_string=True),
+        "selectable_carts_inline": selectable_carts_inline(request, cart_id, as_string=True),
+    }))
+
 
 def cart_inline(request, cart_id, as_string=False, template_name="manage/cart/cart_inline.html"):
     """Displays cart with provided cart id.
@@ -113,23 +117,24 @@ def cart_inline(request, cart_id, as_string=False, template_name="manage/cart/ca
 
     cart_filters = request.session.get("cart-filters", {})
     result = render_to_string(template_name, RequestContext(request, {
-        "cart" : cart,
-        "customer" : customer,
-        "total" : total,
-        "start" : cart_filters.get("start", ""),
-        "end" : cart_filters.get("end", ""),
+        "cart": cart,
+        "customer": customer,
+        "total": total,
+        "start": cart_filters.get("start", ""),
+        "end": cart_filters.get("end", ""),
     }))
-    
+
     if as_string:
         return result
     else:
         html = (("#cart-inline", result),)
 
         result = simplejson.dumps({
-            "html" : html,
-        }, cls = LazyEncoder)
+            "html": html,
+        }, cls=LazyEncoder)
 
         return HttpResponse(result)
+
 
 def selectable_carts_inline(request, cart_id=0, as_string=False,
     template_name="manage/cart/selectable_carts_inline.html"):
@@ -147,19 +152,20 @@ def selectable_carts_inline(request, cart_id=0, as_string=False,
     page = paginator.page(page)
 
     result = render_to_string(template_name, RequestContext(request, {
-        "paginator" : paginator,
-        "page" : page,
-        "cart_id" : int(cart_id),
+        "paginator": paginator,
+        "page": page,
+        "cart_id": int(cart_id),
     }))
 
     if as_string:
         return result
     else:
         result = simplejson.dumps({
-            "html" : (("#selectable-carts-inline", result),),
-        }, cls = LazyEncoder)
+            "html": (("#selectable-carts-inline", result),),
+        }, cls=LazyEncoder)
 
         return HttpResponse(result)
+
 
 def set_cart_filters(request):
     """Sets cart filters given by passed request.
@@ -192,11 +198,12 @@ def set_cart_filters(request):
     msg = _(u"Cart filters has been set.")
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : msg,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": msg,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def set_cart_filters_date(request):
     """Sets the date filter by given short cut link
@@ -222,16 +229,17 @@ def set_cart_filters_date(request):
     msg = _(u"Cart filters has been set")
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : msg,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": msg,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def reset_cart_filters(request):
     """Resets all cart filters.
     """
-    if request.session.has_key("cart-filters"):
+    if "cart-filters" in request.session:
         del request.session["cart-filters"]
 
     if request.REQUEST.get("came-from") == "cart":
@@ -246,11 +254,12 @@ def reset_cart_filters(request):
     msg = _(u"Cart filters has been reset")
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : msg,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": msg,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def _get_filtered_carts(cart_filters):
     """

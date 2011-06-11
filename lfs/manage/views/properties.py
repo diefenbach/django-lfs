@@ -20,12 +20,14 @@ from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.models import FilterStep
 
+
 class PropertyAddForm(ModelForm):
     """Form to add a property.
     """
     class Meta:
         model = Property
         fields = ["name"]
+
 
 class PropertyDataForm(ModelForm):
     """Form to manage core data of a property.
@@ -35,12 +37,14 @@ class PropertyDataForm(ModelForm):
         fields = ["position", "name", "title", "unit", "filterable", "display_no_results",
             "configurable", "required", "display_on_product", "display_price"]
 
+
 class PropertyTypeForm(ModelForm):
     """Form to manage property type.
     """
     class Meta:
         model = Property
         fields = ["type"]
+
 
 class StepTypeForm(ModelForm):
     """Form to manage the step type of a property.
@@ -49,12 +53,14 @@ class StepTypeForm(ModelForm):
         model = Property
         fields = ["step_type"]
 
+
 class SelectFieldForm(ModelForm):
     """Form to manage attributes for select field.
     """
     class Meta:
         model = Property
         fields = ["add_price"]
+
 
 class NumberFieldForm(ModelForm):
     """Form to manage the number field.
@@ -63,12 +69,14 @@ class NumberFieldForm(ModelForm):
         model = Property
         fields = ["decimal_places", "unit_min", "unit_max", "unit_step"]
 
+
 class StepForm(ModelForm):
     """Form to manage step range.
     """
     class Meta:
         model = Property
         fields = ["step"]
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_properties(request):
@@ -82,6 +90,7 @@ def manage_properties(request):
 
     return HttpResponseRedirect(url)
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_property(request, id, template_name="manage/properties/property.html"):
     """The main view to manage the property with passed id.
@@ -93,8 +102,8 @@ def manage_property(request, id, template_name="manage/properties/property.html"
             new_property = form.save()
             _update_property_positions()
             return lfs.core.utils.set_message_cookie(
-                url = reverse("lfs_manage_shop_property", kwargs={"id" : property.id}),
-                msg = _(u"Property type has been saved."),
+                url=reverse("lfs_manage_shop_property", kwargs={"id": property.id}),
+                msg=_(u"Property type has been saved."),
             )
 
     else:
@@ -103,17 +112,18 @@ def manage_property(request, id, template_name="manage/properties/property.html"
     display_step_form = property.is_number_field and property.filterable
 
     return render_to_response(template_name, RequestContext(request, {
-        "property" : property,
-        "properties" : Property.objects.filter(local=False),
-        "form" : form,
-        "type_form" : PropertyTypeForm(instance=property),
-        "current_id" : int(id),
-        "options" : options_inline(request, id),
-        "steps" : steps_inline(request, id),
-        "number_field" : number_field(request, property),
-        "select_field" : select_field(request, property),
-        "display_step_form" : display_step_form,
+        "property": property,
+        "properties": Property.objects.filter(local=False),
+        "form": form,
+        "type_form": PropertyTypeForm(instance=property),
+        "current_id": int(id),
+        "options": options_inline(request, id),
+        "steps": steps_inline(request, id),
+        "number_field": number_field(request, property),
+        "select_field": select_field(request, property),
+        "display_step_form": display_step_form,
       }))
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -133,9 +143,10 @@ def update_property_type(request, id):
         property_type_changed.send(property)
 
     return lfs.core.utils.set_message_cookie(
-        url = reverse("lfs_manage_shop_property", kwargs={"id" : property.id}),
-        msg = _(u"Property type has been changed."),
+        url=reverse("lfs_manage_shop_property", kwargs={"id": property.id}),
+        msg=_(u"Property type has been changed."),
     )
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def select_field(request, property, template_name="manage/properties/property_select_field.html"):
@@ -144,9 +155,10 @@ def select_field(request, property, template_name="manage/properties/property_se
     form = SelectFieldForm(instance=property)
 
     return render_to_string(template_name, RequestContext(request, {
-        "property" : property,
-        "form" : form,
+        "property": property,
+        "form": form,
     }))
+
 
 @require_POST
 def save_select_field(request, property_id):
@@ -159,6 +171,7 @@ def save_select_field(request, property_id):
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def number_field(request, property, template_name="manage/properties/property_number_field.html"):
     """Displays the form of the input field propery type
@@ -166,9 +179,10 @@ def number_field(request, property, template_name="manage/properties/property_nu
     number_field_form = NumberFieldForm(instance=property)
 
     return render_to_string(template_name, RequestContext(request, {
-        "property" : property,
-        "number_field_form" : number_field_form,
+        "property": property,
+        "number_field_form": number_field_form,
     }))
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -182,6 +196,7 @@ def save_number_field_validators(request, property_id):
 
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def steps_inline(request, property_id, template_name="manage/properties/step_inline.html"):
     """Display the steps of a propety. Factored out for Ajax requests.
@@ -192,10 +207,11 @@ def steps_inline(request, property_id, template_name="manage/properties/step_inl
     step_type_form = StepTypeForm(instance=property)
 
     return render_to_string(template_name, RequestContext(request, {
-        "property" : property,
-        "step_form" : step_form,
-        "step_type_form" : step_type_form,
+        "property": property,
+        "step_form": step_form,
+        "step_type_form": step_type_form,
     }))
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -208,11 +224,12 @@ def save_step(request, property_id):
     property = form.save()
 
     result = simplejson.dumps({
-        "steps" : steps_inline(request, property_id),
-        "message" : _(u"Steps have been saved."),
-    }, cls = LazyEncoder)
+        "steps": steps_inline(request, property_id),
+        "message": _(u"Steps have been saved."),
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -225,11 +242,12 @@ def save_step_type(request, property_id):
     property = form.save()
 
     result = simplejson.dumps({
-        "steps" : steps_inline(request, property_id),
-        "message" : _(u"Step type has been saved."),
-    }, cls = LazyEncoder)
+        "steps": steps_inline(request, property_id),
+        "message": _(u"Step type has been saved."),
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -258,11 +276,12 @@ def add_step(request, property_id):
         message = _(u"Steps have been updated.")
 
     result = simplejson.dumps({
-        "steps" : steps_inline(request, property_id),
-        "message" : message
-    }, cls = LazyEncoder)
+        "steps": steps_inline(request, property_id),
+        "message": message
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def delete_step(request, id):
@@ -274,10 +293,11 @@ def delete_step(request, id):
         url = request.META.get("HTTP_REFERER", reverse("lfs_manage_shop_property"))
     else:
         property = step.property
-        url = reverse("lfs_manage_shop_property", kwargs={"id" : property.id})
+        url = reverse("lfs_manage_shop_property", kwargs={"id": property.id})
         step.delete()
 
     return HttpResponseRedirect(url)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def options_inline(request, property_id, template_name="manage/properties/options_inline.html"):
@@ -285,8 +305,9 @@ def options_inline(request, property_id, template_name="manage/properties/option
     """
     property = get_object_or_404(Property, pk=property_id)
     return render_to_string(template_name, RequestContext(request, {
-        "property" : property,
+        "property": property,
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_property(request, template_name="manage/properties/add_property.html"):
@@ -300,16 +321,17 @@ def add_property(request, template_name="manage/properties/add_property.html"):
             property.save()
             _update_property_positions()
             return lfs.core.utils.set_message_cookie(
-                url = reverse("lfs_manage_shop_property", kwargs={"id" : property.id}),
-                msg = _(u"Property has been added."),
+                url=reverse("lfs_manage_shop_property", kwargs={"id": property.id}),
+                msg=_(u"Property has been added."),
             )
     else:
         form = PropertyAddForm()
 
     return render_to_response(template_name, RequestContext(request, {
-        "form" : form,
-        "properties" : Property.objects.filter(local=False),
+        "form": form,
+        "properties": Property.objects.filter(local=False),
     }))
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -326,6 +348,7 @@ def delete_property(request, id):
         url = reverse("lfs_manage_shop_properties")
 
     return HttpResponseRedirect(url)
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -369,11 +392,12 @@ def add_option(request, property_id):
 
     _update_positions(property)
     result = simplejson.dumps({
-        "options" : options_inline(request, property_id),
-        "message" : message
-    }, cls = LazyEncoder)
+        "options": options_inline(request, property_id),
+        "message": message
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def delete_option(request, id):
@@ -385,22 +409,24 @@ def delete_option(request, id):
         url = request.META.get("HTTP_REFERER", reverse("lfs_manage_shop_property"))
     else:
         property = option.property
-        url = reverse("lfs_manage_shop_property", kwargs={"id" : property.id})
+        url = reverse("lfs_manage_shop_property", kwargs={"id": property.id})
         option.delete()
         _update_positions(property)
 
     return HttpResponseRedirect(url)
 
+
 def _update_property_positions():
     """Updates position of options of given property.
     """
     for i, property in enumerate(Property.objects.exclude(local=True)):
-        property.position = (i+1) * 10
+        property.position = (i + 1) * 10
         property.save()
+
 
 def _update_positions(property):
     """Updates position of options of given property.
     """
     for i, option in enumerate(property.options.all()):
-        option.position = (i+1) * 10
+        option.position = (i + 1) * 10
         option.save()

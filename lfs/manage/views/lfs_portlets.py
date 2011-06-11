@@ -22,6 +22,7 @@ from portlets.models import Slot
 import lfs.core.utils
 from lfs.core.utils import LazyEncoder
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def portlets_inline(request, obj, template_name="manage/portlets/portlets_inline.html"):
     """Displays the assigned portlets for given object.
@@ -35,13 +36,14 @@ def portlets_inline(request, obj, template_name="manage/portlets/portlets_inline
         parent_slots = None
 
     return render_to_string(template_name, RequestContext(request, {
-        "slots" : portlets.utils.get_slots(obj),
-        "parent_slots" : parent_slots,
-        "parent_for_portlets" : parent_for_portlets,
-        "portlet_types" : PortletRegistration.objects.filter(active=True),
-        "object" : obj,
-        "object_type_id" : ct.id,
+        "slots": portlets.utils.get_slots(obj),
+        "parent_slots": parent_slots,
+        "parent_for_portlets": parent_for_portlets,
+        "portlet_types": PortletRegistration.objects.filter(active=True),
+        "object": obj,
+        "object_type_id": ct.id,
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def update_portlets(request, object_type_id, object_id):
@@ -72,11 +74,12 @@ def update_portlets(request, object_type_id, object_id):
         html = portlets_inline(request, object)
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : _(u"Portlet has been updated.")},
-        cls = LazyEncoder
+        "html": html,
+        "message": _(u"Portlet has been updated.")},
+        cls=LazyEncoder
     )
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_portlet(request, object_type_id, object_id, template_name="manage/portlets/portlet_add.html"):
@@ -104,9 +107,9 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             html = portlets_inline(request, object)
 
             result = simplejson.dumps({
-                "html" : html,
-                "message" : _(u"Portlet has been added.")},
-                cls = LazyEncoder
+                "html": html,
+                "message": _(u"Portlet has been added.")},
+                cls=LazyEncoder
             )
             return HttpResponse(result)
 
@@ -118,14 +121,15 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             mc = portlet_ct.model_class()
             form = mc().form(prefix="portlet")
             return render_to_response(template_name, RequestContext(request, {
-                "form" : form,
-                "object_id" : object_id,
-                "object_type_id" : object_ct.id,
-                "portlet_type" : portlet_type,
-                "slots" : Slot.objects.all(),
+                "form": form,
+                "object_id": object_id,
+                "object_type_id": object_ct.id,
+                "portlet_type": portlet_type,
+                "slots": Slot.objects.all(),
             }))
         except ContentType.DoesNotExist:
             pass
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -140,7 +144,9 @@ def delete_portlet(request, portletassignment_id):
         pa.delete()
         return lfs.core.utils.set_message_cookie(
             request.META.get("HTTP_REFERER"),
-            msg = _(u"Portlet has been deleted."))
+            msg=_(u"Portlet has been deleted.")
+        )
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def edit_portlet(request, portletassignment_id, template_name="manage/portlets/portlet_edit.html"):
@@ -163,24 +169,24 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
         html = portlets_inline(request, pa.content)
 
         result = simplejson.dumps({
-            "html" : html,
-            "message" : _(u"Portlet has been saved.")},
-            cls = LazyEncoder
+            "html": html,
+            "message": _(u"Portlet has been saved.")},
+            cls=LazyEncoder
         )
         return HttpResponse(result)
     else:
         slots = []
         for slot in Slot.objects.all():
             slots.append({
-                "id" : slot.id,
-                "name" : slot.name,
-                "selected" : slot.id == pa.slot.id,
+                "id": slot.id,
+                "name": slot.name,
+                "selected": slot.id == pa.slot.id,
             })
 
         form = pa.portlet.form(prefix="portlet")
         return render_to_response(template_name, RequestContext(request, {
-            "form" : form,
-            "portletassigment_id" : pa.id,
-            "slots" : slots,
-            "position" : pa.position,
+            "form": form,
+            "portletassigment_id": pa.id,
+            "slots": slots,
+            "position": pa.position,
         }))

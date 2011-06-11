@@ -18,6 +18,7 @@ from lfs.catalog.settings import VARIANT
 from lfs.core.signals import product_changed
 from lfs.core.utils import LazyEncoder
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_accessories(request, product_id, template_name="manage/product/accessories.html"):
     """
@@ -29,15 +30,16 @@ def manage_accessories(request, product_id, template_name="manage/product/access
     amount_options = []
     for value in (10, 25, 50, 100):
         amount_options.append({
-            "value" : value,
-            "selected" : value == request.session.get("accessories-amount")
+            "value": value,
+            "selected": value == request.session.get("accessories-amount")
         })
-        
+
     return render_to_string(template_name, RequestContext(request, {
-        "product" : product,
-        "accessories_inline" : inline,
-        "amount_options" : amount_options,
+        "product": product,
+        "accessories_inline": inline,
+        "amount_options": amount_options,
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_accessories_inline(
@@ -75,18 +77,18 @@ def manage_accessories_inline(
     s["accessories_category_filter"] = category_filter
 
     try:
-        s["accessories-amount"] = int(r.get("accessories-amount", 
+        s["accessories-amount"] = int(r.get("accessories-amount",
                                       s.get("accessories-amount")))
     except TypeError:
         s["accessories-amount"] = 25
-    
+
     filters = Q()
     if filter_:
-        filters &= Q(name__icontains = filter_)
-        filters |= Q(sku__icontains = filter_)
-        filters |= (Q(sub_type = VARIANT) & Q(active_sku = False) & Q(parent__sku__icontains = filter_))
-        filters |= (Q(sub_type = VARIANT) & Q(active_name = False) & Q(parent__name__icontains = filter_))
-        
+        filters &= Q(name__icontains=filter_)
+        filters |= Q(sku__icontains=filter_)
+        filters |= (Q(sub_type=VARIANT) & Q(active_sku=False) & Q(parent__sku__icontains=filter_))
+        filters |= (Q(sub_type=VARIANT) & Q(active_name=False) & Q(parent__name__icontains=filter_))
+
     if category_filter:
         if category_filter == "None":
             filters &= Q(categories=None)
@@ -98,29 +100,30 @@ def manage_accessories_inline(
             categories = [category]
             categories.extend(category.get_all_children())
 
-            filters &= Q(categories__in = categories)
+            filters &= Q(categories__in=categories)
 
     products = Product.objects.filter(filters).exclude(pk=product_id)
-    
-    paginator = Paginator(products.exclude(pk__in = accessory_ids), s["accessories-amount"])
+
+    paginator = Paginator(products.exclude(pk__in=accessory_ids), s["accessories-amount"])
 
     try:
         page = paginator.page(page)
     except EmptyPage:
         page = 0
-    
+
     result = render_to_string(template_name, RequestContext(request, {
-        "product" : product,
-        "product_accessories" : product_accessories,
-        "page" : page,
-        "paginator" : paginator,
-        "filter" : filter_,
+        "product": product,
+        "product_accessories": product_accessories,
+        "page": page,
+        "paginator": paginator,
+        "filter": filter_,
     }))
 
     if as_string:
         return result
     else:
         return HttpResponse(result)
+
 
 # Actions
 @permission_required("core.manage_shop", login_url="/login/")
@@ -129,6 +132,7 @@ def load_tab(request, product_id):
     """
     accessories = manage_accessories(request, product_id)
     return HttpResponse(accessories)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_accessories(request, product_id):
@@ -145,18 +149,19 @@ def add_accessories(request, product_id):
         accessory = Product.objects.get(pk=temp_id)
         product_accessory = ProductAccessories(product=parent_product, accessory=accessory)
         product_accessory.save()
-    
-    _update_positions(parent_product)    
+
+    _update_positions(parent_product)
     product_changed.send(parent_product)
 
     inline = manage_accessories_inline(request, product_id, as_string=True)
 
     result = simplejson.dumps({
-        "html" : inline,
-        "message" : _(u"Accessories have been added.")
-    }, cls=LazyEncoder);
+        "html": inline,
+        "message": _(u"Accessories have been added.")
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 # TODO: Rename to "update_accessories"
 @permission_required("core.manage_shop", login_url="/login/")
@@ -177,14 +182,14 @@ def remove_accessories(request, product_id):
 
             product_accessory.delete()
 
-        _update_positions(parent_product)    
+        _update_positions(parent_product)
         product_changed.send(parent_product)
-        
+
         inline = manage_accessories_inline(request, product_id, as_string=True)
 
         result = simplejson.dumps({
-            "html" : inline,
-            "message" : _(u"Accessories have been removed.")
+            "html": inline,
+            "message": _(u"Accessories have been removed.")
         }, cls=LazyEncoder)
 
     else:
@@ -210,14 +215,15 @@ def remove_accessories(request, product_id):
             product_changed.send(product_accessory.product)
 
         _update_positions(parent_product)
-        
+
         inline = manage_accessories_inline(request, product_id, as_string=True)
         result = simplejson.dumps({
-            "html" : inline,
-            "message" : _(u"Accessories have been updated.")
-        }, cls=LazyEncoder);
-    
+            "html": inline,
+            "message": _(u"Accessories have been updated.")
+        }, cls=LazyEncoder)
+
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def update_accessories(request, product_id):
@@ -233,18 +239,19 @@ def update_accessories(request, product_id):
     inline = manage_accessories_inline(request, product_id, as_string=True)
 
     result = simplejson.dumps({
-        "html" : inline,
-        "message" : _(u"Accessories have been updated.")
-    }, cls=LazyEncoder);
+        "html": inline,
+        "message": _(u"Accessories have been updated.")
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
 
     inline = manage_accessories_inline(request, product_id)
     return HttpResponse(inline)
 
+
 def _update_positions(product):
     """Updates positions of product accessories for given product.
     """
     for i, pa in enumerate(ProductAccessories.objects.filter(product=product)):
-        pa.position = (i+1)*10
+        pa.position = (i + 1) * 10
         pa.save()

@@ -21,11 +21,13 @@ from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import StaticBlock
 from lfs.catalog.models import File
 
+
 class StaticBlockForm(ModelForm):
     """Form to add and edit a static block.
     """
     class Meta:
         model = StaticBlock
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_static_blocks(request):
@@ -39,6 +41,7 @@ def manage_static_blocks(request):
 
     return HttpResponseRedirect(url)
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_static_block(request, id, template_name="manage/static_block/static_block.html"):
     """Displays the main form to manage static blocks.
@@ -49,27 +52,29 @@ def manage_static_block(request, id, template_name="manage/static_block/static_b
         if form.is_valid():
             form.save()
             return lfs.core.utils.set_message_cookie(
-                url = reverse("lfs_manage_static_block", kwargs={"id" : sb.id}),
-                msg = _(u"Static block has been saved."),
+                url=reverse("lfs_manage_static_block", kwargs={"id": sb.id}),
+                msg=_(u"Static block has been saved."),
             )
     else:
         form = StaticBlockForm(instance=sb)
 
     return render_to_response(template_name, RequestContext(request, {
-        "static_block" : sb,
-        "static_blocks" : StaticBlock.objects.all(),
-        "files" : files(request, sb),
-        "form" : form,
-        "current_id" : int(id),
+        "static_block": sb,
+        "static_blocks": StaticBlock.objects.all(),
+        "files": files(request, sb),
+        "form": form,
+        "current_id": int(id),
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def files(request, sb, template_name="manage/static_block/files.html"):
     """Displays the files tab of the passed static block.
     """
     return render_to_string(template_name, RequestContext(request, {
-        "static_block" : sb,
+        "static_block": sb,
     }))
+
 
 def update_files(request, id):
     """
@@ -109,21 +114,22 @@ def update_files(request, id):
                 else:
                     file.position = value
                     file.save()
-                    
+
     for i, file in enumerate(static_block.files.all()):
         file.position = (i + 1) * 10
         file.save()
-    
+
     html = (
         ("#files", files(request, static_block)),
     )
-    
+
     result = simplejson.dumps({
-        "html" : html,
-        "message" : message,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": message,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def reload_files(request, id):
     """
@@ -132,11 +138,12 @@ def reload_files(request, id):
     result = files(request, static_block)
 
     result = simplejson.dumps({
-        "files" : result,
-        "message" : _(u"Files has been added."),
-    }, cls = LazyEncoder)
+        "files": result,
+        "message": _(u"Files has been added."),
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def add_files(request, id):
     """Adds files to static block with passed id.
@@ -154,8 +161,9 @@ def add_files(request, id):
         file.position = (i + 1) * 10
         file.save()
 
-    result = simplejson.dumps({"name": file_content.name, "type":"image/jpeg", "size":"123456789"})
+    result = simplejson.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_static_block(request, template_name="manage/static_block/add_static_block.html"):
@@ -166,16 +174,17 @@ def add_static_block(request, template_name="manage/static_block/add_static_bloc
         if form.is_valid():
             new_sb = form.save()
             return lfs.core.utils.set_message_cookie(
-                url = reverse("lfs_manage_static_block", kwargs={"id" : new_sb.id}),
-                msg = _(u"Static block has been added."),
+                url=reverse("lfs_manage_static_block", kwargs={"id": new_sb.id}),
+                msg=_(u"Static block has been added."),
             )
     else:
         form = StaticBlockForm()
 
     return render_to_response(template_name, RequestContext(request, {
-        "form" : form,
-        "static_blocks" : StaticBlock.objects.all(),
+        "form": form,
+        "static_blocks": StaticBlock.objects.all(),
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def preview_static_block(request, id, template_name="manage/static_block/preview.html"):
@@ -184,8 +193,9 @@ def preview_static_block(request, id, template_name="manage/static_block/preview
     sb = get_object_or_404(StaticBlock, pk=id)
 
     return render_to_response(template_name, RequestContext(request, {
-        "static_block" : sb,
+        "static_block": sb,
     }))
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -202,6 +212,6 @@ def delete_static_block(request, id):
     sb.delete()
 
     return lfs.core.utils.set_message_cookie(
-        url = reverse("lfs_manage_static_blocks"),
-        msg = _(u"Static block has been deleted."),
+        url=reverse("lfs_manage_static_blocks"),
+        msg=_(u"Static block has been deleted."),
     )

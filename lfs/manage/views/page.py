@@ -14,6 +14,7 @@ import lfs.core.utils
 from lfs.core.widgets.file import LFSFileInput
 from lfs.page.models import Page
 
+
 class PageForm(ModelForm):
     """Form to edit a page.
     """
@@ -24,12 +25,14 @@ class PageForm(ModelForm):
     class Meta:
         model = Page
 
+
 class PageAddForm(PageForm):
     """Form to add a page
     """
     class Meta:
         model = Page
         exclude = ("position",)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_pages(request):
@@ -43,6 +46,7 @@ def manage_pages(request):
         url = reverse("lfs_add_page")
 
     return HttpResponseRedirect(url)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_page(request, id, template_name="manage/page/page.html"):
@@ -60,18 +64,19 @@ def manage_page(request, id, template_name="manage/page/page.html"):
                 page.file.delete()
 
             return lfs.core.utils.set_message_cookie(
-                url = reverse("lfs_manage_page", kwargs={"id" : page.id}),
-                msg = _(u"Page has been saved."),
+                url=reverse("lfs_manage_page", kwargs={"id": page.id}),
+                msg=_(u"Page has been saved."),
             )
     else:
         form = PageForm(instance=page)
 
     return render_to_response(template_name, RequestContext(request, {
-        "page" : page,
-        "pages" : Page.objects.all(),
-        "form" : form,
-        "current_id" : int(id),
+        "page": page,
+        "pages": Page.objects.all(),
+        "form": form,
+        "current_id": int(id),
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_page(request, template_name="manage/page/add_page.html"):
@@ -84,16 +89,17 @@ def add_page(request, template_name="manage/page/add_page.html"):
             _update_positions()
 
             return lfs.core.utils.set_message_cookie(
-                url = reverse("lfs_manage_page", kwargs={"id" : page.id}),
-                msg = _(u"Page has been added."),
+                url=reverse("lfs_manage_page", kwargs={"id": page.id}),
+                msg=_(u"Page has been added."),
             )
     else:
         form = PageAddForm()
 
     return render_to_response(template_name, RequestContext(request, {
-        "form" : form,
-        "pages" : Page.objects.all(),
+        "form": form,
+        "pages": Page.objects.all(),
     }))
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -104,13 +110,14 @@ def delete_page(request, id):
     page.delete()
 
     return lfs.core.utils.set_message_cookie(
-        url = reverse("lfs_manage_pages"),
-        msg = _(u"Page has been deleted."),
+        url=reverse("lfs_manage_pages"),
+        msg=_(u"Page has been deleted."),
     )
+
 
 def _update_positions():
     """Updates the positions of all pages.
     """
     for i, page in enumerate(Page.objects.all()):
-        page.position = (i+1)*10
+        page.position = (i + 1) * 10
         page.save()

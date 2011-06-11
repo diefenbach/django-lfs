@@ -27,12 +27,14 @@ from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
 from lfs.core.utils import LazyEncoder
 from lfs.manage import utils as manage_utils
 
+
 class PropertyOptionForm(ModelForm):
     """Form to add/edit property options.
     """
     class Meta:
         model = PropertyOption
         fields = ("name", )
+
 
 class PropertyForm(ModelForm):
     """Form to add/edit properties.
@@ -41,6 +43,7 @@ class PropertyForm(ModelForm):
         model = Property
         fields = ("name", )
 
+
 class ProductVariantSimpleForm(ModelForm):
     """Form to add/edit variants options.
     """
@@ -48,12 +51,14 @@ class ProductVariantSimpleForm(ModelForm):
         model = Product
         fields = ("slug", "name", "price", )
 
+
 class DisplayTypeForm(ModelForm):
     """Form to add/edit product's sub types.
     """
     class Meta:
         model = Product
         fields = ("variants_display_type", )
+
 
 class DefaultVariantForm(ModelForm):
     """Form to edit the default variant.
@@ -70,6 +75,7 @@ class DefaultVariantForm(ModelForm):
     class Meta:
         model = Product
         fields = ("default_variant", )
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_variants(request, product_id, as_string=False, template_name="manage/product/variants.html"):
@@ -100,28 +106,28 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
                     else:
                         selected = False
                     options.append({
-                        "id"   : property_option.id,
-                        "name" : property_option.name,
-                        "selected" : selected
+                        "id": property_option.id,
+                        "name": property_option.name,
+                        "selected": selected
                     })
                 properties.append({
-                    "id" : property.id,
-                    "name" : property.name,
-                    "options" : options
+                    "id": property.id,
+                    "name": property.name,
+                    "options": options
                 })
 
             variants.append({
-                "id" : variant.id,
-                "active" : variant.active,
-                "slug" : variant.slug,
-                "sku" : variant.sku,
-                "name" : variant.name,
-                "price" : variant.price,
-                "active_price" : variant.active_price,
-                "active_sku" : variant.active_sku,
-                "active_name" : variant.active_name,
-                "position" : variant.variant_position,
-                "properties" : properties
+                "id": variant.id,
+                "active": variant.active,
+                "slug": variant.slug,
+                "sku": variant.sku,
+                "name": variant.name,
+                "price": variant.price,
+                "active_price": variant.active_price,
+                "active_sku": variant.active_sku,
+                "active_name": variant.active_name,
+                "position": variant.variant_position,
+                "properties": properties
             })
 
         cache.set(cache_key, variants)
@@ -132,28 +138,29 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
     for property_group in PropertyGroup.objects.all():
 
         shop_property_groups.append({
-            "id" : property_group.id,
-            "name" : property_group.name,
-            "selected" : property_group.id in product_property_group_ids,
+            "id": property_group.id,
+            "name": property_group.name,
+            "selected": property_group.id in product_property_group_ids,
         })
 
     result = render_to_string(template_name, RequestContext(request, {
-        "product" : product,
-        "variants" : variants,
-        "shop_property_groups" : shop_property_groups,
-        "local_properties" : product.get_local_properties(),
-        "all_properties" : product.get_property_select_fields(),
-        "property_option_form" : property_option_form,
-        "property_form" : property_form,
-        "variant_simple_form" : variant_simple_form,
-        "display_type_form" : display_type_form,
-        "default_variant_form" : default_variant_form,
+        "product": product,
+        "variants": variants,
+        "shop_property_groups": shop_property_groups,
+        "local_properties": product.get_local_properties(),
+        "all_properties": product.get_property_select_fields(),
+        "property_option_form": property_option_form,
+        "property_form": property_form,
+        "variant_simple_form": variant_simple_form,
+        "display_type_form": display_type_form,
+        "default_variant_form": default_variant_form,
     }))
 
     if as_string:
         return result
     else:
         return HttpResponse(result)
+
 
 # Actions
 @permission_required("core.manage_shop", login_url="/login/")
@@ -183,11 +190,12 @@ def add_property(request, product_id):
             product_property.save()
 
     result = simplejson.dumps({
-        "html" : manage_variants(request, product_id, as_string=True),
-        "message" : _(u"Property has been added."),
-    }, cls = LazyEncoder)
+        "html": manage_variants(request, product_id, as_string=True),
+        "message": _(u"Property has been added."),
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def delete_property(request, product_id, property_id):
@@ -204,12 +212,13 @@ def delete_property(request, product_id, property_id):
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : _(u"Property has been deleted."),
-        "close-dialog" : True,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": _(u"Property has been deleted."),
+        "close-dialog": True,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def change_property_position(request):
@@ -220,7 +229,7 @@ def change_property_position(request):
     direction = request.GET.get("direction")
 
     try:
-        product_property = ProductsPropertiesRelation.objects.get(product = product_id, property = property_id)
+        product_property = ProductsPropertiesRelation.objects.get(product=product_id, property=property_id)
     except ObjectDoesNotExist:
         pass
     else:
@@ -234,6 +243,7 @@ def change_property_position(request):
     _refresh_property_positions(product_id)
 
     return HttpResponse(manage_variants(request, product_id))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_property_option(request, product_id):
@@ -256,16 +266,17 @@ def add_property_option(request, product_id):
             position += 1
 
         # Refresh positions
-        for i, option in enumerate(PropertyOption.objects.filter(property = property_option.property)):
+        for i, option in enumerate(PropertyOption.objects.filter(property=property_option.property)):
             option.position = i
             option.save()
 
     result = simplejson.dumps({
-        "html" : manage_variants(request, product_id, as_string=True),
-        "message" : _(u"Option has been added."),
-    }, cls = LazyEncoder)
+        "html": manage_variants(request, product_id, as_string=True),
+        "message": _(u"Option has been added."),
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def delete_property_option(request, product_id, option_id):
@@ -282,12 +293,13 @@ def delete_property_option(request, product_id, option_id):
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : _(u"Property has been deleted."),
-        "close-dialog" : True,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": _(u"Property has been deleted."),
+        "close-dialog": True,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def add_variants(request, product_id):
@@ -334,9 +346,9 @@ def add_variants(request, product_id):
             slug += "-" + slugify(o.name)
 
         slug = "%s%s" % (product.slug, slug)
-        sku = "%s-%s" % (product.sku, i+1)
+        sku = "%s-%s" % (product.sku, i + 1)
 
-        variant = Product(slug=slug, sku=sku, parent=product, price=price, variant_position=(i+1)*10, sub_type=VARIANT)
+        variant = Product(slug=slug, sku=sku, parent=product, price=price, variant_position=(i + 1) * 10, sub_type=VARIANT)
         try:
             variant.save()
         except IntegrityError:
@@ -345,17 +357,18 @@ def add_variants(request, product_id):
         # Save the value for this product and property
         for option in options:
             property_id, option_id = option.split("|")
-            pvo = ProductPropertyValue(product = variant, property_id = property_id, value=option_id, type=PROPERTY_VALUE_TYPE_VARIANT)
+            pvo = ProductPropertyValue(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_VARIANT)
             pvo.save()
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : _(u"Variants have been added."),
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": _(u"Variants have been added."),
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def update_variants(request, product_id):
@@ -444,7 +457,7 @@ def update_variants(request, product_id):
 
     # Refresh variant positions
     for i, variant in enumerate(product.variants.order_by("variant_position")):
-        variant.variant_position = (i+1) * 10
+        variant.variant_position = (i + 1) * 10
         variant.save()
 
     # Send a signal to update cache
@@ -453,11 +466,12 @@ def update_variants(request, product_id):
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : message,
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": message,
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def edit_sub_type(request, product_id):
@@ -474,11 +488,12 @@ def edit_sub_type(request, product_id):
     product_changed.send(product)
 
     result = simplejson.dumps({
-        "html" : manage_variants(request, product_id, as_string=True),
-        "message" : _(u"Sup type has been saved."),
-    }, cls = LazyEncoder)
+        "html": manage_variants(request, product_id, as_string=True),
+        "message": _(u"Sup type has been saved."),
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def update_default_variant(request, product_id):
@@ -494,16 +509,17 @@ def update_default_variant(request, product_id):
     product_changed.send(product)
 
     result = simplejson.dumps({
-        "html" : manage_variants(request, product_id, as_string=True),
-        "message" : _(u"Default variant has been saved."),
-    }, cls = LazyEncoder)
+        "html": manage_variants(request, product_id, as_string=True),
+        "message": _(u"Default variant has been saved."),
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def _refresh_property_positions(product_id):
     """
     """
     # Refresh positions
     for i, product_property in enumerate(ProductsPropertiesRelation.objects.filter(product=product_id)):
-        product_property.position = i*2
+        product_property.position = i * 2
         product_property.save()

@@ -18,6 +18,7 @@ from lfs.core.signals import topseller_changed
 from lfs.core.utils import LazyEncoder
 from lfs.marketing.models import Topseller
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_topseller(
     request, template_name="manage/marketing/topseller.html"):
@@ -29,14 +30,15 @@ def manage_topseller(
     amount_options = []
     for value in (10, 25, 50, 100):
         amount_options.append({
-            "value" : value,
-            "selected" : value == request.session.get("topseller-amount")
+            "value": value,
+            "selected": value == request.session.get("topseller-amount")
         })
 
     return render_to_string(template_name, RequestContext(request, {
-        "topseller_inline" : inline,
-        "amount_options" : amount_options,
+        "topseller_inline": inline,
+        "amount_options": amount_options,
     }))
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_topseller_inline(
@@ -80,10 +82,10 @@ def manage_topseller_inline(
 
     filters = Q()
     if filter_:
-        filters &= Q(name__icontains = filter_)
-        filters |= Q(sku__icontains = filter_)
-        filters |= (Q(sub_type = VARIANT) & Q(active_sku = False) & Q(parent__sku__icontains = filter_))
-        filters |= (Q(sub_type = VARIANT) & Q(active_name = False) & Q(parent__name__icontains = filter_))
+        filters &= Q(name__icontains=filter_)
+        filters |= Q(sku__icontains=filter_)
+        filters |= (Q(sub_type=VARIANT) & Q(active_sku=False) & Q(parent__sku__icontains=filter_))
+        filters |= (Q(sub_type=VARIANT) & Q(active_name=False) & Q(parent__name__icontains=filter_))
 
     if category_filter:
         if category_filter == "None":
@@ -95,10 +97,9 @@ def manage_topseller_inline(
             category = lfs_get_object_or_404(Category, pk=category_filter)
             categories = [category]
             categories.extend(category.get_all_children())
-            filters &= Q(categories__in = categories)
-    
-    print topseller_ids        
-    products = Product.objects.filter(filters).exclude(pk__in = topseller_ids)
+            filters &= Q(categories__in=categories)
+
+    products = Product.objects.filter(filters).exclude(pk__in=topseller_ids)
     paginator = Paginator(products, s["topseller-amount"])
 
     total = products.count()
@@ -108,17 +109,18 @@ def manage_topseller_inline(
         page = 0
 
     result = render_to_string(template_name, RequestContext(request, {
-        "topseller" : topseller,
-        "total" : total,
-        "page" : page,
-        "paginator" : paginator,
-        "filter" : filter_
+        "topseller": topseller,
+        "total": total,
+        "page": page,
+        "paginator": paginator,
+        "filter": filter_
     }))
 
     if as_string:
         return result
     else:
         return HttpResponse(result)
+
 
 # Actions
 @permission_required("core.manage_shop", login_url="/login/")
@@ -135,11 +137,12 @@ def add_topseller(request):
 
     inline = manage_topseller_inline(request, as_string=True)
     result = simplejson.dumps({
-        "html" : inline,
-        "message" : _(u"Topseller have been added.")
-    }, cls=LazyEncoder);
+        "html": inline,
+        "message": _(u"Topseller have been added.")
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def update_topseller(request):
@@ -162,9 +165,9 @@ def update_topseller(request):
 
         inline = manage_topseller_inline(request, as_string=True)
         result = simplejson.dumps({
-            "html" : inline,
-            "message" : _(u"Topseller have been removed.")
-        }, cls=LazyEncoder);
+            "html": inline,
+            "message": _(u"Topseller have been removed.")
+        }, cls=LazyEncoder)
 
     else:
         for temp_id in request.POST.keys():
@@ -182,8 +185,8 @@ def update_topseller(request):
 
         inline = manage_topseller_inline(request, as_string=True)
         result = simplejson.dumps({
-            "html" : inline,
-            "message" : _(u"Topseller have been updated.")
-        }, cls=LazyEncoder);
+            "html": inline,
+            "message": _(u"Topseller have been updated.")
+        }, cls=LazyEncoder)
 
     return HttpResponse(result)

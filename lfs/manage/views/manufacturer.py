@@ -22,11 +22,13 @@ from lfs.core.utils import LazyEncoder
 from lfs.manufacturer.models import Manufacturer
 from lfs.manufacturer.models import Manufacturer
 
+
 class ManufacturerDataForm(ModelForm):
     """Form to manage selection data.
     """
     class Meta:
         model = Manufacturer
+
 
 def manage_manufacturer(request, manufacturer_id, template_name="manage/manufacturer/manufacturer.html"):
     """The main view to display manufacturers.
@@ -40,19 +42,20 @@ def manage_manufacturer(request, manufacturer_id, template_name="manage/manufact
         checked, klass = _get_category_state(manufacturer, category)
 
         categories.append({
-            "id" : category.id,
-            "name" : category.name,
-            "checked" : checked,
-            "klass" : klass,
+            "id": category.id,
+            "name": category.name,
+            "checked": checked,
+            "klass": klass,
         })
 
     data_form = ManufacturerDataForm(instance=manufacturer)
     return render_to_response(template_name, RequestContext(request, {
-        "categories" : categories,
-        "manufacturer_id" : manufacturer_id,
-        "selectable_manufacturers_inline" : selectable_manufacturers_inline(request, manufacturer_id),
-        "manufacturer_data_inline" : manufacturer_data_inline(request, manufacturer_id, data_form),
+        "categories": categories,
+        "manufacturer_id": manufacturer_id,
+        "selectable_manufacturers_inline": selectable_manufacturers_inline(request, manufacturer_id),
+        "manufacturer_data_inline": manufacturer_data_inline(request, manufacturer_id, data_form),
     }))
+
 
 # Parts
 def manufacturer_data_inline(request, manufacturer_id, form,
@@ -60,18 +63,20 @@ def manufacturer_data_inline(request, manufacturer_id, form,
     """Displays the data form of the current manufacturer.
     """
     return render_to_string(template_name, RequestContext(request, {
-        "manufacturer_id" : manufacturer_id,
-        "form" : form,
+        "manufacturer_id": manufacturer_id,
+        "form": form,
     }))
+
 
 def selectable_manufacturers_inline(request, manufacturer_id,
     template_name="manage/manufacturer/selectable_manufacturers_inline.html"):
     """Displays all selectable manufacturers.
     """
     return render_to_string(template_name, RequestContext(request, {
-        "manufacturers" : Manufacturer.objects.all(),
-        "manufacturer_id" : int(manufacturer_id),
+        "manufacturers": Manufacturer.objects.all(),
+        "manufacturer_id": int(manufacturer_id),
     }))
+
 
 def manufacturer_inline(request, manufacturer_id, category_id,
     template_name="manage/manufacturer/manufacturer_inline.html"):
@@ -89,10 +94,10 @@ def manufacturer_inline(request, manufacturer_id, category_id,
             type = "V"
 
         products.append({
-            "id" : product.id,
-            "name" : product.get_name(),
-            "checked" : product in selected_products,
-            "type" : type,
+            "id": product.id,
+            "name": product.get_name(),
+            "checked": product in selected_products,
+            "type": type,
         })
 
     categories = []
@@ -101,22 +106,23 @@ def manufacturer_inline(request, manufacturer_id, category_id,
         checked, klass = _get_category_state(manufacturer, category)
 
         categories.append({
-            "id" : category.id,
-            "name" : category.name,
-            "checked" : checked,
-            "klass" : klass,
+            "id": category.id,
+            "name": category.name,
+            "checked": checked,
+            "klass": klass,
         })
 
     result = render_to_string(template_name, RequestContext(request, {
-        "categories" : categories,
-        "products" : products,
-        "manufacturer_id" : manufacturer_id,
+        "categories": categories,
+        "products": products,
+        "manufacturer_id": manufacturer_id,
     }))
 
     html = (("#sub-categories-%s" % category_id, result),)
 
     return HttpResponse(
-        simplejson.dumps({ "html" : html }))
+        simplejson.dumps({"html": html}))
+
 
 def add_manufacturer(request, template_name="manage/manufacturer/add_manufacturer.html"):
     """Form and logic to add a manufacturer.
@@ -126,16 +132,17 @@ def add_manufacturer(request, template_name="manage/manufacturer/add_manufacture
         if form.is_valid():
             new_manufacturer = form.save()
             return HttpResponseRedirect(
-                reverse("lfs_manufacturer", kwargs={ "manufacturer_id" : new_manufacturer.id }))
+                reverse("lfs_manufacturer", kwargs={"manufacturer_id": new_manufacturer.id}))
 
     else:
         form = ManufacturerDataForm()
 
     return render_to_response(template_name, RequestContext(request, {
-        "form" : form,
-        "selectable_manufacturers_inline" : selectable_manufacturers_inline(request, 0),
-        "next" : request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
+        "form": form,
+        "selectable_manufacturers_inline": selectable_manufacturers_inline(request, 0),
+        "next": request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
     }))
+
 
 # Actions
 def manufacturer_dispatcher(request):
@@ -147,7 +154,8 @@ def manufacturer_dispatcher(request):
         return HttpResponseRedirect(reverse("lfs_manufacturer_add_manufacturer"))
     else:
         return HttpResponseRedirect(
-            reverse("lfs_manufacturer", kwargs = {"manufacturer_id" : manufacturer.id }))
+            reverse("lfs_manufacturer", kwargs={"manufacturer_id": manufacturer.id}))
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
@@ -162,6 +170,7 @@ def delete_manufacturer(request, manufacturer_id):
         manufacturer.delete()
 
     return HttpResponseRedirect(reverse("lfs_manufacturer_dispatcher"))
+
 
 def edit_category(request, manufacturer_id, category_id):
     """Adds/Removes products of given category to given manufacturer.
@@ -180,6 +189,7 @@ def edit_category(request, manufacturer_id, category_id):
 
     return HttpResponse("")
 
+
 def edit_product(request, manufacturer_id, product_id):
     """Adds/Removes given product to given manufacturer.
     """
@@ -194,6 +204,7 @@ def edit_product(request, manufacturer_id, product_id):
         product.save()
 
     return HttpResponse("")
+
 
 def category_state(request, manufacturer_id, category_id):
     """Sets the state (klass and checking) for given category for given
@@ -213,10 +224,11 @@ def category_state(request, manufacturer_id, category_id):
 
     return HttpResponse(
         simplejson.dumps({
-            "html" : html,
-            "checkbox" : checkbox
+            "html": html,
+            "checkbox": checkbox
         })
     )
+
 
 def update_data(request, manufacturer_id):
     """Updates data of manufacturer with given manufacturer id.
@@ -235,11 +247,12 @@ def update_data(request, manufacturer_id):
     )
 
     result = simplejson.dumps({
-        "html" : html,
-        "message" : msg
-    }, cls = LazyEncoder)
+        "html": html,
+        "message": msg
+    }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def _get_category_state(manufacturer, category):
     """Calculates the state for given category for given manufacturer.
