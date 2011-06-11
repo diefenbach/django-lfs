@@ -16,6 +16,7 @@ from lfs.order.models import Order
 from lfs.order.models import OrderItem
 from lfs.order.settings import CLOSED
 
+
 class RatingMailTestCase(TestCase):
     """
     """
@@ -56,6 +57,7 @@ class RatingMailTestCase(TestCase):
         orders = lfs.marketing.utils.get_orders()
         self.assertEqual(len(orders), 1)
 
+
 class TopsellerTestCase(TestCase):
     """Tests the Topseller model
     """
@@ -63,12 +65,13 @@ class TopsellerTestCase(TestCase):
         """
         """
         self.p1 = Product.objects.create(name="Product 1", slug="product-1", active=True)
-        self.t1 = Topseller.objects.create(product = self.p1)
+        self.t1 = Topseller.objects.create(product=self.p1)
 
     def test_defaults(self):
         """
         """
         self.assertEqual(self.t1.position, 1)
+
 
 class TopsellerUtilsTestCase(TestCase):
     """Tests the utils of the lfs.marketing

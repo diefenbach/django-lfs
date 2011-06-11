@@ -16,6 +16,7 @@ from lfs.order.settings import CLOSED
 from lfs.order.models import OrderItem
 from django.db import connection
 
+
 def calculate_product_sales():
     """Calculates and saves total product sales.
     """
@@ -30,14 +31,15 @@ def calculate_product_sales():
         else:
             product = order_item.product
 
-        if products.has_key(product.id) == False:
+        if product.id in products == False:
             products[product.id] = [product, 0]
         products[product.id][1] += order_item.product_amount
 
     for product_id, data in products.items():
-        product, created = ProductSales.objects.get_or_create(product = data[0])
+        product, created = ProductSales.objects.get_or_create(product=data[0])
         product.sales = data[1]
         product.save()
+
 
 def get_orders(days=14):
     """Returns closed orders which are closed for given amount of days.
@@ -47,10 +49,11 @@ def get_orders(days=14):
     orders = Order.objects.filter(state=CLOSED, state_modified__lte=limit)
     return orders
 
+
 def get_topseller(limit=5):
     """Returns products with the most sales. Limited by given limit.
     """
-    cache_key = "%s-topseller"%settings.CACHE_MIDDLEWARE_KEY_PREFIX
+    cache_key = "%s-topseller" % settings.CACHE_MIDDLEWARE_KEY_PREFIX
     topseller = cache.get(cache_key)
     if topseller is not None:
         return topseller
@@ -60,7 +63,7 @@ def get_topseller(limit=5):
     cursor.execute("""SELECT product_id, sum(product_amount) as sum
                       FROM order_orderitem
                       GROUP BY product_id
-                      ORDER BY sum DESC limit %s""" % (limit*2))
+                      ORDER BY sum DESC limit %s""" % (limit * 2))
 
     products = []
     for topseller in cursor.fetchall():
@@ -87,6 +90,7 @@ def get_topseller(limit=5):
     products = products[:limit]
     cache.set(cache_key, products)
     return products
+
 
 def get_topseller_for_category(category, limit=5):
     """Returns products with the most sales withing given category. Limited by
