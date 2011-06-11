@@ -5,8 +5,8 @@ CHECKOUT_TYPE_ANON = 1
 CHECKOUT_TYPE_AUTH = 2
 CHECKOUT_TYPES = (
     (CHECKOUT_TYPE_SELECT, _(u"Anonymous and Authenticated")),
-    (CHECKOUT_TYPE_ANON,   _(u"Anonymous only")),
-    (CHECKOUT_TYPE_AUTH,   _(u"Authenticated only")),
+    (CHECKOUT_TYPE_ANON, _(u"Anonymous only")),
+    (CHECKOUT_TYPE_AUTH, _(u"Authenticated only")),
 )
-SHIPPING_PREFIX ="shipping"
+SHIPPING_PREFIX = "shipping"
 INVOICE_PREFIX = "invoice"

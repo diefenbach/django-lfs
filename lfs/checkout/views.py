@@ -41,6 +41,7 @@ from lfs.voucher.settings import MESSAGES
 # other imports
 from postal.library import form_factory
 
+
 def login(request, template_name="lfs/checkout/login.html"):
     """Displays a form to login or register/login the user within the check out
     process.
@@ -70,7 +71,7 @@ def login(request, template_name="lfs/checkout/login.html"):
             login(request, login_form.get_user())
 
             return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"),
-                msg = _(u"You have been logged in."))
+                msg=_(u"You have been logged in."))
 
     elif request.POST.get("action") == "register":
         register_form = RegisterForm(data=request.POST)
@@ -93,13 +94,14 @@ def login(request, template_name="lfs/checkout/login.html"):
             login(request, user)
 
             return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"),
-                msg = _(u"You have been registered and logged in."))
+                msg=_(u"You have been registered and logged in."))
 
     return render_to_response(template_name, RequestContext(request, {
-        "login_form" : login_form,
-        "register_form" : register_form,
-        "anonymous_checkout" : shop.checkout_type != CHECKOUT_TYPE_AUTH,
+        "login_form": login_form,
+        "register_form": register_form,
+        "anonymous_checkout": shop.checkout_type != CHECKOUT_TYPE_AUTH,
     }))
+
 
 def checkout_dispatcher(request):
     """Dispatcher to display the correct checkout form
@@ -115,6 +117,7 @@ def checkout_dispatcher(request):
         return HttpResponseRedirect(reverse("lfs_checkout"))
     else:
         return HttpResponseRedirect(reverse("lfs_checkout_login"))
+
 
 def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html"):
     """Displays the cart items of the checkout page.
@@ -137,7 +140,7 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
     cart_costs = cart_utils.get_cart_costs(request, cart)
     cart_price = cart_costs["price"] + shipping_costs["price"] + payment_costs["price"]
     cart_tax = cart_costs["tax"] + shipping_costs["tax"] + payment_costs["tax"]
-    
+
     discounts = lfs.discounts.utils.get_valid_discounts(request)
     for discount in discounts:
         cart_price = cart_price - discount["price"]
@@ -166,22 +169,23 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
             voucher_tax = 0
 
     return render_to_string(template_name, RequestContext(request, {
-        "cart" : cart,
-        "cart_price" : cart_price,
-        "cart_tax" : cart_tax,
-        "display_voucher" : display_voucher,
-        "discounts" : discounts,        
-        "voucher_value" : voucher_value,
-        "voucher_tax" : voucher_tax,
-        "shipping_price" : shipping_costs["price"],
-        "payment_price" : payment_costs["price"],
-        "selected_shipping_method" : selected_shipping_method,
-        "selected_payment_method" : selected_payment_method,
-        "voucher_number" : voucher_number,
-        "voucher_message" : voucher_message,
+        "cart": cart,
+        "cart_price": cart_price,
+        "cart_tax": cart_tax,
+        "display_voucher": display_voucher,
+        "discounts": discounts,
+        "voucher_value": voucher_value,
+        "voucher_tax": voucher_tax,
+        "shipping_price": shipping_costs["price"],
+        "payment_price": payment_costs["price"],
+        "selected_shipping_method": selected_shipping_method,
+        "selected_payment_method": selected_payment_method,
+        "voucher_number": voucher_number,
+        "voucher_message": voucher_message,
     }))
 
-def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
+
+def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
     template_name="lfs/checkout/one_page_checkout.html"):
     """One page checkout form.
     """
@@ -197,9 +201,9 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
         form = checkout_form(request.POST)
 
         toc = True
-                
+
         if shop.confirm_toc:
-            if not request.POST.has_key("confirm_toc"):
+            if "confirm_toc" not in request.POST:
                 toc = False
                 if form._errors is None:
                     form._errors = {}
@@ -233,33 +237,32 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
                     form._errors["shipping-address"] = ErrorList([_(u"Invalid shipping address")])
                 else:
                     # Payment method
-					customer.selected_payment_method_id = request.POST.get("payment_method")
+                    customer.selected_payment_method_id = request.POST.get("payment_method")
 
-					if int(form.data.get("payment_method")) == DIRECT_DEBIT:
-					    bank_account = BankAccount.objects.create(
-					        account_number = form.cleaned_data.get("account_number"),
-					        bank_identification_code = form.cleaned_data.get("bank_identification_code"),
-					        bank_name = form.cleaned_data.get("bank_name"),
-					        depositor = form.cleaned_data.get("depositor"),
-					    )
+                    if int(form.data.get("payment_method")) == DIRECT_DEBIT:
+                        bank_account = BankAccount.objects.create(
+                            account_number=form.cleaned_data.get("account_number"),
+                            bank_identification_code=form.cleaned_data.get("bank_identification_code"),
+                            bank_name=form.cleaned_data.get("bank_name"),
+                            depositor=form.cleaned_data.get("depositor"),
+                        )
 
-					    customer.selected_bank_account = bank_account
+                        customer.selected_bank_account = bank_account
 
-					# Save the selected information to the customer
-					customer.save()
+                    # Save the selected information to the customer
+                    customer.save()
 
-					# process the payment method ...
-					result = lfs.payment.utils.process_payment(request)
+                    # process the payment method ...
+                    result = lfs.payment.utils.process_payment(request)
 
-					next_url = None
-					if result["accepted"] == True:
-					    return HttpResponseRedirect(
-					        result.get("next-url", reverse("lfs_thank_you")))
-					else:
-					    if result.has_key("message"):
-					        form._errors[result.get("message-position")] = result.get("message")
-
-        else: # form is not valid
+                    next_url = None
+                    if result["accepted"] == True:
+                        return HttpResponseRedirect(
+                            result.get("next-url", reverse("lfs_thank_you")))
+                    else:
+                        if "message" in result:
+                            form._errors[result.get("message-position")] = result.get("message")
+        else:  # form is not valid
             # save invoice details
             customer.selected_invoice_address.firstname = request.POST.get("invoice_firstname")
             customer.selected_invoice_address.lastname = request.POST.get("invoice_lastname")
@@ -288,10 +291,10 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
             if customer.selected_payment_method_id:
                 if int(customer.selected_payment_method_id) == DIRECT_DEBIT:
                     bank_account = BankAccount.objects.create(
-                        account_number = form.data.get("account_number"),
-                        bank_identification_code = form.data.get("bank_identification_code"),
-                        bank_name = form.data.get("bank_name"),
-                        depositor = form.data.get("depositor"),
+                        account_number=form.data.get("account_number"),
+                        bank_identification_code=form.data.get("bank_identification_code"),
+                        bank_name=form.data.get("bank_name"),
+                        depositor=form.data.get("depositor"),
                     )
 
                     customer.selected_bank_account = bank_account
@@ -304,19 +307,19 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
         initial = {}
         invoice_address = customer.selected_invoice_address
         initial.update({
-            "invoice_firstname" : invoice_address.firstname,
-            "invoice_lastname" : invoice_address.lastname,
-            "invoice_phone" : invoice_address.phone,
-            "invoice_email" : invoice_address.email,
-            "invoice_country" : invoice_address.country,
+            "invoice_firstname": invoice_address.firstname,
+            "invoice_lastname": invoice_address.lastname,
+            "invoice_phone": invoice_address.phone,
+            "invoice_email": invoice_address.email,
+            "invoice_country": invoice_address.country,
         })
         shipping_address = customer.selected_shipping_address
         initial.update({
-            "shipping_firstname" : shipping_address.firstname,
-            "shipping_lastname" : shipping_address.lastname,
-            "shipping_phone" : shipping_address.phone,
-            "shipping_email" : shipping_address.email,
-            "no_shipping" : False,
+            "shipping_firstname": shipping_address.firstname,
+            "shipping_lastname": shipping_address.lastname,
+            "shipping_phone": shipping_address.phone,
+            "shipping_email": shipping_address.email,
+            "no_shipping": False,
         })
         form = checkout_form(initial=initial)
     cart = cart_utils.get_cart(request)
@@ -337,16 +340,16 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
     display_credit_card = CREDIT_CARD in valid_payment_method_ids
 
     response = render_to_response(template_name, RequestContext(request, {
-        "form" : form,
-        "cart_inline" : cart_inline(request),
-        "shipping_inline" : shipping_inline(request),
-        "invoice_address_inline" : address_inline(request, INVOICE_PREFIX, form),
-        "shipping_address_inline" : address_inline(request, SHIPPING_PREFIX, form),
-        "payment_inline" : payment_inline(request, form),
-        "selected_payment_method" : selected_payment_method,
-        "display_bank_account" : display_bank_account,
-        "display_credit_card" : display_credit_card,
-        "voucher_number" : lfs.voucher.utils.get_current_voucher_number(request),
+        "form": form,
+        "cart_inline": cart_inline(request),
+        "shipping_inline": shipping_inline(request),
+        "invoice_address_inline": address_inline(request, INVOICE_PREFIX, form),
+        "shipping_address_inline": address_inline(request, SHIPPING_PREFIX, form),
+        "payment_inline": payment_inline(request, form),
+        "selected_payment_method": selected_payment_method,
+        "display_bank_account": display_bank_account,
+        "display_credit_card": display_credit_card,
+        "voucher_number": lfs.voucher.utils.get_current_voucher_number(request),
     }))
 
     if form._errors:
@@ -354,20 +357,23 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
     else:
         return response
 
+
 def empty_page_checkout(request, template_name="lfs/checkout/empty_page_checkout.html"):
     """
     """
     return render_to_response(template_name, RequestContext(request, {
-        "shopping_url" : reverse("lfs.core.views.shop_view"),
+        "shopping_url": reverse("lfs.core.views.shop_view"),
     }))
+
 
 def thank_you(request, template_name="lfs/checkout/thank_you_page.html"):
     """Displays a thank you page ot the customer
     """
     order = request.session.get("order")
     return render_to_response(template_name, RequestContext(request, {
-        "order" : order,
+        "order": order,
     }))
+
 
 def payment_inline(request, form, template_name="lfs/checkout/payment_inline.html"):
     """Displays the selectable payment methods of the checkout page.
@@ -383,10 +389,11 @@ def payment_inline(request, form, template_name="lfs/checkout/payment_inline.htm
     valid_payment_methods = lfs.payment.utils.get_valid_payment_methods(request)
 
     return render_to_string(template_name, RequestContext(request, {
-        "payment_methods" : valid_payment_methods,
-        "selected_payment_method" : selected_payment_method,
-        "form" : form,
+        "payment_methods": valid_payment_methods,
+        "selected_payment_method": selected_payment_method,
+        "form": form,
     }))
+
 
 def shipping_inline(request, template_name="lfs/checkout/shipping_inline.html"):
     """Displays the selectable shipping methods of the checkout page.
@@ -399,9 +406,10 @@ def shipping_inline(request, template_name="lfs/checkout/shipping_inline.html"):
     shipping_methods = lfs.shipping.utils.get_valid_shipping_methods(request)
 
     return render_to_string(template_name, RequestContext(request, {
-        "shipping_methods" : shipping_methods,
-        "selected_shipping_method" : selected_shipping_method,
+        "shipping_methods": shipping_methods,
+        "selected_shipping_method": selected_shipping_method,
     }))
+
 
 def check_voucher(request):
     """
@@ -410,10 +418,11 @@ def check_voucher(request):
     lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
 
     result = simplejson.dumps({
-        "html" : (("#cart-inline", cart_inline(request)),)
+        "html": (("#cart-inline", cart_inline(request)),)
     })
 
     return HttpResponse(result)
+
 
 def changed_checkout(request):
     """
@@ -424,31 +433,34 @@ def changed_checkout(request):
     _save_country(request, customer)
 
     result = simplejson.dumps({
-        SHIPPING_PREFIX : shipping_inline(request),
-        "payment" : payment_inline(request, form),
-        "cart" : cart_inline(request),
+        SHIPPING_PREFIX: shipping_inline(request),
+        "payment": payment_inline(request, form),
+        "cart": cart_inline(request),
     })
 
     return HttpResponse(result)
+
 
 def changed_invoice_country(request):
     """
     """
     form = OnePageCheckoutForm(initial=request.POST)
     result = simplejson.dumps({
-        "invoice_address" : address_inline(request, INVOICE_PREFIX, form),
+        "invoice_address": address_inline(request, INVOICE_PREFIX, form),
     })
     return HttpResponse(result)
+
 
 def changed_shipping_country(request):
     """
     """
     form = OnePageCheckoutForm(initial=request.POST)
     result = simplejson.dumps({
-        "shipping_address" : address_inline(request, SHIPPING_PREFIX, form),
+        "shipping_address": address_inline(request, SHIPPING_PREFIX, form),
     })
 
     return HttpResponse(result)
+
 
 def _save_country(request, customer):
     """
@@ -469,6 +481,7 @@ def _save_country(request, customer):
         lfs.shipping.utils.update_to_valid_shipping_method(request, customer)
         lfs.payment.utils.update_to_valid_payment_method(request, customer)
         customer.save()
+
 
 def _save_customer(request, customer):
     """
