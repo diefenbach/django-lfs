@@ -33,6 +33,7 @@ from lfs.order.models import Order
 from postal.library import form_factory
 from postal.forms import PostalAddressForm
 
+
 def login(request, template_name="lfs/customer/login.html"):
     """Custom view to login or register/login a user.
 
@@ -67,7 +68,7 @@ def login(request, template_name="lfs/customer/login.html"):
             login(request, login_form.get_user())
 
             return lfs.core.utils.set_message_cookie(
-                redirect_to, msg = _(u"You have been logged in."))
+                redirect_to, msg=_(u"You have been logged in."))
 
     elif request.POST.get("action") == "register":
         register_form = RegisterForm(data=request.POST)
@@ -99,14 +100,14 @@ def login(request, template_name="lfs/customer/login.html"):
                 redirect_to = reverse("lfs_shop_view")
 
             return lfs.core.utils.set_message_cookie(
-                redirect_to, msg = _(u"You have been registered and logged in."))
+                redirect_to, msg=_(u"You have been registered and logged in."))
 
     # Get next_url
     next_url = request.REQUEST.get("next")
     if next_url is None:
         next_url = request.META.get("HTTP_REFERER")
     if next_url is None:
-        next_url =  reverse("lfs_shop_view")
+        next_url = reverse("lfs_shop_view")
 
     # Get just the path of the url. See django.contrib.auth.views.login for more
     next_url = urlparse(next_url)
@@ -118,11 +119,12 @@ def login(request, template_name="lfs/customer/login.html"):
         login_form_errors = None
 
     return render_to_response(template_name, RequestContext(request, {
-        "login_form" : login_form,
-        "login_form_errors" : login_form_errors,
-        "register_form" : register_form,
-        "next_url" : next_url,
+        "login_form": login_form,
+        "login_form_errors": login_form_errors,
+        "register_form": register_form,
+        "next_url": next_url,
     }))
+
 
 def logout(request):
     """Custom method to logout a user.
@@ -134,7 +136,8 @@ def logout(request):
     logout(request)
 
     return lfs.core.utils.set_message_cookie(reverse("lfs_shop_view"),
-        msg = _(u"You have been logged out."))
+        msg=_(u"You have been logged out."))
+
 
 @login_required
 def orders(request, template_name="lfs/customer/orders.html"):
@@ -143,8 +146,9 @@ def orders(request, template_name="lfs/customer/orders.html"):
     orders = Order.objects.filter(user=request.user)
 
     return render_to_response(template_name, RequestContext(request, {
-        "orders" : orders,
+        "orders": orders,
     }))
+
 
 @login_required
 def order(request, id, template_name="lfs/customer/order.html"):
@@ -154,9 +158,10 @@ def order(request, id, template_name="lfs/customer/order.html"):
     order = get_object_or_404(Order, pk=id, user=request.user)
 
     return render_to_response(template_name, RequestContext(request, {
-        "current_order" : order,
-        "orders" : orders,
+        "current_order": order,
+        "orders": orders,
     }))
+
 
 @login_required
 def account(request, template_name="lfs/customer/account.html"):
@@ -165,8 +170,9 @@ def account(request, template_name="lfs/customer/account.html"):
     user = request.user
 
     return render_to_response(template_name, RequestContext(request, {
-        "user" : user,
+        "user": user,
     }))
+
 
 @login_required
 def addresses(request, template_name="lfs/customer/addresses.html"):
@@ -212,9 +218,10 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
         form = AddressForm(initial=initial)
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
-        "shipping_address_inline" : address_inline(request, "shipping", form),
-        "invoice_address_inline" : address_inline(request, "invoice", form),
+        "shipping_address_inline": address_inline(request, "shipping", form),
+        "invoice_address_inline": address_inline(request, "invoice", form),
     }))
+
 
 def get_country_code(request, prefix):
     # get country_code from the request
@@ -229,7 +236,7 @@ def get_country_code(request, prefix):
                     country_code = customer.selected_invoice_address.country.code
         elif prefix == SHIPPING_PREFIX:
             if customer.selected_shipping_address is not None:
-                if customer.selected_shipping_address.country is not None: 
+                if customer.selected_shipping_address.country is not None:
                     country_code = customer.selected_shipping_address.country.code
 
     # get country code from shop
@@ -243,7 +250,7 @@ def get_country_code(request, prefix):
 def address_inline(request, prefix, form):
     """displays the invoice address with localized fields
     """
-    template_name="lfs/customer/" + prefix + "_address_inline.html"
+    template_name = "lfs/customer/" + prefix + "_address_inline.html"
     country_code = get_country_code(request, prefix)
     if country_code != '':
         shop = lfs.core.utils.get_default_shop()
@@ -270,12 +277,12 @@ def address_inline(request, prefix, form):
                 customer_selected_address = getattr(customer, 'selected_' + prefix + '_address')
             if customer_selected_address is not None:
                 initial.update({
-                    "line1" : customer_selected_address.company_name,
-                    "line2" : customer_selected_address.street,
-                    "city" : customer_selected_address.city,
-                    "state" : customer_selected_address.state,
-                    "code" : customer_selected_address.zip_code,
-                    "country" : customer_selected_address.country.code.upper(),
+                    "line1": customer_selected_address.company_name,
+                    "line2": customer_selected_address.street,
+                    "city": customer_selected_address.city,
+                    "state": customer_selected_address.state,
+                    "code": customer_selected_address.zip_code,
+                    "country": customer_selected_address.country.code.upper(),
                 })
                 address_form = address_form_class(prefix=prefix, initial=initial)
             else:
@@ -301,6 +308,7 @@ def address_inline(request, prefix, form):
         "form": form,
     }))
 
+
 def save_address(request, customer, prefix):
     # get the shop
     shop = lfs.core.utils.get_default_shop()
@@ -323,33 +331,35 @@ def save_address(request, customer, prefix):
             customer_selected_address.save()
     if not existing_address:
         # no address exists for customer so create one
-        customer_selected_address = Address.objects.create( customer=customer,
-                                                            company_name=request.POST.get(prefix + "-line1", ""),
-                                                            street=request.POST.get(prefix + "-line2", ""),
-                                                            city=request.POST.get(prefix + "-city", ""),
-                                                            state=request.POST.get(prefix + "-state", ""),
-                                                            zip_code=request.POST.get(prefix + "-code", ""),
-                                                            country=Country.objects.get(code=country_iso.lower()))
+        customer_selected_address = Address.objects.create(customer=customer,
+                                                           company_name=request.POST.get(prefix + "-line1", ""),
+                                                           street=request.POST.get(prefix + "-line2", ""),
+                                                           city=request.POST.get(prefix + "-city", ""),
+                                                           state=request.POST.get(prefix + "-state", ""),
+                                                           zip_code=request.POST.get(prefix + "-code", ""),
+                                                           country=Country.objects.get(code=country_iso.lower()))
     setattr(customer, address_attribute, customer_selected_address)
     customer.save()
     return customer_selected_address
+
 
 @login_required
 def email(request, template_name="lfs/customer/email.html"):
     """Saves the email address from the data form.
     """
     if request.method == "POST":
-        email_form = EmailForm(initial={"email" : request.user.email}, data=request.POST)
+        email_form = EmailForm(initial={"email": request.user.email}, data=request.POST)
         if email_form.is_valid():
             request.user.email = email_form.cleaned_data.get("email")
             request.user.save()
             return HttpResponseRedirect(reverse("lfs_my_email"))
     else:
-        email_form = EmailForm(initial={"email" : request.user.email})
+        email_form = EmailForm(initial={"email": request.user.email})
 
     return render_to_response(template_name, RequestContext(request, {
         "email_form": email_form
     }))
+
 
 @login_required
 def password(request, template_name="lfs/customer/password.html"):
@@ -364,6 +374,5 @@ def password(request, template_name="lfs/customer/password.html"):
         form = PasswordChangeForm(request.user)
 
     return render_to_response(template_name, RequestContext(request, {
-        "form" : form
+        "form": form
     }))
-

@@ -8,6 +8,7 @@ from lfs.core.models import Country
 from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
 
+
 class Customer(models.Model):
     """
     * A customer holds all shop customer related information and is assigned to
@@ -52,13 +53,14 @@ class Customer(models.Model):
         else:
             self.selected_invoice_address.email = email
             self.selected_invoice_address.save()
-    
+
     def get_selected_shipping_address(self):
         """Returns the selected shipping address.
         """
         return self.selected_shipping_address or \
                self.selected_invoice_address or \
                None
+
 
 class Address(models.Model):
     """An address which can be used as shipping and/or invoice address.
@@ -79,6 +81,7 @@ class Address(models.Model):
     def __unicode__(self):
         return "%s / %s" % (self.street, self.city)
 
+
 class BankAccount(models.Model):
     """Stores all shop relevant data of a bank account an belongs to a customer.
     """
@@ -92,6 +95,7 @@ class BankAccount(models.Model):
     def __unicode__(self):
         return "%s / %s" % (self.account_number, self.bank_name)
 
+
 class CreditCard(models.Model):
     """Stores all shop relevant data of a credit cart and belongs to a customer.
     """
@@ -101,7 +105,7 @@ class CreditCard(models.Model):
     owner = models.CharField(_(u"Owner"), blank=True, max_length=100)
     number = models.CharField(_(u"Number"), blank=True, max_length=30)
     expiration_date_month = models.IntegerField(_(u"Expiration date month"), )
-    expiration_date_year  = models.IntegerField(_(u"Expiration date year"), )
+    expiration_date_year = models.IntegerField(_(u"Expiration date year"), )
 
     def __unicode__(self):
         return "%s / %s" % (self.card_type, self.card_owner)
