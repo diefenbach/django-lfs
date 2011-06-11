@@ -7,6 +7,7 @@ from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.managers import ActiveManager
 from lfs.core.models import Shop
 
+
 class Page(models.Model):
     """An simple HTML page, which may have an optional file to download.
     """
@@ -18,21 +19,21 @@ class Page(models.Model):
     short_text = models.TextField(blank=True)
     body = models.TextField(_(u"Text"), blank=True)
     file = models.FileField(_(u"File"), blank=True, upload_to="files")
-    
+
     objects = ActiveManager()
-    
-    class Meta: 
+
+    class Meta:
         ordering = ("position", )
-        
+
     def __unicode__(self):
         return self.title
-    
+
     def get_image(self):
         """Returns the image for the page.
         """
         shop = lfs_get_object_or_404(Shop, pk=1)
         return shop.image
-        
+
     def get_absolute_url(self):
-        return ("lfs_page_view", (), {"slug" : self.slug})
+        return ("lfs_page_view", (), {"slug": self.slug})
     get_absolute_url = models.permalink(get_absolute_url)

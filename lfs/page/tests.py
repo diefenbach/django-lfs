@@ -10,6 +10,7 @@ from lfs.tests.utils import DummyRequest
 # lfs imports
 from lfs.page.models import Page
 
+
 class PageTestCase(TestCase):
     """Unit tests for lfs.page
     """
@@ -24,9 +25,9 @@ class PageTestCase(TestCase):
         self.request = DummyRequest(user=self.user)
 
         self.page = Page.objects.create(
-            title = "Page Title",
-            slug = "page-title",
-            body = "<p>This is a body</p>"
+            title="Page Title",
+            slug="page-title",
+            body="<p>This is a body</p>"
         )
 
     def test_add_page(self):
@@ -41,7 +42,7 @@ class PageTestCase(TestCase):
     def test_page_view_1(self):
         """Tests page view as superuser.
         """
-        url = reverse("lfs_page_view", kwargs={"slug" : self.page.slug})
+        url = reverse("lfs_page_view", kwargs={"slug": self.page.slug})
         response = self.client.get(url)
         self.failIf(response.content.find("Page Title") == -1)
         self.failIf(response.content.find("<p>This is a body</p>") == -1)
@@ -51,7 +52,7 @@ class PageTestCase(TestCase):
         """
         self.client.logout()
 
-        url = reverse("lfs_page_view", kwargs={"slug" : self.page.slug})
+        url = reverse("lfs_page_view", kwargs={"slug": self.page.slug})
         response = self.client.get(url)
 
         self.failIf(response.content.find("We are sorry") == -1)
@@ -69,7 +70,7 @@ class PageTestCase(TestCase):
         pages = Page.objects.active()
         self.assertEqual(len(pages), 0)
 
-        self.page.active=True
+        self.page.active = True
         self.page.save()
 
         pages = Page.objects.active()
