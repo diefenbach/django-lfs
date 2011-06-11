@@ -24,6 +24,7 @@ from lfs.tax.models import Tax
 from lfs.tests.utils import DummySession
 from lfs.tests.utils import RequestFactory
 
+
 class OrderTestCase(TestCase):
     """
     """
@@ -39,7 +40,7 @@ class OrderTestCase(TestCase):
         self.request.session = session
         self.request.user = AnonymousUser()
 
-        tax = Tax.objects.create(rate = 19)
+        tax = Tax.objects.create(rate=19)
 
         shipping_method = ShippingMethod.objects.create(
             name="Standard",
@@ -53,36 +54,40 @@ class OrderTestCase(TestCase):
             active=True,
             tax=tax,
         )
-        
+
         us = Country.objects.get(code="us")
         ie = Country.objects.get(code="ie")
 
-        address1 = Address.objects.create(firstname = "John",
-            lastname = "Doe",
-            company_name = "Doe Ltd.",
-            street = "Street 42",
-            city = "Gotham City",
-            zip_code = "2342",
-            country = ie,
-            phone = "555-111111",
-            email = "john@doe.com",)
+        address1 = Address.objects.create(
+            firstname="John",
+            lastname="Doe",
+            company_name="Doe Ltd.",
+            street="Street 42",
+            city="Gotham City",
+            zip_code="2342",
+            country=ie,
+            phone="555-111111",
+            email="john@doe.com",
+        )
 
-        address2 = Address.objects.create(firstname = "Jane",
-            lastname = "Doe",
-            company_name = "Doe Ltd.",
-            street = "Street 43",
-            city = "Smallville",
-            zip_code = "2443",
-            country = us,
-            phone = "666-111111",
-            email = "jane@doe.com",)
-        
+        address2 = Address.objects.create(
+            firstname="Jane",
+            lastname="Doe",
+            company_name="Doe Ltd.",
+            street="Street 43",
+            city="Smallville",
+            zip_code="2443",
+            country=us,
+            phone="666-111111",
+            email="jane@doe.com",
+        )
+
         self.customer = Customer.objects.create(
             session=session.session_key,
-            selected_shipping_method = shipping_method,
-            selected_payment_method = payment_method,
-            selected_shipping_address = address1,
-            selected_invoice_address = address2,
+            selected_shipping_method=shipping_method,
+            selected_payment_method=payment_method,
+            selected_shipping_address=address1,
+            selected_invoice_address=address2,
         )
 
         p1 = Product.objects.create(
@@ -90,7 +95,7 @@ class OrderTestCase(TestCase):
             slug="product-1",
             sku="sku-1",
             price=1.1,
-            tax = tax,
+            tax=tax,
         )
 
         p2 = Product.objects.create(
@@ -98,23 +103,23 @@ class OrderTestCase(TestCase):
             slug="product-2",
             sku="sku-2",
             price=2.2,
-            tax = tax,
+            tax=tax,
         )
 
         cart = Cart.objects.create(
-            session = session.session_key
+            session=session.session_key
         )
 
         item = CartItem.objects.create(
-            cart = cart,
-            product = p1,
-            amount = 2,
+            cart=cart,
+            product=p1,
+            amount=2,
         )
 
         item = CartItem.objects.create(
-            cart = cart,
-            product = p2,
-            amount = 3,
+            cart=cart,
+            product=p2,
+            amount=3,
         )
 
     def test_add_order(self):
@@ -186,14 +191,14 @@ class OrderTestCase(TestCase):
         """Tests created paypal link.
         """
         payment_method, created = PaymentMethod.objects.get_or_create(
-            id = 3,
+            id=3,
             name="PayPal",
             active=True,
         )
-        
+
         self.customer.selected_payment_method = payment_method
         self.customer.save()
-        
+
         from lfs.payment.utils import process_payment
         result = process_payment(self.request)
 

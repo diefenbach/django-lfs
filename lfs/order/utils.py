@@ -12,6 +12,7 @@ from lfs.payment import utils as payment_utils
 from lfs.shipping import utils as shipping_utils
 from lfs.voucher.models import Voucher
 
+
 def add_order(request):
     """Adds an order based on current cart for the current customer.
 
@@ -81,43 +82,43 @@ def add_order(request):
             voucher = None
 
     order = Order.objects.create(
-        user = user,
-        session = request.session.session_key,
-        price = price,
-        tax = tax,
+        user=user,
+        session=request.session.session_key,
+        price=price,
+        tax=tax,
 
-        customer_firstname = customer.selected_invoice_address.firstname,
-        customer_lastname = customer.selected_invoice_address.lastname,
-        customer_email = customer_email,
+        customer_firstname=customer.selected_invoice_address.firstname,
+        customer_lastname=customer.selected_invoice_address.lastname,
+        customer_email=customer_email,
 
-        shipping_method = shipping_method,
-        shipping_price = shipping_costs["price"],
-        shipping_tax = shipping_costs["tax"],
-        payment_method = payment_method,
-        payment_price = payment_costs["price"],
-        payment_tax = payment_costs["tax"],
+        shipping_method=shipping_method,
+        shipping_price=shipping_costs["price"],
+        shipping_tax=shipping_costs["tax"],
+        payment_method=payment_method,
+        payment_price=payment_costs["price"],
+        payment_tax=payment_costs["tax"],
 
-        invoice_firstname = customer.selected_invoice_address.firstname,
-        invoice_lastname = customer.selected_invoice_address.lastname,
-        invoice_line1 = invoice_address.company_name,
-        invoice_line2 = invoice_address.street,
-        invoice_city = invoice_address.city,
-        invoice_state = invoice_address.state,
-        invoice_code = invoice_address.zip_code,
-        invoice_country = Country.objects.get(code=invoice_address.country.code),
-        invoice_phone = customer.selected_invoice_address.phone,
+        invoice_firstname=customer.selected_invoice_address.firstname,
+        invoice_lastname=customer.selected_invoice_address.lastname,
+        invoice_line1=invoice_address.company_name,
+        invoice_line2=invoice_address.street,
+        invoice_city=invoice_address.city,
+        invoice_state=invoice_address.state,
+        invoice_code=invoice_address.zip_code,
+        invoice_country=Country.objects.get(code=invoice_address.country.code),
+        invoice_phone=customer.selected_invoice_address.phone,
 
-        shipping_firstname = shipping_address.firstname,
-        shipping_lastname = shipping_address.lastname,
-        shipping_line1 = shipping_address.company_name,
-        shipping_line2 = shipping_address.street,
-        shipping_city = shipping_address.city,
-        shipping_state = shipping_address.state,
-        shipping_code = shipping_address.zip_code,
-        shipping_country = Country.objects.get(code=shipping_address.country.code),
-        shipping_phone = shipping_address.phone,
+        shipping_firstname=shipping_address.firstname,
+        shipping_lastname=shipping_address.lastname,
+        shipping_line1=shipping_address.company_name,
+        shipping_line2=shipping_address.street,
+        shipping_city=shipping_address.city,
+        shipping_state=shipping_address.state,
+        shipping_code=shipping_address.zip_code,
+        shipping_country=Country.objects.get(code=shipping_address.country.code),
+        shipping_phone=shipping_address.phone,
 
-        message = request.POST.get("message", ""),
+        message=request.POST.get("message", ""),
     )
 
     requested_delivery_date = request.POST.get("requested_delivery_date", None)
@@ -147,17 +148,17 @@ def add_order(request):
         order_item = OrderItem.objects.create(
             order=order,
 
-            price_net = cart_item.get_price_net(),
-            price_gross = cart_item.get_price_gross(),
-            tax = cart_item.get_tax(),
+            price_net=cart_item.get_price_net(),
+            price_gross=cart_item.get_price_gross(),
+            tax=cart_item.get_tax(),
 
-            product = cart_item.product,
-            product_sku = cart_item.product.sku,
-            product_name = cart_item.product.get_name(),
+            product=cart_item.product,
+            product_sku=cart_item.product.sku,
+            product_name=cart_item.product.get_name(),
             product_amount=cart_item.amount,
-            product_price_net = cart_item.product.get_price_net(),
-            product_price_gross = cart_item.get_product_price_gross(),
-            product_tax = cart_item.product.get_tax(),
+            product_price_net=cart_item.product.get_price_net(),
+            product_price_gross=cart_item.get_product_price_gross(),
+            product_tax=cart_item.product.get_tax(),
         )
 
         cart_item.product.decrease_stock_amount(cart_item.amount)
@@ -171,16 +172,16 @@ def add_order(request):
     for discount in discounts:
         OrderItem.objects.create(
             order=order,
-            price_net = -(discount["price"] - discount["tax"]),
-            price_gross = -discount["price"],
-            tax = -discount["tax"],
+            price_net=-(discount["price"] - discount["tax"]),
+            price_gross=-discount["price"],
+            tax=-discount["tax"],
 
-            product_sku = discount["sku"],
-            product_name = discount["name"],
-            product_amount= 1,
-            product_price_net = -(discount["price"] - discount["tax"]),
-            product_price_gross = -discount["price"],
-            product_tax = -discount["tax"],
+            product_sku=discount["sku"],
+            product_name=discount["name"],
+            product_amount=1,
+            product_price_net=-(discount["price"] - discount["tax"]),
+            product_price_gross=-discount["price"],
+            product_tax=-discount["tax"],
         )
 
     cart.delete()

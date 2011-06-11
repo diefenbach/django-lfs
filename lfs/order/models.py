@@ -18,8 +18,10 @@ from lfs.payment.settings import PAYPAL
 # other imports
 import uuid
 
+
 def get_unique_id_str():
     return str(uuid.uuid4())
+
 
 class Order(models.Model):
     """An order is created when products have been sold.
@@ -93,7 +95,7 @@ class Order(models.Model):
     message = models.TextField(_(u"Message"), blank=True)
     pay_link = models.TextField(_(u"pay_link"), blank=True)
 
-    uuid = models.CharField(max_length=50, editable=False,unique=True, default=get_unique_id_str)
+    uuid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
     requested_delivery_date = models.DateTimeField(_(u"Delivery Date"), null=True, blank=True)
 
     class Meta:
@@ -115,6 +117,7 @@ class Order(models.Model):
 
         order_name.strip(', ')
         return order_name
+
 
 class OrderItem(models.Model):
     """An order items holds the sold product, its amount and some other relevant
@@ -161,8 +164,7 @@ class OrderItem(models.Model):
                 else:
                     value = option.name
                     price = option.price
-                
-            else:                
+            else:
                 format_string = "%%.%sf" % property_value.property.decimal_places
                 try:
                     value = format_string % float(property_value.value)
@@ -172,15 +174,16 @@ class OrderItem(models.Model):
                 price = ""
 
             properties.append({
-                "name" : property_value.property.name,
-                "title" : property_value.property.title,
-                "unit" : property_value.property.unit,
-                "display_price" : property_value.property.display_price,
-                "value" : value,
-                "price" : price
+                "name": property_value.property.name,
+                "title": property_value.property.title,
+                "unit": property_value.property.unit,
+                "display_price": property_value.property.display_price,
+                "value": value,
+                "price": price
             })
 
         return properties
+
 
 class OrderItemPropertyValue(models.Model):
     """Stores a value for a property and order item.
@@ -198,5 +201,5 @@ class OrderItemPropertyValue(models.Model):
         The value which is stored.
     """
     order_item = models.ForeignKey(OrderItem, verbose_name=_(u"Order item"), related_name="properties")
-    property = models.ForeignKey(Property, verbose_name = _(u"Property"))
+    property = models.ForeignKey(Property, verbose_name=_(u"Property"))
     value = models.CharField("Value", blank=True, max_length=100)
