@@ -16,6 +16,7 @@ from lfs.criteria.models import CriteriaObjects
 from lfs.criteria.settings import GREATER_THAN, LESS_THAN
 from lfs.discounts.models import Discount
 
+
 class DiscountsTestCase(TestCase):
     """Unit tests for lfs.discounts
     """
