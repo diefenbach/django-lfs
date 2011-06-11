@@ -275,6 +275,7 @@ tr.odd {
 
 .manage-categories-portlet li {
     font-weight: normal;
+    list-style-type: none;
 }
 
 .manage-categories-portlet li.current-item {

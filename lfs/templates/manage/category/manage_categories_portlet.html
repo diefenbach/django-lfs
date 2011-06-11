@@ -9,8 +9,9 @@
                        href="{% url lfs_manage_category category.id %}">
                         {{ category.name }}
                     </a>
-                    {{ category.children }}
-                </div>
+                 </div>
+                 {{ category.children }}
+
             </li>
         {% endfor %}
     </ol>
@@ -33,7 +34,29 @@
 			revert: 250,
 			tabSize: 25,
 			tolerance: 'pointer',
-			toleranceElement: '> div'
+			toleranceElement: '> div',
+            stop: function(event,ui){
+                // send new position here
+                console.log("Position changeid");
+                serialized = $('ol.sortable').nestedSortable('serialize');
+                console.log('serialized is ' + serialized);
+                deArray = $('ol.sortable').nestedSortable('toArray');
+                console.log('toArray is ' + deArray);
+                $.ajax({
+
+                  url: "{% url lfs-sort-categories %}",
+                  context: document.body,
+                  type: "POST",
+                  data: {"categories": serialized},
+                  success: function(data) {
+                    console.log("Server response:  " + data );
+                  },
+                  error: function(data) {
+                    alert("an error occurred");
+                  }
+
+               });
+            }
 		});
 
     });
