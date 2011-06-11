@@ -1,5 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+from django.contrib.auth.decorators import permission_required
+from django.utils.decorators import method_decorator
 
 from djangorestframework.views import View
 from djangorestframework.response import Response
@@ -12,6 +14,7 @@ class CategorySortView(View):
     API for sorting categories
     """
 
+    @method_decorator(permission_required("core.manage_shop", login_url="/login/"))
     def post(self, request):
         """
         Handle POST requests containing category layout.
