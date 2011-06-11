@@ -6,9 +6,11 @@ from django.core.cache import cache
 from django.http import Http404
 from django.shortcuts import _get_queryset
 
+
 def key_from_instance(instance):
     opts = instance._meta
     return '%s.%s:%s' % (opts.app_label, opts.module_name, instance.pk)
+
 
 class SimpleCacheQuerySet(QuerySet):
     def filter(self, *args, **kwargs):
@@ -25,9 +27,11 @@ class SimpleCacheQuerySet(QuerySet):
                 self._result_cache = [obj]
         return super(SimpleCacheQuerySet, self).filter(*args, **kwargs)
 
+
 class SimpleCacheManager(models.Manager):
     def get_query_set(self):
         return SimpleCacheQuerySet(self.model)
+
 
 def lfs_get_object(klass, *args, **kwargs):
     """
@@ -55,6 +59,7 @@ def lfs_get_object(klass, *args, **kwargs):
         cache.set(cache_key, object)
         return object
 
+
 def lfs_get_object_or_404(klass, *args, **kwargs):
     """
     Uses get() to return an object, or raises a Http404 exception if the object
@@ -79,6 +84,7 @@ def lfs_get_object_or_404(klass, *args, **kwargs):
     else:
         cache.set(cache_key, object)
         return object
+
 
 def clear_cache():
     """Clears the complete cache.

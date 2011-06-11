@@ -4,6 +4,7 @@ from django.contrib.contenttypes import generic
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+
 class CriteriaObjects(models.Model):
     """Assigns arbitrary criteria to arbitrary content objects.
     """

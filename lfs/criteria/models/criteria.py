@@ -24,6 +24,7 @@ from lfs.criteria.settings import IS, IS_NOT, IS_VALID, IS_NOT_VALID
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
 
+
 class Criterion(object):
     """Base class for all lfs criteria.
     """
@@ -37,11 +38,12 @@ class Criterion(object):
         template = "manage/criteria/%s_criterion.html" % self.content_type
 
         return render_to_string(template, RequestContext(request, {
-            "id" : "ex%s" % self.id,
-            "operator" : self.operator,
-            "value" : self.value,
-            "position" : position,
+            "id": "ex%s" % self.id,
+            "operator": self.operator,
+            "value": self.value,
+            "position": position,
         }))
+
 
 class CartPriceCriterion(models.Model, Criterion):
     """A criterion for the cart price.
@@ -103,6 +105,7 @@ class CartPriceCriterion(models.Model, Criterion):
         """
         return self.price
 
+
 class CombinedLengthAndGirthCriterion(models.Model, Criterion):
     """A criterion for the combined length and girth.
     """
@@ -154,7 +157,7 @@ class CombinedLengthAndGirthCriterion(models.Model, Criterion):
 
                 total_height += item.product.get_height()
 
-            clag = (2 * max_width) +  (2 * total_height) + max_length
+            clag = (2 * max_width) + (2 * total_height) + max_length
 
         if self.operator == LESS_THAN and (clag < self.clag):
             return True
@@ -174,6 +177,7 @@ class CombinedLengthAndGirthCriterion(models.Model, Criterion):
         """Returns the value of the criterion.
         """
         return self.clag
+
 
 class CountryCriterion(models.Model, Criterion):
     """A criterion for the shipping country.
@@ -232,18 +236,19 @@ class CountryCriterion(models.Model, Criterion):
                 selected = False
 
             countries.append({
-                "iso" : country.iso,
-                "name" : country.name,
-                "selected" : selected,
+                "iso": country.iso,
+                "name": country.name,
+                "selected": selected,
             })
 
         return render_to_string("manage/criteria/country_criterion.html", RequestContext(request, {
-            "id" : "ex%s" % self.id,
-            "operator" : self.operator,
-            "value" : self.value,
-            "position" : position,
-            "countries" : countries,
+            "id": "ex%s" % self.id,
+            "operator": self.operator,
+            "value": self.value,
+            "position": position,
+            "countries": countries,
         }))
+
 
 class HeightCriterion(models.Model, Criterion):
     """
@@ -306,6 +311,7 @@ class HeightCriterion(models.Model, Criterion):
         """
         return self.height
 
+
 class LengthCriterion(models.Model, Criterion):
     """A criterion for the length.
     """
@@ -367,6 +373,7 @@ class LengthCriterion(models.Model, Criterion):
         """Returns the value of the criterion.
         """
         return self.length
+
 
 class PaymentMethodCriterion(models.Model, Criterion):
     """A criterion for the payment method.
@@ -448,18 +455,19 @@ class PaymentMethodCriterion(models.Model, Criterion):
                 selected = False
 
             payment_methods.append({
-                "id" : pm.id,
-                "name" : pm.name,
-                "selected" : selected,
+                "id": pm.id,
+                "name": pm.name,
+                "selected": selected,
             })
 
         return render_to_string("manage/criteria/payment_method_criterion.html", RequestContext(request, {
-            "id" : "ex%s" % self.id,
-            "operator" : self.operator,
-            "value" : self.value,
-            "position" : position,
-            "payment_methods" : payment_methods,
+            "id": "ex%s" % self.id,
+            "operator": self.operator,
+            "value": self.value,
+            "position": position,
+            "payment_methods": payment_methods,
         }))
+
 
 class ShippingMethodCriterion(models.Model, Criterion):
     """A criterion for the shipping method.
@@ -548,18 +556,19 @@ class ShippingMethodCriterion(models.Model, Criterion):
                 selected = False
 
             shipping_methods.append({
-                "id" : sm.id,
-                "name" : sm.name,
-                "selected" : selected,
+                "id": sm.id,
+                "name": sm.name,
+                "selected": selected,
             })
 
         return render_to_string("manage/criteria/shipping_method_criterion.html", RequestContext(request, {
-            "id" : "ex%s" % self.id,
-            "operator" : self.operator,
-            "value" : self.value,
-            "position" : position,
-            "shipping_methods" : shipping_methods,
+            "id": "ex%s" % self.id,
+            "operator": self.operator,
+            "value": self.value,
+            "position": position,
+            "shipping_methods": shipping_methods,
         }))
+
 
 class UserCriterion(models.Model, Criterion):
     """A criterion for user content objects
@@ -591,6 +600,7 @@ class UserCriterion(models.Model, Criterion):
         """Returns the value of the criterion.
         """
         return self.users
+
 
 class WeightCriterion(models.Model, Criterion):
     """
@@ -654,6 +664,7 @@ class WeightCriterion(models.Model, Criterion):
         """
         return self.weight
 
+
 class WidthCriterion(models.Model, Criterion):
     """
     """
@@ -715,6 +726,7 @@ class WidthCriterion(models.Model, Criterion):
         """Returns the value of the criterion.
         """
         return self.width
+
 
 class DistanceCriterion(models.Model, Criterion):
     """

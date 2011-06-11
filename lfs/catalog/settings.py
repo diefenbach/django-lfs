@@ -7,7 +7,7 @@ ACTIVE_FOR_SALE_NO = 3
 ACTIVE_FOR_SALE_CHOICES = [
     (ACTIVE_FOR_SALE_STANDARD, _(u"Standard")),
     (ACTIVE_FOR_SALE_YES, _(u"Yes")),
-    (ACTIVE_FOR_SALE_NO, _(u"No")),    
+    (ACTIVE_FOR_SALE_NO, _(u"No")),
 ]
 
 STANDARD_PRODUCT = "0"
@@ -16,10 +16,10 @@ VARIANT = "2"
 CONFIGURABLE_PRODUCT = "3"
 
 PRODUCT_TYPE_LOOKUP = {
-    STANDARD_PRODUCT : _(u"Standard"),
-    PRODUCT_WITH_VARIANTS : _(u"Product with variants"),
-    VARIANT : _(u"Variant"),
-    CONFIGURABLE_PRODUCT : _(u"Configurable product")
+    STANDARD_PRODUCT: _(u"Standard"),
+    PRODUCT_WITH_VARIANTS: _(u"Product with variants"),
+    VARIANT: _(u"Variant"),
+    CONFIGURABLE_PRODUCT: _(u"Configurable product")
 }
 
 PRODUCT_TYPE_CHOICES = [
@@ -51,9 +51,9 @@ CONTENT_CHOICES = (
     (CONTENT_CATEGORIES, _(u"Categories")),
 )
 
-DELIVERY_TIME_UNIT_HOURS  = 1
-DELIVERY_TIME_UNIT_DAYS   = 2
-DELIVERY_TIME_UNIT_WEEKS  = 3
+DELIVERY_TIME_UNIT_HOURS = 1
+DELIVERY_TIME_UNIT_DAYS = 2
+DELIVERY_TIME_UNIT_WEEKS = 3
 DELIVERY_TIME_UNIT_MONTHS = 4
 
 DELIVERY_TIME_UNIT_CHOICES = (
@@ -64,10 +64,10 @@ DELIVERY_TIME_UNIT_CHOICES = (
 )
 
 DELIVERY_TIME_UNIT_SINGULAR = {
-    DELIVERY_TIME_UNIT_HOURS : _(u"hour"),
-    DELIVERY_TIME_UNIT_DAYS : _(u"day"),
-    DELIVERY_TIME_UNIT_WEEKS : _(u"week"),
-    DELIVERY_TIME_UNIT_MONTHS : _(u"month"),
+    DELIVERY_TIME_UNIT_HOURS: _(u"hour"),
+    DELIVERY_TIME_UNIT_DAYS: _(u"day"),
+    DELIVERY_TIME_UNIT_WEEKS: _(u"week"),
+    DELIVERY_TIME_UNIT_MONTHS: _(u"month"),
 }
 
 PROPERTY_VALUE_TYPE_FILTER = 0
@@ -85,41 +85,41 @@ PROPERTY_FIELD_CHOICES = (
     (PROPERTY_SELECT_FIELD, _(u"Select field")),
 )
 
-PROPERTY_STEP_TYPE_AUTOMATIC  = 1
+PROPERTY_STEP_TYPE_AUTOMATIC = 1
 PROPERTY_STEP_TYPE_FIXED_STEP = 2
 PROPERTY_STEP_TYPE_MANUAL_STEPS = 3
 
 PROPERTY_STEP_TYPE_CHOICES = (
-    (PROPERTY_STEP_TYPE_AUTOMATIC,    _(u"Automatic")),
-    (PROPERTY_STEP_TYPE_FIXED_STEP,   _(u"Fixed step")),
+    (PROPERTY_STEP_TYPE_AUTOMATIC, _(u"Automatic")),
+    (PROPERTY_STEP_TYPE_FIXED_STEP, _(u"Fixed step")),
     (PROPERTY_STEP_TYPE_MANUAL_STEPS, _(u"Manual steps")),
 )
 
 
-CAT_PRODUCT_PATH   = "lfs/catalog/categories/product"   # category with products
-CAT_CATEGORY_PATH  = "lfs/catalog/categories/category"  # category with subcategories
-PRODUCT_PATH       = "lfs/catalog/products"   # product templates
-IMAGES_PATH        = "/media/lfs/icons" # Path to template preview images
+CAT_PRODUCT_PATH = "lfs/catalog/categories/product"   # category with products
+CAT_CATEGORY_PATH = "lfs/catalog/categories/category"  # category with subcategories
+PRODUCT_PATH = "lfs/catalog/products"   # product templates
+IMAGES_PATH = "/media/lfs/icons"  # Path to template preview images
 
-# template configuration for category display
+# Template configuration for category display
 CATEGORY_TEMPLATES = (
-    (0,{"file":"%s/%s" % (CAT_PRODUCT_PATH ,"default.html"),
-        "image":IMAGES_PATH+"/product_default.png",
-        "name":_(u"Category with products"),
-        }),
-    (1,{"file":"%s/%s" % (CAT_CATEGORY_PATH ,"default.html"),
-        "image":IMAGES_PATH+"/category_square.png",
-        "name":_(u"Category with subcategories"),		        
-        }),
+    (0, {"file": "%s/%s" % (CAT_PRODUCT_PATH, "default.html"),
+        "image": IMAGES_PATH + "/product_default.png",
+        "name": _(u"Category with products"),
+    }),
+    (1, {"file": "%s/%s" % (CAT_CATEGORY_PATH, "default.html"),
+        "image": IMAGES_PATH + "/category_square.png",
+        "name": _(u"Category with subcategories"),
+    }),
 )
 
-# template configuration for product display    
+# Template configuration for product display
 PRODUCT_TEMPLATES = (
-    (0,{"file":"%s/%s" % (PRODUCT_PATH ,"product_inline.html"),
-        "image":IMAGES_PATH+"/product_default.png",
-        "name":_(u"Default template")
-        },),
-) 
+    (0, {"file": "%s/%s" % (PRODUCT_PATH, "product_inline.html"),
+        "image": IMAGES_PATH + "/product_default.png",
+        "name": _(u"Default template")
+    },),
+)
 
 CP_PRICE_SUM = 1
 CP_PRICE_CALC = 2

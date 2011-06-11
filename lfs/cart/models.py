@@ -13,6 +13,7 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
 
+
 class Cart(models.Model):
     """A cart is a container for products which are supposed to be bought by a
     shop customer.
@@ -37,7 +38,7 @@ class Cart(models.Model):
     modification_date = models.DateTimeField(_(u"Modification date"), auto_now=True, auto_now_add=True)
 
     def __unicode__(self):
-        return "%s, %s"%(self.user, self.session)
+        return "%s, %s" % (self.user, self.session)
 
     def items(self):
         """Returns the items of the cart.
@@ -108,6 +109,7 @@ class Cart(models.Model):
 
         return None
 
+
 class CartItem(models.Model):
     """A cart item belongs to a cart. It stores the product and the amount of
     the product which has been taken into the cart.
@@ -129,7 +131,7 @@ class CartItem(models.Model):
         ordering = ['id']
 
     def __unicode__(self):
-        return "Product: %s, Quantity: %f, Cart: %s"%(self.product, self.amount, self.cart)
+        return "Product: %s, Quantity: %f, Cart: %s" % (self.product, self.amount, self.cart)
 
     def get_price(self):
         """Convenient method to return the gross price of the product.
@@ -238,15 +240,16 @@ class CartItem(models.Model):
                 price = ""
 
             properties.append({
-                "name" : property.name,
-                "title" : property.title,
-                "unit" : property.unit,
-                "display_price" : property.display_price,
-                "value" : value,
-                "price" : price
+                "name": property.name,
+                "title": property.title,
+                "unit": property.unit,
+                "display_price": property.display_price,
+                "value": value,
+                "price": price,
             })
 
         return properties
+
 
 class CartItemPropertyValue(models.Model):
     """Stores a value for a property and item.
@@ -264,5 +267,5 @@ class CartItemPropertyValue(models.Model):
         The value which is stored.
     """
     cart_item = models.ForeignKey(CartItem, verbose_name=_(u"Cart item"), related_name="properties")
-    property = models.ForeignKey(Property, verbose_name = _(u"Property"))
+    property = models.ForeignKey(Property, verbose_name=_(u"Property"))
     value = models.CharField("Value", blank=True, max_length=100)

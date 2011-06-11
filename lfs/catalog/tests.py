@@ -39,6 +39,7 @@ from lfs.core.signals import product_removed_property_group
 from lfs.tax.models import Tax
 from lfs.tests.utils import RequestFactory
 
+
 class PriceFilterTestCase(TestCase):
     """
     """
@@ -87,6 +88,7 @@ class PriceFilterTestCase(TestCase):
         self.assertEqual(result["items"][2]["max"], 300)
         self.assertEqual(result["items"][2]["quantity"], 1)
 
+
 class PropertiesTestCase(TestCase):
     """
     """
@@ -124,9 +126,9 @@ class PropertiesTestCase(TestCase):
         self.ppv32 = ProductPropertyValue.objects.create(product=self.p3, property=self.pp3, value=30.0, type=PROPERTY_VALUE_TYPE_FILTER)
 
         # Assign groups and properties
-        self.gpr1 = GroupsPropertiesRelation.objects.create(group = self.pg, property=self.pp1)
-        self.gpr2 = GroupsPropertiesRelation.objects.create(group = self.pg, property=self.pp2)
-        self.gpr3 = GroupsPropertiesRelation.objects.create(group = self.pg, property=self.pp3)
+        self.gpr1 = GroupsPropertiesRelation.objects.create(group=self.pg, property=self.pp1)
+        self.gpr2 = GroupsPropertiesRelation.objects.create(group=self.pg, property=self.pp2)
+        self.gpr3 = GroupsPropertiesRelation.objects.create(group=self.pg, property=self.pp3)
 
     def test_add_product_to_property_group(self):
         """Tests that a product can be added to a property group only one time.
@@ -446,13 +448,13 @@ class PropertiesTestCase(TestCase):
     def test_set_filter_1(self):
         """Tests the setting of a filter via request/view
         """
-        url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug, "property_id" : 1, "value":"Red"})
+        url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug, "property_id": 1, "value": "Red"})
         response = self.client.get(url)
 
         pf = self.client.session.get("product-filter", {})
         self.assertEqual(pf["1"], "Red")
 
-        url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug, "property_id" : 2, "value":"M"})
+        url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug, "property_id": 2, "value": "M"})
         response = self.client.get(url)
 
         pf = self.client.session.get("product-filter", {})
@@ -462,13 +464,13 @@ class PropertiesTestCase(TestCase):
     def test_set_filter_2(self):
         """Tests the setting of a filter with min/max via request/view
         """
-        url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug, "property_id" : 1, "min" : "10", "max" : "20"})
+        url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug, "property_id": 1, "min": "10", "max": "20"})
         response = self.client.get(url)
 
         pf = self.client.session.get("product-filter", {})
         self.assertEqual(pf["1"], ("10", "20"))
 
-        url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug, "property_id" : 2, "value":"M"})
+        url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug, "property_id": 2, "value": "M"})
         response = self.client.get(url)
 
         pf = self.client.session.get("product-filter", {})
@@ -560,6 +562,7 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(len(products), 1)
         self.assertEqual(products[0].id, self.p3.id)
 
+
 class PropertiesTestCaseWithoutProperties(TestCase):
     """Test the filter methods without added properties.
     """
@@ -580,6 +583,7 @@ class PropertiesTestCaseWithoutProperties(TestCase):
         # This tests the according SQL within get_product_filters
         f = lfs.catalog.utils.get_product_filters(self.c1, [], None, None)
         self.assertEqual(f, [])
+
 
 class CategoryTestCase(TestCase):
     """Tests the Category of the lfs.catalog.
@@ -734,6 +738,7 @@ class CategoryTestCase(TestCase):
         self.assertEqual(len(product_ids), 2)
         self.assertEqual(product_ids, [self.p2.id, self.p3.id])
 
+
 class ViewsTestCase(TestCase):
     """Tests the views of the lfs.catalog.
     """
@@ -760,7 +765,7 @@ class ViewsTestCase(TestCase):
         url = reverse("lfs_catalog_set_sorting")
 
         # At the beginning there is no sorting stored
-        self.failIf(self.client.session.has_key("sorting"))
+        self.failIf("sorting" in self.client.session)
 
         # Empty string shouldn't raise an error
         self.client.post(url, {'sorting': ''})
@@ -775,13 +780,13 @@ class ViewsTestCase(TestCase):
 
         # Empty string should delete session sorting key
         self.client.post(url, {'sorting': ''})
-        self.failIf(self.client.session.has_key("sorting"))
+        self.failIf("sorting" in self.client.session)
 
     def test_category_view(self):
         """Tests whether the right template is used for products and sub
         category view of a category.
         """
-        url = reverse("lfs_category", kwargs={"slug": "category-1" })
+        url = reverse("lfs_category", kwargs={"slug": "category-1"})
         response = self.client.get(url, {'sorting': ''})
         templates = [t.name for t in response.template]
 
@@ -808,13 +813,14 @@ class ViewsTestCase(TestCase):
         url = reverse("lfs_product_dispatcher")
 
         # Add the variant to cart
-        response = self.client.post(url, {"add-to-cart" : 1, "product_id" : self.v1.id})
+        response = self.client.post(url, {"add-to-cart": 1, "product_id": self.v1.id})
 
         # Select the default variant
-        response = self.client.post(url, {"product_id" : self.p1.id})
+        response = self.client.post(url, {"product_id": self.p1.id})
 
         # Select the variant color = red
-        response = self.client.post(url, {"product_id" : self.p1.id, "property_1"  : "1" })
+        response = self.client.post(url, {"product_id": self.p1.id, "property_1": "1"})
+
 
 class DeliveryTimeTestCase(TestCase):
     """Tests attributes and methods of DeliveryTime objects.
@@ -842,8 +848,8 @@ class DeliveryTimeTestCase(TestCase):
     def test_as_days(self):
         """
         """
-        self.assertEqual(self.dm1.as_days().min, 1.0/24)
-        self.assertEqual(self.dm1.as_days().max, 3.0/24)
+        self.assertEqual(self.dm1.as_days().min, 1.0 / 24)
+        self.assertEqual(self.dm1.as_days().max, 3.0 / 24)
         self.assertEqual(self.dm2.as_days().min, 1)
         self.assertEqual(self.dm2.as_days().max, 3)
         self.assertEqual(self.dm3.as_days().min, 7)
@@ -854,10 +860,10 @@ class DeliveryTimeTestCase(TestCase):
     def test_as_weeks(self):
         """
         """
-        self.assertEqual(self.dm1.as_weeks().min, 1.0/(24*7))
-        self.assertEqual(self.dm1.as_weeks().max, 3.0/(24*7))
-        self.assertEqual(self.dm2.as_weeks().min, 1.0/7)
-        self.assertEqual(self.dm2.as_weeks().max, 3.0/7)
+        self.assertEqual(self.dm1.as_weeks().min, 1.0 / (24 * 7))
+        self.assertEqual(self.dm1.as_weeks().max, 3.0 / (24 * 7))
+        self.assertEqual(self.dm2.as_weeks().min, 1.0 / 7)
+        self.assertEqual(self.dm2.as_weeks().max, 3.0 / 7)
         self.assertEqual(self.dm3.as_weeks().min, 1)
         self.assertEqual(self.dm3.as_weeks().max, 3)
         self.assertEqual(self.dm4.as_weeks().min, 4)
@@ -866,12 +872,12 @@ class DeliveryTimeTestCase(TestCase):
     def test_as_month(self):
         """
         """
-        self.assertEqual(self.dm1.as_months().min, 1.0/(24*30))
-        self.assertEqual(self.dm1.as_months().max, 3.0/(24*30))
-        self.assertEqual(self.dm2.as_months().min, 1.0/30)
-        self.assertEqual(self.dm2.as_months().max, 3.0/30)
-        self.assertEqual(self.dm3.as_months().min, 1.0/4)
-        self.assertEqual(self.dm3.as_months().max, 3.0/4)
+        self.assertEqual(self.dm1.as_months().min, 1.0 / (24 * 30))
+        self.assertEqual(self.dm1.as_months().max, 3.0 / (24 * 30))
+        self.assertEqual(self.dm2.as_months().min, 1.0 / 30)
+        self.assertEqual(self.dm2.as_months().max, 3.0 / 30)
+        self.assertEqual(self.dm3.as_months().min, 1.0 / 4)
+        self.assertEqual(self.dm3.as_months().max, 3.0 / 4)
         self.assertEqual(self.dm4.as_months().min, 1)
         self.assertEqual(self.dm4.as_months().max, 3)
 
@@ -1115,6 +1121,7 @@ class DeliveryTimeTestCase(TestCase):
         self.assertEqual(d.max, 5)
         self.assertEqual(d.unit, DELIVERY_TIME_UNIT_MONTHS)
 
+
 class ProductTestCase(TestCase):
     """Tests attributes and methods of Products
     """
@@ -1138,10 +1145,10 @@ class ProductTestCase(TestCase):
             price=1.0,
             for_sale_price=0.5,
             stock_amount=2,
-            width = 1.0,
-            height = 2.0,
-            length = 3.0,
-            weight = 4.0,
+            width=1.0,
+            height=2.0,
+            length=3.0,
+            weight=4.0,
             active=True)
 
         # Products without properties and variants
@@ -1172,12 +1179,12 @@ class ProductTestCase(TestCase):
             meta_keywords=u"Meta keywords variant 1",
             sub_type=VARIANT,
             price=2.0,
-            for_sale_price = 1.5,
+            for_sale_price=1.5,
             parent=self.p1,
-            width = 11.0,
-            height = 12.0,
-            length = 13.0,
-            weight = 14.0,
+            width=11.0,
+            height=12.0,
+            length=13.0,
+            weight=14.0,
             active=True,
         )
 
@@ -1234,7 +1241,7 @@ class ProductTestCase(TestCase):
 
         self.assertEqual(p.name, "Product")
         self.assertEqual(p.slug, "product")
-        self.assertEqual(p.sku,  "4711")
+        self.assertEqual(p.sku, "4711")
         self.assertEqual(p.price, 42.0)
         self.assertEqual(p.effective_price, 42.0)
         self.assertEqual(p.short_description, "")
@@ -1263,7 +1270,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(p.weight, 0)
         self.assertEqual(p.height, 0)
         self.assertEqual(p.length, 0)
-        self.assertEqual(p.width , 0)
+        self.assertEqual(p.width, 0)
 
         self.assertEqual(p.tax, None)
         self.assertEqual(p.sub_type, STANDARD_PRODUCT)
@@ -1286,7 +1293,7 @@ class ProductTestCase(TestCase):
     def test_decrease_stock_amount(self):
         """Tests the decreasing of the stock amount
         """
-        # By default the stock amount is not managed by LFS and the stock 
+        # By default the stock amount is not managed by LFS and the stock
         # amount is not decrease when a product has been sold.
         self.p1.decrease_stock_amount(1)
         self.assertEqual(self.p1.stock_amount, 2)
@@ -1649,21 +1656,21 @@ class ProductTestCase(TestCase):
         """
         """
         # Test variant 1
-        option = self.v1.get_option(property_id = self.color.id)
+        option = self.v1.get_option(property_id=self.color.id)
         self.assertEqual(option, str(self.red.id))
 
-        option = self.v1.get_option(property_id = self.size.id)
+        option = self.v1.get_option(property_id=self.size.id)
         self.assertEqual(option, str(self.m.id))
 
         # Test variant 2
-        option = self.v2.get_option(property_id = self.color.id)
+        option = self.v2.get_option(property_id=self.color.id)
         self.assertEqual(option, str(self.green.id))
 
-        option = self.v2.get_option(property_id = self.size.id)
+        option = self.v2.get_option(property_id=self.size.id)
         self.assertEqual(option, str(self.l.id))
 
         # Pass a roperty id that doesn't exists
-        option = self.v1.get_option(property_id = "dummy")
+        option = self.v1.get_option(property_id="dummy")
         self.assertEqual(option, None)
 
     def test_get_variant_properties(self):
@@ -2176,6 +2183,7 @@ class ProductTestCase(TestCase):
 
         # Now we get the weight of the variant itself
         self.assertEqual(self.v1.get_weight(), 14.0)
+
 
 class ProductAccessoriesTestCase(TestCase):
     """Tests ProductAccessories (surprise, surprise).

@@ -210,7 +210,7 @@ def product_navigation(context, product):
     slug = product.slug
 
     cache_key = "%s-product-navigation-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
-    temp = None # cache.get(cache_key)
+    temp = None  # cache.get(cache_key)
 
     if temp is not None:
         try:

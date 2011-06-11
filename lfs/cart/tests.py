@@ -23,10 +23,12 @@ from lfs.voucher.models import VoucherGroup
 from lfs.voucher.settings import ABSOLUTE
 from lfs.voucher.settings import PERCENTAGE
 
+
 class CartModelsTestCase(TestCase):
     """
     """
     fixtures = ['lfs_shop.xml']
+
     def setUp(self):
         """
         """
@@ -69,6 +71,7 @@ class CartModelsTestCase(TestCase):
         items = self.cart.items()
         self.assertEqual(len(items), 2)
 
+
 class CartItemTestCase(TestCase):
     """
     """
@@ -87,10 +90,12 @@ class CartItemTestCase(TestCase):
         result = self.item.get_properties()
         self.assertEqual(result, [])
 
+
 class AddToCartTestCase(TestCase):
     """Test case for add_to_cart view.
     """
     fixtures = ['lfs_shop.xml']
+
     def setUp(self):
         """
         """
@@ -105,7 +110,7 @@ class AddToCartTestCase(TestCase):
         """Try to add product to the cart which is not active.
         """
         rf = RequestFactory()
-        request = rf.post("/", {"product_id" : self.p1.id, "quantity" : 1})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
@@ -119,7 +124,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id" : self.p1.id, "quantity" : 1})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
@@ -136,7 +141,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id" : self.p1.id, "quantity" : 2})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2})
         request.session = self.session
         request.user = self.user
 
@@ -149,7 +154,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         result = add_to_cart(request)
-        self.failIf(result.cookies.has_key("message"))
+        self.failIf("message" in result.cookies)
 
         # ... or LFS doesn't manage stock amount
         self.p1.manage_stock_amount = False
@@ -157,7 +162,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         result = add_to_cart(request)
-        self.failIf(result.cookies.has_key("message"))
+        self.failIf("message" in result.cookies)
 
     def test_add_to_cart_stock_1(self):
         """Try to add product two times to cart if only one is in stock.
@@ -169,7 +174,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id" : self.p1.id, "quantity" : 2})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2})
         request.session = self.session
         request.user = self.user
 
@@ -182,7 +187,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         result = add_to_cart(request)
-        self.failIf(result.cookies.has_key("message"))
+        self.failIf("message" in result.cookies)
 
         # ... or LFS doesn't manage stock amount
         self.p1.manage_stock_amount = False
@@ -190,7 +195,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         result = add_to_cart(request)
-        self.failIf(result.cookies.has_key("message"))
+        self.failIf("message" in result.cookies)
 
     def test_add_to_cart_stock_2(self):
         """Try to add product three times to cart if only two is in stock.
@@ -202,7 +207,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id" : self.p1.id, "quantity" : 3})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 3})
         request.session = self.session
         request.user = self.user
 
@@ -215,7 +220,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         result = add_to_cart(request)
-        self.failIf(result.cookies.has_key("message"))
+        self.failIf("message" in result.cookies)
 
         # ... or LFS doesn't manage stock amount
         self.p1.manage_stock_amount = False
@@ -223,7 +228,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         result = add_to_cart(request)
-        self.failIf(result.cookies.has_key("message"))
+        self.failIf("message" in result.cookies)
 
 
 class RefreshCartTestCase(TestCase):
@@ -243,7 +248,7 @@ class RefreshCartTestCase(TestCase):
         """Don't manage stock amount.
         """
         rf = RequestFactory()
-        request = rf.post("/", {"product_id" : self.p1.id, "quantity" : 1})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
@@ -254,7 +259,7 @@ class RefreshCartTestCase(TestCase):
         self.assertEqual(cart.amount_of_items, 1.0)
 
         # Refresh item amount
-        request = rf.post("/", {"product_id" : self.p1.id, "amount-cart-item_%s" % cart.items()[0].id : 2})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.items()[0].id: 2})
         request.session = self.session
         request.user = self.user
 
@@ -269,7 +274,7 @@ class RefreshCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id" : self.p1.id, "quantity" : 1})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
@@ -280,7 +285,7 @@ class RefreshCartTestCase(TestCase):
         self.assertEqual(cart.amount_of_items, 1.0)
 
         # Try to increase item to two, but there is only one in stock
-        request = rf.post("/", {"product_id" : self.p1.id, "amount-cart-item_%s" % cart.items()[0].id : 2})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.items()[0].id: 2})
         request.session = self.session
         request.user = self.user
 
@@ -316,7 +321,7 @@ class RefreshCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id" : self.p1.id, "quantity" : 1})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
@@ -327,7 +332,7 @@ class RefreshCartTestCase(TestCase):
         self.assertEqual(cart.amount_of_items, 1.0)
 
         # Try to increase item to two, but there is only one in stock
-        request = rf.post("/", {"product_id" : self.p1.id, "amount-cart-item_%s" % cart.items()[0].id : 2})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.items()[0].id: 2})
         request.session = self.session
         request.user = self.user
 
@@ -337,7 +342,7 @@ class RefreshCartTestCase(TestCase):
         self.assertEqual(cart.amount_of_items, 2.0)
 
         # Try to increase item to 3, but there are only 2 in stock
-        request = rf.post("/", {"product_id" : self.p1.id, "amount-cart-item_%s" % cart.items()[0].id : 3})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.items()[0].id: 3})
         request.session = self.session
         request.user = self.user
 
@@ -372,7 +377,7 @@ class RefreshCartTestCase(TestCase):
         self.p1.save()
 
         rf = RequestFactory()
-        request = rf.post("/", {"product_id" : self.p1.id, "quantity" : 1})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1})
         request.session = self.session
         request.user = self.user
 
@@ -386,7 +391,7 @@ class RefreshCartTestCase(TestCase):
         self.p1.save()
 
         # Try to increase item to two, but there is no product in stock anymore
-        request = rf.post("/", {"product_id" : self.p1.id, "amount-cart-item_%s" % cart.items()[0].id : 2})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.items()[0].id: 2})
         request.session = self.session
         request.user = self.user
 
@@ -394,6 +399,7 @@ class RefreshCartTestCase(TestCase):
         result = simplejson.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "Sorry, but 'Product 1' is not available anymore.")
         self.assertEqual(cart.amount_of_items, 0.0)
+
 
 class AddedToCartTestCase(TestCase):
     """
@@ -414,7 +420,7 @@ class AddedToCartTestCase(TestCase):
         """Add a product without quantity to cart (implicit 1)
         """
         rf = RequestFactory()
-        request = rf.post("/", {"product_id" : self.p1.id})
+        request = rf.post("/", {"product_id": self.p1.id})
         request.session = self.session
         request.user = self.user
 
@@ -432,7 +438,7 @@ class AddedToCartTestCase(TestCase):
         """Add a product with explicit quantity to cart
         """
         rf = RequestFactory()
-        request = rf.post("/", {"product_id" : self.p1.id, "quantity" : 2})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2})
         request.session = self.session
         request.user = self.user
 

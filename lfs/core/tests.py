@@ -10,6 +10,8 @@ from lfs.voucher.tests import *
 from lfs.customer.tests import *
 from lfs.checkout.tests import *
 from lfs.payment.tests import *
+from lfs.manage.tests import *
+#from lfs.core.wmtests import *
 
 # django imports
 from django.contrib.auth.models import User

@@ -50,39 +50,6 @@
         </div>
     </fieldset>
     <fieldset>
-        <legend>{% trans "Position" %}</legend>
-        <div class="field">
-            <div class="label">
-                {{ form.parent.label_tag }}:
-            </div>
-            {% if field.errors %}
-                <div class="error">
-                    {{ form.parent }}
-                    {{ form.parent.errors }}
-                </div>
-            {% else %}
-                <div>
-                    {{ form.parent }}
-                </div>
-            {% endif %}
-        </div>
-        <div class="field">
-            <div class="label">
-                {{ form.position.label_tag }}:
-            </div>
-            {% if field.errors %}
-                <div class="error">
-                    {{ form.position }}
-                    {{ form.position.errors }}
-                </div>
-            {% else %}
-                <div>
-                    {{ form.position }}
-                </div>
-            {% endif %}
-        </div>
-    </fieldset>
-    <fieldset>
         <legend>{% trans "Content" %}</legend>
             <div class="field">
                 <div class="label">
