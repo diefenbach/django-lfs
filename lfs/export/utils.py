@@ -7,6 +7,7 @@ from lfs.export.settings import CATEGORY_VARIANTS_DEFAULT
 from lfs.export.settings import CATEGORY_VARIANTS_CHEAPEST
 from lfs.export.settings import CATEGORY_VARIANTS_ALL
 
+
 def register(method, name):
     """Registers a new export logic.
     """
@@ -23,6 +24,7 @@ def register(method, name):
     except:
         # Fail silently
         pass
+
 
 def get_variants_option(export, product):
     """Returns the variants option for given category or None.
@@ -42,13 +44,14 @@ def get_variants_option(export, product):
             return category_option.variants_option
     return None
 
+
 def get_variants(product, export):
     """Returns the variants for given product and export.
     """
     variants_option = get_variants_option(export, product)
     if variants_option is None:
         variants_option = export.variants_option
-    
+
     if variants_option == CATEGORY_VARIANTS_DEFAULT:
         if product.get_default_variant():
             return [product.get_default_variant()]

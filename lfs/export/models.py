@@ -9,6 +9,7 @@ from lfs.catalog.models import Product
 from lfs.export.settings import CATEGORY_VARIANTS_CHOICES
 from lfs.export.settings import CATEGORY_VARIANTS_DEFAULT
 
+
 class Export(models.Model):
     """An export of products.
     """
@@ -29,7 +30,7 @@ class Export(models.Model):
         """
         """
         return reverse(
-            "lfs_export", kwargs={ "export_id" : self.id })
+            "lfs_export", kwargs={"export_id": self.id})
 
     def get_products(self):
         """Returns selected products. Takes variant options into account.
@@ -47,6 +48,7 @@ class Export(models.Model):
 
         return products
 
+
 class Script(models.Model):
     """Represents an export script for an Export
     """
@@ -61,9 +63,10 @@ class Script(models.Model):
         ordering = ("name", )
         unique_together = ("module", "method")
 
+
 class CategoryOption(models.Model):
     """Stores options for categories.
     """
-    category = models.ForeignKey(Category, verbose_name = _(u"Category"))
-    export = models.ForeignKey(Export, verbose_name = _(u"Export"))
+    category = models.ForeignKey(Category, verbose_name=_(u"Category"))
+    export = models.ForeignKey(Export, verbose_name=_(u"Export"))
     variants_option = models.PositiveSmallIntegerField(_(u"Variant"), choices=CATEGORY_VARIANTS_CHOICES)

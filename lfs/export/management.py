@@ -7,9 +7,9 @@ from lfs.export.generic import export as export_script
 from lfs.export.models import Script
 import lfs
 
+
 def register_lfs_scripts(sender, **kwargs):
-    # don't register our scripts until the table has been created by syncdb    
+    # don't register our scripts until the table has been created by syncdb
     if sender == lfs.export.models:
         register(export_script, "Generic")
-
 post_syncdb.connect(register_lfs_scripts)
