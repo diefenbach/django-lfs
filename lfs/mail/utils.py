@@ -19,17 +19,18 @@ def send_order_sent_mail(order):
     bcc = shop.get_notification_emails()
 
     # text
-    text = render_to_string("lfs/mail/order_sent_mail.txt", {"order" : order})
+    text = render_to_string("lfs/mail/order_sent_mail.txt", {"order": order})
     mail = EmailMultiAlternatives(
         subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
 
     # html
     html = render_to_string("lfs/mail/order_sent_mail.html", {
-        "order" : order
+        "order": order
     })
 
     mail.attach_alternative(html, "text/html")
     mail.send(fail_silently=True)
+
 
 def send_order_received_mail(order):
     """Sends an order received mail to the shop customer.
@@ -45,17 +46,18 @@ def send_order_received_mail(order):
     bcc = shop.get_notification_emails()
 
     # text
-    text = render_to_string("lfs/mail/order_received_mail.txt", {"order" : order})
+    text = render_to_string("lfs/mail/order_received_mail.txt", {"order": order})
     mail = EmailMultiAlternatives(
         subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
 
     # html
     html = render_to_string("lfs/mail/order_received_mail.html", {
-        "order" : order
+        "order": order
     })
 
     mail.attach_alternative(html, "text/html")
     mail.send(fail_silently=True)
+
 
 def send_customer_added(user):
     """Sends a mail to a newly registered user.
@@ -70,22 +72,23 @@ def send_customer_added(user):
 
     # text
     text = render_to_string("lfs/mail/new_user_mail.txt", {
-        "user" : user, "shop" : shop})
-    
-    # subject    
+        "user": user, "shop": shop})
+
+    # subject
     subject = render_to_string("lfs/mail/new_user_mail_subject.txt", {
-        "user" : user, "shop" : shop})
-    
+        "user": user, "shop": shop})
+
     mail = EmailMultiAlternatives(
         subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
 
     # html
     html = render_to_string("lfs/mail/new_user_mail.html", {
-        "user" : user, "shop" : shop,
+        "user": user, "shop": shop,
     })
 
     mail.attach_alternative(html, "text/html")
     mail.send(fail_silently=True)
+
 
 def send_review_added(review):
     """Sends a mail to shop admins that a new review has been added
@@ -102,8 +105,8 @@ def send_review_added(review):
 
     # text
     text = render_to_string("lfs/mail/review_added_mail.txt", {
-        "review" : review,
-        "product" : product,
+        "review": review,
+        "product": product,
     })
 
     mail = EmailMultiAlternatives(
@@ -111,9 +114,9 @@ def send_review_added(review):
 
     # html
     html = render_to_string("lfs/mail/review_added_mail.html", {
-        "site" : "http://%s" % Site.objects.get(id=settings.SITE_ID),
-        "review" : review,
-        "product" : product,
+        "site": "http://%s" % Site.objects.get(id=settings.SITE_ID),
+        "review": review,
+        "product": product,
     })
 
     mail.attach_alternative(html, "text/html")
