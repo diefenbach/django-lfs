@@ -965,7 +965,7 @@ class Product(models.Model):
     def get_price(self, with_properties=True):
         request = None
         pc = self.get_price_calculator(request)
-        return pc.get_price_gross(with_properties)
+        return pc.get_price(with_properties)
         
 
     def get_standard_price(self, with_properties=True):

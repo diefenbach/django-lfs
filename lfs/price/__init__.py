@@ -25,4 +25,7 @@ class PriceCalculator(object):
         raise NotImplementedError
 
     def get_price_net(self):
-        pass
+        raise NotImplementedError
+
+    def prices_includes_tax(self):
+        raise NotImplementedError

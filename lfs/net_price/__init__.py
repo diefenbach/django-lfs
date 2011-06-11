@@ -1,12 +1,10 @@
 from lfs.price import PriceCalculator
 
 
-class GrossPriceCalculator(PriceCalculator):
-
+class NetPriceCalculator(PriceCalculator):
 
     def get_price(self, with_properties=True):
-        return self.get_price_gross(with_properties)
-
+        return self.get_price_net()
 
     def get_standard_price(self, with_properties=True):
         """Returns always the standard price for the product. Independent
@@ -111,7 +109,7 @@ class GrossPriceCalculator(PriceCalculator):
         """Returns the real net price of the product. Takes care whether the
         product is for sale.
         """
-        return self.product.get_price_gross() - self.product.get_tax()
+        return self.product.price
 
     def price_includes_tax(self):
         return True
