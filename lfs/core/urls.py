@@ -102,14 +102,14 @@ urlpatterns += patterns('',
     (r'^tagging/', include('lfs.tagging.urls')),
 )
 
-# Piston API
-urlpatterns += patterns('',
-    (r'^api/', include('lfs.core.api.urls')),
-)
-
-# Catalog django rest framework API
+# Catalog REST API
 urlpatterns += patterns('',
     (r'^catalog/api/', include('lfs.catalog.api.urls')),
+)
+
+# Manage REST API
+urlpatterns += patterns('',
+    (r'^manage/api/', include('lfs.manage.api.urls')),
 )
 
 urlpatterns += patterns('',

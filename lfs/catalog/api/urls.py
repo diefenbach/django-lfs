@@ -1,14 +1,6 @@
 from django.conf.urls.defaults import patterns, url
-from djangorestframework.resources import ModelResource
 from djangorestframework.views import ListOrCreateModelView, InstanceModelView
-from lfs.catalog.models import Product
-
-class ProductResource(ModelResource):
-    """
-    A Rest representation of an LFS Product
-    """
-    model = Product
-    #fields = ['active]
+from handlers import ProductResource
 
 urlpatterns = patterns('',
     url(r'^products/$', ListOrCreateModelView.as_view(resource=ProductResource)),
