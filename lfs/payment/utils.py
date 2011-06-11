@@ -17,6 +17,7 @@ from lfs.payment.settings import PAYPAL
 # other imports
 from paypal.standard.conf import POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT
 
+
 def update_to_valid_payment_method(request, customer, save=False):
     """After this method has been called the given customer has a valid
     payment method.
@@ -28,6 +29,7 @@ def update_to_valid_payment_method(request, customer, save=False):
         if save:
             customer.save()
 
+
 def get_valid_payment_methods(request):
     """Returns all valid payment methods (aka. selectable) for given request as
     list.
@@ -38,11 +40,13 @@ def get_valid_payment_methods(request):
             result.append(pm)
     return result
 
+
 def get_default_payment_method(request):
     """Returns the default payment method for given request.
     """
     active_payment_methods = PaymentMethod.objects.filter(active=True)
     return criteria_utils.get_first_valid(request, active_payment_methods)
+
 
 def get_selected_payment_method(request):
     """Returns the selected payment method for given request. This could either
@@ -55,13 +59,14 @@ def get_selected_payment_method(request):
     else:
         return get_default_payment_method(request)
 
+
 def get_payment_costs(request, payment_method):
     """Returns the payment price and tax for the given request.
     """
     if payment_method is None:
         return {
-            "price" : 0.0,
-            "tax" : 0.0
+            "price": 0.0,
+            "tax": 0.0
         }
 
     try:
@@ -74,19 +79,20 @@ def get_payment_costs(request, payment_method):
 
     if price is None:
         price = payment_method.price
-        tax = (tax_rate/(tax_rate+100)) * price
+        tax = (tax_rate / (tax_rate + 100)) * price
 
         return {
-            "price" : price,
-            "tax" : tax
+            "price": price,
+            "tax": tax
         }
     else:
-        tax = (tax_rate/(tax_rate+100)) * price.price
+        tax = (tax_rate / (tax_rate + 100)) * price.price
 
         return {
-            "price" : price.price,
-            "tax" : tax
+            "price": price.price,
+            "tax": tax
         }
+
 
 def process_payment(request):
     """Processes the payment depending on the selected payment method. Returns
@@ -97,36 +103,37 @@ def process_payment(request):
     shop = lfs.core.utils.get_default_shop()
 
     if payment_method.module:
-         module = lfs.core.utils.import_module(payment_method.module + ".views")
-         result = module.process(request)
-         if result["accepted"] == True:
-             order = lfs.order.utils.add_order(request)
-             # TODO: this has to be returned from the module
-             order.state = PAID
-             order.save()
-             order_submitted.send({"order" : order, "request" : request})
-         return result
+        module = lfs.core.utils.import_module(payment_method.module + ".views")
+        result = module.process(request)
+        if result["accepted"] == True:
+            order = lfs.order.utils.add_order(request)
+            # TODO: this has to be returned from the module
+            order.state = PAID
+            order.save()
+            order_submitted.send({"order": order, "request": request})
+        return result
 
     elif payment_method.id == PAYPAL:
         order = lfs.order.utils.add_order(request)
-        if order: # if we have no cart then the order will be None
-            order_submitted.send({"order" : order, "request" : request})
+        if order:  # if we have no cart then the order will be None
+            order_submitted.send({"order": order, "request": request})
             if settings.LFS_PAYPAL_REDIRECT:
                 return {
-                    "accepted" : True,
-                    "next-url" : order.get_pay_link(),
+                    "accepted": True,
+                    "next-url": order.get_pay_link(),
                 }
         return {
-            "accepted" : True,
-            "next-url" : reverse("lfs_thank_you"),
+            "accepted": True,
+            "next-url": reverse("lfs_thank_you"),
         }
     else:
         order = lfs.order.utils.add_order(request)
-        order_submitted.send({"order" : order, "request" : request})
+        order_submitted.send({"order": order, "request": request})
         return {
-            "accepted" : True,
-            "next-url" : reverse("lfs_thank_you"),
+            "accepted": True,
+            "next-url": reverse("lfs_thank_you"),
         }
+
 
 def get_next_url(payment_method, order):
     """Creates the next url for the passed payment method and order.
@@ -141,6 +148,7 @@ def get_next_url(payment_method, order):
             return None
     else:
         return None
+
 
 def get_pay_link(payment_method, order):
     """Creates a pay link for the passed payment_method and order.
@@ -159,6 +167,7 @@ def get_pay_link(payment_method, order):
     else:
         return ""
 
+
 def get_paypal_link_for_order(order):
     """Creates paypal link for given order.
     """
@@ -166,25 +175,25 @@ def get_paypal_link_for_order(order):
     current_site = Site.objects.get(id=settings.SITE_ID)
 
     info = {
-        "cmd" : "_xclick",
-        "upload" : "1",
-        "business" : settings.PAYPAL_RECEIVER_EMAIL,
-        "currency_code" : shop.default_currency,
-        "notify_url" : "http://" + current_site.domain + reverse('paypal-ipn'),
-        "return" : "http://" + current_site.domain + reverse('paypal-pdt'),
-        "first_name" : order.invoice_firstname,
-        "last_name" : order.invoice_lastname,
-        "address1" : order.invoice_line1,
-        "address2" : order.invoice_line2,
-        "city" : order.invoice_city,
-        "state" : order.invoice_state,
-        "zip" : order.invoice_code,
-        "no_shipping" : "1",
+        "cmd": "_xclick",
+        "upload": "1",
+        "business": settings.PAYPAL_RECEIVER_EMAIL,
+        "currency_code": shop.default_currency,
+        "notify_url": "http://" + current_site.domain + reverse('paypal-ipn'),
+        "return": "http://" + current_site.domain + reverse('paypal-pdt'),
+        "first_name": order.invoice_firstname,
+        "last_name": order.invoice_lastname,
+        "address1": order.invoice_line1,
+        "address2": order.invoice_line2,
+        "city": order.invoice_city,
+        "state": order.invoice_state,
+        "zip": order.invoice_code,
+        "no_shipping": "1",
         "custom": order.uuid,
         "invoice": order.uuid,
-        "item_name" : shop.shop_owner,
-        "amount" : "%.2f" % (order.price - order.tax),
-        "tax" : "%.2f" % order.tax,
+        "item_name": shop.shop_owner,
+        "amount": "%.2f" % (order.price - order.tax),
+        "tax": "%.2f" % order.tax,
     }
 
     parameters = "&".join(["%s=%s" % (k, v) for (k, v) in info.items()])
