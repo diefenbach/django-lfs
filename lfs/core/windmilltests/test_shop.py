@@ -6,7 +6,7 @@ def setup_module(module):
 
 def test_recordingSuite0():
     client = WindmillTestClient(__name__)
-    client.type(text=u'Search stuff', id=u'id_search')
+    client.type(text=u'Search stuff', id=u'search_input')
     return
 
 def teardown_module(module):
