@@ -11,6 +11,7 @@ from portlets.models import Portlet
 # lfs imports
 from lfs.page.models import Page
 
+
 class PagesPortlet(Portlet):
     """Portlet to display pages.
     """
@@ -25,19 +26,20 @@ class PagesPortlet(Portlet):
         """
         request = context.get("request")
 
-        cache_key = "%s-pages"%settings.CACHE_MIDDLEWARE_KEY_PREFIX
+        cache_key = "%s-pages" % settings.CACHE_MIDDLEWARE_KEY_PREFIX
         pages = cache.get(cache_key)
         if pages is None:
             pages = Page.objects.filter(active=True, exclude_from_navigation=False)
             cache.set(cache_key, pages)
 
         return render_to_string("lfs/portlets/pages.html", RequestContext(request, {
-            "title" : self.title,
-            "pages" : pages,
+            "title": self.title,
+            "pages": pages,
         }))
 
     def form(self, **kwargs):
         return PagesForm(instance=self, **kwargs)
+
 
 class PagesForm(forms.ModelForm):
     """Form for the PagesPortlet.

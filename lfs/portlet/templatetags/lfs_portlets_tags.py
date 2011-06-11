@@ -19,6 +19,7 @@ from lfs.portlet.models import TopsellerPortlet
 
 register = template.Library()
 
+
 # TODO: Make a better reuse of django-portlets portlet slot
 @register.inclusion_tag('portlets/portlet_slot.html', takes_context=True)
 def lfs_portlet_slot(context, slot_name):
@@ -37,7 +38,7 @@ def lfs_portlet_slot(context, slot_name):
         try:
             slot = Slot.objects.get(name=slot_name)
         except Slot.DoesNotExist:
-            return { "portlets" : [] }
+            return {"portlets": []}
 
         # Get portlets for given instance
         temp = portlets.utils.get_portlets(instance, slot)
@@ -75,7 +76,8 @@ def lfs_portlet_slot(context, slot_name):
     for portlet in temp:
         rendered_portlets.append(portlet.render(context))
 
-    return { "portlets" : rendered_portlets }
+    return {"portlets": rendered_portlets}
+
 
 # Inclusion tags to render portlets. This can be used if one wants to display
 # portlets without the possibility to manage them via the UI.
@@ -90,8 +92,9 @@ def lfs_cart_portlet(context, title=None):
     portlet.title = title
 
     return {
-        "html" : portlet.render(context)
+        "html": portlet.render(context)
     }
+
 
 @register.inclusion_tag('lfs/portlets/portlet.html', takes_context=True)
 def lfs_categories_portlet(context, title=None):
@@ -104,8 +107,9 @@ def lfs_categories_portlet(context, title=None):
     portlet.title = title
 
     return {
-        "html" : portlet.render(context)
+        "html": portlet.render(context)
     }
+
 
 @register.inclusion_tag('lfs/portlets/portlet.html', takes_context=True)
 def lfs_pages_portlet(context, title=None):
@@ -118,8 +122,9 @@ def lfs_pages_portlet(context, title=None):
     portlet.title = title
 
     return {
-        "html" : portlet.render(context)
+        "html": portlet.render(context)
     }
+
 
 @register.inclusion_tag('lfs/portlets/portlet.html', takes_context=True)
 def lfs_recent_products_portlet(context, title=None):
@@ -132,8 +137,9 @@ def lfs_recent_products_portlet(context, title=None):
     portlet.title = title
 
     return {
-        "html" : portlet.render(context)
+        "html": portlet.render(context)
     }
+
 
 @register.inclusion_tag('lfs/portlets/portlet.html', takes_context=True)
 def lfs_related_products_portlet(context, title=None):
@@ -146,8 +152,9 @@ def lfs_related_products_portlet(context, title=None):
     portlet.title = title
 
     return {
-        "html" : portlet.render(context)
+        "html": portlet.render(context)
     }
+
 
 @register.inclusion_tag('lfs/portlets/portlet.html', takes_context=True)
 def lfs_topseller_portlet(context, title=None, limit=5):
@@ -161,5 +168,5 @@ def lfs_topseller_portlet(context, title=None, limit=5):
     portlet.limit = limit
 
     return {
-        "html" : portlet.render(context)
+        "html": portlet.render(context)
     }

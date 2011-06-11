@@ -7,20 +7,21 @@ from django.template.loader import render_to_string
 from portlets.models import Portlet
 from portlets.utils import register_portlet
 
+
 class CartPortlet(Portlet):
     """Portlet to display the cart.
     """
     class Meta:
         app_label = 'portlet'
-    
+
     def __unicode__(self):
         return "%s" % self.id
-        
+
     def render(self, context):
         """Renders the portlet as html.
-        """         
+        """
         import lfs.cart.utils
-        
+
         request = context.get("request")
         cart = lfs.cart.utils.get_cart(request)
         if cart is None:
@@ -29,16 +30,17 @@ class CartPortlet(Portlet):
         else:
             amount_of_items = cart.amount_of_items
             price = lfs.cart.utils.get_cart_price(request, cart, total=True)
-        
+
         return render_to_string("lfs/portlets/cart.html", RequestContext(request, {
-            "title" : self.title,
-            "amount_of_items" : amount_of_items,
-            "price" : price,
+            "title": self.title,
+            "amount_of_items": amount_of_items,
+            "price": price,
         }))
-        
+
     def form(self, **kwargs):
         return CartPortletForm(instance=self, **kwargs)
-        
+
+
 class CartPortletForm(forms.ModelForm):
     """Form for CartPortlet.
     """

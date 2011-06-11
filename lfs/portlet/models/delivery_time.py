@@ -9,6 +9,7 @@ from portlets.models import Portlet
 # shipping imports
 import lfs.shipping.utils
 
+
 class DeliveryTimePortlet(Portlet):
     """Portlet to display delivery time.
     """
@@ -26,21 +27,22 @@ class DeliveryTimePortlet(Portlet):
 
         if product is None:
             d = {
-                "display" : False,
+                "display": False,
             }
         else:
             info = lfs.shipping.utils.get_delivery_time(request, product)
             d = {
-                "display" : True,
-                "title" : self.title,
-                "deliverable" : info["deliverable"],
-                "delivery_time" : info["delivery_time"],
+                "display": True,
+                "title": self.title,
+                "deliverable": info["deliverable"],
+                "delivery_time": info["delivery_time"],
             }
 
         return render_to_string("lfs/portlets/delivery_time.html", RequestContext(request, d))
 
     def form(self, **kwargs):
         return DeliveryTimeForm(instance=self, **kwargs)
+
 
 class DeliveryTimeForm(forms.ModelForm):
     """

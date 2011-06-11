@@ -12,6 +12,7 @@ from portlets.models import Portlet
 # lfs imports
 import lfs.core.utils
 
+
 class CategoriesPortlet(Portlet):
     """Portlet to display categories.
     """
@@ -33,12 +34,12 @@ class CategoriesPortlet(Portlet):
         product = context.get("product")
         category = context.get("category")
         object = category or product
-        
+
         if object is None:
             object_id = None
         else:
             object_id = object.id
-        
+
         cache_key = "%s-categories-portlet-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, object.__class__.__name__, object_id)
         result = cache.get(cache_key)
         if result is not None:
@@ -51,10 +52,10 @@ class CategoriesPortlet(Portlet):
         category_tree = ct.get_category_tree()
 
         result = render_to_string("lfs/portlets/categories.html", RequestContext(request, {
-            "title" : self.title,
-            "categories" : category_tree,
-            "product" : product,
-            "category" : category,
+            "title": self.title,
+            "categories": category_tree,
+            "product": product,
+            "category": category,
         }))
 
         cache.set(cache_key, result)
@@ -62,6 +63,7 @@ class CategoriesPortlet(Portlet):
 
     def form(self, **kwargs):
         return CategoriesPortletForm(instance=self, **kwargs)
+
 
 class CategoriesPortletForm(forms.ModelForm):
     """Form for CategoriesPortlet.

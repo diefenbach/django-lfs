@@ -25,8 +25,8 @@ class TextPortlet(Portlet):
         """
         request = context.get("request")
         return render_to_string("lfs/portlets/text_portlet.html", RequestContext(request, {
-            "title" : self.title,
-            "text" : self.text
+            "title": self.title,
+            "text": self.text
         }))
 
     def form(self, **kwargs):

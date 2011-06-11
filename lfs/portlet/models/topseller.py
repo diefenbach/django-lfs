@@ -41,12 +41,13 @@ class TopsellerPortlet(Portlet):
                 object, self.limit)
 
         return render_to_string("lfs/portlets/topseller.html", RequestContext(request, {
-            "title" : self.title,
-            "topseller" : topseller,
+            "title": self.title,
+            "topseller": topseller,
         }))
 
     def form(self, **kwargs):
         return TopsellerForm(instance=self, **kwargs)
+
 
 class TopsellerForm(forms.ModelForm):
     """Form for the TopsellerPortlet.

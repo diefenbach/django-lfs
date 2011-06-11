@@ -9,6 +9,7 @@ from portlets.models import Portlet
 # reviews imports
 import reviews.utils
 
+
 class AverageRatingPortlet(Portlet):
     """Portlet to display the average rating for a product.
     """
@@ -26,19 +27,20 @@ class AverageRatingPortlet(Portlet):
 
         if product is None:
             d = {
-                "average" : False,
+                "average": False,
             }
         else:
             average, amount = reviews.utils.get_average_for_instance(product)
 
         return render_to_string("lfs/portlets/average_rating.html", RequestContext(request, {
-            "title" : self.title,
-            "average" : average,
-            "amount" : amount,
+            "title": self.title,
+            "average": average,
+            "amount": amount,
         }))
 
     def form(self, **kwargs):
         return AverageRatingForm(instance=self, **kwargs)
+
 
 class AverageRatingForm(forms.ModelForm):
     """Form for the AverageRatingPortlet.

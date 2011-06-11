@@ -12,6 +12,7 @@ from portlets.models import Portlet
 from lfs.catalog.models import Product
 from lfs.caching.utils import lfs_get_object
 
+
 class RecentProductsPortlet(Portlet):
     """Portlet to display recent visited products.
     """
@@ -24,7 +25,7 @@ class RecentProductsPortlet(Portlet):
     def render(self, context):
         """Renders the portlet as html.
         """
-        object = context.get("product")        
+        object = context.get("product")
         slug_not_to_display = ""
         limit = settings.LFS_RECENT_PRODUCTS_LIMIT
         if object:
@@ -45,12 +46,13 @@ class RecentProductsPortlet(Portlet):
             products.append(product)
 
         return render_to_string("lfs/portlets/recent_products.html", RequestContext(request, {
-            "title" : self.title,
-            "products" : products,
+            "title": self.title,
+            "products": products,
         }))
 
     def form(self, **kwargs):
         return RecentProductsForm(instance=self, **kwargs)
+
 
 class RecentProductsForm(forms.ModelForm):
     """Form for the RecentProductsPortlet.

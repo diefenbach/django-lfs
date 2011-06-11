@@ -17,6 +17,7 @@ from models import TopsellerPortlet
 import portlets
 from portlets.utils import register_portlet
 
+
 def register_lfs_portlets(sender, **kwargs):
     # don't register our portlets until the table has been created by syncdb
     if sender == portlets.models:

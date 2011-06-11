@@ -11,6 +11,7 @@ from portlets.models import Portlet
 # lfs imports
 import lfs.catalog.utils
 
+
 class FilterPortlet(Portlet):
     """A portlet to display filters.
     """
@@ -32,9 +33,9 @@ class FilterPortlet(Portlet):
         category = context.get("category")
         if category is None:
             return render_to_string("lfs/portlets/filter.html", {
-                "show" : False,
+                "show": False,
             })
-        
+
         # get saved filters
         set_product_filters = request.session.get("product-filter", {})
         set_product_filters = set_product_filters.items()
@@ -47,7 +48,7 @@ class FilterPortlet(Portlet):
         else:
             product_filters = None
 
-        # calculate price filters        
+        # calculate price filters
         if self.show_price_filters:
             price_filters = lfs.catalog.utils.get_price_filters(category,
                 set_product_filters, set_price_filters)
@@ -55,18 +56,19 @@ class FilterPortlet(Portlet):
             price_filters = None
 
         return render_to_string("lfs/portlets/filter.html", RequestContext(request, {
-            "show" : True,
-            "title" : self.title,
-            "category" : category,
-            "show_product_filters" : self.show_product_filters,
-            "product_filters" : product_filters,
-            "set_price_filters" : set_price_filters,
-            "show_price_filters" : self.show_price_filters,
-            "price_filters" : price_filters,
+            "show": True,
+            "title": self.title,
+            "category": category,
+            "show_product_filters": self.show_product_filters,
+            "product_filters": product_filters,
+            "set_price_filters": set_price_filters,
+            "show_price_filters": self.show_price_filters,
+            "price_filters": price_filters,
         }))
 
     def form(self, **kwargs):
         return FilterPortletForm(instance=self, **kwargs)
+
 
 class FilterPortletForm(forms.ModelForm):
     """Form for the FilterPortlet.
