@@ -100,7 +100,7 @@ class AddressTestCase(TestCase):
         self.assertEqual(logged_in, True)
 
         address_response = self.c.get(reverse('lfs_my_addresses'))
-        self.dump_response(address_response)
+        #self.dump_response(address_response)
         self.assertContains(address_response, 'Smallville', status_code=200)
         self.assertContains(address_response, 'Gotham City', status_code=200)
         
