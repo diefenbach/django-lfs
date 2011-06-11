@@ -1,8 +1,10 @@
-from lfs.price import PriceCalculator
+import re
 
+from lfs.price import PriceCalculator
+from lfs.catalog.settings import VARIANT
+from lfs.catalog.models import ProductPropertyValue
 
 class GrossPriceCalculator(PriceCalculator):
-
 
     def get_price(self, with_properties=True):
         return self.get_price_gross(with_properties)
@@ -107,7 +109,7 @@ class GrossPriceCalculator(PriceCalculator):
 
         return mult * price
 
-    def get_price_net(self):
+    def get_price_net(self, with_properties=True):
         """Returns the real net price of the product. Takes care whether the
         product is for sale.
         """
@@ -115,4 +117,24 @@ class GrossPriceCalculator(PriceCalculator):
 
     def price_includes_tax(self):
         return True
+
+    def get_tax_rate(self):
+        """Returns the tax rate of the product.
+        """
+        if self.product.sub_type == VARIANT:
+            if self.product.parent.tax is None:
+                return 0.0
+            else:
+                return self.product.parent.tax.rate
+        else:
+            if self.product.tax is None:
+                return 0.0
+            else:
+                return self.product.tax.rate
+
+    def get_tax(self):
+        """Returns the absolute tax of the product.
+        """
+        tax_rate = self.get_tax_rate()
+        return (tax_rate / (tax_rate + 100)) * self.get_price_gross()
 

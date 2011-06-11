@@ -5,6 +5,7 @@ from django.test import TestCase
 
 # lfs imports
 import lfs.catalog.utils
+import lfs.core.settings as lfs_settings
 from lfs.core.signals import property_type_changed
 from lfs.catalog.settings import ACTIVE_FOR_SALE_YES
 from lfs.catalog.settings import ACTIVE_FOR_SALE_STANDARD
@@ -46,6 +47,10 @@ class GrossPriceTestCase(TestCase):
     def setUp(self):
         """
         """
+        # set up our price calculator
+        self.orig_price_calculator = lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR
+        lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR = "lfs.gross_price.GrossPriceCalculator"
+        
         # Create a tax
         self.t1 = Tax.objects.create(rate=19.0)
 
@@ -91,6 +96,8 @@ class GrossPriceTestCase(TestCase):
             active=True,
         )
 
+    def tearDown(self):
+        lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR = self.orig_price_calculator
 
     def test_defaults(self):
         """Tests the default value after a product has been created

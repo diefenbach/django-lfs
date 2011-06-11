@@ -1019,10 +1019,10 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.calculate_price(price)
 
-    def get_price_net(self):
+    def get_price_net(self, with_properties=True):
         request = None
         pc = self.get_price_calculator(request)
-        return pc.get_price_net()
+        return pc.get_price_net(with_properties)
 
     def get_global_properties(self):
         """Returns all global properties for the product.
@@ -1088,22 +1088,16 @@ class Product(models.Model):
     def get_tax_rate(self):
         """Returns the tax rate of the product.
         """
-        if self.sub_type == VARIANT:
-            if self.parent.tax is None:
-                return 0.0
-            else:
-                return self.parent.tax.rate
-        else:
-            if self.tax is None:
-                return 0.0
-            else:
-                return self.tax.rate
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.get_tax_rate()
 
     def get_tax(self):
         """Returns the absolute tax of the product.
         """
-        tax_rate = self.get_tax_rate()
-        return (tax_rate / (tax_rate + 100)) * self.get_price_gross()
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.get_tax()
 
     def has_related_products(self):
         """Returns True if the product has related products.

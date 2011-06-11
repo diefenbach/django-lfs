@@ -12,6 +12,7 @@ from lfs.checkout.tests import *
 from lfs.payment.tests import *
 from lfs.manage.tests import *
 from lfs.gross_price.tests import *
+from lfs.net_price.tests import *
 #from lfs.core.wmtests import *
 
 # django imports

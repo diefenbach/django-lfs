@@ -15,7 +15,7 @@ class PriceCalculator(object):
     def get_for_sale_price(self):
         raise NotImplementedError
 
-    def get_price_gross(self):
+    def get_price_gross(self, with_properties=True):
         raise NotImplementedError
 
     def get_price_with_unit(self):
@@ -24,8 +24,14 @@ class PriceCalculator(object):
     def calculate_price(self, price):
         raise NotImplementedError
 
-    def get_price_net(self):
+    def get_price_net(self, with_properties=True):
         raise NotImplementedError
 
     def prices_includes_tax(self):
+        raise NotImplementedError
+
+    def get_tax_rate(self):
+        raise NotImplementedError
+
+    def get_tax(self):
         raise NotImplementedError
