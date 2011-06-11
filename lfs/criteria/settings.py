@@ -12,15 +12,15 @@ IS_NOT = 11
 IS_VALID = 12
 IS_NOT_VALID = 13
 
-NUMBER_OPERATORS = ( 
+NUMBER_OPERATORS = (
     (EQUAL, _(u"Equal to")),
     (LESS_THAN, _(u"Less than")),
-    (LESS_THAN_EQUAL, _(u"Less than or equal to")),    
+    (LESS_THAN_EQUAL, _(u"Less than or equal to")),
     (GREATER_THAN, _(u"Greater than")),
     (GREATER_THAN_EQUAL, _(u"Greater than or equal to")),
 )
 
-STRING_OPERATORS = ( 
+STRING_OPERATORS = (
     (EQUAL, _(u"Equal to")),
     (CONTAIN, _(u"Contain")),
 )
