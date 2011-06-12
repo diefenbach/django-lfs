@@ -447,12 +447,9 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
         recent = recent[:settings.LFS_RECENT_PRODUCTS_LIMIT + 1]
     request.session["RECENT_PRODUCTS"] = recent
 
-    # TODO: Factor top_category out to a inclusion tag, so that people can
-    # omit if they don't need it.
     result = render_to_response(template_name, RequestContext(request, {
         "product_inline": product_inline(request, product.id),
         "product": product,
-        "top_category": lfs.catalog.utils.get_current_top_category(request, product),
     }))
 
     return result
