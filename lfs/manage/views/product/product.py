@@ -566,14 +566,8 @@ def set_filters(request):
 def set_products_page(request):
     """Sets the displayed product page.
     """
-    try:
-        product_filters = request.session.get("product_filters", {})
-        amount = int(product_filters.get("amount", 25))
-    except TypeError:
-        amount = 25
-
     products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, amount)
+    paginator = Paginator(products, 20)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     html = (
