@@ -738,6 +738,97 @@ class CategoryTestCase(TestCase):
         self.assertEqual(len(product_ids), 2)
         self.assertEqual(product_ids, [self.p2.id, self.p3.id])
 
+    def test_get_all_children(self):
+        """
+        """
+        children_names = [c.name for c in self.c1.get_all_children()]
+        self.assertEqual(children_names, [u"Category 11", u"Category 111", u"Category 12"])
+
+        children_names = [c.name for c in self.c11.get_all_children()]
+        self.assertEqual(children_names, [u"Category 111"])
+
+        children_names = [c.name for c in self.c111.get_children()]
+        self.assertEqual(children_names, [])
+
+        children_names = [c.name for c in self.c12.get_children()]
+        self.assertEqual(children_names, [])
+
+    def test_get_children(self):
+        """
+        """
+        children_names = [c.name for c in self.c1.get_children()]
+        self.assertEqual(children_names, [u"Category 11", u"Category 12"])
+
+        children_names = [c.name for c in self.c11.get_children()]
+        self.assertEqual(children_names, [u"Category 111"])
+
+        children_names = [c.name for c in self.c111.get_children()]
+        self.assertEqual(children_names, [])
+
+        children_names = [c.name for c in self.c12.get_children()]
+        self.assertEqual(children_names, [])
+
+    def test_get_format_info(self):
+        """
+        """
+        # format informations are inherited from shop default values
+        self.assertEqual(self.c1.active_formats, False)
+        self.assertEqual({'category_cols': 3, 'product_cols': 3, 'product_rows': 3}, self.c1.get_format_info())
+
+        # Add new format informations to c1
+        self.c1.category_cols = 11
+        self.c1.product_cols = 22
+        self.c1.product_rows = 33
+        self.c1.save()
+
+        # But c1 still inherits from shop as active_formats is False by default
+        self.assertEqual({'category_cols': 3, 'product_cols': 3, 'product_rows': 3}, self.c1.get_format_info())
+
+        # Set active_formats to True
+        self.c1.active_formats = True
+        self.c1.save()
+
+        # c1 has it own formats now
+        self.assertEqual(self.c1.active_formats, True)
+        self.assertEqual({'category_cols': 11, 'product_cols': 22, 'product_rows': 33}, self.c1.get_format_info())
+
+        # c11 inherits from c1
+        self.assertEqual(self.c11.active_formats, False)
+        self.assertEqual({'category_cols': 11, 'product_cols': 22, 'product_rows': 33}, self.c11.get_format_info())
+
+        # Add new format informations
+        self.c11.category_cols = 111
+        self.c11.product_cols = 222
+        self.c11.product_rows = 333
+        self.c11.save()
+
+        # But c11 still inherits from c1 as active_formats is False by default
+        self.assertEqual(self.c11.active_formats, False)
+        self.assertEqual({'category_cols': 11, 'product_cols': 22, 'product_rows': 33}, self.c11.get_format_info())
+
+        # Set active_formats to True
+        self.c11.active_formats = True
+        self.c11.save()
+
+        # c11 has it own formats now
+        self.assertEqual(self.c11.active_formats, True)
+        self.assertEqual({'category_cols': 111, 'product_cols': 222, 'product_rows': 333}, self.c11.get_format_info())
+
+    def test_get_absolute_url(self):
+        """
+        """
+        self.assertEqual(self.c1.get_absolute_url(), "/category-%s" % self.c1.slug)
+
+    def test_unicode(self):
+        """
+        """
+        self.assertEqual(self.c1.__unicode__(), "%s (%s)" % (self.c1.name, self.c1.slug))
+
+    def test_get_content_type(self):
+        """
+        """
+        self.assertEqual(self.c1.content_type, u"category")
+
 
 class ViewsTestCase(TestCase):
     """Tests the views of the lfs.catalog.
@@ -2211,3 +2302,13 @@ class ProductAccessoriesTestCase(TestCase):
 
         self.assertEqual(pa1.get_price(), 2.0)
         self.assertEqual(pa2.get_price(), 6.0)
+
+
+class MiscTestCase(TestCase):
+    """
+    """
+    def test_get_unique_id_str(self):
+        from lfs.catalog.models import get_unique_id_str
+        id = get_unique_id_str()
+        self.failUnless(isinstance(id, str))
+        self.assertEqual(len(id), len("dad27436-3468-4d27-97e4-5fd761db85da"))
