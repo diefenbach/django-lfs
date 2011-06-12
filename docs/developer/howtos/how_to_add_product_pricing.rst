@@ -30,7 +30,7 @@ lfs.price.PricingCalculator and implement all inherited methods.
 
 
 Plug in the custom price calculator
-------------------------------
+-----------------------------------
 
 * Add your application to the PYTHONPATH.
 * Add the application to settings.INSTALLED_APPS.
@@ -56,7 +56,10 @@ You can optionally set the default pricing calculator to your own module e.g.
 
 **Set product pricing calculator in manage inteface**
 
-Browse to http://yourshopdomain/manage and login.
-Select the product whose price calculator you wish to change.
-Select your new pricing calculator from the drop down menu of choices.
-Save the product.
+* Browse to http://yourshopdomain/manage and login.
+* Select Catalog - Product
+* Select the product whose price calculator you wish to change.
+* Select the pricing calculator tab
+* Select your new pricing calculator from the drop down menu of choices.
+* Save the product.
+* Browse to your product in your shop and you should see the new price as calculated by your custom pricing calculator.
