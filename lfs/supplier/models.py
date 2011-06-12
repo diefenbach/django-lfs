@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+
 class Supplier(models.Model):
     """
     * A supplier holds all shop supplier related information
@@ -12,9 +13,6 @@ class Supplier(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(_(u"Slug"), unique=True, max_length=80)
     active = models.BooleanField(default=True)
-    
 
     def __unicode__(self):
         return "%s" % (self.name)
-        
-        
