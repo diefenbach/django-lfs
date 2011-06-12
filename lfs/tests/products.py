@@ -10,6 +10,7 @@ from lfs.tests.utils import DummyRequest
 from lfs.catalog.models import Product
 from lfs.catalog.models import Category
 
+
 class ProductsTestCase(TestCase):
     """
     """
@@ -17,17 +18,17 @@ class ProductsTestCase(TestCase):
         """
         """
         self.client.login(username="admin", password="admin")
-        
+
         for i in range(0, 10):
             product = Product(
-                name="Product %s" % i, 
+                name="Product %s" % i,
                 slug="product-%s" % i,
                 description="This is the description %s" % i,
-                price = i
+                price=i
             )
             product.save()
-        
-        c1 = Category(name="Category 1", slug="category-1")        
+
+        c1 = Category(name="Category 1", slug="category-1")
         c1.save()
 
         c11 = Category(name="Category 1-1", slug="category-1-1", parent=c1)
@@ -39,12 +40,12 @@ class ProductsTestCase(TestCase):
         # Assign products
         product = Product.objects.get(slug="product-1")
         c111.products = (product, )
-                
+
     def test_created_products(self):
         """
         """
         for i in range(0, 10):
-            p = Product.objects.get(slug="product-%s" % i)        
+            p = Product.objects.get(slug="product-%s" % i)
             self.assertEqual(p.name, "Product %s" % i)
             self.assertEqual(p.price, i)
             self.assertEqual(p.description, "This is the description %s" % i)
