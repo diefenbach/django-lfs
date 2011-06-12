@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand
 
 from lfs.utils import generator
 
+
 class Command(BaseCommand):
     args = ''
     help = 'Generates mock products for LFS'

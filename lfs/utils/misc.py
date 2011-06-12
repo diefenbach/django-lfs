@@ -1,6 +1,7 @@
 import re
 re_digits_nondigits = re.compile(r'\d+|\D+')
 
+
 def parse_properties(request):
     """Parses the query string for properties and returns them in the format:
     property_id|option_id
@@ -17,6 +18,7 @@ def parse_properties(request):
 
     return properties
 
+
 def FormatWithCommas(format, value):
     """
     """
@@ -27,6 +29,7 @@ def FormatWithCommas(format, value):
             parts[i] = _commafy(s)
             break
     return ''.join(parts)
+
 
 def _commafy(s):
     r = []

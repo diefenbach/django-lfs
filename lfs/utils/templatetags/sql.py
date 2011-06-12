@@ -7,6 +7,7 @@ from django.utils.html import escape
 
 register = Library()
 
+
 class DbInfoNode(Node):
     def __init__(self):
         pass
@@ -19,13 +20,15 @@ class DbInfoNode(Node):
             return ""
         secs = 0.0
         for s in db.connection.queries:
-            secs += float(s['time']);
+            secs += float(s['time'])
         return str("%d queries, %f seconds" % (len(db.connection.queries), secs)
 )
+
 
 def do_dbinfo(parser, token):
     return DbInfoNode()
 do_dbinfo = register.tag('dbinfo', do_dbinfo)
+
 
 class DbQueryListNode(Node):
     def __init__(self):
@@ -41,6 +44,7 @@ class DbQueryListNode(Node):
         for q in db.connection.queries:
             s += "<li>" + escape(q["sql"]) + "</li>\n"
         return s
+
 
 def do_dbquerylist(parser, token):
     return DbQueryListNode()
