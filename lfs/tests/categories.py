@@ -36,8 +36,3 @@ class CategoriesTestCase(TestCase):
         """Has the above categories been created properly.
         """
         self.assertEqual(len(Category.objects.all()), 4)
-
-    def test_get_category_nodes(self):
-        """
-        """
-        category_nodes = get_category_nodes(DummyRequest())

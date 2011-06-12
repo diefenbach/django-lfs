@@ -601,36 +601,3 @@ def product_form_dispatcher(request):
             )
 
         return HttpResponseRedirect(variant.get_absolute_url())
-
-
-# NOT used at moment
-def get_category_nodes(request):
-    """Returns the category tree as JSON for extJS.
-    """
-    categories = []
-    for category in Category.objects.filter(parent=None):
-        temp = _get_children_nodes(category)
-        categories.append({
-            "id": category.slug,
-            "text": category.name,
-            "leaf": len(temp) == 0,
-            "children": temp
-        })
-
-    return HttpResponse(simplejson.dumps(categories))
-
-
-def _get_children_nodes(category):
-    """
-    """
-    children = []
-    for category in category.category_set.all():
-        temp = _get_children_nodes(category)
-        children.append({
-            "id": category.slug,
-            "text": category.name,
-            "leaf": len(temp) == 0,
-            "children": temp,
-        })
-
-    return children
