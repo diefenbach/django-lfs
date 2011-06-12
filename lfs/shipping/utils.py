@@ -17,6 +17,7 @@ from lfs.criteria import utils as criteria_utils
 from lfs.customer import utils as customer_utils
 from lfs.shipping.models import ShippingMethod
 
+
 def get_product_delivery_time(request, product_slug, for_cart=False):
     """Returns the delivery time object for the product with given slug.
 
@@ -34,9 +35,9 @@ def get_product_delivery_time(request, product_slug, for_cart=False):
     if for_cart:
         cache_key = "%s-shipping-delivery-time-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, request.user.id)
     else:
-        cache_key = "%s-shipping-delivery-time"%settings.CACHE_MIDDLEWARE_KEY_PREFIX
+        cache_key = "%s-shipping-delivery-time" % settings.CACHE_MIDDLEWARE_KEY_PREFIX
 
-    shippings = None # cache.get(cache_key)
+    shippings = None  # cache.get(cache_key)
     if shippings is None:
         shippings = {}
 
@@ -65,7 +66,7 @@ def get_product_delivery_time(request, product_slug, for_cart=False):
             sms = get_valid_shipping_methods(request, product)
             if sm in sms:
                 try:
-                    delivery_time  = sm.delivery_time
+                    delivery_time = sm.delivery_time
                 except AttributeError:
                     delivery_time = None
             else:
@@ -111,6 +112,7 @@ def get_product_delivery_time(request, product_slug, for_cart=False):
 
     return delivery_time
 
+
 def update_to_valid_shipping_method(request, customer, save=False):
     """After this has been called the given customer has a valid shipping
     method in any case.
@@ -122,6 +124,7 @@ def update_to_valid_shipping_method(request, customer, save=False):
         if save:
             customer.save()
 
+
 def get_valid_shipping_methods(request, product=None):
     """Returns a list of all valid shipping methods for the passed request.
     """
@@ -131,11 +134,13 @@ def get_valid_shipping_methods(request, product=None):
             result.append(sm)
     return result
 
+
 def get_first_valid_shipping_method(request, product=None):
     """Returns the valid shipping method with the highest priority.
     """
     active_shipping_methods = ShippingMethod.objects.filter(active=True)
     return criteria_utils.get_first_valid(request, active_shipping_methods, product)
+
 
 def get_default_shipping_method(request):
     """Returns the default shipping method for the passed request.
@@ -145,6 +150,7 @@ def get_default_shipping_method(request):
     """
     active_shipping_methods = ShippingMethod.objects.filter(active=True)
     return criteria_utils.get_first_valid(request, active_shipping_methods)
+
 
 def get_selected_shipping_method(request):
     """Returns the selected shipping method for the passed request.
@@ -157,6 +163,7 @@ def get_selected_shipping_method(request):
         return customer.selected_shipping_method
     else:
         return get_default_shipping_method(request)
+
 
 def get_selected_shipping_country(request):
     """Returns the selected shipping country for the passed request.
@@ -173,6 +180,7 @@ def get_selected_shipping_country(request):
 
     return lfs.core.utils.get_default_shop().get_default_country()
 
+
 def get_shipping_costs(request, shipping_method):
     """Returns a dictionary with the shipping price and tax for the passed
     request and shipping method.
@@ -181,8 +189,8 @@ def get_shipping_costs(request, shipping_method):
     """
     if shipping_method is None:
         return {
-            "price" : 0.0,
-            "tax" : 0.0
+            "price": 0.0,
+            "tax": 0.0
         }
 
     try:
@@ -195,30 +203,31 @@ def get_shipping_costs(request, shipping_method):
 
     if price is None:
         price = shipping_method.price
-        tax = (tax_rate/(tax_rate+100)) * price
+        tax = (tax_rate / (tax_rate + 100)) * price
 
         return {
-            "price" : price,
-            "tax" : tax
+            "price": price,
+            "tax": tax
         }
     else:
-        tax = (tax_rate/(tax_rate+100)) * price.price
+        tax = (tax_rate / (tax_rate + 100)) * price.price
 
         return {
-            "price" : price.price,
-            "tax" : tax
+            "price": price.price,
+            "tax": tax
         }
+
 
 def get_delivery_time(request, product):
     """Returns delivery time for given product.
     """
     if product.deliverable == False:
         return {
-            "deliverable" : False,
-            "delivery_time" : get_product_delivery_time(request, product.slug)
+            "deliverable": False,
+            "delivery_time": get_product_delivery_time(request, product.slug)
         }
     else:
         return {
-            "deliverable" : True,
-            "delivery_time" : get_product_delivery_time(request, product.slug)
+            "deliverable": True,
+            "delivery_time": get_product_delivery_time(request, product.slug)
         }
