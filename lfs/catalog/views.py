@@ -544,13 +544,8 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
                 "value": ppv_value,
             })
 
-    # Reviews
     if product.get_template_name() != None:
         template_name = product.get_template_name()
-
-    message = request.COOKIES.get("message")
-    if message:
-        message = urllib.unquote(message)
 
     if product.active_packing_unit:
         packing_result = calculate_packing(request, id, 1, True)
@@ -563,7 +558,6 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
         "variants": variants,
         "product_accessories": variant.get_accessories(),
         "properties": properties,
-        "message": message,
         "packing_result": packing_result,
     }))
 
