@@ -178,7 +178,8 @@ class CartItem(models.Model):
         return price
 
     def get_calculated_price(self):
-        """Returns the calculated gross price of the product.
+        """Returns the calculated gross price of the product based on property
+        values and the price calculation field of the product.
         """
         pc = self.product.price_calculation
         tokens = self.product.price_calculation.split(" ")

@@ -94,7 +94,8 @@ def calculate_packing(request, id, quantity=None, as_string=False, template_name
 
 
 def calculate_price(request, id):
-    """Calculates the price of the product on base of choosen properties.
+    """Calculates the price of the product on base of choosen properties after
+    a customer has selected a property on product view.
     """
     product = Product.objects.get(pk=id)
 
