@@ -1,19 +1,23 @@
+# django imports
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
 
+# djangorestframework imports
 from djangorestframework.views import View
 from djangorestframework.response import Response
 from djangorestframework import status
+
+# lfs imports
 from lfs.catalog.models import Category
+from lfs.core.utils import set_category_levels
 
 
 class CategorySortView(View):
     """
     API for sorting categories
     """
-
     @method_decorator(permission_required("core.manage_shop", login_url="/login/"))
     def post(self, request):
         """
@@ -44,3 +48,4 @@ class CategorySortView(View):
                     child_obj.save()
 
                     pos = pos + 10
+        set_category_levels()
