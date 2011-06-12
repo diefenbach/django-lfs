@@ -591,7 +591,8 @@ def product_by_id(request, product_id):
 
 
 def _get_filtered_products_for_product_view(request):
-    """
+    """Returns a query set with filtered products based on saved name filter
+    and ordering within the current session.
     """
     products = Product.objects.all()
     product_ordering = request.session.get("product-ordering", "id")
@@ -609,7 +610,8 @@ def _get_filtered_products_for_product_view(request):
 
 
 def _get_filtered_products(request):
-    """
+    """Returns a query set with filtered products based on saved filters and
+    ordering within the current session.
     """
     products = Product.objects.all()
     product_filters = request.session.get("product_filters", {})
@@ -637,6 +639,7 @@ def _get_filtered_products(request):
     if price.find("-") != -1:
         s, e = price.split("-")
         products = products.filter(price__range=(s, e))
+
     category = product_filters.get("category", "")
     if category == "None":
         products = products.filter(categories=None).distinct()
@@ -646,7 +649,6 @@ def _get_filtered_products(request):
         category = lfs_get_object_or_404(Category, pk=category)
         categories = [category]
         categories.extend(category.get_all_children())
-
         products = products.filter(categories__in=categories).distinct()
 
     products = products.order_by("%s%s" % (product_ordering_order, product_ordering))
