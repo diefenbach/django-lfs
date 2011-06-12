@@ -636,6 +636,19 @@ $(function() {
         return false;
     })
 
+    // Product / Price Calculator
+    $(".price-calculator-save-button").live("click", function() {
+        $("#product-price-calculator-form").ajaxSubmit({
+            "type": "post",
+            "success": function(data) {
+                var data = $.parseJSON(data)
+                $("#seo-inline").html(data["seo_inline"]);
+                $.jGrowl(data["message"]);
+            }
+        });
+        return false;
+    })
+
     // Shipping/Payment Price
     $(".price-button").live("click", function() {
         var action = $(this).attr("name");

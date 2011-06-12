@@ -4,6 +4,7 @@ from django.db import models
 
 # lfs imports
 from lfs.voucher.models import Voucher
+import lfs.core.settings as lfs_settings
 
 # south imports
 from south.db import db
@@ -34,3 +35,9 @@ class Command(BaseCommand):
 
         db.delete_column('voucher_voucher', 'used')
         db.delete_column('voucher_voucher', 'used_date')
+
+        # product model
+        db.add_column("catalog_product", "price_calculator_class", models.CharField(default=lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR,
+                                              choices=lfs_settings.LFS_PRICE_CALCULATOR_CHOICES,
+                                              max_length=255))
+

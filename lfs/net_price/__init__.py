@@ -6,6 +6,9 @@ from lfs.catalog.settings import VARIANT
 
 
 class NetPriceCalculator(PriceCalculator):
+    """
+    The value of product.price stored in the database excludes tax
+    """
 
     def get_price(self, with_properties=True):
         return self.get_price_net()
