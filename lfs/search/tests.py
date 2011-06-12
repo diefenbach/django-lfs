@@ -5,11 +5,12 @@ from django.test import TestCase
 # test imports
 from lfs.catalog.models import Product
 
+
 class SearchTestCase(TestCase):
     """Unit tests for lfs.search
     """
     fixtures = ['lfs_shop.xml']
-    
+
     def setUp(self):
         """
         """
@@ -21,13 +22,13 @@ class SearchTestCase(TestCase):
         """
         """
         url = reverse("lfs_search")
-        
+
         # Must be found
-        response = self.client.get(url, {"q" : "Product"})
+        response = self.client.get(url, {"q": "Product"})
         self.failIf(response.content.find("Product 1") == -1)
 
         # Must not be found
-        response = self.client.get(url, {"q" : "Hurz"})
+        response = self.client.get(url, {"q": "Hurz"})
         self.failIf(response.content.find("Product 1") != -1)
 
     def test_inactive_search(self):
@@ -36,5 +37,5 @@ class SearchTestCase(TestCase):
         url = reverse("lfs_search")
 
         # Must not be found
-        response = self.client.get(url, {"q" : "Product"})
+        response = self.client.get(url, {"q": "Product"})
         self.failIf(response.content.find("Product 3") != -1)
