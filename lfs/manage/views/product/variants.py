@@ -189,8 +189,10 @@ def add_property(request, product_id):
             product_property.position = i
             product_property.save()
 
+    html = [["#variants", manage_variants(request, product_id, as_string=True)]]
+
     result = simplejson.dumps({
-        "html": manage_variants(request, product_id, as_string=True),
+        "html": html,
         "message": _(u"Property has been added."),
     }, cls=LazyEncoder)
 
@@ -242,7 +244,13 @@ def change_property_position(request):
 
     _refresh_property_positions(product_id)
 
-    return HttpResponse(manage_variants(request, product_id))
+    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
+
+    result = simplejson.dumps({
+        "html": html,
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -270,8 +278,10 @@ def add_property_option(request, product_id):
             option.position = i
             option.save()
 
+    html = [["#variants", manage_variants(request, product_id, as_string=True)]]
+
     result = simplejson.dumps({
-        "html": manage_variants(request, product_id, as_string=True),
+        "html": html,
         "message": _(u"Option has been added."),
     }, cls=LazyEncoder)
 

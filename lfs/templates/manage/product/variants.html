@@ -42,7 +42,7 @@
         <div style="font-weight:bold">{{ property.name }}</div>
         {% if not forloop.first %}
             <a href="{% url lfs.manage.views.change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=up"
-               class="property-change-button property-edit-field">
+               class="ajax-link property-edit-field">
                 <image src="{{ MEDIA_URL }}lfs/icons/arrow_up.png"
                        alt="{% trans 'Up' %}"
                        title="{% trans 'Up' %}"/>
@@ -51,7 +51,7 @@
         {% endif %}
         {% if not forloop.last %}
             <a href="{% url lfs.manage.views.change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=down"
-                    class="property-change-button property-edit-field">
+                    class="ajax-link property-edit-field">
                 <image src="{{ MEDIA_URL }}lfs/icons/arrow_down.png"
                        alt="{% trans 'Down' %}"
                        title="{% trans 'Down' %}"/>
@@ -59,7 +59,7 @@
         {% endif %}
 
         <a href="{% url lfs.manage.views.delete_property product.id property.id %}"
-           class="property-change-button property-edit-field delete-link"
+           class="ajax-link property-edit-field delete-link"
            dialog_message="{% trans 'Do you really want to delete this property and all its options?' %}"
            dialog_yes_button_class="ajax-save-button">
             <image src="{{ MEDIA_URL }}lfs/icons/cross.png"
@@ -71,7 +71,7 @@
                 <div>
                     {{ option.name }}
                     <a href="{% url lfs.manage.views.delete_property_option product.id option.id %}"
-                       class="property-change-button property-edit-field delete-link"
+                       class="ajax-link property-edit-field delete-link"
                        dialog_message="{% trans 'Do you really want to delete this option?' %}"
                        dialog_yes_button_class="ajax-save-button">
                         <image src="{{ MEDIA_URL }}lfs/icons/cross.png"
