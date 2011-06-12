@@ -25,7 +25,7 @@ setup(name='django-lfs',
       packages=find_packages(exclude=['ez_setup']),
       include_package_data=True,
       zip_safe=False,
-      dependency_links = ["http://pypi.iqpp.de/"],
+      dependency_links=["http://pypi.iqpp.de/"],
       install_requires=[
         'setuptools',
         'django-lfstheme == 0.5.0b6',
