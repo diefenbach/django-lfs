@@ -31,7 +31,7 @@ def calculate_product_sales():
         else:
             product = order_item.product
 
-        if product.id in products == False:
+        if product.id not in products:
             products[product.id] = [product, 0]
         products[product.id][1] += order_item.product_amount
 
