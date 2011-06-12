@@ -19,6 +19,7 @@ from lfs.voucher.models import VoucherOptions
 from lfs.voucher.settings import ABSOLUTE
 from lfs.voucher.settings import PERCENTAGE
 
+
 class VoucherUtilsTestCase(TestCase):
     """
     """
@@ -37,10 +38,10 @@ class VoucherUtilsTestCase(TestCase):
         """Tests the custom options.
         """
         VoucherOptions.objects.create(
-            number_prefix = "DH",
-            number_suffix = "XM",
-            number_length = 4,
-            number_letters = "abcdefghijklmnopqrstuvwxyz",
+            number_prefix="DH",
+            number_suffix="XM",
+            number_length=4,
+            number_letters="abcdefghijklmnopqrstuvwxyz",
             )
 
         number = lfs.voucher.utils.create_voucher_number()
@@ -50,6 +51,7 @@ class VoucherUtilsTestCase(TestCase):
 
         for letter in number[2:-2]:
             self.failIf(letter not in letters)
+
 
 class VoucherTestCase(TestCase):
     """
@@ -63,19 +65,19 @@ class VoucherTestCase(TestCase):
 
         self.vg = VoucherGroup.objects.create(
             name="xmas",
-            creator = self.request.user,
+            creator=self.request.user,
         )
 
         self.v1 = Voucher.objects.create(
-            number = "AAAA",
-            group = self.vg,
-            creator = self.request.user,
-            start_date = datetime.date(2009, 12, 1),
-            end_date = datetime.date(2009, 12, 31),
-            effective_from = 0,
-            kind_of = ABSOLUTE,
-            value = 10.0,
-            limit = 2,
+            number="AAAA",
+            group=self.vg,
+            creator=self.request.user,
+            start_date=datetime.date(2009, 12, 1),
+            end_date=datetime.date(2009, 12, 31),
+            effective_from=0,
+            kind_of=ABSOLUTE,
+            value=10.0,
+            limit=2,
         )
 
         self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0)
@@ -239,6 +241,7 @@ class VoucherTestCase(TestCase):
         self.v1.used_amount = 1
         self.v1.effective_from = 0
         self.assertEqual(self.v1.is_effective(self.cart)[0], False)
+
 
 class VoucherOptionsCase(TestCase):
     """

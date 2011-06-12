@@ -13,6 +13,7 @@ from lfs.voucher.settings import ABSOLUTE
 from lfs.voucher.settings import PERCENTAGE
 from lfs.voucher.settings import MESSAGES
 
+
 class VoucherOptions(models.Model):
     """Stores misc voucher options
     """
@@ -20,6 +21,7 @@ class VoucherOptions(models.Model):
     number_suffix = models.CharField(max_length=20, blank=True, default="")
     number_length = models.IntegerField(blank=True, null=True, default=5)
     number_letters = models.CharField(max_length=100, blank=True, default="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
 
 class VoucherGroup(models.Model):
     """Groups vouchers together.
@@ -31,6 +33,7 @@ class VoucherGroup(models.Model):
 
     class Meta:
         ordering = ("position", )
+
 
 class Voucher(models.Model):
     """A voucher.
@@ -83,8 +86,8 @@ class Voucher(models.Model):
 
         - used_date
             The date the voucher has been redeemed.
-            
-        - The quanity of how often the voucher can be used. Let it empty 
+
+        - The quanity of how often the voucher can be used. Let it empty
           the voucher can be used unlimited.
     """
     number = models.CharField(max_length=100, unique=True)
@@ -133,7 +136,7 @@ class Voucher(models.Model):
             else:
                 return 0.0
         else:
-            return cart.get_tax()  * (self.value / 100)
+            return cart.get_tax() * (self.value / 100)
 
     def mark_as_used(self):
         """Mark voucher as used.
