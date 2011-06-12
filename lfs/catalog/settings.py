@@ -121,12 +121,4 @@ PRODUCT_TEMPLATES = (
     },),
 )
 
-CP_PRICE_SUM = 1
-CP_PRICE_CALC = 2
-
-CP_PRICES = (
-    (CP_PRICE_SUM, ("Sume")),
-    (CP_PRICE_CALC, ("Calculated")),
-)
-
 THUMBNAIL_SIZES = getattr(settings, 'LFS_THUMBNAIL_SIZES', ((60, 60), (100, 100), (200, 200), (300, 300), (400, 400)))
