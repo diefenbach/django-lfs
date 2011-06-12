@@ -22,7 +22,6 @@ class CategorySortView(View):
         self.sort_categories(self.CONTENT.get('categories', ''))
         return HttpResponse("OK")
 
-
     def sort_categories(self, serialized_js):
 
         if serialized_js:
@@ -33,7 +32,7 @@ class CategorySortView(View):
                 pos = 10
                 for cat_str in category_list:
                     child, parent_id = cat_str.split('=')
-                    child_id = child[9:-1] # category[2]
+                    child_id = child[9:-1]  # category[2]
                     child_obj = Category.objects.get(pk=child_id)
 
                     parent_obj = None

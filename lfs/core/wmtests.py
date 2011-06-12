@@ -9,7 +9,7 @@ class TestProjectWindmillTest(djangotest.WindmillDjangoUnitTest):
     test_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'windmilltests')
     browser = 'chrome'
     settings.TESTING = True
-    fixtures = ['lfs_shop.xml',]
+    fixtures = ['lfs_shop.xml']
 
     def setUp(self):
         # check that object counts are at zero

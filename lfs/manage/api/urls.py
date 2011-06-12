@@ -5,6 +5,4 @@ from handlers import CategorySortView
 
 urlpatterns = patterns('',
     url(r'^categories/sort/$', CategorySortView.as_view(), name="lfs-sort-categories"),
-
-
 )

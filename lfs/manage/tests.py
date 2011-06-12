@@ -7,15 +7,13 @@ from lfs.catalog.models import Category
 
 from lfs.manage.api.handlers import CategorySortView
 
+
 class ManageTestCase(TestCase):
     """Tests manage interface
     """
-
     def setUp(self):
-        # Every test needs a client.
-
         for i in range(1, 4):
-            cat, created = Category.objects.get_or_create(pk=i, name="cat" + str(i), slug="cat"+str(i), position=10, parent=None)
+            cat, created = Category.objects.get_or_create(pk=i, name="cat" + str(i), slug="cat" + str(i), position=10, parent=None)
 
         self.client = Client()
 

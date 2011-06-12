@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 # print "lfs/__init__: monkey patched loader.get_template"
-# 
+#
 # from django.template import loader
 # from django.conf import settings
-# 
-# template_cache = {} 
+#
+# template_cache = {}
 # original_get_template = loader.get_template
 # def cached_get_template(template_name):
 #     global template_cache
