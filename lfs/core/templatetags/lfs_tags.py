@@ -173,33 +173,6 @@ def breadcrumbs(context, obj):
     return result
 
 
-@register.inclusion_tag('lfs/catalog/filter_navigation.html', takes_context=True)
-def filter_navigation(context, category):
-    """Displays the filter navigation portlet.
-    """
-    request = context.get("request")
-    sorting = request.session.get("sorting")
-
-    # Get saved filters
-    set_product_filters = request.session.get("product-filter", {})
-    set_product_filters = set_product_filters.items()
-    set_price_filters = request.session.get("price-filter")
-
-    # calculate filters
-    product_filters = lfs.catalog.utils.get_product_filters(category,
-        set_product_filters, set_price_filters, sorting)
-
-    price_filters = lfs.catalog.utils.get_price_filters(category,
-        set_product_filters, set_price_filters)
-
-    return {
-        "category": category,
-        "product_filters": product_filters,
-        "set_price_filters": set_price_filters,
-        "price_filters": price_filters,
-    }
-
-
 @register.inclusion_tag('lfs/catalog/product_navigation.html', takes_context=True)
 def product_navigation(context, product):
     """Provides previous and next product links.
@@ -279,15 +252,6 @@ def product_navigation(context, product):
         cache.set(cache_key, temp)
 
         return result
-
-
-@register.inclusion_tag('lfs/catalog/sorting_portlet.html', takes_context=True)
-def sorting_portlet(context):
-    request = context.get("request")
-    return {
-        "current": request.session.get("sorting"),
-        "MEDIA_URL": context.get("MEDIA_URL"),
-    }
 
 
 class ActionsNode(Node):
