@@ -1042,24 +1042,6 @@ class Product(models.Model):
 
         return price
 
-    def calculate_price(self, price):
-        """Calulates the price by given entered price calculation.
-        """
-        pc = self.price_calculation
-        tokens = self.price_calculation.split(" ")
-
-        for token in tokens:
-            if token.startswith("property"):
-                mo = re.match("property\((\d+)\)")
-                ppv = ProductPropertyValue.objects.get(product=self, property_id=mo.groups()[0])
-
-        try:
-            mult = float(self.price_calculation)
-        except:
-            mult = 1
-
-        return mult * price
-
     def get_price_net(self):
         """Returns the real net price of the product. Takes care whether the
         product is for sale.
