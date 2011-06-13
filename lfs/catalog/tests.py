@@ -829,6 +829,56 @@ class CategoryTestCase(TestCase):
         """
         self.assertEqual(self.c1.content_type, u"category")
 
+    def test_get_image(self):
+        """
+        """
+        self.assertEqual(self.c1.get_image(), None)
+        self.assertEqual(self.c11.get_image(), None)
+        self.assertEqual(self.c12.get_image(), None)
+        self.assertEqual(self.c111.get_image(), None)
+
+        # Add an image to c1
+        self.c1.image = Image.objects.create(title="Image 1", position=1)
+        self.assertEqual(self.c1.get_image().title, "Image 1")
+
+        # c11 should inherit the image from c1
+        self.assertEqual(self.c11.get_image().title, "Image 1")
+
+        # c12 should inherit the image from c1
+        self.assertEqual(self.c12.get_image().title, "Image 1")
+
+        # c111 should inherit the image from c1
+        self.assertEqual(self.c111.get_image().title, "Image 1")
+
+        # Add an image to c11
+        self.c11.image = Image.objects.create(title="Image 2", position=1)
+
+        # c1 should still have it's own one
+        self.assertEqual(self.c1.get_image().title, "Image 1")
+        
+        # c11 should have it's own one now
+        self.assertEqual(self.c11.get_image().title, "Image 2")
+
+        # c12 should still inherit the image from c1
+        self.assertEqual(self.c12.get_image().title, "Image 1")
+
+        # c111 should inherit the image from c11 now
+        self.assertEqual(self.c111.get_image().title, "Image 2")
+
+        # Add an image to c111
+        self.c111.image = Image.objects.create(title="Image 3", position=1)
+
+        # c1 should still have it's own one
+        self.assertEqual(self.c1.get_image().title, "Image 1")
+
+        # c12 should still inherit the image from c1
+        self.assertEqual(self.c12.get_image().title, "Image 1")
+        
+        # c11 should have it's own one now
+        self.assertEqual(self.c11.get_image().title, "Image 2")
+
+        # c111 should have it's own one now
+        self.assertEqual(self.c111.get_image().title, "Image 3")
 
 class ViewsTestCase(TestCase):
     """Tests the views of the lfs.catalog.
