@@ -880,7 +880,7 @@ class CategoryTestCase(TestCase):
         # c111 should have it's own one now
         self.assertEqual(self.c111.get_image().title, "Image 3")
 
-    def get_parents(self):
+    def test_get_parents(self):
         """
         """
         self.assertEqual(self.c1.get_parents(), [])
