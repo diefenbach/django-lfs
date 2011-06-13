@@ -326,8 +326,8 @@ class Category(models.Model):
         return products
 
     def get_filtered_products(self, filters, price_filter, sorting):
-        """Returns products for this category filtered by passed filters sorted
-        by passed sorted
+        """Returns products for this category filtered by passed filters,
+        price_filter and sorted by passed sorting.
         """
         return lfs.catalog.utils.get_filtered_products_for_category(
             self, filters, price_filter, sorting)
