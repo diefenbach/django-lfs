@@ -325,12 +325,12 @@ class Category(models.Model):
         cache.set(cache_key, products)
         return products
 
-    def get_filtered_products(self, filters, sorting):
+    def get_filtered_products(self, filters, price_filter, sorting):
         """Returns products for this category filtered by passed filters sorted
         by passed sorted
         """
         return lfs.catalog.utils.get_filtered_products_for_category(
-            self, filters, sorting)
+            self, filters, price_filter, sorting)
 
     def get_static_block(self):
         """Returns the static block of the category.

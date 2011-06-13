@@ -408,6 +408,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
     return result
 
 
+# TODO: Implement this as a method of Category
 def get_filtered_products_for_category(category, filters, price_filter, sorting):
     """Returns products for given categories and current filters sorted by
     current sorting.
