@@ -525,9 +525,9 @@ class Product(models.Model):
     slug = models.SlugField(_(u"Slug"), help_text=_(u"The unique last part of the Product's URL."), unique=True, max_length=80)
     sku = models.CharField(_(u"SKU"), help_text=_(u"Your unique article number of the product."), blank=True, max_length=30)
     price = models.FloatField(_(u"Price"), default=0.0)
-    price_calculator = models.CharField(default=lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR,
-                                              choices=lfs_settings.LFS_PRICE_CALCULATOR_CHOICES,
-                                              max_length=255)
+    price_calculator = models.CharField(null=True, blank=True,
+                                        choices=lfs_settings.LFS_PRICE_CALCULATOR_CHOICES,
+                                        max_length=255)
     effective_price = models.FloatField(_(u"Price"), blank=True)
     price_unit = models.CharField(blank=True, max_length=20)
     unit = models.CharField(blank=True, max_length=20)
@@ -962,7 +962,9 @@ class Product(models.Model):
     def get_price_calculator(self, request=None):
         """Returns the price calculator class as defined in LFS_DEFAULT_PRICE_CALCULATOR in lfs.core.settings
         """
-        module_str, price_calculator_str = self.price_calculator.rsplit('.', 1)
+        module_str, price_calculator_str =lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR.rsplit('.', 1)
+        if self.price_calculator is not None:
+            module_str, price_calculator_str = self.price_calculator.rsplit('.', 1)
         mod = import_module(module_str)
         price_calculator_class = getattr(mod, price_calculator_str)
         return price_calculator_class(request, self)
