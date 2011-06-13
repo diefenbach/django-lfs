@@ -855,7 +855,7 @@ class CategoryTestCase(TestCase):
 
         # c1 should still have it's own one
         self.assertEqual(self.c1.get_image().title, "Image 1")
-        
+
         # c11 should have it's own one now
         self.assertEqual(self.c11.get_image().title, "Image 2")
 
@@ -873,12 +873,27 @@ class CategoryTestCase(TestCase):
 
         # c12 should still inherit the image from c1
         self.assertEqual(self.c12.get_image().title, "Image 1")
-        
+
         # c11 should have it's own one now
         self.assertEqual(self.c11.get_image().title, "Image 2")
 
         # c111 should have it's own one now
         self.assertEqual(self.c111.get_image().title, "Image 3")
+
+    def get_parents(self):
+        """
+        """
+        self.assertEqual(self.c1.get_parents(), [])
+
+        parent_names = [c.name for c in self.c11.get_parents()]
+        self.assertEqual(parent_names, ["Category 1"])
+
+        parent_names = [c.name for c in self.c12.get_parents()]
+        self.assertEqual(parent_names, ["Category 1"])
+
+        parent_names = [c.name for c in self.c111.get_parents()]
+        self.assertEqual(parent_names, ["Category 11", "Category 1"])
+
 
 class ViewsTestCase(TestCase):
     """Tests the views of the lfs.catalog.
