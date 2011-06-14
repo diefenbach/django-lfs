@@ -40,6 +40,7 @@ from lfs.core.signals import product_removed_property_group
 from lfs.tax.models import Tax
 from lfs.tests.utils import RequestFactory
 
+from wmtests import *
 
 class GrossPriceTestCase(TestCase):
     """Tests attributes and methods of Products
