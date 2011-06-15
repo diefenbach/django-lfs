@@ -113,6 +113,23 @@ Tax
     The percentage tax of the product. Note: Taxes are managed central within
     Shop / Taxes.
 
+Price Calculator
+    Determines how a products price is calculated using the products price and tax stored in the database.
+    If you leave this field blank, your pricing calculator will default to lfs.core.settings.LFS_DEFAULT_PRICING_CALCULATOR
+
+    LFS ships with two pricing calculator methods:
+
+    * Price Includes Tax
+        Your product price in the database includes tax, use this calculator if you are only shipping to one country
+        and you don't want your displayed prices to vary when tax rates change.
+
+    * Price Excludes Tax
+        Your product price in the database excludes tax, use this calculator if you are shipping to multiple countries
+        and you want your total price to vary with tax rate changes.
+
+    You can also add :doc:`custom pricing calculators </developer/howtos/how_to_add_product_pricing>`.
+
+
 For sale
     If this is activated the default price of the product is stroked and
     the for entered for sale price is displayed.

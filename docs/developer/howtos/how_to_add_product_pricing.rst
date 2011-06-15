@@ -36,16 +36,16 @@ Plug in the custom price calculator
 * Add the application to settings.INSTALLED_APPS.
 * If your are using models (which is completely up to you), sync your database.
 
-**Add your custom price calculator to lfs.core.settings.LFS_PRICE_CALCULATOR_CHOICES**
+**Add your custom price calculator to lfs.core.settings.LFS_PRICE_CALCULATOR_DICTIONARY**
 
-Edit the choices tuple lfs.core.settings.LFS_PRICE_CALCULATOR_CHOICES to make your custom pricing calculator available
+Edit the dictionary lfs.core.settings.LFS_PRICE_CALCULATOR_DICTIONARY to make your custom pricing calculator available
 to products in the manage interface
 
 .. code-block:: python
 
-    LFS_PRICE_CALCULATOR_CHOICES = [('lfs.gross_price.GrossPriceCalculator', 'Price including tax'),
-                                ('lfs.net_price.NetPriceCalculator', 'Price excluding tax'),
-                                ('mycustom_price.CustomPriceCalculator', 'My Pricing Calculator'),
+    LFS_PRICE_CALCULATOR_DICTIONARY = {'lfs.gross_price.GrossPriceCalculator': 'Price including tax',
+                                'lfs.net_price.NetPriceCalculator': 'Price excluding tax',
+                                'mycustom_price.CustomPriceCalculator': 'My Pricing Calculator',
                                ]
 
 You can optionally set the default pricing calculator to your own module e.g.
@@ -53,6 +53,8 @@ You can optionally set the default pricing calculator to your own module e.g.
 .. code-block:: python
 
     LFS_DEFAULT_PRICE_CALCULATOR="mycustom_price.CustomPriceCalculator'"
+
+All products with an unset Product.price_calculator will default to using LFS_DEFAULT_PRICE_CALCULATOR
 
 **Set product pricing calculator in manage inteface**
 

@@ -5,7 +5,6 @@ from product.properties import *
 from product.variants import *
 from product.related_products import *
 from product.seo import *
-from product.price_calculator import *
 
 from carts import *
 from dashboard import *

@@ -394,6 +394,7 @@ class Product(models.Model):
 
         - price_calculator
             Class that implements lfs.price.PriceCalculator for calculating product price
+            Product will use lfs.core.settings.LFS_DEFAULT_PRICE_CALCULATOR if this field is left blank.
 
         - effective_price:
             Only for internal usage (price filtering).
@@ -526,8 +527,9 @@ class Product(models.Model):
     sku = models.CharField(_(u"SKU"), help_text=_(u"Your unique article number of the product."), blank=True, max_length=30)
     price = models.FloatField(_(u"Price"), default=0.0)
     price_calculator = models.CharField(null=True, blank=True,
-                                        choices=lfs_settings.LFS_PRICE_CALCULATOR_CHOICES,
-                                        max_length=255)
+                                        choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(),
+                                        max_length=255,
+                                        help_text=_(u'Defaults to "%s" if this field is left blank.'%lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY[lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR]))
     effective_price = models.FloatField(_(u"Price"), blank=True)
     price_unit = models.CharField(blank=True, max_length=20)
     unit = models.CharField(blank=True, max_length=20)

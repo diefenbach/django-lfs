@@ -38,6 +38,6 @@ class Command(BaseCommand):
 
         # product model
         db.add_column("catalog_product", "price_calculator_class", models.CharField(null=True, blank=True,
-                                        choices=lfs_settings.LFS_PRICE_CALCULATOR_CHOICES,
+                                        choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(),
                                         max_length=255))
 

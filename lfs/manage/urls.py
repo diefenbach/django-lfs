@@ -111,11 +111,6 @@ urlpatterns += patterns('lfs.manage.views',
     url(r'^manage-seo/(?P<product_id>\d*)$', "manage_seo", name="lfs_manage_product_seo"),
 )
 
-# Product Price Calculator
-urlpatterns += patterns('lfs.manage.views',
-    url(r'^manage-price-calculator/(?P<product_id>\d*)$', "manage_price_calculator", name="lfs_manage_product_price_calculator"),
-)
-
 # Variants
 urlpatterns += patterns('lfs.manage.views.product.variants',
     url(r'^properties/(?P<product_id>\d*)$', "manage_variants"),

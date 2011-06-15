@@ -24,7 +24,6 @@ from lfs.catalog.settings import VARIANT, PRODUCT_TYPE_FORM_CHOICES, PRODUCT_TEM
 from lfs.core.utils import LazyEncoder
 from lfs.manage.views.product.images import manage_images
 from lfs.manage.views.product.seo import manage_seo
-from lfs.manage.views.product.price_calculator import manage_price_calculator
 from lfs.manage.views.product.properties import manage_properties
 from lfs.manage.views.lfs_portlets import portlets_inline
 
@@ -59,7 +58,7 @@ class ProductDataForm(ModelForm):
 
     class Meta:
         model = Product
-        fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "tax",
+        fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "tax", "price_calculator",
             "short_description", "description", "for_sale", "for_sale_price", "static_block", "template",
             "active_price_calculation", "price_calculation", "price_unit", "unit")
 
@@ -84,7 +83,7 @@ class VariantDataForm(ModelForm):
     class Meta:
         model = Product
         fields = ("active", "active_name", "name", "slug", "active_sku", "sku", "sku_manufacturer",
-            "active_price", "price", "active_short_description", "short_description", "active_description",
+            "active_price", "price", "price_calculator", "active_short_description", "short_description", "active_description",
             "description", "for_sale", "for_sale_price", "active_for_sale", "active_for_sale_price",
             "active_related_products", "active_static_block", "static_block", "template")
 
@@ -144,7 +143,6 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
         "seo" : manage_seo(request, product_id),
         "stock" : stock(request, product_id),
         "portlets" : portlets_inline(request, product),
-        "price_calculator" : manage_price_calculator(request, product_id),
         "properties" : manage_properties(request, product_id),
         "form" : ProductSubTypeForm(instance=product),
         "name_filter_value" : request.session.get("product_filters", {}).get("product_name", ""),
