@@ -4,12 +4,9 @@ def setup_module(module):
     pass
 
 
-def test_recordingSuite0():
+def test_cart_prices():
     client = WindmillTestClient(__name__)
-    client.click(link=u'food')
-    client.waits.forPageLoad(timeout=u'20000')
-    client.waits.forElement(link=u'Details', timeout=u'8000')
-    client.click(link=u'Details')
+    client.open(url="/product/chocolate")
     client.waits.forPageLoad(timeout=u'20000')
 
     # check that product includes vat
@@ -18,14 +15,7 @@ def test_recordingSuite0():
     client.waits.forElement(timeout=u'8000', name=u'add-to-cart')
     client.click(name=u'add-to-cart')
     client.waits.forPageLoad(timeout=u'20000')
-    client.waits.forElement(link=u'Go on shopping', timeout=u'8000')
-    client.click(link=u'Go on shopping')
-    client.waits.forPageLoad(timeout=u'20000')
-    client.waits.forElement(xpath=u"//div[@id='content']/div/div[1]/div/div/div[2]/ul/li[3]/a", timeout=u'8000')
-    client.click(xpath=u"//div[@id='content']/div/div[1]/div/div/div[2]/ul/li[3]/a")
-    client.waits.forPageLoad(timeout=u'20000')
-    client.waits.forElement(xpath=u"//div[@id='products']/table/tbody/tr[2]/td/div[4]/a", timeout=u'8000')
-    client.click(xpath=u"//div[@id='products']/table/tbody/tr[2]/td/div[4]/a")
+    client.open(url="/product/apple")
     client.waits.forPageLoad(timeout=u'20000')
 
     # check that product excludes vat
