@@ -373,14 +373,19 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
         # Switch to default variant if product is a "product with variants".
         # if product.is_product_with_variants() and product.has_variants():
         #    product = product.get_default_variant()
+        image = None
+        product_image = product.get_image()
+        if product_image:
+            image = product_image.image
         row.append({
             "obj": product,
             "slug": product.slug,
             "name": product.get_name(),
-            "image": product.get_image().image,
+            "image": image,
             "price": product.get_price(),
             "standard_price": product.get_standard_price(),
             "price_unit": product.price_unit,
+            "price_includes_tax": product.price_includes_tax,
         })
         if (i + 1) % amount_of_cols == 0:
             products.append(row)

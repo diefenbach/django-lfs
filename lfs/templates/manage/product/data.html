@@ -148,7 +148,64 @@
                 {% endif %}
             </div>
 
-            {% if product.is_variant %}
+            {% if not product.is_variant %}
+                <div class="field">
+                    <div class="label">
+                        {{ form.tax.label_tag }}:
+                    </div>
+
+                    {% if form.tax.errors %}
+                        <div class="error">
+                            {{ form.tax }}
+                            {{ form.tax.errors }}
+                        </div>
+                    {% else %}
+                        <div>
+                            {{ form.tax }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% if product.is_configurable_product %}
+                <div class="field">
+                    <div class="label">
+                        {{ form.active_price_calculation }}
+                        {{ form.price_calculation.label_tag }}:
+                    </div>
+
+                    {% if form.price.errors %}
+                        <div class="error">
+                            {{ form.price_calculation }}
+                            {{ form.price_calculation.errors }}
+                        </div>
+                    {% else %}
+                        <div>
+                            {{ form.price_calculation }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <div class="field">
+                <div class="label">
+                    {{ form.price_calculator.label_tag }}:
+                </div>
+
+                {% if form.price.errors %}
+                    <div class="error">
+                        {{ form.price_calculator}}
+                        {{ form.price_calculator.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.price_calculator }}
+                        {{ form.price_calculator.help_text }}
+                    </div>
+                {% endif %}
+            </div>
+
+                        {% if product.is_variant %}
                 <div class="field">
                     <div class="label">
                         {{ form.for_sale.label_tag }}:
@@ -190,45 +247,6 @@
                     {% else %}
                         <div>
                             {{ form.for_sale_price }}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endif %}
-
-            {% if not product.is_variant %}
-                <div class="field">
-                    <div class="label">
-                        {{ form.tax.label_tag }}:
-                    </div>
-
-                    {% if form.tax.errors %}
-                        <div class="error">
-                            {{ form.tax }}
-                            {{ form.tax.errors }}
-                        </div>
-                    {% else %}
-                        <div>
-                            {{ form.tax }}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endif %}
-
-            {% if product.is_configurable_product %}
-                <div class="field">
-                    <div class="label">
-                        {{ form.active_price_calculation }}
-                        {{ form.price_calculation.label_tag }}:
-                    </div>
-
-                    {% if form.price.errors %}
-                        <div class="error">
-                            {{ form.price_calculation }}
-                            {{ form.price_calculation.errors }}
-                        </div>
-                    {% else %}
-                        <div>
-                            {{ form.price_calculation }}
                         </div>
                     {% endif %}
                 </div>

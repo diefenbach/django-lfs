@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.utils.importlib import import_module
 
 # lfs imports
 import lfs.catalog.utils
@@ -51,6 +52,7 @@ from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
 from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
+import lfs.core.settings as lfs_settings
 
 
 def get_unique_id_str():
@@ -389,6 +391,10 @@ class Product(models.Model):
         - price
             The gross price of the product
 
+        - price_calculator
+            Class that implements lfs.price.PriceCalculator for calculating product price
+            Product will use lfs.core.settings.LFS_DEFAULT_PRICE_CALCULATOR if this field is left blank.
+
         - effective_price:
             Only for internal usage (price filtering).
 
@@ -518,6 +524,10 @@ class Product(models.Model):
     slug = models.SlugField(_(u"Slug"), help_text=_(u"The unique last part of the Product's URL."), unique=True, max_length=80)
     sku = models.CharField(_(u"SKU"), help_text=_(u"Your unique article number of the product."), blank=True, max_length=30)
     price = models.FloatField(_(u"Price"), default=0.0)
+    price_calculator = models.CharField(null=True, blank=True,
+                                        choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(),
+                                        max_length=255,
+                                        help_text=_(u'Defaults to "%s" if this field is left blank.'%lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY[lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR]))
     effective_price = models.FloatField(_(u"Price"), blank=True)
     price_unit = models.CharField(blank=True, max_length=20)
     unit = models.CharField(blank=True, max_length=20)
@@ -948,18 +958,22 @@ class Product(models.Model):
 
         return price
 
-    def get_price(self, with_properties=True):
-        """Returns the price of the product. At the moment this is just the
-        gross price. Later this could be the net or the gross price dependent on
-        selected shop options.
 
-        **Parameters:**
-
-        with_properties
-            If the instance is a configurable product and with_properties is
-            True the prices of the default properties are added to the price.
+    def get_price_calculator(self, request=None):
+        """Returns the price calculator class as defined in LFS_DEFAULT_PRICE_CALCULATOR in lfs.core.settings
         """
-        return self.get_price_gross(with_properties)
+        module_str, price_calculator_str =lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR.rsplit('.', 1)
+        if self.price_calculator is not None:
+            module_str, price_calculator_str = self.price_calculator.rsplit('.', 1)
+        mod = import_module(module_str)
+        price_calculator_class = getattr(mod, price_calculator_str)
+        return price_calculator_class(request, self)
+
+    def get_price(self, with_properties=True):
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.get_price(with_properties)
+        
 
     def get_standard_price(self, with_properties=True):
         """Returns always the standard price for the product. Independent
@@ -972,81 +986,50 @@ class Product(models.Model):
             If the instance is a configurable product and with_properties is
             True the prices of the default properties are added to the price.
         """
-        object = self
-
-        if object.is_product_with_variants() and object.get_default_variant():
-            object = object.get_default_variant()
-
-        if object.is_variant() and not object.active_price:
-            object = object.parent
-
-        price = object.price
-        if with_properties and object.is_configurable_product():
-            price += self._get_default_properties_price(object)
-
-        return price
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.get_standard_price(with_properties)
 
     def _get_for_sale_price(self):
         """returns the sale price for the product.
         """
-        object = self
-
-        if object.is_product_with_variants() and object.get_default_variant():
-            object = object.get_default_variant()
-
-        if object.is_variant() and not object.active_for_sale_price:
-            object = object.parent
-
-        return object.for_sale_price
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.get_for_sale_price()
 
     def get_price_gross(self, with_properties=True):
         """Returns the real gross price of the product. This is the base of
         all price and tax calculations.
 
         **Parameters:**
-
+        
         with_properties
-            If the instance is a configurable product and with_properties is
+            If the instance is a configurable product and with_properties is 
             True the prices of the default properties are added to the price.
 
         """
-        object = self
-
-        if object.is_product_with_variants() and object.get_default_variant():
-            object = object.get_default_variant()
-
-        if object.get_for_sale():
-            if object.is_variant() and not object.active_for_sale_price:
-                price = object.parent._get_for_sale_price()
-            else:
-                price = object._get_for_sale_price()
-        else:
-            if object.is_variant() and not object.active_price:
-                price = object.parent.price
-            else:
-                price = object.price
-
-        if with_properties and object.is_configurable_product():
-            price += self._get_default_properties_price(object)
-
-        return price
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.get_price_gross(with_properties)
 
     def get_price_with_unit(self):
         """Returns the formatted gross price of the product
         """
-        from lfs.core.templatetags.lfs_tags import currency
-        price = currency(self.get_price())
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.get_price_with_unit()
 
-        if self.price_unit:
-            price += " / " + self.price_unit
-
-        return price
-
-    def get_price_net(self):
-        """Returns the real net price of the product. Takes care whether the
-        product is for sale.
+    def calculate_price(self, price):
+        """Calulates the price by given entered price calculation.
         """
-        return self.get_price_gross() - self.get_tax()
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.calculate_price(price)
+
+    def get_price_net(self, with_properties=True):
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.get_price_net(with_properties)
 
     def get_global_properties(self):
         """Returns all global properties for the product.
@@ -1112,22 +1095,23 @@ class Product(models.Model):
     def get_tax_rate(self):
         """Returns the tax rate of the product.
         """
-        if self.sub_type == VARIANT:
-            if self.parent.tax is None:
-                return 0.0
-            else:
-                return self.parent.tax.rate
-        else:
-            if self.tax is None:
-                return 0.0
-            else:
-                return self.tax.rate
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.get_tax_rate()
+
+    def price_includes_tax(self):
+        """Returns whether our price calculator includes tax or not.
+        """
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.price_includes_tax()
 
     def get_tax(self):
         """Returns the absolute tax of the product.
         """
-        tax_rate = self.get_tax_rate()
-        return (tax_rate / (tax_rate + 100)) * self.get_price_gross()
+        request = None
+        pc = self.get_price_calculator(request)
+        return pc.get_tax()
 
     def has_related_products(self):
         """Returns True if the product has related products.
