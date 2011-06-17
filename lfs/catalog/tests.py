@@ -34,6 +34,7 @@ from lfs.catalog.models import PropertyOption
 from lfs.catalog.models import ProductAccessories
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import ProductsPropertiesRelation
+from lfs.catalog.models import StaticBlock
 from lfs.core.signals import product_changed
 from lfs.core.signals import product_removed_property_group
 from lfs.tax.models import Tax
@@ -893,6 +894,36 @@ class CategoryTestCase(TestCase):
 
         parent_names = [c.name for c in self.c111.get_parents()]
         self.assertEqual(parent_names, ["Category 11", "Category 1"])
+
+    def test_get_static_block(self):
+        """
+        """
+        result = self.c1.get_static_block()
+        self.assertEqual(result, None)
+
+        result = self.c11.get_static_block()
+        self.assertEqual(result, None)
+
+        # Add static_block to c1
+        sb1 = StaticBlock.objects.create(name="SB1")
+        self.c1.static_block = sb1
+
+        result = self.c1.get_static_block()
+        self.assertEqual(result, sb1)
+
+        result = self.c11.get_static_block()
+        self.assertEqual(result, None)
+        
+        # Add another static_block to c11
+        sb2 = StaticBlock.objects.create(name="SB2")
+        self.c11.static_block = sb2
+
+        result = self.c1.get_static_block()
+        self.assertEqual(result, sb1)
+
+        result = self.c11.get_static_block()
+        self.assertEqual(result, sb2)
+
 
 
 class ViewsTestCase(TestCase):
