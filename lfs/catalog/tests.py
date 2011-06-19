@@ -925,7 +925,6 @@ class CategoryTestCase(TestCase):
         self.assertEqual(result, sb2)
 
 
-
 class ViewsTestCase(TestCase):
     """Tests the views of the lfs.catalog.
     """

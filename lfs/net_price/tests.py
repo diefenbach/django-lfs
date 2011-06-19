@@ -366,7 +366,6 @@ class NetPriceTestCase(TestCase):
 
         self.assertEqual(self.v1.get_for_sale(), False)
 
-
     def test_get_tax_rate(self):
         """
         """

@@ -560,8 +560,8 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
 
     result = render_to_string(template_name, RequestContext(request, {
         "product": product,
-        "standard_price" : product.get_standard_price(request),
-        "price" : product.get_price(request),
+        "standard_price": product.get_standard_price(request),
+        "price": product.get_price(request),
         "variant": variant,
         "variants": variants,
         "product_accessories": variant.get_accessories(),

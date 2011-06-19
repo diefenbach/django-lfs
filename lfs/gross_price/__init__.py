@@ -4,6 +4,7 @@ from lfs.price import PriceCalculator
 from lfs.catalog.settings import VARIANT
 from lfs.catalog.models import ProductPropertyValue
 
+
 class GrossPriceCalculator(PriceCalculator):
     """
     The value of product.price stored in the database includes tax
@@ -139,4 +140,3 @@ class GrossPriceCalculator(PriceCalculator):
         """
         tax_rate = self.get_tax_rate()
         return (tax_rate / (tax_rate + 100)) * self.get_price_gross()
-

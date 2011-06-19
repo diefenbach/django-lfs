@@ -32,6 +32,7 @@ class CartPriceIntegrationTest(djangotest.WindmillDjangoUnitTest):
         # check for new objects in database
         pass
 
+
 class ManageInterfaceIntegrationTest(djangotest.WindmillDjangoUnitTest):
     test_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'windmilltests', 'managetests')
     browser = 'chrome'

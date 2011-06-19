@@ -1,5 +1,6 @@
 from windmill.authoring import  WindmillTestClient
 
+
 def setup_module(module):
     pass
 
@@ -36,8 +37,6 @@ def test_manage_setting_of_price_calculator():
 
     # check that product includes vat
     client.asserts.assertText(xpath=u"//form[@id='product-form']/div[5][@class='prices']/div[2][@class='price-disclaimer']", validator=u'*exc. VAT')
-
-    
 
 
 def teardown_module(module):

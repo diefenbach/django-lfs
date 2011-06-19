@@ -527,7 +527,7 @@ class Product(models.Model):
     price_calculator = models.CharField(null=True, blank=True,
                                         choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(),
                                         max_length=255,
-                                        help_text=_(u'Defaults to "%s" if this field is left blank.'%lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY[lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR]))
+                                        help_text=_(u'Defaults to "%s" if this field is left blank.' % lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY[lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR]))
     effective_price = models.FloatField(_(u"Price"), blank=True)
     price_unit = models.CharField(blank=True, max_length=20)
     unit = models.CharField(blank=True, max_length=20)

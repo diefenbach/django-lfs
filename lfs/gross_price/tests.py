@@ -40,6 +40,7 @@ from lfs.core.signals import product_removed_property_group
 from lfs.tax.models import Tax
 from lfs.tests.utils import RequestFactory
 
+
 class GrossPriceTestCase(TestCase):
     """Tests attributes and methods of Products
     """
@@ -48,11 +49,11 @@ class GrossPriceTestCase(TestCase):
         """
         self.request = RequestFactory().get("/")
         self.request.session = SessionStore()
-        
+
         # set up our price calculator
         self.orig_price_calculator = lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR
         lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR = "lfs.gross_price.GrossPriceCalculator"
-        
+
         # Create a tax
         self.t1 = Tax.objects.create(rate=19.0)
 
@@ -364,7 +365,6 @@ class GrossPriceTestCase(TestCase):
         self.v1.save()
 
         self.assertEqual(self.v1.get_for_sale(), False)
-
 
     def test_get_tax_rate(self):
         """
