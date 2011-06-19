@@ -46,6 +46,9 @@ class GrossPriceTestCase(TestCase):
     def setUp(self):
         """
         """
+        self.request = RequestFactory().get("/")
+        self.request.session = SessionStore()
+        
         # set up our price calculator
         self.orig_price_calculator = lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR
         lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR = "lfs.gross_price.GrossPriceCalculator"
@@ -159,58 +162,58 @@ class GrossPriceTestCase(TestCase):
         """
         """
         # Test product
-        self.assertEqual(self.p1.get_price(), 1.0)
+        self.assertEqual(self.p1.get_price(self.request), 1.0)
 
         # Test variant. By default the price of a variant is inherited
-        self.assertEqual(self.v1.get_price(), 1.0)
+        self.assertEqual(self.v1.get_price(self.request), 1.0)
 
         # Now we switch to active price.
         self.v1.active_price = True
         self.v1.save()
 
         # Now we get the price of the parent product
-        self.assertEqual(self.v1.get_price(), 2.0)
+        self.assertEqual(self.v1.get_price(self.request), 2.0)
 
     def test_get_price_gross(self):
         """Tests the gross price of a product and a variant. Takes active_price
         of the variant into account.
         """
         # Test product
-        self.assertEqual(self.p1.get_price_gross(), 1.0)
+        self.assertEqual(self.p1.get_price_gross(self.request), 1.0)
 
         # Test variant. By default the price_gross of a variant is inherited
-        self.assertEqual(self.v1.get_price_gross(), 1.0)
+        self.assertEqual(self.v1.get_price_gross(self.request), 1.0)
 
         # Now we switch to active price.
         self.v1.active_price = True
         self.v1.save()
 
         # Now we get the price gross of the parent product
-        self.assertEqual(self.v1.get_price_gross(), 2.0)
+        self.assertEqual(self.v1.get_price_gross(self.request), 2.0)
 
     def test_get_price_net(self):
         """Tests the net price of a product and a variant. Takes active_price of
         the variant into account.
         """
         # Test product
-        self.assertEqual("%.2f" % self.p1.get_price_net(), "0.84")
+        self.assertEqual("%.2f" % self.p1.get_price_net(self.request), "0.84")
 
         # Test variant. By default the price_net of a variant is inherited,
         # but the tax is.
-        self.assertEqual("%.2f" % self.v1.get_price_net(), "0.84")
+        self.assertEqual("%.2f" % self.v1.get_price_net(self.request), "0.84")
 
         # Now we switch to ctive price.
         self.v1.active_price = True
         self.v1.save()
 
         # Now we get the price net of the parent product
-        self.assertEqual("%.2f" % self.v1.get_price_net(), "1.68")
+        self.assertEqual("%.2f" % self.v1.get_price_net(self.request), "1.68")
 
     def test_get_standard_price_1(self):
         """Test the price vs. standard price for a product.
         """
         # By default get_standard_price returns then normal price of the product
-        standard_price = self.p1.get_standard_price()
+        standard_price = self.p1.get_standard_price(self.request)
         self.assertEqual(standard_price, 1.0)
 
         # Switch to for sale
@@ -218,11 +221,11 @@ class GrossPriceTestCase(TestCase):
         self.p1.save()
 
         # If the product is for sale ``get_price`` returns the for sale price
-        price = self.p1.get_price()
+        price = self.p1.get_price(self.request)
         self.assertEqual(price, 0.5)
 
         # But ``get_standard_price`` returns still the normal price
-        standard_price = self.p1.get_standard_price()
+        standard_price = self.p1.get_standard_price(self.request)
         self.assertEqual(standard_price, 1.0)
 
     def test_get_standard_price_2(self):
@@ -236,8 +239,8 @@ class GrossPriceTestCase(TestCase):
         self.v1.active_for_sale_price = False
         self.v1.save()
 
-        self.assertEqual(self.v1.get_standard_price(), 1.0)
-        self.assertEqual(self.v1.get_price(), 1.0)
+        self.assertEqual(self.v1.get_standard_price(self.request), 1.0)
+        self.assertEqual(self.v1.get_price(self.request), 1.0)
         self.assertEqual(self.v1.get_for_sale(), False)
 
         #
@@ -248,8 +251,8 @@ class GrossPriceTestCase(TestCase):
         self.v1.active_for_sale_price = True
         self.v1.save()
 
-        self.assertEqual(self.v1.get_standard_price(), 1.0)
-        self.assertEqual(self.v1.get_price(), 1.0)
+        self.assertEqual(self.v1.get_standard_price(self.request), 1.0)
+        self.assertEqual(self.v1.get_price(self.request), 1.0)
         self.assertEqual(self.v1.get_for_sale(), False)
 
         #
@@ -260,8 +263,8 @@ class GrossPriceTestCase(TestCase):
         self.v1.active_for_sale_price = False
         self.v1.save()
 
-        self.assertEqual(self.v1.get_standard_price(), 2.0)
-        self.assertEqual(self.v1.get_price(), 2.0)
+        self.assertEqual(self.v1.get_standard_price(self.request), 2.0)
+        self.assertEqual(self.v1.get_price(self.request), 2.0)
         self.assertEqual(self.v1.get_for_sale(), False)
 
         #
@@ -272,8 +275,8 @@ class GrossPriceTestCase(TestCase):
         self.v1.active_for_sale_price = True
         self.v1.save()
 
-        self.assertEqual(self.v1.get_standard_price(), 2.0)
-        self.assertEqual(self.v1.get_price(), 2.0)
+        self.assertEqual(self.v1.get_standard_price(self.request), 2.0)
+        self.assertEqual(self.v1.get_price(self.request), 2.0)
         self.assertEqual(self.v1.get_for_sale(), False)
 
         #
@@ -284,8 +287,8 @@ class GrossPriceTestCase(TestCase):
         self.v1.active_for_sale_price = False
         self.v1.save()
 
-        self.assertEqual(self.v1.get_standard_price(), 1.0)
-        self.assertEqual(self.v1.get_price(), 0.5)
+        self.assertEqual(self.v1.get_standard_price(self.request), 1.0)
+        self.assertEqual(self.v1.get_price(self.request), 0.5)
         self.assertEqual(self.v1.get_for_sale(), True)
 
         #
@@ -296,8 +299,8 @@ class GrossPriceTestCase(TestCase):
         self.v1.active_for_sale_price = True
         self.v1.save()
 
-        self.assertEqual(self.v1.get_standard_price(), 1.0)
-        self.assertEqual(self.v1.get_price(), 1.5)
+        self.assertEqual(self.v1.get_standard_price(self.request), 1.0)
+        self.assertEqual(self.v1.get_price(self.request), 1.5)
         self.assertEqual(self.v1.get_for_sale(), True)
 
         #
@@ -308,8 +311,8 @@ class GrossPriceTestCase(TestCase):
         self.v1.active_for_sale_price = False
         self.v1.save()
 
-        self.assertEqual(self.v1.get_standard_price(), 2.0)
-        self.assertEqual(self.v1.get_price(), 0.5)
+        self.assertEqual(self.v1.get_standard_price(self.request), 2.0)
+        self.assertEqual(self.v1.get_price(self.request), 0.5)
         self.assertEqual(self.v1.get_for_sale(), True)
 
         #
@@ -320,8 +323,8 @@ class GrossPriceTestCase(TestCase):
         self.v1.active_for_sale_price = True
         self.v1.save()
 
-        self.assertEqual(self.v1.get_standard_price(), 2.0)
-        self.assertEqual(self.v1.get_price(), 1.5)
+        self.assertEqual(self.v1.get_standard_price(self.request), 2.0)
+        self.assertEqual(self.v1.get_price(self.request), 1.5)
         self.assertEqual(self.v1.get_for_sale(), True)
 
         #
@@ -366,33 +369,33 @@ class GrossPriceTestCase(TestCase):
     def test_get_tax_rate(self):
         """
         """
-        tax_rate = self.p1.get_tax_rate()
+        tax_rate = self.p1.get_tax_rate(self.request)
         self.assertEqual(tax_rate, 19.0)
 
         # The variant has the same tax rate as the parent product
-        tax_rate = self.v1.get_tax_rate()
+        tax_rate = self.v1.get_tax_rate(self.request)
         self.assertEqual(tax_rate, 19.0)
 
         # Product 2 doesn't have an assigned tax rate, hence it should be 0.0
-        tax_rate = self.p2.get_tax_rate()
+        tax_rate = self.p2.get_tax_rate(self.request)
         self.assertEqual(tax_rate, 0.0)
 
     def test_get_tax(self):
         """
         """
-        tax = self.p1.get_tax()
+        tax = self.p1.get_tax(self.request)
         self.assertEqual("%.2f" % tax, "0.16")
 
         # The variant has the same tax rate as the parent product
         self.v1.active_price = False
-        tax = self.v1.get_tax()
+        tax = self.v1.get_tax(self.request)
         self.assertEqual("%.2f" % tax, "0.16")
 
         # If the variant has an active price the tax has to take care of this.
         self.v1.active_price = True
-        tax = self.v1.get_tax()
+        tax = self.v1.get_tax(self.request)
         self.assertEqual("%.2f" % tax, "0.32")
 
         # Product 2 doesn't have a assigned tax rate, hence the tax should 0.0
-        tax = self.p2.get_tax()
+        tax = self.p2.get_tax(self.request)
         self.assertEqual("%.2f" % tax, "0.00")

@@ -68,30 +68,30 @@ class Cart(models.Model):
         cart_name.strip(', ')
         return cart_name
 
-    def get_price_gross(self):
+    def get_price_gross(self, request):
         """Returns the total gross price of all items.
         """
         price = 0
         for item in self.items():
-            price += item.get_price_gross()
+            price += item.get_price_gross(request)
 
         return price
 
-    def get_price_net(self):
+    def get_price_net(self, request):
         """Returns the total net price of all items.
         """
         price = 0
         for item in self.items():
-            price += item.get_price_net()
+            price += item.get_price_net(request)
 
         return price
 
-    def get_tax(self):
+    def get_tax(self, request):
         """Returns the total tax of all items
         """
         tax = 0
         for item in self.items():
-            tax += item.get_tax()
+            tax += item.get_tax(request)
 
         return tax
 
@@ -133,38 +133,38 @@ class CartItem(models.Model):
     def __unicode__(self):
         return "Product: %s, Quantity: %f, Cart: %s" % (self.product, self.amount, self.cart)
 
-    def get_price(self):
+    def get_price(self, request):
         """Convenient method to return the gross price of the product.
         """
-        return self.get_price_gross()
+        return self.get_price_gross(request)
 
-    def get_price_net(self):
+    def get_price_net(self, request):
         """Returns the total price of the cart item, which is just the
         multiplication of the product's price and the amount of the product
         within in the cart.
         """
-        return (self.get_price_gross() * self.amount) - (self.get_tax() * self.amount)
+        return (self.get_price_gross(request) * self.amount) - (self.get_tax(request) * self.amount)
 
-    def get_price_gross(self):
+    def get_price_gross(self, request):
         """Returns the gross item price.
         """
-        return self.get_product_price_gross() * self.amount
+        return self.get_product_price_gross(request) * self.amount
 
-    def get_product_price_gross(self):
+    def get_product_price_gross(self, request):
         """Returns the product item price. Based on selected properties, etc.
         """
         if not self.product.is_configurable_product():
-            price = self.product.get_price_gross()
+            price = self.product.get_price_gross(request)
 
             if self.product.active_packing_unit:
                 amount = lfs.catalog.utils.calculate_real_amount(self.product, self.amount)
-                return self.product.get_price_gross() * amount
+                return self.product.get_price_gross(request) * amount
         else:
             if self.product.active_price_calculation:
                 try:
-                    price = self.get_calculated_price()
+                    price = self.get_calculated_price(request)
                 except:
-                    price = self.product.get_price_gross()
+                    price = self.product.get_price_gross(request)
             else:
                 price = self.product.get_price_gross(with_properties=False)
                 for property in self.properties.all():
@@ -177,7 +177,7 @@ class CartItem(models.Model):
                             price += option.price
         return price
 
-    def get_calculated_price(self):
+    def get_calculated_price(self, request):
         """Returns the calculated gross price of the product based on property
         values and the price calculation field of the product.
         """
@@ -204,11 +204,11 @@ class CartItem(models.Model):
 
         return eval(pc)
 
-    def get_tax(self):
+    def get_tax(self, request):
         """Returns the absolute tax of the item.
         """
-        rate = self.product.get_tax_rate()
-        return self.get_price_gross() * (rate / (rate + 100))
+        rate = self.product.get_tax_rate(request)
+        return self.get_price_gross(request) * (rate / (rate + 100))
 
     def get_properties(self):
         """Returns properties of the cart item. Resolves option names for

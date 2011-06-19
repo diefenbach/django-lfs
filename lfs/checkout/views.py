@@ -167,9 +167,19 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
             display_voucher = False
             voucher_value = 0
             voucher_tax = 0
-
+    
+    cart_items = []
+    for cart_item in cart.items():
+        cart_items.append({
+            "product" : cart_item.product,
+            "product_price_net" : cart_item.product.get_price_net(request),
+            "product_price_gross" : cart_item.product.get_price_gross(request),
+            "product_tax" : cart_item.product.get_tax(request),
+        })
+            
     return render_to_string(template_name, RequestContext(request, {
         "cart": cart,
+        "cart_items" : cart_items,
         "cart_price": cart_price,
         "cart_tax": cart_tax,
         "display_voucher": display_voucher,

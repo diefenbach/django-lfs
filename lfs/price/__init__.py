@@ -1,8 +1,7 @@
 
 
 class PriceCalculator(object):
-    """
-    This is the base class that pricing calculators must inherit from
+    """This is the base class that pricing calculators must inherit from.
     """
 
     def __init__(self, request, product, **kwargs):

@@ -109,8 +109,17 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     # Calc delivery date for cart (which is the maximum of all cart items)
     max_delivery_date = cart_utils.get_cart_max_delivery_time(request, cart)
 
+    cart_items = []
+    for cart_item in cart.items():
+        cart_items.append({
+            "product" : cart_item.product,
+            "product_price_net" : cart_item.product.get_price_net(request),
+            "product_price_gross" : cart_item.product.get_price_gross(request),
+            "product_tax" : cart_item.product.get_tax(request),
+        })
+
     return render_to_string(template_name, RequestContext(request, {
-        "cart": cart,
+        "cart_items" : cart_items,
         "max_delivery_date": max_delivery_date,
         "cart_price": cart_price,
         "cart_tax": cart_tax,
@@ -154,11 +163,17 @@ def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
 def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.html"):
     """Displays the added items for the added-to-cart view.
     """
-    cart_items = request.session.get("cart_items", [])
-
     total = 0
-    for cart_item in cart_items:
-        total += cart_item.get_price()
+    cart_items = []
+    for cart_item in request.session.get("cart_items", []):
+        total += cart_item.get_price(request)
+        cart_items.append({
+            "product" : cart_item.product,
+            "obj" : cart_item,
+            "product_price_net" : cart_item.product.get_price_net(request),
+            "product_tax" : cart_item.product.get_tax(request),
+            "product_price_gross" : cart_item.product.get_price_gross(request),
+        })
 
     return render_to_string(template_name, {
         "total": total,

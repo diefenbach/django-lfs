@@ -958,24 +958,23 @@ class Product(models.Model):
 
         return price
 
-
     def get_price_calculator(self, request=None):
         """Returns the price calculator class as defined in LFS_DEFAULT_PRICE_CALCULATOR in lfs.core.settings
         """
-        module_str, price_calculator_str =lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR.rsplit('.', 1)
         if self.price_calculator is not None:
             module_str, price_calculator_str = self.price_calculator.rsplit('.', 1)
+        else:
+            module_str, price_calculator_str = lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR.rsplit('.', 1)
+
         mod = import_module(module_str)
         price_calculator_class = getattr(mod, price_calculator_str)
         return price_calculator_class(request, self)
 
-    def get_price(self, with_properties=True):
-        request = None
+    def get_price(self, request, with_properties=True):
         pc = self.get_price_calculator(request)
         return pc.get_price(with_properties)
-        
 
-    def get_standard_price(self, with_properties=True):
+    def get_standard_price(self, request, with_properties=True):
         """Returns always the standard price for the product. Independent
         whether the product is for sale or not. If you want the real price of
         the product use get_price instead.
@@ -986,25 +985,23 @@ class Product(models.Model):
             If the instance is a configurable product and with_properties is
             True the prices of the default properties are added to the price.
         """
-        request = None
         pc = self.get_price_calculator(request)
         return pc.get_standard_price(with_properties)
 
-    def _get_for_sale_price(self):
+    def _get_for_sale_price(self, request):
         """returns the sale price for the product.
         """
-        request = None
         pc = self.get_price_calculator(request)
         return pc.get_for_sale_price()
 
-    def get_price_gross(self, with_properties=True):
+    def get_price_gross(self, request, with_properties=True):
         """Returns the real gross price of the product. This is the base of
         all price and tax calculations.
 
         **Parameters:**
-        
+
         with_properties
-            If the instance is a configurable product and with_properties is 
+            If the instance is a configurable product and with_properties is
             True the prices of the default properties are added to the price.
 
         """
@@ -1012,22 +1009,19 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.get_price_gross(with_properties)
 
-    def get_price_with_unit(self):
+    def get_price_with_unit(self, request):
         """Returns the formatted gross price of the product
         """
-        request = None
         pc = self.get_price_calculator(request)
         return pc.get_price_with_unit()
 
-    def calculate_price(self, price):
+    def calculate_price(self, request, price):
         """Calulates the price by given entered price calculation.
         """
-        request = None
         pc = self.get_price_calculator(request)
         return pc.calculate_price(price)
 
-    def get_price_net(self, with_properties=True):
-        request = None
+    def get_price_net(self, request, with_properties=True):
         pc = self.get_price_calculator(request)
         return pc.get_price_net(with_properties)
 
@@ -1092,10 +1086,9 @@ class Product(models.Model):
         else:
             return self.sku
 
-    def get_tax_rate(self):
+    def get_tax_rate(self, request):
         """Returns the tax rate of the product.
         """
-        request = None
         pc = self.get_price_calculator(request)
         return pc.get_tax_rate()
 
@@ -1106,10 +1099,9 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.price_includes_tax()
 
-    def get_tax(self):
+    def get_tax(self, request):
         """Returns the absolute tax of the product.
         """
-        request = None
         pc = self.get_price_calculator(request)
         return pc.get_tax()
 
@@ -1356,11 +1348,11 @@ class ProductAccessories(models.Model):
     def __unicode__(self):
         return "%s -> %s" % (self.product.name, self.accessory.name)
 
-    def get_price(self):
+    def get_price(self, request):
         """Returns the total price of the accessory based on the product price
         and the quantity in which the accessory is offered.
         """
-        return self.accessory.get_price() * self.quantity
+        return self.accessory.get_price(request) * self.quantity
 
 
 class PropertyGroup(models.Model):

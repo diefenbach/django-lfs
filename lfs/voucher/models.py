@@ -111,23 +111,23 @@ class Voucher(models.Model):
     def __unicode__(self):
         return self.number
 
-    def get_price_net(self, cart=None):
+    def get_price_net(self, request, cart=None):
         """Returns the net price of the voucher.
         """
         if self.kind_of == ABSOLUTE:
-            return self.value - self.get_tax()
+            return self.value - self.get_tax(request)
         else:
-            return cart.get_price_net() * (self.value / 100)
+            return cart.get_price_net(request) * (self.value / 100)
 
-    def get_price_gross(self, cart=None):
+    def get_price_gross(self, request, cart=None):
         """Returns the gross price of the voucher.
         """
         if self.kind_of == ABSOLUTE:
             return self.value
         else:
-            return cart.get_price_gross() * (self.value / 100)
+            return cart.get_price_gross(request) * (self.value / 100)
 
-    def get_tax(self, cart=None):
+    def get_tax(self, request, cart=None):
         """Returns the absolute tax of the voucher
         """
         if self.kind_of == ABSOLUTE:
@@ -136,7 +136,7 @@ class Voucher(models.Model):
             else:
                 return 0.0
         else:
-            return cart.get_tax() * (self.value / 100)
+            return cart.get_tax(request) * (self.value / 100)
 
     def mark_as_used(self):
         """Mark voucher as used.
@@ -145,7 +145,7 @@ class Voucher(models.Model):
         self.last_used_date = datetime.datetime.now()
         self.save()
 
-    def is_effective(self, cart):
+    def is_effective(self, request, cart):
         """Returns True if the voucher is effective.
         """
         if self.active == False:
@@ -156,7 +156,7 @@ class Voucher(models.Model):
             return (False, MESSAGES[3])
         if self.end_date < datetime.date.today():
             return (False, MESSAGES[4])
-        if self.effective_from > cart.get_price_gross():
+        if self.effective_from > cart.get_price_gross(request):
             return (False, MESSAGES[5])
 
         return (True, MESSAGES[0])

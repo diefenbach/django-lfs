@@ -62,8 +62,8 @@ def get_cart_costs(request, cart, total=False, cached=True):
         cart_price = 0
         cart_tax = 0
         for item in items:
-            cart_price += item.get_price()
-            cart_tax += item.get_tax()
+            cart_price += item.get_price(request)
+            cart_tax += item.get_tax(request)
 
         if len(items) > 0 and total:
             # Shipping

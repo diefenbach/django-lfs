@@ -382,8 +382,8 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
             "slug": product.slug,
             "name": product.get_name(),
             "image": image,
-            "price": product.get_price(),
-            "standard_price": product.get_standard_price(),
+            "price": product.get_price(request),
+            "standard_price": product.get_standard_price(request),
             "price_unit": product.price_unit,
             "price_includes_tax": product.price_includes_tax,
         })
@@ -560,6 +560,8 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
 
     result = render_to_string(template_name, RequestContext(request, {
         "product": product,
+        "standard_price" : product.get_standard_price(request),
+        "price" : product.get_price(request),
         "variant": variant,
         "variants": variants,
         "product_accessories": variant.get_accessories(),

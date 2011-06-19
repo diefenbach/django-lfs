@@ -11,7 +11,7 @@ class NetPriceCalculator(PriceCalculator):
     """
 
     def get_price(self, with_properties=True):
-        return self.get_price_net()
+        return self.get_price_net(self.request)
 
     def get_standard_price(self, with_properties=True):
         """Returns always the standard price for the product. Independent
@@ -52,13 +52,13 @@ class NetPriceCalculator(PriceCalculator):
         return object.for_sale_price
 
     def get_price_gross(self, with_properties=True):
-        return self.product.get_price_net(with_properties) + self.product.get_tax()
+        return self.product.get_price_net(with_properties) + self.product.get_tax(self.request)
 
     def get_price_with_unit(self):
         """Returns the formatted gross price of the product
         """
         from lfs.core.templatetags.lfs_tags import currency
-        price = currency(self.product.get_price())
+        price = currency(self.product.get_price(self.request))
 
         if self.product.price_unit:
             price += " / " + self.product.price_unit
@@ -95,9 +95,9 @@ class NetPriceCalculator(PriceCalculator):
 
         if object.get_for_sale():
             if object.is_variant() and not object.active_for_sale_price:
-                price = object.parent._get_for_sale_price()
+                price = object.parent._get_for_sale_price(self.request)
             else:
-                price = object._get_for_sale_price()
+                price = object._get_for_sale_price(self.request)
         else:
             if object.is_variant() and not object.active_price:
                 price = object.parent.price
@@ -131,4 +131,4 @@ class NetPriceCalculator(PriceCalculator):
         """Returns the absolute tax of the product.
         """
         tax_rate = self.get_tax_rate()
-        return (tax_rate / 100)  * self.get_price_net()
+        return (tax_rate / 100)  * self.get_price_net(self.request)

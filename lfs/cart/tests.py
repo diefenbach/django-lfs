@@ -32,6 +32,9 @@ class CartModelsTestCase(TestCase):
     def setUp(self):
         """
         """
+        self.request = RequestFactory().get("/")
+        self.request.session = SessionStore()
+
         self.tax = Tax.objects.create(rate=19.0)
 
         self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, tax=self.tax)
@@ -44,19 +47,19 @@ class CartModelsTestCase(TestCase):
     def test_get_price(self):
         """
         """
-        price_net = self.cart.get_price_net()
+        price_net = self.cart.get_price_net(self.request)
         self.assertEqual("%.2f" % price_net, "%.2f" % 92.44)
 
     def test_get_gross(self):
         """
         """
-        price_gross = self.cart.get_price_gross()
+        price_gross = self.cart.get_price_gross(self.request)
         self.assertEqual(price_gross, 110.0)
 
     def test_tax(self):
         """
         """
-        tax = self.cart.get_tax()
+        tax = self.cart.get_tax(self.request)
         self.assertEqual("%.2f" % tax, "%.2f" % 17.56)
 
     def test_get_amount_of_items(self):

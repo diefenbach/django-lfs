@@ -148,17 +148,17 @@ def add_order(request):
         order_item = OrderItem.objects.create(
             order=order,
 
-            price_net=cart_item.get_price_net(),
-            price_gross=cart_item.get_price_gross(),
-            tax=cart_item.get_tax(),
+            price_net=cart_item.get_price_net(request),
+            price_gross=cart_item.get_price_gross(request),
+            tax=cart_item.get_tax(request),
 
             product=cart_item.product,
             product_sku=cart_item.product.sku,
             product_name=cart_item.product.get_name(),
             product_amount=cart_item.amount,
-            product_price_net=cart_item.product.get_price_net(),
-            product_price_gross=cart_item.get_product_price_gross(),
-            product_tax=cart_item.product.get_tax(),
+            product_price_net=cart_item.product.get_price_net(request),
+            product_price_gross=cart_item.get_product_price_gross(request),
+            product_tax=cart_item.product.get_tax(request),
         )
 
         cart_item.product.decrease_stock_amount(cart_item.amount)

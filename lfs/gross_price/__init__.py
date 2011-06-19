@@ -12,7 +12,6 @@ class GrossPriceCalculator(PriceCalculator):
     def get_price(self, with_properties=True):
         return self.get_price_gross(with_properties)
 
-
     def get_standard_price(self, with_properties=True):
         """Returns always the standard price for the product. Independent
         whether the product is for sale or not. If you want the real price of
@@ -69,9 +68,9 @@ class GrossPriceCalculator(PriceCalculator):
 
         if object.get_for_sale():
             if object.is_variant() and not object.active_for_sale_price:
-                price = object.parent._get_for_sale_price()
+                price = object.parent._get_for_sale_price(self.request)
             else:
-                price = object._get_for_sale_price()
+                price = object._get_for_sale_price(self.request)
         else:
             if object.is_variant() and not object.active_price:
                 price = object.parent.price
@@ -116,7 +115,7 @@ class GrossPriceCalculator(PriceCalculator):
         """Returns the real net price of the product. Takes care whether the
         product is for sale.
         """
-        return self.product.get_price_gross() - self.product.get_tax()
+        return self.product.get_price_gross(self.request) - self.product.get_tax(self.request)
 
     def price_includes_tax(self):
         return True
