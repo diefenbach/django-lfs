@@ -36,7 +36,9 @@ class Command(BaseCommand):
         db.delete_column('voucher_voucher', 'used')
         db.delete_column('voucher_voucher', 'used_date')
 
-        # product model
-        db.add_column("catalog_product", "price_calculator_class", models.CharField(null=True, blank=True,
-                                        choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(),
-                                        max_length=255))
+        # price calculator
+        db.add_column("catalog_product", "price_calculator", models.CharField(
+            null=True, blank=True, choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(), max_length=255))
+
+        db.add_column("core_shop", "price_calculator",
+            models.CharField(choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(), default=lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR, max_length=255))

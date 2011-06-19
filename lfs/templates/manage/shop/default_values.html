@@ -7,13 +7,31 @@
       action="{% url lfs_save_shop_default_values %}"
       method="post">
     <fieldset>
+        <legend>{% trans "Price Calculator" %}</legend>
+        <div class="field">
+            <div class="label">
+                {{ form.price_calculator.label_tag }}:
+            </div>
+            {% if form.price_calculator.errors %}
+                <div class="error">
+                    {{ form.price_calculator }}
+                    {{ form.price_calculator.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.price_calculator }}
+                </div>
+            {% endif %}
+        </div>
+    </fieldset>
+    <fieldset>
         <legend>{% trans 'Format' %}</legend>
         <div class="field">
             <div class="label">
                 {{ form.product_cols.label_tag }}:
             </div>
         
-            {% if field.errors %}
+            {% if form.product_cols.errors %}
                 <div class="error">
                     {{ form.product_cols }}
                     {{ form.product_cols.errors }}

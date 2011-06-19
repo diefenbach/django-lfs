@@ -44,9 +44,15 @@ from lfs.tests.utils import RequestFactory
 class NetPriceTestCase(TestCase):
     """Tests attributes and methods of Products
     """
+    fixtures = ['lfs_shop.xml']
+
     def setUp(self):
         """
         """
+        shop = lfs.core.utils.get_default_shop()
+        shop.price_calculator = "lfs.net_price.NetPriceCalculator"
+        shop.save()
+
         self.request = RequestFactory().get("/")
         self.request.session = SessionStore()
 

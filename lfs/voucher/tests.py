@@ -56,6 +56,8 @@ class VoucherUtilsTestCase(TestCase):
 class VoucherTestCase(TestCase):
     """
     """
+    fixtures = ['lfs_shop.xml']
+
     def setUp(self):
         """
         """

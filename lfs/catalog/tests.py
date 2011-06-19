@@ -1363,6 +1363,8 @@ class DeliveryTimeTestCase(TestCase):
 class ProductTestCase(TestCase):
     """Tests attributes and methods of Products
     """
+    fixtures = ['lfs_shop.xml']
+
     def setUp(self):
         """
         """
@@ -2429,6 +2431,8 @@ class ProductTestCase(TestCase):
 class ProductAccessoriesTestCase(TestCase):
     """Tests ProductAccessories (surprise, surprise).
     """
+    fixtures = ['lfs_shop.xml']
+
     def setUp(self):
         """
         """

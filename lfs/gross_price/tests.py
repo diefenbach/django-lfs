@@ -44,6 +44,8 @@ from lfs.tests.utils import RequestFactory
 class GrossPriceTestCase(TestCase):
     """Tests attributes and methods of Products
     """
+    fixtures = ['lfs_shop.xml']
+
     def setUp(self):
         """
         """

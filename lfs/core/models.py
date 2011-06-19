@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
+import lfs.core.settings as lfs_settings
 from lfs.checkout.settings import CHECKOUT_TYPES
 from lfs.checkout.settings import CHECKOUT_TYPE_SELECT
 from lfs.core.fields.thumbs import ImageWithThumbsField
@@ -138,6 +139,10 @@ class Shop(models.Model):
        This country will be used to calculate shipping price if the shop
        customer doesn't have select a country yet.
 
+    - price_calculator
+        Class that implements lfs.price.PriceCalculator for calculating product
+        price. This is the default price calculator for all products.
+
     - checkout_type
        Decides whether the customer has to login, has not to login or has the
        choice to to login or not to be able to check out.
@@ -166,6 +171,7 @@ class Shop(models.Model):
     shipping_countries = models.ManyToManyField(Country, verbose_name=_(u"Shipping Countries"), related_name="shipping")
     default_country = models.ForeignKey(Country, verbose_name=_(u"Default country"))
     default_currency = models.CharField(_(u"Default Currency"), max_length=30, default="EUR")
+    price_calculator = models.CharField(choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(), max_length=255, default=lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR)
 
     checkout_type = models.PositiveSmallIntegerField(_(u"Checkout type"), choices=CHECKOUT_TYPES, default=CHECKOUT_TYPE_SELECT)
     confirm_toc = models.BooleanField(default=False)

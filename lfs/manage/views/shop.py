@@ -38,7 +38,7 @@ class ShopDefaultValuesForm(ModelForm):
     """
     class Meta:
         model = Shop
-        fields = ("product_cols", "product_rows", "category_cols",
+        fields = ("price_calculator", "product_cols", "product_rows", "category_cols",
             "default_country", "invoice_countries", "shipping_countries")
 
 

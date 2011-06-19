@@ -392,8 +392,7 @@ class Product(models.Model):
             The gross price of the product
 
         - price_calculator
-            Class that implements lfs.price.PriceCalculator for calculating product price
-            Product will use lfs.core.settings.LFS_DEFAULT_PRICE_CALCULATOR if this field is left blank.
+            Class that implements lfs.price.PriceCalculator for calculating product price.
 
         - effective_price:
             Only for internal usage (price filtering).
@@ -526,8 +525,7 @@ class Product(models.Model):
     price = models.FloatField(_(u"Price"), default=0.0)
     price_calculator = models.CharField(null=True, blank=True,
                                         choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(),
-                                        max_length=255,
-                                        help_text=_(u'Defaults to "%s" if this field is left blank.' % lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY[lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR]))
+                                        max_length=255)
     effective_price = models.FloatField(_(u"Price"), blank=True)
     price_unit = models.CharField(blank=True, max_length=20)
     unit = models.CharField(blank=True, max_length=20)
@@ -958,14 +956,16 @@ class Product(models.Model):
 
         return price
 
-    def get_price_calculator(self, request=None):
-        """Returns the price calculator class as defined in LFS_DEFAULT_PRICE_CALCULATOR in lfs.core.settings
+    def get_price_calculator(self, request):
+        """Returns the price calculator class as defined in LFS_PRICE_CALCULATOR_DICTIONARY
+        in lfs.core.settings.
         """
         if self.price_calculator is not None:
-            module_str, price_calculator_str = self.price_calculator.rsplit('.', 1)
+            price_calculator = self.price_calculator
         else:
-            module_str, price_calculator_str = lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR.rsplit('.', 1)
+            price_calculator = lfs.core.utils.get_default_shop().price_calculator
 
+        module_str, price_calculator_str = price_calculator.rsplit('.', 1)
         mod = import_module(module_str)
         price_calculator_class = getattr(mod, price_calculator_str)
         return price_calculator_class(request, self)

@@ -32,6 +32,7 @@
     <object pk="1" model="core.shop">
         <field type="CharField" name="name">LFS</field>
         <field type="CharField" name="shop_owner">John Doe</field>
+        <field type="CharField" name="price_calculator">lfs.gross_price.GrossPriceCalculator</field>
         <field type="TextField" name="description"></field>
         <field type="FileField" name="image"></field>
         <field to="core.country" name="default_country" rel="ManyToOneRel">1</field>
