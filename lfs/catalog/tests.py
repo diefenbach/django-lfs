@@ -924,6 +924,58 @@ class CategoryTestCase(TestCase):
         result = self.c11.get_static_block()
         self.assertEqual(result, sb2)
 
+    def test_get_filtered_products(self):
+        """
+        """
+        # Sorting
+        result = self.c1.get_filtered_products(filters=None, price_filter=None, sorting="name")
+        product_names = [p.name for p in result]
+        self.assertEqual(product_names, ["Product 1", "Product 2", "Product 3"])
+
+        result = self.c1.get_filtered_products(filters=None, price_filter=None, sorting="-name")
+        product_names = [p.name for p in result]
+        self.assertEqual(product_names, ["Product 3", "Product 2", "Product 1"])
+
+        result = self.c1.get_filtered_products(filters=None, price_filter=None, sorting="price")
+        product_names = [p.name for p in result]
+        self.assertEqual(product_names, ["Product 3", "Product 2", "Product 1"])
+
+        result = self.c1.get_filtered_products(filters=None, price_filter=None, sorting="-price")
+        product_names = [p.name for p in result]
+        self.assertEqual(product_names, ["Product 1", "Product 2", "Product 3"])
+
+        # Price Filter
+        result = self.c1.get_filtered_products(filters=None, price_filter={"min": 1, "max": 1}, sorting="name")
+        product_names = [p.name for p in result]
+        self.assertEqual(product_names, ["Product 3"])
+
+        result = self.c1.get_filtered_products(filters=None, price_filter={"min": 3, "max": 3}, sorting="name")
+        product_names = [p.name for p in result]
+        self.assertEqual(product_names, ["Product 2"])
+
+        result = self.c1.get_filtered_products(filters=None, price_filter={"min": 5, "max": 5}, sorting="name")
+        product_names = [p.name for p in result]
+        self.assertEqual(product_names, ["Product 1"])
+
+        result = self.c1.get_filtered_products(filters=None, price_filter={"min": 1, "max": 3}, sorting="name")
+        product_names = [p.name for p in result]
+        self.assertEqual(product_names, ["Product 2", "Product 3"])
+
+        result = self.c1.get_filtered_products(filters=None, price_filter={"min": 3, "max": 5}, sorting="name")
+        product_names = [p.name for p in result]
+        self.assertEqual(product_names, ["Product 1", "Product 2"])
+
+        result = self.c1.get_filtered_products(filters=None, price_filter={"min": 1, "max": 5}, sorting="name")
+        product_names = [p.name for p in result]
+        self.assertEqual(product_names, ["Product 1", "Product 2", "Product 3"])
+
+        result = self.c1.get_filtered_products(filters=None, price_filter={"min": 4, "max": 4}, sorting="name")
+        product_names = [p.name for p in result]
+        self.assertEqual(product_names, [])
+
+        # Filters
+        # Tested thoroughly within PropertiesTestCase.test_filter_products
+
 
 class ViewsTestCase(TestCase):
     """Tests the views of the lfs.catalog.
