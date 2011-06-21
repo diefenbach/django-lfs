@@ -23,9 +23,6 @@ class PriceCalculator(object):
     def get_price_with_unit(self):
         raise NotImplementedError
 
-    def calculate_price(self, price):
-        raise NotImplementedError
-
     def get_price_net(self, with_properties=True):
         raise NotImplementedError
 

@@ -94,24 +94,6 @@ class GrossPriceCalculator(PriceCalculator):
 
         return price
 
-    def calculate_price(self, price):
-        """Calulates the price by given entered price calculation.
-        """
-        pc = self.product.price_calculation
-        tokens = self.product.price_calculation.split(" ")
-
-        for token in tokens:
-            if token.startswith("property"):
-                mo = re.match("property\((\d+)\)")
-                ppv = ProductPropertyValue.objects.get(product=self.product, property_id=mo.groups()[0])
-
-        try:
-            mult = float(self.product.price_calculation)
-        except:
-            mult = 1
-
-        return mult * price
-
     def get_price_net(self, with_properties=True):
         """Returns the real net price of the product. Takes care whether the
         product is for sale.

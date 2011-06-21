@@ -1015,12 +1015,6 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.get_price_with_unit()
 
-    def calculate_price(self, request, price):
-        """Calulates the price by given entered price calculation.
-        """
-        pc = self.get_price_calculator(request)
-        return pc.calculate_price(price)
-
     def get_price_net(self, request, with_properties=True):
         pc = self.get_price_calculator(request)
         return pc.get_price_net(with_properties)
