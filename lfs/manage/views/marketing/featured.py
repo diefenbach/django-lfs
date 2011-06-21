@@ -133,10 +133,12 @@ def add_featured(request):
 
         temp_id = temp_id.split("-")[1]
         FeaturedProduct.objects.create(product_id=temp_id)
-
-    inline = manage_featured_inline(request, as_string=True)
+    
+    _update_positions()
+        
+    html = [["#featured-inline", manage_featured_inline(request, as_string=True)]]
     result = simplejson.dumps({
-        "html": inline,
+        "html": html,
         "message": _(u"Featured product has been added.")
     }, cls=LazyEncoder)
 
@@ -160,11 +162,12 @@ def update_featured(request):
             except (FeaturedProduct.DoesNotExist, ValueError):
                 pass
 
+            _update_positions()
             featured_changed.send(featured)
 
-        inline = manage_featured_inline(request, as_string=True)
+        html = [["#featured-inline", manage_featured_inline(request, as_string=True)]]
         result = simplejson.dumps({
-            "html": inline,
+            "html": html,
             "message": _(u"Featured product has been removed.")
         }, cls=LazyEncoder)
 
@@ -182,10 +185,17 @@ def update_featured(request):
             featured.position = position
             featured.save()
 
-        inline = manage_featured_inline(request, as_string=True)
+        _update_positions()
+
+        html = [["#featured-inline", manage_featured_inline(request, as_string=True)]]
         result = simplejson.dumps({
-            "html": inline,
+            "html": html,
             "message": _(u"Featured product has been updated.")
         }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
+def _update_positions():
+    for i, featured in enumerate(FeaturedProduct.objects.all()):
+        featured.position = (i + 1) * 10
+        featured.save()

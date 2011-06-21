@@ -1,6 +1,6 @@
 {% load i18n lfs_tags %}
 
-<div style="padding-top:8px">
+<div class="navigation-pages-inline">
     {% if page.has_previous %}
         <a class="products-page-link"
            href="{% url lfs_pg_products_inline property_group.id %}?page=1"><img src="{{ MEDIA_URL }}lfs/icons/resultset_first.png" alt='{% trans "First" %}' /></a>
@@ -84,8 +84,7 @@
 
                 <div class="buttons">
                     <input type="submit"
-                           id="add-products-button"
-                           class="button"
+                           class="ajax-save-button button"
                            value="{% trans 'Add to product group' %}" />
                 </div>
             </form>            
@@ -146,7 +145,7 @@
 
                 <div class="buttons">
                     <input type="submit"
-                           class="products-update-button button"
+                           class="ajax-save-button button"
                            value="{% trans 'Remove from product group' %}" />
                 </div>
             </form>            

@@ -723,3 +723,7 @@ ul.manufacturer-tree ul {
 #active-images-update-form {
     margin-bottom: 15px;
 }
+
+div.separator {
+    padding: 20px 0;
+}

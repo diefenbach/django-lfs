@@ -142,11 +142,6 @@ urlpatterns += patterns('lfs.manage.views.property_groups.products',
     url(r'^pg-products-inline/(?P<product_group_id>\d*)', "products_inline", name="lfs_pg_products_inline"),
 )
 
-# Property Groups / Product Values
-urlpatterns += patterns('lfs.manage.views.property_groups.product_values',
-    url(r'^update-product-values/(?P<property_group_id>\d*)/', "update_product_values", name="lfs_update_product_values"),
-)
-
 # Shop Properties
 urlpatterns += patterns('lfs.manage.views.properties',
     url(r'^shop-properties$', "manage_properties", name="lfs_manage_shop_properties"),

@@ -17,7 +17,6 @@ from lfs.catalog.models import PropertyGroup
 from lfs.catalog.models import ProductPropertyValue
 from lfs.core.utils import LazyEncoder
 from lfs.core.signals import product_removed_property_group
-from product_values import product_values
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -85,7 +84,7 @@ def products_inline(request, product_group_id, as_string=False,
             filters &= Q(categories__in=categories)
 
     products = Product.objects.filter(filters)
-    paginator = Paginator(products.exclude(pk__in=group_product_ids), 6)
+    paginator = Paginator(products.exclude(pk__in=group_product_ids), 25)
 
     try:
         page = paginator.page(page)
@@ -118,9 +117,10 @@ def assign_products(request, group_id):
             product = Product.objects.get(pk=temp_id)
             property_group.products.add(product)
 
+
+    html = [["#products-inline", products_inline(request, group_id, as_string=True)]]
     result = simplejson.dumps({
-        "products_inline": products_inline(request, group_id, as_string=True),
-        "product_values_inline": product_values(request, group_id),
+        "html": html,
         "message": _(u"Products have been assigned.")
     }, cls=LazyEncoder)
 
@@ -141,9 +141,10 @@ def remove_products(request, group_id):
 
             # Notify removing
             product_removed_property_group.send([property_group, product])
-
+    
+    html = [["#products-inline", products_inline(request, group_id, as_string=True)]]
     result = simplejson.dumps({
-        "html": products_inline(request, group_id, as_string=True),
+        "html": html,
         "message": _(u"Products have been removed.")
     }, cls=LazyEncoder)
 

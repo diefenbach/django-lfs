@@ -113,13 +113,16 @@ $(function() {
             data : {"action" : action},
             success : function(data) {
                 data = $.parseJSON(data);
-                for (var html in data["html"])
+                for (var html in data["html"]) {
                     $(data["html"][html][0]).html(data["html"][html][1]);
+                }
                 if (data["close-dialog"]) {
                     $("#delete-dialog").dialog("close");
                     $("#dialog").dialog("close");
                 }
-                $.jGrowl(data["message"]);
+                if (data["message"]) {
+                    $.jGrowl(data["message"]);
+                }
                 hide_ajax_loading();
             }
         })
@@ -221,27 +224,6 @@ $(function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $("#products-inline").html(data)
-        });
-        return false;
-    });
-
-    $(".category-products-add-button").live("click", function() {
-        $("#category-products-add-form").ajaxSubmit({
-            success: function(data) {
-                var data = $.parseJSON(data);
-                $("#products-inline").html(data["products"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    })
-
-    $(".category-products-remove-button").live("click", function() {
-        $("#category-products-remove-form").ajaxSubmit({
-            success: function(data) {
-                $("#products-inline").html(data);
-                $.jGrowl("Produkte wurden von Kategorie entfernt.");
-            }
         });
         return false;
     });
@@ -413,86 +395,7 @@ $(function() {
         return false;
     })
 
-    // Show selected categories - expands all categories which have a selected
-    // sub category.
-    $(".show-selected").live("click", function() {
-
-        $("a:eq(0)", "#manage-product-categories-control").click()
-
-        $("ul.manage-categories input:checked").parents("ul.manage-categories:hidden").each(function() {
-            $(this).show()
-        });
-
-        $("ul.manage-categories input:checked").parents("li.expandable:gt(0)").each(function() {
-            $(this).removeClass("expandable");
-            $(this).addClass("collapsable");
-        });
-
-        $("ul.manage-categories input:checked").parents("li:gt(0)").children(".hitarea").each(function() {
-            $(this).removeClass("expandable-hitarea");
-            $(this).addClass("collapsable-hitarea");
-        });
-
-        return false;
-    })
-
-    // Shows current category in category manage tree (manage category)
-    $(".show-current").live("click", function() {
-
-        $("a:eq(0)", "#manage-categories-categories-control").click()
-
-        var category = $("#manage-tabs").attr("data")
-        $(category).parents("ul.menu:hidden").each(function() {
-            $(this).show()
-        });
-
-        $(category).parents("li.expandable").each(function() {
-            $(this).removeClass("expandable");
-            $(this).addClass("collapsable");
-        });
-
-        $(category).parents("li.lastExpandable").each(function() {
-            $(this).addClass("lastCollapsable");
-            $(this).removeClass("lastExpandable");
-        });
-
-        $(category).parents("li").children(".hitarea").each(function() {
-            $(this).removeClass("expandable-hitarea");
-            $(this).addClass("collapsable-hitarea");
-        });
-
-        return false;
-    })
-
     // Product / Accessories
-    $("#add-accessories-button").live("click", function() {
-        show_ajax_loading()
-        $("#add-accessories-form").ajaxSubmit({
-            "success": function(data) {
-                var data = $.parseJSON(data);
-                $("#accessories-inline").html(data["html"]);
-                $.jGrowl(data["message"]);
-                hide_ajax_loading();
-            }
-        });
-        return false;
-    })
-
-    $(".accessories-update-button").live("click", function() {
-        show_ajax_loading();
-        var action = $(this).attr("name");
-        $("#accessories-update-form").ajaxSubmit({
-            data : {"action" : action},
-            success : function(data) {
-                var data = $.parseJSON(data);
-                $("#accessories-inline").html(data["html"]);
-                $.jGrowl(data["message"]);
-                hide_ajax_loading();
-            }
-        });
-        return false;
-    })
-
     $(".accessories-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
@@ -528,39 +431,6 @@ $(function() {
     });
 
     // Product / Related Products
-    $("#add-related-products-button").live("click", function() {
-        $("#add-related-products-form").ajaxSubmit({
-            "success": function(data) {
-                var data = $.parseJSON(data)
-                $("#related-products-inline").html(data["html"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    })
-
-    $("#remove-related-products-button").live("click", function() {
-        $("#remove-related-products-form").ajaxSubmit({
-            "success": function(data) {
-                var data = $.parseJSON(data);
-                $("#related-products-inline").html(data["html"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    })
-
-    $(".related-products-update-button").live("click", function() {
-        $("#related-products-update-form").ajaxSubmit({
-            "success": function(data) {
-                var data = $.parseJSON(data);
-                $("#related-products-inline").html(data["html"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    });
-
     $(".related-products-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
@@ -665,54 +535,7 @@ $(function() {
     })
 
     // PropertyGroup
-    $("#add-property-button").live("click", function() {
-        $("#add-property-form").ajaxSubmit({
-            "success": function(data) {
-                var data = $.parseJSON(data)
-                $("#properties").html(data["html"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    })
-
-    $(".property-group-update-button").live("click", function() {
-        var action = $(this).attr("name");
-        $("#property-group-update-form").ajaxSubmit({
-            data : {"action" : action},
-            success : function(data) {
-                var data = $.parseJSON(data);
-                $("#properties").html(data["html"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    })
-
     // PropertyGroup / Products
-    $("#add-products-button").live("click", function() {
-        $("#add-products-form").ajaxSubmit({
-            "success": function(data) {
-                var data = $.parseJSON(data);
-                $("#products-inline").html(data["products_inline"]);
-                $("#product-values").html(data["product_values_inline"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    })
-
-    $(".products-update-button").live("click", function() {
-        $("#products-update-form").ajaxSubmit({
-            success : function(data) {
-                var data = $.parseJSON(data);
-                $("#products-inline").html(data["html"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    })
-
     $(".products-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
@@ -737,17 +560,6 @@ $(function() {
     });
 
     // PropertyGroup / Product Property Values
-    $("#update-product-values-button").live("click", function() {
-        $("#update-product-values-form").ajaxSubmit({
-            success : function(data) {
-                var data = $.parseJSON(data);
-                $("#product-values").html(data["html"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    })
-
     // Shop Property Options
     $(".shop-property-add-option-button").live("click", function() {
         var action = $(this).attr("name");
@@ -848,30 +660,6 @@ $(function() {
     });
 
     // Marketing / Topseller
-    $("#add-topseller-button").live("click", function() {
-        $("#add-topseller-form").ajaxSubmit({
-            "success": function(data) {
-                var data = $.parseJSON(data)
-                $("#topseller-inline").html(data["html"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    })
-
-    $(".topseller-update-button").live("click", function() {
-        var action = $(this).attr("name");
-        $("#topseller-update-form").ajaxSubmit({
-            data : {"action" : action},
-            "success": function(data) {
-                var data = $.parseJSON(data);
-                $("#topseller-inline").html(data["html"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    });
-
     $(".topseller-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
@@ -902,30 +690,6 @@ $(function() {
     });
 
     // Marketing / Featured
-    $("#add-featured-button").live("click", function() {
-        $("#add-featured-form").ajaxSubmit({
-            "success": function(data) {
-                var data = $.parseJSON(data)
-                $("#featured-inline").html(data["html"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    })
-
-    $(".featured-update-button").live("click", function() {
-        var action = $(this).attr("name");
-        $("#featured-update-form").ajaxSubmit({
-            data : {"action" : action},
-            "success": function(data) {
-                var data = $.parseJSON(data);
-                $("#featured-inline").html(data["html"]);
-                $.jGrowl(data["message"]);
-            }
-        });
-        return false;
-    });
-
     $(".featured-page-link").live("click", function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {

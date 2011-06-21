@@ -153,10 +153,10 @@ def add_accessories(request, product_id):
     _update_positions(parent_product)
     product_changed.send(parent_product)
 
-    inline = manage_accessories_inline(request, product_id, as_string=True)
+    html = [["#accessories-inline", manage_accessories_inline(request, product_id, as_string=True)]]
 
     result = simplejson.dumps({
-        "html": inline,
+        "html": html,
         "message": _(u"Accessories have been added.")
     }, cls=LazyEncoder)
 
@@ -185,10 +185,10 @@ def remove_accessories(request, product_id):
         _update_positions(parent_product)
         product_changed.send(parent_product)
 
-        inline = manage_accessories_inline(request, product_id, as_string=True)
+        html = [["#accessories-inline", manage_accessories_inline(request, product_id, as_string=True)]]
 
         result = simplejson.dumps({
-            "html": inline,
+            "html": html,
             "message": _(u"Accessories have been removed.")
         }, cls=LazyEncoder)
 
@@ -216,9 +216,9 @@ def remove_accessories(request, product_id):
 
         _update_positions(parent_product)
 
-        inline = manage_accessories_inline(request, product_id, as_string=True)
+        html = [["#accessories-inline", manage_accessories_inline(request, product_id, as_string=True)]]
         result = simplejson.dumps({
-            "html": inline,
+            "html": html,
             "message": _(u"Accessories have been updated.")
         }, cls=LazyEncoder)
 
@@ -236,18 +236,13 @@ def update_accessories(request, product_id):
         product.active_accessories = False
     product.save()
 
-    inline = manage_accessories_inline(request, product_id, as_string=True)
-
+    html = [["#accessories-inline", manage_accessories_inline(request, product_id, as_string=True)]]
     result = simplejson.dumps({
-        "html": inline,
+        "html": html,
         "message": _(u"Accessories have been updated.")
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
-
-    inline = manage_accessories_inline(request, product_id)
-    return HttpResponse(inline)
-
 
 def _update_positions(product):
     """Updates positions of product accessories for given product.

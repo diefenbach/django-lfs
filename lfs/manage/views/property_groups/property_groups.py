@@ -20,7 +20,6 @@ from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyGroup
 from lfs.core.utils import LazyEncoder
 from lfs.manage.views import property_groups
-from lfs.manage.views.property_groups.product_values import product_values
 
 
 class PropertyGroupForm(ModelForm):
@@ -65,7 +64,6 @@ def manage_property_group(request, id, template_name="manage/properties/property
         "property_groups": PropertyGroup.objects.all(),
         "properties": properties_inline(request, id),
         "products": property_groups.products.products(request, id),
-        "product_values": product_values(request, id),
         "form": form,
         "current_id": int(id),
     }))
@@ -137,8 +135,10 @@ def assign_properties(request, group_id):
             pass
 
     _udpate_positions(group_id)
+    
+    html = [["#properties", properties_inline(request, group_id)]]
     result = simplejson.dumps({
-        "html": properties_inline(request, group_id),
+        "html": html,
         "message": _(u"Properties have been assigned.")
     }, cls=LazyEncoder)
 
@@ -168,12 +168,14 @@ def update_properties(request, group_id):
             message = _(u"Properties have been updated.")
 
     _udpate_positions(group_id)
+
+    html = [["#properties", properties_inline(request, group_id)]]
     result = simplejson.dumps({
-        "html": properties_inline(request, group_id),
+        "html": html,
         "message": message
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result)    
 
 
 def _udpate_positions(group_id):

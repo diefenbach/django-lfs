@@ -4,18 +4,21 @@
 <h2 class="heading-first">{% trans 'Accessories' %}</h2>
 
 {% if product.is_variant %}
-    <form id="accessories-update-form"
-          action="{% url lfs_manage_update_accessories product.id %}"
+    <form action="{% url lfs_manage_update_accessories product.id %}"
           method="post">
+        {% csrf_token %}
         <input type="checkbox"
                name="active_accessories"
                {% if product.active_accessories %}checked="checked"{% endif %} />
         <label for="active_accessories">
             {% trans 'Active accessories' %}
         </label>
-        <input class="accessories-update-button"
-               type="submit" value="Update" />
+        <input class="ajax-save-button button" 
+               type="submit" 
+               value='{% trans "Update" %}' />
     </form>
+    <div class="separator"></div>
+    
 {% endif %}
 
 <form id="filter-accessories-form"

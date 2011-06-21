@@ -183,11 +183,9 @@ def add_products(request, category_id):
     category = Category.objects.get(pk=category_id)
 
     for product_id in request.POST.keys():
-
         if product_id.startswith("page") or product_id.startswith("filter") or \
-           product_id.startswith("keep-session"):
+           product_id.startswith("keep-session") or product_id.startswith("action"):
             continue
-
         try:
             category.products.add(product_id)
         except IntegrityError:
@@ -198,8 +196,10 @@ def add_products(request, category_id):
 
     category_changed.send(category)
 
+    html = [["#products-inline", products_inline(request, category_id, as_string=True)]]
+
     result = simplejson.dumps({
-        "products": products_inline(request, category_id, as_string=True),
+        "html": html,
         "message": _(u"Selected products have been added to category.")
     }, cls=LazyEncoder)
 
@@ -215,7 +215,7 @@ def remove_products(request, category_id):
     for product_id in request.POST.keys():
 
         if product_id.startswith("page") or product_id.startswith("filter") or \
-           product_id.startswith("keep-session"):
+           product_id.startswith("keep-session") or product_id.startswith("action"):
             continue
 
         product = Product.objects.get(pk=product_id)
@@ -225,5 +225,11 @@ def remove_products(request, category_id):
 
     category_changed.send(category)
 
-    inline = products_inline(request, category_id)
-    return HttpResponse(inline)
+    html = [["#products-inline", products_inline(request, category_id, as_string=True)]]
+
+    result = simplejson.dumps({
+        "html": html,
+        "message": _(u"Selected products have been removed from category.")
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)

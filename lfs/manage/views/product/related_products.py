@@ -151,9 +151,10 @@ def add_related_products(request, product_id):
         # for more
         parent_product.save()
 
-    inline = manage_related_products_inline(request, product_id, as_string=True)
+    html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
+
     result = simplejson.dumps({
-        "html": inline,
+        "html": html,
         "message": _(u"Related products have been added.")
     }, cls=LazyEncoder)
 
@@ -178,9 +179,10 @@ def remove_related_products(request, product_id):
         # for more
         parent_product.save()
 
-    inline = manage_related_products_inline(request, product_id, as_string=True)
+    html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
+
     result = simplejson.dumps({
-        "html": inline,
+        "html": html,
         "message": _(u"Related products have been removed.")
     }, cls=LazyEncoder)
 
@@ -198,9 +200,11 @@ def update_related_products(request, product_id):
         product.active_related_products = False
     product.save()
 
-    inline = manage_related_products_inline(request, product_id, as_string=True)
+
+    html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
+
     result = simplejson.dumps({
-        "html": inline,
+        "html": html,
         "message": _(u"Related products have been updated.")
     }, cls=LazyEncoder)
 
