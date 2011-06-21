@@ -18,8 +18,10 @@ from lfs.catalog.settings import DELIVERY_TIME_UNIT_MONTHS
 from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD
 from lfs.catalog.settings import PROPERTY_TEXT_FIELD
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DISPLAY
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
+
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import LIST
 
@@ -976,7 +978,6 @@ class CategoryTestCase(TestCase):
         # Filters
         # Tested thoroughly within PropertiesTestCase.test_filter_products
 
-
 class ViewsTestCase(TestCase):
     """Tests the views of the lfs.catalog.
     """
@@ -1533,6 +1534,9 @@ class ProductTestCase(TestCase):
         self.assertEqual(p.active_meta_description, False)
         self.assertEqual(p.active_meta_keywords, False)
 
+    def test_content_type(self):
+        self.assertEqual(self.p1.content_type, u"product")
+
     def test_decrease_stock_amount(self):
         """Tests the decreasing of the stock amount
         """
@@ -1551,6 +1555,29 @@ class ProductTestCase(TestCase):
         # ... but as the stock amount is not managed by LFS any more we have
         # still 1 in the stock.
         self.assertEqual(self.p1.stock_amount, 1)
+
+    def test_has_accessories(self):
+        self.assertEqual(self.p1.has_accessories(), True)
+        self.assertEqual(self.p2.has_accessories(), True)
+        self.assertEqual(self.p3.has_accessories(), True)
+
+        self.p1.accessories.clear()
+
+        self.assertEqual(self.p1.has_accessories(), False)
+        self.assertEqual(self.p2.has_accessories(), True)
+        self.assertEqual(self.p3.has_accessories(), True)
+
+        self.p2.accessories.clear()
+
+        self.assertEqual(self.p1.has_accessories(), False)
+        self.assertEqual(self.p2.has_accessories(), False)
+        self.assertEqual(self.p3.has_accessories(), True)
+
+        self.p3.accessories.clear()
+
+        self.assertEqual(self.p1.has_accessories(), False)
+        self.assertEqual(self.p2.has_accessories(), False)
+        self.assertEqual(self.p3.has_accessories(), False)
 
     def test_get_accessories(self):
         """Tests the get_accessories method. Takes into account the retrieving
@@ -1593,6 +1620,22 @@ class ProductTestCase(TestCase):
 
         names = [a.accessory.name for a in self.p3.get_accessories()]
         self.assertEqual(names, ["Product 1", "Product 2"])
+
+    def test_get_category(self):
+        """
+        """
+        # Note: p1 has category c111; p2 has c111 and c2 (s. above)
+        self.assertEqual(self.p1.get_category(), self.c111)
+        self.assertEqual(self.p2.get_category(), self.c111)
+
+        self.c111.products.remove(self.p1)
+        self.assertEqual(self.p1.get_category(), None)
+
+        self.c111.products.remove(self.p2)
+        self.assertEqual(self.p2.get_category(), self.c2)
+
+        self.c2.products.remove(self.p2)
+        self.assertEqual(self.p2.get_category(), None)
 
     def test_get_categories(self):
         """
@@ -1930,6 +1973,23 @@ class ProductTestCase(TestCase):
         self.failIf(str(ppv_size_m.value) not in options)
 
         options = [p["value"] for p in self.v2.get_variant_properties()]
+        self.failIf(str(self.ppv_color_green.value) not in options)
+        self.failIf(str(self.ppv_size_l.value) not in options)
+
+    def test_get_displayed_properties(self):
+        """
+        """
+        # First add some variant property values
+        ppv_color_red = ProductPropertyValue.objects.create(product=self.p1, property=self.color, value=self.red.id, type=PROPERTY_VALUE_TYPE_DISPLAY)
+        ppv_size_m = ProductPropertyValue.objects.create(product=self.p1, property=self.size, value=self.m.id, type=PROPERTY_VALUE_TYPE_DISPLAY)
+        ppv_color_green = ProductPropertyValue.objects.create(product=self.p2, property=self.color, value=self.green.id, type=PROPERTY_VALUE_TYPE_DISPLAY)
+        ppv_size_l = ProductPropertyValue.objects.create(product=self.p2, property=self.size, value=self.l.id, type=PROPERTY_VALUE_TYPE_DISPLAY)
+
+        options = [p["value"] for p in self.p1.get_displayed_properties()]
+        self.failIf(str(ppv_color_red.value) not in options)
+        self.failIf(str(ppv_size_m.value) not in options)
+
+        options = [p["value"] for p in self.p2.get_displayed_properties()]
         self.failIf(str(self.ppv_color_green.value) not in options)
         self.failIf(str(self.ppv_size_l.value) not in options)
 
@@ -2427,7 +2487,19 @@ class ProductTestCase(TestCase):
         # Now we get the weight of the variant itself
         self.assertEqual(self.v1.get_weight(), 14.0)
 
+    def test_get_price_with_unit(self):
+        self.assertEqual(self.p1.get_price_with_unit(self.request), u"1.00 EUR")
 
+        self.p1.price_calculator = "lfs.net_price.NetPriceCalculator"
+        self.p1.save()
+
+        self.assertEqual(self.p1.get_price_with_unit(self.request), u"1.00 EUR")
+
+        self.p1.price_calculator = None
+        self.p1.save()
+
+        self.assertEqual(self.p1.get_price_with_unit(self.request), u"1.00 EUR")
+    
 class ProductAccessoriesTestCase(TestCase):
     """Tests ProductAccessories (surprise, surprise).
     """
