@@ -58,7 +58,7 @@ class NetPriceCalculator(PriceCalculator):
         """Returns the formatted gross price of the product
         """
         from lfs.core.templatetags.lfs_tags import currency
-        price = currency(self.product.get_price(self.request))
+        price = currency(self.get_price())
 
         if self.product.price_unit:
             price += " / " + self.product.price_unit
