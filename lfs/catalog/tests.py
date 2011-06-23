@@ -602,9 +602,9 @@ class CategoryTestCase(TestCase):
         # Create a category hierachy
         self.c1 = Category.objects.create(name="Category 1", slug="category-1",
             short_description="Short description category 1")
-        self.c11 = Category.objects.create(name="Category 11", slug="category-11", parent=self.c1)
+        self.c11 = Category.objects.create(name="Category 11", slug="category-11", parent=self.c1, position=10)
         self.c111 = Category.objects.create(name="Category 111", slug="category-111", parent=self.c11)
-        self.c12 = Category.objects.create(name="Category 12", slug="category-12", parent=self.c1)
+        self.c12 = Category.objects.create(name="Category 12", slug="category-12", parent=self.c1, position=20)
 
         # Add products to categories
         self.c111.products = [self.p1, self.p2]
