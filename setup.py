@@ -28,7 +28,7 @@ setup(name='django-lfs',
       dependency_links = ["http://pypi.iqpp.de/"],
       install_requires=[
         'setuptools',
-        'django-lfstheme == 0.5.0b6',
+        'django-lfstheme == 0.5.0b7',
         'django-portlets == 1.0',
         'django-pagination == 1.0.7',
         'django-reviews == 0.2.1',
