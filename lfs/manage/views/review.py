@@ -238,7 +238,7 @@ def delete_review(request, review_id):
     else:
         review.delete()
 
-    return set_message_cookie(
+    return lfs.core.utils.set_message_cookie(
         reverse("lfs_manage_reviews"), _(u"Review has been deleted."))
 
 

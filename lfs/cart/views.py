@@ -112,9 +112,10 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     cart_items = []
     for cart_item in cart.items():
         cart_items.append({
+            "obj": cart_item,
             "product": cart_item.product,
             "product_price_net": cart_item.product.get_price_net(request),
-            "product_price_gross": cart_item.product.get_price_gross(request),
+            "product_price_gross": cart_item.product.get_price_gross(request) * cart_item.amount,
             "product_tax": cart_item.product.get_tax(request),
         })
 

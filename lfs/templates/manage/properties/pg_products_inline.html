@@ -2,9 +2,9 @@
 
 <div class="navigation-pages-inline">
     {% if page.has_previous %}
-        <a class="products-page-link"
+        <a class="ajax-link"
            href="{% url lfs_pg_products_inline property_group.id %}?page=1"><img src="{{ MEDIA_URL }}lfs/icons/resultset_first.png" alt='{% trans "First" %}' /></a>
-        <a class="products-page-link"
+        <a class="ajax-link"
            href="{% url lfs_pg_products_inline property_group.id %}?page={{ page.previous_page_number }}"><img src="{{ MEDIA_URL }}lfs/icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
     {% else %}
         <img src="{{ MEDIA_URL }}lfs/icons/resultset_first.png" alt='{% trans "First" %}' />
@@ -16,11 +16,10 @@
     </span>
 
     {% if page.has_next %}
-        <a class="products-page-link"
+        <a class="ajax-link"
            href="{% url lfs_pg_products_inline property_group.id %}?page={{ page.next_page_number }}"><img src="{{ MEDIA_URL }}lfs/icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
-        <a class="products-page-link"
+        <a class="ajax-link"
            href="{% url lfs_pg_products_inline property_group.id %}?page={{ paginator.num_pages }}"><img src="{{ MEDIA_URL }}lfs/icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
-   
     {% else %}
         <img src="{{ MEDIA_URL }}lfs/icons/resultset_next.png" alt='{% trans "Next" %}' />
         <img src="{{ MEDIA_URL }}lfs/icons/resultset_last.png"  alt='{% trans "Last" %}' />
@@ -33,7 +32,7 @@
             <h2>{% trans 'Products' %}</h2>
             <form id="add-products-form"
                   action="{% url lfs_assign_products_to_property_group property_group.id %}"
-                  method="post">    
+                  method="post">
                 <div id="property-products-left">
                     <table class="lfs-manage-table">
                         <tr>
@@ -50,7 +49,7 @@
                             </th>
                             <th class="tiny right-padding">
                                 {% trans 'Active' %}
-                            </th>                            
+                            </th>
                         </tr>
                         {% for product in page.object_list %}
                             <tr class="{% cycle 'even' 'odd' %}">
@@ -74,7 +73,7 @@
                                         <img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
                                     {% endif %}
                                 </td>
-                            </tr>        
+                            </tr>
                         {% endfor %}
                     </table>
                 </div>
@@ -87,7 +86,7 @@
                            class="ajax-save-button button"
                            value="{% trans 'Add to product group' %}" />
                 </div>
-            </form>            
+            </form>
         </td>
         <td width="50%">
             <h2>{% trans 'Assigned products' %}</h2>
@@ -110,7 +109,7 @@
                             </th>
                             <th class="tiny right-padding">
                                 {% trans 'Active' %}
-                            </th>                            
+                            </th>
                         </tr>
 
                         {% for product in group_products %}
@@ -124,7 +123,7 @@
                                     <a href="{% url lfs_manage_product product.id %}">
                                         {{ product.get_name }}
                                     </a>
-                                </td>                        
+                                </td>
                                 <td>
                                     {{ product.get_sku }}
                                 </td>
@@ -137,8 +136,8 @@
                                 </td>
                             </tr>
                         {% endfor %}
-                    </table>    
-                </div>    
+                    </table>
+                </div>
                 <input type="hidden"
                        name="keep-filters"
                        value="1" />
@@ -148,7 +147,7 @@
                            class="ajax-save-button button"
                            value="{% trans 'Remove from product group' %}" />
                 </div>
-            </form>            
+            </form>
         </td>
     </tr>
 </table>

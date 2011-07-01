@@ -21,11 +21,10 @@
 <form id="filter-products-form"
       action="{% url lfs_pg_products_inline property_group.id %}"
       onsubmit="return false">
-    <input class="filter-products-input" type="text" name="filter"/>
-    
-    {% category_filter "products-categories-filter" "products_category_filter" %}
+    <input class="refresh-on-keyup" type="text" name="filter"/>    
+    {% category_filter "refresh-on-change" "products_category_filter" %}
 </form>
 
 <div id="products-inline">
-    {{products_inline}}
+    {{ products_inline }}
 </div>

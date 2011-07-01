@@ -2,7 +2,6 @@
 
 <h2>{% trans 'Data' %}</h2>
 
-
 <form id="product-data-form"
       action="{% url lfs.manage.views.edit_product_data product.id %}"
       method="post">
@@ -355,10 +354,9 @@
             </div>
         </fieldset>
         <div class="buttons">
-            <input class="button"
+            <input class="ajax-save-button button"
                    type="submit"
-                   value="{% trans 'Save data' %}"
-                   id="product-data-save-button" />
+                   value="{% trans 'Save data' %}" />
         </div>           
 </form>
 <script>

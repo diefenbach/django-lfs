@@ -37,7 +37,7 @@
                 <input type="submit"
                        value="{% trans 'Add option' %}"
                        name="add"
-                       class="button shop-property-add-option-button" />
+                       class="ajax-save-button button" />
             </td>
         </tr>
         {% for option in property.options.all %}
@@ -64,8 +64,8 @@
                            value="{% if option.price %}{{ option.price }}{% endif %}" />
                 </td>
                 <td>
-                    <a class="confirmation-link"
-                       data="{% trans 'Delete?' %}"
+                    <a class="delete-link"
+                       dialog_message="{% trans 'Do you really want to delete this option?' %}"
                        href="{% url lfs_delete_shop_property_option option.id %}">
                         <img src="{{ MEDIA_URL }}lfs/icons/cross.png"
                              alt="{% trans 'Delete' %}"
@@ -79,7 +79,7 @@
         <input type="submit"
                value="{% trans 'Update options' %}"
                name="update"
-               class="button shop-property-add-option-button" />
+               class="ajax-save-button button" />
     </div>
 </form>
 <script>

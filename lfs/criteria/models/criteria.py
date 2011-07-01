@@ -76,7 +76,7 @@ class CartPriceCriterion(models.Model, Criterion):
         the cart.
         """
         if product is not None:
-            cart_price = product.get_price()
+            cart_price = product.get_price(request)
         else:
             from lfs.cart import utils as cart_utils
             cart = cart_utils.get_cart(request)

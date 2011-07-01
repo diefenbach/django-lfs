@@ -6,18 +6,17 @@
 <form id="filter-topseller-form"
       action="{% url lfs_manage_topseller_inline %}"
       onsubmit="return false">
-    <input class="filter-topseller-input" type="text" name="filter"/>
-    
-    {% category_filter "topseller-categories-filter" "topseller_category_filter" %}
+    <input class="refresh-on-keyup" type="text" name="filter"/>
 
-    <select id="topseller-amount"
+    {% category_filter "refresh-on-change" "topseller_category_filter" %}
+
+    <select class="refresh-on-change"
             name="topseller-amount">
         {% for option in amount_options %}
-            <option {% if option.selected %}selected="selected"{% endif %} 
+            <option {% if option.selected %}selected="selected"{% endif %}
                     value="{{ option.value }}">{{ option.value }}</option>
         {% endfor %}
     </select>
-    
 </form>
 
 <div id="topseller-inline">

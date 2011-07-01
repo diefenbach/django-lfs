@@ -42,8 +42,7 @@ def manage_accessories(request, product_id, template_name="manage/product/access
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def manage_accessories_inline(
-    request, product_id, as_string=False, template_name="manage/product/accessories_inline.html"):
+def manage_accessories_inline(request, product_id, as_string=False, template_name="manage/product/accessories_inline.html"):
     """View which shows all accessories for the product with the passed id.
     """
     product = Product.objects.get(pk=product_id)
@@ -122,7 +121,10 @@ def manage_accessories_inline(
     if as_string:
         return result
     else:
-        return HttpResponse(result)
+        return HttpResponse(
+            simplejson.dumps({
+                "html": [["#accessories-inline", result]],
+            }))
 
 
 # Actions
@@ -243,6 +245,7 @@ def update_accessories(request, product_id):
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def _update_positions(product):
     """Updates positions of product accessories for given product.

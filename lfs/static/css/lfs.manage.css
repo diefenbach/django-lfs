@@ -235,10 +235,7 @@ tr.odd {
     top:3px;
 }
 
-.category-selected-products-filter-input,
-.category-products-filter-input,
-.filter-accessories-input,
-.filter-related-products-input {
+.refresh-on-keyup {
     width: 166px;    
 }
 
@@ -280,19 +277,6 @@ tr.odd {
 
 .manage-categories-portlet li.current-item {
     font-weight: bold;
-}
-
-#manage-categories-categories-control {
-    padding: 2px 0 10px 0;
-}
-
-#manage-product-categories-control {
-    padding: 0 0 20px 0;
-}
-
-#selectable-products-filter-input,
-#selectable-products-category-filter {
-    width: 170px;
 }
 
 /* Links */
@@ -726,4 +710,19 @@ ul.manufacturer-tree ul {
 
 div.separator {
     padding: 20px 0;
+}
+
+.handle {
+    background-color: #ccc;
+    cursor: move;
+}
+
+.placeholder { 
+    border: 1px dashed black; 
+    visibility: visible !important;     
+    height: 35px;
+}
+
+ol {
+    padding: 0 0 0 25px;
 }

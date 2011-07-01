@@ -70,7 +70,7 @@ class NumberFieldForm(ModelForm):
         fields = ["decimal_places", "unit_min", "unit_max", "unit_step"]
 
 
-class StepForm(ModelForm):
+class StepRangeForm(ModelForm):
     """Form to manage step range.
     """
     class Meta:
@@ -194,16 +194,17 @@ def save_number_field_validators(request, property_id):
     form = NumberFieldForm(instance=property, data=request.POST)
     property = form.save()
 
-    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    response = HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    return lfs.core.utils.set_message_to(response, _(u"Validators have been saved."))
 
 
 @permission_required("core.manage_shop", login_url="/login/")
 def steps_inline(request, property_id, template_name="manage/properties/step_inline.html"):
-    """Display the steps of a propety. Factored out for Ajax requests.
+    """Display the steps of a property. Factored out for Ajax requests.
     """
     property = get_object_or_404(Property, pk=property_id)
 
-    step_form = StepForm(instance=property)
+    step_form = StepRangeForm(instance=property)
     step_type_form = StepTypeForm(instance=property)
 
     return render_to_string(template_name, RequestContext(request, {
@@ -215,17 +216,16 @@ def steps_inline(request, property_id, template_name="manage/properties/step_inl
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
-def save_step(request, property_id):
+def save_step_range(request, property_id):
     """Save the steps of the property with given id.
     """
     property = get_object_or_404(Property, pk=property_id)
 
-    form = StepForm(instance=property, data=request.POST)
+    form = StepRangeForm(instance=property, data=request.POST)
     property = form.save()
 
     result = simplejson.dumps({
-        "steps": steps_inline(request, property_id),
-        "message": _(u"Steps have been saved."),
+        "message": _(u"Step range has been saved."),
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
@@ -241,11 +241,11 @@ def save_step_type(request, property_id):
     form = StepTypeForm(instance=property, data=request.POST)
     property = form.save()
 
+    html = [["#steps", steps_inline(request, property_id)]]
     result = simplejson.dumps({
-        "steps": steps_inline(request, property_id),
+        "html": html,
         "message": _(u"Step type has been saved."),
     }, cls=LazyEncoder)
-
     return HttpResponse(result)
 
 
@@ -275,11 +275,11 @@ def add_step(request, property_id):
                 step.save()
         message = _(u"Steps have been updated.")
 
+    html = [["#steps", steps_inline(request, property_id)]]
     result = simplejson.dumps({
-        "steps": steps_inline(request, property_id),
-        "message": message
+        "html": html,
+        "message": message,
     }, cls=LazyEncoder)
-
     return HttpResponse(result)
 
 
@@ -296,7 +296,8 @@ def delete_step(request, id):
         url = reverse("lfs_manage_shop_property", kwargs={"id": property.id})
         step.delete()
 
-    return HttpResponseRedirect(url)
+    response = HttpResponseRedirect(url)
+    return lfs.core.utils.set_message_to(response, _(u"The step has been saved."))
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -391,11 +392,12 @@ def add_option(request, property_id):
         message = _(u"Options have been update.")
 
     _update_positions(property)
+
+    html = [["#options", options_inline(request, property_id)]]
     result = simplejson.dumps({
-        "options": options_inline(request, property_id),
+        "html": html,
         "message": message
     }, cls=LazyEncoder)
-
     return HttpResponse(result)
 
 

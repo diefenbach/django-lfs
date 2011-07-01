@@ -52,7 +52,7 @@ def add_image(request, product_id):
 
     # Refresh positions
     for i, image in enumerate(product.images.all()):
-        image.position = i + 1
+        image.position = (i + 1) * 10
         image.save()
 
     product_changed.send(product, request=request)
@@ -108,8 +108,9 @@ def update_images(request, product_id):
 
     product_changed.send(product, request=request)
 
+    html = [["#images", manage_images(request, product_id, as_string=True)]]
     result = simplejson.dumps({
-        "images": manage_images(request, product_id, as_string=True),
+        "html": html,
         "message": message,
     }, cls=LazyEncoder)
 

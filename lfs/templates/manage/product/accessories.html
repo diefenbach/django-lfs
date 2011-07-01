@@ -24,11 +24,11 @@
 <form id="filter-accessories-form"
       action="{% url lfs.manage.views.manage_accessories_inline product.id %}"
       onsubmit="return false">
-    <input class="filter-accessories-input" type="text" name="filter"/>
+    <input class="refresh-on-keyup" type="text" name="filter"/>
 
-    {% category_filter "accessories-categories-filter" "accessories_category_filter" %}
+    {% category_filter "refresh-on-change" "accessories_category_filter" %}
 
-    <select id="accessories-amount"
+    <select class="refresh-on-change"
             name="accessories-amount">
         {% for option in amount_options %}
             <option {% if option.selected %}selected="selected"{% endif %}

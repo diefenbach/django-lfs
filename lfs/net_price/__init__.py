@@ -34,7 +34,7 @@ class NetPriceCalculator(PriceCalculator):
 
         price = object.price
         if with_properties and object.is_configurable_product():
-            price += self._get_default_properties_price(object)
+            price += object.get_default_properties_price()
 
         return price
 
@@ -87,7 +87,7 @@ class NetPriceCalculator(PriceCalculator):
                 price = object.price
 
         if with_properties and object.is_configurable_product():
-            price += self._get_default_properties_price(object)
+            price += object.get_default_properties_price()
 
         return price
 

@@ -119,7 +119,10 @@ def manage_topseller_inline(
     if as_string:
         return result
     else:
-        return HttpResponse(result)
+        return HttpResponse(
+            simplejson.dumps({
+                "html": [["#topseller-inline", result]],
+            }))
 
 
 # Actions
@@ -134,7 +137,7 @@ def add_topseller(request):
 
         temp_id = temp_id.split("-")[1]
         Topseller.objects.create(product_id=temp_id)
-    
+
     _update_positions()
     html = [["#topseller-inline", manage_topseller_inline(request, as_string=True)]]
     result = simplejson.dumps({
@@ -193,6 +196,7 @@ def update_topseller(request):
         }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def _update_positions():
     for i, topseller in enumerate(Topseller.objects.all()):

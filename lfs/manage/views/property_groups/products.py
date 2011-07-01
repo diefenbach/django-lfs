@@ -102,7 +102,10 @@ def products_inline(request, product_group_id, as_string=False,
     if as_string:
         return result
     else:
-        return HttpResponse(result)
+        return HttpResponse(
+            simplejson.dumps({
+                "html": [["#products-inline", result]],
+            }))
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -116,7 +119,6 @@ def assign_products(request, group_id):
             temp_id = temp_id.split("-")[1]
             product = Product.objects.get(pk=temp_id)
             property_group.products.add(product)
-
 
     html = [["#products-inline", products_inline(request, group_id, as_string=True)]]
     result = simplejson.dumps({
@@ -141,7 +143,7 @@ def remove_products(request, group_id):
 
             # Notify removing
             product_removed_property_group.send([property_group, product])
-    
+
     html = [["#products-inline", products_inline(request, group_id, as_string=True)]]
     result = simplejson.dumps({
         "html": html,

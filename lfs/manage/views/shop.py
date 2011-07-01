@@ -96,8 +96,10 @@ def save_default_values(request):
     else:
         message = _(u"Please correct the indicated errors.")
 
+    html = [["#default-values", default_values_part(request)]]
+
     result = simplejson.dumps({
-        "html": default_values_part(request),
+        "html": html,
         "message": message
     }, cls=LazyEncoder)
 

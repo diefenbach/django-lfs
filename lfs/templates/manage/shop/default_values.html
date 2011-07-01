@@ -3,8 +3,7 @@
     {% trans 'Default Values' %}
 </h2>
 
-<form id="shop-default-values-form"
-      action="{% url lfs_save_shop_default_values %}"
+<form action="{% url lfs_save_shop_default_values %}"
       method="post">
     <fieldset>
         <legend>{% trans "Price Calculator" %}</legend>
@@ -128,8 +127,7 @@
         </div>                
     </fieldset>
     <div class="buttons">
-        <input id="shop-default-values-button"
-               class="button"
+        <input class="ajax-save-button button"
                type="submit"
                value="{% trans 'Save Default Values' %}">
     </div>

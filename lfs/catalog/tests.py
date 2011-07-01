@@ -978,6 +978,7 @@ class CategoryTestCase(TestCase):
         # Filters
         # Tested thoroughly within PropertiesTestCase.test_filter_products
 
+
 class ViewsTestCase(TestCase):
     """Tests the views of the lfs.catalog.
     """
@@ -2499,7 +2500,8 @@ class ProductTestCase(TestCase):
         self.p1.save()
 
         self.assertEqual(self.p1.get_price_with_unit(self.request), u"1.00 EUR")
-    
+
+
 class ProductAccessoriesTestCase(TestCase):
     """Tests ProductAccessories (surprise, surprise).
     """

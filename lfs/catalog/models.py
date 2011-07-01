@@ -931,11 +931,11 @@ class Product(models.Model):
         except KeyError:
             return False
 
-    def _get_default_properties_price(self, object):
+    def get_default_properties_price(self):
         """Returns the total price of all default properties.
         """
         price = 0
-        for property in object.get_configurable_properties():
+        for property in self.get_configurable_properties():
             if property.add_price:
                 # Try to get the default value of the property
                 try:
@@ -950,9 +950,15 @@ class Product(models.Model):
                         except IndexError:
                             continue
                         else:
-                            price += po.price
+                            try:
+                                price += po.price
+                            except TypeError:
+                                pass
                 else:
-                    price += po.price
+                    try:
+                        price += po.price
+                    except TypeError:
+                        pass
 
         return price
 

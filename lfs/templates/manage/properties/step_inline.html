@@ -9,14 +9,13 @@
     <input type="submit"
            value="{% trans 'Save step type' %}"
            name="Save"
-           class="button shop-property-save-step-type-button" />
+           class="ajax-save-button button" />
 
 </form>
 
 {% if property.is_range_step_type %}
     <h3 class="heading-middle">{% trans 'Step range' %}</h3>
-    <form id="shop-property-step-form"
-          action="{% url lfs_save_shop_property_step property.id %}"
+    <form action="{% url lfs_save_shop_property_step_range property.id %}"
           method="post">
 
         {{ step_form.step }}
@@ -24,15 +23,14 @@
         <input type="submit"
                value="{% trans 'Save step' %}"
                name="Save"
-               class="button shop-property-save-step-button" />
+               class="ajax-save-button button" />
     </form>
 
 {% endif %}
 
 {% if property.is_steps_step_type %}
     <h3 class="heading-middle">{% trans 'Steps' %}</h3>
-    <form id="shop-property-steps-form"
-          action="{% url lfs_add_shop_property_step property.id %}"
+    <form action="{% url lfs_add_shop_property_step property.id %}"
           method="post">
         <table>
             <tr>
@@ -47,7 +45,7 @@
                     <input type="submit"
                            value="{% trans 'Add step' %}"
                            name="add"
-                           class="button shop-property-add-step-button" />
+                           class="ajax-save-button button" />
                 </td>
             </tr>
             {% for step in property.steps.all %}
@@ -55,19 +53,20 @@
                     <td>
                         <input type="hidden"
                                name="step"
-                               value="{{step.id}}" />
+                               value="{{ step.id }}" />
 
                         <input class="number"
                                type="text"
                                size="10"
-                               name="start-{{step.id}}"
-                               value="{{step.start}}" />
+                               name="start-{{ step.id }}"
+                               value="{{ step.start }}" />
                     </td>
                     <td>
-                        <a class="confirmation-link"
-                           data="{% trans 'Delete?' %}"
+                        <a class="delete-link"
+                           dialog_message="{% trans 'Do you really want to delete this step?' %}"
+                           is_ajax="1"
                            href="{% url lfs_delete_shop_property_step step.id %}">
-                            <img src="{{MEDIA_URL}}lfs/icons/cross.png"
+                            <img src="{{ MEDIA_URL }}lfs/icons/cross.png"
                                  alt="{% trans 'Delete' %}"
                                  title="{% trans 'Delete step' %}" />
                         </a>
@@ -79,7 +78,7 @@
             <input type="submit"
                    value="{% trans 'Update steps' %}"
                    name="update"
-                   class="button shop-property-add-step-button" />
+                   class="ajax-save-button button" />
         </div>
     </form>
 {% endif %}

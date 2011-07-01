@@ -121,7 +121,10 @@ def manage_related_products_inline(
     if as_string:
         return result
     else:
-        return HttpResponse(result)
+        return HttpResponse(
+            simplejson.dumps({
+                "html": [["#related-products-inline", result]],
+            }))
 
 
 # Actions
@@ -199,7 +202,6 @@ def update_related_products(request, product_id):
     else:
         product.active_related_products = False
     product.save()
-
 
     html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
 

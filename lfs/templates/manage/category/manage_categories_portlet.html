@@ -7,6 +7,7 @@
                 <div>
                     <a class="selectable {% if category.is_current %}selected{% endif %}"
                        href="{% url lfs_manage_category category.id %}">
+                        <span class="handle">&nbsp;&nbsp;&nbsp;</span>
                         {{ category.name }}
                     </a>
                  </div>
@@ -17,48 +18,29 @@
     </ol>
 </div>
 
-
 <script>
-
-	$(document).ready(function(){
-
-		$('ol.sortable').nestedSortable({
-			disableNesting: 'no-nest',
-			forcePlaceholderSize: true,
-			handle: 'div',
-			helper:	'clone',
-			items: 'li',
-			maxLevels: 3,
-			opacity: .6,
-			placeholder: 'placeholder',
-			revert: 250,
-			tabSize: 25,
-			tolerance: 'pointer',
-			toleranceElement: '> div',
-            stop: function(event,ui){
-                // send new position here
-                console.log("Position changeid");
+    $(function() {
+        $('ol.sortable').nestedSortable({
+            placeholder: 'placeholder',
+            forcePlaceholderSize: true,
+            handle: '.handle',
+            helper: 'clone',
+            items: 'li',
+            opacity: .6,
+            placeholder: 'placeholder',
+            revert: 250,
+            tabSize: 25,
+            tolerance: 'pointer',
+            toleranceElement: '> div',
+            stop: function(event, ui){
                 serialized = $('ol.sortable').nestedSortable('serialize');
-                console.log('serialized is ' + serialized);
-                deArray = $('ol.sortable').nestedSortable('toArray');
-                console.log('toArray is ' + deArray);
                 $.ajax({
-
                   url: "{% url lfs-sort-categories %}",
                   context: document.body,
                   type: "POST",
                   data: {"categories": serialized},
-                  success: function(data) {
-                    console.log("Server response:  " + data );
-                  },
-                  error: function(data) {
-                    alert("an error occurred");
-                  }
-
                });
             }
-		});
-
+        });
     });
-
 </script>

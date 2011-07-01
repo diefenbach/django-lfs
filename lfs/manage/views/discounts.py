@@ -141,15 +141,17 @@ def save_discount_criteria(request, id):
     are passed via request body.
     """
     discount = lfs_get_object_or_404(Discount, pk=id)
-
     criteria_utils.save_criteria(request, discount)
-
     criteria = discount_criteria(request, id)
-    result = {
-        "criteria": criteria,
-        "message": "Modifications have been changed"
-    }
-    return HttpResponse(simplejson.dumps(result))
+
+    html = [["#criteria", discount_criteria(request, id)]]
+
+    result = simplejson.dumps({
+        "html": html,
+        "message": _("Modifications have been changed."),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
 
 
 @permission_required("core.manage_shop", login_url="/login/")

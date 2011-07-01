@@ -115,7 +115,7 @@ def calculate_price(request, id):
         for_sale_standard_price += property_price
     else:
         for_sale_standard_price = 0
-        price = product.get_price(with_properties=False)
+        price = product.get_price(request, with_properties=False)
         price += property_price
 
     result = simplejson.dumps({

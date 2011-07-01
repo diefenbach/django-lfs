@@ -13,13 +13,13 @@
                        name="keep-session"
                        value="1" />
 
-                <input class="category-products-filter-input"
+                <input class="refresh-on-keyup"
                        type="text"
                        name="filter" />
 
-                {% category_filter "category-products-categories-filter" "category_filter" %}
+                {% category_filter "refresh-on-change" "category_filter" %}
 
-                <select class="category-products-amount"
+                <select class="refresh-on-change"
                         name="category-products-amount">
                     {% for option in amount_options %}
                         <option {% if option.selected %}selected="selected"{% endif %}
@@ -40,7 +40,7 @@
                        name="keep-session"
                        value="1" />
 
-                <input class="category-selected-products-filter-input"
+                <input class="refresh-on-keyup"
                        type="text"
                        name="filter_2" />
             </form>

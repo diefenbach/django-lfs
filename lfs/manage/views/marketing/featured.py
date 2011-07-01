@@ -118,7 +118,10 @@ def manage_featured_inline(
     if as_string:
         return result
     else:
-        return HttpResponse(result)
+        return HttpResponse(
+            simplejson.dumps({
+                "html": [["#featured-inline", result]],
+            }))
 
 
 # Actions
@@ -133,9 +136,9 @@ def add_featured(request):
 
         temp_id = temp_id.split("-")[1]
         FeaturedProduct.objects.create(product_id=temp_id)
-    
+
     _update_positions()
-        
+
     html = [["#featured-inline", manage_featured_inline(request, as_string=True)]]
     result = simplejson.dumps({
         "html": html,
@@ -194,6 +197,7 @@ def update_featured(request):
         }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 def _update_positions():
     for i, featured in enumerate(FeaturedProduct.objects.all()):

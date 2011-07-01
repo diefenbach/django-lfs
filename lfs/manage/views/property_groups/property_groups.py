@@ -135,7 +135,7 @@ def assign_properties(request, group_id):
             pass
 
     _udpate_positions(group_id)
-    
+
     html = [["#properties", properties_inline(request, group_id)]]
     result = simplejson.dumps({
         "html": html,
@@ -175,7 +175,7 @@ def update_properties(request, group_id):
         "message": message
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)    
+    return HttpResponse(result)
 
 
 def _udpate_positions(group_id):

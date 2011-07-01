@@ -175,10 +175,13 @@ def stock(request, product_id, template_name="manage/product/stock.html"):
         "form": form
     }))
 
+    html = [["#stock", result]]
+
     if request.is_ajax():
         result = simplejson.dumps({
-            "html": result,
+            "html": html,
             "message": message,
+            "init_date": True,
         }, cls=LazyEncoder)
         return HttpResponse(result)
     else:
@@ -366,9 +369,13 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
         "redirect_to": lfs.core.utils.get_redirect_for(product.get_absolute_url()),
     }))
 
+    html = [
+        ["#selectable-products-inline", selectable_products_inline(request, page, paginator, product_id)],
+        ["#data", form_html],
+    ]
+
     result = simplejson.dumps({
-        "selectable_products": selectable_products_inline(request, page, paginator, product_id),
-        "form": form_html,
+        "html": html,
         "message": message,
     }, cls=LazyEncoder)
 

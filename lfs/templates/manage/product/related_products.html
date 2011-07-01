@@ -22,11 +22,11 @@
 <form id="filter-related-products-form"
       action="{% url lfs.manage.views.manage_related_products_inline product.id %}"
       onsubmit="return false">
-    <input class="filter-related-products-input" type="text" name="filter"/>
+    <input class="refresh-on-keyup" type="text" name="filter"/>
     
-    {% category_filter "related-products-categories-filter" "related_products_category_filter" %}
+    {% category_filter "refresh-on-change" "related_products_category_filter" %}
 
-    <select id="related-products-amount"
+    <select class="refresh-on-change"
             name="related-products-amount">
         {% for option in amount_options %}
             <option {% if option.selected %}selected="selected"{% endif %} 

@@ -151,8 +151,7 @@ def payment_method_prices(request, payment_method_id,
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def payment_price_criteria(request, payment_price_id, as_string=False,
-    template_name="manage/payment/payment_price_criteria.html"):
+def payment_price_criteria(request, payment_price_id, as_string=False, template_name="manage/payment/payment_price_criteria.html"):
     """Returns the criteria of the payment price with passed id.
 
     This view is used as a part within the manage payment view.
@@ -166,16 +165,22 @@ def payment_price_criteria(request, payment_price_id, as_string=False,
         criterion_html = criterion_object.criterion.as_html(request, position)
         criteria.append(criterion_html)
 
+    dialog = render_to_string(template_name, RequestContext(request, {
+        "payment_price": payment_price,
+        "criteria": criteria,
+    }))
+
     if as_string:
-        return render_to_string(template_name, RequestContext(request, {
-            "payment_price": payment_price,
-            "criteria": criteria,
-        }))
+        return dialog
     else:
-        return render_to_response(template_name, RequestContext(request, {
-            "payment_price": payment_price,
-            "criteria": criteria,
-        }))
+        html = [["#dialog", dialog]]
+
+        result = simplejson.dumps({
+            "html": html,
+            "open-dialog": True,
+        }, cls=LazyEncoder)
+
+        return HttpResponse(result)
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -211,12 +216,14 @@ def save_payment_method_criteria(request, payment_method_id):
 
     criteria_utils.save_criteria(request, payment_method)
 
-    criteria = payment_method_criteria(request, payment_method_id)
-    result = {
-        "criteria": criteria,
-        "message": "Modifications have been changed"
-    }
-    return HttpResponse(simplejson.dumps(result))
+    html = [["#criteria", payment_method_criteria(request, payment_method_id)]]
+
+    result = simplejson.dumps({
+        "html": html,
+        "message": _(u"Modifications have been changed."),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -228,14 +235,17 @@ def save_payment_price_criteria(request, payment_price_id):
 
     criteria_utils.save_criteria(request, payment_price)
 
-    prices = payment_method_prices(request, payment_price.payment_method.id)
-    criteria = payment_price_criteria(request, payment_price_id, as_string=True)
-    result = {
-        "criteria": criteria,
-        "prices": prices,
-        "message": "Modifications have been changed"
-    }
-    return HttpResponse(simplejson.dumps(result))
+    html = [
+        ["#price-criteria", payment_price_criteria(request, payment_price_id, as_string=True)],
+        ["#prices", payment_method_prices(request, payment_price.payment_method.id)],
+    ]
+
+    result = simplejson.dumps({
+        "html": html,
+        "message": _(u"Modifications have been changed."),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -252,17 +262,13 @@ def add_payment_price(request, payment_method_id):
 
     payment_method = get_object_or_404(PaymentMethod, pk=payment_method_id)
     payment_method.prices.create(price=price)
+    _update_price_positions(payment_method)
 
-    for i, price in enumerate(payment_method.prices.all()):
-        price.priority = i + 1
-        price.save()
-
-    message = _(u"Price has been added")
-    prices = payment_method_prices(request, payment_method_id)
+    html = [["#prices", payment_method_prices(request, payment_method_id)]]
 
     result = simplejson.dumps({
-        "message": message,
-        "prices": prices
+        "html": html,
+        "message": _(u"Price has been added"),
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
@@ -287,7 +293,6 @@ def update_payment_prices(request, payment_method_id):
                     continue
                 else:
                     price.delete()
-
     elif action == "update":
         message = _(u"Prices have been updated")
         for key, value in request.POST.items():
@@ -306,15 +311,12 @@ def update_payment_prices(request, payment_method_id):
                     price.priority = request.POST.get("priority-%s" % id, 0)
                     price.save()
 
-        for i, price in enumerate(payment_method.prices.all()):
-            price.priority = i + 1
-            price.save()
-
-    prices = payment_method_prices(request, payment_method_id)
+    _update_price_positions(payment_method)
+    html = [["#prices", payment_method_prices(request, payment_method_id)]]
 
     result = simplejson.dumps({
+        "html": html,
         "message": message,
-        "prices": prices
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
@@ -368,3 +370,9 @@ def delete_payment_method(request, payment_method_id):
         url=reverse("lfs_manage_payment"),
         msg=_(u"Payment method has been deleted."),
     )
+
+
+def _update_price_positions(payment_method):
+    for i, price in enumerate(payment_method.prices.all()):
+        price.priority = (i + 1) * 10
+        price.save()

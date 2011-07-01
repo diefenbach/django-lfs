@@ -2,8 +2,7 @@
 
 <h2>{% trans 'Categories' %}</h2>
 {% if categories %}
-    <form id="product-categories-save-form"
-          action="{% url lfs_manage_product_categories product.id %}"
+    <form action="{% url lfs_manage_product_categories product.id %}"
           method="post">
         <ul class="manage-categories root">
             {% for category in categories %}
@@ -20,7 +19,7 @@
             {% endfor %}
         </ul>
         <div class="buttons">
-            <input class="button product-categories-save-button"
+            <input class="ajax-save-button button"
                    type="submit" value="{% trans 'Save categories' %}" />
         </div>
     </form>

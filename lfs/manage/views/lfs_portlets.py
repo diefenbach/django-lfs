@@ -104,10 +104,11 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             PortletAssignment.objects.create(
                 slot_id=slot_id, content=object, portlet=portlet, position=position)
 
-            html = portlets_inline(request, object)
+            html = [["#portlets", portlets_inline(request, object)]]
 
             result = simplejson.dumps({
                 "html": html,
+                "close-dialog": True,
                 "message": _(u"Portlet has been added.")},
                 cls=LazyEncoder
             )
@@ -166,10 +167,11 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
         pa.position = request.POST.get("position")
         pa.save()
 
-        html = portlets_inline(request, pa.content)
+        html = [["#portlets", portlets_inline(request, pa.content)]]
 
         result = simplejson.dumps({
             "html": html,
+            "close-dialog": True,
             "message": _(u"Portlet has been saved.")},
             cls=LazyEncoder
         )

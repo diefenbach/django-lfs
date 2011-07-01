@@ -166,7 +166,7 @@ class CartItem(models.Model):
                 except:
                     price = self.product.get_price_gross(request)
             else:
-                price = self.product.get_price_gross(with_properties=False)
+                price = self.product.get_price_gross(request, with_properties=False)
                 for property in self.properties.all():
                     if property.property.is_select_field:
                         try:

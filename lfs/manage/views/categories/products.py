@@ -43,8 +43,7 @@ def manage_products(request, category_id, template_name="manage/category/product
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def products_inline(request, category_id, as_string=False,
-    template_name="manage/category/products_inline.html"):
+def products_inline(request, category_id, as_string=False, template_name="manage/category/products_inline.html"):
     """Displays the products-tab of a category.
 
     This is called at start from the manage_products view to assemble the
@@ -110,7 +109,9 @@ def products_inline(request, category_id, as_string=False,
     if as_string:
         return result
     else:
-        return HttpResponse(result)
+        return HttpResponse(simplejson.dumps({
+            "html": [["#products-inline", result]],
+        }))
 
 
 # Actions
@@ -172,7 +173,9 @@ def selected_products(request, category_id, as_string=False, template_name="mana
     if as_string:
         return result
     else:
-        return HttpResponse(result)
+        return HttpResponse(simplejson.dumps({
+            "html": [["#selected-products", result]],
+        }))
 
 
 # Actions

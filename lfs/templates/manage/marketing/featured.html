@@ -6,18 +6,17 @@
 <form id="filter-featured-form"
       action="{% url lfs_manage_featured_inline %}"
       onsubmit="return false">
-    <input class="filter-featured-input" type="text" name="filter"/>
+    <input class="refresh-on-keyup" type="text" name="filter"/>
 
-    {% category_filter "featured-categories-filter" "featured_category_filter" %}
-    
-    <select id="featured-amount"
+    {% category_filter "refresh-on-change" "featured_category_filter" %}
+
+    <select class="refresh-on-change"
             name="featured-amount">
         {% for option in amount_options %}
-            <option {% if option.selected %}selected="selected"{% endif %} 
+            <option {% if option.selected %}selected="selected"{% endif %}
                     value="{{ option.value }}">{{ option.value }}</option>
         {% endfor %}
     </select>
-    
 </form>
 
 <div id="featured-inline">
