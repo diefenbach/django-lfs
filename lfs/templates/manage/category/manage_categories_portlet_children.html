@@ -6,7 +6,7 @@
                 <div>
                     <a class="selectable {% if category.is_current %}selected{% endif %}"
                        href="{% url lfs_manage_category category.id %}">
-                        <span class="handle">&nbsp;&nbsp;&nbsp;</span>
+                        <img class="handle" src="{{ MEDIA_URL }}lfs/img/handle.png" alt="Handle"/>
                         {{ category.name }}
                     </a>
                  </div>

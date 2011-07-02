@@ -33,11 +33,11 @@ h3 {
 }
 
 div.label a {
-    color: #777;   
+    color: #777;
 }
 
 div.label a:hover {
-    color: #000;   
+    color: #000;
 }
 
 img {
@@ -101,7 +101,7 @@ table.lfs-manage-table th {
 
 table.lfs-manage-table td {
     vertical-align: middle;
-    padding-left: 6px;    
+    padding-left: 6px;
 }
 
 table.lfs-manage-table.images td {
@@ -231,12 +231,12 @@ tr.odd {
 }
 
 .navigation-pages img {
-    position:relative; 
+    position:relative;
     top:3px;
 }
 
 .refresh-on-keyup {
-    width: 166px;    
+    width: 166px;
 }
 
 .navigation-pages-inline {
@@ -246,7 +246,7 @@ tr.odd {
     width: 170px;
     background-color: #ddd;
     border: 1px solid #aaa;
-    text-align:center;    
+    text-align:center;
 }
 
 .manage-category .navigation-pages-inline {
@@ -310,11 +310,11 @@ a.button {
 
 .site-actions .overview,
 .site-actions .delete,
-.site-actions .add, 
-.site-actions .view, 
-.site-actions .preview, 
-.site-actions .goto, 
-.site-actions .send, 
+.site-actions .add,
+.site-actions .view,
+.site-actions .preview,
+.site-actions .goto,
+.site-actions .send,
 .site-actions .export {
     background: none;
     margin: 0;
@@ -332,13 +332,13 @@ td.management a:hover,
 .site-actions label {
     color: #777;
     font-weight: bold;
-    text-transform: uppercase;    
+    text-transform: uppercase;
 }
 
 td.management a,
 td.management {
     color: #777;
-    text-transform: uppercase;    
+    text-transform: uppercase;
 }
 
 
@@ -523,14 +523,14 @@ select.categories {
 }
 
 /* input fields */
-#id_name, #id_slug, #id_sku, #id_shop_owner, #id_from_email, #id_title, #id_redirect_to, #id_sku_manufacturer, #redirect_to, #id_position, #id_unit, 
+#id_name, #id_slug, #id_sku, #id_shop_owner, #id_from_email, #id_title, #id_redirect_to, #id_sku_manufacturer, #redirect_to, #id_position, #id_unit,
 #id_priority, #id_price, #id_for_sale_price, #id_tax, #id_module, #id_link, #id_parent, #id_static_block, #id_price_unit, #id_template, #id_meta_title,
 #id_type, #id_step_type {
     width: 300px;
 }
 
 #id_default_variant, #id_variants_display_type {
-    width: 200px;    
+    width: 200px;
 }
 
 /* portlets */
@@ -653,24 +653,24 @@ form div.buttons {
 }
 
 .manage-categories-tree ul {
-    list-style: none;    
-    padding: 0;    
+    list-style: none;
+    padding: 0;
 }
 
 .manage-categories-tree ul a {
-    padding: 0 0 0 15px;    
+    padding: 0 0 0 15px;
 }
 
 .manage-categories-tree ul ul a {
-    padding: 0 0 0 30px;    
+    padding: 0 0 0 30px;
 }
 
 .manage-categories-tree ul ul ul a {
-    padding: 0 0 0 45px;    
+    padding: 0 0 0 45px;
 }
 
 .manage-categories-tree ul ul ul ul a {
-    padding: 0 0 0 60px;    
+    padding: 0 0 0 60px;
 }
 
 .navigation-title {
@@ -713,13 +713,13 @@ div.separator {
 }
 
 .handle {
-    background-color: #ccc;
     cursor: move;
+    padding: 0 3px;
 }
 
-.placeholder { 
-    border: 1px dashed black; 
-    visibility: visible !important;     
+.placeholder {
+    border: 1px dashed black;
+    visibility: visible !important;
     height: 35px;
 }
 
