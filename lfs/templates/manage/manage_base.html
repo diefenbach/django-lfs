@@ -5,8 +5,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
+        
         <title>{% block title %}{% endblock %}</title>
-
+        <link rel="shortcut icon" href="{{ MEDIA_URL }}lfs/img/favicon.ico" type="image/ico" />
+        
         <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/widgets.css" />
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/css/lfs.manage.css" />
         <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery-ui-1.8.13.custom/css/smoothness/jquery-ui-1.8.13.custom.css" />
