@@ -27,6 +27,14 @@ function addEditor(selector, hide_save) {
    });
 };
 
+function update_editor() {
+    addEditor("#id_description");
+    addEditor("#id_short_description");    
+    addEditor("#id_short_text");    
+    addEditor("#id_body");
+    addEditor('#id_html');
+}
+
 function save(ed) {
     $("#" + ed.id).parents("form:first").ajaxSubmit({
         dataType: "json",

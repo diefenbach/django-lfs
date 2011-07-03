@@ -51,6 +51,8 @@ function send_form_and_refresh(mythis) {
 }
 
 $(function() {
+    update_editor();
+    $(".button").button();
     var message = $.cookie("message");
 
     if (message != null) {
@@ -103,6 +105,7 @@ $(function() {
 
     // Generic ajax save button
     $(".ajax-save-button").live("click", function() {
+        tinymce.triggerSave();  
         show_ajax_loading();
         var action = $(this).attr("name")
         $(this).parents("form:first").ajaxSubmit({
@@ -123,6 +126,7 @@ $(function() {
                     DateTimeShortcuts.init();
                 }
                 hide_ajax_loading();
+                update_editor();
             }
         })
         return false;
@@ -203,7 +207,6 @@ $(function() {
         $.get(url, function(data) {
             $("#dialog").html(data);
             $("#dialog").dialog("open");
-            $(".button").button();
         });
         return false;
     });
@@ -213,7 +216,6 @@ $(function() {
             success : function(data) {
                 $("#dialog").html(data);
                 $("#dialog").dialog("open");
-                $(".button").button();
         }});
         return false;
     });
@@ -373,6 +375,10 @@ $(function() {
         }
         return false;
     })
+})
+
+$(document).ajaxComplete(function() {
+    $(".button").button();
 })
 
 $(document).ajaxSend(function(event, xhr, settings) {

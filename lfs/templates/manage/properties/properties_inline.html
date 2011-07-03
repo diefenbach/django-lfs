@@ -7,11 +7,11 @@
             <form id="add-property-form"
                   action="{% url lfs_assign_properties property_group.id %}"
                   method="post">
-                <div id="properties-left" style="padding-bottom:10px">  
+                <div id="properties-left" style="padding-bottom:10px">
                     <table class="lfs-manage-table">
                         <tr>
                             <th class="checkbox">
-                                <input type="checkbox" 
+                                <input type="checkbox"
                                        class="select-all"
                                        value="properties" />
                             </th>
@@ -21,7 +21,7 @@
                             {% for property in properties %}
                                 <tr class="{% cycle 'even' 'odd' %}">
                                     <td>
-                                        <input type="checkbox" 
+                                        <input type="checkbox"
                                                class="select-properties"
                                                name="property-id"
                                                value="{{ property.id }}" />
@@ -52,7 +52,7 @@
             <h2>{% trans 'Assigned properties' %}</h2>
             <form id="property-group-update-form"
                   action="{% url lfs_update_properties property_group.id %}"
-                  method="post">      
+                  method="post">
                 <div id="properties-right" style="padding-bottom:10px">
                     <table class="lfs-manage-table">
                         <tr>
@@ -72,9 +72,9 @@
                             {% for gp in gps %}
                                 <tr>
                                     <td>
-                                        <input type="checkbox" 
+                                        <input type="checkbox"
                                                class="select-assigned-products"
-                                               name="property-id" 
+                                               name="property-id"
                                                value="{{ gp.property.id }}" />
                                     </td>
                                     <td>
@@ -97,7 +97,7 @@
                             </tr>
                         {% endif %}
                     </table>
-                </div>    
+                </div>
                 <div class="buttons">
                     <input type="submit"
                            class="ajax-save-button button"
@@ -108,12 +108,11 @@
                            name="update"
                            value="{% trans 'Update properties' %}" />
                     </div>
-            </form>                        
+            </form>
 
-        </td>            
+        </td>
     </tr>
-</table>                
+</table>
 <script>
-    align_buttons("#properties");    
-    $(".button").button();
+    align_buttons("#properties");
 </script>

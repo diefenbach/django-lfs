@@ -31,7 +31,7 @@
             <h2>{% trans 'Products' %}</h2>
             <form id="add-featured-form"
                   action="{% url lfs_manage_add_featured %}"
-                  method="post">            
+                  method="post">
                 <div id="featured-left" style="padding-bottom:10px">
                     <table class="lfs-manage-table">
                         <tr>
@@ -66,16 +66,16 @@
                                     {{ product.get_sku }}
                                 </td>
                                 <td class="right-padding">
-                					{% if product.is_active %}
-                						<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
-                					{% else %}
-                						<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
-                					{% endif %}
+                                    {% if product.is_active %}
+                                        <img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+                                    {% else %}
+                                        <img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
                     </table>
-                </div>    
+                </div>
                 <input type="hidden"
                        name="keep-filters"
                        value="1" />
@@ -89,8 +89,8 @@
             <h2>{% trans 'Featured products' %}</h2>
             <form id="featured-update-form"
                   action="{% url lfs_manage_update_featured %}"
-                  method="post">                
-                <div id="featured-right" style="padding-bottom:10px">  
+                  method="post">
+                <div id="featured-right" style="padding-bottom:10px">
                     <table class="lfs-manage-table">
                         <tr>
                             <th class="checkbox">
@@ -120,11 +120,11 @@
                                            class="select-featured-products" />
                                 </td>
                                 <td>
-                                    <a href="{% url lfs_manage_product product.id %}">                                    
+                                    <a href="{% url lfs_manage_product product.id %}">
                                         {% if ts.product.get_name %}
                                             {{ ts.product.get_name }}
                                         {% else %}
-                                            ---        
+                                            ---
                                         {% endif %}
                                     </a>
                                 </td>
@@ -139,16 +139,16 @@
                                            value="{{ ts.position }}" />
                                 </td>
                                 <td class="right-padding">
-            						{% if ts.product.is_active %}
-            							<img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
-            						{% else %}
-            							<img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
-            						{% endif %}
+                                    {% if ts.product.is_active %}
+                                        <img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+                                    {% else %}
+                                        <img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
                     </table>
-                </div>    
+                </div>
                 <input type="hidden"
                        name="keep-filters"
                        value="1" />
@@ -166,7 +166,6 @@
         </td>
     </tr>
 </table>
-<script>        
+<script>
     align_buttons("#featured");
-    $("input.button").button();
 </script>

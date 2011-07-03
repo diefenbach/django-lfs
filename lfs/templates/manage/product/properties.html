@@ -57,7 +57,7 @@
                                 <select name="property-{{ property.id }}">
                                     <option>-----</option>
                                     {% for option in property.options %}
-                                        <option value="{{ option.id }}"                                                
+                                        <option value="{{ option.id }}"
                                                 {% if option.selected %}selected="selected"{% endif %}>
                                             {{ option.name }}
                                         </option>
@@ -193,7 +193,3 @@
         </div>
     </form>
 {% endif %}
-
-<script>
-    $("input.button").button();
-</script>

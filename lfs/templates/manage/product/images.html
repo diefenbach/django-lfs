@@ -101,9 +101,7 @@
     </form>
     <table id="files" data="{% url lfs_manage_images product.id %}" msg='{% trans "Uploading images:" %}'></table>
 </div>
-
 <script>
-    $("input.button").button()
     $(function () {
         $('#file_upload').fileUploadUI({
             uploadTable: $('#files'),
