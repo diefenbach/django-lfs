@@ -369,7 +369,6 @@ def update_variants(request, product_id):
                     
                     # active-price    
                     active_price = request.POST.get("active-price-%s" % id)
-                    import pdb; pdb.set_trace()
                     if active_price:
                         variant.active_price = True
                     else:

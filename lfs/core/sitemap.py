@@ -5,6 +5,7 @@ from datetime import datetime
 from django.contrib.sitemaps import Sitemap
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
+from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 
 class ProductSitemap(Sitemap):
     """Google's XML sitemap for products.
@@ -13,7 +14,7 @@ class ProductSitemap(Sitemap):
     priority = 0.5
 
     def items(self):
-        return Product.objects.filter(active=True)
+        return Product.objects.filter(active=True).exclude(sub_type=PRODUCT_WITH_VARIANTS)
 
     def lastmod(self, obj):
         return obj.creation_date
