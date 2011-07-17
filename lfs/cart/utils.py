@@ -18,13 +18,13 @@ logger = logging.getLogger("default")
 
 # DDD
 def get_cart_max_delivery_time(request, cart):
-
-    This function is DEPRECATED.
     """
     Returns the delivery time object with the maximal delivery time of all
     products within the cart. Takes the selected shipping method into account.
 
     This is used within the cart to display the maximal delivery time.
+
+    This function is DEPRECATED.
     """
     logger.info("Decprecated: lfs.cart.utils: the function 'get_cart_max_delivery_time' is deprecated. Please use the method 'get_delivery_time' of the Cart object.")
     return cart.get_delivery_time(request)
