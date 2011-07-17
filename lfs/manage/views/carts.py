@@ -44,7 +44,7 @@ def carts_inline(request, as_string=False, template_name="manage/cart/carts_inli
     for cart in page.object_list:
         products = []
         total = 0
-        for item in cart.items():
+        for item in cart.get_items():
             total += item.get_price_gross()
             products.append(item.product.get_name())
 
@@ -58,7 +58,7 @@ def carts_inline(request, as_string=False, template_name="manage/cart/carts_inli
 
         carts.append({
             "id": cart.id,
-            "amount_of_items": cart.amount_of_items,
+            "amount_of_items": cart.get_amount_of_items(),
             "session": cart.session,
             "user": cart.user,
             "total": total,
@@ -104,7 +104,7 @@ def cart_inline(request, cart_id, as_string=False, template_name="manage/cart/ca
     cart = lfs_get_object_or_404(Cart, pk=cart_id)
 
     total = 0
-    for item in cart.items():
+    for item in cart.get_items():
         total += item.get_price_gross()
 
     try:

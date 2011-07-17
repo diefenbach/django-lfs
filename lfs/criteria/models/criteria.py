@@ -84,7 +84,7 @@ class CartPriceCriterion(models.Model, Criterion):
             if cart is None:
                 return False
 
-            cart_price = cart_utils.get_cart_price(request, cart)
+            cart_price = cart.get_price_gross(request)
 
         if self.operator == LESS_THAN and (cart_price < self.price):
             return True
@@ -148,7 +148,7 @@ class CombinedLengthAndGirthCriterion(models.Model, Criterion):
             max_width = 0
             max_length = 0
             total_height = 0
-            for item in cart.items():
+            for item in cart.get_items():
                 if max_length < item.product.get_length():
                     max_length = item.product.get_length()
 
@@ -289,7 +289,7 @@ class HeightCriterion(models.Model, Criterion):
                 return False
 
             cart_height = 0
-            for item in cart.items():
+            for item in cart.get_items():
                 cart_height += (item.product.get_height() * item.amount)
 
         if self.operator == LESS_THAN and (cart_height < self.height):
@@ -351,7 +351,7 @@ class LengthCriterion(models.Model, Criterion):
                 return False
 
             max_length = 0
-            for item in cart.items():
+            for item in cart.get_items():
                 if max_length < item.product.get_length():
                     max_length = item.product.get_length()
 
@@ -642,7 +642,7 @@ class WeightCriterion(models.Model, Criterion):
                 return False
 
             cart_weight = 0
-            for item in cart.items():
+            for item in cart.get_items():
                 cart_weight += (item.product.get_weight() * item.amount)
 
         if self.operator == LESS_THAN and (cart_weight < self.weight):
@@ -704,7 +704,7 @@ class WidthCriterion(models.Model, Criterion):
                 return False
 
             max_width = 0
-            for item in cart.items():
+            for item in cart.get_items():
                 if max_width < item.product.get_width():
                     max_width = item.product.get_width()
 

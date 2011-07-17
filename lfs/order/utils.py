@@ -3,7 +3,6 @@ import lfs.discounts.utils
 import lfs.voucher.utils
 from lfs.cart import utils as cart_utils
 from lfs.core.models import Country
-from lfs.core.signals import order_submitted
 from lfs.customer import utils as customer_utils
 from lfs.order.models import Order
 from lfs.order.models import OrderItem
@@ -31,7 +30,6 @@ def add_order(request):
     cart = cart_utils.get_cart(request)
     if cart is None:
         return order
-    cart_costs = cart_utils.get_cart_costs(request, cart, total=False)
 
     shipping_method = shipping_utils.get_selected_shipping_method(request)
     shipping_costs = shipping_utils.get_shipping_costs(request, shipping_method)
@@ -54,8 +52,8 @@ def add_order(request):
         customer_email = customer.selected_invoice_address.email
 
     # Calculate the totals
-    price = cart_costs["price"] + shipping_costs["price"] + payment_costs["price"]
-    tax = cart_costs["tax"] + shipping_costs["tax"] + payment_costs["tax"]
+    price = cart.get_price_gross(request) + shipping_costs["price"] + payment_costs["price"]
+    tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
     # Discounts
     discounts = lfs.discounts.utils.get_valid_discounts(request)

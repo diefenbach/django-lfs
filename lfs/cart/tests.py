@@ -65,13 +65,13 @@ class CartModelsTestCase(TestCase):
     def test_get_amount_of_items(self):
         """
         """
-        amount = self.cart.amount_of_items
+        amount = self.cart.get_amount_of_items()
         self.assertEqual(2, 2)
 
     def test_get_items(self):
         """
         """
-        items = self.cart.items()
+        items = self.cart.get_items()
         self.assertEqual(len(items), 2)
 
 
@@ -259,15 +259,15 @@ class RefreshCartTestCase(TestCase):
         result = add_to_cart(request)
 
         cart = lfs.cart.utils.get_cart(request)
-        self.assertEqual(cart.amount_of_items, 1.0)
+        self.assertEqual(cart.get_amount_of_items(), 1.0)
 
         # Refresh item amount
-        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.items()[0].id: 2})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2})
         request.session = self.session
         request.user = self.user
 
         refresh_cart(request)
-        self.assertEqual(cart.amount_of_items, 2.0)
+        self.assertEqual(cart.get_amount_of_items(), 2.0)
 
     def test_amount_2(self):
         """Manage stock amount; refresh to 2 only 1 products there.
@@ -285,10 +285,10 @@ class RefreshCartTestCase(TestCase):
         result = add_to_cart(request)
 
         cart = lfs.cart.utils.get_cart(request)
-        self.assertEqual(cart.amount_of_items, 1.0)
+        self.assertEqual(cart.get_amount_of_items(), 1.0)
 
         # Try to increase item to two, but there is only one in stock
-        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.items()[0].id: 2})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2})
         request.session = self.session
         request.user = self.user
 
@@ -297,7 +297,7 @@ class RefreshCartTestCase(TestCase):
         self.assertEqual(result.get("message"), "Sorry, but \'Product 1\' is only one time available.")
 
         # And the amount of the item is still 1.0
-        self.assertEqual(cart.amount_of_items, 1.0)
+        self.assertEqual(cart.get_amount_of_items(), 1.0)
 
         # If the product is ordered the customer can add it into cart again
         self.p1.order_time = self.dt
@@ -305,7 +305,7 @@ class RefreshCartTestCase(TestCase):
 
         result = simplejson.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
-        self.assertEqual(cart.amount_of_items, 2.0)
+        self.assertEqual(cart.get_amount_of_items(), 2.0)
 
         # Or if LFS not managing stock amount the product can be added to the cart
         self.p1.order_time = None
@@ -314,7 +314,7 @@ class RefreshCartTestCase(TestCase):
 
         result = simplejson.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
-        self.assertEqual(cart.amount_of_items, 2.0)
+        self.assertEqual(cart.get_amount_of_items(), 2.0)
 
     def test_amount_3(self):
         """Manage stock amount; refresh to 3 only 2 products there.
@@ -332,20 +332,20 @@ class RefreshCartTestCase(TestCase):
         result = add_to_cart(request)
 
         cart = lfs.cart.utils.get_cart(request)
-        self.assertEqual(cart.amount_of_items, 1.0)
+        self.assertEqual(cart.get_amount_of_items(), 1.0)
 
         # Try to increase item to two, but there is only one in stock
-        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.items()[0].id: 2})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2})
         request.session = self.session
         request.user = self.user
 
         # Refresh to amount of two is possible
         result = simplejson.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
-        self.assertEqual(cart.amount_of_items, 2.0)
+        self.assertEqual(cart.get_amount_of_items(), 2.0)
 
         # Try to increase item to 3, but there are only 2 in stock
-        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.items()[0].id: 3})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 3})
         request.session = self.session
         request.user = self.user
 
@@ -353,7 +353,7 @@ class RefreshCartTestCase(TestCase):
         self.assertEqual(result.get("message"), "Sorry, but \'Product 1\' is only 2.0 times available.")
 
         # And the amount of the item is still 2.0
-        self.assertEqual(cart.amount_of_items, 2.0)
+        self.assertEqual(cart.get_amount_of_items(), 2.0)
 
         # If the product is ordered the customer can add it into cart again
         self.p1.order_time = self.dt
@@ -361,7 +361,7 @@ class RefreshCartTestCase(TestCase):
 
         result = simplejson.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
-        self.assertEqual(cart.amount_of_items, 3.0)
+        self.assertEqual(cart.get_amount_of_items(), 3.0)
 
         # Or if LFS not managing stock amount the product can be added to the cart
         self.p1.order_time = None
@@ -370,7 +370,7 @@ class RefreshCartTestCase(TestCase):
 
         result = simplejson.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
-        self.assertEqual(cart.amount_of_items, 3.0)
+        self.assertEqual(cart.get_amount_of_items(), 3.0)
 
     def test_amount_4(self):
         """Manage stock amount; refresh to 2 but no product is there anymore.
@@ -388,20 +388,20 @@ class RefreshCartTestCase(TestCase):
         result = add_to_cart(request)
 
         cart = lfs.cart.utils.get_cart(request)
-        self.assertEqual(cart.amount_of_items, 1.0)
+        self.assertEqual(cart.get_amount_of_items(), 1.0)
 
         self.p1.stock_amount = 0
         self.p1.save()
 
         # Try to increase item to two, but there is no product in stock anymore
-        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.items()[0].id: 2})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2})
         request.session = self.session
         request.user = self.user
 
         # Refresh to amount of two is not possible
         result = simplejson.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "Sorry, but 'Product 1' is not available anymore.")
-        self.assertEqual(cart.amount_of_items, 0.0)
+        self.assertEqual(cart.get_amount_of_items(), 0.0)
 
 
 class AddedToCartTestCase(TestCase):

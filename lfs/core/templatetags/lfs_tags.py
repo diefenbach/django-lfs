@@ -366,8 +366,8 @@ class CartInformationNode(Node):
             amount_of_items = 0
             price = 0.0
         else:
-            amount_of_items = cart.amount_of_items
-            price = lfs.cart.utils.get_cart_price(request, cart, total=True)
+            amount_of_items = cart.get_amount_of_items()
+            price = cart.get_price_gross(request, total=True)
 
         context["cart_amount_of_items"] = amount_of_items
         context["cart_price"] = price

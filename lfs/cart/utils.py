@@ -11,32 +11,37 @@ from lfs.payment import utils as payment_utils
 from lfs.shipping import utils as shipping_utils
 from lfs.voucher.models import Voucher
 
+# Load logger
+import logging
+logger = logging.getLogger("default")
 
+
+# DDD
 def get_cart_max_delivery_time(request, cart):
-    """Returns the delivery time object with the maximal delivery time of all
+
+    This function is DEPRECATED.
+    """
+    Returns the delivery time object with the maximal delivery time of all
     products within the cart. Takes the selected shipping method into account.
 
     This is used within the cart to display the maximal delivery time.
     """
-    max_delivery_time = None
-    for item in cart.items():
-        # Calculate the delivery time of the product. Takes the selected
-        # shipping method into account.
-        delivery_time = shipping_utils.get_product_delivery_time(
-            request, item.product.slug, for_cart=True)
-        if (max_delivery_time is None) or \
-           (delivery_time.as_hours() > max_delivery_time.as_hours()):
-            max_delivery_time = delivery_time
-    return max_delivery_time
+    logger.info("Decprecated: lfs.cart.utils: the function 'get_cart_max_delivery_time' is deprecated. Please use the method 'get_delivery_time' of the Cart object.")
+    return cart.get_delivery_time(request)
 
 
-# TODO: Remove cart from signature?
+# DDD
 def get_cart_price(request, cart, total=False, cached=True):
-    """Returns price of the given cart.
     """
+    Returns price of the given cart.
+
+    This function is DEPRECATED.
+    """
+    logger.info("Decprecated: lfs.cart.utils: the function 'get_cart_price' is deprecated. Please use the method 'get_max_delivery_time' of the Cart object.")
     return get_cart_costs(request, cart, total, cached)["price"]
 
 
+# DDD
 def get_cart_costs(request, cart, total=False, cached=True):
     """Returns a dictionary with price and tax of the given cart:
 
@@ -44,7 +49,11 @@ def get_cart_costs(request, cart, total=False, cached=True):
             "price" : the cart's price,
             "tax" : the cart's tax,
         }
+
+    This is function DEPRECATED.
     """
+    logger.info("Decprecated: lfs.cart.utils: the function 'get_cart_costs' is deprecated. Please use the methods 'get_price/get_tax' of the Cart/Shipping/Payment objects.")
+
     if cart is None:
         return {"price": 0, "tax": 0}
 
@@ -57,12 +66,12 @@ def get_cart_costs(request, cart, total=False, cached=True):
 
     if cart_costs is None:
 
-        items = cart.items()
+        items = cart.get_items()
 
         cart_price = 0
         cart_tax = 0
         for item in items:
-            cart_price += item.get_price(request)
+            cart_price += item.get_price_gross(request)
             cart_tax += item.get_tax(request)
 
         if len(items) > 0 and total:
@@ -101,8 +110,9 @@ def get_cart_costs(request, cart, total=False, cached=True):
 
 
 def get_or_create_cart(request):
-    """Returns the cart of the current user. If no cart exists it creates a new
-    one first.
+    """
+    Returns the cart of the current user. If no cart exists yet it creates a
+    new one first.
     """
     cart = get_cart(request)
     if cart is None:
@@ -112,7 +122,8 @@ def get_or_create_cart(request):
 
 
 def create_cart(request):
-    """Creates a cart for the current session and/or user.
+    """
+    Creates a cart for the current session and/or user.
     """
     cart = Cart(session=request.session.session_key)
     if request.user.is_authenticated():
@@ -123,7 +134,9 @@ def create_cart(request):
 
 
 def get_cart(request):
-    """Returns the cart of the current customer or None.
+    """
+    Returns the cart of the current shop customer. if the customer has no cart
+    yet it returns None.
     """
     session_key = request.session.session_key
     user = request.user
@@ -151,7 +164,8 @@ def get_cart(request):
 
 
 def get_go_on_shopping_url(request):
-    """Calculates the go on shopping url.
+    """
+    Calculates the go on shopping url based on the last visited category.
     """
     lc = request.session.get("last_category")
     if lc:
@@ -161,7 +175,8 @@ def get_go_on_shopping_url(request):
 
 
 def update_cart_after_login(request):
-    """Updates the cart after login.
+    """
+    Updates the cart after login.
 
     1. if there is no session cart, nothing has to be done.
     2. if there is a session cart and no user cart we assign the session cart
@@ -177,7 +192,7 @@ def update_cart_after_login(request):
             session_cart.user = request.user
             session_cart.save()
         else:
-            for session_cart_item in session_cart.items():
+            for session_cart_item in session_cart.get_items():
                 try:
                     user_cart_item = CartItem.objects.get(cart=user_cart, product=session_cart_item.product)
                 except ObjectDoesNotExist:

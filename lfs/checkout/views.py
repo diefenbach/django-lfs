@@ -109,7 +109,7 @@ def checkout_dispatcher(request):
     shop = lfs.core.utils.get_default_shop()
     cart = cart_utils.get_cart(request)
 
-    if cart is None or not cart.items():
+    if cart is None or not cart.get_items():
         return empty_page_checkout(request)
 
     if request.user.is_authenticated() or \
@@ -137,9 +137,8 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
     payment_costs = lfs.payment.utils.get_payment_costs(request, selected_payment_method)
 
     # Cart costs
-    cart_costs = cart_utils.get_cart_costs(request, cart)
-    cart_price = cart_costs["price"] + shipping_costs["price"] + payment_costs["price"]
-    cart_tax = cart_costs["tax"] + shipping_costs["tax"] + payment_costs["tax"]
+    cart_price = cart.get_price_gross(request) + shipping_costs["price"] + payment_costs["price"]
+    cart_tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
     discounts = lfs.discounts.utils.get_valid_discounts(request)
     for discount in discounts:
@@ -169,7 +168,7 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
             voucher_tax = 0
 
     cart_items = []
-    for cart_item in cart.items():
+    for cart_item in cart.get_items():
         cart_items.append({
             "obj": cart_item,
             "product": cart_item.product,

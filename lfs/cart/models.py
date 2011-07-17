@@ -1,3 +1,4 @@
+# python imports
 import re
 
 # django imports
@@ -13,24 +14,36 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
 
+# Load logger
+import logging
+logger = logging.getLogger("default")
+
 
 class Cart(models.Model):
-    """A cart is a container for products which are supposed to be bought by a
+    """
+    A cart is a container for products which are supposed to be bought by a
     shop customer.
 
-    Instance variables:
+    **Attributes**
 
-    - user
+    user
        The user to which the cart belongs to
-    - session
+
+    session
        The session to which the cart belongs to
 
-    A cart can be assigned either to the current logged in User (in case
-    the shop user is logged in) or to the current session (in case the shop user
-    is not logged in).
+    creation_date
+        The creation date of the cart
 
-    A cart is only created if it needs to. When the shop user adds something to
-    the cart.
+    modification_date
+        The modification date of the cart
+
+    A cart can be assigned either to the current logged in User (in case
+    the shop user is logged in) or to the current session (in case the shop
+    user is not logged in).
+
+    A cart is only created if it needs to, i.e. when the shop user adds
+    something to the cart.
     """
     user = models.ForeignKey(User, verbose_name=_(u"User"), blank=True, null=True)
     session = models.CharField(_(u"Session"), blank=True, max_length=100)
@@ -40,26 +53,35 @@ class Cart(models.Model):
     def __unicode__(self):
         return "%s, %s" % (self.user, self.session)
 
-    def items(self):
-        """Returns the items of the cart.
-        """
-        cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
-        items = cache.get(cache_key)
-        if items is None:
-            items = CartItem.objects.filter(cart=self)
-            cache.set(cache_key, items)
-        return items
-
+    # DDD
     @property
     def amount_of_items(self):
-        """Returns the amount of items of the cart.
         """
-        amount = 0
-        for item in self.items():
-            amount += item.amount
-        return amount
+        Returns the amount of items of the cart.
 
+        This method is DEPRECATED.
+        """
+        logger.info("Decprecated: lfs.cart.models.Cart: the property 'amount_of_items' is deprecated. Please use 'get_amount_of_items'.")
+        return self.get_amount_of_items()
+
+    # DDD
+    def items(self):
+        """
+        Returns the items of the cart.
+
+        This method is DEPRECATED.
+        """
+        logger.info("Decprecated: lfs.cart.models.Cart: the method 'items' is deprecated. Please use 'get_items'.")
+        return self.get_items()
+
+    # DDD
     def get_name(self):
+        """
+        Returns a name for the cart.
+
+        This method is DEPRECATED.
+        """
+        logger.info("Decprecated: lfs.cart.models.Cart: the method 'get_name' is deprecated. (There is no replacement as this method makes no sense at all.)")
         cart_name = ""
         for cart_item in self.items.all():
             if cart_name.product is not None:
@@ -68,35 +90,58 @@ class Cart(models.Model):
         cart_name.strip(', ')
         return cart_name
 
-    def get_price_gross(self, request):
-        """Returns the total gross price of all items.
+    def add(self, product, properties=None, amount=1):
         """
-        price = 0
-        for item in self.items():
-            price += item.get_price_gross(request)
+        Adds passed product to the cart.
 
-        return price
+        **Parameters**
 
-    def get_price_net(self, request):
-        """Returns the total net price of all items.
+        product
+            The product which is added.
+
+        properties
+            The properties which have been selected by the shop customer
+            for the product.
+
+        Returns the newly created cart item.
         """
-        price = 0
-        for item in self.items():
-            price += item.get_price_net(request)
+        if product.is_configurable_product():
+            cart_item = self.get_item(product, properties)
+            if cart_item:
+                cart_item.amount += amount
+                cart_item.save()
+            else:
+                cart_item = CartItem.objects.create(cart=self, product=product, amount=amount)
+                for property_id, value in properties.items():
+                    try:
+                        Property.objects.get(pk=property_id)
+                    except Property.DoesNotExist:
+                        pass
+                    else:
+                        CartItemPropertyValue.objects.create(cart_item=cart_item, property_id=property_id, value=value)
+        else:
+            try:
+                cart_item = CartItem.objects.get(cart=self, product=product)
+            except CartItem.DoesNotExist:
+                cart_item = CartItem.objects.create(cart=self, product=product, amount=amount)
+            else:
+                cart_item.amount += amount
+                cart_item.save()
 
-        return price
+        return cart_item
 
-    def get_tax(self, request):
-        """Returns the total tax of all items
+    def get_amount_of_items(self):
         """
-        tax = 0
-        for item in self.items():
-            tax += item.get_tax(request)
-
-        return tax
+        Returns the amount of items of the cart.
+        """
+        amount = 0
+        for item in self.get_items():
+            amount += item.amount
+        return amount
 
     def get_item(self, product, properties):
-        """Returns the item for passed product and properties or None if there
+        """
+        Returns the item for passed product and properties or None if there
         is none.
         """
         for item in CartItem.objects.filter(cart=self, product=product):
@@ -109,17 +154,78 @@ class Cart(models.Model):
 
         return None
 
+    def get_items(self):
+        """
+        Returns the items of the cart.
+        """
+        cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        items = cache.get(cache_key)
+        if items is None:
+            items = CartItem.objects.filter(cart=self)
+            cache.set(cache_key, items)
+        return items
+
+    def get_delivery_time(self, request):
+        """
+        Returns the delivery time object with the maximal delivery time of all
+        products within the cart. Takes the selected shipping method into account.
+        """
+        import lfs.shipping.utils
+        max_delivery_time = None
+        for item in self.get_items():
+            delivery_time = lfs.shipping.utils.get_product_delivery_time(request, item.product.slug, for_cart=True)
+            if (max_delivery_time is None) or (delivery_time.as_hours() > max_delivery_time.as_hours()):
+                max_delivery_time = delivery_time
+        return max_delivery_time
+
+    def get_price_gross(self, request, total=False):
+        """Returns the total gross price of all items.
+        """
+        price = 0
+        for item in self.get_items():
+            price += item.get_price_gross(request)
+        return price
+
+    def get_price_net(self, request):
+        """Returns the total net price of all items.
+        """
+        price = 0
+        for item in self.get_items():
+            price += item.get_price_net(request)
+
+        return price
+
+    def get_tax(self, request):
+        """Returns the total tax of all items
+        """
+        tax = 0
+        for item in self.get_items():
+            tax += item.get_tax(request)
+
+        return tax
+
 
 class CartItem(models.Model):
-    """A cart item belongs to a cart. It stores the product and the amount of
-    the product which has been taken into the cart.
+    """
+    A cart item belongs to a cart. It stores the product and the amount of the
+    product which has been taken into the cart.
 
-    Instance variables:
+    **Attributes**
 
-    - product
-       A reference to a product which is supposed to be bought
-    - amount
+    cart
+        The cart the cart item belongs to.
+
+    product
+        A reference to a product which is supposed to be bought.
+
+    amount
        Amount of the product which is supposed to be bought.
+
+    creation_date
+        The creation date of the cart item.
+
+    modification_date
+        The modification date of the cart item.
     """
     cart = models.ForeignKey(Cart, verbose_name=_(u"Cart"))
     product = models.ForeignKey(Product, verbose_name=_(u"Product"))
@@ -133,25 +239,30 @@ class CartItem(models.Model):
     def __unicode__(self):
         return "Product: %s, Quantity: %f, Cart: %s" % (self.product, self.amount, self.cart)
 
+    # DDD
     def get_price(self, request):
-        """Convenient method to return the gross price of the product.
         """
+        Convenient method to return the gross price of the product.
+        """
+        logger.info("Decprecated: lfs.cart.models.CartItem: the method 'get_price' is deprecated. Please use the methods 'get_price_gross' and 'get_price_net'.")
         return self.get_price_gross(request)
 
     def get_price_net(self, request):
-        """Returns the total price of the cart item, which is just the
-        multiplication of the product's price and the amount of the product
-        within in the cart.
+        """
+        Returns the total price of the cart item, which is just the multiplication
+        of the product's price and the amount of the product within in the cart.
         """
         return (self.get_price_gross(request) * self.amount) - (self.get_tax(request) * self.amount)
 
     def get_price_gross(self, request):
-        """Returns the gross item price.
+        """
+        Returns the gross item price.
         """
         return self.get_product_price_gross(request) * self.amount
 
     def get_product_price_gross(self, request):
-        """Returns the product item price. Based on selected properties, etc.
+        """
+        Returns the product item price. Based on selected properties, etc.
         """
         if not self.product.is_configurable_product():
             price = self.product.get_price_gross(request)
@@ -178,7 +289,8 @@ class CartItem(models.Model):
         return price
 
     def get_calculated_price(self, request):
-        """Returns the calculated gross price of the product based on property
+        """
+        Returns the calculated gross price of the product based on property
         values and the price calculation field of the product.
         """
         pc = self.product.price_calculation
@@ -205,14 +317,16 @@ class CartItem(models.Model):
         return eval(pc)
 
     def get_tax(self, request):
-        """Returns the absolute tax of the item.
+        """
+        Returns the absolute tax of the item.
         """
         rate = self.product.get_tax_rate(request)
         return self.get_price_gross(request) * (rate / (rate + 100))
 
     def get_properties(self):
-        """Returns properties of the cart item. Resolves option names for
-        select fields.
+        """
+        Returns properties of the cart item. Resolves option names for select
+        fields.
         """
         properties = []
         for property in self.product.get_properties():
@@ -253,7 +367,8 @@ class CartItem(models.Model):
 
 
 class CartItemPropertyValue(models.Model):
-    """Stores a value for a property and item.
+    """
+    Stores a value for a property and item.
 
     **Attributes**
 
