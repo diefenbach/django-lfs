@@ -359,23 +359,33 @@ def add_variants(request, product_id):
         slug = "%s-%s" % (product.slug, slug)
         sku = "%s-%s" % (product.sku, i + 1)
 
-        variant = Product(name=name, slug=slug, sku=sku, parent=product, price=price, variant_position=(i + 1) * 10, sub_type=VARIANT)
+        variant = None
+        # need to validate the amalgamated slug to make sure it is not already in use
         try:
-            variant.save()
-        except IntegrityError:
-            continue
+            product = Product.objects.get(slug=slug)
+            message = _(u"That slug is already in use. Please use another.")
+        except Product.MultipleObjectsReturned:
+            message = _(u"That slug is already in use. Please use another.")
+        except Product.DoesNotExist:
+            variant = Product(name=name, slug=slug, sku=sku, parent=product, price=price, variant_position=(i + 1) * 10, sub_type=VARIANT)
+            try:
+                variant.save()
+            except IntegrityError:
+                continue
 
-        # Save the value for this product and property
-        for option in options:
-            property_id, option_id = option.split("|")
-            pvo = ProductPropertyValue(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_VARIANT)
-            pvo.save()
+            # Save the value for this product and property
+            for option in options:
+                property_id, option_id = option.split("|")
+                pvo = ProductPropertyValue(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_VARIANT)
+                pvo.save()
+                
+            message = _(u"Variants have been added.")
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
     result = simplejson.dumps({
         "html": html,
-        "message": _(u"Variants have been added."),
+        "message": message,
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
