@@ -347,18 +347,19 @@ def add_variants(request, product_id):
         if product.has_variant(options):
             continue
 
+        name = request.POST.get("name")
         price = request.POST.get("price")
 
-        slug = ""
+        slug = request.POST.get("slug")
         for option in options:
             property_id, option_id = option.split("|")
             o = PropertyOption.objects.get(pk=option_id)
             slug += "-" + slugify(o.name)
 
-        slug = "%s%s" % (product.slug, slug)
+        slug = "%s-%s" % (product.slug, slug)
         sku = "%s-%s" % (product.sku, i + 1)
 
-        variant = Product(slug=slug, sku=sku, parent=product, price=price, variant_position=(i + 1) * 10, sub_type=VARIANT)
+        variant = Product(name=name, slug=slug, sku=sku, parent=product, price=price, variant_position=(i + 1) * 10, sub_type=VARIANT)
         try:
             variant.save()
         except IntegrityError:
