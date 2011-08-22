@@ -2535,7 +2535,6 @@ class ProductTestCase(TestCase):
         except KeyError, e:
             pass
         
-        import ipdb; ipdb.set_trace()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(Product.objects.all()), 6)
         variant = Product.objects.get(slug="product-1-variant-slug")
