@@ -2,6 +2,7 @@
 from django.contrib.sessions.backends.file import SessionStore
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.contrib.auth.models import User
 
 # lfs imports
 import lfs.catalog.utils
@@ -2501,6 +2502,46 @@ class ProductTestCase(TestCase):
 
         self.assertEqual(self.p1.get_price_with_unit(self.request), u"1.00 EUR")
 
+    def test_add_product_variants(self):
+        """Test the add variant form in the Manage interface
+        """
+        self.assertEqual(len(Product.objects.all()), 5)
+
+        product = Product.objects.get(slug="product-1")
+        
+        variant_data = {  'slug': 'variant-slug',
+                          'name': 'variant',
+                          'price': 10.00,
+                          }
+        
+        # set up a user with permission to access the manage interface
+        self.user, created = User.objects.get_or_create(username='manager', is_superuser=True)
+        self.password = 'pass'
+        self.user.set_password(self.password)
+        self.user.save()
+        
+        # login the manager account so we can access the add variant function
+        self.client.login(username='manager', password='pass')
+        
+        response = self.client.post(reverse('lfs_add_variants', args=(product.id,)), variant_data)
+        # following code in try loop will only be relevant if there are errors in the form
+        try:
+            if hasattr(response, 'context'):
+                if response.context is not None:
+                    variant_form = response.context['form']
+                    if variant_form.errors:
+                        print variant_form.errors
+                    self.assertEqual(len(variant_form.errors), 0)
+        except KeyError, e:
+            pass
+        
+        import ipdb; ipdb.set_trace()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(Product.objects.all()), 6)
+        variant = Product.objects.get(slug="product-1-variant-slug")
+        self.assertEqual(variant.name, 'variant')
+        self.assertEqual(variant.price, 10.00)
+        self.assertEqual(variant.parent, product)
 
 class ProductAccessoriesTestCase(TestCase):
     """Tests ProductAccessories (surprise, surprise).
