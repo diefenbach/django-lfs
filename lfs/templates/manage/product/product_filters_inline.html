@@ -2,7 +2,7 @@
 {% load lfs_manage_tags %}
 
 <form action="{% url lfs_set_product_filters %}"
-      method="POST">
+      method="POST">{% csrf_token %}
 
     <input type="hidden"
            name="product-id"
