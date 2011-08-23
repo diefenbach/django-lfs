@@ -105,7 +105,12 @@ $(function() {
 
     // Generic ajax save button
     $(".ajax-save-button").live("click", function() {
-        tinymce.triggerSave();  
+		try {
+	        tinymce.triggerSave();
+	    }
+	    catch(err) {
+			// ReferenceError due to undefined tinymce
+	    }
         show_ajax_loading();
         var action = $(this).attr("name")
         $(this).parents("form:first").ajaxSubmit({
