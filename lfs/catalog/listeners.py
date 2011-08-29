@@ -1,11 +1,14 @@
 # django imports
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, m2m_changed
+from django.conf import settings
+from django.core.cache import cache
 
 # lfs imports
 from lfs.catalog.models import PropertyGroup
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.models import GroupsPropertiesRelation
+from lfs.catalog.models import Category
 from lfs.core.signals import property_type_changed
 from lfs.core.signals import product_removed_property_group
 
@@ -91,3 +94,13 @@ def product_removed_from_property_group_listener(sender, **kwargs):
         else:
             ppv.delete()
 product_removed_property_group.connect(product_removed_from_property_group_listener)
+
+
+def product_removed_from_category_listener(sender, instance, action, reverse, model, pk_set, **kwargs):
+    if action in [u'post_add', u'post_remove']:
+        for pk in pk_set:
+            with_parents = False # FIXME: we assume with_parents is False similar to method_signature for get_categories
+            cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, pk, with_parents)
+            categories = cache.delete(cache_key)
+
+m2m_changed.connect(product_removed_from_category_listener, Category.products.through)
