@@ -1,3 +1,6 @@
+# python imports
+import locale
+
 # django imports
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -173,12 +176,14 @@ def get_paypal_link_for_order(order):
     """
     shop = lfs_get_object_or_404(Shop, pk=1)
     current_site = Site.objects.get(id=settings.SITE_ID)
+    conv=locale.localeconv()
+    default_currency = conv['int_curr_symbol']
 
     info = {
         "cmd": "_xclick",
         "upload": "1",
         "business": settings.PAYPAL_RECEIVER_EMAIL,
-        "currency_code": shop.default_currency,
+        "currency_code": default_currency,
         "notify_url": "http://" + current_site.domain + reverse('paypal-ipn'),
         "return": "http://" + current_site.domain + reverse('paypal-pdt'),
         "first_name": order.invoice_firstname,

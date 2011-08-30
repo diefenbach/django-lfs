@@ -1,3 +1,5 @@
+# coding=utf8
+
 # django imports
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.file import SessionStore
@@ -430,12 +432,12 @@ class AddedToCartTestCase(TestCase):
         # Added product_1 to cart
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find("Total: 10.00 EUR") == -1)
+        self.failIf(response.find(u"Total: 10,00 €") == -1)
 
         # Added product_1 to cart again
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find("Total: 20.00 EUR") == -1)
+        self.failIf(response.find(u"Total: 20,00 €") == -1)
 
     def test_totals_2(self):
         """Add a product with explicit quantity to cart
@@ -448,9 +450,9 @@ class AddedToCartTestCase(TestCase):
         # Added product_1 two times to cart
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find("Total: 20.00 EUR") == -1)
+        self.failIf(response.find(u"Total: 20,00 €") == -1)
 
         # Added product_1 two times to cart again
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find("Total: 40.00 EUR") == -1)
+        self.failIf(response.find(u"Total: 40,00 €") == -1)

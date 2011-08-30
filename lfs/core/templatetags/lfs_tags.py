@@ -1,5 +1,6 @@
 # python imports
 import math
+import locale
 
 # django imports
 from django import template
@@ -24,8 +25,10 @@ from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
 from lfs.core.models import Shop
 from lfs.core.models import Action
+from lfs.core.settings import LFS_LOCALE
 from lfs.shipping import utils as shipping_utils
 
+locale.setlocale(locale.LC_ALL, LFS_LOCALE)
 register = template.Library()
 
 
@@ -426,26 +429,25 @@ def get_slug_from_request(request):
 
 
 @register.filter
-def currency(price, arg=None):
+def currency(value, grouping=True):
     """
+    e.g.
+    import locale
+    locale.setlocale(locale.LC_ALL, 'de_CH.UTF-8')
+    currency(123456.789)  # Fr. 123'456.79
+    currency(-123456.789) # <span class="negative">Fr. -123'456.79</span>
     """
-    if not price:
-        price = 0.0
-
-    # TODO: optimize
-    price = lfs.utils.misc.FormatWithCommas("%.2f", price)
-    shop = lfs_get_object_or_404(Shop, pk=1)
-
-    if shop.get_default_country().code == "DE":
-        # replace . and , for german format
-        a, b = price.split(".")
-        a = a.replace(",", ".")
-        price = "%s,%s EUR" % (a, b)
-    else:
-        price = "%s %s" % (price, shop.default_currency)
-
-    return price
-
+    result = ''
+    if value:
+        result = locale.currency(value, grouping=grouping)
+        # add css class if value is negative
+        if value < 0:
+            # replace the minus symbol if needed
+            if result[-1] == '-':
+                length = len(locale.nl_langinfo(locale.CRNCYSTR))
+                result = '%s-%s' % (result[0:length], result[length:-1])
+            return '<span class="negative">%s</span>' % result
+    return result
 
 @register.filter
 def decimal_l10n(value):

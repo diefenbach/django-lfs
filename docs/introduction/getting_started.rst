@@ -123,6 +123,24 @@ Go to the "Product" tab
    * Select "active" and click "Save product"
    * Click on "View product" to view your new product
 
+
+Set default locale and currency
+-------------------------------
+
+Open the file lfs.core.settings and set the variable LFS_LOCALE to your locale
+e.g. for American dollars:
+::
+    LFS_LOCALE = 'en_US.utf8'
+You may have to install this locale on your server PC for this to work,
+to check what locales you currently have installed open a terminal and type:
+::
+    locale -a
+
+To install an english locale (on Debian/Ubuntu):
+::
+    sudo apt-get install language-support-en
+
+
 What's next?
 ------------
 

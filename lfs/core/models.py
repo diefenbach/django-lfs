@@ -170,7 +170,6 @@ class Shop(models.Model):
     invoice_countries = models.ManyToManyField(Country, verbose_name=_(u"Invoice Countries"), related_name="invoice")
     shipping_countries = models.ManyToManyField(Country, verbose_name=_(u"Shipping Countries"), related_name="shipping")
     default_country = models.ForeignKey(Country, verbose_name=_(u"Default country"))
-    default_currency = models.CharField(_(u"Default Currency"), max_length=30, default="EUR")
     price_calculator = models.CharField(choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(), max_length=255, default=lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR)
 
     checkout_type = models.PositiveSmallIntegerField(_(u"Checkout type"), choices=CHECKOUT_TYPES, default=CHECKOUT_TYPE_SELECT)

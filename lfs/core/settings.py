@@ -15,3 +15,6 @@ LFS_PRICE_CALCULATOR_DICTIONARY = {
     'lfs.gross_price.GrossPriceCalculator': 'Price includes tax',
     'lfs.net_price.NetPriceCalculator': 'Price excludes tax',
 }
+
+# You can find locale information here: http://en.wikipedia.org/wiki/Locale
+LFS_LOCALE = 'de_DE.utf8'
