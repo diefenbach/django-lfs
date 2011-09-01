@@ -69,9 +69,9 @@ class GrossPriceCalculator(PriceCalculator):
 
         if object.get_for_sale():
             if object.is_variant() and not object.active_for_sale_price:
-                price = object.parent._get_for_sale_price(self.request)
+                price = object.parent.get_for_sale_price(self.request)
             else:
-                price = object._get_for_sale_price(self.request)
+                price = object.get_for_sale_price(self.request)
         else:
             if object.is_variant() and not object.active_price:
                 price = object.parent.price
