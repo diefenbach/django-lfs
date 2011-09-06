@@ -13,12 +13,16 @@ from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 
+# Load logger
+import logging
+logger = logging.getLogger("default")
+
 
 # TODO: Add unit test
 def get_current_top_category(request, obj):
-    """Returns the current top category of a product.
     """
-
+    Returns the current top category of a product.
+    """
     if obj.__class__.__name__.lower() == "product":
         category = get_current_product_category(request, obj)
     else:
@@ -40,48 +44,15 @@ def get_current_product_category(request, product):
     This is needed if the category has more than one category to display
     breadcrumbs, selected menu points, etc. appropriately.
     """
-    try:
-        product_categories = product.get_categories()
-        if len(product_categories) == 1:
-            category = product_categories[0]
-        else:
-            last_category = request.session.get("last_category")
-
-            if last_category is None:
-                return product_categories[0]
-
-            category = None
-            if last_category in product_categories:
-                category = last_category
-            else:
-                children = last_category.get_all_children()
-                for product_category in product_categories:
-                    if product_category in children:
-                        category = product_category
-                        break
-            if category is None:
-                category = product_categories[0]
-    except IndexError:
-        return None
-    else:
-        request.session["last_category"] = category
-        return category
+    logger.info("Decprecated: lfs.catalog.utils: the function 'get_current_product_category' is deprecated. Please use 'get_current_category'of the Product class.")
+    return product.get_current_category(request)
 
 
 def get_property_groups(category):
     """Returns all property groups for given category
     """
-    cache_key = "%s-category-property-groups-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.id)
-    pgs = cache.get(cache_key)
-    if pgs is not None:
-        return pgs
-
-    products = category.get_products()
-    pgs = lfs.catalog.models.PropertyGroup.objects.filter(
-        products__in=products).distinct()
-
-    cache.set(cache_key, pgs)
-    return pgs
+    logger.info("Decprecated: lfs.catalog.utils: the function 'get_property_groups' is deprecated. Please use 'get_property_groups'of the Category class.")
+    return category.get_property_groups()
 
 
 def get_price_filters(category, product_filter, price_filter):
@@ -229,7 +200,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
 
     property_ids = ", ".join([str(p[0]) for p in cursor.fetchall()])
 
-    # if there either no products or no property ids there can also be no
+    # if there is either no products or no property ids there can also be no
     # product filters.
     if not product_ids or not property_ids:
         return []
@@ -273,7 +244,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
             continue
 
         # Otherwise we display all steps.
-        items = calculate_steps(product_ids, property, row[1], row[2])
+        items = _calculate_steps(product_ids, property, row[1], row[2])
 
         result.append({
             "id": row[0],
@@ -529,7 +500,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
 
 
 def get_option_mapping():
-    """Returns a dictionary with property id to property name.
+    """Returns a dictionary with option id to property name.
     """
     options = {}
     for option in lfs.catalog.models.PropertyOption.objects.all():
@@ -547,8 +518,20 @@ def get_property_mapping():
     return properties
 
 
-def calculate_steps(product_ids, property, min, max):
-    """
+def _calculate_steps(product_ids, property, min, max):
+    """Calculates filter steps.
+    
+    **Parameters**
+    
+    product_ids 
+        The product_ids for which the steps are calculated. List of ids.
+
+    property 
+        The property for which the steps are calculated. Instance of Property.
+        
+    min / max
+        The min and max value of all steps. Must be a Float.
+    
     """
     try:
         min = float(min)
@@ -569,7 +552,7 @@ def calculate_steps(product_ids, property, min, max):
             result.append({
                 "min": min,
                 "max": max,
-                "quantity": calculate_quantity(product_ids, property.id, min, max)
+                "quantity": _calculate_quantity(product_ids, property.id, min, max)
             })
     else:
         if property.is_automatic_step_type:
@@ -609,7 +592,7 @@ def calculate_steps(product_ids, property, min, max):
             result.append({
                 "min": min,
                 "max": max,
-                "quantity": calculate_quantity(product_ids, property.id, min, max),
+                "quantity": _calculate_quantity(product_ids, property.id, min, max),
             })
 
     if property.display_no_results:
@@ -629,7 +612,7 @@ def calculate_steps(product_ids, property, min, max):
         return new_result
 
 
-def calculate_quantity(product_ids, property_id, min, max):
+def _calculate_quantity(product_ids, property_id, min, max):
     """Calculate the amount of products for given parameters.
     """
     # Count entries for current filter
@@ -662,13 +645,15 @@ def calculate_quantity(product_ids, property_id, min, max):
 
 
 def calculate_packages(product, quantity):
+    """Returns amount of packages passed on passes product and quantity. 
+    DEPRECATED.
     """
-    """
+    logger.info("Decprecated: lfs.catalog.utils: the function 'calculate_packages' is deprecated.")
     return math.ceil(quantity / product.packing_unit)
 
 
 def calculate_real_amount(product, quantity):
+    """Returns the amount of pieces in package units. DEPRECATED.
     """
-    """
-    packages = calculate_packages(product, quantity)
-    return packages * product.packing_unit
+    logger.info("Decprecated: lfs.catalog.utils: the function 'calculate_real_amount' is deprecated. Please use 'get_amount_by_packages'of the Product class.")
+    return product.get_amount_by_packages(quantity)

@@ -308,6 +308,19 @@ class Category(models.Model):
         cache.set(cache_key, products)
 
         return products
+    
+    def get_property_groups(self):
+        """Returns property groups for given category.
+        """
+        cache_key = "%s-category-property-groups-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        pgs = cache.get(cache_key)
+        if pgs is not None:
+            return pgs
+        products = self.get_products()
+        pgs = lfs.catalog.models.PropertyGroup.objects.filter(products__in=products).distinct()
+        cache.set(cache_key, pgs)
+
+        return pgs
 
     def get_all_products(self):
         """Returns the direct products and all products of the sub categories
@@ -994,7 +1007,7 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.get_standard_price(with_properties)
 
-    def _get_for_sale_price(self, request):
+    def get_for_sale_price(self, request):
         """returns the sale price for the product.
         """
         pc = self.get_price_calculator(request)
