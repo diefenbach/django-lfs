@@ -1,3 +1,4 @@
+# coding=utf8
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
@@ -18,3 +19,6 @@ LFS_PRICE_CALCULATOR_DICTIONARY = {
 
 # You can find locale information here: http://en.wikipedia.org/wiki/Locale
 LFS_LOCALE = 'de_DE.UTF-8'
+
+# If you use international currency code you will get letters instead of symbols for prices e.g. EUR vs. €
+LFS_USE_INTERNATIONAL_CURRENCY_CODE = False

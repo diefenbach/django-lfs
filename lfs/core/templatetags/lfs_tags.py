@@ -25,7 +25,7 @@ from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
 from lfs.core.models import Shop
 from lfs.core.models import Action
-from lfs.core.settings import LFS_LOCALE
+from lfs.core.settings import LFS_LOCALE, LFS_USE_INTERNATIONAL_CURRENCY_CODE
 from lfs.shipping import utils as shipping_utils
 
 locale.setlocale(locale.LC_ALL, LFS_LOCALE)
@@ -439,7 +439,7 @@ def currency(value, grouping=True):
     """
     result = ''
     if value:
-        result = locale.currency(value, grouping=grouping)
+        result = locale.currency(value, grouping=grouping, international=LFS_USE_INTERNATIONAL_CURRENCY_CODE)
         # add css class if value is negative
         if value < 0:
             # replace the minus symbol if needed
