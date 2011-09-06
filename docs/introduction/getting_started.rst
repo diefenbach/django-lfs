@@ -127,10 +127,9 @@ Go to the "Product" tab
 Set default locale and currency
 -------------------------------
 
-Open the file lfs.core.settings and set the variable LFS_LOCALE to your locale
-e.g. for American dollars:
-::
-    LFS_LOCALE = 'en_US.utf8'
+Default locale and currency can be set through the django admin interface in the Shop model
+e.g. for American dollars you should set your locale to 'en_US.utf8'
+
 You may have to install this locale on your server PC for this to work,
 to check what locales you currently have installed open a terminal and type:
 ::

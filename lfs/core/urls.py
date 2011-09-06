@@ -5,6 +5,7 @@ from django.views.generic.simple import direct_to_template
 # lfs imports
 from lfs.core.sitemap import ProductSitemap
 from lfs.core.sitemap import CategorySitemap
+from lfs.core.views import one_time_setup
 
 # Robots
 urlpatterns = patterns('django.views.generic.simple',
@@ -114,3 +115,6 @@ urlpatterns += patterns('',
 urlpatterns += patterns('',
     (r'', include('lfs_contact.urls')),
 )
+
+
+one_time_setup()

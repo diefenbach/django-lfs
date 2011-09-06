@@ -1,4 +1,5 @@
 # python imports
+import locale
 import sys
 import traceback
 
@@ -51,3 +52,8 @@ def server_error(request):
 
     t = loader.get_template('500.html')
     return HttpResponse(t.render(RequestContext(request)), status=500)
+
+
+def one_time_setup():
+    shop = lfs_get_object_or_404(Shop, pk=1)
+    locale.setlocale(locale.LC_ALL, str(shop.default_locale))

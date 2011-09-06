@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 
 # lfs imports
+from lfs.caching.utils import lfs_get_object_or_404
 import lfs.catalog.utils
 from lfs.core.signals import property_type_changed
 from lfs.catalog.settings import ACTIVE_FOR_SALE_YES
@@ -40,6 +41,7 @@ from lfs.catalog.models import ProductAccessories
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import ProductsPropertiesRelation
 from lfs.catalog.models import StaticBlock
+from lfs.core.models import Shop
 from lfs.core.signals import product_changed
 from lfs.core.signals import product_removed_property_group
 from lfs.tax.models import Tax
@@ -2492,6 +2494,8 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_weight(), 14.0)
 
     def test_get_price_with_unit(self):
+        shop = lfs_get_object_or_404(Shop, pk=1)
+        self.assertEqual(shop.default_locale, 'de_DE.UTF-8')
         self.failIf(self.p1.get_price_with_unit(self.request) != "1,00 €" and self.p1.get_price_with_unit(self.request) != "Eu1,00")
 
         self.p1.price_calculator = "lfs.net_price.NetPriceCalculator"

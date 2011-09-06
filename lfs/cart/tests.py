@@ -8,6 +8,7 @@ from django.test import TestCase
 from django.utils import simplejson
 
 # lfs imports
+from lfs.caching.utils import lfs_get_object_or_404
 import lfs.cart.utils
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
@@ -17,6 +18,7 @@ from lfs.cart.views import refresh_cart
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import Product
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
+from lfs.core.models import Shop
 from lfs.tests.utils import RequestFactory
 from lfs.tests.utils import create_request
 from lfs.tax.models import Tax
@@ -432,6 +434,11 @@ class AddedToCartTestCase(TestCase):
         # Added product_1 to cart
         add_to_cart(request)
         response = added_to_cart_items(request)
+
+        # Check we are using german locale
+        shop = lfs_get_object_or_404(Shop, pk=1)
+        self.assertEqual(shop.default_locale, 'de_DE.UTF-8')
+
         # need to test for two versions of currency output (Mac and Ubuntu differ)
         self.failIf(response.find(u"Total: 10,00 €") == -1 and response.find(u"Total: Eu10,00") == -1)
 
@@ -447,6 +454,10 @@ class AddedToCartTestCase(TestCase):
         request = rf.post("/", {"product_id": self.p1.id, "quantity": 2})
         request.session = self.session
         request.user = self.user
+
+        # Check we are using german locale
+        shop = lfs_get_object_or_404(Shop, pk=1)
+        self.assertEqual(shop.default_locale, 'de_DE.UTF-8')
 
         # Added product_1 two times to cart
         add_to_cart(request)

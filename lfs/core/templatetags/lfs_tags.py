@@ -25,10 +25,8 @@ from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
 from lfs.core.models import Shop
 from lfs.core.models import Action
-from lfs.core.settings import LFS_LOCALE, LFS_USE_INTERNATIONAL_CURRENCY_CODE
 from lfs.shipping import utils as shipping_utils
 
-locale.setlocale(locale.LC_ALL, LFS_LOCALE)
 register = template.Library()
 
 
@@ -439,7 +437,8 @@ def currency(value, grouping=True):
     """
     result = ''
     if value:
-        result = locale.currency(value, grouping=grouping, international=LFS_USE_INTERNATIONAL_CURRENCY_CODE)
+        shop = lfs_get_object_or_404(Shop, pk=1)
+        result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
         # add css class if value is negative
         if value < 0:
             # replace the minus symbol if needed

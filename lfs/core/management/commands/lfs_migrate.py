@@ -43,7 +43,10 @@ class Command(BaseCommand):
         db.add_column("core_shop", "price_calculator",
             models.CharField(choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(), default=lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR, max_length=255))
 
-        # Currencies now set in lfs.core.settings.LFS_LOCALE
-        print 'Warning, you must set the variable LFS_LOCALE to a value that supports your default currency in lfs/core/settings.py e.g. LFS_LOCALE="en_US.utf8"'
+        # Locale and currency settings
+        db.add_column("core_shop", "default_locale",
+            models.CharField(_(u"Defalt Shop Locale"), max_length=20, default="de_DE.UTF-8"))
+        db.add_column("core_shop", "use_international_currency_code",
+            models.BooleanField(_(u"Use international currency codes"), default=False))
         db.delete_column('core_shop', 'default_currency')
 
