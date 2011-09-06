@@ -2492,17 +2492,17 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_weight(), 14.0)
 
     def test_get_price_with_unit(self):
-        self.assertEqual(self.p1.get_price_with_unit(self.request), "1,00 €")
+        self.failIf(self.p1.get_price_with_unit(self.request) != "1,00 €" and self.p1.get_price_with_unit(self.request) != "Eu1,00")
 
         self.p1.price_calculator = "lfs.net_price.NetPriceCalculator"
         self.p1.save()
 
-        self.assertEqual(self.p1.get_price_with_unit(self.request), "1,00 €")
+        self.failIf(self.p1.get_price_with_unit(self.request) != "1,00 €" and self.p1.get_price_with_unit(self.request) != "Eu1,00")
 
         self.p1.price_calculator = None
         self.p1.save()
 
-        self.assertEqual(self.p1.get_price_with_unit(self.request), "1,00 €")
+        self.failIf(self.p1.get_price_with_unit(self.request) != "1,00 €" and self.p1.get_price_with_unit(self.request) != "Eu1,00")
 
     def test_add_product_variants(self):
         """Test the add variant form in the Manage interface
