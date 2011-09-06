@@ -17,4 +17,4 @@ LFS_PRICE_CALCULATOR_DICTIONARY = {
 }
 
 # You can find locale information here: http://en.wikipedia.org/wiki/Locale
-LFS_LOCALE = 'de_DE.utf8'
+LFS_LOCALE = 'de_DE.UTF-8'
