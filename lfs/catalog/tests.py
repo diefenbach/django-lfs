@@ -444,7 +444,7 @@ class PropertiesTestCase(TestCase):
     def test_get_properties_groups(self):
         """
         """
-        pgs = lfs.catalog.utils.get_property_groups(self.c1)
+        pgs = self.c1.get_property_groups()
         pg_ids = [pg.id for pg in pgs]
         self.assertEqual(pg_ids, [self.pg.id])
 

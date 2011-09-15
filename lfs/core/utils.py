@@ -110,7 +110,7 @@ def get_current_categories(request, object):
         current_categories.extend(parents)
     elif object and object.content_type == "product":
         current_categories = []
-        category = lfs.catalog.utils.get_current_product_category(request, object)
+        category = object.get_current_category(request)
         while category:
             current_categories.append(category)
             category = category.parent

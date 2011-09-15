@@ -133,7 +133,7 @@ def breadcrumbs(context, obj):
             return []
         else:
             request = context.get("request")
-            category = lfs.catalog.utils.get_current_product_category(request, obj)
+            category = obj.get_current_category(request)
             if category is None:
                 return []
             else:
@@ -200,7 +200,7 @@ def product_navigation(context, product):
         product = product.parent
         slug = product.slug
 
-    category = lfs.catalog.utils.get_current_product_category(request, product)
+    category = product.get_current_category(request)
     if category is None:
         return {"display": False}
     else:
@@ -394,7 +394,7 @@ class CurrentCategoryNode(Node):
         product = context.get("product")
 
         context["current_category"] = \
-            lfs.catalog.utils.get_current_product_category(request, product)
+            product.get_current_category(request)
         return ''
 
 

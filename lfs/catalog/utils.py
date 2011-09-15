@@ -24,7 +24,7 @@ def get_current_top_category(request, obj):
     Returns the current top category of a product.
     """
     if obj.__class__.__name__.lower() == "product":
-        category = get_current_product_category(request, obj)
+        category = obj.get_current_category(request)
     else:
         category = obj
 
