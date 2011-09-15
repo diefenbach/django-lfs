@@ -449,7 +449,7 @@ class PropertiesTestCase(TestCase):
     def test_get_properties_groups(self):
         """
         """
-        pgs = lfs.catalog.utils.get_property_groups(self.c1)
+        pgs = self.c1.get_property_groups()
         pg_ids = [pg.id for pg in pgs]
         self.assertEqual(pg_ids, [self.pg.id])
 
@@ -993,7 +993,7 @@ class ViewsTestCase(TestCase):
         """
         """
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
-        self.p1 = Product.objects.create(name="Product 1", slug="product-1", sub_type=PRODUCT_WITH_VARIANTS)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", sub_type=PRODUCT_WITH_VARIANTS, active=True)
 
         # Create a property with two options
         color = Property.objects.create(name="Color")
@@ -1065,6 +1065,17 @@ class ViewsTestCase(TestCase):
 
         # Select the variant color = red
         response = self.client.post(url, {"product_id": self.p1.id, "property_1": "1"})
+
+    def test_product_detail_view(self):
+        """
+        Tests that we can view the product detail page
+        """
+        url = reverse("lfs_product", kwargs={"slug": "product-1"})
+
+        response = self.client.get(url)
+
+        # check we get HTTP 200 and that the page contains the text 'Product 1'
+        self.assertContains(response, "Product 1", status_code=200)
 
 
 class DeliveryTimeTestCase(TestCase):
