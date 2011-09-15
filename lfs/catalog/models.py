@@ -727,6 +727,43 @@ class Product(models.Model):
         except IndexError:
             return None
 
+    def get_current_category(self, request):
+        """Returns product category based on actual categories of the given product
+        and the last visited category.
+
+        This is needed if the category has more than one category to display
+        breadcrumbs, selected menu points, etc. appropriately.
+        """
+        last_category = None
+        category = None
+        product_categories = self.get_categories()
+        if len(product_categories) >= 1:
+            try:
+                if len(product_categories) == 1:
+                    category = product_categories[0]
+                    return category
+                else:
+                    last_category = request.session.get("last_category")
+
+                if last_category is None:
+                    return product_categories[0]
+
+                category = None
+                if last_category in product_categories:
+                    category = last_category
+                else:
+                    children = last_category.get_all_children()
+                    for product_category in product_categories:
+                        if product_category in children:
+                            category = product_category
+                            break
+                if category is None:
+                    category = product_categories[0]
+            except IndexError:
+                category = None
+        request.session["last_category"] = category
+        return category
+
     def get_description(self):
         """Returns the description of the product. Takes care whether the
         product is a variant and description is active or not.
