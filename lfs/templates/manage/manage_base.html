@@ -7,13 +7,13 @@
     <head>
         
         <title>{% block title %}{% endblock %}</title>
-        <link rel="shortcut icon" href="{{ MEDIA_URL }}lfs/img/favicon.ico" type="image/ico" />
+        <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" type="image/ico" />
         
         <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/widgets.css" />
-        <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/css/lfs.manage.css" />
-        <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery-ui-1.8.13.custom/css/smoothness/jquery-ui-1.8.13.custom.css" />
-        <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery/jquery.jgrowl.css" />
-        <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}lfs/jquery/superfish/superfish.css" />
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/lfs.manage.css" />
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery-ui-1.8.13.custom/css/smoothness/jquery-ui-1.8.13.custom.css" />
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery/jquery.jgrowl.css" />
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery/superfish/superfish.css" />
 
         <script type="text/javascript">
             window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
@@ -25,22 +25,22 @@
         <script type="text/javascript" src="{% admin_media_prefix %}js/admin/DateTimeShortcuts.js"></script>
         <script type="text/javascript" src="{% admin_media_prefix %}js/urlify.js"></script>
 
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery-1.6.1.min.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery-ui-1.8.13.custom/js/jquery-ui-1.8.13.custom.min.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.ui.nestedSortable.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-1.6.1.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}jquery-ui-1.8.13.custom/js/jquery-ui-1.8.13.custom.min.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.ui.nestedSortable.js"></script>
 
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/tiny_mce-3.4.2/jquery.tinymce.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/js/lfs_tinymce.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}tiny_mce-3.4.2/jquery.tinymce.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/lfs_tinymce.js"></script>
 
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.fileupload-4.2.1/jquery.fileupload-ui.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.fileupload-4.2.1/jquery.fileupload.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.fileupload-4.2.1/jquery.fileupload-ui.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.fileupload-4.2.1/jquery.fileupload.js"></script>
 
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.form.pack.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.jgrowl_minimized.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/jquery.cookie.pack.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.form.pack.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.jgrowl_minimized.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.cookie.pack.js"></script>
 
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/jquery/superfish/superfish.js"></script>
-        <script type="text/javascript" src="{{ MEDIA_URL }}lfs/js/lfs.manage.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}jquery/superfish/superfish.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.manage.js"></script>
 
         {% block javascript %}{% endblock %}
 
@@ -52,7 +52,7 @@
         <div class="lfs-header">
             <div class="logo">
                 <a href="{% url lfs_shop_view %}">
-                    <img src="{{MEDIA_URL}}lfs/img/logo.jpg"
+                    <img src="{{ STATIC_URL }}img/logo.jpg"
                          alt="LFS"
                          title="LFS - Lightning Fast Shop"/>
                 </a>

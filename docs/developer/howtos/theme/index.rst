@@ -92,6 +92,6 @@ for future versions).
 
 5. Include your CSS file to the header::
 
-    <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}mytheme/mytheme.css">
+    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}mytheme/mytheme.css">
 
 6. Optionally delete the link to main.css (if you just want to use your own CSS).

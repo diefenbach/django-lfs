@@ -66,7 +66,7 @@
                            dialog_message="{% trans 'Do you really want to delete this step?' %}"
                            is_ajax="1"
                            href="{% url lfs_delete_shop_property_step step.id %}">
-                            <img src="{{ MEDIA_URL }}lfs/icons/cross.png"
+                            <img src="{{ STATIC_URL }}icons/cross.png"
                                  alt="{% trans 'Delete' %}"
                                  title="{% trans 'Delete step' %}" />
                         </a>

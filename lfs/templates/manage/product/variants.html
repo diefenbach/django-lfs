@@ -23,7 +23,7 @@
 
     <h2 class="heading-middle">{% trans 'Local properties' %}
         <a href="" class="discreet property-edit-mode">
-            <img src="{{ MEDIA_URL }}lfs/icons/pencil.png"
+            <img src="{{ STATIC_URL }}icons/pencil.png"
                  alt="Edit"
                  title="{% trans 'Edit variant' %}" />
         </a>
@@ -43,7 +43,7 @@
         {% if not forloop.first %}
             <a href="{% url lfs.manage.views.change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=up"
                class="ajax-link property-edit-field">
-                <image src="{{ MEDIA_URL }}lfs/icons/arrow_up.png"
+                <image src="{{ STATIC_URL }}icons/arrow_up.png"
                        alt="{% trans 'Up' %}"
                        title="{% trans 'Up' %}"/>
 
@@ -52,7 +52,7 @@
         {% if not forloop.last %}
             <a href="{% url lfs.manage.views.change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=down"
                     class="ajax-link property-edit-field">
-                <image src="{{ MEDIA_URL }}lfs/icons/arrow_down.png"
+                <image src="{{ STATIC_URL }}icons/arrow_down.png"
                        alt="{% trans 'Down' %}"
                        title="{% trans 'Down' %}"/>
             </a>
@@ -62,7 +62,7 @@
            class="ajax-link property-edit-field delete-link"
            dialog_message="{% trans 'Do you really want to delete this property and all its options?' %}"
            dialog_yes_button_class="ajax-save-button">
-            <image src="{{ MEDIA_URL }}lfs/icons/cross.png"
+            <image src="{{ STATIC_URL }}icons/cross.png"
                    alt="delete"
                    title="{% trans 'Delete property' %}"/>
         </a>
@@ -74,7 +74,7 @@
                        class="ajax-link property-edit-field delete-link"
                        dialog_message="{% trans 'Do you really want to delete this option?' %}"
                        dialog_yes_button_class="ajax-save-button">
-                        <image src="{{ MEDIA_URL }}lfs/icons/cross.png"
+                        <image src="{{ STATIC_URL }}icons/cross.png"
                                alt="delete"
                                title="{% trans 'Delete option' %}"/>
 
@@ -234,7 +234,7 @@
                         </td>
                         <td>
                             <a href="{% url lfs_manage_product variant.id %}">
-                                <img src="{{ MEDIA_URL }}lfs/icons/pencil.png"
+                                <img src="{{ STATIC_URL }}icons/pencil.png"
                                      alt="Edit"
                                      title="{% trans 'Edit variant' %}" />
                             </a>

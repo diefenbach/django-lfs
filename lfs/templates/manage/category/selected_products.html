@@ -4,12 +4,12 @@
 <div class="navigation-pages-inline">
     {% if page_2.has_previous %}
         <a class="ajax-link"
-           href="{% url lfs_manage_category_products_inline category.id %}?page_2=1&amp;keep-session=1"><img src="{{ MEDIA_URL }}lfs/icons/resultset_first.png" alt='{% trans "First" %}' /></a>
+           href="{% url lfs_manage_category_products_inline category.id %}?page_2=1&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
         <a class="ajax-link"
-           href="{% url lfs_manage_category_products_inline category.id %}?page_2={{ page_2.previous_page_number }}&amp;keep-session=1"><img src="{{ MEDIA_URL }}lfs/icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
+           href="{% url lfs_manage_category_products_inline category.id %}?page_2={{ page_2.previous_page_number }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
     {% else %}
-        <span><img src="{{ MEDIA_URL }}lfs/icons/resultset_first.png" alt='{% trans "First" %}' /></span>
-        <span><img src="{{ MEDIA_URL }}lfs/icons/resultset_previous.png" alt='{% trans "Previous" %}' /></span>
+        <span><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></span>
+        <span><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></span>
     {% endif %}
 
     <span style="position: relative; top:-4px ">
@@ -18,13 +18,13 @@
 
     {% if page_2.has_next %}
         <a class="ajax-link"
-           href="{% url lfs_manage_category_products_inline category.id %}?page_2={{ page_2.next_page_number }}&amp;keep-session=1"><img src="{{ MEDIA_URL }}lfs/icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
+           href="{% url lfs_manage_category_products_inline category.id %}?page_2={{ page_2.next_page_number }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
         <a class="ajax-link"
-           href="{% url lfs_manage_category_products_inline category.id%}?page_2={{ paginator.num_pages }}&amp;keep-session=1"><img src="{{ MEDIA_URL }}lfs/icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
+           href="{% url lfs_manage_category_products_inline category.id%}?page_2={{ paginator.num_pages }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
 
     {% else %}
-        <span><img src="{{ MEDIA_URL }}lfs/icons/resultset_next.png" alt='{% trans "Next" %}' /></span>
-        <span><img src="{{ MEDIA_URL }}lfs/icons/resultset_last.png"  alt='{% trans "Last" %}' /></span>
+        <span><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></span>
+        <span><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></span>
     {% endif %}
 </div>
 <form id="category-products-remove-form"
@@ -63,9 +63,9 @@
                     </td>
                     <td class="right-padding">
                         {% if product.is_active %}
-                            <img src="{{ MEDIA_URL }}/lfs/icons/tick.png" />
+                            <img src="{{ STATIC_URL }}icons/tick.png" />
                         {% else %}
-                            <img src="{{ MEDIA_URL }}/lfs/icons/cross.png" />
+                            <img src="{{ STATIC_URL }}icons/cross.png" />
                         {% endif %}
                     </td>
                 </tr>

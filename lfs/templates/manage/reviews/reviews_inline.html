@@ -16,21 +16,21 @@
                     {% if page.has_previous %}
                         <a class="ajax-link"
                            href="{% url lfs_reviews_inline %}?page=1">
-                            <img src="{{MEDIA_URL}}lfs/icons/resultset_first.png"
+                            <img src="{{ STATIC_URL }}icons/resultset_first.png"
                                  alt="{% trans 'First' %}"
                                  title="{% trans 'First' %}" />
                         </a>
                         <a class="ajax-link"
                            href="{% url lfs_reviews_inline %}?page={{ page.previous_page_number }}">
-                            <img src="{{MEDIA_URL}}lfs/icons/resultset_previous.png"
+                            <img src="{{ STATIC_URL }}icons/resultset_previous.png"
                                  alt="{% trans 'Previous' %}"
                                  title="{% trans 'Previous' %}" />
                         </a>
                     {% else %}
-                        <img src="{{MEDIA_URL}}lfs/icons/resultset_first.png"
+                        <img src="{{ STATIC_URL }}icons/resultset_first.png"
                              alt="{% trans 'First' %}"
                              title="{% trans 'First' %}" />
-                        <img src="{{MEDIA_URL}}lfs/icons/resultset_previous.png"
+                        <img src="{{ STATIC_URL }}icons/resultset_previous.png"
                              alt="{% trans 'Previous' %}"
                              title="{% trans 'Previous' %}" />
                     {% endif %}
@@ -40,25 +40,25 @@
                     {% if page.has_next %}
                         <a class="ajax-link"
                            href="{% url lfs_reviews_inline %}?page={{ page.next_page_number }}">
-                            <img src="{{MEDIA_URL}}lfs/icons/resultset_next.png"
+                            <img src="{{ STATIC_URL }}icons/resultset_next.png"
                                  alt="{% trans 'Next' %}"
                                  title="{% trans 'Next' %}" />
                         </a>
                         <a class="ajax-link"
                            href="{% url lfs_reviews_inline %}?page={{ paginator.num_pages }}">
-                            <img src="{{MEDIA_URL}}lfs/icons/resultset_last.png"
+                            <img src="{{ STATIC_URL }}icons/resultset_last.png"
                                  alt="{% trans 'Last' %}"
                                  title="{% trans 'Last' %}" />
                         </a>
 
                     {% else %}
                         <span>
-                            <img src="{{MEDIA_URL}}lfs/icons/resultset_next.png"
+                            <img src="{{ STATIC_URL }}icons/resultset_next.png"
                                  alt="{% trans 'Next' %}"
                                  title="{% trans 'Next' %}" />
                         </span>
                         <span>
-                            <img src="{{MEDIA_URL}}lfs/icons/resultset_last.png"
+                            <img src="{{ STATIC_URL }}icons/resultset_last.png"
                                  alt="{% trans 'Last' %}"
                                  title="{% trans 'Last' %}" />
                         </span>
@@ -166,19 +166,19 @@
             </td>
             <td>
                 {% if review.comment %}
-                    <img src="{{ MEDIA_URL }}lfs/icons/tick.png"
+                    <img src="{{ STATIC_URL }}icons/tick.png"
                          alt="{% trans 'Yes' %}">
                 {% else %}              
-                    <img src="{{ MEDIA_URL }}lfs/icons/cross.png"
+                    <img src="{{ STATIC_URL }}icons/cross.png"
                          alt="{% trans 'No' %}">
                 {% endif %}             
             </td>
             <td>
                 {% if review.active %}
-                    <img src="{{ MEDIA_URL }}lfs/icons/tick.png"
+                    <img src="{{ STATIC_URL }}icons/tick.png"
                          alt="{% trans 'Yes' %}">
                 {% else %}              
-                    <img src="{{ MEDIA_URL }}/icons/cross.png"
+                    <img src="{{ STATIC_URL }}icons/cross.png"
                          alt="{% trans 'No' %}">
                 {% endif %}             
             </td>

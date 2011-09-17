@@ -120,7 +120,7 @@ def breadcrumbs(context, obj):
 
         result = {
             "objects": objects,
-            "MEDIA_URL": context.get("MEDIA_URL"),
+            "STATIC_URL": context.get("STATIC_URL"),
         }
         cache.set(cache_key, result)
 
@@ -151,7 +151,7 @@ def breadcrumbs(context, obj):
 
         result = {
             "objects": objects,
-            "MEDIA_URL": context.get("MEDIA_URL"),
+            "STATIC_URL": context.get("STATIC_URL"),
         }
 
     elif isinstance(obj, Page):
@@ -163,12 +163,12 @@ def breadcrumbs(context, obj):
 
         result = {
             "objects": objects,
-            "MEDIA_URL": context.get("MEDIA_URL"),
+            "STATIC_URL": context.get("STATIC_URL"),
         }
     else:
         result = {
             "objects": ({"name": obj},),
-            "MEDIA_URL": context.get("MEDIA_URL"),
+            "STATIC_URL": context.get("STATIC_URL"),
         }
 
     return result
@@ -246,7 +246,7 @@ def product_navigation(context, product):
             "next": next,
             "current": product_index + 1,
             "total": total,
-            "MEDIA_URL": context.get("MEDIA_URL"),
+            "STATIC_URL": context.get("STATIC_URL"),
         }
 
         temp[sorting] = result
@@ -301,7 +301,7 @@ def tabs(context, obj=None):
 
     return {
         "tabs": tabs,
-        "MEDIA_URL": context.get("MEDIA_URL"),
+        "STATIC_URL": context.get("STATIC_URL"),
     }
 
 
