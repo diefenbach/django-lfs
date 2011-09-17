@@ -29,7 +29,7 @@ def test_manage_setting_of_price_calculator():
     client.click(id=u'id_price_calculator')
     client.select(option=u'Price excludes tax', id=u'id_price_calculator')
     client.click(xpath=u"//form[@id='product-data-form']/fieldset[4]/div[4]/div[2]")
-    client.click(id=u'product-data-save-button')
+    client.click(value=u'Save Data')
 
     # Check that price excludes vat now
     client.open(url="/product/chocolate")

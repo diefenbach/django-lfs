@@ -12,6 +12,8 @@ class CartPriceIntegrationTest(djangotest.WindmillDjangoUnitTest):
     test_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'windmilltests', 'grosspricetests')
     browser = 'chrome'
     settings.TESTING = True
+    # We need to set DEBUG = True so that our static content gets server
+    settings.DEBUG = True
     fixtures = ['lfs_price_test.xml']
 
     def setUp(self):
@@ -37,6 +39,8 @@ class ManageInterfaceIntegrationTest(djangotest.WindmillDjangoUnitTest):
     test_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'windmilltests', 'managetests')
     browser = 'chrome'
     settings.TESTING = True
+    # We need to set DEBUG = True so that our static content gets server
+    settings.DEBUG = True
     fixtures = ['lfs_price_test.xml']
 
     def setUp(self):
