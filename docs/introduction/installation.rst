@@ -25,8 +25,9 @@ The installation is straightforward and should last just a few minutes.
    6. Enter your database settings to lfs_project/settings.py
    7. $ bin/django syncdb
    8. $ bin/django lfs_init
-   9. $ bin/django runserver
-   10. Browse to http://localhost:8000/
+   9. $ bin/django collectstatic
+   10. $ bin/django runserver
+   11. Browse to http://localhost:8000/
 
 That's all!
 
