@@ -21,12 +21,17 @@ class RelatedProductsPortlet(Portlet):
         """
         product = context.get("product")
         request = context.get("request")
+        price = ""
+        sale_price = ""
+        if product:
+            price = product.get_price(request)
+            sale_price = product.get_for_sale_price(request)
 
         return render_to_string("lfs/portlets/related_products.html", RequestContext(request, {
             "title": self.title,
             "product": product,
-            "price": product.get_price(request),
-            "sale_price": product.get_for_sale_price(request)
+            "price": price,
+            "sale_price": sale_price
         }))
 
     def form(self, **kwargs):
