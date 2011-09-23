@@ -112,13 +112,14 @@ class Cart(models.Model):
                 cart_item.save()
             else:
                 cart_item = CartItem.objects.create(cart=self, product=product, amount=amount)
-                for property_id, value in properties.items():
-                    try:
-                        Property.objects.get(pk=property_id)
-                    except Property.DoesNotExist:
-                        pass
-                    else:
-                        CartItemPropertyValue.objects.create(cart_item=cart_item, property_id=property_id, value=value)
+                if properties:
+                    for property_id, value in properties.items():
+                        try:
+                            Property.objects.get(pk=property_id)
+                        except Property.DoesNotExist:
+                            pass
+                        else:
+                            CartItemPropertyValue.objects.create(cart_item=cart_item, property_id=property_id, value=value)
         else:
             try:
                 cart_item = CartItem.objects.get(cart=self, product=product)
