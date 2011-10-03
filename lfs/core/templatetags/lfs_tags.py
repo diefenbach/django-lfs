@@ -333,16 +333,6 @@ def top_level_categories(context):
     }
 
 
-@register.inclusion_tag('lfs/catalog/price.html', takes_context=True)
-def get_price(context, request, product):
-    return {'context':context, 'product': product, 'price': product.get_price(request)}
-
-
-@register.inclusion_tag('lfs/catalog/sale_price.html', takes_context=True)
-def get_sale_price(context, request, product):
-    return {'context':context, 'product': product, 'sale_price': product.get_for_sale_price(request)}
-
-
 class TopLevelCategory(Node):
     """Calculates the current top level category.
     """
@@ -563,3 +553,12 @@ def packages(cart_item):
     """
     return int(math.ceil(cart_item.amount / cart_item.product.packing_unit))
 
+
+@register.filter(name='get_price')
+def get_price(product, request):
+    return product.get_price(request)
+
+
+@register.filter(name='get_sale_price')
+def get_sale_price(product, request):
+    return product.get_sale_price(request)
