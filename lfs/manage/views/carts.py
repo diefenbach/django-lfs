@@ -45,7 +45,7 @@ def carts_inline(request, as_string=False, template_name="manage/cart/carts_inli
         products = []
         total = 0
         for item in cart.get_items():
-            total += item.get_price_gross()
+            total += item.get_price_gross(request)
             products.append(item.product.get_name())
 
         try:
