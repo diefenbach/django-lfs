@@ -559,6 +559,10 @@ def get_price(product, request):
     return product.get_price(request)
 
 
-@register.filter(name='get_sale_price')
-def get_sale_price(product, request):
-    return product.get_sale_price(request)
+@register.filter(name='get_for_sale_price')
+def get_for_sale_price(product, request):
+    return product.get_for_sale_price(request)
+
+@register.filter(name='get_standard_price')
+def get_standard_price(product, request):
+    return product.get_standard_price(request)
