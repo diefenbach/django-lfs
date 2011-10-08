@@ -172,7 +172,7 @@ class Shop(models.Model):
     default_country = models.ForeignKey(Country, verbose_name=_(u"Default country"))
 
     # You can find locale information here: http://en.wikipedia.org/wiki/Locale
-    default_locale = models.CharField(_(u"Defalt Shop Locale"), max_length=20, default="de_DE.UTF-8")
+    default_locale = models.CharField(_(u"Default Shop Locale"), max_length=20, default="de_DE.UTF-8")
     use_international_currency_code = models.BooleanField(_(u"Use international currency codes"), default=False)
     price_calculator = models.CharField(choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(), max_length=255, default=lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR)
 
