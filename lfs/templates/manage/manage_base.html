@@ -5,10 +5,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
-        
+
         <title>{% block title %}{% endblock %}</title>
         <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" type="image/ico" />
-        
+
         <link rel="stylesheet" type="text/css" href="{% admin_media_prefix %}css/widgets.css" />
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/lfs.manage.css" />
         <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery-ui-1.8.13.custom/css/smoothness/jquery-ui-1.8.13.custom.css" />
@@ -46,13 +46,12 @@
 
     </head>
     <body class="{% block section %}{% endblock %}">
-
         {# {% dbinfo %} #}
 
         <div class="lfs-header">
             <div class="logo">
                 <a href="{% url lfs_shop_view %}">
-                    <img src="{{ STATIC_URL }}img/logo.jpg"
+                    <img src="{{ STATIC_URL }}/img/logo_management.jpg"
                          alt="LFS"
                          title="LFS - Lightning Fast Shop"/>
                 </a>
@@ -169,7 +168,7 @@
 
         <div class="delete-dialog" title='{% trans "Please Confirm" %}' id="delete-dialog">
             <p class="message">{% trans "Do you really want to delete this object?" %}</p>
-            
+
             <form action="."
                   method="POST">
                 {% csrf_token %}
