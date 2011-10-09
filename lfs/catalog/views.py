@@ -73,7 +73,7 @@ def calculate_packing(request, id, quantity=None, as_string=False, template_name
 
     packs = math.ceil(quantity / packing_amount)
     real_quantity = packs * packing_amount
-    price = real_quantity * product.get_price()
+    price = real_quantity * product.get_price(request)
 
     html = render_to_string(template_name, RequestContext(request, {
         "price": price,
@@ -553,15 +553,15 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
     if product.get_template_name() != None:
         template_name = product.get_template_name()
 
-    if product.active_packing_unit:
-        packing_result = calculate_packing(request, id, 1, True)
+    if variant.active_packing_unit:
+        packing_result = calculate_packing(request, variant.id, 1, True)
     else:
         packing_result = ""
 
     result = render_to_string(template_name, RequestContext(request, {
         "product": product,
-        "standard_price": product.get_standard_price(request),
-        "price": product.get_price(request),
+        "standard_price": variant.get_standard_price(request),
+        "price": variant.get_price(request),
         "variant": variant,
         "variants": variants,
         "product_accessories": variant.get_accessories(),
