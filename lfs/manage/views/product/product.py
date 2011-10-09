@@ -280,15 +280,18 @@ def selectable_products_inline(request, page, paginator, product_id=0, template_
     """Displays the selectable products for the product view. (Used to switch
     quickly from one product to another.)
     """
-    try:
-        product_id = int(product_id)
-    except TypeError:
-        product_id = 0
+    product = Product.objects.get(pk=product_id)
+
+    if product.is_variant():
+        base_product = product.parent
+    else:
+        base_product = product
 
     return render_to_string(template_name, RequestContext(request, {
         "paginator": paginator,
         "page": page,
-        "product_id": int(product_id),
+        "current_product": product,
+        "base_product" : base_product,
     }))
 
 
