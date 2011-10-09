@@ -267,10 +267,6 @@ class CartItem(models.Model):
         """
         if not self.product.is_configurable_product():
             price = self.product.get_price_gross(request)
-
-            if self.product.active_packing_unit:
-                amount = lfs.catalog.utils.calculate_real_amount(self.product, self.amount)
-                return self.product.get_price_gross(request) * amount
         else:
             if self.product.active_price_calculation:
                 try:
