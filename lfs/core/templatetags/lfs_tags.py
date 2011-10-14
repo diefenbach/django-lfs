@@ -452,34 +452,9 @@ def currency(value, grouping=True):
 
 @register.filter
 def decimal_l10n(value):
-    """Localizes
+    """Returns the decimal value of value based on current locale.
     """
-    value = str(value)
-    shop = lfs_get_object_or_404(Shop, pk=1)
-    if shop.get_default_country().iso == "DE":
-        # replace . and , for german format
-        a, b = value.split(".")
-        a = a.replace(",", ".")
-        value = "%s,%s" % (a, b)
-
-    return value
-
-
-@register.filter
-def number(price, arg=None):
-    """
-    """
-    # TODO: optimize
-    price = lfs.utils.misc.FormatWithCommas("%.2f", price)
-    shop = lfs_get_object_or_404(Shop, pk=1)
-
-    if shop.get_default_country().code == "DE":
-        # replace . and , for german format
-        a, b = price.split(".")
-        a = a.replace(",", ".")
-        price = "%s,%s" % (a, b)
-
-    return price
+    return locale.format_string("%.2f", value)
 
 
 @register.filter
