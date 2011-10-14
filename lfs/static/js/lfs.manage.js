@@ -100,7 +100,7 @@ $(function() {
         height: 680,
         draggable: false,
         resizable: false,
-        position: ["center", 200],
+        position: ["center", 200]
     });
 
     // Generic ajax save button
@@ -350,7 +350,7 @@ $(function() {
         modal: true,
         draggable: false,
         resizable: false,
-        position: ["center", 200],
+        position: ["center", 200]
     });
 
     $(".delete-link").live("click", function() {

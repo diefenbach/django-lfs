@@ -23,14 +23,14 @@ function addEditor(selector, hide_save) {
         theme_advanced_toolbar_align : "left",
         save_onsavecallback : "save",
         relative_urls : false,
-        height : "480",
+        height : "480"
    });
 };
 
 function update_editor() {
     addEditor("#id_description");
-    addEditor("#id_short_description");    
-    addEditor("#id_short_text");    
+    addEditor("#id_short_description");
+    addEditor("#id_short_text");
     addEditor("#id_body");
     addEditor('#id_html');
 }
