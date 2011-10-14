@@ -180,6 +180,8 @@ def product_navigation(context, product):
     """
     request = context.get("request")
     sorting = request.session.get("sorting", "price")
+    if sorting == "":
+        sorting = "price"
 
     slug = product.slug
 
