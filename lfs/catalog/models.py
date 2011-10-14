@@ -1,4 +1,5 @@
 # python imports
+import math
 import re
 import uuid
 
@@ -308,7 +309,7 @@ class Category(models.Model):
         cache.set(cache_key, products)
 
         return products
-    
+
     def get_property_groups(self):
         """Returns property groups for given category.
         """
@@ -686,6 +687,12 @@ class Product(models.Model):
         """Returns True if the product has accessories.
         """
         return len(self.get_accessories()) > 0
+
+    def get_amount_by_packages(self, quantity):
+        """
+        """
+        packages = math.ceil(quantity / self.packing_unit)
+        return packages * self.packing_unit
 
     def get_categories(self, with_parents=False):
         """Returns the categories of the product.
