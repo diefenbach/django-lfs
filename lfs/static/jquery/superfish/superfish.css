@@ -31,6 +31,7 @@ ul.sf-menu, .sf-menu * {
 .sf-menu li {
     float:          left;
     position:       relative;
+    z-index:        100;
 }
 .sf-menu a {
     display:        block;
@@ -73,7 +74,7 @@ ul.sf-menu li li li.sfHover ul {
 .sf-menu a, .sf-menu a:visited  { /* visited pseudo selector so IE6 applies text colour*/
     color:          #58585a;
     font-weight: bold;
-    
+
 }
 .sf-menu li {
     background:     transparent;
@@ -82,7 +83,7 @@ ul.sf-menu li li li.sfHover ul {
     background: url('images/menu_bg.jpg') repeat-x;
 }
 .sf-menu li li li {
-    background: url('images/menu_bg.jpg') repeat-x;    
+    background: url('images/menu_bg.jpg') repeat-x;
 }
 .sf-menu li:hover, .sf-menu li.sfHover,
 .sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active {
