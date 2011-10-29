@@ -1,4 +1,4 @@
-# coding=utf8
+# coding: utf-8
 
 # django imports
 from django.contrib.sessions.backends.file import SessionStore
@@ -2525,21 +2525,21 @@ class ProductTestCase(TestCase):
         self.assertEqual(len(Product.objects.all()), 5)
 
         product = Product.objects.get(slug="product-1")
-        
+
         variant_data = {  'slug': 'variant-slug',
                           'name': 'variant',
                           'price': 10.00,
                           }
-        
+
         # set up a user with permission to access the manage interface
         self.user, created = User.objects.get_or_create(username='manager', is_superuser=True)
         self.password = 'pass'
         self.user.set_password(self.password)
         self.user.save()
-        
+
         # login the manager account so we can access the add variant function
         self.client.login(username='manager', password='pass')
-        
+
         response = self.client.post(reverse('lfs_add_variants', args=(product.id,)), variant_data)
         # following code in try loop will only be relevant if there are errors in the form
         try:
@@ -2551,7 +2551,7 @@ class ProductTestCase(TestCase):
                     self.assertEqual(len(variant_form.errors), 0)
         except KeyError, e:
             pass
-        
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(Product.objects.all()), 6)
         variant = Product.objects.get(slug="product-1-variant-slug")
