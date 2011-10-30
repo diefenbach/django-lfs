@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.safestring import mark_safe
-
+from django.utils.translation import ugettext_lazy as _
 
 class LFSImageInput(forms.FileInput):
     """A custom image widget which displays the current image.
@@ -15,6 +15,7 @@ class LFSImageInput(forms.FileInput):
                 output += u"""<div><img src="%s" /></div>""" % value.url
 
         if value:
-            output += """<div><input type="checkbox" name="delete_image" id="id_delete_image" /> <label for="delete_image">Delete image</label></div>"""
+            trans = _(u"Delete image")
+            output += """<div><input type="checkbox" name="delete_image" id="id_delete_image" /> <label for="delete_image">%s</label></div>""" % trans._proxy____unicode_cast()
 
         return mark_safe(output)

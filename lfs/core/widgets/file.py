@@ -11,6 +11,7 @@ class LFSFileInput(forms.FileInput):
             output = u"""<div><a href="%s" />%s</a></div>""" % (value.url, value.name) + output
 
         if value:
-            output += """<div><input type="checkbox" name="delete_file" id="id_delete_file" /> <label for="delete_file">Delete file</label></div>"""
+            trans = _(u"Delete file")
+            output += """<div><input type="checkbox" name="delete_file" id="id_delete_file" /> <label for="delete_file">%s</label></div>""" % trans._proxy____unicode_cast()
 
         return mark_safe(output)

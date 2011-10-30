@@ -117,7 +117,7 @@ CATEGORY_TEMPLATES = (
 PRODUCT_TEMPLATES = (
     (0, {"file": "%s/%s" % (PRODUCT_PATH, "product_inline.html"),
         "image": IMAGES_PATH + "/product_default.png",
-        "name": _(u"Default template")
+        "name": _(u"Default")
     },),
 )
 

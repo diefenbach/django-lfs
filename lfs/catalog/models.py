@@ -537,12 +537,12 @@ class Product(models.Model):
     slug = models.SlugField(_(u"Slug"), help_text=_(u"The unique last part of the Product's URL."), unique=True, max_length=80)
     sku = models.CharField(_(u"SKU"), help_text=_(u"Your unique article number of the product."), blank=True, max_length=30)
     price = models.FloatField(_(u"Price"), default=0.0)
-    price_calculator = models.CharField(null=True, blank=True,
+    price_calculator = models.CharField(_(u"Price calculator"), null=True, blank=True,
                                         choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(),
                                         max_length=255)
     effective_price = models.FloatField(_(u"Price"), blank=True)
-    price_unit = models.CharField(blank=True, max_length=20)
-    unit = models.CharField(blank=True, max_length=20)
+    price_unit = models.CharField(_(u"Price unit"), blank=True, max_length=20)
+    unit = models.CharField(_(u"Unit"), blank=True, max_length=20)
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
     images = generic.GenericRelation("Image", verbose_name=_(u"Images"),
@@ -621,8 +621,8 @@ class Product(models.Model):
     price_calculation = models.CharField(_(u"Price Calculation"), blank=True, max_length=100)
 
     # Manufacturer
-    sku_manufacturer = models.CharField(blank=True, max_length=100)
-    manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True, related_name="products")
+    sku_manufacturer = models.CharField(_(u"SKU Manufacturer"), blank=True, max_length=100)
+    manufacturer = models.ForeignKey(Manufacturer, verbose_name=_(u"Manufacturer"), blank=True, null=True, related_name="products")
 
     objects = ActiveManager()
 

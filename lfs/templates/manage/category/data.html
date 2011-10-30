@@ -6,7 +6,7 @@
       method="post"
       class="category-data-form"
       enctype="multipart/form-data">
-    {% csrf_token %}  
+    {% csrf_token %}
 
     <fieldset>
         <legend>{% trans "General" %}</legend>
@@ -68,7 +68,7 @@
             </div>
             <div class="field">
                 <div class="label">
-                    {{ form.image.label_tag }}:
+                    {% trans "Image" %}
                 </div>
                 {% if field.errors %}
                     <div class="error">

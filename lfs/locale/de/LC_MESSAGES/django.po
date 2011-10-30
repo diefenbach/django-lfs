@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-30 06:08+0100\n"
+"POT-Creation-Date: 2011-10-30 06:42+0100\n"
 "PO-Revision-Date: 2009-02-22 07:20+0100\n"
 "Last-Translator: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
 "Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
@@ -306,6 +306,19 @@ msgstr ""
 msgid "Price"
 msgstr "Preis"
 
+#: catalog/models.py:540
+msgid "Price calculator"
+msgstr "Preiskalkulator"
+
+#: catalog/models.py:544
+msgid "Price unit"
+msgstr "Preiseinheit"
+
+#: catalog/models.py:545 catalog/models.py:579 catalog/models.py:1527
+#: catalog/models.py:1864
+msgid "Unit"
+msgstr "Einheit"
+
 #: catalog/models.py:548 templates/manage/product/images.html:3
 #: templates/manage/product/product.html:97
 msgid "Images"
@@ -390,10 +403,6 @@ msgstr "Verpackungseinheit aktivieren"
 #: catalog/models.py:578
 msgid "Packing unit"
 msgstr "Verpackungseinheit"
-
-#: catalog/models.py:579 catalog/models.py:1527 catalog/models.py:1864
-msgid "Unit"
-msgstr "Einheit"
 
 #: catalog/models.py:584 criteria/models/criteria.py:609
 #: criteria/models/criteria.py:627
@@ -540,7 +549,7 @@ msgstr "Abmessungen aktivieren"
 
 #: catalog/models.py:617
 msgid "Product template"
-msgstr "Produkt-Template"
+msgstr "Produktschablone"
 
 #: catalog/models.py:620
 msgid "Active price calculation"
@@ -549,6 +558,16 @@ msgstr "Preisberechnung aktivieren"
 #: catalog/models.py:621
 msgid "Price Calculation"
 msgstr "Preisberechnung"
+
+#: catalog/models.py:624
+msgid "SKU Manufacturer"
+msgstr "Artikelnummer Hersteller"
+
+#: catalog/models.py:625
+#: templates/manage/manufacturer/add_manufacturer.html:10
+#: templates/manage/manufacturer/manufacturer.html:32
+msgid "Manufacturer"
+msgstr "Hersteller"
 
 #: catalog/models.py:1397
 msgid "Accessory"
@@ -786,9 +805,10 @@ msgstr "Kategorie mit Produkten"
 msgid "Category with subcategories"
 msgstr "Kategorie mit Unterkategorien"
 
-#: catalog/settings.py:120
-msgid "Default template"
-msgstr "Standard-Schablone"
+#: catalog/settings.py:120 export/settings.py:11
+#: templates/manage/product/variants.html:188
+msgid "Default"
+msgstr "Standard"
 
 #: catalog/views.py:53 catalog/views.py:148
 msgid "The product has been changed according to your selection."
@@ -996,6 +1016,14 @@ msgstr "Tabs"
 msgid "Footer"
 msgstr "Fußzeile"
 
+#: core/settings.py:17
+msgid "Price includes tax"
+msgstr "Preis inklusive Mehrwertsteuer"
+
+#: core/settings.py:18
+msgid "Price excludes tax"
+msgstr "Preis exklusive Mehrwertsteuer"
+
 #: core/templatetags/lfs_tags.py:160
 #: portlet/templatetags/lfs_portlets_tags.py:119
 msgid "Information"
@@ -1015,6 +1043,10 @@ msgstr ""
 #, python-format
 msgid "%s tag needs product as argument"
 msgstr ""
+
+#: core/widgets/image.py:17
+msgid "Delete image"
+msgstr "Bild löschen"
 
 #: criteria/settings.py:16 criteria/settings.py:24
 msgid "Equal to"
@@ -1318,10 +1350,6 @@ msgstr "Export"
 #: export/settings.py:10
 msgid "---"
 msgstr "---"
-
-#: export/settings.py:11 templates/manage/product/variants.html:188
-msgid "Default"
-msgstr "Standard"
 
 #: export/settings.py:12
 msgid "Cheapest"
@@ -1679,7 +1707,9 @@ msgstr "Voucheroptionen wurden gespeichert."
 msgid ""
 "Do you really want to delete the category <b>'%(name)s'</b> and all its sub "
 "categories?"
-msgstr "Wollen Sie wirklich die Kategorie <b>'%(name)s'</b> und deren Unterkategorien löschen?"
+msgstr ""
+"Wollen Sie wirklich die Kategorie <b>'%(name)s'</b> und deren "
+"Unterkategorien löschen?"
 
 #: manage/views/categories/category.py:111
 msgid "Category data have been saved."
@@ -2944,11 +2974,6 @@ msgstr "Export löschen"
 msgid "Download Export"
 msgstr "Export herunterladen"
 
-#: templates/manage/manufacturer/add_manufacturer.html:10
-#: templates/manage/manufacturer/manufacturer.html:32
-msgid "Manufacturer"
-msgstr "Hersteller"
-
 #: templates/manage/manufacturer/manufacturer.html:4
 msgid "Manage Manufacturer"
 msgstr "Hersteller verwalten"
@@ -3927,3 +3952,6 @@ msgstr "Der Gutschein ist für diesen Preis nicht gültig."
 #: voucher/settings.py:18
 msgid "The voucher doesn't exist."
 msgstr "Dieser Gutschein existiert nicht"
+
+#~ msgid "Default template"
+#~ msgstr "Standard"
