@@ -586,7 +586,7 @@ def product_form_dispatcher(request):
         return add_to_cart(request)
     else:
         product_id = request.POST.get("product_id")
-        product = Product.objects.get(pk=product_id)
+        product = lfs_get_object_or_404(Product, pk=product_id)
 
         options = lfs_utils.parse_properties(request)
         variant = product.get_variant(options)
