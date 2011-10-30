@@ -6,28 +6,28 @@
 {% block left_slot %}
     <div id="shipping-methods">
         {{ shipping_methods }}
-    </div>    
+    </div>
 {% endblock %}
 
-{% block content %}    
+{% block content %}
     <div class="site-actions">
         <a class="add"
            href="{% url lfs.manage.views.add_shipping_method %}">
-            {% trans 'Add Shipping Method' %}
+            {% trans 'Add shipping method' %}
         </a>
 
-        <a class="delete delete-link" 
+        <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this shipping method?' %}"
            href="{% url lfs.manage.views.delete_shipping_method shipping_method.id %}">
             {% trans 'Delete Shipping Method' %}
         </a>
     </div>
-            
+
     <div id="manage-tabs">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Shipping Method' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#criteria">{% trans 'Criteria' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#prices">{% trans 'Prices' %}</a></li>            
+            <li class="ui-tabs-nav-item"><a href="#prices">{% trans 'Prices' %}</a></li>
         </ul>
 
         <div id="data">
@@ -41,6 +41,6 @@
         <div id="prices">
             {{ method_prices }}
         </div>
-        
+
     </div>
 {% endblock %}
