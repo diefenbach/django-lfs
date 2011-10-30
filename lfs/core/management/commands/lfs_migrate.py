@@ -1,6 +1,7 @@
 # django importsad
 from django.core.management.base import BaseCommand
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 from lfs.voucher.models import Voucher
@@ -45,8 +46,9 @@ class Command(BaseCommand):
 
         # Locale and currency settings
         db.add_column("core_shop", "default_locale",
-            models.CharField(_(u"Defalt Shop Locale"), max_length=20, default="de_DE.UTF-8"))
+            models.CharField(_(u"Default Shop Locale"), max_length=20, default="de_DE.UTF-8"))
         db.add_column("core_shop", "use_international_currency_code",
             models.BooleanField(_(u"Use international currency codes"), default=False))
         db.delete_column('core_shop', 'default_currency')
 
+        db.add_column("catalog_product", "supplier_id", models.IntegerField(blank=True, null=True))
