@@ -150,6 +150,9 @@ class Shop(models.Model):
     - confirm_toc
        If this is activated the shop customer has to confirm terms and
        conditions to checkout.
+
+    - version
+       The current version of the shop. Can be used for migrations.
     """
     name = models.CharField(_(u"Name"), max_length=30)
     shop_owner = models.CharField(_(u"Shop owner"), max_length=100, blank=True)
@@ -219,5 +222,8 @@ class Shop(models.Model):
         is no parent for a shop.
         """
         return None
+
+class Application(models.Model):
+    version = models.CharField(_("Version"), blank=True, max_length=10)
 
 from monkeys import *
