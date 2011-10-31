@@ -4,12 +4,12 @@
 Settings
 ========
 
-These are settings specific for LFS. For Django's default settings please 
+These are settings specific for LFS. For Django's default settings please
 visit `Django settings <http://docs.djangoproject.com/en/dev/ref/settings/>`_.
 
-.. Note:: 
-    These settings might be dropped in favour of the shop preferences, see 
-    :doc:`/user/shop/preferences`.
+.. Note::
+    These settings might be dropped in favour of the shop preferences, see :doc:
+    `/user/shop/preferences`.
 
 Reviews
 =======
@@ -42,7 +42,7 @@ Miscellaneous
 =============
 
 LFS_RECENT_PRODUCTS_LIMIT
-    The amount of recent products which are displayed within the recent 
+    The amount of recent products which are displayed within the recent
     products portlet, e.g. 3.
 
 E-Mail

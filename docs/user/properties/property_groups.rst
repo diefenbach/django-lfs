@@ -82,23 +82,23 @@ Products
 
 * Within this tab you can assign products to the property group. All products
   will have the group's properties.
-* Optionally you can filter the available products with the text (name) and 
+* Optionally you can filter the available products with the text (name) and
   selectbox (categories) on top of the page.
-* You can also navigate through the displayed products by clicking on the 
+* You can also navigate through the displayed products by clicking on the
   ``First``, ``Previous``, ``Next``, ``Last`` links.
 
 **Add products**
 
-1. Select all checkbox beside the products you want to add to the property 
+1. Select all checkbox beside the products you want to add to the property
    group.
 2. Click on ``Add to property group``
 
-You will now see the above selected products within the ``Accessories`` 
+You will now see the above selected products within the ``Accessories``
 section and removed from the ``Products`` section.
 
 **Remove products**
 
-1. Within the ``Assigned products`` section select all checkboxes beside the 
+1. Within the ``Assigned products`` section select all checkboxes beside the
    products you want to remove from the ``property group``.
 2. Click on ``Remove from property group``.
 
@@ -111,5 +111,5 @@ group.
 For that just enter the you want and click save values.
 
 .. note::
-    You can also enter the values within the ``Properties`` tab of the product. 
-    :ref:`See here for more <product-properties-label>`.
+    You can also enter the values within the ``Properties`` tab of the product. :ref:
+    `See here for more <product-properties-label>`.
