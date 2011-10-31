@@ -31,6 +31,23 @@ The installation is straightforward and should last just a few minutes.
 
 That's all!
 
+Migration
+=========
+
+Starting with version 0.6 we provide a migration script which updates existing databases
+to the latest release.
+
+To migrate your database please process the following steps:
+
+   1. Install the new version (see above)
+   2. Backup the database
+   3. Point settings.py to the existing database
+   4. $ bin/django syncdb
+   5. $ bin/django lfs_init
+   6. $ bin/django lfs_migrate
+
+After that your database should be up-to-date.
+
 **Please note**:
 
 * If you encounter problems during ``bin/buildout -v`` or on the first

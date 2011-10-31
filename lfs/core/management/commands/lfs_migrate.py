@@ -29,7 +29,7 @@ class Command(BaseCommand):
 
         # 0.5 -> 0.6
         if version == "0.5":
-            print "Migrate to 0.6"
+            print "Migrating to 0.6"
             db.add_column("voucher_voucher", "used_amount", models.PositiveSmallIntegerField(default=0))
             db.add_column("voucher_voucher", "last_used_date", models.DateTimeField(blank=True, null=True))
             db.add_column("voucher_voucher", "limit", models.PositiveSmallIntegerField(default=1))
@@ -63,6 +63,8 @@ class Command(BaseCommand):
             db.delete_column('core_shop', 'default_currency')
 
             db.add_column("catalog_product", "supplier_id", models.IntegerField(_(u"Supplier"), blank=True, null=True))
+
+            print "Your database has been migrated to version 0.6."
 
             application.version = "0.6"
             application.save()
