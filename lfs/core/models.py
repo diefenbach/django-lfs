@@ -177,7 +177,7 @@ class Shop(models.Model):
     price_calculator = models.CharField(choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(), max_length=255, default=lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR)
 
     checkout_type = models.PositiveSmallIntegerField(_(u"Checkout type"), choices=CHECKOUT_TYPES, default=CHECKOUT_TYPE_SELECT)
-    confirm_toc = models.BooleanField(default=False)
+    confirm_toc = models.BooleanField(_(u"Confirm TOC"), default=False)
 
     class Meta:
         permissions = (("manage_shop", "Manage shop"),)
