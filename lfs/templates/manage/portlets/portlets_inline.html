@@ -1,6 +1,6 @@
 {% load i18n %}
 
-{% if parent_for_portlets %}    
+{% if parent_for_portlets %}
     <form class="portlets-form"
           action="{% url lfs_update_portlets object_type_id, object.id %}"
           method="post"
@@ -12,22 +12,22 @@
                        name="block_slot"
                        value="{{ slot.id }}"
                        {% if slot.is_blocked %}checked="checked"{% endif %} />
-                <label class="middle">{{ slot.name }}</label>            
+                <label class="middle">{% trans slot.name %}</label>
             </div>
         {% endfor %}
-    
+
         <div class="buttons">
             <input type="submit"
                    class="button ajax-save-button"
                    value="{% trans 'Save blocked parent slots' %}" />
-        </div>           
+        </div>
     </form>
 {% endif %}
-        
+
 <h2>{% trans 'Slots' %}</h2>
 {% for slot in slots.items %}
     <h3 {% if forloop.first %}class="first-heading"{% endif %}>
-        {% trans 'Slot' %}: {{ slot.name }}
+        {% trans 'Slot' %}: {% trans slot.name %}
     </h3>
 
     {% if slot.portlets %}
@@ -47,7 +47,7 @@
             {% for portlet in slot.portlets %}
                 <tr>
                     <td>
-                        {{ portlet.type }}
+                        {% trans portlet.type %}
                     </td>
                     <td>
                         {{ portlet.title }}
@@ -79,7 +79,7 @@
     <select name="portlet_type">
         {% for portlet_type in portlet_types %}
             <option value="{{ portlet_type.type }}">
-                {{ portlet_type.name }}
+                {% trans portlet_type.name %}
             </option>
         {% endfor %}
     </select>
