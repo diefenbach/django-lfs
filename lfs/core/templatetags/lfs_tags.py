@@ -19,12 +19,13 @@ from lfs.catalog.models import Category
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT
-from lfs.page.models import Page
 from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
+import lfs.core.utils
 from lfs.core.models import Shop
 from lfs.core.models import Action
+from lfs.page.models import Page
 from lfs.shipping import utils as shipping_utils
 
 register = template.Library()
@@ -439,7 +440,7 @@ def currency(value, grouping=True):
     """
     result = ''
     if value:
-        shop = lfs_get_object_or_404(Shop, pk=1)
+        shop = lfs.core.utils.get_default_shop()
         result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
         # add css class if value is negative
         if value < 0:
