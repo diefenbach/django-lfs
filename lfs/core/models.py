@@ -167,9 +167,9 @@ class Shop(models.Model):
     ga_site_tracking = models.BooleanField(_(u"Google Analytics Site Tracking"), default=False)
     ga_ecommerce_tracking = models.BooleanField(_(u"Google Analytics E-Commerce Tracking"), default=False)
 
-    invoice_countries = models.ManyToManyField(Country, verbose_name=_(u"Invoice Countries"), related_name="invoice")
-    shipping_countries = models.ManyToManyField(Country, verbose_name=_(u"Shipping Countries"), related_name="shipping")
-    default_country = models.ForeignKey(Country, verbose_name=_(u"Default country"))
+    invoice_countries = models.ManyToManyField(Country, verbose_name=_(u"Invoice countries"), related_name="invoice")
+    shipping_countries = models.ManyToManyField(Country, verbose_name=_(u"Shipping countries"), related_name="shipping")
+    default_country = models.ForeignKey(Country, verbose_name=_(u"Default shipping country"))
 
     # You can find locale information here: http://en.wikipedia.org/wiki/Locale
     default_locale = models.CharField(_(u"Default Shop Locale"), max_length=20, default="en_US.UTF-8")
