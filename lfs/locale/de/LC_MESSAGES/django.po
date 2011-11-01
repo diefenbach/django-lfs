@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-01 04:49+0100\n"
+"POT-Creation-Date: 2011-11-01 05:02+0100\n"
 "PO-Revision-Date: 2009-02-22 07:20+0100\n"
 "Last-Translator: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
 "Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
@@ -1008,6 +1008,10 @@ msgstr "Internationale Währungscodes benutzen"
 #: core/models.py:179
 msgid "Checkout type"
 msgstr "Checkouttyp"
+
+#: core/models.py:180
+msgid "Confirm TOC"
+msgstr "AGB Bestätigung"
 
 #: core/models.py:224
 msgid "Version"
@@ -3813,8 +3817,8 @@ msgid "Format"
 msgstr "Format"
 
 #: templates/manage/shop/default_values.html:131
-msgid "Currency"
-msgstr ""
+msgid "Localization"
+msgstr "Lokalisierung"
 
 #: templates/manage/shop/default_values.html:160
 msgid "Save Default Values"
@@ -3970,8 +3974,13 @@ msgstr "Der Gutschein ist für diesen Preis nicht gültig."
 msgid "The voucher doesn't exist."
 msgstr "Dieser Gutschein existiert nicht"
 
-#~ msgid "Default country"
-#~ msgstr "Standardland"
+# Additional msgids DO NOT DELETE THIS
 
-#~ msgid "Default template"
-#~ msgstr "Standard"
+msgid "Left"
+msgstr "Links"
+
+msgid "Right"
+msgstr "Rechts"
+
+msgid "Average Rating"
+msgstr "Durchschnittliche Bewertung"
