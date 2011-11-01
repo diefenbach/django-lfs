@@ -150,9 +150,6 @@ class Shop(models.Model):
     - confirm_toc
        If this is activated the shop customer has to confirm terms and
        conditions to checkout.
-
-    - version
-       The current version of the shop. Can be used for migrations.
     """
     name = models.CharField(_(u"Name"), max_length=30)
     shop_owner = models.CharField(_(u"Shop owner"), max_length=100, blank=True)
@@ -175,7 +172,7 @@ class Shop(models.Model):
     default_country = models.ForeignKey(Country, verbose_name=_(u"Default country"))
 
     # You can find locale information here: http://en.wikipedia.org/wiki/Locale
-    default_locale = models.CharField(_(u"Default Shop Locale"), max_length=20, default="de_DE.UTF-8")
+    default_locale = models.CharField(_(u"Default Shop Locale"), max_length=20, default="en_US.UTF-8")
     use_international_currency_code = models.BooleanField(_(u"Use international currency codes"), default=False)
     price_calculator = models.CharField(choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(), max_length=255, default=lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR)
 
