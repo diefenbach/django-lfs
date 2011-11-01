@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-30 06:42+0100\n"
+"POT-Creation-Date: 2011-11-01 04:49+0100\n"
 "PO-Revision-Date: 2009-02-22 07:20+0100\n"
 "Last-Translator: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
 "Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
@@ -186,6 +186,7 @@ msgstr "Beschreibung"
 
 #: catalog/models.py:146 catalog/models.py:1767 core/models.py:160
 #: payment/models.py:80 shipping/models.py:60
+#: templates/manage/category/data.html:71
 #: templates/manage/product/images.html:33
 msgid "Image"
 msgstr "Bild"
@@ -985,28 +986,32 @@ msgid "Google Analytics E-Commerce Tracking"
 msgstr "Google Analytics E-Commerce Tracking"
 
 #: core/models.py:170
-msgid "Invoice Countries"
+msgid "Invoice countries"
 msgstr "Länder Rechnungsadresse"
 
 #: core/models.py:171
-msgid "Shipping Countries"
+msgid "Shipping countries"
 msgstr "Länder Lieferadresse"
 
 #: core/models.py:172
-msgid "Default country"
-msgstr "Standardland"
+msgid "Default shipping country"
+msgstr "Standard Lieferland"
 
-#: core/models.py:175 core/management/commands/lfs_migrate.py:49
+#: core/models.py:175 core/management/commands/lfs_migrate.py:60
 msgid "Default Shop Locale"
 msgstr "Standard Shop Locale"
 
-#: core/models.py:176 core/management/commands/lfs_migrate.py:51
+#: core/models.py:176 core/management/commands/lfs_migrate.py:62
 msgid "Use international currency codes"
 msgstr "Internationale Währungscodes benutzen"
 
 #: core/models.py:179
 msgid "Checkout type"
 msgstr "Checkouttyp"
+
+#: core/models.py:224
+msgid "Version"
+msgstr "Version"
 
 #: core/settings.py:10
 msgid "Tabs"
@@ -1024,27 +1029,35 @@ msgstr "Preis inklusive Mehrwertsteuer"
 msgid "Price excludes tax"
 msgstr "Preis exklusive Mehrwertsteuer"
 
-#: core/templatetags/lfs_tags.py:160
+#: core/management/commands/lfs_migrate.py:65
+msgid "Supplier"
+msgstr ""
+
+#: core/templatetags/lfs_tags.py:161
 #: portlet/templatetags/lfs_portlets_tags.py:119
 msgid "Information"
 msgstr "Information"
 
-#: core/templatetags/lfs_tags.py:276
+#: core/templatetags/lfs_tags.py:277
 #, python-format
 msgid "%s tag needs group id as argument"
 msgstr ""
 
-#: core/templatetags/lfs_tags.py:356 core/templatetags/lfs_tags.py:386
+#: core/templatetags/lfs_tags.py:357 core/templatetags/lfs_tags.py:387
 #, python-format
 msgid "%s tag needs no argument"
 msgstr ""
 
-#: core/templatetags/lfs_tags.py:410
+#: core/templatetags/lfs_tags.py:411
 #, python-format
 msgid "%s tag needs product as argument"
 msgstr ""
 
-#: core/widgets/image.py:17
+#: core/widgets/file.py:14
+msgid "Delete file"
+msgstr "Datei löschen"
+
+#: core/widgets/image.py:18
 msgid "Delete image"
 msgstr "Bild löschen"
 
@@ -3799,7 +3812,11 @@ msgstr "Preiskalkulator"
 msgid "Format"
 msgstr "Format"
 
-#: templates/manage/shop/default_values.html:132
+#: templates/manage/shop/default_values.html:131
+msgid "Currency"
+msgstr ""
+
+#: templates/manage/shop/default_values.html:160
 msgid "Save Default Values"
 msgstr "Standardwerte speichern"
 
@@ -3952,6 +3969,9 @@ msgstr "Der Gutschein ist für diesen Preis nicht gültig."
 #: voucher/settings.py:18
 msgid "The voucher doesn't exist."
 msgstr "Dieser Gutschein existiert nicht"
+
+#~ msgid "Default country"
+#~ msgstr "Standardland"
 
 #~ msgid "Default template"
 #~ msgstr "Standard"
