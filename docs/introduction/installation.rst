@@ -34,19 +34,18 @@ That's all!
 Migration
 =========
 
-Starting with version 0.6 we provide a migration script which updates existing databases
+Starting with version 0.6 we provide a migration command (``lfs_migrate``) which updates existing databases
 to the latest release.
 
-To migrate your database please process the following steps:
+To migrate your existing database please proceed the following steps:
 
    1. Install the new version (see above)
-   2. Backup the database
+   2. Backup the existing database
    3. Point settings.py to the existing database
    4. $ bin/django syncdb
-   5. $ bin/django lfs_init
-   6. $ bin/django lfs_migrate
+   5. $ bin/django lfs_migrate
 
-After that your database should be up-to-date.
+After that your database should be ready to run with the latest release.
 
 **Please note**:
 
