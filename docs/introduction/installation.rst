@@ -9,7 +9,7 @@ Prequisites
 
 Make sure you have installed:
 
-   * Python 2.6.x
+   * Python 2.6.x or 2.7.x
    * A RDBMS of your choice (PostgreSQL, MySQL, SQLite or Oracle)
 
 Installation
@@ -29,8 +29,6 @@ The installation is straightforward and should last just a few minutes.
    10. $ bin/django runserver
    11. Browse to http://localhost:8000/
 
-That's all!
-
 Migration
 =========
 
@@ -41,7 +39,7 @@ To migrate an existing database please proceed the following steps:
 
    1. Install the new version (see above)
    2. Backup your existing database
-   3. Point LFS to your existing database (via lfs_project/settings.py)
+   3. Enter your existing database to lfs_project/settings.py
    4. $ bin/django syncdb
    5. $ bin/django lfs_migrate
 
