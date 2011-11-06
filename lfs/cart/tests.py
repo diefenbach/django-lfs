@@ -437,15 +437,15 @@ class AddedToCartTestCase(TestCase):
 
         # Check we are using german locale
         shop = lfs_get_object_or_404(Shop, pk=1)
-        self.assertEqual(shop.default_locale, 'de_DE.UTF-8')
+        self.assertEqual(shop.default_locale, 'en_US.UTF-8')
 
         # need to test for two versions of currency output (Mac and Ubuntu differ)
-        self.failIf(response.find(u"Total: 10,00 €") == -1 and response.find(u"Total: Eu10,00") == -1)
+        self.failIf(response.find(u"Total: $10.00") == -1)
 
         # Added product_1 to cart again
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find(u"Total: 20,00 €") == -1 and response.find(u"Total: Eu20,00") == -1)
+        self.failIf(response.find(u"Total: $20.00") == -1)
 
     def test_totals_2(self):
         """Add a product with explicit quantity to cart
@@ -457,14 +457,14 @@ class AddedToCartTestCase(TestCase):
 
         # Check we are using german locale
         shop = lfs_get_object_or_404(Shop, pk=1)
-        self.assertEqual(shop.default_locale, 'de_DE.UTF-8')
+        self.assertEqual(shop.default_locale, 'en_US.UTF-8')
 
         # Added product_1 two times to cart
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find(u"Total: 20,00 €") == -1 and response.find(u"Total: Eu20,00") == -1)
+        self.failIf(response.find(u"Total: $20.00") == -1)
 
         # Added product_1 two times to cart again
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find(u"Total: 40,00 €") == -1 and response.find(u"Total: Eu40,00") == -1)
+        self.failIf(response.find(u"Total: $40.00") == -1)

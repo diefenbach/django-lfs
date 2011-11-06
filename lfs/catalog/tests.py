@@ -2506,18 +2506,18 @@ class ProductTestCase(TestCase):
 
     def test_get_price_with_unit(self):
         shop = lfs_get_object_or_404(Shop, pk=1)
-        self.assertEqual(shop.default_locale, 'de_DE.UTF-8')
-        self.failIf(self.p1.get_price_with_unit(self.request) != "1,00 €" and self.p1.get_price_with_unit(self.request) != "Eu1,00")
+        self.assertEqual(shop.default_locale, 'en_US.UTF-8')
+        self.failIf(self.p1.get_price_with_unit(self.request) != "$1.00")
 
         self.p1.price_calculator = "lfs.net_price.NetPriceCalculator"
         self.p1.save()
 
-        self.failIf(self.p1.get_price_with_unit(self.request) != "1,00 €" and self.p1.get_price_with_unit(self.request) != "Eu1,00")
+        self.failIf(self.p1.get_price_with_unit(self.request) != "$1.00")
 
         self.p1.price_calculator = None
         self.p1.save()
 
-        self.failIf(self.p1.get_price_with_unit(self.request) != "1,00 €" and self.p1.get_price_with_unit(self.request) != "Eu1,00")
+        self.failIf(self.p1.get_price_with_unit(self.request) != "$1.00")
 
     def test_add_product_variants(self):
         """Test the add variant form in the Manage interface
