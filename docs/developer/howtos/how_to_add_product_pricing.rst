@@ -12,7 +12,7 @@ If you do not know how to do this, please refer to the excellent
 `Django tutorial <http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_.
 
 Implement the PriceCalculator class
---------------------------------------
+-----------------------------------
 
 Within ``__init__.py`` file of your application (or anywhere you choose) create a class that inherits from
 lfs.price.PricingCalculator and implement all inherited methods.
@@ -43,25 +43,30 @@ to products in the manage interface
 
 .. code-block:: python
 
-    LFS_PRICE_CALCULATOR_DICTIONARY = {'lfs.gross_price.GrossPriceCalculator': 'Price including tax',
-                                'lfs.net_price.NetPriceCalculator': 'Price excluding tax',
-                                'mycustom_price.CustomPriceCalculator': 'My Pricing Calculator',
-                               ]
+    LFS_PRICE_CALCULATOR_DICTIONARY = {
+        'lfs.gross_price.GrossPriceCalculator': 'Price including tax',
+        'lfs.net_price.NetPriceCalculator': 'Price excluding tax',
+        'mycustom_price.CustomPriceCalculator': 'My Pricing Calculator',
+    }
 
-You can optionally set the default pricing calculator to your own module e.g.
+Set shop default price calculator in manage interface
+-----------------------------------------------------
 
-.. code-block:: python
+* Browse to http://yourshopdomain/manage and login.
+* Select Shop - Preferences
+* Select ``Default Values`` and go the ``Price Calculator`` section.
+* Select your new pricing calculator from the drop down menu of choices.
+* Save the default values.
 
-    LFS_DEFAULT_PRICE_CALCULATOR="mycustom_price.CustomPriceCalculator'"
+All products with an unset price calculator will default to using the shop price calculator.
 
-All products with an unset Product.price_calculator will default to using LFS_DEFAULT_PRICE_CALCULATOR
-
-**Set product pricing calculator in manage inteface**
+Set product pricing calculator in manage interface
+--------------------------------------------------
 
 * Browse to http://yourshopdomain/manage and login.
 * Select Catalog - Product
 * Select the product whose price calculator you wish to change.
-* Select the pricing calculator tab
+* Select the ``Data Tab`` (this is the first tab) and scroll to the ``Prices`` section.
 * Select your new pricing calculator from the drop down menu of choices.
 * Save the product.
 * Browse to your product in your shop and you should see the new price as calculated by your custom pricing calculator.
