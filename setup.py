@@ -35,6 +35,8 @@ setup(name='django-lfs',
         'django-postal == 0.7.7',
         'django-reviews == 0.2.1',
         'django-tagging == 0.3.1',
+        'djangorestframework == 0.2.3',
         'lfs-contact == 1.0',
+        'Pillow == 1.7.5',
       ],
       )
