@@ -38,5 +38,6 @@ setup(name='django-lfs',
         'djangorestframework == 0.2.3',
         'lfs-contact == 1.0',
         'Pillow == 1.7.5',
+        'South == 0.7.3',
       ],
       )
