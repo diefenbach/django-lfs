@@ -27,6 +27,20 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.6.0 beta 1 (2011-11-19)
+-------------------------
+
+* Using Django 1.3
+* Added country dependent addresses
+* Added pluggable price calculation
+* Added supplier management
+* Massively improved management interface
+* Improved static file handling (Django's staticfiles)
+* Improved properties management
+* Removed SWFUpload (Flash) in favour of jquery.fileupload (Javascript)
+* Using Python's locale to display currencies
+* New contact form
+
 0.5.0 beta 7 (2011-04-13)
 -------------------------
 
@@ -82,7 +96,7 @@ Changes
 * Bugfix manage property form: display validators for float field
 * Bugfix: Using property title instead of name
 * Bugfix Product.get_variant_properties: display only variant properties
-* Bugfix order_inline.html: display product.unit instead of price_unit; 
+* Bugfix order_inline.html: display product.unit instead of price_unit;
   display title of property
 * Bugfix cart: inject correct html after refresh the cart
 * Check also for existing username within RegisterForm
@@ -94,7 +108,7 @@ Changes
 
 * Cleaned up contact form
 
-0.5.0 beta 1 (2009-12-27) 
+0.5.0 beta 1 (2009-12-27)
 -------------------------
 
 * First public beta release
