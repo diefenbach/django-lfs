@@ -31,6 +31,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         from lfs.core.models import ActionGroup
         from lfs.core.models import Action
+        from lfs.core.models import Application
         from lfs.core.models import Country
         from lfs.core.models import Shop
 
@@ -86,3 +87,7 @@ class Command(BaseCommand):
         # Pages
         Page.objects.create(title="Terms and Conditions", slug="terms-and-conditions", active=1, body="Enter your terms and conditions here.")
         Page.objects.create(title="Imprint", slug="imprint", active=1, body="Enter your imprint here.")
+
+        # Application object
+        Application.objects.create(version="0.6")
+
