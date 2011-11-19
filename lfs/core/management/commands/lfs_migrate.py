@@ -68,3 +68,5 @@ class Command(BaseCommand):
 
             application.version = "0.6"
             application.save()
+        if version == "0.6":
+            print "You are up-to-date"
