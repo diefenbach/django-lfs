@@ -29,6 +29,17 @@ The installation is straightforward and should last just a few minutes.
    10. $ bin/django runserver
    11. Browse to http://localhost:8000/
 
+**Please note**:
+
+* If you encounter problems during ``bin/buildout -v`` or on the first
+  run on a Debian or Ubuntu server make sure you have the build tools and
+  Python dev packages installed::
+
+    apt-get install build-essential
+    apt-get install python-dev
+    apt-get install python-all-dev
+    apt-get install python-profiler (multiverse repository)
+
 Migration
 =========
 
@@ -45,16 +56,6 @@ To migrate an existing database please proceed the following steps:
 
 After that your database should be ready to run with the latest release.
 
-**Please note**:
-
-* If you encounter problems during ``bin/buildout -v`` or on the first
-  run on a Debian or Ubuntu server make sure you have the build tools and
-  Python dev packages installed::
-
-    apt-get install build-essential
-    apt-get install python-dev
-    apt-get install python-all-dev
-    apt-get install python-profiler (multiverse repository)
 
 What's next?
 ============
