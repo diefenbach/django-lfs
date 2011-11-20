@@ -280,7 +280,10 @@ def selectable_products_inline(request, page, paginator, product_id=0, template_
     """Displays the selectable products for the product view. (Used to switch
     quickly from one product to another.)
     """
-    product = Product.objects.get(pk=product_id)
+    try:
+        product = Product.objects.get(pk=product_id)
+    except Product.DoesNotExist:
+        return ""
 
     if product.is_variant():
         base_product = product.parent
