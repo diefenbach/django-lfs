@@ -27,6 +27,10 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.6.0 beta 2 (2011-11-21)
+-------------------------
+* Fixed display of portlets (using django-portlets 1.1)
+
 0.6.0 beta 1 (2011-11-19)
 -------------------------
 
