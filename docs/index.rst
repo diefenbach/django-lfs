@@ -62,14 +62,6 @@ Developers
 
    developer/settings
 
-API
----
-
-.. toctree::
-   :maxdepth: 2
-
-   developer/api/core
-
 How-tos
 -------
 
