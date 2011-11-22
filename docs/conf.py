@@ -20,9 +20,9 @@ import os
 sys.path.append(os.path.abspath("../../../lfs_project"))
 sys.path.append(os.path.abspath("../../../parts/lfs"))
 sys.path.append(os.path.abspath("../../../parts/lfs/lfs/core/utils"))
-sys.path.append(os.path.abspath("../../../eggs/Django-1.3-py2.7.egg"))
+sys.path.append(os.path.abspath("../../../eggs/Django-1.3.1-py2.7.egg"))
 sys.path.append(os.path.abspath("../../../parts/reviews"))
-sys.path.append(os.path.abspath("../../../eggs/django_paypal-0.1.2-py2.6.egg"))
+sys.path.append(os.path.abspath("../../../eggs/django_paypal-0.1.2-py2.7.egg/"))
 
 # -- General configuration -----------------------------------------------------
 
