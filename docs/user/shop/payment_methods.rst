@@ -129,4 +129,4 @@ is taken.
 
 .. seealso::
 
-    * :ref:`How to manage shipping methods <howto-payment-methods>`
+    * :ref:`How to manage payment methods <howto-payment-methods>`
