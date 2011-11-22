@@ -523,8 +523,12 @@ select.categories {
 /* input fields */
 #id_name, #id_slug, #id_sku, #id_shop_owner, #id_from_email, #id_title, #id_redirect_to, #id_sku_manufacturer, #redirect_to, #id_position, #id_unit,
 #id_priority, #id_price, #id_for_sale_price, #id_tax, #id_module, #id_link, #id_parent, #id_static_block, #id_price_unit, #id_template, #id_meta_title,
-#id_type, #id_step_type {
+#id_type, #id_step_type, #id_delivery_time {
     width: 300px;
+}
+
+#id_note {
+    width: 685px;
 }
 
 #id_default_variant, #id_variants_display_type {
