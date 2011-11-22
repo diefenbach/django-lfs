@@ -17,6 +17,7 @@ import os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 sys.path.append(os.path.abspath("../../../lfs_project"))
 sys.path.append(os.path.abspath("../../../parts/lfs"))
 sys.path.append(os.path.abspath("../../../parts/lfs/lfs/core/utils"))
