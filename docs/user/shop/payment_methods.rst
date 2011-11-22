@@ -6,7 +6,7 @@
 Payment methods
 ===============
 
-This section describes the shipping methods management of LFS.
+This section describes the management interface of payment methods.
 
 Overview
 ========
