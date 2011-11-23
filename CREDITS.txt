@@ -5,13 +5,13 @@ Credits
 
   Power user, smart adviser, sponsor, products for demo shop and much more
 
-* Michael Thornhill
+* Michael Thornhill (http://www.maithu.com/)
 
   Core Developer. Integration of PayPal (django-paypal), country specific
   addresses (django-postal), continous integration with Jenkins. Fixing
   bugs and everything else.
 
-* Kai Diefenbach
+* Kai Diefenbach (http://www.iqpp.de)
 
   Founder.
 
