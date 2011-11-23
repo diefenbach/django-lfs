@@ -438,17 +438,15 @@ def currency(value, grouping=True):
     currency(123456.789)  # Fr. 123'456.79
     currency(-123456.789) # <span class="negative">Fr. -123'456.79</span>
     """
-    result = ''
-    if value:
-        shop = lfs.core.utils.get_default_shop()
-        result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
-        # add css class if value is negative
-        if value < 0:
-            # replace the minus symbol if needed
-            if result[-1] == '-':
-                length = len(locale.nl_langinfo(locale.CRNCYSTR))
-                result = '%s-%s' % (result[0:length], result[length:-1])
-            return '<span class="negative">%s</span>' % result
+    shop = lfs.core.utils.get_default_shop()
+    result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
+    # add css class if value is negative
+    if value < 0:
+        # replace the minus symbol if needed
+        if result[-1] == '-':
+            length = len(locale.nl_langinfo(locale.CRNCYSTR))
+            result = '%s-%s' % (result[0:length], result[length:-1])
+        return '<span class="negative">%s</span>' % result
     return result
 
 @register.filter

@@ -27,6 +27,11 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.6.0 beta 3 (Unreleased)
+-------------------------
+
+* Bugfix: display price if it's 0.0; issue #108
+
 0.6.0 beta 2 (2011-11-21)
 -------------------------
 * Fixed display of portlets (using django-portlets 1.1)

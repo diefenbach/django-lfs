@@ -1,3 +1,6 @@
+# python imports
+import locale
+
 # Import tests from other packages
 from lfs.cart.tests import *
 from lfs.catalog.tests import *
@@ -25,10 +28,12 @@ from django.test import TestCase
 from django.test.client import Client
 
 # lfs imports
-from lfs.core.models import Shop, Country
+import lfs.core.utils
+from lfs.core.models import Country
+from lfs.core.models import Shop
+from lfs.core.templatetags.lfs_tags import currency
 from lfs.order.models import Order
 from lfs.tests.utils import RequestFactory
-import lfs.core.utils
 
 
 class ShopTestCase(TestCase):
@@ -171,3 +176,17 @@ class TagsTestCase(TestCase):
         # Now it works and "pageTracker" is found
         content = template.render(Context({"request": request}))
         self.failIf(content.find("pageTracker") == -1)
+
+    def test_currency(self):
+        """
+        """
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+        self.assertEqual(currency(0.0), "$0.00")
+        self.assertEqual(currency(1.0), "$1.00")
+
+        shop = lfs.core.utils.get_default_shop()
+        shop.use_international_currency_code = True
+        shop.save()
+
+        self.assertEqual(currency(0.0, False), "USD 0.00")
+        self.assertEqual(currency(1.0, False), "USD 1.00")
