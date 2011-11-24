@@ -70,7 +70,7 @@
         </th>
     </tr>
     <tr>
-        <td>
+        <td class="top">
             <div>
                 {{ current_order.shipping_firstname }} {{ current_order.shipping_lastname }}
             </div>
@@ -99,7 +99,7 @@
                 {{ current_order.shipping_phone }}
             </div>
         </td>
-        <td>
+        <td class="top">
             <div>
                 {{ current_order.invoice_firstname }} {{ current_order.invoice_lastname }}
             </div>
@@ -125,15 +125,11 @@
                 {{ current_order.invoice_phone }}
             </div>
         </td>
-        <td>
-            <div>
-                {{ current_order.shipping_method }}
-            </div>
+        <td class="top">
+            {{ current_order.shipping_method }}
         </td>
-        <td>
-            <div>
-                {{ current_order.payment_method.name }}
-            </div>
+        <td class="top">
+            {{ current_order.payment_method.name }}
             {% ifequal current_order.payment_method.id 1 %}
                 <div>
                     {{ current_order.account_number }}
