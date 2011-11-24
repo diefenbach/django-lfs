@@ -36,7 +36,6 @@
               class="inline">
             <select id="states-filter"
                     name="new-state">
-                <option value="">{% trans "All" %}</option>
                 {% for state in states %}
                     <option value="{{ state.id }}"
                             {% if state.selected_order %}selected="selected"{% endif %}>
