@@ -17,6 +17,9 @@ from lfs.catalog.models import Product
 from lfs.core.signals import product_changed
 from lfs.core.utils import LazyEncoder
 
+# Load logger
+import logging
+logger = logging.getLogger("default")
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_images(request, product_id, as_string=False, template_name="manage/product/images.html"):
@@ -48,7 +51,11 @@ def add_image(request, product_id):
     if request.method == "POST":
         for file_content in request.FILES.getlist("file"):
             image = Image(content=product, title=file_content.name)
-            image.image.save(file_content.name, file_content, save=True)
+            try:
+                image.image.save(file_content.name, file_content, save=True)
+            except Exception, e:
+                logger.info("Upload image: %s %s" % (file_content.name, e))
+                continue
 
     # Refresh positions
     for i, image in enumerate(product.images.all()):
