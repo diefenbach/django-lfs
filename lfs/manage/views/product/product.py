@@ -1,11 +1,10 @@
 # django imports
-from django.contrib.admin import widgets
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.db.models import Q
-from django.forms import ModelForm
+from django import forms
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -30,7 +29,7 @@ from lfs.utils.widgets import SelectImage
 
 
 # Forms
-class ProductAddForm(ModelForm):
+class ProductAddForm(forms.ModelForm):
     """Form to add a new product.
     """
     class Meta:
@@ -38,7 +37,7 @@ class ProductAddForm(ModelForm):
         fields = ("name", "slug")
 
 
-class ProductSubTypeForm(ModelForm):
+class ProductSubTypeForm(forms.ModelForm):
     """Form to change the sub type.
     """
     class Meta:
@@ -50,7 +49,7 @@ class ProductSubTypeForm(ModelForm):
         self.fields["sub_type"].choices = PRODUCT_TYPE_FORM_CHOICES
 
 
-class ProductDataForm(ModelForm):
+class ProductDataForm(forms.ModelForm):
     """Form to add and edit master data of a product.
     """
     def __init__(self, *args, **kwargs):
@@ -75,7 +74,7 @@ class ProductDataForm(ModelForm):
         return self.cleaned_data
 
 
-class VariantDataForm(ModelForm):
+class VariantDataForm(forms.ModelForm):
     """Form to add and edit master data of a variant.
     """
     def __init__(self, *args, **kwargs):
@@ -102,7 +101,7 @@ class VariantDataForm(ModelForm):
         return self.cleaned_data
 
 
-class ProductStockForm(ModelForm):
+class ProductStockForm(forms.ModelForm):
     """Form to add and edit stock data of a product.
     """
     class Meta:
@@ -114,7 +113,7 @@ class ProductStockForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ProductStockForm, self).__init__(*args, **kwargs)
-        self.fields["ordered_at"].widget = widgets.AdminDateWidget()
+        self.fields["ordered_at"].widget = forms.DateInput(attrs={'class': 'dateField'})
 
 
 @permission_required("core.manage_shop", login_url="/login/")
