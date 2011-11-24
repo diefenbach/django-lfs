@@ -222,6 +222,7 @@ def order_view(request, order_id, template_name="manage/order/order.html"):
     return render_to_response(template_name, RequestContext(request, {
         "order_inline": order_inline(request, order_id, as_string=True),
         "selectable_orders": selectable_orders_inline(request, as_string=True),
+        "current_order" : order,
         "states": states,
     }))
 
