@@ -34,7 +34,7 @@ def manage_orders(request, template_name="manage/order/manage_orders.html"):
     """
     try:
         order = Order.objects.all()[0]
-    except:
+    except IndexError:
         return HttpResponseRedirect(reverse("lfs_orders"))
     else:
         return HttpResponseRedirect(
@@ -43,16 +43,16 @@ def manage_orders(request, template_name="manage/order/manage_orders.html"):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def orders_view(request, template_name="manage/order/orders.html"):
-    """Main view to display an order overview.
+    """Main view to display the order overview view.
     """
     return render_to_response(template_name, RequestContext(request, {
-        "orders_inline": orders_inline(request, as_string=True),
+        "orders_inline": orders_inline(request),
+        "orders_filters_inline": orders_filters_inline(request),
     }))
 
 
-def orders_inline(request, as_string=False, template_name="manage/order/orders_inline.html"):
-    """Displays the orders. This is factored out in order to reload it via
-    ajax request.
+def orders_filters_inline(request, template_name="manage/order/orders_filters_inline.html"):
+    """Displays the order filter on top of the order overview view.
     """
     order_filters = request.session.get("order-filters", {})
     orders = _get_filtered_orders(order_filters)
@@ -84,16 +84,28 @@ def orders_inline(request, as_string=False, template_name="manage/order/orders_i
         "name": order_filters.get("name", ""),
     }))
 
-    if as_string:
-        return result
-    else:
-        html = (("#orders-inline", result),)
+    return result
 
-        result = simplejson.dumps({
-            "html": html,
-        }, cls=LazyEncoder)
 
-        return HttpResponse(result)
+def orders_inline(request, template_name="manage/order/orders_inline.html"):
+    """Displays the orders. This is factored out in order to reload it via
+    ajax request when the filter is changed..
+    """
+    order_filters = request.session.get("order-filters", {})
+    orders = _get_filtered_orders(order_filters)
+
+    try:
+        amount = int(request.REQUEST.get("amount", 20))
+    except TypeError:
+        amount = 20
+
+    page = request.REQUEST.get("page", 1)
+    paginator = Paginator(orders, amount)
+    page = paginator.page(page)
+
+    return render_to_string(template_name, RequestContext(request, {
+        "page": page,
+    }))
 
 
 def set_order_filters(request):
@@ -130,11 +142,11 @@ def set_order_filters(request):
     if request.REQUEST.get("came-from") == "order":
         order_id = request.REQUEST.get("order-id")
         html = (
-            ("#selectable-orders", selectable_orders_inline(request, as_string=True)),
+            ("#selectable-orders", selectable_orders_inline(request)),
             ("#order-inline", order_inline(request, order_id=order_id, as_string=True)),
         )
     else:
-        html = (("#orders-inline", orders_inline(request, as_string=True)),)
+        html = (("#orders-inline", orders_inline(request)),)
 
     msg = _(u"Filters has been set")
 
@@ -161,11 +173,14 @@ def set_order_filters_date(request):
     if request.REQUEST.get("came-from") == "order":
         order_id = request.REQUEST.get("order-id")
         html = (
-            ("#selectable-orders", selectable_orders_inline(request, as_string=True)),
+            ("#selectable-orders", selectable_orders_inline(request)),
             ("#order-inline", order_inline(request, order_id=order_id, as_string=True)),
         )
     else:
-        html = (("#orders-inline", orders_inline(request, as_string=True)),)
+        html = (
+            ("#orders-inline", orders_inline(request)),
+            ("#orders-filters-inline", orders_filters_inline(request)),
+        )
 
     msg = _(u"Filters has been set")
 
@@ -190,7 +205,10 @@ def reset_order_filters(request):
             ("#order-inline", order_inline(request, order_id=order_id, as_string=True)),
         )
     else:
-        html = (("#orders-inline", orders_inline(request, as_string=True)),)
+        html = (
+            ("#orders-inline", orders_inline(request)),
+            ("#orders-filters-inline", orders_filters_inline(request)),
+        )
 
     msg = _(u"Filters has been reset")
 
