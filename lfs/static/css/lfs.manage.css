@@ -263,9 +263,12 @@ tr.odd {
 .manage-product .navigation-pages,
 .manage-review .navigation-pages,
 .manage-customer .navigation-pages,
-.manage-cart .navigation-pages,
-.manage-order .navigation-pages {
+.manage-cart .navigation-pages {
     margin: 20px 0;
+}
+
+.manage-order .navigation-pages {
+    margin: 5px 0 20px 0;
 }
 
 .manage-categories-portlet li {

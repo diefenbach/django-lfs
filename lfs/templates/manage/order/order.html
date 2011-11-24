@@ -10,6 +10,9 @@
 {% endblock %}
 
 {% block content %}
+    <div id="order-filters-inline">
+        {{ order_filters_inline|safe }}
+    </div>
     <div class="site-actions">
 
         <a class="overview"
@@ -55,7 +58,7 @@
         <ul>
             <li class="ui-tabs-nav-item"><a href="#order">{% trans 'Order' %}</a></li>
         </ul>
-    	<div id="order">    	    
+    	<div id="order">
         	<div id="order-inline">
         		{{ order_inline|safe }}
         	</div>
