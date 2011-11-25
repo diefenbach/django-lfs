@@ -12,6 +12,7 @@ from models import RecentProductsPortlet
 from models import RelatedProductsPortlet
 from models import TextPortlet
 from models import TopsellerPortlet
+from models import ForsalePortlet
 
 # 3rd party imports
 import portlets
@@ -31,5 +32,6 @@ def register_lfs_portlets(sender, **kwargs):
         register_portlet(RelatedProductsPortlet, "Related Products")
         register_portlet(TextPortlet, "Text")
         register_portlet(TopsellerPortlet, "Topseller")
+        register_portlet(ForsalePortlet, "For sale")
 
 post_syncdb.connect(register_lfs_portlets)
