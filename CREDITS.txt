@@ -3,15 +3,28 @@ Credits
 
 * Dirk Kommol (Demmelhuber Holz & Raum - http://www.demmelhuber.net)
 
-  Power user, smart adviser, sponsor, products for demo shop and much more
+  Power user, smart adviser, sponsor, products for demo shop and much more.
 
-* Michael Thornhill (http://www.maithu.com/)
+* Michael Thornhill (mick, http://www.maithu.com/)
 
-  Core Developer. Integration of PayPal (django-paypal), country specific
-  addresses (django-postal), continous integration with Jenkins. Fixing
-  bugs and everything else.
+  Core Developer.
 
-* Kai Diefenbach (http://www.iqpp.de)
+  Integration of PayPal (django-paypal), country specific addresses
+  (django-postal), continous integration with Jenkins. Fixing bugs and
+  everything else.
+
+* Simone Orsi (simahawk)
+
+  Contributor.
+
+  Added for-sale and featured products portlet. Added date picker to management
+  interface.
+
+* Michaela Schmidt née Hering (hmichi)
+
+  Contributor.
+
+* Kai Diefenbach (diefenbach, http://www.iqpp.de)
 
   Founder.
 
