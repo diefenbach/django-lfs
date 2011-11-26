@@ -23,16 +23,16 @@
 			<tr class="clickable {% cycle 'even' 'odd' %}"
 			    onclick="window.location='{% url lfs.manage.views.order_view order.id %}'">
                 <td>
-                    {{order.created|date:_("DATETIME_FORMAT")}}
+                    {{ order.created|date:_("DATETIME_FORMAT") }}
                 </td>
 				<td>
-					{{ order.customer_firstname }} {{ order.customer_lastname }}
+					{{ order.customer_firstname }}   {{ order.customer_lastname }}
 				</td>
 				<td>
 					{{ order.get_state_display }}
 				</td>
                 <td class="number">
-                    {{order.price|currency}}
+                    {{ order.price|currency }}
                 </td>
                 <td class="right-padding">
                     {% if order.message %}

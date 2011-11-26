@@ -113,7 +113,7 @@ class ProductStockForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ProductStockForm, self).__init__(*args, **kwargs)
-        self.fields["ordered_at"].widget = forms.DateInput(attrs={'class': 'dateField'})
+        self.fields["ordered_at"].widget.attrs = {'class': 'date-picker'}
 
 
 @permission_required("core.manage_shop", login_url="/login/")

@@ -66,8 +66,8 @@ class VoucherForm(forms.Form):
         taxes = [["", "---"]]
         taxes.extend([(t.id, t.rate) for t in Tax.objects.all()])
         self.fields["tax"].choices = taxes
-        self.fields["start_date"].widget = forms.DateInput(attrs={'class': 'dateField'})
-        self.fields["end_date"].widget = forms.DateInput(attrs={'class': 'dateField'})
+        self.fields["start_date"].widget.attrs = {'class': 'date-picker'}
+        self.fields["end_date"].widget.attrs = {'class': 'date-picker'}
 
 # Parts
 def voucher_group(request, id, template_name="manage/voucher/voucher_group.html"):
