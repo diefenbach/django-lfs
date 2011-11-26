@@ -20,16 +20,62 @@ from lfs.core.utils import LazyEncoder
 from lfs.customer.models import Customer
 
 
+# Views
 @permission_required("core.manage_shop", login_url="/login/")
 def carts_view(request, template_name="manage/cart/carts.html"):
-    """Base view to display carts overview.
+    """Displays the carts overview.
     """
     return render_to_response(template_name, RequestContext(request, {
-        "carts_inline": carts_inline(request, as_string=True),
+        "carts_filters_inline": carts_filters_inline(request),
+        "carts_inline": carts_inline(request),
     }))
 
 
-def carts_inline(request, as_string=False, template_name="manage/cart/carts_inline.html"):
+@permission_required("core.manage_shop", login_url="/login/")
+def cart_view(request, cart_id, template_name="manage/cart/cart.html"):
+    """Displays the cart with the passed cart id.
+    """
+    return render_to_response(template_name, RequestContext(request, {
+        "cart_filters_inline" : cart_filters_inline(request, cart_id),
+        "selectable_carts_inline": selectable_carts_inline(request, cart_id),
+        "cart_inline": cart_inline(request, cart_id),
+    }))
+
+
+# Parts
+def cart_filters_inline(request, cart_id, template_name="manage/cart/cart_filters_inline.html"):
+    """Renders the filters section of the cart view.
+    """
+    cart = lfs_get_object_or_404(Cart, pk=cart_id)
+    cart_filters = request.session.get("cart-filters", {})
+
+    return render_to_string(template_name, RequestContext(request, {
+        "cart": cart,
+        "start": cart_filters.get("start", ""),
+        "end": cart_filters.get("end", ""),
+    }))
+
+
+def carts_filters_inline(request, template_name="manage/cart/carts_filters_inline.html"):
+    """Displays the filters part of the carts overview.
+    """
+    cart_filters = request.session.get("cart-filters", {})
+    temp = _get_filtered_carts(cart_filters)
+
+    paginator = Paginator(temp, 30)
+
+    page = request.REQUEST.get("page", 1)
+    page = paginator.page(page)
+
+    return render_to_string(template_name, RequestContext(request, {
+        "page": page,
+        "paginator": paginator,
+        "start": cart_filters.get("start", ""),
+        "end": cart_filters.get("end", ""),
+    }))
+
+
+def carts_inline(request, template_name="manage/cart/carts_inline.html"):
     """Displays carts overview.
     """
     cart_filters = request.session.get("cart-filters", {})
@@ -68,7 +114,7 @@ def carts_inline(request, as_string=False, template_name="manage/cart/carts_inli
             "customer": customer,
         })
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, RequestContext(request, {
         "carts": carts,
         "page": page,
         "paginator": paginator,
@@ -76,29 +122,8 @@ def carts_inline(request, as_string=False, template_name="manage/cart/carts_inli
         "end": cart_filters.get("end", ""),
     }))
 
-    if as_string:
-        return result
-    else:
-        html = (("#carts-inline", result),)
 
-        result = simplejson.dumps({
-            "html": html,
-        }, cls=LazyEncoder)
-
-        return HttpResponse(result)
-
-
-@permission_required("core.manage_shop", login_url="/login/")
-def cart_view(request, cart_id, template_name="manage/cart/cart.html"):
-    """Displays cart with provided cart id.
-    """
-    return render_to_response(template_name, RequestContext(request, {
-        "cart_inline": cart_inline(request, cart_id, as_string=True),
-        "selectable_carts_inline": selectable_carts_inline(request, cart_id, as_string=True),
-    }))
-
-
-def cart_inline(request, cart_id, as_string=False, template_name="manage/cart/cart_inline.html"):
+def cart_inline(request, cart_id, template_name="manage/cart/cart_inline.html"):
     """Displays cart with provided cart id.
     """
     cart = lfs_get_object_or_404(Cart, pk=cart_id)
@@ -116,7 +141,7 @@ def cart_inline(request, cart_id, as_string=False, template_name="manage/cart/ca
         customer = None
 
     cart_filters = request.session.get("cart-filters", {})
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, RequestContext(request, {
         "cart": cart,
         "customer": customer,
         "total": total,
@@ -124,21 +149,9 @@ def cart_inline(request, cart_id, as_string=False, template_name="manage/cart/ca
         "end": cart_filters.get("end", ""),
     }))
 
-    if as_string:
-        return result
-    else:
-        html = (("#cart-inline", result),)
 
-        result = simplejson.dumps({
-            "html": html,
-        }, cls=LazyEncoder)
-
-        return HttpResponse(result)
-
-
-def selectable_carts_inline(request, cart_id=0, as_string=False,
-    template_name="manage/cart/selectable_carts_inline.html"):
-    """Display selectable carts.
+def selectable_carts_inline(request, cart_id, template_name="manage/cart/selectable_carts_inline.html"):
+    """Displays selectable carts section within cart view.
     """
     cart_filters = request.session.get("cart-filters", {})
     carts = _get_filtered_carts(cart_filters)
@@ -151,22 +164,46 @@ def selectable_carts_inline(request, cart_id=0, as_string=False,
         page = 1
     page = paginator.page(page)
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, RequestContext(request, {
         "paginator": paginator,
         "page": page,
         "cart_id": int(cart_id),
     }))
 
-    if as_string:
-        return result
-    else:
-        result = simplejson.dumps({
-            "html": (("#selectable-carts-inline", result),),
-        }, cls=LazyEncoder)
 
-        return HttpResponse(result)
+# Actions
+@permission_required("core.manage_shop", login_url="/login/")
+def set_carts_page(request):
+    """Sets the page of the displayed carts.
+    """
+    result = simplejson.dumps({
+        "html": (
+            ("#carts-inline", carts_inline(request)),
+            ("#carts-filters-inline", carts_filters_inline(request)),
+        ),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
+def set_cart_page(request):
+    """Sets the page of the selectable carts within cart view.
+    """
+    cart_id = request.GET.get("cart-id")
+
+    result = simplejson.dumps({
+        "html": (
+            ("#cart-inline", cart_inline(request, cart_id)),
+            ("#cart-filters-inline", cart_filters_inline(request, cart_id)),
+            ("#selectable-carts-inline", selectable_carts_inline(request, cart_id)),
+        ),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
+
+
+@permission_required("core.manage_shop", login_url="/login/")
 def set_cart_filters(request):
     """Sets cart filters given by passed request.
     """
@@ -189,11 +226,15 @@ def set_cart_filters(request):
     if request.REQUEST.get("came-from") == "cart":
         cart_id = request.REQUEST.get("cart-id")
         html = (
-            ("#selectable-carts-inline", selectable_carts_inline(request, as_string=True)),
-            ("#cart-inline", cart_inline(request, cart_id=cart_id, as_string=True)),
+            ("#selectable-carts-inline", selectable_carts_inline(request, cart_id)),
+            ("#cart-filters-inline", cart_filters_inline(request, cart_id)),
+            ("#cart-inline", cart_inline(request, cart_id)),
         )
     else:
-        html = (("#carts-inline", carts_inline(request, as_string=True)),)
+        html = (
+            ("#carts-filters-inline", carts_filters_inline(request)),
+            ("#carts-inline", carts_inline(request)),
+        )
 
     msg = _(u"Cart filters has been set.")
 
@@ -205,6 +246,7 @@ def set_cart_filters(request):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def set_cart_filters_date(request):
     """Sets the date filter by given short cut link
     """
@@ -220,11 +262,15 @@ def set_cart_filters_date(request):
     if request.REQUEST.get("came-from") == "cart":
         cart_id = request.REQUEST.get("cart-id")
         html = (
-            ("#selectable-carts-inline", selectable_carts_inline(request, as_string=True)),
-            ("#cart-inline", cart_inline(request, cart_id=cart_id, as_string=True)),
+            ("#selectable-carts-inline", selectable_carts_inline(request, cart_id)),
+            ("#cart-filters-inline", cart_filters_inline(request, cart_id)),
+            ("#cart-inline", cart_inline(request, cart_id)),
         )
     else:
-        html = (("#carts-inline", carts_inline(request, as_string=True)),)
+        html = (
+            ("#carts-filters-inline", carts_filters_inline(request)),
+            ("#carts-inline", carts_inline(request)),
+        )
 
     msg = _(u"Cart filters has been set")
 
@@ -236,6 +282,7 @@ def set_cart_filters_date(request):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def reset_cart_filters(request):
     """Resets all cart filters.
     """
@@ -245,11 +292,11 @@ def reset_cart_filters(request):
     if request.REQUEST.get("came-from") == "cart":
         cart_id = request.REQUEST.get("cart-id")
         html = (
-            ("#selectable-carts-inline", selectable_carts_inline(request, as_string=True)),
-            ("#cart-inline", cart_inline(request, cart_id=cart_id, as_string=True)),
+            ("#selectable-carts-inline", selectable_carts_inline(request, cart_id)),
+            ("#cart-inline", cart_inline(request, cart_id)),
         )
     else:
-        html = (("#carts-inline", carts_inline(request, as_string=True)),)
+        html = (("#carts-inline", carts_inline(request)),)
 
     msg = _(u"Cart filters has been reset")
 
@@ -261,6 +308,7 @@ def reset_cart_filters(request):
     return HttpResponse(result)
 
 
+# Private methods
 def _get_filtered_carts(cart_filters):
     """
     """

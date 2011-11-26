@@ -195,6 +195,8 @@ urlpatterns += patterns('lfs.manage.views.carts',
     url(r'^set-cart-filters$', "set_cart_filters", name="lfs_set_cart_filters"),
     url(r'^set-cart-filters-date$', "set_cart_filters_date", name="lfs_set_cart_filters_date"),
     url(r'^reset-cart-filters$', "reset_cart_filters", name="lfs_reset_cart_filters"),
+    url(r'^set-carts-page$', "set_carts_page", name="lfs_set_carts_page"),
+    url(r'^set-cart-page$', "set_cart_page", name="lfs_set_cart_page"),
 )
 
 # Categories
@@ -303,6 +305,7 @@ urlpatterns += patterns('lfs.manage.views.orders',
     url(r'^set-orders-filter-date$', "set_order_filters_date", name="lfs_set_order_filters_date"),
     url(r'^reset-order-filter$', "reset_order_filters", name="lfs_reset_order_filters"),
     url(r'^set-selectable-orders-page$', "set_selectable_orders_page", name="lfs_set_selectable_orders_page"),
+    url(r'^set-orders-page$', "set_orders_page", name="lfs_set_orders_page"),
     url(r'^change-order-state$', "change_order_state", name="lfs_change_order_state"),
 )
 

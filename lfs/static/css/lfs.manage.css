@@ -271,6 +271,7 @@ tr.odd {
     margin: 20px 0;
 }
 
+.manage-cart .navigation-pages,
 .manage-order .navigation-pages {
     margin: 5px 0 20px 0;
 }
