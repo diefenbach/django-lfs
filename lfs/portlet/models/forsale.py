@@ -1,6 +1,7 @@
 # django imports
 from django import forms
 from django.db import models
+from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -31,6 +32,7 @@ class ForsalePortlet(Portlet):
     def render(self, context):
         """Renders the portlet as html.
         """
+        request = context.get("request")
         filters = dict(for_sale=True,)
         # filter by current category
         if self.current_category and context.get('category'):
@@ -39,12 +41,12 @@ class ForsalePortlet(Portlet):
 
         products = Product.objects.filter(**filters)[:self.limit]
 
-        return render_to_string("lfs/portlets/forsale.html", {
+        return render_to_string("lfs/portlets/forsale.html", RequestContext(request, {
             "title" : self.rendered_title,
             "slideshow" : self.slideshow,
             "products" : products,
             "MEDIA_URL" : context.get("MEDIA_URL"),
-        })
+        }))
 
 
 
