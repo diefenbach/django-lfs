@@ -536,9 +536,20 @@ def get_price(product, request):
     return product.get_price(request)
 
 
+@register.filter(name='get_price_gross')
+def get_price_gross(object, request):
+    return object.get_price_gross(request)
+
+
+@register.filter(name='get_price_net')
+def get_price_net(object, request):
+    return object.get_price_net(request)
+
+
 @register.filter(name='get_for_sale_price')
 def get_for_sale_price(product, request):
     return product.get_for_sale_price(request)
+
 
 @register.filter(name='get_standard_price')
 def get_standard_price(product, request):
