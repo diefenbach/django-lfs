@@ -18,15 +18,7 @@
             <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery/superfish/superfish.css" />
         {% endcompress %}
 
-        <script type="text/javascript">
-            window.__admin_media_prefix__ = "{% filter escapejs %}{% admin_media_prefix %}{% endfilter %}";
-        </script>
 
-        <script type="text/javascript" src="/admin/jsi18n/"></script>
-        <script type="text/javascript" src="{% admin_media_prefix %}js/core.js"></script>
-        <script type="text/javascript" src="{% admin_media_prefix %}js/calendar.js"></script>
-        <script type="text/javascript" src="{% admin_media_prefix %}js/admin/DateTimeShortcuts.js"></script>
-        <script type="text/javascript" src="{% admin_media_prefix %}js/urlify.js"></script>
 
         {% compress js %}
             <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-1.6.1.min.js"></script>
@@ -45,6 +37,7 @@
 
             <script type="text/javascript" src="{{ STATIC_URL }}jquery/superfish/superfish.js"></script>
             <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.manage.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}js/urlify.js"></script>
         {% endcompress %}
 
         {% block javascript %}{% endblock %}
