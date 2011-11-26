@@ -34,7 +34,7 @@ def manage_orders(request, template_name="manage/order/manage_orders.html"):
     """
     try:
         order = Order.objects.all()[0]
-    except:
+    except IndexError:
         return HttpResponseRedirect(reverse("lfs_orders"))
     else:
         return HttpResponseRedirect(
@@ -43,16 +43,43 @@ def manage_orders(request, template_name="manage/order/manage_orders.html"):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def orders_view(request, template_name="manage/order/orders.html"):
-    """Main view to display an order overview.
+    """Main view to display the order overview view.
     """
     return render_to_response(template_name, RequestContext(request, {
-        "orders_inline": orders_inline(request, as_string=True),
+        "orders_inline": orders_inline(request),
+        "orders_filters_inline": orders_filters_inline(request),
     }))
 
 
-def orders_inline(request, as_string=False, template_name="manage/order/orders_inline.html"):
-    """Displays the orders. This is factored out in order to reload it via
-    ajax request.
+@permission_required("core.manage_shop", login_url="/login/")
+def order_view(request, order_id, template_name="manage/order/order.html"):
+    """Displays the management interface for the order with passed order id.
+    """
+    order_filters = request.session.get("order-filters", {})
+    order = lfs_get_object_or_404(Order, pk=order_id)
+
+    states = []
+    state_id = order_filters.get("state")
+    for state in lfs.order.settings.ORDER_STATES:
+        states.append({
+            "id": state[0],
+            "name": state[1],
+            "selected_filter": state_id == str(state[0]),
+            "selected_order": order.state == state[0],
+        })
+
+    return render_to_response(template_name, RequestContext(request, {
+        "order_inline": order_inline(request, order_id, as_string=True),
+        "order_filters_inline": order_filters_inline(request, order_id),
+        "selectable_orders": selectable_orders_inline(request),
+        "current_order": order,
+        "states": states,
+    }))
+
+
+# Parts
+def orders_filters_inline(request, template_name="manage/order/orders_filters_inline.html"):
+    """Displays the order filter on top of the order overview view.
     """
     order_filters = request.session.get("order-filters", {})
     orders = _get_filtered_orders(order_filters)
@@ -84,18 +111,109 @@ def orders_inline(request, as_string=False, template_name="manage/order/orders_i
         "name": order_filters.get("name", ""),
     }))
 
+    return result
+
+
+def orders_inline(request, template_name="manage/order/orders_inline.html"):
+    """Displays the orders. This is factored out in order to reload it via
+    ajax request when the filter is changed..
+    """
+    order_filters = request.session.get("order-filters", {})
+    orders = _get_filtered_orders(order_filters)
+
+    try:
+        amount = int(request.REQUEST.get("amount", 20))
+    except TypeError:
+        amount = 20
+
+    page = request.REQUEST.get("page", 1)
+    paginator = Paginator(orders, amount)
+    page = paginator.page(page)
+
+    return render_to_string(template_name, RequestContext(request, {
+        "page": page,
+    }))
+
+
+def order_inline(request, order_id, as_string=False, template_name="manage/order/order_inline.html"):
+    """Displays the details of an order.
+    """
+    order_filters = request.session.get("order-filters", {})
+    order = lfs_get_object_or_404(Order, pk=order_id)
+
+    states = []
+    state_id = order_filters.get("state")
+    for state in lfs.order.settings.ORDER_STATES:
+        states.append({
+            "id": state[0],
+            "name": state[1],
+            "selected_filter": state_id == str(state[0]),
+            "selected_order": order.state == state[0],
+        })
+
+    result = render_to_string(template_name, RequestContext(request, {
+        "current_order": order,
+        "start": order_filters.get("start", ""),
+        "end": order_filters.get("end", ""),
+        "name": order_filters.get("name", ""),
+        "states": states,
+    }))
+
     if as_string:
         return result
     else:
-        html = (("#orders-inline", result),)
-
-        result = simplejson.dumps({
-            "html": html,
-        }, cls=LazyEncoder)
-
         return HttpResponse(result)
 
 
+def order_filters_inline(request, order_id, template_name="manage/order/order_filters_inline.html"):
+    """Renders the filters section within the order view.
+    """
+    order_filters = request.session.get("order-filters", {})
+    order = lfs_get_object_or_404(Order, pk=order_id)
+
+    states = []
+    state_id = order_filters.get("state")
+    for state in lfs.order.settings.ORDER_STATES:
+        states.append({
+            "id": state[0],
+            "name": state[1],
+            "selected_filter": state_id == str(state[0]),
+            "selected_order": order.state == state[0],
+        })
+
+    return render_to_string(template_name, RequestContext(request, {
+        "current_order": order,
+        "start": order_filters.get("start", ""),
+        "end": order_filters.get("end", ""),
+        "name": order_filters.get("name", ""),
+        "states": states,
+    }))
+
+
+def selectable_orders_inline(request, template_name="manage/order/selectable_orders_inline.html"):
+    """Displays the selectable orders for the order view. (Used to switch
+    quickly from one order to another.)
+    """
+    order_filters = request.session.get("order-filters", {})
+    orders = _get_filtered_orders(order_filters)
+
+    paginator = Paginator(orders, 20)
+
+    try:
+        page = int(request.REQUEST.get("page", 1))
+    except TypeError:
+        page = 1
+    page = paginator.page(page)
+
+    return render_to_string(template_name, RequestContext(request, {
+        "orders": orders,
+        "paginator": paginator,
+        "page": page,
+    }))
+
+
+# Actions
+@permission_required("core.manage_shop", login_url="/login/")
 def set_order_filters(request):
     """Sets order filters given by passed request.
     """
@@ -130,11 +248,11 @@ def set_order_filters(request):
     if request.REQUEST.get("came-from") == "order":
         order_id = request.REQUEST.get("order-id")
         html = (
-            ("#selectable-orders", selectable_orders_inline(request, as_string=True)),
+            ("#selectable-orders", selectable_orders_inline(request)),
             ("#order-inline", order_inline(request, order_id=order_id, as_string=True)),
         )
     else:
-        html = (("#orders-inline", orders_inline(request, as_string=True)),)
+        html = (("#orders-inline", orders_inline(request)),)
 
     msg = _(u"Filters has been set")
 
@@ -146,6 +264,7 @@ def set_order_filters(request):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def set_order_filters_date(request):
     """Sets the date filter by given short cut link
     """
@@ -161,11 +280,15 @@ def set_order_filters_date(request):
     if request.REQUEST.get("came-from") == "order":
         order_id = request.REQUEST.get("order-id")
         html = (
-            ("#selectable-orders", selectable_orders_inline(request, as_string=True)),
+            ("#selectable-orders", selectable_orders_inline(request)),
             ("#order-inline", order_inline(request, order_id=order_id, as_string=True)),
+            ("#order-filters-inline", order_filters_inline(request, order_id=order_id)),
         )
     else:
-        html = (("#orders-inline", orders_inline(request, as_string=True)),)
+        html = (
+            ("#orders-inline", orders_inline(request)),
+            ("#orders-filters-inline", orders_filters_inline(request)),
+        )
 
     msg = _(u"Filters has been set")
 
@@ -177,6 +300,7 @@ def set_order_filters_date(request):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def reset_order_filters(request):
     """resets order filter.
     """
@@ -186,11 +310,15 @@ def reset_order_filters(request):
     if request.REQUEST.get("came-from") == "order":
         order_id = request.REQUEST.get("order-id")
         html = (
-            ("#selectable-orders", selectable_orders_inline(request, as_string=True)),
+            ("#selectable-orders", selectable_orders_inline(request)),
             ("#order-inline", order_inline(request, order_id=order_id, as_string=True)),
+            ("#order-filters-inline", order_filters_inline(request, order_id=order_id)),
         )
     else:
-        html = (("#orders-inline", orders_inline(request, as_string=True)),)
+        html = (
+            ("#orders-inline", orders_inline(request)),
+            ("#orders-filters-inline", orders_filters_inline(request)),
+        )
 
     msg = _(u"Filters has been reset")
 
@@ -203,94 +331,21 @@ def reset_order_filters(request):
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def order_view(request, order_id, template_name="manage/order/order.html"):
-    """Displays order with provided order id.
+def set_selectable_orders_page(request):
+    """Sets the page of selectable orders.
     """
-    order_filters = request.session.get("order-filters", {})
-    order = lfs_get_object_or_404(Order, pk=order_id)
+    result = selectable_orders_inline(request)
+    html = (
+        ("#selectable-orders", selectable_orders_inline(request)),
+    )
 
-    states = []
-    state_id = order_filters.get("state")
-    for state in lfs.order.settings.ORDER_STATES:
-        states.append({
-            "id": state[0],
-            "name": state[1],
-            "selected_filter": state_id == str(state[0]),
-            "selected_order": order.state == state[0],
-        })
+    result = simplejson.dumps({
+        "html": html,
+    }, cls=LazyEncoder)
 
-    return render_to_response(template_name, RequestContext(request, {
-        "order_inline": order_inline(request, order_id, as_string=True),
-        "selectable_orders": selectable_orders_inline(request, as_string=True),
-        "current_order" : order,
-        "states": states,
-    }))
+    return HttpResponse(result)
 
 
-def order_inline(request, order_id, as_string=False, template_name="manage/order/order_inline.html"):
-    """Displays the details of an order.
-    """
-    order_filters = request.session.get("order-filters", {})
-    order = lfs_get_object_or_404(Order, pk=order_id)
-
-    states = []
-    state_id = order_filters.get("state")
-    for state in lfs.order.settings.ORDER_STATES:
-        states.append({
-            "id": state[0],
-            "name": state[1],
-            "selected_filter": state_id == str(state[0]),
-            "selected_order": order.state == state[0],
-        })
-
-    result = render_to_string(template_name, RequestContext(request, {
-        "current_order": order,
-        "start": order_filters.get("start", ""),
-        "end": order_filters.get("end", ""),
-        "name": order_filters.get("name", ""),
-        "states": states,
-    }))
-
-    if as_string:
-        return result
-    else:
-        return HttpResponse(result)
-
-
-@permission_required("core.manage_shop", login_url="/login/")
-def selectable_orders_inline(request, as_string=False,
-    template_name="manage/order/selectable_orders_inline.html"):
-    """Displays the selectable orders for the order view. (Used to switch
-    quickly from one order to another.)
-    """
-    order_filters = request.session.get("order-filters", {})
-    orders = _get_filtered_orders(order_filters)
-
-    paginator = Paginator(orders, 20)
-
-    try:
-        page = int(request.REQUEST.get("page", 1))
-    except TypeError:
-        page = 1
-    page = paginator.page(page)
-
-    result = render_to_string(template_name, RequestContext(request, {
-        "orders": orders,
-        "paginator": paginator,
-        "page": page,
-    }))
-
-    if as_string:
-        return result
-    else:
-        result = simplejson.dumps({
-            "html": (("#selectable-orders", result),),
-        }, cls=LazyEncoder)
-
-        return HttpResponse(result)
-
-
-# Actions
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def delete_order(request, order_id):
@@ -321,6 +376,8 @@ def send_order(request, order_id):
     )
 
 
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
 def change_order_state(request):
     """Changes the state of an order, given by request post variables.
     """
@@ -342,7 +399,7 @@ def change_order_state(request):
     msg = _(u"State has been changed")
 
     html = (
-        ("#selectable-orders", selectable_orders_inline(request, as_string=True)),
+        ("#selectable-orders", selectable_orders_inline(request)),
         ("#order-inline", order_inline(request, order_id=order_id, as_string=True)),
     )
 

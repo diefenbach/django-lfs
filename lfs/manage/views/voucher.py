@@ -53,8 +53,8 @@ class VoucherForm(forms.Form):
     """
     amount = forms.IntegerField(label=_(u"Amount"), required=True)
     value = forms.FloatField(label=_(u"Value"), required=True)
-    start_date = forms.DateTimeField(label=_(u"Start date"), required=True)
-    end_date = forms.DateTimeField(label=_(u"End date"), required=True)
+    start_date = forms.DateField(label=_(u"Start date"), required=True)
+    end_date = forms.DateField(label=_(u"End date"), required=True)
     kind_of = forms.ChoiceField(label=_(u"Kind of"), choices=KIND_OF_CHOICES, required=True)
     effective_from = forms.FloatField(label=_(u"Effective from"), required=True)
     tax = forms.ChoiceField(label=_(u"Tax"), required=False)
@@ -66,7 +66,8 @@ class VoucherForm(forms.Form):
         taxes = [["", "---"]]
         taxes.extend([(t.id, t.rate) for t in Tax.objects.all()])
         self.fields["tax"].choices = taxes
-
+        self.fields["start_date"].widget = forms.DateInput(attrs={'class': 'dateField'})
+        self.fields["end_date"].widget = forms.DateInput(attrs={'class': 'dateField'})
 
 # Parts
 def voucher_group(request, id, template_name="manage/voucher/voucher_group.html"):

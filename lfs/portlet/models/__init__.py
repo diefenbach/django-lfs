@@ -8,3 +8,5 @@ from related_products import *
 from text import *
 from topseller import *
 from filter import *
+from forsale import *
+from featured import *
