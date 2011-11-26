@@ -52,7 +52,7 @@
 				---
 			{% endif %}
         </td>
-    </tr>        
+    </tr>
     <tr>
         <td class="label">
             {% trans 'Creation date' %}:
@@ -122,13 +122,13 @@
                 	{{ item.product.get_name }}
                 </td>
                 <td class="number">
-                    {{ item.product.get_price|currency }}
+                    {{ item.product|get_price:request|currency }}
                 </td>
                 <td class="number">
                     {{ item.amount }}
                 </td>
                 <td class="number">
-                    {{ item.get_price|currency }}
+                    {{ item|get_price:request|currency }}
                 </td>
             </tr>
         {% endfor %}
