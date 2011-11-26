@@ -3975,11 +3975,11 @@ msgid "The voucher doesn't exist."
 msgstr "Dieser Gutschein existiert nicht"
 
 # Additional msgids DO NOT DELETE THIS
-#~ msgid "Left"
-#~ msgstr "Links"
+msgid "Left"
+msgstr "Links"
 
-#~ msgid "Right"
-#~ msgstr "Rechts"
+msgid "Right"
+msgstr "Rechts"
 
-#~ msgid "Average Rating"
-#~ msgstr "Durchschnittliche Bewertung"
+msgid "Average Rating"
+msgstr "Durchschnittliche Bewertung"

@@ -46,17 +46,17 @@ def customer_inline(request, customer_id, as_string=False, template_name="manage
     except Cart.DoesNotExist:
         cart = None
         cart_price = None
-    
-    # Shipping
-    selected_shipping_method = lfs.shipping.utils.get_selected_shipping_method(request)
-    shipping_costs = lfs.shipping.utils.get_shipping_costs(request, selected_shipping_method)
+    else:
+        # Shipping
+        selected_shipping_method = lfs.shipping.utils.get_selected_shipping_method(request)
+        shipping_costs = lfs.shipping.utils.get_shipping_costs(request, selected_shipping_method)
 
-    # Payment
-    selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
-    payment_costs = lfs.payment.utils.get_payment_costs(request, selected_payment_method)
+        # Payment
+        selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
+        payment_costs = lfs.payment.utils.get_payment_costs(request, selected_payment_method)
 
-    cart_price = cart.get_price_gross(request) + shipping_costs["price"] + payment_costs["price"]
-    
+        cart_price = cart.get_price_gross(request) + shipping_costs["price"] + payment_costs["price"]
+
     result = render_to_string(template_name, RequestContext(request, {
         "customer": customer,
         "orders": orders,
