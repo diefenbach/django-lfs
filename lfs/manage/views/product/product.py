@@ -293,7 +293,7 @@ def selectable_products_inline(request, page, paginator, product_id=0, template_
         "paginator": paginator,
         "page": page,
         "current_product": product,
-        "base_product" : base_product,
+        "base_product": base_product,
     }))
 
 

@@ -36,7 +36,7 @@ def cart_view(request, cart_id, template_name="manage/cart/cart.html"):
     """Displays the cart with the passed cart id.
     """
     return render_to_response(template_name, RequestContext(request, {
-        "cart_filters_inline" : cart_filters_inline(request, cart_id),
+        "cart_filters_inline": cart_filters_inline(request, cart_id),
         "selectable_carts_inline": selectable_carts_inline(request, cart_id),
         "cart_inline": cart_inline(request, cart_id),
     }))

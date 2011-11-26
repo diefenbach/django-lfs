@@ -16,7 +16,7 @@ urlpatterns = patterns('django.views.generic.simple',
 
 # Sitemaps
 urlpatterns += patterns("django.contrib.sitemaps.views",
-    url(r'^sitemap.xml$', 'sitemap', {'sitemaps': {"products": ProductSitemap, "categories": CategorySitemap, "pages" : PageSitemap, "shop": ShopSitemap}})
+    url(r'^sitemap.xml$', 'sitemap', {'sitemaps': {"products": ProductSitemap, "categories": CategorySitemap, "pages": PageSitemap, "shop": ShopSitemap}})
 )
 
 # Shop

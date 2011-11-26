@@ -69,6 +69,7 @@ class VoucherForm(forms.Form):
         self.fields["start_date"].widget.attrs = {'class': 'date-picker'}
         self.fields["end_date"].widget.attrs = {'class': 'date-picker'}
 
+
 # Parts
 def voucher_group(request, id, template_name="manage/voucher/voucher_group.html"):
     """Main view to display a voucher group.

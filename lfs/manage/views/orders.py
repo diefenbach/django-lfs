@@ -194,7 +194,7 @@ def selectable_orders_inline(request, order_id, template_name="manage/order/sele
     page = paginator.page(page)
 
     return render_to_string(template_name, RequestContext(request, {
-        "current_order" : order,
+        "current_order": order,
         "orders": orders,
         "paginator": paginator,
         "page": page,
@@ -334,6 +334,7 @@ def set_selectable_orders_page(request):
 
     return HttpResponse(result)
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def set_orders_page(request):
     """Sets the page of selectable orders.
@@ -350,6 +351,7 @@ def set_orders_page(request):
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")

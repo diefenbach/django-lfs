@@ -449,6 +449,7 @@ def currency(value, grouping=True):
         return '<span class="negative">%s</span>' % result
     return result
 
+
 @register.filter
 def decimal_l10n(value):
     """Returns the decimal value of value based on current locale.
