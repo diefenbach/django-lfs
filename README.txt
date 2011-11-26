@@ -27,6 +27,13 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.6.0 beta 4 (2011-11-26)
+-------------------------
+* Bugfix: fixed display of vouchers options tab
+* Bugfix: don't translate label of supplier_id field within lfs_migrate
+* Bugfix: fixed the management of a customer if he has no cart yet
+* Bugfix: fixed cart management interface; issue #113
+
 0.6.0 beta 3 (2011-11-26)
 -------------------------
 

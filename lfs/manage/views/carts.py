@@ -105,7 +105,7 @@ def cart_inline(request, cart_id, as_string=False, template_name="manage/cart/ca
 
     total = 0
     for item in cart.get_items():
-        total += item.get_price_gross()
+        total += item.get_price_gross(request)
 
     try:
         if cart.user:
