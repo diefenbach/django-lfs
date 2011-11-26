@@ -381,7 +381,11 @@ $(function() {
         return false;
     })
 
-    $("input.date-picker").datepicker({ dateFormat: 'yy-mm-dd' });
+    $("input.date-picker").datepicker({
+        dateFormat: 'yy-mm-dd',
+        showWeek: true,
+        firstDay: 1
+    });
 })
 
 $(document).ajaxComplete(function() {
