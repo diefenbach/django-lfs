@@ -21,6 +21,7 @@ from lfs.caching.utils import lfs_get_object_or_404
 from lfs.cart.models import Cart
 from lfs.core.utils import LazyEncoder
 from lfs.customer.models import Customer
+from lfs.manage.utils import get_current_page
 from lfs.order.models import Order
 
 
@@ -175,16 +176,7 @@ def selectable_customers_inline(request, customer_id, template_name="manage/cust
     customer_filters = request.session.get("customer-filters", {})
     customers = _get_filtered_customers(request, customer_filters)
 
-    try:
-        page = int(request.REQUEST.get("page"))
-    except TypeError:
-        try:
-            idx = tuple(customers).index(customer)
-        except ValueError:
-            page = 1
-        else:
-            page = int(idx / AMOUNT) + 1
-
+    page = get_current_page(request, customers, customer, AMOUNT)
     paginator = Paginator(customers, AMOUNT)
 
     try:

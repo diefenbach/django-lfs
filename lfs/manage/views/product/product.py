@@ -25,6 +25,7 @@ from lfs.manage.views.product.images import manage_images
 from lfs.manage.views.product.seo import manage_seo
 from lfs.manage.views.product.properties import manage_properties
 from lfs.manage.views.lfs_portlets import portlets_inline
+from lfs.manage.utils import get_current_page
 from lfs.utils.widgets import SelectImage
 
 
@@ -131,18 +132,12 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
     products = _get_filtered_products_for_product_view(request)
     paginator = Paginator(products, AMOUNT)
 
-    page = request.REQUEST.get("page")
-    if page:
-        page = paginator.page(page)
-    else:
-        idx = tuple(products).index(product)
-        page = int(idx / AMOUNT) + 1
-        page = paginator.page(page)
+    page = get_current_page(request, products, product, AMOUNT)
 
     try:
-        product = Product.objects.get(pk=product_id)
-    except Exception:
-        return HttpResponse("")
+        page = paginator.page(page)
+    except EmptyPage:
+        page = paginator.page(1)
 
     return render_to_response(template_name, RequestContext(request, {
         "product": product,
