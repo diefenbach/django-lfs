@@ -340,15 +340,14 @@ urlpatterns += patterns('lfs.manage.views.static_blocks',
 # Reviews
 urlpatterns += patterns('lfs.manage.views.review',
     url(r'^reviews$', "reviews", name="lfs_manage_reviews"),
-    url(r'^reviews-inline$', "reviews_inline", name="lfs_reviews_inline"),
     url(r'^review/(?P<review_id>\d*)$', "review", name="lfs_manage_review"),
-    url(r'^review-inline/(?P<review_id>\d*)$', "review_inline", name="lfs_review_inline"),
     url(r'^set-review-filters$', "set_review_filters", name="lfs_set_review_filters"),
     url(r'^reset-review-filters$', "reset_review_filters", name="lfs_reset_review_filters"),
     url(r'^set-review-ordering/(?P<ordering>\w*)$', "set_ordering", name="lfs_set_review_ordering"),
-    url(r'^selectable-reviews-inline$', "selectable_reviews_inline", name="lfs_selectable_reviews_inline"),
-    url(r'^set-review-state/(?P<review_id>\d*)$', "set_state", name="lfs_set_review_state"),
+    url(r'^set-review-state/(?P<review_id>\d*)$', "set_review_state", name="lfs_set_review_state"),
     url(r'^delete-review/(?P<review_id>\d*)$', "delete_review", name="lfs_delete_review"),
+    url(r'^set-reviews-page$', "set_reviews_page", name="lfs_set_reviews_page"),
+    url(r'^set-selectable-reviews-page$', "set_selectable_reviews_page", name="lfs_set_selectable_reviews_page"),
 )
 
 # Shop

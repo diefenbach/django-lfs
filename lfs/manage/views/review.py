@@ -25,38 +25,17 @@ from lfs.core.utils import LazyEncoder
 from reviews.models import Review
 
 
+# Views
 @permission_required("core.manage_shop", login_url="/login/")
 def review(request, review_id, template_name="manage/reviews/review.html"):
     """Displays review with provided review id.
     """
     return render_to_response(template_name, RequestContext(request, {
-        "review_inline": review_inline(request, review_id, as_string=True),
-        "selectable_reviews_inline": selectable_reviews_inline(request, review_id, as_string=True),
+        "review_inline": review_inline(request, review_id),
+        "review_filters_inline": review_filters_inline(request, review_id),
+        "selectable_reviews_inline": selectable_reviews_inline(request, review_id),
+        "review_id" : review_id,
     }))
-
-
-def review_inline(request, review_id, as_string=False, template_name="manage/reviews/review_inline.html"):
-    """Displays review with provided review id.
-    """
-    review_filters = request.session.get("review-filters", {})
-    review = lfs_get_object_or_404(Review, pk=review_id)
-
-    result = render_to_string(template_name, RequestContext(request, {
-        "review": review,
-        "name": review_filters.get("name", ""),
-        "active": review_filters.get("active", ""),
-    }))
-
-    if as_string:
-        return result
-    else:
-        html = (("#review-inline", result),)
-
-        result = simplejson.dumps({
-            "html": html,
-        }, cls=LazyEncoder)
-
-        return HttpResponse(result)
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -64,13 +43,27 @@ def reviews(request, template_name="manage/reviews/reviews.html"):
     """Base view to display reviews overview.
     """
     return render_to_response(template_name, RequestContext(request, {
-        "reviews_inline": reviews_inline(request, as_string=True),
+        "reviews_inline": reviews_inline(request),
+        "reviews_filters_inline": reviews_filters_inline(request),
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
-def reviews_inline(request, as_string=False, template_name="manage/reviews/reviews_inline.html"):
-    """Displays carts overview.
+# Parts
+def review_inline(request, review_id, template_name="manage/reviews/review_inline.html"):
+    """Displays review with provided review id.
+    """
+    review_filters = request.session.get("review-filters", {})
+    review = lfs_get_object_or_404(Review, pk=review_id)
+
+    return render_to_string(template_name, RequestContext(request, {
+        "review": review,
+        "name": review_filters.get("name", ""),
+        "active": review_filters.get("active", ""),
+    }))
+
+
+def reviews_inline(request, template_name="manage/reviews/reviews_inline.html"):
+    """Renders the reviews section of the reviews overview view.
     """
     review_filters = request.session.get("review-filters", {})
     reviews = _get_filtered_reviews(request, review_filters)
@@ -80,7 +73,7 @@ def reviews_inline(request, as_string=False, template_name="manage/reviews/revie
     page = request.REQUEST.get("page", 1)
     page = paginator.page(page)
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, RequestContext(request, {
         "reviews": reviews,
         "page": page,
         "paginator": paginator,
@@ -91,20 +84,41 @@ def reviews_inline(request, as_string=False, template_name="manage/reviews/revie
         "ordering": request.session.get("review-ordering", "id"),
     }))
 
-    if as_string:
-        return result
-    else:
-        html = (("#reviews-inline", result),)
 
-        result = simplejson.dumps({
-            "html": html,
-        }, cls=LazyEncoder)
+def review_filters_inline(request, review_id, template_name="manage/reviews/review_filters_inline.html"):
+    """Renders the filter section of the review view.
+    """
+    review_filters = request.session.get("review-filters", {})
+    review = lfs_get_object_or_404(Review, pk=review_id)
 
-        return HttpResponse(result)
+    return render_to_string(template_name, RequestContext(request, {
+        "review": review,
+        "name": review_filters.get("name", ""),
+        "active": review_filters.get("active", ""),
+    }))
+
+def reviews_filters_inline(request, template_name="manage/reviews/reviews_filters_inline.html"):
+    """Renders the reviews filters section of the reviews overview view.
+    """
+    review_filters = request.session.get("review-filters", {})
+    reviews = _get_filtered_reviews(request, review_filters)
+
+    paginator = Paginator(reviews, 30)
+
+    page = request.REQUEST.get("page", 1)
+    page = paginator.page(page)
+
+    return render_to_string(template_name, RequestContext(request, {
+        "page": page,
+        "paginator": paginator,
+        "start": review_filters.get("start", ""),
+        "end": review_filters.get("end", ""),
+        "active": review_filters.get("active", ""),
+        "name": review_filters.get("name", ""),
+    }))
 
 
-def selectable_reviews_inline(request, review_id=0, as_string=False,
-    template_name="manage/reviews/selectable_reviews_inline.html"):
+def selectable_reviews_inline(request, review_id, template_name="manage/reviews/selectable_reviews_inline.html"):
     """Display selectable reviews.
     """
     review_filters = request.session.get("review-filters", {})
@@ -118,22 +132,46 @@ def selectable_reviews_inline(request, review_id=0, as_string=False,
         page = 1
     page = paginator.page(page)
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, RequestContext(request, {
         "paginator": paginator,
         "page": page,
         "review_id": int(review_id),
     }))
 
-    if as_string:
-        return result
-    else:
-        result = simplejson.dumps({
-            "html": (("#selectable-reviews-inline", result),),
-        }, cls=LazyEncoder)
 
-        return HttpResponse(result)
+# Actions
+@permission_required("core.manage_shop", login_url="/login/")
+def set_reviews_page(request):
+    """Sets the page for the reviews overview view.
+    """
+    result = simplejson.dumps({
+        "html": (
+            ("#reviews-inline", reviews_inline(request)),
+            ("#reviews-filters-inline", reviews_filters_inline(request)),
+        ),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
+
+@permission_required("core.manage_shop", login_url="/login/")
+def set_selectable_reviews_page(request):
+    """Sets the page of selectable reviews.
+    """
+    review_id = request.GET.get("review-id", 1)
+
+    html = (
+        ("#selectable-reviews", selectable_reviews_inline(request, review_id)),
+        ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
+    )
+
+    result = simplejson.dumps({
+        "html": html,
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def set_ordering(request, ordering):
     """Sets review ordering given by passed request.
     """
@@ -150,11 +188,11 @@ def set_ordering(request, ordering):
     if request.REQUEST.get("came-from") == "review":
         review_id = request.REQUEST.get("review-id")
         html = (
-            ("#selectable-reviews-inline", selectable_reviews_inline(request, as_string=True)),
-            ("#review-inline", review_inline(request, review_id=review_id, as_string=True)),
+            ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
+            ("#review-inline", review_inline(request, review_id)),
         )
     else:
-        html = (("#reviews-inline", reviews_inline(request, as_string=True)),)
+        html = (("#reviews-inline", reviews_inline(request)),)
 
     result = simplejson.dumps({
         "html": html,
@@ -163,6 +201,7 @@ def set_ordering(request, ordering):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def set_review_filters(request):
     """Sets review filters given by passed request.
     """
@@ -185,11 +224,14 @@ def set_review_filters(request):
     if request.REQUEST.get("came-from") == "review":
         review_id = request.REQUEST.get("review-id")
         html = (
-            ("#selectable-reviews-inline", selectable_reviews_inline(request, as_string=True)),
-            ("#review-inline", review_inline(request, review_id=review_id, as_string=True)),
+            ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
+            ("#review-inline", review_inline(request, review_id)),
         )
     else:
-        html = (("#reviews-inline", reviews_inline(request, as_string=True)),)
+        html = (
+            ("#reviews-inline", reviews_inline(request)),
+            ("#reviews-filters-inline", reviews_filters_inline(request)),
+        )
 
     msg = _(u"Review filters have been set")
 
@@ -201,6 +243,7 @@ def set_review_filters(request):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def reset_review_filters(request):
     """Resets all review filters.
     """
@@ -210,11 +253,15 @@ def reset_review_filters(request):
     if request.REQUEST.get("came-from") == "review":
         review_id = request.REQUEST.get("review-id")
         html = (
-            ("#selectable-reviews-inline", selectable_reviews_inline(request, as_string=True)),
-            ("#review-inline", review_inline(request, review_id=review_id, as_string=True)),
+            ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
+            ("#review-inline", review_inline(request, review_id)),
+            ("#review-filters-inline", review_filters_inline(request, review_id)),
         )
     else:
-        html = (("#reviews-inline", reviews_inline(request, as_string=True)),)
+        html = (
+            ("#reviews-inline", reviews_inline(request)),
+            ("#reviews-filters-inline", reviews_filters_inline(request)),
+        )
 
     msg = _(u"Review filters have been reset")
 
@@ -238,11 +285,19 @@ def delete_review(request, review_id):
     else:
         review.delete()
 
-    return lfs.core.utils.set_message_cookie(
-        reverse("lfs_manage_reviews"), _(u"Review has been deleted."))
+    try:
+        ordering = "%s%s" % (request.session.get("review-ordering-order", "id"), request.session.get("review-ordering", "id"))
+        review = Review.objects.all().order_by(ordering)[0]
+    except IndexError:
+        url = reverse("lfs_manage_reviews")
+    else:
+        url = reverse("lfs_manage_review", kwargs={"review_id": review.id})
+
+    return lfs.core.utils.set_message_cookie(url, _(u"Review has been deleted."))
 
 
-def set_state(request, review_id):
+@permission_required("core.manage_shop", login_url="/login/")
+def set_review_state(request, review_id):
     """Sets the state for given review.
     """
     try:
@@ -254,8 +309,8 @@ def set_state(request, review_id):
         review.save()
 
     html = (
-        ("#selectable-reviews-inline", selectable_reviews_inline(request, as_string=True)),
-        ("#review-inline", review_inline(request, review_id=review_id, as_string=True)),
+        ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
+        ("#review-inline", review_inline(request, review_id)),
     )
 
     msg = _(u"Review state has been set")
@@ -268,6 +323,7 @@ def set_state(request, review_id):
     return HttpResponse(result)
 
 
+# Private Methods
 def _get_filtered_reviews(request, review_filters):
     """
     """
