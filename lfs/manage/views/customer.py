@@ -5,6 +5,7 @@ from datetime import timedelta
 # django imports
 from django.db.models import Q
 from django.contrib.auth.decorators import permission_required
+from django.core.paginator import EmptyPage
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -185,7 +186,11 @@ def selectable_customers_inline(request, customer_id, template_name="manage/cust
             page = int(idx / AMOUNT) + 1
 
     paginator = Paginator(customers, AMOUNT)
-    page = paginator.page(page)
+
+    try:
+        page = paginator.page(page)
+    except EmptyPage:
+        page = paginator.page(1)
 
     return render_to_string(template_name, RequestContext(request, {
         "paginator": paginator,
