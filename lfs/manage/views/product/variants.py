@@ -508,8 +508,10 @@ def edit_sub_type(request, product_id):
     # Send a signal to update cache
     product_changed.send(product)
 
+    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
+
     result = simplejson.dumps({
-        "html": manage_variants(request, product_id, as_string=True),
+        "html": html,
         "message": _(u"Sup type has been saved."),
     }, cls=LazyEncoder)
 
