@@ -266,11 +266,11 @@ tr.odd {
 
 .manage-product .navigation-pages,
 .manage-review .navigation-pages,
-.manage-customer .navigation-pages,
-.manage-cart .navigation-pages {
+.manage-customer .navigation-pages {
     margin: 20px 0;
 }
 
+.manage-customer .navigation-pages,
 .manage-cart .navigation-pages,
 .manage-order .navigation-pages {
     margin: 5px 0 20px 0;

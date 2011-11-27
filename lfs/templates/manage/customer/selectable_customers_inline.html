@@ -1,15 +1,16 @@
 {% load i18n %}
-<div class="navigation-pages">
 
+<div style="padding-top:12px" class="discreet">{% trans "Pages" %}</div>
+<div class="navigation-pages" style="width:100%;">
     {% if page.has_previous %}
         <a class="ajax-link"
-           href="{% url lfs_selectable_customers_inline %}?page=1">
+           href="{% url lfs_set_selectable_customers_page %}?page=1&amp;customer_id={{ customer_id }}">
             <img src="{{ STATIC_URL }}icons/resultset_first.png"
                  alt="{% trans 'First' %}"
                  title="{% trans 'First' %}" />
         </a>
         <a class="ajax-link"
-           href="{% url lfs_selectable_customers_inline %}?page={{page.previous_page_number}}">
+           href="{% url lfs_set_selectable_customers_page %}?page={{ page.previous_page_number }}&amp;customer_id={{ customer_id }}">
             <img src="{{ STATIC_URL }}icons/resultset_previous.png"
                  alt="{% trans 'Previous' %}"
                  title="{% trans 'Previous' %}" />
@@ -27,17 +28,17 @@
         </span>
     {% endif %}
 
-    {{page.number}}  {% trans 'of' %} {{paginator.num_pages}}
+    {{ page.number }}  {% trans 'of' %} {{ paginator.num_pages }}
 
     {% if page.has_next %}
         <a class="ajax-link"
-           href="{% url lfs_selectable_customers_inline %}?page={{page.next_page_number}}">
+           href="{% url lfs_set_selectable_customers_page %}?page={{ page.next_page_number }}&amp;customer_id={{ customer_id }}">
             <img src="{{ STATIC_URL }}icons/resultset_next.png"
                  alt="{% trans 'Next' %}"
                  title="{% trans 'Next' %}" />
         </a>
         <a class="ajax-link"
-           href="{% url lfs_selectable_customers_inline %}?page={{paginator.num_pages}}">
+           href="{% url lfs_set_selectable_customers_page %}?page={{ paginator.num_pages }}&amp;customer_id={{ customer_id }}">
             <img src="{{ STATIC_URL }}icons/resultset_last.png"
                  alt="{% trans 'Last' %}"
                  title="{% trans 'Last' %}" />
@@ -53,7 +54,7 @@
 </div>
 
 {% for c in page.object_list %}
-    <div>
+    <div class="navigation-body">
         <a href="{% url lfs_manage_customer c.id %}"
            class="selectable {% ifequal customer_id c.id %}selected{% endifequal %}">
 			{% if c.selected_invoice_address %}

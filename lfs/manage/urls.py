@@ -230,6 +230,8 @@ urlpatterns += patterns('lfs.manage.views.customer',
     url(r'^reset-customer-filters$', "reset_customer_filters", name="lfs_reset_customer_filters"),
     url(r'^set-customer-ordering/(?P<ordering>\w*)$', "set_ordering", name="lfs_set_customer_ordering"),
     url(r'^selectable-customers-inline$', "selectable_customers_inline", name="lfs_selectable_customers_inline"),
+    url(r'^set-selectable-customers-page$', "set_selectable_customers_page", name="lfs_set_selectable_customers_page"),
+    url(r'^set-customers-page$', "set_customers_page", name="lfs_set_customers_page"),
 )
 
 # Export
