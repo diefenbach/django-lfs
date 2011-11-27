@@ -169,15 +169,22 @@ def customers_inline(request, template_name="manage/customer/customers_inline.ht
 def selectable_customers_inline(request, customer_id, template_name="manage/customer/selectable_customers_inline.html"):
     """Display selectable customers.
     """
+    AMOUNT = 30
+    customer = lfs_get_object_or_404(Customer, pk=customer_id)
     customer_filters = request.session.get("customer-filters", {})
     customers = _get_filtered_customers(request, customer_filters)
 
-    paginator = Paginator(customers, 30)
-
     try:
-        page = int(request.REQUEST.get("page", 1))
+        page = int(request.REQUEST.get("page"))
     except TypeError:
-        page = 1
+        try:
+            idx = tuple(customers).index(customer)
+        except ValueError:
+            page = 1
+        else:
+            page = int(idx / AMOUNT) + 1
+
+    paginator = Paginator(customers, AMOUNT)
     page = paginator.page(page)
 
     return render_to_string(template_name, RequestContext(request, {
