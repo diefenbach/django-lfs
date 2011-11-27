@@ -180,6 +180,30 @@ def delete_category(request, id):
     return HttpResponseRedirect(url)
 
 
+def sort_categories(request):
+    """Sort categories
+    """
+    category_list = request.POST.get("categories", "").split('&')
+    assert (isinstance(category_list, list))
+    if len(category_list) > 0:
+        pos = 10
+        for cat_str in category_list:
+            child, parent_id = cat_str.split('=')
+            child_id = child[9:-1]  # category[2]
+            child_obj = Category.objects.get(pk=child_id)
+
+            parent_obj = None
+            if parent_id != 'root':
+                parent_obj = Category.objects.get(pk=parent_id)
+
+            child_obj.parent = parent_obj
+            child_obj.position = pos
+            child_obj.save()
+
+            pos = pos + 10
+    set_category_levels()
+
+
 # Privates
 def _category_choices(context):
     """Returns categories to be used as choices for the field parent.

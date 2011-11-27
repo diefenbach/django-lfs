@@ -104,16 +104,6 @@ urlpatterns += patterns('',
     (r'^tagging/', include('lfs.tagging.urls')),
 )
 
-# Catalog REST API
-urlpatterns += patterns('',
-    (r'^catalog/api/', include('lfs.catalog.api.urls')),
-)
-
-# Manage REST API
-urlpatterns += patterns('',
-    (r'^manage/api/', include('lfs.manage.api.urls')),
-)
-
 urlpatterns += patterns('',
     (r'', include('lfs_contact.urls')),
 )

@@ -213,6 +213,7 @@ urlpatterns += patterns('lfs.manage.views.categories',
     url(r'^edit-category-view/(?P<category_id>\d*)$', "category_view", name="lfs_manage_category_view"),
     url(r'^selected-products/(?P<category_id>\d*)$', "selected_products", name="lfs_selected_products"),
     url(r'^load-products-tab/(?P<category_id>\d*)$', "products_tab", name="lfs_load_products_tab"),
+    url(r'^categories/sort/$', "sort_categories", name="lfs-sort-categories"),
 )
 
 # Categories / SEO
