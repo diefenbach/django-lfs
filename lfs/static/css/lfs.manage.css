@@ -683,6 +683,12 @@ form div.buttons {
     padding: 0 0 0 60px;
 }
 
+.manage-pages-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 .navigation-title {
     color: #777;
     border-bottom: none;
