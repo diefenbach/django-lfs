@@ -9,11 +9,14 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
+from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
+from lfs.core.utils import LazyEncoder
+from lfs.core.utils import set_category_levels
 from lfs.core.widgets.image import LFSImageInput
 from lfs.manage import utils as manage_utils
 from lfs.manage.views.categories.products import manage_products
@@ -201,7 +204,14 @@ def sort_categories(request):
             child_obj.save()
 
             pos = pos + 10
+
     set_category_levels()
+
+    result = simplejson.dumps({
+        "message": _(u"The categories have been sorted."),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
 
 
 # Privates
