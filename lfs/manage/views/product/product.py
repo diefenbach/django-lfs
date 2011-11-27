@@ -132,7 +132,8 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
     products = _get_filtered_products_for_product_view(request)
     paginator = Paginator(products, AMOUNT)
 
-    page = get_current_page(request, products, product, AMOUNT)
+    temp = product.parent if product.is_variant() else product
+    page = get_current_page(request, products, temp, AMOUNT)
 
     try:
         page = paginator.page(page)
@@ -638,7 +639,7 @@ def _get_filtered_products_for_product_view(request):
     if name != "":
         products = products.filter(Q(name__icontains=name) | Q(sku__icontains=name))
 
-    products = products.exclude(sub_type="2")
+    products = products.exclude(sub_type=VARIANT)
     products = products.order_by("%s%s" % (product_ordering_order, product_ordering))
     return products
 
