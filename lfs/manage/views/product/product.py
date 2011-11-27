@@ -30,7 +30,8 @@ from lfs.utils.widgets import SelectImage
 
 # Forms
 class ProductAddForm(forms.ModelForm):
-    """Form to add a new product.
+    """
+    Form to add a new product.
     """
     class Meta:
         model = Product
@@ -38,7 +39,8 @@ class ProductAddForm(forms.ModelForm):
 
 
 class ProductSubTypeForm(forms.ModelForm):
-    """Form to change the sub type.
+    """
+    Form to change the sub type.
     """
     class Meta:
         model = Product
@@ -50,7 +52,8 @@ class ProductSubTypeForm(forms.ModelForm):
 
 
 class ProductDataForm(forms.ModelForm):
-    """Form to add and edit master data of a product.
+    """
+    Form to add and edit master data of a product.
     """
     def __init__(self, *args, **kwargs):
         super(ProductDataForm, self).__init__(*args, **kwargs)
@@ -75,7 +78,8 @@ class ProductDataForm(forms.ModelForm):
 
 
 class VariantDataForm(forms.ModelForm):
-    """Form to add and edit master data of a variant.
+    """
+    Form to add and edit master data of a variant.
     """
     def __init__(self, *args, **kwargs):
         super(VariantDataForm, self).__init__(*args, **kwargs)
@@ -102,7 +106,8 @@ class VariantDataForm(forms.ModelForm):
 
 
 class ProductStockForm(forms.ModelForm):
-    """Form to add and edit stock data of a product.
+    """
+    Form to add and edit stock data of a product.
     """
     class Meta:
         model = Product
@@ -118,7 +123,8 @@ class ProductStockForm(forms.ModelForm):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_product(request, product_id, template_name="manage/product/product.html"):
-    """Displays the whole manage/edit form for the product with the passed id.
+    """
+    Displays the whole manage/edit form for the product with the passed id.
     """
     # NOTE: For any reason the script from swfupload (see product/images.html)
     # calls this method (I have no idea how and why). It calls it without a
@@ -139,7 +145,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
     return render_to_response(template_name, RequestContext(request, {
         "product": product,
         "product_filters": product_filters_inline(request, page, paginator, product_id),
-        "pages_inline": pages_inline(request, page, paginator),
+        "pages_inline": pages_inline(request, page, paginator, product_id),
         "product_data": product_data_form(request, product_id),
         "images": manage_images(request, product_id, as_string=True),
         "selectable_products": selectable_products_inline(request, page, paginator, product.id),
@@ -152,9 +158,11 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
     }))
 
 
+# Tabs
 @permission_required("core.manage_shop", login_url="/login/")
 def stock(request, product_id, template_name="manage/product/stock.html"):
-    """Displays and updates product's stock data.
+    """
+    Displays and updates product's stock data.
     """
     # prefix="stock" because <input name="length" doesn't seem to work with IE
     product = lfs_get_object_or_404(Product, pk=product_id)
@@ -216,7 +224,7 @@ def products(request, template_name="manage/product/products.html"):
     return render_to_response(template_name, RequestContext(request, {
         "products_inline": products_inline(request, page, paginator),
         "product_filters": product_filters_inline(request, page=page, paginator=paginator),
-        "pages_inline": pages_inline(request, page=page, paginator=paginator),
+        "pages_inline": pages_inline(request, page, paginator, 0),
     }))
 
 
@@ -265,17 +273,18 @@ def product_filters_inline(request, page, paginator, product_id=0, template_name
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def pages_inline(request, page, paginator, template_name="manage/product/pages_inline.html"):
+def pages_inline(request, page, paginator, product_id, template_name="manage/product/pages_inline.html"):
     """Displays the page navigation.
     """
     return render_to_string(template_name, RequestContext(request, {
         "page": page,
         "paginator": paginator,
+        "product_id": product_id,
     }))
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def selectable_products_inline(request, page, paginator, product_id=0, template_name="manage/product/selectable_products_inline.html"):
+def selectable_products_inline(request, page, paginator, product_id, template_name="manage/product/selectable_products_inline.html"):
     """Displays the selectable products for the product view. (Used to switch
     quickly from one product to another.)
     """
@@ -389,8 +398,9 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
 
 @permission_required("core.manage_shop", login_url="/login/")
 def product_dispatcher(request):
-    """Dispatches to the first product. This is called when the shop user clicks
-    on the manage products link.
+    """
+    Dispatches to the first product. This is called when the shop admin
+    clicks on the manage products link.
     """
     try:
         product = Product.objects.exclude(sub_type=VARIANT)[0]
@@ -403,7 +413,8 @@ def product_dispatcher(request):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def reset_filters(request):
-    """Resets all product filters.
+    """
+    Resets all product filters.
     """
     if "product_filters" in request.session:
         del request.session["product_filters"]
@@ -523,7 +534,7 @@ def set_name_filter(request):
     html = (
         ("#products-inline", products_inline(request, page, paginator)),
         ("#selectable-products-inline", selectable_products_inline(request, page, paginator, product_id)),
-        ("#pages-inline", pages_inline(request, page, paginator)),
+        ("#pages-inline", pages_inline(request, page, paginator, product_id)),
     )
 
     result = simplejson.dumps({
@@ -578,14 +589,15 @@ def set_filters(request):
 def set_products_page(request):
     """Sets the displayed product page.
     """
+    product_id = request.GET.get("product-id")
     products = _get_filtered_products_for_product_view(request)
     paginator = Paginator(products, 20)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     html = (
         ("#products-inline", products_inline(request, page, paginator)),
-        ("#pages-inline", pages_inline(request, page, paginator)),
-        ("#selectable-products-inline", selectable_products_inline(request, page, paginator)),
+        ("#pages-inline", pages_inline(request, page, paginator, product_id)),
+        ("#selectable-products-inline", selectable_products_inline(request, page, paginator, product_id)),
     )
 
     return HttpResponse(
@@ -602,6 +614,7 @@ def product_by_id(request, product_id):
     return HttpResponseRedirect(url)
 
 
+# Private Methods
 def _get_filtered_products_for_product_view(request):
     """Returns a query set with filtered products based on saved name filter
     and ordering within the current session.
