@@ -126,16 +126,18 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
     """
     Displays the whole manage/edit form for the product with the passed id.
     """
-    # NOTE: For any reason the script from swfupload (see product/images.html)
-    # calls this method (I have no idea how and why). It calls it without a
-    # product id so we have to take care of it here as a workaround.
-    if not product_id:
-        return HttpResponse("")
-
+    AMOUNT = 20
     product = lfs_get_object_or_404(Product, pk=product_id)
     products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, 20)
-    page = paginator.page(request.REQUEST.get("page", 1))
+    paginator = Paginator(products, AMOUNT)
+
+    page = request.REQUEST.get("page")
+    if page:
+        page = paginator.page(page)
+    else:
+        idx = tuple(products).index(product)
+        page = int(idx / AMOUNT) + 1
+        page = paginator.page(page)
 
     try:
         product = Product.objects.get(pk=product_id)
@@ -197,7 +199,8 @@ def stock(request, product_id, template_name="manage/product/stock.html"):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def product_data_form(request, product_id, template_name="manage/product/data.html"):
-    """Displays the product master data form within the manage product view.
+    """
+    Displays the product master data form within the manage product view.
     """
     product = Product.objects.get(pk=product_id)
 
@@ -215,7 +218,8 @@ def product_data_form(request, product_id, template_name="manage/product/data.ht
 
 @permission_required("core.manage_shop", login_url="/login/")
 def products(request, template_name="manage/product/products.html"):
-    """Displays an overview list of all products.
+    """
+    Displays an overview list of all products.
     """
     products = _get_filtered_products(request)
     paginator = Paginator(products, 20)
@@ -231,7 +235,8 @@ def products(request, template_name="manage/product/products.html"):
 # Parts
 @permission_required("core.manage_shop", login_url="/login/")
 def products_inline(request, page, paginator, template_name="manage/product/products_inline.html"):
-    """Displays the list of products.
+    """
+    Displays the list of products.
     """
     return render_to_string(template_name, RequestContext(request, {
         "page": page,
@@ -242,6 +247,7 @@ def products_inline(request, page, paginator, template_name="manage/product/prod
 @permission_required("core.manage_shop", login_url="/login/")
 def product_filters_inline(request, page, paginator, product_id=0, template_name="manage/product/product_filters_inline.html"):
     """
+    Displays the filter section of the product overview view.
     """
     product_filters = request.session.get("product_filters", {})
 
@@ -274,7 +280,8 @@ def product_filters_inline(request, page, paginator, product_id=0, template_name
 
 @permission_required("core.manage_shop", login_url="/login/")
 def pages_inline(request, page, paginator, product_id, template_name="manage/product/pages_inline.html"):
-    """Displays the page navigation.
+    """
+    Displays the page navigation.
     """
     return render_to_string(template_name, RequestContext(request, {
         "page": page,
@@ -285,8 +292,8 @@ def pages_inline(request, page, paginator, product_id, template_name="manage/pro
 
 @permission_required("core.manage_shop", login_url="/login/")
 def selectable_products_inline(request, page, paginator, product_id, template_name="manage/product/selectable_products_inline.html"):
-    """Displays the selectable products for the product view. (Used to switch
-    quickly from one product to another.)
+    """
+    Displays the selectable products for the product view.
     """
     try:
         product = Product.objects.get(pk=product_id)
@@ -307,6 +314,7 @@ def selectable_products_inline(request, page, paginator, product_id, template_na
 
 
 # Actions
+@permission_required("core.manage_shop", login_url="/login/")
 def add_product(request, template_name="manage/product/add_product.html"):
     """Shows a simplified product form and adds a new product.
     """
@@ -440,7 +448,8 @@ def reset_filters(request):
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def save_products(request):
-    """Saves products with passed ids (by request body).
+    """
+    Saves products with passed ids (by request body).
     """
     products = _get_filtered_products(request)
     paginator = Paginator(products, 20)
@@ -513,7 +522,8 @@ def save_products(request):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def set_name_filter(request):
-    """Sets product filters given by passed request.
+    """
+    Sets product filters given by passed request.
     """
     product_filters = request.session.get("product_filters", {})
 
@@ -546,7 +556,8 @@ def set_name_filter(request):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def set_filters(request):
-    """Sets product filters given by passed request.
+    """
+    Sets product filters given by passed request.
     """
     product_filters = request.session.get("product_filters", {})
     for name in ("name", "active", "price", "category", "for_sale", "sub_type", "amount"):
@@ -587,7 +598,8 @@ def set_filters(request):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def set_products_page(request):
-    """Sets the displayed product page.
+    """
+    Sets the displayed product page.
     """
     product_id = request.GET.get("product-id")
     products = _get_filtered_products_for_product_view(request)
@@ -606,7 +618,8 @@ def set_products_page(request):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def product_by_id(request, product_id):
-    """Little helper which returns a product by id. (For the shop customer the
+    """
+    Little helper which returns a product by id. (For the shop customer the
     products are displayed by slug, for the manager by id).
     """
     product = Product.objects.get(pk=product_id)
@@ -616,7 +629,8 @@ def product_by_id(request, product_id):
 
 # Private Methods
 def _get_filtered_products_for_product_view(request):
-    """Returns a query set with filtered products based on saved name filter
+    """
+    Returns a query set with filtered products based on saved name filter
     and ordering within the current session.
     """
     products = Product.objects.all()
@@ -635,7 +649,8 @@ def _get_filtered_products_for_product_view(request):
 
 
 def _get_filtered_products(request):
-    """Returns a query set with filtered products based on saved filters and
+    """
+    Returns a query set with filtered products based on saved filters and
     ordering within the current session.
     """
     products = Product.objects.all()
