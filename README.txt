@@ -27,6 +27,16 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.6.0 beta 5 (2011-11-28)
+-------------------------
+
+* Bugfix: fixed delete links for properties and options within product's variants tab
+* Bugfix: fixed saving of variant list type.
+* Bugfix: fixed my account (added missing csrf_tokens; issue #114).
+* Bugfix: fixed discounts
+* Added dutch translations (BasTichelaar)
+* Updated romanian translations (bsdwave)
+
 0.6.0 beta 4 (2011-11-26)
 -------------------------
 * Bugfix: fixed display of vouchers options tab
