@@ -10,6 +10,9 @@
 {% endblock %}
 
 {% block content %}
+    <div id="order-filters-inline">
+        {{ order_filters_inline|safe }}
+    </div>
     <div class="site-actions">
 
         <a class="overview"
@@ -33,7 +36,6 @@
               class="inline">
             <select id="states-filter"
                     name="new-state">
-                <option value="">{% trans "All" %}</option>
                 {% for state in states %}
                     <option value="{{ state.id }}"
                             {% if state.selected_order %}selected="selected"{% endif %}>
@@ -55,7 +57,7 @@
         <ul>
             <li class="ui-tabs-nav-item"><a href="#order">{% trans 'Order' %}</a></li>
         </ul>
-    	<div id="order">    	    
+    	<div id="order">
         	<div id="order-inline">
         		{{ order_inline|safe }}
         	</div>

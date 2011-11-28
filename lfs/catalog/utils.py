@@ -520,18 +520,18 @@ def get_property_mapping():
 
 def _calculate_steps(product_ids, property, min, max):
     """Calculates filter steps.
-    
+
     **Parameters**
-    
-    product_ids 
+
+    product_ids
         The product_ids for which the steps are calculated. List of ids.
 
-    property 
+    property
         The property for which the steps are calculated. Instance of Property.
-        
+
     min / max
         The min and max value of all steps. Must be a Float.
-    
+
     """
     try:
         min = float(min)
@@ -645,7 +645,7 @@ def _calculate_quantity(product_ids, property_id, min, max):
 
 
 def calculate_packages(product, quantity):
-    """Returns amount of packages passed on passes product and quantity. 
+    """Returns amount of packages passed on passes product and quantity.
     DEPRECATED.
     """
     logger.info("Decprecated: lfs.catalog.utils: the function 'calculate_packages' is deprecated.")

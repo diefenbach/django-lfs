@@ -2,85 +2,6 @@
 {% load lfs_tags %}
 
 <h2>{% trans "Customers" %}</h2>
-<form action="{% url lfs_set_customer_filters %}"
-      method="POST">
-
-	<table class="filters">
-		<tr>
-			<td class="discreet">{% trans "Pages" %}</td>
-			<td class="discreet">{% trans "Name" %}</td>
-		</tr>
-		<tr>
-			<td>
-				<div class="navigation-pages">
-				    {% if page.has_previous %}
-				        <a class="ajax-link"
-				           href="{% url lfs_customers_inline %}?page=1">
-				            <img src="{{ STATIC_URL }}icons/resultset_first.png"
-				                 alt="{% trans 'First' %}"
-				                 title="{% trans 'First' %}" />
-						</a>
-				        <a class="ajax-link"
-				           href="{% url lfs_customers_inline %}?page={{ page.previous_page_number }}">
-				            <img src="{{ STATIC_URL }}icons/resultset_previous.png"
-				                 alt="{% trans 'Previous' %}"
-				                 title="{% trans 'Previous' %}" />
-						</a>
-				    {% else %}
-				        <img src="{{ STATIC_URL }}icons/resultset_first.png"
-				             alt="{% trans 'First' %}"
-				             title="{% trans 'First' %}" />
-				        <img src="{{ STATIC_URL }}icons/resultset_previous.png"
-				             alt="{% trans 'Previous' %}"
-				             title="{% trans 'Previous' %}" />
-				    {% endif %}
-
-				    {{ page.number }} {% trans "of" %} {{ paginator.num_pages }}
-
-				    {% if page.has_next %}
-				        <a class="ajax-link"
-				           href="{% url lfs_customers_inline %}?page={{ page.next_page_number }}">
-				            <img src="{{ STATIC_URL }}icons/resultset_next.png"
-				                 alt="{% trans 'Next' %}"
-				                 title="{% trans 'Next' %}" />
-						</a>
-				        <a class="ajax-link"
-				           href="{% url lfs_customers_inline %}?page={{ paginator.num_pages }}">
-				            <img src="{{ STATIC_URL }}icons/resultset_last.png"
-				                 alt="{% trans 'Last' %}"
-				                 title="{% trans 'Last' %}" />
-						</a>
-
-				    {% else %}
-				        <span>
-				            <img src="{{ STATIC_URL }}icons/resultset_next.png"
-				                 alt="{% trans 'Next' %}"
-				                 title="{% trans 'Next' %}" />
-				        </span>
-				        <span>
-				            <img src="{{ STATIC_URL }}icons/resultset_last.png"
-				                 alt="{% trans 'Last' %}"
-				                 title="{% trans 'Last' %}" />
-				        </span>
-				    {% endif %}
-				</div>
-
-			</td>
-			<td>
-				<input type="text"
-				       name="name"
-					   value="{{ name }}">
-			</td>
-			<td>
-				<input type="submit"
-				       class="ajax-save-button" />
-	
-				<a href="{% url lfs_reset_customer_filters %}"
-				   class="ajax-link reset">&nbsp;</a>
-			</td>
-		</tr>
-	</table>
-</form>
 <table class="lfs-manage-table">
     <tr>
         <th class="tiny right-padding">
@@ -90,7 +11,7 @@
            	</a>
         </th>
         <th>
-			<a class="ajax-link" 
+			<a class="ajax-link"
 			   href='{% url lfs_set_customer_ordering "firstname" %}'>
             	{% trans 'Firstname' %}
 			</a>
@@ -102,10 +23,10 @@
 			</a>
         </th>
         <th class="middle">
-			<a class="ajax-link" 
+			<a class="ajax-link"
 			   href='{% url lfs_set_customer_ordering "email" %}'>
             	{% trans 'E-Mail' %}
-			</a>	
+			</a>
         </th>
         <th class="tiny right-padding">
             {% trans 'Orders' %}

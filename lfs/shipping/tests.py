@@ -76,6 +76,11 @@ class ShippingMethodTestCase(TestCase):
         co = CriteriaObjects(criterion=c, content=self.sm1)
         co.save()
 
+        # Create a weigth criterion and add it to the shipping method 2.
+        c = WeightCriterion.objects.create(weight=10.0, operator=LESS_THAN)
+        co = CriteriaObjects(criterion=c, content=self.sm2)
+        co.save()
+
         # Now we ask for the delivery time for product 1. As sm1 is not valid
         # (p1 has an weight of 6.0) we should get the delivery time from sm2,
         # which is dt2
