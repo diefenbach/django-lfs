@@ -1,0 +1,4171 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-11-28 12:49+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Bas Tichelaar <bas@30loops.net>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: cart/models.py:48 criteria/models/criteria.py:591 order/models.py:43
+#: templates/manage/cart/carts_inline.html:111
+msgid "User"
+msgstr "Gebruiker"
+
+#: cart/models.py:49 order/models.py:44
+msgid "Session"
+msgstr "Sessie"
+
+#: cart/models.py:50 cart/models.py:234 catalog/models.py:565
+#: templates/manage/cart/cart_inline.html:58
+#: templates/manage/cart/cart_inline.html:97
+#: templates/manage/cart/carts_inline.html:105
+#: templates/manage/customer/customer_inline.html:154
+#: templates/manage/reviews/review_inline.html:95
+#: templates/manage/reviews/reviews_inline.html:101
+msgid "Creation date"
+msgstr "Aangemaakt op"
+
+#: cart/models.py:51 cart/models.py:235
+#: templates/manage/cart/cart_inline.html:66
+#: templates/manage/cart/carts_inline.html:108
+#: templates/manage/customer/customer_inline.html:202
+msgid "Modification date"
+msgstr "Gewijzigd op"
+
+#: cart/models.py:231 portlet/templatetags/lfs_portlets_tags.py:89
+#: templates/manage/cart/cart.html:67
+#: templates/manage/customer/customer_inline.html:194
+#: templates/manage/customer/customers_inline.html:114
+msgid "Cart"
+msgstr "Winkelwagen"
+
+#: cart/models.py:232 catalog/models.py:1396 catalog/models.py:1650
+#: catalog/models.py:1716 marketing/models.py:13 marketing/models.py:26
+#: marketing/models.py:33 templates/manage/cart/cart_inline.html:100
+#: templates/manage/product/product.html:89
+#: templates/manage/reviews/review_inline.html:140
+#: templates/manage/reviews/reviews_inline.html:119
+msgid "Product"
+msgstr "Product"
+
+#: cart/models.py:233 catalog/models.py:1399
+#: templates/manage/product/accessories_inline.html:116
+msgid "Quantity"
+msgstr "Aantal"
+
+#: cart/models.py:382
+msgid "Cart item"
+msgstr "Artikel in winkelwagen"
+
+#: cart/models.py:383 catalog/models.py:1603 catalog/models.py:1628
+#: catalog/models.py:1651 catalog/models.py:1676 catalog/models.py:1718
+#: order/models.py:204 templates/manage/properties/property.html:31
+msgid "Property"
+msgstr "Eigenschap"
+
+#: cart/views.py:258
+#, python-format
+msgid "%(name)s must be between %(min)s and %(max)s %(unit)s."
+msgstr ""
+"%(name)s mag mogen minimaal %(min)s en maximaal %(max)s %(unit)s bevatten"
+
+#: cart/views.py:272
+#, python-format
+msgid ""
+"Your entered value for %(name)s (%(value)s) is not in valid step width, "
+"which is %(step)s."
+msgstr ""
+"Het ingevoerde aantal voor %(name)s (%(value)s) is niet geldig, welke "
+"%(step)s is."
+
+#: cart/views.py:292 cart/views.py:394
+#, python-format
+msgid "Sorry, but '%(product)s' is not available anymore."
+msgstr "Sorry, maar '%(product)s' is niet meer leverbaar."
+
+#: cart/views.py:294 cart/views.py:396
+#, python-format
+msgid "Sorry, but '%(product)s' is only one time available."
+msgstr "Sorry, maar '%(product)s' is maar een keer leverbaar"
+
+#: cart/views.py:296 cart/views.py:398
+#, python-format
+msgid "Sorry, but '%(product)s' is only %(amount)s times available."
+msgstr "Sorry, maar '%(product)s' is maar %(amount)s keer leverbaar."
+
+#: catalog/models.py:135 catalog/models.py:536 catalog/models.py:1522
+#: catalog/models.py:1678 catalog/models.py:1839 core/models.py:19
+#: core/models.py:154 export/models.py:16 manufacturer/models.py:10
+#: payment/models.py:77 shipping/models.py:57
+#: templates/manage/category/products_inline.html:47
+#: templates/manage/category/selected_products.html:42
+#: templates/manage/customer/customer_inline.html:13
+#: templates/manage/customer/customers_inline.html:11
+#: templates/manage/marketing/featured_inline.html:44
+#: templates/manage/marketing/featured_inline.html:102
+#: templates/manage/marketing/rating_mails.html:48
+#: templates/manage/marketing/topseller_inline.html:44
+#: templates/manage/marketing/topseller_inline.html:103
+#: templates/manage/order/order_inline.html:14
+#: templates/manage/order/order_inline.html:224
+#: templates/manage/order/orders_inline.html:12
+#: templates/manage/order/orders_inline.html:122
+#: templates/manage/product/accessories_inline.html:48
+#: templates/manage/product/accessories_inline.html:107
+#: templates/manage/product/products_inline.html:17
+#: templates/manage/product/related_products_inline.html:47
+#: templates/manage/product/related_products_inline.html:107
+#: templates/manage/product/variants.html:107
+#: templates/manage/product/variants.html:174
+#: templates/manage/properties/options_inline.html:13
+#: templates/manage/properties/pg_products_inline.html:45
+#: templates/manage/properties/pg_products_inline.html:105
+#: templates/manage/properties/properties_inline.html:18
+#: templates/manage/properties/properties_inline.html:68
+#: templates/manage/reviews/review_inline.html:12
+#: templates/manage/reviews/review_inline.html:103
+#: templates/manage/reviews/reviews_inline.html:10
+#: templates/manage/reviews/reviews_inline.html:107
+msgid "Name"
+msgstr "Naam"
+
+#: catalog/models.py:136 catalog/models.py:537 export/models.py:17
+#: page/models.py:16 supplier/models.py:14
+#: templates/manage/product/products_inline.html:20
+#: templates/manage/product/variants.html:104
+msgid "Slug"
+msgstr "Verkorte naam"
+
+#: catalog/models.py:137 catalog/models.py:601 catalog/models.py:1717
+#: core/models.py:80
+msgid "Parent"
+msgstr "Hoofdcategorie"
+
+#: catalog/models.py:141
+msgid "Show all products"
+msgstr "Toon alle producten"
+
+#: catalog/models.py:143 catalog/models.py:1429 catalog/models.py:1525
+#: catalog/settings.py:50 export/models.py:18
+#: templates/manage/manage_base.html:96
+#: templates/manage/cart/carts_inline.html:120
+#: templates/manage/category/manage_category.html:40
+#: templates/manage/category/products.html:7
+#: templates/manage/export/export.html:34
+#: templates/manage/export/export.html:42
+#: templates/manage/manufacturer/manufacturer.html:33
+#: templates/manage/manufacturer/manufacturer.html:41
+#: templates/manage/marketing/featured_inline.html:31
+#: templates/manage/marketing/topseller_inline.html:31
+#: templates/manage/product/products.html:20
+#: templates/manage/properties/pg_products.html:4
+#: templates/manage/properties/pg_products_inline.html:32
+#: templates/manage/properties/property_group.html:32
+msgid "Products"
+msgstr "Producten"
+
+#: catalog/models.py:144 catalog/models.py:546
+msgid "Short description"
+msgstr "Korte beschrijving"
+
+#: catalog/models.py:145 catalog/models.py:547 catalog/models.py:1865
+#: core/models.py:159 payment/models.py:78 shipping/models.py:58
+#: tax/models.py:18
+msgid "Description"
+msgstr "Beschrijving"
+
+#: catalog/models.py:146 catalog/models.py:1767 core/models.py:160
+#: payment/models.py:80 shipping/models.py:60
+#: templates/manage/category/data.html:71
+#: templates/manage/product/images.html:33
+msgid "Image"
+msgstr "Afbeelding"
+
+#: catalog/models.py:147 catalog/models.py:1398 catalog/models.py:1526
+#: catalog/models.py:1629 catalog/models.py:1652 catalog/models.py:1680
+#: catalog/models.py:1768 core/models.py:79
+#: criteria/models/criteria_objects.py:24 marketing/models.py:14
+#: marketing/models.py:34 page/models.py:17
+#: templates/manage/marketing/featured_inline.html:108
+#: templates/manage/marketing/topseller_inline.html:109
+#: templates/manage/portlets/portlet_add.html:6
+#: templates/manage/portlets/portlet_edit.html:6
+#: templates/manage/product/accessories_inline.html:113
+#: templates/manage/product/images.html:39
+#: templates/manage/properties/options_inline.html:10
+#: templates/manage/properties/properties_inline.html:65
+#: templates/manage/static_block/files.html:20
+msgid "Position"
+msgstr "Positie"
+
+#: catalog/models.py:148 page/models.py:18
+msgid "Exclude from navigation"
+msgstr "Niet weergeven in navigatie"
+
+#: catalog/models.py:150 catalog/models.py:581 core/models.py:161
+#: templates/manage/static_block/static_block.html:34
+msgid "Static block"
+msgstr "Tekstblok"
+
+#: catalog/models.py:151
+msgid "Category template"
+msgstr "Categorie template"
+
+#: catalog/models.py:152
+msgid "Active formats"
+msgstr "Actieve formaten"
+
+#: catalog/models.py:154 core/models.py:164
+msgid "Product rows"
+msgstr "Product rijen"
+
+#: catalog/models.py:155 core/models.py:163
+msgid "Product cols"
+msgstr "Product kolommen"
+
+#: catalog/models.py:156 core/models.py:165
+msgid "Category cols"
+msgstr "Categorie kolommen"
+
+#: catalog/models.py:158 catalog/models.py:551
+msgid "Meta title"
+msgstr "Meta titel"
+
+#: catalog/models.py:159 catalog/models.py:552
+msgid "Meta keywords"
+msgstr "Meta steekwoorden"
+
+#: catalog/models.py:160 catalog/models.py:553
+msgid "Meta description"
+msgstr "Meta beschrijving"
+
+#: catalog/models.py:536
+#, fuzzy
+msgid "The name of the product."
+msgstr "Verwijder product"
+
+#: catalog/models.py:537
+msgid "The unique last part of the Product's URL."
+msgstr ""
+
+#: catalog/models.py:538 templates/manage/category/products_inline.html:50
+#: templates/manage/category/selected_products.html:45
+#: templates/manage/marketing/featured_inline.html:47
+#: templates/manage/marketing/featured_inline.html:105
+#: templates/manage/marketing/topseller_inline.html:47
+#: templates/manage/marketing/topseller_inline.html:106
+#: templates/manage/order/order_inline.html:221
+#: templates/manage/product/accessories_inline.html:51
+#: templates/manage/product/accessories_inline.html:110
+#: templates/manage/product/products_inline.html:23
+#: templates/manage/product/related_products_inline.html:50
+#: templates/manage/product/related_products_inline.html:110
+#: templates/manage/product/variants.html:170
+#: templates/manage/properties/pg_products_inline.html:48
+#: templates/manage/properties/pg_products_inline.html:108
+msgid "SKU"
+msgstr "SKU"
+
+#: catalog/models.py:538
+msgid "Your unique article number of the product."
+msgstr ""
+
+#: catalog/models.py:539 catalog/models.py:543 catalog/models.py:1534
+#: catalog/models.py:1679 criteria/models/criteria.py:52 order/models.py:51
+#: payment/models.py:82 payment/models.py:123 shipping/models.py:62
+#: shipping/models.py:109 templates/manage/cart/cart_inline.html:103
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:14
+#: templates/manage/criteria/country_criterion.html:14
+#: templates/manage/criteria/distance_criterion.html:14
+#: templates/manage/criteria/height_criterion.html:14
+#: templates/manage/criteria/length_criterion.html:12
+#: templates/manage/criteria/payment_method_criterion.html:14
+#: templates/manage/criteria/price_criterion.html:14
+#: templates/manage/criteria/shipping_method_criterion.html:14
+#: templates/manage/criteria/user_criterion.html:14
+#: templates/manage/criteria/weight_criterion.html:14
+#: templates/manage/criteria/width_criterion.html:14
+#: templates/manage/customer/customer_inline.html:160
+#: templates/manage/customer/customer_inline.html:205
+#: templates/manage/marketing/rating_mails.html:60
+#: templates/manage/order/order_inline.html:232
+#: templates/manage/order/orders_inline.html:128
+#: templates/manage/payment/payment_method_prices.html:27
+#: templates/manage/product/products_inline.html:34
+#: templates/manage/product/variants.html:110
+#: templates/manage/product/variants.html:185
+#: templates/manage/shipping/shipping_method_prices.html:27
+msgid "Price"
+msgstr "Prijs"
+
+#: catalog/models.py:540
+#, fuzzy
+msgid "Price calculator"
+msgstr "Prijs Berekening"
+
+#: catalog/models.py:544
+#, fuzzy
+msgid "Price unit"
+msgstr "Netto prijs"
+
+#: catalog/models.py:545 catalog/models.py:579 catalog/models.py:1527
+#: catalog/models.py:1864
+msgid "Unit"
+msgstr "Eenheid"
+
+#: catalog/models.py:548 templates/manage/product/images.html:3
+#: templates/manage/product/product.html:97
+msgid "Images"
+msgstr "Afbeeldingen"
+
+#: catalog/models.py:555 templates/manage/product/related_products.html:4
+msgid "Related products"
+msgstr "Gerelateerde producten"
+
+#: catalog/models.py:558
+msgid "Acessories"
+msgstr "Accessoires"
+
+#: catalog/models.py:562
+#: templates/manage/product/product_filters_inline.html:17
+msgid "For sale"
+msgstr "Aanbieding"
+
+#: catalog/models.py:563
+msgid "For sale price"
+msgstr "Aanbiedingsprijs"
+
+#: catalog/models.py:564 core/models.py:75 marketing/models.py:35
+#: page/models.py:14 payment/models.py:75 payment/models.py:125
+#: shipping/models.py:55 shipping/models.py:114
+#: templates/manage/category/products_inline.html:53
+#: templates/manage/category/selected_products.html:48
+#: templates/manage/marketing/featured_inline.html:50
+#: templates/manage/marketing/featured_inline.html:111
+#: templates/manage/marketing/topseller_inline.html:50
+#: templates/manage/marketing/topseller_inline.html:112
+#: templates/manage/product/accessories_inline.html:54
+#: templates/manage/product/accessories_inline.html:119
+#: templates/manage/product/product_filters_inline.html:16
+#: templates/manage/product/products_inline.html:28
+#: templates/manage/product/related_products_inline.html:53
+#: templates/manage/product/related_products_inline.html:113
+#: templates/manage/product/variants.html:163
+#: templates/manage/properties/pg_products_inline.html:51
+#: templates/manage/properties/pg_products_inline.html:111
+#: templates/manage/reviews/review_inline.html:13
+#: templates/manage/reviews/review_inline.html:52
+#: templates/manage/reviews/review_inline.html:83
+#: templates/manage/reviews/reviews_inline.html:11
+#: templates/manage/reviews/reviews_inline.html:132
+#: templates/manage/voucher/vouchers_inline.html:88
+msgid "Active"
+msgstr "Actief"
+
+#: catalog/models.py:569
+msgid "Deliverable"
+msgstr "Leverbaar"
+
+#: catalog/models.py:570
+msgid "Manual delivery time"
+msgstr "Aangepaste levertijd"
+
+#: catalog/models.py:571 shipping/models.py:63
+msgid "Delivery time"
+msgstr "Levertijd"
+
+#: catalog/models.py:572
+msgid "Order time"
+msgstr "Besteltijd"
+
+#: catalog/models.py:573
+msgid "Ordered at"
+msgstr "Besteld op"
+
+#: catalog/models.py:574
+msgid "Manage stock amount"
+msgstr "Beheer voorraad"
+
+#: catalog/models.py:575
+msgid "Stock amount"
+msgstr "Voorraad"
+
+#: catalog/models.py:577
+msgid "Active packing unit"
+msgstr "Actieve verpakkingseenheid"
+
+#: catalog/models.py:578
+msgid "Packing unit"
+msgstr "Verpakkingseenheid"
+
+#: catalog/models.py:584 criteria/models/criteria.py:609
+#: criteria/models/criteria.py:627
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:17
+#: templates/manage/criteria/country_criterion.html:17
+#: templates/manage/criteria/distance_criterion.html:17
+#: templates/manage/criteria/height_criterion.html:17
+#: templates/manage/criteria/length_criterion.html:17
+#: templates/manage/criteria/payment_method_criterion.html:17
+#: templates/manage/criteria/price_criterion.html:17
+#: templates/manage/criteria/shipping_method_criterion.html:17
+#: templates/manage/criteria/user_criterion.html:17
+#: templates/manage/criteria/weight_criterion.html:17
+#: templates/manage/criteria/width_criterion.html:17
+msgid "Weight"
+msgstr "Gewicht"
+
+#: catalog/models.py:585 criteria/models/criteria.py:257
+#: criteria/models/criteria.py:275 criteria/models/criteria.py:690
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:11
+#: templates/manage/criteria/country_criterion.html:11
+#: templates/manage/criteria/distance_criterion.html:11
+#: templates/manage/criteria/height_criterion.html:11
+#: templates/manage/criteria/length_criterion.html:13
+#: templates/manage/criteria/payment_method_criterion.html:11
+#: templates/manage/criteria/price_criterion.html:11
+#: templates/manage/criteria/shipping_method_criterion.html:11
+#: templates/manage/criteria/user_criterion.html:11
+#: templates/manage/criteria/weight_criterion.html:11
+#: templates/manage/criteria/width_criterion.html:11
+msgid "Height"
+msgstr "Hoogte"
+
+#: catalog/models.py:586 criteria/models/criteria.py:319
+#: criteria/models/criteria.py:337
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:12
+#: templates/manage/criteria/country_criterion.html:12
+#: templates/manage/criteria/distance_criterion.html:12
+#: templates/manage/criteria/height_criterion.html:12
+#: templates/manage/criteria/length_criterion.html:14
+#: templates/manage/criteria/payment_method_criterion.html:12
+#: templates/manage/criteria/price_criterion.html:12
+#: templates/manage/criteria/shipping_method_criterion.html:12
+#: templates/manage/criteria/user_criterion.html:12
+#: templates/manage/criteria/weight_criterion.html:12
+#: templates/manage/criteria/width_criterion.html:12
+msgid "Length"
+msgstr "Lengte"
+
+#: catalog/models.py:587 criteria/models/criteria.py:113
+#: criteria/models/criteria.py:672
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:16
+#: templates/manage/criteria/country_criterion.html:16
+#: templates/manage/criteria/distance_criterion.html:16
+#: templates/manage/criteria/height_criterion.html:16
+#: templates/manage/criteria/length_criterion.html:16
+#: templates/manage/criteria/payment_method_criterion.html:16
+#: templates/manage/criteria/price_criterion.html:16
+#: templates/manage/criteria/shipping_method_criterion.html:16
+#: templates/manage/criteria/user_criterion.html:16
+#: templates/manage/criteria/weight_criterion.html:16
+#: templates/manage/criteria/width_criterion.html:16
+msgid "Width"
+msgstr "Breedte"
+
+#: catalog/models.py:590 discounts/models.py:44 manage/views/voucher.py:60
+#: order/models.py:52 order/models.py:130 payment/models.py:81
+#: shipping/models.py:61 templates/manage/tax/tax.html:34
+#: templates/manage/voucher/vouchers_inline.html:76 voucher/models.py:102
+msgid "Tax"
+msgstr "BTW"
+
+#: catalog/models.py:591
+msgid "Subtype"
+msgstr "Subtype"
+
+#: catalog/models.py:595
+msgid "Default variant"
+msgstr "Standaard variant"
+
+#: catalog/models.py:596
+msgid "Variants display type"
+msgstr "Varianten weergavetype"
+
+#: catalog/models.py:602
+msgid "Active name"
+msgstr "Actieve naam"
+
+#: catalog/models.py:603
+msgid "Active SKU"
+msgstr "Actieve SKU"
+
+#: catalog/models.py:604
+msgid "Active short description"
+msgstr "Actieve korte beschrijving"
+
+#: catalog/models.py:605
+msgid "Active static bock"
+msgstr "Actieve tekstblok"
+
+#: catalog/models.py:606
+msgid "Active description"
+msgstr "Actieve beschrijving"
+
+#: catalog/models.py:607
+msgid "Active price"
+msgstr "Actieve prijs"
+
+#: catalog/models.py:608
+msgid "Active for sale"
+msgstr "Actieve aanbieding"
+
+#: catalog/models.py:609
+msgid "Active for sale price"
+msgstr "Actieve aanbiedingsprijs"
+
+#: catalog/models.py:610
+msgid "Active Images"
+msgstr "Actieve afbeeldingen"
+
+#: catalog/models.py:611 templates/manage/product/related_products.html:14
+msgid "Active related products"
+msgstr "Actieve gerelateerde producten"
+
+#: catalog/models.py:612 templates/manage/product/accessories.html:14
+msgid "Active accessories"
+msgstr "Actieve accessoires"
+
+#: catalog/models.py:613
+msgid "Active meta title"
+msgstr "Actieve meta titel"
+
+#: catalog/models.py:614
+msgid "Active meta description"
+msgstr "Actieve meta beschrijving"
+
+#: catalog/models.py:615
+msgid "Active meta keywords"
+msgstr "Actieve meta steekwoorden"
+
+#: catalog/models.py:616
+msgid "Active dimensions"
+msgstr "Actieve afmetingen"
+
+#: catalog/models.py:617
+msgid "Product template"
+msgstr "Product template"
+
+#: catalog/models.py:620
+msgid "Active price calculation"
+msgstr "Actieve prijs berekening"
+
+#: catalog/models.py:621
+msgid "Price Calculation"
+msgstr "Prijs Berekening"
+
+#: catalog/models.py:624
+#, fuzzy
+msgid "SKU Manufacturer"
+msgstr "Producent"
+
+#: catalog/models.py:625
+#: templates/manage/manufacturer/add_manufacturer.html:10
+#: templates/manage/manufacturer/manufacturer.html:32
+msgid "Manufacturer"
+msgstr "Producent"
+
+#: catalog/models.py:1397
+msgid "Accessory"
+msgstr "Accessoire"
+
+#: catalog/models.py:1523 catalog/models.py:1766 core/models.py:76
+#: page/models.py:15 templates/manage/portlets/portlets_inline.html:41
+#: templates/manage/product/images.html:36
+#: templates/manage/static_block/files.html:17
+msgid "Title"
+msgstr "Titel"
+
+#: catalog/models.py:1524 catalog/models.py:1627 core/models.py:78
+msgid "Group"
+msgstr "Groep"
+
+#: catalog/models.py:1528
+msgid "Display on product"
+msgstr "Geef weer op product"
+
+#: catalog/models.py:1531
+msgid "Display no results"
+msgstr "Geen resultaten weergeven"
+
+#: catalog/models.py:1533 catalog/models.py:1721 customer/models.py:104
+#: discounts/models.py:43 templates/manage/portlets/portlets_inline.html:38
+#: templates/manage/voucher/vouchers_inline.html:70
+msgid "Type"
+msgstr "Type"
+
+#: catalog/models.py:1535
+msgid "Display price"
+msgstr "Weergegeven prijs"
+
+#: catalog/models.py:1536
+#: templates/manage/payment/payment_method_prices.html:9
+#: templates/manage/shipping/shipping_method_prices.html:9
+msgid "Add price"
+msgstr "Prijs toevoegen"
+
+#: catalog/models.py:1539 catalog/models.py:1862
+msgid "Min"
+msgstr "Minimum"
+
+#: catalog/models.py:1540 catalog/models.py:1863
+msgid "Max"
+msgstr "Maximum"
+
+#: catalog/models.py:1541 catalog/models.py:1547
+msgid "Step"
+msgstr "Stap"
+
+#: catalog/models.py:1542
+msgid "Decimal places"
+msgstr "Aantal decimalen"
+
+#: catalog/models.py:1546 templates/manage/properties/step_inline.html:2
+msgid "Step type"
+msgstr "Stap type"
+
+#: catalog/models.py:1552 templates/manage/manage_base.html:100
+#: templates/manage/manage_base.html:102
+#: templates/manage/product/product.html:108
+#: templates/manage/properties/properties_inline.html:6
+#: templates/manage/properties/property.html:6
+#: templates/manage/properties/property_group.html:33
+msgid "Properties"
+msgstr "Eigenschappen"
+
+#: catalog/models.py:1719 discounts/models.py:42 manage/views/voucher.py:55
+#: templates/manage/voucher/vouchers_inline.html:73
+msgid "Value"
+msgstr "Waarde"
+
+#: catalog/models.py:1720
+msgid "Value as float"
+msgstr "Waarde als float"
+
+#: catalog/models.py:1762 catalog/models.py:1804
+#: criteria/models/criteria_objects.py:20
+msgid "Content type"
+msgstr "Inhoud type"
+
+#: catalog/models.py:1763 catalog/models.py:1805
+#: criteria/models/criteria_objects.py:17
+#: criteria/models/criteria_objects.py:21
+msgid "Content id"
+msgstr "Inhoud id"
+
+#: catalog/models.py:1840
+msgid "Display files"
+msgstr "Geef bestanden weer"
+
+#: catalog/models.py:1841 templates/manage/manage_base.html:107
+msgid "HTML"
+msgstr "HTML"
+
+#: catalog/models.py:1842 templates/manage/static_block/files.html:2
+#: templates/manage/static_block/static_block.html:35
+msgid "Files"
+msgstr "Bestanden"
+
+#: catalog/settings.py:8 catalog/settings.py:19 catalog/settings.py:26
+#: catalog/settings.py:33
+#: templates/manage/product/product_filters_inline.html:56
+#: templates/manage/product/products_inline.html:84
+msgid "Standard"
+msgstr "Standaard"
+
+#: catalog/settings.py:9 templates/manage/manage_base.html:176
+#: templates/manage/customer/customer_inline.html:59
+#: templates/manage/product/data.html:216
+#: templates/manage/product/product_filters_inline.html:42
+#: templates/manage/product/product_filters_inline.html:49
+#: templates/manage/reviews/review_inline.html:24
+#: templates/manage/reviews/review_inline.html:55
+#: templates/manage/reviews/review_inline.html:87
+#: templates/manage/reviews/review_inline.html:132
+#: templates/manage/reviews/reviews_inline.html:76
+#: templates/manage/reviews/reviews_inline.html:170
+#: templates/manage/reviews/reviews_inline.html:179
+msgid "Yes"
+msgstr "Ja"
+
+#: catalog/settings.py:10 templates/manage/manage_base.html:177
+#: templates/manage/customer/customer_inline.html:61
+#: templates/manage/product/data.html:218
+#: templates/manage/product/product_filters_inline.html:43
+#: templates/manage/product/product_filters_inline.html:50
+#: templates/manage/reviews/review_inline.html:25
+#: templates/manage/reviews/review_inline.html:56
+#: templates/manage/reviews/review_inline.html:89
+#: templates/manage/reviews/review_inline.html:134
+#: templates/manage/reviews/reviews_inline.html:77
+#: templates/manage/reviews/reviews_inline.html:173
+#: templates/manage/reviews/reviews_inline.html:182
+msgid "No"
+msgstr "Nee"
+
+#: catalog/settings.py:20 catalog/settings.py:27 catalog/settings.py:34
+#: templates/manage/product/product_filters_inline.html:57
+#: templates/manage/product/products_inline.html:85
+msgid "Product with variants"
+msgstr "Producten met varianten"
+
+#: catalog/settings.py:21 catalog/settings.py:28 export/models.py:72
+#: templates/manage/product/product_filters_inline.html:58
+#: templates/manage/product/products_inline.html:86
+msgid "Variant"
+msgstr "Variant"
+
+#: catalog/settings.py:22 catalog/settings.py:29 catalog/settings.py:35
+#: templates/manage/product/product_filters_inline.html:59
+#: templates/manage/product/products_inline.html:87
+msgid "Configurable product"
+msgstr "Configureerbaar product"
+
+#: catalog/settings.py:42
+msgid "List"
+msgstr "Lijst"
+
+#: catalog/settings.py:43
+msgid "Select"
+msgstr "Selecteer"
+
+#: catalog/settings.py:51 portlet/templatetags/lfs_portlets_tags.py:104
+#: templates/manage/manage_base.html:95
+#: templates/manage/category/manage_categories_portlet.html:2
+#: templates/manage/product/categories.html:3
+#: templates/manage/product/product.html:94
+msgid "Categories"
+msgstr "Categorieen"
+
+#: catalog/settings.py:60
+msgid "hours"
+msgstr "uren"
+
+#: catalog/settings.py:61
+msgid "days"
+msgstr "dagen"
+
+#: catalog/settings.py:62
+msgid "weeks"
+msgstr "weken"
+
+#: catalog/settings.py:63
+msgid "months"
+msgstr "maanden"
+
+#: catalog/settings.py:67
+msgid "hour"
+msgstr "uur"
+
+#: catalog/settings.py:68
+msgid "day"
+msgstr "dag"
+
+#: catalog/settings.py:69
+msgid "week"
+msgstr "week"
+
+#: catalog/settings.py:70
+msgid "month"
+msgstr "maand"
+
+#: catalog/settings.py:83
+msgid "Float field"
+msgstr "Numeriek veld"
+
+#: catalog/settings.py:84
+msgid "Text field"
+msgstr "Tekstveld"
+
+#: catalog/settings.py:85
+msgid "Select field"
+msgstr "Selecteerbaar veld"
+
+#: catalog/settings.py:93
+msgid "Automatic"
+msgstr "Automatisch"
+
+#: catalog/settings.py:94
+msgid "Fixed step"
+msgstr "Vaste stap"
+
+#: catalog/settings.py:95
+msgid "Manual steps"
+msgstr "Aangepaste stappen"
+
+#: catalog/settings.py:108
+msgid "Category with products"
+msgstr "Categorie met producten"
+
+#: catalog/settings.py:112
+msgid "Category with subcategories"
+msgstr "Categorie met subcategorieen"
+
+#: catalog/settings.py:120 export/settings.py:11
+#: templates/manage/product/variants.html:188
+msgid "Default"
+msgstr "Standaard"
+
+#: catalog/views.py:53 catalog/views.py:148
+msgid "The product has been changed according to your selection."
+msgstr "Dit product is aangepast volgens jouw selectie"
+
+#: catalog/views.py:124
+msgid "Price has been changed according to your selection."
+msgstr "De prijs is aangepast volgens jouw selectie"
+
+#: catalog/views.py:145 catalog/views.py:599
+msgid "The choosen combination of properties is not deliverable."
+msgstr "De gekozen combinatie van eigenschappen is niet leverbaar"
+
+#: checkout/forms.py:19 checkout/forms.py:24 customer/forms.py:13
+#: customer/forms.py:18
+#, fuzzy
+msgid "First Name"
+msgstr "Voornaam"
+
+#: checkout/forms.py:20 checkout/forms.py:25 customer/forms.py:14
+#: customer/forms.py:19
+#, fuzzy
+msgid "Last Name"
+msgstr "Achternaam"
+
+#: checkout/forms.py:21 customer/forms.py:15
+#, fuzzy
+msgid "Invoice Phone"
+msgstr "Factuur telefoonnummer"
+
+#: checkout/forms.py:22 customer/forms.py:16
+#, fuzzy
+msgid "Invoice E-mail"
+msgstr "Factuur stad"
+
+#: checkout/forms.py:26 customer/forms.py:20
+#, fuzzy
+msgid "Shipping Phone"
+msgstr "Verzendadres telefoonnummer"
+
+#: checkout/forms.py:27 customer/forms.py:21
+#, fuzzy
+msgid "Shipping E-mail"
+msgstr "Verzendkosten BTW"
+
+#: checkout/forms.py:29
+#, fuzzy
+msgid "Requested Delivery Date"
+msgstr "Afleverdatum"
+
+#: checkout/forms.py:31
+msgid "Account Number"
+msgstr "Rekeningnummer"
+
+#: checkout/forms.py:32
+msgid "Bank Indentification Code"
+msgstr "Bank identificatie nummer"
+
+#: checkout/forms.py:33
+msgid "Bankname"
+msgstr "Banknaam"
+
+#: checkout/forms.py:34 customer/models.py:93 order/models.py:89
+msgid "Depositor"
+msgstr "Deposant"
+
+#: checkout/forms.py:38
+msgid "Credit Card Type"
+msgstr "Credit Card Type"
+
+#: checkout/forms.py:39
+msgid "Credit Card Owner"
+msgstr "Credit Card houder"
+
+#: checkout/forms.py:40
+msgid "Credit Card Number"
+msgstr "Credit Card Nummer"
+
+#: checkout/forms.py:41
+msgid "Expiration Date Month"
+msgstr "Verloopt op (dag en maand)"
+
+#: checkout/forms.py:42
+msgid "Expiration Date Year"
+msgstr "Verloopt in (jaar)"
+
+#: checkout/forms.py:43
+msgid "Verification Number"
+msgstr "Verificatie nummer"
+
+#: checkout/forms.py:45
+msgid "Same as invoice"
+msgstr "Zelfde als factuur"
+
+#: checkout/forms.py:46
+msgid "Your message to us"
+msgstr "Jouw bericht aan ons"
+
+#: checkout/forms.py:58
+msgid "This field is required."
+msgstr "Dit veld is verplicht"
+
+#: checkout/forms.py:85
+msgid "Invalid shipping country."
+msgstr ""
+
+#: checkout/settings.py:7
+msgid "Anonymous and Authenticated"
+msgstr "Anoniem en ingelogd"
+
+#: checkout/settings.py:8
+msgid "Anonymous only"
+msgstr "Alleen anoniem"
+
+#: checkout/settings.py:9
+msgid "Authenticated only"
+msgstr "Alleen ingelogd"
+
+#: checkout/views.py:65 customer/models.py:79 customer/views.py:55
+#: templates/manage/customer/customers_inline.html:107
+#: templates/manage/marketing/rating_mails.html:51
+#: templates/manage/reviews/review_inline.html:116
+#: templates/manage/reviews/reviews_inline.html:113
+msgid "E-Mail"
+msgstr "E-mail"
+
+#: checkout/views.py:75 customer/views.py:71
+msgid "You have been logged in."
+msgstr "Je bent ingelogd"
+
+#: checkout/views.py:98 customer/views.py:103
+msgid "You have been registered and logged in."
+msgstr "Je bent geregistreerd en ingelogd"
+
+#: checkout/views.py:221
+msgid "Please confirm our terms and conditions"
+msgstr "Bevestig onze algemene voorwaarden"
+
+#: checkout/views.py:233
+#, fuzzy
+msgid "Invalid invoice address"
+msgstr "Factuuradres"
+
+#: checkout/views.py:248
+#, fuzzy
+msgid "Invalid shipping address"
+msgstr "Geselecteerde afleveradres"
+
+#: checkout/views.py:370
+#, fuzzy
+msgid "An error has occured."
+msgstr "Er is een fout opgetreden"
+
+#: core/models.py:18
+msgid "Country code"
+msgstr "Land code"
+
+#: core/models.py:77
+msgid "Link"
+msgstr "Link"
+
+#: core/models.py:155
+msgid "Shop owner"
+msgstr "Winkel eigenaar"
+
+#: core/models.py:156
+msgid "From e-mail address"
+msgstr "Van e-mail adres"
+
+#: core/models.py:157
+msgid "Notification email addresses"
+msgstr "Notificatie e-mail adressen"
+
+#: core/models.py:166
+msgid "Google Analytics ID"
+msgstr "Google Analytics ID"
+
+#: core/models.py:167
+msgid "Google Analytics Site Tracking"
+msgstr "Google Analytics statistieken"
+
+#: core/models.py:168
+msgid "Google Analytics E-Commerce Tracking"
+msgstr "Google Analytics e-commerce statistieken"
+
+#: core/models.py:170
+#, fuzzy
+msgid "Invoice countries"
+msgstr "Factuur telefoonnummer"
+
+#: core/models.py:171
+#, fuzzy
+msgid "Shipping countries"
+msgstr "Verzendadres telefoonnummer"
+
+#: core/models.py:172
+#, fuzzy
+msgid "Default shipping country"
+msgstr "Standaard land"
+
+#: core/models.py:175 core/management/commands/lfs_migrate.py:60
+#, fuzzy
+msgid "Default Shop Locale"
+msgstr "Standaard waarden"
+
+#: core/models.py:176 core/management/commands/lfs_migrate.py:62
+msgid "Use international currency codes"
+msgstr ""
+
+#: core/models.py:179
+msgid "Checkout type"
+msgstr "Kassa soort"
+
+#: core/models.py:180
+msgid "Confirm TOC"
+msgstr ""
+
+#: core/models.py:224
+#, fuzzy
+msgid "Version"
+msgstr "Sessie"
+
+#: core/settings.py:10
+msgid "Tabs"
+msgstr "Tabs"
+
+#: core/settings.py:11
+msgid "Footer"
+msgstr "Footer"
+
+#: core/settings.py:17
+#, fuzzy
+msgid "Price includes tax"
+msgstr "Netto prijs"
+
+#: core/settings.py:18
+msgid "Price excludes tax"
+msgstr ""
+
+#: core/templatetags/lfs_tags.py:161
+#: portlet/templatetags/lfs_portlets_tags.py:119
+msgid "Information"
+msgstr "Informatie"
+
+#: core/templatetags/lfs_tags.py:277
+#, python-format
+msgid "%s tag needs group id as argument"
+msgstr "%s tag heeft group id als argument nodig"
+
+#: core/templatetags/lfs_tags.py:357 core/templatetags/lfs_tags.py:387
+#, python-format
+msgid "%s tag needs no argument"
+msgstr "%s tag heeft geen argument nodig"
+
+#: core/templatetags/lfs_tags.py:411
+#, python-format
+msgid "%s tag needs product as argument"
+msgstr "%s tag heeft product als argument nodig"
+
+#: core/widgets/file.py:14
+#, fuzzy
+msgid "Delete file"
+msgstr "Verwijder prijzen"
+
+#: core/widgets/image.py:18
+#, fuzzy
+msgid "Delete image"
+msgstr "Pagina verwijderen"
+
+#: criteria/settings.py:16 criteria/settings.py:24
+msgid "Equal to"
+msgstr "Gelijk aan"
+
+#: criteria/settings.py:17 templates/manage/criteria/number_operators.html:4
+msgid "Less than"
+msgstr "Minder dan"
+
+#: criteria/settings.py:18
+msgid "Less than or equal to"
+msgstr "Minder dan of gelijk aan"
+
+#: criteria/settings.py:19 templates/manage/criteria/number_operators.html:6
+msgid "Greater than"
+msgstr "Groter dan"
+
+#: criteria/settings.py:20
+msgid "Greater than or equal to"
+msgstr "Groter dan of gelijk aan"
+
+#: criteria/settings.py:25
+msgid "Contain"
+msgstr "Bevat"
+
+#: criteria/settings.py:29
+msgid "Is"
+msgstr "Is"
+
+#: criteria/settings.py:30
+msgid "Is not"
+msgstr "Is niet"
+
+#: criteria/settings.py:31
+#: templates/manage/criteria/selection_operators.html:5
+msgid "Is valid"
+msgstr "Is geldig"
+
+#: criteria/settings.py:32
+#: templates/manage/criteria/selection_operators.html:6
+msgid "Is not valid"
+msgstr "Is niet geldig"
+
+#: criteria/models/criteria.py:51 criteria/models/criteria.py:112
+#: criteria/models/criteria.py:185 criteria/models/criteria.py:318
+#: criteria/models/criteria.py:381 criteria/models/criteria.py:475
+#: criteria/models/criteria.py:608 criteria/models/criteria.py:671
+#: criteria/models/criteria.py:734
+msgid "Operator"
+msgstr "Operator"
+
+#: criteria/models/criteria.py:70
+msgid "Cart Price"
+msgstr "Winkelwagen Prijs"
+
+#: criteria/models/criteria.py:131
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:9
+#: templates/manage/criteria/country_criterion.html:9
+#: templates/manage/criteria/distance_criterion.html:9
+#: templates/manage/criteria/height_criterion.html:9
+#: templates/manage/criteria/length_criterion.html:9
+#: templates/manage/criteria/payment_method_criterion.html:9
+#: templates/manage/criteria/price_criterion.html:9
+#: templates/manage/criteria/shipping_method_criterion.html:9
+#: templates/manage/criteria/user_criterion.html:9
+#: templates/manage/criteria/weight_criterion.html:9
+#: templates/manage/criteria/width_criterion.html:9
+msgid "Combined length and girth"
+msgstr "Gecomineerde lengte en omtrek"
+
+#: criteria/models/criteria.py:186
+#: templates/manage/shop/default_values.html:81
+msgid "Countries"
+msgstr "Landen"
+
+#: criteria/models/criteria.py:208 customer/models.py:77
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:8
+#: templates/manage/criteria/country_criterion.html:8
+#: templates/manage/criteria/distance_criterion.html:8
+#: templates/manage/criteria/height_criterion.html:8
+#: templates/manage/criteria/length_criterion.html:8
+#: templates/manage/criteria/payment_method_criterion.html:8
+#: templates/manage/criteria/price_criterion.html:8
+#: templates/manage/criteria/shipping_method_criterion.html:8
+#: templates/manage/criteria/user_criterion.html:8
+#: templates/manage/criteria/weight_criterion.html:8
+#: templates/manage/criteria/width_criterion.html:8
+msgid "Country"
+msgstr "Land"
+
+#: criteria/models/criteria.py:382
+#: templates/manage/payment/payment_methods.html:3
+msgid "Payment methods"
+msgstr "Betalingswijzen"
+
+#: criteria/models/criteria.py:407 payment/models.py:122
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:13
+#: templates/manage/criteria/country_criterion.html:13
+#: templates/manage/criteria/distance_criterion.html:13
+#: templates/manage/criteria/height_criterion.html:13
+#: templates/manage/criteria/length_criterion.html:11
+#: templates/manage/criteria/payment_method_criterion.html:13
+#: templates/manage/criteria/price_criterion.html:13
+#: templates/manage/criteria/shipping_method_criterion.html:13
+#: templates/manage/criteria/user_criterion.html:13
+#: templates/manage/criteria/weight_criterion.html:13
+#: templates/manage/criteria/width_criterion.html:13
+#: templates/manage/order/order_inline.html:132
+msgid "Payment method"
+msgstr "Betalingswijze"
+
+#: criteria/models/criteria.py:476
+#: templates/manage/shipping/shipping_methods.html:4
+msgid "Shipping methods"
+msgstr "Verzendwijzes"
+
+#: criteria/models/criteria.py:501
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:15
+#: templates/manage/criteria/country_criterion.html:15
+#: templates/manage/criteria/distance_criterion.html:15
+#: templates/manage/criteria/height_criterion.html:15
+#: templates/manage/criteria/length_criterion.html:15
+#: templates/manage/criteria/payment_method_criterion.html:15
+#: templates/manage/criteria/price_criterion.html:15
+#: templates/manage/criteria/shipping_method_criterion.html:15
+#: templates/manage/criteria/user_criterion.html:15
+#: templates/manage/criteria/weight_criterion.html:15
+#: templates/manage/criteria/width_criterion.html:15
+#: templates/manage/order/order_inline.html:129
+msgid "Shipping method"
+msgstr "Verzendwijze"
+
+#: criteria/models/criteria.py:735 criteria/models/criteria.py:754
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:10
+#: templates/manage/criteria/country_criterion.html:10
+#: templates/manage/criteria/distance_criterion.html:10
+#: templates/manage/criteria/height_criterion.html:10
+#: templates/manage/criteria/length_criterion.html:10
+#: templates/manage/criteria/payment_method_criterion.html:10
+#: templates/manage/criteria/price_criterion.html:10
+#: templates/manage/criteria/shipping_method_criterion.html:10
+#: templates/manage/criteria/user_criterion.html:10
+#: templates/manage/criteria/weight_criterion.html:10
+#: templates/manage/criteria/width_criterion.html:10
+msgid "Distance"
+msgstr "Afstand"
+
+#: criteria/models/criteria_objects.py:16
+msgid "Criterion type"
+msgstr "Criteria type"
+
+#: customer/forms.py:35 customer/forms.py:41
+#: templates/manage/order/order_inline.html:90
+msgid "E-mail"
+msgstr "E-mail"
+
+#: customer/forms.py:43
+msgid "Password"
+msgstr "Paswoord"
+
+#: customer/forms.py:45
+msgid "Confirm password"
+msgstr "Bevestig paswoord"
+
+#: customer/forms.py:54
+msgid "The two passwords do not match."
+msgstr "De twee paswoorden komen niet overeen."
+
+#: customer/forms.py:64
+msgid "That email address is already in use."
+msgstr "Dat e-mail adres is al in gebruik."
+
+#: customer/models.py:26
+msgid "Selected shipping method"
+msgstr "Geselecteerde verzendwijze"
+
+#: customer/models.py:27
+msgid "Selected payment method"
+msgstr "Geselecteerde betalingswijze"
+
+#: customer/models.py:28
+msgid "Bank account"
+msgstr "Bankrekening"
+
+#: customer/models.py:29
+msgid "Credit card"
+msgstr "Credit card"
+
+#: customer/models.py:30
+msgid "Selected shipping address"
+msgstr "Geselecteerde afleveradres"
+
+#: customer/models.py:31
+msgid "Selected invoice address"
+msgstr "Geselecteerde factuuradres"
+
+#: customer/models.py:32
+msgid "Selected country"
+msgstr "Geselecteerd land"
+
+#: customer/models.py:68 customer/models.py:88 customer/models.py:102
+#: templates/manage/cart/cart_inline.html:21
+msgid "Customer"
+msgstr "Klant"
+
+#: customer/models.py:70 templates/manage/customer/customers_inline.html:95
+msgid "Firstname"
+msgstr "Voornaam"
+
+#: customer/models.py:71 templates/manage/customer/customers_inline.html:101
+msgid "Lastname"
+msgstr "Achternaam"
+
+#: customer/models.py:72
+msgid "Company name"
+msgstr "Bedrijfsnaam"
+
+#: customer/models.py:73
+msgid "Street"
+msgstr "Straat"
+
+#: customer/models.py:74
+msgid "Zip code"
+msgstr "Postcode"
+
+#: customer/models.py:75
+msgid "City"
+msgstr "Stad"
+
+#: customer/models.py:76 order/models.py:48
+#: templates/manage/customer/customer_inline.html:157
+#: templates/manage/order/order.html:30
+#: templates/manage/order/order_inline.html:15
+#: templates/manage/order/order_inline.html:98
+#: templates/manage/order/orders_inline.html:13
+#: templates/manage/order/orders_inline.html:125
+msgid "State"
+msgstr "Status"
+
+#: customer/models.py:78 templates/manage/order/order_inline.html:106
+msgid "Phone"
+msgstr "Telefoonnummer"
+
+#: customer/models.py:90 order/models.py:86
+msgid "Account number"
+msgstr "Rekeningnummer"
+
+#: customer/models.py:91
+msgid "Bank identification code"
+msgstr "Bank identificatie code"
+
+#: customer/models.py:92 order/models.py:88
+msgid "Bank name"
+msgstr "Bank naam"
+
+#: customer/models.py:105
+msgid "Owner"
+msgstr "Eigenaar"
+
+#: customer/models.py:106 templates/manage/voucher/vouchers_inline.html:67
+msgid "Number"
+msgstr "Nummer"
+
+#: customer/models.py:107
+msgid "Expiration date month"
+msgstr "Verloopdatum (maand)"
+
+#: customer/models.py:108
+msgid "Expiration date year"
+msgstr "Verloopdatum (jaar)"
+
+#: customer/views.py:139
+msgid "You have been logged out."
+msgstr "Je bent uitgelogd"
+
+#: discounts/settings.py:7 voucher/settings.py:7
+msgid "Absolute"
+msgstr "Absoluut"
+
+#: discounts/settings.py:8 voucher/settings.py:8
+msgid "Percentage"
+msgstr "Percentage"
+
+#: export/models.py:19
+msgid "Script"
+msgstr "Script"
+
+#: export/models.py:20 templates/manage/product/product.html:100
+#: templates/manage/product/variants.html:97
+msgid "Variants"
+msgstr "Varianten"
+
+#: export/models.py:70 templates/manage/product/product_filters_inline.html:15
+msgid "Category"
+msgstr "Categorie"
+
+#: export/models.py:71 templates/manage/manage_base.html:131
+msgid "Export"
+msgstr "Exporteer"
+
+#: export/settings.py:10
+msgid "---"
+msgstr "---"
+
+#: export/settings.py:12
+msgid "Cheapest"
+msgstr "Goedkoopste"
+
+#: export/settings.py:13 templates/manage/category/category_filter.html:5
+#: templates/manage/order/order.html:36
+#: templates/manage/order/order_inline.html:47
+#: templates/manage/order/orders_inline.html:99
+#: templates/manage/product/variants.html:132
+msgid "All"
+msgstr "Alles"
+
+#: mail/utils.py:16 mail/utils.py:43
+msgid "Your order has been received"
+msgstr "Je opdracht is ontvangen"
+
+#: mail/utils.py:67
+#, python-format
+msgid "Welcome to %s"
+msgstr "Welkom bij %s"
+
+#: mail/utils.py:99
+msgid "New review has been added"
+msgstr "Er is een nieuwe review toegevoegd"
+
+#: manage/views/actions.py:61
+msgid "Action has been saved."
+msgstr "De actie is opgeslagen"
+
+#: manage/views/actions.py:86
+msgid "Action has been added."
+msgstr "De actie is toegevoegd."
+
+#: manage/views/actions.py:107
+msgid "Action has been deleted."
+msgstr "De actie is verwijderd."
+
+#: manage/views/carts.py:198
+msgid "Cart filters has been set."
+msgstr "Winkelwagen filters zijn toegewezen."
+
+#: manage/views/carts.py:229
+msgid "Cart filters has been set"
+msgstr "Winkelwagen filters zijn toegewezen"
+
+#: manage/views/carts.py:254
+msgid "Cart filters has been reset"
+msgstr "Winkelwagen filters zijn gereset"
+
+#: manage/views/customer.py:227
+msgid "Customer filters have been set"
+msgstr "Klant filters zijn toegewezen"
+
+#: manage/views/customer.py:252
+msgid "Customer filters has been reset"
+msgstr "Klant filters zijn gereset"
+
+#: manage/views/delivery_times.py:58
+msgid "Delivery time has been saved."
+msgstr "Aflevertijd is opgeslagen"
+
+#: manage/views/delivery_times.py:82
+msgid "Delivery time has been added."
+msgstr "Aflevertijd is toegevoegd."
+
+#: manage/views/delivery_times.py:115
+msgid "Delivery time has been deleted."
+msgstr "Aflevertijd is verwijderd."
+
+#: manage/views/discounts.py:127
+msgid "Discount method has been added."
+msgstr "Kortingsmethode is toegevoegd."
+
+#: manage/views/discounts.py:151 manage/views/payment.py:223
+#: manage/views/payment.py:245 manage/views/shipping.py:222
+#: manage/views/shipping.py:244
+#, fuzzy
+msgid "Modifications have been changed."
+msgstr "Producten zijn toegewezen."
+
+#: manage/views/discounts.py:178
+msgid "Discount data has been saved."
+msgstr "Kortingsgegevens zijn opgeslagen"
+
+#: manage/views/discounts.py:196
+msgid "Discount has been deleted."
+msgstr "Korting is verwijderd."
+
+#: manage/views/export.py:323
+msgid "Export data has been saved."
+msgstr "Export gegevens zijn opgeslagen."
+
+#: manage/views/lfs_portlets.py:78
+msgid "Portlet has been updated."
+msgstr "Portlet is geupdated."
+
+#: manage/views/lfs_portlets.py:112
+msgid "Portlet has been added."
+msgstr "Portlet is toegevoegd."
+
+#: manage/views/lfs_portlets.py:148
+msgid "Portlet has been deleted."
+msgstr "Portlet is verwijderd."
+
+#: manage/views/lfs_portlets.py:175
+msgid "Portlet has been saved."
+msgstr "Portlet is opgeslagen."
+
+#: manage/views/manufacturer.py:242
+msgid "Manufacturer data has been saved."
+msgstr "Productent gegevens zijn opgeslagen."
+
+#: manage/views/orders.py:139 manage/views/orders.py:170
+msgid "Filters has been set"
+msgstr "Filters zijn ingesteld"
+
+#: manage/views/orders.py:195
+msgid "Filters has been reset"
+msgstr "Filters zijn gereset"
+
+#: manage/views/orders.py:320
+msgid "Order has been sent."
+msgstr "De order is verzonden."
+
+#: manage/views/orders.py:342
+msgid "State has been changed"
+msgstr "De status is gewijzigd"
+
+#: manage/views/page.py:68
+msgid "Page has been saved."
+msgstr "De pagina is opgeslagen."
+
+#: manage/views/page.py:93
+msgid "Page has been added."
+msgstr "De pagina "
+
+#: manage/views/page.py:114
+msgid "Page has been deleted."
+msgstr "De pagina is verwijderd."
+
+#: manage/views/payment.py:197
+msgid "Payment method has been added."
+msgstr "Betalingswijze is toegevoegd."
+
+#: manage/views/payment.py:271 manage/views/shipping.py:266
+msgid "Price has been added"
+msgstr "De prijs is toegevoegd"
+
+#: manage/views/payment.py:286 manage/views/shipping.py:286
+msgid "Prices have been deleted"
+msgstr "De prijzen zijn verwijderd"
+
+#: manage/views/payment.py:297 manage/views/shipping.py:298
+msgid "Prices have been updated"
+msgstr "De prijzen zijn geupdated"
+
+#: manage/views/payment.py:346
+msgid "Payment method has been saved."
+msgstr "De betalingswijzen zijn opgeslagen."
+
+#: manage/views/payment.py:371
+msgid "Payment method has been deleted."
+msgstr "De betalingsmethode is verwijderd"
+
+#: manage/views/properties.py:106
+msgid "Property type has been saved."
+msgstr "De eigenschap type is opgeslagen"
+
+#: manage/views/properties.py:147
+msgid "Property type has been changed."
+msgstr "De eigenschap type is gewijzigd."
+
+#: manage/views/properties.py:198
+#, fuzzy
+msgid "Validators have been saved."
+msgstr "Categorieen zijn opgeslagen."
+
+#: manage/views/properties.py:228
+#, fuzzy
+msgid "Step range has been saved."
+msgstr "De stap type is opgeslagen."
+
+#: manage/views/properties.py:247
+msgid "Step type has been saved."
+msgstr "De stap type is opgeslagen."
+
+#: manage/views/properties.py:264
+msgid "Step has been added."
+msgstr "De stap is toegevoegd."
+
+#: manage/views/properties.py:276
+msgid "Steps have been updated."
+msgstr "De stappen zijn gewijzigd."
+
+#: manage/views/properties.py:300
+#, fuzzy
+msgid "The step has been saved."
+msgstr "De stap type is opgeslagen."
+
+#: manage/views/properties.py:326 manage/views/product/variants.py:196
+msgid "Property has been added."
+msgstr "De eigenschap is toegevoegd."
+
+#: manage/views/properties.py:371 manage/views/product/variants.py:285
+msgid "Option has been added."
+msgstr "De optie is toegevoegd."
+
+#: manage/views/properties.py:373
+#, fuzzy
+msgid "Option could not be added."
+msgstr "De optie is toegevoegd."
+
+#: manage/views/properties.py:392
+msgid "Options have been update."
+msgstr "De opties zijn geupdated."
+
+#: manage/views/review.py:194
+msgid "Review filters have been set"
+msgstr "De review filters zijn ingesteld"
+
+#: manage/views/review.py:219
+msgid "Review filters have been reset"
+msgstr "De review filters zijn gereset"
+
+#: manage/views/review.py:242
+msgid "Review has been deleted."
+msgstr "De review is verwijderd."
+
+#: manage/views/review.py:261
+msgid "Review state has been set"
+msgstr "De review status is ingesteld."
+
+#: manage/views/shipping.py:197
+msgid "Shipping method has been added."
+msgstr "De verzendwijze is toegevoegd."
+
+#: manage/views/shipping.py:347
+msgid "Shipping method has been saved."
+msgstr "De verzendwijze is opgeslagen."
+
+#: manage/views/shipping.py:372
+msgid "Shipping method has been deleted."
+msgstr "De verzendwijze is verwijderd."
+
+#: manage/views/shop.py:56
+msgid "Shop data has been saved."
+msgstr "De winkel gegevens zijn opgeslagen."
+
+#: manage/views/shop.py:95
+msgid "Shop default values have been saved."
+msgstr "De standaard winkel waardes zijn opgeslagen."
+
+#: manage/views/shop.py:97 manage/views/categories/category.py:113
+#: manage/views/categories/seo.py:42 manage/views/categories/view.py:45
+#: manage/views/product/product.py:169 manage/views/product/product.py:370
+msgid "Please correct the indicated errors."
+msgstr "Pas de aangegeven fouten aan."
+
+#: manage/views/static_blocks.py:56
+msgid "Static block has been saved."
+msgstr "Tekstblok is opgeslagen."
+
+#: manage/views/static_blocks.py:86
+msgid "Files has been deleted."
+msgstr "De bestanden zijn verwijderd."
+
+#: manage/views/static_blocks.py:96
+msgid "Files has been updated."
+msgstr "De bestanden zijn geupdated."
+
+#: manage/views/static_blocks.py:142
+msgid "Files has been added."
+msgstr "De bestanden zijn toegevoegd."
+
+#: manage/views/static_blocks.py:178
+msgid "Static block has been added."
+msgstr "Tekstblok is toegevoegd."
+
+#: manage/views/static_blocks.py:216
+msgid "Static block has been deleted."
+msgstr "Tekstblok is verwijderd."
+
+#: manage/views/tax.py:49
+msgid "Tax has been saved."
+msgstr "BTW is opgeslagen."
+
+#: manage/views/tax.py:73
+msgid "Tax has been added."
+msgstr "BTW is toegevoegd."
+
+#: manage/views/tax.py:101
+msgid "Tax has been deleted."
+msgstr "BTW is verwijderd."
+
+#: manage/views/utils.py:30
+msgid "Topseller have been reindexed."
+msgstr "Topper is opnieuw geindexeerd."
+
+#: manage/views/utils.py:41
+msgid "Cache has been cleared."
+msgstr "De cache is geleegd."
+
+#: manage/views/utils.py:52
+msgid "Categoy levels have been created."
+msgstr "De categorie niveaus zijn aangemaakt."
+
+#: manage/views/utils.py:65
+msgid "Effective prices have been set."
+msgstr "De effectieve prijzen zijn ingesteld."
+
+#: manage/views/voucher.py:54 templates/manage/cart/cart_inline.html:106
+#: templates/manage/order/order_inline.html:228
+#: templates/manage/product/product_filters_inline.html:13
+msgid "Amount"
+msgstr "Aantal"
+
+#: manage/views/voucher.py:56 templates/manage/voucher/vouchers_inline.html:79
+msgid "Start date"
+msgstr "Start datum"
+
+#: manage/views/voucher.py:57 templates/manage/voucher/vouchers_inline.html:82
+msgid "End date"
+msgstr "Eind datum"
+
+#: manage/views/voucher.py:58
+msgid "Kind of"
+msgstr "Soort"
+
+#: manage/views/voucher.py:59 templates/manage/voucher/vouchers_inline.html:85
+msgid "Effective from"
+msgstr "Effectief vanaf"
+
+#: manage/views/voucher.py:61 templates/manage/voucher/vouchers_inline.html:94
+msgid "Limit"
+msgstr ""
+
+#: manage/views/voucher.py:223
+msgid "Vouchers have been created."
+msgstr "Vouchers zijn aangemaakt."
+
+#: manage/views/voucher.py:245
+msgid "Vouchers have been deleted."
+msgstr "Vouchers zijn verwijderd."
+
+#: manage/views/voucher.py:282
+msgid "Voucher data has been save."
+msgstr "De kortingscode is opgeslagen."
+
+#: manage/views/voucher.py:298
+msgid "Voucher group and assigned vouchers have been deleted."
+msgstr "De kortingscode groep en toegewezen kortingscodes zijn verwijderd."
+
+#: manage/views/voucher.py:316
+msgid "Voucher options has been save."
+msgstr "De kortingscode opties zijn opgeslagen."
+
+#: manage/views/categories/category.py:82
+#, python-format
+msgid ""
+"Do you really want to delete the category <b>'%(name)s'</b> and all its sub "
+"categories?"
+msgstr ""
+
+#: manage/views/categories/category.py:111
+msgid "Category data have been saved."
+msgstr "De categorie gegevens zijn opgeslagen."
+
+#: manage/views/categories/products.py:206
+msgid "Selected products have been added to category."
+msgstr "De geselecteerde producten zijn aan de categorie toegevoegd."
+
+#: manage/views/categories/products.py:235
+#, fuzzy
+msgid "Selected products have been removed from category."
+msgstr "De geselecteerde producten zijn aan de categorie toegevoegd."
+
+#: manage/views/categories/seo.py:40
+msgid "SEO data has been saved."
+msgstr "SEO gegevens zijn opgeslagen."
+
+#: manage/views/categories/view.py:43
+msgid "View data has been saved."
+msgstr "De weergave data zijn opgeslagen."
+
+#: manage/views/marketing/featured.py:145
+#, fuzzy
+msgid "Featured product has been added."
+msgstr "Gerelateerde producten zijn toegevoegd."
+
+#: manage/views/marketing/featured.py:174
+#, fuzzy
+msgid "Featured product has been removed."
+msgstr "Gerelateerde producten zijn verwijderd."
+
+#: manage/views/marketing/featured.py:196
+#, fuzzy
+msgid "Featured product has been updated."
+msgstr "Gerelateerde producten zijn aangepast."
+
+#: manage/views/marketing/rating_mails.py:35
+msgid "Please rate your products on "
+msgstr "Waardeer uw producten op"
+
+#: manage/views/marketing/topseller.py:145
+msgid "Topseller have been added."
+msgstr "Topproducten zijn toegevoegd."
+
+#: manage/views/marketing/topseller.py:174
+msgid "Topseller have been removed."
+msgstr "Topproducten zijn verwijderd."
+
+#: manage/views/marketing/topseller.py:195
+msgid "Topseller have been updated."
+msgstr "Tolproducten zijn aangepast."
+
+#: manage/views/product/accessories.py:162
+msgid "Accessories have been added."
+msgstr "Accessoires zijn toegevoegd."
+
+#: manage/views/product/accessories.py:194
+msgid "Accessories have been removed."
+msgstr "Accessoires zijn verwijderd."
+
+#: manage/views/product/accessories.py:224
+#: manage/views/product/accessories.py:244
+msgid "Accessories have been updated."
+msgstr "Accessoires zijn aangepast."
+
+#: manage/views/product/categories.py:92
+msgid "Categories have been saved."
+msgstr "Categorieen zijn opgeslagen."
+
+#: manage/views/product/images.py:39
+msgid "Images has been added."
+msgstr "Afbeeldingen zijn toegevoegd."
+
+#: manage/views/product/images.py:79
+msgid "Images has been deleted."
+msgstr "Afbeeldingen zijn verwijderd."
+
+#: manage/views/product/images.py:89
+msgid "Images has been updated."
+msgstr "Afbeeldingen zijn aangepast."
+
+#: manage/views/product/images.py:187
+msgid "Active images has been updated."
+msgstr "Actieve afbeeldingen zijn aagepast."
+
+#: manage/views/product/product.py:167
+msgid "Product stock data has been saved."
+msgstr "Product voorraad gegevens zijn opgeslagen."
+
+#: manage/views/product/product.py:330
+msgid "Sub type has been changed."
+msgstr "Sub type is aangepast."
+
+#: manage/views/product/product.py:368
+msgid "Productdata has been saved."
+msgstr "Product gegevens zijn opgeslagen."
+
+#: manage/views/product/product.py:424
+msgid "Product filters have been reset"
+msgstr "Product filters zijn gereset"
+
+#: manage/views/product/product.py:450
+#, fuzzy
+msgid "Products have been deleted."
+msgstr "De prijzen zijn verwijderd"
+
+#: manage/views/product/product.py:492
+msgid "Products have been saved"
+msgstr "Producten zijn opgeslagen"
+
+#: manage/views/product/product.py:568
+msgid "Product filters have been set"
+msgstr "Product filters zijn ingesteld"
+
+#: manage/views/product/related_products.py:161
+msgid "Related products have been added."
+msgstr "Gerelateerde producten zijn toegevoegd."
+
+#: manage/views/product/related_products.py:189
+msgid "Related products have been removed."
+msgstr "Gerelateerde producten zijn verwijderd."
+
+#: manage/views/product/related_products.py:210
+msgid "Related products have been updated."
+msgstr "Gerelateerde producten zijn aangepast."
+
+#: manage/views/product/seo.py:48
+msgid "Seo data has been saved."
+msgstr "SEO gegevens zijn opgeslagen/"
+
+#: manage/views/product/variants.py:218 manage/views/product/variants.py:307
+#, fuzzy
+msgid "Property has been deleted."
+msgstr "Eigenschap groep is verwijderd."
+
+#: manage/views/product/variants.py:366 manage/views/product/variants.py:368
+msgid "That slug is already in use. Please use another."
+msgstr ""
+
+#: manage/views/product/variants.py:382
+#, fuzzy
+msgid "Variants have been added."
+msgstr "Accessoires zijn toegevoegd."
+
+#: manage/views/product/variants.py:403
+#, fuzzy
+msgid "Variants have been deleted."
+msgstr "De prijzen zijn verwijderd"
+
+#: manage/views/product/variants.py:417
+#, fuzzy
+msgid "Variants have been saved."
+msgstr "De stappen zijn opgeslagen."
+
+#: manage/views/product/variants.py:513
+#, fuzzy
+msgid "Sup type has been saved."
+msgstr "De stap type is opgeslagen."
+
+#: manage/views/product/variants.py:534
+#, fuzzy
+msgid "Default variant has been saved."
+msgstr "Aflevertijd is opgeslagen"
+
+#: manage/views/property_groups/products.py:126
+msgid "Products have been assigned."
+msgstr "Producten zijn toegewezen."
+
+#: manage/views/property_groups/products.py:150
+msgid "Products have been removed."
+msgstr "Producten zijn verwijderd."
+
+#: manage/views/property_groups/property_groups.py:57
+msgid "Property group has been saved."
+msgstr "Eigenschap groep is opgeslagen."
+
+#: manage/views/property_groups/property_groups.py:102
+msgid "Property group has been added."
+msgstr "Eigenschap groep is toegevoegd."
+
+#: manage/views/property_groups/property_groups.py:123
+msgid "Property group has been deleted."
+msgstr "Eigenschap groep is verwijderd."
+
+#: manage/views/property_groups/property_groups.py:142
+msgid "Properties have been assigned."
+msgstr "Eigenschappen zijn toegewezen."
+
+#: manage/views/property_groups/property_groups.py:161
+msgid "Properties have been removed."
+msgstr "Eigenschappen zijn verwijderd."
+
+#: manage/views/property_groups/property_groups.py:168
+msgid "Properties have been updated."
+msgstr "EIgenschappen zijn aangepast."
+
+#: marketing/models.py:27
+msgid "sales"
+msgstr "verkopen"
+
+#: marketing/models.py:47 templates/manage/order/order.html:56
+msgid "Order"
+msgstr "Bestelling"
+
+#: order/models.py:46
+msgid "Created"
+msgstr "Aangemaakt"
+
+#: order/models.py:49
+msgid "State modified"
+msgstr "Status aangepast"
+
+#: order/models.py:54
+msgid "firstname"
+msgstr "voornaam"
+
+#: order/models.py:55
+msgid "lastname"
+msgstr "achternaam"
+
+#: order/models.py:56
+msgid "email"
+msgstr "e-mail"
+
+#: order/models.py:58
+msgid "Invoice firstname"
+msgstr "Factuur voornaam"
+
+#: order/models.py:59
+msgid "Invoice lastname"
+msgstr "Factuur achternaam"
+
+#: order/models.py:60
+#, fuzzy
+msgid "Invoice Line 1"
+msgstr "Factuur telefoonnummer"
+
+#: order/models.py:61
+#, fuzzy
+msgid "Invoice Line 2"
+msgstr "Factuur telefoonnummer"
+
+#: order/models.py:62
+#, fuzzy
+msgid "Invoice City"
+msgstr "Factuur stad"
+
+#: order/models.py:63
+#, fuzzy
+msgid "Invoice State"
+msgstr "Factuur status"
+
+#: order/models.py:64
+#, fuzzy
+msgid "Invoice Postal Code"
+msgstr "Factuur status"
+
+#: order/models.py:66
+msgid "Invoice phone"
+msgstr "Factuur telefoonnummer"
+
+#: order/models.py:68
+msgid "Shipping firstname"
+msgstr "Verzendadres voornaam"
+
+#: order/models.py:69
+msgid "Shipping lastname"
+msgstr "Verzendadres achternaam"
+
+#: order/models.py:70
+#, fuzzy
+msgid "Shipping Line 1"
+msgstr "Verzendadres telefoonnummer"
+
+#: order/models.py:71
+#, fuzzy
+msgid "Shipping Line 2"
+msgstr "Verzendadres telefoonnummer"
+
+#: order/models.py:72
+#, fuzzy
+msgid "Shipping City"
+msgstr "Verzendadres stad"
+
+#: order/models.py:73
+#, fuzzy
+msgid "Shipping State"
+msgstr "Verzendadres status"
+
+#: order/models.py:74
+#, fuzzy
+msgid "Shipping Postal Code"
+msgstr "Verzendadres status"
+
+#: order/models.py:76
+msgid "Shipping phone"
+msgstr "Verzendadres telefoonnummer"
+
+#: order/models.py:78 templates/manage/shipping/manage_shipping.html:28
+msgid "Shipping Method"
+msgstr "Verzendwijze"
+
+#: order/models.py:79
+msgid "Shipping Price"
+msgstr "Verzendkosten"
+
+#: order/models.py:80
+msgid "Shipping Tax"
+msgstr "Verzendkosten BTW"
+
+#: order/models.py:82 templates/manage/payment/manage_payment.html:28
+msgid "Payment Method"
+msgstr "Betaalwijze"
+
+#: order/models.py:83
+msgid "Payment Price"
+msgstr "Betaalwijze kosten"
+
+#: order/models.py:84
+msgid "Payment Tax"
+msgstr "Betaalwijze BTW"
+
+#: order/models.py:87
+msgid "Bank identication code"
+msgstr "Bank identificatie code"
+
+#: order/models.py:91
+msgid "Voucher number"
+msgstr "Kortingscode"
+
+#: order/models.py:92
+msgid "Voucher value"
+msgstr "Waarde kortingscode"
+
+#: order/models.py:93
+msgid "Voucher tax"
+msgstr "Kortingscode BTW"
+
+#: order/models.py:95 templates/manage/customer/customer_inline.html:163
+#: templates/manage/order/orders_inline.html:131
+msgid "Message"
+msgstr "Bericht"
+
+#: order/models.py:96
+msgid "pay_link"
+msgstr "betaal_link"
+
+#: order/models.py:99
+msgid "Delivery Date"
+msgstr "Afleverdatum"
+
+#: order/models.py:128
+msgid "Price net"
+msgstr "Netto prijs"
+
+#: order/models.py:129
+msgid "Price gross"
+msgstr "Bruto prijs"
+
+#: order/models.py:137
+msgid "Product quantity"
+msgstr "Product aantal"
+
+#: order/models.py:138
+msgid "Product SKU"
+msgstr "Product SKU"
+
+#: order/models.py:139
+msgid "Product name"
+msgstr "Product naam"
+
+#: order/models.py:140
+msgid "Product price net"
+msgstr "Product netto prijs"
+
+#: order/models.py:141
+msgid "Product price gross"
+msgstr "Product bruto prijs"
+
+#: order/models.py:142
+msgid "Product tax"
+msgstr "Product BTW"
+
+#: order/models.py:203
+msgid "Order item"
+msgstr "Bestel item"
+
+#: order/settings.py:13
+msgid "Submitted"
+msgstr "Bevestigd"
+
+#: order/settings.py:14
+msgid "Paid"
+msgstr "Betaald"
+
+#: order/settings.py:15
+msgid "Sent"
+msgstr "Verzonden"
+
+#: order/settings.py:16
+msgid "Closed"
+msgstr "Gesloten"
+
+#: order/settings.py:17
+msgid "Canceled"
+msgstr "Geannulleerd"
+
+#: order/settings.py:18
+msgid "Payment Failed"
+msgstr "Betaling mislukt"
+
+#: order/settings.py:19
+msgid "Payment Flagged"
+msgstr "Betaling geflagged"
+
+#: page/models.py:20 portlet/models/text.py:15
+msgid "Text"
+msgstr "Tekst"
+
+#: page/models.py:21
+msgid "File"
+msgstr "Bestand"
+
+#: payment/models.py:76 payment/models.py:124 shipping/models.py:56
+#: shipping/models.py:110
+#: templates/manage/payment/payment_method_prices.html:24
+#: templates/manage/shipping/shipping_method_prices.html:24
+msgid "Priority"
+msgstr "Prioriteit"
+
+#: payment/models.py:79
+msgid "note"
+msgstr "notitie"
+
+#: payment/settings.py:16
+msgid "Mastercard"
+msgstr "Mastercard"
+
+#: payment/settings.py:17
+msgid "Visacard"
+msgstr "Visacard"
+
+#: payment/settings.py:25
+msgid "Plain"
+msgstr "Normaal"
+
+#: payment/settings.py:26
+msgid "Bank"
+msgstr "Bank"
+
+#: payment/settings.py:27
+msgid "Credit Card"
+msgstr "Creditcard"
+
+#: portlet/models/filter.py:18
+msgid "Show product filters"
+msgstr "Geef productfilters weer"
+
+#: portlet/models/filter.py:19
+msgid "Show price filters"
+msgstr "Geef prijsfilters weer"
+
+#: portlet/templatetags/lfs_portlets_tags.py:134
+msgid "Recent Products"
+msgstr "Recente producten"
+
+#: portlet/templatetags/lfs_portlets_tags.py:149
+#: templates/manage/product/product.html:104
+msgid "Related Products"
+msgstr "Gerelateerde producten"
+
+#: portlet/templatetags/lfs_portlets_tags.py:164
+#: templates/manage/manage_base.html:125
+#: templates/manage/marketing/marketing.html:15
+#: templates/manage/marketing/topseller_inline.html:90
+msgid "Topseller"
+msgstr "Topproducten"
+
+#: shipping/models.py:59
+msgid "Note"
+msgstr "Notitie"
+
+#: shipping/models.py:108
+msgid "shipping_method"
+msgstr "verzend_methode"
+
+#: tax/models.py:17
+msgid "Rate"
+msgstr "Waardering"
+
+#: templates/manage/dashboard.html:3
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: templates/manage/manage_base.html:67
+msgid "Logout"
+msgstr "Uitloggen"
+
+#: templates/manage/manage_base.html:69
+msgid "Login"
+msgstr "Inloggen"
+
+#: templates/manage/manage_base.html:80 templates/manage/shop/shop.html:9
+msgid "Shop"
+msgstr "Winkel"
+
+#: templates/manage/manage_base.html:82 templates/manage/shop/action.html:7
+msgid "Actions"
+msgstr "Acties"
+
+#: templates/manage/manage_base.html:83
+msgid "Delivery Times"
+msgstr "Leveringstijden"
+
+#: templates/manage/manage_base.html:84
+#: templates/manage/discounts/discount.html:7
+msgid "Discounts"
+msgstr "Kortingen"
+
+#: templates/manage/manage_base.html:85
+#: templates/manage/manufacturer/manufacturer.html:8
+#, fuzzy
+msgid "Manufacturers"
+msgstr "Producent"
+
+#: templates/manage/manage_base.html:86
+msgid "Payment Methods"
+msgstr "Betalingswijzen"
+
+#: templates/manage/manage_base.html:87
+msgid "Preferences"
+msgstr "Voorkeuren"
+
+#: templates/manage/manage_base.html:88
+msgid "Shipping Methods"
+msgstr "Verzendwijzen"
+
+#: templates/manage/manage_base.html:89 templates/manage/tax/tax.html:6
+msgid "Taxes"
+msgstr "BTW"
+
+#: templates/manage/manage_base.html:93
+msgid "Catalog"
+msgstr "Catalogus"
+
+#: templates/manage/manage_base.html:97
+#, fuzzy
+msgid "Products Overview"
+msgstr "Product overzicht"
+
+#: templates/manage/manage_base.html:103
+#: templates/manage/product/properties.html:2
+#: templates/manage/product/variants.html:4
+#: templates/manage/properties/add_property_group.html:12
+msgid "Property Groups"
+msgstr "Eigenschap groepen"
+
+#: templates/manage/manage_base.html:109
+#: templates/manage/cart/carts_inline.html:9
+#: templates/manage/customer/customers_inline.html:10
+#: templates/manage/order/orders_inline.html:8
+#: templates/manage/page/page.html:7
+#: templates/manage/reviews/reviews_inline.html:9
+msgid "Pages"
+msgstr "Paginas"
+
+#: templates/manage/manage_base.html:110
+#: templates/manage/static_block/static_block.html:6
+msgid "Static blocks"
+msgstr "Tekstblokken"
+
+#: templates/manage/manage_base.html:113 templates/manage/manage_base.html:116
+#: templates/manage/customer/customers.html:12
+#: templates/manage/customer/customers_inline.html:4
+msgid "Customers"
+msgstr "Klanten"
+
+#: templates/manage/manage_base.html:115 templates/manage/cart/carts.html:12
+#: templates/manage/cart/carts.html:15
+msgid "Carts"
+msgstr "Winkelwagens"
+
+#: templates/manage/manage_base.html:117
+#: templates/manage/customer/customer_inline.html:146
+#: templates/manage/customer/customers_inline.html:111
+#: templates/manage/order/orders.html:11
+#: templates/manage/order/orders_inline.html:2
+msgid "Orders"
+msgstr "Bestellingen"
+
+#: templates/manage/manage_base.html:118
+#: templates/manage/reviews/reviews.html:10
+#: templates/manage/reviews/reviews.html:13
+msgid "Reviews"
+msgstr "Waarderingen"
+
+#: templates/manage/manage_base.html:121
+msgid "Marketing"
+msgstr "Marketing"
+
+#: templates/manage/manage_base.html:123
+msgid "Featured"
+msgstr ""
+
+#: templates/manage/manage_base.html:124
+#: templates/manage/marketing/rating_mails.html:13
+msgid "Rating Mails"
+msgstr "Rating mails"
+
+#: templates/manage/manage_base.html:126
+#: templates/manage/voucher/voucher_group.html:26
+#: templates/manage/voucher/vouchers.html:3
+msgid "Vouchers"
+msgstr "Kortingscodes"
+
+#: templates/manage/manage_base.html:129
+msgid "Utils"
+msgstr "Tools"
+
+#: templates/manage/manage_base.html:132
+msgid "Miscellaneous"
+msgstr "Overig"
+
+#: templates/manage/manage_base.html:158
+msgid "Powered by"
+msgstr "Powered by"
+
+#: templates/manage/manage_base.html:160
+msgid "is a product of"
+msgstr "is een product van"
+
+#: templates/manage/manage_base.html:161
+msgid "by"
+msgstr "door"
+
+#: templates/manage/manage_base.html:161
+msgid "All rights reserved"
+msgstr "Alle rechten voorbehouden"
+
+#: templates/manage/manage_base.html:163
+msgid "Distributed under the"
+msgstr "Gedistribueerd onder de"
+
+#: templates/manage/manage_base.html:163
+msgid "BSD-License"
+msgstr "BSD licentie"
+
+#: templates/manage/manage_base.html:169
+msgid "Please Confirm"
+msgstr ""
+
+#: templates/manage/manage_base.html:170
+msgid "Do you really want to delete this object?"
+msgstr ""
+
+#: templates/manage/utils.html:11 templates/manage/utils.html.py:16
+msgid "Utilities"
+msgstr "Tools"
+
+#: templates/manage/utils.html:19
+msgid "Clear Cache"
+msgstr "Cache legen"
+
+#: templates/manage/utils.html:22
+msgid "Set category levels"
+msgstr "Category niveaus instellen"
+
+#: templates/manage/utils.html:25
+msgid "Reindex topseller"
+msgstr "Herindexeer topproducten"
+
+#: templates/manage/cart/cart.html:4
+#, fuzzy
+msgid "Manage Cart"
+msgstr "Beheer"
+
+#: templates/manage/cart/cart.html:19
+#: templates/manage/customer/customer_inline.html:35
+#: templates/manage/order/order.html:17
+#: templates/manage/product/products_inline.html:6
+#: templates/manage/reviews/review_inline.html:42
+msgid "Overview"
+msgstr "Overzicht"
+
+#: templates/manage/cart/cart_inline.html:7
+#: templates/manage/category/data.html:12
+#: templates/manage/customer/customer_inline.html:41
+#: templates/manage/order/order_inline.html:69
+#: templates/manage/product/data.html:10
+#: templates/manage/reviews/review_inline.html:69
+#: templates/manage/shop/shop.html:21
+msgid "General"
+msgstr "Algemeen"
+
+#: templates/manage/cart/cart_inline.html:13
+#: templates/manage/cart/cart_inline.html:94
+#: templates/manage/cart/carts_inline.html:102
+#: templates/manage/customer/customer_inline.html:47
+#: templates/manage/customer/customer_inline.html:151
+#: templates/manage/customer/customer_inline.html:199
+#: templates/manage/customer/customers_inline.html:89
+#: templates/manage/marketing/rating_mails.html:45
+#: templates/manage/reviews/review_inline.html:75
+#: templates/manage/reviews/reviews_inline.html:95
+msgid "ID"
+msgstr "ID"
+
+#: templates/manage/cart/cart_inline.html:61
+#: templates/manage/cart/cart_inline.html:69
+#: templates/manage/cart/cart_inline.html:119
+#: templates/manage/cart/carts_inline.html:131
+#: templates/manage/cart/carts_inline.html:134
+#: templates/manage/cart/selectable_carts_inline.html:59
+#: templates/manage/customer/customer_inline.html:173
+#: templates/manage/customer/customer_inline.html:214
+#: templates/manage/marketing/rating_mails.html:79
+#: templates/manage/marketing/rating_mails.html:82
+#: templates/manage/order/order_inline.html:85
+#: templates/manage/order/order_inline.html:101
+#: templates/manage/order/orders_inline.html:139
+#: templates/manage/order/selectable_orders_inline.html:60
+msgid "DATETIME_FORMAT"
+msgstr ""
+
+#: templates/manage/cart/cart_inline.html:74
+#: templates/manage/cart/carts_inline.html:117
+msgid "Items"
+msgstr "Artikelen"
+
+#: templates/manage/cart/cart_inline.html:82
+#: templates/manage/cart/cart_inline.html:109
+#: templates/manage/cart/carts_inline.html:114
+#: templates/manage/order/order_inline.html:112
+#: templates/manage/order/order_inline.html:240
+msgid "Total"
+msgstr "Totaal"
+
+#: templates/manage/cart/cart_inline.html:137
+msgid "This cart has no items"
+msgstr "De winkelwagen bevat geen artikelen"
+
+#: templates/manage/cart/carts.html:5
+#, fuzzy
+msgid "Manage Carts"
+msgstr "Beheer"
+
+#: templates/manage/cart/carts_inline.html:11
+#: templates/manage/order/order_inline.html:12
+#: templates/manage/order/orders_inline.html:10
+msgid "Start"
+msgstr "Begin"
+
+#: templates/manage/cart/carts_inline.html:12
+#: templates/manage/order/order_inline.html:13
+#: templates/manage/order/orders_inline.html:11
+msgid "End"
+msgstr "Einde"
+
+#: templates/manage/cart/carts_inline.html:21
+#: templates/manage/cart/carts_inline.html:22
+#: templates/manage/cart/carts_inline.html:32
+#: templates/manage/cart/carts_inline.html:33
+#: templates/manage/cart/selectable_carts_inline.html:8
+#: templates/manage/cart/selectable_carts_inline.html:9
+#: templates/manage/cart/selectable_carts_inline.html:20
+#: templates/manage/cart/selectable_carts_inline.html:21
+#: templates/manage/category/products_inline.html:11
+#: templates/manage/category/products_inline.html:15
+#: templates/manage/category/selected_products.html:7
+#: templates/manage/category/selected_products.html:11
+#: templates/manage/customer/customers_inline.html:20
+#: templates/manage/customer/customers_inline.html:21
+#: templates/manage/customer/customers_inline.html:31
+#: templates/manage/customer/customers_inline.html:32
+#: templates/manage/customer/selectable_customers_inline.html:8
+#: templates/manage/customer/selectable_customers_inline.html:9
+#: templates/manage/customer/selectable_customers_inline.html:20
+#: templates/manage/customer/selectable_customers_inline.html:21
+#: templates/manage/marketing/featured_inline.html:6
+#: templates/manage/marketing/featured_inline.html:10
+#: templates/manage/marketing/topseller_inline.html:6
+#: templates/manage/marketing/topseller_inline.html:10
+#: templates/manage/order/orders_inline.html:22
+#: templates/manage/order/orders_inline.html:23
+#: templates/manage/order/orders_inline.html:33
+#: templates/manage/order/orders_inline.html:34
+#: templates/manage/order/selectable_orders_inline.html:9
+#: templates/manage/order/selectable_orders_inline.html:10
+#: templates/manage/order/selectable_orders_inline.html:21
+#: templates/manage/order/selectable_orders_inline.html:22
+#: templates/manage/product/accessories_inline.html:7
+#: templates/manage/product/accessories_inline.html:11
+#: templates/manage/product/pages_inline.html:7
+#: templates/manage/product/pages_inline.html:8
+#: templates/manage/product/pages_inline.html:19
+#: templates/manage/product/pages_inline.html:20
+#: templates/manage/product/related_products_inline.html:7
+#: templates/manage/product/related_products_inline.html:11
+#: templates/manage/properties/pg_products_inline.html:6
+#: templates/manage/properties/pg_products_inline.html:10
+#: templates/manage/reviews/reviews_inline.html:20
+#: templates/manage/reviews/reviews_inline.html:21
+#: templates/manage/reviews/reviews_inline.html:31
+#: templates/manage/reviews/reviews_inline.html:32
+#: templates/manage/reviews/selectable_reviews_inline.html:8
+#: templates/manage/reviews/selectable_reviews_inline.html:9
+#: templates/manage/reviews/selectable_reviews_inline.html:20
+#: templates/manage/reviews/selectable_reviews_inline.html:21
+#: templates/manage/voucher/vouchers_inline.html:9
+#: templates/manage/voucher/vouchers_inline.html:10
+#: templates/manage/voucher/vouchers_inline.html:21
+#: templates/manage/voucher/vouchers_inline.html:22
+msgid "First"
+msgstr "Eerste"
+
+#: templates/manage/cart/carts_inline.html:27
+#: templates/manage/cart/carts_inline.html:28
+#: templates/manage/cart/carts_inline.html:35
+#: templates/manage/cart/carts_inline.html:36
+#: templates/manage/cart/selectable_carts_inline.html:14
+#: templates/manage/cart/selectable_carts_inline.html:15
+#: templates/manage/cart/selectable_carts_inline.html:25
+#: templates/manage/cart/selectable_carts_inline.html:26
+#: templates/manage/category/products_inline.html:13
+#: templates/manage/category/products_inline.html:16
+#: templates/manage/category/selected_products.html:9
+#: templates/manage/category/selected_products.html:12
+#: templates/manage/customer/customers_inline.html:26
+#: templates/manage/customer/customers_inline.html:27
+#: templates/manage/customer/customers_inline.html:34
+#: templates/manage/customer/customers_inline.html:35
+#: templates/manage/customer/selectable_customers_inline.html:14
+#: templates/manage/customer/selectable_customers_inline.html:15
+#: templates/manage/customer/selectable_customers_inline.html:25
+#: templates/manage/customer/selectable_customers_inline.html:26
+#: templates/manage/marketing/featured_inline.html:8
+#: templates/manage/marketing/featured_inline.html:11
+#: templates/manage/marketing/topseller_inline.html:8
+#: templates/manage/marketing/topseller_inline.html:11
+#: templates/manage/order/orders_inline.html:28
+#: templates/manage/order/orders_inline.html:29
+#: templates/manage/order/orders_inline.html:36
+#: templates/manage/order/orders_inline.html:37
+#: templates/manage/order/selectable_orders_inline.html:15
+#: templates/manage/order/selectable_orders_inline.html:16
+#: templates/manage/order/selectable_orders_inline.html:26
+#: templates/manage/order/selectable_orders_inline.html:27
+#: templates/manage/product/accessories_inline.html:9
+#: templates/manage/product/accessories_inline.html:12
+#: templates/manage/product/pages_inline.html:13
+#: templates/manage/product/pages_inline.html:14
+#: templates/manage/product/pages_inline.html:24
+#: templates/manage/product/pages_inline.html:25
+#: templates/manage/product/related_products_inline.html:9
+#: templates/manage/product/related_products_inline.html:12
+#: templates/manage/properties/pg_products_inline.html:8
+#: templates/manage/properties/pg_products_inline.html:11
+#: templates/manage/reviews/reviews_inline.html:26
+#: templates/manage/reviews/reviews_inline.html:27
+#: templates/manage/reviews/reviews_inline.html:34
+#: templates/manage/reviews/reviews_inline.html:35
+#: templates/manage/reviews/selectable_reviews_inline.html:14
+#: templates/manage/reviews/selectable_reviews_inline.html:15
+#: templates/manage/reviews/selectable_reviews_inline.html:25
+#: templates/manage/reviews/selectable_reviews_inline.html:26
+#: templates/manage/voucher/vouchers_inline.html:15
+#: templates/manage/voucher/vouchers_inline.html:16
+#: templates/manage/voucher/vouchers_inline.html:26
+#: templates/manage/voucher/vouchers_inline.html:27
+msgid "Previous"
+msgstr "Laatste"
+
+#: templates/manage/cart/carts_inline.html:39
+#: templates/manage/cart/selectable_carts_inline.html:30
+#: templates/manage/category/products_inline.html:20
+#: templates/manage/category/selected_products.html:16
+#: templates/manage/customer/customers_inline.html:38
+#: templates/manage/customer/selectable_customers_inline.html:30
+#: templates/manage/marketing/featured_inline.html:15
+#: templates/manage/marketing/topseller_inline.html:15
+#: templates/manage/order/orders_inline.html:40
+#: templates/manage/order/selectable_orders_inline.html:31
+#: templates/manage/product/accessories_inline.html:16
+#: templates/manage/product/pages_inline.html:29
+#: templates/manage/product/related_products_inline.html:16
+#: templates/manage/properties/pg_products_inline.html:15
+#: templates/manage/reviews/reviews_inline.html:38
+#: templates/manage/reviews/selectable_reviews_inline.html:30
+#: templates/manage/voucher/vouchers_inline.html:31
+msgid "of"
+msgstr "van"
+
+#: templates/manage/cart/carts_inline.html:45
+#: templates/manage/cart/carts_inline.html:46
+#: templates/manage/cart/carts_inline.html:58
+#: templates/manage/cart/carts_inline.html:59
+#: templates/manage/cart/selectable_carts_inline.html:36
+#: templates/manage/cart/selectable_carts_inline.html:37
+#: templates/manage/cart/selectable_carts_inline.html:47
+#: templates/manage/cart/selectable_carts_inline.html:48
+#: templates/manage/category/products_inline.html:25
+#: templates/manage/category/products_inline.html:30
+#: templates/manage/category/selected_products.html:21
+#: templates/manage/category/selected_products.html:26
+#: templates/manage/customer/customers_inline.html:44
+#: templates/manage/customer/customers_inline.html:45
+#: templates/manage/customer/customers_inline.html:57
+#: templates/manage/customer/customers_inline.html:58
+#: templates/manage/customer/selectable_customers_inline.html:36
+#: templates/manage/customer/selectable_customers_inline.html:37
+#: templates/manage/customer/selectable_customers_inline.html:47
+#: templates/manage/customer/selectable_customers_inline.html:48
+#: templates/manage/marketing/featured_inline.html:20
+#: templates/manage/marketing/featured_inline.html:24
+#: templates/manage/marketing/topseller_inline.html:20
+#: templates/manage/marketing/topseller_inline.html:24
+#: templates/manage/order/orders_inline.html:46
+#: templates/manage/order/orders_inline.html:47
+#: templates/manage/order/orders_inline.html:59
+#: templates/manage/order/orders_inline.html:60
+#: templates/manage/order/selectable_orders_inline.html:37
+#: templates/manage/order/selectable_orders_inline.html:38
+#: templates/manage/order/selectable_orders_inline.html:48
+#: templates/manage/order/selectable_orders_inline.html:49
+#: templates/manage/product/accessories_inline.html:21
+#: templates/manage/product/accessories_inline.html:26
+#: templates/manage/product/pages_inline.html:35
+#: templates/manage/product/pages_inline.html:36
+#: templates/manage/product/pages_inline.html:46
+#: templates/manage/product/pages_inline.html:47
+#: templates/manage/product/related_products_inline.html:21
+#: templates/manage/product/related_products_inline.html:26
+#: templates/manage/properties/pg_products_inline.html:20
+#: templates/manage/properties/pg_products_inline.html:24
+#: templates/manage/reviews/reviews_inline.html:44
+#: templates/manage/reviews/reviews_inline.html:45
+#: templates/manage/reviews/reviews_inline.html:57
+#: templates/manage/reviews/reviews_inline.html:58
+#: templates/manage/reviews/selectable_reviews_inline.html:36
+#: templates/manage/reviews/selectable_reviews_inline.html:37
+#: templates/manage/reviews/selectable_reviews_inline.html:47
+#: templates/manage/reviews/selectable_reviews_inline.html:48
+#: templates/manage/voucher/vouchers_inline.html:37
+#: templates/manage/voucher/vouchers_inline.html:38
+#: templates/manage/voucher/vouchers_inline.html:48
+#: templates/manage/voucher/vouchers_inline.html:49
+msgid "Next"
+msgstr "Volgende"
+
+#: templates/manage/cart/carts_inline.html:51
+#: templates/manage/cart/carts_inline.html:52
+#: templates/manage/cart/carts_inline.html:63
+#: templates/manage/cart/carts_inline.html:64
+#: templates/manage/cart/selectable_carts_inline.html:42
+#: templates/manage/cart/selectable_carts_inline.html:43
+#: templates/manage/cart/selectable_carts_inline.html:50
+#: templates/manage/cart/selectable_carts_inline.html:51
+#: templates/manage/category/products_inline.html:27
+#: templates/manage/category/products_inline.html:31
+#: templates/manage/category/selected_products.html:23
+#: templates/manage/category/selected_products.html:27
+#: templates/manage/customer/customers_inline.html:50
+#: templates/manage/customer/customers_inline.html:51
+#: templates/manage/customer/customers_inline.html:62
+#: templates/manage/customer/customers_inline.html:63
+#: templates/manage/customer/selectable_customers_inline.html:42
+#: templates/manage/customer/selectable_customers_inline.html:43
+#: templates/manage/customer/selectable_customers_inline.html:50
+#: templates/manage/customer/selectable_customers_inline.html:51
+#: templates/manage/marketing/featured_inline.html:22
+#: templates/manage/marketing/featured_inline.html:25
+#: templates/manage/marketing/topseller_inline.html:22
+#: templates/manage/marketing/topseller_inline.html:25
+#: templates/manage/order/orders_inline.html:52
+#: templates/manage/order/orders_inline.html:53
+#: templates/manage/order/orders_inline.html:64
+#: templates/manage/order/orders_inline.html:65
+#: templates/manage/order/selectable_orders_inline.html:43
+#: templates/manage/order/selectable_orders_inline.html:44
+#: templates/manage/order/selectable_orders_inline.html:51
+#: templates/manage/order/selectable_orders_inline.html:52
+#: templates/manage/product/accessories_inline.html:23
+#: templates/manage/product/accessories_inline.html:27
+#: templates/manage/product/pages_inline.html:41
+#: templates/manage/product/pages_inline.html:42
+#: templates/manage/product/pages_inline.html:49
+#: templates/manage/product/pages_inline.html:50
+#: templates/manage/product/related_products_inline.html:23
+#: templates/manage/product/related_products_inline.html:27
+#: templates/manage/properties/pg_products_inline.html:22
+#: templates/manage/properties/pg_products_inline.html:25
+#: templates/manage/reviews/reviews_inline.html:50
+#: templates/manage/reviews/reviews_inline.html:51
+#: templates/manage/reviews/reviews_inline.html:62
+#: templates/manage/reviews/reviews_inline.html:63
+#: templates/manage/reviews/selectable_reviews_inline.html:42
+#: templates/manage/reviews/selectable_reviews_inline.html:43
+#: templates/manage/reviews/selectable_reviews_inline.html:50
+#: templates/manage/reviews/selectable_reviews_inline.html:51
+#: templates/manage/voucher/vouchers_inline.html:43
+#: templates/manage/voucher/vouchers_inline.html:44
+#: templates/manage/voucher/vouchers_inline.html:51
+#: templates/manage/voucher/vouchers_inline.html:52
+msgid "Last"
+msgstr "Laatste"
+
+#: templates/manage/category/add_category.html:10
+#: templates/manage/category/add_category.html:13
+#: templates/manage/category/add_category.html:24
+msgid "Add category"
+msgstr "Category toevoegen"
+
+#: templates/manage/category/add_category.html:29
+#: templates/manage/delivery_times/add.html:27
+#: templates/manage/discounts/add_discount.html:30
+#: templates/manage/export/add_export.html:30
+#: templates/manage/manufacturer/add_manufacturer.html:27
+#: templates/manage/page/add_page.html:28
+#: templates/manage/payment/add_payment_method.html:27
+#: templates/manage/product/add_product.html:35
+#: templates/manage/properties/add_property.html:24
+#: templates/manage/properties/add_property_group.html:29
+#: templates/manage/shipping/add_shipping_method.html:28
+#: templates/manage/shop/add_action.html:28
+#: templates/manage/static_block/add_static_block.html:26
+#: templates/manage/tax/add_tax.html:28
+#: templates/manage/voucher/add_voucher_group.html:29
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: templates/manage/category/category_filter.html:6
+msgid "None"
+msgstr "Geen"
+
+#: templates/manage/category/data.html:3
+#: templates/manage/delivery_times/base.html:39
+#: templates/manage/discounts/data.html:2
+#: templates/manage/export/export.html:33
+#: templates/manage/export/export_data_inline.html:2
+#: templates/manage/manufacturer/manufacturer_data_inline.html:2
+#: templates/manage/page/page.html:45
+#: templates/manage/payment/payment_method_data.html:3
+#: templates/manage/product/data.html:3
+#: templates/manage/shipping/shipping_method_data.html:2
+#: templates/manage/shop/action.html:44
+#: templates/manage/shop/add_action.html:14 templates/manage/shop/shop.html:15
+#: templates/manage/static_block/static_block.html:39
+#: templates/manage/tax/add_tax.html:13 templates/manage/tax/tax.html:37
+#: templates/manage/voucher/voucher_group.html:25
+msgid "Data"
+msgstr "Gegevens"
+
+#: templates/manage/category/data.html:53 templates/manage/shop/shop.html:156
+#, fuzzy
+msgid "Content"
+msgstr "Inhoud id"
+
+#: templates/manage/category/data.html:102 templates/manage/page/page.html:54
+#: templates/manage/product/data.html:359
+#: templates/manage/static_block/static_block.html:48
+msgid "Save data"
+msgstr "Bewaar gegevens"
+
+#: templates/manage/category/manage_category.html:4
+#, fuzzy
+msgid "Manage Category"
+msgstr "Categorie"
+
+#: templates/manage/category/manage_category.html:14
+#, fuzzy
+msgid "Add Top Category"
+msgstr "Top categorie toevoegen"
+
+#: templates/manage/category/manage_category.html:19
+#, fuzzy
+msgid "Add Category"
+msgstr "Category toevoegen"
+
+#: templates/manage/category/manage_category.html:24
+#, fuzzy
+msgid "Delete Category"
+msgstr "Verwijder categorie"
+
+#: templates/manage/category/manage_category.html:27
+#, fuzzy
+msgid "View Category"
+msgstr "Categorie"
+
+#: templates/manage/category/manage_category.html:31
+#, fuzzy
+msgid "Goto Category"
+msgstr "Categorie"
+
+#: templates/manage/category/manage_category.html:39
+#: templates/manage/category/view.html:3
+#: templates/manage/marketing/rating_mails.html:63
+#: templates/manage/marketing/rating_mails.html:90
+#: templates/manage/product/products_inline.html:112
+msgid "View"
+msgstr "Weergave"
+
+#: templates/manage/category/manage_category.html:41
+#: templates/manage/category/seo.html:3
+#: templates/manage/product/product.html:106
+#: templates/manage/product/seo.html:3
+msgid "SEO"
+msgstr "SEO"
+
+#: templates/manage/category/manage_category.html:42
+#: templates/manage/product/product.html:107
+#: templates/manage/shop/shop.html:11
+msgid "Portlets"
+msgstr "Portlets"
+
+#: templates/manage/category/products.html:33
+#, fuzzy
+msgid "Selected Products"
+msgstr "Geselecteerde producten"
+
+#: templates/manage/category/products_inline.html:89
+msgid "Add to category"
+msgstr "Voeg toe aan categorie"
+
+#: templates/manage/category/selected_products.html:82
+msgid "Remove from category"
+msgstr "Verwijder van categorie"
+
+#: templates/manage/category/seo.html:12
+msgid "Save SEO"
+msgstr "Sla SEO op"
+
+#: templates/manage/category/view.html:14
+#, fuzzy
+msgid "Save View"
+msgstr "Pagina opslaan"
+
+#: templates/manage/criteria/number_operators.html:3
+msgid "Equal"
+msgstr "Gelijk aan"
+
+#: templates/manage/criteria/number_operators.html:5
+msgid "Less than equal to"
+msgstr "Minder dan of gelijk aan"
+
+#: templates/manage/criteria/number_operators.html:7
+msgid "Greater than equal to"
+msgstr "Groter dan of gelijk aan"
+
+#: templates/manage/criteria/selection_operators.html:3
+msgid "Is selected"
+msgstr "Is geselecteerd"
+
+#: templates/manage/criteria/selection_operators.html:4
+msgid "Is not selected"
+msgstr "Is niet geselecteerd"
+
+#: templates/manage/customer/customer_inline.html:55
+#: templates/manage/reviews/review_inline.html:128
+msgid "Registriert"
+msgstr "Geregistreerd"
+
+#: templates/manage/customer/customer_inline.html:70
+#: templates/manage/order/order_inline.html:126
+msgid "Invoice address"
+msgstr "Factuuradres"
+
+#: templates/manage/customer/customer_inline.html:73
+#: templates/manage/order/order_inline.html:123
+msgid "Shipping address"
+msgstr "Verzendadres"
+
+#: templates/manage/customer/customers.html:5
+#, fuzzy
+msgid "Manage customers"
+msgstr "Klanten"
+
+#: templates/manage/delivery_times/add.html:4
+#: templates/manage/delivery_times/add.html:23
+#: templates/manage/delivery_times/base.html:26
+msgid "Add Delivery Time"
+msgstr "Voeg levertijd toe"
+
+#: templates/manage/delivery_times/add.html:11
+#: templates/manage/delivery_times/add.html:14
+msgid "Add delivery time"
+msgstr "Voeg levertijd toe"
+
+#: templates/manage/delivery_times/base.html:4
+#, fuzzy
+msgid "Manage Delivery Time"
+msgstr "Sla levertijd op"
+
+#: templates/manage/delivery_times/base.html:8
+msgid "Delivery times"
+msgstr "Levertijden"
+
+#: templates/manage/delivery_times/base.html:29
+msgid "Do you really want to delete this delivery time?"
+msgstr ""
+
+#: templates/manage/delivery_times/base.html:30
+msgid "Delete Delivery Time"
+msgstr "Verwijder levertijd"
+
+#: templates/manage/delivery_times/base.html:35
+msgid "Delivery Time"
+msgstr "Levertijd"
+
+#: templates/manage/delivery_times/base.html:48
+msgid "Save Delivery Time"
+msgstr "Sla levertijd op"
+
+#: templates/manage/discounts/add_discount.html:10
+#: templates/manage/discounts/add_discount.html:14
+#: templates/manage/discounts/add_discount.html:24
+#: templates/manage/discounts/discount.html:19
+msgid "Add discount"
+msgstr "Voeg korting toe"
+
+#: templates/manage/discounts/criteria.html:3
+#: templates/manage/discounts/discount.html:30
+#: templates/manage/payment/manage_payment.html:29
+#: templates/manage/payment/payment_method_criteria.html:3
+#: templates/manage/shipping/manage_shipping.html:29
+#: templates/manage/shipping/shipping_method_criteria.html:3
+msgid "Criteria"
+msgstr "Criteria"
+
+#: templates/manage/discounts/criteria.html:12
+#: templates/manage/shipping/shipping_method_criteria.html:13
+#: templates/manage/shop/add_action.html:23
+#: templates/manage/tax/add_tax.html:23
+msgid "Add"
+msgstr "Toevoegen"
+
+#: templates/manage/discounts/criteria.html:14
+#: templates/manage/payment/payment_method_criteria.html:15
+#: templates/manage/payment/payment_price_criteria.html:18
+#: templates/manage/shipping/shipping_method_criteria.html:15
+#: templates/manage/shipping/shipping_price_criteria.html:17
+#: templates/manage/shipping/shipping_price_criteria.html:18
+msgid "Add criterion"
+msgstr "Criterium toevoegen"
+
+#: templates/manage/discounts/criteria.html:27
+#: templates/manage/payment/payment_method_criteria.html:28
+#: templates/manage/payment/payment_price_criteria.html:31
+#: templates/manage/shipping/shipping_method_criteria.html:28
+#: templates/manage/shipping/shipping_price_criteria.html:31
+msgid "Save criteria"
+msgstr "Sla criteria op"
+
+#: templates/manage/discounts/data.html:13
+#: templates/manage/export/add_export.html:26
+#: templates/manage/manufacturer/add_manufacturer.html:22
+#: templates/manage/product/products_inline.html:122
+#: templates/manage/product/variants.html:247
+#: templates/manage/properties/property_select_field.html:13
+#: templates/manage/shipping/shipping_method_data.html:15
+#: templates/manage/tax/tax.html:47
+msgid "Save"
+msgstr "Opslaan"
+
+#: templates/manage/discounts/discount.html:22
+msgid "Do you really want to delete this discount?"
+msgstr ""
+
+#: templates/manage/discounts/discount.html:24
+msgid "Delete discount"
+msgstr "Verwijder korting"
+
+#: templates/manage/discounts/discount.html:29
+#, fuzzy
+msgid "Discount"
+msgstr "Kortingen"
+
+#: templates/manage/export/add_export.html:11
+msgid "Selection"
+msgstr "Selectie"
+
+#: templates/manage/export/export.html:7
+#, fuzzy
+msgid "Exports"
+msgstr "Exporteer"
+
+#: templates/manage/export/export.html:19
+#, fuzzy
+msgid "Add Export"
+msgstr "Voeg portlet toe"
+
+#: templates/manage/export/export.html:22
+msgid "Do you really want to delete this export?"
+msgstr ""
+
+#: templates/manage/export/export.html:24
+#, fuzzy
+msgid "Delete Export"
+msgstr "Verwijder eigenschap"
+
+#: templates/manage/export/export.html:28
+msgid "Download Export"
+msgstr ""
+
+#: templates/manage/manufacturer/manufacturer.html:4
+#, fuzzy
+msgid "Manage Manufacturer"
+msgstr "Producent"
+
+#: templates/manage/manufacturer/manufacturer.html:20
+msgid "Add Manufacturer"
+msgstr "Producent toevoegen"
+
+#: templates/manage/manufacturer/manufacturer.html:24
+msgid "Do you really want to delete this manufacturer?"
+msgstr ""
+
+#: templates/manage/manufacturer/manufacturer.html:26
+msgid "Delete Manufacturer"
+msgstr "Producent verwijderen"
+
+#: templates/manage/marketing/featured.html:4
+#: templates/manage/marketing/topseller.html:4
+#, fuzzy
+msgid "Product Selection"
+msgstr "Product selectie"
+
+#: templates/manage/marketing/featured_inline.html:85
+#, fuzzy
+msgid "Add to Featured Products"
+msgstr "Voeg toe aan gerelateerde producten"
+
+#: templates/manage/marketing/featured_inline.html:89
+#, fuzzy
+msgid "Featured products"
+msgstr "Gerelateerde producten"
+
+#: templates/manage/marketing/featured_inline.html:159
+#, fuzzy
+msgid "Save Featured"
+msgstr "Bewaar waarden"
+
+#: templates/manage/marketing/featured_inline.html:164
+#, fuzzy
+msgid "Remove from Featured"
+msgstr "Verwijder van categorie"
+
+#: templates/manage/marketing/marketing_featured.html:11
+#, fuzzy
+msgid "Featured Products"
+msgstr "Gerelateerde producten"
+
+#: templates/manage/marketing/rating_mails.html:18
+#: templates/manage/marketing/rating_mails.html:35
+msgid "Send rating mails"
+msgstr "Verzend rating mails"
+
+#: templates/manage/marketing/rating_mails.html:25
+msgid "Test"
+msgstr "Test"
+
+#: templates/manage/marketing/rating_mails.html:25
+msgid "The mails will get to the shop notification email adresses"
+msgstr "De mails worden verzonden naar het notificatie adres"
+
+#: templates/manage/marketing/rating_mails.html:30
+msgid "Send copy"
+msgstr "Verzend kopie"
+
+#: templates/manage/marketing/rating_mails.html:30
+msgid ""
+"The mails will also send to the shop notification email adresses (if not in "
+"test mode)"
+msgstr ""
+"De mails worden ook verzonden naar het notificatie adres (als de testmode "
+"uit status)"
+
+#: templates/manage/marketing/rating_mails.html:40
+msgid "Rating mails sent"
+msgstr "Rating mails verzonden"
+
+#: templates/manage/marketing/rating_mails.html:54
+#: templates/manage/order/order_inline.html:82
+#: templates/manage/order/orders_inline.html:119
+msgid "Date"
+msgstr "Datum"
+
+#: templates/manage/marketing/rating_mails.html:57
+msgid "Date Closed"
+msgstr "Datum gesloten"
+
+#: templates/manage/marketing/rating_mails.html:91
+msgid "View order"
+msgstr "Bekijk bestelling"
+
+#: templates/manage/marketing/rating_mails.html:98
+msgid "No e-mails have been sent"
+msgstr "Er zijn geen e-mails verzonden"
+
+#: templates/manage/marketing/topseller_inline.html:85
+msgid "Add to topseller"
+msgstr "Voeg toe aan topproducten"
+
+#: templates/manage/marketing/topseller_inline.html:156
+msgid "Save topseller"
+msgstr "Sla topproducten op"
+
+#: templates/manage/marketing/topseller_inline.html:161
+msgid "Remove from topseller"
+msgstr "Verwijder van topproducten"
+
+#: templates/manage/order/order.html:20
+msgid "Do you really want to delete this order?"
+msgstr ""
+
+#: templates/manage/order/order.html:22
+msgid "Delete order"
+msgstr "Verwijder bestelling"
+
+#: templates/manage/order/order.html:25
+msgid "Do you really want to resend this order?"
+msgstr ""
+
+#: templates/manage/order/order.html:27
+msgid "Resend order"
+msgstr "Bestelling opnieuw verzenden"
+
+#: templates/manage/order/order.html:50
+#: templates/manage/product/product.html:76
+#: templates/manage/reviews/review_inline.html:61
+msgid "Change"
+msgstr "Aanpassen"
+
+#: templates/manage/order/order_inline.html:75
+msgid "Customer name"
+msgstr "Klant naam"
+
+#: templates/manage/order/order_inline.html:236
+msgid "Included VAT"
+msgstr "Inclusief BTW"
+
+#: templates/manage/order/order_inline.html:298
+msgid "Voucher"
+msgstr "Kortingscode"
+
+#: templates/manage/order/order_inline.html:315
+msgid "Shipping"
+msgstr "Verzendwijze"
+
+#: templates/manage/order/order_inline.html:331
+msgid "Payment"
+msgstr "Betalingswijze"
+
+#: templates/manage/order/order_inline.html:353
+msgid "Inclusive VAT"
+msgstr "Inclusief BTW"
+
+#: templates/manage/order/order_inline.html:362
+msgid "Message from the customer"
+msgstr "Bericht van de klant"
+
+#: templates/manage/order/order_inline.html:376
+msgid "Paypal Transaction ID"
+msgstr "Paypal transactie ID"
+
+#: templates/manage/order/orders_inline.html:162
+msgid "There are no orders"
+msgstr "Er zijn geen bestellingen"
+
+#: templates/manage/page/add_page.html:10
+#: templates/manage/page/add_page.html:13
+#: templates/manage/page/add_page.html:23
+msgid "Add page"
+msgstr "Pagina toevoegen"
+
+#: templates/manage/page/page.html:25
+msgid "Add Page"
+msgstr "Pagina toevoegen"
+
+#: templates/manage/page/page.html:28
+msgid "Do you really want to delete this page?"
+msgstr ""
+
+#: templates/manage/page/page.html:29
+msgid "Delete Page"
+msgstr "Pagina verwijderen"
+
+#: templates/manage/page/page.html:32
+#, fuzzy
+msgid "View Page"
+msgstr "Pagina voorbeeld"
+
+#: templates/manage/page/page.html:35
+#, fuzzy
+msgid "Goto Page"
+msgstr "Pagina"
+
+#: templates/manage/page/page.html:41
+msgid "Page"
+msgstr "Pagina"
+
+#: templates/manage/payment/add_payment_method.html:4
+#: templates/manage/payment/add_payment_method.html:14
+#: templates/manage/payment/manage_payment.html:16
+#, fuzzy
+msgid "Add payment Method"
+msgstr "Voeg betalingswijze toe"
+
+#: templates/manage/payment/add_payment_method.html:11
+#: templates/manage/payment/add_payment_method.html:22
+msgid "Add payment method"
+msgstr "Voeg betalingswijze toe"
+
+#: templates/manage/payment/manage_payment.html:4
+#, fuzzy
+msgid "Manage Payment Methods"
+msgstr "Betalingswijzen"
+
+#: templates/manage/payment/manage_payment.html:20
+#, fuzzy
+msgid "Do you really want to delete this payment method?"
+msgstr "Verwijder betalingswijze"
+
+#: templates/manage/payment/manage_payment.html:22
+msgid "Delete payment method"
+msgstr "Verwijder betalingswijze"
+
+#: templates/manage/payment/manage_payment.html:30
+#: templates/manage/payment/payment_method_prices.html:3
+#: templates/manage/product/data.html:125
+#: templates/manage/shipping/manage_shipping.html:30
+#: templates/manage/shipping/shipping_method_prices.html:3
+msgid "Prices"
+msgstr "Prijzen"
+
+#: templates/manage/payment/payment_method_data.html:16
+#, fuzzy
+msgid "Save Payment Method"
+msgstr "Betaalwijze"
+
+#: templates/manage/payment/payment_method_prices.html:13
+#: templates/manage/shipping/shipping_method_prices.html:13
+msgid "Existing prices"
+msgstr "Bestaande prijzen"
+
+#: templates/manage/payment/payment_method_prices.html:43
+#: templates/manage/shipping/shipping_method_prices.html:43
+msgid "Edit criteria"
+msgstr "Wijzig criteria"
+
+#: templates/manage/payment/payment_method_prices.html:58
+#: templates/manage/shipping/shipping_method_prices.html:58
+msgid "Delete prices"
+msgstr "Verwijder prijzen"
+
+#: templates/manage/payment/payment_method_prices.html:59
+#: templates/manage/shipping/shipping_method_prices.html:59
+msgid "Update prices"
+msgstr "Update prijzen"
+
+#: templates/manage/payment/payment_price_criteria.html:6
+#: templates/manage/shipping/shipping_price_criteria.html:6
+msgid "Edit criteria for"
+msgstr "Wijzig criteria voor"
+
+#: templates/manage/portlets/portlet_add.html:16
+#: templates/manage/portlets/portlet_edit.html:16
+#: templates/manage/portlets/portlets_inline.html:30
+msgid "Slot"
+msgstr "Slot"
+
+#: templates/manage/portlets/portlet_add.html:38
+#: templates/manage/portlets/portlet_edit.html:34
+msgid "Save portlet"
+msgstr "Bewaar portlet"
+
+#: templates/manage/portlets/portlets_inline.html:8
+msgid "Blocked parent slots"
+msgstr "Geblokte slots"
+
+#: templates/manage/portlets/portlets_inline.html:22
+msgid "Save blocked parent slots"
+msgstr "Bewaar geblokte slots"
+
+#: templates/manage/portlets/portlets_inline.html:27
+msgid "Slots"
+msgstr "Slots"
+
+#: templates/manage/portlets/portlets_inline.html:44
+#: templates/manage/product/images.html:42
+#: templates/manage/product/products_inline.html:45
+msgid "Manage"
+msgstr "Beheer"
+
+#: templates/manage/portlets/portlets_inline.html:57
+msgid "Do you really want to delete this portlet?"
+msgstr ""
+
+#: templates/manage/portlets/portlets_inline.html:58
+#: templates/manage/product/products_inline.html:127
+#: templates/manage/product/variants.html:246
+#: templates/manage/properties/options_inline.html:71
+#: templates/manage/properties/step_inline.html:70
+#: templates/manage/static_block/files.html:44
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: templates/manage/portlets/portlets_inline.html:61
+#: templates/manage/product/products_inline.html:111
+msgid "Edit"
+msgstr "Wijzigen"
+
+#: templates/manage/portlets/portlets_inline.html:68
+msgid "There are no portlets assigned"
+msgstr "Er zijn geen portlets toegewezen"
+
+#: templates/manage/portlets/portlets_inline.html:73
+msgid "Add new portlet"
+msgstr "Voeg nieuwe portlet toe"
+
+#: templates/manage/portlets/portlets_inline.html:89
+msgid "Add portlet"
+msgstr "Voeg portlet toe"
+
+#: templates/manage/product/accessories.html:4
+#: templates/manage/product/accessories_inline.html:94
+#: templates/manage/product/product.html:103
+msgid "Accessories"
+msgstr "Accessoires"
+
+#: templates/manage/product/accessories.html:18
+#: templates/manage/static_block/files.html:42
+msgid "Update"
+msgstr "Aanpassen"
+
+#: templates/manage/product/accessories_inline.html:34
+#: templates/manage/product/related_products_inline.html:33
+#, fuzzy
+msgid "Selectable products"
+msgstr "Geselecteerde producten"
+
+#: templates/manage/product/accessories_inline.html:89
+msgid "Add to accessories"
+msgstr "Voeg toe aan accessoires"
+
+#: templates/manage/product/accessories_inline.html:170
+msgid "Save accessories"
+msgstr "Bewaar accessoires"
+
+#: templates/manage/product/accessories_inline.html:175
+msgid "Remove from accessories"
+msgstr "Verwijder van accessoires"
+
+#: templates/manage/product/add_product.html:16
+#: templates/manage/product/add_product.html:30
+msgid "Add product"
+msgstr "Voeg product toe"
+
+#: templates/manage/product/categories.html:23
+msgid "Save categories"
+msgstr "Bewaar categorieen"
+
+#: templates/manage/product/categories.html:27
+msgid "There are no categories"
+msgstr "Er zijn geen categorieen"
+
+#: templates/manage/product/data.html:45
+msgid "Urls"
+msgstr "URLs"
+
+#: templates/manage/product/data.html:69
+msgid "Redirect to"
+msgstr "Doorsturen naar"
+
+#: templates/manage/product/data.html:82
+msgid "Article numbers"
+msgstr "Artikel nummers"
+
+#: templates/manage/product/data.html:258
+msgid "Units"
+msgstr "Units"
+
+#: templates/manage/product/data.html:319
+msgid "Appearance"
+msgstr ""
+
+#: templates/manage/product/images.html:13
+msgid "Active images"
+msgstr "Actieve afbeeldingen"
+
+#: templates/manage/product/images.html:70
+msgid "Move Up"
+msgstr ""
+
+#: templates/manage/product/images.html:75
+#, fuzzy
+msgid "Move Down"
+msgstr "Omlaag"
+
+#: templates/manage/product/images.html:86
+#, fuzzy
+msgid "Update images"
+msgstr "Update prijzen"
+
+#: templates/manage/product/images.html:88
+#, fuzzy
+msgid "Delete images"
+msgstr "Pagina verwijderen"
+
+#: templates/manage/product/images.html:92
+msgid "There are no images"
+msgstr "Er zijn geen afbeeldingen"
+
+#: templates/manage/product/images.html:95
+msgid "Add images"
+msgstr "Voeg afbeeldingen toe"
+
+#: templates/manage/product/images.html:102
+#: templates/manage/static_block/files.html:58
+msgid "Uploading images:"
+msgstr ""
+
+#: templates/manage/product/product.html:6
+#, fuzzy
+msgid "Manage Product"
+msgstr "Gerelateerde producten"
+
+#: templates/manage/product/product.html:41
+msgid "Base Article"
+msgstr "Basis artikel"
+
+#: templates/manage/product/product.html:47
+#, fuzzy
+msgid "Add Product"
+msgstr "Voeg product toe"
+
+#: templates/manage/product/product.html:52
+msgid "Do you really want to delete this product?"
+msgstr ""
+
+#: templates/manage/product/product.html:53
+#, fuzzy
+msgid "Delete Product"
+msgstr "Verwijder product"
+
+#: templates/manage/product/product.html:58
+#, fuzzy
+msgid "View Product"
+msgstr "Wijzig product"
+
+#: templates/manage/product/product.html:63
+#, fuzzy
+msgid "Goto Product"
+msgstr "Wijzig product"
+
+#: templates/manage/product/product.html:105
+#: templates/manage/product/stock.html:2
+msgid "Stock"
+msgstr "Voorraad"
+
+#: templates/manage/product/product_filters_inline.html:14
+#, fuzzy
+msgid "Name/SKU"
+msgstr "Naam"
+
+#: templates/manage/product/product_filters_inline.html:18
+#: templates/manage/product/products_inline.html:31
+msgid "Sub type"
+msgstr "Sub type"
+
+#: templates/manage/product/products.html:4
+#, fuzzy
+msgid "Manage Products"
+msgstr "Gerelateerde producten"
+
+#: templates/manage/product/products_inline.html:37
+msgid "Sale Price"
+msgstr "Aanbiedingsprijs"
+
+#: templates/manage/product/products_inline.html:42
+msgid "For Sale"
+msgstr "Aanbieding"
+
+#: templates/manage/product/products_inline.html:113
+msgid "Goto"
+msgstr ""
+
+#: templates/manage/product/products_inline.html:131
+#, fuzzy
+msgid "No products found."
+msgstr "Voeg toe aan product groep"
+
+#: templates/manage/product/properties.html:20
+#: templates/manage/product/variants.html:20
+msgid "Update property groups"
+msgstr "Pas eigenschap groepen aan"
+
+#: templates/manage/product/properties.html:29
+#, fuzzy
+msgid "Default values"
+msgstr "Standaard waarden"
+
+#: templates/manage/product/properties.html:78
+msgid "Update default values"
+msgstr "WIjzig standaard waarden"
+
+#: templates/manage/product/properties.html:87
+#, fuzzy
+msgid "Filter values"
+msgstr "Filter waarden"
+
+#: templates/manage/product/properties.html:136
+msgid "Update filter values"
+msgstr "Wijzig filter waarden"
+
+#: templates/manage/product/properties.html:145
+#, fuzzy
+msgid "Displayed values"
+msgstr "Weergegeven waarden"
+
+#: templates/manage/product/properties.html:192
+msgid "Update displayed values"
+msgstr "Wijzig weergegeven waarden"
+
+#: templates/manage/product/related_products_inline.html:89
+msgid "Add to related products"
+msgstr "Voeg toe aan gerelateerde producten"
+
+#: templates/manage/product/related_products_inline.html:94
+msgid "Selected products"
+msgstr "Geselecteerde producten"
+
+#: templates/manage/product/related_products_inline.html:150
+msgid "Remove from related products"
+msgstr "Verwijder van gerelateerde producten"
+
+#: templates/manage/product/stock.html:10
+msgid "Dimension"
+msgstr "Afmetingen"
+
+#: templates/manage/product/stock.html:25
+msgid "kg"
+msgstr "kg"
+
+#: templates/manage/product/stock.html:42
+#: templates/manage/product/stock.html:59
+#: templates/manage/product/stock.html:76
+msgid "m"
+msgstr "m"
+
+#: templates/manage/product/stock.html:83
+#, fuzzy
+msgid "Stock Data"
+msgstr "Voorraad gegevens"
+
+#: templates/manage/product/stock.html:190
+#, fuzzy
+msgid "Packaging Unit"
+msgstr "Verpakkingseenheid"
+
+#: templates/manage/product/stock.html:245
+msgid "Save stock"
+msgstr "Bewaar voorraad"
+
+#: templates/manage/product/variants.html:24
+msgid "Local properties"
+msgstr "Lokale eigenschappen"
+
+#: templates/manage/product/variants.html:28
+#: templates/manage/product/variants.html:239
+msgid "Edit variant"
+msgstr "Wijzig variant"
+
+#: templates/manage/product/variants.html:38
+#: templates/manage/properties/add_property.html:9
+#: templates/manage/properties/add_property.html:12
+#: templates/manage/properties/add_property.html:19
+msgid "Add property"
+msgstr "Voeg eigenschap toe"
+
+#: templates/manage/product/variants.html:47
+#: templates/manage/product/variants.html:48
+msgid "Up"
+msgstr "Omhoog"
+
+#: templates/manage/product/variants.html:56
+#: templates/manage/product/variants.html:57
+msgid "Down"
+msgstr "Omlaag"
+
+#: templates/manage/product/variants.html:63
+msgid "Do you really want to delete this property and all its options?"
+msgstr ""
+
+#: templates/manage/product/variants.html:67
+msgid "Delete property"
+msgstr "Verwijder eigenschap"
+
+#: templates/manage/product/variants.html:75
+#: templates/manage/properties/options_inline.html:68
+msgid "Do you really want to delete this option?"
+msgstr ""
+
+#: templates/manage/product/variants.html:79
+#: templates/manage/properties/options_inline.html:72
+msgid "Delete option"
+msgstr "Verwijder optie"
+
+#: templates/manage/product/variants.html:91
+#: templates/manage/properties/options_inline.html:38
+msgid "Add option"
+msgstr "Voeg optie toe"
+
+#: templates/manage/product/variants.html:143
+msgid "Add variant(s)"
+msgstr "Voeg variant(en) toe"
+
+#: templates/manage/product/variants.html:159
+msgid "Pos."
+msgstr "Positie"
+
+#: templates/manage/product/variants.html:166
+msgid "URL"
+msgstr "URL"
+
+#: templates/manage/product/variants.html:251
+msgid "Display type"
+msgstr "Weergave type"
+
+#: templates/manage/product/variants.html:262
+msgid "Change variant display type"
+msgstr "Wijzig variant weergave type"
+
+#: templates/manage/properties/add_property_group.html:16
+msgid "Add property Group"
+msgstr "Voeg eigenschap groep toe"
+
+#: templates/manage/properties/add_property_group.html:24
+msgid "Add property group"
+msgstr "Voeg eigenschap groep toe"
+
+#: templates/manage/properties/options_inline.html:3
+msgid "Select field options"
+msgstr "Selecteer veld opties"
+
+#: templates/manage/properties/options_inline.html:16
+msgid "Price (optional)"
+msgstr "Prijs (optioneel)"
+
+#: templates/manage/properties/options_inline.html:80
+msgid "Update options"
+msgstr "Wijzig opties"
+
+#: templates/manage/properties/pg_products_inline.html:87
+msgid "Add to product group"
+msgstr "Voeg toe aan product groep"
+
+#: templates/manage/properties/pg_products_inline.html:92
+msgid "Assigned products"
+msgstr "Toegewezen producten"
+
+#: templates/manage/properties/pg_products_inline.html:148
+msgid "Remove from product group"
+msgstr "Verwijder van product groep"
+
+#: templates/manage/properties/properties_inline.html:38
+msgid "All properties are assigned"
+msgstr "Alle eigenschappen zijn toegewezen"
+
+#: templates/manage/properties/properties_inline.html:47
+msgid "Assign properties"
+msgstr "Wijs eigenschappen toe"
+
+#: templates/manage/properties/properties_inline.html:52
+msgid "Assigned properties"
+msgstr "Toegewezen eigenschappen"
+
+#: templates/manage/properties/properties_inline.html:95
+msgid "No properties assigned"
+msgstr "Geen eigenschappen toegewezen"
+
+#: templates/manage/properties/properties_inline.html:105
+msgid "Remove properties"
+msgstr "Verwijder eigenschappen"
+
+#: templates/manage/properties/properties_inline.html:109
+msgid "Update properties"
+msgstr "Wijzig eigenschappen"
+
+#: templates/manage/properties/property.html:23
+msgid "Add Property"
+msgstr "Voeg eigenschap toe"
+
+#: templates/manage/properties/property.html:25
+msgid "Do you really want to delete this property?"
+msgstr ""
+
+#: templates/manage/properties/property.html:26
+msgid "Delete Property"
+msgstr "Verwijder eigenschap"
+
+#: templates/manage/properties/property.html:35
+msgid "Property data"
+msgstr "EIgenschap gegevens"
+
+#: templates/manage/properties/property.html:45
+msgid "Save property"
+msgstr "Bewaar eigenschap"
+
+#: templates/manage/properties/property.html:49
+msgid "Field type"
+msgstr "Veld type"
+
+#: templates/manage/properties/property.html:56
+msgid "Save property type"
+msgstr "Bewaar eigenschap type"
+
+#: templates/manage/properties/property_group.html:6
+msgid "Property groups"
+msgstr "Eigenschap groepen"
+
+#: templates/manage/properties/property_group.html:23
+msgid "Add Property Group"
+msgstr "Voeg eigenschap groep toe"
+
+#: templates/manage/properties/property_group.html:25
+msgid "Do you really want to delete this property group?"
+msgstr ""
+
+#: templates/manage/properties/property_group.html:26
+msgid "Delete Property Group"
+msgstr "Verwijder eigenschap groep"
+
+#: templates/manage/properties/property_group.html:31
+#: templates/manage/properties/property_group.html:37
+msgid "Property Group"
+msgstr "Eigenschap groep"
+
+#: templates/manage/properties/property_group.html:45
+msgid "Save property group"
+msgstr "Bewaar eigenschap groep"
+
+#: templates/manage/properties/property_number_field.html:2
+msgid "Validators"
+msgstr "Validators"
+
+#: templates/manage/properties/property_number_field.html:15
+msgid "Save validators"
+msgstr "Bewaar validators"
+
+#: templates/manage/properties/property_select_field.html:2
+msgid "Select field properties"
+msgstr "Selecteer veld eigenschappen"
+
+#: templates/manage/properties/step_inline.html:10
+msgid "Save step type"
+msgstr "Bewaar stap type"
+
+#: templates/manage/properties/step_inline.html:17
+msgid "Step range"
+msgstr "Stap bereik"
+
+#: templates/manage/properties/step_inline.html:24
+msgid "Save step"
+msgstr "Bewaar stap"
+
+#: templates/manage/properties/step_inline.html:32
+msgid "Steps"
+msgstr "Stappen"
+
+#: templates/manage/properties/step_inline.html:46
+msgid "Add step"
+msgstr "Voeg stap toe"
+
+#: templates/manage/properties/step_inline.html:66
+msgid "Do you really want to delete this step?"
+msgstr ""
+
+#: templates/manage/properties/step_inline.html:71
+msgid "Delete step"
+msgstr "Verwijder stap"
+
+#: templates/manage/properties/step_inline.html:79
+msgid "Update steps"
+msgstr "Wijzig stappen"
+
+#: templates/manage/reviews/review_inline.html:45
+msgid "Do you really want to delete this review?"
+msgstr ""
+
+#: templates/manage/reviews/review_inline.html:47
+msgid "Delete review"
+msgstr "Verwijder waardering"
+
+#: templates/manage/reviews/review_inline.html:150
+#: templates/manage/reviews/reviews_inline.html:125
+msgid "Score"
+msgstr "Score"
+
+#: templates/manage/reviews/review_inline.html:160
+#: templates/manage/reviews/reviews_inline.html:129
+msgid "Comment"
+msgstr "Commentaar"
+
+#: templates/manage/shipping/add_shipping_method.html:4
+#: templates/manage/shipping/add_shipping_method.html:11
+#: templates/manage/shipping/add_shipping_method.html:14
+#: templates/manage/shipping/add_shipping_method.html:23
+#: templates/manage/shipping/manage_shipping.html:16
+msgid "Add shipping method"
+msgstr "Voeg verzendwijze toe"
+
+#: templates/manage/shipping/manage_shipping.html:4
+#, fuzzy
+msgid "Manage Shipping Methods"
+msgstr "Verzendwijzen"
+
+#: templates/manage/shipping/manage_shipping.html:20
+#, fuzzy
+msgid "Do you really want to delete this shipping method?"
+msgstr "Verwijder verzendwijze"
+
+#: templates/manage/shipping/manage_shipping.html:22
+#, fuzzy
+msgid "Delete Shipping Method"
+msgstr "Verwijder verzendwijze"
+
+#: templates/manage/shop/action.html:30
+#: templates/manage/shop/add_action.html:10
+msgid "Add action"
+msgstr "Voeg actie toe"
+
+#: templates/manage/shop/action.html:33
+msgid "Do you really want to delete this action?"
+msgstr ""
+
+#: templates/manage/shop/action.html:34
+msgid "Delete action"
+msgstr "Verwijder actie"
+
+#: templates/manage/shop/action.html:40
+msgid "Action"
+msgstr "Actie"
+
+#: templates/manage/shop/action.html:51
+msgid "Save action"
+msgstr "Bewaar actie"
+
+#: templates/manage/shop/default_values.html:3
+#: templates/manage/shop/shop.html:10
+msgid "Default Values"
+msgstr "Standaard waarden"
+
+#: templates/manage/shop/default_values.html:9
+#, fuzzy
+msgid "Price Calculator"
+msgstr "Prijs Berekening"
+
+#: templates/manage/shop/default_values.html:27
+msgid "Format"
+msgstr "Formaat"
+
+#: templates/manage/shop/default_values.html:131
+#, fuzzy
+msgid "Localization"
+msgstr "Positie"
+
+#: templates/manage/shop/default_values.html:160
+msgid "Save Default Values"
+msgstr "Bewaar standaard waarden"
+
+#: templates/manage/shop/shop.html:56
+#, fuzzy
+msgid "E-Mails"
+msgstr "E-mail"
+
+#: templates/manage/shop/shop.html:94
+msgid "Google"
+msgstr ""
+
+#: templates/manage/shop/shop.html:129
+#, fuzzy
+msgid "Checkout"
+msgstr "Kassa soort"
+
+#: templates/manage/shop/shop.html:206
+msgid "Save shop"
+msgstr "Bewaar winkel"
+
+#: templates/manage/static_block/add_static_block.html:10
+#: templates/manage/static_block/add_static_block.html:13
+msgid "Add static block"
+msgstr "Voeg tekstblok toe"
+
+#: templates/manage/static_block/add_static_block.html:20
+msgid "Save static block"
+msgstr "Bewaar tekstblok"
+
+#: templates/manage/static_block/files.html:48
+msgid "There are no files"
+msgstr "Er zijn geen bestanden"
+
+#: templates/manage/static_block/files.html:51
+msgid "Add files"
+msgstr "Voeg bestanden toe"
+
+#: templates/manage/static_block/static_block.html:24
+msgid "Add Static Block"
+msgstr "Voeg tekstblok toe"
+
+#: templates/manage/static_block/static_block.html:26
+msgid "Do you really want to delete this static block?"
+msgstr ""
+
+#: templates/manage/static_block/static_block.html:27
+#, fuzzy
+msgid "Delete Static Block"
+msgstr "Voeg tekstblok toe"
+
+#: templates/manage/static_block/static_block.html:29
+#, fuzzy
+msgid "View Static Block"
+msgstr "Voeg tekstblok toe"
+
+#: templates/manage/tax/add_tax.html:10
+msgid "Add tax"
+msgstr "Voeg BTW toe"
+
+#: templates/manage/tax/tax.html:25
+msgid "Add Tax"
+msgstr "Voeg BTW toe"
+
+#: templates/manage/tax/tax.html:28
+msgid "Do you really want to delete this tax?"
+msgstr ""
+
+#: templates/manage/tax/tax.html:29
+msgid "Delete Tax"
+msgstr "Verwijder BTW"
+
+#: templates/manage/voucher/add_voucher_group.html:10
+#: templates/manage/voucher/add_voucher_group.html:14
+#: templates/manage/voucher/add_voucher_group.html:23
+#: templates/manage/voucher/voucher_group.html:16
+msgid "Add voucher group"
+msgstr "Voeg kortingscode groep toe"
+
+#: templates/manage/voucher/data.html:2
+msgid "Core data"
+msgstr "Core gegevens"
+
+#: templates/manage/voucher/data.html:12
+msgid "Save voucher group"
+msgstr "Bewaar kortingscode groep"
+
+#: templates/manage/voucher/options.html:3
+#: templates/manage/voucher/voucher_group.html:27
+msgid "Options"
+msgstr "Opties"
+
+#: templates/manage/voucher/options.html:12
+msgid "Save options"
+msgstr "Bewaar opties"
+
+#: templates/manage/voucher/voucher_group.html:6
+msgid "Voucher groups"
+msgstr "Kortingscode groepen"
+
+#: templates/manage/voucher/voucher_group.html:19
+msgid "Do you really want to delete this voucher group?"
+msgstr ""
+
+#: templates/manage/voucher/voucher_group.html:20
+#, fuzzy
+msgid "Delete voucher group"
+msgstr "Verwijder kortingscodes"
+
+#: templates/manage/voucher/vouchers.html:9
+#: templates/manage/voucher/vouchers.html:18
+msgid "Add vouchers"
+msgstr "Voeg kortingscodes toe"
+
+#: templates/manage/voucher/vouchers_inline.html:91
+msgid "Used"
+msgstr "Gebruikt"
+
+#: templates/manage/voucher/vouchers_inline.html:97
+#, fuzzy
+msgid "Last used date"
+msgstr "Gebruikt op"
+
+#: templates/manage/voucher/vouchers_inline.html:157
+msgid "DATE_FORMAT"
+msgstr "DATE_FORMAT"
+
+#: templates/manage/voucher/vouchers_inline.html:164
+msgid "Delete vouchers"
+msgstr "Verwijder kortingscodes"
+
+#: templates/manage/voucher/vouchers_inline.html:167
+#, fuzzy
+msgid "There are no vouchers for this group yet."
+msgstr "De kortingscode is nog niet actief"
+
+#: voucher/settings.py:12
+msgid "The voucher is valid."
+msgstr "De kortingscode is geldig."
+
+#: voucher/settings.py:13
+msgid "The voucher is not active."
+msgstr "De kortingscode is ongeldig."
+
+#: voucher/settings.py:14
+msgid "The voucher has been already used."
+msgstr "De kortingscode is al gebruikt."
+
+#: voucher/settings.py:15
+msgid "The voucher is not active yet."
+msgstr "De kortingscode is nog niet actief"
+
+#: voucher/settings.py:16
+msgid "The voucher is not active any more."
+msgstr "De kortingscode is niet meer actief."
+
+#: voucher/settings.py:17
+msgid "The voucher is not valid for this cart price."
+msgstr "De kortingscode is niet geldig voor dit totaalbedrag."
+
+#: voucher/settings.py:18
+msgid "The voucher doesn't exist."
+msgstr "Deze kortingscode bestatus niet."
+
+#~ msgid "Default template"
+#~ msgstr "Standaard template"
+
+#~ msgid "Zip Code"
+#~ msgstr "Postcode"
+
+#~ msgid "Default Currency"
+#~ msgstr "Standaard munteenheid"
+
+#~ msgid "Product Values have been saved."
+#~ msgstr "Product waarden zijn opgeslagen."
+
+#~ msgid "Invoice company name"
+#~ msgstr "Factuur bedrijfsnaam"
+
+#~ msgid "Invoice street"
+#~ msgstr "Factuur straat"
+
+#~ msgid "Invoice zip code"
+#~ msgstr "Factuur postcode"
+
+#~ msgid "Shipping company name"
+#~ msgstr "Verzendadres bedrijfsnaam"
+
+#~ msgid "Shipping street"
+#~ msgstr "Verzendadres straat"
+
+#~ msgid "Shipping zip code"
+#~ msgstr "Verzendadres postcode"
+
+#~ msgid "Collapse all"
+#~ msgstr "Alles inklappen"
+
+#~ msgid "Expand all"
+#~ msgstr "Alles uitpakken"
+
+#~ msgid "Show current"
+#~ msgstr "Geef huidige weer"
+
+#~ msgid "Delete?"
+#~ msgstr "Verwijderen?"
+
+#~ msgid "Preview"
+#~ msgstr "Voorbeeld"
+
+#~ msgid "Edit product"
+#~ msgstr "Wijzig product"
+
+#~ msgid "This category has no products yet."
+#~ msgstr "Deze categorie bevat nog geen producten."
+
+#~ msgid "Resend?"
+#~ msgstr "Opnieuw verzenden?"
+
+#~ msgid "Modify"
+#~ msgstr "Aanpassen"
+
+#~ msgid "Show selected"
+#~ msgstr "Geef geselecteerde weer"
+
+#~ msgid "Edit category"
+#~ msgstr "WIjzig categorie"
+
+#~ msgid "Product data"
+#~ msgstr "Product gegevens"
+
+#~ msgid "Preview product"
+#~ msgstr "Voorbeeld product"
+
+#~ msgid "Save default variant"
+#~ msgstr "Bewaar standaard variant"
+
+#~ msgid "Product values"
+#~ msgstr "Product waarden"
+
+#~ msgid "Display"
+#~ msgstr "Weergave"
+
+#~ msgid "Filter"
+#~ msgstr "Filter"
+
+#~ msgid "Shop Preferences"
+#~ msgstr "Winkel voorkeuren"
+
+#~ msgid "Select Files"
+#~ msgstr "Selecteer bestanden"
+
+#~ msgid "Delete group"
+#~ msgstr "Verwijder kortingscode groep"
