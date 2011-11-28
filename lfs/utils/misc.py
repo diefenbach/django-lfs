@@ -13,4 +13,3 @@ def parse_properties(request):
                 properties.append("%s|%s" % (property_id, option_id))
 
     return properties
-

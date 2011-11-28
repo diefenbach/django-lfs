@@ -220,6 +220,7 @@ class Shop(models.Model):
         """
         return None
 
+
 class Application(models.Model):
     version = models.CharField(_("Version"), blank=True, max_length=10)
 

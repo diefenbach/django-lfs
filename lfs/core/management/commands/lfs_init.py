@@ -90,4 +90,3 @@ class Command(BaseCommand):
 
         # Application object
         Application.objects.create(version="0.6")
-

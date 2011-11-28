@@ -9,11 +9,14 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
+from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
+from lfs.core.utils import LazyEncoder
+from lfs.core.utils import set_category_levels
 from lfs.core.widgets.image import LFSImageInput
 from lfs.manage import utils as manage_utils
 from lfs.manage.views.categories.products import manage_products
@@ -178,6 +181,37 @@ def delete_category(request, id):
 
     url = reverse("lfs_manage_categories")
     return HttpResponseRedirect(url)
+
+
+def sort_categories(request):
+    """Sort categories
+    """
+    category_list = request.POST.get("categories", "").split('&')
+    assert (isinstance(category_list, list))
+    if len(category_list) > 0:
+        pos = 10
+        for cat_str in category_list:
+            child, parent_id = cat_str.split('=')
+            child_id = child[9:-1]  # category[2]
+            child_obj = Category.objects.get(pk=child_id)
+
+            parent_obj = None
+            if parent_id != 'root':
+                parent_obj = Category.objects.get(pk=parent_id)
+
+            child_obj.parent = parent_obj
+            child_obj.position = pos
+            child_obj.save()
+
+            pos = pos + 10
+
+    set_category_levels()
+
+    result = simplejson.dumps({
+        "message": _(u"The categories have been sorted."),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
 
 
 # Privates
