@@ -68,7 +68,7 @@ class Discount(models.Model):
                 return 0.0
             else:
                 cart = lfs.cart.utils.get_cart(request)
-                return cart.get_tax() * (self.value / 100)
+                return cart.get_tax(request) * (self.value / 100)
 
     def get_price_net(self, request, product=None):
         """Returns the net price of the discount.
@@ -84,8 +84,8 @@ class Discount(models.Model):
         cart = lfs.cart.utils.get_cart(request)
 
         if cart is not None:
-            return cart.get_price_gross() * (self.value / 100)
+            return cart.get_price_gross(request) * (self.value / 100)
         elif product is not None:
-            return product.get_price_gross() * (self.value / 100)
+            return product.get_price_gross(request) * (self.value / 100)
 
         return 0.0
