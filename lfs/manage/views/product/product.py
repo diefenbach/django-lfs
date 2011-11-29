@@ -140,7 +140,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
     return render_to_response(template_name, RequestContext(request, {
         "product": product,
         "product_filters": product_filters_inline(request, page, paginator, product_id),
-        "pages_inline": pages_inline(request, page, paginator),
+        "pages_inline": pages_inline(request, page, paginator, product_id),
         "product_data": product_data_form(request, product_id),
         "images": manage_images(request, product_id, as_string=True),
         "selectable_products": selectable_products_inline(request, page, paginator, product.id),
@@ -217,7 +217,7 @@ def products(request, template_name="manage/product/products.html"):
     return render_to_response(template_name, RequestContext(request, {
         "products_inline": products_inline(request, page, paginator),
         "product_filters": product_filters_inline(request, page=page, paginator=paginator),
-        "pages_inline": pages_inline(request, page=page, paginator=paginator),
+        "pages_inline": pages_inline(request, page, paginator, 0),
     }))
 
 
@@ -266,12 +266,13 @@ def product_filters_inline(request, page, paginator, product_id=0, template_name
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def pages_inline(request, page, paginator, template_name="manage/product/pages_inline.html"):
+def pages_inline(request, page, paginator, product_id, template_name="manage/product/pages_inline.html"):
     """Displays the page navigation.
     """
     return render_to_string(template_name, RequestContext(request, {
         "page": page,
         "paginator": paginator,
+        "product_id" : product_id,
     }))
 
 
@@ -524,7 +525,7 @@ def set_name_filter(request):
     html = (
         ("#products-inline", products_inline(request, page, paginator)),
         ("#selectable-products-inline", selectable_products_inline(request, page, paginator, product_id)),
-        ("#pages-inline", pages_inline(request, page, paginator)),
+        ("#pages-inline", pages_inline(request, page, paginator, product_id)),
     )
 
     result = simplejson.dumps({
@@ -579,14 +580,15 @@ def set_filters(request):
 def set_products_page(request):
     """Sets the displayed product page.
     """
+    product_id = request.GET.get("product-id")
     products = _get_filtered_products_for_product_view(request)
     paginator = Paginator(products, 20)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     html = (
         ("#products-inline", products_inline(request, page, paginator)),
-        ("#pages-inline", pages_inline(request, page, paginator)),
-        ("#selectable-products-inline", selectable_products_inline(request, page, paginator)),
+        ("#pages-inline", pages_inline(request, page, paginator, product_id)),
+        ("#selectable-products-inline", selectable_products_inline(request, page, paginator, product_id)),
     )
 
     return HttpResponse(
