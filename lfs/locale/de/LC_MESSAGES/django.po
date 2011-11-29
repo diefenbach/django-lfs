@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-01 05:02+0100\n"
+"POT-Creation-Date: 2011-11-26 03:33-0600\n"
 "PO-Revision-Date: 2009-02-22 07:20+0100\n"
 "Last-Translator: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
 "Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
@@ -277,7 +277,7 @@ msgstr "Artikelnummer"
 
 #: catalog/models.py:538
 msgid "Your unique article number of the product."
-msgstr ""
+msgstr "Ihre eindeutige Artikelnummer des Produkts."
 
 #: catalog/models.py:539 catalog/models.py:543 catalog/models.py:1534
 #: catalog/models.py:1679 criteria/models/criteria.py:52 order/models.py:51
@@ -365,7 +365,7 @@ msgstr "Angebotspreis"
 #: templates/manage/reviews/review_inline.html:83
 #: templates/manage/reviews/reviews_inline.html:11
 #: templates/manage/reviews/reviews_inline.html:132
-#: templates/manage/voucher/vouchers_inline.html:86
+#: templates/manage/voucher/vouchers_inline.html:88
 msgid "Active"
 msgstr "Aktiv"
 
@@ -472,7 +472,7 @@ msgstr "Breite"
 #: catalog/models.py:590 discounts/models.py:44 manage/views/voucher.py:60
 #: order/models.py:52 order/models.py:130 payment/models.py:81
 #: shipping/models.py:61 templates/manage/tax/tax.html:34
-#: templates/manage/voucher/vouchers_inline.html:74 voucher/models.py:102
+#: templates/manage/voucher/vouchers_inline.html:76 voucher/models.py:102
 msgid "Tax"
 msgstr "Mehrwertsteuer"
 
@@ -595,7 +595,7 @@ msgstr "Keine Ergebnisse anzeigen"
 
 #: catalog/models.py:1533 catalog/models.py:1721 customer/models.py:104
 #: discounts/models.py:43 templates/manage/portlets/portlets_inline.html:38
-#: templates/manage/voucher/vouchers_inline.html:68
+#: templates/manage/voucher/vouchers_inline.html:70
 msgid "Type"
 msgstr "Typ"
 
@@ -639,7 +639,7 @@ msgid "Properties"
 msgstr "Eigenschaften"
 
 #: catalog/models.py:1719 discounts/models.py:42 manage/views/voucher.py:55
-#: templates/manage/voucher/vouchers_inline.html:71
+#: templates/manage/voucher/vouchers_inline.html:73
 msgid "Value"
 msgstr "Wert"
 
@@ -1033,10 +1033,6 @@ msgstr "Preis inklusive Mehrwertsteuer"
 msgid "Price excludes tax"
 msgstr "Preis exklusive Mehrwertsteuer"
 
-#: core/management/commands/lfs_migrate.py:65
-msgid "Supplier"
-msgstr ""
-
 #: core/templatetags/lfs_tags.py:161
 #: portlet/templatetags/lfs_portlets_tags.py:119
 msgid "Information"
@@ -1323,7 +1319,7 @@ msgstr "Name der Bank"
 msgid "Owner"
 msgstr "Eigentümer"
 
-#: customer/models.py:106 templates/manage/voucher/vouchers_inline.html:65
+#: customer/models.py:106 templates/manage/voucher/vouchers_inline.html:67
 msgid "Number"
 msgstr "Nummer"
 
@@ -1487,11 +1483,11 @@ msgstr "Filter wurde gespeichert."
 msgid "Filters has been reset"
 msgstr "Filter wurde gespeichert."
 
-#: manage/views/orders.py:319
+#: manage/views/orders.py:320
 msgid "Order has been sent."
 msgstr "Bestellung wurde gespeichert."
 
-#: manage/views/orders.py:341
+#: manage/views/orders.py:342
 msgid "State has been changed"
 msgstr "Status wurden gespeichert."
 
@@ -1617,7 +1613,7 @@ msgstr "Standardwerte Shop wurden gespeichert."
 
 #: manage/views/shop.py:97 manage/views/categories/category.py:113
 #: manage/views/categories/seo.py:42 manage/views/categories/view.py:45
-#: manage/views/product/product.py:169 manage/views/product/product.py:367
+#: manage/views/product/product.py:169 manage/views/product/product.py:370
 msgid "Please correct the indicated errors."
 msgstr "Bitte korrigieren Sie die angezeigten Fehler."
 
@@ -1679,11 +1675,11 @@ msgstr "Effektive Preise wurden gespeichert."
 msgid "Amount"
 msgstr "Menge"
 
-#: manage/views/voucher.py:56 templates/manage/voucher/vouchers_inline.html:77
+#: manage/views/voucher.py:56 templates/manage/voucher/vouchers_inline.html:79
 msgid "Start date"
 msgstr "Startdatum"
 
-#: manage/views/voucher.py:57 templates/manage/voucher/vouchers_inline.html:80
+#: manage/views/voucher.py:57 templates/manage/voucher/vouchers_inline.html:82
 msgid "End date"
 msgstr "Enddatum"
 
@@ -1691,11 +1687,11 @@ msgstr "Enddatum"
 msgid "Kind of"
 msgstr "Art"
 
-#: manage/views/voucher.py:59 templates/manage/voucher/vouchers_inline.html:83
+#: manage/views/voucher.py:59 templates/manage/voucher/vouchers_inline.html:85
 msgid "Effective from"
 msgstr "Effektiv ab"
 
-#: manage/views/voucher.py:61 templates/manage/voucher/vouchers_inline.html:92
+#: manage/views/voucher.py:61 templates/manage/voucher/vouchers_inline.html:94
 msgid "Limit"
 msgstr "Limit"
 
@@ -1793,19 +1789,19 @@ msgstr "Zubehör wurde aktualisiert."
 msgid "Categories have been saved."
 msgstr "Kategorien wurden gespeichert."
 
-#: manage/views/product/images.py:36
+#: manage/views/product/images.py:39
 msgid "Images has been added."
 msgstr "Bilder wurden hinzugefügt."
 
-#: manage/views/product/images.py:72
+#: manage/views/product/images.py:79
 msgid "Images has been deleted."
 msgstr "Bilder wurden gelöscht."
 
-#: manage/views/product/images.py:82
+#: manage/views/product/images.py:89
 msgid "Images has been updated."
 msgstr "Bilder wurden aktualisiert."
 
-#: manage/views/product/images.py:180
+#: manage/views/product/images.py:187
 msgid "Active images has been updated."
 msgstr "Bilderstatus wurden aktualisiert."
 
@@ -1813,27 +1809,27 @@ msgstr "Bilderstatus wurden aktualisiert."
 msgid "Product stock data has been saved."
 msgstr "Produkt-Lagerdaten wurden gespeichert."
 
-#: manage/views/product/product.py:327
+#: manage/views/product/product.py:330
 msgid "Sub type has been changed."
 msgstr "Produkttyp wurden gespeichert."
 
-#: manage/views/product/product.py:365
+#: manage/views/product/product.py:368
 msgid "Productdata has been saved."
 msgstr "Produktdaten wurden gespeichert."
 
-#: manage/views/product/product.py:421
+#: manage/views/product/product.py:424
 msgid "Product filters have been reset"
 msgstr "Produktfilter wurden gespeichert."
 
-#: manage/views/product/product.py:447
+#: manage/views/product/product.py:450
 msgid "Products have been deleted."
 msgstr "Produkte wurden gelöscht."
 
-#: manage/views/product/product.py:489
+#: manage/views/product/product.py:492
 msgid "Products have been saved"
 msgstr "Produkte wurden gespeichert."
 
-#: manage/views/product/product.py:565
+#: manage/views/product/product.py:568
 msgid "Product filters have been set"
 msgstr "Produktfilter wurden gespeichert."
 
@@ -2511,10 +2507,10 @@ msgstr "Ende"
 #: templates/manage/reviews/selectable_reviews_inline.html:9
 #: templates/manage/reviews/selectable_reviews_inline.html:20
 #: templates/manage/reviews/selectable_reviews_inline.html:21
-#: templates/manage/voucher/vouchers_inline.html:7
-#: templates/manage/voucher/vouchers_inline.html:8
-#: templates/manage/voucher/vouchers_inline.html:19
-#: templates/manage/voucher/vouchers_inline.html:20
+#: templates/manage/voucher/vouchers_inline.html:9
+#: templates/manage/voucher/vouchers_inline.html:10
+#: templates/manage/voucher/vouchers_inline.html:21
+#: templates/manage/voucher/vouchers_inline.html:22
 msgid "First"
 msgstr "Erstes"
 
@@ -2568,10 +2564,10 @@ msgstr "Erstes"
 #: templates/manage/reviews/selectable_reviews_inline.html:15
 #: templates/manage/reviews/selectable_reviews_inline.html:25
 #: templates/manage/reviews/selectable_reviews_inline.html:26
-#: templates/manage/voucher/vouchers_inline.html:13
-#: templates/manage/voucher/vouchers_inline.html:14
-#: templates/manage/voucher/vouchers_inline.html:24
-#: templates/manage/voucher/vouchers_inline.html:25
+#: templates/manage/voucher/vouchers_inline.html:15
+#: templates/manage/voucher/vouchers_inline.html:16
+#: templates/manage/voucher/vouchers_inline.html:26
+#: templates/manage/voucher/vouchers_inline.html:27
 msgid "Previous"
 msgstr "Zurück"
 
@@ -2591,7 +2587,7 @@ msgstr "Zurück"
 #: templates/manage/properties/pg_products_inline.html:15
 #: templates/manage/reviews/reviews_inline.html:38
 #: templates/manage/reviews/selectable_reviews_inline.html:30
-#: templates/manage/voucher/vouchers_inline.html:29
+#: templates/manage/voucher/vouchers_inline.html:31
 msgid "of"
 msgstr "von"
 
@@ -2645,10 +2641,10 @@ msgstr "von"
 #: templates/manage/reviews/selectable_reviews_inline.html:37
 #: templates/manage/reviews/selectable_reviews_inline.html:47
 #: templates/manage/reviews/selectable_reviews_inline.html:48
-#: templates/manage/voucher/vouchers_inline.html:35
-#: templates/manage/voucher/vouchers_inline.html:36
-#: templates/manage/voucher/vouchers_inline.html:46
-#: templates/manage/voucher/vouchers_inline.html:47
+#: templates/manage/voucher/vouchers_inline.html:37
+#: templates/manage/voucher/vouchers_inline.html:38
+#: templates/manage/voucher/vouchers_inline.html:48
+#: templates/manage/voucher/vouchers_inline.html:49
 msgid "Next"
 msgstr "Vor"
 
@@ -2702,10 +2698,10 @@ msgstr "Vor"
 #: templates/manage/reviews/selectable_reviews_inline.html:43
 #: templates/manage/reviews/selectable_reviews_inline.html:50
 #: templates/manage/reviews/selectable_reviews_inline.html:51
-#: templates/manage/voucher/vouchers_inline.html:41
-#: templates/manage/voucher/vouchers_inline.html:42
-#: templates/manage/voucher/vouchers_inline.html:49
-#: templates/manage/voucher/vouchers_inline.html:50
+#: templates/manage/voucher/vouchers_inline.html:43
+#: templates/manage/voucher/vouchers_inline.html:44
+#: templates/manage/voucher/vouchers_inline.html:51
+#: templates/manage/voucher/vouchers_inline.html:52
 msgid "Last"
 msgstr "Letztes"
 
@@ -3930,21 +3926,25 @@ msgstr "Gutscheingruppen löschen"
 msgid "Add vouchers"
 msgstr "Gutscheine hinzufügen"
 
-#: templates/manage/voucher/vouchers_inline.html:89
+#: templates/manage/voucher/vouchers_inline.html:91
 msgid "Used"
 msgstr "Verbraucht"
 
-#: templates/manage/voucher/vouchers_inline.html:95
+#: templates/manage/voucher/vouchers_inline.html:97
 msgid "Last used date"
 msgstr "Zuletzt benutzt"
 
-#: templates/manage/voucher/vouchers_inline.html:155
+#: templates/manage/voucher/vouchers_inline.html:157
 msgid "DATE_FORMAT"
 msgstr ""
 
 #: templates/manage/voucher/vouchers_inline.html:164
 msgid "Delete vouchers"
 msgstr "Gutscheine löschen"
+
+#: templates/manage/voucher/vouchers_inline.html:167
+msgid "There are no vouchers for this group yet."
+msgstr "Diese Gruppe hat zur Zeit keine Gutscheine."
 
 #: voucher/settings.py:12
 msgid "The voucher is valid."
@@ -3975,7 +3975,6 @@ msgid "The voucher doesn't exist."
 msgstr "Dieser Gutschein existiert nicht"
 
 # Additional msgids DO NOT DELETE THIS
-
 msgid "Left"
 msgstr "Links"
 

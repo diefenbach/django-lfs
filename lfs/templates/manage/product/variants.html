@@ -24,7 +24,7 @@
     <h2 class="heading-middle">{% trans 'Local properties' %}
         <a href="" class="discreet property-edit-mode">
             <img src="{{ STATIC_URL }}icons/pencil.png"
-                 alt="Edit"
+                 alt="{% trans 'Edit' %}"
                  title="{% trans 'Edit variant' %}" />
         </a>
     </h2>
@@ -59,7 +59,7 @@
         {% endif %}
 
         <a href="{% url lfs.manage.views.delete_property product.id property.id %}"
-           class="ajax-link property-edit-field delete-link"
+           class="delete-link property-edit-field"
            dialog_message="{% trans 'Do you really want to delete this property and all its options?' %}"
            dialog_yes_button_class="ajax-save-button">
             <image src="{{ STATIC_URL }}icons/cross.png"
@@ -71,7 +71,7 @@
                 <div>
                     {{ option.name }}
                     <a href="{% url lfs.manage.views.delete_property_option product.id option.id %}"
-                       class="ajax-link property-edit-field delete-link"
+                       class="delete-link property-edit-field"
                        dialog_message="{% trans 'Do you really want to delete this option?' %}"
                        dialog_yes_button_class="ajax-save-button">
                         <image src="{{ STATIC_URL }}icons/cross.png"
@@ -179,8 +179,8 @@
                     </th>
                 {% endfor %}
                 <th colspan="2">
-                    <input type="checkbox" 
-                           class="select-all" 
+                    <input type="checkbox"
+                           class="select-all"
                            value="price" />
                     {% trans 'Price' %}
                 </th>
@@ -253,7 +253,7 @@
               method="post">
             <div class="label">
                 {{ display_type_form.variants_display_type.label_tag }}:
-            </div>    
+            </div>
             <div>
                 {{ display_type_form.variants_display_type }}
             </div>

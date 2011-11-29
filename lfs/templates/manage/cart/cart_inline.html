@@ -52,7 +52,7 @@
 				---
 			{% endif %}
         </td>
-    </tr>        
+    </tr>
     <tr>
         <td class="label">
             {% trans 'Creation date' %}:
@@ -87,7 +87,7 @@
     </tr>
 </table>
 
-{% if cart.items %}
+{% if cart.get_items %}
     <table class="lfs-manage-table">
         <tr>
             <th class="small">
@@ -109,7 +109,7 @@
                 {% trans 'Total' %}
             </th>
         </tr>
-        {% for item in cart.items %}
+        {% for item in cart.get_items %}
             <tr class="clickable"
                 onclick="window.location='{% url lfs_manage_product item.product.id %}'">
                 <td class="small-right">
@@ -122,13 +122,13 @@
                 	{{ item.product.get_name }}
                 </td>
                 <td class="number">
-                    {{ item.product.get_price|currency }}
+                    {{ item.product|get_price:request|currency }}
                 </td>
                 <td class="number">
                     {{ item.amount }}
                 </td>
                 <td class="number">
-                    {{ item.get_price|currency }}
+                    {{ item|get_price_gross:request|currency }}
                 </td>
             </tr>
         {% endfor %}

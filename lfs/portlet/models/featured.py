@@ -36,19 +36,17 @@ class FeaturedPortlet(Portlet):
         # filter by current category
         if self.current_category and context.get('category'):
             cat = context.get('category')
-            filters['categories__in'] = [cat.id,]
+            filters['categories__in'] = [cat.id, ]
 
         products = [x.product
                     for x in FeaturedProduct.objects.all()[:self.limit]]
 
         return render_to_string("lfs/portlets/featured.html", {
-            "title" : self.rendered_title,
-            "slideshow" : self.slideshow,
-            "products" : products,
-            "MEDIA_URL" : context.get("MEDIA_URL"),
+            "title": self.rendered_title,
+            "slideshow": self.slideshow,
+            "products": products,
+            "MEDIA_URL": context.get("MEDIA_URL"),
         })
-
-
 
     def form(self, **kwargs):
         """
@@ -64,4 +62,3 @@ class FeaturedForm(forms.ModelForm):
     """
     class Meta:
         model = FeaturedPortlet
-

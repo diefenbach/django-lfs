@@ -1,7 +1,3 @@
-$(document).ready(function(){
-	$("input.dateField").datepicker({ dateFormat: 'yy-mm-dd' });
-});
-
 function popup(url, w, h) {
     w = window.open(url, "Preview", "height=" + h +", width=" + w +", screenX=500, screenY=150, scrollbars=yes, resizable=yes");
     w.focus();
@@ -384,6 +380,69 @@ $(function() {
         }
         return false;
     })
+
+    $("input.date-picker").datepicker({
+        dateFormat: 'yy-mm-dd',
+        showWeek: true,
+        firstDay: 1
+    });
+
+    $('ul.sortable').sortable({
+        placeholder: 'placeholder',
+        forcePlaceholderSize: true,
+        handle: '.handle',
+        helper: 'clone',
+        items: 'li',
+        opacity: .6,
+        revert: 250,
+        tabSize: 25,
+        tolerance: 'pointer',
+        toleranceElement: '> div',
+        stop: function(event, ui){
+            var url = $(this).attr("href");
+            serialized = $('ul.sortable').sortable('serialize');
+            $.ajax({
+                url: url,
+                context: document.body,
+                type: "POST",
+                data: {"pages": serialized},
+                success: function(data) {
+                    data = $.parseJSON(data);
+                    $.jGrowl(data["message"])
+                }
+           });
+        }
+    });
+
+    $(function() {
+        $('ol.sortable').nestedSortable({
+            placeholder: 'placeholder',
+            forcePlaceholderSize: true,
+            handle: '.handle',
+            helper: 'clone',
+            items: 'li',
+            opacity: .6,
+            revert: 250,
+            tabSize: 25,
+            tolerance: 'pointer',
+            toleranceElement: '> div',
+            stop: function(event, ui){
+                var url = $(this).attr("href");
+                serialized = $('ol.sortable').nestedSortable('serialize');
+                $.ajax({
+                    url: url,
+                    context: document.body,
+                    type: "POST",
+                    data: {"categories": serialized},
+                    success: function(data) {
+                        data = $.parseJSON(data);
+                        $.jGrowl(data["message"])
+                    }
+               });
+            }
+        });
+    });
+
 })
 
 $(document).ajaxComplete(function() {

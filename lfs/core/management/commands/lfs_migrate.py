@@ -62,7 +62,7 @@ class Command(BaseCommand):
                 models.BooleanField(_(u"Use international currency codes"), default=False))
             db.delete_column('core_shop', 'default_currency')
 
-            db.add_column("catalog_product", "supplier_id", models.IntegerField(_(u"Supplier"), blank=True, null=True))
+            db.add_column("catalog_product", "supplier_id", models.IntegerField("Supplier", blank=True, null=True))
 
             print "Your database has been migrated to version 0.6."
 

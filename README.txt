@@ -27,10 +27,31 @@ A demo shop can be tried here:
 Changes
 =======
 
-0.6.0 beta 3 (Unreleased)
+0.6.0 beta 5 (2011-11-28)
 -------------------------
 
-* Bugfix: display price if it's 0.0; issue #108
+* Bugfix: fixed delete links for properties and options within product's variants tab
+* Bugfix: fixed saving of variant list type.
+* Bugfix: fixed my account (added missing csrf_tokens; issue #114).
+* Bugfix: fixed discounts
+* Added dutch translations (BasTichelaar)
+* Updated romanian translations (bsdwave)
+
+0.6.0 beta 4 (2011-11-26)
+-------------------------
+* Bugfix: fixed display of vouchers options tab
+* Bugfix: don't translate label of supplier_id field within lfs_migrate
+* Bugfix: fixed the management of a customer if he has no cart yet
+* Bugfix: fixed cart management interface; issue #113
+
+0.6.0 beta 3 (2011-11-26)
+-------------------------
+
+* Added: add log message when uploading of an image failed
+* Bugfix: fixed display of average score in rating portlet
+* Bugfix: fixed links to images within image gallery
+* Bugfix: fixed changing state and deleting of orders; issue #110
+* Bugfix: fixed display price if it's 0.0; issue #108
 
 0.6.0 beta 2 (2011-11-21)
 -------------------------
@@ -49,3 +70,9 @@ Changes
 * Removed SWFUpload (Flash) in favour of jquery.fileupload (Javascript)
 * Using Python's locale to display currencies
 * New contact form
+
+HISTORY
+=======
+
+For the complete history please look into HISTORY.txt
+=======

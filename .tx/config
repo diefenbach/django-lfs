@@ -2,12 +2,14 @@
 host = http://www.transifex.net
 
 [lfs.lfs]
-source_file = lfs/locale/de/LC_MESSAGES/django.po
-source_lang = de
+source_file = lfs/locale/en/LC_MESSAGES/django.po
+source_lang = en
+trans.de = lfs/locale/de/LC_MESSAGES/django.po
 trans.es = lfs/locale/es/LC_MESSAGES/django.po
 trans.es_MX = lfs/locale/es_MX/LC_MESSAGES/django.po
 trans.fr = lfs/locale/fr/LC_MESSAGES/django.po
 trans.it = lfs/locale/it/LC_MESSAGES/django.po
+trans.nl = lfs/locale/nl/LC_MESSAGES/django.po
 trans.pl = lfs/locale/pl/LC_MESSAGES/django.po
 trans.ro = lfs/locale/ro/LC_MESSAGES/django.po
 trans.ru = lfs/locale/ru/LC_MESSAGES/django.po

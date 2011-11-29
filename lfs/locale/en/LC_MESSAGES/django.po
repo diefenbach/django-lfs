@@ -1,85 +1,82 @@
-# LFS Romanian Translations
-# Copyright (C) 2009 Tiberiu Ichim
-# This file is distributed under the same license as the LFS package.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Tiberiu Ichim <tibi@pixelblaster.ro>, 2009, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: LFS\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-24 17:16+0200\n"
-"PO-Revision-Date: 2011-11-25 14:59+0200\n"
-"Last-Translator: bsdwave\n"
-"Language-Team: Romanian <kde-i18n-doc@kde.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2011-11-28 08:08-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.2\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
-"20)) ? 1 : 2;\n"
 
 #: cart/models.py:48 criteria/models/criteria.py:591 order/models.py:43
-#: templates/manage/cart/carts_inline.html:111
+#: templates/manage/cart/carts_inline.html:16
 msgid "User"
-msgstr "Utilizator"
+msgstr ""
 
 #: cart/models.py:49 order/models.py:44
 msgid "Session"
-msgstr "Sesiune"
+msgstr ""
 
 #: cart/models.py:50 cart/models.py:234 catalog/models.py:565
 #: templates/manage/cart/cart_inline.html:58
 #: templates/manage/cart/cart_inline.html:97
-#: templates/manage/cart/carts_inline.html:105
-#: templates/manage/customer/customer_inline.html:154
-#: templates/manage/reviews/review_inline.html:95
-#: templates/manage/reviews/reviews_inline.html:101
+#: templates/manage/cart/carts_inline.html:10
+#: templates/manage/customer/customer_inline.html:125
+#: templates/manage/reviews/review_inline.html:33
+#: templates/manage/reviews/reviews_inline.html:15
 msgid "Creation date"
-msgstr "Data creare"
+msgstr ""
 
 #: cart/models.py:51 cart/models.py:235
 #: templates/manage/cart/cart_inline.html:66
-#: templates/manage/cart/carts_inline.html:108
-#: templates/manage/customer/customer_inline.html:202
+#: templates/manage/cart/carts_inline.html:13
+#: templates/manage/customer/customer_inline.html:173
 msgid "Modification date"
-msgstr "Data modificare"
+msgstr ""
 
 #: cart/models.py:231 portlet/templatetags/lfs_portlets_tags.py:89
-#: templates/manage/cart/cart.html:67
-#: templates/manage/customer/customer_inline.html:194
-#: templates/manage/customer/customers_inline.html:114
+#: templates/manage/cart/cart.html:24
+#: templates/manage/customer/customer_inline.html:165
+#: templates/manage/customer/customers_inline.html:35
 msgid "Cart"
-msgstr "Coș"
+msgstr ""
 
 #: cart/models.py:232 catalog/models.py:1396 catalog/models.py:1650
 #: catalog/models.py:1716 marketing/models.py:13 marketing/models.py:26
 #: marketing/models.py:33 templates/manage/cart/cart_inline.html:100
 #: templates/manage/product/product.html:89
-#: templates/manage/reviews/review_inline.html:140
-#: templates/manage/reviews/reviews_inline.html:119
+#: templates/manage/reviews/review_inline.html:78
+#: templates/manage/reviews/reviews_inline.html:33
 msgid "Product"
-msgstr "Produs"
+msgstr ""
 
 #: cart/models.py:233 catalog/models.py:1399
 #: templates/manage/product/accessories_inline.html:116
 msgid "Quantity"
-msgstr "Cantitate"
+msgstr ""
 
 #: cart/models.py:382
 msgid "Cart item"
-msgstr "Item coș"
+msgstr ""
 
 #: cart/models.py:383 catalog/models.py:1603 catalog/models.py:1628
 #: catalog/models.py:1651 catalog/models.py:1676 catalog/models.py:1718
 #: order/models.py:204 templates/manage/properties/property.html:31
 msgid "Property"
-msgstr "Proprietate"
+msgstr ""
 
 #: cart/views.py:258
 #, python-format
 msgid "%(name)s must be between %(min)s and %(max)s %(unit)s."
-msgstr "%(name)s trebuie sa fie între %(min)s și %(max)s %(unit)s."
+msgstr ""
 
 #: cart/views.py:272
 #, python-format
@@ -87,23 +84,21 @@ msgid ""
 "Your entered value for %(name)s (%(value)s) is not in valid step width, "
 "which is %(step)s."
 msgstr ""
-"Valoarea (%(value)s) introdusă pentru %(name)s nu corespunde cu pașii %"
-"(step)s."
 
 #: cart/views.py:292 cart/views.py:394
 #, python-format
 msgid "Sorry, but '%(product)s' is not available anymore."
-msgstr "Ne pare rău, dar '%(product)s' nu mai este disponibil."
+msgstr ""
 
 #: cart/views.py:294 cart/views.py:396
 #, python-format
 msgid "Sorry, but '%(product)s' is only one time available."
-msgstr "Ne pare rău, dar '%(product)s' este disponibil o singură dată."
+msgstr ""
 
 #: cart/views.py:296 cart/views.py:398
 #, python-format
 msgid "Sorry, but '%(product)s' is only %(amount)s times available."
-msgstr "Ne pare rău, dar '%(product)s' este disponibil doar de %(amount)s ori."
+msgstr ""
 
 #: catalog/models.py:135 catalog/models.py:536 catalog/models.py:1522
 #: catalog/models.py:1678 catalog/models.py:1839 core/models.py:19
@@ -111,17 +106,18 @@ msgstr "Ne pare rău, dar '%(product)s' este disponibil doar de %(amount)s ori."
 #: payment/models.py:77 shipping/models.py:57
 #: templates/manage/category/products_inline.html:47
 #: templates/manage/category/selected_products.html:42
-#: templates/manage/customer/customer_inline.html:13
-#: templates/manage/customer/customers_inline.html:11
+#: templates/manage/customer/customer_filters_inline.html:12
+#: templates/manage/customer/customers_filters_inline.html:10
 #: templates/manage/marketing/featured_inline.html:44
 #: templates/manage/marketing/featured_inline.html:102
 #: templates/manage/marketing/rating_mails.html:48
 #: templates/manage/marketing/topseller_inline.html:44
 #: templates/manage/marketing/topseller_inline.html:103
-#: templates/manage/order/order_inline.html:14
-#: templates/manage/order/order_inline.html:224
-#: templates/manage/order/orders_inline.html:12
-#: templates/manage/order/orders_inline.html:122
+#: templates/manage/order/order_filters_inline.html:15
+#: templates/manage/order/order_inline.html:157
+#: templates/manage/order/orders_filter.html:11
+#: templates/manage/order/orders_filters_inline.html:11
+#: templates/manage/order/orders_inline.html:9
 #: templates/manage/product/accessories_inline.html:48
 #: templates/manage/product/accessories_inline.html:107
 #: templates/manage/product/products_inline.html:17
@@ -134,33 +130,33 @@ msgstr "Ne pare rău, dar '%(product)s' este disponibil doar de %(amount)s ori."
 #: templates/manage/properties/pg_products_inline.html:105
 #: templates/manage/properties/properties_inline.html:18
 #: templates/manage/properties/properties_inline.html:68
-#: templates/manage/reviews/review_inline.html:12
-#: templates/manage/reviews/review_inline.html:103
-#: templates/manage/reviews/reviews_inline.html:10
-#: templates/manage/reviews/reviews_inline.html:107
+#: templates/manage/reviews/review_filters_inline.html:11
+#: templates/manage/reviews/review_inline.html:41
+#: templates/manage/reviews/reviews_filters_inline.html:9
+#: templates/manage/reviews/reviews_inline.html:21
 msgid "Name"
-msgstr "Nume"
+msgstr ""
 
 #: catalog/models.py:136 catalog/models.py:537 export/models.py:17
 #: page/models.py:16 supplier/models.py:14
 #: templates/manage/product/products_inline.html:20
 #: templates/manage/product/variants.html:104
 msgid "Slug"
-msgstr "Scurtătură"
+msgstr ""
 
 #: catalog/models.py:137 catalog/models.py:601 catalog/models.py:1717
 #: core/models.py:80
 msgid "Parent"
-msgstr "Părinte"
+msgstr ""
 
 #: catalog/models.py:141
 msgid "Show all products"
-msgstr "Arată toate produsele"
+msgstr ""
 
 #: catalog/models.py:143 catalog/models.py:1429 catalog/models.py:1525
 #: catalog/settings.py:50 export/models.py:18
-#: templates/manage/manage_base.html:96
-#: templates/manage/cart/carts_inline.html:120
+#: templates/manage/manage_base.html:86
+#: templates/manage/cart/carts_inline.html:25
 #: templates/manage/category/manage_category.html:40
 #: templates/manage/category/products.html:7
 #: templates/manage/export/export.html:34
@@ -174,24 +170,24 @@ msgstr "Arată toate produsele"
 #: templates/manage/properties/pg_products_inline.html:32
 #: templates/manage/properties/property_group.html:32
 msgid "Products"
-msgstr "Produse"
+msgstr ""
 
 #: catalog/models.py:144 catalog/models.py:546
 msgid "Short description"
-msgstr "Scurtă descriere"
+msgstr ""
 
 #: catalog/models.py:145 catalog/models.py:547 catalog/models.py:1865
 #: core/models.py:159 payment/models.py:78 shipping/models.py:58
 #: tax/models.py:18
 msgid "Description"
-msgstr "Descriere"
+msgstr ""
 
 #: catalog/models.py:146 catalog/models.py:1767 core/models.py:160
 #: payment/models.py:80 shipping/models.py:60
 #: templates/manage/category/data.html:71
 #: templates/manage/product/images.html:33
 msgid "Image"
-msgstr "Imagine"
+msgstr ""
 
 #: catalog/models.py:147 catalog/models.py:1398 catalog/models.py:1526
 #: catalog/models.py:1629 catalog/models.py:1652 catalog/models.py:1680
@@ -208,56 +204,56 @@ msgstr "Imagine"
 #: templates/manage/properties/properties_inline.html:65
 #: templates/manage/static_block/files.html:20
 msgid "Position"
-msgstr "Poziție"
+msgstr ""
 
 #: catalog/models.py:148 page/models.py:18
 msgid "Exclude from navigation"
-msgstr "Exclude din navigație"
+msgstr ""
 
 #: catalog/models.py:150 catalog/models.py:581 core/models.py:161
 #: templates/manage/static_block/static_block.html:34
 msgid "Static block"
-msgstr "Bloc static"
+msgstr ""
 
 #: catalog/models.py:151
 msgid "Category template"
-msgstr "Template categorie"
+msgstr ""
 
 #: catalog/models.py:152
 msgid "Active formats"
-msgstr "Formate active"
+msgstr ""
 
 #: catalog/models.py:154 core/models.py:164
 msgid "Product rows"
-msgstr "Linii produse"
+msgstr ""
 
 #: catalog/models.py:155 core/models.py:163
 msgid "Product cols"
-msgstr "Coloane produse"
+msgstr ""
 
 #: catalog/models.py:156 core/models.py:165
 msgid "Category cols"
-msgstr "Coloane categorii"
+msgstr ""
 
 #: catalog/models.py:158 catalog/models.py:551
 msgid "Meta title"
-msgstr "Titlu meta"
+msgstr ""
 
 #: catalog/models.py:159 catalog/models.py:552
 msgid "Meta keywords"
-msgstr "Cuvinte cheie meta"
+msgstr ""
 
 #: catalog/models.py:160 catalog/models.py:553
 msgid "Meta description"
-msgstr "Descrierea meta"
+msgstr ""
 
 #: catalog/models.py:536
 msgid "The name of the product."
-msgstr "Numele produsului."
+msgstr ""
 
 #: catalog/models.py:537
 msgid "The unique last part of the Product's URL."
-msgstr "Ultima parte unică a URL-ului produsului."
+msgstr ""
 
 #: catalog/models.py:538 templates/manage/category/products_inline.html:50
 #: templates/manage/category/selected_products.html:45
@@ -265,7 +261,7 @@ msgstr "Ultima parte unică a URL-ului produsului."
 #: templates/manage/marketing/featured_inline.html:105
 #: templates/manage/marketing/topseller_inline.html:47
 #: templates/manage/marketing/topseller_inline.html:106
-#: templates/manage/order/order_inline.html:221
+#: templates/manage/order/order_inline.html:154
 #: templates/manage/product/accessories_inline.html:51
 #: templates/manage/product/accessories_inline.html:110
 #: templates/manage/product/products_inline.html:23
@@ -275,11 +271,11 @@ msgstr "Ultima parte unică a URL-ului produsului."
 #: templates/manage/properties/pg_products_inline.html:48
 #: templates/manage/properties/pg_products_inline.html:108
 msgid "SKU"
-msgstr "SKU"
+msgstr ""
 
 #: catalog/models.py:538
 msgid "Your unique article number of the product."
-msgstr "Numărul unic al produsului."
+msgstr ""
 
 #: catalog/models.py:539 catalog/models.py:543 catalog/models.py:1534
 #: catalog/models.py:1679 criteria/models/criteria.py:52 order/models.py:51
@@ -296,53 +292,53 @@ msgstr "Numărul unic al produsului."
 #: templates/manage/criteria/user_criterion.html:14
 #: templates/manage/criteria/weight_criterion.html:14
 #: templates/manage/criteria/width_criterion.html:14
-#: templates/manage/customer/customer_inline.html:160
-#: templates/manage/customer/customer_inline.html:205
+#: templates/manage/customer/customer_inline.html:131
+#: templates/manage/customer/customer_inline.html:176
 #: templates/manage/marketing/rating_mails.html:60
-#: templates/manage/order/order_inline.html:232
-#: templates/manage/order/orders_inline.html:128
+#: templates/manage/order/order_inline.html:165
+#: templates/manage/order/orders_inline.html:15
 #: templates/manage/payment/payment_method_prices.html:27
 #: templates/manage/product/products_inline.html:34
 #: templates/manage/product/variants.html:110
 #: templates/manage/product/variants.html:185
 #: templates/manage/shipping/shipping_method_prices.html:27
 msgid "Price"
-msgstr "Preț"
+msgstr ""
 
 #: catalog/models.py:540
 msgid "Price calculator"
-msgstr "Calculator preț"
+msgstr ""
 
 #: catalog/models.py:544
 msgid "Price unit"
-msgstr "Preț unitar"
+msgstr ""
 
 #: catalog/models.py:545 catalog/models.py:579 catalog/models.py:1527
 #: catalog/models.py:1864
 msgid "Unit"
-msgstr "Unitate"
+msgstr ""
 
 #: catalog/models.py:548 templates/manage/product/images.html:3
 #: templates/manage/product/product.html:97
 msgid "Images"
-msgstr "Imagini"
+msgstr ""
 
 #: catalog/models.py:555 templates/manage/product/related_products.html:4
 msgid "Related products"
-msgstr "Produse conexe"
+msgstr ""
 
 #: catalog/models.py:558
 msgid "Acessories"
-msgstr "Accesorii"
+msgstr ""
 
 #: catalog/models.py:562
 #: templates/manage/product/product_filters_inline.html:17
 msgid "For sale"
-msgstr "La reducere"
+msgstr ""
 
 #: catalog/models.py:563
 msgid "For sale price"
-msgstr "Preț la reducere"
+msgstr ""
 
 #: catalog/models.py:564 core/models.py:75 marketing/models.py:35
 #: page/models.py:14 payment/models.py:75 payment/models.py:125
@@ -362,42 +358,42 @@ msgstr "Preț la reducere"
 #: templates/manage/product/variants.html:163
 #: templates/manage/properties/pg_products_inline.html:51
 #: templates/manage/properties/pg_products_inline.html:111
-#: templates/manage/reviews/review_inline.html:13
-#: templates/manage/reviews/review_inline.html:52
-#: templates/manage/reviews/review_inline.html:83
-#: templates/manage/reviews/reviews_inline.html:11
-#: templates/manage/reviews/reviews_inline.html:132
-#: templates/manage/voucher/vouchers_inline.html:86
+#: templates/manage/reviews/review.html:28
+#: templates/manage/reviews/review_filters_inline.html:12
+#: templates/manage/reviews/review_inline.html:21
+#: templates/manage/reviews/reviews_filters_inline.html:10
+#: templates/manage/reviews/reviews_inline.html:46
+#: templates/manage/voucher/vouchers_inline.html:88
 msgid "Active"
-msgstr "Activ"
+msgstr ""
 
 #: catalog/models.py:569
 msgid "Deliverable"
-msgstr "Livrabil"
+msgstr ""
 
 #: catalog/models.py:570
 msgid "Manual delivery time"
-msgstr "Timp de livrare manual"
+msgstr ""
 
 #: catalog/models.py:571 shipping/models.py:63
 msgid "Delivery time"
-msgstr "Timp de livrare"
+msgstr ""
 
 #: catalog/models.py:572
 msgid "Order time"
-msgstr "Timpul comenzii"
+msgstr ""
 
 #: catalog/models.py:573
 msgid "Ordered at"
-msgstr "Comandat la"
+msgstr ""
 
 #: catalog/models.py:574
 msgid "Manage stock amount"
-msgstr "Administrare stocuri"
+msgstr ""
 
 #: catalog/models.py:575
 msgid "Stock amount"
-msgstr "Cantitate în stoc"
+msgstr ""
 
 #: catalog/models.py:577
 msgid "Active packing unit"
@@ -421,7 +417,7 @@ msgstr ""
 #: templates/manage/criteria/weight_criterion.html:17
 #: templates/manage/criteria/width_criterion.html:17
 msgid "Weight"
-msgstr "Greutate"
+msgstr ""
 
 #: catalog/models.py:585 criteria/models/criteria.py:257
 #: criteria/models/criteria.py:275 criteria/models/criteria.py:690
@@ -437,7 +433,7 @@ msgstr "Greutate"
 #: templates/manage/criteria/weight_criterion.html:11
 #: templates/manage/criteria/width_criterion.html:11
 msgid "Height"
-msgstr "Înălțime"
+msgstr ""
 
 #: catalog/models.py:586 criteria/models/criteria.py:319
 #: criteria/models/criteria.py:337
@@ -453,7 +449,7 @@ msgstr "Înălțime"
 #: templates/manage/criteria/weight_criterion.html:12
 #: templates/manage/criteria/width_criterion.html:12
 msgid "Length"
-msgstr "Lungime"
+msgstr ""
 
 #: catalog/models.py:587 criteria/models/criteria.py:113
 #: criteria/models/criteria.py:672
@@ -469,646 +465,641 @@ msgstr "Lungime"
 #: templates/manage/criteria/weight_criterion.html:16
 #: templates/manage/criteria/width_criterion.html:16
 msgid "Width"
-msgstr "Lățime"
+msgstr ""
 
 #: catalog/models.py:590 discounts/models.py:44 manage/views/voucher.py:60
 #: order/models.py:52 order/models.py:130 payment/models.py:81
 #: shipping/models.py:61 templates/manage/tax/tax.html:34
-#: templates/manage/voucher/vouchers_inline.html:74 voucher/models.py:102
+#: templates/manage/voucher/vouchers_inline.html:76 voucher/models.py:102
 msgid "Tax"
-msgstr "Taxă"
+msgstr ""
 
 #: catalog/models.py:591
 msgid "Subtype"
-msgstr "Subtip"
+msgstr ""
 
 #: catalog/models.py:595
 msgid "Default variant"
-msgstr "Variantă implicită"
+msgstr ""
 
 #: catalog/models.py:596
 msgid "Variants display type"
-msgstr "Tip de afișare al variantelor"
+msgstr ""
 
 #: catalog/models.py:602
 msgid "Active name"
-msgstr "Nume activ"
+msgstr ""
 
 #: catalog/models.py:603
 msgid "Active SKU"
-msgstr "SKU activ"
+msgstr ""
 
 #: catalog/models.py:604
 msgid "Active short description"
-msgstr "Scurtă descriere activ"
+msgstr ""
 
 #: catalog/models.py:605
 msgid "Active static bock"
-msgstr "Bloc static activ"
+msgstr ""
 
 #: catalog/models.py:606
 msgid "Active description"
-msgstr "Descrierea activ"
+msgstr ""
 
 #: catalog/models.py:607
 msgid "Active price"
-msgstr "Preț activ"
+msgstr ""
 
 #: catalog/models.py:608
 msgid "Active for sale"
-msgstr "Activ la reducere"
+msgstr ""
 
 #: catalog/models.py:609
 msgid "Active for sale price"
-msgstr "Preț redus activ"
+msgstr ""
 
 #: catalog/models.py:610
 msgid "Active Images"
-msgstr "Imagini activ"
+msgstr ""
 
 #: catalog/models.py:611 templates/manage/product/related_products.html:14
 msgid "Active related products"
-msgstr "Produse conexe active"
+msgstr ""
 
 #: catalog/models.py:612 templates/manage/product/accessories.html:14
 msgid "Active accessories"
-msgstr "Accesorii activ"
+msgstr ""
 
 #: catalog/models.py:613
 msgid "Active meta title"
-msgstr "Titlu meta activ"
+msgstr ""
 
 #: catalog/models.py:614
 msgid "Active meta description"
-msgstr "Descriere meta activ"
+msgstr ""
 
 #: catalog/models.py:615
 msgid "Active meta keywords"
-msgstr "Cuvinte cheie activ"
+msgstr ""
 
 #: catalog/models.py:616
 msgid "Active dimensions"
-msgstr "Dimensiuni activ"
+msgstr ""
 
 #: catalog/models.py:617
 msgid "Product template"
-msgstr "Template produs"
+msgstr ""
 
 #: catalog/models.py:620
 msgid "Active price calculation"
-msgstr "Calculare activă a prețului"
+msgstr ""
 
 #: catalog/models.py:621
 msgid "Price Calculation"
-msgstr "Calcularea prețului"
+msgstr ""
 
 #: catalog/models.py:624
 msgid "SKU Manufacturer"
-msgstr "SKU Producător"
+msgstr ""
 
 #: catalog/models.py:625
 #: templates/manage/manufacturer/add_manufacturer.html:10
 #: templates/manage/manufacturer/manufacturer.html:32
 msgid "Manufacturer"
-msgstr "Producător"
+msgstr ""
 
 #: catalog/models.py:1397
 msgid "Accessory"
-msgstr "Accesoriu"
+msgstr ""
 
 #: catalog/models.py:1523 catalog/models.py:1766 core/models.py:76
 #: page/models.py:15 templates/manage/portlets/portlets_inline.html:41
 #: templates/manage/product/images.html:36
 #: templates/manage/static_block/files.html:17
 msgid "Title"
-msgstr "Titlu"
+msgstr ""
 
 #: catalog/models.py:1524 catalog/models.py:1627 core/models.py:78
 msgid "Group"
-msgstr "Grup"
+msgstr ""
 
 #: catalog/models.py:1528
 msgid "Display on product"
-msgstr "Afișează pe produs"
+msgstr ""
 
 #: catalog/models.py:1531
 msgid "Display no results"
-msgstr "Afișează fără rezultate"
+msgstr ""
 
 #: catalog/models.py:1533 catalog/models.py:1721 customer/models.py:104
 #: discounts/models.py:43 templates/manage/portlets/portlets_inline.html:38
-#: templates/manage/voucher/vouchers_inline.html:68
+#: templates/manage/voucher/vouchers_inline.html:70
 msgid "Type"
-msgstr "Tip"
+msgstr ""
 
 #: catalog/models.py:1535
 msgid "Display price"
-msgstr "Afișează preț"
+msgstr ""
 
 #: catalog/models.py:1536
 #: templates/manage/payment/payment_method_prices.html:9
 #: templates/manage/shipping/shipping_method_prices.html:9
 msgid "Add price"
-msgstr "Adaugă preț"
+msgstr ""
 
 #: catalog/models.py:1539 catalog/models.py:1862
 msgid "Min"
-msgstr "Min"
+msgstr ""
 
 #: catalog/models.py:1540 catalog/models.py:1863
 msgid "Max"
-msgstr "Max"
+msgstr ""
 
 #: catalog/models.py:1541 catalog/models.py:1547
 msgid "Step"
-msgstr "Pas"
+msgstr ""
 
 #: catalog/models.py:1542
 msgid "Decimal places"
-msgstr "Zecimale"
+msgstr ""
 
 #: catalog/models.py:1546 templates/manage/properties/step_inline.html:2
 msgid "Step type"
-msgstr "Tip pas"
+msgstr ""
 
-#: catalog/models.py:1552 templates/manage/manage_base.html:100
-#: templates/manage/manage_base.html:102
+#: catalog/models.py:1552 templates/manage/manage_base.html:90
+#: templates/manage/manage_base.html:92
 #: templates/manage/product/product.html:108
 #: templates/manage/properties/properties_inline.html:6
 #: templates/manage/properties/property.html:6
 #: templates/manage/properties/property_group.html:33
 msgid "Properties"
-msgstr "Proprietăți"
+msgstr ""
 
 #: catalog/models.py:1719 discounts/models.py:42 manage/views/voucher.py:55
-#: templates/manage/voucher/vouchers_inline.html:71
+#: templates/manage/voucher/vouchers_inline.html:73
 msgid "Value"
-msgstr "Valoare"
+msgstr ""
 
 #: catalog/models.py:1720
 msgid "Value as float"
-msgstr "Valoare număr real"
+msgstr ""
 
 #: catalog/models.py:1762 catalog/models.py:1804
 #: criteria/models/criteria_objects.py:20
 msgid "Content type"
-msgstr "Tip conținut"
+msgstr ""
 
 #: catalog/models.py:1763 catalog/models.py:1805
 #: criteria/models/criteria_objects.py:17
 #: criteria/models/criteria_objects.py:21
 msgid "Content id"
-msgstr "Id conținut"
+msgstr ""
 
 #: catalog/models.py:1840
 msgid "Display files"
-msgstr "Afișează fișiere"
+msgstr ""
 
-#: catalog/models.py:1841 templates/manage/manage_base.html:107
+#: catalog/models.py:1841 templates/manage/manage_base.html:97
 msgid "HTML"
-msgstr "HTML"
+msgstr ""
 
 #: catalog/models.py:1842 templates/manage/static_block/files.html:2
 #: templates/manage/static_block/static_block.html:35
 msgid "Files"
-msgstr "Fișiere"
+msgstr ""
 
 #: catalog/settings.py:8 catalog/settings.py:19 catalog/settings.py:26
 #: catalog/settings.py:33
 #: templates/manage/product/product_filters_inline.html:56
 #: templates/manage/product/products_inline.html:84
 msgid "Standard"
-msgstr "Standard"
+msgstr ""
 
-#: catalog/settings.py:9 templates/manage/manage_base.html:176
-#: templates/manage/customer/customer_inline.html:59
+#: catalog/settings.py:9 templates/manage/manage_base.html:166
+#: templates/manage/customer/customer_inline.html:30
 #: templates/manage/product/data.html:216
 #: templates/manage/product/product_filters_inline.html:42
 #: templates/manage/product/product_filters_inline.html:49
-#: templates/manage/reviews/review_inline.html:24
-#: templates/manage/reviews/review_inline.html:55
-#: templates/manage/reviews/review_inline.html:87
-#: templates/manage/reviews/review_inline.html:132
-#: templates/manage/reviews/reviews_inline.html:76
-#: templates/manage/reviews/reviews_inline.html:170
-#: templates/manage/reviews/reviews_inline.html:179
+#: templates/manage/reviews/review.html:31
+#: templates/manage/reviews/review_filters_inline.html:23
+#: templates/manage/reviews/review_inline.html:25
+#: templates/manage/reviews/review_inline.html:70
+#: templates/manage/reviews/reviews_filters_inline.html:75
+#: templates/manage/reviews/reviews_inline.html:84
+#: templates/manage/reviews/reviews_inline.html:93
 msgid "Yes"
-msgstr "Da"
+msgstr ""
 
-#: catalog/settings.py:10 templates/manage/manage_base.html:177
-#: templates/manage/customer/customer_inline.html:61
+#: catalog/settings.py:10 templates/manage/manage_base.html:167
+#: templates/manage/customer/customer_inline.html:32
 #: templates/manage/product/data.html:218
 #: templates/manage/product/product_filters_inline.html:43
 #: templates/manage/product/product_filters_inline.html:50
-#: templates/manage/reviews/review_inline.html:25
-#: templates/manage/reviews/review_inline.html:56
-#: templates/manage/reviews/review_inline.html:89
-#: templates/manage/reviews/review_inline.html:134
-#: templates/manage/reviews/reviews_inline.html:77
-#: templates/manage/reviews/reviews_inline.html:173
-#: templates/manage/reviews/reviews_inline.html:182
+#: templates/manage/reviews/review.html:32
+#: templates/manage/reviews/review_filters_inline.html:24
+#: templates/manage/reviews/review_inline.html:27
+#: templates/manage/reviews/review_inline.html:72
+#: templates/manage/reviews/reviews_filters_inline.html:76
+#: templates/manage/reviews/reviews_inline.html:87
+#: templates/manage/reviews/reviews_inline.html:96
 msgid "No"
-msgstr "Nu"
+msgstr ""
 
 #: catalog/settings.py:20 catalog/settings.py:27 catalog/settings.py:34
 #: templates/manage/product/product_filters_inline.html:57
 #: templates/manage/product/products_inline.html:85
 msgid "Product with variants"
-msgstr "Produs cu variante"
+msgstr ""
 
 #: catalog/settings.py:21 catalog/settings.py:28 export/models.py:72
 #: templates/manage/product/product_filters_inline.html:58
 #: templates/manage/product/products_inline.html:86
 msgid "Variant"
-msgstr "Variantă"
+msgstr ""
 
 #: catalog/settings.py:22 catalog/settings.py:29 catalog/settings.py:35
 #: templates/manage/product/product_filters_inline.html:59
 #: templates/manage/product/products_inline.html:87
 msgid "Configurable product"
-msgstr "Produs configurabil"
+msgstr ""
 
 #: catalog/settings.py:42
 msgid "List"
-msgstr "Listă"
+msgstr ""
 
 #: catalog/settings.py:43
 msgid "Select"
-msgstr "Selectează"
+msgstr ""
 
 #: catalog/settings.py:51 portlet/templatetags/lfs_portlets_tags.py:104
-#: templates/manage/manage_base.html:95
+#: templates/manage/manage_base.html:85
 #: templates/manage/category/manage_categories_portlet.html:2
 #: templates/manage/product/categories.html:3
 #: templates/manage/product/product.html:94
 msgid "Categories"
-msgstr "Categorii"
+msgstr ""
 
 #: catalog/settings.py:60
 msgid "hours"
-msgstr "ore"
+msgstr ""
 
 #: catalog/settings.py:61
 msgid "days"
-msgstr "zile"
+msgstr ""
 
 #: catalog/settings.py:62
 msgid "weeks"
-msgstr "săptămâni"
+msgstr ""
 
 #: catalog/settings.py:63
 msgid "months"
-msgstr "luni"
+msgstr ""
 
 #: catalog/settings.py:67
 msgid "hour"
-msgstr "oră"
+msgstr ""
 
 #: catalog/settings.py:68
 msgid "day"
-msgstr "zi"
+msgstr ""
 
 #: catalog/settings.py:69
 msgid "week"
-msgstr "săptămână"
+msgstr ""
 
 #: catalog/settings.py:70
 msgid "month"
-msgstr "lună"
+msgstr ""
 
 #: catalog/settings.py:83
 msgid "Float field"
-msgstr "Câmp de tip număr real"
+msgstr ""
 
 #: catalog/settings.py:84
 msgid "Text field"
-msgstr "Câmp text"
+msgstr ""
 
 #: catalog/settings.py:85
 msgid "Select field"
-msgstr "Câmp selectare"
+msgstr ""
 
 #: catalog/settings.py:93
 msgid "Automatic"
-msgstr "Automatic"
+msgstr ""
 
 #: catalog/settings.py:94
 msgid "Fixed step"
-msgstr "Pași ficși"
+msgstr ""
 
 #: catalog/settings.py:95
 msgid "Manual steps"
-msgstr "Pași manuali"
+msgstr ""
 
 #: catalog/settings.py:108
 msgid "Category with products"
-msgstr "Categorie cu produse"
+msgstr ""
 
 #: catalog/settings.py:112
 msgid "Category with subcategories"
-msgstr "Categorie cu subcategorii"
+msgstr ""
 
 #: catalog/settings.py:120 export/settings.py:11
 #: templates/manage/product/variants.html:188
 msgid "Default"
-msgstr "Implicit"
+msgstr ""
 
 #: catalog/views.py:53 catalog/views.py:148
 msgid "The product has been changed according to your selection."
-msgstr "Produsul a fost modificat potrivit selecției."
+msgstr ""
 
 #: catalog/views.py:124
 msgid "Price has been changed according to your selection."
-msgstr "Produsul a fost modificat potrivit selecției."
+msgstr ""
 
 #: catalog/views.py:145 catalog/views.py:599
 msgid "The choosen combination of properties is not deliverable."
-msgstr "Combinația de proprietăți aleasă nu este livrabilă"
+msgstr ""
 
 #: checkout/forms.py:19 checkout/forms.py:24 customer/forms.py:13
 #: customer/forms.py:18
 msgid "First Name"
-msgstr "Prenume"
+msgstr ""
 
 #: checkout/forms.py:20 checkout/forms.py:25 customer/forms.py:14
 #: customer/forms.py:19
 msgid "Last Name"
-msgstr "Nume"
+msgstr ""
 
 #: checkout/forms.py:21 customer/forms.py:15
 msgid "Invoice Phone"
-msgstr "Telefon pentru factură"
+msgstr ""
 
 #: checkout/forms.py:22 customer/forms.py:16
 msgid "Invoice E-mail"
-msgstr "E-mail pentru factură"
+msgstr ""
 
 #: checkout/forms.py:26 customer/forms.py:20
 msgid "Shipping Phone"
-msgstr "Telefon pentru livrare"
+msgstr ""
 
 #: checkout/forms.py:27 customer/forms.py:21
 msgid "Shipping E-mail"
-msgstr "E-mail pentru livrare"
+msgstr ""
 
 #: checkout/forms.py:29
 msgid "Requested Delivery Date"
-msgstr "Dată livrare solicitată"
+msgstr ""
 
 #: checkout/forms.py:31
 msgid "Account Number"
-msgstr "Număr cont"
+msgstr ""
 
 #: checkout/forms.py:32
 msgid "Bank Indentification Code"
-msgstr "Cod de identificare al băncii"
+msgstr ""
 
 #: checkout/forms.py:33
 msgid "Bankname"
-msgstr "Nume bancă"
+msgstr ""
 
 #: checkout/forms.py:34 customer/models.py:93 order/models.py:89
 msgid "Depositor"
-msgstr "Depozitor"
+msgstr ""
 
 #: checkout/forms.py:38
 msgid "Credit Card Type"
-msgstr "Tip carte de credit"
+msgstr ""
 
 #: checkout/forms.py:39
 msgid "Credit Card Owner"
-msgstr "Proprietar carte de credit"
+msgstr ""
 
 #: checkout/forms.py:40
 msgid "Credit Card Number"
-msgstr "Număr carte de credit"
+msgstr ""
 
 #: checkout/forms.py:41
 msgid "Expiration Date Month"
-msgstr "Data de expirare: lună"
+msgstr ""
 
 #: checkout/forms.py:42
 msgid "Expiration Date Year"
-msgstr "Data de expirare: an"
+msgstr ""
 
 #: checkout/forms.py:43
 msgid "Verification Number"
-msgstr "Număr de verificare"
+msgstr ""
 
 #: checkout/forms.py:45
 msgid "Same as invoice"
-msgstr "La fel ca factura"
+msgstr ""
 
 #: checkout/forms.py:46
 msgid "Your message to us"
-msgstr "Mesajul tău pentru noi"
+msgstr ""
 
 #: checkout/forms.py:58
 msgid "This field is required."
-msgstr "Acest câmp este necesar."
+msgstr ""
 
-#: checkout/forms.py:85
+#: checkout/forms.py:81
 msgid "Invalid shipping country."
-msgstr "Țară pentru livrare invalidă."
+msgstr ""
 
 #: checkout/settings.py:7
 msgid "Anonymous and Authenticated"
-msgstr "Anonim sau Autentificat"
+msgstr ""
 
 #: checkout/settings.py:8
 msgid "Anonymous only"
-msgstr "Doar anonim"
+msgstr ""
 
 #: checkout/settings.py:9
 msgid "Authenticated only"
-msgstr "Doar autentificat"
+msgstr ""
 
-#: checkout/views.py:64 customer/models.py:79 customer/views.py:55
-#: templates/manage/customer/customers_inline.html:107
+#: checkout/views.py:64 customer/models.py:79 customer/views.py:56
+#: templates/manage/customer/customers_inline.html:28
 #: templates/manage/marketing/rating_mails.html:51
-#: templates/manage/reviews/review_inline.html:116
-#: templates/manage/reviews/reviews_inline.html:113
+#: templates/manage/reviews/review_inline.html:54
+#: templates/manage/reviews/reviews_inline.html:27
 msgid "E-Mail"
-msgstr "E-Mail"
+msgstr ""
 
-#: checkout/views.py:74 customer/views.py:71
+#: checkout/views.py:74 customer/views.py:72
 msgid "You have been logged in."
-msgstr "Ai fost autentificat."
+msgstr ""
 
-#: checkout/views.py:97 customer/views.py:103
+#: checkout/views.py:97 customer/views.py:104
 msgid "You have been registered and logged in."
-msgstr "Ai fost înregistrat și loginat."
+msgstr ""
 
 #: checkout/views.py:220
 msgid "Please confirm our terms and conditions"
 msgstr ""
-"Vă rugăm confirmați faptul că sunteți de acord cu termenii si condițiile"
 
 #: checkout/views.py:232
 msgid "Invalid invoice address"
-msgstr "Adresă facturare invalidă"
+msgstr ""
 
 #: checkout/views.py:247
 msgid "Invalid shipping address"
-msgstr "Adresă livrare invalidă"
+msgstr ""
 
 #: checkout/views.py:366
 msgid "An error has occured."
-msgstr "O eroare a apărut."
+msgstr ""
 
 #: core/models.py:18
 msgid "Country code"
-msgstr "Cod țară"
+msgstr ""
 
 #: core/models.py:77
 msgid "Link"
-msgstr "Legătură"
+msgstr ""
 
 #: core/models.py:155
 msgid "Shop owner"
-msgstr "Proprietar magazin"
+msgstr ""
 
 #: core/models.py:156
 msgid "From e-mail address"
-msgstr "Adresă email pt. trimițător"
+msgstr ""
 
 #: core/models.py:157
 msgid "Notification email addresses"
-msgstr "Adrese de email pt notificare"
+msgstr ""
 
 #: core/models.py:166
 msgid "Google Analytics ID"
-msgstr "ID Google Analytics"
+msgstr ""
 
 #: core/models.py:167
 msgid "Google Analytics Site Tracking"
-msgstr "Google Analytics Site Tracking"
+msgstr ""
 
 #: core/models.py:168
 msgid "Google Analytics E-Commerce Tracking"
-msgstr "Google Analytics E-Commerce Tracking"
+msgstr ""
 
 #: core/models.py:170
 msgid "Invoice countries"
-msgstr "Țări facturare"
+msgstr ""
 
 #: core/models.py:171
 msgid "Shipping countries"
-msgstr "Țări livrare"
+msgstr ""
 
 #: core/models.py:172
 msgid "Default shipping country"
-msgstr "Țară livrare implicită"
+msgstr ""
 
 #: core/models.py:175 core/management/commands/lfs_migrate.py:60
 msgid "Default Shop Locale"
-msgstr "Shop Locale Implicit"
+msgstr ""
 
 #: core/models.py:176 core/management/commands/lfs_migrate.py:62
 msgid "Use international currency codes"
-msgstr "Folosește codurile internaționale pentru valută"
+msgstr ""
 
 #: core/models.py:179
 msgid "Checkout type"
-msgstr "Tipul de finalizare comandă"
+msgstr ""
 
 #: core/models.py:180
 msgid "Confirm TOC"
-msgstr "Confirmă TOC"
+msgstr ""
 
-#: core/models.py:224
+#: core/models.py:225
 msgid "Version"
-msgstr "Versiune"
+msgstr ""
 
 #: core/settings.py:10
 msgid "Tabs"
-msgstr "Tab-uri"
+msgstr ""
 
 #: core/settings.py:11
 msgid "Footer"
-msgstr "Footer"
+msgstr ""
 
 #: core/settings.py:17
 msgid "Price includes tax"
-msgstr "Prețul include taxe"
+msgstr ""
 
 #: core/settings.py:18
 msgid "Price excludes tax"
-msgstr "Prețul nu include taxe"
-
-#: core/management/commands/lfs_migrate.py:65
-msgid "Supplier"
-msgstr "Furnizor"
+msgstr ""
 
 #: core/templatetags/lfs_tags.py:161
 #: portlet/templatetags/lfs_portlets_tags.py:119
 msgid "Information"
-msgstr "Informații"
+msgstr ""
 
 #: core/templatetags/lfs_tags.py:277
 #, python-format
 msgid "%s tag needs group id as argument"
-msgstr "Cuvântul cheie %s are nevoie de id-ul grupului ca și argument"
+msgstr ""
 
 #: core/templatetags/lfs_tags.py:357 core/templatetags/lfs_tags.py:387
 #, python-format
 msgid "%s tag needs no argument"
-msgstr "Cuvântul cheie %s nu necesită argumente"
+msgstr ""
 
 #: core/templatetags/lfs_tags.py:411
 #, python-format
 msgid "%s tag needs product as argument"
-msgstr "Cuvântul cheie %s are nevoie de produs ca și argument"
+msgstr ""
 
 #: core/widgets/file.py:14
 msgid "Delete file"
-msgstr "Șterge fișier"
+msgstr ""
 
-#: core/widgets/image.py:18
+#: core/widgets/image.py:19
 msgid "Delete image"
-msgstr "Șterge imagine"
+msgstr ""
 
 #: criteria/settings.py:16 criteria/settings.py:24
 msgid "Equal to"
-msgstr "Egal cu"
+msgstr ""
 
 #: criteria/settings.py:17 templates/manage/criteria/number_operators.html:4
 msgid "Less than"
-msgstr "Mai mic decât"
+msgstr ""
 
 #: criteria/settings.py:18
 msgid "Less than or equal to"
-msgstr "Mai mic sau egal cu"
+msgstr ""
 
 #: criteria/settings.py:19 templates/manage/criteria/number_operators.html:6
 msgid "Greater than"
-msgstr "Mai mare decât"
+msgstr ""
 
 #: criteria/settings.py:20
 msgid "Greater than or equal to"
-msgstr "Mai mare sau egal cu"
+msgstr ""
 
 #: criteria/settings.py:25
 msgid "Contain"
-msgstr "Conține"
+msgstr ""
 
 #: criteria/settings.py:29
 msgid "Is"
-msgstr "Este"
+msgstr ""
 
 #: criteria/settings.py:30
 msgid "Is not"
-msgstr "Nu este"
+msgstr ""
 
 #: criteria/settings.py:31
 #: templates/manage/criteria/selection_operators.html:5
 msgid "Is valid"
-msgstr "Este valid"
+msgstr ""
 
 #: criteria/settings.py:32
 #: templates/manage/criteria/selection_operators.html:6
 msgid "Is not valid"
-msgstr "Nu este valid"
+msgstr ""
 
 #: criteria/models/criteria.py:51 criteria/models/criteria.py:112
 #: criteria/models/criteria.py:185 criteria/models/criteria.py:318
@@ -1116,11 +1107,11 @@ msgstr "Nu este valid"
 #: criteria/models/criteria.py:608 criteria/models/criteria.py:671
 #: criteria/models/criteria.py:734
 msgid "Operator"
-msgstr "Operator"
+msgstr ""
 
 #: criteria/models/criteria.py:70
 msgid "Cart Price"
-msgstr "Preț Coș"
+msgstr ""
 
 #: criteria/models/criteria.py:131
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:9
@@ -1135,12 +1126,12 @@ msgstr "Preț Coș"
 #: templates/manage/criteria/weight_criterion.html:9
 #: templates/manage/criteria/width_criterion.html:9
 msgid "Combined length and girth"
-msgstr "Lungimea și grosimea combinate"
+msgstr ""
 
 #: criteria/models/criteria.py:186
 #: templates/manage/shop/default_values.html:81
 msgid "Countries"
-msgstr "Țări"
+msgstr ""
 
 #: criteria/models/criteria.py:208 customer/models.py:77
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:8
@@ -1155,12 +1146,12 @@ msgstr "Țări"
 #: templates/manage/criteria/weight_criterion.html:8
 #: templates/manage/criteria/width_criterion.html:8
 msgid "Country"
-msgstr "Țară"
+msgstr ""
 
 #: criteria/models/criteria.py:382
 #: templates/manage/payment/payment_methods.html:3
 msgid "Payment methods"
-msgstr "Metode de plată"
+msgstr ""
 
 #: criteria/models/criteria.py:407 payment/models.py:122
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:13
@@ -1174,14 +1165,14 @@ msgstr "Metode de plată"
 #: templates/manage/criteria/user_criterion.html:13
 #: templates/manage/criteria/weight_criterion.html:13
 #: templates/manage/criteria/width_criterion.html:13
-#: templates/manage/order/order_inline.html:132
+#: templates/manage/order/order_inline.html:69
 msgid "Payment method"
-msgstr "Metoda de plată"
+msgstr ""
 
 #: criteria/models/criteria.py:476
 #: templates/manage/shipping/shipping_methods.html:4
 msgid "Shipping methods"
-msgstr "Metode de livrare"
+msgstr ""
 
 #: criteria/models/criteria.py:501
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:15
@@ -1195,9 +1186,9 @@ msgstr "Metode de livrare"
 #: templates/manage/criteria/user_criterion.html:15
 #: templates/manage/criteria/weight_criterion.html:15
 #: templates/manage/criteria/width_criterion.html:15
-#: templates/manage/order/order_inline.html:129
+#: templates/manage/order/order_inline.html:66
 msgid "Shipping method"
-msgstr "Metodă de livrare"
+msgstr ""
 
 #: criteria/models/criteria.py:735 criteria/models/criteria.py:754
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:10
@@ -1212,847 +1203,856 @@ msgstr "Metodă de livrare"
 #: templates/manage/criteria/weight_criterion.html:10
 #: templates/manage/criteria/width_criterion.html:10
 msgid "Distance"
-msgstr "Distanța"
+msgstr ""
 
 #: criteria/models/criteria_objects.py:16
 msgid "Criterion type"
-msgstr "Tip criteriu"
+msgstr ""
 
 #: customer/forms.py:35 customer/forms.py:41
-#: templates/manage/order/order_inline.html:90
+#: templates/manage/order/order_inline.html:27
 msgid "E-mail"
-msgstr "E-mail"
+msgstr ""
 
 #: customer/forms.py:43
 msgid "Password"
-msgstr "Parolă"
+msgstr ""
 
 #: customer/forms.py:45
 msgid "Confirm password"
-msgstr "Confirmă parola"
+msgstr ""
 
 #: customer/forms.py:54
 msgid "The two passwords do not match."
-msgstr "Cele două parole nu se potrivesc."
+msgstr ""
 
 #: customer/forms.py:64
 msgid "That email address is already in use."
-msgstr "Această adresă de email este folosită deja."
+msgstr ""
 
 #: customer/models.py:26
 msgid "Selected shipping method"
-msgstr "Selectează metoda de livrare"
+msgstr ""
 
 #: customer/models.py:27
 msgid "Selected payment method"
-msgstr "Metoda de plată selectată"
+msgstr ""
 
 #: customer/models.py:28
 msgid "Bank account"
-msgstr "Cont bancar"
+msgstr ""
 
 #: customer/models.py:29
 msgid "Credit card"
-msgstr "Carte de credit"
+msgstr ""
 
 #: customer/models.py:30
 msgid "Selected shipping address"
-msgstr "Selectează adresa de livrare"
+msgstr ""
 
 #: customer/models.py:31
 msgid "Selected invoice address"
-msgstr "Selectează adresa de facturare"
+msgstr ""
 
 #: customer/models.py:32
 msgid "Selected country"
-msgstr "Selectează țara"
+msgstr ""
 
 #: customer/models.py:68 customer/models.py:88 customer/models.py:102
 #: templates/manage/cart/cart_inline.html:21
+#: templates/manage/customer/customer.html:22
 msgid "Customer"
-msgstr "Client"
+msgstr ""
 
-#: customer/models.py:70 templates/manage/customer/customers_inline.html:95
+#: customer/models.py:70 templates/manage/customer/customers_inline.html:16
 msgid "Firstname"
-msgstr "Prenume"
+msgstr ""
 
-#: customer/models.py:71 templates/manage/customer/customers_inline.html:101
+#: customer/models.py:71 templates/manage/customer/customers_inline.html:22
 msgid "Lastname"
-msgstr "Nume"
+msgstr ""
 
 #: customer/models.py:72
 msgid "Company name"
-msgstr "Nume companie"
+msgstr ""
 
 #: customer/models.py:73
 msgid "Street"
-msgstr "Stradă"
+msgstr ""
 
 #: customer/models.py:74
 msgid "Zip code"
-msgstr "Cod poștal"
+msgstr ""
 
 #: customer/models.py:75
 msgid "City"
-msgstr "Oraș"
+msgstr ""
 
 #: customer/models.py:76 order/models.py:48
-#: templates/manage/customer/customer_inline.html:157
-#: templates/manage/order/order.html:28
-#: templates/manage/order/order_inline.html:15
-#: templates/manage/order/order_inline.html:98
-#: templates/manage/order/orders_inline.html:13
-#: templates/manage/order/orders_inline.html:125
+#: templates/manage/customer/customer_inline.html:128
+#: templates/manage/order/order.html:33
+#: templates/manage/order/order_filters_inline.html:16
+#: templates/manage/order/order_inline.html:35
+#: templates/manage/order/orders_filter.html:12
+#: templates/manage/order/orders_filters_inline.html:12
+#: templates/manage/order/orders_inline.html:12
 msgid "State"
-msgstr "Județ"
+msgstr ""
 
-#: customer/models.py:78 templates/manage/order/order_inline.html:106
+#: customer/models.py:78 templates/manage/order/order_inline.html:43
 msgid "Phone"
-msgstr "Telefon"
+msgstr ""
 
 #: customer/models.py:90 order/models.py:86
 msgid "Account number"
-msgstr "Număr cont"
+msgstr ""
 
 #: customer/models.py:91
 msgid "Bank identification code"
-msgstr "Cod identificare bancă"
+msgstr ""
 
 #: customer/models.py:92 order/models.py:88
 msgid "Bank name"
-msgstr "Nume bancă"
+msgstr ""
 
 #: customer/models.py:105
 msgid "Owner"
-msgstr "Proprietar"
+msgstr ""
 
-#: customer/models.py:106 templates/manage/voucher/vouchers_inline.html:65
+#: customer/models.py:106 templates/manage/voucher/vouchers_inline.html:67
 msgid "Number"
-msgstr "Număr"
+msgstr ""
 
 #: customer/models.py:107
 msgid "Expiration date month"
-msgstr "Data de expirare: lună"
+msgstr ""
 
 #: customer/models.py:108
 msgid "Expiration date year"
-msgstr "Data de expirare: an"
+msgstr ""
 
-#: customer/views.py:139
+#: customer/views.py:140
 msgid "You have been logged out."
-msgstr "Ai fost deautentificat."
+msgstr ""
 
 #: discounts/settings.py:7 voucher/settings.py:7
 msgid "Absolute"
-msgstr "Absolut"
+msgstr ""
 
 #: discounts/settings.py:8 voucher/settings.py:8
 msgid "Percentage"
-msgstr "Procent"
+msgstr ""
 
 #: export/models.py:19
 msgid "Script"
-msgstr "Script"
+msgstr ""
 
 #: export/models.py:20 templates/manage/product/product.html:100
 #: templates/manage/product/variants.html:97
 msgid "Variants"
-msgstr "Variante"
+msgstr ""
 
 #: export/models.py:70 templates/manage/product/product_filters_inline.html:15
 msgid "Category"
-msgstr "Categorie"
+msgstr ""
 
-#: export/models.py:71 templates/manage/manage_base.html:131
+#: export/models.py:71 templates/manage/manage_base.html:121
 msgid "Export"
-msgstr "Exportă"
+msgstr ""
 
 #: export/settings.py:10
 msgid "---"
-msgstr "---"
+msgstr ""
 
 #: export/settings.py:12
 msgid "Cheapest"
-msgstr "Cel mai ieftin"
+msgstr ""
 
 #: export/settings.py:13 templates/manage/category/category_filter.html:5
-#: templates/manage/order/order.html:34
-#: templates/manage/order/order_inline.html:47
-#: templates/manage/order/orders_inline.html:99
+#: templates/manage/order/order_filters_inline.html:50
+#: templates/manage/order/orders_filter.html:98
+#: templates/manage/order/orders_filters_inline.html:100
 #: templates/manage/product/variants.html:132
 msgid "All"
-msgstr "Toate"
+msgstr ""
 
 #: mail/utils.py:16 mail/utils.py:43
 msgid "Your order has been received"
-msgstr "Comanda ta a fost primită"
+msgstr ""
 
 #: mail/utils.py:67
 #, python-format
 msgid "Welcome to %s"
-msgstr "Bun venit la %s"
+msgstr ""
 
 #: mail/utils.py:99
 msgid "New review has been added"
-msgstr "O nouă recenzie a fost adăugată"
+msgstr ""
 
 #: manage/views/actions.py:61
 msgid "Action has been saved."
-msgstr "Acțiunea a fost salvată."
+msgstr ""
 
 #: manage/views/actions.py:86
 msgid "Action has been added."
-msgstr "Acțiunea a fost adaugată."
+msgstr ""
 
 #: manage/views/actions.py:107
 msgid "Action has been deleted."
-msgstr "Acțiunea a fost ștearsă."
+msgstr ""
 
-#: manage/views/carts.py:198
+#: manage/views/carts.py:239
 msgid "Cart filters has been set."
-msgstr "Filtrele coșului au fost aplicate."
+msgstr ""
 
-#: manage/views/carts.py:229
+#: manage/views/carts.py:275
 msgid "Cart filters has been set"
-msgstr "Filtrele coșului au fost aplicate"
+msgstr ""
 
-#: manage/views/carts.py:254
+#: manage/views/carts.py:301
 msgid "Cart filters has been reset"
-msgstr "Filtrele coșului au fost resetate"
+msgstr ""
 
-#: manage/views/customer.py:227
+#: manage/views/customer.py:283
 msgid "Customer filters have been set"
-msgstr "Filtrele clienți au fost aplicate"
+msgstr ""
 
-#: manage/views/customer.py:252
+#: manage/views/customer.py:310
 msgid "Customer filters has been reset"
-msgstr "Filtrele clienți au fost resetate"
+msgstr ""
 
 #: manage/views/delivery_times.py:58
 msgid "Delivery time has been saved."
-msgstr "Timpul de livrare a fost salvat"
+msgstr ""
 
 #: manage/views/delivery_times.py:82
 msgid "Delivery time has been added."
-msgstr "Timpul de livrare a fost adaugat."
+msgstr ""
 
 #: manage/views/delivery_times.py:115
 msgid "Delivery time has been deleted."
-msgstr "Timpul de livrare a fost șters"
+msgstr ""
 
 #: manage/views/discounts.py:127
 msgid "Discount method has been added."
-msgstr "Metoda de discount a fost adăugată."
+msgstr ""
 
 #: manage/views/discounts.py:151 manage/views/payment.py:223
 #: manage/views/payment.py:245 manage/views/shipping.py:222
 #: manage/views/shipping.py:244
 msgid "Modifications have been changed."
-msgstr "Modificările au fost făcute."
+msgstr ""
 
 #: manage/views/discounts.py:178
 msgid "Discount data has been saved."
-msgstr "Datele de discount au fost salvate."
+msgstr ""
 
 #: manage/views/discounts.py:196
 msgid "Discount has been deleted."
-msgstr "Discount-ul a fost șters."
+msgstr ""
 
 #: manage/views/export.py:323
 msgid "Export data has been saved."
-msgstr "Data de export a fost salvată."
+msgstr ""
 
 #: manage/views/lfs_portlets.py:78
 msgid "Portlet has been updated."
-msgstr "Portletul a fost modificat."
+msgstr ""
 
 #: manage/views/lfs_portlets.py:112
 msgid "Portlet has been added."
-msgstr "Portletul a fost adăugat."
+msgstr ""
 
 #: manage/views/lfs_portlets.py:148
 msgid "Portlet has been deleted."
-msgstr "Portletul a fost șters."
+msgstr ""
 
 #: manage/views/lfs_portlets.py:175
 msgid "Portlet has been saved."
-msgstr "Portletul a fost salvat."
+msgstr ""
 
 #: manage/views/manufacturer.py:242
 msgid "Manufacturer data has been saved."
-msgstr "Datele producătorului au fost salvate."
+msgstr ""
 
-#: manage/views/orders.py:139 manage/views/orders.py:170
+#: manage/views/orders.py:246 manage/views/orders.py:282
 msgid "Filters has been set"
-msgstr "Filtrele au fost aplicate"
+msgstr ""
 
-#: manage/views/orders.py:195
+#: manage/views/orders.py:312
 msgid "Filters has been reset"
-msgstr "Filtrele au fost resetate"
+msgstr ""
 
-#: manage/views/orders.py:320
+#: manage/views/orders.py:382
 msgid "Order has been sent."
-msgstr "Comanda a fost trimisă."
+msgstr ""
 
-#: manage/views/orders.py:342
+#: manage/views/orders.py:406
 msgid "State has been changed"
-msgstr "Starea a fost modifică"
+msgstr ""
 
-#: manage/views/page.py:68
+#: manage/views/page.py:72
 msgid "Page has been saved."
-msgstr "Pagina a fost salvată."
+msgstr ""
 
-#: manage/views/page.py:93
+#: manage/views/page.py:97
 msgid "Page has been added."
-msgstr "Pagina a fost adaugată."
+msgstr ""
 
-#: manage/views/page.py:114
+#: manage/views/page.py:118
 msgid "Page has been deleted."
-msgstr "Pagina a fost ștearsă."
+msgstr ""
+
+#: manage/views/page.py:137
+msgid "The pages have been sorted."
+msgstr ""
 
 #: manage/views/payment.py:197
 msgid "Payment method has been added."
-msgstr "Metoda de plată a fost adăugată."
+msgstr ""
 
 #: manage/views/payment.py:271 manage/views/shipping.py:266
 msgid "Price has been added"
-msgstr "Prețul a fost adăugat"
+msgstr ""
 
 #: manage/views/payment.py:286 manage/views/shipping.py:286
 msgid "Prices have been deleted"
-msgstr "Prețurile au fost șterse"
+msgstr ""
 
 #: manage/views/payment.py:297 manage/views/shipping.py:298
 msgid "Prices have been updated"
-msgstr "Prețurile au fost modificate"
+msgstr ""
 
 #: manage/views/payment.py:346
 msgid "Payment method has been saved."
-msgstr "Metoda de plată a fost salvată."
+msgstr ""
 
 #: manage/views/payment.py:371
 msgid "Payment method has been deleted."
-msgstr "Metoda de plată a fost ștearsă."
+msgstr ""
 
 #: manage/views/properties.py:106
 msgid "Property type has been saved."
-msgstr "Tipul de proprietate a fost salvat."
+msgstr ""
 
 #: manage/views/properties.py:147
 msgid "Property type has been changed."
-msgstr "Tipul de proprietate a fost modificat."
+msgstr ""
 
 #: manage/views/properties.py:198
 msgid "Validators have been saved."
-msgstr "Validatorii au fost salvați."
+msgstr ""
 
 #: manage/views/properties.py:228
 msgid "Step range has been saved."
-msgstr "Intervalul pasului a fost salvat."
+msgstr ""
 
 #: manage/views/properties.py:247
 msgid "Step type has been saved."
-msgstr "Tipul de pas a fost salvat."
+msgstr ""
 
 #: manage/views/properties.py:264
 msgid "Step has been added."
-msgstr "Pasul a fost adăugat."
+msgstr ""
 
 #: manage/views/properties.py:276
 msgid "Steps have been updated."
-msgstr "Pașii au fost modificați."
+msgstr ""
 
 #: manage/views/properties.py:300
 msgid "The step has been saved."
-msgstr "Pasul a fost salvat."
+msgstr ""
 
 #: manage/views/properties.py:326 manage/views/product/variants.py:196
 msgid "Property has been added."
-msgstr "Proprietatea a fost adăugată."
+msgstr ""
 
 #: manage/views/properties.py:371 manage/views/product/variants.py:285
 msgid "Option has been added."
-msgstr "Opțiunea a fost adăugată."
+msgstr ""
 
 #: manage/views/properties.py:373
 msgid "Option could not be added."
-msgstr "Opțiunea nu a putut fi adăugată."
+msgstr ""
 
 #: manage/views/properties.py:392
 msgid "Options have been update."
-msgstr "Opțiunile au fost modificate."
+msgstr ""
 
-#: manage/views/review.py:194
+#: manage/views/review.py:238
 msgid "Review filters have been set"
-msgstr "Filtrele pt recenzii au fost aplicate"
+msgstr ""
 
-#: manage/views/review.py:219
+#: manage/views/review.py:268
 msgid "Review filters have been reset"
-msgstr "Filtrele pt recenzii au fost șterse"
+msgstr ""
 
-#: manage/views/review.py:242
+#: manage/views/review.py:298
 msgid "Review has been deleted."
-msgstr "Recenzia a fost ștearsă."
+msgstr ""
 
-#: manage/views/review.py:261
+#: manage/views/review.py:318
 msgid "Review state has been set"
-msgstr "Starea recenziei a fost modificată"
+msgstr ""
 
 #: manage/views/shipping.py:197
 msgid "Shipping method has been added."
-msgstr "Metoda de livrare a fost adaugată."
+msgstr ""
 
 #: manage/views/shipping.py:347
 msgid "Shipping method has been saved."
-msgstr "Metoda de livrare a fost salvată."
+msgstr ""
 
 #: manage/views/shipping.py:372
 msgid "Shipping method has been deleted."
-msgstr "Metoda de livrare a fost ștearsă."
+msgstr ""
 
 #: manage/views/shop.py:56
 msgid "Shop data has been saved."
-msgstr "Datele magazinului au fost salvate."
+msgstr ""
 
 #: manage/views/shop.py:95
 msgid "Shop default values have been saved."
-msgstr "Datele implicite ale magazinului au fost salvate."
+msgstr ""
 
-#: manage/views/shop.py:97 manage/views/categories/category.py:113
+#: manage/views/shop.py:97 manage/views/categories/category.py:116
 #: manage/views/categories/seo.py:42 manage/views/categories/view.py:45
-#: manage/views/product/product.py:169 manage/views/product/product.py:370
+#: manage/views/product/product.py:174 manage/views/product/product.py:382
 msgid "Please correct the indicated errors."
-msgstr "Te rog corectează următoarele erori."
+msgstr ""
 
 #: manage/views/static_blocks.py:56
 msgid "Static block has been saved."
-msgstr "Blocul static a fost salvat."
+msgstr ""
 
 #: manage/views/static_blocks.py:86
 msgid "Files has been deleted."
-msgstr "Fișierele au fost șterse"
+msgstr ""
 
 #: manage/views/static_blocks.py:96
 msgid "Files has been updated."
-msgstr "Fișierele au fost actualizate."
+msgstr ""
 
 #: manage/views/static_blocks.py:142
 msgid "Files has been added."
-msgstr "Fișierele au fost adăugate."
+msgstr ""
 
 #: manage/views/static_blocks.py:178
 msgid "Static block has been added."
-msgstr "Blocul static a fost adăugat."
+msgstr ""
 
 #: manage/views/static_blocks.py:216
 msgid "Static block has been deleted."
-msgstr "Blocul static a fost șters."
+msgstr ""
 
 #: manage/views/tax.py:49
 msgid "Tax has been saved."
-msgstr "Taxa a fost salvată."
+msgstr ""
 
 #: manage/views/tax.py:73
 msgid "Tax has been added."
-msgstr "Taxa a fost adăugată."
+msgstr ""
 
 #: manage/views/tax.py:101
 msgid "Tax has been deleted."
-msgstr "Taxa a fost ștearsă."
+msgstr ""
 
 #: manage/views/utils.py:30
 msgid "Topseller have been reindexed."
-msgstr "Topseller-ul a fost reindexat."
+msgstr ""
 
 #: manage/views/utils.py:41
 msgid "Cache has been cleared."
-msgstr "Cache-ul a fost curățat."
+msgstr ""
 
 #: manage/views/utils.py:52
 msgid "Categoy levels have been created."
-msgstr "Nivelele de categorii au fost create."
+msgstr ""
 
 #: manage/views/utils.py:65
 msgid "Effective prices have been set."
-msgstr "Prețurile efective au fost aplicate."
+msgstr ""
 
 #: manage/views/voucher.py:54 templates/manage/cart/cart_inline.html:106
-#: templates/manage/order/order_inline.html:228
+#: templates/manage/order/order_inline.html:161
 #: templates/manage/product/product_filters_inline.html:13
 msgid "Amount"
-msgstr "Sumă"
+msgstr ""
 
-#: manage/views/voucher.py:56 templates/manage/voucher/vouchers_inline.html:77
+#: manage/views/voucher.py:56 templates/manage/voucher/vouchers_inline.html:79
 msgid "Start date"
-msgstr "Data început"
+msgstr ""
 
-#: manage/views/voucher.py:57 templates/manage/voucher/vouchers_inline.html:80
+#: manage/views/voucher.py:57 templates/manage/voucher/vouchers_inline.html:82
 msgid "End date"
-msgstr "Data sfărșit"
+msgstr ""
 
 #: manage/views/voucher.py:58
 msgid "Kind of"
-msgstr "Un fel de"
+msgstr ""
 
-#: manage/views/voucher.py:59 templates/manage/voucher/vouchers_inline.html:83
+#: manage/views/voucher.py:59 templates/manage/voucher/vouchers_inline.html:85
 msgid "Effective from"
-msgstr "În efect din"
+msgstr ""
 
-#: manage/views/voucher.py:61 templates/manage/voucher/vouchers_inline.html:92
+#: manage/views/voucher.py:61 portlet/models/featured.py:24
+#: portlet/models/forsale.py:24
+#: templates/manage/voucher/vouchers_inline.html:94
 msgid "Limit"
-msgstr "Limită"
+msgstr ""
 
-#: manage/views/voucher.py:223
+#: manage/views/voucher.py:225
 msgid "Vouchers have been created."
-msgstr "Voucherele au fost create."
+msgstr ""
 
-#: manage/views/voucher.py:245
+#: manage/views/voucher.py:247
 msgid "Vouchers have been deleted."
-msgstr "Voucherele au fost șterse."
+msgstr ""
 
-#: manage/views/voucher.py:282
+#: manage/views/voucher.py:284
 msgid "Voucher data has been save."
-msgstr "Date voucher salvate."
+msgstr ""
 
-#: manage/views/voucher.py:298
+#: manage/views/voucher.py:300
 msgid "Voucher group and assigned vouchers have been deleted."
-msgstr "Grup voucher și vouchere asignate șterse."
+msgstr ""
 
-#: manage/views/voucher.py:316
+#: manage/views/voucher.py:318
 msgid "Voucher options has been save."
-msgstr "Opțiuni voucher salvate."
+msgstr ""
 
-#: manage/views/categories/category.py:82
+#: manage/views/categories/category.py:85
 #, python-format
 msgid ""
 "Do you really want to delete the category <b>'%(name)s'</b> and all its sub "
 "categories?"
 msgstr ""
-"Ești sigur că vrei să ștergi categoria <b>'%(name)s'</b> și toate "
-"subcategoriile "
-"acesteia?"
 
-#: manage/views/categories/category.py:111
+#: manage/views/categories/category.py:114
 msgid "Category data have been saved."
-msgstr "Datele categoriilor au fost salvate."
+msgstr ""
+
+#: manage/views/categories/category.py:211
+msgid "The categories have been sorted."
+msgstr ""
 
 #: manage/views/categories/products.py:206
 msgid "Selected products have been added to category."
-msgstr "Produsele selectate au fost adăugate la categorie."
+msgstr ""
 
 #: manage/views/categories/products.py:235
 msgid "Selected products have been removed from category."
-msgstr "Produsele selectate au fost șterse din categorie."
+msgstr ""
 
 #: manage/views/categories/seo.py:40
 msgid "SEO data has been saved."
-msgstr "Datele SEO au fost salvate."
+msgstr ""
 
 #: manage/views/categories/view.py:43
 msgid "View data has been saved."
-msgstr "Datele de afișare au fost salvate."
+msgstr ""
 
 #: manage/views/marketing/featured.py:145
 msgid "Featured product has been added."
-msgstr "Produsul promo a fost adăugat."
+msgstr ""
 
 #: manage/views/marketing/featured.py:174
 msgid "Featured product has been removed."
-msgstr "Produsul promo a fost șters."
+msgstr ""
 
 #: manage/views/marketing/featured.py:196
 msgid "Featured product has been updated."
-msgstr "Produsul promo a fost actualizat."
+msgstr ""
 
 #: manage/views/marketing/rating_mails.py:35
 msgid "Please rate your products on "
-msgstr "Te rugăm evaluează produsele pe "
+msgstr ""
 
 #: manage/views/marketing/topseller.py:145
 msgid "Topseller have been added."
-msgstr "Topseller-ul a fost adăugat."
+msgstr ""
 
 #: manage/views/marketing/topseller.py:174
 msgid "Topseller have been removed."
-msgstr "Topseller-ul a fost șters."
+msgstr ""
 
 #: manage/views/marketing/topseller.py:195
 msgid "Topseller have been updated."
-msgstr "Topseller-ul a fost modificat."
+msgstr ""
 
 #: manage/views/product/accessories.py:162
 msgid "Accessories have been added."
-msgstr "Accesoriile au fost adăugate."
+msgstr ""
 
 #: manage/views/product/accessories.py:194
 msgid "Accessories have been removed."
-msgstr "Accesoriile au fost șterse."
+msgstr ""
 
 #: manage/views/product/accessories.py:224
 #: manage/views/product/accessories.py:244
 msgid "Accessories have been updated."
-msgstr "Accesoriile au fost modificate."
+msgstr ""
 
 #: manage/views/product/categories.py:92
 msgid "Categories have been saved."
-msgstr "Categoriile au fost salvate."
+msgstr ""
 
-#: manage/views/product/images.py:36
+#: manage/views/product/images.py:40
 msgid "Images has been added."
-msgstr "Imaginile au fost adăugate."
+msgstr ""
 
-#: manage/views/product/images.py:72
+#: manage/views/product/images.py:80
 msgid "Images has been deleted."
-msgstr "Imaginile au fost șterse."
+msgstr ""
 
-#: manage/views/product/images.py:82
+#: manage/views/product/images.py:90
 msgid "Images has been updated."
-msgstr "Imaginile au fost modificate."
+msgstr ""
 
-#: manage/views/product/images.py:180
+#: manage/views/product/images.py:188
 msgid "Active images has been updated."
-msgstr "Imaginile active au fost modificate."
+msgstr ""
 
-#: manage/views/product/product.py:167
+#: manage/views/product/product.py:172
 msgid "Product stock data has been saved."
-msgstr "Datele de stoc ale produsului a fost salvate."
+msgstr ""
 
-#: manage/views/product/product.py:330
+#: manage/views/product/product.py:342
 msgid "Sub type has been changed."
-msgstr "Subtipul a fost modificat."
+msgstr ""
 
-#: manage/views/product/product.py:368
+#: manage/views/product/product.py:380
 msgid "Productdata has been saved."
-msgstr "Datele produsului au fost salvate."
+msgstr ""
 
-#: manage/views/product/product.py:424
+#: manage/views/product/product.py:438
 msgid "Product filters have been reset"
-msgstr "Filtrele produsului au fost resetate"
+msgstr ""
 
-#: manage/views/product/product.py:450
+#: manage/views/product/product.py:465
 msgid "Products have been deleted."
-msgstr "Produsele au fost șterse."
+msgstr ""
 
-#: manage/views/product/product.py:492
+#: manage/views/product/product.py:507
 msgid "Products have been saved"
-msgstr "Produsele au fost salvate"
+msgstr ""
 
-#: manage/views/product/product.py:568
+#: manage/views/product/product.py:585
 msgid "Product filters have been set"
-msgstr "Filtrele de produs au fost aplicate"
+msgstr ""
 
 #: manage/views/product/related_products.py:161
 msgid "Related products have been added."
-msgstr "Produsele relaționate au fost adăugate."
+msgstr ""
 
 #: manage/views/product/related_products.py:189
 msgid "Related products have been removed."
-msgstr "Produsele relaționate au fost șterse."
+msgstr ""
 
 #: manage/views/product/related_products.py:210
 msgid "Related products have been updated."
-msgstr "Produsele relaționate au fost modificate."
+msgstr ""
 
 #: manage/views/product/seo.py:48
 msgid "Seo data has been saved."
-msgstr "Datele SEO au fost salvate."
+msgstr ""
 
 #: manage/views/product/variants.py:218 manage/views/product/variants.py:307
 msgid "Property has been deleted."
-msgstr "Proprietatea a fost ștearsă."
+msgstr ""
 
 #: manage/views/product/variants.py:366 manage/views/product/variants.py:368
 msgid "That slug is already in use. Please use another."
-msgstr "Slug-ul este deja folosit. Te rugăm alege altul."
+msgstr ""
 
 #: manage/views/product/variants.py:382
 msgid "Variants have been added."
-msgstr "Variantele au fost adăugate."
+msgstr ""
 
 #: manage/views/product/variants.py:403
 msgid "Variants have been deleted."
-msgstr "Variantele au fost șterse."
+msgstr ""
 
 #: manage/views/product/variants.py:417
 msgid "Variants have been saved."
-msgstr "Variantele au fost salvate."
+msgstr ""
 
-#: manage/views/product/variants.py:513
+#: manage/views/product/variants.py:515
 msgid "Sup type has been saved."
-msgstr "Subtipul a fost salvat."
+msgstr ""
 
-#: manage/views/product/variants.py:534
+#: manage/views/product/variants.py:536
 msgid "Default variant has been saved."
-msgstr "Varianta implicită a fost salvată."
+msgstr ""
 
 #: manage/views/property_groups/products.py:126
 msgid "Products have been assigned."
-msgstr "Produsele a fost desemnate."
+msgstr ""
 
 #: manage/views/property_groups/products.py:150
 msgid "Products have been removed."
-msgstr "Produsele au fost șterse."
+msgstr ""
 
 #: manage/views/property_groups/property_groups.py:57
 msgid "Property group has been saved."
-msgstr "Grupul de proprietăți a fost salvat."
+msgstr ""
 
 #: manage/views/property_groups/property_groups.py:102
 msgid "Property group has been added."
-msgstr "Grupul de proprietăți a fost adăugat."
+msgstr ""
 
 #: manage/views/property_groups/property_groups.py:123
 msgid "Property group has been deleted."
-msgstr "Grupul de proprietăți a fost șters."
+msgstr ""
 
 #: manage/views/property_groups/property_groups.py:142
 msgid "Properties have been assigned."
-msgstr "Proprietățile au fost desemnate."
+msgstr ""
 
 #: manage/views/property_groups/property_groups.py:161
 msgid "Properties have been removed."
-msgstr "Proprietățile au fost șterse."
+msgstr ""
 
 #: manage/views/property_groups/property_groups.py:168
 msgid "Properties have been updated."
-msgstr "Proprietățile au fost modificate."
+msgstr ""
 
 #: marketing/models.py:27
 msgid "sales"
-msgstr "La reducere"
+msgstr ""
 
-#: marketing/models.py:47 templates/manage/order/order.html:56
+#: marketing/models.py:47 templates/manage/order/order.html:58
 msgid "Order"
-msgstr "Comandă"
+msgstr ""
 
 #: order/models.py:46
 msgid "Created"
-msgstr "Creat"
+msgstr ""
 
 #: order/models.py:49
 msgid "State modified"
-msgstr "Status modificat"
+msgstr ""
 
 #: order/models.py:54
 msgid "firstname"
-msgstr "Prenume"
+msgstr ""
 
 #: order/models.py:55
 msgid "lastname"
-msgstr "lastname"
+msgstr ""
 
 #: order/models.py:56
 msgid "email"
-msgstr "email"
+msgstr ""
 
 #: order/models.py:58
 msgid "Invoice firstname"
-msgstr "Factură prenume"
+msgstr ""
 
 #: order/models.py:59
 msgid "Invoice lastname"
-msgstr "Factură nume"
+msgstr ""
 
 #: order/models.py:60
 msgid "Invoice Line 1"
-msgstr "Linia 1 factură"
+msgstr ""
 
 #: order/models.py:61
 msgid "Invoice Line 2"
-msgstr "Linia 2 factură"
+msgstr ""
 
 #: order/models.py:62
 msgid "Invoice City"
-msgstr "Oraș  factură"
+msgstr ""
 
 #: order/models.py:63
 msgid "Invoice State"
-msgstr "Județ factură"
+msgstr ""
 
 #: order/models.py:64
 msgid "Invoice Postal Code"
-msgstr "Cod poștal factură"
+msgstr ""
 
 #: order/models.py:66
 msgid "Invoice phone"
-msgstr "Factură telefon"
+msgstr ""
 
 #: order/models.py:68
 msgid "Shipping firstname"
-msgstr "Livrare prenume"
+msgstr ""
 
 #: order/models.py:69
 msgid "Shipping lastname"
-msgstr "Livrare nume"
+msgstr ""
 
 #: order/models.py:70
 msgid "Shipping Line 1"
-msgstr "Linia 1 livrare"
+msgstr ""
 
 #: order/models.py:71
 msgid "Shipping Line 2"
-msgstr "Linia 2 livrare"
+msgstr ""
 
 #: order/models.py:72
 msgid "Shipping City"
-msgstr "Livrare oraș"
+msgstr ""
 
 #: order/models.py:73
 msgid "Shipping State"
-msgstr "Livrare județ"
+msgstr ""
 
 #: order/models.py:74
 msgid "Shipping Postal Code"
-msgstr "Livrare județ"
+msgstr ""
 
 #: order/models.py:76
 msgid "Shipping phone"
-msgstr "Livrare telefon"
+msgstr ""
 
 #: order/models.py:78 templates/manage/shipping/manage_shipping.html:28
 msgid "Shipping Method"
-msgstr "Metoda de Livrare"
+msgstr ""
 
 #: order/models.py:79
 msgid "Shipping Price"
-msgstr "Preț Livrare"
+msgstr ""
 
 #: order/models.py:80
 msgid "Shipping Tax"
-msgstr "Taxă Livrare"
+msgstr ""
 
 #: order/models.py:82 templates/manage/payment/manage_payment.html:28
 msgid "Payment Method"
-msgstr "Metoda de Plată"
+msgstr ""
 
 #: order/models.py:83
 msgid "Payment Price"
-msgstr "Preț de Plată"
+msgstr ""
 
 #: order/models.py:84
 msgid "Payment Tax"
-msgstr "Taxă Plată"
+msgstr ""
 
 #: order/models.py:87
 msgid "Bank identication code"
-msgstr "Cod de identificare bancă"
+msgstr ""
 
 #: order/models.py:91
 msgid "Voucher number"
-msgstr "Număr voucher"
+msgstr ""
 
 #: order/models.py:92
 msgid "Voucher value"
-msgstr "Valoare voucher"
+msgstr ""
 
 #: order/models.py:93
 msgid "Voucher tax"
-msgstr "Taxă voucher"
+msgstr ""
 
-#: order/models.py:95 templates/manage/customer/customer_inline.html:163
-#: templates/manage/order/orders_inline.html:131
+#: order/models.py:95 templates/manage/customer/customer_inline.html:134
+#: templates/manage/order/orders_inline.html:18
 msgid "Message"
-msgstr "Mesaj"
+msgstr ""
 
 #: order/models.py:96
 msgid "pay_link"
@@ -2060,98 +2060,98 @@ msgstr ""
 
 #: order/models.py:99
 msgid "Delivery Date"
-msgstr "Data livrării"
+msgstr ""
 
 #: order/models.py:128
 msgid "Price net"
-msgstr "Preț net"
+msgstr ""
 
 #: order/models.py:129
 msgid "Price gross"
-msgstr "Preț brut"
+msgstr ""
 
 #: order/models.py:137
 msgid "Product quantity"
-msgstr "Cantitate produs"
+msgstr ""
 
 #: order/models.py:138
 msgid "Product SKU"
-msgstr "SKU Produs"
+msgstr ""
 
 #: order/models.py:139
 msgid "Product name"
-msgstr "Nume produs"
+msgstr ""
 
 #: order/models.py:140
 msgid "Product price net"
-msgstr "Preț net produs"
+msgstr ""
 
 #: order/models.py:141
 msgid "Product price gross"
-msgstr "Preț brut produs"
+msgstr ""
 
 #: order/models.py:142
 msgid "Product tax"
-msgstr "Taxă produs"
+msgstr ""
 
 #: order/models.py:203
 msgid "Order item"
-msgstr "Produs comandă"
+msgstr ""
 
 #: order/settings.py:13
 msgid "Submitted"
-msgstr "Submis"
+msgstr ""
 
 #: order/settings.py:14
 msgid "Paid"
-msgstr "Plătit"
+msgstr ""
 
 #: order/settings.py:15
 msgid "Sent"
-msgstr "Trimis"
+msgstr ""
 
 #: order/settings.py:16
 msgid "Closed"
-msgstr "Închis"
+msgstr ""
 
 #: order/settings.py:17
 msgid "Canceled"
-msgstr "Anulat"
+msgstr ""
 
 #: order/settings.py:18
 msgid "Payment Failed"
-msgstr "Plată Eșuată"
+msgstr ""
 
 #: order/settings.py:19
 msgid "Payment Flagged"
-msgstr "Plată Semnalată"
+msgstr ""
 
 #: page/models.py:20 portlet/models/text.py:15
 msgid "Text"
-msgstr "Text"
+msgstr ""
 
 #: page/models.py:21
 msgid "File"
-msgstr "Fișier"
+msgstr ""
 
 #: payment/models.py:76 payment/models.py:124 shipping/models.py:56
 #: shipping/models.py:110
 #: templates/manage/payment/payment_method_prices.html:24
 #: templates/manage/shipping/shipping_method_prices.html:24
 msgid "Priority"
-msgstr "Prioritate"
+msgstr ""
 
 #: payment/models.py:79
 msgid "note"
-msgstr "notă"
+msgstr ""
 
 #: payment/settings.py:16
 msgid "Mastercard"
-msgstr "Mastercard"
+msgstr ""
 
 #: payment/settings.py:17
 msgid "Visacard"
-msgstr "Visacard"
+msgstr ""
 
 #: payment/settings.py:25
 msgid "Plain"
@@ -2159,340 +2159,371 @@ msgstr ""
 
 #: payment/settings.py:26
 msgid "Bank"
-msgstr "Nume bancă"
+msgstr ""
 
 #: payment/settings.py:27
 msgid "Credit Card"
-msgstr "Carte de credit"
+msgstr ""
+
+#: portlet/models/featured.py:22
+#: templates/manage/marketing/featured_inline.html:89
+msgid "Featured products"
+msgstr ""
+
+#: portlet/models/featured.py:25 portlet/models/forsale.py:25
+msgid "Use current category"
+msgstr ""
+
+#: portlet/models/featured.py:26 portlet/models/forsale.py:26
+msgid "Slideshow"
+msgstr ""
 
 #: portlet/models/filter.py:18
 msgid "Show product filters"
-msgstr "Arată filtre produs"
+msgstr ""
 
 #: portlet/models/filter.py:19
 msgid "Show price filters"
-msgstr "Arată filtre preț"
+msgstr ""
+
+#: portlet/models/forsale.py:22
+msgid "Product Forsale"
+msgstr ""
 
 #: portlet/templatetags/lfs_portlets_tags.py:134
 msgid "Recent Products"
-msgstr "Produse Recente"
+msgstr ""
 
 #: portlet/templatetags/lfs_portlets_tags.py:149
 #: templates/manage/product/product.html:104
 msgid "Related Products"
-msgstr "Produse conexe"
+msgstr ""
 
 #: portlet/templatetags/lfs_portlets_tags.py:164
-#: templates/manage/manage_base.html:125
+#: templates/manage/manage_base.html:115
 #: templates/manage/marketing/marketing.html:15
 #: templates/manage/marketing/topseller_inline.html:90
 msgid "Topseller"
-msgstr "Topseller"
+msgstr ""
 
 #: shipping/models.py:59
 msgid "Note"
-msgstr "Notă"
+msgstr ""
 
 #: shipping/models.py:108
 msgid "shipping_method"
-msgstr "shipping_method"
+msgstr ""
 
 #: tax/models.py:17
 msgid "Rate"
-msgstr "Rată"
+msgstr ""
 
 #: templates/manage/dashboard.html:3
 msgid "Dashboard"
-msgstr "Dashboard"
+msgstr ""
 
-#: templates/manage/manage_base.html:67
+#: templates/manage/manage_base.html:57
 msgid "Logout"
-msgstr "Ieșire"
+msgstr ""
 
-#: templates/manage/manage_base.html:69
+#: templates/manage/manage_base.html:59
 msgid "Login"
-msgstr "Login"
+msgstr ""
 
-#: templates/manage/manage_base.html:80 templates/manage/shop/shop.html:9
+#: templates/manage/manage_base.html:70 templates/manage/shop/shop.html:9
 msgid "Shop"
-msgstr "Magazin"
+msgstr ""
 
-#: templates/manage/manage_base.html:82 templates/manage/shop/action.html:7
+#: templates/manage/manage_base.html:72 templates/manage/shop/action.html:7
 msgid "Actions"
-msgstr "Acțiuni"
+msgstr ""
 
-#: templates/manage/manage_base.html:83
+#: templates/manage/manage_base.html:73
 msgid "Delivery Times"
-msgstr "Timp de Livrare"
+msgstr ""
 
-#: templates/manage/manage_base.html:84
+#: templates/manage/manage_base.html:74
 #: templates/manage/discounts/discount.html:7
 msgid "Discounts"
-msgstr "Disconturi"
+msgstr ""
 
-#: templates/manage/manage_base.html:85
+#: templates/manage/manage_base.html:75
 #: templates/manage/manufacturer/manufacturer.html:8
 msgid "Manufacturers"
-msgstr "Producători"
+msgstr ""
 
-#: templates/manage/manage_base.html:86
+#: templates/manage/manage_base.html:76
 msgid "Payment Methods"
-msgstr "Metode de Plată"
+msgstr ""
+
+#: templates/manage/manage_base.html:77
+msgid "Preferences"
+msgstr ""
+
+#: templates/manage/manage_base.html:78
+msgid "Shipping Methods"
+msgstr ""
+
+#: templates/manage/manage_base.html:79 templates/manage/tax/tax.html:6
+msgid "Taxes"
+msgstr ""
+
+#: templates/manage/manage_base.html:83
+msgid "Catalog"
+msgstr ""
 
 #: templates/manage/manage_base.html:87
-msgid "Preferences"
-msgstr "Preferințe"
-
-#: templates/manage/manage_base.html:88
-msgid "Shipping Methods"
-msgstr "Metode de Livrare"
-
-#: templates/manage/manage_base.html:89 templates/manage/tax/tax.html:6
-msgid "Taxes"
-msgstr "Taxe"
+msgid "Products Overview"
+msgstr ""
 
 #: templates/manage/manage_base.html:93
-msgid "Catalog"
-msgstr "Catalog"
-
-#: templates/manage/manage_base.html:97
-msgid "Products Overview"
-msgstr "Sumar Produse"
-
-#: templates/manage/manage_base.html:103
 #: templates/manage/product/properties.html:2
 #: templates/manage/product/variants.html:4
 #: templates/manage/properties/add_property_group.html:12
 msgid "Property Groups"
-msgstr "Grupuri de Proprietăți"
+msgstr ""
 
-#: templates/manage/manage_base.html:109
-#: templates/manage/cart/carts_inline.html:9
-#: templates/manage/customer/customers_inline.html:10
-#: templates/manage/order/orders_inline.html:8
+#: templates/manage/manage_base.html:99
+#: templates/manage/cart/carts_filters_inline.html:9
+#: templates/manage/cart/selectable_carts_inline.html:2
+#: templates/manage/customer/customers_filters_inline.html:9
+#: templates/manage/customer/selectable_customers_inline.html:3
+#: templates/manage/order/orders_filter.html:7
+#: templates/manage/order/orders_filters_inline.html:7
+#: templates/manage/order/selectable_orders_inline.html:3
 #: templates/manage/page/page.html:7
-#: templates/manage/reviews/reviews_inline.html:9
+#: templates/manage/reviews/reviews_filters_inline.html:8
+#: templates/manage/reviews/selectable_reviews_inline.html:2
 msgid "Pages"
-msgstr "Pagini"
+msgstr ""
 
-#: templates/manage/manage_base.html:110
+#: templates/manage/manage_base.html:100
 #: templates/manage/static_block/static_block.html:6
 msgid "Static blocks"
-msgstr "Blocuri statice"
+msgstr ""
 
-#: templates/manage/manage_base.html:113 templates/manage/manage_base.html:116
-#: templates/manage/customer/customers.html:12
+#: templates/manage/manage_base.html:103 templates/manage/manage_base.html:106
+#: templates/manage/customer/customers.html:15
 #: templates/manage/customer/customers_inline.html:4
 msgid "Customers"
-msgstr "Clienți"
+msgstr ""
 
-#: templates/manage/manage_base.html:115 templates/manage/cart/carts.html:12
-#: templates/manage/cart/carts.html:15
+#: templates/manage/manage_base.html:105 templates/manage/cart/carts.html:15
+#: templates/manage/cart/carts.html:18
 msgid "Carts"
-msgstr "Coșuri"
+msgstr ""
 
-#: templates/manage/manage_base.html:117
-#: templates/manage/customer/customer_inline.html:146
-#: templates/manage/customer/customers_inline.html:111
-#: templates/manage/order/orders.html:11
+#: templates/manage/manage_base.html:107
+#: templates/manage/customer/customer_inline.html:117
+#: templates/manage/customer/customers_inline.html:32
+#: templates/manage/order/orders.html:14
 #: templates/manage/order/orders_inline.html:2
 msgid "Orders"
-msgstr "Comenzi"
+msgstr ""
 
-#: templates/manage/manage_base.html:118
-#: templates/manage/reviews/reviews.html:10
+#: templates/manage/manage_base.html:108
 #: templates/manage/reviews/reviews.html:13
+#: templates/manage/reviews/reviews.html:16
 msgid "Reviews"
-msgstr "Recenzii"
+msgstr ""
 
-#: templates/manage/manage_base.html:121
+#: templates/manage/manage_base.html:111
 msgid "Marketing"
-msgstr "Marketing"
+msgstr ""
 
-#: templates/manage/manage_base.html:123
+#: templates/manage/manage_base.html:113
 msgid "Featured"
-msgstr "Promovate"
+msgstr ""
 
-#: templates/manage/manage_base.html:124
+#: templates/manage/manage_base.html:114
 #: templates/manage/marketing/rating_mails.html:13
 msgid "Rating Mails"
-msgstr "Mailuri evaluări"
+msgstr ""
 
-#: templates/manage/manage_base.html:126
+#: templates/manage/manage_base.html:116
 #: templates/manage/voucher/voucher_group.html:26
 #: templates/manage/voucher/vouchers.html:3
 msgid "Vouchers"
-msgstr "Vouchere"
+msgstr ""
 
-#: templates/manage/manage_base.html:129
+#: templates/manage/manage_base.html:119
 msgid "Utils"
-msgstr "Utile"
+msgstr ""
 
-#: templates/manage/manage_base.html:132
+#: templates/manage/manage_base.html:122
 msgid "Miscellaneous"
-msgstr "Altele"
+msgstr ""
 
-#: templates/manage/manage_base.html:158
+#: templates/manage/manage_base.html:148
 msgid "Powered by"
-msgstr "Rulează"
+msgstr ""
+
+#: templates/manage/manage_base.html:150
+msgid "is a product of"
+msgstr ""
+
+#: templates/manage/manage_base.html:151
+msgid "by"
+msgstr ""
+
+#: templates/manage/manage_base.html:151
+msgid "All rights reserved"
+msgstr ""
+
+#: templates/manage/manage_base.html:153
+msgid "Distributed under the"
+msgstr ""
+
+#: templates/manage/manage_base.html:153
+msgid "BSD-License"
+msgstr ""
+
+#: templates/manage/manage_base.html:159
+msgid "Please Confirm"
+msgstr ""
 
 #: templates/manage/manage_base.html:160
-msgid "is a product of"
-msgstr "este un produs al"
-
-#: templates/manage/manage_base.html:161
-msgid "by"
-msgstr "de"
-
-#: templates/manage/manage_base.html:161
-msgid "All rights reserved"
-msgstr "Toate drepturile rezervate"
-
-#: templates/manage/manage_base.html:163
-msgid "Distributed under the"
-msgstr "Distribuit sub"
-
-#: templates/manage/manage_base.html:163
-msgid "BSD-License"
-msgstr "Licența BSD"
-
-#: templates/manage/manage_base.html:169
-msgid "Please Confirm"
-msgstr "Te rugăm confirmă"
-
-#: templates/manage/manage_base.html:170
 msgid "Do you really want to delete this object?"
-msgstr "Ești sigur că vrei să ștergi acest obiect?"
+msgstr ""
 
 #: templates/manage/utils.html:11 templates/manage/utils.html.py:16
 msgid "Utilities"
-msgstr "Utilitare"
+msgstr ""
 
 #: templates/manage/utils.html:19
 msgid "Clear Cache"
-msgstr "Curăță Cache-ul"
+msgstr ""
 
 #: templates/manage/utils.html:22
 msgid "Set category levels"
-msgstr "Modifică nivelele de categorii"
+msgstr ""
 
 #: templates/manage/utils.html:25
 msgid "Reindex topseller"
-msgstr "Reindexează topseller"
+msgstr ""
 
 #: templates/manage/cart/cart.html:4
 msgid "Manage Cart"
-msgstr "Administrare coș"
+msgstr ""
 
 #: templates/manage/cart/cart.html:19
-#: templates/manage/customer/customer_inline.html:35
-#: templates/manage/order/order.html:16
+#: templates/manage/customer/customer.html:18
+#: templates/manage/customer/customer_inline.html:6
+#: templates/manage/order/order.html:20
 #: templates/manage/product/products_inline.html:6
-#: templates/manage/reviews/review_inline.html:42
+#: templates/manage/reviews/review.html:18
 msgid "Overview"
-msgstr "Sumar"
+msgstr ""
+
+#: templates/manage/cart/cart_filters_inline.html:13
+#: templates/manage/cart/carts_filters_inline.html:11
+#: templates/manage/order/order_filters_inline.html:13
+#: templates/manage/order/orders_filter.html:9
+#: templates/manage/order/orders_filters_inline.html:9
+msgid "Start"
+msgstr ""
+
+#: templates/manage/cart/cart_filters_inline.html:14
+#: templates/manage/cart/carts_filters_inline.html:12
+#: templates/manage/order/order_filters_inline.html:14
+#: templates/manage/order/orders_filter.html:10
+#: templates/manage/order/orders_filters_inline.html:10
+msgid "End"
+msgstr ""
 
 #: templates/manage/cart/cart_inline.html:7
 #: templates/manage/category/data.html:12
-#: templates/manage/customer/customer_inline.html:41
-#: templates/manage/order/order_inline.html:69
+#: templates/manage/customer/customer_inline.html:12
+#: templates/manage/order/order_inline.html:6
 #: templates/manage/product/data.html:10
-#: templates/manage/reviews/review_inline.html:69
+#: templates/manage/reviews/review_inline.html:7
 #: templates/manage/shop/shop.html:21
 msgid "General"
-msgstr "General"
+msgstr ""
 
 #: templates/manage/cart/cart_inline.html:13
 #: templates/manage/cart/cart_inline.html:94
-#: templates/manage/cart/carts_inline.html:102
-#: templates/manage/customer/customer_inline.html:47
-#: templates/manage/customer/customer_inline.html:151
-#: templates/manage/customer/customer_inline.html:199
-#: templates/manage/customer/customers_inline.html:89
+#: templates/manage/cart/carts_inline.html:7
+#: templates/manage/customer/customer_inline.html:18
+#: templates/manage/customer/customer_inline.html:122
+#: templates/manage/customer/customer_inline.html:170
+#: templates/manage/customer/customers_inline.html:10
 #: templates/manage/marketing/rating_mails.html:45
-#: templates/manage/reviews/review_inline.html:75
-#: templates/manage/reviews/reviews_inline.html:95
+#: templates/manage/reviews/review_inline.html:13
+#: templates/manage/reviews/reviews_inline.html:9
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 #: templates/manage/cart/cart_inline.html:61
 #: templates/manage/cart/cart_inline.html:69
 #: templates/manage/cart/cart_inline.html:119
-#: templates/manage/cart/carts_inline.html:131
-#: templates/manage/cart/carts_inline.html:134
-#: templates/manage/cart/selectable_carts_inline.html:59
-#: templates/manage/customer/customer_inline.html:173
-#: templates/manage/customer/customer_inline.html:214
+#: templates/manage/cart/carts_inline.html:36
+#: templates/manage/cart/carts_inline.html:39
+#: templates/manage/cart/selectable_carts_inline.html:60
+#: templates/manage/customer/customer_inline.html:144
+#: templates/manage/customer/customer_inline.html:185
 #: templates/manage/marketing/rating_mails.html:79
 #: templates/manage/marketing/rating_mails.html:82
-#: templates/manage/order/order_inline.html:85
-#: templates/manage/order/order_inline.html:101
-#: templates/manage/order/orders_inline.html:139
+#: templates/manage/order/order_inline.html:22
+#: templates/manage/order/order_inline.html:38
+#: templates/manage/order/orders_inline.html:26
 #: templates/manage/order/selectable_orders_inline.html:60
 msgid "DATETIME_FORMAT"
-msgstr "DATETIME_FORMAT"
+msgstr ""
 
 #: templates/manage/cart/cart_inline.html:74
-#: templates/manage/cart/carts_inline.html:117
+#: templates/manage/cart/carts_inline.html:22
 msgid "Items"
-msgstr "Elemente"
+msgstr ""
 
 #: templates/manage/cart/cart_inline.html:82
 #: templates/manage/cart/cart_inline.html:109
-#: templates/manage/cart/carts_inline.html:114
-#: templates/manage/order/order_inline.html:112
-#: templates/manage/order/order_inline.html:240
+#: templates/manage/cart/carts_inline.html:19
+#: templates/manage/order/order_inline.html:49
+#: templates/manage/order/order_inline.html:173
 msgid "Total"
-msgstr "Total"
+msgstr ""
 
 #: templates/manage/cart/cart_inline.html:137
 msgid "This cart has no items"
-msgstr "Acest coș nu are elemente"
+msgstr ""
 
 #: templates/manage/cart/carts.html:5
 msgid "Manage Carts"
-msgstr "Administrare coșuri"
+msgstr ""
 
-#: templates/manage/cart/carts_inline.html:11
-#: templates/manage/order/order_inline.html:12
-#: templates/manage/order/orders_inline.html:10
-msgid "Start"
-msgstr "Start"
-
-#: templates/manage/cart/carts_inline.html:12
-#: templates/manage/order/order_inline.html:13
-#: templates/manage/order/orders_inline.html:11
-msgid "End"
-msgstr "Final"
-
-#: templates/manage/cart/carts_inline.html:21
-#: templates/manage/cart/carts_inline.html:22
-#: templates/manage/cart/carts_inline.html:32
-#: templates/manage/cart/carts_inline.html:33
-#: templates/manage/cart/selectable_carts_inline.html:8
+#: templates/manage/cart/carts_filters_inline.html:21
+#: templates/manage/cart/carts_filters_inline.html:22
+#: templates/manage/cart/carts_filters_inline.html:32
+#: templates/manage/cart/carts_filters_inline.html:33
 #: templates/manage/cart/selectable_carts_inline.html:9
-#: templates/manage/cart/selectable_carts_inline.html:20
+#: templates/manage/cart/selectable_carts_inline.html:10
 #: templates/manage/cart/selectable_carts_inline.html:21
+#: templates/manage/cart/selectable_carts_inline.html:22
 #: templates/manage/category/products_inline.html:11
 #: templates/manage/category/products_inline.html:15
 #: templates/manage/category/selected_products.html:7
 #: templates/manage/category/selected_products.html:11
-#: templates/manage/customer/customers_inline.html:20
-#: templates/manage/customer/customers_inline.html:21
-#: templates/manage/customer/customers_inline.html:31
-#: templates/manage/customer/customers_inline.html:32
-#: templates/manage/customer/selectable_customers_inline.html:8
+#: templates/manage/customer/customers_filters_inline.html:19
+#: templates/manage/customer/customers_filters_inline.html:20
+#: templates/manage/customer/customers_filters_inline.html:30
+#: templates/manage/customer/customers_filters_inline.html:31
 #: templates/manage/customer/selectable_customers_inline.html:9
-#: templates/manage/customer/selectable_customers_inline.html:20
+#: templates/manage/customer/selectable_customers_inline.html:10
 #: templates/manage/customer/selectable_customers_inline.html:21
+#: templates/manage/customer/selectable_customers_inline.html:22
 #: templates/manage/marketing/featured_inline.html:6
 #: templates/manage/marketing/featured_inline.html:10
 #: templates/manage/marketing/topseller_inline.html:6
 #: templates/manage/marketing/topseller_inline.html:10
-#: templates/manage/order/orders_inline.html:22
-#: templates/manage/order/orders_inline.html:23
-#: templates/manage/order/orders_inline.html:33
-#: templates/manage/order/orders_inline.html:34
+#: templates/manage/order/orders_filter.html:21
+#: templates/manage/order/orders_filter.html:22
+#: templates/manage/order/orders_filter.html:32
+#: templates/manage/order/orders_filter.html:33
+#: templates/manage/order/orders_filters_inline.html:21
+#: templates/manage/order/orders_filters_inline.html:22
+#: templates/manage/order/orders_filters_inline.html:32
+#: templates/manage/order/orders_filters_inline.html:33
 #: templates/manage/order/selectable_orders_inline.html:9
 #: templates/manage/order/selectable_orders_inline.html:10
 #: templates/manage/order/selectable_orders_inline.html:21
@@ -2507,49 +2538,53 @@ msgstr "Final"
 #: templates/manage/product/related_products_inline.html:11
 #: templates/manage/properties/pg_products_inline.html:6
 #: templates/manage/properties/pg_products_inline.html:10
-#: templates/manage/reviews/reviews_inline.html:20
-#: templates/manage/reviews/reviews_inline.html:21
-#: templates/manage/reviews/reviews_inline.html:31
-#: templates/manage/reviews/reviews_inline.html:32
+#: templates/manage/reviews/reviews_filters_inline.html:19
+#: templates/manage/reviews/reviews_filters_inline.html:20
+#: templates/manage/reviews/reviews_filters_inline.html:30
+#: templates/manage/reviews/reviews_filters_inline.html:31
 #: templates/manage/reviews/selectable_reviews_inline.html:8
 #: templates/manage/reviews/selectable_reviews_inline.html:9
 #: templates/manage/reviews/selectable_reviews_inline.html:20
 #: templates/manage/reviews/selectable_reviews_inline.html:21
-#: templates/manage/voucher/vouchers_inline.html:7
-#: templates/manage/voucher/vouchers_inline.html:8
-#: templates/manage/voucher/vouchers_inline.html:19
-#: templates/manage/voucher/vouchers_inline.html:20
+#: templates/manage/voucher/vouchers_inline.html:9
+#: templates/manage/voucher/vouchers_inline.html:10
+#: templates/manage/voucher/vouchers_inline.html:21
+#: templates/manage/voucher/vouchers_inline.html:22
 msgid "First"
-msgstr "Primul"
+msgstr ""
 
-#: templates/manage/cart/carts_inline.html:27
-#: templates/manage/cart/carts_inline.html:28
-#: templates/manage/cart/carts_inline.html:35
-#: templates/manage/cart/carts_inline.html:36
-#: templates/manage/cart/selectable_carts_inline.html:14
+#: templates/manage/cart/carts_filters_inline.html:27
+#: templates/manage/cart/carts_filters_inline.html:28
+#: templates/manage/cart/carts_filters_inline.html:35
+#: templates/manage/cart/carts_filters_inline.html:36
 #: templates/manage/cart/selectable_carts_inline.html:15
-#: templates/manage/cart/selectable_carts_inline.html:25
+#: templates/manage/cart/selectable_carts_inline.html:16
 #: templates/manage/cart/selectable_carts_inline.html:26
+#: templates/manage/cart/selectable_carts_inline.html:27
 #: templates/manage/category/products_inline.html:13
 #: templates/manage/category/products_inline.html:16
 #: templates/manage/category/selected_products.html:9
 #: templates/manage/category/selected_products.html:12
-#: templates/manage/customer/customers_inline.html:26
-#: templates/manage/customer/customers_inline.html:27
-#: templates/manage/customer/customers_inline.html:34
-#: templates/manage/customer/customers_inline.html:35
-#: templates/manage/customer/selectable_customers_inline.html:14
+#: templates/manage/customer/customers_filters_inline.html:25
+#: templates/manage/customer/customers_filters_inline.html:26
+#: templates/manage/customer/customers_filters_inline.html:33
+#: templates/manage/customer/customers_filters_inline.html:34
 #: templates/manage/customer/selectable_customers_inline.html:15
-#: templates/manage/customer/selectable_customers_inline.html:25
+#: templates/manage/customer/selectable_customers_inline.html:16
 #: templates/manage/customer/selectable_customers_inline.html:26
+#: templates/manage/customer/selectable_customers_inline.html:27
 #: templates/manage/marketing/featured_inline.html:8
 #: templates/manage/marketing/featured_inline.html:11
 #: templates/manage/marketing/topseller_inline.html:8
 #: templates/manage/marketing/topseller_inline.html:11
-#: templates/manage/order/orders_inline.html:28
-#: templates/manage/order/orders_inline.html:29
-#: templates/manage/order/orders_inline.html:36
-#: templates/manage/order/orders_inline.html:37
+#: templates/manage/order/orders_filter.html:27
+#: templates/manage/order/orders_filter.html:28
+#: templates/manage/order/orders_filter.html:35
+#: templates/manage/order/orders_filter.html:36
+#: templates/manage/order/orders_filters_inline.html:27
+#: templates/manage/order/orders_filters_inline.html:28
+#: templates/manage/order/orders_filters_inline.html:35
+#: templates/manage/order/orders_filters_inline.html:36
 #: templates/manage/order/selectable_orders_inline.html:15
 #: templates/manage/order/selectable_orders_inline.html:16
 #: templates/manage/order/selectable_orders_inline.html:26
@@ -2564,69 +2599,74 @@ msgstr "Primul"
 #: templates/manage/product/related_products_inline.html:12
 #: templates/manage/properties/pg_products_inline.html:8
 #: templates/manage/properties/pg_products_inline.html:11
-#: templates/manage/reviews/reviews_inline.html:26
-#: templates/manage/reviews/reviews_inline.html:27
-#: templates/manage/reviews/reviews_inline.html:34
-#: templates/manage/reviews/reviews_inline.html:35
+#: templates/manage/reviews/reviews_filters_inline.html:25
+#: templates/manage/reviews/reviews_filters_inline.html:26
+#: templates/manage/reviews/reviews_filters_inline.html:33
+#: templates/manage/reviews/reviews_filters_inline.html:34
 #: templates/manage/reviews/selectable_reviews_inline.html:14
 #: templates/manage/reviews/selectable_reviews_inline.html:15
 #: templates/manage/reviews/selectable_reviews_inline.html:25
 #: templates/manage/reviews/selectable_reviews_inline.html:26
-#: templates/manage/voucher/vouchers_inline.html:13
-#: templates/manage/voucher/vouchers_inline.html:14
-#: templates/manage/voucher/vouchers_inline.html:24
-#: templates/manage/voucher/vouchers_inline.html:25
+#: templates/manage/voucher/vouchers_inline.html:15
+#: templates/manage/voucher/vouchers_inline.html:16
+#: templates/manage/voucher/vouchers_inline.html:26
+#: templates/manage/voucher/vouchers_inline.html:27
 msgid "Previous"
-msgstr "Precedent"
+msgstr ""
 
-#: templates/manage/cart/carts_inline.html:39
-#: templates/manage/cart/selectable_carts_inline.html:30
+#: templates/manage/cart/carts_filters_inline.html:39
+#: templates/manage/cart/selectable_carts_inline.html:31
 #: templates/manage/category/products_inline.html:20
 #: templates/manage/category/selected_products.html:16
-#: templates/manage/customer/customers_inline.html:38
-#: templates/manage/customer/selectable_customers_inline.html:30
+#: templates/manage/customer/customers_filters_inline.html:37
+#: templates/manage/customer/selectable_customers_inline.html:31
 #: templates/manage/marketing/featured_inline.html:15
 #: templates/manage/marketing/topseller_inline.html:15
-#: templates/manage/order/orders_inline.html:40
+#: templates/manage/order/orders_filter.html:39
+#: templates/manage/order/orders_filters_inline.html:39
 #: templates/manage/order/selectable_orders_inline.html:31
 #: templates/manage/product/accessories_inline.html:16
 #: templates/manage/product/pages_inline.html:29
 #: templates/manage/product/related_products_inline.html:16
 #: templates/manage/properties/pg_products_inline.html:15
-#: templates/manage/reviews/reviews_inline.html:38
+#: templates/manage/reviews/reviews_filters_inline.html:37
 #: templates/manage/reviews/selectable_reviews_inline.html:30
-#: templates/manage/voucher/vouchers_inline.html:29
+#: templates/manage/voucher/vouchers_inline.html:31
 msgid "of"
-msgstr "de"
+msgstr ""
 
-#: templates/manage/cart/carts_inline.html:45
-#: templates/manage/cart/carts_inline.html:46
-#: templates/manage/cart/carts_inline.html:58
-#: templates/manage/cart/carts_inline.html:59
-#: templates/manage/cart/selectable_carts_inline.html:36
+#: templates/manage/cart/carts_filters_inline.html:45
+#: templates/manage/cart/carts_filters_inline.html:46
+#: templates/manage/cart/carts_filters_inline.html:58
+#: templates/manage/cart/carts_filters_inline.html:59
 #: templates/manage/cart/selectable_carts_inline.html:37
-#: templates/manage/cart/selectable_carts_inline.html:47
+#: templates/manage/cart/selectable_carts_inline.html:38
 #: templates/manage/cart/selectable_carts_inline.html:48
+#: templates/manage/cart/selectable_carts_inline.html:49
 #: templates/manage/category/products_inline.html:25
 #: templates/manage/category/products_inline.html:30
 #: templates/manage/category/selected_products.html:21
 #: templates/manage/category/selected_products.html:26
-#: templates/manage/customer/customers_inline.html:44
-#: templates/manage/customer/customers_inline.html:45
-#: templates/manage/customer/customers_inline.html:57
-#: templates/manage/customer/customers_inline.html:58
-#: templates/manage/customer/selectable_customers_inline.html:36
+#: templates/manage/customer/customers_filters_inline.html:43
+#: templates/manage/customer/customers_filters_inline.html:44
+#: templates/manage/customer/customers_filters_inline.html:56
+#: templates/manage/customer/customers_filters_inline.html:57
 #: templates/manage/customer/selectable_customers_inline.html:37
-#: templates/manage/customer/selectable_customers_inline.html:47
+#: templates/manage/customer/selectable_customers_inline.html:38
 #: templates/manage/customer/selectable_customers_inline.html:48
+#: templates/manage/customer/selectable_customers_inline.html:49
 #: templates/manage/marketing/featured_inline.html:20
 #: templates/manage/marketing/featured_inline.html:24
 #: templates/manage/marketing/topseller_inline.html:20
 #: templates/manage/marketing/topseller_inline.html:24
-#: templates/manage/order/orders_inline.html:46
-#: templates/manage/order/orders_inline.html:47
-#: templates/manage/order/orders_inline.html:59
-#: templates/manage/order/orders_inline.html:60
+#: templates/manage/order/orders_filter.html:45
+#: templates/manage/order/orders_filter.html:46
+#: templates/manage/order/orders_filter.html:58
+#: templates/manage/order/orders_filter.html:59
+#: templates/manage/order/orders_filters_inline.html:45
+#: templates/manage/order/orders_filters_inline.html:46
+#: templates/manage/order/orders_filters_inline.html:58
+#: templates/manage/order/orders_filters_inline.html:59
 #: templates/manage/order/selectable_orders_inline.html:37
 #: templates/manage/order/selectable_orders_inline.html:38
 #: templates/manage/order/selectable_orders_inline.html:48
@@ -2641,49 +2681,53 @@ msgstr "de"
 #: templates/manage/product/related_products_inline.html:26
 #: templates/manage/properties/pg_products_inline.html:20
 #: templates/manage/properties/pg_products_inline.html:24
-#: templates/manage/reviews/reviews_inline.html:44
-#: templates/manage/reviews/reviews_inline.html:45
-#: templates/manage/reviews/reviews_inline.html:57
-#: templates/manage/reviews/reviews_inline.html:58
+#: templates/manage/reviews/reviews_filters_inline.html:43
+#: templates/manage/reviews/reviews_filters_inline.html:44
+#: templates/manage/reviews/reviews_filters_inline.html:56
+#: templates/manage/reviews/reviews_filters_inline.html:57
 #: templates/manage/reviews/selectable_reviews_inline.html:36
 #: templates/manage/reviews/selectable_reviews_inline.html:37
 #: templates/manage/reviews/selectable_reviews_inline.html:47
 #: templates/manage/reviews/selectable_reviews_inline.html:48
-#: templates/manage/voucher/vouchers_inline.html:35
-#: templates/manage/voucher/vouchers_inline.html:36
-#: templates/manage/voucher/vouchers_inline.html:46
-#: templates/manage/voucher/vouchers_inline.html:47
+#: templates/manage/voucher/vouchers_inline.html:37
+#: templates/manage/voucher/vouchers_inline.html:38
+#: templates/manage/voucher/vouchers_inline.html:48
+#: templates/manage/voucher/vouchers_inline.html:49
 msgid "Next"
-msgstr "Următorul"
+msgstr ""
 
-#: templates/manage/cart/carts_inline.html:51
-#: templates/manage/cart/carts_inline.html:52
-#: templates/manage/cart/carts_inline.html:63
-#: templates/manage/cart/carts_inline.html:64
-#: templates/manage/cart/selectable_carts_inline.html:42
+#: templates/manage/cart/carts_filters_inline.html:51
+#: templates/manage/cart/carts_filters_inline.html:52
+#: templates/manage/cart/carts_filters_inline.html:63
+#: templates/manage/cart/carts_filters_inline.html:64
 #: templates/manage/cart/selectable_carts_inline.html:43
-#: templates/manage/cart/selectable_carts_inline.html:50
+#: templates/manage/cart/selectable_carts_inline.html:44
 #: templates/manage/cart/selectable_carts_inline.html:51
+#: templates/manage/cart/selectable_carts_inline.html:52
 #: templates/manage/category/products_inline.html:27
 #: templates/manage/category/products_inline.html:31
 #: templates/manage/category/selected_products.html:23
 #: templates/manage/category/selected_products.html:27
-#: templates/manage/customer/customers_inline.html:50
-#: templates/manage/customer/customers_inline.html:51
-#: templates/manage/customer/customers_inline.html:62
-#: templates/manage/customer/customers_inline.html:63
-#: templates/manage/customer/selectable_customers_inline.html:42
+#: templates/manage/customer/customers_filters_inline.html:49
+#: templates/manage/customer/customers_filters_inline.html:50
+#: templates/manage/customer/customers_filters_inline.html:61
+#: templates/manage/customer/customers_filters_inline.html:62
 #: templates/manage/customer/selectable_customers_inline.html:43
-#: templates/manage/customer/selectable_customers_inline.html:50
+#: templates/manage/customer/selectable_customers_inline.html:44
 #: templates/manage/customer/selectable_customers_inline.html:51
+#: templates/manage/customer/selectable_customers_inline.html:52
 #: templates/manage/marketing/featured_inline.html:22
 #: templates/manage/marketing/featured_inline.html:25
 #: templates/manage/marketing/topseller_inline.html:22
 #: templates/manage/marketing/topseller_inline.html:25
-#: templates/manage/order/orders_inline.html:52
-#: templates/manage/order/orders_inline.html:53
-#: templates/manage/order/orders_inline.html:64
-#: templates/manage/order/orders_inline.html:65
+#: templates/manage/order/orders_filter.html:51
+#: templates/manage/order/orders_filter.html:52
+#: templates/manage/order/orders_filter.html:63
+#: templates/manage/order/orders_filter.html:64
+#: templates/manage/order/orders_filters_inline.html:51
+#: templates/manage/order/orders_filters_inline.html:52
+#: templates/manage/order/orders_filters_inline.html:63
+#: templates/manage/order/orders_filters_inline.html:64
 #: templates/manage/order/selectable_orders_inline.html:43
 #: templates/manage/order/selectable_orders_inline.html:44
 #: templates/manage/order/selectable_orders_inline.html:51
@@ -2698,26 +2742,26 @@ msgstr "Următorul"
 #: templates/manage/product/related_products_inline.html:27
 #: templates/manage/properties/pg_products_inline.html:22
 #: templates/manage/properties/pg_products_inline.html:25
-#: templates/manage/reviews/reviews_inline.html:50
-#: templates/manage/reviews/reviews_inline.html:51
-#: templates/manage/reviews/reviews_inline.html:62
-#: templates/manage/reviews/reviews_inline.html:63
+#: templates/manage/reviews/reviews_filters_inline.html:49
+#: templates/manage/reviews/reviews_filters_inline.html:50
+#: templates/manage/reviews/reviews_filters_inline.html:61
+#: templates/manage/reviews/reviews_filters_inline.html:62
 #: templates/manage/reviews/selectable_reviews_inline.html:42
 #: templates/manage/reviews/selectable_reviews_inline.html:43
 #: templates/manage/reviews/selectable_reviews_inline.html:50
 #: templates/manage/reviews/selectable_reviews_inline.html:51
-#: templates/manage/voucher/vouchers_inline.html:41
-#: templates/manage/voucher/vouchers_inline.html:42
-#: templates/manage/voucher/vouchers_inline.html:49
-#: templates/manage/voucher/vouchers_inline.html:50
+#: templates/manage/voucher/vouchers_inline.html:43
+#: templates/manage/voucher/vouchers_inline.html:44
+#: templates/manage/voucher/vouchers_inline.html:51
+#: templates/manage/voucher/vouchers_inline.html:52
 msgid "Last"
-msgstr "Ultimul"
+msgstr ""
 
 #: templates/manage/category/add_category.html:10
 #: templates/manage/category/add_category.html:13
 #: templates/manage/category/add_category.html:24
 msgid "Add category"
-msgstr "Adaugă categorie"
+msgstr ""
 
 #: templates/manage/category/add_category.html:29
 #: templates/manage/delivery_times/add.html:27
@@ -2735,11 +2779,11 @@ msgstr "Adaugă categorie"
 #: templates/manage/tax/add_tax.html:28
 #: templates/manage/voucher/add_voucher_group.html:29
 msgid "Cancel"
-msgstr "Anulează"
+msgstr ""
 
 #: templates/manage/category/category_filter.html:6
 msgid "None"
-msgstr "Nici una"
+msgstr ""
 
 #: templates/manage/category/data.html:3
 #: templates/manage/delivery_times/base.html:39
@@ -2747,7 +2791,7 @@ msgstr "Nici una"
 #: templates/manage/export/export.html:33
 #: templates/manage/export/export_data_inline.html:2
 #: templates/manage/manufacturer/manufacturer_data_inline.html:2
-#: templates/manage/page/page.html:45
+#: templates/manage/page/page.html:51
 #: templates/manage/payment/payment_method_data.html:3
 #: templates/manage/product/data.html:3
 #: templates/manage/shipping/shipping_method_data.html:2
@@ -2757,41 +2801,41 @@ msgstr "Nici una"
 #: templates/manage/tax/add_tax.html:13 templates/manage/tax/tax.html:37
 #: templates/manage/voucher/voucher_group.html:25
 msgid "Data"
-msgstr "Date"
+msgstr ""
 
 #: templates/manage/category/data.html:53 templates/manage/shop/shop.html:156
 msgid "Content"
-msgstr "Conținut"
+msgstr ""
 
-#: templates/manage/category/data.html:102 templates/manage/page/page.html:54
+#: templates/manage/category/data.html:102 templates/manage/page/page.html:60
 #: templates/manage/product/data.html:359
 #: templates/manage/static_block/static_block.html:48
 msgid "Save data"
-msgstr "Salveaza date"
+msgstr ""
 
 #: templates/manage/category/manage_category.html:4
 msgid "Manage Category"
-msgstr "Administrare categorie"
+msgstr ""
 
 #: templates/manage/category/manage_category.html:14
 msgid "Add Top Category"
-msgstr "Adaugă categorie de top"
+msgstr ""
 
 #: templates/manage/category/manage_category.html:19
 msgid "Add Category"
-msgstr "Adaugă categorie"
+msgstr ""
 
 #: templates/manage/category/manage_category.html:24
 msgid "Delete Category"
-msgstr "Șterge categorie"
+msgstr ""
 
 #: templates/manage/category/manage_category.html:27
 msgid "View Category"
-msgstr "Vezi categorie"
+msgstr ""
 
 #: templates/manage/category/manage_category.html:31
 msgid "Goto Category"
-msgstr "Du-te la categorie"
+msgstr ""
 
 #: templates/manage/category/manage_category.html:39
 #: templates/manage/category/view.html:3
@@ -2799,121 +2843,121 @@ msgstr "Du-te la categorie"
 #: templates/manage/marketing/rating_mails.html:90
 #: templates/manage/product/products_inline.html:112
 msgid "View"
-msgstr "Vezi"
+msgstr ""
 
 #: templates/manage/category/manage_category.html:41
 #: templates/manage/category/seo.html:3
 #: templates/manage/product/product.html:106
 #: templates/manage/product/seo.html:3
 msgid "SEO"
-msgstr "SEO"
+msgstr ""
 
 #: templates/manage/category/manage_category.html:42
 #: templates/manage/product/product.html:107
 #: templates/manage/shop/shop.html:11
 msgid "Portlets"
-msgstr "Portleturi"
+msgstr ""
 
 #: templates/manage/category/products.html:33
 msgid "Selected Products"
-msgstr "Produse selectate"
+msgstr ""
 
 #: templates/manage/category/products_inline.html:89
 msgid "Add to category"
-msgstr "Adaugă la categorie"
+msgstr ""
 
 #: templates/manage/category/selected_products.html:82
 msgid "Remove from category"
-msgstr "Șterge din categorie"
+msgstr ""
 
 #: templates/manage/category/seo.html:12
 msgid "Save SEO"
-msgstr "Salvează SEO"
+msgstr ""
 
 #: templates/manage/category/view.html:14
 msgid "Save View"
-msgstr "Salvează pagină"
+msgstr ""
 
 #: templates/manage/criteria/number_operators.html:3
 msgid "Equal"
-msgstr "Egal"
+msgstr ""
 
 #: templates/manage/criteria/number_operators.html:5
 msgid "Less than equal to"
-msgstr "Mai mic decât egal cu"
+msgstr ""
 
 #: templates/manage/criteria/number_operators.html:7
 msgid "Greater than equal to"
-msgstr "Mai mare decât egal cu"
+msgstr ""
 
 #: templates/manage/criteria/selection_operators.html:3
 msgid "Is selected"
-msgstr "Este selectat"
+msgstr ""
 
 #: templates/manage/criteria/selection_operators.html:4
 msgid "Is not selected"
-msgstr "Nu este selectat"
+msgstr ""
 
-#: templates/manage/customer/customer_inline.html:55
-#: templates/manage/reviews/review_inline.html:128
+#: templates/manage/customer/customer_inline.html:26
+#: templates/manage/reviews/review_inline.html:66
 msgid "Registriert"
-msgstr "Înregistrare"
+msgstr ""
 
-#: templates/manage/customer/customer_inline.html:70
-#: templates/manage/order/order_inline.html:126
+#: templates/manage/customer/customer_inline.html:41
+#: templates/manage/order/order_inline.html:63
 msgid "Invoice address"
-msgstr "Adresa de facturare"
+msgstr ""
 
-#: templates/manage/customer/customer_inline.html:73
-#: templates/manage/order/order_inline.html:123
+#: templates/manage/customer/customer_inline.html:44
+#: templates/manage/order/order_inline.html:60
 msgid "Shipping address"
-msgstr "Adresa de livrare"
+msgstr ""
 
 #: templates/manage/customer/customers.html:5
 msgid "Manage customers"
-msgstr "Administrează clienți"
+msgstr ""
 
 #: templates/manage/delivery_times/add.html:4
 #: templates/manage/delivery_times/add.html:23
 #: templates/manage/delivery_times/base.html:26
 msgid "Add Delivery Time"
-msgstr "Adaugă Timp de Livrare"
+msgstr ""
 
 #: templates/manage/delivery_times/add.html:11
 #: templates/manage/delivery_times/add.html:14
 msgid "Add delivery time"
-msgstr "Adaugă timp de livrare"
+msgstr ""
 
 #: templates/manage/delivery_times/base.html:4
 msgid "Manage Delivery Time"
-msgstr "Administrează timp de livrare"
+msgstr ""
 
 #: templates/manage/delivery_times/base.html:8
 msgid "Delivery times"
-msgstr "Timpi de livrare"
+msgstr ""
 
 #: templates/manage/delivery_times/base.html:29
 msgid "Do you really want to delete this delivery time?"
-msgstr "Ești sigur că vrei să ștergi acest timp de livrare?"
+msgstr ""
 
 #: templates/manage/delivery_times/base.html:30
 msgid "Delete Delivery Time"
-msgstr "Șterge Timp de Livrare"
+msgstr ""
 
 #: templates/manage/delivery_times/base.html:35
 msgid "Delivery Time"
-msgstr "Timp de Livrare"
+msgstr ""
 
 #: templates/manage/delivery_times/base.html:48
 msgid "Save Delivery Time"
-msgstr "Salvează Timp de Livrare"
+msgstr ""
 
 #: templates/manage/discounts/add_discount.html:10
 #: templates/manage/discounts/add_discount.html:14
 #: templates/manage/discounts/add_discount.html:24
 #: templates/manage/discounts/discount.html:19
 msgid "Add discount"
-msgstr "Adaugă discont"
+msgstr ""
 
 #: templates/manage/discounts/criteria.html:3
 #: templates/manage/discounts/discount.html:30
@@ -2922,14 +2966,14 @@ msgstr "Adaugă discont"
 #: templates/manage/shipping/manage_shipping.html:29
 #: templates/manage/shipping/shipping_method_criteria.html:3
 msgid "Criteria"
-msgstr "Criterii"
+msgstr ""
 
 #: templates/manage/discounts/criteria.html:12
 #: templates/manage/shipping/shipping_method_criteria.html:13
 #: templates/manage/shop/add_action.html:23
 #: templates/manage/tax/add_tax.html:23
 msgid "Add"
-msgstr "Adaugă"
+msgstr ""
 
 #: templates/manage/discounts/criteria.html:14
 #: templates/manage/payment/payment_method_criteria.html:15
@@ -2938,7 +2982,7 @@ msgstr "Adaugă"
 #: templates/manage/shipping/shipping_price_criteria.html:17
 #: templates/manage/shipping/shipping_price_criteria.html:18
 msgid "Add criterion"
-msgstr "Adaugă criterii"
+msgstr ""
 
 #: templates/manage/discounts/criteria.html:27
 #: templates/manage/payment/payment_method_criteria.html:28
@@ -2946,7 +2990,7 @@ msgstr "Adaugă criterii"
 #: templates/manage/shipping/shipping_method_criteria.html:28
 #: templates/manage/shipping/shipping_price_criteria.html:31
 msgid "Save criteria"
-msgstr "Salvează criterii"
+msgstr ""
 
 #: templates/manage/discounts/data.html:13
 #: templates/manage/export/add_export.html:26
@@ -2957,254 +3001,248 @@ msgstr "Salvează criterii"
 #: templates/manage/shipping/shipping_method_data.html:15
 #: templates/manage/tax/tax.html:47
 msgid "Save"
-msgstr "Salvează"
+msgstr ""
 
 #: templates/manage/discounts/discount.html:22
 msgid "Do you really want to delete this discount?"
-msgstr "Ești sigur că vrei să ștergi acest discont?"
+msgstr ""
 
 #: templates/manage/discounts/discount.html:24
 msgid "Delete discount"
-msgstr "Șterge discont"
+msgstr ""
 
 #: templates/manage/discounts/discount.html:29
 msgid "Discount"
-msgstr "Discont"
+msgstr ""
 
 #: templates/manage/export/add_export.html:11
 msgid "Selection"
-msgstr "Selecție"
+msgstr ""
 
 #: templates/manage/export/export.html:7
 msgid "Exports"
-msgstr "Exporturi"
+msgstr ""
 
 #: templates/manage/export/export.html:19
 msgid "Add Export"
-msgstr "Adaugă export"
+msgstr ""
 
 #: templates/manage/export/export.html:22
 msgid "Do you really want to delete this export?"
-msgstr "Ești sigur că vrei să ștergi acest export?"
+msgstr ""
 
 #: templates/manage/export/export.html:24
 msgid "Delete Export"
-msgstr "Șterge export"
+msgstr ""
 
 #: templates/manage/export/export.html:28
 msgid "Download Export"
-msgstr "Descarcă exportul"
+msgstr ""
 
 #: templates/manage/manufacturer/manufacturer.html:4
 msgid "Manage Manufacturer"
-msgstr "Administrare producător"
+msgstr ""
 
 #: templates/manage/manufacturer/manufacturer.html:20
 msgid "Add Manufacturer"
-msgstr "Adaugă producător"
+msgstr ""
 
 #: templates/manage/manufacturer/manufacturer.html:24
 msgid "Do you really want to delete this manufacturer?"
-msgstr "Ești sigur că vrei să ștergi acest producător?"
+msgstr ""
 
 #: templates/manage/manufacturer/manufacturer.html:26
 msgid "Delete Manufacturer"
-msgstr "Șterge producător"
+msgstr ""
 
 #: templates/manage/marketing/featured.html:4
 #: templates/manage/marketing/topseller.html:4
 msgid "Product Selection"
-msgstr "Selecții produse"
+msgstr ""
 
 #: templates/manage/marketing/featured_inline.html:85
 msgid "Add to Featured Products"
-msgstr "Adaugă la produse promovate"
-
-#: templates/manage/marketing/featured_inline.html:89
-msgid "Featured products"
-msgstr "Produse promovate"
+msgstr ""
 
 #: templates/manage/marketing/featured_inline.html:159
 msgid "Save Featured"
-msgstr "Salvează promo"
+msgstr ""
 
 #: templates/manage/marketing/featured_inline.html:164
 msgid "Remove from Featured"
-msgstr "Șterge din promo"
+msgstr ""
 
 #: templates/manage/marketing/marketing_featured.html:11
 msgid "Featured Products"
-msgstr "Produse promovate"
+msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:18
 #: templates/manage/marketing/rating_mails.html:35
 msgid "Send rating mails"
-msgstr "Trimite mailuri evaluare"
+msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:25
 msgid "Test"
-msgstr "Test"
+msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:25
 msgid "The mails will get to the shop notification email adresses"
-msgstr "Emailurile vor ajunge in căsuța de mail a magazinului"
+msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:30
 msgid "Send copy"
-msgstr "Trimite copie"
+msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:30
 msgid ""
 "The mails will also send to the shop notification email adresses (if not in "
 "test mode)"
 msgstr ""
-"Mailurile vor fi trimise și pe adresa de notificări a magazinului ( Dacă "
-"nu ești in modul test)"
 
 #: templates/manage/marketing/rating_mails.html:40
 msgid "Rating mails sent"
-msgstr "Mailurile de evaluare au fost trimise"
+msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:54
-#: templates/manage/order/order_inline.html:82
-#: templates/manage/order/orders_inline.html:119
+#: templates/manage/order/order_inline.html:19
+#: templates/manage/order/orders_inline.html:6
 msgid "Date"
-msgstr "Dată"
+msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:57
 msgid "Date Closed"
-msgstr "Dată inchidere"
+msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:91
 msgid "View order"
-msgstr "Vezi comandă"
+msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:98
 msgid "No e-mails have been sent"
-msgstr "Nu s-a trimis nici un email"
+msgstr ""
 
 #: templates/manage/marketing/topseller_inline.html:85
 msgid "Add to topseller"
-msgstr "Adaugă la topseller"
+msgstr ""
 
 #: templates/manage/marketing/topseller_inline.html:156
 msgid "Save topseller"
-msgstr "Salvează topseller"
+msgstr ""
 
 #: templates/manage/marketing/topseller_inline.html:161
 msgid "Remove from topseller"
-msgstr "Șterge de la topseller"
+msgstr ""
 
-#: templates/manage/order/order.html:19
+#: templates/manage/order/order.html:23
 msgid "Do you really want to delete this order?"
-msgstr "Ești sigur că vrei să ștergi această comandă?"
+msgstr ""
 
-#: templates/manage/order/order.html:21
+#: templates/manage/order/order.html:25
 msgid "Delete order"
-msgstr "Șterge comandă"
+msgstr ""
 
-#: templates/manage/order/order.html:24
+#: templates/manage/order/order.html:28
 msgid "Do you really want to resend this order?"
-msgstr "Ești sigur că vrei să retrimiți această comandă?"
+msgstr ""
 
-#: templates/manage/order/order.html:26
+#: templates/manage/order/order.html:30
 msgid "Resend order"
-msgstr "Retrimite comanda"
+msgstr ""
 
-#: templates/manage/order/order.html:48
+#: templates/manage/order/order.html:52
 #: templates/manage/product/product.html:76
-#: templates/manage/reviews/review_inline.html:61
+#: templates/manage/reviews/review.html:37
 msgid "Change"
-msgstr "Modifică"
+msgstr ""
 
-#: templates/manage/order/order_inline.html:75
+#: templates/manage/order/order_inline.html:12
 msgid "Customer name"
-msgstr "Nume client"
+msgstr ""
 
-#: templates/manage/order/order_inline.html:236
+#: templates/manage/order/order_inline.html:169
 msgid "Included VAT"
-msgstr "TVA Inclus"
+msgstr ""
 
-#: templates/manage/order/order_inline.html:298
+#: templates/manage/order/order_inline.html:231
 msgid "Voucher"
-msgstr "Voucher"
+msgstr ""
 
-#: templates/manage/order/order_inline.html:315
+#: templates/manage/order/order_inline.html:248
 msgid "Shipping"
-msgstr "Livrare"
+msgstr ""
 
-#: templates/manage/order/order_inline.html:331
+#: templates/manage/order/order_inline.html:264
 msgid "Payment"
-msgstr "Plată"
+msgstr ""
 
-#: templates/manage/order/order_inline.html:353
+#: templates/manage/order/order_inline.html:286
 msgid "Inclusive VAT"
-msgstr "Include TVA"
+msgstr ""
 
-#: templates/manage/order/order_inline.html:362
+#: templates/manage/order/order_inline.html:295
 msgid "Message from the customer"
-msgstr "Mesaj de la client"
+msgstr ""
 
-#: templates/manage/order/order_inline.html:376
+#: templates/manage/order/order_inline.html:309
 msgid "Paypal Transaction ID"
-msgstr "ID Tranzacție Paypal"
+msgstr ""
 
-#: templates/manage/order/orders_inline.html:162
+#: templates/manage/order/orders_inline.html:49
 msgid "There are no orders"
-msgstr "Nu există comenzi"
+msgstr ""
 
 #: templates/manage/page/add_page.html:10
 #: templates/manage/page/add_page.html:13
 #: templates/manage/page/add_page.html:23
 msgid "Add page"
-msgstr "Adaugă pagină"
+msgstr ""
 
-#: templates/manage/page/page.html:25
+#: templates/manage/page/page.html:31
 msgid "Add Page"
-msgstr "Adaugă Pagină"
+msgstr ""
 
-#: templates/manage/page/page.html:28
+#: templates/manage/page/page.html:34
 msgid "Do you really want to delete this page?"
-msgstr "Ești sigur că vrei să ștergi această pagină?"
-
-#: templates/manage/page/page.html:29
-msgid "Delete Page"
-msgstr "Șterge Pagină"
-
-#: templates/manage/page/page.html:32
-msgid "View Page"
-msgstr "Vezi pagina"
+msgstr ""
 
 #: templates/manage/page/page.html:35
-msgid "Goto Page"
-msgstr "Du-te la pagina"
+msgid "Delete Page"
+msgstr ""
+
+#: templates/manage/page/page.html:38
+msgid "View Page"
+msgstr ""
 
 #: templates/manage/page/page.html:41
+msgid "Goto Page"
+msgstr ""
+
+#: templates/manage/page/page.html:47
 msgid "Page"
-msgstr "Pagină"
+msgstr ""
 
 #: templates/manage/payment/add_payment_method.html:4
 #: templates/manage/payment/add_payment_method.html:14
 #: templates/manage/payment/manage_payment.html:16
 msgid "Add payment Method"
-msgstr "Adaugă metode de plată"
+msgstr ""
 
 #: templates/manage/payment/add_payment_method.html:11
 #: templates/manage/payment/add_payment_method.html:22
 msgid "Add payment method"
-msgstr "Adaugă metode de plată"
+msgstr ""
 
 #: templates/manage/payment/manage_payment.html:4
 msgid "Manage Payment Methods"
-msgstr "Administreaza metode de plată"
+msgstr ""
 
 #: templates/manage/payment/manage_payment.html:20
 msgid "Do you really want to delete this payment method?"
-msgstr "Ești sigur că vrei sa ștergi metoda de plată?"
+msgstr ""
 
 #: templates/manage/payment/manage_payment.html:22
 msgid "Delete payment method"
-msgstr "Șterge metode de plată"
+msgstr ""
 
 #: templates/manage/payment/manage_payment.html:30
 #: templates/manage/payment/payment_method_prices.html:3
@@ -3212,69 +3250,69 @@ msgstr "Șterge metode de plată"
 #: templates/manage/shipping/manage_shipping.html:30
 #: templates/manage/shipping/shipping_method_prices.html:3
 msgid "Prices"
-msgstr "Prețuri"
+msgstr ""
 
 #: templates/manage/payment/payment_method_data.html:16
 msgid "Save Payment Method"
-msgstr "Salvează metoda de plată"
+msgstr ""
 
 #: templates/manage/payment/payment_method_prices.html:13
 #: templates/manage/shipping/shipping_method_prices.html:13
 msgid "Existing prices"
-msgstr "Prețuri existente"
+msgstr ""
 
 #: templates/manage/payment/payment_method_prices.html:43
 #: templates/manage/shipping/shipping_method_prices.html:43
 msgid "Edit criteria"
-msgstr "Editeaza criterii"
+msgstr ""
 
 #: templates/manage/payment/payment_method_prices.html:58
 #: templates/manage/shipping/shipping_method_prices.html:58
 msgid "Delete prices"
-msgstr "Șterge prețuri"
+msgstr ""
 
 #: templates/manage/payment/payment_method_prices.html:59
 #: templates/manage/shipping/shipping_method_prices.html:59
 msgid "Update prices"
-msgstr "Modifiă prețuri"
+msgstr ""
 
 #: templates/manage/payment/payment_price_criteria.html:6
 #: templates/manage/shipping/shipping_price_criteria.html:6
 msgid "Edit criteria for"
-msgstr "Editează criterii pentru"
+msgstr ""
 
 #: templates/manage/portlets/portlet_add.html:16
 #: templates/manage/portlets/portlet_edit.html:16
 #: templates/manage/portlets/portlets_inline.html:30
 msgid "Slot"
-msgstr "Slot"
+msgstr ""
 
 #: templates/manage/portlets/portlet_add.html:38
 #: templates/manage/portlets/portlet_edit.html:34
 msgid "Save portlet"
-msgstr "Salvează portlet"
+msgstr ""
 
 #: templates/manage/portlets/portlets_inline.html:8
 msgid "Blocked parent slots"
-msgstr "Sloturi părinte blocate"
+msgstr ""
 
 #: templates/manage/portlets/portlets_inline.html:22
 msgid "Save blocked parent slots"
-msgstr "Salvează sloturi părinte blocate"
+msgstr ""
 
 #: templates/manage/portlets/portlets_inline.html:27
 msgid "Slots"
-msgstr "Sloturi"
+msgstr ""
 
 #: templates/manage/portlets/portlets_inline.html:44
 #: templates/manage/product/images.html:42
 #: templates/manage/product/products_inline.html:45
 msgid "Manage"
-msgstr "Administrare"
+msgstr ""
 
 #: templates/manage/portlets/portlets_inline.html:57
 msgid "Do you really want to delete this portlet?"
-msgstr "Ești sigur că vrei să ștergi acest portlet?"
+msgstr ""
 
 #: templates/manage/portlets/portlets_inline.html:58
 #: templates/manage/product/products_inline.html:127
@@ -3283,239 +3321,240 @@ msgstr "Ești sigur că vrei să ștergi acest portlet?"
 #: templates/manage/properties/step_inline.html:70
 #: templates/manage/static_block/files.html:44
 msgid "Delete"
-msgstr "Șterge"
+msgstr ""
 
 #: templates/manage/portlets/portlets_inline.html:61
 #: templates/manage/product/products_inline.html:111
+#: templates/manage/product/variants.html:27
 msgid "Edit"
-msgstr "Editează"
+msgstr ""
 
 #: templates/manage/portlets/portlets_inline.html:68
 msgid "There are no portlets assigned"
-msgstr "Nu exista portleturi desemnate"
+msgstr ""
 
 #: templates/manage/portlets/portlets_inline.html:73
 msgid "Add new portlet"
-msgstr "Adaugă nou portlet"
+msgstr ""
 
 #: templates/manage/portlets/portlets_inline.html:89
 msgid "Add portlet"
-msgstr "Adaugă portlet"
+msgstr ""
 
 #: templates/manage/product/accessories.html:4
 #: templates/manage/product/accessories_inline.html:94
 #: templates/manage/product/product.html:103
 msgid "Accessories"
-msgstr "Accesorii"
+msgstr ""
 
 #: templates/manage/product/accessories.html:18
 #: templates/manage/static_block/files.html:42
 msgid "Update"
-msgstr "Modifică"
+msgstr ""
 
 #: templates/manage/product/accessories_inline.html:34
 #: templates/manage/product/related_products_inline.html:33
 msgid "Selectable products"
-msgstr "Produse selectabile"
+msgstr ""
 
 #: templates/manage/product/accessories_inline.html:89
 msgid "Add to accessories"
-msgstr "Adaugă la accesorii"
+msgstr ""
 
 #: templates/manage/product/accessories_inline.html:170
 msgid "Save accessories"
-msgstr "Salvează accesorii"
+msgstr ""
 
 #: templates/manage/product/accessories_inline.html:175
 msgid "Remove from accessories"
-msgstr "Șterge de la accesorii"
+msgstr ""
 
 #: templates/manage/product/add_product.html:16
 #: templates/manage/product/add_product.html:30
 msgid "Add product"
-msgstr "Adaugă produs"
+msgstr ""
 
 #: templates/manage/product/categories.html:23
 msgid "Save categories"
-msgstr "Salvează categorii"
+msgstr ""
 
 #: templates/manage/product/categories.html:27
 msgid "There are no categories"
-msgstr "Nu există categorii"
+msgstr ""
 
 #: templates/manage/product/data.html:45
 msgid "Urls"
-msgstr "URL-uri"
+msgstr ""
 
 #: templates/manage/product/data.html:69
 msgid "Redirect to"
-msgstr "Redirectare către"
+msgstr ""
 
 #: templates/manage/product/data.html:82
 msgid "Article numbers"
-msgstr "Numere articol"
+msgstr ""
 
 #: templates/manage/product/data.html:258
 msgid "Units"
-msgstr "Unități"
+msgstr ""
 
 #: templates/manage/product/data.html:319
 msgid "Appearance"
-msgstr "Aspect"
+msgstr ""
 
 #: templates/manage/product/images.html:13
 msgid "Active images"
-msgstr "Imagini active"
+msgstr ""
 
 #: templates/manage/product/images.html:70
 msgid "Move Up"
-msgstr "Mută sus"
+msgstr ""
 
 #: templates/manage/product/images.html:75
 msgid "Move Down"
-msgstr "Mută jos"
+msgstr ""
 
 #: templates/manage/product/images.html:86
 msgid "Update images"
-msgstr "Actualizează imagini"
+msgstr ""
 
 #: templates/manage/product/images.html:88
 msgid "Delete images"
-msgstr "Șterge imagini"
+msgstr ""
 
 #: templates/manage/product/images.html:92
 msgid "There are no images"
-msgstr "Nu există imagini"
+msgstr ""
 
 #: templates/manage/product/images.html:95
 msgid "Add images"
-msgstr "Adaugă imagini"
+msgstr ""
 
 #: templates/manage/product/images.html:102
 #: templates/manage/static_block/files.html:58
 msgid "Uploading images:"
-msgstr "Încarc imaginile:"
+msgstr ""
 
 #: templates/manage/product/product.html:6
 msgid "Manage Product"
-msgstr "Administrare produs"
+msgstr ""
 
 #: templates/manage/product/product.html:41
 msgid "Base Article"
-msgstr "Articol de bază"
+msgstr ""
 
 #: templates/manage/product/product.html:47
 msgid "Add Product"
-msgstr "Adaugă produs"
+msgstr ""
 
 #: templates/manage/product/product.html:52
 msgid "Do you really want to delete this product?"
-msgstr "Ești sigur că vrei să ștergi acest produs?"
+msgstr ""
 
 #: templates/manage/product/product.html:53
 msgid "Delete Product"
-msgstr "Șterge produs"
+msgstr ""
 
 #: templates/manage/product/product.html:58
 msgid "View Product"
-msgstr "Vezi produs"
+msgstr ""
 
 #: templates/manage/product/product.html:63
 msgid "Goto Product"
-msgstr "Du-te la produs"
+msgstr ""
 
 #: templates/manage/product/product.html:105
 #: templates/manage/product/stock.html:2
 msgid "Stock"
-msgstr "Stoc"
+msgstr ""
 
 #: templates/manage/product/product_filters_inline.html:14
 msgid "Name/SKU"
-msgstr "Nume/SKU"
+msgstr ""
 
 #: templates/manage/product/product_filters_inline.html:18
 #: templates/manage/product/products_inline.html:31
 msgid "Sub type"
-msgstr "Subtip"
+msgstr ""
 
 #: templates/manage/product/products.html:4
 msgid "Manage Products"
-msgstr "Administrare produse"
+msgstr ""
 
 #: templates/manage/product/products_inline.html:37
 msgid "Sale Price"
-msgstr "Preț reducere"
+msgstr ""
 
 #: templates/manage/product/products_inline.html:42
 msgid "For Sale"
-msgstr "La reducere"
+msgstr ""
 
 #: templates/manage/product/products_inline.html:113
 msgid "Goto"
-msgstr "Du-te la"
+msgstr ""
 
 #: templates/manage/product/products_inline.html:131
 msgid "No products found."
-msgstr "Nu s-a găsit nici un produs."
+msgstr ""
 
 #: templates/manage/product/properties.html:20
 #: templates/manage/product/variants.html:20
 msgid "Update property groups"
-msgstr "Modifică grupuri de proprietăți"
+msgstr ""
 
 #: templates/manage/product/properties.html:29
 msgid "Default values"
-msgstr "Valori Implicite"
+msgstr ""
 
 #: templates/manage/product/properties.html:78
 msgid "Update default values"
-msgstr "Actualizează valorile implicite"
+msgstr ""
 
 #: templates/manage/product/properties.html:87
 msgid "Filter values"
-msgstr "Valori filtru"
+msgstr ""
 
 #: templates/manage/product/properties.html:136
 msgid "Update filter values"
-msgstr "Actualizează valori filtru"
+msgstr ""
 
 #: templates/manage/product/properties.html:145
 msgid "Displayed values"
-msgstr "Valori afișate"
+msgstr ""
 
 #: templates/manage/product/properties.html:192
 msgid "Update displayed values"
-msgstr "Actualizare valori afișate"
+msgstr ""
 
 #: templates/manage/product/related_products_inline.html:89
 msgid "Add to related products"
-msgstr "Adaugă la produse conexe"
+msgstr ""
 
 #: templates/manage/product/related_products_inline.html:94
 msgid "Selected products"
-msgstr "Produse selectate"
+msgstr ""
 
 #: templates/manage/product/related_products_inline.html:150
 msgid "Remove from related products"
-msgstr "Șterge de la produse conexe"
+msgstr ""
 
 #: templates/manage/product/stock.html:10
 msgid "Dimension"
-msgstr "Dimensiuni"
+msgstr ""
 
 #: templates/manage/product/stock.html:25
 msgid "kg"
-msgstr "kg"
+msgstr ""
 
 #: templates/manage/product/stock.html:42
 #: templates/manage/product/stock.html:59
 #: templates/manage/product/stock.html:76
 msgid "m"
-msgstr "m"
+msgstr ""
 
 #: templates/manage/product/stock.html:83
 msgid "Stock Data"
-msgstr "Date stoc"
+msgstr ""
 
 #: templates/manage/product/stock.html:190
 msgid "Packaging Unit"
@@ -3523,248 +3562,251 @@ msgstr ""
 
 #: templates/manage/product/stock.html:245
 msgid "Save stock"
-msgstr "Salvează stoc"
+msgstr ""
 
 #: templates/manage/product/variants.html:24
 msgid "Local properties"
-msgstr "Proprietăți locale"
+msgstr ""
 
 #: templates/manage/product/variants.html:28
 #: templates/manage/product/variants.html:239
 msgid "Edit variant"
-msgstr "Editează variantă"
+msgstr ""
 
 #: templates/manage/product/variants.html:38
 #: templates/manage/properties/add_property.html:9
 #: templates/manage/properties/add_property.html:12
 #: templates/manage/properties/add_property.html:19
 msgid "Add property"
-msgstr "Adaugă proprietate"
+msgstr ""
 
 #: templates/manage/product/variants.html:47
 #: templates/manage/product/variants.html:48
 msgid "Up"
-msgstr "Sus"
+msgstr ""
 
 #: templates/manage/product/variants.html:56
 #: templates/manage/product/variants.html:57
 msgid "Down"
-msgstr "Jos"
+msgstr ""
 
 #: templates/manage/product/variants.html:63
 msgid "Do you really want to delete this property and all its options?"
 msgstr ""
-"Ești sigur că vrei să ștergi această proprietate și toate opțiunile acesteia?"
 
 #: templates/manage/product/variants.html:67
 msgid "Delete property"
-msgstr "Șterge proprietate"
+msgstr ""
 
 #: templates/manage/product/variants.html:75
 #: templates/manage/properties/options_inline.html:68
 msgid "Do you really want to delete this option?"
-msgstr "Ești sigur că vrei să ștergi această opțiune?"
+msgstr ""
 
 #: templates/manage/product/variants.html:79
 #: templates/manage/properties/options_inline.html:72
 msgid "Delete option"
-msgstr "Șterge opțiune"
+msgstr ""
 
 #: templates/manage/product/variants.html:91
 #: templates/manage/properties/options_inline.html:38
 msgid "Add option"
-msgstr "Adaugă opțiune"
+msgstr ""
 
 #: templates/manage/product/variants.html:143
 msgid "Add variant(s)"
-msgstr "Adaugă variant(e)"
+msgstr ""
 
 #: templates/manage/product/variants.html:159
 msgid "Pos."
-msgstr "Poz."
+msgstr ""
 
 #: templates/manage/product/variants.html:166
 msgid "URL"
-msgstr "URL"
+msgstr ""
 
 #: templates/manage/product/variants.html:251
 msgid "Display type"
-msgstr "Tip afișare"
+msgstr ""
 
 #: templates/manage/product/variants.html:262
 msgid "Change variant display type"
-msgstr "Modifica tipul afișării variantelor"
+msgstr ""
 
 #: templates/manage/properties/add_property_group.html:16
 msgid "Add property Group"
-msgstr "Adaugă grup proprietăți"
+msgstr ""
 
 #: templates/manage/properties/add_property_group.html:24
 msgid "Add property group"
-msgstr "Adaugă grup proprietăți"
+msgstr ""
 
 #: templates/manage/properties/options_inline.html:3
 msgid "Select field options"
-msgstr "Opțiuni câmp de selecție"
+msgstr ""
 
 #: templates/manage/properties/options_inline.html:16
 msgid "Price (optional)"
-msgstr "Preț (opțional)"
+msgstr ""
 
 #: templates/manage/properties/options_inline.html:80
 msgid "Update options"
-msgstr "Modifică opțiuni"
+msgstr ""
 
 #: templates/manage/properties/pg_products_inline.html:87
 msgid "Add to product group"
-msgstr "Adaugă la grup de produse"
+msgstr ""
 
 #: templates/manage/properties/pg_products_inline.html:92
 msgid "Assigned products"
-msgstr "Produse desemnate"
+msgstr ""
 
 #: templates/manage/properties/pg_products_inline.html:148
 msgid "Remove from product group"
-msgstr "Șterge from grup de produse"
+msgstr ""
 
 #: templates/manage/properties/properties_inline.html:38
 msgid "All properties are assigned"
-msgstr "Toate proprietățile au fost desemnate"
+msgstr ""
 
 #: templates/manage/properties/properties_inline.html:47
 msgid "Assign properties"
-msgstr "Desemnează proprietăți"
+msgstr ""
 
 #: templates/manage/properties/properties_inline.html:52
 msgid "Assigned properties"
-msgstr "Proprietăți desemnate"
+msgstr ""
 
 #: templates/manage/properties/properties_inline.html:95
 msgid "No properties assigned"
-msgstr "Nu există proprietăți desemnate"
+msgstr ""
 
 #: templates/manage/properties/properties_inline.html:105
 msgid "Remove properties"
-msgstr "Șterge proprietăți"
+msgstr ""
 
 #: templates/manage/properties/properties_inline.html:109
 msgid "Update properties"
-msgstr "Modifică proprietăți"
+msgstr ""
 
 #: templates/manage/properties/property.html:23
 msgid "Add Property"
-msgstr "Adaugă Proprietatet"
+msgstr ""
 
 #: templates/manage/properties/property.html:25
 msgid "Do you really want to delete this property?"
-msgstr "Ești sigur că vrei să ștergi această proprietate?"
+msgstr ""
 
 #: templates/manage/properties/property.html:26
 msgid "Delete Property"
-msgstr "Șterge Proprietate"
+msgstr ""
 
 #: templates/manage/properties/property.html:35
 msgid "Property data"
-msgstr "Date proprietate"
+msgstr ""
 
 #: templates/manage/properties/property.html:45
 msgid "Save property"
-msgstr "Salvează proprietate"
+msgstr ""
 
 #: templates/manage/properties/property.html:49
 msgid "Field type"
-msgstr "Tip câmp"
+msgstr ""
 
 #: templates/manage/properties/property.html:56
 msgid "Save property type"
-msgstr "Salvează tip proprietate"
+msgstr ""
 
 #: templates/manage/properties/property_group.html:6
 msgid "Property groups"
-msgstr "Grupuri de Proprietăți"
+msgstr ""
 
 #: templates/manage/properties/property_group.html:23
 msgid "Add Property Group"
-msgstr "Adaugă Grup Proprietăți"
+msgstr ""
 
 #: templates/manage/properties/property_group.html:25
 msgid "Do you really want to delete this property group?"
-msgstr "Ești sigur că vrei să ștergi acest grup de proprietăți?"
+msgstr ""
 
 #: templates/manage/properties/property_group.html:26
 msgid "Delete Property Group"
-msgstr "Șterge Grup Proprietăți"
+msgstr ""
 
 #: templates/manage/properties/property_group.html:31
 #: templates/manage/properties/property_group.html:37
 msgid "Property Group"
-msgstr "Grup Proprietăți"
+msgstr ""
 
 #: templates/manage/properties/property_group.html:45
 msgid "Save property group"
-msgstr "Salvează grup proprietăți"
+msgstr ""
 
 #: templates/manage/properties/property_number_field.html:2
 msgid "Validators"
-msgstr "Validatori"
+msgstr ""
 
 #: templates/manage/properties/property_number_field.html:15
 msgid "Save validators"
-msgstr "Salvează validatori"
+msgstr ""
 
 #: templates/manage/properties/property_select_field.html:2
 msgid "Select field properties"
-msgstr "Proprietăți câmp de selecție"
+msgstr ""
 
 #: templates/manage/properties/step_inline.html:10
 msgid "Save step type"
-msgstr "Salvează tip pas"
+msgstr ""
 
 #: templates/manage/properties/step_inline.html:17
 msgid "Step range"
-msgstr "Salveaza gamă de valori"
+msgstr ""
 
 #: templates/manage/properties/step_inline.html:24
 msgid "Save step"
-msgstr "Salvează pas"
+msgstr ""
 
 #: templates/manage/properties/step_inline.html:32
 msgid "Steps"
-msgstr "Pași"
+msgstr ""
 
 #: templates/manage/properties/step_inline.html:46
 msgid "Add step"
-msgstr "Adaugă pas"
+msgstr ""
 
 #: templates/manage/properties/step_inline.html:66
 msgid "Do you really want to delete this step?"
-msgstr "Ești sigur că vrei să ștergi acest pas?"
+msgstr ""
 
 #: templates/manage/properties/step_inline.html:71
 msgid "Delete step"
-msgstr "Șterge pas"
+msgstr ""
 
 #: templates/manage/properties/step_inline.html:79
 msgid "Update steps"
-msgstr "Modifică pași"
+msgstr ""
 
-#: templates/manage/reviews/review_inline.html:45
+#: templates/manage/reviews/review.html:21
 msgid "Do you really want to delete this review?"
-msgstr "Ești sigur că vrei să ștergi această recenzie?"
+msgstr ""
 
-#: templates/manage/reviews/review_inline.html:47
+#: templates/manage/reviews/review.html:23
 msgid "Delete review"
-msgstr "Șterge recenzie"
+msgstr ""
 
-#: templates/manage/reviews/review_inline.html:150
-#: templates/manage/reviews/reviews_inline.html:125
+#: templates/manage/reviews/review.html:42
+msgid "Review"
+msgstr ""
+
+#: templates/manage/reviews/review_inline.html:88
+#: templates/manage/reviews/reviews_inline.html:39
 msgid "Score"
-msgstr "Scor"
+msgstr ""
 
-#: templates/manage/reviews/review_inline.html:160
-#: templates/manage/reviews/reviews_inline.html:129
+#: templates/manage/reviews/review_inline.html:98
+#: templates/manage/reviews/reviews_inline.html:43
 msgid "Comment"
-msgstr "Comentariu"
+msgstr ""
 
 #: templates/manage/shipping/add_shipping_method.html:4
 #: templates/manage/shipping/add_shipping_method.html:11
@@ -3772,302 +3814,222 @@ msgstr "Comentariu"
 #: templates/manage/shipping/add_shipping_method.html:23
 #: templates/manage/shipping/manage_shipping.html:16
 msgid "Add shipping method"
-msgstr "Adaugă metodă de livrare"
+msgstr ""
 
 #: templates/manage/shipping/manage_shipping.html:4
 msgid "Manage Shipping Methods"
-msgstr "Administrare metode de livrare"
+msgstr ""
 
 #: templates/manage/shipping/manage_shipping.html:20
 msgid "Do you really want to delete this shipping method?"
-msgstr "Ești sigur că vrei să ștergi această metodă de livrare?"
+msgstr ""
 
 #: templates/manage/shipping/manage_shipping.html:22
 msgid "Delete Shipping Method"
-msgstr "Șterge metodă de livrare"
+msgstr ""
 
 #: templates/manage/shop/action.html:30
 #: templates/manage/shop/add_action.html:10
 msgid "Add action"
-msgstr "Adăugă acțiune"
+msgstr ""
 
 #: templates/manage/shop/action.html:33
 msgid "Do you really want to delete this action?"
-msgstr "Ești sigur că vrei să ștergi această acțiune?"
+msgstr ""
 
 #: templates/manage/shop/action.html:34
 msgid "Delete action"
-msgstr "Șterge acțiune"
+msgstr ""
 
 #: templates/manage/shop/action.html:40
 msgid "Action"
-msgstr "Acțiune"
+msgstr ""
 
 #: templates/manage/shop/action.html:51
 msgid "Save action"
-msgstr "Salvează acțiunea"
+msgstr ""
 
 #: templates/manage/shop/default_values.html:3
 #: templates/manage/shop/shop.html:10
 msgid "Default Values"
-msgstr "Valori Implicite"
+msgstr ""
 
 #: templates/manage/shop/default_values.html:9
 msgid "Price Calculator"
-msgstr "Calculator preț"
+msgstr ""
 
 #: templates/manage/shop/default_values.html:27
 msgid "Format"
-msgstr "Format"
+msgstr ""
 
 #: templates/manage/shop/default_values.html:131
 msgid "Localization"
-msgstr "Localizare"
+msgstr ""
 
 #: templates/manage/shop/default_values.html:160
 msgid "Save Default Values"
-msgstr "Salvează Valorile Implicite"
+msgstr ""
 
 #: templates/manage/shop/shop.html:56
 msgid "E-Mails"
-msgstr "E-Mail-uri"
+msgstr ""
 
 #: templates/manage/shop/shop.html:94
 msgid "Google"
-msgstr "Google"
+msgstr ""
 
 #: templates/manage/shop/shop.html:129
 msgid "Checkout"
-msgstr "Finalizare comandă"
+msgstr ""
 
 #: templates/manage/shop/shop.html:206
 msgid "Save shop"
-msgstr "Salvează magazinul"
+msgstr ""
 
 #: templates/manage/static_block/add_static_block.html:10
 #: templates/manage/static_block/add_static_block.html:13
 msgid "Add static block"
-msgstr "Adaugă bloc static"
+msgstr ""
 
 #: templates/manage/static_block/add_static_block.html:20
 msgid "Save static block"
-msgstr "Salvează bloc static"
+msgstr ""
 
 #: templates/manage/static_block/files.html:48
 msgid "There are no files"
-msgstr "Nu există fișiere"
+msgstr ""
 
 #: templates/manage/static_block/files.html:51
 msgid "Add files"
-msgstr "Adaugă fișiere"
+msgstr ""
 
 #: templates/manage/static_block/static_block.html:24
 msgid "Add Static Block"
-msgstr "Adaugă Bloc Static"
+msgstr ""
 
 #: templates/manage/static_block/static_block.html:26
 msgid "Do you really want to delete this static block?"
-msgstr "Ești sigur că vrei să ștergi acest bloc static?"
+msgstr ""
 
 #: templates/manage/static_block/static_block.html:27
 msgid "Delete Static Block"
-msgstr "Șterge bloc static"
+msgstr ""
 
 #: templates/manage/static_block/static_block.html:29
 msgid "View Static Block"
-msgstr "Vezi bloc static"
+msgstr ""
 
 #: templates/manage/tax/add_tax.html:10
 msgid "Add tax"
-msgstr "Adaugă taxa"
+msgstr ""
 
 #: templates/manage/tax/tax.html:25
 msgid "Add Tax"
-msgstr "Adaugă Taxa"
+msgstr ""
 
 #: templates/manage/tax/tax.html:28
 msgid "Do you really want to delete this tax?"
-msgstr "Ești sigur că vrei să ștergi această taxă?"
+msgstr ""
 
 #: templates/manage/tax/tax.html:29
 msgid "Delete Tax"
-msgstr "Șterge taxa"
+msgstr ""
 
 #: templates/manage/voucher/add_voucher_group.html:10
 #: templates/manage/voucher/add_voucher_group.html:14
 #: templates/manage/voucher/add_voucher_group.html:23
 #: templates/manage/voucher/voucher_group.html:16
 msgid "Add voucher group"
-msgstr "Adaugă grup vouchere"
+msgstr ""
 
 #: templates/manage/voucher/data.html:2
 msgid "Core data"
-msgstr "Date importante"
+msgstr ""
 
 #: templates/manage/voucher/data.html:12
 msgid "Save voucher group"
-msgstr "Salvează grup vouchere"
+msgstr ""
 
 #: templates/manage/voucher/options.html:3
 #: templates/manage/voucher/voucher_group.html:27
 msgid "Options"
-msgstr "Opțiuni"
+msgstr ""
 
 #: templates/manage/voucher/options.html:12
 msgid "Save options"
-msgstr "Salvează opțiuni"
+msgstr ""
 
 #: templates/manage/voucher/voucher_group.html:6
 msgid "Voucher groups"
-msgstr "Grupuri de vouchere"
+msgstr ""
 
 #: templates/manage/voucher/voucher_group.html:19
 msgid "Do you really want to delete this voucher group?"
-msgstr "Ești sigur că vrei să ștergi acest grup de vouchere?"
+msgstr ""
 
 #: templates/manage/voucher/voucher_group.html:20
 msgid "Delete voucher group"
-msgstr "Șterge grup de vouchere"
+msgstr ""
 
 #: templates/manage/voucher/vouchers.html:9
 #: templates/manage/voucher/vouchers.html:18
 msgid "Add vouchers"
-msgstr "Adaugă vouchere"
+msgstr ""
 
-#: templates/manage/voucher/vouchers_inline.html:89
+#: templates/manage/voucher/vouchers_inline.html:91
 msgid "Used"
-msgstr "Folosit"
+msgstr ""
 
-#: templates/manage/voucher/vouchers_inline.html:95
+#: templates/manage/voucher/vouchers_inline.html:97
 msgid "Last used date"
-msgstr "Data ultimei folosiri"
+msgstr ""
 
-#: templates/manage/voucher/vouchers_inline.html:155
+#: templates/manage/voucher/vouchers_inline.html:157
 msgid "DATE_FORMAT"
-msgstr "FORMAT_DATĂ"
+msgstr ""
 
 #: templates/manage/voucher/vouchers_inline.html:164
 msgid "Delete vouchers"
-msgstr "Șterge vouchere"
+msgstr ""
+
+#: templates/manage/voucher/vouchers_inline.html:167
+msgid "There are no vouchers for this group yet."
+msgstr ""
 
 #: voucher/settings.py:12
 msgid "The voucher is valid."
-msgstr "Voucherul este valid."
+msgstr ""
 
 #: voucher/settings.py:13
 msgid "The voucher is not active."
-msgstr "Voucherul nu este activ."
+msgstr ""
 
 #: voucher/settings.py:14
 msgid "The voucher has been already used."
-msgstr "Voucher-ul a fost deja utilizat."
+msgstr ""
 
 #: voucher/settings.py:15
 msgid "The voucher is not active yet."
-msgstr "Voucherul nu este activ încă."
+msgstr ""
 
 #: voucher/settings.py:16
 msgid "The voucher is not active any more."
-msgstr "Voucherul nu mai este activ."
+msgstr ""
 
 #: voucher/settings.py:17
 msgid "The voucher is not valid for this cart price."
-msgstr "Voucherul nu este activ pentru această valoare a comenzii."
+msgstr ""
 
 #: voucher/settings.py:18
 msgid "The voucher doesn't exist."
-msgstr "Acest voucher nu există."
+msgstr ""
 
-#~ msgid "Number field"
-#~ msgstr "Câmp număr"
+# Additional msgids DO NOT DELETE THIS
+msgid "Left"
+msgstr ""
 
-#~ msgid "Active Price"
-#~ msgstr "Preț activ"
+msgid "Right"
+msgstr ""
 
-#~ msgid "Zip Code"
-#~ msgstr "Cod poștal"
-
-#~ msgid "Default Currency"
-#~ msgstr "Moneda implicită"
-
-#~ msgid "Top Menu"
-#~ msgstr "Menu Top"
-
-#~ msgid "Product Values have been saved."
-#~ msgstr "Valorile produsului au fost salvate."
-
-#~ msgid "Invoice company name"
-#~ msgstr "Factură nume companie"
-
-#~ msgid "Invoice street"
-#~ msgstr "Factură stradă"
-
-#~ msgid "Invoice zip code"
-#~ msgstr "Factură cod poștal"
-
-#~ msgid "Shipping company name"
-#~ msgstr "Livrare nume companie"
-
-#~ msgid "Shipping street"
-#~ msgstr "Livrare stradă"
-
-#~ msgid "Shipping zip code"
-#~ msgstr "Livrare cod poștal"
-
-#~ msgid "American Express"
-#~ msgstr "American Express"
-
-#~ msgid "Collapse all"
-#~ msgstr "Colapsează"
-
-#~ msgid "Expand all"
-#~ msgstr "Expandează toate"
-
-#~ msgid "Show current"
-#~ msgstr "Arată elementul curent"
-
-#~ msgid "Delete?"
-#~ msgstr "Șterge?"
-
-#~ msgid "Preview"
-#~ msgstr "Previzualizare"
-
-#~ msgid "Edit product"
-#~ msgstr "Editează produs"
-
-#~ msgid "Please fill out the form below"
-#~ msgstr "Te rog completează formularul de mai jos"
-
-#~ msgid "Resend?"
-#~ msgstr "Retrimite?"
-
-#~ msgid "Modify"
-#~ msgstr "Modifică"
-
-#~ msgid "Show selected"
-#~ msgstr "Arată selecție"
-
-#~ msgid "Edit category"
-#~ msgstr "Editează categorie"
-
-#~ msgid "Product data"
-#~ msgstr "Date produs"
-
-#~ msgid "Preview product"
-#~ msgstr "Previzualizare produs"
-
-#~ msgid "Property Values"
-#~ msgstr "Valori Proprietăți"
-
-#~ msgid ""
-#~ "Attention: If the field type is changed all entered product values for "
-#~ "this property will be deleted."
-#~ msgstr ""
-#~ "Atenție: Dacă tipul de câmp a fost modificat toate valorile produsului "
-#~ "pentru această proprietate au fost șterse."
-
-#~ msgid "Shop Preferences"
-#~ msgstr "Preferințe Magazin"
-
-#~ msgid "Save tax"
-#~ msgstr "Salvează taxa"
+msgid "Average Rating"
+msgstr ""

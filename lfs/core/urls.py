@@ -16,7 +16,7 @@ urlpatterns = patterns('django.views.generic.simple',
 
 # Sitemaps
 urlpatterns += patterns("django.contrib.sitemaps.views",
-    url(r'^sitemap.xml$', 'sitemap', {'sitemaps': {"products": ProductSitemap, "categories": CategorySitemap, "pages" : PageSitemap, "shop": ShopSitemap}})
+    url(r'^sitemap.xml$', 'sitemap', {'sitemaps': {"products": ProductSitemap, "categories": CategorySitemap, "pages": PageSitemap, "shop": ShopSitemap}})
 )
 
 # Shop
@@ -102,16 +102,6 @@ urlpatterns += patterns('lfs.search.views',
 # Tagging
 urlpatterns += patterns('',
     (r'^tagging/', include('lfs.tagging.urls')),
-)
-
-# Catalog REST API
-urlpatterns += patterns('',
-    (r'^catalog/api/', include('lfs.catalog.api.urls')),
-)
-
-# Manage REST API
-urlpatterns += patterns('',
-    (r'^manage/api/', include('lfs.manage.api.urls')),
 )
 
 urlpatterns += patterns('',

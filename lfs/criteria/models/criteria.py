@@ -236,7 +236,7 @@ class CountryCriterion(models.Model, Criterion):
                 selected = False
 
             countries.append({
-                "iso": country.iso,
+                "id" : country.id,
                 "name": country.name,
                 "selected": selected,
             })
