@@ -19,7 +19,7 @@ from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 
 
-# Parts
+# Views
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_products(request, category_id, template_name="manage/category/products.html"):
     """
@@ -42,6 +42,7 @@ def manage_products(request, category_id, template_name="manage/category/product
     }))
 
 
+# Parts
 @permission_required("core.manage_shop", login_url="/login/")
 def products_inline(request, category_id, as_string=False, template_name="manage/category/products_inline.html"):
     """Displays the products-tab of a category.
@@ -52,7 +53,7 @@ def products_inline(request, category_id, as_string=False, template_name="manage
     """
     category = Category.objects.get(pk=category_id)
 
-    products = category.get_products()
+    products = Product.objects.filter(categories=category)
     product_ids = [p.id for p in products]
 
     if request.REQUEST.get("keep-session"):
@@ -178,7 +179,6 @@ def selected_products(request, category_id, as_string=False, template_name="mana
         }))
 
 
-# Actions
 @permission_required("core.manage_shop", login_url="/login/")
 def add_products(request, category_id):
     """Adds products (passed via request body) to category with passed id.
