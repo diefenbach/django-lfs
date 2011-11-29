@@ -21,6 +21,7 @@ from lfs.core.utils import LazyEncoder
 import logging
 logger = logging.getLogger("default")
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_images(request, product_id, as_string=False, template_name="manage/product/images.html"):
     """

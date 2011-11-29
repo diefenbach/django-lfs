@@ -7,14 +7,20 @@
         {% trans "Pages" %}
     </h2>
     <div class="navigation-body">
-        {% for page in pages %}
-            <div>
-                <a href="{% url lfs_manage_page page.id %}"
-                   class="selectable {% ifequal page.id current_id %}selected{% endifequal %}">
-                    {{page.title}}
-                </a>
-            </div>
-        {% endfor %}
+        <ul class="manage-pages-list sortable"
+            href="{% url lfs_sort_pages %}">
+            {% for page in pages %}
+                <li id="page_{{ page.id }}">
+                    <div>
+                        <a href="{% url lfs_manage_page page.id %}"
+                           class="selectable {% ifequal page.id current_id %}selected{% endifequal %}">
+                           <img class="handle" src="{{ STATIC_URL }}img/handle.png" alt="Handle" />
+                            {{ page.title }}
+                        </a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 {% endblock %}
 

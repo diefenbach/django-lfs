@@ -8,6 +8,22 @@ from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 
 
+def get_current_page(request, objs, obj, amount):
+    """Returns the current page of obj within objs.
+    """
+    try:
+        page = int(request.REQUEST.get("page"))
+    except TypeError:
+        try:
+            idx = tuple(objs).index(obj)
+        except ValueError:
+            page = 1
+        else:
+            page = int(idx / amount) + 1
+
+    return page
+
+
 def cartesian_product(*seqin):
     """Calculates the cartesian product of given lists.
     """
