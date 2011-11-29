@@ -316,16 +316,17 @@ def get_product_filters(category, product_filter, price_filter, sorting):
 
         # If the property is a select field we want to display the name of the
         # option instead of the id.
-        if properties_mapping[row[0]].is_select_field:
+        if property.is_select_field:
             try:
                 name = options_mapping[row[1]].name
             except KeyError:
                 name = row[1]
+        elif property.is_number_field:
+            value = float(row[1])
         else:
             name = row[1]
 
         # Transform to float for later sorting, see below
-        property = properties_mapping[row[0]]
         if property.is_number_field:
             value = float(row[1])
         else:
@@ -343,6 +344,8 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                 }]
             continue
         else:
+            if not properties.has_key(row[0]):
+                properties[row[0]] = []
             properties[row[0]].append({
                 "id": row[0],
                 "value": value,
@@ -520,18 +523,18 @@ def get_property_mapping():
 
 def _calculate_steps(product_ids, property, min, max):
     """Calculates filter steps.
-    
+
     **Parameters**
-    
-    product_ids 
+
+    product_ids
         The product_ids for which the steps are calculated. List of ids.
 
-    property 
+    property
         The property for which the steps are calculated. Instance of Property.
-        
+
     min / max
         The min and max value of all steps. Must be a Float.
-    
+
     """
     try:
         min = float(min)
@@ -645,7 +648,7 @@ def _calculate_quantity(product_ids, property_id, min, max):
 
 
 def calculate_packages(product, quantity):
-    """Returns amount of packages passed on passes product and quantity. 
+    """Returns amount of packages passed on passes product and quantity.
     DEPRECATED.
     """
     logger.info("Decprecated: lfs.catalog.utils: the function 'calculate_packages' is deprecated.")
