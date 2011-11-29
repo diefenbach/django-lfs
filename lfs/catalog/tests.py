@@ -2569,24 +2569,18 @@ class ProductTestCase(TestCase):
         self.attachment_P1_1_data = dict(
             title='Attachment P1-1',
             product=self.p1,
-            type='link',
-            link='http://www.myattachments1.com',
         )
         self.attachment_P1_1 = ProductAttachment.objects.create(**self.attachment_P1_1_data)
 
         self.attachment_P1_2_data = dict(
             title='Attachment P1-2',
             product=self.p1,
-            type='link',
-            link='http://www.myattachments2.com',
         )
         self.attachment_P1_2 = ProductAttachment.objects.create(**self.attachment_P1_2_data)
 
         self.attachment_V1_data = dict(
             title='Attachment V1',
             product=self.v1,
-            type='link',
-            link='http://www.myattachmentsV2.com',
         )
         self.attachment_V1 = ProductAttachment.objects.create(**self.attachment_V1_data)
 
