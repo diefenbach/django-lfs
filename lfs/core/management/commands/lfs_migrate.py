@@ -1,10 +1,12 @@
 # django importsad
 from django.core.management.base import BaseCommand
+from django.db import connection
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.core.settings as lfs_settings
+from lfs.core.utils import get_default_shop
 from lfs.voucher.models import Voucher
 
 # south imports
@@ -30,6 +32,8 @@ class Command(BaseCommand):
         # 0.5 -> 0.6
         if version == "0.5":
             print "Migrating to 0.6"
+
+            # Vouchers
             db.add_column("voucher_voucher", "used_amount", models.PositiveSmallIntegerField(default=0))
             db.add_column("voucher_voucher", "last_used_date", models.DateTimeField(blank=True, null=True))
             db.add_column("voucher_voucher", "limit", models.PositiveSmallIntegerField(default=1))
@@ -48,7 +52,7 @@ class Command(BaseCommand):
             db.delete_column('voucher_voucher', 'used')
             db.delete_column('voucher_voucher', 'used_date')
 
-            # price calculator
+            # Price calculator
             db.add_column("catalog_product", "price_calculator", models.CharField(
                 null=True, blank=True, choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(), max_length=255))
 
@@ -63,6 +67,34 @@ class Command(BaseCommand):
             db.delete_column('core_shop', 'default_currency')
 
             db.add_column("catalog_product", "supplier_id", models.IntegerField("Supplier", blank=True, null=True))
+
+            # Invoice/Shipping countries
+            shop = get_default_shop()
+            db.create_table("core_shop_invoice_countries", (
+                ("id", models.AutoField(primary_key=True)),
+                ("shop_id", models.IntegerField("shop_id")),
+                ("country_id", models.IntegerField("country_id")),
+            ))
+            db.create_index("core_shop_invoice_countries", ("shop_id", ))
+            db.create_index("core_shop_invoice_countries", ("country_id", ))
+            db.create_unique("core_shop_invoice_countries", ("shop_id", "country_id"))
+
+            db.create_table("core_shop_shipping_countries", (
+                ("id", models.AutoField(primary_key=True)),
+                ("shop_id", models.IntegerField("shop_id")),
+                ("country_id", models.IntegerField("country_id")),
+            ))
+            db.create_index("core_shop_shipping_countries", ("shop_id", ))
+            db.create_index("core_shop_shipping_countries", ("country_id", ))
+            db.create_unique("core_shop_shipping_countries", ("shop_id", "country_id"))
+
+            cursor = connection.cursor()
+            cursor.execute("""SELECT country_id FROM core_shop_countries""")
+            for row in cursor.fetchall():
+                shop.invoice_countries.add(row[0])
+                shop.shipping_countries.add(row[0])
+
+            db.delete_table("core_shop_countries")
 
             print "Your database has been migrated to version 0.6."
 
