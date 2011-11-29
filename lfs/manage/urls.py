@@ -195,6 +195,8 @@ urlpatterns += patterns('lfs.manage.views.carts',
     url(r'^set-cart-filters$', "set_cart_filters", name="lfs_set_cart_filters"),
     url(r'^set-cart-filters-date$', "set_cart_filters_date", name="lfs_set_cart_filters_date"),
     url(r'^reset-cart-filters$', "reset_cart_filters", name="lfs_reset_cart_filters"),
+    url(r'^set-carts-page$', "set_carts_page", name="lfs_set_carts_page"),
+    url(r'^set-cart-page$', "set_cart_page", name="lfs_set_cart_page"),
 )
 
 # Categories
@@ -211,6 +213,7 @@ urlpatterns += patterns('lfs.manage.views.categories',
     url(r'^edit-category-view/(?P<category_id>\d*)$', "category_view", name="lfs_manage_category_view"),
     url(r'^selected-products/(?P<category_id>\d*)$', "selected_products", name="lfs_selected_products"),
     url(r'^load-products-tab/(?P<category_id>\d*)$', "products_tab", name="lfs_load_products_tab"),
+    url(r'^sort-categories$', "sort_categories", name="lfs_sort_categories"),
 )
 
 # Categories / SEO
@@ -228,6 +231,8 @@ urlpatterns += patterns('lfs.manage.views.customer',
     url(r'^reset-customer-filters$', "reset_customer_filters", name="lfs_reset_customer_filters"),
     url(r'^set-customer-ordering/(?P<ordering>\w*)$', "set_ordering", name="lfs_set_customer_ordering"),
     url(r'^selectable-customers-inline$', "selectable_customers_inline", name="lfs_selectable_customers_inline"),
+    url(r'^set-selectable-customers-page$', "set_selectable_customers_page", name="lfs_set_selectable_customers_page"),
+    url(r'^set-customers-page$', "set_customers_page", name="lfs_set_customers_page"),
 )
 
 # Export
@@ -275,6 +280,7 @@ urlpatterns += patterns('lfs.manage.views.page',
     url(r'^delete-page/(?P<id>\d*)$', "delete_page", name="lfs_delete_page"),
     url(r'^manage-pages$', "manage_pages", name="lfs_manage_pages"),
     url(r'^manage-page/(?P<id>\d*)$', "manage_page", name="lfs_manage_page"),
+    url(r'^sort-pages$', "sort_pages", name="lfs_sort_pages"),
 )
 
 # Payment
@@ -302,7 +308,8 @@ urlpatterns += patterns('lfs.manage.views.orders',
     url(r'^set-orders-filter$', "set_order_filters", name="lfs_set_order_filter"),
     url(r'^set-orders-filter-date$', "set_order_filters_date", name="lfs_set_order_filters_date"),
     url(r'^reset-order-filter$', "reset_order_filters", name="lfs_reset_order_filters"),
-    url(r'^selectable-orders-inline$', "selectable_orders_inline", name="lfs_selectable_orders_inline"),
+    url(r'^set-selectable-orders-page$', "set_selectable_orders_page", name="lfs_set_selectable_orders_page"),
+    url(r'^set-orders-page$', "set_orders_page", name="lfs_set_orders_page"),
     url(r'^change-order-state$', "change_order_state", name="lfs_change_order_state"),
 )
 
@@ -335,15 +342,14 @@ urlpatterns += patterns('lfs.manage.views.static_blocks',
 # Reviews
 urlpatterns += patterns('lfs.manage.views.review',
     url(r'^reviews$', "reviews", name="lfs_manage_reviews"),
-    url(r'^reviews-inline$', "reviews_inline", name="lfs_reviews_inline"),
     url(r'^review/(?P<review_id>\d*)$', "review", name="lfs_manage_review"),
-    url(r'^review-inline/(?P<review_id>\d*)$', "review_inline", name="lfs_review_inline"),
     url(r'^set-review-filters$', "set_review_filters", name="lfs_set_review_filters"),
     url(r'^reset-review-filters$', "reset_review_filters", name="lfs_reset_review_filters"),
     url(r'^set-review-ordering/(?P<ordering>\w*)$', "set_ordering", name="lfs_set_review_ordering"),
-    url(r'^selectable-reviews-inline$', "selectable_reviews_inline", name="lfs_selectable_reviews_inline"),
-    url(r'^set-review-state/(?P<review_id>\d*)$', "set_state", name="lfs_set_review_state"),
+    url(r'^set-review-state/(?P<review_id>\d*)$', "set_review_state", name="lfs_set_review_state"),
     url(r'^delete-review/(?P<review_id>\d*)$', "delete_review", name="lfs_delete_review"),
+    url(r'^set-reviews-page$', "set_reviews_page", name="lfs_set_reviews_page"),
+    url(r'^set-selectable-reviews-page$', "set_selectable_reviews_page", name="lfs_set_selectable_reviews_page"),
 )
 
 # Shop
