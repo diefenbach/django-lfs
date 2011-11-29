@@ -24,6 +24,7 @@ from lfs.core.utils import LazyEncoder
 from lfs.manage.views.product.images import manage_images
 from lfs.manage.views.product.seo import manage_seo
 from lfs.manage.views.product.properties import manage_properties
+from lfs.manage.views.product.attachments import manage_attachments
 from lfs.manage.views.lfs_portlets import portlets_inline
 from lfs.utils.widgets import SelectImage
 
@@ -142,6 +143,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
         "pages_inline": pages_inline(request, page, paginator),
         "product_data": product_data_form(request, product_id),
         "images": manage_images(request, product_id, as_string=True),
+        "attachments" : manage_attachments(request, product_id, as_string=True),
         "selectable_products": selectable_products_inline(request, page, paginator, product.id),
         "seo": manage_seo(request, product_id),
         "stock": stock(request, product_id),

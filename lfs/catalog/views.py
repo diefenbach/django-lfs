@@ -25,6 +25,7 @@ from lfs.catalog.models import File
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import PropertyOption
+from lfs.catalog.models import ProductAttachment
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import VARIANT
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
@@ -558,6 +559,9 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
     else:
         packing_result = ""
 
+    # attachments
+    attachments = variant.get_attachments()
+
     result = render_to_string(template_name, RequestContext(request, {
         "product": product,
         "standard_price": variant.get_standard_price(request),
@@ -567,6 +571,7 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
         "product_accessories": variant.get_accessories(),
         "properties": properties,
         "packing_result": packing_result,
+        "attachments" : attachments,
     }))
 
     cache.set(cache_key, result)

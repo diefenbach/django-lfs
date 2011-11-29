@@ -95,6 +95,7 @@
                 {% endif %}
 
                 <li><a href="#images">{% trans 'Images' %}</a></li>
+                <li><a href="#attachments">{% trans 'Attachments' %}</a></li>
 
                 {% if product.is_product_with_variants %}
                     <li class="ui-tabs-nav-item"><a href="{% url lfs_manage_product_variants_tab product.id %}">{% trans 'Variants' %}</a></li>
@@ -114,6 +115,10 @@
 
             <div id="images">
                 {{ images|safe }}
+            </div>
+
+            <div id="attachments">
+                {{ attachments|safe }}
             </div>
 
             <div id="stock">

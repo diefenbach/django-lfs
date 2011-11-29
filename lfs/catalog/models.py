@@ -688,6 +688,20 @@ class Product(models.Model):
         """
         return len(self.get_accessories()) > 0
 
+    def get_attachments(self):
+        """ Returns the ProductAttachment relationship objects.
+            If no attachment is found and it's variant get parent's ones.
+        """
+        attachments = ProductAttachment.objects.filter(product=self)
+        if not attachments and self.is_variant():
+            attachments = ProductAttachment.objects.filter(product=self.parent)
+        return attachments
+
+    def has_attachments(self):
+        """Returns True if the product has attachments.
+        """
+        return len(self.get_attachments()) > 0
+
     def get_amount_by_packages(self, quantity):
         """
         """
@@ -2037,3 +2051,21 @@ class DeliveryTime(models.Model):
         max = int("%.0f" % (self.max + 0.001))
 
         return DeliveryTime(min=min, max=max, unit=self.unit)
+
+
+class ProductAttachment(models.Model):
+    """
+    """
+    title = models.CharField(_(u"Title"), max_length=50)
+    description = models.TextField(_(u"Description"), blank=True)
+    file = models.FileField(upload_to="files")
+    product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="attachments")
+    position = models.IntegerField( _(u"Position"), default=1)
+
+    class Meta:
+        ordering = ("position", )
+
+    def get_url(self):
+        if self.file.url:
+            return self.file.url
+        return None
