@@ -38,6 +38,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
     filterables = []
     displayables = []
 
+    # Configurable
     if not product.is_product_with_variants():
         for property_group in product.property_groups.all():
             properties = []
@@ -85,6 +86,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                 "properties": properties,
             })
 
+        # Filterable
         for property_group in product.property_groups.all():
             properties = []
             for property in property_group.properties.filter(filterable=True).order_by("groupspropertiesrelation"):
@@ -110,14 +112,25 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                         "selected": selected,
                     })
 
+                value = ""
+                if property.type == PROPERTY_SELECT_FIELD:
+                    display_select_field = True
+                else:
+                    display_select_field = False
+                    try:
+                        value = value_ids[0]
+                    except IndexError:
+                        pass
+
                 properties.append({
                     "id": property.id,
                     "name": property.name,
                     "title": property.title,
                     "type": property.type,
                     "options": options,
-                    "display_text_field": property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
-                    "display_select_field": property.type == PROPERTY_SELECT_FIELD,
+                    "value" : value,
+                    "display_text_field": not display_select_field,
+                    "display_select_field": display_select_field,
                 })
 
             filterables.append({
@@ -126,6 +139,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                 "properties": properties,
             })
 
+        # Displayable
         for property_group in product.property_groups.all():
             properties = []
             for property in property_group.properties.filter(display_on_product=True).order_by("groupspropertiesrelation"):
@@ -151,14 +165,25 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                         "selected": selected,
                     })
 
+                value = ""
+                if property.type == PROPERTY_SELECT_FIELD:
+                    display_select_field = True
+                else:
+                    display_select_field = False
+                    try:
+                        value = value_ids[0]
+                    except IndexError:
+                        pass
+
                 properties.append({
                     "id": property.id,
                     "name": property.name,
                     "title": property.title,
                     "type": property.type,
                     "options": options,
-                    "display_text_field": property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
-                    "display_select_field": property.type == PROPERTY_SELECT_FIELD,
+                    "value" : value,
+                    "display_text_field": not display_select_field,
+                    "display_select_field": display_select_field,
                 })
 
             displayables.append({
