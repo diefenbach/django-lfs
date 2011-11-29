@@ -1,11 +1,10 @@
 # django imports
-from django.contrib.admin import widgets
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.db.models import Q
-from django.forms import ModelForm
+from django import forms
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -26,20 +25,23 @@ from lfs.manage.views.product.images import manage_images
 from lfs.manage.views.product.seo import manage_seo
 from lfs.manage.views.product.properties import manage_properties
 from lfs.manage.views.lfs_portlets import portlets_inline
+from lfs.manage.utils import get_current_page
 from lfs.utils.widgets import SelectImage
 
 
 # Forms
-class ProductAddForm(ModelForm):
-    """Form to add a new product.
+class ProductAddForm(forms.ModelForm):
+    """
+    Form to add a new product.
     """
     class Meta:
         model = Product
         fields = ("name", "slug")
 
 
-class ProductSubTypeForm(ModelForm):
-    """Form to change the sub type.
+class ProductSubTypeForm(forms.ModelForm):
+    """
+    Form to change the sub type.
     """
     class Meta:
         model = Product
@@ -50,8 +52,9 @@ class ProductSubTypeForm(ModelForm):
         self.fields["sub_type"].choices = PRODUCT_TYPE_FORM_CHOICES
 
 
-class ProductDataForm(ModelForm):
-    """Form to add and edit master data of a product.
+class ProductDataForm(forms.ModelForm):
+    """
+    Form to add and edit master data of a product.
     """
     def __init__(self, *args, **kwargs):
         super(ProductDataForm, self).__init__(*args, **kwargs)
@@ -75,8 +78,9 @@ class ProductDataForm(ModelForm):
         return self.cleaned_data
 
 
-class VariantDataForm(ModelForm):
-    """Form to add and edit master data of a variant.
+class VariantDataForm(forms.ModelForm):
+    """
+    Form to add and edit master data of a variant.
     """
     def __init__(self, *args, **kwargs):
         super(VariantDataForm, self).__init__(*args, **kwargs)
@@ -102,8 +106,9 @@ class VariantDataForm(ModelForm):
         return self.cleaned_data
 
 
-class ProductStockForm(ModelForm):
-    """Form to add and edit stock data of a product.
+class ProductStockForm(forms.ModelForm):
+    """
+    Form to add and edit stock data of a product.
     """
     class Meta:
         model = Product
@@ -114,28 +119,26 @@ class ProductStockForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ProductStockForm, self).__init__(*args, **kwargs)
-        self.fields["ordered_at"].widget = widgets.AdminDateWidget()
+        self.fields["ordered_at"].widget.attrs = {'class': 'date-picker'}
 
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_product(request, product_id, template_name="manage/product/product.html"):
-    """Displays the whole manage/edit form for the product with the passed id.
     """
-    # NOTE: For any reason the script from swfupload (see product/images.html)
-    # calls this method (I have no idea how and why). It calls it without a
-    # product id so we have to take care of it here as a workaround.
-    if not product_id:
-        return HttpResponse("")
-
+    Displays the whole manage/edit form for the product with the passed id.
+    """
+    AMOUNT = 20
     product = lfs_get_object_or_404(Product, pk=product_id)
     products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, 20)
-    page = paginator.page(request.REQUEST.get("page", 1))
+    paginator = Paginator(products, AMOUNT)
+
+    temp = product.parent if product.is_variant() else product
+    page = get_current_page(request, products, temp, AMOUNT)
 
     try:
-        product = Product.objects.get(pk=product_id)
-    except Exception:
-        return HttpResponse("")
+        page = paginator.page(page)
+    except EmptyPage:
+        page = paginator.page(1)
 
     return render_to_response(template_name, RequestContext(request, {
         "product": product,
@@ -153,9 +156,11 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
     }))
 
 
+# Tabs
 @permission_required("core.manage_shop", login_url="/login/")
 def stock(request, product_id, template_name="manage/product/stock.html"):
-    """Displays and updates product's stock data.
+    """
+    Displays and updates product's stock data.
     """
     # prefix="stock" because <input name="length" doesn't seem to work with IE
     product = lfs_get_object_or_404(Product, pk=product_id)
@@ -190,7 +195,8 @@ def stock(request, product_id, template_name="manage/product/stock.html"):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def product_data_form(request, product_id, template_name="manage/product/data.html"):
-    """Displays the product master data form within the manage product view.
+    """
+    Displays the product master data form within the manage product view.
     """
     product = Product.objects.get(pk=product_id)
 
@@ -208,7 +214,8 @@ def product_data_form(request, product_id, template_name="manage/product/data.ht
 
 @permission_required("core.manage_shop", login_url="/login/")
 def products(request, template_name="manage/product/products.html"):
-    """Displays an overview list of all products.
+    """
+    Displays an overview list of all products.
     """
     products = _get_filtered_products(request)
     paginator = Paginator(products, 20)
@@ -224,7 +231,8 @@ def products(request, template_name="manage/product/products.html"):
 # Parts
 @permission_required("core.manage_shop", login_url="/login/")
 def products_inline(request, page, paginator, template_name="manage/product/products_inline.html"):
-    """Displays the list of products.
+    """
+    Displays the list of products.
     """
     return render_to_string(template_name, RequestContext(request, {
         "page": page,
@@ -235,6 +243,7 @@ def products_inline(request, page, paginator, template_name="manage/product/prod
 @permission_required("core.manage_shop", login_url="/login/")
 def product_filters_inline(request, page, paginator, product_id=0, template_name="manage/product/product_filters_inline.html"):
     """
+    Displays the filter section of the product overview view.
     """
     product_filters = request.session.get("product_filters", {})
 
@@ -267,19 +276,20 @@ def product_filters_inline(request, page, paginator, product_id=0, template_name
 
 @permission_required("core.manage_shop", login_url="/login/")
 def pages_inline(request, page, paginator, product_id, template_name="manage/product/pages_inline.html"):
-    """Displays the page navigation.
+    """
+    Displays the page navigation.
     """
     return render_to_string(template_name, RequestContext(request, {
         "page": page,
         "paginator": paginator,
-        "product_id" : product_id,
+        "product_id": product_id,
     }))
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def selectable_products_inline(request, page, paginator, product_id=0, template_name="manage/product/selectable_products_inline.html"):
-    """Displays the selectable products for the product view. (Used to switch
-    quickly from one product to another.)
+def selectable_products_inline(request, page, paginator, product_id, template_name="manage/product/selectable_products_inline.html"):
+    """
+    Displays the selectable products for the product view.
     """
     try:
         product = Product.objects.get(pk=product_id)
@@ -295,11 +305,12 @@ def selectable_products_inline(request, page, paginator, product_id=0, template_
         "paginator": paginator,
         "page": page,
         "current_product": product,
-        "base_product" : base_product,
+        "base_product": base_product,
     }))
 
 
 # Actions
+@permission_required("core.manage_shop", login_url="/login/")
 def add_product(request, template_name="manage/product/add_product.html"):
     """Shows a simplified product form and adds a new product.
     """
@@ -391,8 +402,9 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
 
 @permission_required("core.manage_shop", login_url="/login/")
 def product_dispatcher(request):
-    """Dispatches to the first product. This is called when the shop user clicks
-    on the manage products link.
+    """
+    Dispatches to the first product. This is called when the shop admin
+    clicks on the manage products link.
     """
     try:
         product = Product.objects.exclude(sub_type=VARIANT)[0]
@@ -405,7 +417,8 @@ def product_dispatcher(request):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def reset_filters(request):
-    """Resets all product filters.
+    """
+    Resets all product filters.
     """
     if "product_filters" in request.session:
         del request.session["product_filters"]
@@ -431,7 +444,8 @@ def reset_filters(request):
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def save_products(request):
-    """Saves products with passed ids (by request body).
+    """
+    Saves products with passed ids (by request body).
     """
     products = _get_filtered_products(request)
     paginator = Paginator(products, 20)
@@ -504,7 +518,8 @@ def save_products(request):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def set_name_filter(request):
-    """Sets product filters given by passed request.
+    """
+    Sets product filters given by passed request.
     """
     product_filters = request.session.get("product_filters", {})
 
@@ -537,7 +552,8 @@ def set_name_filter(request):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def set_filters(request):
-    """Sets product filters given by passed request.
+    """
+    Sets product filters given by passed request.
     """
     product_filters = request.session.get("product_filters", {})
     for name in ("name", "active", "price", "category", "for_sale", "sub_type", "amount"):
@@ -578,7 +594,8 @@ def set_filters(request):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def set_products_page(request):
-    """Sets the displayed product page.
+    """
+    Sets the displayed product page.
     """
     product_id = request.GET.get("product-id")
     products = _get_filtered_products_for_product_view(request)
@@ -597,7 +614,8 @@ def set_products_page(request):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def product_by_id(request, product_id):
-    """Little helper which returns a product by id. (For the shop customer the
+    """
+    Little helper which returns a product by id. (For the shop customer the
     products are displayed by slug, for the manager by id).
     """
     product = Product.objects.get(pk=product_id)
@@ -605,8 +623,10 @@ def product_by_id(request, product_id):
     return HttpResponseRedirect(url)
 
 
+# Private Methods
 def _get_filtered_products_for_product_view(request):
-    """Returns a query set with filtered products based on saved name filter
+    """
+    Returns a query set with filtered products based on saved name filter
     and ordering within the current session.
     """
     products = Product.objects.all()
@@ -619,13 +639,14 @@ def _get_filtered_products_for_product_view(request):
     if name != "":
         products = products.filter(Q(name__icontains=name) | Q(sku__icontains=name))
 
-    products = products.exclude(sub_type="2")
+    products = products.exclude(sub_type=VARIANT)
     products = products.order_by("%s%s" % (product_ordering_order, product_ordering))
     return products
 
 
 def _get_filtered_products(request):
-    """Returns a query set with filtered products based on saved filters and
+    """
+    Returns a query set with filtered products based on saved filters and
     ordering within the current session.
     """
     products = Product.objects.all()

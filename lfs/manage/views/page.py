@@ -2,15 +2,18 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
+from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
+from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
 # lfs imports
 import lfs.core.utils
+from lfs.core.utils import LazyEncoder
 from lfs.core.widgets.file import LFSFileInput
 from lfs.page.models import Page
 
@@ -24,14 +27,15 @@ class PageForm(ModelForm):
 
     class Meta:
         model = Page
+        exclude = ("position",)
 
 
-class PageAddForm(PageForm):
-    """Form to add a page
+class PageAddForm(ModelForm):
+    """Form to add a page.
     """
     class Meta:
         model = Page
-        exclude = ("position",)
+        exclude = ("active", "position", "body", "short_text", "exclude_from_navigation", "file")
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -113,6 +117,27 @@ def delete_page(request, id):
         url=reverse("lfs_manage_pages"),
         msg=_(u"Page has been deleted."),
     )
+
+
+def sort_pages(request):
+    """Sorts pages after drag 'n drop.
+    """
+    page_list = request.POST.get("pages", "").split('&')
+    assert (isinstance(page_list, list))
+    if len(page_list) > 0:
+        pos = 10
+        for page_str in page_list:
+            page_id = page_str.split('=')[1]
+            page_obj = Page.objects.get(pk=page_id)
+            page_obj.position = pos
+            page_obj.save()
+            pos = pos + 10
+
+        result = simplejson.dumps({
+            "message": _(u"The pages have been sorted."),
+        }, cls=LazyEncoder)
+
+        return HttpResponse(result)
 
 
 def _update_positions():

@@ -1,0 +1,117 @@
+{% load i18n lfs_tags %}
+<form action="{% url lfs_set_order_filter %}"
+      method="POST">
+
+    <table class="filters">
+        <tr>
+            <td class="discreet">{% trans "Pages" %}</td>
+            <td></td>
+            <td class="discreet">{% trans "Start" %}</td>
+            <td class="discreet">{% trans "End" %}</td>
+            <td class="discreet">{% trans "Name" %}</td>
+            <td class="discreet">{% trans "State" %}</td>
+        </tr>
+        <tr>
+            <td>
+                <div class="navigation-pages">
+                    {% if page.has_previous %}
+                        <a class="ajax-link"
+                           href="{% url lfs_set_orders_page %}?page=1">
+                            <img src="{{ STATIC_URL }}icons/resultset_first.png"
+                                 alt="{% trans 'First' %}"
+                                 title="{% trans 'First' %}" />
+                        </a>
+                        <a class="ajax-link"
+                           href="{% url lfs_set_orders_page %}?page={{ page.previous_page_number }}">
+                            <img src="{{ STATIC_URL }}icons/resultset_previous.png"
+                                 alt="{% trans 'Previous' %}"
+                                 title="{% trans 'Previous' %}" />
+                        </a>
+                    {% else %}
+                        <img src="{{ STATIC_URL }}icons/resultset_first.png"
+                             alt="{% trans 'First' %}"
+                             title="{% trans 'First' %}" />
+                        <img src="{{ STATIC_URL }}icons/resultset_previous.png"
+                             alt="{% trans 'Previous' %}"
+                             title="{% trans 'Previous' %}" />
+                    {% endif %}
+
+                    {{ page.number }} {% trans "of" %} {{ paginator.num_pages }}
+
+                    {% if page.has_next %}
+                        <a class="ajax-link"
+                           href="{% url lfs_set_orders_page %}?page={{ page.next_page_number }}">
+                            <img src="{{ STATIC_URL }}icons/resultset_next.png"
+                                 alt="{% trans 'Next' %}"
+                                 title="{% trans 'Next' %}" />
+                        </a>
+                        <a class="ajax-link"
+                           href="{% url lfs_set_orders_page %}?page={{ paginator.num_pages }}">
+                            <img src="{{ STATIC_URL }}icons/resultset_last.png"
+                                 alt="{% trans 'Last' %}"
+                                 title="{% trans 'Last' %}" />
+                        </a>
+
+                    {% else %}
+                        <span>
+                            <img src="{{ STATIC_URL }}icons/resultset_next.png"
+                                 alt="{% trans 'Next' %}"
+                                 title="{% trans 'Next' %}" />
+                        </span>
+                        <span>
+                            <img src="{{ STATIC_URL }}icons/resultset_last.png"
+                                 alt="{% trans 'Last' %}"
+                                 title="{% trans 'Last' %}" />
+                        </span>
+                    {% endif %}
+                </div>
+
+            </td>
+            <td>
+                <a href="{% url lfs_set_order_filters_date %}?start=0&amp;end=0"
+                   class="ajax-link">T</a>
+                <a href="{% url lfs_set_order_filters_date %}?start=1&amp;end=1"
+                   class="ajax-link">Y</a>
+                <a href="{% url lfs_set_order_filters_date %}?start=7&amp;end=0"
+                   class="ajax-link">W</a>
+            </td>
+            <td>
+                <input class="date-picker"
+                       type="text"
+                       name="start"
+                       value="{{ start }}">
+            </td>
+            <td>
+
+                <input class="date-picker"
+                       type="text"
+                       name="end"
+                       value="{{ end }}">
+            </td>
+            <td>
+                <input type="text"
+                       name="name"
+                       value="{{ name }}">
+            </td>
+            <td>
+                <select id="states-filter"
+                        class="ajax-change"
+                        name="state">
+                    <option value="">{% trans "All" %}</option>
+                    {% for state in states %}
+                        <option value="{{ state.id }}"
+                                {% if state.selected %}selected="selected"{% endif %}>
+                            {{ state.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <input type="submit"
+                       class="ajax-save-button" />
+
+                <a href="{% url lfs_reset_order_filters %}"
+                   class="ajax-link reset">&nbsp;</a>
+            </td>
+        </tr>
+    </table>
+</form>

@@ -2526,10 +2526,11 @@ class ProductTestCase(TestCase):
 
         product = Product.objects.get(slug="product-1")
 
-        variant_data = {  'slug': 'variant-slug',
-                          'name': 'variant',
-                          'price': 10.00,
-                          }
+        variant_data = {
+                'slug': 'variant-slug',
+                'name': 'variant',
+                'price': 10.00,
+        }
 
         # set up a user with permission to access the manage interface
         self.user, created = User.objects.get_or_create(username='manager', is_superuser=True)
@@ -2558,6 +2559,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(variant.name, 'variant')
         self.assertEqual(variant.price, 10.00)
         self.assertEqual(variant.parent, product)
+
 
 class ProductAccessoriesTestCase(TestCase):
     """Tests ProductAccessories (surprise, surprise).
