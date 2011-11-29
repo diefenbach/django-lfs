@@ -2,6 +2,7 @@ from django import forms
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
+
 class LFSImageInput(forms.FileInput):
     """A custom image widget which displays the current image.
     """

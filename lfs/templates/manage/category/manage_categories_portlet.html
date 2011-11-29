@@ -1,7 +1,8 @@
 {% load i18n %}
 <h2 class="navigation-title">{% trans "Categories" %}</h2>
 <div class="navigation-body manage-categories-portlet">
-    <ol class="manage-categories-tree sortable">
+    <ol class="manage-categories-tree sortable"
+        href="{% url lfs_sort_categories %}">
         {% for category in categories %}
             <li id="category_{{ category.id }}">
                 <div>
@@ -17,30 +18,3 @@
         {% endfor %}
     </ol>
 </div>
-
-<script>
-    $(function() {
-        $('ol.sortable').nestedSortable({
-            placeholder: 'placeholder',
-            forcePlaceholderSize: true,
-            handle: '.handle',
-            helper: 'clone',
-            items: 'li',
-            opacity: .6,
-            placeholder: 'placeholder',
-            revert: 250,
-            tabSize: 25,
-            tolerance: 'pointer',
-            toleranceElement: '> div',
-            stop: function(event, ui){
-                serialized = $('ol.sortable').nestedSortable('serialize');
-                $.ajax({
-                  url: "{% url lfs-sort-categories %}",
-                  context: document.body,
-                  type: "POST",
-                  data: {"categories": serialized},
-               });
-            }
-        });
-    });
-</script>
