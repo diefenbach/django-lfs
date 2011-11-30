@@ -106,6 +106,14 @@ urlpatterns += patterns('lfs.manage.views.product.images',
     url(r'^move-image/(?P<id>\d+)$', "move_image", name="lfc_move_image"),
 )
 
+# Product Attachments
+urlpatterns += patterns('lfs.manage.views.product.attachments',
+    url(r'^add-attachment/(?P<product_id>\d*)$', "add_attachment", name="lfs_manage_add_attachment"),
+    url(r'^update-attachments/(?P<product_id>\d*)$', "update_attachments", name="lfs_manage_update_attachments"),
+    url(r'^product-attachments/(?P<product_id>\d*)$', "manage_attachments", name="lfs_manage_attachments"),
+    url(r'^move-product-attachments/(?P<id>\d+)$', "move_attachment", name="lfs_move_product_attachment"),
+)
+
 # Product SEO
 urlpatterns += patterns('lfs.manage.views',
     url(r'^manage-seo/(?P<product_id>\d*)$', "manage_seo", name="lfs_manage_product_seo"),
