@@ -139,6 +139,16 @@ table.lfs-manage-table.images td {
     padding-right: 10px;
 }
 
+.lfs-manage-table.attachments td {
+    vertical-align: top;
+}
+
+.lfs-manage-table.attachments textarea {
+    width: 400px;
+    height: 100px;
+    margin-top: 2px;
+}
+
 .checkbox {
     min-height: 20px;
     height: 20px;

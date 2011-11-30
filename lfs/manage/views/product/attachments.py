@@ -50,7 +50,7 @@ def add_attachment(request, product_id):
 
     # Refresh positions
     for i, attachment in enumerate(product.attachments.all()):
-        attachment.position = i+1
+        attachment.position = (i + 1) * 10
         attachment.save()
 
     product_changed.send(product, request=request)
@@ -101,7 +101,7 @@ def update_attachments(request, product_id):
 
     # Refresh positions
     for i, attachment in enumerate(product.attachments.all()):
-        attachment.position = i+1
+        attachment.position = (i + 1) * 10
         attachment.save()
 
     product_changed.send(product, request=request)
