@@ -24,6 +24,13 @@ class PageTestCase(TestCase):
         self.user = User.objects.get(username="admin")
         self.request = DummyRequest(user=self.user)
 
+        self.root = Page.objects.create(
+            id=1,
+            title="Root",
+            slug="",
+            exclude_from_navigation=False,
+        )
+
         self.page = Page.objects.create(
             id=2,
             title="Page Title",
