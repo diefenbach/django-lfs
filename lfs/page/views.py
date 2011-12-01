@@ -30,7 +30,7 @@ def pages_view(request, template_name="lfs/page/pages.html"):
 
     return render_to_response(template_name, RequestContext(request, {
         "pages": pages,
-        "page" : Page.objects.get(pk=1),
+        "page": Page.objects.get(pk=1),
     }))
 
 

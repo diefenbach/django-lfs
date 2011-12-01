@@ -70,9 +70,13 @@ class Command(BaseCommand):
 
         Page.objects.create(id=1, title="Root", slug="", active=1, exclude_from_navigation=1)
 
+        # Shop
+        db.add_column("core_shop", "meta_title", models.CharField(_(u"Meta title"), blank=True, default="<name>", max_length=80))
+        db.add_column("core_shop", "meta_keywords", models.TextField(_(u"Meta keywords"), null=True, blank=True))
+        db.add_column("core_shop", "meta_description", models.TextField(_(u"Meta description"), null=True, blank=True))
+
         application.version = "0.7"
         application.save()
-
 
     def migrate_to_06(self, application, version):
         from lfs.core.utils import get_default_shop

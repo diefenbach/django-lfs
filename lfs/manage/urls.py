@@ -366,7 +366,9 @@ urlpatterns += patterns('lfs.manage.views.review',
 # Shop
 urlpatterns += patterns('lfs.manage.views.shop',
     url(r'^shop$', "manage_shop", name="lfs_manage_shop"),
-    url(r'^save-shop-default-values$', "save_default_values", name="lfs_save_shop_default_values"),
+    url(r'^save-shop-data-tab$', "save_data_tab", name="lfs_save_shop_data_tab"),
+    url(r'^save-shop-default-values-tab$', "save_default_values_tab", name="lfs_save_shop_default_values_tab"),
+    url(r'^save-shop-seo-tab$', "save_seo_tab", name="lfs_save_shop_seo_tab"),
 )
 
 # Shop action

@@ -35,6 +35,7 @@ class PageTestCase(TestCase):
     def test_add_page(self):
         """Tests to add a page.
         """
+        self.assertEqual(self.page.id, 2)
         self.assertEqual(self.page.title, "Page Title")
         self.assertEqual(self.page.slug, "page-title")
         self.assertEqual(self.page.body, "<p>This is a body</p>")

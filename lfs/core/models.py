@@ -179,6 +179,10 @@ class Shop(models.Model):
     checkout_type = models.PositiveSmallIntegerField(_(u"Checkout type"), choices=CHECKOUT_TYPES, default=CHECKOUT_TYPE_SELECT)
     confirm_toc = models.BooleanField(_(u"Confirm TOC"), default=False)
 
+    meta_title = models.CharField(_(u"Meta title"), blank=True, default="<name>", max_length=80)
+    meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
+    meta_description = models.TextField(_(u"Meta description"), blank=True)
+
     class Meta:
         permissions = (("manage_shop", "Manage shop"),)
 
@@ -186,7 +190,7 @@ class Shop(models.Model):
         return self.name
 
     def get_format_info(self):
-        """
+        """Returns the global format info.
         """
         return {
             "product_cols": self.product_cols,
@@ -220,8 +224,24 @@ class Shop(models.Model):
         """
         return None
 
+    def get_meta_title(self):
+        """Returns the meta title of the shop.
+        """
+        return self.meta_title.replace("<name>", self.name)
+
+    def get_meta_keywords(self):
+        """Returns the meta keywords of the shop.
+        """
+        return self.meta_keywords.replace("<name>", self.name)
+
+    def get_meta_description(self):
+        """Returns the meta description of the shop.
+        """
+        return self.meta_description.replace("<name>", self.name)
+
 
 class Application(models.Model):
     version = models.CharField(_("Version"), blank=True, max_length=10)
+
 
 from monkeys import *

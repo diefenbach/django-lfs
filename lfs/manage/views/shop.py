@@ -8,6 +8,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_POST
 
 # lfs imports
 import lfs.core.utils
@@ -19,11 +20,11 @@ from lfs.core.widgets.image import LFSImageInput
 from lfs.manage.views.lfs_portlets import portlets_inline
 
 
-class ShopForm(ModelForm):
+class ShopDataForm(ModelForm):
     """Form to edit shop data.
     """
     def __init__(self, *args, **kwargs):
-        super(ShopForm, self).__init__(*args, **kwargs)
+        super(ShopDataForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
 
     class Meta:
@@ -33,8 +34,16 @@ class ShopForm(ModelForm):
             "google_analytics_id", "ga_site_tracking", "ga_ecommerce_tracking")
 
 
-class ShopDefaultValuesForm(ModelForm):
+class ShopSEOForm(ModelForm):
+    """Form to edit shop SEO data.
     """
+    class Meta:
+        model = Shop
+        fields = ("meta_title", "meta_keywords", "meta_description")
+
+
+class ShopDefaultValuesForm(ModelForm):
+    """Form to edit shop default values.
     """
     class Meta:
         model = Shop
@@ -46,44 +55,98 @@ class ShopDefaultValuesForm(ModelForm):
 def manage_shop(request, template_name="manage/shop/shop.html"):
     """Displays the form to manage shop data.
     """
-    shop = lfs_get_object_or_404(Shop, pk=1)
-    if request.method == "POST":
-        form = ShopForm(instance=shop, data=request.POST, files=request.FILES)
-        if form.is_valid():
-            form.save()
-            return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_shop"),
-                msg=_(u"Shop data has been saved."),
-            )
-    else:
-        form = ShopForm(instance=shop)
+    shop = lfs.core.utils.get_default_shop()
+    data_form = ShopDataForm(instance=shop)
+    seo_form = ShopSEOForm(instance=shop)
+    default_values_form = ShopDefaultValuesForm(instance=shop)
 
     return render_to_response(template_name, RequestContext(request, {
         "shop": shop,
-        "form": form,
-        "default_values": default_values_part(request),
+        "data": data_tab(request, shop, data_form),
+        "default_values": default_values_tab(request, shop, default_values_form),
+        "seo": seo_tab(request, shop, seo_form),
         "portlets": portlets_inline(request, shop),
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
-def default_values_part(request, template_name="manage/shop/default_values.html"):
-    """Displays the default value part of the shop form.
+# Parts
+def data_tab(request, shop, form, template_name="manage/shop/data_tab.html"):
+    """Renders the data tab of the shop.
     """
-    shop = lfs_get_object_or_404(Shop, pk=1)
-
-    if request.method == "POST":
-        form = ShopDefaultValuesForm(instance=shop, data=request.POST)
-    else:
-        form = ShopDefaultValuesForm(instance=shop)
-
     return render_to_string(template_name, RequestContext(request, {
         "shop": shop,
         "form": form,
     }))
 
 
-def save_default_values(request):
+def default_values_tab(request, shop, form, template_name="manage/shop/default_values_tab.html"):
+    """Renders the default value tab of the shop.
+    """
+    return render_to_string(template_name, RequestContext(request, {
+        "shop": shop,
+        "form": form,
+    }))
+
+
+def seo_tab(request, shop, form, template_name="manage/shop/seo_tab.html"):
+    """Renders the SEO tab of the shop.
+    """
+    return render_to_string(template_name, RequestContext(request, {
+        "shop": shop,
+        "form": form,
+    }))
+
+
+# Actions
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
+def save_data_tab(request):
+    """Saves the data tab of the default shop.
+    """
+    shop = lfs.core.utils.get_default_shop()
+
+    form = ShopDataForm(instance=shop, data=request.POST)
+    if form.is_valid():
+        form.save()
+        shop_changed.send(shop)
+        message = _(u"Shop data has been saved.")
+    else:
+        message = _(u"Please correct the indicated errors.")
+
+    result = simplejson.dumps({
+        "html": [["#data", data_tab(request, shop, form)]],
+        "message": message,
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
+
+
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
+def save_seo_tab(request):
+    """Saves the seo tab of the default shop.
+    """
+    shop = lfs.core.utils.get_default_shop()
+
+    form = ShopSEOForm(instance=shop, data=request.POST)
+    if form.is_valid():
+        form.save()
+        shop_changed.send(shop)
+        message = _(u"Shop SEO data has been saved.")
+    else:
+        message = _(u"Please correct the indicated errors.")
+
+    result = simplejson.dumps({
+        "html": [["#seo", seo_tab(request, shop, form)]],
+        "message": message,
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
+
+
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
+def save_default_values_tab(request):
     """Saves the default value part
     """
     shop = lfs_get_object_or_404(Shop, pk=1)
@@ -96,10 +159,8 @@ def save_default_values(request):
     else:
         message = _(u"Please correct the indicated errors.")
 
-    html = [["#default-values", default_values_part(request)]]
-
     result = simplejson.dumps({
-        "html": html,
+        "html": [["#default-values", default_values_tab(request, shop, form)]],
         "message": message
     }, cls=LazyEncoder)
 

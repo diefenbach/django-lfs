@@ -56,6 +56,9 @@ class ShopTestCase(TestCase):
         self.assertEqual(shop.ga_ecommerce_tracking, False)
         self.assertEqual(shop.default_country.name, u"Deutschland")
         self.assertEqual(shop.get_default_country().name, u"Deutschland")
+        self.assertEqual(shop.meta_title, u"<name>")
+        self.assertEqual(shop.meta_keywords, u"")
+        self.assertEqual(shop.meta_description, u"")
 
     def test_from_email(self):
         """
@@ -95,6 +98,73 @@ class ShopTestCase(TestCase):
         self.assertEqual(
             shop.get_notification_emails(),
             ["john@doe.com", "jane@doe.com"])
+
+    def test_get_meta_title(self):
+        shop = lfs.core.utils.get_default_shop()
+        self.assertEqual("LFS", shop.get_meta_title())
+
+        shop.meta_title = "John Doe"
+        shop.save()
+
+        self.assertEqual("John Doe", shop.get_meta_title())
+
+        shop.meta_title = "<name> - John Doe"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe", shop.get_meta_title())
+
+        shop.meta_title = "John Doe - <name>"
+        shop.save()
+
+        self.assertEqual("John Doe - LFS", shop.get_meta_title())
+
+    def test_get_meta_keywords(self):
+        shop = lfs.core.utils.get_default_shop()
+        self.assertEqual("", shop.get_meta_keywords())
+
+        shop.meta_keywords = "John Doe"
+        shop.save()
+
+        self.assertEqual("John Doe", shop.get_meta_keywords())
+
+        shop.meta_keywords = "<name> - John Doe"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe", shop.get_meta_keywords())
+
+        shop.meta_keywords = "<name> - John Doe"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe", shop.get_meta_keywords())
+
+        shop.meta_keywords = "<name> - John Doe - <name>"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe - LFS", shop.get_meta_keywords())
+
+    def test_get_meta_description(self):
+        shop = lfs.core.utils.get_default_shop()
+        self.assertEqual("", shop.get_meta_description())
+
+        shop.meta_description = "John Doe"
+        shop.save()
+
+        self.assertEqual("John Doe", shop.get_meta_description())
+
+        shop.meta_description = "<name> - John Doe"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe", shop.get_meta_description())
+
+        shop.meta_description = "<name> - John Doe"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe", shop.get_meta_description())
+
+        shop.meta_description = "<name> - John Doe - <name>"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe - LFS", shop.get_meta_description())
 
 
 class TagsTestCase(TestCase):
