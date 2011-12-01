@@ -27,7 +27,8 @@ class PageTestCase(TestCase):
         self.page = Page.objects.create(
             title="Page Title",
             slug="page-title",
-            body="<p>This is a body</p>"
+            body="<p>This is a body</p>",
+            short_text="This is a short text"
         )
 
     def test_add_page(self):
@@ -75,3 +76,67 @@ class PageTestCase(TestCase):
 
         pages = Page.objects.active()
         self.assertEqual(len(pages), 1)
+
+    def test_get_meta_title(self):
+        self.assertEqual("Page Title", self.page.get_meta_title())
+
+        self.page.meta_title = "John Doe"
+        self.page.save()
+
+        self.assertEqual("John Doe", self.page.get_meta_title())
+
+        self.page.meta_title = "<title> - John Doe"
+        self.page.save()
+
+        self.assertEqual("Page Title - John Doe", self.page.get_meta_title())
+
+        self.page.meta_title = "John Doe - <title>"
+        self.page.save()
+
+        self.assertEqual("John Doe - Page Title", self.page.get_meta_title())
+
+    def test_get_meta_keywords(self):
+        self.assertEqual("", self.page.get_meta_keywords())
+
+        self.page.meta_keywords = "John Doe"
+        self.page.save()
+
+        self.assertEqual("John Doe", self.page.get_meta_keywords())
+
+        self.page.meta_keywords = "<title> - John Doe"
+        self.page.save()
+
+        self.assertEqual("Page Title - John Doe", self.page.get_meta_keywords())
+
+        self.page.meta_keywords = "<short-text> - John Doe"
+        self.page.save()
+
+        self.assertEqual("This is a short text - John Doe", self.page.get_meta_keywords())
+
+        self.page.meta_keywords = "<short-text> - John Doe - <title>"
+        self.page.save()
+
+        self.assertEqual("This is a short text - John Doe - Page Title", self.page.get_meta_keywords())
+
+    def test_get_meta_description(self):
+        self.assertEqual("", self.page.get_meta_description())
+
+        self.page.meta_description = "John Doe"
+        self.page.save()
+
+        self.assertEqual("John Doe", self.page.get_meta_description())
+
+        self.page.meta_description = "<title> - John Doe"
+        self.page.save()
+
+        self.assertEqual("Page Title - John Doe", self.page.get_meta_description())
+
+        self.page.meta_description = "<short-text> - John Doe"
+        self.page.save()
+
+        self.assertEqual("This is a short text - John Doe", self.page.get_meta_description())
+
+        self.page.meta_description = "<short-text> - John Doe - <title>"
+        self.page.save()
+
+        self.assertEqual("This is a short text - John Doe - Page Title", self.page.get_meta_description())

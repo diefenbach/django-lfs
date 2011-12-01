@@ -2531,10 +2531,11 @@ class ProductTestCase(TestCase):
 
         product = Product.objects.get(slug="product-1")
 
-        variant_data = {  'slug': 'variant-slug',
-                          'name': 'variant',
-                          'price': 10.00,
-                          }
+        variant_data = {
+            'slug': 'variant-slug',
+            'name': 'variant',
+            'price': 10.00,
+        }
 
         # set up a user with permission to access the manage interface
         self.user, created = User.objects.get_or_create(username='manager', is_superuser=True)
@@ -2584,35 +2585,34 @@ class ProductTestCase(TestCase):
         )
         self.attachment_V1 = ProductAttachment.objects.create(**self.attachment_V1_data)
 
-
     def test_get_attachments(self):
         # retrieve attachments
         match_titles = [self.attachment_P1_1_data['title'],
                         self.attachment_P1_2_data['title']]
         attachments = self.p1.get_attachments()
         attachments_titles = [x.title for x in attachments]
-        self.assertEqual(match_titles,attachments_titles)
+        self.assertEqual(match_titles, attachments_titles)
 
         # check data
         first = attachments[0]
-        for k,v in self.attachment_P1_1_data.items():
-            self.assertEqual(getattr(first,k),v)
+        for k, v in self.attachment_P1_1_data.items():
+            self.assertEqual(getattr(first, k), v)
 
         second = attachments[1]
-        for k,v in self.attachment_P1_2_data.items():
-            self.assertEqual(getattr(second,k),v)
+        for k, v in self.attachment_P1_2_data.items():
+            self.assertEqual(getattr(second, k), v)
 
         # retrieve variant attachment
         attachments = self.v1.get_attachments()
         attachments_titles = [x.title for x in attachments]
-        match_titles = [self.attachment_V1_data['title'],]
-        self.assertEqual(attachments_titles,match_titles)
+        match_titles = [self.attachment_V1_data['title']]
+        self.assertEqual(attachments_titles, match_titles)
 
         # delete variant attachment: we should get parent attachments
         self.attachment_V1.delete()
         pattachments = [x.title for x in self.p1.get_attachments()]
         vattachments = [x.title for x in self.v1.get_attachments()]
-        self.assertEqual(pattachments,vattachments)
+        self.assertEqual(pattachments, vattachments)
 
         # position
         self.attachment_P1_1.position = 20
@@ -2622,7 +2622,7 @@ class ProductTestCase(TestCase):
         attachments_titles = [x.title for x in self.p1.get_attachments()]
         match_titles = [self.attachment_P1_2_data['title'],
                         self.attachment_P1_1_data['title']]
-        self.assertEqual(match_titles,attachments_titles)
+        self.assertEqual(match_titles, attachments_titles)
 
 
 class ProductAccessoriesTestCase(TestCase):

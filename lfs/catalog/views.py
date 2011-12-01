@@ -571,7 +571,7 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
         "product_accessories": variant.get_accessories(),
         "properties": properties,
         "packing_result": packing_result,
-        "attachments" : attachments,
+        "attachments": attachments,
     }))
 
     cache.set(cache_key, result)

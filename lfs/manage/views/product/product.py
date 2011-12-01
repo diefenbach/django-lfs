@@ -147,7 +147,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
         "pages_inline": pages_inline(request, page, paginator, product_id),
         "product_data": product_data_form(request, product_id),
         "images": manage_images(request, product_id, as_string=True),
-        "attachments" : manage_attachments(request, product_id, as_string=True),
+        "attachments": manage_attachments(request, product_id, as_string=True),
         "selectable_products": selectable_products_inline(request, page, paginator, product.id),
         "seo": manage_seo(request, product_id),
         "stock": stock(request, product_id),
@@ -188,7 +188,6 @@ def stock(request, product_id, template_name="manage/product/stock.html"):
         result = simplejson.dumps({
             "html": html,
             "message": message,
-            "init_date": True,
         }, cls=LazyEncoder)
         return HttpResponse(result)
     else:

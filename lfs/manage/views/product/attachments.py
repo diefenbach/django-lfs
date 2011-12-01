@@ -17,6 +17,7 @@ from lfs.catalog.models import Product
 from lfs.core.signals import product_changed
 from lfs.core.utils import LazyEncoder
 
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_attachments(request, product_id, as_string=False, template_name="manage/product/attachments.html"):
     """
@@ -24,18 +25,19 @@ def manage_attachments(request, product_id, as_string=False, template_name="mana
     product = lfs_get_object_or_404(Product, pk=product_id)
 
     result = render_to_string(template_name, RequestContext(request, {
-        "product" : product,
+        "product": product,
     }))
 
     if as_string:
         return result
     else:
         result = simplejson.dumps({
-            "attachments" : result,
-            "message" : _(u"Attachments have been added."),
-        }, cls = LazyEncoder)
+            "attachments": result,
+            "message": _(u"Attachments have been added."),
+        }, cls=LazyEncoder)
 
         return HttpResponse(result)
+
 
 # Actions
 @permission_required("core.manage_shop", login_url="/login/")
@@ -55,6 +57,7 @@ def add_attachment(request, product_id):
 
     product_changed.send(product, request=request)
     return manage_attachments(request, product_id)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def update_attachments(request, product_id):
@@ -113,6 +116,7 @@ def update_attachments(request, product_id):
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def move_attachment(request, id):

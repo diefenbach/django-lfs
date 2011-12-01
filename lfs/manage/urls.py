@@ -288,7 +288,10 @@ urlpatterns += patterns('lfs.manage.views.page',
     url(r'^delete-page/(?P<id>\d*)$', "delete_page", name="lfs_delete_page"),
     url(r'^manage-pages$', "manage_pages", name="lfs_manage_pages"),
     url(r'^manage-page/(?P<id>\d*)$', "manage_page", name="lfs_manage_page"),
+    url(r'^page-by-id/(?P<id>\d*)$', "page_view_by_id", name="lfs_page_view_by_id"),
     url(r'^sort-pages$', "sort_pages", name="lfs_sort_pages"),
+    url(r'^save-page-data-tab/(?P<id>\d*)$', "save_data_tab", name="lfs_save_page_data_tab"),
+    url(r'^save-page-seo-tab/(?P<id>\d*)$', "save_seo_tab", name="lfs_save_page_seo_tab"),
 )
 
 # Payment

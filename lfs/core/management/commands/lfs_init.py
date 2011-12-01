@@ -85,8 +85,9 @@ class Command(BaseCommand):
         ShippingMethod.objects.create(name="Standard", priority=1, active=1)
 
         # Pages
+        Page.objects.create(id=1, title="Root", slug="", active=1, exclude_from_navigation=1)
         Page.objects.create(title="Terms and Conditions", slug="terms-and-conditions", active=1, body="Enter your terms and conditions here.")
         Page.objects.create(title="Imprint", slug="imprint", active=1, body="Enter your imprint here.")
 
         # Application object
-        Application.objects.create(version="0.6")
+        Application.objects.create(version="0.7")

@@ -164,20 +164,20 @@ def orders(request, template_name="lfs/customer/orders.html"):
     else:
         now = datetime.datetime.now()
         start = now - datetime.timedelta(days=date_filter)
-        orders = orders.filter(created__gte = start)
+        orders = orders.filter(created__gte=start)
 
     options = []
     for value in [1, 3, 6, 12]:
         selected = True if value == date_filter else False
         options.append({
-            "value" : value,
-            "selected" : selected,
+            "value": value,
+            "selected": selected,
         })
 
     return render_to_response(template_name, RequestContext(request, {
         "orders": orders,
-        "options" : options,
-        "date_filter" : date_filter,
+        "options": options,
+        "date_filter": date_filter,
     }))
 
 

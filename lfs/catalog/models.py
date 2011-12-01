@@ -2060,7 +2060,7 @@ class ProductAttachment(models.Model):
     description = models.TextField(_(u"Description"), blank=True)
     file = models.FileField(upload_to="files")
     product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="attachments")
-    position = models.IntegerField( _(u"Position"), default=1)
+    position = models.IntegerField(_(u"Position"), default=1)
 
     class Meta:
         ordering = ("position", )
