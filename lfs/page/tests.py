@@ -25,6 +25,7 @@ class PageTestCase(TestCase):
         self.request = DummyRequest(user=self.user)
 
         self.page = Page.objects.create(
+            id=2,
             title="Page Title",
             slug="page-title",
             body="<p>This is a body</p>",
