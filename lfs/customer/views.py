@@ -346,6 +346,14 @@ def save_address(request, customer, prefix):
 
     # get the country for the address
     country_iso = request.POST.get(prefix + "-country", shop.default_country.code)
+
+    # check have we a valid address
+    form_class = form_factory(country_iso)
+    valid_address = False
+    form_obj = form_class(request.POST, prefix=prefix)
+    if form_obj.is_valid():
+        valid_address = True
+
     customer_selected_address = None
     address_attribute = 'selected_' + prefix + '_address'
     existing_address = False
@@ -371,7 +379,7 @@ def save_address(request, customer, prefix):
                                                            country=Country.objects.get(code=country_iso.lower()))
     setattr(customer, address_attribute, customer_selected_address)
     customer.save()
-    return customer_selected_address
+    return valid_address
 
 
 @login_required
