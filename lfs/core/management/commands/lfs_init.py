@@ -53,7 +53,7 @@ class Command(BaseCommand):
         shop = Shop.objects.create(name="LFS", shop_owner="John Doe",
             from_email="john@doe.com", notification_emails="john@doe.com", description=SHOP_DESCRIPTION, default_country=usa)
         shop.invoice_countries.add(usa)
-        shop.invoice_countries.add(usa)
+        shop.shipping_countries.add(usa)
 
         # Actions
         tabs = ActionGroup.objects.create(name="Tabs")
