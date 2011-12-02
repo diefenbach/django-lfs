@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.forms.util import ErrorList
+from django.forms.forms import NON_FIELD_ERRORS
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -229,7 +230,7 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
             # Create or update invoice address
             valid_invoice_address = save_address(request, customer, INVOICE_PREFIX)
             if valid_invoice_address == False:
-                form._errors["invoice-address"] = ErrorList([_(u"Invalid invoice address")])
+                form._errors.setdefault(NON_FIELD_ERRORS, ErrorList([_(u"Invalid invoice address")]))
             else:
                 # If the shipping address differs from invoice firstname we create
                 # or update the shipping address.
@@ -244,7 +245,7 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
                     valid_shipping_address = save_address(request, customer, SHIPPING_PREFIX)
 
                 if valid_shipping_address == False:
-                    form._errors["shipping-address"] = ErrorList([_(u"Invalid shipping address")])
+                    form._errors.setdefault(NON_FIELD_ERRORS, ErrorList([_(u"Invalid shipping address")]))
                 else:
                     # Payment method
                     customer.selected_payment_method_id = request.POST.get("payment_method")

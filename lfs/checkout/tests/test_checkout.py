@@ -206,7 +206,7 @@ class CheckoutTestCase(TestCase):
                          'invoice-city': 'de area',
                          'invoice-state': 'de town',
                          'invoice-code': 'cork',
-                         'invoice-country': "ie",
+                         'invoice-country': "IE",
                          'invoice_email': 'a@a.com',
                          'invoice_phone': '1234567',
                          'shipping_firstname': 'hans',
@@ -216,7 +216,7 @@ class CheckoutTestCase(TestCase):
                          'shipping-city': 'stuff',
                          'shipping-state': 'BE',
                          'shipping-code': '12345',
-                         'shipping-country': "de",
+                         'shipping-country': "DE",
                          'payment_method': self.by_invoice.id,
                          'shipping_email': 'b@b.com',
                          'shipping_phone': '7654321',
@@ -248,7 +248,7 @@ class CheckoutTestCase(TestCase):
         self.assertEqual(logged_in, True)
 
         # test that our Netherlands form has only 4 address line fields
-        nl_form_class = form_factory("nl")
+        nl_form_class = form_factory("NL")
         nl_form = nl_form_class()
         self.assertEqual('state' in nl_form.fields, False)
         self.assertEqual('code' in nl_form.fields, True)
@@ -271,8 +271,8 @@ class CheckoutTestCase(TestCase):
                          'invoice-line2': 'de street',
                          'invoice-city': 'de area',
                          'invoice-state': 'de town',
-                         'invoice-code': 'cork',
-                         'invoice-country': "nl",
+                         'invoice-code': '1234AB',
+                         'invoice-country': "NL",
                          'invoice_email': 'a@a.com',
                          'invoice_phone': '1234567',
                          'shipping_firstname': 'hans',
@@ -281,8 +281,8 @@ class CheckoutTestCase(TestCase):
                          'shipping-line2': 'de town',
                          'shipping-city': 'stuff',
                          'shipping-state': 'BE',
-                         'shipping-code': '12345',
-                         'shipping-country': "nl",
+                         'shipping-code': '1234AB',
+                         'shipping-country': "NL",
                          'payment_method': self.by_invoice.id,
                          'shipping_email': 'b@b.com',
                          'shipping_phone': '7654321',
