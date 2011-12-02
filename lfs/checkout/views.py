@@ -363,10 +363,7 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
         "voucher_number": lfs.voucher.utils.get_current_voucher_number(request),
     }))
 
-    if form._errors:
-        return lfs.core.utils.set_message_to(response, _(u"An error has occured."))
-    else:
-        return response
+    return response
 
 
 def empty_page_checkout(request, template_name="lfs/checkout/empty_page_checkout.html"):
