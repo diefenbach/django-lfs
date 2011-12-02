@@ -26,6 +26,21 @@ A demo shop can be tried here:
 
 Changes
 =======
+0.6.0 beta 6 (2011-12-02)
+-------------------------
+
+* Bugfix: added default country to shipping countries within lfs_init.
+* Bugfix: fixed validation of shipping and invoice addresses. (mickt)
+* Bugfix: fixed page selection within product management interface.
+* Bugfix: fixed display of selectable products within category's products tab.
+* Bugfix: fixed displaying of property values within product management interface.
+* Bugfix: fixed filter portlet.
+* Bugfix: fixed management of country criterion.
+* Changed: removed growl message from checkout view.
+* Changed: removed displaying of error fields from one page checkout.
+* Added migration of shop_countries.
+* Added migration of orders.
+* Updated russian translations (Belanchuk)
 
 0.6.0 beta 5 (2011-11-28)
 -------------------------
