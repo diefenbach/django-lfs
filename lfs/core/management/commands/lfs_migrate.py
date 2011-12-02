@@ -21,6 +21,8 @@ class Command(BaseCommand):
         """
         """
         from lfs.core.models import Application
+        from lfs.order.models import Order
+
         try:
             application = Application.objects.get(pk=1)
         except Application.DoesNotExist:
@@ -33,7 +35,7 @@ class Command(BaseCommand):
         if version == "0.5":
             print "Migrating to 0.6"
 
-            # Vouchers
+            # Vouchers #######################################################
             db.add_column("voucher_voucher", "used_amount", models.PositiveSmallIntegerField(default=0))
             db.add_column("voucher_voucher", "last_used_date", models.DateTimeField(blank=True, null=True))
             db.add_column("voucher_voucher", "limit", models.PositiveSmallIntegerField(default=1))
@@ -52,7 +54,7 @@ class Command(BaseCommand):
             db.delete_column('voucher_voucher', 'used')
             db.delete_column('voucher_voucher', 'used_date')
 
-            # Price calculator
+            # Price calculator ###############################################
             db.add_column("catalog_product", "price_calculator", models.CharField(
                 null=True, blank=True, choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(), max_length=255))
 
@@ -68,7 +70,7 @@ class Command(BaseCommand):
 
             db.add_column("catalog_product", "supplier_id", models.IntegerField("Supplier", blank=True, null=True))
 
-            # Invoice/Shipping countries
+            # Invoice/Shipping countries #####################################
             shop = get_default_shop()
             db.create_table("core_shop_invoice_countries", (
                 ("id", models.AutoField(primary_key=True)),
@@ -95,6 +97,34 @@ class Command(BaseCommand):
                 shop.shipping_countries.add(row[0])
 
             db.delete_table("core_shop_countries")
+
+            # Orders #########################################################
+
+            # Add new lines
+            db.add_column("order_order", "invoice_line1", models.CharField(null=True, blank=True, max_length=100))
+            db.add_column("order_order", "shipping_line1", models.CharField(null=True, blank=True, max_length=100))
+            db.add_column("order_order", "invoice_line2", models.CharField(null=True, blank=True, max_length=100))
+            db.add_column("order_order", "shipping_line2", models.CharField(null=True, blank=True, max_length=100))
+            db.add_column("order_order", "invoice_code", models.CharField(null=True, blank=True, max_length=100))
+            db.add_column("order_order", "shipping_code", models.CharField(null=True, blank=True, max_length=100))
+
+            # Migrate data
+            cursor.execute("""SELECT id, invoice_zip_code, shipping_zip_code, invoice_street, shipping_street FROM order_order""")
+            for row in cursor.fetchall():
+                order = Order.objects.get(pk=row[0])
+                order.invoice_code = row[1]
+                order.shipping_code = row[2]
+                order.invoice_line1 = row[3]
+                order.shipping_line1 = row[4]
+                order.invoice_line2 = ""
+                order.shipping_line2 = ""
+                order.save()
+
+            # Remove old code fields
+            db.delete_column('order_order', 'invoice_zip_code')
+            db.delete_column('order_order', 'shipping_zip_code')
+            db.delete_column('order_order', 'invoice_street')
+            db.delete_column('order_order', 'shipping_street')
 
             print "Your database has been migrated to version 0.6."
 
