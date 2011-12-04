@@ -4,7 +4,7 @@
       action="{% url lfs_save_product_stock product.id %}"
       method="post">
 
-    <fieldset>        
+    <fieldset>
         <legend>
             {% if product.is_variant %}{{ form.active_dimensions }}{% endif %}
             {% trans 'Dimension' %}
@@ -186,7 +186,7 @@
         </div>
 
     </fieldset>
-    <fieldset>        
+    <fieldset>
         <legend>{% trans "Packaging Unit" %}</legend>
         <div class="field">
             <div class="label">
@@ -210,7 +210,7 @@
                 {{ form.packing_unit.label_tag }}:
             </div>
 
-            {% if form.ordered_at.errors %}
+            {% if form.packing_unit.errors %}
                 <div class="error">
                     {{ form.packing_unit }}
                     {{ form.packing_unit.errors }}
