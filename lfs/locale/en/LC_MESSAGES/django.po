@@ -2469,7 +2469,7 @@ msgstr ""
 #: templates/manage/order/orders_inline.html:26
 #: templates/manage/order/selectable_orders_inline.html:60
 msgid "DATETIME_FORMAT"
-msgstr ""
+msgstr "Y-m-d H:i"
 
 #: templates/manage/cart/cart_inline.html:74
 #: templates/manage/cart/carts_inline.html:22

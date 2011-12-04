@@ -42,7 +42,9 @@ class Command(BaseCommand):
             print "You are up-to-date"
 
     def migrate_to_07(self, application, version):
+        from lfs.core.utils import get_default_shop
         from lfs.page.models import Page
+        from lfs_order_numbers.models import OrderNumberGenerator
 
         # Pages
         print "Migrating to 0.7"
@@ -74,6 +76,15 @@ class Command(BaseCommand):
         db.add_column("core_shop", "meta_title", models.CharField(_(u"Meta title"), blank=True, default="<name>", max_length=80))
         db.add_column("core_shop", "meta_keywords", models.TextField(_(u"Meta keywords"), null=True, blank=True))
         db.add_column("core_shop", "meta_description", models.TextField(_(u"Meta description"), null=True, blank=True))
+
+        shop = get_default_shop()
+        shop.meta_keywords = ""
+        shop.meta_description = ""
+        shop.save()
+
+        # Order
+        db.add_column("order_order", "number", models.CharField(max_length=30, unique=True))
+        OrderNumberGenerator.objects.create(pk="1", last=0)
 
         application.version = "0.7"
         application.save()

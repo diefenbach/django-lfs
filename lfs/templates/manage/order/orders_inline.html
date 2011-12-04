@@ -3,6 +3,9 @@
 <table class="lfs-manage-table">
     <tr>
         <th class="small">
+            {% trans 'Number' %}
+        </th>
+        <th class="small">
             {% trans 'Date' %}
         </th>
         <th class="middle">
@@ -22,6 +25,9 @@
         {% for order in page.object_list %}
 			<tr class="clickable {% cycle 'even' 'odd' %}"
 			    onclick="window.location='{% url lfs.manage.views.order_view order.id %}'">
+                <td>
+                    {{ order.number }}
+                </td>
                 <td>
                     {{ order.created|date:_("DATETIME_FORMAT") }}
                 </td>
@@ -49,6 +55,5 @@
 				{% trans "There are no orders" %}
 			</td>
 		</tr>
-
 	{% endif %}
 </table>

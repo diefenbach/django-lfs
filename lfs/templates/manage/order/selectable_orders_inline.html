@@ -57,7 +57,11 @@
     <div class="navigation-body">
         <a href="{% url lfs.manage.views.order_view order.id %}"
            class="selectable {% ifequal order.id current_order.id %}selected{% endifequal %}">
-            {{ order.created|date:_("DATETIME_FORMAT") }}
+            {% if order.number %}
+                {{ order.number }}
+            {% else %}
+                {% trans "N/A" %}
+            {% endif %}
         </a>
     </div>
 {% endfor %}

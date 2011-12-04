@@ -324,6 +324,11 @@ urlpatterns += patterns('lfs.manage.views.orders',
     url(r'^change-order-state$', "change_order_state", name="lfs_change_order_state"),
 )
 
+# Order numbers
+urlpatterns += patterns('lfs.manage.views.shop',
+    url(r'^save-order-numbers-tab$', "save_order_numbers_tab", name="lfs_save_order_numbers_tab"),
+)
+
 # Criteria
 urlpatterns += patterns('lfs.manage.views.criteria',
     url(r'^add-criterion', "add_criterion", name="lfs_add_criterion"),

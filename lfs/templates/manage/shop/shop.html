@@ -7,7 +7,8 @@
     <div id="manage-tabs">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Shop' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#default-values">{% trans 'Default Values' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#default_values">{% trans 'Default Values' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#order_numbers">{% trans 'Order Numbers' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
         </ul>
@@ -15,8 +16,11 @@
         <div id="data">
             {{ data|safe }}
         </div>
-        <div id="default-values">
+        <div id="default_values">
             {{ default_values|safe }}
+        </div>
+        <div id="order_numbers">
+            {{ order_numbers|safe }}
         </div>
         <div id="seo">
             {{ seo|safe }}

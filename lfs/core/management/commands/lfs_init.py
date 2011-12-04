@@ -1,5 +1,6 @@
 # django imports
 from django.core.management.base import BaseCommand
+from django.conf import settings
 
 SHOP_DESCRIPTION = """
 <h1 class="first-heading">Welcome to LFS!</h1>
@@ -34,6 +35,7 @@ class Command(BaseCommand):
         from lfs.core.models import Application
         from lfs.core.models import Country
         from lfs.core.models import Shop
+        from lfs.core.utils import import_module
 
         from portlets.models import Slot
         from portlets.models import PortletAssignment
@@ -88,6 +90,10 @@ class Command(BaseCommand):
         Page.objects.create(id=1, title="Root", slug="", active=1, exclude_from_navigation=1)
         Page.objects.create(title="Terms and Conditions", slug="terms-and-conditions", active=1, body="Enter your terms and conditions here.")
         Page.objects.create(title="Imprint", slug="imprint", active=1, body="Enter your imprint here.")
+
+        # Order Numbers
+        MODELS = import_module(settings.LFS_APP_ORDER_NUMBERS + ".models")
+        MODELS.OrderNumberGenerator.objects.create(id="order_number")
 
         # Application object
         Application.objects.create(version="0.7")
