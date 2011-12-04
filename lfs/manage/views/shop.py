@@ -26,7 +26,6 @@ from lfs.manage.views.lfs_portlets import portlets_inline
 FORMS = import_module(settings.LFS_APP_ORDER_NUMBERS + ".forms")
 MODELS = import_module(settings.LFS_APP_ORDER_NUMBERS + ".models")
 
-from lfs.manage.views.order_numbers import order_numbers_tab
 
 class ShopDataForm(ModelForm):
     """Form to edit shop data.
