@@ -71,10 +71,8 @@ def update_portlets(request, object_type_id, object_id):
             except PortletBlocking.DoesNotExist:
                 pass
 
-        html = portlets_inline(request, object)
-
     result = simplejson.dumps({
-        "html": html,
+        "html": [["#portlets", portlets_inline(request, object)]],
         "message": _(u"Portlet has been updated.")},
         cls=LazyEncoder
     )

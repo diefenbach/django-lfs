@@ -41,6 +41,8 @@ from lfs.catalog.models import ProductAccessories
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import ProductsPropertiesRelation
 from lfs.catalog.models import StaticBlock
+from lfs.catalog.models import ProductAttachment
+
 from lfs.core.models import Shop
 from lfs.core.signals import product_changed
 from lfs.core.signals import product_removed_property_group
@@ -1494,6 +1496,9 @@ class ProductTestCase(TestCase):
         # Assign images to variant
         self.v1.images.add(self.i4, self.i5)
 
+        # setup attachments test stuff
+        self.setupAttachments()
+
     def test_defaults(self):
         """Tests the default value after a product has been created
         """
@@ -2526,10 +2531,11 @@ class ProductTestCase(TestCase):
 
         product = Product.objects.get(slug="product-1")
 
-        variant_data = {  'slug': 'variant-slug',
-                          'name': 'variant',
-                          'price': 10.00,
-                          }
+        variant_data = {
+            'slug': 'variant-slug',
+            'name': 'variant',
+            'price': 10.00,
+        }
 
         # set up a user with permission to access the manage interface
         self.user, created = User.objects.get_or_create(username='manager', is_superuser=True)
@@ -2558,6 +2564,66 @@ class ProductTestCase(TestCase):
         self.assertEqual(variant.name, 'variant')
         self.assertEqual(variant.price, 10.00)
         self.assertEqual(variant.parent, product)
+
+    def setupAttachments(self):
+        # Assign attachments to products
+        self.attachment_P1_1_data = dict(
+            title='Attachment P1-1',
+            product=self.p1,
+        )
+        self.attachment_P1_1 = ProductAttachment.objects.create(**self.attachment_P1_1_data)
+
+        self.attachment_P1_2_data = dict(
+            title='Attachment P1-2',
+            product=self.p1,
+        )
+        self.attachment_P1_2 = ProductAttachment.objects.create(**self.attachment_P1_2_data)
+
+        self.attachment_V1_data = dict(
+            title='Attachment V1',
+            product=self.v1,
+        )
+        self.attachment_V1 = ProductAttachment.objects.create(**self.attachment_V1_data)
+
+    def test_get_attachments(self):
+        # retrieve attachments
+        match_titles = [self.attachment_P1_1_data['title'],
+                        self.attachment_P1_2_data['title']]
+        attachments = self.p1.get_attachments()
+        attachments_titles = [x.title for x in attachments]
+        self.assertEqual(match_titles, attachments_titles)
+
+        # check data
+        first = attachments[0]
+        for k, v in self.attachment_P1_1_data.items():
+            self.assertEqual(getattr(first, k), v)
+
+        second = attachments[1]
+        for k, v in self.attachment_P1_2_data.items():
+            self.assertEqual(getattr(second, k), v)
+
+        # retrieve variant attachment
+        attachments = self.v1.get_attachments()
+        attachments_titles = [x.title for x in attachments]
+        match_titles = [self.attachment_V1_data['title']]
+        self.assertEqual(attachments_titles, match_titles)
+
+        # delete variant attachment: we should get parent attachments
+        self.attachment_V1.delete()
+        pattachments = [x.title for x in self.p1.get_attachments()]
+        vattachments = [x.title for x in self.v1.get_attachments()]
+        self.assertEqual(pattachments, vattachments)
+
+        # position
+        self.attachment_P1_1.position = 20
+        self.attachment_P1_1.save()
+        self.attachment_P1_2.position = 10
+        self.attachment_P1_2.save()
+        attachments_titles = [x.title for x in self.p1.get_attachments()]
+        match_titles = [self.attachment_P1_2_data['title'],
+                        self.attachment_P1_1_data['title']]
+        self.assertEqual(match_titles, attachments_titles)
+
 
 class ProductAccessoriesTestCase(TestCase):
     """Tests ProductAccessories (surprise, surprise).

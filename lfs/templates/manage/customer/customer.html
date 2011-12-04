@@ -10,7 +10,21 @@
 {% endblock %}
 
 {% block content %}
-	<div id="customer-inline">
-		{{ customer_inline|safe }}
-	</div>
+    <div id="customer-filters-inline">
+        {{ customer_filters_inline|safe }}
+    </div>
+    <div class="site-actions">
+        <a class="overview"
+           href="{% url lfs_manage_customers %}">{% trans 'Overview' %}</a>
+    </div>
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#customer">{% trans 'Customer' %}</a></li>
+        </ul>
+        <div id="customer">
+            <div id="customer-inline">
+                {{ customer_inline|safe }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

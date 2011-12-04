@@ -344,7 +344,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                 }]
             continue
         else:
-            if not properties.has_key(row[0]):
+            if not row[0] in properties:
                 properties[row[0]] = []
             properties[row[0]].append({
                 "id": row[0],
