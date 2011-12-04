@@ -3,57 +3,46 @@
 
 {% block section %}manage-page{% endblock %}
 {% block left_slot %}
-    <h2 class="navigation-title">
-        {% trans "Pages" %}
-    </h2>
-    <div class="navigation-body">
-        {% for page in pages %}
-            <div>
-                <a href="{% url lfs_manage_page page.id %}"
-                   class="selectable {% ifequal page.id current_id %}selected{% endifequal %}">
-                    {{page.title}}
-                </a>
-            </div>
-        {% endfor %}
+    <div id="navigation">
+        {{ navigation|safe }}
     </div>
 {% endblock %}
 
 {% block content %}
-
-    <div class="site-actions">
+<div class="site-actions">
         <a class="add"
            href="{% url lfs_add_page %}">{% trans 'Add Page' %}</a>
 
-        <a class="delete delete-link"
-           dialog_message="{% trans 'Do you really want to delete this page?' %}"
-           href="{% url lfs_delete_page page.id %}">{% trans 'Delete Page' %}</a>
+        {% if page.id != 1 %}
+            <a class="delete delete-link"
+               dialog_message="{% trans 'Do you really want to delete this page?' %}"
+               href="{% url lfs_delete_page page.id %}">{% trans 'Delete Page' %}</a>
 
-        <a class="view popup-link"
-           href="{% url lfs_page_view page.slug %}">{% trans 'View Page' %}</a>
+            <a class="view popup-link"
+               href="{% url lfs_page_view_by_id page.id %}">{% trans 'View Page' %}</a>
 
-        <a class="goto"
-           href="{% url lfs_page_view page.slug %}">{% trans 'Goto Page' %}</a>
+            <a class="goto"
+               href="{% url lfs_page_view_by_id page.id %}">{% trans 'Goto Page' %}</a>
+        {% endif %}
     </div>
-
     <div id="manage-tabs">
-
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Page' %}</a></li>
+            {% if page.id != 1 %}
+                <li class="ui-tabs-nav-item"><a href="#data_tab">{% trans 'Page' %}</a></li>
+                <li class="ui-tabs-nav-item"><a href="#seo_tab">{% trans 'SEO' %}</a></li>
+            {% endif %}
+            <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
         </ul>
-
-        <div id="data">
-            <h2>{% trans 'Data' %}</h2>
-            <form action="{% url lfs_manage_page page.id %}"
-                  method="post">
-                {% csrf_token %}
-                {% include "manage/lfs_form.html" %}
-
-                <div class="buttons">
-                    <input type="submit"
-                           class="button"
-                           value="{% trans 'Save data' %}">
-                </div>
-            </form>
+        {% if page.id != 1 %}
+            <div id="data_tab">
+                {{ data_tab|safe }}
+            </div>
+            <div id="seo_tab">
+                {{ seo_tab|safe }}
+            </div>
+        {% endif %}
+        <div id="portlets">
+            {{ portlets|safe }}
         </div>
     </div>
 {% endblock %}

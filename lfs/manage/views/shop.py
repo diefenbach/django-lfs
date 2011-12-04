@@ -1,4 +1,5 @@
 # django imports
+from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
@@ -8,22 +9,29 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_POST
 
 # lfs imports
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
 from lfs.core.signals import shop_changed
+from lfs.core.utils import import_module
 from lfs.core.utils import LazyEncoder
 from lfs.core.widgets.image import LFSImageInput
 from lfs.manage.views.lfs_portlets import portlets_inline
 
 
-class ShopForm(ModelForm):
+# import registered order numbers app
+FORMS = import_module(settings.LFS_APP_ORDER_NUMBERS + ".forms")
+MODELS = import_module(settings.LFS_APP_ORDER_NUMBERS + ".models")
+
+
+class ShopDataForm(ModelForm):
     """Form to edit shop data.
     """
     def __init__(self, *args, **kwargs):
-        super(ShopForm, self).__init__(*args, **kwargs)
+        super(ShopDataForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
 
     class Meta:
@@ -33,8 +41,16 @@ class ShopForm(ModelForm):
             "google_analytics_id", "ga_site_tracking", "ga_ecommerce_tracking")
 
 
-class ShopDefaultValuesForm(ModelForm):
+class ShopSEOForm(ModelForm):
+    """Form to edit shop SEO data.
     """
+    class Meta:
+        model = Shop
+        fields = ("meta_title", "meta_keywords", "meta_description")
+
+
+class ShopDefaultValuesForm(ModelForm):
+    """Form to edit shop default values.
     """
     class Meta:
         model = Shop
@@ -46,36 +62,44 @@ class ShopDefaultValuesForm(ModelForm):
 def manage_shop(request, template_name="manage/shop/shop.html"):
     """Displays the form to manage shop data.
     """
-    shop = lfs_get_object_or_404(Shop, pk=1)
-    if request.method == "POST":
-        form = ShopForm(instance=shop, data=request.POST, files=request.FILES)
-        if form.is_valid():
-            form.save()
-            return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_shop"),
-                msg=_(u"Shop data has been saved."),
-            )
-    else:
-        form = ShopForm(instance=shop)
+    shop = lfs.core.utils.get_default_shop()
+    data_form = ShopDataForm(instance=shop)
+    seo_form = ShopSEOForm(instance=shop)
+    default_values_form = ShopDefaultValuesForm(instance=shop)
+
+    try:
+        order_number = MODELS.OrderNumberGenerator.objects.get(id="order_number")
+    except MODELS.OrderNumberGenerator.DoesNotExist:
+        order_number = MODELS.OrderNumberGenerator.objects.create(id="order_number")
+    order_numbers_form = FORMS.OrderNumberGeneratorForm(instance=order_number)
 
     return render_to_response(template_name, RequestContext(request, {
         "shop": shop,
-        "form": form,
-        "default_values": default_values_part(request),
+        "data": data_tab(request, shop, data_form),
+        "default_values": default_values_tab(request, shop, default_values_form),
+        "order_numbers" : order_numbers_tab(request, shop, order_numbers_form),
+        "seo": seo_tab(request, shop, seo_form),
         "portlets": portlets_inline(request, shop),
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
-def default_values_part(request, template_name="manage/shop/default_values.html"):
-    """Displays the default value part of the shop form.
+# Parts
+def data_tab(request, shop, form, template_name="manage/shop/data_tab.html"):
+    """Renders the data tab of the shop.
     """
-    shop = lfs_get_object_or_404(Shop, pk=1)
+    return render_to_string(template_name, RequestContext(request, {
+        "shop": shop,
+        "form": form,
+    }))
 
-    if request.method == "POST":
-        form = ShopDefaultValuesForm(instance=shop, data=request.POST)
-    else:
-        form = ShopDefaultValuesForm(instance=shop)
+
+def order_numbers_tab(request, shop, form, template_name="manage/order_numbers/order_numbers_tab.html"):
+    """Renders the ordern number tab of the shop.
+    """
+    try:
+        order_number = MODELS.OrderNumberGenerator.objects.get(id="order_number")
+    except MODELS.OrderNumberGenerator.DoesNotExist:
+        order_number = MODELS.OrderNumberGenerator.objects.create(id="order_number")
 
     return render_to_string(template_name, RequestContext(request, {
         "shop": shop,
@@ -83,7 +107,51 @@ def default_values_part(request, template_name="manage/shop/default_values.html"
     }))
 
 
-def save_default_values(request):
+def default_values_tab(request, shop, form, template_name="manage/shop/default_values_tab.html"):
+    """Renders the default value tab of the shop.
+    """
+    return render_to_string(template_name, RequestContext(request, {
+        "shop": shop,
+        "form": form,
+    }))
+
+
+def seo_tab(request, shop, form, template_name="manage/shop/seo_tab.html"):
+    """Renders the SEO tab of the shop.
+    """
+    return render_to_string(template_name, RequestContext(request, {
+        "shop": shop,
+        "form": form,
+    }))
+
+
+# Actions
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
+def save_data_tab(request):
+    """Saves the data tab of the default shop.
+    """
+    shop = lfs.core.utils.get_default_shop()
+
+    form = ShopDataForm(instance=shop, data=request.POST)
+    if form.is_valid():
+        form.save()
+        shop_changed.send(shop)
+        message = _(u"Shop data has been saved.")
+    else:
+        message = _(u"Please correct the indicated errors.")
+
+    result = simplejson.dumps({
+        "html": [["#data", data_tab(request, shop, form)]],
+        "message": message,
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
+
+
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
+def save_default_values_tab(request):
     """Saves the default value part
     """
     shop = lfs_get_object_or_404(Shop, pk=1)
@@ -96,11 +164,56 @@ def save_default_values(request):
     else:
         message = _(u"Please correct the indicated errors.")
 
-    html = [["#default-values", default_values_part(request)]]
+    result = simplejson.dumps({
+        "html": [["#default_values", default_values_tab(request, shop, form)]],
+        "message": message
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
+
+
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
+def save_seo_tab(request):
+    """Saves the seo tab of the default shop.
+    """
+    shop = lfs.core.utils.get_default_shop()
+
+    form = ShopSEOForm(instance=shop, data=request.POST)
+    if form.is_valid():
+        form.save()
+        shop_changed.send(shop)
+        message = _(u"Shop SEO data has been saved.")
+    else:
+        message = _(u"Please correct the indicated errors.")
 
     result = simplejson.dumps({
-        "html": html,
-        "message": message
+        "html": [["#seo", seo_tab(request, shop, form)]],
+        "message": message,
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
+
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
+def save_order_numbers_tab(request):
+    """Saves the order number tab of the default shop.
+    """
+    shop = lfs.core.utils.get_default_shop()
+
+    order_number = MODELS.OrderNumberGenerator.objects.get(id="order_number")
+    form = FORMS.OrderNumberGeneratorForm(instance=order_number, data=request.POST)
+
+    if form.is_valid():
+        form.save()
+        shop_changed.send(shop)
+        message = _(u"Order numbers has been saved.")
+    else:
+        message = _(u"Please correct the indicated errors.")
+
+    result = simplejson.dumps({
+        "html": [["#order_numbers", order_numbers_tab(request, shop, form)]],
+        "message": message,
     }, cls=LazyEncoder)
 
     return HttpResponse(result)

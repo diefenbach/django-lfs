@@ -1,0 +1,195 @@
+{% load i18n %}
+
+<h2>{% trans 'Data' %}</h2>
+<form action="{% url lfs_save_shop_data_tab %}"
+      method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend>{% trans "General" %}</legend>
+        <div class="field">
+            <div class="label">
+                {{ form.name.label_tag }}:
+            </div>
+
+            {% if form.name.errors %}
+                <div class="error">
+                    {{ form.name }}
+                    {{ form.name.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.name }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="field">
+            <div class="label">
+                {{ form.shop_owner.label_tag }}:
+            </div>
+
+            {% if form.shop_owner.errors %}
+                <div class="error">
+                    {{ form.shop_owner }}
+                    {{ form.shop_owner.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.shop_owner }}
+                </div>
+            {% endif %}
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>{% trans "E-Mails" %}</legend>
+
+        <div class="field">
+            <div class="label">
+                {{ form.from_email.label_tag }}:
+            </div>
+
+            {% if form.from_email.errors %}
+                <div class="error">
+                    {{ form.from_email }}
+                    {{ form.from_email.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.from_email }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.notification_emails.label_tag }}:
+            </div>
+
+            {% if form.notification_emails.errors %}
+                <div class="error">
+                    {{ form.notification_emails }}
+                    {{ form.notification_emails.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.notification_emails }}
+                </div>
+            {% endif %}
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>{% trans "Google" %}</legend>
+        <div class="field">
+            <div class="label">
+                {{ form.google_analytics_id.label_tag }}:
+            </div>
+            {% if form.google_analytics_id.errors %}
+                <div class="error">
+                    {{ form.google_analytics_id }}
+                    {{ form.google_analytics_id.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.google_analytics_id }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="field">
+            <div class="label">
+                {{ form.ga_site_tracking.label_tag }}:
+            </div>
+            <div>
+                {{ form.ga_site_tracking }}
+            </div>
+        </div>
+        <div class="field">
+            <div class="label">
+                {{ form.ga_ecommerce_tracking.label_tag }}:
+            </div>
+            <div>
+                {{ form.ga_ecommerce_tracking }}
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>{% trans "Checkout" %}</legend>
+            <div class="field">
+                <div class="label">
+                    {{ form.checkout_type.label_tag }}:
+                </div>
+                {% if form.checkout_type.errors %}
+                    <div class="error">
+                        {{ form.checkout_type }}
+                        {{ form.checkout_type.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.checkout_type }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="field">
+                <div class="label">
+                    {{ form.confirm_toc.label_tag }}:
+                </div>
+                <div>
+                    {{ form.confirm_toc }}
+                </div>
+            </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>{% trans "Content" %}</legend>
+            <div class="field">
+                <div class="label">
+                    {{ form.description.label_tag }}:
+                </div>
+                {% if form.description.errors %}
+                    <div class="error">
+                        {{ form.description }}
+                        {{ form.description.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.description }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="field">
+                <div class="label">
+                    {{ form.image.label_tag }}:
+                </div>
+                {% if form.image.errors %}
+                    <div class="error">
+                        {{ form.image }}
+                        {{ form.image.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.image }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="field">
+                <div class="label">
+                    {{ form.static_block.label_tag }}:
+                </div>
+                {% if form.static_block.errors %}
+                    <div class="error">
+                        {{ form.static_block }}
+                        {{ form.static_block.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.static_block }}
+                    </div>
+                {% endif %}
+            </div>
+    </fieldset>
+    <div class="buttons">
+        <input type="submit"
+               class="button ajax-save-button"
+               value="{% trans 'Save shop' %}" />
+    </div>
+</form>

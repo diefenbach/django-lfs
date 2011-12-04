@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.6.0b6'
+version = 'dev'
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
@@ -28,7 +28,8 @@ setup(name='django-lfs',
       dependency_links=["http://pypi.iqpp.de/"],
       install_requires=[
         'setuptools',
-        'django-lfstheme == 0.6.0b5',
+        'django-compressor == 1.1.1',
+        'django-lfstheme == dev',
         'django-pagination == 1.0.7',
         'django-paypal == 0.1.2',
         'django-portlets == 1.1',
