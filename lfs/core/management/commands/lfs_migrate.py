@@ -185,6 +185,5 @@ class Command(BaseCommand):
         db.delete_column('order_order', 'invoice_street')
         db.delete_column('order_order', 'shipping_street')
 
-
         application.version = "0.6"
         application.save()

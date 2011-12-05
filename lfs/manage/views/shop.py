@@ -77,7 +77,7 @@ def manage_shop(request, template_name="manage/shop/shop.html"):
         "shop": shop,
         "data": data_tab(request, shop, data_form),
         "default_values": default_values_tab(request, shop, default_values_form),
-        "order_numbers" : order_numbers_tab(request, shop, order_numbers_form),
+        "order_numbers": order_numbers_tab(request, shop, order_numbers_form),
         "seo": seo_tab(request, shop, seo_form),
         "portlets": portlets_inline(request, shop),
     }))
@@ -193,6 +193,7 @@ def save_seo_tab(request):
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
+
 
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
