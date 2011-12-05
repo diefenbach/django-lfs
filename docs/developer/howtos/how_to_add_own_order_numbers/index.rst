@@ -72,8 +72,8 @@ At last run syncdb and restart your instance.
 
 **And that's it**
 
-You should now see your form within the ``Order Numbers``-tab within
-Shop/Preferences management interface and the ``get_next``-method of your
+You should now see your form within the ``Order Numbers`` tab within
+Shop/Preferences management interface and the ``get_next`` method of your
 model should be called to generate a new order number.
 
 Optionally add your own template
@@ -96,5 +96,5 @@ this on following place::
 .. Note::
 
     In this case  please make sure that your ``my_order_numbers`` application
-    is **before** ``lfs`` within ``INSTALLED_APPS`` of ``settings.py`` so that the
-    LFS' default template is overwritten.
+    is **before** ``lfs`` within ``INSTALLED_APPS`` of ``settings.py`` so that
+    LFS' default ``order_numbers_tab.html`` template is overwritten.
