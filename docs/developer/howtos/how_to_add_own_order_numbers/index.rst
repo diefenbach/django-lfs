@@ -4,9 +4,9 @@ How to add an own order numbers generator
 LFS order numbers generator is  pluggable. In this tutorial you will learn how
 to add an own order numbers generator.
 
-Please see also the :download:`complete example application here
-<country_specific_order_numbers.tar.gz>` or refer to the default implementation
-of LFS within ``lfs_order_numbers``.
+Please see also the :download:`complete example application
+<country_specific_order_numbers.tar.gz>` or refer to the default
+implementation of LFS within ``lfs_order_numbers``.
 
 Create an application
 ----------------------
@@ -29,7 +29,7 @@ Implement the application
 
 **Add the model**
 
-Within ``models.py`` file of your application create class called
+Within ``models.py`` file of your application create a class called
 ``OrderNumberGenerator`` which inherits from LFS' OrderNumberGenerator base
 class and add a method to it called ``get_next``:
 
@@ -42,8 +42,8 @@ class and add a method to it called ``get_next``:
             return "DOE-4711"
 
 The ``get_next`` method is called when the shop customer submits a new order.
-It **must** return a character value which is the new order number of the new
-order.
+It **must** return a character value which will become the order number of the
+new order.
 
 **Add the form**
 
