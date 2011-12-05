@@ -10,6 +10,8 @@ class OrderNumberGenerator(models.Model):
     """This is the base class that order generator calculators should inherit
     from.
     """
+    id = models.CharField(primary_key=True, max_length=20)
+
     class Meta:
         abstract = True
 
