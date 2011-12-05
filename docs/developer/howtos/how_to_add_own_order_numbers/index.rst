@@ -1,8 +1,8 @@
 How to add an own order numbers generator
 =========================================
 
-LFS order numbers generator is  pluggable. In this tutorial you will learn how
-to add an own order numbers generator.
+LFS' order numbers generator is  pluggable. In this tutorial you will learn how
+to add an own one.
 
 Please see also the :download:`complete example application
 <country_specific_order_numbers.tar.gz>` or refer to the default
@@ -68,13 +68,13 @@ and assign your application to ``LFS_APP_ORDER_NUMBERS`` within settings.py::
     INSTALLED_APPS = ("my_order_numbers", ...)
     LFS_APP_ORDER_NUMBERS = "my_order_numbers"
 
-At last run syncdb and restart your instance.
+Finally run ``syncdb`` and restart your instance.
 
 **And that's it**
 
 You should now see your form within the ``Order Numbers`` tab within
-Shop/Preferences management interface and the ``get_next`` method of your
-model should be called to generate a new order number.
+``Shop/Preference`` and the ``get_next`` method of your model should be
+called to generate a new order number.
 
 Optionally add your own template
 --------------------------------
@@ -89,12 +89,42 @@ just add the order_numbers_tab.html template to your application::
                     order_numbers_tab.html
 
 Please refer to the standard template of LFS to get more details. You can find
-this on following place::
+this on following place:
 
-    lfs/templates/manage/order_numbers/order_numbers_tab.html
+    ``lfs/templates/manage/order_numbers/order_numbers_tab.html``
 
-.. Note::
+In this case  please make sure that your ``my_order_numbers`` application
+stands **before** ``lfs`` within ``INSTALLED_APPS`` of ``settings.py`` so
+that LFS' default ``order_numbers_tab.html`` template is overwritten.
 
-    In this case  please make sure that your ``my_order_numbers`` application
-    is **before** ``lfs`` within ``INSTALLED_APPS`` of ``settings.py`` so that
-    LFS' default ``order_numbers_tab.html`` template is overwritten.
+
+Available information
+---------------------
+
+Within the ``get_next`` method of your new class you have access to following
+information:
+
+    self.request
+        The current request
+
+    self.user
+        The current user
+
+    self.customer
+        The current customer
+
+    self.cart
+        The current cart
+
+    self.order
+        The order which is about to be created.
+
+Please note that you have also access to the products of the order via
+the ``items`` attribute. For instance:
+
+.. code-block:: python
+
+    for item in self.order.items.all():
+        product = item.product
+
+See the also the ``Order`` and ``OrderItem`` classes for more information.
