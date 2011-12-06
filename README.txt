@@ -22,10 +22,18 @@ Demo shop
 
 A demo shop can be tried here:
 
-* http://demo.getlfs.com
+* http://demo.getlfs.com:81 (version 0.6)
+* http://demo.getlfs.com (version 0.5)
 
 Changes
 =======
+
+0.6.0 beta 7 (2011-12-06)
+-------------------------
+
+* Bugfix: fixed filtered products for variants; #issue #122
+* Bugfix: fixed display of error indicator for packing_unit
+
 0.6.0 beta 6 (2011-12-02)
 -------------------------
 
@@ -37,7 +45,7 @@ Changes
 * Bugfix: fixed filter portlet.
 * Bugfix: fixed management of country criterion.
 * Changed: removed growl message from checkout view.
-* Changed: removed displaying of error fields from one page checkout.
+* Changed: removed displaying of error fields checkout view.
 * Added migration of shop_countries.
 * Added migration of orders.
 * Updated russian translations (Belanchuk)
