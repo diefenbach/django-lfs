@@ -435,7 +435,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
                 FROM catalog_productpropertyvalue
                 WHERE product_id IN (%s) and %s and type=%s
                 GROUP BY product_id
-                HAVING count(*)=%s""" % (all_variant_ids, PROPERTY_VALUE_TYPE_FILTER, fstr, len(filters)))
+                HAVING count(*)=%s""" % (all_variant_ids, fstr, PROPERTY_VALUE_TYPE_FILTER, len(filters)))
 
             # Get the parent ids of the variants as the "product with variants"
             # should be displayed and not the variants.
