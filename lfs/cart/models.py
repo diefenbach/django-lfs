@@ -240,7 +240,7 @@ class CartItem(models.Model):
     def __unicode__(self):
         return "Product: %s, Quantity: %f, Cart: %s" % (self.product, self.amount, self.cart)
 
-    # DDD
+    # DDD 0.6
     def get_price(self, request):
         """
         Convenient method to return the gross price of the product.

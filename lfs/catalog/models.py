@@ -1048,51 +1048,39 @@ class Product(models.Model):
         return price_calculator_class(request, self)
 
     def get_price(self, request, with_properties=True):
+        """See lfs.plugins.
+        """
         pc = self.get_price_calculator(request)
         return pc.get_price(with_properties)
 
     def get_standard_price(self, request, with_properties=True):
-        """Returns always the standard price for the product. Independent
-        whether the product is for sale or not. If you want the real price of
-        the product use get_price instead.
-
-        **Parameters:**
-
-        with_properties
-            If the instance is a configurable product and with_properties is
-            True the prices of the default properties are added to the price.
+        """See lfs.plugins.
         """
         pc = self.get_price_calculator(request)
         return pc.get_standard_price(with_properties)
 
     def get_for_sale_price(self, request):
-        """returns the sale price for the product.
+        """See lfs.plugins.
         """
         pc = self.get_price_calculator(request)
         return pc.get_for_sale_price()
 
     def get_price_gross(self, request, with_properties=True):
-        """Returns the real gross price of the product. This is the base of
-        all price and tax calculations.
-
-        **Parameters:**
-
-        with_properties
-            If the instance is a configurable product and with_properties is
-            True the prices of the default properties are added to the price.
-
+        """See lfs.plugins.
         """
         request = None
         pc = self.get_price_calculator(request)
         return pc.get_price_gross(with_properties)
 
     def get_price_with_unit(self, request):
-        """Returns the formatted gross price of the product
+        """See lfs.plugins.
         """
         pc = self.get_price_calculator(request)
         return pc.get_price_with_unit()
 
     def get_price_net(self, request, with_properties=True):
+        """See lfs.plugins.
+        """
         pc = self.get_price_calculator(request)
         return pc.get_price_net(with_properties)
 
