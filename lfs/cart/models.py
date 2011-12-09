@@ -53,7 +53,7 @@ class Cart(models.Model):
     def __unicode__(self):
         return "%s, %s" % (self.user, self.session)
 
-    # DDD
+    # DEPRECATED 0.6
     @property
     def amount_of_items(self):
         """
@@ -64,7 +64,7 @@ class Cart(models.Model):
         logger.info("Decprecated: lfs.cart.models.Cart: the property 'amount_of_items' is deprecated. Please use 'get_amount_of_items'.")
         return self.get_amount_of_items()
 
-    # DDD
+    # DEPRECATED 0.6
     def items(self):
         """
         Returns the items of the cart.
@@ -74,7 +74,7 @@ class Cart(models.Model):
         logger.info("Decprecated: lfs.cart.models.Cart: the method 'items' is deprecated. Please use 'get_items'.")
         return self.get_items()
 
-    # DDD
+    # DEPRECATED 0.6
     def get_name(self):
         """
         Returns a name for the cart.
@@ -180,7 +180,8 @@ class Cart(models.Model):
         return max_delivery_time
 
     def get_price_gross(self, request, total=False):
-        """Returns the total gross price of all items.
+        """
+        Returns the total gross price of all items.
         """
         price = 0
         for item in self.get_items():
@@ -188,7 +189,8 @@ class Cart(models.Model):
         return price
 
     def get_price_net(self, request):
-        """Returns the total net price of all items.
+        """
+        Returns the total net price of all items.
         """
         price = 0
         for item in self.get_items():
@@ -197,7 +199,8 @@ class Cart(models.Model):
         return price
 
     def get_tax(self, request):
-        """Returns the total tax of all items
+        """
+        Returns the total tax of all items
         """
         tax = 0
         for item in self.get_items():
@@ -240,7 +243,7 @@ class CartItem(models.Model):
     def __unicode__(self):
         return "Product: %s, Quantity: %f, Cart: %s" % (self.product, self.amount, self.cart)
 
-    # DDD 0.6
+    # DEPRECATED 0.6
     def get_price(self, request):
         """
         Convenient method to return the gross price of the product.
