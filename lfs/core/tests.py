@@ -18,6 +18,12 @@ from lfs.gross_price.tests import *
 from lfs.net_price.tests import *
 # from lfs.core.wmtests import *
 
+try:
+    from lfs_order_numbers.tests import *
+except ImportError:
+    pass
+
+
 # django imports
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.file import SessionStore
