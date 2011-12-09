@@ -36,7 +36,7 @@ def get_current_top_category(request, obj):
 
     return category
 
-
+# DEPRECATED 0.6
 def get_current_product_category(request, product):
     """Returns product category based on actual categories of the given product
     and the last visited category.
@@ -48,6 +48,7 @@ def get_current_product_category(request, product):
     return product.get_current_category(request)
 
 
+# DEPRECATED 0.6
 def get_property_groups(category):
     """Returns all property groups for given category
     """
@@ -647,6 +648,7 @@ def _calculate_quantity(product_ids, property_id, min, max):
     return amount
 
 
+# DEPRECATED 0.6
 def calculate_packages(product, quantity):
     """Returns amount of packages passed on passes product and quantity.
     DEPRECATED.
@@ -655,6 +657,7 @@ def calculate_packages(product, quantity):
     return math.ceil(quantity / product.packing_unit)
 
 
+# DEPRECATED 0.6
 def calculate_real_amount(product, quantity):
     """Returns the amount of pieces in package units. DEPRECATED.
     """
