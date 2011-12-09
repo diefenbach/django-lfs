@@ -61,104 +61,98 @@ def get_unique_id_str():
 
 
 class Category(models.Model):
-    """A category is used to browse through the shop products. A category can
+    """
+    A category is used to browse through the shop products. A category can
     have one parent category and several child categories.
 
-    Parameters:
+    **Parameters:**
 
-        - name:
-            The name of the category.
+    name
+        The name of the category.
 
-        - slug
-            Part of the URL
+    slug
+        Part of the URL
 
-        - parent
-            Parent of the category. This is used to create a category tree. If
-            it's None the category is a top level category.
+    parent
+        Parent of the category. This is used to create a category tree. If
+        it's None the category is a top level category.
 
-        - show_all_products
-           If True the category displays it's direct products as well as products
-           of it's sub categories. If False only direct products will be
-           displayed.
+    show_all_products
+       If True the category displays it's direct products as well as products
+       of it's sub categories. If False only direct products will be
+       displayed.
 
-         - products
-            The assigned products of the category.
+    products
+        The assigned products of the category.
 
-         - short_description
-            A short description of the category. This is used in overviews.
+    short_description
+        A short description of the category. This is used in overviews.
 
-         - description
-            The description of the category. This can be used in details views
-            of the category.
+    description
+        The description of the category. This can be used in details views
+        of the category.
 
-        - image
-            The image of the category.
+    image
+        The image of the category.
 
-        - position
-            The position of the category within the shop resp. the parent
-            category.
+    position
+        The position of the category within the shop resp. the parent
+        category.
 
-        - static_block
-            A assigned static block to the category.
+    static_block
+        A assigned static block to the category.
 
-        - content
-            decides which content will be displayed. At the moment this is either
-            sub categories or products.
+    content
+        decides which content will be displayed. At the moment this is either
+        sub categories or products.
 
-        - active_formats
-            If True product_rows, product_cols and category_cols are taken from
-            the category otherwise from the parent.
+    active_formats
+        If True product_rows, product_cols and category_cols are taken from
+        the category otherwise from the parent.
 
-        - product_rows, product_cols, category_cols
-            Format information for the category views
+    product_rows, product_cols, category_cols
+        Format information for the category views
 
-        - meta_title
-            Meta title of the category (HTML title)
+    meta_title
+        Meta title of the category (HTML title)
 
-        - meta_keywords
-            Meta keywords of the category
+    meta_keywords
+        Meta keywords of the category
 
-        - meta_description
-           Meta description of the category
+    meta_description
+       Meta description of the category
 
-        - uid
-           The unique id of the category
+    uid
+       The unique id of the category
 
-        - level
-           The level of the category within the category hierachie, e.g. if it
-           is a top level category the level is 1.
+    level
+       The level of the category within the category hierachie, e.g. if it
+       is a top level category the level is 1.
 
-        - template
-           Sets the template which renders the category view. If left to None, default template is used.
+    template
+       Sets the template which renders the category view. If left to None,
+       the default template is used.
 
     """
     name = models.CharField(_(u"Name"), max_length=50)
     slug = models.SlugField(_(u"Slug"), unique=True)
     parent = models.ForeignKey("self", verbose_name=_(u"Parent"), blank=True, null=True)
-
-    # If selected it shows products of the sub categories within the product
-    # view. If not it shows only direct products of the category.
     show_all_products = models.BooleanField(_(u"Show all products"), default=True)
-
     products = models.ManyToManyField("Product", verbose_name=_(u"Products"), blank=True, related_name="categories")
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
     image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400)))
     position = models.IntegerField(_(u"Position"), default=1000)
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
-
     static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")
     template = models.PositiveSmallIntegerField(_(u"Category template"), max_length=400, blank=True, null=True, choices=CATEGORY_TEMPLATES)
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
-
     product_rows = models.IntegerField(_(u"Product rows"), default=3)
     product_cols = models.IntegerField(_(u"Product cols"), default=3)
     category_cols = models.IntegerField(_(u"Category cols"), default=3)
-
     meta_title = models.CharField(_(u"Meta title"), max_length=100, default="<name>")
     meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
     meta_description = models.TextField(_(u"Meta description"), blank=True)
-
     level = models.PositiveSmallIntegerField(default=1)
     uid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
 
@@ -170,19 +164,22 @@ class Category(models.Model):
         return "%s (%s)" % (self.name, self.slug)
 
     def get_absolute_url(self):
-        """Returns the absolute_url.
+        """
+        Returns the absolute_url.
         """
         return ("lfs.catalog.views.category_view", (), {"slug": self.slug})
     get_absolute_url = models.permalink(get_absolute_url)
 
     @property
     def content_type(self):
-        """Returns the content type of the category as lower string.
+        """
+        Returns the content type of the category as lower string.
         """
         return u"category"
 
     def get_all_children(self):
-        """Returns all child categories of the category.
+        """
+        Returns all children categories of the category.
         """
         def _get_all_children(category, children):
             for category in Category.objects.filter(parent=category.id):
@@ -203,7 +200,8 @@ class Category(models.Model):
         return children
 
     def get_children(self):
-        """Returns the first level child categories.
+        """
+        Returns the first level child categories.
         """
         cache_key = "%s-category-children-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
 
@@ -217,7 +215,8 @@ class Category(models.Model):
         return categories
 
     def get_format_info(self):
-        """Returns format information.
+        """
+        Returns format information.
         """
         if self.active_formats == True:
             return {
@@ -249,28 +248,32 @@ class Category(models.Model):
                 return self.parent.get_format_info()
 
     def get_meta_title(self):
-        """Returns the meta keywords of the catgory.
+        """
+        Returns the meta keywords of the catgory.
         """
         mt = self.meta_title.replace("<name>", self.name)
         return mt
 
     def get_meta_keywords(self):
-        """Returns the meta keywords of the catgory.
+        """
+        Returns the meta keywords of the catgory.
         """
         mk = self.meta_keywords.replace("<name>", self.name)
         mk = mk.replace("<short-description>", self.short_description)
         return mk
 
     def get_meta_description(self):
-        """Returns the meta description of the product.
+        """
+        Returns the meta description of the product.
         """
         md = self.meta_description.replace("<name>", self.name)
         md = md.replace("<short-description>", self.short_description)
         return md
 
     def get_image(self):
-        """Returns the image of the category if it has none it inherits that
-        from the parent category.
+        """
+        Returns the image of the category if it has none it inherits that from
+        the parent category.
         """
         if self.image:
             return self.image
@@ -281,7 +284,8 @@ class Category(models.Model):
         return None
 
     def get_parents(self):
-        """Returns all parent categories.
+        """
+        Returns all parent categories.
         """
         cache_key = "%s-category-parents-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         parents = cache.get(cache_key)
@@ -298,7 +302,8 @@ class Category(models.Model):
         return parents
 
     def get_products(self):
-        """Returns the direct products of the category.
+        """
+        Returns the direct products of the category.
         """
         cache_key = "%s-category-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         products = cache.get(cache_key)
@@ -324,7 +329,8 @@ class Category(models.Model):
         return pgs
 
     def get_all_products(self):
-        """Returns the direct products and all products of the sub categories
+        """
+        Returns the direct products and all products of the sub categories
         """
         cache_key = "%s-category-all-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         products = cache.get(cache_key)
@@ -342,14 +348,16 @@ class Category(models.Model):
         return products
 
     def get_filtered_products(self, filters, price_filter, sorting):
-        """Returns products for this category filtered by passed filters,
+        """
+        Returns products for this category filtered by passed filters,
         price_filter and sorted by passed sorting.
         """
         return lfs.catalog.utils.get_filtered_products_for_category(
             self, filters, price_filter, sorting)
 
     def get_static_block(self):
-        """Returns the static block of the category.
+        """
+        Returns the static block of the category.
         """
         cache_key = "%s-static-block-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         blocks = cache.get(cache_key)
@@ -361,16 +369,9 @@ class Category(models.Model):
 
         return block
 
-    # 3rd party contracts
-    def get_parent_for_portlets(self):
-        """Returns the parent for portlets.
-        """
-        # TODO: Circular imports
-        import lfs.core.utils
-        return self.parent or lfs.core.utils.get_default_shop()
-
     def get_template_name(self):
-        """method to return the path of the category template
+        """
+        method to return the path of the category template
         """
         if self.template != None:
             id = int(self.template)
@@ -379,7 +380,8 @@ class Category(models.Model):
         return None
 
     def get_content(self):
-        """try to find out which type of content the template is rendering,
+        """
+        try to find out which type of content the template is rendering,
         depending on its path.
         """
         if self.get_template_name() == None:
@@ -388,149 +390,160 @@ class Category(models.Model):
             return CONTENT_CATEGORIES
         return CONTENT_PRODUCTS
 
+    def get_parent_for_portlets(self):
+        """
+        Returns the parent for portlets.
+        """
+        # TODO: Circular imports
+        import lfs.core.utils
+        return self.parent or lfs.core.utils.get_default_shop()
+
 
 class Product(models.Model):
-    """A product is sold within a shop.
+    """
+    A product is sold within a shop.
 
-    Parameters:
-        - name
-            The name of the product
+    **Parameters:**
 
-        - slug
-            Part of the URL
+    name
+        The name of the product
 
-        - sku
-            The external unique id of the product
+    slug
+        Part of the URL
 
-        - price
-            The gross price of the product
+    sku
+        The external unique id of the product
 
-        - price_calculator
-            Class that implements lfs.price.PriceCalculator for calculating product price.
+    price
+        The gross price of the product
 
-        - effective_price:
-            Only for internal usage (price filtering).
+    price_calculator
+        Class that implements lfs.price.PriceCalculator for calculating product price.
 
-        - unit
-            The unit of the product. This is displayed beside the quantity
-            field.
+    effective_price:
+        Only for internal usage (price filtering).
 
-        - price_unit
-            The unit of the product's price. This is displayed beside the price
+    unit
+        The unit of the product. This is displayed beside the quantity
+        field.
 
-        - short_description
-            The short description of the product. This is used within overviews.
+    price_unit
+        The unit of the product's price. This is displayed beside the price
 
-        - description
-            The description of the product. This is used within the detailed view
-            of the product.
+    short_description
+        The short description of the product. This is used within overviews.
 
-        - images
-            The images of the product.
+    description
+        The description of the product. This is used within the detailed view
+        of the product.
 
-        - meta_title
-            the meta title of the product (the title of the HTML page).
+    images
+        The images of the product.
 
-        - meta_keywords
-            the meta keywords of the product.
+    meta_title
+        the meta title of the product (the title of the HTML page).
 
-        - meta_description
-            the meta description of the product.
+    meta_keywords
+        the meta keywords of the product.
 
-        - related_products
-            Related products for this products.
+    meta_description
+        the meta description of the product.
 
-        - accessories
-            Accessories for this products.
+    related_products
+        Related products for this products.
 
-        - for_sale
-            If True the product is for sale and the for sale price will be
-            displayed.
+    accessories
+        Accessories for this products.
 
-        - for_sale_price
-            The for sale price for the product. Will be displayed if the product
-            is for sale.
+    for_sale
+        If True the product is for sale and the for sale price will be
+        displayed.
 
-        - active
-            If False the product won't be displayed to shop users.
+    for_sale_price
+        The for sale price for the product. Will be displayed if the product
+        is for sale.
 
-        - creation_date
-            The creation date of the product
+    active
+        If False the product won't be displayed to shop users.
 
-        - deliverable
-            If True the product is deliverable. Otherwise not.
+    creation_date
+        The creation date of the product
 
-        - manual_delivery_time
-            If True the delivery_time of the product is taken. Otherwise the
-            delivery time will be calculate on global delivery times and
-            selected shipping method.
+    deliverable
+        If True the product is deliverable. Otherwise not.
 
-        - delivery_time
-            The delivery time of the product. This is only relevant if
-            manual_delivery_time is set to true.
+    manual_delivery_time
+        If True the delivery_time of the product is taken. Otherwise the
+        delivery time will be calculate on global delivery times and
+        selected shipping method.
 
-        - order_time
-            Order time of the product when no product is within the stock. This
-            is added to the product's delivery time.
+    delivery_time
+        The delivery time of the product. This is only relevant if
+        manual_delivery_time is set to true.
 
-        - ordered_at
-            The date when the product has been ordered. To calculate the rest of
-            the order time since the product has been ordered.
+    order_time
+        Order time of the product when no product is within the stock. This
+        is added to the product's delivery time.
 
-        - manage_stock_amount
-            If true the stock amount of the product will be decreased when a
-            product has been saled.
+    ordered_at
+        The date when the product has been ordered. To calculate the rest of
+        the order time since the product has been ordered.
 
-        - weight, height, length, width
-            The dimensions of the product relevant for the the stock (IOW the
-            dimension of the product's box not the product itself).
+    manage_stock_amount
+        If true the stock amount of the product will be decreased when a
+        product has been saled.
 
-        - tax
-            Tax rate of the product.
+    weight, height, length, width
+        The dimensions of the product relevant for the the stock (IOW the
+        dimension of the product's box not the product itself).
 
-        - static_block
-            A static block which has been assigned to the product.
+    tax
+        Tax rate of the product.
 
-        - sub_type
-            Sub type of the product. At the moment that is standard, product with
-            variants, variant.
+    static_block
+        A static block which has been assigned to the product.
 
-        - default_variant
-            The default variant of a product with variants. This will be
-            displayed at first if the shop customer browses to a product with
-            variant.
+    sub_type
+        Sub type of the product. At the moment that is standard, product with
+        variants, variant.
 
-        - variants_display_type
-            This decides howt the variants of a product with variants are
-            displayed. This is select box of list.
+    default_variant
+        The default variant of a product with variants. This will be
+        displayed at first if the shop customer browses to a product with
+        variant.
 
-        - parent
-            The parent of a variant (only relevant for variants)
+    variants_display_type
+        This decides howt the variants of a product with variants are
+        displayed. This is select box of list.
 
-        - active_xxx
-            If set to true the information will be taken from the variant.
-            Otherwise from the parent product (only relevant for variants)
+    parent
+        The parent of a variant (only relevant for variants)
 
-        - supplier
-            The supplier of the product
+    active_xxx
+        If set to true the information will be taken from the variant.
+        Otherwise from the parent product (only relevant for variants)
 
-        - template
-            Sets the template, which renders the product content. If left to None, default template is used.
+    supplier
+        The supplier of the product
 
-        - active_price_calculation
-            If True the price will be calculated by the field price_calculation
+    template
+        Sets the template, which renders the product content. If left to None,
+        default template is used.
 
-        - price_calculation
-            Formula to calculate price of the product.
+    active_price_calculation
+        If True the price will be calculated by the field price_calculation
 
-        - sku_manufacturer
-            The product's article ID of the manufacturer (external article id)
+    price_calculation
+        Formula to calculate price of the product.
 
-        - manufacturer
-            The manufacturer of the product.
+    sku_manufacturer
+        The product's article ID of the manufacturer (external article id)
 
-        - uid
-           The unique id of the product
+    manufacturer
+        The manufacturer of the product.
+
+    uid
+       The unique id of the product
     """
     # All products
     name = models.CharField(_(u"Name"), help_text=_(u"The name of the product."), max_length=80, blank=True)
@@ -635,8 +648,8 @@ class Product(models.Model):
         return "%s (%s)" % (self.name, self.slug)
 
     def save(self, *args, **kwargs):
-        """Overwritten to save effective_price
-        use.
+        """
+        Saves the product. Overwritten to save the effective_price.
         """
         if self.for_sale:
             self.effective_price = self.for_sale_price
@@ -646,19 +659,22 @@ class Product(models.Model):
         super(Product, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        """Returns the absolute url of the product.
+        """
+        Returns the absolute url of the product.
         """
         return ("lfs.catalog.views.product_view", (), {"slug": self.slug})
     get_absolute_url = models.permalink(get_absolute_url)
 
     @property
     def content_type(self):
-        """Returns the content type of the product as lower string.
+        """
+        Returns the content type of the product as lower string.
         """
         return u"product"
 
     def decrease_stock_amount(self, amount):
-        """If the stock amount is managed by LFS, it decreases stock amount by
+        """
+        If the stock amount is managed by LFS, it decreases stock amount by
         given amount.
         """
         if self.manage_stock_amount:
@@ -666,7 +682,8 @@ class Product(models.Model):
         self.save()
 
     def get_accessories(self):
-        """Returns the ProductAccessories relationship objects - not the
+        """
+        Returns the ProductAccessories relationship objects - not the
         accessory (Product) objects.
 
         This is necessary to have also the default quantity of the relationship.
@@ -684,13 +701,15 @@ class Product(models.Model):
         return pas
 
     def has_accessories(self):
-        """Returns True if the product has accessories.
+        """
+        Returns True if the product has accessories.
         """
         return len(self.get_accessories()) > 0
 
     def get_attachments(self):
-        """ Returns the ProductAttachment relationship objects.
-            If no attachment is found and it's variant get parent's ones.
+        """
+        Returns the ProductAttachment relationship objects. If no attachment
+        is found and it's variant get parent's ones.
         """
         attachments = ProductAttachment.objects.filter(product=self)
         if not attachments and self.is_variant():
@@ -698,18 +717,34 @@ class Product(models.Model):
         return attachments
 
     def has_attachments(self):
-        """Returns True if the product has attachments.
+        """
+        Returns True if the product has attachments.
         """
         return len(self.get_attachments()) > 0
 
     def get_amount_by_packages(self, quantity):
         """
+        Returns the amount of products the customer must take when he actually
+        wants the passed amount of products, based on the amount of products
+        per package.
+
+        **Attributes:**
+
+        quantity
+            The amount of products the customer wants to have.
         """
         packages = math.ceil(quantity / self.packing_unit)
         return packages * self.packing_unit
 
     def get_categories(self, with_parents=False):
-        """Returns the categories of the product.
+        """
+        Returns the categories of the product.
+
+        **Attributes**:
+
+        with_parents
+            If this is True all parent categories will be returend too.
+
         """
         cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id, with_parents)
         categories = cache.get(cache_key)
@@ -736,7 +771,8 @@ class Product(models.Model):
         return categories
 
     def get_category(self):
-        """Returns the first category of a product.
+        """
+        Returns the first category of a product.
         """
         if self.is_variant():
             object = self.parent
@@ -749,11 +785,8 @@ class Product(models.Model):
             return None
 
     def get_current_category(self, request):
-        """Returns product category based on actual categories of the given product
-        and the last visited category.
-
-        This is needed if the category has more than one category to display
-        breadcrumbs, selected menu points, etc. appropriately.
+        """
+        Returns the last visited category of the product.
         """
         last_category = None
         category = None
@@ -786,7 +819,8 @@ class Product(models.Model):
         return category
 
     def get_description(self):
-        """Returns the description of the product. Takes care whether the
+        """
+        Returns the description of the product. Takes care whether the
         product is a variant and description is active or not.
         """
         if self.is_variant():
@@ -802,8 +836,9 @@ class Product(models.Model):
 
     # TODO: Check whether there is a test case for that and write one if not.
     def get_for_sale(self):
-        """Returns true if the product is for sale. Takes care whether the
-        product is a variant.
+        """
+        Returns True if the product is for sale. Takes care whether the
+        product is a variant and for_sale is active or not.
         """
         if self.is_variant():
             if self.active_for_sale == ACTIVE_FOR_SALE_STANDARD:
@@ -816,7 +851,8 @@ class Product(models.Model):
             return self.for_sale
 
     def get_short_description(self):
-        """Returns the short description of the product. Takes care whether the
+        """
+        Returns the short description of the product. Takes care whether the
         product is a variant and short description is active or not.
         """
         if self.is_variant() and not self.active_short_description:
@@ -825,7 +861,8 @@ class Product(models.Model):
             return self.short_description
 
     def get_image(self):
-        """Returns the first image (the main image) of the product.
+        """
+        Returns the first image (the main image) of the product.
         """
         try:
             return self.get_images()[0]
@@ -833,7 +870,8 @@ class Product(models.Model):
             return None
 
     def get_images(self):
-        """Returns all images of the product, including the main image.
+        """
+        Returns all images of the product, including the main image.
         """
         cache_key = "%s-product-images-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         images = cache.get(cache_key)
@@ -851,13 +889,21 @@ class Product(models.Model):
         return images
 
     def get_sub_images(self):
-        """Returns all images of the product, except the main image.
+        """
+        Returns all images of the product, except the main image.
         """
         return self.get_images()[1:]
 
     def get_meta_title(self):
-        """Returns the meta title of the product. Takes care whether the
-        product is a variant and meta title are active or not.
+        """
+        Returns the meta title of the product. Takes care whether the product
+        is a variant and meta title are active or not.
+
+        Following tag can be used within the meta title and is replaced with
+        the corresponding attribute of the product.
+
+        <name>
+            Replaced with the name of the product
         """
         if self.is_variant() and not self.active_meta_title:
             mt = self.parent.meta_title
@@ -868,8 +914,18 @@ class Product(models.Model):
         return mt
 
     def get_meta_keywords(self):
-        """Returns the meta keywords of the product. Takes care whether the
+        """
+        Returns the meta keywords of the product. Takes care whether the
         product is a variant and meta keywords are active or not.
+
+        Following tags can be used within the meta keywords and are replaced
+        with the corresponding attribute of the product.
+
+        <name>
+            Replaced with the name of the product
+
+        <short-description>
+            Replaced with the short description of the product
         """
         if self.is_variant() and not self.active_meta_keywords:
             mk = self.parent.meta_keywords
@@ -881,8 +937,18 @@ class Product(models.Model):
         return mk
 
     def get_meta_description(self):
-        """Returns the meta description of the product. Takes care whether the
+        """
+        Returns the meta description of the product. Takes care whether the
         product is a variant and meta description are active or not.
+
+        Following tags can be used within the meta description and are replaced
+        with the corresponding attribute of the product.
+
+        <name>
+            Replaced with the name of the product
+
+        <short-description>
+            Replaced with the short description of the product
         """
         if self.is_variant() and not self.active_meta_description:
             md = self.parent.meta_description
@@ -895,7 +961,8 @@ class Product(models.Model):
 
     # TODO: Check whether there is a test case for that and write one if not.
     def get_name(self):
-        """Returns the name of the product. Takes care whether the product is a
+        """
+        Returns the name of the product. Takes care whether the product is a
         variant and name is active or not.
         """
         if self.is_variant():
@@ -910,7 +977,8 @@ class Product(models.Model):
         return name
 
     def get_option(self, property_id):
-        """Returns the id of the selected option for property with passed id.
+        """
+        Returns the id of the selected option for property with passed id.
         """
         options = cache.get("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id))
         if options is None:
@@ -924,7 +992,8 @@ class Product(models.Model):
             return None
 
     def get_displayed_properties(self):
-        """Returns properties with ``display_on_product`` is True.
+        """
+        Returns properties with ``display_on_product`` is True.
         """
         cache_key = "%s-displayed-properties-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
 
@@ -954,7 +1023,8 @@ class Product(models.Model):
         return properties
 
     def get_variant_properties(self):
-        """Returns the property value of a variant in the correct ordering
+        """
+        Returns the property value of a variant in the correct ordering
         of the properties.
         """
         cache_key = "%s-variant-properties-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
@@ -987,7 +1057,8 @@ class Product(models.Model):
         return properties
 
     def has_option(self, property, option):
-        """Returns True if the variant has the given property / option
+        """
+        Returns True if the variant has the given property / option
         combination.
         """
         options = cache.get("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id))
@@ -1003,7 +1074,8 @@ class Product(models.Model):
             return False
 
     def get_default_properties_price(self):
-        """Returns the total price of all default properties.
+        """
+        Returns the total price of all default properties of the product.
         """
         price = 0
         for property in self.get_configurable_properties():
@@ -1034,8 +1106,9 @@ class Product(models.Model):
         return price
 
     def get_price_calculator(self, request):
-        """Returns the price calculator class as defined in LFS_PRICE_CALCULATOR_DICTIONARY
-        in lfs.core.settings.
+        """
+        Returns the price calculator class as defined in
+        LFS_PRICE_CALCULATOR_DICTIONARY in lfs.core.settings.
         """
         if self.price_calculator is not None:
             price_calculator = self.price_calculator
@@ -1048,44 +1121,51 @@ class Product(models.Model):
         return price_calculator_class(request, self)
 
     def get_price(self, request, with_properties=True):
-        """See lfs.plugins.
+        """
+        See lfs.plugins.PriceCalculator.
         """
         pc = self.get_price_calculator(request)
         return pc.get_price(with_properties)
 
     def get_standard_price(self, request, with_properties=True):
-        """See lfs.plugins.
+        """
+        See lfs.plugins.PriceCalculator.
         """
         pc = self.get_price_calculator(request)
         return pc.get_standard_price(with_properties)
 
     def get_for_sale_price(self, request):
-        """See lfs.plugins.
+        """
+        See lfs.plugins.PriceCalculator.
         """
         pc = self.get_price_calculator(request)
         return pc.get_for_sale_price()
 
     def get_price_gross(self, request, with_properties=True):
-        """See lfs.plugins.
+        """
+        See lfs.plugins.PriceCalculator.
         """
         request = None
         pc = self.get_price_calculator(request)
         return pc.get_price_gross(with_properties)
 
     def get_price_with_unit(self, request):
-        """See lfs.plugins.
+        """
+        See lfs.plugins.PriceCalculator.
         """
         pc = self.get_price_calculator(request)
         return pc.get_price_with_unit()
 
     def get_price_net(self, request, with_properties=True):
-        """See lfs.plugins.
+        """
+        See lfs.plugins.PriceCalculator.
         """
         pc = self.get_price_calculator(request)
         return pc.get_price_net(with_properties)
 
     def get_global_properties(self):
-        """Returns all global properties for the product.
+        """
+        Returns all global properties for the product.
         """
         properties = []
         for property_group in self.property_groups.all():
@@ -1094,12 +1174,14 @@ class Product(models.Model):
         return properties
 
     def get_local_properties(self):
-        """Returns local properties of the product
+        """
+        Returns local properties of the product.
         """
         return self.properties.order_by("productspropertiesrelation")
 
     def get_properties(self):
-        """Returns local and global properties
+        """
+        Returns all (local and global) properties.
         """
         properties = self.get_global_properties()
         properties.extend(self.get_local_properties())
@@ -1123,7 +1205,8 @@ class Product(models.Model):
         return properties
 
     def get_configurable_properties(self):
-        """Returns all properties which are configurable.
+        """
+        Returns all properties which are configurable.
         """
         # global
         properties = []
@@ -1137,7 +1220,8 @@ class Product(models.Model):
         return properties
 
     def get_sku(self):
-        """Returns the sku of the product. Takes care whether the product is a
+        """
+        Returns the sku of the product. Takes care whether the product is a
         variant and sku is active or not.
         """
         if self.is_variant() and not self.active_sku:
@@ -1146,31 +1230,36 @@ class Product(models.Model):
             return self.sku
 
     def get_tax_rate(self, request):
-        """Returns the tax rate of the product.
+        """
+        See lfs.plugins.PriceCalculator.
         """
         pc = self.get_price_calculator(request)
         return pc.get_tax_rate()
 
     def price_includes_tax(self):
-        """Returns whether our price calculator includes tax or not.
+        """
+        See lfs.plugins.PriceCalculator.
         """
         request = None
         pc = self.get_price_calculator(request)
         return pc.price_includes_tax()
 
     def get_tax(self, request):
-        """Returns the absolute tax of the product.
+        """
+        See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
         return pc.get_tax()
 
     def has_related_products(self):
-        """Returns True if the product has related products.
+        """
+        Returns True if the product has related products.
         """
         return len(self.get_related_products()) > 0
 
     def get_related_products(self):
-        """Returns the related products of the product.
+        """
+        Returns the related products of the product.
         """
         cache_key = "%s-related-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         related_products = cache.get(cache_key)
@@ -1186,7 +1275,8 @@ class Product(models.Model):
         return related_products
 
     def get_default_variant(self):
-        """Returns the default variant.
+        """
+        Returns the default variant of the product.
 
         This is either a selected variant or the first added variant. If the
         product has no variants it is None.
@@ -1209,7 +1299,8 @@ class Product(models.Model):
         return default_variant
 
     def get_static_block(self):
-        """Returns the static block of the product. Takes care whether the
+        """
+        Returns the static block of the product. Takes care whether the
         product is a variant and meta description are active or not.
         """
         cache_key = "%s-product-static-block-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
@@ -1227,17 +1318,20 @@ class Product(models.Model):
         return block
 
     def get_variants(self):
-        """Returns the variants of the product.
+        """
+        Returns the variants of the product.
         """
         return self.variants.filter(active=True).order_by("variant_position")
 
     def has_variants(self):
-        """Returns True if the product has variants.
+        """
+        Returns True if the product has variants.
         """
         return len(self.get_variants()) > 0
 
     def get_variant(self, options):
-        """Returns the variant with the given options or None.
+        """
+        Returns the variant with the given options or None.
 
         The format of the passed properties/options must be tuple as following:
 
@@ -1263,16 +1357,17 @@ class Product(models.Model):
         return None
 
     def has_variant(self, options):
-        """Returns true if a variant with given options already exists.
+        """
+        Returns true if a variant with given options already exists.
         """
         if self.get_variant(options) is None:
             return False
         else:
             return True
 
-    # Dimensions
     def get_weight(self):
-        """Returns weight of the product. Takes care whether the product is a
+        """
+        Returns weight of the product. Takes care whether the product is a
         variant and meta description are active or not.
         """
         if self.is_variant() and not self.active_dimensions:
@@ -1281,7 +1376,8 @@ class Product(models.Model):
             return self.weight
 
     def get_width(self):
-        """Returns width of the product. Takes care whether the product is a
+        """
+        Returns width of the product. Takes care whether the product is a
         variant and meta description are active or not.
         """
         if self.is_variant() and not self.active_dimensions:
@@ -1290,7 +1386,8 @@ class Product(models.Model):
             return self.width
 
     def get_length(self):
-        """Returns length of the product. Takes care whether the product is a
+        """
+        Returns length of the product. Takes care whether the product is a
         variant and meta description are active or not.
         """
         if self.is_variant() and not self.active_dimensions:
@@ -1299,7 +1396,8 @@ class Product(models.Model):
             return self.length
 
     def get_height(self):
-        """Returns height of the product. Takes care whether the product is a
+        """
+        Returns height of the product. Takes care whether the product is a
         variant and meta description are active or not.
         """
         if self.is_variant() and not self.active_dimensions:
@@ -1308,7 +1406,8 @@ class Product(models.Model):
             return self.height
 
     def get_packing_info(self):
-        """Returns the packing info of the product as list:
+        """
+        Returns the packing info of the product as list:
         """
         if self.is_variant():
             obj = self.parent
@@ -1318,27 +1417,32 @@ class Product(models.Model):
         return (obj.packing_unit, obj.packing_unit_unit)
 
     def is_standard(self):
-        """Returns True if product is standard product.
+        """
+        Returns True if product is standard product.
         """
         return self.sub_type == STANDARD_PRODUCT
 
     def is_configurable_product(self):
-        """Returns True if product is configurable product.
+        """
+        Returns True if product is configurable product.
         """
         return self.sub_type == CONFIGURABLE_PRODUCT
 
     def is_product_with_variants(self):
-        """Returns True if product is product with variants.
+        """
+        Returns True if product is product with variants.
         """
         return self.sub_type == PRODUCT_WITH_VARIANTS
 
     def is_variant(self):
-        """Returns True if product is variant.
+        """
+        Returns True if product is variant.
         """
         return self.sub_type == VARIANT
 
     def is_active(self):
-        """Returns the activity state of the product.
+        """
+        Returns the activity state of the product.
         """
         if self.is_variant():
             return self.active and self.parent.active
@@ -1346,14 +1450,22 @@ class Product(models.Model):
             return self.active
 
     def is_deliverable(self):
-        """Returns the deliverable state of the product.
+        """
+        Returns the deliverable state of the product.
         """
         if self.manage_stock_amount and self.stock_amount <= 0 and not self.order_time:
             return False
         else:
             return self.deliverable
 
-    # 3rd party contracts
+    def get_template_name(self):
+        """Method to return the path of the product template
+        """
+        if self.template != None:
+            id = int(self.template)
+            return PRODUCT_TEMPLATES[id][1]["file"]
+        return None
+
     def get_parent_for_portlets(self):
         """Returns the current category. This will add the portlets of the
         current category to the product portlets.
@@ -1366,15 +1478,6 @@ class Product(models.Model):
                 return self.categories.all()[0]
             except:
                 return None
-
-    def get_template_name(self):
-        """Method to return the path of the product template
-        """
-        if self.template != None:
-            id = int(self.template)
-            return PRODUCT_TEMPLATES[id][1]["file"]
-        return None
-
 
 class ProductAccessories(models.Model):
     """Represents the relationship between products and accessories.
