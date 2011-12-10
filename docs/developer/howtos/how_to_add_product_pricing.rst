@@ -19,7 +19,7 @@ lfs.price.PricingCalculator and implement all inherited methods.
 
 .. code-block:: python
 
-    from lfs.price import PriceCalculator
+    from lfs.plugins import PriceCalculator
 
     class CustomPriceCalculator(PriceCalculator):
 

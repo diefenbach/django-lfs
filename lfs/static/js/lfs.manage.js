@@ -50,6 +50,35 @@ function send_form_and_refresh(mythis) {
     })
 }
 
+function sortable() {
+    $('ul.sortable').sortable({
+        placeholder: 'placeholder',
+        forcePlaceholderSize: true,
+        handle: '.handle',
+        helper: 'clone',
+        items: 'li',
+        opacity: .6,
+        revert: 250,
+        tabSize: 25,
+        tolerance: 'pointer',
+        toleranceElement: '> div',
+        stop: function(event, ui){
+            var url = $(this).attr("href");
+            serialized = $('ul.sortable').sortable('serialize');
+            $.ajax({
+                url: url,
+                context: document.body,
+                type: "POST",
+                data: {"pages": serialized},
+                success: function(data) {
+                    data = $.parseJSON(data);
+                    $.jGrowl(data["message"])
+                }
+           });
+        }
+    });
+}
+
 $(function() {
     update_editor();
     $(".button").button();
@@ -126,9 +155,6 @@ $(function() {
                 }
                 if (data["message"]) {
                     $.jGrowl(data["message"]);
-                }
-                if (data["init_date"]) {
-                    DateTimeShortcuts.init();
                 }
                 hide_ajax_loading();
                 update_editor();
@@ -380,6 +406,42 @@ $(function() {
         }
         return false;
     })
+
+    $("input.date-picker").datepicker({
+        dateFormat: 'yy-mm-dd',
+        showWeek: true,
+        firstDay: 1
+    });
+
+    $(function() {
+        $('ol.sortable').nestedSortable({
+            placeholder: 'placeholder',
+            forcePlaceholderSize: true,
+            handle: '.handle',
+            helper: 'clone',
+            items: 'li',
+            opacity: .6,
+            revert: 250,
+            tabSize: 25,
+            tolerance: 'pointer',
+            toleranceElement: '> div',
+            stop: function(event, ui){
+                var url = $(this).attr("href");
+                serialized = $('ol.sortable').nestedSortable('serialize');
+                $.ajax({
+                    url: url,
+                    context: document.body,
+                    type: "POST",
+                    data: {"categories": serialized},
+                    success: function(data) {
+                        data = $.parseJSON(data);
+                        $.jGrowl(data["message"])
+                    }
+               });
+            }
+        });
+    });
+
 })
 
 $(document).ajaxComplete(function() {

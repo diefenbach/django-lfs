@@ -1,0 +1,14 @@
+{% load i18n %}
+<h2>
+    {% trans 'Order Numbers' %}
+</h2>
+
+<form action="{% url lfs_save_order_numbers_tab %}"
+      method="post">
+    {% include "manage/lfs_form.html" %}
+    <div class="buttons">
+        <input type="submit"
+               class="button ajax-save-button"
+               value="{% trans 'Save order numbers' %}">
+    </div>
+</form>

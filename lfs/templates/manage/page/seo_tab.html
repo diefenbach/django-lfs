@@ -1,0 +1,13 @@
+{% load i18n %}
+<h2>{% trans 'SEO' %}</h2>
+
+<form action="{% url lfs_save_page_seo_tab page.id %}"
+      method="POST">
+    {% csrf_token %}
+    {% include "manage/lfs_form.html" %}
+    <div class="buttons">
+        <input type="submit"
+               class="button ajax-save-button"
+               value="{% trans 'Save SEO' %}">
+    </div>
+</form>

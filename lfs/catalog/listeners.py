@@ -99,7 +99,7 @@ product_removed_property_group.connect(product_removed_from_property_group_liste
 def product_removed_from_category_listener(sender, instance, action, reverse, model, pk_set, **kwargs):
     if action in [u'post_add', u'post_remove']:
         for pk in pk_set:
-            with_parents = False # FIXME: we assume with_parents is False similar to method_signature for get_categories
+            with_parents = False  # FIXME: we assume with_parents is False similar to method_signature for get_categories
             cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, pk, with_parents)
             categories = cache.delete(cache_key)
 

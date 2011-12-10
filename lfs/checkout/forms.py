@@ -76,15 +76,15 @@ class OnePageCheckoutForm(forms.Form):
             shipping_country_code = self.data.get("shipping-country", None)
             if shipping_country_code:
                 shipping_country = Country.objects.get(code=shipping_country_code.lower())
+            if shipping_country:
+                if shipping_country not in shipping_countries:
+                    msg = _(u"Invalid shipping country.")
+                    #self._errors["all"] = ErrorList([msg])
+                    raise forms.ValidationError("Invalid Shipping Country")
         else:
             shipping_country_code = self.data.get("invoice-country", None)
             if shipping_country_code:
                 shipping_country = Country.objects.get(code=shipping_country_code.lower())
-        if shipping_country:
-            if shipping_country not in shipping_countries:
-                msg = _(u"Invalid shipping country.")
-                #self._errors["all"] = ErrorList([msg])
-                raise forms.ValidationError("Invalid Shipping Country")
 
         # Check data of selected payment method
         payment_method_id = self.data.get("payment_method")

@@ -29,6 +29,7 @@ def lfs_portlet_slot(context, slot_name):
     """
     instance = context.get("category") or \
                context.get("product") or \
+               context.get("page") or \
                lfs.core.utils.get_default_shop()
 
     cache_key = "%s-lfs-portlet-slot-%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slot_name, instance.__class__.__name__, instance.id)

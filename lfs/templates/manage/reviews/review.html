@@ -10,7 +10,41 @@
 {% endblock %}
 
 {% block content %}
-	<div id="review-inline">
-		{{ review_inline|safe }}
-	</div>
+    <div id="review-filters-inline">
+        {{ review_filters_inline|safe }}
+    </div>
+    <div class="site-actions">
+        <a class="overview"
+           href="{% url lfs_manage_reviews %}">{% trans 'Overview' %}</a>
+
+        <a class="delete delete-link"
+           dialog_message="{% trans 'Do you really want to delete this review?' %}"
+           href="{% url lfs_delete_review review_id %}">
+           {% trans 'Delete review' %}</a>
+
+        <form action="{% url lfs_set_review_state review_id %}"
+              method="post"
+              class="inline">
+            <label>{% trans "Active" %}:</label>
+
+            <select name="active">
+                <option {% ifequal review.active 1 %}selected="selected"{% endifequal %}value="1">{% trans "Yes" %}</option>
+                <option {% ifequal review.active 0 %}selected="selected"{% endifequal %}value="0">{% trans "No" %}</option>
+            </select>
+
+            <input class="ajax-save-button"
+                   type="submit"
+                   value='{% trans "Change" %}'>
+        </form>
+    </div>
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#review">{% trans 'Review' %}</a></li>
+        </ul>
+        <div id="review">
+            <div id="review-inline">
+                {{ review_inline|safe }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

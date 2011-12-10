@@ -1,28 +1,22 @@
+# python imports
 import re
 
-from lfs.price import PriceCalculator
+# lfs imports
 from lfs.catalog.settings import VARIANT
 from lfs.catalog.models import ProductPropertyValue
+from lfs.plugins import PriceCalculator
 
 
 class GrossPriceCalculator(PriceCalculator):
+    """The value of product.price stored in the database includes tax.
     """
-    The value of product.price stored in the database includes tax
-    """
-
     def get_price(self, with_properties=True):
+        """See lfs.plugins.
+        """
         return self.get_price_gross(with_properties)
 
     def get_standard_price(self, with_properties=True):
-        """Returns always the standard price for the product. Independent
-        whether the product is for sale or not. If you want the real price of
-        the product use get_price instead.
-
-        **Parameters:**
-
-        with_properties
-            If the instance is a configurable product and with_properties is
-            True the prices of the default properties are added to the price.
+        """See lfs.plugins.
         """
         object = self.product
 
@@ -39,7 +33,7 @@ class GrossPriceCalculator(PriceCalculator):
         return price
 
     def get_for_sale_price(self):
-        """returns the sale price for the product.
+        """See lfs.plugins.
         """
         object = self.product
 
@@ -52,15 +46,7 @@ class GrossPriceCalculator(PriceCalculator):
         return object.for_sale_price
 
     def get_price_gross(self, with_properties=True):
-        """Returns the real gross price of the product. This is the base of
-        all price and tax calculations.
-
-        **Parameters:**
-
-        with_properties
-            If the instance is a configurable product and with_properties is
-            True the prices of the default properties are added to the price.
-
+        """See lfs.plugins.
         """
         object = self.product
 
@@ -84,7 +70,7 @@ class GrossPriceCalculator(PriceCalculator):
         return price
 
     def get_price_with_unit(self):
-        """Returns the formatted gross price of the product
+        """See lfs.plugins.
         """
         from lfs.core.templatetags.lfs_tags import currency
         price = currency(self.get_price())
@@ -95,16 +81,17 @@ class GrossPriceCalculator(PriceCalculator):
         return price
 
     def get_price_net(self, with_properties=True):
-        """Returns the real net price of the product. Takes care whether the
-        product is for sale.
+        """See lfs.plugins.
         """
         return self.product.get_price_gross(self.request) - self.product.get_tax(self.request)
 
     def price_includes_tax(self):
+        """See lfs.plugins.
+        """
         return True
 
     def get_tax_rate(self):
-        """Returns the tax rate of the product.
+        """See lfs.plugins.
         """
         if self.product.sub_type == VARIANT:
             if self.product.parent.tax is None:
@@ -118,7 +105,7 @@ class GrossPriceCalculator(PriceCalculator):
                 return self.product.tax.rate
 
     def get_tax(self):
-        """Returns the absolute tax of the product.
+        """See lfs.plugins.
         """
         tax_rate = self.get_tax_rate()
         return (tax_rate / (tax_rate + 100)) * self.get_price_gross()
