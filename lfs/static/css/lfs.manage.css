@@ -545,6 +545,14 @@ select.categories {
     width: 300px;
 }
 
+#id_rate {
+    width: 195px;
+}
+
+#id_country, #id_countries {
+    width: 200px;
+}
+
 #id_note {
     width: 685px;
 }

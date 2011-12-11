@@ -7,7 +7,7 @@ Introduction
 ============
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    introduction/overview.rst
    introduction/installation.rst
@@ -20,7 +20,7 @@ Management reference
 --------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    user/shop/index.rst
    user/catalog/index.rst
@@ -34,10 +34,11 @@ Miscellaneous information
 -------------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    user/misc/criteria.rst
    user/misc/properties.rst
+   user/misc/taxes.rst
 
 How-tos
 -------
