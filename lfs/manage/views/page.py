@@ -222,10 +222,12 @@ def delete_page(request, id):
     )
 
 
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
 def sort_pages(request):
     """Sorts pages after drag 'n drop.
     """
-    page_list = request.POST.get("pages", "").split('&')
+    page_list = request.POST.get("objs", "").split('&')
     assert (isinstance(page_list, list))
     if len(page_list) > 0:
         pos = 10

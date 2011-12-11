@@ -270,6 +270,7 @@ urlpatterns += patterns('lfs.manage.views',
     url(r'^shipping-price-criteria/(?P<shipping_price_id>\d*)$', "shipping_price_criteria", name="lfs_manage_shipping_price_criteria"),
     url(r'^save-shipping-price-criteria/(?P<shipping_price_id>\d*)$', "save_shipping_price_criteria", name="lfs_manage_save_shipping_price_criteria"),
     url(r'^save-shipping-method-criteria/(?P<shipping_method_id>\d*)$', "save_shipping_method_criteria", name="lfs_manage_save_shipping_method_criteria"),
+    url(r'^sort-shipping-methods$', "sort_shipping_methods", name="lfs_sort_shipping_methods"),
 )
 
 # Discounts
@@ -306,6 +307,7 @@ urlpatterns += patterns('lfs.manage.views.payment',
     url(r'^payment-price-criteria/(?P<payment_price_id>\d*)$', "payment_price_criteria", name="lfs_manage_payment_price_criteria"),
     url(r'^save-payment-price-criteria/(?P<payment_price_id>\d*)$', "save_payment_price_criteria", name="lfs_manage_save_payment_price_criteria"),
     url(r'^save-payment-method-criteria/(?P<payment_method_id>\d*)$', "save_payment_method_criteria", name="lfs_manage_save_payment_method_criteria"),
+    url(r'^sort-payment-methods$', "sort_payment_methods", name="lfs_sort_payment_methods"),
 )
 
 # Orders

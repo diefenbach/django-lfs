@@ -4,12 +4,19 @@
 </h2>
 
 <div class="navigation-body">
-    {% for payment_method in payment_methods %}
-        <div>
-            <a class="selectable {% ifequal current_id payment_method.id %}selected{% endifequal %}" 
-               href="{% url lfs_manage_payment_method payment_method.id %}">
-                {{ payment_method.name }}
-            </a>
-        </div>    
-    {% endfor %}
+    <ul class="sortable"
+        href="{% url lfs_sort_payment_methods %}">
+        {% for payment_method in payment_methods %}
+            <li id="payment_method_{{ payment_method.id }}">
+                <div>
+                    <a class="selectable {% ifequal current_id payment_method.id %}selected{% endifequal %}"
+                       href="{% url lfs_manage_payment_method payment_method.id %}">
+                        <img class="handle" src="{{ STATIC_URL }}img/handle.png" alt="Handle" />
+                        {{ payment_method.name }}
+                    </a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
 </div>
+<script>sortable()</script>

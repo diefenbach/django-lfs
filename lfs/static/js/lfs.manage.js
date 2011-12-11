@@ -69,7 +69,7 @@ function sortable() {
                 url: url,
                 context: document.body,
                 type: "POST",
-                data: {"pages": serialized},
+                data: {"objs": serialized},
                 success: function(data) {
                     data = $.parseJSON(data);
                     $.jGrowl(data["message"])

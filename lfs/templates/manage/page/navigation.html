@@ -9,7 +9,7 @@
             {{ root.title }}
         </a>
     </div>
-    <ul class="manage-pages-list sortable"
+    <ul class="sortable"
         href="{% url lfs_sort_pages %}">
         {% for p in pages %}
             <li id="page_{{ p.id }}">
