@@ -1101,7 +1101,7 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.get_for_sale_price_gross(with_properties)
 
-    def get_product_tax_rate(self):
+    def get_product_tax_rate(self, request):
         """See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)

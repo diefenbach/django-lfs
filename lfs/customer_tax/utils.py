@@ -11,18 +11,18 @@ def get_customer_tax_rate(request, product):
     try:
         shipping_country = customer.selected_shipping_address.country
     except AttributeError:
-        return _calc_product_tax_rate(product)
+        return _calc_product_tax_rate(request, product)
 
     try:
         customer_tax = CustomerTax.objects.get(countries=shipping_country)
     except CustomerTax.DoesNotExist:
-        return _calc_product_tax_rate(product)
+        return _calc_product_tax_rate(request, product)
 
     return customer_tax.rate
 
 
-def _calc_product_tax_rate(product):
+def _calc_product_tax_rate(request, product):
     try:
-        return product.get_product_tax_rate()
+        return product.get_product_tax_rate(request)
     except AttributeError:
         return 0.0
