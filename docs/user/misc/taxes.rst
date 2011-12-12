@@ -63,10 +63,10 @@ Example 2
 Conclusion
 ==========
 
-In both examples you will see that the product tax is used when no customer
-tax is found. This means if you don't have the need for differen taxes based
-on customers you can safely ignore them at all and just assign your default
-taxes directly to the products.
+In both examples you see that the product tax is used when no customer tax is
+found. This means if you don't have the need for different taxes based on
+customers you can safely ignore them at all and just assign your default taxes
+directly to the products.
 
 .. seealso::
 
