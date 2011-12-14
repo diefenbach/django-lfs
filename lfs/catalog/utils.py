@@ -67,8 +67,11 @@ def get_price_filters(category, product_filter, price_filter):
     # And their variants
     all_products = []
     for product in products:
-        all_products.append(product)
         all_products.extend(product.variants.filter(active=True))
+        if product.is_product_with_variants():
+            all_products.extend(product.variants.filter(active=True))
+        else:
+            all_products.append(product)
 
     product_ids = [p.id for p in all_products]
 
