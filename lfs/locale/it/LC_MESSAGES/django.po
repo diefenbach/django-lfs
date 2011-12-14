@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Massimiliano Pippi <mpippi@gmail.com>, 2009.
 #   <pierpaolo.baldan@gmail.com>, 2011.
@@ -1288,7 +1288,7 @@ msgid "Street"
 msgstr "Via"
 
 #: customer/models.py:74
-msgid "Zip code"
+msgid "Zip Code"
 msgstr "CAP"
 
 #: customer/models.py:75

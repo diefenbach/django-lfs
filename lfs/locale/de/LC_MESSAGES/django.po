@@ -1282,7 +1282,7 @@ msgid "Street"
 msgstr "Straße"
 
 #: customer/models.py:74
-msgid "Zip code"
+msgid "Zip Code"
 msgstr "PLZ"
 
 #: customer/models.py:75

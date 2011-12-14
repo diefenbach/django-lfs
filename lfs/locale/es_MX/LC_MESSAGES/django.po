@@ -2,7 +2,7 @@
 # Copyright (C) 2009 Kai Diefenbach
 # This file is distributed under the same license as the LFS package.
 # Kai Diefenbach <kai.diefenbach@iqpp.de>, 2009.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
@@ -800,10 +800,6 @@ msgstr "Nombre de la empresa"
 msgid "Street"
 msgstr "Calle"
 
-#: checkout/forms.py:21 checkout/forms.py:31
-msgid "Zip Code"
-msgstr ""
-
 #: checkout/forms.py:22 checkout/forms.py:32 customer/models.py:73
 msgid "City"
 msgstr "Ciudad"
@@ -1179,7 +1175,7 @@ msgid "Customer"
 msgstr "Cliente"
 
 #: customer/models.py:72
-msgid "Zip code"
+msgid "Zip Code"
 msgstr "Código postal"
 
 #: customer/models.py:74 order/models.py:46

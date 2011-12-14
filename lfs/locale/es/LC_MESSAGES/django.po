@@ -1189,10 +1189,6 @@ msgstr "Ciudad seleccionada"
 msgid "Customer"
 msgstr "Cliente"
 
-#: customer/models.py:72
-msgid "Zip code"
-msgstr "Código postal"
-
 #: customer/models.py:74 order/models.py:46
 #: templates/manage/customer/customer_inline.html:133
 #: templates/manage/order/order_inline.html:15

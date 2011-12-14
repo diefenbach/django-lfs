@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 #   <bas@30loops.net>, 2011.
 msgid ""
@@ -1286,7 +1286,7 @@ msgid "Street"
 msgstr "Straat"
 
 #: customer/models.py:74
-msgid "Zip code"
+msgid "Zip Code"
 msgstr "Postcode"
 
 #: customer/models.py:75

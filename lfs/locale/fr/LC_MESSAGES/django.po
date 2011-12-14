@@ -1081,11 +1081,6 @@ msgstr "Société"
 msgid "Street"
 msgstr "Rue"
 
-#: checkout/forms.py:21
-#: checkout/forms.py:31
-msgid "Zip Code"
-msgstr "Code postal"
-
 #: checkout/forms.py:22
 #: checkout/forms.py:32
 #: customer/models.py:73
@@ -1525,7 +1520,7 @@ msgstr "Client"
 
 #: customer/models.py:72
 #: customer/migrations/0001_initial.py:44
-msgid "Zip code"
+msgid "Zip Code"
 msgstr "Code postal"
 
 #: customer/models.py:74

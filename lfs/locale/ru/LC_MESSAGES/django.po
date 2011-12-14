@@ -1176,10 +1176,6 @@ msgstr "Выбранная страна"
 msgid "Customer"
 msgstr "Клиент"
 
-#: customer/models.py:65 customer/migrations/0001_initial.py:44
-msgid "Zip code"
-msgstr "Индекс"
-
 #: customer/models.py:67 customer/migrations/0002_add_address_state.py:11
 #: order/models.py:40 order/migrations/0001_initial.py:45
 #: templates/manage/customer/customer_inline.html:133

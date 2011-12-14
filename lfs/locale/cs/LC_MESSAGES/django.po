@@ -926,11 +926,6 @@ msgstr "Firma"
 msgid "Street"
 msgstr "Ulice"
 
-#: checkout/forms.py:21
-#: checkout/forms.py:31
-msgid "Zip Code"
-msgstr "PSČ"
-
 #: checkout/forms.py:22
 #: checkout/forms.py:32
 #: customer/models.py:73
@@ -1335,7 +1330,7 @@ msgid "Customer"
 msgstr "Zákazník"
 
 #: customer/models.py:72
-msgid "Zip code"
+msgid "Zip Code"
 msgstr "PSČ"
 
 #: customer/models.py:74

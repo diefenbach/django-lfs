@@ -1289,7 +1289,7 @@ msgid "Street"
 msgstr "Stradă"
 
 #: customer/models.py:74
-msgid "Zip code"
+msgid "Zip Code"
 msgstr "Cod poștal"
 
 #: customer/models.py:75
@@ -3983,9 +3983,6 @@ msgstr "Acest voucher nu există."
 
 #~ msgid "Active Price"
 #~ msgstr "Preț activ"
-
-#~ msgid "Zip Code"
-#~ msgstr "Cod poștal"
 
 #~ msgid "Default Currency"
 #~ msgstr "Moneda implicită"
