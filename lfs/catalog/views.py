@@ -210,7 +210,7 @@ def reset_filter(request, category_slug, property_id):
     with given slug.
     """
     if "product-filter" in request.session:
-        if "property_id" in request.session["product-filter"]:
+        if property_id in request.session["product-filter"]:
             del request.session["product-filter"][property_id]
             request.session["product-filter"] = request.session["product-filter"]
 
