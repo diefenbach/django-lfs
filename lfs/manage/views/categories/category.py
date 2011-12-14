@@ -43,12 +43,10 @@ class CategoryForm(ModelForm):
         except KeyError:
             context = None
 
-        self.fields["parent"].choices = _category_choices(context)
-
     class Meta:
         model = Category
-        fields = ("name", "slug", "parent", "position", "short_description",
-            "description", "exclude_from_navigation", "image", "static_block", )
+        fields = ("name", "slug", "short_description", "description",
+                  "exclude_from_navigation", "image", "static_block")
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -90,7 +88,11 @@ def category_data(request, category_id, template_name="manage/category/data.html
     This is used as a part of the whole category form.
     """
     category = Category.objects.get(pk=category_id)
-    form = CategoryForm(instance=category)
+
+    if request.method == "POST":
+        form = CategoryForm(data=request.POST, instance=category, files=request.FILES)
+    else:
+        form = CategoryForm(instance=category)
 
     return render_to_string(template_name, RequestContext(request, {
         "category": category,
@@ -111,6 +113,7 @@ def edit_category_data(request, category_id, template_name="manage/category/data
         message = _(u"Category data have been saved.")
     else:
         message = _(u"Please correct the indicated errors.")
+        return manage_category(request, category.id)
 
     # Delete image
     if request.POST.get("delete_image"):

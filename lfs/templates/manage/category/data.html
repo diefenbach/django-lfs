@@ -22,7 +22,7 @@
             <div class="label">
                 {{ form.name.label_tag }}:
             </div>
-            {% if field.errors %}
+            {% if form.name.errors %}
                 <div class="error">
                     {{ form.name }}
                     {{ form.name.errors }}
@@ -37,7 +37,7 @@
             <div class="label">
                 {{ form.slug.label_tag }}:
             </div>
-            {% if field.errors %}
+            {% if form.slug.errors %}
                 <div class="error">
                     {{ form.slug }}
                     {{ form.slug.errors }}
@@ -55,7 +55,7 @@
                 <div class="label">
                     {{ form.description.label_tag }}:
                 </div>
-                {% if field.errors %}
+                {% if form.description.errors %}
                     <div class="error">
                         {{ form.description }}
                         {{ form.description.errors }}
@@ -70,7 +70,7 @@
                 <div class="label">
                     {% trans "Image" %}
                 </div>
-                {% if field.errors %}
+                {% if form.image.errors %}
                     <div class="error">
                         {{ form.image }}
                         {{ form.image.errors }}
@@ -85,7 +85,7 @@
                 <div class="label">
                     {{ form.static_block.label_tag }}:
                 </div>
-                {% if field.errors %}
+                {% if form.static_block.errors %}
                     <div class="error">
                         {{ form.static_block }}
                         {{ form.static_block.errors }}
