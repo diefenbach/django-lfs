@@ -13,9 +13,8 @@
         <div id="data">
             <h2>{% trans "Add payment Method" %}</h2>
             <form method="post">
-
+                {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
-
                 <div class="buttons">
                     <input type="submit"
                            class="button"
