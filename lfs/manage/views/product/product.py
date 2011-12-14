@@ -419,7 +419,7 @@ def reset_filters(request):
         ("#product-filters", product_filters_inline(request, page, paginator, product_id)),
         ("#products-inline", products_inline(request, page, paginator)),
         ("#selectable-products-inline", selectable_products_inline(request, page, paginator, product_id)),
-        ("#pages-inline", pages_inline(request, page, paginator)),
+        ("#pages-inline", pages_inline(request, page, paginator, product_id)),
     )
 
     msg = _(u"Product filters have been reset")
@@ -563,7 +563,7 @@ def set_filters(request):
         ("#product-filters", product_filters_inline(request, page, paginator, product_id)),
         ("#products-inline", products_inline(request, page, paginator)),
         ("#selectable-products-inline", selectable_products_inline(request, page, paginator, product_id)),
-        ("#pages-inline", pages_inline(request, page, paginator)),
+        ("#pages-inline", pages_inline(request, page, paginator, product_id)),
     )
 
     msg = _(u"Product filters have been set")
