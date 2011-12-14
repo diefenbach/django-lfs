@@ -1,0 +1,162 @@
+{% load i18n %}
+<h2>
+    {% trans 'Default Values' %}
+</h2>
+
+<form action="{% url lfs_save_shop_default_values_tab %}"
+      method="post">
+    <fieldset>
+        <legend>{% trans "Price Calculator" %}</legend>
+        <div class="field">
+            <div class="label">
+                {{ form.price_calculator.label_tag }}:
+            </div>
+            {% if form.price_calculator.errors %}
+                <div class="error">
+                    {{ form.price_calculator }}
+                    {{ form.price_calculator.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.price_calculator }}
+                </div>
+            {% endif %}
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>{% trans 'Format' %}</legend>
+        <div class="field">
+            <div class="label">
+                {{ form.product_cols.label_tag }}:
+            </div>
+
+            {% if form.product_cols.errors %}
+                <div class="error">
+                    {{ form.product_cols }}
+                    {{ form.product_cols.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.product_cols }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.product_rows.label_tag }}:
+            </div>
+
+            {% if form.product_rows.errors %}
+                <div class="error">
+                    {{ form.product_rows }}
+                    {{ form.product_rows.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.product_rows }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.category_cols.label_tag }}:
+            </div>
+
+            {% if form.category_cols.errors %}
+                <div class="error">
+                    {{ form.category_cols }}
+                    {{ form.category_cols.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.category_cols }}
+                </div>
+            {% endif %}
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>{% trans 'Countries' %}</legend>
+        <div class="field">
+            <div class="label">
+                {{ form.invoice_countries.label_tag }}:
+            </div>
+            {% if form.invoice_countries.errors %}
+                <div class="error">
+                    {{ form.invoice_countries }}
+                    {{ form.invoice_countries.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.invoice_countries }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="field">
+            <div class="label">
+                {{ form.shipping_countries.label_tag }}:
+            </div>
+            {% if form.shipping_countries.errors %}
+                <div class="error">
+                    {{ form.shipping_countries }}
+                    {{ form.shipping_countries.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.shipping_countries }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="field">
+            <div class="label">
+                {{ form.default_country.label_tag }}:
+            </div>
+            {% if form.default_country.errors %}
+                <div class="error">
+                    {{ form.default_country }}
+                    {{ form.default_country.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.default_country }}
+                </div>
+            {% endif %}
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>{% trans "Localization" %}</legend>
+        <div class="field">
+            <div class="label">
+                {{ form.default_locale.label_tag }}:
+            </div>
+            {% if form.default_locale.errors %}
+                <div class="error">
+                    {{ form.default_locale }}
+                    {{ form.default_locale.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.default_locale }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="field">
+            <div class="label">
+                {{ form.use_international_currency_code.label_tag }}:
+            </div>
+            <div>
+                {{ form.use_international_currency_code }}
+            </div>
+        </div>
+
+    </fieldset>
+    <div class="buttons">
+        <input class="ajax-save-button button"
+               type="submit"
+               value="{% trans 'Save Default Values' %}">
+    </div>
+</form>

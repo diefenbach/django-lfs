@@ -13,4 +13,5 @@ Here you will find information about the components of the shop tab.
    delivery_times.rst
    payment_methods.rst
    taxes.rst
+   customer_taxes.rst
    discounts.rst

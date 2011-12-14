@@ -7,20 +7,20 @@ Properties
 Overview
 --------
 
-* Properties are used to add flexible properties on a product, like color, 
+* Properties are used to add flexible properties on a product, like color,
   size, material, etc.
 * There are two types of properties: global properties and local properties:
 
 Global properties
 -----------------
 
-* Global properties are organized with property groups (which are assigned to 
+* Global properties are organized with property groups (which are assigned to
   products).
 * Global properties can be used to create product filters.
 * Global properties can be used to create variants.
 * Global properties can be used to create configurable products.
 
-.. note:: 
+.. note::
 
     To create filters you have to use global properties.
 
@@ -30,7 +30,7 @@ Local properties
 * Local properties are organized on a single product.
 * Local properties can be used to create variants.
 
-More information 
+More information
 ----------------
 
 * :ref:`Management reference <product-properties-label>`

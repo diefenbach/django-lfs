@@ -159,7 +159,7 @@ def breadcrumbs(context, obj):
         objects = []
         objects.append({
             "name": _(u"Information"),
-            "get_absolute_url": reverse("lfs_pages")}),
+            "url": reverse("lfs_pages")}),
         objects.append({"name": obj.title})
 
         result = {
@@ -438,6 +438,9 @@ def currency(value, grouping=True):
     currency(123456.789)  # Fr. 123'456.79
     currency(-123456.789) # <span class="negative">Fr. -123'456.79</span>
     """
+    if not value:
+        value = 0.0
+
     shop = lfs.core.utils.get_default_shop()
     result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
     # add css class if value is negative
@@ -448,6 +451,7 @@ def currency(value, grouping=True):
             result = '%s-%s' % (result[0:length], result[length:-1])
         return '<span class="negative">%s</span>' % result
     return result
+
 
 @register.filter
 def decimal_l10n(value):
@@ -535,11 +539,34 @@ def packages(cart_item):
 def get_price(product, request):
     return product.get_price(request)
 
+@register.filter(name='get_price_net')
+def get_price_net(object, request):
+    return object.get_price_net(request)
+
+@register.filter(name='get_price_gross')
+def get_price_gross(object, request):
+    return object.get_price_gross(request)
+
+@register.filter(name='get_standard_price')
+def get_standard_price(product, request):
+    return product.get_standard_price(request)
+
+@register.filter(name='get_standard_price_net')
+def get_standard_price_net(product, request):
+    return product.get_standard_price_net(request)
+
+@register.filter(name='get_standard_price_gross')
+def get_standard_price_gross(product, request):
+    return product.get_standard_price_gross(request)
 
 @register.filter(name='get_for_sale_price')
 def get_for_sale_price(product, request):
     return product.get_for_sale_price(request)
 
-@register.filter(name='get_standard_price')
-def get_standard_price(product, request):
-    return product.get_standard_price(request)
+@register.filter(name='get_for_sale_price_net')
+def get_for_sale_price_net(product, request):
+    return product.get_for_sale_price_net(request)
+
+@register.filter(name='get_for_sale_price_gross')
+def get_for_sale_price_gross(product, request):
+    return product.get_for_sale_price_gross(request)

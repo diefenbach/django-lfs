@@ -148,7 +148,7 @@ def products(amount=20):
         print "Rock-%s created" % i
 
     for i in range(1, amount):
-        p = Product(name="Hemd-%s" % i, slug="hemd-%s" % i, sku="hemd-000%s" % i, price=i * 10)
+        p = Product(name="Hemd-%s" % i, slug="hemd-%s" % i, sku="hemd-000%s" % i, price=i * 10, active=True)
         p.save()
 
         img = Image(title="Image 1", image="images/Laminat02.jpg")
@@ -162,7 +162,7 @@ def products(amount=20):
         print "Hemd-%s created" % i
 
     for i in range(1, amount):
-        p = Product(name="Pullover-%s" % i, slug="pullover-%s" % i, sku="pullover-000%s" % i, price=i * 10)
+        p = Product(name="Pullover-%s" % i, slug="pullover-%s" % i, sku="pullover-000%s" % i, price=i * 10, active=True)
         p.save()
 
         img = Image(title="Image 1", image="images/Laminat03.jpg")
@@ -176,7 +176,7 @@ def products(amount=20):
         print "Pullover-%s created" % i
 
     for i in range(1, amount):
-        p = Product(name="Hose-%s" % i, slug="hose-%s" % i, sku="hose-000%s" % i, price=i * 10)
+        p = Product(name="Hose-%s" % i, slug="hose-%s" % i, sku="hose-000%s" % i, price=i * 10, active=True)
         p.save()
 
         img = Image(title="Image 1", image="images/Laminat03.jpg")

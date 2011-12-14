@@ -1,9 +1,9 @@
-# python imports
+# Python imports
 import math
 import re
 import uuid
 
-# # django imports
+# django imports
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
@@ -688,6 +688,20 @@ class Product(models.Model):
         """
         return len(self.get_accessories()) > 0
 
+    def get_attachments(self):
+        """ Returns the ProductAttachment relationship objects.
+            If no attachment is found and it's variant get parent's ones.
+        """
+        attachments = ProductAttachment.objects.filter(product=self)
+        if not attachments and self.is_variant():
+            attachments = ProductAttachment.objects.filter(product=self.parent)
+        return attachments
+
+    def has_attachments(self):
+        """Returns True if the product has attachments.
+        """
+        return len(self.get_attachments()) > 0
+
     def get_amount_by_packages(self, quantity):
         """
         """
@@ -1034,53 +1048,88 @@ class Product(models.Model):
         return price_calculator_class(request, self)
 
     def get_price(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
         pc = self.get_price_calculator(request)
         return pc.get_price(with_properties)
 
+    def get_price_net(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_price_net(with_properties)
+
+    def get_price_gross(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_price_gross(with_properties)
+
     def get_standard_price(self, request, with_properties=True):
-        """Returns always the standard price for the product. Independent
-        whether the product is for sale or not. If you want the real price of
-        the product use get_price instead.
-
-        **Parameters:**
-
-        with_properties
-            If the instance is a configurable product and with_properties is
-            True the prices of the default properties are added to the price.
+        """See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
         return pc.get_standard_price(with_properties)
 
-    def get_for_sale_price(self, request):
-        """returns the sale price for the product.
+    def get_standard_price_net(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_for_sale_price()
+        return pc.get_standard_price_net(with_properties)
 
-    def get_price_gross(self, request, with_properties=True):
-        """Returns the real gross price of the product. This is the base of
-        all price and tax calculations.
-
-        **Parameters:**
-
-        with_properties
-            If the instance is a configurable product and with_properties is
-            True the prices of the default properties are added to the price.
-
-        """
-        request = None
-        pc = self.get_price_calculator(request)
-        return pc.get_price_gross(with_properties)
-
-    def get_price_with_unit(self, request):
-        """Returns the formatted gross price of the product
+    def get_standard_price_gross(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_price_with_unit()
+        return pc.get_standard_price_gross(with_properties)
 
-    def get_price_net(self, request, with_properties=True):
+    def get_for_sale_price(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
         pc = self.get_price_calculator(request)
-        return pc.get_price_net(with_properties)
+        return pc.get_for_sale_price(with_properties)
+
+    def get_for_sale_price_net(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_for_sale_price_net(with_properties)
+
+    def get_for_sale_price_gross(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_for_sale_price_gross(with_properties)
+
+    def get_product_tax_rate(self, request):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_product_tax_rate()
+
+    def get_product_tax(self):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_product_tax()
+
+    def get_tax_rate(self, request):
+        """Returns the tax rate for the product and the current customer.
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_customer_tax_rate()
+
+    def get_tax(self, request):
+        """Returns the tax for the product and the current customer.
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_customer_tax()
+
+    def price_includes_tax(self):
+        """Returns whether our price calculator includes tax or not.
+        """
+        pc = self.get_price_calculator(None)
+        return pc.price_includes_tax()
 
     def get_global_properties(self):
         """Returns all global properties for the product.
@@ -1142,25 +1191,6 @@ class Product(models.Model):
             return self.parent.sku
         else:
             return self.sku
-
-    def get_tax_rate(self, request):
-        """Returns the tax rate of the product.
-        """
-        pc = self.get_price_calculator(request)
-        return pc.get_tax_rate()
-
-    def price_includes_tax(self):
-        """Returns whether our price calculator includes tax or not.
-        """
-        request = None
-        pc = self.get_price_calculator(request)
-        return pc.price_includes_tax()
-
-    def get_tax(self, request):
-        """Returns the absolute tax of the product.
-        """
-        pc = self.get_price_calculator(request)
-        return pc.get_tax()
 
     def has_related_products(self):
         """Returns True if the product has related products.
@@ -2037,3 +2067,21 @@ class DeliveryTime(models.Model):
         max = int("%.0f" % (self.max + 0.001))
 
         return DeliveryTime(min=min, max=max, unit=self.unit)
+
+
+class ProductAttachment(models.Model):
+    """
+    """
+    title = models.CharField(_(u"Title"), max_length=50)
+    description = models.TextField(_(u"Description"), blank=True)
+    file = models.FileField(upload_to="files")
+    product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="attachments")
+    position = models.IntegerField(_(u"Position"), default=1)
+
+    class Meta:
+        ordering = ("position", )
+
+    def get_url(self):
+        if self.file.url:
+            return self.file.url
+        return None
