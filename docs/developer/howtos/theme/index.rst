@@ -1,6 +1,6 @@
-==============
-Create a theme
-==============
+=====================
+How to create a theme
+=====================
 
 In this how-to you will learn how to create a theme for LFS.
 
@@ -10,8 +10,8 @@ Preparations
 ============
 
 First you have to create a new Django application. This is beyond the purpose
-of this tutorial and you should refer to `Django's excellent tutorial 
-<http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_ if you want to learn 
+of this tutorial and you should refer to `Django's excellent tutorial
+<http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_ if you want to learn
 more.
 
 Add a templates folder and within that add a lfs folder.
@@ -47,11 +47,11 @@ Register mytheme to Django's template engine.
 Copy templates
 ==============
 
-Now copy the templates you want to change into the lfs folder of mytheme and 
+Now copy the templates you want to change into the lfs folder of mytheme and
 adapt them to your needs.
 
 **Important:** you have to keep the original path, e.g: base.html must be within
-the root of the lfs folder whereas the cart portlet (cart.html) must be within 
+the root of the lfs folder whereas the cart portlet (cart.html) must be within
 the portlets  folder::
 
     mytheme

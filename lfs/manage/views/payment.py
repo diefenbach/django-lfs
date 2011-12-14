@@ -42,7 +42,7 @@ class PaymentMethodForm(ModelForm):
 
     class Meta:
         model = PaymentMethod
-        exclude = ("deletable", )
+        exclude = ("deletable", "priority")
 
 
 # Starting pages. This pages are called directly via a request
@@ -371,6 +371,28 @@ def delete_payment_method(request, payment_method_id):
         msg=_(u"Payment method has been deleted."),
     )
 
+
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
+def sort_payment_methods(request):
+    """Sorts payment methods after drag 'n drop.
+    """
+    payment_methods = request.POST.get("objs", "").split('&')
+    assert (isinstance(payment_methods, list))
+    if len(payment_methods) > 0:
+        priority = 10
+        for pm_str in payment_methods:
+            pm_id = pm_str.split('=')[1]
+            pm_obj = PaymentMethod.objects.get(pk=pm_id)
+            pm_obj.priority = priority
+            pm_obj.save()
+            priority = priority + 10
+
+        result = simplejson.dumps({
+            "message": _(u"The payment methods have been sorted."),
+        }, cls=LazyEncoder)
+
+        return HttpResponse(result)
 
 def _update_price_positions(payment_method):
     for i, price in enumerate(payment_method.prices.all()):
