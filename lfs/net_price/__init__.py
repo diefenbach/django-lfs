@@ -1,115 +1,52 @@
+# python imports
 import re
 
-from lfs.price import PriceCalculator
+# lfs imports
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.settings import VARIANT
+from lfs.plugins import PriceCalculator
 
 
 class NetPriceCalculator(PriceCalculator):
+    """The value of product.price stored in the database excludes tax.
     """
-    The value of product.price stored in the database excludes tax
-    """
-
-    def get_price(self, with_properties=True):
-        return self.get_price_net(self.request)
-
-    def get_standard_price(self, with_properties=True):
-        """Returns always the standard price for the product. Independent
-        whether the product is for sale or not. If you want the real price of
-        the product use get_price instead.
-
-        **Parameters:**
-
-        with_properties
-            If the instance is a configurable product and with_properties is
-            True the prices of the default properties are added to the price.
+    def get_price_net(self, with_properties=True):
+        """See lfs.plugins.PriceCalculator
         """
-        object = self.product
-
-        if object.is_product_with_variants() and object.get_default_variant():
-            object = object.get_default_variant()
-
-        if object.is_variant() and not object.active_price:
-            object = object.parent
-
-        price = object.price
-        if with_properties and object.is_configurable_product():
-            price += object.get_default_properties_price()
-
-        return price
-
-    def get_for_sale_price(self):
-        """returns the sale price for the product.
-        """
-        object = self.product
-
-        if object.is_product_with_variants() and object.get_default_variant():
-            object = object.get_default_variant()
-
-        if object.is_variant() and not object.active_for_sale_price:
-            object = object.parent
-
-        return object.for_sale_price
+        # stored product price
+        return self.get_price(with_properties)
 
     def get_price_gross(self, with_properties=True):
-        return self.product.get_price_net(with_properties) + self.product.get_tax(self.request)
-
-    def get_price_with_unit(self):
-        """Returns the formatted gross price of the product
+        """See lfs.plugins.PriceCalculator
         """
-        from lfs.core.templatetags.lfs_tags import currency
-        price = currency(self.get_price())
+        # net price + customer tax
+        return self.get_price_net(with_properties) * self._calc_customer_tax_rate()
 
-        if self.product.price_unit:
-            price += " / " + self.product.price_unit
-
-        return price
-
-    def get_price_net(self, with_properties=True):
-        """Returns the real net price of the product. Takes care whether the
-        product is for sale.
+    def get_standard_price_net(self, with_properties=True):
+        """See lfs.plugins.PriceCalculator
         """
-        object = self.product
-        price = object.price
+        # stored product standard price
+        return self.get_standard_price(with_properties)
 
-        if object.is_product_with_variants() and object.get_default_variant():
-            object = object.get_default_variant()
+    def get_standard_price_gross(self, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        # net standard price + customer tax
+        return self.get_standard_price_net(with_properties) * self._calc_customer_tax_rate()
 
-        if object.get_for_sale():
-            if object.is_variant() and not object.active_for_sale_price:
-                price = object.parent.get_for_sale_price(self.request)
-            else:
-                price = object.get_for_sale_price(self.request)
-        else:
-            if object.is_variant() and not object.active_price:
-                price = object.parent.price
-            else:
-                price = object.price
+    def get_for_sale_price_net(self, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        # stored for sale product price
+        return self.get_for_sale_price(with_properties)
 
-        if with_properties and object.is_configurable_product():
-            price += object.get_default_properties_price()
-
-        return price
+    def get_for_sale_price_gross(self, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        # for sale net price + customer tax
+        return self.get_for_sale_price_net(with_properties) * self._calc_customer_tax_rate()
 
     def price_includes_tax(self):
+        """See lfs.plugins.PriceCalculator
+        """
         return False
-
-    def get_tax_rate(self):
-        """Returns the tax rate of the product.
-        """
-        if self.product.sub_type == VARIANT:
-            if self.product.parent.tax is None:
-                return 0.0
-            else:
-                return self.product.parent.tax.rate
-        else:
-            if self.product.tax is None:
-                return 0.0
-            else:
-                return self.product.tax.rate
-
-    def get_tax(self):
-        """Returns the absolute tax of the product.
-        """
-        tax_rate = self.get_tax_rate()
-        return (tax_rate / 100) * self.get_price_net(self.request)

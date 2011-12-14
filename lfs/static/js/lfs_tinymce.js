@@ -34,6 +34,7 @@ function update_editor() {
     addEditor("#id_short_text");
     addEditor("#id_body");
     addEditor('#id_html');
+    addEditor('#id_note');
 }
 
 function save(ed) {

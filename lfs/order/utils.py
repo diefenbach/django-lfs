@@ -1,8 +1,12 @@
+# django imports
+from django.conf import settings
+
 # lfs imports
 import lfs.discounts.utils
 import lfs.voucher.utils
 from lfs.cart import utils as cart_utils
 from lfs.core.models import Country
+from lfs.core.utils import import_module
 from lfs.customer import utils as customer_utils
 from lfs.order.models import Order
 from lfs.order.models import OrderItem
@@ -10,6 +14,9 @@ from lfs.order.models import OrderItemPropertyValue
 from lfs.payment import utils as payment_utils
 from lfs.shipping import utils as shipping_utils
 from lfs.voucher.models import Voucher
+
+# import registered order numbers app
+MODELS = import_module(settings.LFS_APP_ORDER_NUMBERS + ".models")
 
 
 def add_order(request):
@@ -187,5 +194,18 @@ def add_order(request):
     # Note: Save order for later use in thank you page. The order will be
     # removed from the session if the thank you page has been called.
     request.session["order"] = order
+
+    try:
+        order_numbers = MODELS.OrderNumberGenerator.objects.get(id="order_number")
+    except MODELS.OrderNumberGenerator.DoesNotExist:
+        order_numbers = MODELS.OrderNumberGenerator.objects.create(id="order_number")
+
+    try:
+        order_numbers.init(request, order)
+    except AttributeError:
+        pass
+
+    order.number = order_numbers.get_next()
+    order.save()
 
     return order

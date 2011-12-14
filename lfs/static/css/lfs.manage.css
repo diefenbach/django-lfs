@@ -106,6 +106,10 @@ table.lfs-manage-table.images td {
     vertical-align: top;
 }
 
+.lfs-manage-table td.top {
+    vertical-align: top;
+}
+
 .lfs-manage-table.full {
     width: 100%;
 }
@@ -133,6 +137,16 @@ table.lfs-manage-table.images td {
 .lfs-manage-table .right-padding {
     text-align: right;
     padding-right: 10px;
+}
+
+.lfs-manage-table.attachments td {
+    vertical-align: top;
+}
+
+.lfs-manage-table.attachments textarea {
+    width: 400px;
+    height: 100px;
+    margin-top: 2px;
 }
 
 .checkbox {
@@ -261,11 +275,15 @@ tr.odd {
 }
 
 .manage-product .navigation-pages,
-.manage-review .navigation-pages,
+.manage-customer .navigation-pages {
+    margin: 20px 0;
+}
+
 .manage-customer .navigation-pages,
 .manage-cart .navigation-pages,
+.manage-review .navigation-pages,
 .manage-order .navigation-pages {
-    margin: 20px 0;
+    margin: 5px 0 20px 0;
 }
 
 .manage-categories-portlet li {
@@ -523,8 +541,20 @@ select.categories {
 /* input fields */
 #id_name, #id_slug, #id_sku, #id_shop_owner, #id_from_email, #id_title, #id_redirect_to, #id_sku_manufacturer, #redirect_to, #id_position, #id_unit,
 #id_priority, #id_price, #id_for_sale_price, #id_tax, #id_module, #id_link, #id_parent, #id_static_block, #id_price_unit, #id_template, #id_meta_title,
-#id_type, #id_step_type {
+#id_type, #id_step_type, #id_delivery_time {
     width: 300px;
+}
+
+#id_rate {
+    width: 195px;
+}
+
+#id_country, #id_countries {
+    width: 200px;
+}
+
+#id_note {
+    width: 685px;
 }
 
 #id_default_variant, #id_variants_display_type {
@@ -685,8 +715,18 @@ form div.buttons {
     top: 20px;
 }
 
+.navigation-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 .navigation-body a {
     padding: 2px 0;
+}
+
+.navigation-body .top-page {
+    font-size: 110%;
 }
 
 ul.manufacturer-tree {
