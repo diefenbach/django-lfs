@@ -22,8 +22,7 @@ Demo shop
 
 A demo shop can be tried here:
 
-* http://demo.getlfs.com:81 (version 0.6)
-* http://demo.getlfs.com (version 0.5)
+* http://demo.getlfs.com
 
 Changes
 =======
