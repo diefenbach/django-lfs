@@ -1,4 +1,4 @@
-# python imports
+
 import re
 
 # django imports
@@ -126,7 +126,7 @@ class Cart(models.Model):
             except CartItem.DoesNotExist:
                 cart_item = CartItem.objects.create(cart=self, product=product, amount=amount)
             else:
-                cart_item.amount += amount
+                cart_item.amount += float(amount)
                 cart_item.save()
 
         return cart_item

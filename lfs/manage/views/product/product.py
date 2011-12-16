@@ -65,7 +65,7 @@ class ProductDataForm(forms.ModelForm):
         model = Product
         fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "tax", "price_calculator",
             "short_description", "description", "for_sale", "for_sale_price", "static_block", "template",
-            "active_price_calculation", "price_calculation", "price_unit", "unit")
+            "active_price_calculation", "price_calculation", "price_unit", "unit", "type_of_quantity_field")
 
     def clean(self):
         super(ProductDataForm, self).clean()

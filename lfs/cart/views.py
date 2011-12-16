@@ -21,6 +21,7 @@ from lfs.core.signals import cart_changed
 from lfs.core import utils as core_utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
+from lfs.catalog.settings import QUANTITY_FIELD_INTEGER
 from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
 from lfs.core.models import Country
@@ -107,12 +108,15 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
 
     cart_items = []
     for cart_item in cart.get_items():
+        product = cart_item.product
+        quantity = product.get_clean_quantity(cart_item.amount)
         cart_items.append({
             "obj": cart_item,
-            "product": cart_item.product,
-            "product_price_net": cart_item.product.get_price_net(request),
-            "product_price_gross": cart_item.product.get_price_gross(request) * cart_item.amount,
-            "product_tax": cart_item.product.get_tax(request),
+            "quantity": quantity,
+            "product": product,
+            "product_price_net": product.get_price_net(request),
+            "product_price_gross": product.get_price_gross(request) * cart_item.amount,
+            "product_tax": product.get_tax(request),
         })
 
     return render_to_string(template_name, RequestContext(request, {
@@ -167,12 +171,15 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
     cart_items = []
     for cart_item in request.session.get("cart_items", []):
         total += cart_item.get_price_gross(request)
+        product = cart_item.product
+        quantity = product.get_clean_quantity(cart_item.amount)
         cart_items.append({
-            "product": cart_item.product,
+            "product": product,
             "obj": cart_item,
-            "product_price_net": cart_item.product.get_price_net(request),
-            "product_tax": cart_item.product.get_tax(request),
-            "product_price_gross": cart_item.product.get_price_gross(request),
+            "quantity": quantity,
+            "product_price_net": product.get_price_net(request),
+            "product_tax": product.get_tax(request),
+            "product_price_gross": product.get_price_gross(request),
         })
 
     return render_to_string(template_name, {
@@ -228,9 +235,9 @@ def add_to_cart(request, product_id=None):
         raise Http404()
 
     try:
-        quantity = float(request.POST.get("quantity", 1))
-    except TypeError:
-        quantity = 1
+        quantity = float(request.POST.get("quantity", 1.0))
+    except (TypeError, ValueError):
+        quantity = 1.0
 
     # Validate properties (They are added below)
     properties_dict = {}
@@ -313,7 +320,7 @@ def add_to_cart(request, product_id=None):
             except TypeError:
                 quantity = 1
 
-            cart_item = cart.add(product=accessory, amount=1)
+            cart_item = cart.add(product=accessory, amount=quantity)
             cart_items.append(cart_item)
 
     # Store cart items for retrieval within added_to_cart.
@@ -382,23 +389,23 @@ def refresh_cart(request):
     # Update Amounts
     message = ""
     for item in cart.get_items():
-        amount = request.POST.get("amount-cart-item_%s" % item.id, 0)
         try:
-            amount = float(amount)
-            if item.product.manage_stock_amount and amount > item.product.stock_amount and not item.product.order_time:
-                amount = item.product.stock_amount
-                if amount < 0:
-                    amount = 0
+            amount = request.POST.get("amount-cart-item_%s" % item.id, 0)
+        except (TypeError, ValueError):
+            amount = 1.0
 
-                if amount == 0:
-                    message = _(u"Sorry, but '%(product)s' is not available anymore." % {"product": item.product.name})
-                elif amount == 1:
-                    message = _(u"Sorry, but '%(product)s' is only one time available." % {"product": item.product.name})
-                else:
-                    message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": item.product.name, "amount": amount}
+        if item.product.manage_stock_amount and amount > item.product.stock_amount and not item.product.order_time:
+            amount = item.product.stock_amount
+            if amount < 0:
+                amount = 0
 
-        except ValueError:
-            amount = 1
+            if amount == 0:
+                message = _(u"Sorry, but '%(product)s' is not available anymore." % {"product": item.product.name})
+            elif amount == 1:
+                message = _(u"Sorry, but '%(product)s' is only one time available." % {"product": item.product.name})
+            else:
+                message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": item.product.name, "amount": amount}
+
 
         if item.product.active_packing_unit:
             item.amount = lfs.catalog.utils.calculate_real_amount(item.product, float(amount))

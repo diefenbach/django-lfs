@@ -25,10 +25,11 @@ from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DISPLAY
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
-
+from lfs.catalog.settings import QUANTITY_FIELD_INTEGER
+from lfs.catalog.settings import QUANTITY_FIELD_DECIMAL_1
+from lfs.catalog.settings import QUANTITY_FIELD_DECIMAL_2
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import LIST
-
 from lfs.catalog.models import Category
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import GroupsPropertiesRelation
@@ -42,7 +43,6 @@ from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import ProductsPropertiesRelation
 from lfs.catalog.models import StaticBlock
 from lfs.catalog.models import ProductAttachment
-
 from lfs.core.models import Shop
 from lfs.core.signals import product_changed
 from lfs.core.signals import product_removed_property_group
@@ -2608,6 +2608,111 @@ class ProductTestCase(TestCase):
         match_titles = [self.attachment_P1_2_data['title'],
                         self.attachment_P1_1_data['title']]
         self.assertEqual(match_titles, attachments_titles)
+
+    def test_get_type_of_quantity_field(self):
+        result = self.p1.get_type_of_quantity_field()
+        self.assertEqual(result, QUANTITY_FIELD_INTEGER)
+
+        result = self.v1.get_type_of_quantity_field()
+        self.assertEqual(result, QUANTITY_FIELD_INTEGER)
+
+        self.p1.type_of_quantity_field = QUANTITY_FIELD_DECIMAL_1
+        self.p1.save()
+
+        result = self.p1.get_type_of_quantity_field()
+        self.assertEqual(result, QUANTITY_FIELD_DECIMAL_1)
+        result = self.v1.get_type_of_quantity_field()
+        self.assertEqual(result, QUANTITY_FIELD_DECIMAL_1)
+
+        self.p1.type_of_quantity_field = QUANTITY_FIELD_DECIMAL_2
+        self.p1.save()
+
+        result = self.p1.get_type_of_quantity_field()
+        self.assertEqual(result, QUANTITY_FIELD_DECIMAL_2)
+        result = self.v1.get_type_of_quantity_field()
+        self.assertEqual(result, QUANTITY_FIELD_DECIMAL_2)
+
+    def test_get_clean_quantity(self):
+        result = self.p1.get_clean_quantity(1)
+        self.assertEqual(result, 1)
+        result = self.v1.get_clean_quantity(1)
+        self.assertEqual(result, 1)
+
+        result = self.p1.get_clean_quantity("1")
+        self.assertEqual(result, 1)
+        result = self.v1.get_clean_quantity("1")
+        self.assertEqual(result, 1)
+
+        result = self.p1.get_clean_quantity(1.0)
+        self.assertEqual(result, 1)
+        result = self.v1.get_clean_quantity(1.0)
+        self.assertEqual(result, 1)
+
+        result = self.p1.get_clean_quantity("1.0")
+        self.assertEqual(result, 1)
+        result = self.v1.get_clean_quantity("1.0")
+        self.assertEqual(result, 1)
+
+        result = self.p1.get_clean_quantity("A")
+        self.assertEqual(result, 1)
+        result = self.v1.get_clean_quantity("A")
+        self.assertEqual(result, 1)
+
+        self.p1.type_of_quantity_field = QUANTITY_FIELD_DECIMAL_1
+        self.p1.save()
+
+        result = self.p1.get_clean_quantity(1)
+        self.assertEqual(result, "1.0")
+        result = self.v1.get_clean_quantity(1)
+        self.assertEqual(result, "1.0")
+
+        result = self.p1.get_clean_quantity("1")
+        self.assertEqual(result, "1.0")
+        result = self.v1.get_clean_quantity("1")
+        self.assertEqual(result, "1.0")
+
+        result = self.p1.get_clean_quantity(1.0)
+        self.assertEqual(result, "1.0")
+        result = self.v1.get_clean_quantity(1.0)
+        self.assertEqual(result, "1.0")
+
+        result = self.p1.get_clean_quantity("1.0")
+        self.assertEqual(result, "1.0")
+        result = self.v1.get_clean_quantity("1.0")
+        self.assertEqual(result, "1.0")
+
+        result = self.p1.get_clean_quantity("A")
+        self.assertEqual(result, "1.0")
+        result = self.v1.get_clean_quantity("A")
+        self.assertEqual(result, "1.0")
+
+        self.p1.type_of_quantity_field = QUANTITY_FIELD_DECIMAL_2
+        self.p1.save()
+
+        result = self.p1.get_clean_quantity(1)
+        self.assertEqual(result, "1.00")
+        result = self.v1.get_clean_quantity(1)
+        self.assertEqual(result, "1.00")
+
+        result = self.p1.get_clean_quantity("1")
+        self.assertEqual(result, "1.00")
+        result = self.v1.get_clean_quantity("1")
+        self.assertEqual(result, "1.00")
+
+        result = self.p1.get_clean_quantity(1.0)
+        self.assertEqual(result, "1.00")
+        result = self.v1.get_clean_quantity(1.0)
+        self.assertEqual(result, "1.00")
+
+        result = self.p1.get_clean_quantity("1.0")
+        self.assertEqual(result, "1.00")
+        result = self.v1.get_clean_quantity("1.0")
+        self.assertEqual(result, "1.00")
+
+        result = self.p1.get_clean_quantity("A")
+        self.assertEqual(result, "1.00")
+        result = self.v1.get_clean_quantity("A")
+        self.assertEqual(result, "1.00")
 
 
 class ProductAccessoriesTestCase(TestCase):

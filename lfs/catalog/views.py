@@ -570,6 +570,7 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
         "properties": properties,
         "packing_result": packing_result,
         "attachments": attachments,
+        "quantity" : product.get_clean_quantity(1),
     }))
 
     cache.set(cache_key, result)
