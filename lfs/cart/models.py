@@ -162,7 +162,8 @@ class Cart(models.Model):
         cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         items = cache.get(cache_key)
         if items is None:
-            items = CartItem.objects.filter(cart=self)
+            items = CartItem.objects.select_related().filter(cart=self)
+            # items = CartItem.objects.filter(cart=self)
             cache.set(cache_key, items)
         return items
 
