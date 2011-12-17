@@ -101,10 +101,8 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
             voucher_value = 0
             voucher_tax = 0
 
+    # Calc delivery time for cart (which is the maximum of all cart items)
     max_delivery_time = cart.get_delivery_time(request)
-
-    # Calc delivery date for cart (which is the maximum of all cart items)
-    max_delivery_date = cart.get_delivery_time(request)
 
     cart_items = []
     for cart_item in cart.get_items():
@@ -114,14 +112,13 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
             "obj": cart_item,
             "quantity": quantity,
             "product": product,
-            "product_price_net": product.get_price_net(request),
+            "product_price_net": product.get_price_net(request) * cart_item.amount,
             "product_price_gross": product.get_price_gross(request) * cart_item.amount,
-            "product_tax": product.get_tax(request),
+            "product_tax": product.get_tax(request) * cart_item.amount,
         })
 
     return render_to_string(template_name, RequestContext(request, {
         "cart_items": cart_items,
-        "max_delivery_date": max_delivery_date,
         "cart_price": cart_price,
         "cart_tax": cart_tax,
         "shipping_methods": shipping_utils.get_valid_shipping_methods(request),
