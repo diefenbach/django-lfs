@@ -79,12 +79,12 @@ def _get_shipping(context, product):
     if product.is_deliverable() == False:
         return {
             "deliverable": False,
-            "delivery_time": shipping_utils.get_product_delivery_time(request, product.slug)
+            "delivery_time": shipping_utils.get_product_delivery_time(request, product)
         }
     else:
         return {
             "deliverable": True,
-            "delivery_time": shipping_utils.get_product_delivery_time(request, product.slug)
+            "delivery_time": shipping_utils.get_product_delivery_time(request, product)
         }
 
 

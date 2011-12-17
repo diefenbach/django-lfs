@@ -18,7 +18,8 @@ from lfs.customer import utils as customer_utils
 from lfs.shipping.models import ShippingMethod
 
 
-def get_product_delivery_time(request, product_slug, for_cart=False):
+# TODO: Move this to Product class
+def get_product_delivery_time(request, product, for_cart=False):
     """Returns the delivery time object for the product with given slug.
 
     If the ``for_cart`` parameter is False, the default delivery time for
@@ -41,12 +42,10 @@ def get_product_delivery_time(request, product_slug, for_cart=False):
     if shippings is None:
         shippings = {}
 
-    product_key = "product-%s" % product_slug
+    product_key = "product-%s" % product.id
     shipping = shippings.get(product_key)
     if shipping is not None:
         return shipping
-
-    product = lfs_get_object_or_404(Product, slug=product_slug)
 
     # if the product is a product with variants we switch to the default
     # variant to calculate the delivery time. Please note that in this case

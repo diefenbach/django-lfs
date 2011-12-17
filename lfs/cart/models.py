@@ -174,7 +174,7 @@ class Cart(models.Model):
         import lfs.shipping.utils
         max_delivery_time = None
         for item in self.get_items():
-            delivery_time = lfs.shipping.utils.get_product_delivery_time(request, item.product.slug, for_cart=True)
+            delivery_time = lfs.shipping.utils.get_product_delivery_time(request, item.product, for_cart=True)
             if (max_delivery_time is None) or (delivery_time.as_hours() > max_delivery_time.as_hours()):
                 max_delivery_time = delivery_time
         return max_delivery_time
