@@ -11,7 +11,7 @@ def get_or_create_customer(request):
     """
     customer = get_customer(request)
     if customer is None:
-        customer = create_customer(request)
+        customer = request.customer = create_customer(request)
 
     return customer
 
@@ -37,15 +37,22 @@ def get_customer(request):
     """Returns the customer for the given request (which means for the current
     logged in user/or the session user).
     """
-    session_key = request.session.session_key
-    user = request.user
+    try:
+        return request.customer
+    except AttributeError:
+        customer = request.customer = _get_customer(request)
+        return customer
 
+
+def _get_customer(request):
+    user = request.user
     if user.is_authenticated():
         try:
             return Customer.objects.get(user=user)
         except ObjectDoesNotExist:
             return None
     else:
+        session_key = request.session.session_key
         try:
             return Customer.objects.get(session=session_key)
         except ObjectDoesNotExist:
