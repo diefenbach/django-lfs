@@ -27,7 +27,6 @@ from lfs.voucher.models import VoucherGroup
 from lfs.voucher.settings import ABSOLUTE
 from lfs.voucher.settings import PERCENTAGE
 
-
 class CartModelsTestCase(TestCase):
     """
     """
@@ -38,6 +37,7 @@ class CartModelsTestCase(TestCase):
         """
         self.request = RequestFactory().get("/")
         self.request.session = SessionStore()
+        self.request.user = User(id=1)
 
         self.tax = Tax.objects.create(rate=19.0)
 
@@ -345,7 +345,7 @@ class RefreshCartTestCase(TestCase):
 
         # Refresh to amount of two is possible
         result = simplejson.loads(refresh_cart(request).content)
-        self.assertEqual(result.get("message"), "")
+        self.assertEqual(result.get("message"), "Sorry, but \'Product 1\' is only 2.0 times available.")
         self.assertEqual(cart.get_amount_of_items(), 2.0)
 
         # Try to increase item to 3, but there are only 2 in stock
