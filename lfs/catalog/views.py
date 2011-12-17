@@ -51,10 +51,11 @@ def select_variant(request):
     changed.
     """
     variant_id = request.POST.get("variant_id")
+    variant = Product.objects.get(pk=variant_id)
     msg = _(u"The product has been changed according to your selection.")
 
     result = simplejson.dumps({
-        "product": product_inline(request, variant_id),
+        "product": product_inline(request, variant),
         "message": msg,
     }, cls=LazyEncoder)
 
@@ -149,7 +150,7 @@ def select_variant_from_properties(request):
         msg = _(u"The product has been changed according to your selection.")
 
     result = simplejson.dumps({
-        "product": product_inline(request, variant.id),
+        "product": product_inline(request, variant),
         "message": msg,
     }, cls=LazyEncoder)
 
@@ -455,26 +456,23 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
     request.session["RECENT_PRODUCTS"] = recent
 
     result = render_to_response(template_name, RequestContext(request, {
-        "product_inline": product_inline(request, product.id),
+        "product_inline": product_inline(request, product),
         "product": product,
     }))
 
     return result
 
 
-def product_inline(request, id, template_name="lfs/catalog/products/product_inline.html"):
+def product_inline(request, product, template_name="lfs/catalog/products/product_inline.html"):
     """Part of the prduct view, which displays the actual data of the product.
 
     This is factored out to be able to better cached and in might in future used
     used to be updated via ajax requests.
     """
-    cache_key = "%s-product-inline-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, request.user.is_superuser, id)
+    cache_key = "%s-product-inline-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, request.user.is_superuser, product.id)
     result = cache.get(cache_key)
     if result is not None:
         return result
-
-    # Get product in question
-    product = lfs_get_object_or_404(Product, pk=id)
 
     if product.sub_type == PRODUCT_WITH_VARIANTS:
         variant = product.get_default_variant()
