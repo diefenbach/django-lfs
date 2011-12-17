@@ -26,7 +26,7 @@ def create_customer(request):
     customer = Customer(session=request.session.session_key)
     if request.user.is_authenticated():
         customer.user = request.user
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
     customer.selected_invoice_address = Address.objects.create(customer=customer, country=shop.default_country)
     customer.selected_shipping_address = Address.objects.create(customer=customer, country=shop.default_country)
     customer.save()

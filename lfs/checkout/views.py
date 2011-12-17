@@ -54,7 +54,7 @@ def login(request, template_name="lfs/checkout/login.html"):
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse("lfs_checkout"))
 
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
 
     # If only anonymous checkout allowed we don't want to show this view at all.
     if shop.checkout_type == CHECKOUT_TYPE_ANON:
@@ -107,7 +107,7 @@ def login(request, template_name="lfs/checkout/login.html"):
 def checkout_dispatcher(request):
     """Dispatcher to display the correct checkout form
     """
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
     cart = cart_utils.get_cart(request)
 
     if cart is None or not cart.get_items():
@@ -205,7 +205,7 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
     """
     # If the user is not authenticated and the if only authenticate checkout
     # allowed we rediret to authentication page.
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
     if request.user.is_anonymous() and \
        shop.checkout_type == CHECKOUT_TYPE_AUTH:
         return HttpResponseRedirect(reverse("lfs_checkout_login"))

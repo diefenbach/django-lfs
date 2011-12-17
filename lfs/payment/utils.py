@@ -103,7 +103,7 @@ def process_payment(request):
     message.
     """
     payment_method = get_selected_payment_method(request)
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
 
     if payment_method.module:
         module = lfs.core.utils.import_module(payment_method.module + ".views")

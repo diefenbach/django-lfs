@@ -57,7 +57,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
             "shopping_url": shopping_url,
         }))
 
-    shop = core_utils.get_default_shop()
+    shop = core_utils.get_default_shop(request)
     countries = shop.shipping_countries.all()
     selected_country = shipping_utils.get_selected_shipping_country(request)
 

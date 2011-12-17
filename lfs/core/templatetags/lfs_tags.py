@@ -23,7 +23,6 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
 import lfs.core.utils
-from lfs.core.models import Shop
 from lfs.core.models import Action
 from lfs.page.models import Page
 from lfs.shipping import utils as shipping_utils
@@ -43,7 +42,7 @@ def google_analytics_tracking(context):
     """Returns google analytics tracking code which has been entered to the
     shop.
     """
-    shop = lfs_get_object_or_404(Shop, pk=1)
+    shop = lfs.core.utils.get_default_shop(context.get("request"))
     return {
         "ga_site_tracking": shop.ga_site_tracking,
         "google_analytics_id": shop.google_analytics_id,
@@ -57,7 +56,7 @@ def google_analytics_ecommerce(context, clear_session=True):
     """
     request = context.get("request")
     order = request.session.get("order")
-    shop = lfs_get_object_or_404(Shop, pk=1)
+    shop = lfs.core.utils.get_default_shop(request)
 
     # The order is removed from the session. It has been added after the order
     # has been payed within the checkout process. See order.utils for more.

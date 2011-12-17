@@ -177,7 +177,7 @@ def get_selected_shipping_country(request):
         elif customer.selected_country:
             return customer.selected_country
 
-    return lfs.core.utils.get_default_shop().get_default_country()
+    return lfs.core.utils.get_default_shop(request).get_default_country()
 
 
 def get_shipping_costs(request, shipping_method):
