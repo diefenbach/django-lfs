@@ -387,7 +387,7 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
             "price": product.get_price(request),
             "standard_price": product.get_standard_price(request),
             "price_unit": product.price_unit,
-            "price_includes_tax": product.price_includes_tax,
+            "price_includes_tax": product.price_includes_tax(request),
         })
         if (i + 1) % amount_of_cols == 0:
             products.append(row)
@@ -569,6 +569,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
         "packing_result": packing_result,
         "attachments": attachments,
         "quantity" : product.get_clean_quantity(1),
+        "price_includes_tax": product.price_includes_tax(request),
     }))
 
     cache.set(cache_key, result)

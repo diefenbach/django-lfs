@@ -248,7 +248,7 @@ class PriceCalculator(object):
         """
         return self.get_price(with_properties) - self.get_price(with_properties)
 
-    def price_includes_tax(self):
+    def price_includes_tax(self, request):
         """
         Returns True if stored price includes tax. False if not.
         """
