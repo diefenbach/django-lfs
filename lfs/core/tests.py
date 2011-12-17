@@ -213,7 +213,7 @@ class TagsTestCase(TestCase):
     def test_ga_ecommerce_tracking(self):
         """
         """
-        shop = Shop.objects.get(pk=1)
+        shop = lfs.core.utils.get_default_shop()
         shop.google_analytics_id = ""
         shop.ga_site_tracking = False
         shop.ga_ecommerce_tracking = False
@@ -235,6 +235,11 @@ class TagsTestCase(TestCase):
         shop.google_analytics_id = "UA-XXXXXXXXXX"
         shop.save()
 
+        # Simulating a new request
+        rf = RequestFactory()
+        request = rf.get('/')
+        request.session = session
+
         # But this is not enough
         content = template.render(Context({"request": request}))
         self.failIf(content.find("pageTracker") != -1)
@@ -242,6 +247,11 @@ class TagsTestCase(TestCase):
         # It has to be activated first
         shop.ga_ecommerce_tracking = True
         shop.save()
+
+        # Simulating a new request
+        rf = RequestFactory()
+        request = rf.get('/')
+        request.session = session
 
         # But this is still not enough
         content = template.render(Context({"request": request}))
