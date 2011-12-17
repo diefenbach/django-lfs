@@ -390,7 +390,7 @@ def refresh_cart(request):
     message = ""
     for item in cart.get_items():
         try:
-            amount = request.POST.get("amount-cart-item_%s" % item.id, 0)
+            amount = float(request.POST.get("amount-cart-item_%s" % item.id, 0))
         except (TypeError, ValueError):
             amount = 1.0
 
