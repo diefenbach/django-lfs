@@ -121,7 +121,7 @@ def calculate_price(request, id):
         price += property_price
 
     result = simplejson.dumps({
-        "price": lfs_tags.currency(price),
+        "price": lfs_tags.currency(price, request),
         "for-sale-standard-price": lfs_tags.currency(for_sale_standard_price),
         "message": _("Price has been changed according to your selection."),
     }, cls=LazyEncoder)

@@ -275,5 +275,5 @@ class TagsTestCase(TestCase):
         shop.use_international_currency_code = True
         shop.save()
 
-        self.assertEqual(currency(0.0, False), "USD 0.00")
-        self.assertEqual(currency(1.0, False), "USD 1.00")
+        self.assertEqual(currency(0.0, None, False), "USD 0.00")
+        self.assertEqual(currency(1.0, None, False), "USD 1.00")

@@ -182,10 +182,10 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
             "product_price_gross": product.get_price_gross(request),
         })
 
-    return render_to_string(template_name, {
+    return render_to_string(template_name, RequestContext(request, {
         "total": total,
         "cart_items": cart_items,
-    })
+    }))
 
 
 # Actions

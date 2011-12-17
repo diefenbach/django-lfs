@@ -429,7 +429,7 @@ def get_slug_from_request(request):
 
 
 @register.filter
-def currency(value, grouping=True):
+def currency(value, request=None, grouping=True):
     """
     e.g.
     import locale
@@ -440,7 +440,7 @@ def currency(value, grouping=True):
     if not value:
         value = 0.0
 
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
     result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
     # add css class if value is negative
     if value < 0:
