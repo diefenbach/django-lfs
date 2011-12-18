@@ -98,9 +98,8 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             portlet = form.save()
 
             slot_id = request.POST.get("slot")
-            position = request.POST.get("position")
             PortletAssignment.objects.create(
-                slot_id=slot_id, content=object, portlet=portlet, position=position)
+                slot_id=slot_id, content=object, portlet=portlet, position=1000)
 
             html = [["#portlets", portlets_inline(request, object)]]
 
@@ -129,7 +128,6 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
         except ContentType.DoesNotExist:
             pass
 
-
 @require_POST
 @permission_required("core.manage_shop", login_url="/login/")
 def delete_portlet(request, portletassignment_id):
@@ -141,10 +139,13 @@ def delete_portlet(request, portletassignment_id):
         pass
     else:
         pa.delete()
-        return lfs.core.utils.set_message_cookie(
-            request.META.get("HTTP_REFERER"),
-            msg=_(u"Portlet has been deleted.")
+        result = simplejson.dumps({
+            "html": [["#portlets", portlets_inline(request, pa.content)]],
+            "close-dialog": True,
+            "message": _(u"Portlet has been deleted.")},
+            cls=LazyEncoder
         )
+        return HttpResponse(result)
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -162,7 +163,6 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
 
         # Save the rest
         pa.slot_id = request.POST.get("slot")
-        pa.position = request.POST.get("position")
         pa.save()
 
         html = [["#portlets", portlets_inline(request, pa.content)]]
@@ -188,5 +188,61 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
             "form": form,
             "portletassigment_id": pa.id,
             "slots": slots,
-            "position": pa.position,
         }))
+
+
+def move_portlet(request, portletassignment_id):
+    """
+    Moves a portlet up/down within a slot.
+
+    **Parameters:**
+
+        portletassignment_id
+            The portlet assignment (hence the portlet) which should be moved.
+
+    **Query String:**
+
+        direction
+            The direction to which the portlet should be moved. One of 0 (up)
+            or 1 (down).
+    """
+    try:
+        pa = PortletAssignment.objects.get(pk=portletassignment_id)
+    except PortletAssignment.DoesNotExist:
+        return ""
+
+    direction = request.GET.get("direction", "0")
+    if direction == "1":
+        pa.position += 15
+    else:
+        pa.position -= 15
+        if pa.position < 0:
+            pa.position = 10
+    pa.save()
+
+    update_portlet_positions(pa)
+
+    result = simplejson.dumps({
+        "html": [["#portlets", portlets_inline(request, pa.content)]]},
+        cls=LazyEncoder
+    )
+
+    return HttpResponse(result)
+
+
+def update_portlet_positions(pa):
+    """Updates the portlet positions for a content object and a slot.
+
+    **Parameters:**
+
+        pa
+            PortletAssignment which contains the slot and the content object
+            in question.
+
+    **Permission:**
+
+        None (as this is not called from outside)
+    """
+    for i, pa in enumerate(PortletAssignment.objects.filter(content_type=pa.content_type, content_id=pa.content_id, slot=pa.slot)):
+        pa.position = (i + 1) * 10
+        pa.save()

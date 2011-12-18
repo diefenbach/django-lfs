@@ -63,6 +63,7 @@ urlpatterns += patterns('lfs.manage.views.lfs_portlets',
     url(r'^update-portlets/(?P<object_type_id>\d+)/(?P<object_id>\d+)$', "update_portlets", name="lfs_update_portlets"),
     url(r'^delete-portlet/(?P<portletassignment_id>\d+)$', "delete_portlet", name="lfs_delete_portlet"),
     url(r'^edit-portlet/(?P<portletassignment_id>\d+)$', "edit_portlet", name="lfs_edit_portlet"),
+    url(r'^move-portlet/(?P<portletassignment_id>\d+)$', "move_portlet", name="lfs_move_portlet"),
 )
 
 # Product
