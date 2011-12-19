@@ -557,16 +557,12 @@ select.categories {
     width: 195px;
 }
 
-#id_country, #id_countries, #id_slot, #id_portlet-title {
+#id_country, #id_countries, #id_slot, #id_portlet-title, #id_default_variant, #id_variants_display_type, #selected-property-groups  {
     width: 200px;
 }
 
 #id_note {
     width: 685px;
-}
-
-#id_default_variant, #id_variants_display_type {
-    width: 200px;
 }
 
 /* portlets */
