@@ -319,6 +319,7 @@ def add_property(request, template_name="manage/properties/add_property.html"):
         if form.is_valid():
             property = form.save()
             property.position = 1000
+            property.title = property.name
             property.save()
             _update_property_positions()
             return lfs.core.utils.set_message_cookie(
