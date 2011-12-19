@@ -1,195 +1,201 @@
 {% load i18n %}
 <h2>{% trans 'Property Groups' %}</h2>
 
-<form action="{% url lfs_update_product_property_groups product.id %}"
-      method="post">
-    {% csrf_token %}
-    <select name="selected-property-groups"
-            multiple="multiple">
-        {% for property_group in shop_property_groups %}
-            <option value="{{ property_group.id }}"
-                    {% if property_group.selected %}selected="selected"{% endif %}>
-                {{ property_group.name }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <div class="buttons">
-        <input class="button"
-               type="submit"
-               value="{% trans 'Update property groups' %}">
-    </div>
-</form>
-
-{% if display_configurables %}
-    <form action="{% url lfs_update_product_properties product.id %}"
-          method="post">
-
-        {% csrf_token %}
-        <h2 class="heading-middle">{% trans 'Default values' %}</h2>
-
-        {% for property_group in configurables %}
-            <fieldset>
-                <legend>
-                    <a href="{% url lfs_manage_property_group property_group.id %}">
-                        {{ property_group.name }}
-                    </a>
-                </legend>
-                {% for property in property_group.properties %}
-                    <div>
-                        {% if property.display_text_field %}
-                            <div class="field">
-                                <div class="label">
-                                    <a href="{% url lfs_manage_shop_property property.id %}">
-                                        {{ property.name }}:
-                                    </a>
-                                </div>
-                                <input type="text"
-                                       name="property-{{ property.id }}"
-                                       value="{{ property.value }}" />
-                            </div>
-                        {% endif %}
-                        {% if property.display_select_field %}
-                            <div class="field">
-                                <div class="label">
-                                    {{ property.title }}:
-                                </div>
-                                <select name="property-{{ property.id }}">
-                                    <option>-----</option>
-                                    {% for option in property.options %}
-                                        <option value="{{ option.id }}"
-                                                {% if option.selected %}selected="selected"{% endif %}>
-                                            {{ option.name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </fieldset>
-        {% endfor %}
-
-        <input type="hidden" name="type" value="1" />
-
-        <div class="buttons">
-            <input type="submit"
-                   class="button"
-                   value="{% trans 'Update default values' %}" />
-        </div>
-    </form>
-{% endif %}
-
-{% if display_filterables %}
-    <form action="{% url lfs_update_product_properties product.id %}"
+{% if not shop_property_groups %}
+    {% trans "There are no property groups yet." %}
+{% else %}
+    <form action="{% url lfs_update_product_property_groups product.id %}"
           method="post">
         {% csrf_token %}
-        <h2 class="heading-middle">{% trans "Filter values" %}</h2>
-        {% for property_group in filterables %}
-            <fieldset>
-                <legend>
-                    <a href="{% url lfs_manage_property_group property_group.id %}">
-                        {{ property_group.name }}
-                    </a>
-                </legend>
-                {% for property in property_group.properties %}
-                    <div>
-                        {% if property.display_text_field %}
-                            <div class="field">
-                                <div class="label">
-                                    <a href="{% url lfs_manage_shop_property property.id %}">
-                                        {{ property.name }}:
-                                    </a>
-                                </div>
-                                <input type="text"
-                                       name="property-{{ property.id }}"
-                                       value="{{ property.value }}" />
-                            </div>
-                        {% endif %}
-                        {% if property.display_select_field %}
-                            <div class="field">
-                                <div class="label">
-                                    <a href="{% url lfs_manage_shop_property property.id %}">
-                                        {{ property.name }}:
-                                    </a>
-                                </div>
-                                <select multiple="multiple" name="property-{{ property.id }}">
-                                    {% for option in property.options %}
-                                        <option value="{{ option.id }}"
-                                                {% if option.selected %}selected="selected"{% endif %}>
-                                            {{ option.name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </fieldset>
-        {% endfor %}
-
-        <input type="hidden" name="type" value="0" />
-
-        <div class="buttons">
-            <input type="submit"
-                   class="button"
-                   value="{% trans 'Update filter values' %}" />
-        </div>
-    </form>
-{% endif %}
-
-{% if display_displayables %}
-    <form action="{% url lfs_update_product_properties product.id %}"
-          method="post">
-        {% csrf_token %}
-        <h2 class="heading-middle">{% trans "Displayed values" %}</h2>
-        {% for property_group in displayables %}
-            <fieldset>
-                <legend>
-                    <a href="{% url lfs_manage_property_group property_group.id %}">
-                        {{ property_group.name }}
-                    </a>
-                </legend>
-                {% for property in property_group.properties %}
-                    <div>
-                        {% if property.display_text_field %}
-                            <div class="field">
-                                <div class="label">
-                                    <a href="{% url lfs_manage_shop_property property.id %}">
-                                        {{ property.name }}:
-                                    </a>
-                                </div>
-                                <input type="text"
-                                       name="property-{{ property.id }}"
-                                       value="{{ property.value }}" />
-                            </div>
-                        {% endif %}
-                        {% if property.display_select_field %}
-                            <div class="field">
-                                <div class="label">
-                                    {{ property.name }}:
-                                </div>
-                                <select multiple="multiple" name="property-{{ property.id }}">
-                                    {% for option in property.options %}
-                                        <option value="{{ option.id }}"
-                                                {% if option.selected %}selected="selected"{% endif %}>
-                                            {{ option.name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </fieldset>
-        {% endfor %}
-
-        <input type="hidden" name="type" value="2" />
+        <select id="selected-property-groups"
+                name="selected-property-groups"
+                multiple="multiple">
+            {% for property_group in shop_property_groups %}
+                <option value="{{ property_group.id }}"
+                        {% if property_group.selected %}selected="selected"{% endif %}>
+                    {{ property_group.name }}
+                </option>
+            {% endfor %}
+        </select>
 
         <div class="buttons">
             <input class="button"
                    type="submit"
-                   value="{% trans 'Update displayed values' %}" />
+                   value="{% trans 'Update property groups' %}">
         </div>
     </form>
+
+    {% if display_configurables %}
+        <form action="{% url lfs_update_product_properties product.id %}"
+              method="post">
+
+            {% csrf_token %}
+            <h2 class="heading-middle">{% trans 'Default values' %}</h2>
+
+            {% for property_group in configurables %}
+                <fieldset>
+                    <legend>
+                        <a href="{% url lfs_manage_property_group property_group.id %}">
+                            {{ property_group.name }}
+                        </a>
+                    </legend>
+                    {% for property in property_group.properties %}
+                        <div>
+                            {% if property.display_text_field %}
+                                <div class="field">
+                                    <div class="label">
+                                        <a href="{% url lfs_manage_shop_property property.id %}">
+                                            {{ property.name }}:
+                                        </a>
+                                    </div>
+                                    <input type="text"
+                                           name="property-{{ property.id }}"
+                                           value="{{ property.value }}" />
+                                </div>
+                            {% endif %}
+                            {% if property.display_select_field %}
+                                <div class="field">
+                                    <div class="label">
+                                        {{ property.title }}:
+                                    </div>
+                                    <select name="property-{{ property.id }}">
+                                        <option>-----</option>
+                                        {% for option in property.options %}
+                                            <option value="{{ option.id }}"
+                                                    {% if option.selected %}selected="selected"{% endif %}>
+                                                {{ option.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </fieldset>
+            {% endfor %}
+
+            <input type="hidden" name="type" value="1" />
+
+            <div class="buttons">
+                <input type="submit"
+                       class="button"
+                       value="{% trans 'Update default values' %}" />
+            </div>
+        </form>
+    {% endif %}
+
+    {% if display_filterables %}
+        <form action="{% url lfs_update_product_properties product.id %}"
+              method="post">
+            {% csrf_token %}
+            <h2 class="heading-middle">{% trans "Filter values" %}</h2>
+            {% for property_group in filterables %}
+                <fieldset>
+                    <legend>
+                        <a href="{% url lfs_manage_property_group property_group.id %}">
+                            {{ property_group.name }}
+                        </a>
+                    </legend>
+                    {% for property in property_group.properties %}
+                        <div>
+                            {% if property.display_text_field %}
+                                <div class="field">
+                                    <div class="label">
+                                        <a href="{% url lfs_manage_shop_property property.id %}">
+                                            {{ property.name }}:
+                                        </a>
+                                    </div>
+                                    <input type="text"
+                                           name="property-{{ property.id }}"
+                                           value="{{ property.value }}" />
+                                </div>
+                            {% endif %}
+                            {% if property.display_select_field %}
+                                <div class="field">
+                                    <div class="label">
+                                        <a href="{% url lfs_manage_shop_property property.id %}">
+                                            {{ property.name }}:
+                                        </a>
+                                    </div>
+                                    <select multiple="multiple" name="property-{{ property.id }}">
+                                        {% for option in property.options %}
+                                            <option value="{{ option.id }}"
+                                                    {% if option.selected %}selected="selected"{% endif %}>
+                                                {{ option.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </fieldset>
+            {% endfor %}
+
+            <input type="hidden" name="type" value="0" />
+
+            <div class="buttons">
+                <input type="submit"
+                       class="button"
+                       value="{% trans 'Update filter values' %}" />
+            </div>
+        </form>
+    {% endif %}
+
+    {% if display_displayables %}
+        <form action="{% url lfs_update_product_properties product.id %}"
+              method="post">
+            {% csrf_token %}
+            <h2 class="heading-middle">{% trans "Displayed values" %}</h2>
+            {% for property_group in displayables %}
+                <fieldset>
+                    <legend>
+                        <a href="{% url lfs_manage_property_group property_group.id %}">
+                            {{ property_group.name }}
+                        </a>
+                    </legend>
+                    {% for property in property_group.properties %}
+                        <div>
+                            {% if property.display_text_field %}
+                                <div class="field">
+                                    <div class="label">
+                                        <a href="{% url lfs_manage_shop_property property.id %}">
+                                            {{ property.name }}:
+                                        </a>
+                                    </div>
+                                    <input type="text"
+                                           name="property-{{ property.id }}"
+                                           value="{{ property.value }}" />
+                                </div>
+                            {% endif %}
+                            {% if property.display_select_field %}
+                                <div class="field">
+                                    <div class="label">
+                                        {{ property.name }}:
+                                    </div>
+                                    <select multiple="multiple" name="property-{{ property.id }}">
+                                        {% for option in property.options %}
+                                            <option value="{{ option.id }}"
+                                                    {% if option.selected %}selected="selected"{% endif %}>
+                                                {{ option.name }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </fieldset>
+            {% endfor %}
+
+            <input type="hidden" name="type" value="2" />
+
+            <div class="buttons">
+                <input class="button"
+                       type="submit"
+                       value="{% trans 'Update displayed values' %}" />
+            </div>
+        </form>
+    {% endif %}
 {% endif %}
+
