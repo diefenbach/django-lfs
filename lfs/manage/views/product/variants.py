@@ -350,12 +350,14 @@ def add_variants(request, product_id):
 
         name = request.POST.get("name")
         price = request.POST.get("price")
-
         slug = request.POST.get("slug")
+
         for option in options:
             property_id, option_id = option.split("|")
             o = PropertyOption.objects.get(pk=option_id)
-            slug += "-" + slugify(o.name)
+            if slug:
+                slug += "-"
+            slug += slugify(o.name)
 
         slug = "%s-%s" % (product.slug, slug)
         sku = "%s-%s" % (product.sku, i + 1)
