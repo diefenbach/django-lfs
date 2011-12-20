@@ -118,8 +118,8 @@ table.lfs-manage-table.images td {
     width: 50%;
 }
 
-.lfs-manage-table .large {
-    width: 300px;
+.lfs-manage-table.large {
+    width: 900px;
 }
 
 .lfs-manage-table .middle {

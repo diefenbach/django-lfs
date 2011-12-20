@@ -98,8 +98,10 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             portlet = form.save()
 
             slot_id = request.POST.get("slot")
-            PortletAssignment.objects.create(
+            pa = PortletAssignment.objects.create(
                 slot_id=slot_id, content=object, portlet=portlet, position=1000)
+
+            update_portlet_positions(pa)
 
             html = [["#portlets", portlets_inline(request, object)]]
 
@@ -139,6 +141,7 @@ def delete_portlet(request, portletassignment_id):
         pass
     else:
         pa.delete()
+        update_portlet_positions(pa)
         result = simplejson.dumps({
             "html": [["#portlets", portlets_inline(request, pa.content)]],
             "close-dialog": True,

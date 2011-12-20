@@ -244,7 +244,6 @@ $(function() {
     });
 
     $(".portlet-add-button").live("click", function() {
-        addEditor('#id_portlet-text');
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
                 $("#dialog").html(data);
