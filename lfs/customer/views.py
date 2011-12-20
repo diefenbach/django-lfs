@@ -1,4 +1,5 @@
 # python imports
+import datetime
 from urlparse import urlparse
 
 # django imports
@@ -44,7 +45,7 @@ def login(request, template_name="lfs/customer/login.html"):
 
     It uses Django's standard AuthenticationForm, though.
     """
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
 
     # If only anonymous checkout is allowed this view doesn't exists :)
     # if shop.checkout_type == CHECKOUT_TYPE_ANON:
@@ -145,8 +146,38 @@ def orders(request, template_name="lfs/customer/orders.html"):
     """
     orders = Order.objects.filter(user=request.user)
 
+    if request.method == "GET":
+        date_filter = request.session.get("my-orders-date-filter")
+    else:
+        date_filter = request.POST.get("date-filter")
+        if date_filter:
+            request.session["my-orders-date-filter"] = date_filter
+        else:
+            try:
+                del request.session["my-orders-date-filter"]
+            except KeyError:
+                pass
+    try:
+        date_filter = int(date_filter)
+    except (ValueError, TypeError):
+        date_filter = None
+    else:
+        now = datetime.datetime.now()
+        start = now - datetime.timedelta(days=date_filter)
+        orders = orders.filter(created__gte=start)
+
+    options = []
+    for value in [1, 3, 6, 12]:
+        selected = True if value == date_filter else False
+        options.append({
+            "value": value,
+            "selected": selected,
+        })
+
     return render_to_response(template_name, RequestContext(request, {
         "orders": orders,
+        "options": options,
+        "date_filter": date_filter,
     }))
 
 
@@ -179,7 +210,7 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
     """Provides a form to edit addresses and bank account.
     """
     customer = lfs.customer.utils.get_customer(request)
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
 
     if request.method == "POST":
         form = AddressForm(request.POST)
@@ -241,7 +272,7 @@ def get_country_code(request, prefix):
 
     # get country code from shop
     if country_code == '':
-        shop = lfs.core.utils.get_default_shop()
+        shop = lfs.core.utils.get_default_shop(request)
         if shop.default_country is not None:
             country_code = shop.default_country.code
     return country_code
@@ -253,7 +284,7 @@ def address_inline(request, prefix, form):
     template_name = "lfs/customer/" + prefix + "_address_inline.html"
     country_code = get_country_code(request, prefix)
     if country_code != '':
-        shop = lfs.core.utils.get_default_shop()
+        shop = lfs.core.utils.get_default_shop(request)
         countries = None
         if prefix == INVOICE_PREFIX:
             countries = shop.invoice_countries.all()
@@ -311,7 +342,7 @@ def address_inline(request, prefix, form):
 
 def save_address(request, customer, prefix):
     # get the shop
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
 
     # get the country for the address
     country_iso = request.POST.get(prefix + "-country", shop.default_country.code)

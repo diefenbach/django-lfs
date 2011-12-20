@@ -25,6 +25,7 @@ from lfs.catalog.models import File
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import PropertyOption
+from lfs.catalog.models import ProductAttachment
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import VARIANT
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
@@ -50,10 +51,11 @@ def select_variant(request):
     changed.
     """
     variant_id = request.POST.get("variant_id")
+    variant = Product.objects.get(pk=variant_id)
     msg = _(u"The product has been changed according to your selection.")
 
     result = simplejson.dumps({
-        "product": product_inline(request, variant_id),
+        "product": product_inline(request, variant),
         "message": msg,
     }, cls=LazyEncoder)
 
@@ -119,7 +121,7 @@ def calculate_price(request, id):
         price += property_price
 
     result = simplejson.dumps({
-        "price": lfs_tags.currency(price),
+        "price": lfs_tags.currency(price, request),
         "for-sale-standard-price": lfs_tags.currency(for_sale_standard_price),
         "message": _("Price has been changed according to your selection."),
     }, cls=LazyEncoder)
@@ -148,7 +150,7 @@ def select_variant_from_properties(request):
         msg = _(u"The product has been changed according to your selection.")
 
     result = simplejson.dumps({
-        "product": product_inline(request, variant.id),
+        "product": product_inline(request, variant),
         "message": msg,
     }, cls=LazyEncoder)
 
@@ -385,7 +387,7 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
             "price": product.get_price(request),
             "standard_price": product.get_standard_price(request),
             "price_unit": product.price_unit,
-            "price_includes_tax": product.price_includes_tax,
+            "price_includes_tax": product.price_includes_tax(request),
         })
         if (i + 1) % amount_of_cols == 0:
             products.append(row)
@@ -454,26 +456,23 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
     request.session["RECENT_PRODUCTS"] = recent
 
     result = render_to_response(template_name, RequestContext(request, {
-        "product_inline": product_inline(request, product.id),
+        "product_inline": product_inline(request, product),
         "product": product,
     }))
 
     return result
 
 
-def product_inline(request, id, template_name="lfs/catalog/products/product_inline.html"):
+def product_inline(request, product, template_name="lfs/catalog/products/product_inline.html"):
     """Part of the prduct view, which displays the actual data of the product.
 
     This is factored out to be able to better cached and in might in future used
     used to be updated via ajax requests.
     """
-    cache_key = "%s-product-inline-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, request.user.is_superuser, id)
+    cache_key = "%s-product-inline-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, request.user.is_superuser, product.id)
     result = cache.get(cache_key)
     if result is not None:
         return result
-
-    # Get product in question
-    product = lfs_get_object_or_404(Product, pk=id)
 
     if product.sub_type == PRODUCT_WITH_VARIANTS:
         variant = product.get_default_variant()
@@ -558,15 +557,19 @@ def product_inline(request, id, template_name="lfs/catalog/products/product_inli
     else:
         packing_result = ""
 
+    # attachments
+    attachments = variant.get_attachments()
+
     result = render_to_string(template_name, RequestContext(request, {
         "product": product,
-        "standard_price": variant.get_standard_price(request),
-        "price": variant.get_price(request),
         "variant": variant,
         "variants": variants,
         "product_accessories": variant.get_accessories(),
         "properties": properties,
         "packing_result": packing_result,
+        "attachments": attachments,
+        "quantity" : product.get_clean_quantity(1),
+        "price_includes_tax": product.price_includes_tax(request),
     }))
 
     cache.set(cache_key, result)

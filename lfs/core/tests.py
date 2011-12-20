@@ -4,6 +4,7 @@ import locale
 # Import tests from other packages
 from lfs.cart.tests import *
 from lfs.catalog.tests import *
+from lfs.customer_tax.tests import *
 from lfs.marketing.tests import *
 from lfs.order.tests import *
 from lfs.page.tests import *
@@ -13,10 +14,16 @@ from lfs.voucher.tests import *
 from lfs.customer.tests import *
 from lfs.checkout.tests import *
 from lfs.payment.tests import *
-from lfs.manage.tests import *
+# from lfs.manage.tests import *
 from lfs.gross_price.tests import *
 from lfs.net_price.tests import *
-#from lfs.core.wmtests import *
+# from lfs.core.wmtests import *
+
+try:
+    from lfs_order_numbers.tests import *
+except ImportError:
+    pass
+
 
 # django imports
 from django.contrib.auth.models import User
@@ -56,6 +63,9 @@ class ShopTestCase(TestCase):
         self.assertEqual(shop.ga_ecommerce_tracking, False)
         self.assertEqual(shop.default_country.name, u"Deutschland")
         self.assertEqual(shop.get_default_country().name, u"Deutschland")
+        self.assertEqual(shop.meta_title, u"<name>")
+        self.assertEqual(shop.meta_keywords, u"")
+        self.assertEqual(shop.meta_description, u"")
 
     def test_from_email(self):
         """
@@ -95,6 +105,73 @@ class ShopTestCase(TestCase):
         self.assertEqual(
             shop.get_notification_emails(),
             ["john@doe.com", "jane@doe.com"])
+
+    def test_get_meta_title(self):
+        shop = lfs.core.utils.get_default_shop()
+        self.assertEqual("LFS", shop.get_meta_title())
+
+        shop.meta_title = "John Doe"
+        shop.save()
+
+        self.assertEqual("John Doe", shop.get_meta_title())
+
+        shop.meta_title = "<name> - John Doe"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe", shop.get_meta_title())
+
+        shop.meta_title = "John Doe - <name>"
+        shop.save()
+
+        self.assertEqual("John Doe - LFS", shop.get_meta_title())
+
+    def test_get_meta_keywords(self):
+        shop = lfs.core.utils.get_default_shop()
+        self.assertEqual("", shop.get_meta_keywords())
+
+        shop.meta_keywords = "John Doe"
+        shop.save()
+
+        self.assertEqual("John Doe", shop.get_meta_keywords())
+
+        shop.meta_keywords = "<name> - John Doe"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe", shop.get_meta_keywords())
+
+        shop.meta_keywords = "<name> - John Doe"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe", shop.get_meta_keywords())
+
+        shop.meta_keywords = "<name> - John Doe - <name>"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe - LFS", shop.get_meta_keywords())
+
+    def test_get_meta_description(self):
+        shop = lfs.core.utils.get_default_shop()
+        self.assertEqual("", shop.get_meta_description())
+
+        shop.meta_description = "John Doe"
+        shop.save()
+
+        self.assertEqual("John Doe", shop.get_meta_description())
+
+        shop.meta_description = "<name> - John Doe"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe", shop.get_meta_description())
+
+        shop.meta_description = "<name> - John Doe"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe", shop.get_meta_description())
+
+        shop.meta_description = "<name> - John Doe - <name>"
+        shop.save()
+
+        self.assertEqual("LFS - John Doe - LFS", shop.get_meta_description())
 
 
 class TagsTestCase(TestCase):
@@ -136,7 +213,7 @@ class TagsTestCase(TestCase):
     def test_ga_ecommerce_tracking(self):
         """
         """
-        shop = Shop.objects.get(pk=1)
+        shop = lfs.core.utils.get_default_shop()
         shop.google_analytics_id = ""
         shop.ga_site_tracking = False
         shop.ga_ecommerce_tracking = False
@@ -158,6 +235,11 @@ class TagsTestCase(TestCase):
         shop.google_analytics_id = "UA-XXXXXXXXXX"
         shop.save()
 
+        # Simulating a new request
+        rf = RequestFactory()
+        request = rf.get('/')
+        request.session = session
+
         # But this is not enough
         content = template.render(Context({"request": request}))
         self.failIf(content.find("pageTracker") != -1)
@@ -165,6 +247,11 @@ class TagsTestCase(TestCase):
         # It has to be activated first
         shop.ga_ecommerce_tracking = True
         shop.save()
+
+        # Simulating a new request
+        rf = RequestFactory()
+        request = rf.get('/')
+        request.session = session
 
         # But this is still not enough
         content = template.render(Context({"request": request}))
@@ -188,5 +275,5 @@ class TagsTestCase(TestCase):
         shop.use_international_currency_code = True
         shop.save()
 
-        self.assertEqual(currency(0.0, False), "USD 0.00")
-        self.assertEqual(currency(1.0, False), "USD 1.00")
+        self.assertEqual(currency(0.0, None, False), "USD 0.00")
+        self.assertEqual(currency(1.0, None, False), "USD 1.00")

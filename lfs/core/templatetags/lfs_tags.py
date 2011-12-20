@@ -23,7 +23,6 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
 import lfs.core.utils
-from lfs.core.models import Shop
 from lfs.core.models import Action
 from lfs.page.models import Page
 from lfs.shipping import utils as shipping_utils
@@ -43,7 +42,7 @@ def google_analytics_tracking(context):
     """Returns google analytics tracking code which has been entered to the
     shop.
     """
-    shop = lfs_get_object_or_404(Shop, pk=1)
+    shop = lfs.core.utils.get_default_shop(context.get("request"))
     return {
         "ga_site_tracking": shop.ga_site_tracking,
         "google_analytics_id": shop.google_analytics_id,
@@ -57,7 +56,7 @@ def google_analytics_ecommerce(context, clear_session=True):
     """
     request = context.get("request")
     order = request.session.get("order")
-    shop = lfs_get_object_or_404(Shop, pk=1)
+    shop = lfs.core.utils.get_default_shop(request)
 
     # The order is removed from the session. It has been added after the order
     # has been payed within the checkout process. See order.utils for more.
@@ -79,12 +78,12 @@ def _get_shipping(context, product):
     if product.is_deliverable() == False:
         return {
             "deliverable": False,
-            "delivery_time": shipping_utils.get_product_delivery_time(request, product.slug)
+            "delivery_time": shipping_utils.get_product_delivery_time(request, product)
         }
     else:
         return {
             "deliverable": True,
-            "delivery_time": shipping_utils.get_product_delivery_time(request, product.slug)
+            "delivery_time": shipping_utils.get_product_delivery_time(request, product)
         }
 
 
@@ -159,7 +158,7 @@ def breadcrumbs(context, obj):
         objects = []
         objects.append({
             "name": _(u"Information"),
-            "get_absolute_url": reverse("lfs_pages")}),
+            "url": reverse("lfs_pages")}),
         objects.append({"name": obj.title})
 
         result = {
@@ -430,7 +429,7 @@ def get_slug_from_request(request):
 
 
 @register.filter
-def currency(value, grouping=True):
+def currency(value, request=None, grouping=True):
     """
     e.g.
     import locale
@@ -438,7 +437,10 @@ def currency(value, grouping=True):
     currency(123456.789)  # Fr. 123'456.79
     currency(-123456.789) # <span class="negative">Fr. -123'456.79</span>
     """
-    shop = lfs.core.utils.get_default_shop()
+    if not value:
+        value = 0.0
+
+    shop = lfs.core.utils.get_default_shop(request)
     result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
     # add css class if value is negative
     if value < 0:
@@ -448,6 +450,7 @@ def currency(value, grouping=True):
             result = '%s-%s' % (result[0:length], result[length:-1])
         return '<span class="negative">%s</span>' % result
     return result
+
 
 @register.filter
 def decimal_l10n(value):
@@ -535,11 +538,34 @@ def packages(cart_item):
 def get_price(product, request):
     return product.get_price(request)
 
+@register.filter(name='get_price_net')
+def get_price_net(object, request):
+    return object.get_price_net(request)
+
+@register.filter(name='get_price_gross')
+def get_price_gross(object, request):
+    return object.get_price_gross(request)
+
+@register.filter(name='get_standard_price')
+def get_standard_price(product, request):
+    return product.get_standard_price(request)
+
+@register.filter(name='get_standard_price_net')
+def get_standard_price_net(product, request):
+    return product.get_standard_price_net(request)
+
+@register.filter(name='get_standard_price_gross')
+def get_standard_price_gross(product, request):
+    return product.get_standard_price_gross(request)
 
 @register.filter(name='get_for_sale_price')
 def get_for_sale_price(product, request):
     return product.get_for_sale_price(request)
 
-@register.filter(name='get_standard_price')
-def get_standard_price(product, request):
-    return product.get_standard_price(request)
+@register.filter(name='get_for_sale_price_net')
+def get_for_sale_price_net(product, request):
+    return product.get_for_sale_price_net(request)
+
+@register.filter(name='get_for_sale_price_gross')
+def get_for_sale_price_gross(product, request):
+    return product.get_for_sale_price_gross(request)

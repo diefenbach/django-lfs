@@ -15,7 +15,7 @@ Overview
 Types
 =====
 
-There are three types of products: ``product``, ``product with variants`` and 
+There are three types of products: ``product``, ``product with variants`` and
 ``variant``. There are further described in more detail.
 
 .. _product-product-label:
@@ -34,7 +34,7 @@ Configurable product
 * A configurable product is a product with several properties
 * Properties can be a selection or a input field
 * Properties can be price changing
-* The price of an configurable product is usually calculated by the product's 
+* The price of an configurable product is usually calculated by the product's
   base price plus all selected/entered values of its properties
 
 .. _product-product-with-variant-label:
@@ -82,7 +82,7 @@ management interface.
 Data
 ----
 
-This tab contains the core date of the product.
+This tab contains the core data of the product.
 
 Active
     Only active products are displayed to the customer, can be found, bought
@@ -312,8 +312,8 @@ like the dimension, stock amount and delivery dates.
 
 **Dimension**
 
-The values of the product are considered shipping relevant, e.g. the product
-within the package:
+The values of the product which are considered shipping relevant, e.g. the
+product within the package:
 
 Weight
     The weight of the product.
@@ -355,6 +355,19 @@ Ordered at
 
 If ``Order time`` and ``Order at`` is given LFS calculates the ``delivery
 time`` for the shop customer based on this and the default ``delivery time``.
+
+**Packaging Unit**
+
+Active packing unit
+    If this is checked only packages can be saled for this product. The price
+    of is autamatically calculated for the amount of pieces/packages.
+
+Packing unit
+    Amount of pieces of the product in one package.
+
+Unit:
+    The unit of the package, e.g.: package, set, etc.
+
 
 .. _product-seo-label:
 
@@ -435,7 +448,7 @@ To add properties and property values to the product proceed as following:
 1. Select the ``Property groups`` you want to assign to the product and click
    ``Update property groups``.
 
-You will now see all properties which are assigned to the product. 
+You will now see all properties which are assigned to the product.
 
 2. Enter the values for every assigned property and click on ``Update
    properties``

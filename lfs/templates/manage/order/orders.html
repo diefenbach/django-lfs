@@ -6,6 +6,9 @@
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
+    <div id="orders-filters-inline">
+        {{ orders_filters_inline|safe }}
+    </div>
     <div id="manage-tabs">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#orders">{% trans 'Orders' %}</a></li>

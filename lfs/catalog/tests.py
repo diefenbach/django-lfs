@@ -25,10 +25,11 @@ from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DISPLAY
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
-
+from lfs.catalog.settings import QUANTITY_FIELD_INTEGER
+from lfs.catalog.settings import QUANTITY_FIELD_DECIMAL_1
+from lfs.catalog.settings import QUANTITY_FIELD_DECIMAL_2
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import LIST
-
 from lfs.catalog.models import Category
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import GroupsPropertiesRelation
@@ -41,6 +42,7 @@ from lfs.catalog.models import ProductAccessories
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import ProductsPropertiesRelation
 from lfs.catalog.models import StaticBlock
+from lfs.catalog.models import ProductAttachment
 from lfs.core.models import Shop
 from lfs.core.signals import product_changed
 from lfs.core.signals import product_removed_property_group
@@ -1494,6 +1496,9 @@ class ProductTestCase(TestCase):
         # Assign images to variant
         self.v1.images.add(self.i4, self.i5)
 
+        # setup attachments test stuff
+        self.setupAttachments()
+
     def test_defaults(self):
         """Tests the default value after a product has been created
         """
@@ -2504,21 +2509,6 @@ class ProductTestCase(TestCase):
         # Now we get the weight of the variant itself
         self.assertEqual(self.v1.get_weight(), 14.0)
 
-    def test_get_price_with_unit(self):
-        shop = lfs_get_object_or_404(Shop, pk=1)
-        self.assertEqual(shop.default_locale, 'en_US.UTF-8')
-        self.failIf(self.p1.get_price_with_unit(self.request) != "$1.00")
-
-        self.p1.price_calculator = "lfs.net_price.NetPriceCalculator"
-        self.p1.save()
-
-        self.failIf(self.p1.get_price_with_unit(self.request) != "$1.00")
-
-        self.p1.price_calculator = None
-        self.p1.save()
-
-        self.failIf(self.p1.get_price_with_unit(self.request) != "$1.00")
-
     def test_add_product_variants(self):
         """Test the add variant form in the Manage interface
         """
@@ -2526,10 +2516,11 @@ class ProductTestCase(TestCase):
 
         product = Product.objects.get(slug="product-1")
 
-        variant_data = {  'slug': 'variant-slug',
-                          'name': 'variant',
-                          'price': 10.00,
-                          }
+        variant_data = {
+            'slug': 'variant-slug',
+            'name': 'variant',
+            'price': 10.00,
+        }
 
         # set up a user with permission to access the manage interface
         self.user, created = User.objects.get_or_create(username='manager', is_superuser=True)
@@ -2558,6 +2549,171 @@ class ProductTestCase(TestCase):
         self.assertEqual(variant.name, 'variant')
         self.assertEqual(variant.price, 10.00)
         self.assertEqual(variant.parent, product)
+
+    def setupAttachments(self):
+        # Assign attachments to products
+        self.attachment_P1_1_data = dict(
+            title='Attachment P1-1',
+            product=self.p1,
+        )
+        self.attachment_P1_1 = ProductAttachment.objects.create(**self.attachment_P1_1_data)
+
+        self.attachment_P1_2_data = dict(
+            title='Attachment P1-2',
+            product=self.p1,
+        )
+        self.attachment_P1_2 = ProductAttachment.objects.create(**self.attachment_P1_2_data)
+
+        self.attachment_V1_data = dict(
+            title='Attachment V1',
+            product=self.v1,
+        )
+        self.attachment_V1 = ProductAttachment.objects.create(**self.attachment_V1_data)
+
+    def test_get_attachments(self):
+        # retrieve attachments
+        match_titles = [self.attachment_P1_1_data['title'],
+                        self.attachment_P1_2_data['title']]
+        attachments = self.p1.get_attachments()
+        attachments_titles = [x.title for x in attachments]
+        self.assertEqual(match_titles, attachments_titles)
+
+        # check data
+        first = attachments[0]
+        for k, v in self.attachment_P1_1_data.items():
+            self.assertEqual(getattr(first, k), v)
+
+        second = attachments[1]
+        for k, v in self.attachment_P1_2_data.items():
+            self.assertEqual(getattr(second, k), v)
+
+        # retrieve variant attachment
+        attachments = self.v1.get_attachments()
+        attachments_titles = [x.title for x in attachments]
+        match_titles = [self.attachment_V1_data['title']]
+        self.assertEqual(attachments_titles, match_titles)
+
+        # delete variant attachment: we should get parent attachments
+        self.attachment_V1.delete()
+        pattachments = [x.title for x in self.p1.get_attachments()]
+        vattachments = [x.title for x in self.v1.get_attachments()]
+        self.assertEqual(pattachments, vattachments)
+
+        # position
+        self.attachment_P1_1.position = 20
+        self.attachment_P1_1.save()
+        self.attachment_P1_2.position = 10
+        self.attachment_P1_2.save()
+        attachments_titles = [x.title for x in self.p1.get_attachments()]
+        match_titles = [self.attachment_P1_2_data['title'],
+                        self.attachment_P1_1_data['title']]
+        self.assertEqual(match_titles, attachments_titles)
+
+    def test_get_type_of_quantity_field(self):
+        result = self.p1.get_type_of_quantity_field()
+        self.assertEqual(result, QUANTITY_FIELD_INTEGER)
+
+        result = self.v1.get_type_of_quantity_field()
+        self.assertEqual(result, QUANTITY_FIELD_INTEGER)
+
+        self.p1.type_of_quantity_field = QUANTITY_FIELD_DECIMAL_1
+        self.p1.save()
+
+        result = self.p1.get_type_of_quantity_field()
+        self.assertEqual(result, QUANTITY_FIELD_DECIMAL_1)
+        result = self.v1.get_type_of_quantity_field()
+        self.assertEqual(result, QUANTITY_FIELD_DECIMAL_1)
+
+        self.p1.type_of_quantity_field = QUANTITY_FIELD_DECIMAL_2
+        self.p1.save()
+
+        result = self.p1.get_type_of_quantity_field()
+        self.assertEqual(result, QUANTITY_FIELD_DECIMAL_2)
+        result = self.v1.get_type_of_quantity_field()
+        self.assertEqual(result, QUANTITY_FIELD_DECIMAL_2)
+
+    def test_get_clean_quantity(self):
+        result = self.p1.get_clean_quantity(1)
+        self.assertEqual(result, 1)
+        result = self.v1.get_clean_quantity(1)
+        self.assertEqual(result, 1)
+
+        result = self.p1.get_clean_quantity("1")
+        self.assertEqual(result, 1)
+        result = self.v1.get_clean_quantity("1")
+        self.assertEqual(result, 1)
+
+        result = self.p1.get_clean_quantity(1.0)
+        self.assertEqual(result, 1)
+        result = self.v1.get_clean_quantity(1.0)
+        self.assertEqual(result, 1)
+
+        result = self.p1.get_clean_quantity("1.0")
+        self.assertEqual(result, 1)
+        result = self.v1.get_clean_quantity("1.0")
+        self.assertEqual(result, 1)
+
+        result = self.p1.get_clean_quantity("A")
+        self.assertEqual(result, 1)
+        result = self.v1.get_clean_quantity("A")
+        self.assertEqual(result, 1)
+
+        self.p1.type_of_quantity_field = QUANTITY_FIELD_DECIMAL_1
+        self.p1.save()
+
+        result = self.p1.get_clean_quantity(1)
+        self.assertEqual(result, "1.0")
+        result = self.v1.get_clean_quantity(1)
+        self.assertEqual(result, "1.0")
+
+        result = self.p1.get_clean_quantity("1")
+        self.assertEqual(result, "1.0")
+        result = self.v1.get_clean_quantity("1")
+        self.assertEqual(result, "1.0")
+
+        result = self.p1.get_clean_quantity(1.0)
+        self.assertEqual(result, "1.0")
+        result = self.v1.get_clean_quantity(1.0)
+        self.assertEqual(result, "1.0")
+
+        result = self.p1.get_clean_quantity("1.0")
+        self.assertEqual(result, "1.0")
+        result = self.v1.get_clean_quantity("1.0")
+        self.assertEqual(result, "1.0")
+
+        result = self.p1.get_clean_quantity("A")
+        self.assertEqual(result, "1.0")
+        result = self.v1.get_clean_quantity("A")
+        self.assertEqual(result, "1.0")
+
+        self.p1.type_of_quantity_field = QUANTITY_FIELD_DECIMAL_2
+        self.p1.save()
+
+        result = self.p1.get_clean_quantity(1)
+        self.assertEqual(result, "1.00")
+        result = self.v1.get_clean_quantity(1)
+        self.assertEqual(result, "1.00")
+
+        result = self.p1.get_clean_quantity("1")
+        self.assertEqual(result, "1.00")
+        result = self.v1.get_clean_quantity("1")
+        self.assertEqual(result, "1.00")
+
+        result = self.p1.get_clean_quantity(1.0)
+        self.assertEqual(result, "1.00")
+        result = self.v1.get_clean_quantity(1.0)
+        self.assertEqual(result, "1.00")
+
+        result = self.p1.get_clean_quantity("1.0")
+        self.assertEqual(result, "1.00")
+        result = self.v1.get_clean_quantity("1.0")
+        self.assertEqual(result, "1.00")
+
+        result = self.p1.get_clean_quantity("A")
+        self.assertEqual(result, "1.00")
+        result = self.v1.get_clean_quantity("A")
+        self.assertEqual(result, "1.00")
+
 
 class ProductAccessoriesTestCase(TestCase):
     """Tests ProductAccessories (surprise, surprise).

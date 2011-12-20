@@ -106,6 +106,10 @@ table.lfs-manage-table.images td {
     vertical-align: top;
 }
 
+.lfs-manage-table td.top {
+    vertical-align: top;
+}
+
 .lfs-manage-table.full {
     width: 100%;
 }
@@ -133,6 +137,16 @@ table.lfs-manage-table.images td {
 .lfs-manage-table .right-padding {
     text-align: right;
     padding-right: 10px;
+}
+
+.lfs-manage-table.attachments td {
+    vertical-align: top;
+}
+
+.lfs-manage-table.attachments textarea {
+    width: 400px;
+    height: 100px;
+    margin-top: 2px;
 }
 
 .checkbox {
@@ -261,11 +275,15 @@ tr.odd {
 }
 
 .manage-product .navigation-pages,
-.manage-review .navigation-pages,
+.manage-customer .navigation-pages {
+    margin: 20px 0;
+}
+
 .manage-customer .navigation-pages,
 .manage-cart .navigation-pages,
+.manage-review .navigation-pages,
 .manage-order .navigation-pages {
-    margin: 20px 0;
+    margin: 5px 0 20px 0;
 }
 
 .manage-categories-portlet li {
@@ -275,6 +293,14 @@ tr.odd {
 
 .manage-categories-portlet li.current-item {
     font-weight: bold;
+}
+
+.portlet-edit-button {
+    cursor: pointer;
+}
+
+.portlet-edit-button:hover {
+    background-color: #eee;
 }
 
 /* Links */
@@ -341,14 +367,14 @@ td.management {
 
 
 .up {
-    margin: 0 4px;
+    margin: 0 5px;
     padding-left: 16px;
     background: url(../icons/arrow_up.png) no-repeat;
     text-decoration: none;
 }
 
 .down {
-    margin: 0 4px;
+    margin: 0 5px;
     padding-left: 16px;
     background: url(../icons/arrow_down.png) no-repeat;
     text-decoration: none;
@@ -361,36 +387,36 @@ a.add {
 
 
 a.delete {
-    margin: 0 10px;
-    padding-left: 20px;
-    background: url(../icons/delete.png) no-repeat;
+    margin: 0 5px;
+    padding-left: 16px;
+    background: url(../icons/cross.png) no-repeat;
 }
 
 a.export {
-    margin: 0 10px;
+    margin: 0 5px;
     padding: 0 0 1px 20px;
 }
 
 a.overview {
-    margin: 0 10px;
+    margin: 0 5px;
     padding-left: 20px;
     background: url(../icons/arrow_up.png) no-repeat;
 }
 
 a.preview {
-    margin: 0 10px;
+    margin: 0 5px;
     padding-left: 18px;
     background: url(../icons/zoom.png) no-repeat;
 }
 
 a.reset {
-    margin: 0 10px;
+    margin: 0 5px;
     padding-left: 18px;
     background: url(../icons/cancel.png) no-repeat;
 }
 
 a.send {
-    margin: 0 10px;
+    margin: 0 5px;
     padding-left: 22px;
     background: url(../icons/email.png) no-repeat;
 }
@@ -421,8 +447,8 @@ a.view {
 }
 
 a.edit {
-    margin-right:10px;
-    padding-left: 20px;
+    margin: 0 5px;
+    padding-left: 16px;
     background: url(../icons/pencil.png) no-repeat;
 }
 
@@ -523,12 +549,20 @@ select.categories {
 /* input fields */
 #id_name, #id_slug, #id_sku, #id_shop_owner, #id_from_email, #id_title, #id_redirect_to, #id_sku_manufacturer, #redirect_to, #id_position, #id_unit,
 #id_priority, #id_price, #id_for_sale_price, #id_tax, #id_module, #id_link, #id_parent, #id_static_block, #id_price_unit, #id_template, #id_meta_title,
-#id_type, #id_step_type {
+#id_type, #id_step_type, #id_delivery_time, #id_type_of_quantity_field, #id_price_calculator {
     width: 300px;
 }
 
-#id_default_variant, #id_variants_display_type {
+#id_rate {
+    width: 195px;
+}
+
+#id_country, #id_countries, #id_slot, #id_portlet-title, #id_default_variant, #id_variants_display_type, #selected-property-groups  {
     width: 200px;
+}
+
+#id_note {
+    width: 685px;
 }
 
 /* portlets */
@@ -685,8 +719,18 @@ form div.buttons {
     top: 20px;
 }
 
+.navigation-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 .navigation-body a {
     padding: 2px 0;
+}
+
+.navigation-body .top-page {
+    font-size: 110%;
 }
 
 ul.manufacturer-tree {
@@ -723,4 +767,9 @@ div.separator {
 
 ol {
     padding: 0 0 0 25px;
+}
+
+ .blank {
+    margin: 0 5px;
+    padding-left: 16px;
 }

@@ -42,9 +42,10 @@ class ShippingMethodForm(ModelForm):
 
     class Meta:
         model = ShippingMethod
+        exclude = ("priority", )
 
 
-# # Starting pages. This pages are called directly via a request
+# Starting pages. This pages are called directly via a request
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_shipping(request):
     """Dispatches to the first shipping method or to the add shipping method
@@ -182,7 +183,7 @@ def shipping_price_criteria(request, shipping_price_id, as_string=False,
 
         return HttpResponse(result)
 
-
+# Actions
 @permission_required("core.manage_shop", login_url="/login/")
 def add_shipping_method(request,
     template_name="manage/shipping/add_shipping_method.html"):
@@ -205,7 +206,6 @@ def add_shipping_method(request,
     }))
 
 
-# Actions
 @permission_required("core.manage_shop", login_url="/login/")
 def save_shipping_method_criteria(request, shipping_method_id):
     """Saves the criteria for the shipping method with given id. The criteria
@@ -372,6 +372,28 @@ def delete_shipping_method(request, shipping_method_id):
         msg=_(u"Shipping method has been deleted."),
     )
 
+
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
+def sort_shipping_methods(request):
+    """Sorts shipping methods after drag 'n drop.
+    """
+    shipping_methods = request.POST.get("objs", "").split('&')
+    assert (isinstance(shipping_methods, list))
+    if len(shipping_methods) > 0:
+        priority = 10
+        for sm_str in shipping_methods:
+            sm_id = sm_str.split('=')[1]
+            sm_obj = ShippingMethod.objects.get(pk=sm_id)
+            sm_obj.priority = priority
+            sm_obj.save()
+            priority = priority + 10
+
+        result = simplejson.dumps({
+            "message": _(u"The shipping methods have been sorted."),
+        }, cls=LazyEncoder)
+
+        return HttpResponse(result)
 
 def _update_price_positions(shipping_method):
     for i, price in enumerate(shipping_method.prices.all()):

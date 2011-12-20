@@ -28,6 +28,10 @@ class Order(models.Model):
 
     **Parameters**:
 
+    number
+        The unique order number of the order which is the reference for the
+        customer.
+
     voucher_number, voucher_value, voucher_tax
 
         Storing this information here assures that we have it all time, even
@@ -40,6 +44,7 @@ class Order(models.Model):
         A link to re-pay the order (e.g. for PayPal)
 
     """
+    number = models.CharField(max_length=30)
     user = models.ForeignKey(User, verbose_name=_(u"User"), blank=True, null=True)
     session = models.CharField(_(u"Session"), blank=True, max_length=100)
 

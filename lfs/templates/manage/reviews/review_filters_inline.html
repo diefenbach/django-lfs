@@ -1,0 +1,36 @@
+{% load i18n %}
+
+<form action="{% url lfs_set_review_filters %}"
+      method="post">
+
+    <input type="hidden" name="came-from" value="review" />
+    <input type="hidden" name="review-id" value="{{ review.id }}" />
+
+    <table class="filters">
+        <tr>
+            <td class="discreet">{% trans "Name" %}</td>
+            <td class="discreet">{% trans "Active" %}</td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text"
+                       name="name"
+                       value="{{ name }}">
+            </td>
+            <td>
+                <select name="active">
+                    <option value="">---</option>
+                    <option {% ifequal active "1" %}selected="selected"{% endifequal %}value="1">{% trans "Yes" %}</option>
+                    <option {% ifequal active "0" %}selected="selected"{% endifequal %}value="0">{% trans "No" %}</option>
+                </select>
+            </td>
+            <td>
+                <input type="submit"
+                       class="ajax-save-button" />
+
+                <a href="{% url lfs_reset_review_filters %}?came-from=review;review-id={{ review.id }}"
+                   class="ajax-link reset">&nbsp;</a>
+            </td>
+        </tr>
+    </table>
+</form>

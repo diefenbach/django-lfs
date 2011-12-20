@@ -128,7 +128,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     "title": property.title,
                     "type": property.type,
                     "options": options,
-                    "value" : value,
+                    "value": value,
                     "display_text_field": not display_select_field,
                     "display_select_field": display_select_field,
                 })
@@ -181,7 +181,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     "title": property.title,
                     "type": property.type,
                     "options": options,
-                    "value" : value,
+                    "value": value,
                     "display_text_field": not display_select_field,
                     "display_select_field": display_select_field,
                 })

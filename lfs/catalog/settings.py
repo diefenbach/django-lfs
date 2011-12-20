@@ -1,6 +1,16 @@
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
+QUANTITY_FIELD_INTEGER = 0
+QUANTITY_FIELD_DECIMAL_1 = 1
+QUANTITY_FIELD_DECIMAL_2 = 2
+
+QUANTITY_FIELD_TYPES = [
+    (QUANTITY_FIELD_INTEGER, _(u"Integer")),
+    (QUANTITY_FIELD_DECIMAL_1, _(u"Decimal 0.1")),
+    (QUANTITY_FIELD_DECIMAL_2, _(u"Decimal 0.01")),
+]
+
 ACTIVE_FOR_SALE_STANDARD = 0
 ACTIVE_FOR_SALE_YES = 2
 ACTIVE_FOR_SALE_NO = 3

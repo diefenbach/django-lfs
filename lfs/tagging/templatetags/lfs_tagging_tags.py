@@ -13,20 +13,20 @@ register = template.Library()
 
 
 @register.inclusion_tag('tagging/related_products_by_tags.html', takes_context=True)
-def related_products_by_tags(context, product_id, num=None):
+def related_products_by_tags(context, product, num=None):
     """Inclusion tag for a list of related products by tags.
     """
-    return _get_related_products_by_tags(product_id, num)
+    return _get_related_products_by_tags(product, num)
 
 
 @register.inclusion_tag('tagging/related_products_by_tags_portlet.html', takes_context=True)
-def related_products_by_tags_portlet(context, product_id, num=None):
+def related_products_by_tags_portlet(context, product, num=None):
     """Inclusion tag for a related products by tags portlet.
     """
-    return _get_related_products_by_tags(product_id, num)
+    return _get_related_products_by_tags(product, num)
 
 
-def _get_related_products_by_tags(product_id, num=None):
+def _get_related_products_by_tags(product, num=None):
     """Returns a dict with related products by tags.
 
     This is just a thin wrapper for the get_related method of the
@@ -39,13 +39,12 @@ def _get_related_products_by_tags(product_id, num=None):
     See there for more.
     """
     # Try to get it out of cache
-    cache_key = "%s-related-products-by-tags-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product_id)
+    cache_key = "%s-related-products-by-tags-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product.id)
     related_products = cache.get(cache_key)
     if related_products is not None:
         return {"related_products": related_products}
 
     # Create related products
-    product = lfs_get_object_or_404(Product, pk=product_id)
     related_products = TaggedItem.objects.get_related(product, Product, num)
 
     # Save related_products within cache

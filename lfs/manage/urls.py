@@ -63,6 +63,7 @@ urlpatterns += patterns('lfs.manage.views.lfs_portlets',
     url(r'^update-portlets/(?P<object_type_id>\d+)/(?P<object_id>\d+)$', "update_portlets", name="lfs_update_portlets"),
     url(r'^delete-portlet/(?P<portletassignment_id>\d+)$', "delete_portlet", name="lfs_delete_portlet"),
     url(r'^edit-portlet/(?P<portletassignment_id>\d+)$', "edit_portlet", name="lfs_edit_portlet"),
+    url(r'^move-portlet/(?P<portletassignment_id>\d+)$', "move_portlet", name="lfs_move_portlet"),
 )
 
 # Product
@@ -104,6 +105,14 @@ urlpatterns += patterns('lfs.manage.views.product.images',
     url(r'^product-images/(?P<product_id>\d*)$', "manage_images", name="lfs_manage_images"),
     url(r'^update-active-images/(?P<product_id>\d*)$', "update_active_images", name="lfs_manage_update_active_images"),
     url(r'^move-image/(?P<id>\d+)$', "move_image", name="lfc_move_image"),
+)
+
+# Product Attachments
+urlpatterns += patterns('lfs.manage.views.product.attachments',
+    url(r'^add-attachment/(?P<product_id>\d*)$', "add_attachment", name="lfs_manage_add_attachment"),
+    url(r'^update-attachments/(?P<product_id>\d*)$', "update_attachments", name="lfs_manage_update_attachments"),
+    url(r'^product-attachments/(?P<product_id>\d*)$', "manage_attachments", name="lfs_manage_attachments"),
+    url(r'^move-product-attachments/(?P<id>\d+)$', "move_attachment", name="lfs_move_product_attachment"),
 )
 
 # Product SEO
@@ -195,6 +204,8 @@ urlpatterns += patterns('lfs.manage.views.carts',
     url(r'^set-cart-filters$', "set_cart_filters", name="lfs_set_cart_filters"),
     url(r'^set-cart-filters-date$', "set_cart_filters_date", name="lfs_set_cart_filters_date"),
     url(r'^reset-cart-filters$', "reset_cart_filters", name="lfs_reset_cart_filters"),
+    url(r'^set-carts-page$', "set_carts_page", name="lfs_set_carts_page"),
+    url(r'^set-cart-page$', "set_cart_page", name="lfs_set_cart_page"),
 )
 
 # Categories
@@ -211,6 +222,7 @@ urlpatterns += patterns('lfs.manage.views.categories',
     url(r'^edit-category-view/(?P<category_id>\d*)$', "category_view", name="lfs_manage_category_view"),
     url(r'^selected-products/(?P<category_id>\d*)$', "selected_products", name="lfs_selected_products"),
     url(r'^load-products-tab/(?P<category_id>\d*)$', "products_tab", name="lfs_load_products_tab"),
+    url(r'^sort-categories$', "sort_categories", name="lfs_sort_categories"),
 )
 
 # Categories / SEO
@@ -228,6 +240,8 @@ urlpatterns += patterns('lfs.manage.views.customer',
     url(r'^reset-customer-filters$', "reset_customer_filters", name="lfs_reset_customer_filters"),
     url(r'^set-customer-ordering/(?P<ordering>\w*)$', "set_ordering", name="lfs_set_customer_ordering"),
     url(r'^selectable-customers-inline$', "selectable_customers_inline", name="lfs_selectable_customers_inline"),
+    url(r'^set-selectable-customers-page$', "set_selectable_customers_page", name="lfs_set_selectable_customers_page"),
+    url(r'^set-customers-page$', "set_customers_page", name="lfs_set_customers_page"),
 )
 
 # Export
@@ -257,6 +271,7 @@ urlpatterns += patterns('lfs.manage.views',
     url(r'^shipping-price-criteria/(?P<shipping_price_id>\d*)$', "shipping_price_criteria", name="lfs_manage_shipping_price_criteria"),
     url(r'^save-shipping-price-criteria/(?P<shipping_price_id>\d*)$', "save_shipping_price_criteria", name="lfs_manage_save_shipping_price_criteria"),
     url(r'^save-shipping-method-criteria/(?P<shipping_method_id>\d*)$', "save_shipping_method_criteria", name="lfs_manage_save_shipping_method_criteria"),
+    url(r'^sort-shipping-methods$', "sort_shipping_methods", name="lfs_sort_shipping_methods"),
 )
 
 # Discounts
@@ -275,6 +290,10 @@ urlpatterns += patterns('lfs.manage.views.page',
     url(r'^delete-page/(?P<id>\d*)$', "delete_page", name="lfs_delete_page"),
     url(r'^manage-pages$', "manage_pages", name="lfs_manage_pages"),
     url(r'^manage-page/(?P<id>\d*)$', "manage_page", name="lfs_manage_page"),
+    url(r'^page-by-id/(?P<id>\d*)$', "page_view_by_id", name="lfs_page_view_by_id"),
+    url(r'^sort-pages$', "sort_pages", name="lfs_sort_pages"),
+    url(r'^save-page-data-tab/(?P<id>\d*)$', "save_data_tab", name="lfs_save_page_data_tab"),
+    url(r'^save-page-seo-tab/(?P<id>\d*)$', "save_seo_tab", name="lfs_save_page_seo_tab"),
 )
 
 # Payment
@@ -289,6 +308,7 @@ urlpatterns += patterns('lfs.manage.views.payment',
     url(r'^payment-price-criteria/(?P<payment_price_id>\d*)$', "payment_price_criteria", name="lfs_manage_payment_price_criteria"),
     url(r'^save-payment-price-criteria/(?P<payment_price_id>\d*)$', "save_payment_price_criteria", name="lfs_manage_save_payment_price_criteria"),
     url(r'^save-payment-method-criteria/(?P<payment_method_id>\d*)$', "save_payment_method_criteria", name="lfs_manage_save_payment_method_criteria"),
+    url(r'^sort-payment-methods$', "sort_payment_methods", name="lfs_sort_payment_methods"),
 )
 
 # Orders
@@ -302,8 +322,14 @@ urlpatterns += patterns('lfs.manage.views.orders',
     url(r'^set-orders-filter$', "set_order_filters", name="lfs_set_order_filter"),
     url(r'^set-orders-filter-date$', "set_order_filters_date", name="lfs_set_order_filters_date"),
     url(r'^reset-order-filter$', "reset_order_filters", name="lfs_reset_order_filters"),
-    url(r'^selectable-orders-inline$', "selectable_orders_inline", name="lfs_selectable_orders_inline"),
+    url(r'^set-selectable-orders-page$', "set_selectable_orders_page", name="lfs_set_selectable_orders_page"),
+    url(r'^set-orders-page$', "set_orders_page", name="lfs_set_orders_page"),
     url(r'^change-order-state$', "change_order_state", name="lfs_change_order_state"),
+)
+
+# Order numbers
+urlpatterns += patterns('lfs.manage.views.shop',
+    url(r'^save-order-numbers-tab$', "save_order_numbers_tab", name="lfs_save_order_numbers_tab"),
 )
 
 # Criteria
@@ -335,21 +361,22 @@ urlpatterns += patterns('lfs.manage.views.static_blocks',
 # Reviews
 urlpatterns += patterns('lfs.manage.views.review',
     url(r'^reviews$', "reviews", name="lfs_manage_reviews"),
-    url(r'^reviews-inline$', "reviews_inline", name="lfs_reviews_inline"),
     url(r'^review/(?P<review_id>\d*)$', "review", name="lfs_manage_review"),
-    url(r'^review-inline/(?P<review_id>\d*)$', "review_inline", name="lfs_review_inline"),
     url(r'^set-review-filters$', "set_review_filters", name="lfs_set_review_filters"),
     url(r'^reset-review-filters$', "reset_review_filters", name="lfs_reset_review_filters"),
     url(r'^set-review-ordering/(?P<ordering>\w*)$', "set_ordering", name="lfs_set_review_ordering"),
-    url(r'^selectable-reviews-inline$', "selectable_reviews_inline", name="lfs_selectable_reviews_inline"),
-    url(r'^set-review-state/(?P<review_id>\d*)$', "set_state", name="lfs_set_review_state"),
+    url(r'^set-review-state/(?P<review_id>\d*)$', "set_review_state", name="lfs_set_review_state"),
     url(r'^delete-review/(?P<review_id>\d*)$', "delete_review", name="lfs_delete_review"),
+    url(r'^set-reviews-page$', "set_reviews_page", name="lfs_set_reviews_page"),
+    url(r'^set-selectable-reviews-page$', "set_selectable_reviews_page", name="lfs_set_selectable_reviews_page"),
 )
 
 # Shop
 urlpatterns += patterns('lfs.manage.views.shop',
     url(r'^shop$', "manage_shop", name="lfs_manage_shop"),
-    url(r'^save-shop-default-values$', "save_default_values", name="lfs_save_shop_default_values"),
+    url(r'^save-shop-data-tab$', "save_data_tab", name="lfs_save_shop_data_tab"),
+    url(r'^save-shop-default-values-tab$', "save_default_values_tab", name="lfs_save_shop_default_values_tab"),
+    url(r'^save-shop-seo-tab$', "save_seo_tab", name="lfs_save_shop_seo_tab"),
 )
 
 # Shop action
@@ -366,6 +393,15 @@ urlpatterns += patterns('lfs.manage.views.tax',
     url(r'^delete-tax/(?P<id>\d*)$', "delete_tax", name="lfs_delete_tax"),
     url(r'^manage-taxes$', "manage_taxes", name="lfs_manage_taxes"),
     url(r'^manage-tax/(?P<id>\d*)$', "manage_tax", name="lfs_manage_tax"),
+)
+
+# Customer tax
+urlpatterns += patterns('lfs.manage.customer_tax.views',
+    url(r'^add-customer-tax$', "add_customer_tax", name="lfs_add_customer_tax"),
+    url(r'^delete-customer-tax/(?P<id>\d*)$', "delete_customer_tax", name="lfs_delete_customer_tax"),
+    url(r'^customer-taxes$', "manage_customer_taxes", name="lfs_manage_customer_taxes"),
+    url(r'^customer-tax/(?P<id>\d*)$', "manage_customer_tax", name="lfs_manage_customer_tax"),
+    url(r'^no-customer-taxes$', "no_customer_taxes", name="lfs_manage_no_customer_taxes"),
 )
 
 # Utils

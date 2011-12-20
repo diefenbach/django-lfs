@@ -103,7 +103,7 @@ def process_payment(request):
     message.
     """
     payment_method = get_selected_payment_method(request)
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
 
     if payment_method.module:
         module = lfs.core.utils.import_module(payment_method.module + ".views")
@@ -176,7 +176,7 @@ def get_paypal_link_for_order(order):
     """
     shop = lfs_get_object_or_404(Shop, pk=1)
     current_site = Site.objects.get(id=settings.SITE_ID)
-    conv=locale.localeconv()
+    conv = locale.localeconv()
     default_currency = conv['int_curr_symbol']
 
     info = {

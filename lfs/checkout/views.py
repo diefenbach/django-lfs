@@ -54,7 +54,7 @@ def login(request, template_name="lfs/checkout/login.html"):
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse("lfs_checkout"))
 
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
 
     # If only anonymous checkout allowed we don't want to show this view at all.
     if shop.checkout_type == CHECKOUT_TYPE_ANON:
@@ -107,7 +107,7 @@ def login(request, template_name="lfs/checkout/login.html"):
 def checkout_dispatcher(request):
     """Dispatcher to display the correct checkout form
     """
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
     cart = cart_utils.get_cart(request)
 
     if cart is None or not cart.get_items():
@@ -170,12 +170,15 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
 
     cart_items = []
     for cart_item in cart.get_items():
+        product = cart_item.product
+        quantity = product.get_clean_quantity(cart_item.amount)
         cart_items.append({
             "obj": cart_item,
-            "product": cart_item.product,
-            "product_price_net": cart_item.product.get_price_net(request),
-            "product_price_gross": cart_item.product.get_price_gross(request) * cart_item.amount,
-            "product_tax": cart_item.product.get_tax(request),
+            "quantity" : quantity,
+            "product": product,
+            "product_price_net": product.get_price_net(request),
+            "product_price_gross": product.get_price_gross(request) * cart_item.amount,
+            "product_tax": product.get_tax(request),
         })
 
     return render_to_string(template_name, RequestContext(request, {
@@ -202,7 +205,7 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
     """
     # If the user is not authenticated and the if only authenticate checkout
     # allowed we rediret to authentication page.
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
     if request.user.is_anonymous() and \
        shop.checkout_type == CHECKOUT_TYPE_AUTH:
         return HttpResponseRedirect(reverse("lfs_checkout_login"))

@@ -1,9 +1,9 @@
-# python imports
+# Python imports
 import math
 import re
 import uuid
 
-# # django imports
+# django imports
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
@@ -48,6 +48,10 @@ from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DISPLAY
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
 from lfs.catalog.settings import PRODUCT_TEMPLATES
+from lfs.catalog.settings import QUANTITY_FIELD_TYPES
+from lfs.catalog.settings import QUANTITY_FIELD_INTEGER
+from lfs.catalog.settings import QUANTITY_FIELD_DECIMAL_1
+from lfs.catalog.settings import QUANTITY_FIELD_DECIMAL_2
 from lfs.catalog.settings import THUMBNAIL_SIZES
 from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
 from lfs.tax.models import Tax
@@ -392,145 +396,149 @@ class Category(models.Model):
 class Product(models.Model):
     """A product is sold within a shop.
 
-    Parameters:
-        - name
-            The name of the product
+    **Parameters:**
 
-        - slug
-            Part of the URL
+    name
+        The name of the product
 
-        - sku
-            The external unique id of the product
+    slug
+        Part of the URL
 
-        - price
-            The gross price of the product
+    sku
+        The external unique id of the product
 
-        - price_calculator
-            Class that implements lfs.price.PriceCalculator for calculating product price.
+    price
+        The gross price of the product
 
-        - effective_price:
-            Only for internal usage (price filtering).
+    price_calculator
+        Class that implements lfs.price.PriceCalculator for calculating product price.
 
-        - unit
-            The unit of the product. This is displayed beside the quantity
-            field.
+    effective_price:
+        Only for internal usage (price filtering).
 
-        - price_unit
-            The unit of the product's price. This is displayed beside the price
+    unit
+        The unit of the product. This is displayed beside the quantity
+        field.
 
-        - short_description
-            The short description of the product. This is used within overviews.
+    price_unit
+        The unit of the product's price. This is displayed beside the price
 
-        - description
-            The description of the product. This is used within the detailed view
-            of the product.
+    short_description
+        The short description of the product. This is used within overviews.
 
-        - images
-            The images of the product.
+    description
+        The description of the product. This is used within the detailed view
+        of the product.
 
-        - meta_title
-            the meta title of the product (the title of the HTML page).
+    images
+        The images of the product.
 
-        - meta_keywords
-            the meta keywords of the product.
+    meta_title
+        the meta title of the product (the title of the HTML page).
 
-        - meta_description
-            the meta description of the product.
+    meta_keywords
+        the meta keywords of the product.
 
-        - related_products
-            Related products for this products.
+    meta_description
+        the meta description of the product.
 
-        - accessories
-            Accessories for this products.
+    related_products
+        Related products for this products.
 
-        - for_sale
-            If True the product is for sale and the for sale price will be
-            displayed.
+    accessories
+        Accessories for this products.
 
-        - for_sale_price
-            The for sale price for the product. Will be displayed if the product
-            is for sale.
+    for_sale
+        If True the product is for sale and the for sale price will be
+        displayed.
 
-        - active
-            If False the product won't be displayed to shop users.
+    for_sale_price
+        The for sale price for the product. Will be displayed if the product
+        is for sale.
 
-        - creation_date
-            The creation date of the product
+    active
+        If False the product won't be displayed to shop users.
 
-        - deliverable
-            If True the product is deliverable. Otherwise not.
+    creation_date
+        The creation date of the product
 
-        - manual_delivery_time
-            If True the delivery_time of the product is taken. Otherwise the
-            delivery time will be calculate on global delivery times and
-            selected shipping method.
+    deliverable
+        If True the product is deliverable. Otherwise not.
 
-        - delivery_time
-            The delivery time of the product. This is only relevant if
-            manual_delivery_time is set to true.
+    manual_delivery_time
+        If True the delivery_time of the product is taken. Otherwise the
+        delivery time will be calculate on global delivery times and
+        selected shipping method.
 
-        - order_time
-            Order time of the product when no product is within the stock. This
-            is added to the product's delivery time.
+    delivery_time
+        The delivery time of the product. This is only relevant if
+        manual_delivery_time is set to true.
 
-        - ordered_at
-            The date when the product has been ordered. To calculate the rest of
-            the order time since the product has been ordered.
+    order_time
+        Order time of the product when no product is within the stock. This
+        is added to the product's delivery time.
 
-        - manage_stock_amount
-            If true the stock amount of the product will be decreased when a
-            product has been saled.
+    ordered_at
+        The date when the product has been ordered. To calculate the rest of
+        the order time since the product has been ordered.
 
-        - weight, height, length, width
-            The dimensions of the product relevant for the the stock (IOW the
-            dimension of the product's box not the product itself).
+    manage_stock_amount
+        If true the stock amount of the product will be decreased when a
+        product has been saled.
 
-        - tax
-            Tax rate of the product.
+    weight, height, length, width
+        The dimensions of the product relevant for the the stock (IOW the
+        dimension of the product's box not the product itself).
 
-        - static_block
-            A static block which has been assigned to the product.
+    tax
+        Tax rate of the product.
 
-        - sub_type
-            Sub type of the product. At the moment that is standard, product with
-            variants, variant.
+    static_block
+        A static block which has been assigned to the product.
 
-        - default_variant
-            The default variant of a product with variants. This will be
-            displayed at first if the shop customer browses to a product with
-            variant.
+    sub_type
+        Sub type of the product. At the moment that is standard, product with
+        variants, variant.
 
-        - variants_display_type
-            This decides howt the variants of a product with variants are
-            displayed. This is select box of list.
+    default_variant
+        The default variant of a product with variants. This will be
+        displayed at first if the shop customer browses to a product with
+        variant.
 
-        - parent
-            The parent of a variant (only relevant for variants)
+    variants_display_type
+        This decides howt the variants of a product with variants are
+        displayed. This is select box of list.
 
-        - active_xxx
-            If set to true the information will be taken from the variant.
-            Otherwise from the parent product (only relevant for variants)
+    parent
+        The parent of a variant (only relevant for variants)
 
-        - supplier
-            The supplier of the product
+    active_xxx
+        If set to true the information will be taken from the variant.
+        Otherwise from the parent product (only relevant for variants)
 
-        - template
-            Sets the template, which renders the product content. If left to None, default template is used.
+    supplier
+        The supplier of the product
 
-        - active_price_calculation
-            If True the price will be calculated by the field price_calculation
+    template
+        Sets the template, which renders the product content. If left to None, default template is used.
 
-        - price_calculation
-            Formula to calculate price of the product.
+    active_price_calculation
+        If True the price will be calculated by the field price_calculation
 
-        - sku_manufacturer
-            The product's article ID of the manufacturer (external article id)
+    price_calculation
+        Formula to calculate price of the product.
 
-        - manufacturer
-            The manufacturer of the product.
+    sku_manufacturer
+        The product's article ID of the manufacturer (external article id)
 
-        - uid
-           The unique id of the product
+    manufacturer
+        The manufacturer of the product.
+
+    uid
+       The unique id of the product
+
+    type_of_quantity_field
+        The type of the quantity field: Integer or Decimal for now.
     """
     # All products
     name = models.CharField(_(u"Name"), help_text=_(u"The name of the product."), max_length=80, blank=True)
@@ -614,7 +622,7 @@ class Product(models.Model):
     active_meta_description = models.BooleanField(_(u"Active meta description"), default=False)
     active_meta_keywords = models.BooleanField(_(u"Active meta keywords"), default=False)
     active_dimensions = models.BooleanField(_(u"Active dimensions"), default=False)
-    template = models.PositiveSmallIntegerField(_(u"Product template"), blank=True, null=True, max_length=400, choices=PRODUCT_TEMPLATES)
+    template = models.PositiveSmallIntegerField(_(u"Product template"), blank=True, null=True, choices=PRODUCT_TEMPLATES)
 
     # Price calculation
     active_price_calculation = models.BooleanField(_(u"Active price calculation"), default=False)
@@ -623,6 +631,7 @@ class Product(models.Model):
     # Manufacturer
     sku_manufacturer = models.CharField(_(u"SKU Manufacturer"), blank=True, max_length=100)
     manufacturer = models.ForeignKey(Manufacturer, verbose_name=_(u"Manufacturer"), blank=True, null=True, related_name="products")
+    type_of_quantity_field = models.PositiveSmallIntegerField(_(u"Type of quantity field"), default=QUANTITY_FIELD_INTEGER, choices=QUANTITY_FIELD_TYPES)
 
     objects = ActiveManager()
 
@@ -687,6 +696,20 @@ class Product(models.Model):
         """Returns True if the product has accessories.
         """
         return len(self.get_accessories()) > 0
+
+    def get_attachments(self):
+        """ Returns the ProductAttachment relationship objects.
+            If no attachment is found and it's variant get parent's ones.
+        """
+        attachments = ProductAttachment.objects.filter(product=self)
+        if not attachments and self.is_variant():
+            attachments = ProductAttachment.objects.filter(product=self.parent)
+        return attachments
+
+    def has_attachments(self):
+        """Returns True if the product has attachments.
+        """
+        return len(self.get_attachments()) > 0
 
     def get_amount_by_packages(self, quantity):
         """
@@ -1026,7 +1049,7 @@ class Product(models.Model):
         if self.price_calculator is not None:
             price_calculator = self.price_calculator
         else:
-            price_calculator = lfs.core.utils.get_default_shop().price_calculator
+            price_calculator = lfs.core.utils.get_default_shop(request).price_calculator
 
         module_str, price_calculator_str = price_calculator.rsplit('.', 1)
         mod = import_module(module_str)
@@ -1034,53 +1057,88 @@ class Product(models.Model):
         return price_calculator_class(request, self)
 
     def get_price(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
         pc = self.get_price_calculator(request)
         return pc.get_price(with_properties)
 
+    def get_price_net(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_price_net(with_properties)
+
+    def get_price_gross(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_price_gross(with_properties)
+
     def get_standard_price(self, request, with_properties=True):
-        """Returns always the standard price for the product. Independent
-        whether the product is for sale or not. If you want the real price of
-        the product use get_price instead.
-
-        **Parameters:**
-
-        with_properties
-            If the instance is a configurable product and with_properties is
-            True the prices of the default properties are added to the price.
+        """See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
         return pc.get_standard_price(with_properties)
 
-    def get_for_sale_price(self, request):
-        """returns the sale price for the product.
+    def get_standard_price_net(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_for_sale_price()
+        return pc.get_standard_price_net(with_properties)
 
-    def get_price_gross(self, request, with_properties=True):
-        """Returns the real gross price of the product. This is the base of
-        all price and tax calculations.
-
-        **Parameters:**
-
-        with_properties
-            If the instance is a configurable product and with_properties is
-            True the prices of the default properties are added to the price.
-
-        """
-        request = None
-        pc = self.get_price_calculator(request)
-        return pc.get_price_gross(with_properties)
-
-    def get_price_with_unit(self, request):
-        """Returns the formatted gross price of the product
+    def get_standard_price_gross(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_price_with_unit()
+        return pc.get_standard_price_gross(with_properties)
 
-    def get_price_net(self, request, with_properties=True):
+    def get_for_sale_price(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
         pc = self.get_price_calculator(request)
-        return pc.get_price_net(with_properties)
+        return pc.get_for_sale_price(with_properties)
+
+    def get_for_sale_price_net(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_for_sale_price_net(with_properties)
+
+    def get_for_sale_price_gross(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_for_sale_price_gross(with_properties)
+
+    def get_product_tax_rate(self, request):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_product_tax_rate()
+
+    def get_product_tax(self):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_product_tax()
+
+    def get_tax_rate(self, request):
+        """Returns the tax rate for the product and the current customer.
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_customer_tax_rate()
+
+    def get_tax(self, request):
+        """Returns the tax for the product and the current customer.
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_customer_tax()
+
+    def price_includes_tax(self, request):
+        """Returns whether our price calculator includes tax or not.
+        """
+        pc = self.get_price_calculator(request)
+        return pc.price_includes_tax()
 
     def get_global_properties(self):
         """Returns all global properties for the product.
@@ -1142,25 +1200,6 @@ class Product(models.Model):
             return self.parent.sku
         else:
             return self.sku
-
-    def get_tax_rate(self, request):
-        """Returns the tax rate of the product.
-        """
-        pc = self.get_price_calculator(request)
-        return pc.get_tax_rate()
-
-    def price_includes_tax(self):
-        """Returns whether our price calculator includes tax or not.
-        """
-        request = None
-        pc = self.get_price_calculator(request)
-        return pc.price_includes_tax()
-
-    def get_tax(self, request):
-        """Returns the absolute tax of the product.
-        """
-        pc = self.get_price_calculator(request)
-        return pc.get_tax()
 
     def has_related_products(self):
         """Returns True if the product has related products.
@@ -1350,6 +1389,38 @@ class Product(models.Model):
             return False
         else:
             return self.deliverable
+
+    def get_clean_quantity(self, quantity=1):
+        """Returns the correct formatted quantity based on the product's type
+        of quantity field.
+        """
+        try:
+            quantity = float(quantity)
+        except (TypeError, ValueError):
+            quantity = 1.0
+
+        type_of_quantity_field = self.get_type_of_quantity_field()
+        if type_of_quantity_field == QUANTITY_FIELD_INTEGER:
+            quantity = int(quantity)
+        elif type_of_quantity_field == QUANTITY_FIELD_DECIMAL_1:
+            quantity = "%.1f" % quantity
+        else:
+            quantity = "%.2f" % quantity
+
+        return quantity
+
+    def get_type_of_quantity_field(self):
+        """Returns the type of quantity field.
+        """
+        if self.is_variant():
+            obj = self.parent
+        else:
+            obj = self
+
+        if obj.type_of_quantity_field:
+            return obj.type_of_quantity_field
+        else:
+            return QUANTITY_FIELD_INTEGER
 
     # 3rd party contracts
     def get_parent_for_portlets(self):
@@ -2037,3 +2108,21 @@ class DeliveryTime(models.Model):
         max = int("%.0f" % (self.max + 0.001))
 
         return DeliveryTime(min=min, max=max, unit=self.unit)
+
+
+class ProductAttachment(models.Model):
+    """
+    """
+    title = models.CharField(_(u"Title"), max_length=50)
+    description = models.TextField(_(u"Description"), blank=True)
+    file = models.FileField(upload_to="files")
+    product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="attachments")
+    position = models.IntegerField(_(u"Position"), default=1)
+
+    class Meta:
+        ordering = ("position", )
+
+    def get_url(self):
+        if self.file.url:
+            return self.file.url
+        return None

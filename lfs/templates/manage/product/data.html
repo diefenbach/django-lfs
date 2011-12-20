@@ -5,7 +5,7 @@
 <form id="product-data-form"
       action="{% url lfs.manage.views.edit_product_data product.id %}"
       method="post">
-      
+
         <fieldset>
             <legend>{% trans "General" %}</legend>
             <div class="field">
@@ -27,7 +27,7 @@
 
                 {% if form.name.errors %}
                     <div class="error">
-                        {{ form.name }} 
+                        {{ form.name }}
                         {{ form.name.errors }}
                     </div>
                 {% else %}
@@ -36,9 +36,9 @@
                         {% if product.is_variant %}
                             {{ product.parent.name }}
                         {% endif %}
-                    </div>                                        
+                    </div>
                 {% endif %}
-            </div>            
+            </div>
         </fieldset>
 
         <fieldset>
@@ -272,6 +272,14 @@
                         {{ form.price_unit }}
                     </div>
                 </div>
+                <div class="field">
+                    <div class="label">
+                        {{ form.type_of_quantity_field.label_tag }}:
+                    </div>
+                    <div>
+                        {{ form.type_of_quantity_field }}
+                    </div>
+                </div>
             </fieldset>
         {% endif %}
 
@@ -357,5 +365,5 @@
             <input class="ajax-save-button button"
                    type="submit"
                    value="{% trans 'Save data' %}" />
-        </div>           
+        </div>
 </form>

@@ -6,7 +6,7 @@ from lfs.core.utils import get_default_shop
 def main(request):
     """context processor for lfs
     """
-    shop = get_default_shop()
+    shop = get_default_shop(request)
 
     return {
         "SHOP": shop,

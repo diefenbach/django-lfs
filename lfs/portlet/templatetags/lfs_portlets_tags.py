@@ -27,9 +27,12 @@ def lfs_portlet_slot(context, slot_name):
     implements the ``get_parent_for_portlets`` method the portlets of the
     parent of the instance are also added.
     """
+    request = context.get("request")
+
     instance = context.get("category") or \
                context.get("product") or \
-               lfs.core.utils.get_default_shop()
+               context.get("page") or \
+               lfs.core.utils.get_default_shop(request)
 
     cache_key = "%s-lfs-portlet-slot-%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slot_name, instance.__class__.__name__, instance.id)
     temp = cache.get(cache_key)

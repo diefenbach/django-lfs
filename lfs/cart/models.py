@@ -1,4 +1,4 @@
-# python imports
+
 import re
 
 # django imports
@@ -53,7 +53,7 @@ class Cart(models.Model):
     def __unicode__(self):
         return "%s, %s" % (self.user, self.session)
 
-    # DDD
+    # DEPRECATED 0.6
     @property
     def amount_of_items(self):
         """
@@ -64,7 +64,7 @@ class Cart(models.Model):
         logger.info("Decprecated: lfs.cart.models.Cart: the property 'amount_of_items' is deprecated. Please use 'get_amount_of_items'.")
         return self.get_amount_of_items()
 
-    # DDD
+    # DEPRECATED 0.6
     def items(self):
         """
         Returns the items of the cart.
@@ -74,7 +74,7 @@ class Cart(models.Model):
         logger.info("Decprecated: lfs.cart.models.Cart: the method 'items' is deprecated. Please use 'get_items'.")
         return self.get_items()
 
-    # DDD
+    # DEPRECATED 0.6
     def get_name(self):
         """
         Returns a name for the cart.
@@ -126,7 +126,7 @@ class Cart(models.Model):
             except CartItem.DoesNotExist:
                 cart_item = CartItem.objects.create(cart=self, product=product, amount=amount)
             else:
-                cart_item.amount += amount
+                cart_item.amount += float(amount)
                 cart_item.save()
 
         return cart_item
@@ -162,7 +162,8 @@ class Cart(models.Model):
         cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         items = cache.get(cache_key)
         if items is None:
-            items = CartItem.objects.filter(cart=self)
+            items = CartItem.objects.select_related().filter(cart=self)
+            # items = CartItem.objects.filter(cart=self)
             cache.set(cache_key, items)
         return items
 
@@ -174,13 +175,14 @@ class Cart(models.Model):
         import lfs.shipping.utils
         max_delivery_time = None
         for item in self.get_items():
-            delivery_time = lfs.shipping.utils.get_product_delivery_time(request, item.product.slug, for_cart=True)
+            delivery_time = lfs.shipping.utils.get_product_delivery_time(request, item.product, for_cart=True)
             if (max_delivery_time is None) or (delivery_time.as_hours() > max_delivery_time.as_hours()):
                 max_delivery_time = delivery_time
         return max_delivery_time
 
     def get_price_gross(self, request, total=False):
-        """Returns the total gross price of all items.
+        """
+        Returns the total gross price of all items.
         """
         price = 0
         for item in self.get_items():
@@ -188,7 +190,8 @@ class Cart(models.Model):
         return price
 
     def get_price_net(self, request):
-        """Returns the total net price of all items.
+        """
+        Returns the total net price of all items.
         """
         price = 0
         for item in self.get_items():
@@ -197,7 +200,8 @@ class Cart(models.Model):
         return price
 
     def get_tax(self, request):
-        """Returns the total tax of all items
+        """
+        Returns the total tax of all items
         """
         tax = 0
         for item in self.get_items():
@@ -240,7 +244,7 @@ class CartItem(models.Model):
     def __unicode__(self):
         return "Product: %s, Quantity: %f, Cart: %s" % (self.product, self.amount, self.cart)
 
-    # DDD
+    # DEPRECATED 0.6
     def get_price(self, request):
         """
         Convenient method to return the gross price of the product.

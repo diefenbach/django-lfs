@@ -1,5 +1,7 @@
 .. index:: Tax
 
+.. _management-taxes:
+
 =====
 Taxes
 =====
@@ -19,11 +21,11 @@ Rate
 
 Description
     A short description for internal uses only.
-    
+
 Add a tax
 =========
 
-To add an tax proceed as following: 
+To add an tax proceed as following:
 
 1. Click on the "Add tax" button
 2. Fill in the provided form
@@ -32,7 +34,7 @@ To add an tax proceed as following:
 Delete a tax
 ============
 
-To delete an tax proceed as following: 
+To delete an tax proceed as following:
 
 1. Click on the "Delete tax" button
 2. Answer the confirmation question with "Yes"

@@ -31,35 +31,47 @@
     </h3>
 
     {% if slot.portlets %}
-
         <table class="lfs-manage-table">
             <tr>
-                <th class="small">
+                <th class="middle">
                     {% trans 'Type' %}
                 </th>
-                <th class="middle">
+                <th>
                     {% trans 'Title' %}
                 </th>
-                <th class="tiny right-padding">
+                <th class="small right-padding">
                     {% trans 'Manage' %}
                 </th>
             </tr>
             {% for portlet in slot.portlets %}
-                <tr>
+                <tr class="portlet-edit-button"
+                    href="{% url lfs_edit_portlet portlet.pa_id %}">
                     <td>
                         {% trans portlet.type %}
                     </td>
                     <td>
                         {{ portlet.title }}
                     </td>
-                    <td class="right-padding management">
-                        <a class="delete-link"
+                    <td class="right-padding" nowrap="nowrap">
+                        {% if not forloop.first %}
+                            <a class="up ajax-link"
+                               href="{% url lfs_move_portlet portlet.pa_id %}?direction=0"
+                               title='{% trans "Move Up" %}'></a>
+                        {% else %}
+                            <span class="blank"></span>
+                        {% endif %}
+                        {% if not forloop.last %}
+                            <a class="down ajax-link"
+                               href="{% url lfs_move_portlet portlet.pa_id %}?direction=1"
+                               title='{% trans "Move Down" %}'></a>
+                        {% else %}
+                            <span class="blank"></span>
+                        {% endif %}
+                        <a class="delete-link delete"
+                           dialog_yes_button_class="ajax-save-button"
                            dialog_message='{% trans "Do you really want to delete this portlet?" %}'
-                           href="{% url lfs_delete_portlet portlet.pa_id %}">{% trans 'Delete' %}
-                        </a> |
-                        <a class="portlet-edit-button"
-                           href="{% url lfs_edit_portlet portlet.pa_id %}">{% trans 'Edit' %}
-                        </a>
+                           href="{% url lfs_delete_portlet portlet.pa_id %}"
+                           title='{% trans "Delete" %}'></a>
                     </td>
                 </tr>
             {% endfor %}
