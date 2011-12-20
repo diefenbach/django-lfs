@@ -419,7 +419,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         cursor.execute("""
             SELECT product_id, count(*)
             FROM catalog_productpropertyvalue
-            WHERE product_id IN (%s) and %s and type=%s
+            WHERE product_id IN (%s) and (%s) and type=%s
             GROUP BY product_id
             HAVING count(*)=%s""" % (product_ids, fstr, PROPERTY_VALUE_TYPE_FILTER, len(filters)))
 
