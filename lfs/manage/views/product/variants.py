@@ -23,6 +23,7 @@ from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyGroup
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import VARIANT, PROPERTY_SELECT_FIELD
+from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
 from lfs.core.utils import LazyEncoder
 from lfs.manage import utils as manage_utils
@@ -372,12 +373,19 @@ def add_variants(request, product_id):
                 variant.save()
             except IntegrityError:
                 continue
+            else:
+                # By default we copy the property groups of the product to
+                # the variants
+                for property_group in product.property_groups.all():
+                    variant.property_groups.add(property_group)
 
-            # Save the value for this product and property
+            # Save the value for this product and property.
             for option in options:
                 property_id, option_id = option.split("|")
-                pvo = ProductPropertyValue(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_VARIANT)
-                pvo.save()
+                ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_VARIANT)
+                # By default we create also the filter values as this most of
+                # the users would excepct.
+                ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_FILTER)
 
             message = _(u"Variants have been added.")
 
