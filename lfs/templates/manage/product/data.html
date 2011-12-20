@@ -186,32 +186,23 @@
                 </div>
             {% endif %}
 
-            <div class="field">
-                <div class="label">
-                    {{ form.price_calculator.label_tag }}:
-                </div>
-
-                {% if form.price.errors %}
-                    <div class="error">
-                        {{ form.price_calculator}}
-                        {{ form.price_calculator.errors }}
+            {% if not product.is_variant %}
+                <div class="field">
+                    <div class="label">
+                        {{ form.price_calculator.label_tag }}:
                     </div>
-                {% else %}
                     <div>
                         {{ form.price_calculator }}
-                        {{ form.price_calculator.help_text }}
                     </div>
-                {% endif %}
-            </div>
-
-                        {% if product.is_variant %}
+                </div>
+            {% endif %}
+            {% if product.is_variant %}
                 <div class="field">
                     <div class="label">
                         {{ form.for_sale.label_tag }}:
                     </div>
                     <div>
                         {{ form.active_for_sale }}
-
                         {% if product.parent.for_sale %}
                             {% trans 'Yes' %}
                         {% else %}
