@@ -199,3 +199,8 @@
     {% endif %}
 {% endif %}
 
+{% if shop_property_groups and product.is_product_with_variants %}
+    <h2 class="heading-middle">{% trans "Property values" %}</h2>
+    {% trans "Please go to the variants to assign property values." %}
+{% endif %}
+
