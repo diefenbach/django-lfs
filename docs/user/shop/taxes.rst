@@ -38,3 +38,8 @@ To delete an tax proceed as following:
 
 1. Click on the "Delete tax" button
 2. Answer the confirmation question with "Yes"
+
+.. seealso::
+
+    * :ref:`General about taxes <general-taxes>`
+    * :ref:`Manage customer taxes <management-customer-taxes>`

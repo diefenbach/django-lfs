@@ -78,6 +78,8 @@ Image
 Default values
 ==============
 
+.. _shop-price-calculator-label:
+
 Price calculator
 ----------------
 

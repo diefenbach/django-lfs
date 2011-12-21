@@ -1,8 +1,6 @@
 LFS - Lightning Fast Shop
 =========================
 
-LFS is a online-shop based on Django.
-
 Introduction
 ============
 
@@ -36,6 +34,7 @@ Miscellaneous information
 .. toctree::
    :maxdepth: 1
 
+   user/misc/products.rst
    user/misc/criteria.rst
    user/misc/properties.rst
    user/misc/taxes.rst
@@ -67,7 +66,6 @@ How-tos
 -------
 
 .. toctree::
-   :numbered:
    :maxdepth: 1
 
    developer/howtos/how_to_add_own_templates.rst
@@ -84,6 +82,5 @@ Indices and tables
 
 * :doc:`glossary`
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 

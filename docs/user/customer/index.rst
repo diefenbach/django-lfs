@@ -5,7 +5,7 @@ Customers
 In this section all sub menu points of ``Customers`` are described.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    customers.rst
    orders.rst

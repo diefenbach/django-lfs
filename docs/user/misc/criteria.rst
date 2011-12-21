@@ -17,7 +17,7 @@ At the moment criteria are used within:
     * shipping methods
     * shipping method's prices
     * discounts
-    
+
 In future they might be used to provide:
 
     * multiple product prices
@@ -44,6 +44,9 @@ to the used operator (see below).
 
 **Operators**
 
+Equal
+    The cart price is equal to the entered value
+
 Less than
     The criterion is true if the cart price is less than the entered value.
 
@@ -57,9 +60,6 @@ Greater than
 Greater than equal to
     The criterion is true if the cart price is greater than equal to the
     entered value
-
-Equal
-    The cart price is equal to the entered value
 
 Combined Length And Girth
 -------------------------
@@ -78,6 +78,9 @@ used operator (see below).
 
 **Operators**
 
+Equal
+    The criterion is true if the clag is equal to the entered value.
+
 Less than
     The criterion is true if the clag is less than the entered value.
 
@@ -90,9 +93,6 @@ Greater than
 Greater than equal to
     The criterion is true if the clag is greater than equal to the entered
     value.
-
-Equal
-    The criterion is true if the clag is equal to the entered value.
 
 Country
 -------
@@ -130,6 +130,9 @@ to the used operator (see below).
 
 **Operators**
 
+Equal
+    The total height is equal to the entered value
+
 Less than
     The criterion is true if the total height is less than the entered value.
 
@@ -145,9 +148,6 @@ Greater than equal to
     The criterion is true if the total height is greater than equal to the
     entered value.
 
-Equal
-    The total height is equal to the entered value
-
 Length
 ------
 
@@ -161,6 +161,9 @@ A number which describes a length level. How this is interpreted is up
 to the used operator (see below).
 
 **Operators**
+
+Equal
+    The criterion is true if the maximal length is equal to the entered value.
 
 Less than
     The criterion is true if the maximal length is less than the entered value.
@@ -177,9 +180,6 @@ Greater than equal to
     The criterion is true if the maximal length is greater than equal to the
     entered value.
 
-Equal
-    The criterion is true if the maximal length is equal to the entered value.
-
 Payment Method
 --------------
 
@@ -193,11 +193,11 @@ Any selection out of all provided payment methods.
 
 **Operators**
 
-Is
+Is selected
     The criterion is true if the current selected payment method is within
     the selected payment methods.
 
-Is not
+Is not selected
     The criterion is true if the current selected payment method is not within
     the selected payment methods.
 
@@ -221,11 +221,11 @@ Any selection out of all provided shipping methods.
 
 **Operators**
 
-Is
+Is selected
     The criterion is true if the current selected shipping method is within
     the selected shipping methods.
 
-Is not
+Is not selected
     The criterion is true if the current selected shipping method is not within
     the selected shipping methods.
 
@@ -235,15 +235,6 @@ Is valid
 Is not valid
     The criterion is true if all of the selected shipping methods are not
     valid.
-
-User
-----
-
-**Description**
-
-**Value**
-
-**Operators**
 
 Weight
 ------
@@ -259,6 +250,9 @@ used operator (see below).
 
 **Operators**
 
+Equal
+    The total weight is equal to the entered value
+
 Less than
     The total weight is less than the entered value
 
@@ -270,9 +264,6 @@ Greater than
 
 Greater than equal to
     The total weight is greater than equal to the entered value
-
-Equal
-    The total weight is equal to the entered value
 
 Width
 -----
@@ -288,6 +279,9 @@ used operator (see below).
 
 **Operators**
 
+Equal
+    The criterion is true if the maximum width is equal to the entered value.
+
 Less than
     The criterion is true if the maximum width is less than the entered value.
 
@@ -302,6 +296,3 @@ Greater than
 Greater than equal to
     The criterion is true if the maximum width is greater than equal to the
     entered value.
-
-Equal
-    The criterion is true if the maximum width is equal to the entered value.

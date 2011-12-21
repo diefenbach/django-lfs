@@ -49,3 +49,5 @@ To delete a customer tax proceed as following:
 .. seealso::
 
     * :ref:`General about taxes <general-taxes>`
+    * :ref:`Manage product taxes <management-taxes>`
+

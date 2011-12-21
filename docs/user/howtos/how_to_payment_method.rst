@@ -15,7 +15,7 @@ Overview
 * You can add as many payment methods you want.
 
 * All valid payment methods are displayed for selection to the shop customer.
-  
+
 * A payment method is true if all criteria of the payment method are true.
 
 * Payment methods can have many prices which are dependent of criteria. The
@@ -52,7 +52,7 @@ The data tab contains all core data for the payment method.
       shop customer.
     * **Description:** A short description of the payment method, which is also
       displayed to the customer.
-    * **Note:** A note of the payment method, which is displayed on the 
+    * **Note:** A note of the payment method, which is displayed on the
       confirmation mail after the shop customer has been checked out.
     * **Priority:** The first valid payment method with the highest priority
       (smaller number) method is displayed to the customer.
@@ -63,15 +63,15 @@ The data tab contains all core data for the payment method.
       overwritten within the price tab (see below).
     * **Module:** The dotted name of the external package which processes the
       payment (this is for developers only).
-    * **Type:** The type of the payment method. Dependent on that additional 
-      fields for input (within the checkout process) will be displayed. There 
+    * **Type:** The type of the payment method. Dependent on that additional
+      fields for input (within the checkout process) will be displayed. There
       are three types at the moment:
-      
+
         * Plain
           No additional fields are displayed.
-        * Bank 
+        * Bank
           Fields for a bank account are displayed.
-        * Credit Card 
+        * Credit Card
           Fields for a credit card are displayed.
 
 * Click on ``Save``-button
@@ -129,4 +129,4 @@ with criteria.
 
 .. seealso::
 
-    * :ref:`Manage shipping methods <management-payment-methods>`
+    * :ref:`Manage payment methods <management-payment-methods>`

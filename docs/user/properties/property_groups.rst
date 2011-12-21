@@ -110,6 +110,7 @@ group.
 
 For that just enter the you want and click save values.
 
-.. note::
+.. Note::
+
     You can also enter the values within the ``Properties`` tab of the product.
     :ref:`See here for more <product-properties-label>`.
