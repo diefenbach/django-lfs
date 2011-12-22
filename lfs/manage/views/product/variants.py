@@ -392,7 +392,10 @@ def add_variants(request, product_id):
 
             message = _(u"Variants have been added.")
 
-    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
+    html = (
+        ("#selectable-products-inline", _selectable_products_inline(request, product)),
+        ("#variants", manage_variants(request, product_id, as_string=True)),
+    )
 
     result = simplejson.dumps({
         "html": html,
@@ -495,7 +498,10 @@ def update_variants(request, product_id):
     # Send a signal to update cache
     product_changed.send(product)
 
-    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
+    html = (
+        ("#variants", manage_variants(request, product_id, as_string=True)),
+        ("#selectable-products-inline", _selectable_products_inline(request, product)),
+    )
 
     result = simplejson.dumps({
         "html": html,
@@ -557,3 +563,27 @@ def _refresh_property_positions(product_id):
     for i, product_property in enumerate(ProductsPropertiesRelation.objects.filter(product=product_id)):
         product_property.position = i * 2
         product_property.save()
+
+def _selectable_products_inline(request, product):
+    """Updates the product navigation on the left when variants added or
+    updated.
+    """
+    # Somewhat ugly but it works for now. This is will be updated if the
+    # planned refactoring of the whole product management takes place
+    from lfs.manage.views.product.product import selectable_products_inline
+    from lfs.manage.views.product.product import _get_filtered_products_for_product_view
+    from lfs.manage.views.product.product import get_current_page
+    from django.core.paginator import Paginator
+    AMOUNT = 20
+    products = _get_filtered_products_for_product_view(request)
+    paginator = Paginator(products, AMOUNT)
+    temp = product.parent if product.is_variant() else product
+    page = get_current_page(request, products, temp, AMOUNT)
+
+    try:
+        page = paginator.page(page)
+    except EmptyPage:
+        page = paginator.page(1)
+
+    return selectable_products_inline(request, page, paginator, product.id)
+
