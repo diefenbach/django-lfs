@@ -1,0 +1,13 @@
+{% for group in groups %}
+    {% if group.actions.all %}
+        <div class="action-group">{{ group.name }}</div>
+        {% for action in group.actions.all %}
+            <div class="action">
+                <a href="{% url lfs_manage_action action.id %}"
+                   class="selectable {% ifequal action.id current_action.id %}selected{% endifequal %}">
+                    {{ action.title }}
+                </a>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endfor %}
