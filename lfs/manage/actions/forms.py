@@ -10,7 +10,7 @@ class ActionForm(ModelForm):
     """
     class Meta:
         model = Action
-        exclude = ("parent", "place")
+        exclude = ("parent", "position")
 
 
 class ActionAddForm(ModelForm):

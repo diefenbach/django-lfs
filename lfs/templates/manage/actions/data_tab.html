@@ -4,7 +4,9 @@
       method="post">
     {% csrf_token %}
     {% include "manage/lfs_form.html" %}
-    <input class="ajax-save-button button"
-           type="submit"
-           value="{% trans 'Save action' %}">
+    <div class="buttons">
+        <input class="ajax-save-button button"
+               type="submit"
+               value="{% trans 'Save action' %}">
+    </div>
 </form>

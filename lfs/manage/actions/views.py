@@ -147,6 +147,28 @@ def delete_action(request, id):
     )
 
 
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
+def sort_actions(request):
+    """Sorts actions after drag 'n drop.
+    """
+    action_list = request.POST.get("objs", "").split('&')
+    if len(action_list) > 0:
+        pos = 10
+        for action_str in action_list:
+            action_id = action_str.split('=')[1]
+            action_obj = Action.objects.get(pk=action_id)
+            action_obj.position = pos
+            action_obj.save()
+            pos = pos + 10
+
+        result = simplejson.dumps({
+            "message": _(u"The actions have been sorted."),
+        }, cls=LazyEncoder)
+
+        return HttpResponse(result)
+
+
 def _update_positions():
     """Updates the positions of all actions.
     """

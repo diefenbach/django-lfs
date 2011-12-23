@@ -382,12 +382,13 @@ urlpatterns += patterns('lfs.manage.views.shop',
 
 # Actions
 urlpatterns += patterns('lfs.manage.actions.views',
-    url(r'^add-action$', "add_action", name="lfs_add_action"),
-    url(r'^save-action/(?P<id>\d*)$', "save_action", name="lfs_save_action"),
-    url(r'^delete-action/(?P<id>\d*)$', "delete_action", name="lfs_delete_action"),
     url(r'^actions$', "manage_actions", name="lfs_manage_actions"),
     url(r'^action/(?P<id>\d*)$', "manage_action", name="lfs_manage_action"),
     url(r'^no-actions$', "no_actions", name="lfs_no_actions"),
+    url(r'^add-action$', "add_action", name="lfs_add_action"),
+    url(r'^delete-action/(?P<id>\d*)$', "delete_action", name="lfs_delete_action"),
+    url(r'^save-action/(?P<id>\d*)$', "save_action", name="lfs_save_action"),
+    url(r'^sort-actions$', "sort_actions", name="lfs_sort_actions"),
 )
 
 # Tax
