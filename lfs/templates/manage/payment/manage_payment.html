@@ -13,8 +13,7 @@
     <div class="site-actions">
         <a class="add"
            href="{% url lfs_add_payment_method %}">
-            {% trans 'Add payment Method' %}</a>
-
+            {% trans 'Add Payment Method' %}</a>
         {% if payment_method.deletable %}
             <a class="delete delete-link"
                dialog_message="{% trans 'Do you really want to delete this payment method?' %}"
@@ -22,10 +21,9 @@
                 {% trans 'Delete payment method' %}</a>
         {% endif %}
     </div>
-
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Payment Method' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#criteria">{% trans 'Criteria' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#prices">{% trans 'Prices' %}</a></li>
         </ul>

@@ -83,11 +83,7 @@
         <div id="product-tabs">
             <ul>
                 <li>
-                    {% if product.get_name %}
-                        <a href="#data">{{ product.get_name }}</a>
-                    {% else %}
-                        <a href="#data">{% trans "Product" %}</a>
-                    {% endif %}
+                    <a href="#data">{% trans "Data" %}</a>
                 </li>
 
                 {% if not product.is_variant %}

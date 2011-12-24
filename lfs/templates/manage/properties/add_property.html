@@ -6,17 +6,17 @@
 {% block content %}
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add property' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add Property' %}</a></li>
         </ul>
         <div id="data">
-            <h2>{% trans 'Add property' %}</h2>
+            <h2>{% trans 'Data' %}</h2>
             <form action="{% url lfs_add_shop_property %}"
                   method="post">
                 {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
                 <input type="submit"
                        class="button"
-                       value="{% trans 'Add property' %}" />
+                       value="{% trans 'Add Property' %}" />
                     {% if  request.META.HTTP_REFERER %}
                         <input type="button"
                                class="button"

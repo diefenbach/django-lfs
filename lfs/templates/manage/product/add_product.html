@@ -17,10 +17,11 @@
             </ul>
 
             <div id="data">
+                <h2>{% trans "Data" %}</h2>
                 <form id="product-data-form"
                       action="{% url lfs.manage.views.add_product %}"
                       method="post">
-                    {% csrf_token %}  
+                    {% csrf_token %}
                     {% include "manage/lfs_form.html" %}
 
                     <div class="buttons">

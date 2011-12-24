@@ -29,14 +29,14 @@
 
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Manufacturer' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Products' %}</a></li>
         </ul>
-        
+
         <div id="data">
             {{ manufacturer_data_inline|safe }}
         </div>
-        
+
         <div id="products">
             <h2>{% trans "Products" %}</h2>
             <ul class="manufacturer-tree">

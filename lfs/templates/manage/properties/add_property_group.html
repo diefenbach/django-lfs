@@ -7,28 +7,28 @@
 {% block content %}
 
     <div id="manage-tabs">
-        
+
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Property Groups' %}</a></li>            
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add property Group' %}</a></li>
         </ul>
 
         <div id="data">
-            <h2>{% trans 'Add property Group' %}</h2>
+            <h2>{% trans 'Data' %}</h2>
             <form action="{% url lfs_add_property_group %}"
                   method="post">
-                {% csrf_token %}  
+                {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
 
                 <input type="submit"
                        class="button"
                        value="{% trans 'Add property group' %}" />
-                       
+
                 <input type="button"
                        class="button"
                        onclick="window.location='{{request.META.HTTP_REFERER}}'"
                        value="{% trans 'Cancel' %}" />
-                       
+
             </form>
         </div>
-    </div>        
+    </div>
 {% endblock %}

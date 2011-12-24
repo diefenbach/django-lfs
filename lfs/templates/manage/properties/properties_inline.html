@@ -35,7 +35,7 @@
                             <tr>
                                 <td></td>
                                 <td>
-                                    {% trans 'All properties are assigned' %}
+                                    {% trans 'All properties are selected' %}
                                 </td>
                             </tr>
                         {% endif %}
@@ -44,12 +44,12 @@
                 <div class="buttons">
                     <input type="submit"
                            class="ajax-save-button button"
-                           value="{% trans 'Assign properties' %}" />
+                           value="{% trans 'Add to Property Group' %}" />
                 </div>
             </form>
         </td>
         <td width="50%">
-            <h2>{% trans 'Assigned properties' %}</h2>
+            <h2>{% trans 'Selected Properties' %}</h2>
             <form id="property-group-update-form"
                   action="{% url lfs_update_properties property_group.id %}"
                   method="post">
@@ -102,7 +102,7 @@
                     <input type="submit"
                            class="ajax-save-button button"
                            name="remove"
-                           value="{% trans 'Remove properties' %}" />
+                           value="{% trans 'Remove from Property Group' %}" />
                     <input type="submit"
                            class="ajax-save-button button"
                            name="update"

@@ -6,10 +6,8 @@
       class="ajax-form"
       action="{% url lfs_manage_save_payment_method_data payment_method.id %}"
       enctype="multipart/form-data">
-
     {% csrf_token %}
     {% include "manage/lfs_form.html" %}
-
     <div class="buttons">
         <input class="ajax-form-button button"
                type="submit"
