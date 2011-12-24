@@ -404,7 +404,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         # Generate filter
         temp = []
         for f in filters:
-            if not isinstance(f[1], list):
+            if not isinstance(f[1], (list, tuple)):
                 temp.append("property_id='%s' AND value='%s'" % (f[0], f[1]))
             else:
                 temp.append("property_id='%s' AND value_as_float BETWEEN '%s' AND '%s'" % (f[0], f[1][0], f[1][1]))
