@@ -14,93 +14,68 @@ from lfs.core.signals import product_removed_property_group
 
 
 def property_option_deleted_listener(sender, instance, **kwargs):
-    """Deletes all property values which have the deleted PropertyOption
-    (instance) selected.
+    """
+    This is called before a PropertyOption is deleted.
 
-    NOTE: This has to be done via a event/listener pair, because the id of
-    the option is stored within value field (a char field) of the Product-
-    PropertyValue [1]. That means that there is no relation at ORM level,
-    hence the automatic integrity check doesn't take place at all.
-
-    [1] This is done because the value field can also contain free text, for
-    instance if the type of the property is a PROPERTY_TEXT_FIELD.
+    Deletes all property values that have the PropertyOption (passed by
+    instance) selected which is about to be deleted.
     """
     property = instance.property
-    for ppv in ProductPropertyValue.objects.filter(
-        property=property, value=str(instance.id)):
-        ppv.delete()
+    ProductPropertyValue.objects.filter(property=property, value=str(instance.id)).delete()
 pre_delete.connect(property_option_deleted_listener, sender=PropertyOption)
 
 
 def property_group_deleted_listener(sender, instance, **kwargs):
-    """Deletes all ProductPropertyValue, which fullfill following criteria:
-       1. Property belongs to the deleted PropertyGroup
-       2. Product has the deleted PropertyGroup selected
+    """
+    This is called before a PropertyGroup is deleted.
+
+    Deletes all ProductPropertyValue which are assigned to products and
+    properties of the PropertyGroup which is about to be deleted.
     """
     properties = instance.properties.all()
     products = instance.products.all()
 
     for product in products:
         for property in properties:
-            try:
-                ppv = ProductPropertyValue.objects.get(product=product, property=property)
-            except ProductPropertyValue.DoesNotExist:
-                pass
-            else:
-                ppv.delete()
+            ProductPropertyValue.objects.filter(product=product, property=property).delete()
 pre_delete.connect(property_group_deleted_listener, sender=PropertyGroup)
 
 
-def property_removed_listener(sender, instance, **kwargs):
-    """This is called when a GroupsPropertiesRelation is about to be deleted.
-    This stands for removing a Property from a PropertyGroup.
+def property_removed_from_property_group_listener(sender, instance, **kwargs):
+    """
+    This is called before a GroupsPropertiesRelation is deleted, in other
+    words when a Property is removed from a PropertyGroup.
 
-    This deletes all ProductPropertyValue of products which are in the group of
-    question and with the removed property.
+    Deletes all ProductPropertyValue which are assigned to the property and
+    the property group from which the property is about to be removed.
     """
     property = instance.property
     products = instance.group.products.all()
 
     for product in products:
-        try:
-            ppv = ProductPropertyValue.objects.get(product=product, property=property)
-        except ProductPropertyValue.DoesNotExist:
-            pass
-        else:
-            ppv.delete()
-pre_delete.connect(property_removed_listener, sender=GroupsPropertiesRelation)
-
-
-def property_type_changed_listener(sender, **kwargs):
-    """This is called when the type of a Property has been changed. Then all
-    ProductPropertyValue with this property have to be deleted.
-    """
-    ppvs = ProductPropertyValue.objects.filter(property=sender)
-    ppvs.delete()
-property_type_changed.connect(property_type_changed_listener)
+        ProductPropertyValue.objects.filter(product=product, property=property).delete()
+pre_delete.connect(property_removed_from_property_group_listener, sender=GroupsPropertiesRelation)
 
 
 def product_removed_from_property_group_listener(sender, **kwargs):
     """
+    This is called when a product is removed from a property group.
+
+    Deletes all ProductPropertyValue for this product and the properties which
+    are belong to this property group.
     """
     property_group, product = sender
 
-    # Remove property values for product and properties of the group.
     for property in property_group.properties.all():
-        try:
-            ppv = ProductPropertyValue.objects.get(product=product, property=property)
-        except ProductPropertyValue.DoesNotExist:
-            pass
-        else:
-            ppv.delete()
+        ProductPropertyValue.objects.filter(product=product, property=property).delete()
 product_removed_property_group.connect(product_removed_from_property_group_listener)
 
 
-def product_removed_from_category_listener(sender, instance, action, reverse, model, pk_set, **kwargs):
-    if action in [u'post_add', u'post_remove']:
-        for pk in pk_set:
-            with_parents = False # FIXME: we assume with_parents is False similar to method_signature for get_categories
-            cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, pk, with_parents)
-            categories = cache.delete(cache_key)
+def property_type_changed_listener(sender, **kwargs):
+    """
+    This is called after the type of a property has been changed.
 
-m2m_changed.connect(product_removed_from_category_listener, Category.products.through)
+    Deletes all ProductPropertyValue which are assigned to the property.
+    """
+    ProductPropertyValue.objects.filter(property=sender).delete()
+property_type_changed.connect(property_type_changed_listener)
