@@ -27,6 +27,12 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.6.2 (2011-12-24)
+------------------
+
+* Bugfix: fixed issue with utf-8 support for MySQL; issue #126
+* Bugfix: fixed product filtering; issue #124
+
 0.6.1 (2011-12-16)
 ------------------
 
