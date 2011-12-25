@@ -391,12 +391,12 @@ urlpatterns += patterns('lfs.manage.actions.views',
     url(r'^sort-actions$', "sort_actions", name="lfs_sort_actions"),
 )
 
-# Tax
+# Taxes
 urlpatterns += patterns('lfs.manage.views.tax',
-    url(r'^add-tax$', "add_tax", name="lfs_add_tax"),
-    url(r'^delete-tax/(?P<id>\d*)$', "delete_tax", name="lfs_delete_tax"),
-    url(r'^manage-taxes$', "manage_taxes", name="lfs_manage_taxes"),
-    url(r'^manage-tax/(?P<id>\d*)$', "manage_tax", name="lfs_manage_tax"),
+    url(r'^add-product-tax$', "add_tax", name="lfs_add_tax"),
+    url(r'^delete-product-tax/(?P<id>\d*)$', "delete_tax", name="lfs_delete_tax"),
+    url(r'^product-taxes$', "manage_taxes", name="lfs_manage_taxes"),
+    url(r'^product-tax/(?P<id>\d*)$', "manage_tax", name="lfs_manage_tax"),
 )
 
 # Customer tax
