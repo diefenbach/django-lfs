@@ -2,9 +2,9 @@
 
 .. _pages_management:
 
-====
-Page
-====
+=====
+Pages
+=====
 
 This section describes the management interfaces of pages.
 

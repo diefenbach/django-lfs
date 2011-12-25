@@ -251,8 +251,8 @@ Related products
 
 Within this tab you can manage the related products of this product.
 
-Add Accessories
-^^^^^^^^^^^^^^^
+Add Related Products
+^^^^^^^^^^^^^^^^^^^^
 
 Within the ``Selectable Products`` section select all checkbox beside the
 product you want to add as related products to the product and click on
@@ -263,8 +263,8 @@ product you want to add as related products to the product and click on
     You can filter the selectable products by name and category with the
     input fields on top of the ``Selectable Products`` section.
 
-Remove accessories
-^^^^^^^^^^^^^^^^^^
+Remove Related Products
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Within the ``Selected Products`` section select all checkboxes beside the
 products you want to remove from the product and click on ``Remove From
