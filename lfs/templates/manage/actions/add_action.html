@@ -1,6 +1,8 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}/user/management/shop/actions.html{% endblock %}
+
 {% block section %}add-action{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
@@ -16,7 +18,7 @@
                   method="post">
                 {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
-                
+
                 <div class="buttons">
                     <input type="submit"
                            class="button"

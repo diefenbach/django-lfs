@@ -111,7 +111,7 @@ def save_action(request, id):
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def add_action(request, template_name="manage/shop/add_action.html"):
+def add_action(request, template_name="manage/actions/add_action.html"):
     """Provides a form to add a new action.
     """
     if request.method == "POST":
