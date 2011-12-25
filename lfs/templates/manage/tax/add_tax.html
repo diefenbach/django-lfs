@@ -1,13 +1,15 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}/user/management/shop/product_taxes.html{% endblock %}
+
 {% block sextion %}add-tax{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add Tax' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add Product Tax' %}</a></li>
         </ul>
         <div id="data">
             <h2>{% trans "Data" %}</h2>

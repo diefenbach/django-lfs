@@ -123,6 +123,13 @@
                                     <li><a href="{% url lfs_manage_utils %}">{% trans 'Miscellaneous' %}</a></li>
                                 </ul>
                             </li>
+                            {% block help_wrapper %}
+                                <li><a href="{{ LFS_DOCS }}{% block help_link %}{% endblock %}"
+                                       target="_blank">
+                                       Help
+                                    </a>
+                                <li>
+                            {% endblock %}
                         </ul>
                     </td>
                 </tr>
