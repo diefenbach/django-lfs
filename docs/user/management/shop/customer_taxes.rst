@@ -7,49 +7,33 @@
 Customer Taxes
 ==============
 
-This section describes the management interface for ``customer taxes``.
+This section describes the management interface for customer taxes.
 
-Overview
-========
-
-``Customer taxes`` are used to calculate the tax for a product and a specific
-customer.
-
-.. Note::
-
-    At the moment you can choose different taxes for different shipping
-    countries. This might be extended in future.
-
-Customer Tax
+Site Actions
 ============
+
+Add Customer Tax
+    Adds a new customer tax.
+
+Delete Customer  Tax
+    Deletes the currently displayed customer product tax.
+
+Data
+====
 
 Rate
     The tax rate in percent.
 
-Add a customer tax
-==================
-
-To add a new ``customer tax`` proceed as following:
-
-1. Click on the ``Add customer tax`` button.
-2. Fill in the provided form.
-3. Click on the ``Add customer tax`` button below the fields.
+Countries
+    The countries for which the customer tax is valid.
 
 .. Note::
 
     You can add just one tax rate per country.
 
-Delete a tax
-============
-
-To delete a customer tax proceed as following:
-
-1. Click on the ``Delete tax`` button.
-2. Answer the confirmation question with ``Yes``.
-
 See also
 ========
 
-* :ref:`How LFS handles taxes <general-taxes>`
-* :ref:`Manage product taxes <management-taxes>`
+* :ref:`Taxes in general <taxes_concept>`
+* :ref:`Manage product taxes <product_taxes_management>`
 

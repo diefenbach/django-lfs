@@ -1,6 +1,6 @@
 .. index:: Taxes
 
-.. _general-taxes:
+.. _taxes_concept:
 
 =====
 Taxes
@@ -71,5 +71,5 @@ directly to the products.
 See also
 ========
 
-* :ref:`Manage product taxes <management-taxes>`
+* :ref:`Manage product taxes <product_taxes_management>`
 * :ref:`Manage customer taxes <management-customer-taxes>`

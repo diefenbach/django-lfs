@@ -1,20 +1,24 @@
 .. index:: single: Tax; Product
 
-.. _management-taxes:
+.. _product_taxes_management:
 
 =============
 Product Taxes
 =============
 
-This section describes the management interface for taxes.
+This section describes the management interface for product taxes.
 
-Overview
-========
+Site Actions
+============
 
-* Taxes are used to calculate the included tax for a product.
+Add Tax
+    Adds a new product tax.
 
-Tax
-===
+Delete Tax
+    Deletes the current product tax.
+
+Data
+====
 
 Rate
     The tax rate in percent.
@@ -22,25 +26,8 @@ Rate
 Description
     A short description for internal uses only.
 
-Add a tax
-=========
-
-To add an tax proceed as following:
-
-1. Click on the "Add tax" button
-2. Fill in the provided form
-3. Click on the "Add tax" button below the fields
-
-Delete a tax
-============
-
-To delete an tax proceed as following:
-
-1. Click on the "Delete tax" button
-2. Answer the confirmation question with "Yes"
-
 See also
 ========
 
-* :ref:`General about taxes <general-taxes>`
-* :ref:`Manage customer taxes <management-customer-taxes>`
+* :ref:`General about taxes <taxes_concept>`
+* :ref:`Manage Customer Taxes <management-customer-taxes>`
