@@ -15,15 +15,16 @@ Add Action
     Adds a new action.
 
 Delete Action
-    Deletes the current displayed action.
+    Deletes the currently displayed action.
 
 View Shop
-    This opens the front page of the shop in pop-up window to quickly check
-    the added action without the need to leave management interface.
+    This opens the front page of the shop in a pop-up window to quickly check
+    the added actions without the need to leave the management interface.
 
 Sort Actions
-    In order to sort actions, hold it on the handle and drag and drop it to
-    the position you want the it to be.
+    In order to sort the actions, hold an action on the handle within the
+    navigation on the left and drag and drop it to the position you want it to
+    be.
 
 Data
 ====
