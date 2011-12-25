@@ -34,8 +34,8 @@ on the left side and drag and drop it to the position you want the page to be.
 Root
 ====
 
-The ``Root`` page is the root of all page. With the help of it you can add
-portlets which are inherit to all pages.
+This is the root of all pages. You can add portlets to it which are inherited
+from all other pages.
 
 Tabs
 ====
