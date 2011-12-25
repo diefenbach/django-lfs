@@ -346,7 +346,7 @@ Unit:
 SEO
 ---
 
-This tab is used to optimize your pages for search engines. You can enter data
+This tab is used to optimize your product for search engines. You can enter data
 for all usual HTML meta data fields. However LFS provides some reasonable default
 values for all fields.
 

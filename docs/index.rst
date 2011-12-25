@@ -41,6 +41,7 @@ Concepts
    user/concepts/payment_methods.rst
    user/concepts/marketing.rst
    user/concepts/reviews.rst
+   user/concepts/pages.rst
 
 .. _index_users_management_interface:
 

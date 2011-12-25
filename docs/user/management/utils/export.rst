@@ -2,10 +2,19 @@
 Export
 ======
 
-Overview
-========
+Within this tab you can export selections of products.
 
-Within this tab you can export flexible selection of products.
+Site Actions
+============
+
+Add Export
+    Adds a new export.
+
+Delete Export
+    Deletes the currently displayed export.
+
+Download Export
+    Downloads the currently displayed export.
 
 Tabs
 ====
@@ -17,45 +26,35 @@ Name
     The name of the product selection. This is just for internal reasons.
 
 Slug
-    The unique part of the selection's URL. This is used to call the selection 
+    The unique part of the selection's URL. This is used to call the selection
     from outside.
-    
+
 Script
     The script which is used to create the export. By default there is only
-    *default*. Developers can add more scripts.
-    
+    the ``Generic`` script. Developers can :ref:`add more scripts
+    <developers_howto_export>`.
+
 Variants
-    This defines how a product witth variants is exported. ``Default``: the 
-    default variant will be exported. ``Cheapest``: the cheapest variant will 
-    be exported. ``All``: all variants will be exported.
-    
+    This defines how a product with variants is exported by default. This is
+    either the default variant, the cheapest variant or all variants.
+
 Position
-    The position of the selectio within the management interface.
+    The position of the selection within the management interface.
 
-Product selection
------------------
+Products
+--------
 
-To select products just check the checkbox beside the products you want to 
-export. You can also check whole categories. For every category you can 
-select which variants of a product with variants will be exported (see above).
+Within this tab you can select which products are supposed to be exported.
 
-Actions
-=======
+To export whole categories just select the checkbox beside the category you want
+to  export. If you want just a sub category or single products of category,
+click on the category to expand the children.
 
-Add a selection
----------------
+For every category you can overwrite the default settings which variant(s) of a
+``product with variants`` will be exported. This is either the default variant,
+the cheapest variant or all variants.
 
-To add a selection click on the ``Add`` button, fill in the form and click on 
-``Save`` button.
+See Also
+========
 
-Remove a selection
-------------------
-
-To remove a selection select the selection, click on the ``Delete`` button and 
-answer the confirmation question with ``yes``.
-
-Export a selection 
-------------------
-
-To export a selection select the selection and click on ``Export`` button. 
-You can also call the export URL directly, e.g.: http://localhost:8000/manage/export-export/default.
+* :ref:`How to create a export script <developers_howto_export>`

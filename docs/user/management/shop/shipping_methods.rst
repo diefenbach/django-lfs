@@ -8,8 +8,20 @@ Shipping methods
 
 This section describes the management interface of shipping methods.
 
-Data
+Site Actions
+============
+
+Add Shipping Method
+    Adds a new shipping method.
+
+Delete Shipping Method
+    Deletes the currently displayed shipping method
+
+Tabs
 ====
+
+Data
+----
 
 Name
     The name of the shipping method, which is displayed to the shop
@@ -43,7 +55,7 @@ Delivery time
     The delivery time of the shipping method. See :doc:`delivery_times`.
 
 Criteria
-========
+--------
 
 Here you can add criteria for the shipping method. The shipping method is
 only available for shop customers if all criteria are true.
@@ -52,7 +64,7 @@ Please see :ref:`How to manage shipping methods <how_to_shipping_method_criteria
 to see how to add criteria.
 
 Prices
-======
+------
 
 Here you can add additional prices for the shipping method based on criteria.
 If prices are given the first price which meets all criteria is taken for the
@@ -65,5 +77,6 @@ to see how to add prices.
 See also
 ========
 
+* :ref:`General about shipping methods <shipping_methods_concepts>`
 * :ref:`How to manage shipping methods <shipping_methods_howto>`
 * :ref:`General about criteria <criteria_concepts>`

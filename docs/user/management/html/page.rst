@@ -1,38 +1,47 @@
 .. index:: Page, HTML
 
+.. _pages_management:
+
 ====
 Page
 ====
 
-Overview
-========
+This section describes the management interfaces of pages.
 
-* A page is a simple HTML page within the shop.
-* A page can be used to display information like terms and conditions or
-  to create landing pages.
-* Pages are automatically displayed within the pages portlet.
+Site Actions
+============
 
-Add a page
+Add Page
+    Adds a new page.
+
+Delete Page
+    Deletes the currently displayed page.
+
+View Page
+    Opens the page in a pop-up window to quickly check the appearance of
+    the page without leaving the :term:`LMI`.
+
+Goto Page
+    Leaves the :term:`LMI` and redirects to the customer view of the current
+    displayed page.
+
+Sort Pages
 ==========
 
-To add a page proceed as following:
+In order to sort pages, take the handle on besides a page within the navigation
+on the left side and drag and drop it to the position you want the page to be.
 
-1. Go to Management / HTML / Pages.
-2. Click on ``Add page``. Please note: if there are no Static blocks yet
-   at all you will redirected automatically to the add form.
-3. Fill in the form and click on ``Add page``
+Root
+====
 
-Remove a page
-=============
+The ``Root`` page is the root of all page. With the help of it you can add
+portlets which are inherit to all pages.
 
-To remove a page proceed as following:
+Tabs
+====
 
-1. Browse to the page you want to delete.
-2. Click on the ``Delete page`` button and answer the confirmation question
-   with yes.
-
-Data fields
-===========
+Data
+----
 
 Title
     The title of the page. This is displayed on top of the page as well as
@@ -59,3 +68,56 @@ Position
 File
     A file which can be uploaded. If a file has been uploaded a download link
     is automatically displayed at the bottom of the page.
+
+SEO
+---
+
+This tab is used to optimize your pages for search engines. You can enter data
+for all usual HTML meta data fields. However LFS provides some reasonable default
+values for all fields.
+
+Meta title
+    This is displayed within the meta title tag of the category's HTML tags. By
+    default the name of the product is used.
+
+Meta keywords
+    This is displayed within the meta keywords tag of the category's HTML page.
+    By default the short description of the category is used.
+
+Meta description
+    This is displayed within the meta description tag of the category's HTML
+    page. By default the short description of the category is used.
+
+You can use several placeholders within the above mentioned fields:
+
+<name>
+    The name of the product.
+
+<short-description>
+    The short description of the product (only within meta keywords/description-field).
+
+Portlets
+--------
+
+This tab is used to assign :term:`portlets` to the page.
+
+Blocked parent slots
+    By default portlets are inherited from the current category. To block
+    portlets check the regarding slots and click on the ``Save blocked parent
+    slots`` button.
+
+Slots
+  Here you can see all directly assigned portlets to the page. In order to edit
+  a portlet click on row of the portlet. In order to delete a portlet click on
+  the red cross beside the portlet. You can also change the position of the
+  portlets by clicking on the up and down arrows beside the portlets.
+
+Add new Portlet
+    In order to add a portlet to the page select the type of portlet and click
+    on ``Add portlet``.
+
+See Also
+========
+
+* :ref:`Pages in general <pages_concepts>`
+* :ref:`Portlets in general <portlets_concepts>`

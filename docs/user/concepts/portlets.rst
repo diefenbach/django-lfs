@@ -169,7 +169,7 @@ Slideshow
 .. index:: Page Portlet
    single: Portlet; Page
 
-.. _portlets_concepts_page:
+.. _portlets_concepts_pages:
 
 Pages
 ------

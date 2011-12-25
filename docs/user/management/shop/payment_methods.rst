@@ -8,22 +8,24 @@ Payment methods
 
 This section describes the management interface of payment methods.
 
-Overview
-========
+Site Actions
+============
 
-* You can add as many payment methods as you want.
+Add Payment Method
+  This add a new payment method
 
-* All valid payment methods are displayed for selection to the shop customer.
+Delete Payment Method
+  This deletes the currently displayed payment method.
 
-* A payment method is valid if all criteria of the payment method are true.
+.. note::
 
-* Payment methods can have many prices which are dependent of criteria. The
-  first price which is valid (all criteria are true) is the current price for
-  the the payment method. If no price is valid the default price is taken
-  (from data tab).
+    Default payment methods can't be deleted.
+
+Tabs
+====
 
 Data
-====
+----
 
 Name
     The name of the payment method, which is displayed to the shop
@@ -60,19 +62,19 @@ Module
 Type
     The type of the payment method. Dependent on that additional fields
     for input (within the checkout process) will be displayed. There are
-    three types at the moment:
+    three types:
 
-      * Plain
-        No additional fields are displayed.
+    * Plain
+      No additional fields are displayed.
 
-      * Bank
-        Fields for a bank account are displayed.
+    * Bank
+      Fields for a bank account are displayed.
 
-      * Credit Card
-        Fields for a credit card are displayed.
+    * Credit Card
+      Fields for a credit card are displayed.
 
 Criteria
-========
+--------
 
 Here you can add criteria for the payment method. The payment method is
 only available for shop customers if all criteria are true.
@@ -81,7 +83,7 @@ Please see :ref:`How to manage payment methods <how_to_payment_method_criteria>`
 to see how to add criteria.
 
 Prices
-======
+------
 
 Here you can add additional prices for the payment method based on criteria.
 If prices are given the first price which meets all criteria is taken for the
@@ -94,5 +96,6 @@ to see how to add prices.
 See also
 ========
 
+* :ref:`General about payment method <payment_methods_concepts>`
 * :ref:`How to manage payment methods <payment_methods_howto>`
 * :ref:`General about criteria <criteria_concepts>`
