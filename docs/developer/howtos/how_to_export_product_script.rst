@@ -5,8 +5,8 @@ Overview
 --------
 
 LFS provides a generic export engine for products :doc:`(see here for more)
-</user/utils/export>`. In this tutorial you will learn how to create your own 
-scripts to format the data like you want to.
+</user/management/utils/export>`. In this tutorial you will learn how to
+create your own scripts to format the data like you want to.
 
 
 Create an application
@@ -14,7 +14,7 @@ Create an application
 
 First you need to create a default Django application (or use an existing one).
 
-If you do not know how to do this, please refer to the excellent 
+If you do not know how to do this, please refer to the excellent
 `Django tutorial <http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_.
 
 Create the code
@@ -81,4 +81,4 @@ Getting ready
 
 Now you can go the management interface, create a new export, select the
 products and your newly script and call it via the ``Export`` button
-:doc:`(See here for more) </user/utils/export>`.
+:doc:`(See here for more) </user/management/utils/export>`.

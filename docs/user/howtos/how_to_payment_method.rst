@@ -1,6 +1,6 @@
-.. index:: Payment method, Payment methods
+.. index:: Payment method
 
-.. _howto-payment-methods:
+.. _payment_methods_howto:
 
 =============================
 How to manage payment methods
@@ -46,35 +46,47 @@ The data tab contains all core data for the payment method.
 
 .. image:: /images/how_to_payment_data.*
 
-* Now fill in the fields:
+Now fill in the fields:
 
-    * **Name:** The name of the payment method, which is displayed to the
-      shop customer.
-    * **Description:** A short description of the payment method, which is also
-      displayed to the customer.
-    * **Note:** A note of the payment method, which is displayed on the
-      confirmation mail after the shop customer has been checked out.
-    * **Priority:** The first valid payment method with the highest priority
-      (smaller number) method is displayed to the customer.
-    * **Image:** An image for the payment method, which is displayed to the
-      shop customer.
-    * **Tax:** The included tax of the payment method's price.
-    * **Price:** The default price of the payment method. This can be
-      overwritten within the price tab (see below).
-    * **Module:** The dotted name of the external package which processes the
-      payment (this is for developers only).
-    * **Type:** The type of the payment method. Dependent on that additional
-      fields for input (within the checkout process) will be displayed. There
-      are three types at the moment:
+* **Name:** The name of the payment method, which is displayed to the
+  shop customer.
 
-        * Plain
-          No additional fields are displayed.
-        * Bank
-          Fields for a bank account are displayed.
-        * Credit Card
-          Fields for a credit card are displayed.
+* **Description:** A short description of the payment method, which is also
+  displayed to the customer.
 
-* Click on ``Save``-button
+* **Note:** A note of the payment method, which is displayed on the
+  confirmation mail after the shop customer has been checked out.
+
+* **Priority:** The first valid payment method with the highest priority
+  (smaller number) method is displayed to the customer.
+
+* **Image:** An image for the payment method, which is displayed to the
+  shop customer.
+
+* **Tax:** The included tax of the payment method's price.
+
+* **Price:** The default price of the payment method. This can be
+  overwritten within the price tab (see below).
+
+* **Module:** The dotted name of the external package which processes the
+  payment (this is for developers only).
+
+* **Type:** The type of the payment method. Dependent on that additional
+  fields for input (within the checkout process) will be displayed. There
+  are three types at the moment:
+
+    * **Plain**
+      No additional fields are displayed.
+
+    * **Bank**
+      Fields for a bank account are displayed.
+
+    * **Credit Card**
+      Fields for a credit card are displayed.
+
+And click on the ``Save``-button.
+
+.. _how_to_payment_method_criteria:
 
 Criteria
 ========
@@ -106,11 +118,13 @@ criteria are true the payment method is displayed to the shop customer.
 * Click on the ``minus`` button beside the criterion.
 * Click on ``Save criteria``.
 
+.. _how_to_payment_method_prices:
+
 Prices
 ======
 
-Optional you can add many prices to the payment method and restrict them
-with criteria.
+Optional you can add additonal prices to the payment method and restrict them
+with criteria. The first price which meets all criteria will be taken.
 
 .. image:: /images/how_to_payment_prices.*
 
@@ -127,6 +141,7 @@ with criteria.
 * To update the prices change the priority and/or the value of the price and click on ``Update prices``.
 * To delete the prices select the checkboxes of the prices you want delete and click on ``Delete prices``.
 
-.. seealso::
+See also
+========
 
-    * :ref:`Manage payment methods <management-payment-methods>`
+* :ref:`Manage payment methods <payment_methods_management>`

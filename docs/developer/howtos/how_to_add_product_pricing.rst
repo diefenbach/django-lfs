@@ -1,3 +1,5 @@
+.. index:: Price Calculator
+
 How to add custom product pricing module
 ========================================
 

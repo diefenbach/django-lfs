@@ -1,29 +1,19 @@
-.. index:: Shipping method, Shipping methods
+.. index:: Shipping Method
 
-.. _howto-shipping-methods:
+.. _shipping_methods_howto:
 
+==============================
 How to manage shipping methods
 ==============================
 
 In this how-to you will learn how to add/edit shipping methods and how to
 add criteria and prices for them.
 
-Overview:
----------
-
-* You can add as many shipping methods you want.
-
-* All valid shipping methods are displayed for selection to the shop customer.
-  
-* A shipping method is true if all criteria of the shipping method are true.
-
-* Shipping methods can have many prices which are dependent of criteria. The
-  first price which is valid (all criteria are true) is the current price for
-  the for the shipping method. If no price is valid the default price is taken
-  (from data tab).
+You might want to read :ref:`Shipping Method Concepts <shipping_methods_concepts>`
+first.
 
 Get started:
-------------
+============
 
 In order to add/edit a shipping method please go to Management / Shop /
 Shipping Methods.
@@ -41,7 +31,7 @@ If you have done that you can edit or enter the data for a shipping method as
 described below.
 
 Data
-----
+====
 
 The data tab contains all core data for the shipping method.
 
@@ -65,8 +55,10 @@ The data tab contains all core data for the shipping method.
 
 * Click on ``Save``-button
 
+.. _how_to_shipping_method_criteria:
+
 Criteria
---------
+========
 
 Optional you can add some criteria to the shipping method. Only when all
 criteria are true the shipping method is displayed to the shop customer.
@@ -75,7 +67,7 @@ criteria are true the shipping method is displayed to the shop customer.
 
 **To add criterion proceed as following:**
 
-* click on the ``Add criteria``-button (adds a criterion on first position) or on the 
+* Click on the ``Add criteria``-button (adds a criterion on first position) or on the
   ``plus`` button beside a criterion (adds a criterion below)
 * Select the criteria type you want, e.g. ``Weight`` (this is the weight of all cart items).
 * Select the operator, e.g. ``Less than equal to``.
@@ -95,11 +87,13 @@ criteria are true the shipping method is displayed to the shop customer.
 * Click on the ``minus`` button beside the criterion.
 * Click on ``Save criteria``.
 
-Prices
-------
+.. _how_to_shipping_method_prices:
 
-Optional you can add many prices to the shipping method and restrict them
-with criteria.
+Prices
+======
+
+Optional you can add additonal prices to the shipping method and restrict them
+with criteria. The first price which meets all criteria will be taken.
 
 .. image:: /images/how_to_shipping_prices.*
 
@@ -116,6 +110,7 @@ with criteria.
 * to update the prices change the priority and/or the value of the price and click on ``Update prices``.
 * To delete the prices select the checkboxes of the prices you want delete and click on ``Delete prices``.
 
-.. seealso::
+See also
+========
 
-    * :ref:`Manage shipping methods <management-shipping-methods>`
+* :ref:`Manage shipping methods <shipping_methods_management>`

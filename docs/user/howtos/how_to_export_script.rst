@@ -5,8 +5,8 @@ Overview
 --------
 
 LFS provides a generic export engine for products :doc:`(see here for more)
-</user/utils/export>`. In this tutorial you will learn how to create your own 
-scripts to format the data like you want to.
+</user/management/utils/export>`. In this tutorial you will learn how to
+create your own scripts to format the data like you want to.
 
 Step by Step
 ------------
@@ -80,4 +80,4 @@ Now you can go the management interface, create a new export, select the
 products and your newly script and call it via the ``Export`` button.
 
 You might want to create a cron job which calls your script regularly.
-:doc:`(See here for more) </user/utils/export>`
+:doc:`(See here for more) </user/management/utils/export>`

@@ -1,0 +1,17 @@
+=========
+Marketing
+=========
+
+This section descibes the management interfaces of the ``Marketing`` menu:
+
+Overview
+========
+
+.. toctree::
+   :maxdepth: 2
+
+   featured.rst
+   topseller.rst
+   discounts.rst
+   vouchers.rst
+   rating_mails.rst

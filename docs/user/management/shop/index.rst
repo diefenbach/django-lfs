@@ -1,0 +1,20 @@
+====
+Shop
+====
+
+This section descibes the management interfaces of the ``Shop`` menu.:
+
+Overview
+========
+
+.. toctree::
+   :maxdepth: 2
+
+   actions.rst
+   delivery_times.rst
+   manufacturers.rst
+   payment_methods.rst
+   preferences.rst
+   shipping_methods.rst
+   product_taxes.rst
+   customer_taxes.rst
