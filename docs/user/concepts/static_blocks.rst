@@ -1,6 +1,6 @@
 .. index:: Static Block, HTML
 
-.. _static_blocks:
+.. _static_blocks_concepts:
 
 =============
 Static blocks

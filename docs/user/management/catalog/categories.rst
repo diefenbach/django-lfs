@@ -43,27 +43,30 @@ Data
 This tab contains the core date of the category.
 
 Exclude from navigation
-    If activated the category is excluded from the navigation portlet.
+    If checked the category is not displayed within the :ref:`categories portlet
+    <portlets_concepts_categories>`.
 
 Name
-    The name of the category. This is displayed on several places: Within
-    overview pages on top of the category page and within the meta-title tag.
+    The name of the category. This is displayed on several places, e.g: within
+    category overviews, on top of the category detail view and within the
+    meta title tag.
 
 Slug
-    The last part of the category's URL.
+    The unique last part of the category's URL.
 
 Description
     The detailed description of the category. This is displayed on the detail
-    page of the category.
+    view of the category.
 
 Image
-    The image of the category. This can be displayed within overview pages and
-    the detailed page.
+    The image of the category. This can be displayed within category overviews
+    and the category detaile view.
 
 .. index:: Static Block
 
 Static block
-    An optional static block which displayed on top of the category view.
+    An optional :ref:`static block <static_blocks_concepts>` which displayed on
+    top of the category detail view.
 
 View
 ----

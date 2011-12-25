@@ -23,7 +23,7 @@ This section describes the categories of LFS.
   sub categories resp. to the assigned products but they can be blocked per
   :term:`slot`.
 
-* A ``Category`` can have a :ref:`static block <static_blocks>` which are
+* A ``Category`` can have a :ref:`static block <static_blocks_concepts>` which are
   displayed on top of the ``Category``.
 
 See also
