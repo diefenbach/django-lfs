@@ -1,27 +1,27 @@
 .. index:: Action
 
-.. _actions:
+.. _actions_concepts:
 
 =======
 Actions
 =======
 
-This section describes the actions of LFS.
+This section describes the concepts of actions.
 
-Overview
+Concept
+=======
+
+Actions are used to place links on several locations within the shop. They
+belong to exactly one action group and the action group decides the location the
+actions are displayed within the shop. LFS ships with two action groups, the
+tabs, which constitutes the horizontal menu bar and the footer. Developers can
+easily :ref:`add more action groups   <how_to_add_own_action_groups>`.
+
+Examples
 ========
 
-* ``Actions`` are used to place links on several locations within the shop.
-
-* The ``Action Group`` decides the place where the action is displayed.
-
-* An ``Action`` belongs to exactly one action group.
-
-* LFS ships with two ``Action Groups``: ``Tabs`` (horizontal menu bar) and
-  ``Footer``.
-
-* Developers can easily :ref:`add more action groups
-  <how_to_add_own_action_groups>`.
+Actions enables the shop owner to link to arbitrary categories, products,
+information pages or even external web sites.
 
 See also
 ========

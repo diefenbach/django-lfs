@@ -3,22 +3,26 @@
 .. _static_blocks_concepts:
 
 =============
-Static blocks
+Static Blocks
 =============
 
-This section gives an overview about ``Static Blocks``.
+This section describes the concept of static blocks.
 
-* A ``Static Block`` is a piece of information which can be reused from several
-  content objects like the shop, a :ref:`category <categories_management>` or
-  a product.
+Concept
+=======
 
-* ``Static Blocks`` are managed on a central place within the shop, which
-  can be found on ``HTML / Static Blocks``.
+A static block is a piece of information which are managed on a central
+place within LFS and can be reused from several content objects like the front
+page, :ref:`categories <categories_management>` or :ref:`products
+<products_management>`. It consists out of an arbitrary HTML text and an
+arbitrary amount of attachments which can be provided for download.
 
-* A ``Static Block`` consists out of valid HTML and an arbitrary amount of
-  attachments which can be provided for download.
+Examples
+========
+
+An description, image or video you want to use on several products or categories.
 
 See also
 ========
 
-:doc:`Static Blocks Management Interface </user/concepts/static_blocks>`
+* :ref:`Static Blocks Management Interface <static_blocks_management>`

@@ -170,9 +170,9 @@ What's next?
 
 * Add more categories and products.
 
-* :ref:`Add accessories to your products <product-accessories-label>`.
+* :ref:`Add accessories to your products <products_management_accessories>`.
 
-* :ref:`Add related products to your products <product-related-products-label>`.
+* :ref:`Add related products to your products <products_management_related_products>`.
 
 * :doc:`Add variants </user/howtos/how_to_variants>`.
 
@@ -184,6 +184,6 @@ What's next?
 
 * :doc:`Manage delivery times </user/management/shop/delivery_times>`.
 
-* :ref:`Manage stock information <product-stock-label>`.
+* :ref:`Manage stock information <products_management_stock>`.
 
 * Add some portlets to your shop and/or categories.

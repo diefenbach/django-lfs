@@ -170,6 +170,8 @@ You can use several placeholders within the above mentioned fields:
 
 .. index:: Portlets
 
+.. _categories_management_portlets:
+
 Portlets
 --------
 

@@ -8,7 +8,7 @@ Products
 
 This section describes the product management interface.
 
-.. _product-site-actions-label:
+.. _products_management_site_actions:
 
 Site actions
 ============
@@ -30,7 +30,7 @@ Goto product
 Product type
     Select box to change the :ref:`type of the product <product-types-label>`.
 
-.. _product-tabs-label:
+.. _products_management_tabs:
 
 Tabs
 ====
@@ -38,7 +38,7 @@ Tabs
 In this section we will go through all tabs and fields of the product
 management interface.
 
-.. _product-data-label:
+.. _products_management_data:
 
 Data
 ----
@@ -135,7 +135,7 @@ Product template
     The selected product template decides how the content of the product is
     structured.
 
-.. _product-categories-label:
+.. _products_management_categories:
 
 Categories
 ----------
@@ -177,7 +177,7 @@ Delete images
     To delete images select the checkboxes beside all images you want to delete
     and click the *Delete* button.
 
-.. _product-attachments-label:
+.. _products_management_attachements:
 
 Attachments
 ------------
@@ -205,7 +205,7 @@ Delete attachments
     To delete attachments select the checkboxes beside all images you want to
     delete and click the *Delete* button.
 
-.. _product-accessories-label:
+.. _products_management_accessories:
 
 Accessories
 -----------
@@ -244,7 +244,7 @@ Within the ``Selected Products`` section select all checkboxes beside the
 products you want to remove from the product and click on ``Remove From
 Accessories``.
 
-.. _product-related-products-label:
+.. _products_management_related_products:
 
 Related products
 ----------------
@@ -270,7 +270,7 @@ Within the ``Selected Products`` section select all checkboxes beside the
 products you want to remove from the product and click on ``Remove From
 Related Prouducts``.
 
-.. _product-stock-label:
+.. _products_management_stock:
 
 Stock
 -----
@@ -341,7 +341,9 @@ Packing unit
 Unit:
     The unit of the package, for instance ``package`` or ``set``.
 
-.. _product-seo-label:
+.. index:: SEO
+
+.. _products_management_seo:
 
 SEO
 ---
@@ -370,9 +372,9 @@ You can use several placeholders within the above mentioned fields:
 <short-description>
     The short description of the product (only within meta keywords/description-field).
 
-.. _product-portlets-label:
-
 .. index:: Portlets
+
+.. _products_management_portlets:
 
 Portlets
 --------
@@ -420,4 +422,3 @@ See also
 * :ref:`Products in general <products_concepts>`
 * :ref:`Portlets in general <portlets_concepts>`
 * :ref:`Properties in general <properties_concepts>`
-

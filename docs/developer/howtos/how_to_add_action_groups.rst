@@ -1,7 +1,7 @@
 .. _how_to_add_own_action_groups:
 
 ============================
-How to add own action groups
+How To Add Own Action Groups
 ============================
 
 Overview
@@ -15,7 +15,7 @@ Overview
 * In this how-to you will learn how to add new ``Actions Groups`` and how to
   use them within your templates.
 
-Add a new action group
+Add A New Action Group
 ======================
 
 1. Login as admin.
@@ -27,7 +27,7 @@ Add a new action group
 4. Click on the ``Add action group`` button.
 5. Enter the name of the group, e.g. ``Sidebar``.
 
-Display the actions within your templates
+Display The Actions Within Your Templates
 =========================================
 
 Insert the ``actions`` tag to your template as following:
@@ -48,7 +48,7 @@ Insert the ``actions`` tag to your template as following:
     We pass the above given group name to the ``actions`` tab. In this case
     ``Sidebar``.
 
-Add actions to the group
+Add Actions To The Group
 ========================
 
 1. Open the :term:`LMI` and go to ``Shop / Actions``.
@@ -56,8 +56,8 @@ Add actions to the group
 3. Fill in the provided form and select your new group.
 4. Click on the ``Save action`` button.
 
-See also
+See Also
 ========
 
-* :ref:`General about actions <actions>`
+* :ref:`General about actions <actions_concepts>`
 * :ref:`Actions management interace <actions_management>`

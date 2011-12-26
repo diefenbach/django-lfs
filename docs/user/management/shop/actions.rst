@@ -6,7 +6,8 @@
 Actions
 =======
 
-This section describes the management interface for :ref:`actions <actions>`.
+This section describes the management interface for :ref:`actions
+<actions_concepts>`.
 
 Site Actions
 ============
@@ -46,5 +47,5 @@ Group
 See also
 ========
 
-* :ref:`General about actions <actions>`
+* :ref:`General about actions <actions_concepts>`
 * :ref:`How to add own action groups <how_to_add_own_action_groups>`

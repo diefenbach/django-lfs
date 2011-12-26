@@ -12,26 +12,25 @@ portlets in detail.
 Overview
 ========
 
-* Every object can have so-called :term:`portlets`, which are displayed in
-  :term:`slots`. By default LFS ships with a left and a right slot and several
-  default portlets (more slots and portlets can be added by developers).
+A Portlet is a piece of arbitrary information which can be assigned to every
+object (shop, product, category, page). They are displayed in :term:`slots`. LFS
+ships with a left and a right slot and several default portlets. By default
+portlets are inherited from parent objects but it is also possible to block
+parent portlets per slot.
 
-* By default portlets are inherited from parent objects but it is also
-  possible to block parent portlets per slot.
-
-* The inheritance path for categories and products is::
+The inheritance path for categories and products is::
 
     shop > category > sub category > product
 
-* The inheritance path for pages is::
+The inheritance path for pages is::
 
     shop > page root > page
 
 Default Portlets
 ================
 
-In this section all default portlets of LFS are described, with there
-particular settings.
+This section describes all default portlets of LFS with there particular
+settings and properties.
 
 .. index:: Average Rating Portlet
    single: Portlet; Average Rating
@@ -243,3 +242,5 @@ See Also
 --------
 
 * :ref:`Shop Preferences <preferences_portlets>`
+* :ref:`Categories Management Interface <categories_management_portlets>`
+* :ref:`Products Management Interface <products_management_portlets>`

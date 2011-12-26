@@ -11,26 +11,26 @@ This section describes what criteria are and how and where there are used.
 Overview
 ========
 
-Criteria are used on several places within LFS in order to display/hide data
-dependent on different situations.
+Criteria are a central concept and used on several locations of LFS in order to
+restrict respectively display information dependent on different contexts.
 
 At the moment criteria are used within:
 
-* payment methods
+* Payment methods
 
-* payment method's prices
+* Payment method's prices
 
-* shipping methods
+* Shipping methods
 
-* shipping method's prices
+* Shipping method's prices
 
-* discounts
+* Discounts
 
 In future they might be used to provide:
 
-* multiple product prices
+* Multiple product prices
 
-* different product taxes
+* Different product taxes
 
 Types
 =====
@@ -80,7 +80,7 @@ Description
 ^^^^^^^^^^^
 
 Provides some tests agains the total combined length and girth (clag) of all
-products within the cart. The clag is calculated as following::
+products within the cart. The "clag" is calculated as following::
 
     (2 * maximum width) + (2 * total height) + maximal length
 

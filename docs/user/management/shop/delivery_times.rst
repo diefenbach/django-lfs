@@ -37,5 +37,4 @@ See also
 
 * :ref:`General about delivery times <delivery_times>`
 * :doc:`shipping_methods`
-* :ref:`Product stock data <product-stock-label>`
-
+* :ref:`Product stock data <products_management_stock>`

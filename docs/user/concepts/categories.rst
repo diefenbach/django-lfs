@@ -8,6 +8,9 @@ Categories
 
 This section describes the categories of LFS.
 
+Overview
+========
+
 * ``Categories`` are used to structure products.
 
 * Every ``Category`` can have either one or no parent ``Category``. In this
