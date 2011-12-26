@@ -6,7 +6,7 @@
 Shipping Methods
 ================
 
-This section descibes the shipping methods of LFS in general.
+This section describes the shipping methods of LFS in general.
 
 Overview:
 =========

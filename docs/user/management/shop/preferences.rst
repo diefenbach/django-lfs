@@ -1,5 +1,7 @@
 .. index:: Google Analytics, Price Calculator
 
+.. _preferences:
+
 ===========
 Preferences
 ===========
@@ -78,7 +80,7 @@ Image
 Default values
 ==============
 
-.. _shop-price-calculator-label:
+.. _preferences_management:
 
 Price calculator
 ----------------
@@ -112,7 +114,7 @@ Shipping countries
     Available countries within the shipping address.
 
 Default shipping country
-    The default shipping country whithin addresses. This country will be used to
+    The default shipping country within addresses. This country will be used to
     calculate shipping price if the shop customer doesn't have select a country
     yet.
 

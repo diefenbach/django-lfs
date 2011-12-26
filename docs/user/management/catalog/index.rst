@@ -2,7 +2,7 @@
 Catalog
 =======
 
-This section descibes the management interfaces of the ``Catatalog`` menu:
+This section describes the management interfaces of the ``Catalog`` menu:
 
 Overview
 ========

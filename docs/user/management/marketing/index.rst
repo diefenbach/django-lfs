@@ -2,7 +2,7 @@
 Marketing
 =========
 
-This section descibes the management interfaces of the ``Marketing`` menu:
+This section describes the management interfaces of the ``Marketing`` menu:
 
 Overview
 ========

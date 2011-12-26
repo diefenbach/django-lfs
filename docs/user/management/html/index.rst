@@ -2,7 +2,7 @@
 HTML
 ====
 
-This section descibes the management interfaces of the ``HTML`` menu:
+This section describes the management interfaces of the ``HTML`` menu:
 
 Overview
 ========

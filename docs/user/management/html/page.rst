@@ -88,13 +88,16 @@ Meta description
     This is displayed within the meta description tag of the category's HTML
     page. By default the short description of the category is used.
 
-You can use several placeholders within the above mentioned fields:
+.. note::
 
-<name>
-    The name of the product.
+    You can use several placeholders within these fields:
 
-<short-description>
-    The short description of the product (only within meta keywords/description-field).
+    <name>
+        The name of the page.
+
+    <short-description>
+        The description of the page (only within meta keywords and meta
+        description field).
 
 Portlets
 --------

@@ -2,7 +2,7 @@
 Properties
 ==========
 
-This section descibes the management interfaces of the ``Properties`` menu:
+This section describes the management interfaces of the ``Properties`` menu:
 
 Overview
 ========

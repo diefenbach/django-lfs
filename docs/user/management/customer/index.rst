@@ -2,7 +2,7 @@
 Customers
 =========
 
-This section descibes the management interfaces of the ``Customers`` menu:
+This section describes the management interfaces of the ``Customers`` menu:
 
 Overview
 ========

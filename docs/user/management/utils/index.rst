@@ -2,7 +2,7 @@
 Utils
 =====
 
-This section descibes the management interfaces of the ``Utils`` menu:
+This section describes the management interfaces of the ``Utils`` menu:
 
 Overview
 ========

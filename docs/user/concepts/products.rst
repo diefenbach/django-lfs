@@ -14,7 +14,7 @@ Overview
 * Products are sold to the shop customer.
 * Products can belong to an arbitrary amount of categories.
 * Products can have an arbitrary amount of images.
-* Products can have an arbitrary amount of attachements.
+* Products can have an arbitrary amount of attachments.
 * Products can have :term:`portlets`.
 
 .. _product-types-label:
@@ -51,8 +51,8 @@ Configurable Product
 
 * Properties can optionally change the price of the product.
 
-* The price of an configurable product is usually calculated by the product"s
-  base price plus all selected/entered values of its properties
+* The price of an configurable product is usually calculated by the product's
+  base price plus all selected / entered values of its properties.
 
 .. index:: single: Product; with Variants
 
@@ -61,15 +61,15 @@ Configurable Product
 Product with variants
 ---------------------
 
-* A product with variants consists of two parts: A "product with variants"
+* A product with variants consists of two parts: A ``product with variants``
   and the variants.
 
-* The "product with variants" can be considered as the parent of its variants.
+* The ``product with variants`` can be considered as the parent of its variants.
 
 * The parent can't be sold. It is just a container for the variants and provides
   default data which can be inherited by the variants.
 
-* The parent has/defines some properties (global or local) which are the base
+* The parent has / defines some properties (global or local) which are the base
   to create the variants.
 
 .. index:: single: Product; Variant
@@ -83,13 +83,13 @@ This is a single variant of a Product with variants.
 
 * A variant can be sold to the customer.
 
-* By default a variant inherits all data of the parent "product with variants".
+* By default a variant inherits all data of the parent ``product with variants``.
 
 * A variant can overwrite the data from the belonging parent product. To do
   that the fields in question have to be activated explicitly.
 
 * A variant belongs to a unique combination of properties. The properties are
-  defined by the "product with variants".
+  defined by the ``product with variants``.
 
 See also
 ========

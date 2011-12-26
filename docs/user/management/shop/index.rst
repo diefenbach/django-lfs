@@ -2,7 +2,7 @@
 Shop
 ====
 
-This section descibes the management interfaces of the ``Shop`` menu.:
+This section describes the management interfaces of the ``Shop`` menu:
 
 Overview
 ========

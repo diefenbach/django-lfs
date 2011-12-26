@@ -79,7 +79,7 @@ Combined Length And Girth
 Description
 ^^^^^^^^^^^
 
-Provides some tests agains the total combined length and girth (clag) of all
+Provides some tests against the total combined length and girth (clag) of all
 products within the cart. The "clag" is calculated as following::
 
     (2 * maximum width) + (2 * total height) + maximal length

@@ -6,7 +6,7 @@
 Payment Methods
 ===============
 
-This section descibes the payment methods of LFS in general.
+This section describes the payment methods of LFS in general.
 
 Overview
 ========

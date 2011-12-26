@@ -35,6 +35,6 @@ Description
 See also
 ========
 
-* :ref:`General about delivery times <delivery_times>`
+* :ref:`General about delivery times <delivery_times_concepts>`
 * :doc:`shipping_methods`
 * :ref:`Product stock data <products_management_stock>`
