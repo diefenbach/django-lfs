@@ -8,8 +8,8 @@ Static Blocks
 
 This section describes the concept of static blocks.
 
-Concept
-=======
+Overview
+========
 
 A static block is a piece of information which are managed on a central
 place within LFS and can be reused from several content objects like the front
@@ -22,7 +22,7 @@ Examples
 
 An description, image or video you want to use on several products or categories.
 
-See also
+See Also
 ========
 
 * :ref:`Static Blocks Management Interface <static_blocks_management>`

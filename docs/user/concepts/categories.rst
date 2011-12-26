@@ -29,7 +29,7 @@ the sub categories and assigned products but they can be blocked per
 A category can have a :doc:`static block <static_blocks>` which is displayed on
 top of the category.
 
-See also
+See Also
 ========
 
 * :doc:`Category Management Interface </user/management/catalog/categories>`

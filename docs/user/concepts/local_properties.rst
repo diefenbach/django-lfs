@@ -18,7 +18,7 @@ to :doc:`global properties </user/concepts/properties>` they can not be used to
 create :ref:`configurable products <products_concepts_configurable_product>`,
 filtering or other features which are provided by global properties.
 
-See also
+See Also
 ========
 
 * :ref:`Global properties <properties_concepts>`

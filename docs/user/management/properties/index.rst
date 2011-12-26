@@ -2,10 +2,7 @@
 Properties
 ==========
 
-This section describes the management interfaces of the ``Properties`` menu:
-
-Overview
-========
+This section describes the management interfaces of the ``Properties`` menu.
 
 .. toctree::
    :maxdepth: 2

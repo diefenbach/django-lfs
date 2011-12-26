@@ -76,8 +76,8 @@ Rating Mails
 See Also
 ========
 
-* :ref:`Discounts Management Interface <discounts_management>`
-* :ref:`Products Management Interface <products_management>`
-* :ref:`Rating Mails Management Interface <rating_mails_management>`
-* :ref:`Review Concepts <reviews_concept>`
-* :ref:`Vouchers Management Interface <vouchers_management>`
+  * :ref:`Discounts Management Interface <discounts_management>`
+  * :ref:`Products Management Interface <products_management>`
+  * :ref:`Rating Mails Management Interface <rating_mails_management>`
+  * :ref:`Review Concepts <reviews_concept>`
+  * :ref:`Vouchers Management Interface <vouchers_management>`

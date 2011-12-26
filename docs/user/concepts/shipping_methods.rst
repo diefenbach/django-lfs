@@ -8,8 +8,8 @@ Shipping Methods
 
 This section describes the shipping methods of LFS in general.
 
-Concept
-=======
+Overview
+========
 
 You can add as many shipping methods as you want. All valid shipping methods are
 displayed for selection to the shop customer. A shipping method is valid if all

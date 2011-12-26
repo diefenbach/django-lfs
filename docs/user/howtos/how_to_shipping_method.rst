@@ -3,7 +3,7 @@
 .. _shipping_methods_howto:
 
 ==============================
-How to manage shipping methods
+How To Manage Shipping Methods
 ==============================
 
 In this how-to you will learn how to add/edit shipping methods and how to
@@ -12,8 +12,8 @@ add criteria and prices for them.
 You might want to read :ref:`Shipping Method Concepts <shipping_methods_concepts>`
 first.
 
-Get started:
-============
+Get Started
+===========
 
 In order to add/edit a shipping method please go to Management / Shop /
 Shipping Methods.
@@ -110,7 +110,7 @@ with criteria. The first price which meets all criteria will be taken.
 * to update the prices change the priority and/or the value of the price and click on ``Update prices``.
 * To delete the prices select the checkboxes of the prices you want delete and click on ``Delete prices``.
 
-See also
+See Also
 ========
 
 * :ref:`Manage shipping methods <shipping_methods_management>`

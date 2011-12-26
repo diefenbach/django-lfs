@@ -8,8 +8,8 @@ Properties
 
 This section describes the concepts of properties.
 
-Concept
-=======
+Overview
+========
 
 Properties are used to add flexible attributes on a product, like color, size,
 material, etc. They organized with :doc:`property groups
@@ -23,8 +23,8 @@ owners or show customers) can enter information.
 
 .. _properties_concepts_types:
 
-Property Types
-==============
+Types
+=====
 
 There are three types of properties.
 

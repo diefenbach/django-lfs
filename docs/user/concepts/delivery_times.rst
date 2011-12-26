@@ -8,8 +8,8 @@ Delivery Times
 
 This section describes the concept of delivery times.
 
-Concept
-=======
+Overview
+========
 
 Delivery times are used to calculate the total delivery time for single products
 or the total cart.
@@ -22,7 +22,7 @@ currently selected shipping method.
 It is also possible to overwrite this mechanism for single products with a
 manually delivery time.
 
-See also
+See Also
 ========
 
 * :ref:`Delivery Times Management <delivery_times_management>`

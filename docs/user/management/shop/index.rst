@@ -2,10 +2,7 @@
 Shop
 ====
 
-This section describes the management interfaces of the ``Shop`` menu:
-
-Overview
-========
+This section describes the management interfaces of the ``Shop`` menu.
 
 .. toctree::
    :maxdepth: 2

@@ -2,10 +2,7 @@
 Utils
 =====
 
-This section describes the management interfaces of the ``Utils`` menu:
-
-Overview
-========
+This section describes the management interfaces of the ``Utils`` menu.
 
 .. toctree::
    :maxdepth: 2

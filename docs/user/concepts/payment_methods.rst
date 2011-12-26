@@ -8,8 +8,8 @@ Payment Methods
 
 This section describes the concept of payment methods.
 
-Concept
-=======
+Overview
+========
 
 You can add as many payment methods as you want. All valid payment methods are
 displayed for selection to the shop customer. A payment method is valid if all

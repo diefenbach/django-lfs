@@ -1,6 +1,8 @@
 {% extends "basic/layout.html" %}
 {% block header %}
     <div class="header">
-        <img src="{{ pathto('_static/header.jpg', 1) }}" />
+        <a href="{{ pathto(master_doc) }}">
+            <img src="{{ pathto('_static/header.jpg', 1) }}" height="120px" />
+        </a>
     </div>
 {% endblock %}

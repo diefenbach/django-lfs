@@ -8,16 +8,17 @@ Page
 
 This section describes the pages of LFS.
 
-Concept
-=======
+Overview
+========
 
-A page is a simple piece of HTML within the shop. It can be used to to create
-landing pages or to display information like terms and conditions.
+A page is a simple piece of HTML within the shop. It can be used to create
+landing pages or to display other information to shop customers like terms and
+conditions.
 
 Pages are automatically displayed within the :ref:`pages portlet
 <portlets_concepts_pages>` or can be refered by :doc:`actions <actions>`.
 
-Pages can have :doc:`portlets <portlets>`.
+Like other objects pages can have :doc:`portlets <portlets>`.
 
 See Also
 ========

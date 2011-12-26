@@ -2,10 +2,7 @@
 Marketing
 =========
 
-This section describes the management interfaces of the ``Marketing`` menu:
-
-Overview
-========
+This section describes the management interfaces of the ``Marketing`` menu.
 
 .. toctree::
    :maxdepth: 2

@@ -1,14 +1,14 @@
-How to use product filters
+How to use Product Filters
 ==========================
 
 Overview
 --------
 
 In this how-to you will learn how to use product filters. At the end of this
-tutorial you will have added a property group a property, a category with 
+tutorial you will have added a property group a property, a category with
 three products and a filter portlet.
 
-Step by step
+Step by Step
 ------------
 
 First we will add the corresponding filter portlet:
@@ -31,7 +31,7 @@ Now we will add properties, which are the base for the product filters.
    at all yet you will see the *Add property form* automatically).
 6. Enter the ``Name`` of the property, in our case *Size* and click
    ``Add property``.
-7. Go to ``Field type``, select ``Select field`` and click ``Save property 
+7. Go to ``Field type``, select ``Select field`` and click ``Save property
    type``.
 8. Now go to ``Options`` and fill in the ``Name`` field. In our case *Small*.
    Click ``Add option``.
@@ -40,16 +40,16 @@ Now we will add properties, which are the base for the product filters.
 
 .. image:: /images/how_to_filters_3.*
 
-Now we will add a property group. 
+Now we will add a property group.
 
 .. note::
 
-    Every property has to belong exactly to one property group in order to 
+    Every property has to belong exactly to one property group in order to
     use it with a product.
 
 10. Got to Management / Properties / Property Groups.
-11. Add a new property group by clicking the ``Add property group`` button. 
-    (If there is no property group at all yet you will see the *Add property 
+11. Add a new property group by clicking the ``Add property group`` button.
+    (If there is no property group at all yet you will see the *Add property
     group* form automatically).
 12. Enter the ``Name`` of the property, in our case *T-Shirts* and click
     ``Add property group``.
@@ -67,7 +67,7 @@ You should now see *Size* within ``Assigned properties``.
 We will now add the ``Property group`` to some products.
 
 15. Go to Management / Catalog / Products.
-16. Add a new product clicking ``Add product``. (If there is no product at all 
+16. Add a new product clicking ``Add product``. (If there is no product at all
     yet you will see the *Add product" form* automatically).
 17. Fill in ``Name`` *T-Shirt One* and ``Price`` *10.00* and click ``Add product``.
 
@@ -78,9 +78,9 @@ No we assign values to the properties:
     You will now see the ``Property`` *Size*.
 20. Select ``Size`` *Small*.
 21. Repeat Steps 16 - 20 for *T-Shirt Two* and *T-Shirt Three* and assign
-    sizes *Middle* and *Large* and prices *100.00* and *1000.00*. Now you should 
-    have three products *T-Shirt One*, *T-Shirt Two* and *T-Shirt Three* with 
-    sizes *Small*, *Middle* and *Large* and prices *10.00*, *100.00* and 
+    sizes *Middle* and *Large* and prices *100.00* and *1000.00*. Now you should
+    have three products *T-Shirt One*, *T-Shirt Two* and *T-Shirt Three* with
+    sizes *Small*, *Middle* and *Large* and prices *10.00*, *100.00* and
     *1000.00*.
 
 We need to make the products active:
@@ -90,11 +90,11 @@ We need to make the products active:
 
 .. image:: /images/how_to_filters_5.*
 
-Now we add a new category *T-Shirts*: 
+Now we add a new category *T-Shirts*:
 
-.. note:: 
+.. note::
 
-    Filtering takes place on products of a category, hence we add a category 
+    Filtering takes place on products of a category, hence we add a category
     for our newly products.
 
 24. Go to Management / Catalog / Categories.
@@ -102,17 +102,17 @@ Now we add a new category *T-Shirts*:
     all  yet you will see the "Add category" form automatically).
 26. Fill in the ``Name``: *T-Shirts* and click ``Add category``.
 
-Now we assign the products to the category: 
+Now we assign the products to the category:
 
 27. Go to the products tab of that category.
-28. Select the products *T-Shirt One*, *T-Shirt Two*, *T-Shirt Three* and 
+28. Select the products *T-Shirt One*, *T-Shirt Two*, *T-Shirt Three* and
     click ``Add to category``.
-    
-Now we are ready to preview our new content: 
 
-29. Click on the ``Preview`` button. You should now see the filter portlet   
+Now we are ready to preview our new content:
+
+29. Click on the ``Preview`` button. You should now see the filter portlet
     with the ability to select the sizes *Small*, *Middle* and *Large* and prices *0 - 500.00* and *501.00 - 1000.00*.
-    
+
 .. image:: /images/how_to_filters_6.*
 
 What's next?
@@ -120,12 +120,12 @@ What's next?
 
 * Add some more properties to the property group *T-Shirts*.
 * Add the property group *T-Shirts* to more products.
-* Assign products and values via *Property Groups*: 
+* Assign products and values via *Property Groups*:
     1. Go to Properties / Properties Groups
     2. Select *T-Shirts*
     3. Go to *Products* tab
     4. Go to *Values* tab
-* Check out the other options of the properties, e.g. the ``Field type`` or the 
+* Check out the other options of the properties, e.g. the ``Field type`` or the
   ``Unit`` field.
-* Check out creating variants on base of properties and see how filters work 
+* Check out creating variants on base of properties and see how filters work
   with variants too.

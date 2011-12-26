@@ -21,6 +21,10 @@
     background: url("header_bg.jpg");
 }
 
+ul {
+    list-style-type: square;
+}
+
 /* -- page layout ----------------------------------------------------------- */
 
 body {
@@ -201,8 +205,8 @@ div.note {
 }
 
 div.seealso {
-    background-color: #ffc;
-    border: 1px solid #ff6;
+    background-color: #eee;
+    border: 1px solid #aaa;
 }
 
 div.topic {

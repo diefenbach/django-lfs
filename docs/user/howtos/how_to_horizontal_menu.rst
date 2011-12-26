@@ -1,4 +1,5 @@
-How to add a horizontal menu
+============================
+How To Add a Horizontal Menu
 ============================
 
 In this how-to you will learn how to add a horizontal menu.
@@ -6,15 +7,13 @@ In this how-to you will learn how to add a horizontal menu.
 .. image:: /images/how_to_horizontal_menu.*
 
 Overview
---------
+========
 
 By default there is no automatically horizontal menu. You can add so-called
 actions to add one.
 
-Step by step
--------------
-
-For that please do the following steps:
+Step by Step
+=============
 
 1. Go to Management / Shop / Actions.
 2. Click on ``Add action``. Please note: if there are no actions yet at all you

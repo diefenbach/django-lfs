@@ -8,8 +8,8 @@ Taxes
 
 This section describes how LFS handles taxes.
 
-General
-=======
+Overview
+========
 
 There are two types of taxes: product taxes and customer taxes.
 

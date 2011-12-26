@@ -3,7 +3,7 @@
 .. _payment_methods_howto:
 
 =============================
-How to manage payment methods
+How To Manage Payment Methods
 =============================
 
 In this how-to you will learn how to add/edit payment methods and how to

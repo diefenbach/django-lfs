@@ -2,10 +2,7 @@
 Customers
 =========
 
-This section describes the management interfaces of the ``Customers`` menu:
-
-Overview
-========
+This section describes the management interfaces of the ``Customers`` menu.
 
 .. toctree::
    :maxdepth: 2

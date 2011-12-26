@@ -239,7 +239,7 @@ Limit
 
 
 See Also
---------
+========
 
 * :ref:`Shop Preferences <preferences_portlets>`
 * :ref:`Categories Management Interface <categories_management_portlets>`

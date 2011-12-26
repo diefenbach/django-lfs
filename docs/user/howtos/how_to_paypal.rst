@@ -1,5 +1,5 @@
-How to setup Paypal
-==================================
+How to Setup Paypal
+===================
 
 In this how-to you will learn how to setup paypal for your shop
 
