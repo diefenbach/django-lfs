@@ -98,7 +98,7 @@ class GrossPriceCalculator(PriceCalculator):
         """Returns the real net price of the product. Takes care whether the
         product is for sale.
         """
-        return self.product.get_price_gross(self.request) - self.product.get_tax(self.request)
+        return self.product.get_price_gross(self.request, with_properties) - self.product.get_tax(self.request)
 
     def price_includes_tax(self):
         return True

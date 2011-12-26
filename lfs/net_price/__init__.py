@@ -11,7 +11,7 @@ class NetPriceCalculator(PriceCalculator):
     """
 
     def get_price(self, with_properties=True):
-        return self.get_price_net(self.request)
+        return self.get_price_net(with_properties)
 
     def get_standard_price(self, with_properties=True):
         """Returns always the standard price for the product. Independent
@@ -108,8 +108,8 @@ class NetPriceCalculator(PriceCalculator):
             else:
                 return self.product.tax.rate
 
-    def get_tax(self):
+    def get_tax(self, with_properties=True):
         """Returns the absolute tax of the product.
         """
         tax_rate = self.get_tax_rate()
-        return (tax_rate / 100) * self.get_price_net(self.request)
+        return (tax_rate / 100) * self.get_price_net(with_properties)
