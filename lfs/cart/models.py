@@ -257,7 +257,7 @@ class CartItem(models.Model):
         Returns the total price of the cart item, which is just the multiplication
         of the product's price and the amount of the product within in the cart.
         """
-        return (self.get_price_gross(request) * self.amount) - (self.get_tax(request) * self.amount)
+        return self.get_price_gross(request) - self.get_tax(request)
 
     def get_price_gross(self, request):
         """
@@ -286,7 +286,11 @@ class CartItem(models.Model):
                         except (PropertyOption.DoesNotExist, AttributeError, ValueError):
                             pass
                         else:
-                            price += option.price
+                            if self.product.price_includes_tax():
+                                option_price = option.price
+                            else:
+                                option_price = option.price * ((100 + self.product.get_tax_rate(request)) / 100)
+                            price = price + option_price
         return price
 
     def get_calculated_price(self, request):

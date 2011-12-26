@@ -112,9 +112,9 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
             "obj": cart_item,
             "quantity": quantity,
             "product": product,
-            "product_price_net": product.get_price_net(request) * cart_item.amount,
-            "product_price_gross": product.get_price_gross(request) * cart_item.amount,
-            "product_tax": product.get_tax(request) * cart_item.amount,
+            "product_price_net": cart_item.get_price_net(request),
+            "product_price_gross": cart_item.get_price_gross(request),
+            "product_tax": cart_item.get_tax(request),
         })
 
     return render_to_string(template_name, RequestContext(request, {
@@ -174,9 +174,9 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
             "product": product,
             "obj": cart_item,
             "quantity": quantity,
-            "product_price_net": product.get_price_net(request),
-            "product_tax": product.get_tax(request),
-            "product_price_gross": product.get_price_gross(request),
+            "product_price_net": cart_item.get_price_net(request),
+            "product_price_gross": cart_item.get_price_gross(request),
+            "product_tax": cart_item.get_tax(request),
         })
 
     return render_to_string(template_name, RequestContext(request, {
