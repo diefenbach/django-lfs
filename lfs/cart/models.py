@@ -286,7 +286,7 @@ class CartItem(models.Model):
                         except (PropertyOption.DoesNotExist, AttributeError, ValueError):
                             pass
                         else:
-                            if self.product.price_includes_tax():
+                            if self.product.price_includes_tax(request):
                                 option_price = option.price
                             else:
                                 option_price = option.price * ((100 + self.product.get_tax_rate(request)) / 100)
