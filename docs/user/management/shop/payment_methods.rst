@@ -3,7 +3,7 @@
 .. _payment_methods_management:
 
 ===============
-Payment methods
+Payment Methods
 ===============
 
 This section describes the management interface of payment methods.
@@ -93,7 +93,7 @@ is taken.
 Please see :ref:`How to manage payment methods <how_to_payment_method_prices>`
 to see how to add prices.
 
-See also
+See Also
 ========
 
 * :ref:`General about payment method <payment_methods_concepts>`

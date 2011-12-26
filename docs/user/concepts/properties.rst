@@ -6,30 +6,20 @@
 Properties
 ==========
 
-This section describes what properties are and how and where there are used.
+This section describes the concepts of properties.
 
-Overview
-========
+Concept
+=======
 
-* Properties are used to add flexible properties on a product, like color,
-  size, material, etc.
+Properties are used to add flexible attributes on a product, like color, size,
+material, etc. They organized with :doc:`property groups
+</user/management/properties/property_groups>`, which are assigned to products.
 
-* Properties are organized with property groups (which are assigned to
-  products).
-
-* Properties can be used to create product filters.
-
-* Properties can be used to create variants.
-
-* Properties can be used to create configurable products.
-
-* Properties can be used to display information on a product.
-
-* Properties can be used to ask the shop customer to enter information for
-  a product.
-
-* For every property which is assigned to a product users (shop owners or
-  show customers) can enter information.
+Properties can be used to create product filters, variants and configurable
+products or just to display information on a product. They can also be used to
+ask the shop customers to enter information for to product which should be ordered
+in other words for every property which is assigned to a product users (shop
+owners or show customers) can enter information.
 
 .. _properties_concepts_types:
 
@@ -134,8 +124,8 @@ the price is used to calculate the total price of a :ref:`Configurable Product
 See Also
 ========
 
-* :ref:`Properties Management Interface <properties_management>`
+* :doc:`Properties Management Interface </user/management/properties/properties>`
 * :ref:`Properties within the Product Management Interface <products_management_properties>`
 * :doc:`/user/howtos/how_to_filters`
 * :doc:`/user/howtos/how_to_variants`
-* :ref:`Local properties <local_properties_concepts>`
+* :doc:`Local properties </user/concepts/local_properties>`

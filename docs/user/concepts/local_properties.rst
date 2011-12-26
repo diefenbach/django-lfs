@@ -12,10 +12,11 @@ used.
 Overview
 ========
 
-* Local properties are organized on a single product.
-* Local properties are a convenient way to create create variants.
-* Local properties can not be used to create configurable products or
-  filtering. For that you need to use :ref:`global properties <properties_concepts>`.
+Local properties are added to a single product. They are a just convenient way
+to create :ref:`variants <products_concepts_product_with_variants>`. In contrary
+to :doc:`global properties </user/concepts/properties>` they can not be used to
+create :ref:`configurable products <products_concepts_configurable_product>`,
+filtering or other features which are provided by global properties.
 
 See also
 ========

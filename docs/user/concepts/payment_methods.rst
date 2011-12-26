@@ -6,24 +6,20 @@
 Payment Methods
 ===============
 
-This section describes the payment methods of LFS in general.
+This section describes the concept of payment methods.
 
-Overview
+Concept
+=======
+
+You can add as many payment methods as you want. All valid payment methods are
+displayed for selection to the shop customer. A payment method is valid if all
+:doc:`criteria <criteria>` of the payment method are true. Payment methods can
+have many prices which are also dependent of criteria. The first price which is
+valid (all criteria are true) is the current price for the payment method. If no
+price is valid the default price is taken (from the ``Data`` tab).
+
+See Also
 ========
 
-* You can add as many payment methods as you want.
-
-* All valid payment methods are displayed for selection to the shop customer.
-
-* A payment method is valid if all criteria of the payment method are true.
-
-* Payment methods can have many prices which are dependent of criteria. The
-  first price which is valid (all criteria are true) is the current price fr
-  the payment method. If no price is valid the default price is taken (from
-  the ``Data`` tab).
-
-See also
-========
-
-* :ref:`Management Reference <payment_methods_management>`
-* :ref:`payment_methods_howto`
+* :doc:`Payment Methods Management Interface </user/management/shop/payment_methods>`
+* :doc:`/developer/howtos/how_to_add_own_payment_methods`

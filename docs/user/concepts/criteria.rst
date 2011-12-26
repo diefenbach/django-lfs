@@ -6,7 +6,7 @@
 Criteria
 ========
 
-This section describes what criteria are and how and where there are used.
+This section describes the concepts of criteria.
 
 Overview
 ========
