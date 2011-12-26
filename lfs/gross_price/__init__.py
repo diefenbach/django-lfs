@@ -117,8 +117,8 @@ class GrossPriceCalculator(PriceCalculator):
             else:
                 return self.product.tax.rate
 
-    def get_tax(self):
+    def get_tax(self, with_properties):
         """Returns the absolute tax of the product.
         """
         tax_rate = self.get_tax_rate()
-        return (tax_rate / (tax_rate + 100)) * self.get_price_gross()
+        return (tax_rate / (tax_rate + 100)) * self.get_price_gross(with_properties)

@@ -52,7 +52,7 @@ class NetPriceCalculator(PriceCalculator):
         return object.for_sale_price
 
     def get_price_gross(self, with_properties=True):
-        return self.product.get_price_net(with_properties) + self.product.get_tax(self.request)
+        return self.get_price_net(with_properties) + self.get_tax(with_properties)
 
     def get_price_with_unit(self):
         """Returns the formatted gross price of the product

@@ -1068,7 +1068,6 @@ class Product(models.Model):
             True the prices of the default properties are added to the price.
 
         """
-        request = None
         pc = self.get_price_calculator(request)
         return pc.get_price_gross(with_properties)
 
@@ -1156,11 +1155,11 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.price_includes_tax()
 
-    def get_tax(self, request):
+    def get_tax(self, request, with_properties=True):
         """Returns the absolute tax of the product.
         """
         pc = self.get_price_calculator(request)
-        return pc.get_tax()
+        return pc.get_tax(with_properties)
 
     def has_related_products(self):
         """Returns True if the product has related products.
