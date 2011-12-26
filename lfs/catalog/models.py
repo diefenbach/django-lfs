@@ -1051,11 +1051,11 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.get_standard_price(with_properties)
 
-    def get_for_sale_price(self, request):
+    def get_for_sale_price(self, request, with_properties=True):
         """returns the sale price for the product.
         """
         pc = self.get_price_calculator(request)
-        return pc.get_for_sale_price()
+        return pc.get_for_sale_price(with_properties)
 
     def get_price_gross(self, request, with_properties=True):
         """Returns the real gross price of the product. This is the base of

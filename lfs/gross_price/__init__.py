@@ -38,7 +38,7 @@ class GrossPriceCalculator(PriceCalculator):
 
         return price
 
-    def get_for_sale_price(self):
+    def get_for_sale_price(self, with_properties=True):
         """returns the sale price for the product.
         """
         object = self.product
@@ -49,7 +49,11 @@ class GrossPriceCalculator(PriceCalculator):
         if object.is_variant() and not object.active_for_sale_price:
             object = object.parent
 
-        return object.for_sale_price
+        price = object.for_sale_price
+        if with_properties and object.is_configurable_product():
+            price += object.get_default_properties_price()
+
+        return price
 
     def get_price_gross(self, with_properties=True):
         """Returns the real gross price of the product. This is the base of
