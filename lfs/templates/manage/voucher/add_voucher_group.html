@@ -1,13 +1,14 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/marketing/vouchers.html{% endblock %}
 {% block section %}add-voucher-group{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add voucher group' %}</a></li>            
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add voucher group' %}</a></li>
         </ul>
 
         <div id="data">
@@ -15,14 +16,14 @@
 
             <form action="{% url lfs_manage_add_voucher_group %}"
                   method="post">
-                {% csrf_token %}  
+                {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
 
                 <input type="submit"
                        class="button"
                        value="{% trans 'Add voucher group' %}" />
-                       
-                    {% if  request.META.HTTP_REFERER %}                       
+
+                    {% if  request.META.HTTP_REFERER %}
                         <input type="button"
                                class="button"
                                onclick="window.location='{{ request.META.HTTP_REFERER }}'"
@@ -30,5 +31,5 @@
                     {% endif %}
             </form>
         </div>
-    </div>    
+    </div>
 {% endblock %}

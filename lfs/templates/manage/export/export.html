@@ -1,10 +1,12 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/utils/export.html{% endblock %}
+
 {% block section %}export{% endblock %}
 
 {% block left_slot %}
-    <h2 class="navigation-title">{% trans "Exports" %}</h2>    
+    <h2 class="navigation-title">{% trans "Exports" %}</h2>
 	<div id="selectable-exports-inline"
 	     class="navigation-body">
 		{{ selectable_exports_inline|safe }}
@@ -33,11 +35,11 @@
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Products' %}</a></li>
         </ul>
-		
+
 		<div id="data">
 			{{ export_data_inline|safe }}
 		</div>
-		
+
 		<div id="products">
 		    <h2>{% trans "Products" %}</h2>
 			<ul id="export-tree-root"

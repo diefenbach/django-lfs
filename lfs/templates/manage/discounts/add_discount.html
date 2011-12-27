@@ -1,6 +1,8 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/marketing/discounts.html{% endblock %}
+
 {% block section %}add-discount{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
@@ -14,23 +16,23 @@
             <h2>{% trans 'Add discount' %}</h2>
             <form method="post"
                  enctype="multipart/form-data">
-                {% csrf_token %} 
+                {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
 
                 <div class="buttons">
 
-                    <input type="submit" 
+                    <input type="submit"
                            class="button"
                            value="{% trans 'Add discount' %}" />
 
-                    {% if  request.META.HTTP_REFERER %}                       
+                    {% if  request.META.HTTP_REFERER %}
                         <input type="button"
                                class="button"
                                onclick="window.location='{{request.META.HTTP_REFERER}}'"
                                value="{% trans 'Cancel' %}" />
                     {% endif %}
                 </div>
-            </form>                   
+            </form>
         </div>
-    </div>    
+    </div>
 {% endblock %}
