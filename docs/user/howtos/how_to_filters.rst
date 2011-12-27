@@ -1,15 +1,18 @@
-How to use Product Filters
-==========================
+=================================
+How To Add a Product with Filters
+=================================
 
 Overview
---------
+========
 
-In this how-to you will learn how to use product filters. At the end of this
-tutorial you will have added a property group a property, a category with
-three products and a filter portlet.
+In this how-to you will learn how to create a product with filters. At the end
+of it you will have added a property group a property, a category with three
+products and a filter portlet.
 
-Step by Step
-------------
+.. include:: /includes/demo_shop.rst
+
+Steps
+=====
 
 First we will add the corresponding filter portlet:
 
@@ -116,16 +119,24 @@ Now we are ready to preview our new content:
 .. image:: /images/how_to_filters_6.*
 
 What's next?
-------------
+============
 
 * Add some more properties to the property group *T-Shirts*.
+
 * Add the property group *T-Shirts* to more products.
+
 * Assign products and values via *Property Groups*:
-    1. Go to Properties / Properties Groups
-    2. Select *T-Shirts*
-    3. Go to *Products* tab
-    4. Go to *Values* tab
+
+  1. Go to Properties / Properties Groups
+
+  2. Select *T-Shirts*
+
+  3. Go to *Products* tab
+
+  4. Go to *Values* tab
+
 * Check out the other options of the properties, e.g. the ``Field type`` or the
   ``Unit`` field.
+
 * Check out creating variants on base of properties and see how filters work
   with variants too.

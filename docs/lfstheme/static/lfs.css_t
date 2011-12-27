@@ -25,6 +25,11 @@ ul {
     list-style-type: square;
 }
 
+p.admonition-title {
+    margin: 0;
+    font-weight: bold;
+}
+
 /* -- page layout ----------------------------------------------------------- */
 
 body {

@@ -23,8 +23,7 @@ Types
 =====
 
 There are four types of products: product, configurable product,
-product with variants and variant. Following there are described in
-more detail.
+product with variants and variant.
 
 .. index:: single: Product; Default
 
@@ -34,7 +33,7 @@ Product
 -------
 
 The plain default product of LFS. This is in some way the base of all other
-product types which are described in following.
+product types which are described in the following sections.
 
 .. index:: single: Product; Configurable
 
@@ -48,6 +47,10 @@ options (e.g. red, green, blue) from which a shop customer can choose. The
 provided properties and options can optionally change the total price of the
 configurable product. That is usually calculated by the product's base price
 plus all selected options of its properties.
+
+.. seealso::
+
+    * :doc:`/user/howtos/how_to_configurable_product`
 
 .. index:: single: Product; with Variants
 
@@ -64,6 +67,11 @@ The ``product with variants`` can be considered as the parent of its
 provides default data which can be inherited by the variants. The ``product with
 variants`` uses :doc:`global <properties>` and :doc:`local properties
 <local_properties>` to create the variants.
+
+.. seealso::
+
+    * :doc:`/user/howtos/how_to_variants`
+
 
 .. index:: single: Product; Variant
 

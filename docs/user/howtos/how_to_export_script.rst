@@ -1,8 +1,8 @@
 .. _developers_howto_export:
 
-=============================
-How To Create A Export Script
-=============================
+==========================
+How To Add a Export Script
+==========================
 
 Overview
 ========
@@ -11,8 +11,10 @@ LFS provides a generic export engine for products :doc:`(see here for more)
 </user/management/utils/export>`. In this tutorial you will learn how to
 create your own scripts to format the data like you want to.
 
-Step by Step
-============
+.. include:: /includes/demo_shop.rst
+
+Steps
+=====
 
 In order to create a new export script you should first create a new Django
 application (or use an existing one). This is beyond this tutorial. If you do

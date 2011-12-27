@@ -1,7 +1,14 @@
-How to Setup Paypal
+===================
+How To Setup Paypal
 ===================
 
+Overview
+========
+
 In this how-to you will learn how to setup paypal for your shop
+
+Steps
+=====
 
 1. Setup a paypal developer account at https://developer.paypal.com/
 

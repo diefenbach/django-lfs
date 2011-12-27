@@ -6,11 +6,13 @@
 How To Manage Shipping Methods
 ==============================
 
-In this how-to you will learn how to add/edit shipping methods and how to
+Overview
+========
+
+In this how-to you will learn how to add and edit shipping methods and how to
 add criteria and prices for them.
 
-You might want to read :ref:`Shipping Method Concepts <shipping_methods_concepts>`
-first.
+.. include:: /includes/demo_shop.rst
 
 Get Started
 ===========

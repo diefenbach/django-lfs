@@ -1,9 +1,6 @@
-=========================
-LFS - Lightning Fast Shop
-=========================
-
 .. _index_introduction:
 
+============
 Introduction
 ============
 
@@ -16,13 +13,14 @@ Introduction
 
 .. _index_users:
 
+=====================
 Information for Users
 =====================
 
 .. _index_users_concepts:
 
 Concepts
---------
+========
 
 .. toctree::
    :maxdepth: 1
@@ -46,7 +44,7 @@ Concepts
 .. _index_users_management_interface:
 
 Management Interface
---------------------
+====================
 
 .. toctree::
    :maxdepth: 1
@@ -61,30 +59,31 @@ Management Interface
 
 .. _index_users_howtos:
 
-How-tos for end users
----------------------
+How-tos
+=======
 
 .. toctree::
    :maxdepth: 1
 
+   user/howtos/how_to_horizontal_menu.rst
    user/howtos/how_to_variants.rst
    user/howtos/how_to_configurable_product.rst
    user/howtos/how_to_filters.rst
-   user/howtos/how_to_shipping_method
    user/howtos/how_to_payment_method
-   user/howtos/how_to_horizontal_menu.rst
+   user/howtos/how_to_shipping_method
    user/howtos/how_to_paypal.rst
    user/howtos/how_to_export_script
 
 .. _index_developers:
 
+==========================
 Information for Developers
 ==========================
 
 .. _index_developers_miscellaneous:
 
 Miscellaneous
--------------
+=============
 
 .. toctree::
    :maxdepth: 1
@@ -93,8 +92,8 @@ Miscellaneous
 
 .. _index_developers_howtos:
 
-How-tos for developers
-----------------------
+How-tos
+=======
 
 .. toctree::
    :maxdepth: 1
@@ -108,7 +107,8 @@ How-tos for developers
    developer/howtos/theme/index.rst
    developer/howtos/how_to_add_own_order_numbers/index.rst
 
-Indices and tables
+==================
+Indices and Tables
 ==================
 
 * :doc:`glossary`

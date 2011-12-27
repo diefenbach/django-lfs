@@ -6,22 +6,13 @@
 How To Manage Payment Methods
 =============================
 
-In this how-to you will learn how to add/edit payment methods and how to
-add criteria and prices for them.
-
 Overview
 ========
 
-* You can add as many payment methods you want.
+In this how-to you will learn how to add and edit payment methods and how to
+add criteria and prices for them.
 
-* All valid payment methods are displayed for selection to the shop customer.
-
-* A payment method is true if all criteria of the payment method are true.
-
-* Payment methods can have many prices which are dependent of criteria. The
-  first price which is valid (all criteria are true) is the current price for
-  the for the payment method. If no price is valid the default price is taken
-  (from data tab).
+.. include:: /includes/demo_shop.rst
 
 Get started
 ===========
