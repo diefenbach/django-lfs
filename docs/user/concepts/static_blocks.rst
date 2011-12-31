@@ -17,10 +17,8 @@ page, :ref:`categories <categories_management>` or :ref:`products
 <products_management>`. It consists out of an arbitrary HTML text and an
 arbitrary amount of attachments which can be provided for download.
 
-Examples
-========
-
-An description, image or video you want to use on several products or categories.
+An example is a description, image or video than should be displayed on several
+products or categories.
 
 See Also
 ========

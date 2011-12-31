@@ -13,10 +13,11 @@ Overview
 ========
 
 A Portlet is a piece of arbitrary information which can be assigned to every
-object (shop, product, category, page). They are displayed in :term:`slots`. LFS
-ships with a left and a right slot and several default portlets. By default
-portlets are inherited from parent objects but it is also possible to block
-parent portlets per slot.
+object, like shop, products, categories and pages. They are displayed in
+:term:`slots`. A slot can have an arbitrary amount of Portlets. LFS ships with a
+left and a right slot and several default portlets. By default portlets are
+inherited from parent objects but it is also possible to block parent portlets
+per slot.
 
 The inheritance path for categories and products is::
 
@@ -29,7 +30,7 @@ The inheritance path for pages is::
 Default Portlets
 ================
 
-This section describes all default portlets of LFS with there particular
+This section describes all default portlets of LFS with their particular
 settings and properties.
 
 .. index:: Average Rating Portlet
@@ -40,7 +41,7 @@ settings and properties.
 Average Rating
 --------------
 
-Displays the average rating of a product.
+This portlet displays the average rating of a product.
 
 Title
     The title of the portlet.
@@ -53,7 +54,7 @@ Title
 Cart
 ----
 
-Displays the cart of the shop.
+This portlet displays the cart of the shop.
 
 Title
     The title of the portlet.
@@ -66,19 +67,27 @@ Title
 Categories Portlet
 ------------------
 
-Displays the category tree of the shop.
+This portlet displays the category tree, which is the essential navigation for
+the shop.
 
 Title
     The title of the portlet.
 
 Start Level
-    The starting level of categories. If this is, for instance, ``2`` the
-    top level categories are not displayed within the portlet.
+    The starting level of categories. If this is ``2`` the :term:`top level
+    categories` are not displayed within the portlet. This can be useful if you
+    want to display them in the horizonal menu.
 
 Expand Level
-    Expands the categories up to this level. If this is, for instance, ``1``
-    all top level categories are expanded. By default only the categories
-    which are selected are expanded.
+    Expands the categories up to this level. If this is ``0`` only the current
+    category will be expanded. If this is ``1`` all top level categories are
+    expanded, etc.
+
+.. note::
+
+    :term:`Top-Level-Kategorien` have level 1, their sub categories have Level
+    2, etc.
+
 
 .. index:: Delivery Time Portlet
    single: Portlet; Delivery Time
@@ -88,7 +97,7 @@ Expand Level
 Delivery Time
 -------------
 
-Displays the delivery time of a product.
+This portlet displays the delivery time of a product.
 
 Title
     The title of the portlet.
@@ -101,7 +110,8 @@ Title
 Featured Products
 ------------------
 
-Displays featured products
+This portlet displays products, which are selected within :doc:`Marketing /
+Featured </user/management/marketing/featured>`
 
 Title
     The title of the portlet.
@@ -110,13 +120,13 @@ Limit
     Only the given amount of products are displayed.
 
 Use current category
-    If this is checked only the featured product of the current category
-    are displayed.
+    If this is checked only the featured product of the current category are
+    displayed.
 
 Slideshow
     If this is checked the products are displayed with a slideshow, i.e. a
-    single product which is exchanged automatically). If this is unchecked
-    all products are display at once.
+    single product which is exchanged automatically). If this is unchecked all
+    products are display at once.
 
 .. index:: Filter Portlet
    single: Portlet; Filter
@@ -126,15 +136,15 @@ Slideshow
 Filter
 -------
 
-Displays a filter portlet for a category.
+This portlet displays a filter portlet for a category.
 
 Title
     The title of the portlet.
 
 Show Product Filters:
-    If this is checked product filters are displayed. To make this work
-    properly the products assigned to the category must filterable properties
-    and there must be values assigned to them.
+    If this is checked product filters are displayed. To make this work properly
+    the products assigned to the category must filterable properties and there
+    must be values assigned to them.
 
 Show price filters:
     If this is checked price filters are displayed (which are automatically
@@ -148,7 +158,7 @@ Show price filters:
 For Sale
 --------
 
-Displays products which are for sale.
+This portlet displays products which are for sale.
 
 Title
     The title of the portlet.
@@ -173,7 +183,7 @@ Slideshow
 Pages
 ------
 
-Displays information pages.
+This portlet displays information pages.
 
 Title
     The title of the portlet.
@@ -199,7 +209,7 @@ Title
 Related Products
 ----------------
 
-Displays related products of a product.
+This portlet displays related products of a product.
 
 Title
     The title of the portlet.
@@ -212,7 +222,7 @@ Title
 Text
 ----
 
-Displays arbitrary HTML.
+This portlet displays arbitrary HTML.
 
 Title
     The title of the portlet.
@@ -229,7 +239,7 @@ Text
 Top Seller
 ----------
 
-Displays the top seller of the shop.
+This portlet displays the top seller of the shop.
 
 Title
     The title of the portlet.

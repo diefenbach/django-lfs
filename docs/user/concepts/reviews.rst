@@ -18,8 +18,8 @@ rating for a product is calculated automatically and displayed within the
 product view and the :ref:`average rating portlet
 <portlets_concepts_average_rating>`.
 
-Logged in customers can review a product only once. Anonymous customers can
-review a product just once in a session.
+Logged in customers can review a product only once, anonymous customers just
+once in a session.
 
 Shop administrators can influence the way reviews are handled, e.g. whether
 reviews are moderated or which fields are required. See :ref:`settings

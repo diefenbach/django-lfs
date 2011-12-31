@@ -57,7 +57,7 @@ Steps
 13. Click on the pencil of a variant in order to open its edit form.
 
 14. By default the data is inherited from the parent. In order to override a
-    field activate it - check the checkbox beside the field - and enter some
+    field activate it - check the check box beside the field - and enter some
     information to it for instance for the price of a variant.
 
 15. Repeat that for every variant you want to change.
@@ -67,7 +67,7 @@ Steps
 
 17. Go to the ``Variants`` tab. You should be there automatically.
 
-18. Check the ``Active`` checkbox. This will check the active check boxes of
+18. Check the ``Active`` check box. This will check the active check boxes of
     all variants and click on the ``Save`` button.
 
 19. Select the default variant by checking one of the radio boxes below the
@@ -76,7 +76,7 @@ Steps
 
 20. Go to the ``Product`` tab.
 
-21. Check the ``Active`` checkbox. This will activate the whole ``Product with
+21. Check the ``Active`` check box. This will activate the whole ``Product with
     Variants``.
 
 That's it

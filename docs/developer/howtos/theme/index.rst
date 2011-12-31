@@ -65,7 +65,7 @@ the portlets  folder::
 Use own CSS
 ===========
 
-To use own CSS several steps are neccessary.
+To use own CSS several steps are necessary.
 
 1. Create a ``static`` folder within mytheme::
 

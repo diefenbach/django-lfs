@@ -94,7 +94,7 @@ criteria are true the shipping method is displayed to the shop customer.
 Prices
 ======
 
-Optional you can add additonal prices to the shipping method and restrict them
+Optional you can add additional prices to the shipping method and restrict them
 with criteria. The first price which meets all criteria will be taken.
 
 .. image:: /images/how_to_shipping_prices.*
@@ -103,14 +103,15 @@ with criteria. The first price which meets all criteria will be taken.
 
 * To manage prices go to the ``Prices`` tab.
 * To add a new price enter the value into the text field and click ``Add price``.
-* To add/edit criteria for that price click on ``Edit criteria`` link. A popup will open.
+* To add/edit criteria for that price click on ``Edit criteria`` link. A pop-up
+  window will open.
 * Click on ``Add criteria`` and change the criteria type, the operator and
   the value to your needs.
 
 **To update/delete a price proceed as following:**
 
 * to update the prices change the priority and/or the value of the price and click on ``Update prices``.
-* To delete the prices select the checkboxes of the prices you want delete and click on ``Delete prices``.
+* To delete the prices select the check boxes of the prices you want delete and click on ``Delete prices``.
 
 See Also
 ========

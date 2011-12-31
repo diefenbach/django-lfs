@@ -1,6 +1,6 @@
-=====
-Utils
-=====
+=========
+Utilities
+=========
 
 This section describes the management interfaces of the ``Utils`` menu.
 

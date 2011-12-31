@@ -63,7 +63,7 @@ Move files
     ``Update`` button.
 
 Delete files
-    To delete files select the checkboxes beside all files you want to delete
+    To delete files select the check boxes beside all files you want to delete
     and click the ``Delete`` button.
 
 See also

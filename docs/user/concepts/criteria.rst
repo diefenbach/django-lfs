@@ -11,10 +11,14 @@ This section describes the concepts of criteria.
 Overview
 ========
 
-Criteria are a central concept and used on several locations of LFS in order to
-restrict respectively display information dependent on different contexts.
+Criteria are a central concept of LFS and are used on several places in order
+to restrict or display information on base of the current situation. For
+example: which products are in the cart or in which country are these products
+about to be delivered. Criteria have a value and an operator, which are the base
+whether the criteria is true or false. This is described in more detail in the
+section ``Criteria`` below.
 
-At the moment criteria are used within:
+Criteria are used within:
 
 * Payment methods
 
@@ -26,17 +30,14 @@ At the moment criteria are used within:
 
 * Discounts
 
-In future they might be used to provide:
+For example a shipping method is only available when all of its criteria are
+true.
 
-* Multiple product prices
+Criteria
+========
 
-* Different product taxes
-
-Types
-=====
-
-This paragraph describes which types of criteria exists and which operators
-they provide.
+This paragraph describes the existing types of criteria and which operators they
+provide.
 
 Cart Price
 -----------
@@ -44,165 +45,36 @@ Cart Price
 Description
 ^^^^^^^^^^^
 
-Provides some tests against the the total gross price of all products of the
-cart (without other costs like shipping, payment and so on).
+Tests the gross price of all products within the cart (without costs for
+shipping, payment and so on).
 
 Value
 ^^^^^
 
-A number which describes a price level. How this is interpreted is up
-to the used operator (see below).
+A number against the gross price of all products within the cart is tested.
 
 Operators
 ^^^^^^^^^
 
 Equal
-    The cart price is equal to the entered value
-
-Less than
-    The criterion is true if the cart price is less than the entered value.
-
-Less than equal to
-    The criterion is true if the cart price is less than equal to the entered
-    value.
-
-Greater than
-    The criterion is true if the cart price is greater than the entered value.
-
-Greater than equal to
-    The criterion is true if the cart price is greater than equal to the
-    entered value
-
-Combined Length And Girth
--------------------------
-
-Description
-^^^^^^^^^^^
-
-Provides some tests against the total combined length and girth (clag) of all
-products within the cart. The "clag" is calculated as following::
-
-    (2 * maximum width) + (2 * total height) + maximal length
-
-Value
-^^^^^
-
-A number which describes a clag level. How this is interpreted is up to the
-used operator (see below).
-
-Operators
-^^^^^^^^^
-
-Equal
-    The criterion is true if the clag is equal to the entered value.
-
-Less than
-    The criterion is true if the clag is less than the entered value.
-
-Less than equal to
-    The criterion is true if the clag is less than equal to the entered value.
-
-Greater than
-    The criterion is true if the clag is greater than the entered value.
-
-Greater than equal to
-    The criterion is true if the clag is greater than equal to the entered
-    value.
-
-Country
--------
-
-Description
-^^^^^^^^^^^
-
-Provides some tests against the the country of the current customer's shipping
-address.
-
-Value
-^^^^^
-
-An arbitrary selection out of all provided countries.
-
-Operators
-^^^^^^^^^
-
-Is
-    The criterion is true if the shipping country of the customer is within
-    the selected countries.
-
-Is not
-    The criterion is true if the shipping country of the customer is not within
-    selected countries.
-
-Height
-------
-
-Description
-^^^^^^^^^^^
-
-Provides some tests against the total height of all products within the cart.
-
-Value
-^^^^^
-
-A number which describes a height level. How this is interpreted is up
-to the used operator (see below).
-
-Operators
-^^^^^^^^^
-
-Equal
-    The total height is equal to the entered value
-
-Less than
-    The criterion is true if the total height is less than the entered value.
-
-Less than equal to
-    The criterion is true if the total height is less than equal to the entered
-    value.
-
-Greater than
-    The criterion is true if the total height is greater than the entered
-    value.
-
-Greater than equal to
-    The criterion is true if the total height is greater than equal to the
+    The criterion is true, if the gross price of the cart is equal to the
     entered value.
 
-Length
-------
-
-Description
-^^^^^^^^^^^
-
-Provides some tests against the maximal length of all products within the cart.
-
-Value
-^^^^^
-
-A number which describes a length level. How this is interpreted is up
-to the used operator (see below).
-
-Operators
-^^^^^^^^^
-
-Equal
-    The criterion is true if the maximal length is equal to the entered value.
-
 Less than
-    The criterion is true if the maximal length is less than the entered value.
+    The criterion is true, if the gross cart price is less than the entered
+    value.
 
 Less than equal to
-    The criterion is true if the maximal length is less than equal to the
-    entered value.
+    The criterion is true, if the gross cart price is less than or equal to
+    the entered value.
 
 Greater than
-    The criterion is true if the maximal length is greater than the entered
+    The criterion is true, if the gross cart price is greater than the entered
     value.
 
 Greater than equal to
-    The criterion is true if the maximal length is greater than equal to the
-    entered value.
+    The criterion is true, if the gross cart price is greater than or equal to
+    the entered value.
 
 Payment Method
 --------------
@@ -266,37 +138,174 @@ Is not valid
     The criterion is true if all of the selected shipping methods are not
     valid.
 
+Country
+-------
+
+Description
+^^^^^^^^^^^
+
+Tests the country of the customer's shipping address.
+
+Value
+^^^^^
+
+An arbitrary selection out of all existing countries.
+
+Operators
+^^^^^^^^^
+
+Is
+    The criterion is true, if the customer's shipping country is within the
+    selection of countries.
+
+Is not
+    The criterion is true, if the customer's shipping country is not within the
+    selection of countries.
+
+Combined Length And Girth
+-------------------------
+
+Description
+^^^^^^^^^^^
+
+Tests the total combined length and girth (clag) of all products within the
+cart. The clag is calculated as following::
+
+    (2 * maximum width) + (2 * total height) + maximal length
+
+Value
+^^^^^
+
+A number against the total combined length and girth of all products within the
+cart is tested.
+
+Operators
+^^^^^^^^^
+
+Equal
+    The criterion is true, if the total clag is equal to the entered value.
+
+Less than
+    The criterion is true, if the total clag is less than the entered value.
+
+Less than equal to
+    The criterion is true, if the total clag is less than equal to the entered
+    value.
+
+Greater than
+    The criterion is true, if the total clag is greater than the entered value.
+
+Greater than equal to
+    The criterion is true, if the total clag is greater than equal to the
+    entered value.
+
+Height
+------
+
+Description
+^^^^^^^^^^^
+
+Tests the total height of all products within the cart.
+
+Value
+^^^^^
+
+A number against the total height of all products within the cart is tested.
+
+Operators
+^^^^^^^^^
+
+Equal
+    The criterion is true, if the total height of all products within the cart
+    is equal to the entered value.
+
+Less than
+    The criterion is true, if the total height of all products within the cart
+    is less than the entered value.
+
+Less than equal to
+    The criterion is true, if the total height of all products within the cart
+    is less than equal to the entered value.
+
+Greater than
+    The criterion is true, if the total height of all products within the cart
+    is greater than the entered value.
+
+Greater than equal to
+    The criterion is true, if the total height of all products within the cart
+    is greater than equal to the entered value.
+
+Length
+------
+
+Description
+^^^^^^^^^^^
+
+Tests the maximum length of all products within the cart.
+
+Value
+^^^^^
+
+A number against the maximum length of all products within the cart is tested.
+
+Operators
+^^^^^^^^^
+
+Equal
+    The criterion is true, if the maximum length of all products within the cart
+    is equal to the entered value.
+
+Less than
+    The criterion is true, if the maximum length of all products within the cart
+    is less than the entered value.
+
+Less than equal to
+    The criterion is true, if the maximum length of all products within the cart
+    is less than equal to the entered value.
+
+Greater than
+    The criterion is true, if the maximum length of all products within the cart
+    is greater than the entered value.
+
+Greater than equal to
+    The criterion is true, if the maximum length of all products within the cart
+    is greater than equal to the entered value.
+
 Weight
 ------
 
 Description
 ^^^^^^^^^^^
 
-Represents the total weight of all products within the cart.
+Tests the total weight of all products within the cart.
 
 Value
 ^^^^^
 
-A number which describes a weight level. How this is interpreted is up to the
-used operator (see below).
+A number against the total weight of all products within the cart is tested.
 
 Operators
 ^^^^^^^^^
 
 Equal
-    The total weight is equal to the entered value
+    The criterion is true, if the total weight of all products within the cart
+    is equal to the entered value.
 
 Less than
-    The total weight is less than the entered value
+    The criterion is true, if the total weight of all products within the cart
+    is less than the entered value.
 
 Less than equal to
-    The total weight is less than equal to the entered value
+    The criterion is true, if the total weight of all products within the cart
+    is less than equal to the entered value.
 
 Greater than
-    The total weight is greater than the entered value
+    The criterion is true, if the total weight of all products within the cart
+    is greater than the entered value.
 
 Greater than equal to
-    The total weight is greater than equal to the entered value
+    The criterion is true, if the total weight of all products within the cart
+    is greater than equal to the entered value.
 
 Width
 -----
@@ -304,31 +313,32 @@ Width
 Description
 ^^^^^^^^^^^
 
-Provides some tests against the maximal height of all products within the cart.
+Tests the maximum width of all products within the cart.
 
 Value
 ^^^^^
 
-A number which describes a width level. How this is interpreted is up to the
-used operator (see below).
+A number against the maximum width of all products within the cart is tested.
 
 Operators
 ^^^^^^^^^
 
 Equal
-    The criterion is true if the maximum width is equal to the entered value.
+    The criterion is true, if the maximum width of all products within the cart
+    is equal to the entered value.
 
 Less than
-    The criterion is true if the maximum width is less than the entered value.
+    The criterion is true, if the maximum width of all products within the cart
+    is less than the entered value.
 
 Less than equal to
-    The criterion is true if the maximum width is less than equal to the
-    entered value.
+    The criterion is true, if the maximum width of all products within the cart
+    is less than equal to the entered value.
 
 Greater than
-    The criterion is true if the maximum width is greater than the entered
-    value.
+    The criterion is true, if the maximum width of all products within the cart
+    is greater than the entered value.
 
 Greater than equal to
-    The criterion is true if the maximum width is greater than equal to the
-    entered value.
+    The criterion is true, if the maximum width of all products within the cart
+    is greater than equal to the entered value.

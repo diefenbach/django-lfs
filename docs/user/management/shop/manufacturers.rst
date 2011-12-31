@@ -27,6 +27,6 @@ Products
 
 Within this tab you can assign categories and products to the manufacturer.
 
-To assign all products of a category to the manufacurer just check it. If you
+To assign all products of a category to the manufacturer just check it. If you
 want just a sub category or single products of it, click on the category to
 expand the children.

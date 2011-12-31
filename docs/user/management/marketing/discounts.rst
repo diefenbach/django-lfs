@@ -15,7 +15,7 @@ Add Discount
     Adds a new discount to the shop.
 
 Delete Discount
-    Deletes the currently display disount.
+    Deletes the currently display discount.
 
 Data
 ====

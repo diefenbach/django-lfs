@@ -147,12 +147,12 @@ Go to the ``Images`` tab
 
 Go back to the ``Product`` tab
 
-1. Check the ``Active`` checkbox. Only active products are displayed to the
+1. Check the ``Active`` check box. Only active products are displayed to the
    customers.
 
 2. Click ``Save data``.
 
-3. Click on ``Goto Product`` to visie the new product.
+3. Click on ``Goto Product`` to visit the new product.
 
 Set Default Locale and Currency
 ===============================

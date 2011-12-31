@@ -46,7 +46,7 @@ Products
 
 Within this tab you can select which products are supposed to be exported.
 
-To export whole categories just select the checkbox beside the category you want
+To export whole categories just select the check box beside the category you want
 to  export. If you want just a sub category or single products of category,
 click on the category to expand the children.
 

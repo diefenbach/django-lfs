@@ -14,20 +14,19 @@ Overview
 Categories are used to structure :doc:`products <products>`.
 
 Every category can have either one or no parent category. In this way the
-category tree is built. If the category has no parent it's a  top level
-category.
+category tree is built, which serves as the essential navigation of the shop. If
+a category has no parent it's a top level category.
 
-Every category can have an arbitrary amount of products or sub categories. What
-is displayed is up to the selected template and selected format informations
+Every category can have an arbitrary amount of products and sub categories. What
+is displayed depends on the selected template and entered format informations
 like amount of columns and rows of displayed products.
 
-A category can have :doc:`portlets <portlets>`. By default the portlets are
-inherited from the parent category or the shop (for top level categories) and to
-the sub categories and assigned products but they can be blocked per
-:term:`slot`.
+Each category can have several assigned :doc:`portlets <portlets>`. By default
+the portlets are inherited from the parent category or from the shop preferences
+(for top level categories). However, this can be blocked per :term:`slot`.
 
-A category can have a :doc:`static block <static_blocks>` which is displayed on
-top of the category.
+In addition a :doc:`static block <static_blocks>` can be assigned to a category,
+which is displayed on top of the category page.
 
 See Also
 ========

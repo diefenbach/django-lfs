@@ -67,7 +67,7 @@ the products, like so:
     We decided to give a response with a download back. Your code may vary here.
 
 16
-    We decided to use Python csv moduls. You code may vary here.
+    We decided to use Python csv modules. You code may vary here.
 
 19
     All selected products can be get with the ``get_products`` method of the

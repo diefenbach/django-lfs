@@ -38,7 +38,7 @@ Properties
 Within this tab you can manage properties for this property group.
 
 Add Properties
-  To add properties to the group select the checkbox beside the properties
+  To add properties to the group select the check box beside the properties
   you want to add within the ``Properties`` section on the left side and click
   on ``Add to Property Group``.
 
@@ -47,7 +47,7 @@ Update Properties
   and click on ``Update properties``.
 
 Remove Properties
-  To remove properties from the group select the checkboxes beside the properties
+  To remove properties from the group select the check boxes beside the properties
   you want to remove within the ``Selected properties`` section on the right
   side and click on ``Remove from Property Group``.
 
@@ -68,12 +68,12 @@ will have the properties of this property group.
   select box (categories).
 
 Add Products
-  To add products to the group select the checkbox beside the products
+  To add products to the group select the check box beside the products
   you want to add within the ``Products`` section on the left side and click
   on ``Add to Property Group``.
 
 Remove Products
-  To remove products from the group select the checkboxes beside the products
+  To remove products from the group select the check boxes beside the products
   you want to remove within the ``Selected products`` section on the right
   side and click on ``Remove from Property Group``.
 

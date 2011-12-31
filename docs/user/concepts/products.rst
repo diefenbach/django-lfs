@@ -6,24 +6,24 @@
 Products
 ========
 
-This section describes the products of LFS.
+This section describes the concepts of products.
 
 Overview
 ========
 
-Products are provided for sale to the shop customer. Products are the central
-content object within LFS. All attributes of a product is managed here. For
-instance the prices, stock data, images and attachements. Please refer to the
-:doc:`product management interface </user/management/catalog/products>` to see
-all attributes of a product.
+Products are the central content object of LFS. These are provided for sale to
+the customer. Almost all relevant attributes of products are entered here, for
+instance the price, stock data, images and attachments. More details about all
+attributes can be found at :doc:`product management interface reference
+</user/management/catalog/products>`.
 
 .. _product-types-label:
 
 Types
 =====
 
-There are four types of products: product, configurable product,
-product with variants and variant.
+There are three types of products: default products, configurable products,
+and ``products with variants``.
 
 .. index:: single: Product; Default
 
@@ -32,8 +32,8 @@ product with variants and variant.
 Product
 -------
 
-The plain default product of LFS. This is in some way the base of all other
-product types which are described in the following sections.
+This is the plain default product of LFS and can be considered as the the base
+of all other product types, which are described in the following sections.
 
 .. index:: single: Product; Configurable
 
@@ -42,11 +42,11 @@ product types which are described in the following sections.
 Configurable Product
 --------------------
 
-A configurable product is a product with several properties (e.g. color) and
-options (e.g. red, green, blue) from which a shop customer can choose. The
-provided properties and options can optionally change the total price of the
-configurable product. That is usually calculated by the product's base price
-plus all selected options of its properties.
+A configurable product is a product with several properties and options from
+which a shop customer can or has to choose. For instance property ``Color`` an
+its option ``red, yellow and green``. The selected options of all properties can
+change the total price of the product. This is calculated by the base price of
+the product plus all selected options of all provided product's properties.
 
 .. seealso::
 
@@ -56,35 +56,47 @@ plus all selected options of its properties.
 
 .. _products_concepts_product_with_variants:
 
-Product With Variants
+Product with Variants
 ---------------------
 
-A product with variants consists of two parts: A ``product with variants``
-and the ``variants`` (see below).
+A ``product with variants`` is a product from which the customer can choose out
+of an arbitrary amount of similar variants.
 
-The ``product with variants`` can be considered as the parent of its
-``variants``, which can't be sold. It is just a container for the variants and
-provides default data which can be inherited by the variants. The ``product with
-variants`` uses :doc:`global <properties>` and :doc:`local properties
-<local_properties>` to create the variants.
+The most essential difference to a ``configurable product`` is, that every
+variant is a discrete product, with own data, like the price or the article,
+whereas the latter can be important for accounting.
 
-.. seealso::
+Technical the ``product with variants`` consists out of two parts: the base and
+the variants.
 
-    * :doc:`/user/howtos/how_to_variants`
+Base
+^^^^
 
+The base can be considered as the parent of the variants. It can't be sold to
+customers, but it serves as a container for the variants and provides default
+data, which can be inherited from the variants.
+
+To create variants for a base :doc:`global <properties>` and :doc:`local
+properties <local_properties>` are used. Each variant belongs then to a
+unique combination of options from all properties.
 
 .. index:: single: Product; Variant
 
 .. _products_concepts_variant:
 
 Variant
--------
+^^^^^^^
 
-This is a single variant of a ``product with variants``, which can be sold to
-the customer. By default a variant inherits all data of the parent ``product
-with variants``. A ``variant`` can overwrite the data from the belonging parent.
-A variant belongs to a unique combination of properties. The properties are
-defined by the ``product with variants``.
+This is a single variant of a ``product with variants``. Variants can be offered
+for sale. By default the variants inherit all data from the base, but this data
+can be overwritten per variant and per field. This can be considered as the most
+essential difference to a ``configurable product``. For example each variant can
+have an own price or an own article number. Latter can be important for
+accounting.
+
+.. seealso::
+
+    * :doc:`/user/howtos/how_to_variants`
 
 See Also
 ========

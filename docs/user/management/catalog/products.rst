@@ -84,7 +84,7 @@ Price Calculator
     Tax``, which means the product price in the database excludes tax.
 
 For Sale
-    If the checkbox is activated the entered for sale price is active. On all
+    If the check box is activated the entered for sale price is active. On all
     views the standard price is displayed stroked and the for sale price is
     displayed emphasized.
 
@@ -100,7 +100,8 @@ Type of Quantity Field
     quantity must be an integer and all decimal places are ignored. ``Decimal
     0.1``, which means the quantity must be a decimal number with one place and
     more decimal places are ignored. ``Decimal 0.01``, which means the quantity
-    must be a decimal number with two places andMore decimal places are ignored.
+    must be a decimal number with two places and more decimal places are
+    ignored.
 
 Short Description
     A short description of the product. This is displayed within overviews
@@ -161,7 +162,7 @@ Move Images
     To move images just click on the up or down arrow beside the image.
 
 Delete Images
-    To delete images select the checkboxes beside all images you want to delete
+    To delete images select the check boxes beside all images you want to delete
     and click the ``Delete`` button.
 
 .. _products_management_attachments:
@@ -188,7 +189,7 @@ Move Attachments
     attachment.
 
 Delete Attachments
-    To delete attachments select the checkboxes beside all images you want to
+    To delete attachments select the check boxes beside all images you want to
     delete and click the ``Delete`` button.
 
 .. _products_management_accessories:
@@ -201,7 +202,7 @@ Within this tab you can manage the accessories of this product.
 Add Accessories
 ^^^^^^^^^^^^^^^
 
-Within the ``Selectable Products`` section select all checkbox beside the
+Within the ``Selectable Products`` section select all check box beside the
 product you want to add as accessory to the product and click on ``Add To
 Accessories``.
 
@@ -226,7 +227,7 @@ Quantity
 Remove Accessories
 ^^^^^^^^^^^^^^^^^^
 
-Within the ``Selected Products`` section select all checkboxes beside the
+Within the ``Selected Products`` section select all check boxes beside the
 products you want to remove from the product and click on ``Remove From
 Accessories``.
 
@@ -240,7 +241,7 @@ Within this tab you can manage the related products of this product.
 Add Related Products
 ^^^^^^^^^^^^^^^^^^^^
 
-Within the ``Selectable Products`` section select all checkbox beside the
+Within the ``Selectable Products`` section select all check box beside the
 product you want to add as related products to the product and click on
 ``Add To Related Products``.
 
@@ -252,7 +253,7 @@ product you want to add as related products to the product and click on
 Remove Related Products
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Within the ``Selected Products`` section select all checkboxes beside the
+Within the ``Selected Products`` section select all check boxes beside the
 products you want to remove from the product and click on ``Remove From Related
 Prouducts``.
 

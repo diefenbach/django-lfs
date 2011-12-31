@@ -11,15 +11,16 @@ This section describes the concepts of properties.
 Overview
 ========
 
-Properties are used to add flexible attributes on a product, like color, size,
-material, etc. They organized with :doc:`property groups
-</user/management/properties/property_groups>`, which are assigned to products.
+Generally, properties are used to extend products with miscellaneous date fields.
+Properties are attached to products with the help of :doc:`property groups
+</user/management/properties/property_groups>`.
 
-Properties can be used to create product filters, variants and configurable
-products or just to display information on a product. They can also be used to
-ask the shop customers to enter information for to product which should be ordered
-in other words for every property which is assigned to a product users (shop
-owners or show customers) can enter information.
+In particular properties are used to create :doc:`products with variants
+</user/howtos/how_to_variants>`, :doc:`configurable products
+</user/howtos/how_to_configurable_product>` and :doc:`filters
+</user/howtos/how_to_filters>` or just to display generic information on a product.
+Additionally they can also be used to ask the shop customers to enter
+information for a product which is about to be ordered.
 
 .. _properties_concepts_types:
 
@@ -38,27 +39,23 @@ Float Field
 
 The property value must be a float.
 
-Additional Data
-^^^^^^^^^^^^^^^
-
 Step Type
 *********
 
-The step type is used for :ref:`filtering <portlets_concepts_filter>`. You
-can choose from three different methods how the steps are created.
+The step type is used for :ref:`filtering <portlets_concepts_filter>`. It can
+be chose from three different methods how the steps are created.
 
 Automatic
-    The filter steps are calculate automatically. LFS tries to
-    calculate decent steps based on the existing values.
+    The filter steps are calculate automatically. The base are the entered
+    values of all products of a category for this property.
 
-Fixed step
-    You need to enter a fixed step for the filter, e.g. 5. LFS will
-    then generate the filter from the min to the max field with the
-    provided step.
+Fixed steps
+    On base of the entered number LFS builds automatically all steps from the
+    minimal to the maximum value of all entered values on the products of a
+    category for this property.
 
 Manual steps
-    You need to enter every step. LFS will just display the steps
-    you provide.
+    All steps, which are supposed to be displayed are entered manually.
 
 Validators
 **********
@@ -78,22 +75,19 @@ Step
     The valid steps from minimum to maximum value.
 
 Example
-^^^^^^^
+*******
 
 * Min: 1
 * Max: 3
 * Steps: 0.5
 
-Valid values which a shop customer could input into this field would be:
-1, 1.5, 2, 2.5 and 3.
+Valid values which a shop customer could input into this field are: 1, 1.5, 2,
+2.5 and 3.
 
 Select Field
 ------------
 
 The property is displayed as a select box.
-
-Additional Data
-^^^^^^^^^^^^^^^
 
 Select Field Properties
 ***********************
@@ -104,7 +98,8 @@ Display Price
 
 Add Price
     The price of the selected option of the property is added to the total
-    price of a ``Configurable Product``.
+    price of a :doc:`Configurable Product
+    </user/howtos/how_to_configurable_product>`.
 
 Select Field Options
 ********************

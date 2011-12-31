@@ -11,26 +11,30 @@ This section describes the concepts of delivery times.
 Overview
 ========
 
-Delivery times are used to calculate the delivery time for single products or
-the total cart.
+LFS calculates automatically the delivery times for single products and the
+total cart. Delivery times are managed on a central place and are assigned to
+shipping methods, that means they are usually dependent on the first valid or
+selected shipping method, if not explicitly overwritten for a product (see
+below).
 
-The common way how to use delivery times is to assign them to :doc:`shipping
-methods </user/management/shop/shipping_methods>`. The delivery time of a
-product and the total cart is then calculated by LFS automatically.
+To calculate the delivery time for a single product (to display it within the
+product page) LFS takes the first shipping method, which is valid for the
+product and customer (all :doc:`criteria </user/concepts/criteria>` are true)
+and takes the assigned delivery time of it. It's also possible to override this
+mechanism for single products with a :ref:`manually delivery time
+<products_management_stock>`.
 
-To calculate the delivery time for a single product LFS takes the first valid
-shipping method for the current customer, i.e. the first shipping method which
-meets all :doc:`criteria </user/concepts/criteria>`.
+To calculate the delivery time for the total cart (to display it within the cart
+and the checkout page), LFS takes the shipping method the customer has currently
+selected and calculates on base of that the maximum delivery time of all
+products within the cart. Also in this case the manual delivery times are taken
+into account. Is the selected shipping method for a product not valid for this
+one the default delivery time is used.
 
-To calculate the delivery time for the total cart LFS takes the shipping method
-the customer has currently selected. In this way the customer can see in real
-time how long a delivery would take when he changes the shipping method from
-standard to express for instance.
+Additionally the :ref:`internal delivery time <products_management_stock>` (shop
+owner orders product) can be added to the delivery time for the customer.
 
-It is also possible to overwrite this mechanism for single products with a
-:ref:`manually delivery time <products_management_stock>`.
-
-See Also
+See also
 ========
 
 * :doc:`Delivery Times Management </user/management/shop/delivery_times>`

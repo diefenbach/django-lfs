@@ -60,7 +60,7 @@ Description
 
 Image
     The image of the category. This can be displayed within category overviews
-    and the category detaile view.
+    and the category detail view.
 
 .. index:: Static Block
 
@@ -129,13 +129,13 @@ name into the appropriate text box and/or select a certain category.
 
 **Add products**
 
-You can see available products to assign on top of the page. Select the checkboxes
+You can see available products to assign on top of the page. Select the check boxes
 beside all products you want to assign and click on ``Add to category``
 
 **Remove products**
 
 You can see all already assigned products within the ``Selected products`` section.
-Select the checkboxes beside the products you want to remove and click on ``Remove
+Select the check boxes beside the products you want to remove and click on ``Remove
 from category``.
 
 SEO

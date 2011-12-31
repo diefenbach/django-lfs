@@ -26,7 +26,7 @@ You can filter the available products within the ``Products`` section:
 Add top sellers
 ---------------
 
-To add top sellers check the checkboxes beside the products you want to add
+To add top sellers check the check boxes beside the products you want to add
 (within the ``Products`` section) and click on ``Add to topseller``.
 
 .. image:: /images/topseller_products.*
@@ -40,7 +40,7 @@ topseller`` button (see image below).
 Remove top sellers
 ------------------
 
-To remove top sellers check the checkboxes beside the products you want to
+To remove top sellers check the check boxes beside the products you want to
 remove (within the ``Topseller`` section) and click on ``Remove from
 topseller``.
 

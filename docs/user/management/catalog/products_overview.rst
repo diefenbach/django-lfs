@@ -16,7 +16,7 @@ Here you can bulk edit products.
 Change Products
 ===============
 
-In order to delete products activate the checkbox on the left side of the
+In order to delete products activate the check box on the left side of the
 products in question and click the ``Delete`` button. In order to modify
 products make the changes in the product fields and click the ``Save`` button.
 

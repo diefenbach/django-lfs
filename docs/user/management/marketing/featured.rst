@@ -24,7 +24,7 @@ You can filter the available products within the ``Products`` section:
 Add featured products
 ---------------------
 
-To add featured products check the checkboxes beside the products you want to add
+To add featured products check the check boxes beside the products you want to add
 (within the ``Products`` section) and click on ``Add to featured products``.
 
 .. image:: /images/topseller_products.*
@@ -32,13 +32,13 @@ To add featured products check the checkboxes beside the products you want to ad
 Update featured products
 ------------------------
 
-To update featured produts change the entries in question and click on the ``Save
-featured`` button (see image below).
+To update featured products change the entries in question and click on the
+``Save featured`` button (see image below).
 
 Remove featured products
 ------------------------
 
-To remove featured products check the checkboxes beside the products you want to
+To remove featured products check the check boxes beside the products you want to
 remove (within the ``Featured products`` section) and click on ``Remove from
 featured``.
 

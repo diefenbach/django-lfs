@@ -57,7 +57,7 @@ Now we will add a property group.
 12. Enter the ``Name`` of the property, in our case *T-Shirts* and click
     ``Add property group``.
 
-Now will adssign the property to the property group:
+Now assign the property to the property group:
 
 13. Go to the "Properties" tab.
 14. Select *Size* and click ``Assign properties``.

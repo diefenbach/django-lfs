@@ -17,10 +17,10 @@ All valid payment methods are displayed for selection to the shop customer. A
 payment method is valid if all :doc:`criteria <criteria>` of the payment method
 are true.
 
-Payment methods can have many prices which are also dependent of criteria. The
-first price which is valid - all of its criteria are true - is the current price
-for the payment method. If no price is valid the default price is taken (from
-the ``Data`` tab).
+Payment methods can have many prices which are, as the payment method itself,
+also dependent of criteria. The first price which is valid - all of its criteria
+are true - is the current price for the payment method. If no price is valid the
+default price is taken (from the ``Data`` tab).
 
 See Also
 ========

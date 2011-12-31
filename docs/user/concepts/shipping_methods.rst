@@ -1,4 +1,4 @@
-.. index:: Shipping Method
+.. index:: Shipping Methods
 
 .. _shipping_methods_concepts:
 
@@ -11,16 +11,17 @@ This section describes the concept of shipping methods.
 Overview
 ========
 
-You can add as many shipping methods as you want.
+You can add as many :doc:`shipping methods </user/howtos/how_to_shipping_method>`
+as you want.
 
-All valid shipping methods are displayed for selection to the shop customer. A
+All *valid* shipping methods are displayed for selection to the shop customer. A
 shipping method is valid if all :doc:`criteria <criteria>` of the shipping
 method are true.
 
-Shipping methods can have many prices which are also dependent on criteria. The
-first price which is valid - all of its criteria are true - is the current price
-for the shipping method. If no price is valid the default price is taken (from
-the ``Data`` tab).
+Shipping methods can have many prices which are, as the payment method itself,
+also dependent on criteria. The first price which is valid - all of its criteria
+are true - is the current price for the shipping method. If no price is valid
+the default price is taken (from the ``Data`` tab).
 
 Shipping methods have also a :doc:`delivery time
 </user/concepts/delivery_times>` which decides how long the delivery will take

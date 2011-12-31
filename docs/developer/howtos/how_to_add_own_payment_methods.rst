@@ -53,7 +53,7 @@ Create a Pay-Link
 For non-real-time payment processors (for instance like PayPal) you may want
 to include a pay-link with which the customer can re-pay the order. This link
 will be displayed to the customer on the ``thank-you`` page and is part of the
-notifcation mail the customer receives when he has submitted an order. To do
+notification mail the customer receives when he has submitted an order. To do
 that just create the link and add it to the order:
 
 .. code-block:: python

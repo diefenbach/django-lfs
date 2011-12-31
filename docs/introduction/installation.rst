@@ -4,8 +4,8 @@
 Installation
 ============
 
-Prequisites
-===========
+Prerequisites
+=============
 
 Make sure you have installed:
 
