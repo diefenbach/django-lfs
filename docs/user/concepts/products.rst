@@ -22,8 +22,8 @@ attributes can be found at :doc:`product management interface reference
 Types
 =====
 
-There are three types of products: default products, configurable products,
-and ``products with variants``.
+There are three types of products: default products, configurable products and
+products with variants.
 
 .. index:: single: Product; Default
 
@@ -43,7 +43,7 @@ Configurable Product
 --------------------
 
 A configurable product is a product with several properties and options from
-which a shop customer can or has to choose. For instance property ``Color`` an
+which a customer can or has to choose. For instance the property ``Color`` and
 its option ``red, yellow and green``. The selected options of all properties can
 change the total price of the product. This is calculated by the base price of
 the product plus all selected options of all provided product's properties.
@@ -63,11 +63,11 @@ A ``product with variants`` is a product from which the customer can choose out
 of an arbitrary amount of similar variants.
 
 The most essential difference to a ``configurable product`` is, that every
-variant is a discrete product, with own data, like the price or the article,
-whereas the latter can be important for accounting.
+variant is a discrete product with own data, like the price or the article
+number - whereas the latter can be important for accounting.
 
 Technical the ``product with variants`` consists out of two parts: the base and
-the variants.
+its variants.
 
 Base
 ^^^^

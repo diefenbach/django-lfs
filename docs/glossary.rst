@@ -30,9 +30,11 @@ Glossary
     Templates
         Templates are used to structure the content of a category or product.
 
-    Top-Level-Categories
+    Top Level Categories
         Categories, which has no parent category.
 
     WYSIWYG
         Acronym for ``What You See Is What You Get``. See also:
         `http://en.wikipedia.org/wiki/WYSIWYG`_
+
+
