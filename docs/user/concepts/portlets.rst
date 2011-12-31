@@ -76,7 +76,7 @@ Title
 Start Level
     The starting level of categories. If this is ``2`` the :term:`top level
     categories` are not displayed within the portlet. This can be useful if you
-    want to display them in the horizonal menu.
+    want to display them in the horizontal menu.
 
 Expand Level
     Expands the categories up to this level. If this is ``0`` only the current
