@@ -11,11 +11,11 @@ This section describes the concepts of delivery times.
 Overview
 ========
 
-The delivery time of product and the cart is calculated automatically by LFS.
-Delivery times are managed centrally and are assigned to every existing shipping
-method, that means they are usually dependent on the first valid or the selected
-shipping method of a customer, if not this is not explicitly overwritten for a
-product (see below).
+The delivery time of single products and the cart is calculated automatically by
+LFS. Delivery times are managed centrally and are assigned to every existing
+shipping method, that means they are usually dependent on the first valid or the
+selected shipping method of a customer, if this is not explicitly overwritten
+for a product (see below).
 
 To calculate the delivery time for a single product (to display it within the
 product page), LFS takes the first valid shipping method for the product and
