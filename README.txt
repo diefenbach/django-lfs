@@ -15,7 +15,7 @@ Documentation
 
 For the latest documentation please visit:
 
-* http://readthedocs.org/docs/lightning-fast-shop
+* http://docs.getlfs.com
 
 Demo shop
 =========
@@ -24,8 +24,21 @@ A demo shop can be tried here:
 
 * http://demo.getlfs.com
 
+The latest development state can be found here:
+
+* http://dev.getlfs.com
+
 Changes
 =======
+
+0.6.3 (2011-12-31)
+------------------
+
+* Bugfix: Fixed update of prices if a configurable product is for sale.
+* Bugfix: Fixed calculation of property prices for configurable products.
+* Bugfix: fixed saving of property data (added missing csrf token).
+* Bugfix: fixed removing products / properties from a group.
+* Bugfix: fixed filtering for float field steps.
 
 0.6.2 (2011-12-24)
 ------------------
