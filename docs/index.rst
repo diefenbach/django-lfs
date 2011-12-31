@@ -89,7 +89,6 @@ Miscellaneous
    :maxdepth: 1
 
    developer/settings.rst
-   developer/contributing.rst
 
 .. _index_developers_howtos:
 
