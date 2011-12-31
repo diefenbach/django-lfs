@@ -98,10 +98,11 @@ Price Unit
 Type of Quantity Field
     There are three types of quantity fields: ``Integer``, which means the
     quantity must be an integer and all decimal places are ignored. ``Decimal
-    0.1``, which means the quantity must be a decimal number with one place and
-    more decimal places are ignored. ``Decimal 0.01``, which means the quantity
-    must be a decimal number with two places and more decimal places are
-    ignored.
+    0.1``, which means the quantity must be a decimal number with one decimal
+    place, more decimal places are ignored. ``Decimal 0.01``, which means the
+    quantity must be a decimal number with two decimal places, more decimal
+    places are ignored. If no type is given the default type is taken, which is
+    ``Integer``.
 
 Short Description
     A short description of the product. This is displayed within overviews

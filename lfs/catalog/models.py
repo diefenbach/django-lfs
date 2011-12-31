@@ -631,7 +631,7 @@ class Product(models.Model):
     # Manufacturer
     sku_manufacturer = models.CharField(_(u"SKU Manufacturer"), blank=True, max_length=100)
     manufacturer = models.ForeignKey(Manufacturer, verbose_name=_(u"Manufacturer"), blank=True, null=True, related_name="products")
-    type_of_quantity_field = models.PositiveSmallIntegerField(_(u"Type of quantity field"), default=QUANTITY_FIELD_INTEGER, choices=QUANTITY_FIELD_TYPES)
+    type_of_quantity_field = models.PositiveSmallIntegerField(_(u"Type of quantity field"), blank=True, null=True, choices=QUANTITY_FIELD_TYPES)
 
     objects = ActiveManager()
 

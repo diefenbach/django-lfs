@@ -50,7 +50,7 @@ class Command(BaseCommand):
         from lfs.catalog.settings import QUANTITY_FIELD_INTEGER
         from lfs.catalog.settings import QUANTITY_FIELD_TYPES
 
-        db.add_column("catalog_product", "type_of_quantity_field", models.PositiveSmallIntegerField(_(u"Type of quantity field"), default=QUANTITY_FIELD_INTEGER, choices=QUANTITY_FIELD_TYPES))
+        db.add_column("catalog_product", "type_of_quantity_field", models.PositiveSmallIntegerField(_(u"Type of quantity field"), null=True, blank=True, choices=QUANTITY_FIELD_TYPES))
 
         # Pages
         print "Migrating to 0.7"
