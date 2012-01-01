@@ -30,7 +30,7 @@ should make the installation straightforward:
 
   You might want to fork LFS on `Bitbucket <https://bitbucket.org/diefenbach
   /django-lfs>`_ or `GitHub <https://github.com/diefenbach/django-lfs>`_ and
-  point to it within buildout.cfg to your forks first.
+  point to it within buildout.cfg first.
 
 Contributing Code to the Core
 =============================
