@@ -80,6 +80,19 @@ How-tos
 Information for Developers
 ==========================
 
+.. _index_developers_developing:
+
+Developing
+==========
+
+.. toctree::
+   :maxdepth: 1
+
+   developer/developing.rst
+   developer/testing.rst
+   developer/benchmarking.rst
+   misc/contributing_translations.rst
+
 .. _index_developers_miscellaneous:
 
 Miscellaneous
@@ -89,10 +102,6 @@ Miscellaneous
    :maxdepth: 1
 
    developer/settings.rst
-   developer/developing.rst
-   developer/testing.rst
-   developer/benchmarking.rst
-   misc/contributing_translations.rst
 
 .. _index_developers_howtos:
 
