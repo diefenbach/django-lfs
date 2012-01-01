@@ -8,25 +8,14 @@ Marketing
 
 This section describes the marketing features of LFS.
 
-.. _marketing_concepts_related_products:
-
-Related Products
-================
-
-Related products are products which are somehow related to a product. They are
-not bidirectional but they need to entered on each product itself.
-
-Related products can be displayed within the :ref:`Related Products Portlet
-<portlets_concepts_related_products>`.
-
 .. _marketing_concepts_accessories:
 
 Accessories
 ===========
 
-Accessories are products which should be soled together with a product, like
-shingles to a summerhouse. They are not bidirectional but they need need to be
-entered on each product itself.
+Accessories are products which are supposed to be sold together with a product,
+like shingles to a summerhouse. They are not bidirectional but they need need to
+be entered on each product itself.
 
 Accessories are displayed within the ``product view`` and could be added to the
 cart alongside with the product. They are also displayed within the ``added to
@@ -38,22 +27,59 @@ the cart) in order to offer them to be also added to the cart.
 Discounts
 =========
 
-Discounts are a price reduction for customers. The price reduction can be
-absolute or percentaged based on the total cart price.
+Discounts are a possibility to give a price reduction to customers. They can be
+absolute or percentaged based on the total cart price. Discounts can be
+restricted by :ref:`criteria <criteria_concepts>` and they are only given if it
+meets all criteria. The shop owner can add an arbitrary amount of discounts.
 
-Discounts can be restricted by :ref:`criteria <criteria_concepts>` and they are
-only given to a customer if he meets all of them.
+.. _marketing_concepts_featured_products:
 
-The shop owner can add an arbitrary amount of discounts. They can be of the same
-or of different types.
+Featured Products
+=================
+
+Featured products are several product which are supposed to be exposed to the
+customer for any reason. They are :doc:`management manually
+</user/management/marketing/featured>` an can be displayed displayed to the
+customer via the :ref:`featured product portlet
+<portlets_concepts_featured_products>`.
+
+.. _marketing_concepts_rating_mails:
+
+Rating Mails
+============
+
+Shop owners can send :ref:`rating mails <rating_mails_management>` to shop
+customers in order to ask them to rate the products they bought. See also
+:ref:`review concepts <reviews_concept>` for more information.
+
+.. _marketing_concepts_related_products:
+
+Related Products
+================
+
+Related products are products which are somehow related to a product. They are
+not bidirectional related but they need to be assigned to every single product.
+
+Related products can be displayed within the :ref:`Related Products Portlet
+<portlets_concepts_related_products>`.
+
+.. _marketing_concepts_top_seller:
+
+Top seller
+==========
+
+Top seller are best sold products of the shop. They are calculated automatically
+but can be also :doc:`manipulated manually
+</user/management/marketing/topseller>`. They are displayed within the :ref:`top
+seller portlet <portlets_concepts_top_seller>`
 
 .. _marketing_concepts_vouchers:
 
 Vouchers
 ========
 
-Vouchers are another price reduction for customers. The price reduction can be
-absolute or percentaged based on the total cart price.
+Vouchers are another possibility to give a price reduction for customers. The
+price reduction can be absolute or percentaged based on the total cart price.
 
 They are generic character strings which can be distributed to customers. If a
 valid voucher string is entered within the cart or as part of the checkout
@@ -66,15 +92,6 @@ way is to expire the voucher right after it has been used the first time.
 
 The shop owner can add an arbitrary amount of vouchers. They can be of the same
 or of different types.
-
-.. _marketing_concepts_rating_mails:
-
-Rating Mails
-============
-
-Shop owners can send :ref:`rating mails <rating_mails_management>` to shop
-customers in order to ask them to rate the products they bought. See also
-:ref:`review concepts <reviews_concept>` for more information.
 
 See also
 ========

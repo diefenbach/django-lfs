@@ -85,7 +85,7 @@ Expand Level
 
 .. note::
 
-    :term:`Top-Level-Kategorien` have level 1, their sub categories have Level
+    :term:`top level categories` have level 1, their sub categories have Level
     2, etc.
 
 

@@ -89,6 +89,10 @@ Miscellaneous
    :maxdepth: 1
 
    developer/settings.rst
+   developer/developing.rst
+   developer/testing.rst
+   developer/benchmarking.rst
+   misc/contributing_translations.rst
 
 .. _index_developers_howtos:
 
@@ -113,7 +117,6 @@ Miscellaneous
 
 .. toctree::
    :maxdepth: 1
-
 
    misc/contributing_translations.rst
 

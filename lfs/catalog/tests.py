@@ -1,10 +1,15 @@
 # coding: utf-8
 
+# python imports
+import os
+
 # django imports
 from django.contrib.sessions.backends.file import SessionStore
+from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.files.base import ContentFile
 
 # lfs imports
 from lfs.caching.utils import lfs_get_object_or_404
@@ -32,6 +37,7 @@ from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import LIST
 from lfs.catalog.models import Category
 from lfs.catalog.models import DeliveryTime
+from lfs.catalog.models import File
 from lfs.catalog.models import GroupsPropertiesRelation
 from lfs.catalog.models import Image
 from lfs.catalog.models import Product
@@ -995,7 +1001,7 @@ class ViewsTestCase(TestCase):
         """
         """
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
-        self.p1 = Product.objects.create(name="Product 1", slug="product-1", sub_type=PRODUCT_WITH_VARIANTS, active=True)
+        self.p1 = Product.objects.create(pk=1, name="Product 1", slug="product-1", sub_type=PRODUCT_WITH_VARIANTS, active=True)
 
         # Create a property with two options
         color = Property.objects.create(name="Color")
@@ -1005,6 +1011,68 @@ class ViewsTestCase(TestCase):
         # Add a variant with color = red
         self.v1 = Product.objects.create(name="Variant 1", slug="variant-1", sub_type=VARIANT, parent=self.p1, active=True)
         ProductPropertyValue.objects.create(product=self.v1, property=color, value=str(red.id), type=PROPERTY_VALUE_TYPE_FILTER)
+
+        # Create a test file
+        fh = open(os.path.join(os.getcwd(), "parts/lfs/lfs/utils/data/image1.jpg"))
+        cf_1 = ContentFile(fh.read())
+
+        self.file = File.objects.create(pk=1, title="Test File", slug="test-file", file=None)
+        self.file.file.save("Laminat01.jpg", cf_1)
+
+    def test_file(self):
+        request = RequestFactory().get("/")
+
+        from lfs.catalog.views import file
+        result = file(request, id=1)
+
+        import pdb; pdb.set_trace()
+
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(len(result.content), 1980821)
+        self.assertEqual(result["Content-Type"], "application/binary")
+        self.assertEqual(result["Content-Disposition"], "attachment; filename=Test File")
+
+    def test_select_variant(self):
+        from lfs.catalog.views import select_variant
+
+        request = RequestFactory().post("/", {"variant_id": 1})
+        request.user = AnonymousUser()
+
+        result = select_variant(request)
+        self.assertEqual(result.status_code, 200)
+        self.failIf(result.content.find("The product has been changed according to your selection.") == -1)
+
+    def test_set_price_filter(self):
+        from lfs.catalog.views import set_price_filter
+        from lfs.catalog.views import reset_price_filter
+
+        request = RequestFactory().get("/")
+        request.session = SessionStore()
+
+        result = set_price_filter(request, "test")
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(request.session["price-filter"]["min"], "0")
+        self.assertEqual(request.session["price-filter"]["max"], "99999")
+
+        request = RequestFactory().get("/", {"min": 0, "max": 100})
+        request.session = SessionStore()
+
+        result = set_price_filter(request, "test")
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(request.session["price-filter"]["min"], "0")
+        self.assertEqual(request.session["price-filter"]["max"], "100")
+
+        request = RequestFactory().get("/", {"min": "A", "max": "B"})
+        request.session = SessionStore()
+
+        result = set_price_filter(request, "test")
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(request.session["price-filter"]["min"], "0")
+        self.assertEqual(request.session["price-filter"]["max"], "0")
+
+        result = reset_price_filter(request, "test")
+        self.assertEqual(result.status_code, 302)
+        self.failIf("price-filter" in request.session.keys())
 
     def test_set_sorting(self):
         """Tests setting and deleting of the sorting session.

@@ -189,19 +189,18 @@ def set_price_filter(request, category_slug):
 
     try:
         float(min)
-    except TypeError:
+    except (TypeError, ValueError):
         min = "0"
 
     try:
         float(max)
-    except TypeError:
+    except (TypeError, ValueError):
         max = "0"
 
     request.session["price-filter"] = {"min": min, "max": max}
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
-
 
 def reset_price_filter(request, category_slug):
     """Resets the price filter. Redirects to the category with given slug.

@@ -35,6 +35,6 @@ Glossary
 
     WYSIWYG
         Acronym for ``What You See Is What You Get``. See also:
-        `http://en.wikipedia.org/wiki/WYSIWYG`_
+        http://en.wikipedia.org/wiki/WYSIWYG.
 
 
