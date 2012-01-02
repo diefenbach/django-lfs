@@ -1,6 +1,7 @@
 # coding: utf-8
 
 # python imports
+import locale
 import os
 
 # django imports
@@ -1004,9 +1005,9 @@ class ViewsTestCase(TestCase):
         self.p1 = Product.objects.create(pk=1, name="Product 1", slug="product-1", sub_type=PRODUCT_WITH_VARIANTS, active=True)
 
         # Create a property with two options
-        color = Property.objects.create(name="Color")
-        red = PropertyOption.objects.create(name="Red", property=color)
-        green = PropertyOption.objects.create(name="Green", property=color)
+        color = Property.objects.create(pk=1, name="Color", add_price=True, price=10.0)
+        red = PropertyOption.objects.create(pk=1, name="Red", property=color)
+        green = PropertyOption.objects.create(pk=2, name="Green", property=color)
 
         # Add a variant with color = red
         self.v1 = Product.objects.create(name="Variant 1", slug="variant-1", sub_type=VARIANT, parent=self.p1, active=True)
@@ -1019,13 +1020,13 @@ class ViewsTestCase(TestCase):
         self.file = File.objects.create(pk=1, title="Test File", slug="test-file", file=None)
         self.file.file.save("Laminat01.jpg", cf_1)
 
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+
     def test_file(self):
         request = RequestFactory().get("/")
 
         from lfs.catalog.views import file
         result = file(request, id=1)
-
-        import pdb; pdb.set_trace()
 
         self.assertEqual(result.status_code, 200)
         self.assertEqual(len(result.content), 1980821)
@@ -1073,6 +1074,67 @@ class ViewsTestCase(TestCase):
         result = reset_price_filter(request, "test")
         self.assertEqual(result.status_code, 302)
         self.failIf("price-filter" in request.session.keys())
+
+    def test_calculate_packing(self):
+        from lfs.catalog.views import calculate_packing
+        request = RequestFactory().post("/")
+
+        self.p1.packing_unit = 2
+        self.p1.save()
+
+        result = calculate_packing(request, id=1, quantity=3)
+        self.assertEqual(result.status_code, 200)
+
+        request = RequestFactory().post("/", {"quantity": "3"})
+        result = calculate_packing(request, id=1)
+        self.assertEqual(result.status_code, 200)
+
+        request = RequestFactory().post("/", {"quantity": "3"})
+        result = calculate_packing(request, id=1, as_string=True)
+        self.failUnless(isinstance(result, unicode))
+
+    def test_calculate_price(self):
+        from lfs.catalog.views import calculate_price
+        request = RequestFactory().post("/", {"property_1": "1", "property_dont_exist": "99"})
+
+        result = calculate_price(request, id=1)
+        self.assertEqual(result.status_code, 200)
+
+        self.p1.for_sale = True
+        self.p1.save()
+
+        result = calculate_price(request, id=1)
+        self.assertEqual(result.status_code, 200)
+
+    def test_select_variant_from_properties(self):
+        from lfs.catalog.views import select_variant_from_properties
+
+        request = RequestFactory().post("/", {"product_id": "1"})
+        request.user = AnonymousUser()
+
+        result = select_variant_from_properties(request)
+        self.assertEqual(result.status_code, 200)
+
+        request = RequestFactory().post("/", {"product_id": "99"})
+        request.user = AnonymousUser()
+
+        result = select_variant_from_properties(request)
+        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.content, "")
+
+    def test_set_filter(self):
+        from lfs.catalog.views import set_filter
+
+        request = RequestFactory().post("/", {"product_id": "1"})
+        request.session = SessionStore()
+
+        result = set_filter(request, "category-1", property_id=1, value="value-1")
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(request.session.get("product-filter")[1], "value-1")
+
+        result = set_filter(request, "category-1", property_id=1, min="0", max="999")
+        self.assertEqual(result.status_code, 302)
+        self.assertEqual(request.session.get("product-filter")[1], ("0", "999"))
 
     def test_set_sorting(self):
         """Tests setting and deleting of the sorting session.
