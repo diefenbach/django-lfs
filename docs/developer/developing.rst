@@ -12,19 +12,19 @@ Creating a Development Environment
 There is an installer based on `zc.buildout <http://www.buildout.org/>`_, which
 should make the installation straightforward:
 
-1. $ hg cl ssh://hg@bitbucket.org/diefenbach/lfs-buildout-development
+#. $ hg cl https://bitbucket.org/diefenbach/lfs-buildout-development
 
-2. $ cd lfs-buildout-development
+#. $ cd lfs-buildout-development
 
-3. $ python bootstrap.py
+#. $ python bootstrap.py
 
-4. $ bin/buildout -v
+#. $ bin/buildout -v
 
-5. $ bin/django syncdb
+#. $ bin/django syncdb
 
-6. $ bin/django lfs_init
+#. $ bin/django lfs_init
 
-7. $ bin/django test lfs.core
+#. $ bin/django test lfs.core
 
 .. note::
 

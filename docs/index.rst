@@ -120,9 +120,9 @@ How-tos
    developer/howtos/theme/index.rst
    developer/howtos/how_to_add_own_order_numbers/index.rst
 
-=============
-Miscellaneous
-=============
+=========================
+Miscellaneous Information
+=========================
 
 .. toctree::
    :maxdepth: 1

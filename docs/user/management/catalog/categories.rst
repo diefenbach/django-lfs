@@ -40,16 +40,13 @@ Tabs
 Data
 ----
 
-This tab contains the core date of the category.
-
 Exclude from navigation
     If checked the category is not displayed within the :ref:`categories portlet
     <portlets_concepts_categories>`.
 
 Name
     The name of the category. This is displayed on several places, e.g: within
-    category overviews, on top of the category detail view and within the
-    meta title tag.
+    category overviews, on top of the category detail view.
 
 Slug
     The unique last part of the category's URL.
@@ -71,30 +68,29 @@ Static block
 View
 ----
 
-This tab contains all data which are responsible on how the content is
-displayed.
-
 .. index:: Template
 
 Category template
-    The selected template of the category. A category can have several
-    templates. The selected templates decides what is displayed (sub templates,
-    products) and how this information is structured.
+    The selected template of the category decides whether the sub categories or
+    the products are displayed. It is also possible to provide more templates to
+    display single categories individually.
 
 Show all products
-    If activated also the products of the sub categories will be displayed
-    for that category. Otherwise only the direct products are displayed.
+
+    If this checkbox is activated also the products of the sub categories are
+    displayed. Otherwise only the direct products are displayed.
 
     .. note::
 
-        This is only available when a product template is selected.
+        This is only available when a the products of the category are
+        displayed. (see Category Template).
 
 .. index:: Formats
 
 Active formats
-    If activated you can overwrite the formats. If not activated formats are
-    inherited from the parent object. This may be a parent category or the
-    shop itself.
+    If this checkbox is activated several formats for this category can be
+    overwritten. Otherwise the formats are inherited from the parent object,
+    which is either the parent category or the shop.
 
 Category cols
     Amount of columns which are used to display the sub categories. Always all

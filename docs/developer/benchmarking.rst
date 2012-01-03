@@ -9,19 +9,15 @@ This section describes how to benchmark LFS.
 Overview
 =========
 
-You can use it in case you want to optimize LFS in terms of speed. In case you
-want to add a new feature, please compare the versions with and without your
-feature and try to not slow down LFS.
-
 The development buildout comes with ``lfs_bench``, a small application, which
 provides some tools to benchmark LFS.
 
+You can use it in case you want to optimize LFS in terms of speed. In case you
+want to development a new feature, please compare the versions with and without
+this feature and try to not slow down LFS.
+
 JMeter
 ======
-
-.. note::
-
-    You can find more information about JMeter here: http://jmeter.apache.org/
 
 1. Install `JMeter <http://jmeter.apache.org/>`_
 
@@ -45,13 +41,8 @@ JMeter
 5. Execute the Testplan and check the result within ``Summary Report`` for
    instance.
 
-ab (Apache Benchmark)
+Apache Benchmark - ab
 =====================
-
-.. note::
-
-    You can find more information about ``ab`` here:
-    http://httpd.apache.org/docs/2.0/programs/ab.html
 
 1. Prepare the database::
 
@@ -75,8 +66,14 @@ ab (Apache Benchmark)
 Python Profiling
 ================
 
-The development buildout comes with a middleware, which let you profile single
-requests. Just hang ``?prof`` behind the request you want to profile and you
-will get a list of all executed methods, for instance::
+The development buildout provides a middleware by default, which let you profile
+single requests. Just suffix the request with ``?prof`` in order to get
+profiling data, for instance::
 
     http://localhost/product-1-1-1?prof
+
+See also:
+
+* `JMeter <http://jmeter.apache.org/>`_
+* `Apache Benchmark - ab <http://httpd.apache.org/docs/2.0/programs/ab.html>`_
+* `Python stats reference <http://docs.python.org/library/profile.html#module-pstats>`_
