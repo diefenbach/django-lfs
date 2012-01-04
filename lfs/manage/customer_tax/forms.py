@@ -5,7 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 from lfs.customer_tax.models import CustomerTax
 
-
 class CustomerTaxForm(forms.ModelForm):
     """Form to add and edit a customer tax.
     """
@@ -18,8 +17,8 @@ class CustomerTaxForm(forms.ModelForm):
 
         for country in countries:
             try:
-                ct = CustomerTax.objects.get(countries=country)
-            except CustomerTax.DoesNotExist:
+                ct = CustomerTax.objects.filter(countries=country).exclude(pk=self.instance.id)[0]
+            except IndexError:
                 continue
             else:
                 raise forms.ValidationError(
