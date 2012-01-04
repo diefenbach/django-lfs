@@ -109,30 +109,34 @@ Product cols / Product rows
 
     .. note::
 
-        This is only available if ``Active formats`` is True and a product
+        This is only available if ``Active Formats`` is True and a product
         template is selected.
 
 Products
 --------
 
-This tab is used to assign/remove products to the category.
+This tab is used to assign and remove products to the category.
 
-**Filter**
+Add Products
+************
 
-In order to make it easier to find and select several products you can filter
-them. This is true for assignable and assigned products. Just put the product
-name into the appropriate text box and/or select a certain category.
+In order to assign products to the category, select the check boxes of the
+corresponding products within the section ``Selectable Products`` and click on
+``Add To Category``.
 
-**Add products**
+Remove Products
+***************
 
-You can see available products to assign on top of the page. Select the check boxes
-beside all products you want to assign and click on ``Add to category``
+In order to remove products from the category, select the check boxes beside the
+corresponding products  within the section ``Selected Products`` and click on
+``Remove From Category``.
 
-**Remove products**
+Filter
+******
 
-You can see all already assigned products within the ``Selected products`` section.
-Select the check boxes beside the products you want to remove and click on ``Remove
-from category``.
+In order to make it easier to find products you can filter them by name, SKU and
+category. For that enter on top of the according section the name or the SKU
+into the text box and select the category out of the select box.
 
 SEO
 ---
