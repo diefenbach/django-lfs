@@ -7,3 +7,4 @@ syntax: glob
 *dist/
 *.egg-info/
 *.git*
+*docs_de

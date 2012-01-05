@@ -1109,7 +1109,7 @@ class ViewsTestCase(TestCase):
     def test_select_variant_from_properties(self):
         from lfs.catalog.views import select_variant_from_properties
 
-        request = RequestFactory().post("/", {"product_id": "1"})
+        request = RequestFactory().post("/", {"product_id": self.v1.id})
         request.user = AnonymousUser()
 
         result = select_variant_from_properties(request)

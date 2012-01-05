@@ -136,15 +136,19 @@ def calculate_price(request, id):
 
 
 def select_variant_from_properties(request):
-    """This is called via an ajax call if the combination of properties are
+    """
+    This is called via an ajax call if the combination of properties are
     changed.
     """
     product_id = request.POST.get("product_id")
+    print product_id
 
     try:
-        product = Product.objects.get(pk=product_id)
-    except:  # Product.DoesNotExist:
+        variant = Product.objects.get(pk=product_id)
+    except Product.DoesNotExist:
         return HttpResponse("")
+    else:
+        product = variant.parent
 
     options = lfs_utils.parse_properties(request)
     variant = product.get_variant(options)
@@ -469,7 +473,8 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
 
 
 def product_inline(request, product, template_name="lfs/catalog/products/product_inline.html"):
-    """Part of the prduct view, which displays the actual data of the product.
+    """
+    Part of the product view, which displays the actual data of the product.
 
     This is factored out to be able to better cached and in might in future used
     used to be updated via ajax requests.
@@ -479,27 +484,25 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
     if result is not None:
         return result
 
-    if product.sub_type == PRODUCT_WITH_VARIANTS:
-        variant = product.get_default_variant()
-        if variant is None:
-            variant = product
-    elif product.sub_type == VARIANT:
-        variant = product
-        product = product.parent
-    else:
-        variant = product
+    # Switching to default variant
+    if product.is_product_with_variants():
+        temp = product.get_default_variant()
+        product = temp if temp else product
 
     properties = []
     variants = []
 
-    if product.is_product_with_variants():
-        if product.variants_display_type == SELECT:
+    display_variants_list = True
+    if product.is_variant():
+        parent = product.parent
+        if parent.variants_display_type == SELECT:
+            display_variants_list = False
             # Get all properties (sorted). We need to traverse through all
             # property/options to select the options of the current variant.
-            for property in product.get_property_select_fields():
+            for property in parent.get_property_select_fields():
                 options = []
                 for property_option in property.options.all():
-                    if variant.has_option(property, property_option):
+                    if product.has_option(property, property_option):
                         selected = True
                     else:
                         selected = False
@@ -516,13 +519,12 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
                     "options": options,
                 })
         else:
-            properties = product.get_property_select_fields()
-            variants = product.get_variants()
+            properties = parent.get_property_select_fields()
+            variants = parent.get_variants()
 
     elif product.is_configurable_product():
         for property in product.get_configurable_properties():
             options = []
-
             try:
                 ppv = ProductPropertyValue.objects.get(product=product, property=property, type=PROPERTY_VALUE_TYPE_DEFAULT)
                 ppv_value = ppv.value
@@ -542,7 +544,6 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
                     "price": property_option.price,
                     "selected": selected,
                 })
-
             properties.append({
                 "obj": property,
                 "id": property.id,
@@ -557,24 +558,27 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
     if product.get_template_name() != None:
         template_name = product.get_template_name()
 
-    if variant.active_packing_unit:
-        packing_result = calculate_packing(request, variant.id, 1, True)
+    if product.active_packing_unit:
+        packing_result = calculate_packing(request, product.id, 1, True)
     else:
         packing_result = ""
 
     # attachments
-    attachments = variant.get_attachments()
+    attachments = product.get_attachments()
 
     result = render_to_string(template_name, RequestContext(request, {
         "product": product,
-        "variant": variant,
         "variants": variants,
-        "product_accessories": variant.get_accessories(),
+        "product_accessories": product.get_accessories(),
         "properties": properties,
         "packing_result": packing_result,
         "attachments": attachments,
         "quantity" : product.get_clean_quantity(1),
         "price_includes_tax": product.price_includes_tax(request),
+        "price_unit": product.price_unit,
+        "unit": product.unit,
+        "display_variants_list": display_variants_list,
+        "for_sale": product.for_sale,
     }))
 
     cache.set(cache_key, result)
