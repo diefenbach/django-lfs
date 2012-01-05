@@ -31,8 +31,8 @@ Goto Category
 Move Categories
 ===============
 
-In order to sort categories or move it around, hold it on the handle and
-drag and drop it to the place you want the category to be.
+In order to move categories, hold it on the handle left beside the category name
+and drag and drop it to the new place.
 
 Tabs
 ====
@@ -46,7 +46,7 @@ Exclude from navigation
 
 Name
     The name of the category. This is displayed on several places, e.g: within
-    category overviews, on top of the category detail view.
+    category overviews and on top of the category detail view.
 
 Slug
     The unique last part of the category's URL.
@@ -59,16 +59,12 @@ Image
     The image of the category. This can be displayed within category overviews
     and the category detail view.
 
-.. index:: Static Block
-
 Static block
     An optional :ref:`static block <static_blocks_concepts>` which displayed on
     top of the category detail view.
 
 View
 ----
-
-.. index:: Template
 
 Category template
     The selected template of the category decides whether the sub categories or
@@ -84,8 +80,6 @@ Show all products
 
         This is only available when a the products of the category are
         displayed. (see Category Template).
-
-.. index:: Formats
 
 Active formats
     If this checkbox is activated several formats for this category can be
@@ -167,8 +161,6 @@ Meta description
     <short-description>
         The short description of the category (only within meta keywords and
         meta description field).
-
-.. index:: Portlets
 
 .. _categories_management_portlets:
 
