@@ -73,7 +73,7 @@ Category template
 
 Show all products
 
-    If this checkbox is activated also the products of the sub categories are
+    If this check box is activated also the products of the sub categories are
     displayed. Otherwise only the direct products are displayed.
 
     .. note::
@@ -82,7 +82,7 @@ Show all products
         displayed. (see Category Template).
 
 Active formats
-    If this checkbox is activated several formats for this category can be
+    If this check box is activated several formats for this category can be
     overwritten. Otherwise the formats are inherited from the parent object,
     which is either the parent category or the shop.
 

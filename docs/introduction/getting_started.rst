@@ -23,7 +23,7 @@ Enter Shop Preferences
 #. Go to the ``Shop`` tab.
 
 #. Enter the ``Name``. This is the name of the shop, for instance ``ACME Inc``
-   wich is used on several places, e.g. as part of the meta title of all HTML
+   which is used on several places, e.g. as part of the meta title of all HTML
    pages.
 
 #. Enter the ``Shop Owner``. This is the full name of the shop owner.
