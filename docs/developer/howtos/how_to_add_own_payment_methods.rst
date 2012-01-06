@@ -7,12 +7,16 @@ In this how-to you will learn how to add a own payment method.
 Create an application
 =====================
 
-First you need to create a default Django application (or use an existing one).
-If you do not know how to do this, please refer to the excellent `Django
-tutorial <http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_.
+First you need to create a default Django application (or use an existing one),
+where  you can put in your plugin. If you do not know how to do this, please
+refer to the excellent `Django tutorial
+<http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_.
 
-Implement the PaymentMethod class
-=================================
+Implement the ``PaymentMethod`` class
+=====================================
+
+The main part of the plugin consists of a class which must provide a certain
+API.
 
 Create the class
 ----------------
@@ -22,14 +26,22 @@ Create a class which inherits from ``lfs.plugins.PaymentMethod``:
 .. code-block:: python
 
     from lfs.plugins import PaymentMethod
-    class MyPaymentMethod(PaymentMethod)
+
+    class MyPaymentMethod(PaymentMethod):
+        pass
+
 
 Add the ``process`` method
 --------------------------
 
 .. code-block:: python
 
-    def process(self, request, cart=None, order=None)
+    def process(self, request, cart=None, order=None):
+        total = order.price
+        return {
+            "accepted": True,
+            "next_url": "http://www.acme.com/payment?id=4711&total=%s" % total,
+        }
 
 This method is called from LFS when the shop customer submits the checkout page
 (while selected this payment method). Within that method you can do whatever
@@ -42,7 +54,7 @@ it is necessary to process your payment, e.g.:
 Return Value
 ^^^^^^^^^^^^
 
-The ``process`` method must return a dictionary with following keys (some of
+The ``process`` method must return a dictionary with following keys (most of
 them are optional):
 
 accepted (mandatory)
@@ -73,10 +85,13 @@ Add the ``get_create_order_time`` method
 
 .. code-block:: python
 
-    def get_create_order_time(self)
+    from lfs.plugins import PM_ORDER_IMMEDIATELY
+
+    def get_create_order_time(self):
+        return PM_ORDER_ACCEPTED
 
 This method is called from LFS to determine when the order is to be created and
-must return one of following constants::
+must return one of following values:
 
 PM_ORDER_IMMEDIATELY
     The order is created immediately before the payment is processed.
@@ -88,17 +103,18 @@ Add the ``get_pay_link`` method
 --------------------------------
 
 In order to provide a link to the customer to re-visit the payment provider and
-pay his order (if something did go wrong) LFS calls get get_pay_link method.
+pay his order (if something did go wrong) LFS calls get ``get_pay_link method``
+or your class (this is optional).
 
 .. code-block:: python
 
     def get_pay_link(self):
-        return "http://www.domain.com/your/pay/link"
+        return "http://www.acme.com/payment?id=4711&total=%s" % total
 
 The complete plugin
 ===================
 
-Following all pieces are sticked together to the complete plugin.
+Following all pieces are sticked together to the complete plugin:
 
 .. code-block:: python
 
@@ -120,13 +136,14 @@ Following all pieces are sticked together to the complete plugin.
 
         def get_pay_link(self, order):
             total = order.price
-            return "http://www.acme.de/payment?id=4711&total=%s" % total
+            return "http://www.acme.com/payment?id=4711&total=%s" % total
 
 In this example the order is created immediately and the customer is redirected
-to the ACME page in order to pay his order. After he has paid he is redirected
-to the ``thank-you`` page, but this is completely up to ACME. If something goes
-wrong while he is paying he can always go back to ACME to pay his order because
-he gets the pay link via the order confirmation mail.
+to the ACME page in order to pay his order. After he has paid he might be
+redirected to the ``thank-you`` page of LFS, but this is completely up to ACME.
+However, if something goes wrong while he is paying he can always go back to
+ACME to pay his order because he gets the pay link via the order confirmation
+mail.
 
 Plug in your payment method
 ===========================
@@ -156,6 +173,21 @@ Further hints
 =============
 
 * When an external payment processor redirects to LFS the current order is still
-  in the session. This means you can display it on the thank you page or you can
-  redirect to a own view and set the order to PAID for instance.
+  in the session. This means you can redirect to an own view and set the order
+  state to PAID, for instance::
 
+        from django.core.urlresolvers import reverse
+        from django.http import HttpResponseRedirect
+        from lfs.plugins import PAID
+
+        def acme_callback_success_view(request):
+            order = request.session.get("order")
+            order.state = PAID
+            order.save()
+
+            return HTTPRedirectResponse(reverse("lfs_thank_you"))
+
+* All fields of the checkout form are available within the ``process`` method
+  via the request variable, e.g.::
+
+     request.POST.get("invoice_firstname")
