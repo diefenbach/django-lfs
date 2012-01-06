@@ -269,13 +269,11 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
                     # process the payment method ...
                     result = lfs.payment.utils.process_payment(request)
 
-                    next_url = None
-                    if result["accepted"] == True:
-                        return HttpResponseRedirect(
-                            result.get("next-url", reverse("lfs_thank_you")))
+                    if result["accepted"]:
+                        return HttpResponseRedirect(result.get("next_url", reverse("lfs_thank_you")))
                     else:
                         if "message" in result:
-                            form._errors[result.get("message-position")] = result.get("message")
+                            form._errors[result.get("message_location")] = result.get("message")
         else:  # form is not valid
             # save invoice details
             customer.selected_invoice_address.firstname = request.POST.get("invoice_firstname")

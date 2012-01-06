@@ -3,13 +3,90 @@ from django.db import models
 
 # lfs imports
 import lfs
+from lfs.payment.settings import PM_ORDER_IMMEDIATELY
+from lfs.payment.settings import PM_ORDER_ACCEPTED
+from lfs.payment.settings import PM_MSG_TOP
+from lfs.payment.settings import PM_MSG_FORM
+from lfs.order.settings import PAID
+
+
+class PaymentMethod(object):
+    """
+    Base class from which all 3rd-party payment methods should inherit.
+    """
+    def process(self, request, cart=None, order=None):
+        """
+        Implements the processing of the payment method. Returns a dictionary
+        with several status codes, see below.
+
+        **Parameters:**
+
+        request
+            The current request.
+
+        cart
+            The current cart. This is only set, when create order time is
+            ACCEPTED.
+
+        order
+            The current order. This is only set, when create order time is
+            IMMEDIATELY.
+
+        **Return Values:**
+
+        This values must be returned via a dictionary.
+
+        accepted (mandatory)
+            Indicates whether the payment is accepted or not. if this is
+            ``False`` the customer keeps on the checkout page and gets
+            ``message`` (if given) below. If this is ``True`` the customer will
+            be redirecte to next_url (if given).
+
+        message (optional)
+            This message is displayed on the checkout page, when the order is
+            not accepted.
+
+        message_location (optional)
+            The location, where the message is diplayed.
+
+        next_url (optional)
+            The url to which the user is redirect after the payment has been
+            processed. if this is not given the customer is redirected to the
+            default thank-you page.
+
+        order_state (optional)
+            The state in which the order should be set. It's just PAID. If it's
+            not given the state keeps in SUBMITTED.
+        """
+        raise NotImplementedError
+
+    def get_create_order_time(self):
+        """
+        Defines when the order should be created.
+
+        IMMEDIATELY
+            The order is created immediately before the payment is processed.
+
+        ACCEPTED
+            The order is only created when the payment has been accepted.
+        """
+        raise NotImplementedError
+
+    def get_pay_link(self):
+        """
+        Returns a link to the payment service to pay the current order, which
+        is displayed on the thank-you page and the order confirmation mail. In
+        this way the customer can pay the order again if something has gone
+        wrong.
+        """
+        return None
 
 
 class OrderNumberGenerator(models.Model):
-    """This is the base class that order generator calculators should inherit
-    from.
+    """
+    Base class from which all order generator calculators should inherit.
 
-    **Attributes**:
+    **Attributes:**
 
     id
         The unique id of the order number generator.

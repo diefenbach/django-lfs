@@ -5,6 +5,7 @@ import locale
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
+from django.utils.importlib import import_module
 
 # lfs imports
 import lfs.core.utils
@@ -16,6 +17,8 @@ from lfs.customer import utils as customer_utils
 from lfs.order.settings import PAID
 from lfs.payment.models import PaymentMethod
 from lfs.payment.settings import PAYPAL
+from lfs.payment.settings import PM_ORDER_IMMEDIATELY
+from lfs.payment.settings import PM_ORDER_ACCEPTED
 
 # other imports
 from paypal.standard.conf import POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT
@@ -106,14 +109,29 @@ def process_payment(request):
     shop = lfs.core.utils.get_default_shop()
 
     if payment_method.module:
-        module = lfs.core.utils.import_module(payment_method.module + ".views")
-        result = module.process(request)
-        if result["accepted"] == True:
+        module_str, payment_class_str = payment_method.module.rsplit('.', 1)
+        module = import_module(module_str)
+        payment_class = getattr(module, payment_class_str)
+        instance = payment_class()
+
+        create_order_time = instance.get_create_order_time()
+        if create_order_time == PM_ORDER_IMMEDIATELY:
             order = lfs.order.utils.add_order(request)
-            # TODO: this has to be returned from the module
-            order.state = PAID
+
+        result = instance.process(request, order=order)
+        if result.get("order_state"):
+            order.state = result.get("order_state")
             order.save()
-            order_submitted.send({"order": order, "request": request})
+
+        order_submitted.send({"order": order, "request": request})
+
+        if result["accepted"]:
+            if create_order_time == PM_ORDER_ACCEPTED:
+                order = lfs.order.utils.add_order(request)
+                if result.get("order_state"):
+                    order.state = result.get("order_state")
+                    order.save()
+                order_submitted.send({"order": order, "request": request})
         return result
 
     elif payment_method.id == PAYPAL:
@@ -123,18 +141,18 @@ def process_payment(request):
             if settings.LFS_PAYPAL_REDIRECT:
                 return {
                     "accepted": True,
-                    "next-url": order.get_pay_link(),
+                    "next_url": order.get_pay_link(),
                 }
         return {
             "accepted": True,
-            "next-url": reverse("lfs_thank_you"),
+            "next_url": reverse("lfs_thank_you"),
         }
     else:
         order = lfs.order.utils.add_order(request)
         order_submitted.send({"order": order, "request": request})
         return {
-            "accepted": True,
-            "next-url": reverse("lfs_thank_you"),
+            "accepted": PM_STATE_ACCEPTED,
+            "next_url": reverse("lfs_thank_you"),
         }
 
 
@@ -162,9 +180,12 @@ def get_pay_link(payment_method, order):
     if payment_method.id == PAYPAL:
         return get_paypal_link_for_order(order)
     elif payment_method.module:
-        module = lfs.core.utils.import_module(payment_method.module + ".views")
+        module_str, payment_class_str = payment_method.module.rsplit('.', 1)
+        module = import_module(module_str)
+        payment_class = getattr(module, payment_class_str)
+        instance = payment_class()
         try:
-            return module.get_pay_link(order)
+            return instance.get_pay_link(order)
         except AttributeError:
             return ""
     else:
