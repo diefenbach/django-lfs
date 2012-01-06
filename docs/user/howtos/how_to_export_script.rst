@@ -1,15 +1,20 @@
-How to create a export script
-=============================
+.. _developers_howto_export:
+
+==========================
+How To Add a Export Script
+==========================
 
 Overview
---------
+========
 
 LFS provides a generic export engine for products :doc:`(see here for more)
-</user/utils/export>`. In this tutorial you will learn how to create your own 
-scripts to format the data like you want to.
+</user/management/utils/export>`. In this tutorial you will learn how to
+create your own scripts to format the data like you want to.
 
-Step by Step
-------------
+.. include:: /includes/demo_shop.rst
+
+Steps
+=====
 
 In order to create a new export script you should first create a new Django
 application (or use an existing one). This is beyond this tutorial. If you do
@@ -62,7 +67,7 @@ the products, like so:
     We decided to give a response with a download back. Your code may vary here.
 
 16
-    We decided to use Python csv moduls. You code may vary here.
+    We decided to use Python csv modules. You code may vary here.
 
 19
     All selected products can be get with the ``get_products`` method of the
@@ -74,10 +79,10 @@ the products, like so:
 
 
 Getting ready
--------------
+=============
 
 Now you can go the management interface, create a new export, select the
 products and your newly script and call it via the ``Export`` button.
 
 You might want to create a cron job which calls your script regularly.
-:doc:`(See here for more) </user/utils/export>`
+:doc:`(See here for more) </user/management/utils/export>`

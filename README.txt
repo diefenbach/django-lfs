@@ -15,7 +15,7 @@ Documentation
 
 For the latest documentation please visit:
 
-* http://packages.python.org/django-lfs/
+* http://docs.getlfs.com
 
 Demo shop
 =========
@@ -24,79 +24,44 @@ A demo shop can be tried here:
 
 * http://demo.getlfs.com
 
+The latest development state can be found here:
+
+* http://dev.getlfs.com
+
 Changes
 =======
+
+0.6.3 (2011-12-31)
+------------------
+
+* Bugfix: Fixed update of prices if a configurable product is for sale.
+* Bugfix: Fixed calculation of property prices for configurable products.
+* Bugfix: fixed saving of property data (added missing csrf token).
+* Bugfix: fixed removing products / properties from a group.
+* Bugfix: fixed filtering for float field steps.
+
+0.6.2 (2011-12-24)
+------------------
+
+* Bugfix: fixed issue with utf-8 support for MySQL; issue #126
+* Bugfix: fixed product filtering; issue #124
+
+0.6.1 (2011-12-16)
+------------------
+
+* Bugfix: fixed category management; issue #123
+* Bugfix: fixed adding of payment method: added csrf_token
+* Bugfix: fixed german address form: removed "Area" field, made fields required
+* Bugfix: fixed set/reset of product filters within management UI
+* Bugfix: fixed amount of products per price filter step
+* Bugfix: added translatable label for country field
+* Updated italian translations (pippo64)
+* Updated dutch translations (bastichelaar)
 
 0.6.0 (2011-12-10)
 -------------------
 
 * Final release
-
-0.6.0 beta 7 (2011-12-06)
--------------------------
-
-* Bugfix: fixed filtered products for variants; #issue #122
-* Bugfix: fixed display of error indicator for packing_unit
-
-0.6.0 beta 6 (2011-12-02)
--------------------------
-
-* Bugfix: added default country to shipping countries within lfs_init.
-* Bugfix: fixed validation of shipping and invoice addresses. (mickt)
-* Bugfix: fixed page selection within product management interface.
-* Bugfix: fixed display of selectable products within category's products tab.
-* Bugfix: fixed displaying of property values within product management interface.
-* Bugfix: fixed filter portlet.
-* Bugfix: fixed management of country criterion.
-* Changed: removed growl message from checkout view.
-* Changed: removed displaying of error fields checkout view.
-* Added migration of shop_countries.
-* Added migration of orders.
-* Updated russian translations (Belanchuk)
-
-0.6.0 beta 5 (2011-11-28)
--------------------------
-
-* Bugfix: fixed delete links for properties and options within product's variants tab
-* Bugfix: fixed saving of variant list type.
-* Bugfix: fixed my account (added missing csrf_tokens; issue #114).
-* Bugfix: fixed discounts
-* Added dutch translations (BasTichelaar)
-* Updated romanian translations (bsdwave)
-
-0.6.0 beta 4 (2011-11-26)
--------------------------
-* Bugfix: fixed display of vouchers options tab
-* Bugfix: don't translate label of supplier_id field within lfs_migrate
-* Bugfix: fixed the management of a customer if he has no cart yet
-* Bugfix: fixed cart management interface; issue #113
-
-0.6.0 beta 3 (2011-11-26)
--------------------------
-
-* Added: add log message when uploading of an image failed
-* Bugfix: fixed display of average score in rating portlet
-* Bugfix: fixed links to images within image gallery
-* Bugfix: fixed changing state and deleting of orders; issue #110
-* Bugfix: fixed display price if it's 0.0; issue #108
-
-0.6.0 beta 2 (2011-11-21)
--------------------------
-* Fixed display of portlets (using django-portlets 1.1)
-
-0.6.0 beta 1 (2011-11-19)
--------------------------
-
-* Using Django 1.3
-* Added country dependent addresses
-* Added pluggable price calculation
-* Added supplier management
-* Massively improved management interface
-* Improved static file handling (Django's staticfiles)
-* Improved properties management
-* Removed SWFUpload (Flash) in favour of jquery.fileupload (Javascript)
-* Using Python's locale to display currencies
-* New contact form
 
 HISTORY
 =======

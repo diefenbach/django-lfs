@@ -35,7 +35,7 @@ class PropertyDataForm(ModelForm):
     class Meta:
         model = Property
         fields = ["position", "name", "title", "unit", "filterable", "display_no_results",
-            "configurable", "required", "display_on_product", "display_price"]
+            "configurable", "required", "display_on_product"]
 
 
 class PropertyTypeForm(ModelForm):
@@ -59,7 +59,7 @@ class SelectFieldForm(ModelForm):
     """
     class Meta:
         model = Property
-        fields = ["add_price"]
+        fields = ["display_price", "add_price"]
 
 
 class NumberFieldForm(ModelForm):
@@ -319,6 +319,7 @@ def add_property(request, template_name="manage/properties/add_property.html"):
         if form.is_valid():
             property = form.save()
             property.position = 1000
+            property.title = property.name
             property.save()
             _update_property_positions()
             return lfs.core.utils.set_message_cookie(

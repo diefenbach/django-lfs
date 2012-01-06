@@ -1,25 +1,28 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/shop/manufacturers.html{% endblock %}
+
 {% block section %}add-manufacturer{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Manufacturer' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add Manufacturer' %}</a></li>
         </ul>
 
         <div id="data">
+            <h2>{% trans "Data" %}</h2>
             <form class="lfc-form"
                   method="post"
                   action="{% url lfs_manufacturer_add_manufacturer %}">
-                {% csrf_token %}  
+                {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
-                <input type="submit" 
+                <input type="submit"
                        class="button"
-                       name="save" 
-                       value="{% trans 'Save' %}" />
+                       name="save"
+                       value="{% trans 'Add Manufacturer' %}" />
 
                 <input type="button"
                        class="button"
@@ -40,5 +43,5 @@
                 $("#id_slug").val(slug);
             });
         });
-    </script>    
+    </script>
 {% endblock %}

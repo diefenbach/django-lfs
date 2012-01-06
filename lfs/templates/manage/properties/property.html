@@ -1,6 +1,7 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/properties/properties.html{% endblock %}
 {% block left_slot %}
     <h2 class="navigation-title">
         {% trans "Properties" %}
@@ -32,7 +33,7 @@
         </ul>
 
         <div id="data">
-            <h2>{% trans 'Property data' %}</h2>
+            <h2>{% trans 'Data' %}</h2>
 
             <form action="{% url lfs_manage_shop_property property.id %}"
                   method="post">

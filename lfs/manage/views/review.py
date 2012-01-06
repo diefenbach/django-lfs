@@ -30,11 +30,13 @@ from reviews.models import Review
 def review(request, review_id, template_name="manage/reviews/review.html"):
     """Displays review with provided review id.
     """
+    review = lfs_get_object_or_404(Review, pk=review_id)
+
     return render_to_response(template_name, RequestContext(request, {
         "review_inline": review_inline(request, review_id),
         "review_filters_inline": review_filters_inline(request, review_id),
         "selectable_reviews_inline": selectable_reviews_inline(request, review_id),
-        "review_id": review_id,
+        "review": review,
     }))
 
 

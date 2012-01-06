@@ -57,7 +57,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
             "shopping_url": shopping_url,
         }))
 
-    shop = core_utils.get_default_shop()
+    shop = core_utils.get_default_shop(request)
     countries = shop.shipping_countries.all()
     selected_country = shipping_utils.get_selected_shipping_country(request)
 
@@ -101,10 +101,8 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
             voucher_value = 0
             voucher_tax = 0
 
+    # Calc delivery time for cart (which is the maximum of all cart items)
     max_delivery_time = cart.get_delivery_time(request)
-
-    # Calc delivery date for cart (which is the maximum of all cart items)
-    max_delivery_date = cart.get_delivery_time(request)
 
     cart_items = []
     for cart_item in cart.get_items():
@@ -114,14 +112,13 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
             "obj": cart_item,
             "quantity": quantity,
             "product": product,
-            "product_price_net": product.get_price_net(request),
-            "product_price_gross": product.get_price_gross(request) * cart_item.amount,
-            "product_tax": product.get_tax(request),
+            "product_price_net": cart_item.get_price_net(request),
+            "product_price_gross": cart_item.get_price_gross(request),
+            "product_tax": cart_item.get_tax(request),
         })
 
     return render_to_string(template_name, RequestContext(request, {
         "cart_items": cart_items,
-        "max_delivery_date": max_delivery_date,
         "cart_price": cart_price,
         "cart_tax": cart_tax,
         "shipping_methods": shipping_utils.get_valid_shipping_methods(request),
@@ -177,15 +174,15 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
             "product": product,
             "obj": cart_item,
             "quantity": quantity,
-            "product_price_net": product.get_price_net(request),
-            "product_tax": product.get_tax(request),
-            "product_price_gross": product.get_price_gross(request),
+            "product_price_net": cart_item.get_price_net(request),
+            "product_price_gross": cart_item.get_price_gross(request),
+            "product_tax": cart_item.get_tax(request),
         })
 
-    return render_to_string(template_name, {
+    return render_to_string(template_name, RequestContext(request, {
         "total": total,
         "cart_items": cart_items,
-    })
+    }))
 
 
 # Actions
@@ -279,10 +276,6 @@ def add_to_cart(request, product_id=None):
                         msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": property.title, "value": value, "step": property.unit_step}
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
-
-    elif product.is_product_with_variants():
-        variant_id = request.POST.get("variant_id")
-        product = lfs_get_object_or_404(Product, pk=variant_id)
 
     if product.active_packing_unit:
         quantity = lfs.catalog.utils.calculate_real_amount(product, quantity)

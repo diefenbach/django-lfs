@@ -1,9 +1,13 @@
-function addEditor(selector, hide_save) {
+function addEditor(selector, hide_save, height) {
     if (hide_save == true) {
         buttons = "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,forecolor,backcolor,styleselect,formatselect,image,|,link,mylink,unlink,|,removeformat,code,|,fullscreen"
     }
     else {
         buttons  = "save,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,forecolor,backcolor,styleselect,formatselect,image,|,link,mylink,unlink,|,removeformat,code,|,fullscreen"
+    }
+
+    if (!height) {
+        height = "480";
     }
 
     // Theme options
@@ -23,7 +27,7 @@ function addEditor(selector, hide_save) {
         theme_advanced_toolbar_align : "left",
         save_onsavecallback : "save",
         relative_urls : false,
-        height : "480",
+        height : height,
         content_css : "/static/css/tinymce_styles.css"
    });
 };

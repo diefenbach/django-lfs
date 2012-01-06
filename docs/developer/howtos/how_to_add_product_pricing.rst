@@ -1,21 +1,24 @@
-How to add custom product pricing module
+.. index:: Price Calculator
+
+========================================
+How To Add Custom Product Pricing Module
 ========================================
 
 In this tutorial you will learn how to your own custom product pricing module.
 
-Create an application
-----------------------
+Create an Application
+=====================
 
 First you need to create a default Django application (or use an existing one).
+If you do not know how to do this, please refer to the excellent `Django
+tutorial <http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_.
 
-If you do not know how to do this, please refer to the excellent
-`Django tutorial <http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_.
+Implement the PriceCalculator Class
+===================================
 
-Implement the PriceCalculator class
------------------------------------
-
-Within ``__init__.py`` file of your application (or anywhere you choose) create a class that inherits from
-lfs.price.PricingCalculator and implement all inherited methods.
+Within ``__init__.py`` file of your application (or anywhere you choose) create
+a class that inherits from lfs.price.PricingCalculator and implement all
+inherited methods.
 
 .. code-block:: python
 
@@ -29,17 +32,17 @@ lfs.price.PricingCalculator and implement all inherited methods.
         ... Other Methods...
 
 
-Plug in the custom price calculator
------------------------------------
+Plug In The Custom Price Calculator
+===================================
 
-* Add your application to the PYTHONPATH.
-* Add the application to settings.INSTALLED_APPS.
-* If your are using models (which is completely up to you), sync your database.
+1. Add your application to the PYTHONPATH.
 
-**Add your custom price calculator to lfs.core.settings.LFS_PRICE_CALCULATOR_DICTIONARY**
+2. Add the application to settings.INSTALLED_APPS.
 
-Edit the dictionary lfs.core.settings.LFS_PRICE_CALCULATOR_DICTIONARY to make your custom pricing calculator available
-to products in the manage interface
+3. If your are using models (which is completely up to you), sync your database.
+
+4. Edit the dictionary lfs.core.settings.LFS_PRICE_CALCULATOR_DICTIONARY to make
+   your custom pricing calculator available to products in the manage interface
 
 .. code-block:: python
 
@@ -49,24 +52,38 @@ to products in the manage interface
         'mycustom_price.CustomPriceCalculator': 'My Pricing Calculator',
     }
 
-Set shop default price calculator in manage interface
------------------------------------------------------
+Set the Shop Default Price Calculator
+=====================================
 
-* Browse to http://yourshopdomain/manage and login.
-* Select Shop - Preferences
-* Select ``Default Values`` and go the ``Price Calculator`` section.
-* Select your new pricing calculator from the drop down menu of choices.
-* Save the default values.
+1. Go to the LFS Management Interface.
 
-All products with an unset price calculator will default to using the shop price calculator.
+2. Select ``Shop / Preferences``.
 
-Set product pricing calculator in manage interface
---------------------------------------------------
+3. Select ``Default Values`` and go the ``Price Calculator`` section.
 
-* Browse to http://yourshopdomain/manage and login.
-* Select Catalog - Product
-* Select the product whose price calculator you wish to change.
-* Select the ``Data Tab`` (this is the first tab) and scroll to the ``Prices`` section.
-* Select your new pricing calculator from the drop down menu of choices.
-* Save the product.
-* Browse to your product in your shop and you should see the new price as calculated by your custom pricing calculator.
+4. Select your new pricing calculator from the drop down menu of choices.
+
+5. Save the default values.
+
+.. note::
+
+    All products with an unset price calculator will default to using the shop
+    price calculator.
+
+Set the Product Pricing Calculator
+==================================
+
+1. Browse to http://yourshopdomain/manage and login.
+
+2. Select ``Catalog / Product``.
+
+3. Select the product whose price calculator you wish to change.
+
+4. Select the ``Data Tab`` and scroll to the ``Prices`` section.
+
+5. Select your new pricing calculator from the drop down menu.
+
+6. Click on ``Save Data``.
+
+7. Now browse to the customer view of the product and you should see the price
+   as calculated by your custom pricing calculator.

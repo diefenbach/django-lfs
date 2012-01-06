@@ -162,7 +162,8 @@ class Cart(models.Model):
         cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         items = cache.get(cache_key)
         if items is None:
-            items = CartItem.objects.filter(cart=self)
+            items = CartItem.objects.select_related().filter(cart=self)
+            # items = CartItem.objects.filter(cart=self)
             cache.set(cache_key, items)
         return items
 
@@ -174,7 +175,7 @@ class Cart(models.Model):
         import lfs.shipping.utils
         max_delivery_time = None
         for item in self.get_items():
-            delivery_time = lfs.shipping.utils.get_product_delivery_time(request, item.product.slug, for_cart=True)
+            delivery_time = lfs.shipping.utils.get_product_delivery_time(request, item.product, for_cart=True)
             if (max_delivery_time is None) or (delivery_time.as_hours() > max_delivery_time.as_hours()):
                 max_delivery_time = delivery_time
         return max_delivery_time
@@ -256,7 +257,7 @@ class CartItem(models.Model):
         Returns the total price of the cart item, which is just the multiplication
         of the product's price and the amount of the product within in the cart.
         """
-        return (self.get_price_gross(request) * self.amount) - (self.get_tax(request) * self.amount)
+        return self.get_price_gross(request) - self.get_tax(request)
 
     def get_price_gross(self, request):
         """
@@ -285,7 +286,11 @@ class CartItem(models.Model):
                         except (PropertyOption.DoesNotExist, AttributeError, ValueError):
                             pass
                         else:
-                            price += option.price
+                            if self.product.price_includes_tax(request):
+                                option_price = option.price
+                            else:
+                                option_price = option.price * ((100 + self.product.get_tax_rate(request)) / 100)
+                            price = price + option_price
         return price
 
     def get_calculated_price(self, request):

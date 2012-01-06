@@ -1,6 +1,8 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/marketing/discounts.html{% endblock %}
+
 {% block section %}manage-discount{% endblock %}
 {% block left_slot %}
     <h2 class="navigation-title">
@@ -26,7 +28,7 @@
 
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Discount' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#criteria">{% trans 'Criteria' %}</a></li>
         </ul>
 

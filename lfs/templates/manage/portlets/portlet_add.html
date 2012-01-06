@@ -3,20 +3,11 @@
       method="post">
     <div class="field">
         <div class="label">
-            <label>{% trans 'Position' %}:</label>
-        </div>        
-        <div>
-            <input type="text"
-                   name="position"
-                   value="1">
-        </div>
-    </div>
-    <div class="field">
-        <div class="label">
             <label>{% trans 'Slot' %}:</label>
         </div>
         <div>
-            <select name="slot">
+            <select id="id_slot"
+                    name="slot">
                 {% for slot in slots %}
                     <option value="{{ slot.id }}"
                         {% if slot.selected %}selected="selected"{% endif %}>
@@ -26,14 +17,14 @@
             </select>
         </div>
     </div>
-        
+
     {% include "manage/lfs_form.html" %}
 
     <input type="hidden"
            name="portlet_type"
            value="{{ portlet_type }}" />
-    
+
     <input class="ajax-save-button button"
            type="submit"
-           value="{% trans 'Save portlet' %}" />                
+           value="{% trans 'Save portlet' %}" />
 </form>

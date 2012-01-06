@@ -1,6 +1,7 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/customer/reviews.html{% endblock %}
 {% block section %}manage-review{% endblock %}
 
 {% block left_slot %}
@@ -22,7 +23,7 @@
            href="{% url lfs_delete_review review_id %}">
            {% trans 'Delete review' %}</a>
 
-        <form action="{% url lfs_set_review_state review_id %}"
+        <form action="{% url lfs_set_review_state review.id %}"
               method="post"
               class="inline">
             <label>{% trans "Active" %}:</label>

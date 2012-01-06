@@ -404,7 +404,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         # Generate filter
         temp = []
         for f in filters:
-            if not isinstance(f[1], list):
+            if not isinstance(f[1], (list, tuple)):
                 temp.append("property_id='%s' AND value='%s'" % (f[0], f[1]))
             else:
                 temp.append("property_id='%s' AND value_as_float BETWEEN '%s' AND '%s'" % (f[0], f[1][0], f[1][1]))
@@ -420,7 +420,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         cursor.execute("""
             SELECT product_id, count(*)
             FROM catalog_productpropertyvalue
-            WHERE product_id IN (%s) and %s and type=%s
+            WHERE product_id IN (%s) and (%s) and type=%s
             GROUP BY product_id
             HAVING count(*)=%s""" % (product_ids, fstr, PROPERTY_VALUE_TYPE_FILTER, len(filters)))
 

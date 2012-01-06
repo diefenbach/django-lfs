@@ -1,17 +1,18 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/utils/export.html{% endblock %}
+
 {% block section %}add-export{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
     <div id="manage-tabs">
-
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Selection' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add Export' %}</a></li>
         </ul>
-
         <div id="data">
+            <h2>{% trans "Data" %}</h2>
             <form class="lfc-form"
                   method="post"
                   action="{% url lfs_export_add_export %}">
@@ -20,15 +21,15 @@
                     {% include "manage/lfs_form.html" %}
                 </table>
                 <div class="buttons">
-                    <input type="submit" 
-                           name="save" 
+                    <input type="submit"
+                           name="save"
                            class="button"
-                           value="{% trans 'Save' %}" />
+                           value="{% trans 'Add Export' %}" />
                     <input type="button"
                            class="button"
                            onclick="window.location='{% url lfs_export_dispatcher %}'"
                            value="{% trans 'Cancel' %}" />
-                </div>           
+                </div>
             </form>
         </div>
     </div>

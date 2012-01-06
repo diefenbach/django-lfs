@@ -1,10 +1,14 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/catalog/categories.html{% endblock %}
+
 {% block title %}{% trans "Manage Category" %}{% endblock %}
 {% block section %}manage-category{% endblock %}
 {% block left_slot %}
-    {{ categories_portlet|safe }}
+    <div id="categories-portlet">
+        {{ categories_portlet|safe }}
+    </div>
 {% endblock %}
 
 {% block content %}
@@ -23,11 +27,11 @@
                  href="{% url lfs_delete_category category.id %}">
                  {% trans 'Delete Category' %}</a>
             <a class="preview popup-link"
-               href="{% url lfs.catalog.views.category_view category.slug %}">
+               href="{% url lfs_category_by_id category.id %}">
                 {% trans 'View Category' %}
             </a>
             <a class="preview"
-               href="{% url lfs.catalog.views.category_view category.slug %}">
+               href="{% url lfs_category_by_id category.id %}">
                 {% trans 'Goto Category' %}
             </a>
         {% endif %}
@@ -35,7 +39,7 @@
     <div id="category-tabs"
          data="#category_{{ category.id }}">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{{ category.name }}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans "Data" %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#view">{% trans 'View' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="{% url lfs_load_products_tab category.id %}">{% trans 'Products' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>

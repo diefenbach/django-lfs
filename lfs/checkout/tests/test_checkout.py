@@ -29,7 +29,6 @@ from lfs.tax.models import Tax
 # 3rd party imports
 from postal.library import form_factory
 
-
 class CheckoutTestCase(TestCase):
     """
     """
@@ -90,6 +89,7 @@ class CheckoutTestCase(TestCase):
         new_user = User(username=self.username)
         new_user.set_password(self.password)
         new_user.save()
+        self.user = new_user
 
         self.customer = Customer.objects.create(
             user=new_user,
@@ -135,6 +135,39 @@ class CheckoutTestCase(TestCase):
         )
 
         self.c = Client()
+
+    def test_login(self):
+        """Tests the login view.
+        """
+        from lfs.checkout.views import login
+        from lfs.checkout.settings import CHECKOUT_TYPE_ANON
+
+        from lfs.tests.utils import create_request
+        request = create_request()
+
+        # Anonymous
+        from django.contrib.auth.models import AnonymousUser
+        request.user = AnonymousUser()
+
+        result = login(request)
+        self.assertEqual(result.status_code, 200)
+
+        # Set checkout_type
+        shop = get_default_shop()
+        shop.checkout_type = CHECKOUT_TYPE_ANON
+        shop.save()
+
+        # Fake a new reuqest
+        request.shop = shop
+
+        result = login(request)
+        self.assertEqual(result.status_code, 302)
+
+        # Authenticated
+        request.user = self.user
+        result = login(request)
+
+        self.assertEqual(result.status_code, 302)
 
     def dump_response(self, http_response):
         fo = open('tests_checkout.html', 'w')

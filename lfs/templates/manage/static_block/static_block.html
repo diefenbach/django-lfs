@@ -1,6 +1,7 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/html/static_block.html{% endblock %}
 {% block left_slot %}
     <h2 class="navigation-title">
         {% trans "Static blocks" %}
@@ -20,28 +21,28 @@
 {% block content %}
 
     <div class="site-actions">
-        <a class="add" 
+        <a class="add"
            href="{% url lfs_add_static_block %}">{% trans 'Add Static Block' %}</a>
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this static block?' %}"
            href="{% url lfs_delete_static_block static_block.id %}">{% trans 'Delete Static Block' %}</a>
-        <a class="view popup-link" 
+        <a class="view popup-link"
            href="{% url lfs_preview_static_block static_block.id %}">{% trans 'View Static Block' %}</a>
     </div>
 
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Static block' %}</a></li>            
-            <li class="ui-tabs-nav-item"><a href="#files">{% trans 'Files' %}</a></li>            
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#files">{% trans 'Files' %}</a></li>
         </ul>
 
         <div id="data">
             <h2>{% trans 'Data' %}</h2>
             <form action="{% url lfs_manage_static_block static_block.id %}"
                   method="post">
-                {% csrf_token %}  
+                {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
-                
+
                 <div class="buttons">
                     <input type="submit"
                            class="button"

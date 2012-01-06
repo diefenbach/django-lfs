@@ -26,9 +26,8 @@ class AverageRatingPortlet(Portlet):
         request = context.get("request")
 
         if product is None:
-            d = {
-                "average": False,
-            }
+            average = False
+            amount = 0
         else:
             average, amount = reviews.utils.get_average_for_instance(product)
 

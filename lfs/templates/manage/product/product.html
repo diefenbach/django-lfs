@@ -4,6 +4,8 @@
 {% load lfs_manage_tags %}
 
 {% block title %}{% trans "Manage Product" %}{% endblock %}
+
+{% block help_link %}user/management/catalog/products.html{% endblock %}
 {% block section %}manage-product{% endblock %}
 
 {% block left_slot %}
@@ -83,11 +85,7 @@
         <div id="product-tabs">
             <ul>
                 <li>
-                    {% if product.get_name %}
-                        <a href="#data">{{ product.get_name }}</a>
-                    {% else %}
-                        <a href="#data">{% trans "Product" %}</a>
-                    {% endif %}
+                    <a href="#data">{% trans "Data" %}</a>
                 </li>
 
                 {% if not product.is_variant %}

@@ -16,11 +16,17 @@ from lfs.tax.models import Tax
 
 
 class TaxForm(ModelForm):
-    """Form to add and edit a tax.
+    """Form to edit a tax.
     """
     class Meta:
         model = Tax
 
+class TaxAddForm(ModelForm):
+    """Form to add a tax.
+    """
+    class Meta:
+        model = Tax
+        fields = ("rate", )
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_taxes(request):
@@ -64,7 +70,7 @@ def add_tax(request, template_name="manage/tax/add_tax.html"):
     """Provides a form to add a new tax.
     """
     if request.method == "POST":
-        form = TaxForm(data=request.POST, files=request.FILES)
+        form = TaxAddForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             tax = form.save()
 
@@ -73,7 +79,7 @@ def add_tax(request, template_name="manage/tax/add_tax.html"):
                 msg=_(u"Tax has been added."),
             )
     else:
-        form = TaxForm()
+        form = TaxAddForm()
 
     return render_to_response(template_name, RequestContext(request, {
         "form": form,

@@ -52,8 +52,8 @@ class Export(models.Model):
 class Script(models.Model):
     """Represents an export script for an Export
     """
-    module = models.CharField(max_length=255, default="lfs.export.generic")
-    method = models.CharField(max_length=255, default="export")
+    module = models.CharField(max_length=100, default="lfs.export.generic")
+    method = models.CharField(max_length=100, default="export")
     name = models.CharField(max_length=100, unique=True)
 
     def __unicode__(self):

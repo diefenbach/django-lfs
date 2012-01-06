@@ -1,14 +1,15 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/utils/miscellaneous.html{% endblock %}
 {% block section %}utilities{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
-{% block content %}    
+{% block content %}
     <div id="product">
         <div id="manage-tabs">
             <ul>
-                <li class="ui-tabs-nav-item"><a href="#utilities">{% trans 'Utilities' %}</a></li>                
+                <li class="ui-tabs-nav-item"><a href="#utilities">{% trans 'Utilities' %}</a></li>
             </ul>
 
             <div id="utilities">
@@ -27,5 +28,5 @@
                 </ul>
             </div>
         </div>
-    </div>        
+    </div>
 {% endblock %}

@@ -31,7 +31,7 @@
     <table class="lfs-manage-table" style="margin-top:20px">
         <tr>
             <td width="50%">
-                <h2>{% trans "Selectable products" %}</h2>
+                <h2>{% trans "Selectable Products" %}</h2>
                 <form id="add-accessories-form"
                       action="{% url lfs.manage.views.add_accessories product.id %}"
                       method="post">
@@ -91,7 +91,7 @@
                 </form>
             </td>
             <td width="50%">
-                <h2>{% trans 'Accessories' %}</h2>
+                <h2>{% trans 'Selected Products' %}</h2>
                 <form id="accessories-update-form"
                       action="{% url lfs.manage.views.remove_accessories product.id %}"
                       method="post">

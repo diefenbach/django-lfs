@@ -84,14 +84,14 @@ class ShippingMethodTestCase(TestCase):
         # Now we ask for the delivery time for product 1. As sm1 is not valid
         # (p1 has an weight of 6.0) we should get the delivery time from sm2,
         # which is dt2
-        dt = utils.get_product_delivery_time(request, self.p1.slug)
+        dt = utils.get_product_delivery_time(request, self.p1)
         self.assertEqual(dt.min, self.dt2.min)
         self.assertEqual(dt.max, self.dt2.max)
         self.assertEqual(dt.unit, self.dt2.unit)
 
         # For product 2 sm1 is valid (p2 has an weight of 11.0), hence we should
         # get dt1.
-        dt = utils.get_product_delivery_time(request, self.p2.slug)
+        dt = utils.get_product_delivery_time(request, self.p2)
         self.assertEqual(dt.min, self.dt1.min)
         self.assertEqual(dt.max, self.dt1.max)
         self.assertEqual(dt.unit, self.dt1.unit)
@@ -101,7 +101,7 @@ class ShippingMethodTestCase(TestCase):
         self.p1.delivery_time = self.dt3
         self.p1.save()
 
-        dt = utils.get_product_delivery_time(request, self.p1.slug)
+        dt = utils.get_product_delivery_time(request, self.p1)
         self.assertEqual(dt.min, self.dt3.min)
         self.assertEqual(dt.max, self.dt3.max)
         self.assertEqual(dt.unit, self.dt3.unit)
@@ -116,12 +116,12 @@ class ShippingMethodTestCase(TestCase):
         customer.selected_shipping_method = self.sm1
         customer.save()
 
-        dt = utils.get_product_delivery_time(request, self.p1.slug, for_cart=True)
+        dt = utils.get_product_delivery_time(request, self.p1, for_cart=True)
         self.assertEqual(dt.min, self.dt1.min)
         self.assertEqual(dt.max, self.dt1.max)
         self.assertEqual(dt.unit, self.dt1.unit)
 
-        dt = utils.get_product_delivery_time(request, self.p2.slug, for_cart=True)
+        dt = utils.get_product_delivery_time(request, self.p2, for_cart=True)
         self.assertEqual(dt.min, self.dt1.min)
         self.assertEqual(dt.max, self.dt1.max)
         self.assertEqual(dt.unit, self.dt1.unit)
@@ -132,13 +132,13 @@ class ShippingMethodTestCase(TestCase):
         # As the customer has now selected sm2 explicitely the delivery method
         # for the products is dt2 although the default shipping method is
         # sm1.
-        dt = utils.get_product_delivery_time(request, self.p1.slug, for_cart=True)
+        dt = utils.get_product_delivery_time(request, self.p1, for_cart=True)
         self.assertEqual(dt.min, self.dt2.min)
         self.assertEqual(dt.max, self.dt2.max)
         self.assertEqual(dt.unit, self.dt2.unit)
 
         # For product 2 sm1 is valid, hence we should get dt1
-        dt = utils.get_product_delivery_time(request, self.p2.slug, for_cart=True)
+        dt = utils.get_product_delivery_time(request, self.p2, for_cart=True)
         self.assertEqual(dt.min, self.dt2.min)
         self.assertEqual(dt.max, self.dt2.max)
         self.assertEqual(dt.unit, self.dt2.unit)
@@ -155,7 +155,7 @@ class ShippingMethodTestCase(TestCase):
 
         # ... the shipping method for p1 is sm2 and hence the delivery time is
         # dt1
-        dt = utils.get_product_delivery_time(request, self.p1.slug, for_cart=True)
+        dt = utils.get_product_delivery_time(request, self.p1, for_cart=True)
         self.assertEqual(dt.min, self.dt2.min)
         self.assertEqual(dt.max, self.dt2.max)
         self.assertEqual(dt.unit, self.dt2.unit)

@@ -33,13 +33,23 @@ def l10n_float(string):
         return 0.0
 
 
-def get_default_shop():
+def get_default_shop(request=None):
     """Returns the default shop.
     """
+    if request:
+        try:
+            return request.shop
+        except AttributeError:
+            pass
+
     try:
         shop = Shop.objects.get(pk=1)
     except Shop.DoesNotExist, e:  # No guarantee that our shop will have pk=1 in postgres
         shop = Shop.objects.all()[0]
+
+    if request:
+        request.shop = shop
+
     return shop
 
 

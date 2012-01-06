@@ -23,7 +23,6 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
 import lfs.core.utils
-from lfs.core.models import Shop
 from lfs.core.models import Action
 from lfs.page.models import Page
 from lfs.shipping import utils as shipping_utils
@@ -43,7 +42,7 @@ def google_analytics_tracking(context):
     """Returns google analytics tracking code which has been entered to the
     shop.
     """
-    shop = lfs_get_object_or_404(Shop, pk=1)
+    shop = lfs.core.utils.get_default_shop(context.get("request"))
     return {
         "ga_site_tracking": shop.ga_site_tracking,
         "google_analytics_id": shop.google_analytics_id,
@@ -57,7 +56,7 @@ def google_analytics_ecommerce(context, clear_session=True):
     """
     request = context.get("request")
     order = request.session.get("order")
-    shop = lfs_get_object_or_404(Shop, pk=1)
+    shop = lfs.core.utils.get_default_shop(request)
 
     # The order is removed from the session. It has been added after the order
     # has been payed within the checkout process. See order.utils for more.
@@ -79,12 +78,12 @@ def _get_shipping(context, product):
     if product.is_deliverable() == False:
         return {
             "deliverable": False,
-            "delivery_time": shipping_utils.get_product_delivery_time(request, product.slug)
+            "delivery_time": shipping_utils.get_product_delivery_time(request, product)
         }
     else:
         return {
             "deliverable": True,
-            "delivery_time": shipping_utils.get_product_delivery_time(request, product.slug)
+            "delivery_time": shipping_utils.get_product_delivery_time(request, product)
         }
 
 
@@ -430,7 +429,7 @@ def get_slug_from_request(request):
 
 
 @register.filter
-def currency(value, grouping=True):
+def currency(value, request=None, grouping=True):
     """
     e.g.
     import locale
@@ -441,7 +440,8 @@ def currency(value, grouping=True):
     if not value:
         value = 0.0
 
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
+
     result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
     # add css class if value is negative
     if value < 0:

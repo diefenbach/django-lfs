@@ -1,0 +1,42 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/shop/actions.html{% endblock %}
+
+{% block section %}manage-action{% endblock %}
+{% block left_slot %}
+    <h2 class="navigation-title">
+        {% trans "Actions" %}
+    </h2>
+    <div id="navigation"
+         class="navigation-body">
+        {{ navigation|safe }}
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <div class="site-actions">
+        <a class="add"
+           href="{% url lfs_add_action %}">{% trans 'Add action' %}</a>
+
+        <a class="delete delete-link"
+           dialog_message="{% trans 'Do you really want to delete this action?' %}"
+           href="{% url lfs_delete_action action.id %}">{% trans 'Delete action' %}</a>
+
+        <a class="view popup-link"
+           href="{% url lfs_shop_view %}">
+           {% trans 'View Shop' %}
+        </a>
+
+    </div>
+
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Action' %}</a></li>
+        </ul>
+        <div id="data">
+            {{ data|safe }}
+        </div>
+    </div>
+{% endblock %}

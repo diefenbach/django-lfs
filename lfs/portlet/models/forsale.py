@@ -8,7 +8,10 @@ from django.utils.translation import ugettext_lazy as _
 # portlets imports
 from portlets.models import Portlet
 
+# lfs imports
+from lfs.catalog.models import Category
 from lfs.catalog.models import Product
+from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.caching.utils import lfs_get_object
 
 
@@ -33,13 +36,19 @@ class ForsalePortlet(Portlet):
         """Renders the portlet as html.
         """
         request = context.get("request")
-        filters = dict(for_sale=True,)
-        # filter by current category
-        if self.current_category and context.get('category'):
-            cat = context.get('category')
-            filters['categories__in'] = [cat.id, ]
 
-        products = Product.objects.filter(**filters)[:self.limit]
+        products = Product.objects.filter(for_sale=True)
+        if self.current_category:
+            obj = context.get("category") or context.get("product")
+            if obj:
+                category = obj if isinstance(obj, Category) else obj.get_current_category(request)
+                categories = [category]
+                categories.extend(category.get_all_children())
+                products = products.filter(categories__in=categories)[:self.limit]
+            else:
+                products = None
+        else:
+            products = products[:self.limit]
 
         return render_to_string("lfs/portlets/forsale.html", RequestContext(request, {
             "title": self.rendered_title,

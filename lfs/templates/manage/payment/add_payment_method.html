@@ -2,16 +2,18 @@
 {% load i18n %}
 
 {% block title %}{% trans "Add payment Method" %}{% endblock %}
+
+{% block help_link %}user/management/shop/payment_methods.html{% endblock %}
 {% block section %}add-payment-method{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add payment method' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add Payment Method' %}</a></li>
         </ul>
         <div id="data">
-            <h2>{% trans "Add payment Method" %}</h2>
+            <h2>{% trans "Data" %}</h2>
             <form method="post">
                 {% csrf_token %}
                 {% include "manage/lfs_form.html" %}

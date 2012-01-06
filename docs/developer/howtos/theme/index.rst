@@ -1,10 +1,12 @@
 =====================
-How to create a theme
+How To Create A Theme
 =====================
 
 In this how-to you will learn how to create a theme for LFS.
 
-You can :download:`download the whole theme here <mytheme.tar.gz>`.
+.. note::
+
+    You can :download:`download the whole theme here <mytheme.tar.gz>`.
 
 Preparations
 ============
@@ -13,8 +15,6 @@ First you have to create a new Django application. This is beyond the purpose
 of this tutorial and you should refer to `Django's excellent tutorial
 <http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_ if you want to learn
 more.
-
-Add a templates folder and within that add a lfs folder.
 
 In short, your starting file structure should look like this::
 
@@ -30,12 +30,12 @@ Register mytheme to Django's template engine.
 
 1. Move the mytheme folder to the PYTHONPATH.
 
-    The easiest way to do that is to put it into the lfs_project folder of the
-    buildout.
+   The easiest way to do that is to put it into the lfs_project folder of the
+   buildout.
 
 2. Register the theme
 
-    Add mytheme to INSTALLED_APPS **before** lfstheme::
+   Add mytheme to INSTALLED_APPS **before** lfstheme::
 
      INSTALLED_APPS = (
          ...
@@ -44,7 +44,7 @@ Register mytheme to Django's template engine.
          "django.contrib.admin",
          ...
 
-Copy templates
+Copy Templates
 ==============
 
 Now copy the templates you want to change into the lfs folder of mytheme and
@@ -65,25 +65,27 @@ the portlets  folder::
 Use own CSS
 ===========
 
-To use own CSS several steps are neccessary (this is going to be improved a lot
-for future versions).
+To use own CSS several steps are necessary.
 
-1. Create a "static" folder within mytheme::
+1. Create a ``static`` folder within mytheme::
 
     mytheme
         static
         ...
 
-2. Within that create a new CSS-file, e.g. mytheme.css and add your CSS rules, e.g.::
+2. Within that create a new CSS-file, e.g. mytheme.css and add your CSS rules,
+   e.g.:
 
-    .breadcrumbs li {
-        color: red !important;
-    }
+   .. code-block:: css
 
-   Alternatively you might copy main.css from lfstheme and adapt it to your
+     .breadcrumbs li {
+         color: red !important;
+     }
+
+   Alternatively you might copy main.css from ``lfstheme`` and adapt it to your
    needs.
 
-3. Go to the lfs_project/media folder and create a symbolic link to the
+3. Go to the ``lfs_project/media`` folder and create a symbolic link to the
    static folder::
 
    $ ln -s <path/to/buildout>/lfs_project/mytheme/static mytheme

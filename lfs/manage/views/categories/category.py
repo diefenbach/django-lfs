@@ -85,7 +85,7 @@ def manage_category(request, category_id, template_name="manage/category/manage_
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def category_data(request, category_id, template_name="manage/category/data.html"):
+def category_data(request, category_id, form=None, template_name="manage/category/data.html"):
     """Displays the core data for the category_id with passed category_id.
 
     This is used as a part of the whole category form.
@@ -93,7 +93,7 @@ def category_data(request, category_id, template_name="manage/category/data.html
     category = Category.objects.get(pk=category_id)
 
     if request.method == "POST":
-        form = CategoryForm(data=request.POST, instance=category, files=request.FILES)
+        form = CategoryForm(instance=category, data=request.POST)
     else:
         form = CategoryForm(instance=category)
 
@@ -101,6 +101,17 @@ def category_data(request, category_id, template_name="manage/category/data.html
         "category": category,
         "form": form,
     }))
+
+
+@permission_required("core.manage_shop", login_url="/login/")
+def category_by_id(request, category_id):
+    """
+    Little helper which returns a category by id. (For the shop customer the
+    products are displayed by slug, for the manager by id).
+    """
+    category = Category.objects.get(pk=category_id)
+    url = reverse("lfs.catalog.views.category_view", kwargs={"slug": category.slug})
+    return HttpResponseRedirect(url)
 
 
 # Actions
@@ -116,24 +127,22 @@ def edit_category_data(request, category_id, template_name="manage/category/data
         message = _(u"Category data have been saved.")
     else:
         message = _(u"Please correct the indicated errors.")
-        return manage_category(request, category.id)
 
     # Delete image
     if request.POST.get("delete_image"):
         category.image.delete()
 
-    # Update category level
-    category.level = len(category.get_parents()) + 1
-    category.save()
-    for child in category.get_all_children():
-        child.level = len(child.get_parents()) + 1
-        child.save()
+    html = [
+        ["#data", category_data(request, category.id)],
+        ["#categories-portlet", manage_categories_portlet(request, category.id)],
+    ]
 
-    # Update positions
-    manage_utils.update_category_positions(category.parent)
+    result = simplejson.dumps({
+        "message": message,
+        "html" : html,
+    }, cls=LazyEncoder)
 
-    url = reverse("lfs_manage_category", kwargs={"category_id": category_id})
-    return HttpResponseRedirect(url)
+    return HttpResponse(result)
 
 
 @permission_required("core.manage_shop", login_url="/login/")

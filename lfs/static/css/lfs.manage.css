@@ -118,8 +118,8 @@ table.lfs-manage-table.images td {
     width: 50%;
 }
 
-.lfs-manage-table .large {
-    width: 300px;
+.lfs-manage-table.large {
+    width: 900px;
 }
 
 .lfs-manage-table .middle {
@@ -295,6 +295,14 @@ tr.odd {
     font-weight: bold;
 }
 
+.portlet-edit-button {
+    cursor: pointer;
+}
+
+.portlet-edit-button:hover {
+    background-color: #eee;
+}
+
 /* Links */
 a.selectable {
     color: black;
@@ -359,14 +367,14 @@ td.management {
 
 
 .up {
-    margin: 0 4px;
+    margin: 0 5px;
     padding-left: 16px;
     background: url(../icons/arrow_up.png) no-repeat;
     text-decoration: none;
 }
 
 .down {
-    margin: 0 4px;
+    margin: 0 5px;
     padding-left: 16px;
     background: url(../icons/arrow_down.png) no-repeat;
     text-decoration: none;
@@ -379,36 +387,36 @@ a.add {
 
 
 a.delete {
-    margin: 0 10px;
-    padding-left: 20px;
-    background: url(../icons/delete.png) no-repeat;
+    margin: 0 5px;
+    padding-left: 16px;
+    background: url(../icons/cross.png) no-repeat;
 }
 
 a.export {
-    margin: 0 10px;
+    margin: 0 5px;
     padding: 0 0 1px 20px;
 }
 
 a.overview {
-    margin: 0 10px;
+    margin: 0 5px;
     padding-left: 20px;
     background: url(../icons/arrow_up.png) no-repeat;
 }
 
 a.preview {
-    margin: 0 10px;
+    margin: 0 5px;
     padding-left: 18px;
     background: url(../icons/zoom.png) no-repeat;
 }
 
 a.reset {
-    margin: 0 10px;
+    margin: 0 5px;
     padding-left: 18px;
     background: url(../icons/cancel.png) no-repeat;
 }
 
 a.send {
-    margin: 0 10px;
+    margin: 0 5px;
     padding-left: 22px;
     background: url(../icons/email.png) no-repeat;
 }
@@ -439,8 +447,8 @@ a.view {
 }
 
 a.edit {
-    margin-right:10px;
-    padding-left: 20px;
+    margin: 0 5px;
+    padding-left: 16px;
     background: url(../icons/pencil.png) no-repeat;
 }
 
@@ -549,16 +557,12 @@ select.categories {
     width: 195px;
 }
 
-#id_country, #id_countries {
+#id_country, #id_countries, #id_slot, #id_portlet-title, #id_default_variant, #id_variants_display_type, #selected-property-groups, #id_group {
     width: 200px;
 }
 
 #id_note {
     width: 685px;
-}
-
-#id_default_variant, #id_variants_display_type {
-    width: 200px;
 }
 
 /* portlets */
@@ -763,4 +767,9 @@ div.separator {
 
 ol {
     padding: 0 0 0 25px;
+}
+
+ .blank {
+    margin: 0 5px;
+    padding-left: 16px;
 }

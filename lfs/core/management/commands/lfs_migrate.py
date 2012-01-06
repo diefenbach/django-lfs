@@ -46,6 +46,12 @@ class Command(BaseCommand):
         from lfs.page.models import Page
         from lfs_order_numbers.models import OrderNumberGenerator
 
+        # Product
+        from lfs.catalog.settings import QUANTITY_FIELD_INTEGER
+        from lfs.catalog.settings import QUANTITY_FIELD_TYPES
+
+        db.add_column("catalog_product", "type_of_quantity_field", models.PositiveSmallIntegerField(_(u"Type of quantity field"), null=True, blank=True, choices=QUANTITY_FIELD_TYPES))
+
         # Pages
         print "Migrating to 0.7"
         db.add_column("page_page", "meta_title", models.CharField(_(u"Meta title"), blank=True, default="<title>", max_length=80))
@@ -67,7 +73,6 @@ class Command(BaseCommand):
             new_page = deepcopy(page)
             new_page.id = None
             new_page.save()
-
             page.delete()
 
         Page.objects.create(id=1, title="Root", slug="", active=1, exclude_from_navigation=1)
@@ -83,15 +88,14 @@ class Command(BaseCommand):
         shop.save()
 
         # Order
-        db.add_column("order_order", "number", models.CharField(max_length=30, unique=True))
+        db.add_column("order_order", "number", models.CharField(max_length=30, unique=True, null=True))
         OrderNumberGenerator.objects.create(pk="1", last=0)
 
         application.version = "0.7"
         application.save()
 
     def migrate_to_06(self, application, version):
-        from lfs.core.utils import get_default_shop
-
+        from lfs.core.models import Shop
         print "Migrating to 0.6"
 
         # Vouchers ###########################################################
@@ -130,7 +134,11 @@ class Command(BaseCommand):
         db.add_column("catalog_product", "supplier_id", models.IntegerField(_(u"Supplier"), blank=True, null=True))
 
         # Invoice/Shipping countries
-        shop = get_default_shop()
+        try:
+            shop = Shop.objects.only("id").get(pk=1)
+        except Shop.DoesNotExist, e:  # No guarantee that our shop will have pk=1 in postgres
+            shop = Shop.objects.only("id").all()[0]
+
         db.create_table("core_shop_invoice_countries", (
             ("id", models.AutoField(primary_key=True)),
             ("shop_id", models.IntegerField("shop_id")),

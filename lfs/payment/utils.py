@@ -106,7 +106,7 @@ def process_payment(request):
     message.
     """
     payment_method = get_selected_payment_method(request)
-    shop = lfs.core.utils.get_default_shop()
+    shop = lfs.core.utils.get_default_shop(request)
 
     if payment_method.module:
         module_str, payment_class_str = payment_method.module.rsplit('.', 1)

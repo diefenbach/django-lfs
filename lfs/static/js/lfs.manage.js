@@ -238,6 +238,7 @@ $(function() {
         $.get(url, function(data) {
             $("#dialog").html(data);
             $("#dialog").dialog("open");
+            addEditor('#id_portlet-text', true, 300);
         });
         return false;
     });
@@ -247,6 +248,7 @@ $(function() {
             success : function(data) {
                 $("#dialog").html(data);
                 $("#dialog").dialog("open");
+                addEditor('#id_portlet-text', true, 300);
         }});
         return false;
     });

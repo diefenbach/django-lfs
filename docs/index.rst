@@ -1,8 +1,6 @@
-LFS - Lightning Fast Shop
-=========================
+.. _index_introduction:
 
-LFS is a online-shop based on Django.
-
+============
 Introduction
 ============
 
@@ -13,61 +11,104 @@ Introduction
    introduction/installation.rst
    introduction/getting_started.rst
 
-Users
-=====
+.. _index_users:
 
-Management reference
---------------------
+=====================
+Information for Users
+=====================
 
-.. toctree::
-   :maxdepth: 1
+.. _index_users_concepts:
 
-   user/shop/index.rst
-   user/catalog/index.rst
-   user/properties/index.rst
-   user/html/index.rst
-   user/customer/index.rst
-   user/marketing/index.rst
-   user/utils/index.rst
-
-Miscellaneous information
--------------------------
+Concepts
+========
 
 .. toctree::
    :maxdepth: 1
 
-   user/misc/criteria.rst
-   user/misc/properties.rst
-   user/misc/taxes.rst
+   user/concepts/products.rst
+   user/concepts/categories.rst
+   user/concepts/criteria.rst
+   user/concepts/properties.rst
+   user/concepts/local_properties.rst
+   user/concepts/taxes.rst
+   user/concepts/static_blocks.rst
+   user/concepts/portlets.rst
+   user/concepts/actions.rst
+   user/concepts/delivery_times.rst
+   user/concepts/shipping_methods.rst
+   user/concepts/payment_methods.rst
+   user/concepts/marketing.rst
+   user/concepts/reviews.rst
+   user/concepts/pages.rst
+
+.. _index_users_management_interface:
+
+Management Interface
+====================
+
+.. toctree::
+   :maxdepth: 1
+
+   user/management/shop/index.rst
+   user/management/catalog/index.rst
+   user/management/properties/index.rst
+   user/management/html/index.rst
+   user/management/customer/index.rst
+   user/management/marketing/index.rst
+   user/management/utils/index.rst
+
+.. _index_users_howtos:
 
 How-tos
--------
+=======
 
 .. toctree::
    :maxdepth: 1
 
    user/howtos/how_to_horizontal_menu.rst
-   user/howtos/how_to_filters.rst
    user/howtos/how_to_variants.rst
    user/howtos/how_to_configurable_product.rst
-   user/howtos/how_to_paypal.rst
-   user/howtos/how_to_shipping_method
+   user/howtos/how_to_filters.rst
    user/howtos/how_to_payment_method
+   user/howtos/how_to_shipping_method
+   user/howtos/how_to_paypal.rst
    user/howtos/how_to_export_script
 
-Developers
+.. _index_developers:
+
+==========================
+Information for Developers
+==========================
+
+.. _index_developers_developing:
+
+Developing
 ==========
 
 .. toctree::
    :maxdepth: 1
 
-   developer/settings
+   developer/developing.rst
+   developer/testing.rst
+   developer/benchmarking.rst
+   misc/contributing_translations.rst
 
-How-tos
--------
+.. _index_developers_miscellaneous:
+
+Miscellaneous
+=============
 
 .. toctree::
-   :numbered:
+   :maxdepth: 1
+
+   developer/settings.rst
+
+.. _index_developers_howtos:
+
+How-tos
+=======
+
+.. toctree::
    :maxdepth: 1
 
    developer/howtos/how_to_add_own_templates.rst
@@ -79,11 +120,20 @@ How-tos
    developer/howtos/theme/index.rst
    developer/howtos/how_to_add_own_order_numbers/index.rst
 
-Indices and tables
+=========================
+Miscellaneous Information
+=========================
+
+.. toctree::
+   :maxdepth: 1
+
+   misc/contributing_translations.rst
+
+==================
+Indices and Tables
 ==================
 
 * :doc:`glossary`
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 

@@ -4,7 +4,7 @@
 <table class="lfs-manage-table" style="margin-bottom:0">
     <tr>
         <td width="50%">
-            <h2>{% trans "Products" %}</h2>
+            <h2>{% trans "Selectable Products" %}</h2>
             <form id="category-products-filter-form"
                   action="{% url lfs_manage_category_products_inline category.id %}"
                   onsubmit="return false">
@@ -26,7 +26,6 @@
                                 value="{{ option.value }}">{{ option.value }}</option>
                     {% endfor %}
                 </select>
-
             </form>
         </td>
         <td width="50%">

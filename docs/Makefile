@@ -30,6 +30,11 @@ help:
 clean:
 	-rm -rf $(BUILDDIR)/*
 
+spelling:
+	$(SPHINXBUILD) -b spelling $(ALLSPHINXOPTS) $(BUILDDIR)/spelling
+	@echo
+	@echo "Build finished. The output is in $(BUILDDIR)/spelling."
+
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo

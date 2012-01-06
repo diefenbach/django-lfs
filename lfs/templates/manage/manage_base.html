@@ -71,7 +71,6 @@
                                 <ul>
                                     <li><a href="{% url lfs_manage_actions %}">{% trans 'Actions' %}</a></li>
                                     <li><a href="{% url lfs_manage_delivery_times %}">{% trans 'Delivery Times' %}</a></li>
-                                    <li><a href="{% url lfs_manage_discounts %}">{% trans 'Discounts' %}</a></li>
                                     <li><a href="{% url lfs_manufacturer_dispatcher %}">{% trans 'Manufacturers' %}</a></li>
                                     <li><a href="{% url lfs_manage_payment %}">{% trans 'Payment Methods' %}</a></li>
                                     <li><a href="{% url lfs_manage_shop %}">{% trans 'Preferences' %}</a></li>
@@ -112,9 +111,10 @@
                             <li><a>{% trans 'Marketing' %}</a>
                                 <ul>
                                 	<li><a href="{% url lfs_manage_featured %}">{% trans 'Featured' %}</a></li>
-                                    <li><a href="{% url lfs_manage_rating_mails %}">{% trans 'Rating Mails' %}</a></li>
                                     <li><a href="{% url lfs_manage_marketing %}">{% trans 'Topseller' %}</a></li>
                                     <li><a href="{% url lfs_manage_vouchers %}">{% trans 'Vouchers' %}</a></li>
+                                    <li><a href="{% url lfs_manage_discounts %}">{% trans 'Discounts' %}</a></li>
+                                    <li><a href="{% url lfs_manage_rating_mails %}">{% trans 'Rating Mails' %}</a></li>
                                 </ul>
                             </li>
                             <li><a>{% trans 'Utils' %}</a>
@@ -123,6 +123,13 @@
                                     <li><a href="{% url lfs_manage_utils %}">{% trans 'Miscellaneous' %}</a></li>
                                 </ul>
                             </li>
+                            {% block help_wrapper %}
+                                <li><a href="{{ LFS_DOCS }}{% block help_link %}{% endblock %}"
+                                       target="_blank">
+                                       Help
+                                    </a>
+                                <li>
+                            {% endblock %}
                         </ul>
                     </td>
                 </tr>
@@ -148,8 +155,7 @@
             <div class="footer">
                 <p>{% trans 'Powered by' %} <a target="_blank" href="http://www.getlfs.com">LFS</a> &mdash; Lightning Fast Shop</p>
                 <p>
-                    <a target="_blank" href="http://www.getlfs.com">LFS</a> {% trans 'is a product of' %} <a target="_blank" href="http://www.iqpp.de">IQ++</a>
-                    &mdash; &copy; 2009 - 2011 {% trans 'by' %} <a target="_blank" href="http://www.iqpp.de">IQ++</a> &mdash; {% trans 'All rights reserved' %}
+                    &copy; 2009 - 2011 {% trans 'by' %} Kai Diefenbach and contributors &mdash; {% trans 'All rights reserved' %}
                 </p>
                 <p>{% trans 'Distributed under the' %} <a target="_blank" href="http://www.opensource.org/licenses/bsd-license.php">{% trans 'BSD-License' %}</a></p>
             </div>

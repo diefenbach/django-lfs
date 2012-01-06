@@ -1,0 +1,20 @@
+{% for group in groups %}
+    {% if group.actions.all %}
+        <div class="action-group">{{ group.name }}</div>
+        <ul class="sortable"
+            href="{% url lfs_sort_actions %}">
+            {% for action in group.actions.all %}
+                <li id="action_{{ action.id }}">
+                    <div class="action">
+                        <a href="{% url lfs_manage_action action.id %}"
+                           class="selectable {% ifequal action.id current_action.id %}selected{% endifequal %}">
+                            <img class="handle" src="{{ STATIC_URL }}img/handle.png" alt="Handle" />
+                            {{ action.title }}
+                        </a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endfor %}
+<script>sortable()</script>

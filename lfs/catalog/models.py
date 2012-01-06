@@ -631,7 +631,7 @@ class Product(models.Model):
     # Manufacturer
     sku_manufacturer = models.CharField(_(u"SKU Manufacturer"), blank=True, max_length=100)
     manufacturer = models.ForeignKey(Manufacturer, verbose_name=_(u"Manufacturer"), blank=True, null=True, related_name="products")
-    type_of_quantity_field = models.PositiveSmallIntegerField(_(u"Type of quantity field"), default=QUANTITY_FIELD_INTEGER, choices=QUANTITY_FIELD_TYPES)
+    type_of_quantity_field = models.PositiveSmallIntegerField(_(u"Type of quantity field"), blank=True, null=True, choices=QUANTITY_FIELD_TYPES)
 
     objects = ActiveManager()
 
@@ -1049,7 +1049,7 @@ class Product(models.Model):
         if self.price_calculator is not None:
             price_calculator = self.price_calculator
         else:
-            price_calculator = lfs.core.utils.get_default_shop().price_calculator
+            price_calculator = lfs.core.utils.get_default_shop(request).price_calculator
 
         module_str, price_calculator_str = price_calculator.rsplit('.', 1)
         mod = import_module(module_str)
@@ -1134,10 +1134,10 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.get_customer_tax()
 
-    def price_includes_tax(self):
+    def price_includes_tax(self, request):
         """Returns whether our price calculator includes tax or not.
         """
-        pc = self.get_price_calculator(None)
+        pc = self.get_price_calculator(request)
         return pc.price_includes_tax()
 
     def get_global_properties(self):

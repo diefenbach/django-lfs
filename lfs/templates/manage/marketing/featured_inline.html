@@ -120,7 +120,7 @@
                                            class="select-featured-products" />
                                 </td>
                                 <td>
-                                    <a href="{% url lfs_manage_product product.id %}">
+                                    <a href="{% url lfs_manage_product ts.product.id %}">
                                         {% if ts.product.get_name %}
                                             {{ ts.product.get_name }}
                                         {% else %}

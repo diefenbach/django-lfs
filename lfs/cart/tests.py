@@ -338,14 +338,14 @@ class RefreshCartTestCase(TestCase):
         cart = lfs.cart.utils.get_cart(request)
         self.assertEqual(cart.get_amount_of_items(), 1.0)
 
-        # Try to increase item to two, but there is only one in stock
+        # Increase items to two
         request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2})
         request.session = self.session
         request.user = self.user
 
         # Refresh to amount of two is possible
         result = simplejson.loads(refresh_cart(request).content)
-        self.assertEqual(result.get("message"), "Sorry, but \'Product 1\' is only 2.0 times available.")
+        self.assertEqual(result.get("message"), "")
         self.assertEqual(cart.get_amount_of_items(), 2.0)
 
         # Try to increase item to 3, but there are only 2 in stock

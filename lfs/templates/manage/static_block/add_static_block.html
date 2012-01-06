@@ -1,25 +1,26 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/html/static_block.html{% endblock %}
 {% block section %}add-static-block{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
     <div id="manage-tabs">
         <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add static block' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add Static Block' %}</a></li>
         </ul>
         <div id="data">
-            <h2>{% trans 'Add static block' %}</h2>
+            <h2>{% trans 'Data' %}</h2>
             <form action=""
                   method="post">
-                {% csrf_token %}  
+                {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
                 <input type="submit"
                        class="button"
                        value="{% trans 'Save static block' %}">
 
-                {% if  request.META.HTTP_REFERER %}                       
+                {% if  request.META.HTTP_REFERER %}
                     <input type="button"
                            class="button"
                            onclick="window.location='{{request.META.HTTP_REFERER}}'"
@@ -27,8 +28,8 @@
                 {% endif %}
             </form>
         </div>
-    </div>    
+    </div>
     <script type="text/javascript">
         tinyMCE.execCommand('mceAddControl', true, 'id_html');
-    </script>    
+    </script>
 {% endblock %}

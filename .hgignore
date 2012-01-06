@@ -1,9 +1,10 @@
 syntax: glob
 *.pyc
 *.pyo
-*.DS_Store 
+*.DS_Store
 *.installed.cfg
 *build/
 *dist/
 *.egg-info/
 *.git*
+*docs_de

@@ -63,6 +63,7 @@ urlpatterns += patterns('lfs.manage.views.lfs_portlets',
     url(r'^update-portlets/(?P<object_type_id>\d+)/(?P<object_id>\d+)$', "update_portlets", name="lfs_update_portlets"),
     url(r'^delete-portlet/(?P<portletassignment_id>\d+)$', "delete_portlet", name="lfs_delete_portlet"),
     url(r'^edit-portlet/(?P<portletassignment_id>\d+)$', "edit_portlet", name="lfs_edit_portlet"),
+    url(r'^move-portlet/(?P<portletassignment_id>\d+)$', "move_portlet", name="lfs_move_portlet"),
 )
 
 # Product
@@ -211,6 +212,7 @@ urlpatterns += patterns('lfs.manage.views.carts',
 urlpatterns += patterns('lfs.manage.views.categories',
     url(r'^categories$', "manage_categories", name="lfs_manage_categories"),
     url(r'^category/(?P<category_id>\d*)$', "manage_category", name="lfs_manage_category"),
+    url(r'^category-by-id/(?P<category_id>\d*)$', "category_by_id", name="lfs_category_by_id"),
     url(r'^add-products/(?P<category_id>\d*)$', "add_products", name="lfs_manage_category_add_products"),
     url(r'^remove-products/(?P<category_id>\d*)$', "remove_products", name="lfs_manage_category_remove_products"),
     url(r'^add-top-category$', "add_category", name="lfs_manage_add_top_category"),
@@ -378,20 +380,23 @@ urlpatterns += patterns('lfs.manage.views.shop',
     url(r'^save-shop-seo-tab$', "save_seo_tab", name="lfs_save_shop_seo_tab"),
 )
 
-# Shop action
-urlpatterns += patterns('lfs.manage.views.actions',
+# Actions
+urlpatterns += patterns('lfs.manage.actions.views',
+    url(r'^actions$', "manage_actions", name="lfs_manage_actions"),
+    url(r'^action/(?P<id>\d*)$', "manage_action", name="lfs_manage_action"),
+    url(r'^no-actions$', "no_actions", name="lfs_no_actions"),
     url(r'^add-action$', "add_action", name="lfs_add_action"),
     url(r'^delete-action/(?P<id>\d*)$', "delete_action", name="lfs_delete_action"),
-    url(r'^manage-actions$', "manage_actions", name="lfs_manage_actions"),
-    url(r'^manage-action/(?P<id>\d*)$', "manage_action", name="lfs_manage_action"),
+    url(r'^save-action/(?P<id>\d*)$', "save_action", name="lfs_save_action"),
+    url(r'^sort-actions$', "sort_actions", name="lfs_sort_actions"),
 )
 
-# Tax
+# Taxes
 urlpatterns += patterns('lfs.manage.views.tax',
-    url(r'^add-tax$', "add_tax", name="lfs_add_tax"),
-    url(r'^delete-tax/(?P<id>\d*)$', "delete_tax", name="lfs_delete_tax"),
-    url(r'^manage-taxes$', "manage_taxes", name="lfs_manage_taxes"),
-    url(r'^manage-tax/(?P<id>\d*)$', "manage_tax", name="lfs_manage_tax"),
+    url(r'^add-product-tax$', "add_tax", name="lfs_add_tax"),
+    url(r'^delete-product-tax/(?P<id>\d*)$', "delete_tax", name="lfs_delete_tax"),
+    url(r'^product-taxes$', "manage_taxes", name="lfs_manage_taxes"),
+    url(r'^product-tax/(?P<id>\d*)$', "manage_tax", name="lfs_manage_tax"),
 )
 
 # Customer tax

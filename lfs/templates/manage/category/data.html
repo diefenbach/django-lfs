@@ -3,11 +3,8 @@
 <h2>{% trans 'Data' %}</h2>
 
 <form action="{% url lfs_manage_category_edit_data category.id %}"
-      method="post"
-      class="category-data-form"
-      enctype="multipart/form-data">
+      method="post">
     {% csrf_token %}
-
     <fieldset>
         <legend>{% trans "General" %}</legend>
         <div class="field">
@@ -101,6 +98,6 @@
     <div class="buttons">
         <input value="{% trans 'Save data' %}"
                type="submit"
-               class="category-data-save-button button"/>
+               class="ajax-save-button button"/>
     </div>
 </form>

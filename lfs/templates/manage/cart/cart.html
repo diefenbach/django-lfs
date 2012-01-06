@@ -1,6 +1,8 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block help_link %}user/management/customer/carts.html{% endblock %}
+
 {% block title %}{% trans "Manage Cart" %}{{ cart.id }}{% endblock %}
 {% block section %}manage-cart{% endblock %}
 
