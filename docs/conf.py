@@ -19,14 +19,24 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
+os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
+DIRNAME = os.path.dirname(__file__)
+sys.path[0:0] = [
+    DIRNAME + '/../../../eggs/Django-1.3.1-py2.7.egg',
+    DIRNAME + '/../../../lfs_project',
+    DIRNAME + '/../../../parts/lfs',
+]
+
 # -- General configuration -----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 # extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo']
 
+extensions = ['sphinx.ext.autodoc']
+
 if not on_rtd:
-    extensions = [ 'sphinxcontrib.spelling' ]
+    extensions.append('sphinxcontrib.spelling')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
