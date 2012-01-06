@@ -34,7 +34,7 @@ class PaymentMethod(object):
 
         **Return Values:**
 
-        This values must be returned via a dictionary.
+        This values are returned within a dictionary.
 
         accepted (mandatory)
             Indicates whether the payment is accepted or not. if this is
@@ -62,13 +62,14 @@ class PaymentMethod(object):
 
     def get_create_order_time(self):
         """
-        Defines when the order should be created.
+        Returns the time when the order should be created. It is one of:
 
-        IMMEDIATELY
+        PM_ORDER_IMMEDIATELY
             The order is created immediately before the payment is processed.
 
-        ACCEPTED
-            The order is only created when the payment has been accepted.
+        PM_ORDER_ACCEPTED
+            The order is created when the payment has been processed and
+            accepted.
         """
         raise NotImplementedError
 
