@@ -23,7 +23,6 @@ The structure of the application should look at least like this::
 
     my_order_numbers
         __init__.py
-        forms.py
         models.py
 
 
@@ -39,7 +38,7 @@ class and add a method to it called ``get_next``:
 
 .. code-block:: python
 
-    from lfs.order_numbers import OrderNumberGenerator as Base
+    from lfs.plugins import OrderNumberGenerator as Base
 
     class OrderNumberGenerator(Base):
         def get_next(formatted):
@@ -52,9 +51,8 @@ order.
 Add the form
 ============
 
-Within ``forms.py`` of the newly created package add a form called
-``OrderNumberGeneratorForm``. This form is used to edit the order numbers within
-the management interface of LFS.
+Now add the form which is used to manage the order numbers within the management
+interface of LFS.
 
 .. code-block:: python
 
@@ -64,16 +62,22 @@ the management interface of LFS.
 
 The ``OrderNumberGeneratorForm`` **must** inherit from ModelForm.
 
-Register your Plug in
-=====================
+Plug in your order number generator
+===================================
 
-In order to register the plug in add your application to ``INSTALLED_APPS`` and
-assign your application to ``LFS_APP_ORDER_NUMBERS`` within settings.py::
+Now as the code is ready, you can easily plugin your payment method:
 
-    INSTALLED_APPS = ("my_order_numbers", ...)
-    LFS_APP_ORDER_NUMBERS = "my_order_numbers"
+#. Add your application to the PYTHONPATH.
 
-Finally run ``syncdb`` and restart your instance.
+#. Add your class to ``settings.py``
+
+    LFS_ORDER_NUMBER_GENERATOR = "my_order_numbers.models.OrderNumberGenerator"
+
+#. Add the form to ``settings.py``
+
+    LFS_ORDER_NUMBER_GENERATOR_FORM = "my_order_numbers.forms.OrderNumberGeneratorForm"
+
+#. Add your application to settings.INSTALLED_APPS and sync the database.
 
 And that's it
 =============

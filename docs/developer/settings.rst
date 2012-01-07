@@ -22,9 +22,13 @@ LFS_AFTER_ADD_TO_CART
     product, which has been added to the cart. A reasonable alternativ is
     ``lfs_checkout_dispatcher``, which redirects directly to the checkout view.
 
-LFS_APP_ORDER_NUMBERS
-    The APP which is responsible for the creation of order numbers. Defaults
-    to: ``lfs_order_numbers``.
+LFS_ORDER_NUMBER_GENERATOR
+    The class which is responsible for the creation of order numbers. LFS ships
+    with: ``lfs_order_numbers.models.OrderNumberGenerator``.
+
+LFS_ORDER_NUMBER_GENERATOR_FORM
+    The form which is used within the shop interface to manage order numbers.
+    LFS with: ``lfs_order_numbers.forms.OrderNumberGeneratorForm``.
 
 LFS_DOCS
     Base URL to the LFS docs. This is used for the context aware help link

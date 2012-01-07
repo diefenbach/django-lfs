@@ -7,6 +7,7 @@ import lfs.voucher.utils
 from lfs.cart import utils as cart_utils
 from lfs.core.models import Country
 from lfs.core.utils import import_module
+from lfs.core.utils import import_symbol
 from lfs.customer import utils as customer_utils
 from lfs.order.models import Order
 from lfs.order.models import OrderItem
@@ -14,10 +15,6 @@ from lfs.order.models import OrderItemPropertyValue
 from lfs.payment import utils as payment_utils
 from lfs.shipping import utils as shipping_utils
 from lfs.voucher.models import Voucher
-
-# import registered order numbers app
-MODELS = import_module(settings.LFS_APP_ORDER_NUMBERS + ".models")
-
 
 def add_order(request):
     """Adds an order based on current cart for the current customer.
@@ -195,10 +192,11 @@ def add_order(request):
     # removed from the session if the thank you page has been called.
     request.session["order"] = order
 
+    ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
     try:
-        order_numbers = MODELS.OrderNumberGenerator.objects.get(id="order_number")
-    except MODELS.OrderNumberGenerator.DoesNotExist:
-        order_numbers = MODELS.OrderNumberGenerator.objects.create(id="order_number")
+        order_numbers = ong.objects.get(id="order_number")
+    except ong.DoesNotExist:
+        order_numbers = ong.objects.create(id="order_number")
 
     try:
         order_numbers.init(request, order)

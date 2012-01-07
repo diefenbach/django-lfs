@@ -17,14 +17,10 @@ from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
 from lfs.core.signals import shop_changed
 from lfs.core.utils import import_module
+from lfs.core.utils import import_symbol
 from lfs.core.utils import LazyEncoder
 from lfs.core.widgets.image import LFSImageInput
 from lfs.manage.views.lfs_portlets import portlets_inline
-
-
-# import registered order numbers app
-FORMS = import_module(settings.LFS_APP_ORDER_NUMBERS + ".forms")
-MODELS = import_module(settings.LFS_APP_ORDER_NUMBERS + ".models")
 
 
 class ShopDataForm(ModelForm):
@@ -67,11 +63,15 @@ def manage_shop(request, template_name="manage/shop/shop.html"):
     seo_form = ShopSEOForm(instance=shop)
     default_values_form = ShopDefaultValuesForm(instance=shop)
 
+    ong = lfs.core.utils.import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
+
     try:
-        order_number = MODELS.OrderNumberGenerator.objects.get(id="order_number")
-    except MODELS.OrderNumberGenerator.DoesNotExist:
-        order_number = MODELS.OrderNumberGenerator.objects.create(id="order_number")
-    order_numbers_form = FORMS.OrderNumberGeneratorForm(instance=order_number)
+        order_number = ong.objects.get(id="order_number")
+    except ong.DoesNotExist:
+        order_number = ong.objects.create(id="order_number")
+
+    ongf = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR_FORM)
+    order_numbers_form = ongf(instance=order_number)
 
     return render_to_response(template_name, RequestContext(request, {
         "shop": shop,
@@ -96,11 +96,6 @@ def data_tab(request, shop, form, template_name="manage/shop/data_tab.html"):
 def order_numbers_tab(request, shop, form, template_name="manage/order_numbers/order_numbers_tab.html"):
     """Renders the ordern number tab of the shop.
     """
-    try:
-        order_number = MODELS.OrderNumberGenerator.objects.get(id="order_number")
-    except MODELS.OrderNumberGenerator.DoesNotExist:
-        order_number = MODELS.OrderNumberGenerator.objects.create(id="order_number")
-
     return render_to_string(template_name, RequestContext(request, {
         "shop": shop,
         "form": form,
@@ -202,8 +197,11 @@ def save_order_numbers_tab(request):
     """
     shop = lfs.core.utils.get_default_shop()
 
-    order_number = MODELS.OrderNumberGenerator.objects.get(id="order_number")
-    form = FORMS.OrderNumberGeneratorForm(instance=order_number, data=request.POST)
+    ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
+    order_number = ong.objects.get(id="order_number")
+
+    ongf = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR_FORM)
+    form = ongf(instance=order_number, data=request.POST)
 
     if form.is_valid():
         form.save()

@@ -92,8 +92,8 @@ class Command(BaseCommand):
         Page.objects.create(title="Imprint", slug="imprint", active=1, body="Enter your imprint here.")
 
         # Order Numbers
-        MODELS = import_module(settings.LFS_APP_ORDER_NUMBERS + ".models")
-        MODELS.OrderNumberGenerator.objects.create(id="order_number")
+        ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
+        ong.objects.create(id="order_number")
 
         # Application object
         Application.objects.create(version="0.7")
