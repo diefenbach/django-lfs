@@ -28,6 +28,20 @@ LFS_DOCS
     within the management interface. Defaults to
     http://docs.getlfs.com/en/latest/.
 
+.. _settings_lfs_payment_modules:
+
+LFS_PAYMENT_MODULES
+    List of list of available 3rd-party payment modules, whereas the first entry
+    is the dotted name to a PaymentMethod and the second entry is the name,
+    which  is displayed. These are provided for selection within the payment
+    method management interface, e.g.::
+
+        LFS_PAYMENT_MODULES = [
+            ["acme.ACMEPaymentMethod", "ACME payment"],
+        ]
+
+    See also :doc:`/developer/howtos/how_to_add_own_payment_methods`.
+
 .. _settings_email:
 
 E-Mail
@@ -74,3 +88,4 @@ LFS_PAYPAL_REDIRECT
     True or False. If True the customer is automatically redirected to PayPal
     after he submitted his order. If False the thank-you page is displayed
     with a link to PayPal.
+
