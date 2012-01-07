@@ -117,8 +117,11 @@ def process_payment(request):
         create_order_time = instance.get_create_order_time()
         if create_order_time == PM_ORDER_IMMEDIATELY:
             order = lfs.order.utils.add_order(request)
+            result = instance.process(request, order=order)
+        else:
+            cart = lfs.cart.utils.get_cart(request)
+            result = instance.process(request, cart=cart)
 
-        result = instance.process(request, order=order)
         if result.get("order_state"):
             order.state = result.get("order_state")
             order.save()
@@ -151,7 +154,7 @@ def process_payment(request):
         order = lfs.order.utils.add_order(request)
         order_submitted.send({"order": order, "request": request})
         return {
-            "accepted": PM_STATE_ACCEPTED,
+            "accepted": True,
             "next_url": reverse("lfs_thank_you"),
         }
 

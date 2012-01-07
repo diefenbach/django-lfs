@@ -25,6 +25,9 @@ from lfs.payment.models import PaymentMethodPrice
 from lfs.payment import utils as payment_utils
 
 
+from django.forms.widgets import Select
+from django.conf import settings
+
 class PaymentMethodAddForm(ModelForm):
     """Form to add a payment method.
     """
@@ -39,6 +42,11 @@ class PaymentMethodForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(PaymentMethodForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
+
+        # Get registered payment modules
+        payment_modules = [["", "-----"]]
+        payment_modules.extend(getattr(settings, "LFS_PAYMENT_MODULES", []))
+        self.fields["module"].widget = Select(choices=payment_modules)
 
     class Meta:
         model = PaymentMethod
