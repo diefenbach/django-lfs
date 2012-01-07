@@ -6,8 +6,9 @@
 Settings
 ========
 
-These are settings specific for LFS. For Django's default settings which are
-relevant for LFS (within ``lfs_project/settings``) please visit `Django settings
+These are settings specific for LFS which can be changed within
+``lfs_project/settings``. For Django's default settings which are also relevant
+for LFS, please visit `Django settings
 <http://docs.djangoproject.com/en/dev/ref/settings/>`_ for an explanation.
 
 .. _settings_miscellaneous:
@@ -15,9 +16,11 @@ relevant for LFS (within ``lfs_project/settings``) please visit `Django settings
 Miscellaneous
 =============
 
-LFS_RECENT_PRODUCTS_LIMIT
-    The amount of recent products which are displayed within the recent
-    products portlet, e.g. 3.
+LFS_AFTER_ADD_TO_CART
+    URL name to which LFS redirects after the customer has put a product into
+    the cart. LFS ships with ``lfs_added_to_cart``, which displays the last
+    product, which has been added to the cart. A reasonable alternativ is
+    ``lfs_checkout_dispatcher``, which redirects directly to the checkout view.
 
 LFS_APP_ORDER_NUMBERS
     The APP which is responsible for the creation of order numbers. Defaults
@@ -28,6 +31,9 @@ LFS_DOCS
     within the management interface. Defaults to
     http://docs.getlfs.com/en/latest/.
 
+LFS_LOG_FILE
+    Absolute path to LFS' log file.
+
 .. _settings_lfs_payment_modules:
 
 LFS_PAYMENT_MODULES
@@ -37,10 +43,27 @@ LFS_PAYMENT_MODULES
     method management interface, e.g.::
 
         LFS_PAYMENT_MODULES = [
-            ["acme.ACMEPaymentMethod", "ACME payment"],
+            ["acme.ACMEPaymentMethod", _(u"ACME payment")],
         ]
 
     See also :doc:`/developer/howtos/how_to_add_own_payment_methods`.
+
+LFS_PRICE_CALCULATORS
+    List of list of available price calculators, whereas the first entry is the
+    dotted name to a PriceCalculator and the second entry is the name, which  is
+    displayed. These are provided for selection within the shop preferences and
+    the product. LFS is shipped with following entries::
+
+        LFS_PRICE_CALCULATORS = [
+            ["lfs.gross_price.GrossPriceCalculator", _(u"Price includes tax")],
+            ["lfs.net_price.NetPriceCalculator", _(u"Price excludes tax")],
+        ]
+
+    See also :doc:`/developer/howtos/how_to_add_product_pricing`.
+
+LFS_RECENT_PRODUCTS_LIMIT
+    The amount of recent products which are displayed within the recent
+    products portlet, e.g. 3.
 
 .. _settings_email:
 
