@@ -152,12 +152,14 @@ Now as the code is ready, you can easily plugin your payment method:
 
 #. Add your application to the PYTHONPATH.
 
-#. Add the application to settings.INSTALLED_APPS.
+#. Add the class to the :ref:`LFS_PAYMENT_MODULES
+   <settings_lfs_payment_modules>` setting.
 
-#. If your are using models (which is completely up to you), sync your database.
+#. If your are using models (which is completely up to you), add the application
+   to settings.INSTALLED_APPS and sync your database.
 
 #. :doc:`Add a new payment method </user/howtos/how_to_payment_method>` and
-   enter the dotted name to your payment method class into the ``module`` field.
+   select your payment method within the ``module`` field.
 
 #. Select the ``type`` of your payment method. Following types are provided:
 
