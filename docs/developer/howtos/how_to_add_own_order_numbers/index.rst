@@ -48,20 +48,6 @@ The ``get_next`` method is called when the shop customer submits a new order. It
 **must** return a character value which will become the order number of the new
 order.
 
-Add the form
-============
-
-Now add the form which is used to manage the order numbers within the management
-interface of LFS.
-
-.. code-block:: python
-
-    class OrderNumberGeneratorForm(forms.ModelForm):
-        class Meta:
-            model = OrderNumberGeneratorForm
-
-The ``OrderNumberGeneratorForm`` **must** inherit from ModelForm.
-
 Plug in your order number generator
 ===================================
 
@@ -106,6 +92,18 @@ this on following place:
 In this case  please make sure that your ``my_order_numbers`` application
 stands **before** ``lfs`` within ``INSTALLED_APPS`` of ``settings.py`` so
 that LFS' default ``order_numbers_tab.html`` template is overwritten.
+
+Further hints
+=============
+
+* The form is automatically created from the model you provide. However you can
+  provide a own own by overwriting the ``get_form`` method. :ref:`See the API
+  for more <order_number_generator>`.
+
+* If you just want to exclude certain fields from the automatically generated
+  form you can overwrite the ``exclude_form_fields``. The return value is just
+  passed to the exclude attribute of the from Meta class. :ref:`See the API for
+  more <order_number_generator>`.
 
 Available Information
 =====================

@@ -21,10 +21,12 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
 DIRNAME = os.path.dirname(__file__)
+
 sys.path[0:0] = [
     DIRNAME + '/../../../eggs/Django-1.3.1-py2.7.egg',
     DIRNAME + '/../../../lfs_project',
     DIRNAME + '/../../../parts/lfs',
+    DIRNAME + '/../../../lfs_project',
 ]
 
 # -- General configuration -----------------------------------------------------

@@ -19,16 +19,12 @@ Miscellaneous
 LFS_AFTER_ADD_TO_CART
     URL name to which LFS redirects after the customer has put a product into
     the cart. LFS ships with ``lfs_added_to_cart``, which displays the last
-    product, which has been added to the cart. A reasonable alternativ is
+    product, which has been added to the cart. A reasonable alternative is
     ``lfs_checkout_dispatcher``, which redirects directly to the checkout view.
 
 LFS_ORDER_NUMBER_GENERATOR
     The class which is responsible for the creation of order numbers. LFS ships
     with: ``lfs_order_numbers.models.OrderNumberGenerator``.
-
-LFS_ORDER_NUMBER_GENERATOR_FORM
-    The form which is used within the shop interface to manage order numbers.
-    LFS with: ``lfs_order_numbers.forms.OrderNumberGeneratorForm``.
 
 LFS_DOCS
     Base URL to the LFS docs. This is used for the context aware help link
