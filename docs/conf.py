@@ -19,14 +19,14 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
+os.environ["DJANGO_SETTINGS_MODULE"] = "lfs_project.settings"
 DIRNAME = os.path.dirname(__file__)
 
 sys.path[0:0] = [
     DIRNAME + '/../../../eggs/Django-1.3.1-py2.7.egg',
     DIRNAME + '/../../../lfs_project',
     DIRNAME + '/../../../parts/lfs',
-    DIRNAME + '/../../../lfs_project',
+    DIRNAME + '/../../..',
 ]
 
 # -- General configuration -----------------------------------------------------
