@@ -21,14 +21,17 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 DIRNAME = os.path.dirname(__file__)
 
-os.environ["DJANGO_SETTINGS_MODULE"] = DIRNAME + "/settings"
-
 sys.path[0:0] = [
     DIRNAME + '/../../../eggs/Django-1.3.1-py2.7.egg',
     DIRNAME + '/../../../parts/lfs',
     DIRNAME + '/../../../lfs_project',
     DIRNAME,
 ]
+
+sys.path.insert(0, os.path.abspath('../lfs_project'))
+import settings
+from django.core.management import setup_environ
+setup_environ(settings)
 
 # -- General configuration -----------------------------------------------------
 
