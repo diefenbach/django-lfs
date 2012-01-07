@@ -1,4 +1,5 @@
 # django imports
+from django import forms
 from django.db import models
 
 # lfs imports
@@ -40,14 +41,14 @@ class PaymentMethod(object):
             Indicates whether the payment is accepted or not. if this is
             ``False`` the customer keeps on the checkout page and gets
             ``message`` (if given) below. If this is ``True`` the customer will
-            be redirecte to next_url (if given).
+            be redirected to next_url (if given).
 
         message (optional)
             This message is displayed on the checkout page, when the order is
             not accepted.
 
         message_location (optional)
-            The location, where the message is diplayed.
+            The location, where the message is displayed.
 
         next_url (optional)
             The url to which the user is redirect after the payment has been
@@ -85,7 +86,7 @@ class PaymentMethod(object):
 
 class OrderNumberGenerator(models.Model):
     """
-    Base class from which all order generator calculators should inherit.
+    Base class from which all order number generators should inherit.
 
     **Attributes:**
 
@@ -110,18 +111,38 @@ class OrderNumberGenerator(models.Model):
 
     def get_next(self, formatted=True):
         """
-        Returns the next order number. Order number generators must
-        implement this method.
+        Returns the next order number as string. Derived classes must implement
+        this method.
 
         **Parameters:**
 
         formatted
-            If True the number will be returned within the stored format.
-
-        **Return value**
-            An order number which must be a character string.
+            If True the number will be returned within the stored format, which
+            is based on Python default string formatting operators, e.g.
+            ``%04d``.
         """
         raise NotImplementedError
+
+    def exclude_form_fields(self):
+        """
+        Returns a list of fields, which are excluded from the model form, see
+        also ``get_form``.
+        """
+        return ("id", )
+
+    def get_form(self, **kwargs):
+        """
+        Returns the form which is used within the shop preferences management
+        interface.
+
+        All parameters are passed to the form.
+        """
+        class OrderNumberGeneratorForm(forms.ModelForm):
+            class Meta:
+                model = self
+                exclude = self.exclude_form_fields()
+
+        return OrderNumberGeneratorForm(**kwargs)
 
 
 class PriceCalculator(object):

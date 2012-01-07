@@ -69,9 +69,7 @@ def manage_shop(request, template_name="manage/shop/shop.html"):
         order_number = ong.objects.get(id="order_number")
     except ong.DoesNotExist:
         order_number = ong.objects.create(id="order_number")
-
-    ongf = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR_FORM)
-    order_numbers_form = ongf(instance=order_number)
+    order_numbers_form = order_number.get_form(instance=order_number)
 
     return render_to_response(template_name, RequestContext(request, {
         "shop": shop,
@@ -199,9 +197,7 @@ def save_order_numbers_tab(request):
 
     ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
     order_number = ong.objects.get(id="order_number")
-
-    ongf = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR_FORM)
-    form = ongf(instance=order_number, data=request.POST)
+    form = order_number.get_form(instance=order_number, data=request.POST)
 
     if form.is_valid():
         form.save()
