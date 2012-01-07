@@ -71,6 +71,14 @@ def import_module(module):
     return module
 
 
+def import_symbol(symbol):
+    """Imports symbol with given dotted name.
+    """
+    module_str, symbol_str = symbol.rsplit('.', 1)
+    module = import_module(module_str)
+    return getattr(module, symbol_str)
+
+
 def set_message_to(response, msg):
     """Sets message cookie with passed message to passed response.
     """

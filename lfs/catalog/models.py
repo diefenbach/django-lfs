@@ -57,7 +57,6 @@ from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
 from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
-import lfs.core.settings as lfs_settings
 
 
 def get_unique_id_str():
@@ -546,7 +545,7 @@ class Product(models.Model):
     sku = models.CharField(_(u"SKU"), help_text=_(u"Your unique article number of the product."), blank=True, max_length=30)
     price = models.FloatField(_(u"Price"), default=0.0)
     price_calculator = models.CharField(_(u"Price calculator"), null=True, blank=True,
-                                        choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(),
+                                        choices=settings.LFS_PRICE_CALCULATORS,
                                         max_length=255)
     effective_price = models.FloatField(_(u"Price"), blank=True)
     price_unit = models.CharField(_(u"Price unit"), blank=True, max_length=20)
@@ -1043,17 +1042,16 @@ class Product(models.Model):
         return price
 
     def get_price_calculator(self, request):
-        """Returns the price calculator class as defined in LFS_PRICE_CALCULATOR_DICTIONARY
-        in lfs.core.settings.
+        """
+        Returns the price calculator class as defined in LFS_PRICE_CALCULATORS
+        in settings.
         """
         if self.price_calculator is not None:
             price_calculator = self.price_calculator
         else:
             price_calculator = lfs.core.utils.get_default_shop(request).price_calculator
 
-        module_str, price_calculator_str = price_calculator.rsplit('.', 1)
-        mod = import_module(module_str)
-        price_calculator_class = getattr(mod, price_calculator_str)
+        price_calculator_class = lfs.core.utils.import_symbol(price_calculator)
         return price_calculator_class(request, self)
 
     def get_price(self, request, with_properties=True):

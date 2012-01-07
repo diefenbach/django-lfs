@@ -56,10 +56,6 @@ class NetPriceTestCase(TestCase):
         self.request = RequestFactory().get("/")
         self.request.session = SessionStore()
 
-        # set up our price calculator
-        self.orig_price_calculator = lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR
-        lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR = "lfs.net_price.NetPriceCalculator"
-
         # Create a tax
         self.t1 = Tax.objects.create(rate=19.0)
 
@@ -104,9 +100,6 @@ class NetPriceTestCase(TestCase):
             weight=14.0,
             active=True,
         )
-
-    def tearDown(self):
-        lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR = self.orig_price_calculator
 
     def test_defaults(self):
         """Tests the default value after a product has been created

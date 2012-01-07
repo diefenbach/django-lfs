@@ -109,9 +109,7 @@ def process_payment(request):
     shop = lfs.core.utils.get_default_shop(request)
 
     if payment_method.module:
-        module_str, payment_class_str = payment_method.module.rsplit('.', 1)
-        module = import_module(module_str)
-        payment_class = getattr(module, payment_class_str)
+        payment_class = lfs.core.utils.import_symbol(payment_method.module)
         instance = payment_class()
 
         create_order_time = instance.get_create_order_time()
@@ -183,9 +181,7 @@ def get_pay_link(payment_method, order):
     if payment_method.id == PAYPAL:
         return get_paypal_link_for_order(order)
     elif payment_method.module:
-        module_str, payment_class_str = payment_method.module.rsplit('.', 1)
-        module = import_module(module_str)
-        payment_class = getattr(module, payment_class_str)
+        payment_class = lfs.core.utils.import_symbol(payment_method)
         instance = payment_class()
         try:
             return instance.get_pay_link(order)
