@@ -25,9 +25,11 @@ sys.path[0:0] = [
     DIRNAME + '/../../../eggs/Django-1.3.1-py2.7.egg',
     DIRNAME + '/../../../parts/lfs',
     DIRNAME + '/../../../lfs_project',
+    DIRNAME + '/../../lfs_project',
+    DIRNAME + '/../lfs_project',
+    DIRNAME + '/lfs_project',
 ]
 
-print DIRNAME
 import settings
 from django.core.management import setup_environ
 setup_environ(settings)
