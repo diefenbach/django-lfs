@@ -26,6 +26,7 @@ sys.path[0:0] = [
     DIRNAME + '/../../../eggs/Django-1.3.1-py2.7.egg',
     DIRNAME + '/../../../parts/lfs',
     DIRNAME + '/../../../lfs_project',
+    DIRNAME,
 ]
 
 # -- General configuration -----------------------------------------------------
