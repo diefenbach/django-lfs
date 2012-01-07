@@ -27,6 +27,7 @@ sys.path[0:0] = [
     DIRNAME + '/../../../lfs_project',
 ]
 
+print DIRNAME
 import settings
 from django.core.management import setup_environ
 setup_environ(settings)
