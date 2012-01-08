@@ -364,7 +364,7 @@ def add_option(request, property_id):
         try:
             price = float(price)
         except ValueError:
-            price = None
+            price = 0.0
 
         if name != "":
             option = PropertyOption.objects.create(name=name, price=price, property_id=property_id)
@@ -383,7 +383,7 @@ def add_option(request, property_id):
                 try:
                     price = float(request.POST.get("price-%s" % option_id, ""))
                 except ValueError:
-                    price = None
+                    price = 0.0
 
                 option.position = request.POST.get("position-%s" % option_id, 99)
                 option.name = request.POST.get("name-%s" % option_id, "")

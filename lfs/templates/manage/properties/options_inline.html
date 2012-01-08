@@ -13,7 +13,7 @@
                 {% trans 'Name' %}
             </th>
             <th>
-                {% trans 'Price (optional)' %}
+                {% trans 'Price' %}
             </th>
             <th></th>
         </tr>
@@ -61,7 +61,7 @@
                 <td>
                     <input type="text"
                            name="price-{{ option.id }}"
-                           value="{% if option.price %}{{ option.price }}{% endif %}" />
+                           value="{{ option.price }}" />
                 </td>
                 <td>
                     <a class="delete-link"

@@ -108,7 +108,12 @@ def calculate_price(request, id):
                 pass
             else:
                 if po.property.add_price:
-                    property_price += po.price
+                    try:
+                        po_price = float(po.price)
+                    except (TypeError, ValueError):
+                        pass
+                    else:
+                        property_price += po_price
 
     if product.for_sale:
         for_sale_standard_price = product.get_standard_price(request, with_properties=False)
