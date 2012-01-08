@@ -31,11 +31,16 @@ The latest development state can be found here:
 Changes
 =======
 
+0.6.4 (2012-01-08)
+------------------
+
+* Bugfix: fixed price calculation of configurable products.
+
 0.6.3 (2011-12-31)
 ------------------
 
-* Bugfix: Fixed update of prices if a configurable product is for sale.
-* Bugfix: Fixed calculation of property prices for configurable products.
+* Bugfix: fixed update of prices if a configurable product is for sale.
+* Bugfix: fixed calculation of property prices for configurable products.
 * Bugfix: fixed saving of property data (added missing csrf token).
 * Bugfix: fixed removing products / properties from a group.
 * Bugfix: fixed filtering for float field steps.
