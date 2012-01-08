@@ -19,14 +19,23 @@ on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
-DIRNAME = os.path.dirname(__file__)
+class Mock(object):
+    def __init__(self, *args, **kwargs):
+        pass
 
-sys.path[0:0] = [
-    DIRNAME + '/../../../eggs/Django-1.3.1-py2.7.egg',
-    DIRNAME + '/../../../parts/lfs',
-    DIRNAME + '/../../../lfs_project',
-]
+    def __call__(self, *args, **kwargs):
+        return Mock()
+
+    @classmethod
+    def __getattr__(self, name):
+        return Mock() if name not in ('__file__', '__path__') else '/dev/null'
+
+MOCK_MODULES = ['settings']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = Mock()
+
+os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
+sys.path.insert(0, os.path.abspath('../../latest'))
 
 # -- General configuration -----------------------------------------------------
 
