@@ -291,7 +291,7 @@ class CartItem(models.Model):
                             except (TypeError, ValueError):
                                 pass
                             else:
-                                if not self.product.price_includes_tax():
+                                if not self.product.price_includes_tax(request):
                                     option_price = option_price * ((100 + self.product.get_tax_rate(request)) / 100)
                                 price += option_price
         return price
