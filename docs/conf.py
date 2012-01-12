@@ -35,7 +35,12 @@ for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
 
 os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
-sys.path.insert(0, os.path.abspath('../../latest'))
+
+if on_rtd:
+    sys.path.insert(0, os.path.abspath('../../latest'))
+else:
+    sys.path.insert(0, os.path.abspath('../../../parts/lfs'))
+    sys.path.insert(0, os.path.abspath('../../../eggs/Django-1.3.1-py2.7.egg'))
 
 # -- General configuration -----------------------------------------------------
 
