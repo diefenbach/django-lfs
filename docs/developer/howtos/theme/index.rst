@@ -1,5 +1,5 @@
 =====================
-How To Create A Theme
+How to create a theme
 =====================
 
 In this how-to you will learn how to create a theme for LFS.
@@ -44,7 +44,7 @@ Register mytheme to Django's template engine.
          "django.contrib.admin",
          ...
 
-Copy Templates
+Copy templates
 ==============
 
 Now copy the templates you want to change into the lfs folder of mytheme and
@@ -62,7 +62,7 @@ the portlets  folder::
                 portlets
                     cart.html
 
-Use own CSS
+Use own css
 ===========
 
 To use own CSS several steps are necessary.

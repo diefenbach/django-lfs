@@ -1,19 +1,19 @@
 .. index:: Price Calculator
 
 ========================================
-How To Add Custom Product Pricing Module
+How to add custom product pricing module
 ========================================
 
 In this tutorial you will learn how to your own custom product pricing module.
 
-Create an Application
+Create an application
 =====================
 
 First you need to create a default Django application (or use an existing one).
 If you do not know how to do this, please refer to the excellent `Django
 tutorial <http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_.
 
-Implement the PriceCalculator Class
+Implement the pricecalculator class
 ===================================
 
 Within ``__init__.py`` file of your application (or anywhere you choose) create
@@ -32,7 +32,7 @@ inherited methods.
         ... Other Methods...
 
 
-Plug In The Custom Price Calculator
+Plug in the custom price calculator
 ===================================
 
 1. Add your application to the PYTHONPATH.
@@ -52,7 +52,7 @@ Plug In The Custom Price Calculator
         'mycustom_price.CustomPriceCalculator': 'My Pricing Calculator',
     }
 
-Set the Shop Default Price Calculator
+Set the shop default price calculator
 =====================================
 
 1. Go to the LFS Management Interface.
@@ -70,7 +70,7 @@ Set the Shop Default Price Calculator
     All products with an unset price calculator will default to using the shop
     price calculator.
 
-Set the Product Pricing Calculator
+Set the product pricing calculator
 ==================================
 
 1. Browse to http://yourshopdomain/manage and login.

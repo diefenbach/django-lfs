@@ -11,42 +11,35 @@ These are settings specific for LFS which can be changed within
 for LFS, please visit `Django settings
 <http://docs.djangoproject.com/en/dev/ref/settings/>`_ for an explanation.
 
-.. _settings_miscellaneous:
 
-Miscellaneous
-=============
+.. _settings_plugins:
 
-LFS_AFTER_ADD_TO_CART
-    URL name to which LFS redirects after the customer has put a product into
-    the cart. LFS ships with ``lfs_added_to_cart``, which displays the last
-    product, which has been added to the cart. A reasonable alternative is
-    ``lfs_checkout_dispatcher``, which redirects directly to the checkout view.
+Plugins
+========
+
+.. _settings_lfs_order_numbers_generators:
 
 LFS_ORDER_NUMBER_GENERATOR
     The class which is responsible for the creation of order numbers. LFS ships
     with: ``lfs_order_numbers.models.OrderNumberGenerator``.
 
-LFS_DOCS
-    Base URL to the LFS docs. This is used for the context aware help link
-    within the management interface. Defaults to
-    http://docs.getlfs.com/en/latest/.
+    See also :doc:`/developer/howtos/how_to_add_own_order_numbers/index`.
 
-LFS_LOG_FILE
-    Absolute path to LFS' log file.
+.. _settings_lfs_payment_method_processors:
 
-.. _settings_lfs_payment_modules:
+LFS_PAYMENT_METHOD_PROCESSORS
+    List of list of available 3rd-party payment method processors, whereas the
+    first entry is the dotted name to a PaymentMethod and the second entry is
+    the name, which  is displayed. These are provided for selection within the
+    payment method management interface, e.g.::
 
-LFS_PAYMENT_MODULES
-    List of list of available 3rd-party payment modules, whereas the first entry
-    is the dotted name to a PaymentMethod and the second entry is the name,
-    which  is displayed. These are provided for selection within the payment
-    method management interface, e.g.::
-
-        LFS_PAYMENT_MODULES = [
+        LFS_PAYMENT_METHOD_PROCESSORS = [
             ["acme.ACMEPaymentMethod", _(u"ACME payment")],
         ]
 
     See also :doc:`/developer/howtos/how_to_add_own_payment_methods`.
+
+.. _settings_lfs_price_calculators:
 
 LFS_PRICE_CALCULATORS
     List of list of available price calculators, whereas the first entry is the
@@ -60,10 +53,6 @@ LFS_PRICE_CALCULATORS
         ]
 
     See also :doc:`/developer/howtos/how_to_add_product_pricing`.
-
-LFS_RECENT_PRODUCTS_LIMIT
-    The amount of recent products which are displayed within the recent
-    products portlet, e.g. 3.
 
 .. _settings_lfs_shipping_price_calculators:
 
@@ -79,7 +68,30 @@ LFS_SHIPPING_PRICE_CALCULATORS
             ["lfs.shipping.NetShippingMethodPriceCalculator", _(u'Price excludes tax')],
         ]
 
-    See also :doc:`/developer/howtos/how_to_add_product_pricing`.
+    See also :doc:`/developer/howtos/how_to_shipping_price`.
+
+.. _settings_miscellaneous:
+
+Miscellaneous
+=============
+
+LFS_AFTER_ADD_TO_CART
+    URL name to which LFS redirects after the customer has put a product into
+    the cart. LFS ships with ``lfs_added_to_cart``, which displays the last
+    product, which has been added to the cart. A reasonable alternative is
+    ``lfs_checkout_dispatcher``, which redirects directly to the checkout view.
+
+LFS_DOCS
+    Base URL to the LFS docs. This is used for the context aware help link
+    within the management interface. Defaults to
+    http://docs.getlfs.com/en/latest/.
+
+LFS_LOG_FILE
+    Absolute path to LFS' log file.
+
+LFS_RECENT_PRODUCTS_LIMIT
+    The amount of recent products which are displayed within the recent
+    products portlet, e.g. 3.
 
 .. _settings_email:
 

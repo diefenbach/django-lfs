@@ -1,8 +1,8 @@
-================================
-How to add an own payment method
-================================
+===================================
+How to add an own payment processor
+===================================
 
-In this how-to you will learn how to add a own payment method.
+In this how-to you will learn how to add a own payment processor.
 
 Create an application
 =====================
@@ -12,8 +12,8 @@ where  you can put in your plugin. If you do not know how to do this, please
 refer to the excellent `Django tutorial
 <http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_.
 
-Implement the ``PaymentMethod`` class
-=====================================
+Implement the ``PaymentMethodProcessor`` class
+==============================================
 
 The main part of the plugin consists of a class which must provide a certain
 API.
@@ -21,13 +21,13 @@ API.
 Create the class
 ----------------
 
-Create a class which inherits from ``lfs.plugins.PaymentMethod``:
+Create a class which inherits from ``lfs.plugins.PaymentMethodProcessor``:
 
 .. code-block:: python
 
-    from lfs.plugins import PaymentMethod
+    from lfs.plugins import PaymentMethodProcessor
 
-    class MyPaymentMethod(PaymentMethod):
+    class MyPaymentMethodProcessor(PaymentMethodProcessor):
         pass
 
 
@@ -36,8 +36,8 @@ Add the ``process`` method
 
 .. code-block:: python
 
-    def process(self, request, cart=None, order=None):
-        total = order.price
+    def process(self):
+        total = self.order.price
         return {
             "accepted": True,
             "next_url": "http://www.acme.com/payment?id=4711&total=%s" % total,
@@ -118,10 +118,10 @@ Following all pieces are sticked together to the complete plugin:
 
 .. code-block:: python
 
-    from lfs.plugins import PaymentMethod
+    from lfs.plugins import PaymentMethodProcessor
     from lfs.plugins import PM_ORDER_IMMEDIATELY
 
-    class ACMEPaymentMethod(PaymentMethod):
+    class ACMEPaymentMethodProcessor(PaymentMethodProcessor):
         """
         Implements the ACME payment processor.
         """
@@ -153,7 +153,7 @@ Now as the code is ready, you can easily plugin your payment method:
 #. Add your application to the PYTHONPATH.
 
 #. Add the class to the :ref:`LFS_PAYMENT_MODULES
-   <settings_lfs_payment_modules>` setting.
+   <settings_lfs_payment_method_processors>` setting.
 
 #. If your are using models (which is completely up to you), add the application
    to settings.INSTALLED_APPS and sync your database.
@@ -174,6 +174,13 @@ Now as the code is ready, you can easily plugin your payment method:
 Further hints
 =============
 
+* Within the ``PaymentMethodProcessor`` request, the current order or the
+  current cart are available as instance variables::
+
+    self.request
+    self.cart (only when get_create_order_item returns PM_ORDER_ACCEPTED)
+    self.order (only when get_create_order_item returns PM_ORDER_IMMEDIATELY)
+
 * When an external payment processor redirects to LFS the current order is still
   in the session. This means you can redirect to an own view and set the order
   state to PAID, for instance::
@@ -193,3 +200,8 @@ Further hints
   via the request variable, e.g.::
 
      request.POST.get("invoice_firstname")
+
+See also
+=========
+
+* :ref:`PaymentMethodProcessor API <payment_method_proccessor>`

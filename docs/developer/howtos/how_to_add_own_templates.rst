@@ -1,5 +1,5 @@
 ========================
-How To Add own Templates
+How to add own templates
 ========================
 
 In this how-to you will learn how to add your own templates for categories and

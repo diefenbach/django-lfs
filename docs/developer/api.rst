@@ -18,18 +18,18 @@ OrderNumberGenerator
 
     .. automethod:: lfs.plugins.OrderNumberGenerator.get_form
 
-.. _payment_method:
+.. _payment_method_proccessor:
 
-PaymentMethod
--------------
+PaymentMethodProcessor
+----------------------
 
-.. autoclass:: lfs.plugins.PaymentMethod
+.. autoclass:: lfs.plugins.PaymentMethodProcessor
 
-    .. automethod:: lfs.plugins.PaymentMethod.get_create_order_time
+    .. automethod:: lfs.plugins.PaymentMethodProcessor.get_create_order_time
 
-    .. automethod:: lfs.plugins.PaymentMethod.get_pay_link
+    .. automethod:: lfs.plugins.PaymentMethodProcessor.get_pay_link
 
-    .. automethod:: lfs.plugins.PaymentMethod.process
+    .. automethod:: lfs.plugins.PaymentMethodProcessor.process
 
 
 .. _shipping_method_price_calculator:

@@ -1,5 +1,5 @@
 =========================
-Contribution Translations
+Contribution translations
 =========================
 
 There are two preferred ways to contribute translations:
