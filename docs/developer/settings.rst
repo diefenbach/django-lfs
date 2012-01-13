@@ -50,7 +50,7 @@ LFS_PAYMENT_MODULES
 
 LFS_PRICE_CALCULATORS
     List of list of available price calculators, whereas the first entry is the
-    dotted name to a PriceCalculator and the second entry is the name, which  is
+    dotted name to a PriceCalculator and the second entry is the name, which is
     displayed. These are provided for selection within the shop preferences and
     the product. LFS is shipped with following entries::
 
@@ -64,6 +64,22 @@ LFS_PRICE_CALCULATORS
 LFS_RECENT_PRODUCTS_LIMIT
     The amount of recent products which are displayed within the recent
     products portlet, e.g. 3.
+
+.. _settings_lfs_shipping_price_calculators:
+
+LFS_SHIPPING_PRICE_CALCULATORS
+    List of list of available shipping method price calculators, whereas the
+    first entry is the dotted name to a ShippingMethodPriceCalculator and the
+    second entry is the name, which is displayed. These are provided for
+    selection within the shipping method. LFS is shipped with following
+    entries::
+
+        LFS_SHIPPING_PRICE_CALCULATORS = [
+            ["lfs.shipping.GrossShippingMethodPriceCalculator", _(u'Price includes tax')],
+            ["lfs.shipping.NetShippingMethodPriceCalculator", _(u'Price excludes tax')],
+        ]
+
+    See also :doc:`/developer/howtos/how_to_add_product_pricing`.
 
 .. _settings_email:
 

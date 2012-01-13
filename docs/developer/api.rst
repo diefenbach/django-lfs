@@ -2,15 +2,26 @@
 API
 ===
 
-This is the public API of LFS.
+Plugins
+=======
 
-All changes of it underlies a proper deprecation process and will be announced
-explicitly within release notes.
+.. _order_number_generator:
 
-.. _order_payment_method:
+OrderNumberGenerator
+--------------------
+
+.. autoclass:: lfs.plugins.OrderNumberGenerator
+
+    .. automethod:: lfs.plugins.OrderNumberGenerator.exclude_form_fields
+
+    .. automethod:: lfs.plugins.OrderNumberGenerator.get_next
+
+    .. automethod:: lfs.plugins.OrderNumberGenerator.get_form
+
+.. _payment_method:
 
 PaymentMethod
-=============
+-------------
 
 .. autoclass:: lfs.plugins.PaymentMethod
 
@@ -20,15 +31,16 @@ PaymentMethod
 
     .. automethod:: lfs.plugins.PaymentMethod.process
 
-.. _order_number_generator:
 
-OrderNumberGenerator
-====================
+.. _shipping_method_price_calculator:
 
-.. autoclass:: lfs.plugins.OrderNumberGenerator
+ShippingMethodPriceCalculator
+-----------------------------
 
-    .. automethod:: lfs.plugins.OrderNumberGenerator.exclude_form_fields
+.. autoclass:: lfs.plugins.ShippingMethodPriceCalculator
 
-    .. automethod:: lfs.plugins.OrderNumberGenerator.get_next
+    .. automethod:: lfs.plugins.ShippingMethodPriceCalculator.get_price_net
 
-    .. automethod:: lfs.plugins.OrderNumberGenerator.get_form
+    .. automethod:: lfs.plugins.ShippingMethodPriceCalculator.get_price_gross
+
+    .. automethod:: lfs.plugins.ShippingMethodPriceCalculator.get_tax

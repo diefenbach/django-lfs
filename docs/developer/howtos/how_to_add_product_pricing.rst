@@ -17,7 +17,7 @@ Implement the PriceCalculator Class
 ===================================
 
 Within ``__init__.py`` file of your application (or anywhere you choose) create
-a class that inherits from lfs.price.PricingCalculator and implement all
+a class that inherits from lfs.plugins.PricingCalculator and implement all
 inherited methods.
 
 .. code-block:: python

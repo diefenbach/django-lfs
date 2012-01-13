@@ -101,6 +101,7 @@ Miscellaneous
 .. toctree::
    :maxdepth: 1
 
+   developer/api.rst
    developer/settings.rst
 
 .. _index_developers_howtos:
@@ -119,6 +120,7 @@ How-tos
    developer/howtos/how_to_add_action_groups
    developer/howtos/theme/index.rst
    developer/howtos/how_to_add_own_order_numbers/index.rst
+   developer/howtos/how_to_shipping_price.rst
 
 =========================
 Miscellaneous Information
