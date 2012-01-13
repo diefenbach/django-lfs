@@ -2,6 +2,7 @@
 from copy import deepcopy
 
 # django imports
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connection
 from django.db import models
@@ -90,6 +91,12 @@ class Command(BaseCommand):
         # Order
         db.add_column("order_order", "number", models.CharField(max_length=30, unique=True, null=True))
         OrderNumberGenerator.objects.create(pk="1", last=0)
+
+        # Shipping Method
+        db.add_column("shipping_shippingmethod", "price_calculator", models.CharField(max_length=200, choices=settings.LFS_SHIPPING_PRICE_CALCULATORS, default=settings.LFS_SHIPPING_PRICE_CALCULATORS[0][0]))
+        for shipping_method in ShippingMethod.objects.all():
+            shipping_method.price_calculator = settings.LFS_SHIPPING_PRICE_CALCULATORS[0][0]
+            shipping_method.save()
 
         application.version = "0.7"
         application.save()

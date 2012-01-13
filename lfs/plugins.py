@@ -365,3 +365,33 @@ class PriceCalculator(object):
         Returns the tax rate for the current customer.
         """
         return (self.get_customer_tax_rate() + 100.0) / 100.0
+
+
+class ShippingMethodPriceCalculator(object):
+    """Base class from which all 3rd-party prices should inherit.
+
+    **Attributes:**
+
+    request
+        The current request.
+    """
+    def __init__(self, request, shipping_method):
+        self.shipping_method = shipping_method
+        self.request = request
+
+    def get_price_net(self):
+        """
+        Returns the net price of the shipping method.
+        """
+        raise NotImplementedError
+
+    def get_price_gross(self):
+        """
+        Returns the gross price of the shipping method.
+        """
+        raise NotImplementedError
+
+    def get_tax(self):
+        """
+        """
+        return self.get_price_gross() - self.get_price_net()

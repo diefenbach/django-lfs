@@ -201,7 +201,7 @@ def get_shipping_costs(request, shipping_method):
         shipping_method.prices.all())
 
     if price is None:
-        price = shipping_method.price
+        price = shipping_method.get_price(request)
         tax = (tax_rate / (tax_rate + 100)) * price
 
         return {
