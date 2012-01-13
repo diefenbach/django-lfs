@@ -25,9 +25,6 @@ from lfs.payment.models import PaymentMethodPrice
 from lfs.payment import utils as payment_utils
 
 
-from django.forms.widgets import Select
-from django.conf import settings
-
 class PaymentMethodAddForm(ModelForm):
     """Form to add a payment method.
     """
@@ -42,11 +39,6 @@ class PaymentMethodForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(PaymentMethodForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
-
-        # Get registered payment modules
-        payment_modules = [["", "-----"]]
-        payment_modules.extend(getattr(settings, "LFS_PAYMENT_MODULES", []))
-        self.fields["module"].widget = Select(choices=payment_modules)
 
     class Meta:
         model = PaymentMethod
@@ -340,12 +332,6 @@ def save_payment_method_data(request, payment_method_id):
     payment_method = PaymentMethod.objects.get(pk=payment_method_id)
     payment_form = PaymentMethodForm(instance=payment_method, data=request.POST, files=request.FILES)
 
-    form = render_to_string(
-        "manage/payment/payment_method_data.html", RequestContext(request, {
-        "form": payment_form,
-        "payment_method": payment_method,
-    }))
-
     if payment_form.is_valid():
         payment_form.save()
 
@@ -401,6 +387,7 @@ def sort_payment_methods(request):
         }, cls=LazyEncoder)
 
         return HttpResponse(result)
+
 
 def _update_price_positions(payment_method):
     for i, price in enumerate(payment_method.prices.all()):

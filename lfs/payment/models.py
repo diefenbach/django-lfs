@@ -1,12 +1,5 @@
-from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
-from django.db import models
-from django.utils.translation import ugettext_lazy as _
-from django.template import RequestContext
-from django.template.loader import render_to_string
-
 # django imports
+from django.conf import settings
 from django.contrib.contenttypes import generic
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -16,9 +9,8 @@ import lfs.payment.settings
 from lfs.criteria.models.criteria_objects import CriteriaObjects
 from lfs.tax.models import Tax
 
-# other imports
+# paypal imports
 from paypal.standard.ipn.models import PayPalIPN
-from paypal.standard.pdt.models import PayPalPDT
 
 
 class ActivePaymentMethodManager(models.Manager):
@@ -81,7 +73,7 @@ class PaymentMethod(models.Model):
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
     price = models.FloatField(_(u"Price"), default=0.0)
     deletable = models.BooleanField(default=True)
-    module = models.CharField(blank=True, max_length=100)
+    module = models.CharField(blank=True, max_length=100, choices=settings.LFS_PAYMENT_PROCESSORS, default=settings.LFS_PAYMENT_PROCESSORS[0][0])
     type = models.PositiveSmallIntegerField(choices=lfs.payment.settings.PAYMENT_METHOD_TYPES_CHOICES, default=lfs.payment.settings.PM_PLAIN)
 
     criteria_objects = generic.GenericRelation(CriteriaObjects,
