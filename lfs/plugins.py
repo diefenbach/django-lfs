@@ -11,6 +11,67 @@ from lfs.payment.settings import PM_MSG_FORM
 from lfs.order.settings import PAID
 
 
+class OrderNumberGenerator(models.Model):
+    """
+    Base class from which all order number generators should inherit.
+
+    **Attributes:**
+
+    id
+        The unique id of the order number generator.
+    """
+    id = models.CharField(primary_key=True, max_length=20)
+
+    class Meta:
+        abstract = True
+
+    def init(self, request, order):
+        """
+        Initializes the order number generator. This method is called
+        automatically from LFS.
+        """
+        self.request = request
+        self.order = order
+        self.user = request.user
+        self.customer = lfs.customer.utils.get_customer(request)
+        self.cart = lfs.cart.utils.get_cart(request)
+
+    def get_next(self, formatted=True):
+        """
+        Returns the next order number as string. Derived classes must implement
+        this method.
+
+        **Parameters:**
+
+        formatted
+            If True the number will be returned within the stored format, which
+            is based on Python default string formatting operators, e.g.
+            ``%04d``.
+        """
+        raise NotImplementedError
+
+    def exclude_form_fields(self):
+        """
+        Returns a list of fields, which are excluded from the model form, see
+        also ``get_form``.
+        """
+        return ("id", )
+
+    def get_form(self, **kwargs):
+        """
+        Returns the form which is used within the shop preferences management
+        interface.
+
+        All parameters are passed to the form.
+        """
+        class OrderNumberGeneratorForm(forms.ModelForm):
+            class Meta:
+                model = self
+                exclude = self.exclude_form_fields()
+
+        return OrderNumberGeneratorForm(**kwargs)
+
+
 class PaymentMethod(object):
     """
     Base class from which all 3rd-party payment methods should inherit.
@@ -82,67 +143,6 @@ class PaymentMethod(object):
         wrong.
         """
         return None
-
-
-class OrderNumberGenerator(models.Model):
-    """
-    Base class from which all order number generators should inherit.
-
-    **Attributes:**
-
-    id
-        The unique id of the order number generator.
-    """
-    id = models.CharField(primary_key=True, max_length=20)
-
-    class Meta:
-        abstract = True
-
-    def init(self, request, order):
-        """
-        Initializes the order number generator. This method is called
-        automatically from LFS.
-        """
-        self.request = request
-        self.order = order
-        self.user = request.user
-        self.customer = lfs.customer.utils.get_customer(request)
-        self.cart = lfs.cart.utils.get_cart(request)
-
-    def get_next(self, formatted=True):
-        """
-        Returns the next order number as string. Derived classes must implement
-        this method.
-
-        **Parameters:**
-
-        formatted
-            If True the number will be returned within the stored format, which
-            is based on Python default string formatting operators, e.g.
-            ``%04d``.
-        """
-        raise NotImplementedError
-
-    def exclude_form_fields(self):
-        """
-        Returns a list of fields, which are excluded from the model form, see
-        also ``get_form``.
-        """
-        return ("id", )
-
-    def get_form(self, **kwargs):
-        """
-        Returns the form which is used within the shop preferences management
-        interface.
-
-        All parameters are passed to the form.
-        """
-        class OrderNumberGeneratorForm(forms.ModelForm):
-            class Meta:
-                model = self
-                exclude = self.exclude_form_fields()
-
-        return OrderNumberGeneratorForm(**kwargs)
 
 
 class PriceCalculator(object):
@@ -368,12 +368,16 @@ class PriceCalculator(object):
 
 
 class ShippingMethodPriceCalculator(object):
-    """Base class from which all 3rd-party prices should inherit.
+    """
+    Base class from which all 3rd-party shipping method prices should inherit.
 
     **Attributes:**
 
     request
         The current request.
+
+    shipping_method
+        The shipping method for which the price is calculated.
     """
     def __init__(self, request, shipping_method):
         self.shipping_method = shipping_method
@@ -393,5 +397,6 @@ class ShippingMethodPriceCalculator(object):
 
     def get_tax(self):
         """
+        Returns the total tax of the shipping method.
         """
         return self.get_price_gross() - self.get_price_net()

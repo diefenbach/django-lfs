@@ -2,7 +2,7 @@
 from lfs.plugins import ShippingMethodPriceCalculator
 
 
-class GrossShippingPriceCalculator(ShippingMethodPriceCalculator):
+class GrossShippingMethodPriceCalculator(ShippingMethodPriceCalculator):
     """
     ShippingMethodPriceCalculator which considers the entered pirce as gross
     price.
@@ -20,7 +20,7 @@ class GrossShippingPriceCalculator(ShippingMethodPriceCalculator):
         return self.shipping_method.price
 
 
-class NetShippingPriceCalculator(ShippingMethodPriceCalculator):
+class NetShippingMethodPriceCalculator(ShippingMethodPriceCalculator):
     """
     ShippingMethodPriceCalculator which considers the entered pirce as net
     price.
