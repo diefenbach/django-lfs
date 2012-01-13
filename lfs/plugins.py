@@ -72,27 +72,31 @@ class OrderNumberGenerator(models.Model):
         return OrderNumberGeneratorForm(**kwargs)
 
 
-class PaymentMethod(object):
+class PaymentMethodProcessor(object):
     """
-    Base class from which all 3rd-party payment methods should inherit.
+    Base class from which all 3rd-party payment method processors should inherit.
+
+    **Attributes:**
+
+    request
+        The current request.
+
+    cart
+        The current cart. This is only set, when create order time is ACCEPTED.
+
+    order
+        The current order. This is only set, when create order time is
+        IMMEDIATELY.
     """
-    def process(self, request, cart=None, order=None):
+    def __init__(self, request, cart=None, order=None):
+        self.request = request
+        self.cart = cart
+        self.order = order
+
+    def process(self):
         """
         Implements the processing of the payment method. Returns a dictionary
         with several status codes, see below.
-
-        **Parameters:**
-
-        request
-            The current request.
-
-        cart
-            The current cart. This is only set, when create order time is
-            ACCEPTED.
-
-        order
-            The current order. This is only set, when create order time is
-            IMMEDIATELY.
 
         **Return Values:**
 

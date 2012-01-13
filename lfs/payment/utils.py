@@ -110,15 +110,17 @@ def process_payment(request):
 
     if payment_method.module:
         payment_class = lfs.core.utils.import_symbol(payment_method.module)
-        instance = payment_class()
+        instance = payment_class(request)
 
         create_order_time = instance.get_create_order_time()
         if create_order_time == PM_ORDER_IMMEDIATELY:
             order = lfs.order.utils.add_order(request)
-            result = instance.process(request, order=order)
+            instance.order = order
+            result = instance.process()
         else:
             cart = lfs.cart.utils.get_cart(request)
-            result = instance.process(request, cart=cart)
+            instance.cart = cart
+            result = instance.process()
 
         if result.get("order_state"):
             order.state = result.get("order_state")
