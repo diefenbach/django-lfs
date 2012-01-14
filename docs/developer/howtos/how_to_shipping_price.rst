@@ -78,7 +78,7 @@ calculator:
 #. If your are using models (which is completely up to you), add the application
    to settings.INSTALLED_APPS and sync your database.
 
-#. :doc:`Add a new payment method </user/howtos/how_to_shipping_method>` and
+#. :doc:`Add a new shipping method </user/howtos/how_to_shipping_method>` and
    select your price calculator within the ``price_calculator`` field.
 
 #. Save the shipping method.
@@ -92,7 +92,14 @@ Further hints
     self.request
     self.shipping_method
 
-* With the ``request`` you have access to the current cart::
+* With the ``request`` you have access to the current cart (in case you need
+  it)::
 
     from lfs.cart.utils import get_cart
     cart = get_cart(self.request)
+
+* With the ``request`` you have access to the current customer (in case you need
+  it)::
+
+    from lfs.customer.utils import get_customer
+    customer = get_customer(self.request)

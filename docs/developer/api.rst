@@ -32,6 +32,41 @@ PaymentMethodProcessor
     .. automethod:: lfs.plugins.PaymentMethodProcessor.process
 
 
+.. _price_calculator:
+
+PriceCalculator
+---------------
+
+.. autoclass:: lfs.plugins.PriceCalculator
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_price
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_price_net
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_price_gross
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_standard_price
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_standard_price_net
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_standard_price_gross
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_for_sale_price
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_for_sale_price_net
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_for_sale_price_gross
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_customer_tax_rate
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_customer_tax
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_product_tax_rate
+
+    .. automethod:: lfs.plugins.PriceCalculator.get_product_tax
+
+    .. automethod:: lfs.plugins.PriceCalculator.price_includes_tax
+
 .. _shipping_method_price_calculator:
 
 ShippingMethodPriceCalculator

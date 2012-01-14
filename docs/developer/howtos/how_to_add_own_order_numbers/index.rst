@@ -1,5 +1,5 @@
 =========================================
-How To Add an own Order Numbers Generator
+How to add an own order numbers generator
 =========================================
 
 Overview
@@ -26,10 +26,10 @@ The structure of the application should look at least like this::
         models.py
 
 
-Implement The Application
+Implement the application
 =========================
 
-Add the Model
+Add the model
 -------------
 
 Within ``models.py`` file of your application create a class called
@@ -105,7 +105,7 @@ Further hints
   passed to the exclude attribute of the from Meta class. :ref:`See the API for
   more <order_number_generator>`.
 
-Available Information
+Available information
 =====================
 
 Within the ``get_next`` method of your new class you have access to following
