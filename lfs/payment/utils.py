@@ -25,8 +25,9 @@ from paypal.standard.conf import POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT
 
 
 def update_to_valid_payment_method(request, customer, save=False):
-    """After this method has been called the given customer has a valid
-    payment method.
+    """
+    After this method has been called the given customer has a valid payment
+    method.
     """
     valid_sms = get_valid_payment_methods(request)
 
@@ -37,7 +38,8 @@ def update_to_valid_payment_method(request, customer, save=False):
 
 
 def get_valid_payment_methods(request):
-    """Returns all valid payment methods (aka. selectable) for given request as
+    """
+    Returns all valid payment methods (aka. selectable) for given request as
     list.
     """
     result = []
@@ -48,14 +50,16 @@ def get_valid_payment_methods(request):
 
 
 def get_default_payment_method(request):
-    """Returns the default payment method for given request.
+    """
+    Returns the default payment method for given request.
     """
     active_payment_methods = PaymentMethod.objects.filter(active=True)
     return criteria_utils.get_first_valid(request, active_payment_methods)
 
 
 def get_selected_payment_method(request):
-    """Returns the selected payment method for given request. This could either
+    """
+    Returns the selected payment method for given request. This could either
     be an explicitly selected payment method of the current user or the default
     payment method.
     """
@@ -67,7 +71,8 @@ def get_selected_payment_method(request):
 
 
 def get_payment_costs(request, payment_method):
-    """Returns the payment price and tax for the given request.
+    """
+    Returns the payment price and tax for the given request.
     """
     if payment_method is None:
         return {
@@ -101,8 +106,9 @@ def get_payment_costs(request, payment_method):
 
 
 def process_payment(request):
-    """Processes the payment depending on the selected payment method. Returns
-    a dictionary with the success state, the next url and a optional error
+    """
+    Processes the payment depending on the selected payment method. Returns a
+    dictionary with the success state, the next url and a optional error
     message.
     """
     payment_method = get_selected_payment_method(request)
@@ -159,23 +165,9 @@ def process_payment(request):
         }
 
 
-def get_next_url(payment_method, order):
-    """Creates the next url for the passed payment method and order.
-    """
-    if payment_method.id == PAYPAL:
-        return get_paypal_link_for_order(order)
-    elif payment_method.module:
-        module = lfs.core.utils.import_module.import_module(payment_method + ".views")
-        try:
-            return module.get_next_url(order)
-        except AttributeError:
-            return None
-    else:
-        return None
-
-
 def get_pay_link(request, payment_method, order):
-    """Creates a pay link for the passed payment_method and order.
+    """
+    Creates a pay link for the passed payment_method and order.
 
     This can be used to display the link within the order mail and/or the
     thank you page after a customer has payed.
@@ -194,7 +186,8 @@ def get_pay_link(request, payment_method, order):
 
 
 def get_paypal_link_for_order(order):
-    """Creates paypal link for given order.
+    """
+    Creates paypal link for given order.
     """
     shop = lfs_get_object_or_404(Shop, pk=1)
     current_site = Site.objects.get(id=settings.SITE_ID)
