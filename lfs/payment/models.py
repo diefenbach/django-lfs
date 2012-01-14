@@ -7,62 +7,67 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs.payment.settings
 from lfs.criteria.models.criteria_objects import CriteriaObjects
+from lfs.order.models import Order
 from lfs.tax.models import Tax
+
 
 # paypal imports
 from paypal.standard.ipn.models import PayPalIPN
 
 
 class ActivePaymentMethodManager(models.Manager):
-    """A manager which return just valid (aka selectable) shipping methods.
+    """
+    A manager which return just valid shipping methods.
     """
     def active(self):
         return super(ActivePaymentMethodManager, self).get_query_set().filter(active=True)
 
 
 class PaymentMethod(models.Model):
-    """Decides how products are paid.
+    """
+    Payment methods are provided to the customer to select the kind of how
+    products are paid.
 
-    Instance variables:
+    A payment method may have several criteria which decide whether the payment
+    method is valid. It is valid if all criteria are true. Only active and valid
+    payment methods are provided to the shop customer.
 
-    - name
-       The name of the payment method. This is displayed to the customer to
-       choose the payment method.
+    **Attributes:**
 
-    - active
-       A flag which decides whether a payment method is displayed to the
-       customer or not.
+    name
+        The name of the payment method. This is displayed to the customer to
+        choose the payment method.
 
-    - description
-       A longer description of the payment method. This could be displayed to
-       the customer to describe the payment method in detail.
+    active
+        A flag which decides whether a payment method is displayed to the
+        customer or not.
 
-    - note
-       This is displayed to the customer within the checkout process and should
-       contain a short note about the payment method.
+    description
+        A longer description of the payment method. This could be displayed to
+        the customer to describe the payment method in detail.
 
-    - priority
-       The order in which the payment methods are displayed to the customer.
+    note
+        This is displayed to the customer within the checkout process and should
+        contain a short note about the payment method.
 
-    - image
-       An image of the payment method, which is displayed to customer within
-       the checkout process.
+    priority
+        The order in which the payment methods are displayed to the customer.
 
-    - tax
-       The tax of the payment method.
+    image
+        An image of the payment method, which is displayed to customer within
+        the checkout process.
 
-    - price
-       The default price of the payment method. This is taken if the payment
-       method either has no additional prices or if none of he additional prices
-       is valid.
+    tax
+        The tax of the payment method.
 
-    - module
-       This module will be called to process the payment. If it is empty the
-       LFS' default one will be used.
+    price
+        The default price of the payment method. This is taken if the payment
+        method either has no additional prices or if none of he additional prices
+        is valid.
 
-    A payment method may have several criteria which decide whether the
-    payment method is valid. It is valid if all criteria are true. Only active
-    and valid payment methods are provided to the shop customer.
+    module
+        This module will be called to process the payment. If it is empty the
+        LFS' default one will be used.
     """
     active = models.BooleanField(_(u"Active"), default=False)
     priority = models.IntegerField(_(u"Priority"), default=0)
@@ -73,7 +78,7 @@ class PaymentMethod(models.Model):
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
     price = models.FloatField(_(u"Price"), default=0.0)
     deletable = models.BooleanField(default=True)
-    module = models.CharField(blank=True, max_length=100, choices=settings.LFS_PAYMENT_PROCESSORS, default=settings.LFS_PAYMENT_PROCESSORS[0][0])
+    module = models.CharField(blank=True, max_length=100, choices=getattr(settings, "LFS_PAYMENT_PROCESSORS", []))
     type = models.PositiveSmallIntegerField(choices=lfs.payment.settings.PAYMENT_METHOD_TYPES_CHOICES, default=lfs.payment.settings.PM_PLAIN)
 
     criteria_objects = generic.GenericRelation(CriteriaObjects,
@@ -89,21 +94,24 @@ class PaymentMethod(models.Model):
 
 
 class PaymentMethodPrice(models.Model):
-    """An additional price for a payment method.
-
-    Instance variables:
-
-    - payment_method
-       The shipping method to which the price belongs to.
-    - price
-       The actual price, which will be billed to the shop customer
-    - priority
-       The order in which all prices of the belonging payment method are tested
-       for validity. Less comes first.
+    """
+    An additional price for a payment method.
 
     A payment method price may have some criteria. Only when all criteria are
     true the price is valid. The first valid price is the actual price of the
     belonging payment method.
+
+    **Attributes:**
+
+    payment_method
+        The shipping method to which the price belongs to.
+
+    price
+        The actual price, which will be billed to the shop customer
+
+    priority
+        The order in which all prices of the belonging payment method are tested
+        for validity. Less comes first.
     """
     def __unicode__(self):
         return "%s" % self.price
@@ -115,18 +123,15 @@ class PaymentMethodPrice(models.Model):
     price = models.FloatField(_(u"Price"), default=0.0)
     priority = models.IntegerField(_(u"Priority"), default=0)
     active = models.BooleanField(_(u"Active"), default=False)
-
-    criteria_objects = generic.GenericRelation(CriteriaObjects,
-        object_id_field="content_id", content_type_field="content_type")
+    criteria_objects = generic.GenericRelation(CriteriaObjects, object_id_field="content_id", content_type_field="content_type")
 
     def is_valid(self, request):
-        """Returns True if the payment method is valid. This is calculated via
-        the attached criteria.
+        """
+        Returns True if the payment method is valid. This is calculated via the
+        attached criteria.
         """
         from lfs.criteria import utils as criteria_utils
         return criteria_utils.is_valid(self, request)
-
-from lfs.order.models import Order
 
 
 class PayPalOrderTransaction(models.Model):
