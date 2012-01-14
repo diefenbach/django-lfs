@@ -174,7 +174,7 @@ def get_next_url(payment_method, order):
         return None
 
 
-def get_pay_link(payment_method, order):
+def get_pay_link(request, payment_method, order):
     """Creates a pay link for the passed payment_method and order.
 
     This can be used to display the link within the order mail and/or the
@@ -183,10 +183,10 @@ def get_pay_link(payment_method, order):
     if payment_method.id == PAYPAL:
         return get_paypal_link_for_order(order)
     elif payment_method.module:
-        payment_class = lfs.core.utils.import_symbol(payment_method)
-        instance = payment_class()
+        payment_class = lfs.core.utils.import_symbol(payment_method.module)
+        instance = payment_class(request=request, order=order)
         try:
-            return instance.get_pay_link(order)
+            return instance.get_pay_link()
         except AttributeError:
             return ""
     else:

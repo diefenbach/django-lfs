@@ -379,8 +379,10 @@ def thank_you(request, template_name="lfs/checkout/thank_you_page.html"):
     """Displays a thank you page ot the customer
     """
     order = request.session.get("order")
+    pay_link = order.get_pay_link(request) if order else None
     return render_to_response(template_name, RequestContext(request, {
         "order": order,
+        "pay_link": pay_link,
     }))
 
 

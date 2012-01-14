@@ -109,10 +109,10 @@ class Order(models.Model):
     def __unicode__(self):
         return "%s (%s %s)" % (self.created.strftime("%x %X"), self.customer_firstname, self.customer_lastname)
 
-    def get_pay_link(self):
+    def get_pay_link(self, request):
         """Returns a pay link for the selected payment method.
         """
-        return lfs.payment.utils.get_pay_link(self.payment_method, self)
+        return lfs.payment.utils.get_pay_link(request, self.payment_method, self)
 
     def get_name(self):
         order_name = ""

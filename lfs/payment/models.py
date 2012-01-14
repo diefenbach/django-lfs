@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs.payment.settings
 from lfs.criteria.models.criteria_objects import CriteriaObjects
-from lfs.order.models import Order
 from lfs.tax.models import Tax
 
 
@@ -134,6 +133,7 @@ class PaymentMethodPrice(models.Model):
         return criteria_utils.is_valid(self, request)
 
 
+from lfs.order.models import Order
 class PayPalOrderTransaction(models.Model):
     order = models.ForeignKey(Order, unique=True)
     ipn = models.ManyToManyField(PayPalIPN)
