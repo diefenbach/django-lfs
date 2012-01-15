@@ -126,9 +126,14 @@ def save_data_tab(request):
     """
     shop = lfs.core.utils.get_default_shop()
 
-    form = ShopDataForm(instance=shop, data=request.POST)
+    form = ShopDataForm(instance=shop, data=request.POST, files=request.FILES)
     if form.is_valid():
         form.save()
+
+        # Delete image
+        if request.POST.get("delete_image"):
+            shop.image.delete()
+
         shop_changed.send(shop)
         message = _(u"Shop data has been saved.")
     else:
