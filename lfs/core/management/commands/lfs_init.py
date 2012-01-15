@@ -35,7 +35,7 @@ class Command(BaseCommand):
         from lfs.core.models import Application
         from lfs.core.models import Country
         from lfs.core.models import Shop
-        from lfs.core.utils import import_module
+        from lfs.core.utils import import_symbol
 
         from portlets.models import Slot
         from portlets.models import PortletAssignment
