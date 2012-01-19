@@ -1,3 +1,6 @@
+# python imports
+import locale
+
 # django imports
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -232,7 +235,7 @@ def add_to_cart(request, product_id=None):
         raise Http404()
 
     try:
-        quantity = float(request.POST.get("quantity", 1.0))
+        quantity = locale.atof(request.POST.get("quantity", 1.0))
     except (TypeError, ValueError):
         quantity = 1.0
 
@@ -251,7 +254,7 @@ def add_to_cart(request, product_id=None):
                     continue
 
                 if property.is_number_field:
-                    value = l10n_float(value)
+                    value = locale.atof(value)
 
                 properties_dict[property_id] = unicode(value)
 
@@ -383,7 +386,7 @@ def refresh_cart(request):
     message = ""
     for item in cart.get_items():
         try:
-            amount = float(request.POST.get("amount-cart-item_%s" % item.id, 0))
+            amount = locale.atof(request.POST.get("amount-cart-item_%s" % item.id, "0.0"))
         except (TypeError, ValueError):
             amount = 1.0
 

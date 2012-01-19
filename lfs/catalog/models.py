@@ -1,4 +1,5 @@
 # Python imports
+import locale
 import math
 import re
 import uuid
@@ -1401,9 +1402,9 @@ class Product(models.Model):
         if type_of_quantity_field == QUANTITY_FIELD_INTEGER:
             quantity = int(quantity)
         elif type_of_quantity_field == QUANTITY_FIELD_DECIMAL_1:
-            quantity = "%.1f" % quantity
+            quantity = locale.format("%.1f", quantity)
         else:
-            quantity = "%.2f" % quantity
+            quantity = locale.format("%.2f", quantity)
 
         return quantity
 

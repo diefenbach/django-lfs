@@ -1,3 +1,6 @@
+# python imports
+import locale
+
 # django imports
 from django import forms
 from django.template import RequestContext
@@ -28,7 +31,7 @@ class CartPortlet(Portlet):
             amount_of_items = None
             price = None
         else:
-            amount_of_items = cart.get_amount_of_items()
+            amount_of_items = locale.format("%.2f", cart.get_amount_of_items())
             price = cart.get_price_gross(request, total=True)
 
         return render_to_string("lfs/portlets/cart.html", RequestContext(request, {
