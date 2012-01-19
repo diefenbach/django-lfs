@@ -1905,12 +1905,18 @@ class StaticBlock(models.Model):
 
     files
         The files of the static block.
+
+    position
+        Position to sort the static blocks
     """
     name = models.CharField(_(u"Name"), max_length=30)
     display_files = models.BooleanField(_(u"Display files"), default=True)
     html = models.TextField(_(u"HTML"), blank=True)
-    files = generic.GenericRelation(File, verbose_name=_(u"Files"),
-        object_id_field="content_id", content_type_field="content_type")
+    files = generic.GenericRelation(File, verbose_name=_(u"Files"), object_id_field="content_id", content_type_field="content_type")
+    position = models.SmallIntegerField(_(u"Position"), default=1000)
+
+    class Meta:
+        ordering = ("position", )
 
     def __unicode__(self):
         return self.name
