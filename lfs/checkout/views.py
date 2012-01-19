@@ -331,7 +331,7 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
             "shipping_lastname": shipping_address.lastname,
             "shipping_phone": shipping_address.phone,
             "shipping_email": shipping_address.email,
-            "no_shipping": False,
+            "no_shipping": True,
         })
         form = checkout_form(initial=initial)
     cart = cart_utils.get_cart(request)
