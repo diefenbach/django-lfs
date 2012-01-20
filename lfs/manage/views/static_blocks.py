@@ -27,6 +27,7 @@ class StaticBlockForm(ModelForm):
     """
     class Meta:
         model = StaticBlock
+        exclude = ("position", )
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -195,6 +196,29 @@ def preview_static_block(request, id, template_name="manage/static_block/preview
     return render_to_response(template_name, RequestContext(request, {
         "static_block": sb,
     }))
+
+
+@require_POST
+@permission_required("core.manage_shop", login_url="/login/")
+def sort_static_blocks(request):
+    """Sorts static blocks after drag 'n drop.
+    """
+    static_blocks = request.POST.get("objs", "").split('&')
+    assert (isinstance(static_blocks, list))
+    if len(static_blocks) > 0:
+        position = 10
+        for sb_str in static_blocks:
+            sb_id = sb_str.split('=')[1]
+            sb_obj = StaticBlock.objects.get(pk=sb_id)
+            sb_obj.position = position
+            sb_obj.save()
+            position = position + 10
+
+        result = simplejson.dumps({
+            "message": _(u"The static blocks have been sorted."),
+        }, cls=LazyEncoder)
+
+        return HttpResponse(result)
 
 
 @require_POST

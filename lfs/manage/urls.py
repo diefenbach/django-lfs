@@ -349,6 +349,8 @@ urlpatterns += patterns('lfs.manage.views.static_blocks',
     url(r'^add_files/(?P<id>[-\w]*)', "add_files", name="lfs_add_files_to_static_block"),
     url(r'^update_files/(?P<id>[-\w]*)', "update_files", name="lfs_manage_update_files_sb"),
     url(r'^reload_files/(?P<id>[-\w]*)', "reload_files", name="lfs_reload_files"),
+    url(r'^reload_files/(?P<id>[-\w]*)', "reload_files", name="lfs_reload_files"),
+    url(r'^sort-static-blocks$', "sort_static_blocks", name="lfs_sort_static_blocks"),
 )
 
 # Reviews

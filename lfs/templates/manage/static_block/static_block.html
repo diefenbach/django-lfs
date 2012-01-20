@@ -7,14 +7,20 @@
         {% trans "Static blocks" %}
     </h2>
     <div class="navigation-body">
-        {% for static_block in static_blocks %}
-            <div>
-                <a href="{% url lfs_manage_static_block static_block.id %}"
-                   class="selectable {% ifequal static_block.id current_id %}selected{% endifequal %}">
-                    {{ static_block.name }}
-                </a>
-            </div>
-        {% endfor %}
+        <ul class="sortable"
+            href="{% url lfs_sort_static_blocks %}">
+            {% for static_block in static_blocks %}
+                <li id="static_block_{{ static_block.id}}">
+                    <div>
+                        <a href="{% url lfs_manage_static_block static_block.id %}"
+                           class="selectable {% ifequal static_block.id current_id %}selected{% endifequal %}">
+                            <img class="handle" src="{{ STATIC_URL }}img/handle.png" alt="Handle" />
+                            {{ static_block.name }}
+                        </a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 {% endblock %}
 
@@ -54,4 +60,5 @@
             {{ files }}
         </div>
     </div>
+    <script>sortable()</script>
 {% endblock %}
