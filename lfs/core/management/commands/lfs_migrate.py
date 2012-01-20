@@ -45,6 +45,7 @@ class Command(BaseCommand):
     def migrate_to_07(self, application, version):
         from lfs.core.utils import get_default_shop
         from lfs.page.models import Page
+        from lfs.shipping.models import ShippingMethod
         from lfs_order_numbers.models import OrderNumberGenerator
 
         # Product
@@ -97,6 +98,9 @@ class Command(BaseCommand):
         for shipping_method in ShippingMethod.objects.all():
             shipping_method.price_calculator = settings.LFS_SHIPPING_PRICE_CALCULATORS[0][0]
             shipping_method.save()
+
+        # Static Block
+        db.add_column("catalog_staticblock", "position", models.PositiveSmallIntegerField(_(u"Position"), default=999))
 
         application.version = "0.7"
         application.save()
