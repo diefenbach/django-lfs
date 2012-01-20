@@ -1133,7 +1133,7 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.get_customer_tax()
 
-    def price_includes_tax(self, request):
+    def price_includes_tax(self, request=None):
         """Returns whether our price calculator includes tax or not.
         """
         pc = self.get_price_calculator(request)
