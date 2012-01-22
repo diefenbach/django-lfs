@@ -93,6 +93,10 @@ class Command(BaseCommand):
         db.add_column("order_order", "number", models.CharField(max_length=30, unique=True, null=True))
         OrderNumberGenerator.objects.create(pk="1", last=0)
 
+        # Add new lines
+        db.add_column("order_order", "invoice_company_name", models.CharField(null=True, blank=True, max_length=100))
+        db.add_column("order_order", "shipping_company_name", models.CharField(null=True, blank=True, max_length=100))
+
         # Shipping Method
         db.add_column("shipping_shippingmethod", "price_calculator", models.CharField(max_length=200, choices=settings.LFS_SHIPPING_PRICE_CALCULATORS, default=settings.LFS_SHIPPING_PRICE_CALCULATORS[0][0]))
         for shipping_method in ShippingMethod.objects.all():

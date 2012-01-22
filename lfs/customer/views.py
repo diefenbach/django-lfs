@@ -308,8 +308,7 @@ def address_inline(request, prefix, form):
                 customer_selected_address = getattr(customer, 'selected_' + prefix + '_address')
             if customer_selected_address is not None:
                 initial.update({
-                    "line1": customer_selected_address.company_name,
-                    "line2": customer_selected_address.street,
+                    "line1": customer_selected_address.street,
                     "city": customer_selected_address.city,
                     "state": customer_selected_address.state,
                     "code": customer_selected_address.zip_code,
@@ -361,8 +360,7 @@ def save_address(request, customer, prefix):
         customer_selected_address = getattr(customer, address_attribute)
         if customer_selected_address is not None:
             existing_address = True
-            customer_selected_address.company_name = request.POST.get(prefix + "-line1", "")
-            customer_selected_address.street = request.POST.get(prefix + "-line2", "")
+            customer_selected_address.street = request.POST.get(prefix + "-line1", "")
             customer_selected_address.city = request.POST.get(prefix + "-city", "")
             customer_selected_address.state = request.POST.get(prefix + "-state", "")
             customer_selected_address.zip_code = request.POST.get(prefix + "-code", "")
@@ -371,8 +369,7 @@ def save_address(request, customer, prefix):
     if not existing_address:
         # no address exists for customer so create one
         customer_selected_address = Address.objects.create(customer=customer,
-                                                           company_name=request.POST.get(prefix + "-line1", ""),
-                                                           street=request.POST.get(prefix + "-line2", ""),
+                                                           street=request.POST.get(prefix + "-line1", ""),
                                                            city=request.POST.get(prefix + "-city", ""),
                                                            state=request.POST.get(prefix + "-state", ""),
                                                            zip_code=request.POST.get(prefix + "-code", ""),

@@ -62,6 +62,7 @@ class Order(models.Model):
 
     invoice_firstname = models.CharField(_(u"Invoice firstname"), max_length=50)
     invoice_lastname = models.CharField(_(u"Invoice lastname"), max_length=50)
+    invoice_company_name = models.CharField(_(u"Invoice company name"), null=True, blank=True, max_length=100)
     invoice_line1 = models.CharField(_(u"Invoice Line 1"), null=True, blank=True, max_length=100)
     invoice_line2 = models.CharField(_(u"Invoice Line 2"), null=True, blank=True, max_length=100)
     invoice_city = models.CharField(_(u"Invoice City"), null=True, blank=True, max_length=100)
@@ -72,6 +73,7 @@ class Order(models.Model):
 
     shipping_firstname = models.CharField(_(u"Shipping firstname"), max_length=50)
     shipping_lastname = models.CharField(_(u"Shipping lastname"), max_length=50)
+    shipping_company_name = models.CharField(_(u"shipping company name"), null=True, blank=True, max_length=100)
     shipping_line1 = models.CharField(_(u"Shipping Line 1"), null=True, blank=True, max_length=100)
     shipping_line2 = models.CharField(_(u"Shipping Line 2"), null=True, blank=True, max_length=100)
     shipping_city = models.CharField(_(u"Shipping City"), null=True, blank=True, max_length=100)

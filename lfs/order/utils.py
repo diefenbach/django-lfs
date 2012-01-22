@@ -26,10 +26,10 @@ def add_order(request):
     order = None
 
     invoice_address = customer.selected_invoice_address
-    if customer.selected_shipping_address:
-        shipping_address = customer.selected_shipping_address
-    else:
+    if request.POST.get("no_shipping"):
         shipping_address = customer.selected_invoice_address
+    else:
+        shipping_address = customer.selected_shipping_address
 
     cart = cart_utils.get_cart(request)
     if cart is None:
@@ -102,8 +102,8 @@ def add_order(request):
 
         invoice_firstname=customer.selected_invoice_address.firstname,
         invoice_lastname=customer.selected_invoice_address.lastname,
-        invoice_line1=invoice_address.company_name,
-        invoice_line2=invoice_address.street,
+        invoice_company_name=customer.selected_invoice_address.company_name,
+        invoice_line1=invoice_address.street,
         invoice_city=invoice_address.city,
         invoice_state=invoice_address.state,
         invoice_code=invoice_address.zip_code,
@@ -112,8 +112,8 @@ def add_order(request):
 
         shipping_firstname=shipping_address.firstname,
         shipping_lastname=shipping_address.lastname,
-        shipping_line1=shipping_address.company_name,
-        shipping_line2=shipping_address.street,
+        shipping_company_name=shipping_address.company_name,
+        shipping_line1=shipping_address.street,
         shipping_city=shipping_address.city,
         shipping_state=shipping_address.state,
         shipping_code=shipping_address.zip_code,

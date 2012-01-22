@@ -74,16 +74,20 @@
             <div>
                 {{ current_order.shipping_firstname }} {{ current_order.shipping_lastname }}
             </div>
-            <div>
-                {{ current_order.shipping_company_name }}
-            </div>
-            <div>
+            {% if current_order.shipping_company_name %}
+                <div>
+                    {{ current_order.shipping_company_name }}
+                </div>
+            {% endif %}
+                <div>
                 {{ current_order.shipping_line1 }}
             </div>
-            <div>
-                {{ current_order.shipping_line2 }}
-            </div>
-            <div>
+            {% if current_order.shipping_line2 %}
+                <div>
+                    {{ current_order.shipping_line2 }}
+                </div>
+            {% endif %}
+                <div>
                 {{ current_order.shipping_city }}
             </div>
             <div>
@@ -103,12 +107,19 @@
             <div>
                 {{ current_order.invoice_firstname }} {{ current_order.invoice_lastname }}
             </div>
-            <div>
+            {% if current_order.invoice_company_name %}
+                <div>
+                    {{ current_order.invoice_company_name }}
+                </div>
+            {% endif %}
+                <div>
                 {{ current_order.invoice_line1 }}
             </div>
-            <div>
-                {{ current_order.invoice_line2 }}
-            </div>
+            {% if current_order.invoice_line2 %}
+                <div>
+                    {{ current_order.invoice_line2 }}
+                </div>
+            {% endif %}
             <div>
                 {{ current_order.invoice_city }}
             </div>

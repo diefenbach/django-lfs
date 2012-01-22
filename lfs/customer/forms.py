@@ -14,11 +14,12 @@ class AddressForm(forms.Form):
     invoice_lastname = forms.CharField(label=_(u"Last Name"), max_length=50)
     invoice_phone = forms.CharField(label=_(u"Invoice Phone"), max_length=20, required=False)
     invoice_email = forms.EmailField(label=_(u"Invoice E-mail"), required=False, max_length=50)
-
+    invoice_company_name = forms.EmailField(label=_(u"Company name"), required=False, max_length=50)
     shipping_firstname = forms.CharField(label=_(u"First Name"), required=False, max_length=50)
     shipping_lastname = forms.CharField(label=_(u"Last Name"), required=False, max_length=50)
     shipping_phone = forms.CharField(label=_(u"Shipping Phone"), required=False, max_length=20)
     shipping_email = forms.EmailField(label=_(u"Shipping E-mail"), required=False, max_length=50)
+    shipping_company_name = forms.EmailField(label=_(u"Company name"), required=False, max_length=50)
 
 
 class BankForm(forms.ModelForm):

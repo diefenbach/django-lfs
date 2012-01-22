@@ -213,22 +213,22 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
     customer = customer_utils.get_or_create_customer(request)
     if request.method == "POST":
         form = checkout_form(request.POST)
-
         toc = True
 
         if shop.confirm_toc:
             if "confirm_toc" not in request.POST:
                 toc = False
-                if form._errors is None:
-                    form._errors = {}
-                form._errors["confirm_toc"] = _(u"Please confirm our terms and conditions")
+                if form.errors is None:
+                    form.errors = {}
+                form.errors["confirm_toc"] = _(u"Please confirm our terms and conditions")
 
-        if toc and form.is_valid():
+        if form.is_valid() and toc:
             # save invoice details
             customer.selected_invoice_address.firstname = request.POST.get("invoice_firstname")
             customer.selected_invoice_address.lastname = request.POST.get("invoice_lastname")
             customer.selected_invoice_address.phone = request.POST.get("invoice_phone")
             customer.selected_invoice_address.email = request.POST.get("invoice_email")
+            customer.selected_invoice_address.company_name = request.POST.get("invoice_company_name")
 
             # Create or update invoice address
             valid_invoice_address = save_address(request, customer, INVOICE_PREFIX)
@@ -244,6 +244,7 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
                     customer.selected_shipping_address.lastname = request.POST.get("shipping_lastname")
                     customer.selected_shipping_address.phone = request.POST.get("shipping_phone")
                     customer.selected_shipping_address.email = request.POST.get("shipping_email")
+                    customer.selected_shipping_address.company_name = request.POST.get("shipping_company_name")
 
                     valid_shipping_address = save_address(request, customer, SHIPPING_PREFIX)
 
@@ -280,6 +281,7 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
             customer.selected_invoice_address.lastname = request.POST.get("invoice_lastname")
             customer.selected_invoice_address.phone = request.POST.get("invoice_phone")
             customer.selected_invoice_address.email = request.POST.get("invoice_email")
+            customer.selected_invoice_address.company_name = request.POST.get("invoice_company_name")
 
             # Create or update invoice address
             save_address(request, customer, INVOICE_PREFIX)
@@ -292,6 +294,7 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
                 customer.selected_shipping_address.lastname = request.POST.get("shipping_lastname")
                 customer.selected_shipping_address.phone = request.POST.get("shipping_phone")
                 customer.selected_shipping_address.email = request.POST.get("shipping_email")
+                customer.selected_shipping_address.company_name = request.POST.get("shipping_company_name")
                 customer.save()
 
                 save_address(request, customer, SHIPPING_PREFIX)
@@ -324,6 +327,7 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
             "invoice_phone": invoice_address.phone,
             "invoice_email": invoice_address.email,
             "invoice_country": invoice_address.country,
+            "invoice_company_name": invoice_address.company_name,
         })
         shipping_address = customer.selected_shipping_address
         initial.update({
@@ -331,6 +335,7 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
             "shipping_lastname": shipping_address.lastname,
             "shipping_phone": shipping_address.phone,
             "shipping_email": shipping_address.email,
+            "shipping_company_name": shipping_address.company_name,
             "no_shipping": True,
         })
         form = checkout_form(initial=initial)
