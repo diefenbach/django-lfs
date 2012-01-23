@@ -7,25 +7,30 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-07 11:45+0100\n"
-"PO-Revision-Date: 2010-02-24 14:03+0100\n"
-"Last-Translator: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
+"POT-Creation-Date: 2012-01-23 20:51+0100\n"
+"PO-Revision-Date: 2012-01-23 22:29+0100\n"
+"Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: cart/models.py:48 criteria/models/criteria.py:591 order/models.py:48
+#: cart/models.py:48
+#: criteria/models/criteria.py:591
+#: order/models.py:48
 #: templates/manage/cart/carts_inline.html:16
 msgid "User"
 msgstr "Użytkownik"
 
-#: cart/models.py:49 order/models.py:49
+#: cart/models.py:49
+#: order/models.py:49
 msgid "Session"
 msgstr "Sesja"
 
-#: cart/models.py:50 cart/models.py:238 catalog/models.py:573
+#: cart/models.py:50
+#: cart/models.py:238
+#: catalog/models.py:573
 #: templates/manage/cart/cart_inline.html:58
 #: templates/manage/cart/cart_inline.html:97
 #: templates/manage/cart/carts_inline.html:10
@@ -35,76 +40,96 @@ msgstr "Sesja"
 msgid "Creation date"
 msgstr "Data utworzenia"
 
-#: cart/models.py:51 cart/models.py:239
+#: cart/models.py:51
+#: cart/models.py:239
 #: templates/manage/cart/cart_inline.html:66
 #: templates/manage/cart/carts_inline.html:13
 #: templates/manage/customer/customer_inline.html:173
 msgid "Modification date"
 msgstr "Data modyfikacji"
 
-#: cart/models.py:235 portlet/templatetags/lfs_portlets_tags.py:92
+#: cart/models.py:235
+#: portlet/templatetags/lfs_portlets_tags.py:92
 #: templates/manage/cart/cart.html:26
 #: templates/manage/customer/customer_inline.html:165
 #: templates/manage/customer/customers_inline.html:35
 msgid "Cart"
 msgstr "Koszyk"
 
-#: cart/models.py:236 catalog/models.py:1467 catalog/models.py:1721
-#: catalog/models.py:1787 catalog/models.py:2119 marketing/models.py:13
-#: marketing/models.py:26 marketing/models.py:33
+#: cart/models.py:236
+#: catalog/models.py:1466
+#: catalog/models.py:1720
+#: catalog/models.py:1786
+#: catalog/models.py:2124
+#: marketing/models.py:13
+#: marketing/models.py:26
+#: marketing/models.py:33
 #: templates/manage/cart/cart_inline.html:100
 #: templates/manage/reviews/review_inline.html:78
 #: templates/manage/reviews/reviews_inline.html:33
 msgid "Product"
 msgstr "Produkt"
 
-#: cart/models.py:237 catalog/models.py:1470
+#: cart/models.py:237
+#: catalog/models.py:1469
 #: templates/manage/product/accessories_inline.html:116
 msgid "Quantity"
 msgstr "Ilość"
 
-#: cart/models.py:390
-#, fuzzy
+#: cart/models.py:393
 msgid "Cart item"
-msgstr "Koszyk"
+msgstr "Towar w koszyku"
 
-#: cart/models.py:391 catalog/models.py:1674 catalog/models.py:1699
-#: catalog/models.py:1722 catalog/models.py:1747 catalog/models.py:1789
-#: order/models.py:209 templates/manage/properties/property.html:32
+#: cart/models.py:394
+#: catalog/models.py:1673
+#: catalog/models.py:1698
+#: catalog/models.py:1721
+#: catalog/models.py:1746
+#: catalog/models.py:1788
+#: order/models.py:211
+#: templates/manage/properties/property.html:32
 msgid "Property"
-msgstr ""
+msgstr "Cecha"
 
-#: cart/views.py:262
+#: cart/views.py:265
 #, python-format
 msgid "%(name)s must be between %(min)s and %(max)s %(unit)s."
-msgstr ""
+msgstr "%(name)s musi się zawierać pomiędzy %(min)s a %(max)s %(unit)s."
 
-#: cart/views.py:276
+#: cart/views.py:279
 #, python-format
-msgid ""
-"Your entered value for %(name)s (%(value)s) is not in valid step width, "
-"which is %(step)s."
-msgstr ""
+msgid "Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s."
+msgstr "Wartość którą wprowadziłeś dla %(name)s (%(value)s) nie jest prawidłowa - musi być wielokrotnością %(step)s."
 
-#: cart/views.py:292 cart/views.py:396
+#: cart/views.py:295
+#: cart/views.py:399
 #, python-format
 msgid "Sorry, but '%(product)s' is not available anymore."
-msgstr ""
+msgstr "Przepraszamy, ale '%(product)s' nie jest już dostępny."
 
-#: cart/views.py:294 cart/views.py:398
+#: cart/views.py:297
+#: cart/views.py:401
 #, python-format
 msgid "Sorry, but '%(product)s' is only one time available."
-msgstr ""
+msgstr "Przepraszamy, ale '%(product)s' jest jednorazową ofertą."
 
-#: cart/views.py:296 cart/views.py:400
+#: cart/views.py:299
+#: cart/views.py:403
 #, python-format
 msgid "Sorry, but '%(product)s' is only %(amount)s times available."
-msgstr ""
+msgstr "Przepraszamy ale '%(product)s' jest dostępne tylko %(amount)s razy"
 
-#: catalog/models.py:139 catalog/models.py:544 catalog/models.py:1593
-#: catalog/models.py:1749 catalog/models.py:1910 core/models.py:19
-#: core/models.py:154 export/models.py:16 manufacturer/models.py:10
-#: payment/models.py:77 shipping/models.py:57
+#: catalog/models.py:139
+#: catalog/models.py:544
+#: catalog/models.py:1592
+#: catalog/models.py:1748
+#: catalog/models.py:1912
+#: core/models.py:19
+#: core/models.py:154
+#: export/models.py:16
+#: manufacturer/models.py:10
+#: payment/models.py:73
+#: shipping/models.py:71
 #: templates/manage/category/products_inline.html:47
 #: templates/manage/category/selected_products.html:42
 #: templates/manage/customer/customer_filters_inline.html:12
@@ -115,7 +140,7 @@ msgstr ""
 #: templates/manage/marketing/topseller_inline.html:44
 #: templates/manage/marketing/topseller_inline.html:103
 #: templates/manage/order/order_filters_inline.html:15
-#: templates/manage/order/order_inline.html:157
+#: templates/manage/order/order_inline.html:168
 #: templates/manage/order/orders_filter.html:11
 #: templates/manage/order/orders_filters_inline.html:11
 #: templates/manage/order/orders_inline.html:12
@@ -138,17 +163,20 @@ msgstr ""
 msgid "Name"
 msgstr "Imię"
 
-#: catalog/models.py:140 catalog/models.py:545 export/models.py:17
-#: page/models.py:17 supplier/models.py:14
+#: catalog/models.py:140
+#: catalog/models.py:545
+#: export/models.py:17
+#: page/models.py:17
+#: supplier/models.py:14
 #: templates/manage/product/products_inline.html:20
 #: templates/manage/product/variants.html:104
-#, fuzzy
 msgid "Slug"
-msgstr "Tytuł w adresie"
+msgstr "Adres"
 
-#: catalog/models.py:141 catalog/models.py:609 catalog/models.py:1788
+#: catalog/models.py:141
+#: catalog/models.py:609
+#: catalog/models.py:1787
 #: core/models.py:80
-#, fuzzy
 msgid "Parent"
 msgstr "Rodzic"
 
@@ -156,8 +184,11 @@ msgstr "Rodzic"
 msgid "Show all products"
 msgstr "Pokaż wszystkie produkty"
 
-#: catalog/models.py:147 catalog/models.py:1500 catalog/models.py:1596
-#: catalog/settings.py:60 export/models.py:18
+#: catalog/models.py:147
+#: catalog/models.py:1499
+#: catalog/models.py:1595
+#: catalog/settings.py:60
+#: export/models.py:18
 #: templates/manage/manage_base.html:86
 #: templates/manage/cart/carts_inline.html:25
 #: templates/manage/category/manage_category.html:44
@@ -174,29 +205,49 @@ msgstr "Pokaż wszystkie produkty"
 msgid "Products"
 msgstr "Produkty"
 
-#: catalog/models.py:148 catalog/models.py:554
+#: catalog/models.py:148
+#: catalog/models.py:554
 msgid "Short description"
 msgstr "Krótki opis"
 
-#: catalog/models.py:149 catalog/models.py:555 catalog/models.py:1936
-#: catalog/models.py:2117 core/models.py:159 customer_tax/models.py:24
-#: payment/models.py:78 shipping/models.py:58 tax/models.py:18
+#: catalog/models.py:149
+#: catalog/models.py:555
+#: catalog/models.py:1941
+#: catalog/models.py:2122
+#: core/models.py:159
+#: customer_tax/models.py:24
+#: payment/models.py:74
+#: shipping/models.py:72
+#: tax/models.py:18
 #: templates/manage/product/attachments.html:21
 msgid "Description"
 msgstr "Opis"
 
-#: catalog/models.py:150 catalog/models.py:1838 core/models.py:160
-#: payment/models.py:80 shipping/models.py:60
+#: catalog/models.py:150
+#: catalog/models.py:1837
+#: core/models.py:160
+#: payment/models.py:76
+#: shipping/models.py:74
 #: templates/manage/category/data.html:68
 #: templates/manage/product/images.html:33
 msgid "Image"
 msgstr "Grafika"
 
-#: catalog/models.py:151 catalog/models.py:1469 catalog/models.py:1597
-#: catalog/models.py:1700 catalog/models.py:1723 catalog/models.py:1751
-#: catalog/models.py:1839 catalog/models.py:2120 core/models.py:79
-#: criteria/models/criteria_objects.py:24 marketing/models.py:14
-#: marketing/models.py:34 page/models.py:18
+#: catalog/models.py:151
+#: catalog/models.py:1468
+#: catalog/models.py:1596
+#: catalog/models.py:1699
+#: catalog/models.py:1722
+#: catalog/models.py:1750
+#: catalog/models.py:1838
+#: catalog/models.py:1916
+#: catalog/models.py:2125
+#: core/models.py:79
+#: core/management/commands/lfs_migrate.py:107
+#: criteria/models/criteria_objects.py:24
+#: marketing/models.py:14
+#: marketing/models.py:34
+#: page/models.py:18
 #: templates/manage/marketing/featured_inline.html:108
 #: templates/manage/marketing/topseller_inline.html:109
 #: templates/manage/product/accessories_inline.html:113
@@ -208,68 +259,83 @@ msgstr "Grafika"
 msgid "Position"
 msgstr "Pozycja"
 
-#: catalog/models.py:152 page/models.py:19
+#: catalog/models.py:152
+#: page/models.py:19
 msgid "Exclude from navigation"
 msgstr "Wyłącz z nawigacji"
 
-#: catalog/models.py:154 catalog/models.py:589 core/models.py:161
+#: catalog/models.py:154
+#: catalog/models.py:589
+#: core/models.py:161
 msgid "Static block"
 msgstr "Blok statyczny"
 
 #: catalog/models.py:155
-#, fuzzy
 msgid "Category template"
-msgstr "Kolumny kategorii"
+msgstr "Szablon Kategorii"
 
 #: catalog/models.py:156
 msgid "Active formats"
 msgstr "Aktywne formaty"
 
-#: catalog/models.py:158 core/models.py:164
+#: catalog/models.py:158
+#: core/models.py:164
 msgid "Product rows"
 msgstr "Wiersze produktu"
 
-#: catalog/models.py:159 core/models.py:163
+#: catalog/models.py:159
+#: core/models.py:163
 msgid "Product cols"
 msgstr "Kolumny produktu"
 
-#: catalog/models.py:160 core/models.py:165
+#: catalog/models.py:160
+#: core/models.py:165
 msgid "Category cols"
 msgstr "Kolumny kategorii"
 
-#: catalog/models.py:162 catalog/models.py:559 core/models.py:182
-#: core/management/commands/lfs_migrate.py:57
-#: core/management/commands/lfs_migrate.py:81 page/models.py:24
-msgid "Meta title"
-msgstr ""
-
-#: catalog/models.py:163 catalog/models.py:560 core/models.py:183
-#: core/management/commands/lfs_migrate.py:58
-#: core/management/commands/lfs_migrate.py:82 page/models.py:25
-msgid "Meta keywords"
-msgstr ""
-
-#: catalog/models.py:164 catalog/models.py:561 core/models.py:184
+#: catalog/models.py:162
+#: catalog/models.py:559
+#: core/models.py:182
 #: core/management/commands/lfs_migrate.py:59
-#: core/management/commands/lfs_migrate.py:83 page/models.py:26
+#: core/management/commands/lfs_migrate.py:83
+#: page/models.py:24
+msgid "Meta title"
+msgstr "Meta tytuł"
+
+#: catalog/models.py:163
+#: catalog/models.py:560
+#: core/models.py:183
+#: core/management/commands/lfs_migrate.py:60
+#: core/management/commands/lfs_migrate.py:84
+#: page/models.py:25
+msgid "Meta keywords"
+msgstr "Meta słowa kluczowe"
+
+#: catalog/models.py:164
+#: catalog/models.py:561
+#: core/models.py:184
+#: core/management/commands/lfs_migrate.py:61
+#: core/management/commands/lfs_migrate.py:85
+#: page/models.py:26
 msgid "Meta description"
-msgstr ""
+msgstr "Meta opis"
 
 #: catalog/models.py:544
 msgid "The name of the product."
-msgstr ""
+msgstr "Nazwa produktu."
 
 #: catalog/models.py:545
 msgid "The unique last part of the Product's URL."
-msgstr ""
+msgstr "Unikalna, ostatnia część adresu URL produktu."
 
-#: catalog/models.py:546 templates/manage/category/products_inline.html:50
+#: catalog/models.py:546
+#: templates/manage/category/products_inline.html:50
 #: templates/manage/category/selected_products.html:45
 #: templates/manage/marketing/featured_inline.html:47
 #: templates/manage/marketing/featured_inline.html:105
 #: templates/manage/marketing/topseller_inline.html:47
 #: templates/manage/marketing/topseller_inline.html:106
-#: templates/manage/order/order_inline.html:154
+#: templates/manage/order/order_inline.html:165
 #: templates/manage/product/accessories_inline.html:51
 #: templates/manage/product/accessories_inline.html:110
 #: templates/manage/product/products_inline.html:23
@@ -279,16 +345,23 @@ msgstr ""
 #: templates/manage/properties/pg_products_inline.html:48
 #: templates/manage/properties/pg_products_inline.html:108
 msgid "SKU"
-msgstr ""
+msgstr "Numer katalogowy"
 
 #: catalog/models.py:546
 msgid "Your unique article number of the product."
-msgstr ""
+msgstr "Twój unikalny numer produktu."
 
-#: catalog/models.py:547 catalog/models.py:551 catalog/models.py:1605
-#: catalog/models.py:1750 criteria/models/criteria.py:52 order/models.py:56
-#: payment/models.py:82 payment/models.py:123 shipping/models.py:62
-#: shipping/models.py:109 templates/manage/cart/cart_inline.html:103
+#: catalog/models.py:547
+#: catalog/models.py:551
+#: catalog/models.py:1604
+#: catalog/models.py:1749
+#: criteria/models/criteria.py:52
+#: order/models.py:56
+#: payment/models.py:78
+#: payment/models.py:122
+#: shipping/models.py:76
+#: shipping/models.py:154
+#: templates/manage/cart/cart_inline.html:103
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:14
 #: templates/manage/criteria/country_criterion.html:14
 #: templates/manage/criteria/distance_criterion.html:14
@@ -303,54 +376,64 @@ msgstr ""
 #: templates/manage/customer/customer_inline.html:131
 #: templates/manage/customer/customer_inline.html:176
 #: templates/manage/marketing/rating_mails.html:60
-#: templates/manage/order/order_inline.html:165
+#: templates/manage/order/order_inline.html:176
 #: templates/manage/order/orders_inline.html:18
 #: templates/manage/payment/payment_method_prices.html:27
 #: templates/manage/product/products_inline.html:34
 #: templates/manage/product/variants.html:110
 #: templates/manage/product/variants.html:185
+#: templates/manage/properties/options_inline.html:16
 #: templates/manage/shipping/shipping_method_prices.html:27
 msgid "Price"
-msgstr ""
+msgstr "Cena"
 
 #: catalog/models.py:548
 msgid "Price calculator"
-msgstr ""
+msgstr "Kalkulator ceny"
 
 #: catalog/models.py:552
 msgid "Price unit"
-msgstr ""
+msgstr "Jednostka ceny"
 
-#: catalog/models.py:553 catalog/models.py:587 catalog/models.py:1598
-#: catalog/models.py:1935
+#: catalog/models.py:553
+#: catalog/models.py:587
+#: catalog/models.py:1597
+#: catalog/models.py:1940
 msgid "Unit"
-msgstr ""
+msgstr "Jednostka"
 
-#: catalog/models.py:556 templates/manage/product/images.html:3
+#: catalog/models.py:556
+#: templates/manage/product/images.html:3
 #: templates/manage/product/product.html:95
 msgid "Images"
-msgstr ""
+msgstr "Obrazy"
 
-#: catalog/models.py:563 templates/manage/product/related_products.html:4
+#: catalog/models.py:563
+#: templates/manage/product/related_products.html:4
 msgid "Related products"
-msgstr ""
+msgstr "Powiązane produkty"
 
 #: catalog/models.py:566
 msgid "Acessories"
-msgstr ""
+msgstr "Akcesoria"
 
 #: catalog/models.py:570
 #: templates/manage/product/product_filters_inline.html:17
 msgid "For sale"
-msgstr ""
+msgstr "Wyprzedaż"
 
 #: catalog/models.py:571
 msgid "For sale price"
-msgstr ""
+msgstr "Cena wyprzedażowa"
 
-#: catalog/models.py:572 core/models.py:75 marketing/models.py:35
-#: page/models.py:15 payment/models.py:75 payment/models.py:125
-#: shipping/models.py:55 shipping/models.py:114
+#: catalog/models.py:572
+#: core/models.py:75
+#: marketing/models.py:35
+#: page/models.py:15
+#: payment/models.py:71
+#: payment/models.py:124
+#: shipping/models.py:69
+#: shipping/models.py:156
 #: templates/manage/category/products_inline.html:53
 #: templates/manage/category/selected_products.html:48
 #: templates/manage/marketing/featured_inline.html:50
@@ -373,45 +456,47 @@ msgstr ""
 #: templates/manage/reviews/reviews_inline.html:46
 #: templates/manage/voucher/vouchers_inline.html:88
 msgid "Active"
-msgstr ""
+msgstr "Aktywny"
 
 #: catalog/models.py:577
 msgid "Deliverable"
-msgstr ""
+msgstr "Dostępny do dostarczenia"
 
 #: catalog/models.py:578
 msgid "Manual delivery time"
-msgstr ""
+msgstr "Ręczny czas dostawy"
 
-#: catalog/models.py:579 shipping/models.py:63
+#: catalog/models.py:579
+#: shipping/models.py:77
 msgid "Delivery time"
-msgstr ""
+msgstr "Czas dostawy"
 
 #: catalog/models.py:580
 msgid "Order time"
-msgstr ""
+msgstr "Czas zamówienia"
 
 #: catalog/models.py:581
 msgid "Ordered at"
-msgstr ""
+msgstr "Zamówione"
 
 #: catalog/models.py:582
 msgid "Manage stock amount"
-msgstr ""
+msgstr "Zarządzanie stanem magazynowym"
 
 #: catalog/models.py:583
 msgid "Stock amount"
-msgstr ""
+msgstr "Stan magazynowy"
 
 #: catalog/models.py:585
 msgid "Active packing unit"
-msgstr ""
+msgstr "Aktywna jednostka pakowania"
 
 #: catalog/models.py:586
 msgid "Packing unit"
-msgstr ""
+msgstr "Jednostka pakowania"
 
-#: catalog/models.py:592 criteria/models/criteria.py:609
+#: catalog/models.py:592
+#: criteria/models/criteria.py:609
 #: criteria/models/criteria.py:627
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:17
 #: templates/manage/criteria/country_criterion.html:17
@@ -425,10 +510,12 @@ msgstr ""
 #: templates/manage/criteria/weight_criterion.html:17
 #: templates/manage/criteria/width_criterion.html:17
 msgid "Weight"
-msgstr ""
+msgstr "Waga"
 
-#: catalog/models.py:593 criteria/models/criteria.py:257
-#: criteria/models/criteria.py:275 criteria/models/criteria.py:690
+#: catalog/models.py:593
+#: criteria/models/criteria.py:257
+#: criteria/models/criteria.py:275
+#: criteria/models/criteria.py:690
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:11
 #: templates/manage/criteria/country_criterion.html:11
 #: templates/manage/criteria/distance_criterion.html:11
@@ -441,9 +528,10 @@ msgstr ""
 #: templates/manage/criteria/weight_criterion.html:11
 #: templates/manage/criteria/width_criterion.html:11
 msgid "Height"
-msgstr ""
+msgstr "Wysokość"
 
-#: catalog/models.py:594 criteria/models/criteria.py:319
+#: catalog/models.py:594
+#: criteria/models/criteria.py:319
 #: criteria/models/criteria.py:337
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:12
 #: templates/manage/criteria/country_criterion.html:12
@@ -457,9 +545,10 @@ msgstr ""
 #: templates/manage/criteria/weight_criterion.html:12
 #: templates/manage/criteria/width_criterion.html:12
 msgid "Length"
-msgstr ""
+msgstr "Długość"
 
-#: catalog/models.py:595 criteria/models/criteria.py:113
+#: catalog/models.py:595
+#: criteria/models/criteria.py:113
 #: criteria/models/criteria.py:672
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:16
 #: templates/manage/criteria/country_criterion.html:16
@@ -473,119 +562,128 @@ msgstr ""
 #: templates/manage/criteria/weight_criterion.html:16
 #: templates/manage/criteria/width_criterion.html:16
 msgid "Width"
-msgstr ""
+msgstr "Szerokość"
 
-#: catalog/models.py:598 discounts/models.py:44 manage/views/voucher.py:60
-#: order/models.py:57 order/models.py:135 payment/models.py:81
-#: shipping/models.py:61 templates/manage/voucher/vouchers_inline.html:76
+#: catalog/models.py:598
+#: discounts/models.py:44
+#: manage/views/voucher.py:60
+#: order/models.py:57
+#: order/models.py:137
+#: payment/models.py:77
+#: shipping/models.py:75
+#: templates/manage/voucher/vouchers_inline.html:76
 #: voucher/models.py:102
 msgid "Tax"
-msgstr ""
+msgstr "Stawka podatku"
 
 #: catalog/models.py:599
 msgid "Subtype"
-msgstr ""
+msgstr "Podtyp"
 
 #: catalog/models.py:603
 msgid "Default variant"
-msgstr ""
+msgstr "Domyślny wariant"
 
 #: catalog/models.py:604
 msgid "Variants display type"
-msgstr ""
+msgstr "Wyświetlany typ Wariantu"
 
 #: catalog/models.py:610
 msgid "Active name"
-msgstr ""
+msgstr "Aktywna nazwa"
 
 #: catalog/models.py:611
 msgid "Active SKU"
-msgstr ""
+msgstr "Aktywny numer katalogowy"
 
 #: catalog/models.py:612
 msgid "Active short description"
-msgstr ""
+msgstr "Aktywny skrócony opis"
 
 #: catalog/models.py:613
-#, fuzzy
 msgid "Active static bock"
-msgstr "Blok statyczny"
+msgstr "Aktywny Blok statyczny"
 
 #: catalog/models.py:614
 msgid "Active description"
-msgstr ""
+msgstr "Aktywny opis"
 
 #: catalog/models.py:615
 msgid "Active price"
-msgstr ""
+msgstr "Aktywna cena"
 
 #: catalog/models.py:616
 msgid "Active for sale"
-msgstr ""
+msgstr "Aktywna wyprzedaż"
 
 #: catalog/models.py:617
 msgid "Active for sale price"
-msgstr ""
+msgstr "Aktywna cena wyprzedażowa"
 
 #: catalog/models.py:618
 msgid "Active Images"
-msgstr ""
+msgstr "Aktywne obrazy"
 
-#: catalog/models.py:619 templates/manage/product/related_products.html:14
+#: catalog/models.py:619
+#: templates/manage/product/related_products.html:14
 msgid "Active related products"
-msgstr ""
+msgstr "Aktywne powiązane produkty"
 
-#: catalog/models.py:620 templates/manage/product/accessories.html:14
+#: catalog/models.py:620
+#: templates/manage/product/accessories.html:14
 msgid "Active accessories"
-msgstr ""
+msgstr "Aktywne akcesoria"
 
 #: catalog/models.py:621
 msgid "Active meta title"
-msgstr ""
+msgstr "Aktywny meta tytuł"
 
 #: catalog/models.py:622
 msgid "Active meta description"
-msgstr ""
+msgstr "Aktywny meta opis"
 
 #: catalog/models.py:623
 msgid "Active meta keywords"
-msgstr ""
+msgstr "Aktywne meta słowa kluczowe"
 
 #: catalog/models.py:624
 msgid "Active dimensions"
-msgstr ""
+msgstr "Aktywne wymiary"
 
 #: catalog/models.py:625
-#, fuzzy
 msgid "Product template"
-msgstr "Kolumny produktu"
+msgstr "Szablon Produktu"
 
 #: catalog/models.py:628
 msgid "Active price calculation"
-msgstr ""
+msgstr "Aktywna kalkulacja ceny"
 
 #: catalog/models.py:629
 msgid "Price Calculation"
-msgstr ""
+msgstr "Kalkulacja ceny"
 
 #: catalog/models.py:632
 msgid "SKU Manufacturer"
-msgstr ""
+msgstr "Numer katalogowy producenta"
 
 #: catalog/models.py:633
 msgid "Manufacturer"
-msgstr ""
+msgstr "Producent"
 
-#: catalog/models.py:634 core/management/commands/lfs_migrate.py:53
+#: catalog/models.py:634
+#: core/management/commands/lfs_migrate.py:55
 msgid "Type of quantity field"
-msgstr ""
+msgstr "Typ pola z ilością"
 
-#: catalog/models.py:1468
+#: catalog/models.py:1467
 msgid "Accessory"
-msgstr ""
+msgstr "Akcesoria"
 
-#: catalog/models.py:1594 catalog/models.py:1837 catalog/models.py:2116
-#: core/models.py:76 page/models.py:16
+#: catalog/models.py:1593
+#: catalog/models.py:1836
+#: catalog/models.py:2121
+#: core/models.py:76
+#: page/models.py:16
 #: templates/manage/portlets/portlets_inline.html:40
 #: templates/manage/product/attachments.html:18
 #: templates/manage/product/images.html:36
@@ -593,116 +691,135 @@ msgstr ""
 msgid "Title"
 msgstr "Tytuł"
 
-#: catalog/models.py:1595 catalog/models.py:1698 core/models.py:78
+#: catalog/models.py:1594
+#: catalog/models.py:1697
+#: core/models.py:78
 msgid "Group"
-msgstr ""
+msgstr "Grupa"
 
-#: catalog/models.py:1599
+#: catalog/models.py:1598
 msgid "Display on product"
-msgstr ""
+msgstr "Wyświetlaj przy produkcie"
 
-#: catalog/models.py:1602
+#: catalog/models.py:1601
 msgid "Display no results"
-msgstr ""
+msgstr "Wyświetlaj gdy brak wyników"
 
-#: catalog/models.py:1604 catalog/models.py:1792 customer/models.py:104
-#: discounts/models.py:43 templates/manage/portlets/portlets_inline.html:37
+#: catalog/models.py:1603
+#: catalog/models.py:1791
+#: customer/models.py:104
+#: discounts/models.py:43
+#: templates/manage/portlets/portlets_inline.html:37
 #: templates/manage/voucher/vouchers_inline.html:70
 msgid "Type"
-msgstr ""
+msgstr "Typ"
+
+#: catalog/models.py:1605
+msgid "Display price"
+msgstr "Wyświetlaj cenę"
 
 #: catalog/models.py:1606
-msgid "Display price"
-msgstr ""
-
-#: catalog/models.py:1607
 #: templates/manage/payment/payment_method_prices.html:9
 #: templates/manage/shipping/shipping_method_prices.html:9
 msgid "Add price"
-msgstr ""
+msgstr "Dodaj cenę"
 
-#: catalog/models.py:1610 catalog/models.py:1933
+#: catalog/models.py:1609
+#: catalog/models.py:1938
 msgid "Min"
-msgstr ""
+msgstr "Min"
 
-#: catalog/models.py:1611 catalog/models.py:1934
+#: catalog/models.py:1610
+#: catalog/models.py:1939
 msgid "Max"
-msgstr ""
+msgstr "Max"
 
-#: catalog/models.py:1612 catalog/models.py:1618
+#: catalog/models.py:1611
+#: catalog/models.py:1617
 msgid "Step"
-msgstr ""
+msgstr "Krok"
 
-#: catalog/models.py:1613
+#: catalog/models.py:1612
 msgid "Decimal places"
-msgstr ""
+msgstr "Miejsca dziesiętne"
 
-#: catalog/models.py:1617 templates/manage/properties/step_inline.html:2
+#: catalog/models.py:1616
+#: templates/manage/properties/step_inline.html:2
 msgid "Step type"
-msgstr ""
+msgstr "Rodzaj kroku"
 
-#: catalog/models.py:1623 templates/manage/manage_base.html:90
+#: catalog/models.py:1622
+#: templates/manage/manage_base.html:90
 #: templates/manage/manage_base.html:92
 #: templates/manage/product/product.html:107
 #: templates/manage/properties/properties_inline.html:6
 #: templates/manage/properties/property.html:7
 #: templates/manage/properties/property_group.html:33
 msgid "Properties"
-msgstr ""
+msgstr "Cechy"
 
-#: catalog/models.py:1790 discounts/models.py:42 manage/views/voucher.py:55
+#: catalog/models.py:1789
+#: discounts/models.py:42
+#: manage/views/voucher.py:55
 #: templates/manage/voucher/vouchers_inline.html:73
 msgid "Value"
-msgstr ""
+msgstr "Wartość"
 
-#: catalog/models.py:1791
+#: catalog/models.py:1790
 msgid "Value as float"
-msgstr ""
+msgstr "Wartość jako liczba zmiennoprzecinkowa"
 
-#: catalog/models.py:1833 catalog/models.py:1875
+#: catalog/models.py:1832
+#: catalog/models.py:1874
 #: criteria/models/criteria_objects.py:20
 msgid "Content type"
-msgstr ""
+msgstr "Typ treści"
 
-#: catalog/models.py:1834 catalog/models.py:1876
+#: catalog/models.py:1833
+#: catalog/models.py:1875
 #: criteria/models/criteria_objects.py:17
 #: criteria/models/criteria_objects.py:21
 msgid "Content id"
-msgstr ""
+msgstr "Id treści"
 
-#: catalog/models.py:1911
+#: catalog/models.py:1913
 msgid "Display files"
-msgstr ""
+msgstr "Wyświetlaj pliki"
 
-#: catalog/models.py:1912 templates/manage/manage_base.html:97
+#: catalog/models.py:1914
+#: templates/manage/manage_base.html:97
 msgid "HTML"
 msgstr ""
 
-#: catalog/models.py:1913 templates/manage/static_block/files.html:2
-#: templates/manage/static_block/static_block.html:36
+#: catalog/models.py:1915
+#: templates/manage/static_block/files.html:2
+#: templates/manage/static_block/static_block.html:42
 msgid "Files"
-msgstr ""
+msgstr "Pliki"
 
 #: catalog/settings.py:9
 msgid "Integer"
-msgstr ""
+msgstr "Liczba całkowita"
 
 #: catalog/settings.py:10
 msgid "Decimal 0.1"
-msgstr ""
+msgstr "Dziesiętne 0.1"
 
 #: catalog/settings.py:11
 msgid "Decimal 0.01"
-msgstr ""
+msgstr "Dziesiętne 0.01"
 
-#: catalog/settings.py:18 catalog/settings.py:29 catalog/settings.py:36
+#: catalog/settings.py:18
+#: catalog/settings.py:29
+#: catalog/settings.py:36
 #: catalog/settings.py:43
 #: templates/manage/product/product_filters_inline.html:56
 #: templates/manage/product/products_inline.html:84
 msgid "Standard"
-msgstr ""
+msgstr "Standard"
 
-#: catalog/settings.py:19 templates/manage/manage_base.html:173
+#: catalog/settings.py:19
+#: templates/manage/manage_base.html:173
 #: templates/manage/customer/customer_inline.html:30
 #: templates/manage/product/data.html:207
 #: templates/manage/product/product_filters_inline.html:42
@@ -715,9 +832,10 @@ msgstr ""
 #: templates/manage/reviews/reviews_inline.html:84
 #: templates/manage/reviews/reviews_inline.html:93
 msgid "Yes"
-msgstr ""
+msgstr "Tak"
 
-#: catalog/settings.py:20 templates/manage/manage_base.html:174
+#: catalog/settings.py:20
+#: templates/manage/manage_base.html:174
 #: templates/manage/customer/customer_inline.html:32
 #: templates/manage/product/data.html:209
 #: templates/manage/product/product_filters_inline.html:43
@@ -730,303 +848,334 @@ msgstr ""
 #: templates/manage/reviews/reviews_inline.html:87
 #: templates/manage/reviews/reviews_inline.html:96
 msgid "No"
-msgstr ""
+msgstr "Nie"
 
-#: catalog/settings.py:30 catalog/settings.py:37 catalog/settings.py:44
+#: catalog/settings.py:30
+#: catalog/settings.py:37
+#: catalog/settings.py:44
 #: templates/manage/product/product_filters_inline.html:57
 #: templates/manage/product/products_inline.html:85
 msgid "Product with variants"
-msgstr ""
+msgstr "Produkt z wariantami"
 
-#: catalog/settings.py:31 catalog/settings.py:38 export/models.py:72
+#: catalog/settings.py:31
+#: catalog/settings.py:38
+#: export/models.py:72
 #: templates/manage/product/product_filters_inline.html:58
 #: templates/manage/product/products_inline.html:86
 msgid "Variant"
-msgstr ""
+msgstr "Wariant"
 
-#: catalog/settings.py:32 catalog/settings.py:39 catalog/settings.py:45
+#: catalog/settings.py:32
+#: catalog/settings.py:39
+#: catalog/settings.py:45
 #: templates/manage/product/product_filters_inline.html:59
 #: templates/manage/product/products_inline.html:87
 msgid "Configurable product"
-msgstr ""
+msgstr "Konfigurowalny produkt"
 
 #: catalog/settings.py:52
 msgid "List"
-msgstr ""
+msgstr "Lista"
 
 #: catalog/settings.py:53
 msgid "Select"
-msgstr ""
+msgstr "Lista rozwijana"
 
-#: catalog/settings.py:61 portlet/templatetags/lfs_portlets_tags.py:107
+#: catalog/settings.py:61
+#: portlet/templatetags/lfs_portlets_tags.py:107
 #: templates/manage/manage_base.html:85
 #: templates/manage/category/manage_categories_portlet.html:2
 #: templates/manage/product/categories.html:3
 #: templates/manage/product/product.html:92
 msgid "Categories"
-msgstr ""
+msgstr "Kategorie"
 
 #: catalog/settings.py:70
 msgid "hours"
-msgstr ""
+msgstr "godziny"
 
 #: catalog/settings.py:71
 msgid "days"
-msgstr ""
+msgstr "dni"
 
 #: catalog/settings.py:72
 msgid "weeks"
-msgstr ""
+msgstr "tygodnie"
 
 #: catalog/settings.py:73
 msgid "months"
-msgstr ""
+msgstr "miesiące"
 
 #: catalog/settings.py:77
 msgid "hour"
-msgstr ""
+msgstr "godzina"
 
 #: catalog/settings.py:78
 msgid "day"
-msgstr ""
+msgstr "dzień"
 
 #: catalog/settings.py:79
 msgid "week"
-msgstr ""
+msgstr "tydzień"
 
 #: catalog/settings.py:80
 msgid "month"
-msgstr ""
+msgstr "miesiąc"
 
 #: catalog/settings.py:93
 msgid "Float field"
-msgstr ""
+msgstr "Pole z liczbązmiennoprzecinkową"
 
 #: catalog/settings.py:94
 msgid "Text field"
-msgstr ""
+msgstr "Pole tekstowe"
 
 #: catalog/settings.py:95
 msgid "Select field"
-msgstr ""
+msgstr "Lista rozwijana"
 
 #: catalog/settings.py:103
 msgid "Automatic"
-msgstr ""
+msgstr "Automatycznie"
 
 #: catalog/settings.py:104
 msgid "Fixed step"
-msgstr ""
+msgstr "Ustalony krok"
 
 #: catalog/settings.py:105
 msgid "Manual steps"
-msgstr ""
+msgstr "Ręcznie ustalany krok"
 
 #: catalog/settings.py:118
-#, fuzzy
 msgid "Category with products"
-msgstr "Kolumny kategorii"
+msgstr "Kategoria z Produktami"
 
 #: catalog/settings.py:122
-#, fuzzy
 msgid "Category with subcategories"
-msgstr "Kolumny kategorii"
+msgstr "Kategoria z podkategoriami"
 
-#: catalog/settings.py:130 export/settings.py:11
+#: catalog/settings.py:130
+#: export/settings.py:11
 #: templates/manage/product/variants.html:188
 msgid "Default"
-msgstr ""
+msgstr "Domyślnie"
 
-#: catalog/views.py:55 catalog/views.py:160
+#: catalog/views.py:55
+#: catalog/views.py:165
 msgid "The product has been changed according to your selection."
-msgstr ""
+msgstr "Produkt został zmieniony zgodnie z Twoim wyborem."
 
-#: catalog/views.py:132
+#: catalog/views.py:137
 msgid "Price has been changed according to your selection."
-msgstr ""
+msgstr "Cena została zmieniona zgodnie z Twoim wyborem."
 
-#: catalog/views.py:157 catalog/views.py:611
+#: catalog/views.py:162
+#: catalog/views.py:616
 msgid "The choosen combination of properties is not deliverable."
-msgstr ""
+msgstr "Wybrana kombinacja cech jest niemozliwa do dostarczenia."
 
-#: checkout/forms.py:19 checkout/forms.py:24 customer/forms.py:13
+#: checkout/forms.py:20
+#: checkout/forms.py:26
+#: customer/forms.py:13
 #: customer/forms.py:18
 msgid "First Name"
-msgstr ""
-
-#: checkout/forms.py:20 checkout/forms.py:25 customer/forms.py:14
-#: customer/forms.py:19
-#, fuzzy
-msgid "Last Name"
 msgstr "Imię"
 
-#: checkout/forms.py:21 customer/forms.py:15
+#: checkout/forms.py:21
+#: checkout/forms.py:27
+#: customer/forms.py:14
+#: customer/forms.py:19
+msgid "Last Name"
+msgstr "Nazwisko"
+
+#: checkout/forms.py:22
+#: customer/forms.py:15
 msgid "Invoice Phone"
-msgstr ""
+msgstr "Telefon na fakturze"
 
-#: checkout/forms.py:22 customer/forms.py:16
+#: checkout/forms.py:23
+#: customer/forms.py:16
 msgid "Invoice E-mail"
-msgstr ""
+msgstr "E-mail na fakturze"
 
-#: checkout/forms.py:26 customer/forms.py:20
+#: checkout/forms.py:24
+#: checkout/forms.py:30
+#: customer/forms.py:17
+#: customer/forms.py:22
+#: customer/models.py:72
+msgid "Company name"
+msgstr "Nazwa firmy"
+
+#: checkout/forms.py:28
+#: customer/forms.py:20
 msgid "Shipping Phone"
-msgstr ""
-
-#: checkout/forms.py:27 customer/forms.py:21
-msgid "Shipping E-mail"
-msgstr ""
+msgstr "Telefon do wysyłki"
 
 #: checkout/forms.py:29
-msgid "Requested Delivery Date"
-msgstr ""
-
-#: checkout/forms.py:31
-msgid "Account Number"
-msgstr ""
+#: customer/forms.py:21
+msgid "Shipping E-mail"
+msgstr "E-mail do wysyłki"
 
 #: checkout/forms.py:32
+msgid "Requested Delivery Date"
+msgstr "Żądana data dostarczenia"
+
+#: checkout/forms.py:34
+msgid "Account Number"
+msgstr "Numer konta"
+
+#: checkout/forms.py:35
 msgid "Bank Indentification Code"
-msgstr ""
+msgstr "Kod identyfikacyjny banku"
 
-#: checkout/forms.py:33
+#: checkout/forms.py:36
 msgid "Bankname"
-msgstr ""
+msgstr "Nazwa banku"
 
-#: checkout/forms.py:34 customer/models.py:93 order/models.py:94
+#: checkout/forms.py:37
+#: customer/models.py:93
+#: order/models.py:96
 msgid "Depositor"
-msgstr ""
-
-#: checkout/forms.py:38
-msgid "Credit Card Type"
-msgstr ""
-
-#: checkout/forms.py:39
-msgid "Credit Card Owner"
-msgstr ""
-
-#: checkout/forms.py:40
-msgid "Credit Card Number"
-msgstr ""
+msgstr "Deponujący"
 
 #: checkout/forms.py:41
-msgid "Expiration Date Month"
-msgstr ""
+msgid "Credit Card Type"
+msgstr "Rodzaj karty kredytowej"
 
 #: checkout/forms.py:42
-msgid "Expiration Date Year"
-msgstr ""
+msgid "Credit Card Owner"
+msgstr "Właściciel karty kredytowej"
 
 #: checkout/forms.py:43
-msgid "Verification Number"
-msgstr ""
+msgid "Credit Card Number"
+msgstr "Numer karty kredytowej"
+
+#: checkout/forms.py:44
+msgid "Expiration Date Month"
+msgstr "Miesiąc wygaśnięcia ważności karty"
 
 #: checkout/forms.py:45
-msgid "Same as invoice"
-msgstr ""
+msgid "Expiration Date Year"
+msgstr "Rok wygaśnięcia ważności karty"
 
 #: checkout/forms.py:46
+msgid "Verification Number"
+msgstr "Numer weryfikacyjny"
+
+#: checkout/forms.py:48
+msgid "Same as invoice"
+msgstr "Tak samo jak na fakturze"
+
+#: checkout/forms.py:49
 msgid "Your message to us"
-msgstr ""
+msgstr "Twoja wiadomość dla nas"
 
-#: checkout/forms.py:58
+#: checkout/forms.py:61
 msgid "This field is required."
-msgstr ""
+msgstr "To pole jest wymagane."
 
-#: checkout/forms.py:81
+#: checkout/forms.py:88
 msgid "Invalid shipping country."
-msgstr ""
+msgstr "Nieprawidłowy kraj do wysyłki."
 
 #: checkout/settings.py:7
 msgid "Anonymous and Authenticated"
-msgstr ""
+msgstr "Anonimowi i Zalogowani"
 
 #: checkout/settings.py:8
 msgid "Anonymous only"
-msgstr ""
+msgstr "Tylko Anonimowi"
 
 #: checkout/settings.py:9
 msgid "Authenticated only"
-msgstr ""
+msgstr "Tylko Zalogowani"
 
-#: checkout/views.py:65 customer/models.py:79 customer/views.py:56
+#: checkout/views.py:65
+#: customer/models.py:79
+#: customer/views.py:56
 #: templates/manage/customer/customers_inline.html:28
 #: templates/manage/marketing/rating_mails.html:51
 #: templates/manage/reviews/review_inline.html:54
 #: templates/manage/reviews/reviews_inline.html:27
 msgid "E-Mail"
-msgstr ""
+msgstr "E-mail"
 
-#: checkout/views.py:75 customer/views.py:72
+#: checkout/views.py:75
+#: customer/views.py:72
 msgid "You have been logged in."
-msgstr ""
+msgstr "Zostałeś zalogowany"
 
-#: checkout/views.py:98 customer/views.py:104
+#: checkout/views.py:98
+#: customer/views.py:104
 msgid "You have been registered and logged in."
-msgstr ""
+msgstr "Zostałeś zarejestrowany i zalogowany."
 
-#: checkout/views.py:224
+#: checkout/views.py:223
 msgid "Please confirm our terms and conditions"
-msgstr ""
+msgstr "Zapoznałem się z regulaminem"
 
 #: checkout/views.py:236
 msgid "Invalid invoice address"
-msgstr ""
+msgstr "Nieprawidłowy adres na fakturę"
 
-#: checkout/views.py:251
+#: checkout/views.py:252
 msgid "Invalid shipping address"
-msgstr ""
+msgstr "Nieprawidłowy adres wysyłki"
 
 #: core/models.py:18
 msgid "Country code"
-msgstr ""
+msgstr "Kod kraju"
 
 #: core/models.py:77
 msgid "Link"
-msgstr ""
+msgstr "Odnośnik"
 
 #: core/models.py:155
 msgid "Shop owner"
-msgstr ""
+msgstr "Właściciel sklepu"
 
 #: core/models.py:156
 msgid "From e-mail address"
-msgstr ""
+msgstr "Adres e-mail Od"
 
 #: core/models.py:157
 msgid "Notification email addresses"
-msgstr ""
+msgstr "Adres e-mail dla powiadomień"
 
 #: core/models.py:166
 msgid "Google Analytics ID"
-msgstr ""
+msgstr "Google Analytics ID"
 
 #: core/models.py:167
 msgid "Google Analytics Site Tracking"
-msgstr ""
+msgstr "Google Analytics Site Tracking"
 
 #: core/models.py:168
 msgid "Google Analytics E-Commerce Tracking"
-msgstr ""
+msgstr "Google Analytics E-Commerce Tracking"
 
 #: core/models.py:170
 msgid "Invoice countries"
-msgstr ""
+msgstr "Kraje dla faktury"
 
 #: core/models.py:171
 msgid "Shipping countries"
-msgstr ""
+msgstr "Kraje do wysyłki"
 
 #: core/models.py:172
 msgid "Default shipping country"
-msgstr ""
+msgstr "Domyślny kraj do wysyłki"
 
-#: core/models.py:175 core/management/commands/lfs_migrate.py:129
+#: core/models.py:175
+#: core/management/commands/lfs_migrate.py:144
 msgid "Default Shop Locale"
-msgstr ""
+msgstr "Domyślne ustawienia językowe sklepu"
 
-#: core/models.py:176 core/management/commands/lfs_migrate.py:131
+#: core/models.py:176
+#: core/management/commands/lfs_migrate.py:146
 msgid "Use international currency codes"
-msgstr ""
+msgstr "Używaj międzynarodowych kodów walut"
 
 #: core/models.py:179
 msgid "Checkout type"
@@ -1034,114 +1183,113 @@ msgstr ""
 
 #: core/models.py:180
 msgid "Confirm TOC"
-msgstr ""
+msgstr "Zaakceptuj regulamin"
 
 #: core/models.py:244
-#, fuzzy
 msgid "Version"
-msgstr "Sesja"
+msgstr "Wersja"
 
 #: core/settings.py:10
 msgid "Tabs"
-msgstr ""
+msgstr "Zakładki"
 
 #: core/settings.py:11
 msgid "Footer"
-msgstr ""
+msgstr "Stopka"
 
-#: core/settings.py:17
-msgid "Price includes tax"
-msgstr ""
-
-#: core/settings.py:18
-msgid "Price excludes tax"
-msgstr ""
-
-#: core/management/commands/lfs_migrate.py:134
+#: core/management/commands/lfs_migrate.py:149
 msgid "Supplier"
-msgstr ""
+msgstr "Dostawca"
 
 #: core/templatetags/lfs_tags.py:160
 #: portlet/templatetags/lfs_portlets_tags.py:122
 msgid "Information"
-msgstr ""
+msgstr "Informacja"
 
 #: core/templatetags/lfs_tags.py:276
 #, python-format
 msgid "%s tag needs group id as argument"
-msgstr ""
+msgstr "znacznik %s wymaga id grupy jako argumentu"
 
-#: core/templatetags/lfs_tags.py:356 core/templatetags/lfs_tags.py:386
+#: core/templatetags/lfs_tags.py:356
+#: core/templatetags/lfs_tags.py:386
 #, python-format
 msgid "%s tag needs no argument"
-msgstr ""
+msgstr "znacznik %s nie wymaga żadnych argumentów"
 
 #: core/templatetags/lfs_tags.py:410
 #, python-format
 msgid "%s tag needs product as argument"
-msgstr ""
+msgstr "znacznik %s wymaga produktu jako argumentu"
 
 #: core/widgets/file.py:19
 msgid "Delete file"
-msgstr ""
+msgstr "Usuń plik"
 
 #: core/widgets/image.py:19
 msgid "Delete image"
-msgstr ""
+msgstr "Usuń obraz"
 
-#: criteria/settings.py:16 criteria/settings.py:24
+#: criteria/settings.py:16
+#: criteria/settings.py:24
 msgid "Equal to"
-msgstr ""
+msgstr "Równe"
 
-#: criteria/settings.py:17 templates/manage/criteria/number_operators.html:4
+#: criteria/settings.py:17
+#: templates/manage/criteria/number_operators.html:4
 msgid "Less than"
-msgstr ""
+msgstr "Mniejsze niż"
 
 #: criteria/settings.py:18
 msgid "Less than or equal to"
-msgstr ""
+msgstr "Mniejsze lub równe"
 
-#: criteria/settings.py:19 templates/manage/criteria/number_operators.html:6
+#: criteria/settings.py:19
+#: templates/manage/criteria/number_operators.html:6
 msgid "Greater than"
-msgstr ""
+msgstr "Większe niż"
 
 #: criteria/settings.py:20
 msgid "Greater than or equal to"
-msgstr ""
+msgstr "Większe lub równe "
 
 #: criteria/settings.py:25
 msgid "Contain"
-msgstr ""
+msgstr "Zawiera"
 
 #: criteria/settings.py:29
 msgid "Is"
-msgstr ""
+msgstr "Jest"
 
 #: criteria/settings.py:30
 msgid "Is not"
-msgstr ""
+msgstr "Nie jest"
 
 #: criteria/settings.py:31
 #: templates/manage/criteria/selection_operators.html:5
 msgid "Is valid"
-msgstr ""
+msgstr "Jest poprawne"
 
 #: criteria/settings.py:32
 #: templates/manage/criteria/selection_operators.html:6
 msgid "Is not valid"
-msgstr ""
+msgstr "Nie jest poprawne"
 
-#: criteria/models/criteria.py:51 criteria/models/criteria.py:112
-#: criteria/models/criteria.py:185 criteria/models/criteria.py:318
-#: criteria/models/criteria.py:381 criteria/models/criteria.py:475
-#: criteria/models/criteria.py:608 criteria/models/criteria.py:671
+#: criteria/models/criteria.py:51
+#: criteria/models/criteria.py:112
+#: criteria/models/criteria.py:185
+#: criteria/models/criteria.py:318
+#: criteria/models/criteria.py:381
+#: criteria/models/criteria.py:475
+#: criteria/models/criteria.py:608
+#: criteria/models/criteria.py:671
 #: criteria/models/criteria.py:734
 msgid "Operator"
-msgstr ""
+msgstr "Operator"
 
 #: criteria/models/criteria.py:70
 msgid "Cart Price"
-msgstr ""
+msgstr "Cena w koszyku"
 
 #: criteria/models/criteria.py:131
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:9
@@ -1156,14 +1304,16 @@ msgstr ""
 #: templates/manage/criteria/weight_criterion.html:9
 #: templates/manage/criteria/width_criterion.html:9
 msgid "Combined length and girth"
-msgstr ""
+msgstr "W sumie długość i obwód"
 
-#: criteria/models/criteria.py:186 customer_tax/models.py:25
+#: criteria/models/criteria.py:186
+#: customer_tax/models.py:25
 #: templates/manage/shop/default_values_tab.html:81
 msgid "Countries"
-msgstr ""
+msgstr "Kraje"
 
-#: criteria/models/criteria.py:208 customer/models.py:77
+#: criteria/models/criteria.py:208
+#: customer/models.py:77
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:8
 #: templates/manage/criteria/country_criterion.html:8
 #: templates/manage/criteria/distance_criterion.html:8
@@ -1176,14 +1326,15 @@ msgstr ""
 #: templates/manage/criteria/weight_criterion.html:8
 #: templates/manage/criteria/width_criterion.html:8
 msgid "Country"
-msgstr ""
+msgstr "Kraj"
 
 #: criteria/models/criteria.py:382
 #: templates/manage/payment/payment_methods.html:3
 msgid "Payment methods"
-msgstr ""
+msgstr "Metody płatności"
 
-#: criteria/models/criteria.py:407 payment/models.py:122
+#: criteria/models/criteria.py:407
+#: payment/models.py:121
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:13
 #: templates/manage/criteria/country_criterion.html:13
 #: templates/manage/criteria/distance_criterion.html:13
@@ -1197,12 +1348,12 @@ msgstr ""
 #: templates/manage/criteria/width_criterion.html:13
 #: templates/manage/order/order_inline.html:69
 msgid "Payment method"
-msgstr ""
+msgstr "Metoda płatności"
 
 #: criteria/models/criteria.py:476
 #: templates/manage/shipping/shipping_methods.html:4
 msgid "Shipping methods"
-msgstr ""
+msgstr "Metody wysyłki"
 
 #: criteria/models/criteria.py:501
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:15
@@ -1218,9 +1369,10 @@ msgstr ""
 #: templates/manage/criteria/width_criterion.html:15
 #: templates/manage/order/order_inline.html:66
 msgid "Shipping method"
-msgstr ""
+msgstr "Metoda wysyłki"
 
-#: criteria/models/criteria.py:735 criteria/models/criteria.py:754
+#: criteria/models/criteria.py:735
+#: criteria/models/criteria.py:754
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:10
 #: templates/manage/criteria/country_criterion.html:10
 #: templates/manage/criteria/distance_criterion.html:10
@@ -1233,92 +1385,94 @@ msgstr ""
 #: templates/manage/criteria/weight_criterion.html:10
 #: templates/manage/criteria/width_criterion.html:10
 msgid "Distance"
-msgstr ""
+msgstr "Odległość"
 
 #: criteria/models/criteria_objects.py:16
 msgid "Criterion type"
-msgstr ""
+msgstr "Rodzaj kryterium"
 
-#: customer/forms.py:35 customer/forms.py:41
+#: customer/forms.py:36
+#: customer/forms.py:42
 #: templates/manage/order/order_inline.html:27
 msgid "E-mail"
-msgstr ""
+msgstr "E-mail"
 
-#: customer/forms.py:43
+#: customer/forms.py:44
 msgid "Password"
-msgstr ""
+msgstr "Hasło"
 
-#: customer/forms.py:45
+#: customer/forms.py:46
 msgid "Confirm password"
-msgstr ""
+msgstr "Potwierdź hasło"
 
-#: customer/forms.py:54
+#: customer/forms.py:55
 msgid "The two passwords do not match."
-msgstr ""
+msgstr "Hasła nie pasują do siebie"
 
-#: customer/forms.py:64
+#: customer/forms.py:65
 msgid "That email address is already in use."
-msgstr ""
+msgstr "Ten adres e-mail jest już używany."
 
 #: customer/models.py:26
 msgid "Selected shipping method"
-msgstr ""
+msgstr "Wybrana metoda wysyłki"
 
 #: customer/models.py:27
 msgid "Selected payment method"
-msgstr ""
+msgstr "Wybrana metoda płatności"
 
 #: customer/models.py:28
 msgid "Bank account"
-msgstr ""
+msgstr "Konto bankowe"
 
 #: customer/models.py:29
 msgid "Credit card"
-msgstr ""
+msgstr "Karta kredytowa"
 
 #: customer/models.py:30
 msgid "Selected shipping address"
-msgstr ""
+msgstr "Wybrany adres wysyłki"
 
 #: customer/models.py:31
 msgid "Selected invoice address"
-msgstr ""
+msgstr "Wybrany adres na fakturze"
 
 #: customer/models.py:32
 msgid "Selected country"
-msgstr ""
+msgstr "Wybrany kraj"
 
-#: customer/models.py:68 customer/models.py:88 customer/models.py:102
+#: customer/models.py:68
+#: customer/models.py:88
+#: customer/models.py:102
 #: templates/manage/cart/cart_inline.html:21
 #: templates/manage/customer/customer.html:23
 msgid "Customer"
-msgstr ""
+msgstr "Klient"
 
-#: customer/models.py:70 templates/manage/customer/customers_inline.html:16
+#: customer/models.py:70
+#: templates/manage/customer/customers_inline.html:16
 msgid "Firstname"
-msgstr ""
+msgstr "Imię"
 
-#: customer/models.py:71 templates/manage/customer/customers_inline.html:22
+#: customer/models.py:71
+#: templates/manage/customer/customers_inline.html:22
 msgid "Lastname"
-msgstr ""
-
-#: customer/models.py:72
-msgid "Company name"
-msgstr ""
+msgstr "Nazwisko"
 
 #: customer/models.py:73
 msgid "Street"
-msgstr ""
+msgstr "Ulica"
 
 #: customer/models.py:74
 msgid "Zip code"
-msgstr ""
+msgstr "Kod pocztowy"
 
 #: customer/models.py:75
 msgid "City"
-msgstr ""
+msgstr "Miejscowość"
 
-#: customer/models.py:76 order/models.py:53
+#: customer/models.py:76
+#: order/models.py:53
 #: templates/manage/customer/customer_inline.html:128
 #: templates/manage/order/order.html:34
 #: templates/manage/order/order_filters_inline.html:16
@@ -1327,73 +1481,83 @@ msgstr ""
 #: templates/manage/order/orders_filters_inline.html:12
 #: templates/manage/order/orders_inline.html:15
 msgid "State"
-msgstr ""
+msgstr "Województwo"
 
-#: customer/models.py:78 templates/manage/order/order_inline.html:43
+#: customer/models.py:78
+#: templates/manage/order/order_inline.html:43
 msgid "Phone"
-msgstr ""
+msgstr "Telefon"
 
-#: customer/models.py:90 order/models.py:91
+#: customer/models.py:90
+#: order/models.py:93
 msgid "Account number"
-msgstr ""
+msgstr "Numer konta"
 
 #: customer/models.py:91
 msgid "Bank identification code"
-msgstr ""
+msgstr "Numer identyfikacyjny banku"
 
-#: customer/models.py:92 order/models.py:93
+#: customer/models.py:92
+#: order/models.py:95
 msgid "Bank name"
-msgstr ""
+msgstr "Nazwa banku"
 
 #: customer/models.py:105
 msgid "Owner"
-msgstr ""
+msgstr "Właściciel"
 
-#: customer/models.py:106 templates/manage/order/orders_inline.html:6
+#: customer/models.py:106
+#: templates/manage/order/orders_inline.html:6
 #: templates/manage/voucher/vouchers_inline.html:67
 msgid "Number"
-msgstr ""
+msgstr "Numer"
 
 #: customer/models.py:107
 msgid "Expiration date month"
-msgstr ""
+msgstr "Miesiąc wygaśnięcia"
 
 #: customer/models.py:108
 msgid "Expiration date year"
-msgstr ""
+msgstr "Rok wygaśnięcia"
 
 #: customer/views.py:140
 msgid "You have been logged out."
-msgstr ""
+msgstr "Zostałeś wylogowany"
 
-#: customer_tax/models.py:23 tax/models.py:17
+#: customer_tax/models.py:23
+#: tax/models.py:17
 msgid "Rate"
 msgstr ""
 
-#: discounts/settings.py:7 voucher/settings.py:7
+#: discounts/settings.py:7
+#: voucher/settings.py:7
 msgid "Absolute"
-msgstr ""
+msgstr "Absolutna"
 
-#: discounts/settings.py:8 voucher/settings.py:8
+#: discounts/settings.py:8
+#: voucher/settings.py:8
 msgid "Percentage"
-msgstr ""
+msgstr "Procentowa"
 
 #: export/models.py:19
 msgid "Script"
-msgstr ""
+msgstr "Skrypt"
 
-#: export/models.py:20 templates/manage/product/product.html:99
+#: export/models.py:20
+#: templates/manage/product/product.html:99
 #: templates/manage/product/variants.html:97
 msgid "Variants"
-msgstr ""
+msgstr "Warianty"
 
-#: export/models.py:70 templates/manage/product/product_filters_inline.html:15
+#: export/models.py:70
+#: templates/manage/product/product_filters_inline.html:15
 msgid "Category"
-msgstr ""
+msgstr "Kategoria"
 
-#: export/models.py:71 templates/manage/manage_base.html:122
+#: export/models.py:71
+#: templates/manage/manage_base.html:122
 msgid "Export"
-msgstr ""
+msgstr "Eksport"
 
 #: export/settings.py:10
 msgid "---"
@@ -1401,328 +1565,345 @@ msgstr ""
 
 #: export/settings.py:12
 msgid "Cheapest"
-msgstr ""
+msgstr "Najtańsze"
 
-#: export/settings.py:13 templates/manage/category/category_filter.html:5
+#: export/settings.py:13
+#: templates/manage/category/category_filter.html:5
 #: templates/manage/order/order_filters_inline.html:50
 #: templates/manage/order/orders_filter.html:98
 #: templates/manage/order/orders_filters_inline.html:100
 #: templates/manage/product/variants.html:132
 msgid "All"
-msgstr ""
+msgstr "Wszystko"
 
-#: mail/utils.py:16 mail/utils.py:43
+#: mail/utils.py:16
+#: mail/utils.py:43
 msgid "Your order has been received"
-msgstr ""
+msgstr "Twoje zamówienie zostało przyjęte"
 
 #: mail/utils.py:67
 #, python-format
 msgid "Welcome to %s"
-msgstr ""
+msgstr "Witamy w %s"
 
 #: mail/utils.py:99
 msgid "New review has been added"
-msgstr ""
+msgstr "Została dodana nowa opinia"
 
 #: manage/actions/views.py:96
 msgid "The action has been saved."
-msgstr ""
+msgstr "Akcja została zapisana."
 
-#: manage/actions/views.py:98 manage/views/shop.py:142
-#: manage/views/shop.py:165 manage/views/shop.py:188 manage/views/shop.py:213
-#: manage/views/categories/category.py:129 manage/views/categories/seo.py:42
-#: manage/views/categories/view.py:45 manage/views/product/product.py:176
+#: manage/actions/views.py:98
+#: manage/views/shop.py:140
+#: manage/views/shop.py:163
+#: manage/views/shop.py:186
+#: manage/views/shop.py:212
+#: manage/views/categories/category.py:129
+#: manage/views/categories/seo.py:42
+#: manage/views/categories/view.py:45
+#: manage/views/product/product.py:176
 #: manage/views/product/product.py:383
 msgid "Please correct the indicated errors."
-msgstr ""
+msgstr "Proszę poprawić wskazane błędy."
 
 #: manage/actions/views.py:125
 msgid "Action has been added."
-msgstr ""
+msgstr "Akcja została dodana."
 
 #: manage/actions/views.py:146
 msgid "Action has been deleted."
-msgstr ""
+msgstr "Akcja została usunięta."
 
 #: manage/actions/views.py:166
 msgid "The actions have been sorted."
-msgstr ""
+msgstr "Akcje zostały posortowane."
 
 #: manage/customer_tax/forms.py:25
 #, python-format
-msgid ""
-"There is already a customer tax with country %(country)s, see "
-"%(customer_tax)s %% "
-msgstr ""
+msgid "There is already a customer tax with country %(country)s, see %(customer_tax)s %% "
+msgstr "Już istnieje stawka podatku dla kraju %(country)s, zobacz %(customer_tax)s %% "
 
 #: manage/customer_tax/views.py:43
 msgid "Customer tax has been saved."
-msgstr ""
+msgstr "Stawka podatku została zapisana."
 
 #: manage/customer_tax/views.py:75
 msgid "Customer tax has been added."
-msgstr ""
+msgstr "Stawka podatku została dodana."
 
 #: manage/customer_tax/views.py:97
 msgid "Customer tax has been deleted."
-msgstr ""
+msgstr "Stawka podatku została usunięta."
 
 #: manage/views/carts.py:239
 msgid "Cart filters has been set."
-msgstr ""
+msgstr "Filtry koszyka zostały ustawione."
 
 #: manage/views/carts.py:275
 msgid "Cart filters has been set"
-msgstr ""
+msgstr "Filtry koszyka zostały ustawione"
 
 #: manage/views/carts.py:301
 msgid "Cart filters has been reset"
-msgstr ""
+msgstr "Filtry koszyka zostały zresetowane"
 
 #: manage/views/customer.py:283
 msgid "Customer filters have been set"
-msgstr ""
+msgstr "Filtry Klienta zostały ustawione"
 
 #: manage/views/customer.py:310
 msgid "Customer filters has been reset"
-msgstr ""
+msgstr "Filtry Klienta zostały zresetowane"
 
 #: manage/views/delivery_times.py:58
 msgid "Delivery time has been saved."
-msgstr ""
+msgstr "Czas dostawy został zapisany."
 
 #: manage/views/delivery_times.py:82
 msgid "Delivery time has been added."
-msgstr ""
+msgstr "Czas dostawy został dodany."
 
 #: manage/views/delivery_times.py:115
 msgid "Delivery time has been deleted."
-msgstr ""
+msgstr "Czas dostawy został usunięty."
 
 #: manage/views/discounts.py:127
 msgid "Discount method has been added."
-msgstr ""
+msgstr "Rodzaj rabatu został dodany."
 
-#: manage/views/discounts.py:151 manage/views/payment.py:223
-#: manage/views/payment.py:245 manage/views/shipping.py:222
+#: manage/views/discounts.py:151
+#: manage/views/payment.py:223
+#: manage/views/payment.py:245
+#: manage/views/shipping.py:222
 #: manage/views/shipping.py:244
-#, fuzzy
 msgid "Modifications have been changed."
-msgstr "Data modyfikacji"
+msgstr "Zmiany zostały zapisane."
 
 #: manage/views/discounts.py:178
 msgid "Discount data has been saved."
-msgstr ""
+msgstr "Dane rabatu zostały zapisane."
 
 #: manage/views/discounts.py:196
 msgid "Discount has been deleted."
-msgstr ""
+msgstr "Rabat został usunięty."
 
 #: manage/views/export.py:323
 msgid "Export data has been saved."
-msgstr ""
+msgstr "Dane eksportu zostały zapisane."
 
 #: manage/views/lfs_portlets.py:76
 msgid "Portlet has been updated."
-msgstr ""
+msgstr "Portlet został uaktualniony."
 
 #: manage/views/lfs_portlets.py:111
 msgid "Portlet has been added."
-msgstr ""
+msgstr "Portlet został dodany."
 
 #: manage/views/lfs_portlets.py:148
 msgid "Portlet has been deleted."
-msgstr ""
+msgstr "Portlet został usunięty."
 
 #: manage/views/lfs_portlets.py:176
 msgid "Portlet has been saved."
-msgstr ""
+msgstr "Portlet został zapisany."
 
 #: manage/views/manufacturer.py:242
 msgid "Manufacturer data has been saved."
-msgstr ""
+msgstr "Dane Producenta zostały zapisane."
 
-#: manage/views/orders.py:246 manage/views/orders.py:282
+#: manage/views/orders.py:246
+#: manage/views/orders.py:282
 msgid "Filters has been set"
-msgstr ""
+msgstr "Filtry zostały ustawione"
 
 #: manage/views/orders.py:312
 msgid "Filters has been reset"
-msgstr ""
+msgstr "Filtry zostały zresetowane"
 
 #: manage/views/orders.py:382
 msgid "Order has been sent."
-msgstr ""
+msgstr "Zamówienie zostało wysłane."
 
 #: manage/views/orders.py:406
 msgid "State has been changed"
-msgstr ""
+msgstr "Stan został zmieniony"
 
 #: manage/views/page.py:161
 msgid "Data has been saved."
-msgstr ""
+msgstr "Dane zostały zapisane."
 
-#: manage/views/page.py:182 manage/views/categories/seo.py:40
+#: manage/views/page.py:182
+#: manage/views/categories/seo.py:40
 msgid "SEO data has been saved."
-msgstr ""
+msgstr "Dane SEO zostały zapisane"
 
 #: manage/views/page.py:200
 msgid "Page has been added."
-msgstr ""
+msgstr "Strona została dodana."
 
 #: manage/views/page.py:221
 msgid "Page has been deleted."
-msgstr ""
+msgstr "Strona została usunięta."
 
 #: manage/views/page.py:242
 msgid "The pages have been sorted."
-msgstr ""
+msgstr "Strony zostały posortowane."
 
 #: manage/views/payment.py:197
 msgid "Payment method has been added."
-msgstr ""
+msgstr "Metoda płatności została dodana."
 
-#: manage/views/payment.py:271 manage/views/shipping.py:266
+#: manage/views/payment.py:271
+#: manage/views/shipping.py:266
 msgid "Price has been added"
-msgstr ""
+msgstr "Cena została dodana"
 
-#: manage/views/payment.py:286 manage/views/shipping.py:286
+#: manage/views/payment.py:286
+#: manage/views/shipping.py:286
 msgid "Prices have been deleted"
-msgstr ""
+msgstr "Ceny zostały usunięte"
 
-#: manage/views/payment.py:297 manage/views/shipping.py:298
+#: manage/views/payment.py:297
+#: manage/views/shipping.py:298
 msgid "Prices have been updated"
-msgstr ""
+msgstr "Ceny zostały uaktualnione"
 
-#: manage/views/payment.py:346
+#: manage/views/payment.py:340
 msgid "Payment method has been saved."
-msgstr ""
+msgstr "Metody płatności zostały zapisane."
 
-#: manage/views/payment.py:371
+#: manage/views/payment.py:365
 msgid "Payment method has been deleted."
-msgstr ""
+msgstr "Metoda płatności została usunięta."
 
-#: manage/views/payment.py:392
+#: manage/views/payment.py:386
 msgid "The payment methods have been sorted."
-msgstr ""
+msgstr "Metody płatności zostały posortowane."
 
 #: manage/views/properties.py:106
 msgid "Property type has been saved."
-msgstr ""
+msgstr "Typ Cechy został zapisany."
 
 #: manage/views/properties.py:147
 msgid "Property type has been changed."
-msgstr ""
+msgstr "Typ Cechy został zmieniony."
 
 #: manage/views/properties.py:198
 msgid "Validators have been saved."
-msgstr ""
+msgstr "Walidatory zostały zapisane."
 
 #: manage/views/properties.py:228
 msgid "Step range has been saved."
-msgstr ""
+msgstr "Zakres kroku został zapisany."
 
 #: manage/views/properties.py:247
 msgid "Step type has been saved."
-msgstr ""
+msgstr "Rodzaj kroku został zapisany."
 
 #: manage/views/properties.py:264
 msgid "Step has been added."
-msgstr ""
+msgstr "Krok został dodany."
 
 #: manage/views/properties.py:276
 msgid "Steps have been updated."
-msgstr ""
+msgstr "Kroki zostały uaktualnione."
 
 #: manage/views/properties.py:300
 msgid "The step has been saved."
-msgstr ""
+msgstr "Krok został zapisany."
 
-#: manage/views/properties.py:327 manage/views/product/variants.py:197
+#: manage/views/properties.py:327
+#: manage/views/product/variants.py:197
 msgid "Property has been added."
-msgstr ""
+msgstr "Cecha została dodana."
 
-#: manage/views/properties.py:372 manage/views/product/variants.py:286
+#: manage/views/properties.py:372
+#: manage/views/product/variants.py:286
 msgid "Option has been added."
-msgstr ""
+msgstr "Opcja została dodana."
 
 #: manage/views/properties.py:374
 msgid "Option could not be added."
-msgstr ""
+msgstr "Opcja nie mogła zostać dodana."
 
 #: manage/views/properties.py:393
 msgid "Options have been update."
-msgstr ""
+msgstr "Opcje zostały uaktualnione."
 
 #: manage/views/review.py:240
 msgid "Review filters have been set"
-msgstr ""
+msgstr "Filtry opinii zostały ustawione"
 
 #: manage/views/review.py:270
 msgid "Review filters have been reset"
-msgstr ""
+msgstr "Filtry opinii zostały zresetowane"
 
 #: manage/views/review.py:300
 msgid "Review has been deleted."
-msgstr ""
+msgstr "Opinia została usunięta."
 
 #: manage/views/review.py:320
 msgid "Review state has been set"
-msgstr ""
+msgstr "Stan opinii został ustawiony"
 
 #: manage/views/shipping.py:198
 msgid "Shipping method has been added."
-msgstr ""
+msgstr "Metoda wysyłki została dodana."
 
 #: manage/views/shipping.py:347
 msgid "Shipping method has been saved."
-msgstr ""
+msgstr "Metoda wysyłki została zapisana."
 
 #: manage/views/shipping.py:372
 msgid "Shipping method has been deleted."
-msgstr ""
+msgstr "Metoda wysyłki została usunięta."
 
 #: manage/views/shipping.py:393
 msgid "The shipping methods have been sorted."
-msgstr ""
+msgstr "Metody wysyłki zostały posortowane."
 
-#: manage/views/shop.py:140
+#: manage/views/shop.py:138
 msgid "Shop data has been saved."
 msgstr ""
 
-#: manage/views/shop.py:163
+#: manage/views/shop.py:161
 msgid "Shop default values have been saved."
 msgstr ""
 
-#: manage/views/shop.py:186
+#: manage/views/shop.py:184
 msgid "Shop SEO data has been saved."
 msgstr ""
 
-#: manage/views/shop.py:211
+#: manage/views/shop.py:210
 msgid "Order numbers has been saved."
 msgstr ""
 
-#: manage/views/static_blocks.py:56
+#: manage/views/static_blocks.py:57
 msgid "Static block has been saved."
 msgstr ""
 
-#: manage/views/static_blocks.py:86
+#: manage/views/static_blocks.py:87
 msgid "Files has been deleted."
 msgstr ""
 
-#: manage/views/static_blocks.py:96
+#: manage/views/static_blocks.py:97
 msgid "Files has been updated."
 msgstr ""
 
-#: manage/views/static_blocks.py:142
+#: manage/views/static_blocks.py:143
 msgid "Files has been added."
 msgstr ""
 
-#: manage/views/static_blocks.py:178
+#: manage/views/static_blocks.py:179
 msgid "Static block has been added."
 msgstr ""
 
-#: manage/views/static_blocks.py:216
+#: manage/views/static_blocks.py:218
+msgid "The static blocks have been sorted."
+msgstr ""
+
+#: manage/views/static_blocks.py:240
 msgid "Static block has been deleted."
 msgstr ""
 
@@ -1754,17 +1935,20 @@ msgstr ""
 msgid "Effective prices have been set."
 msgstr ""
 
-#: manage/views/voucher.py:54 templates/manage/cart/cart_inline.html:106
-#: templates/manage/order/order_inline.html:161
+#: manage/views/voucher.py:54
+#: templates/manage/cart/cart_inline.html:106
+#: templates/manage/order/order_inline.html:172
 #: templates/manage/product/product_filters_inline.html:13
 msgid "Amount"
 msgstr ""
 
-#: manage/views/voucher.py:56 templates/manage/voucher/vouchers_inline.html:79
+#: manage/views/voucher.py:56
+#: templates/manage/voucher/vouchers_inline.html:79
 msgid "Start date"
 msgstr ""
 
-#: manage/views/voucher.py:57 templates/manage/voucher/vouchers_inline.html:82
+#: manage/views/voucher.py:57
+#: templates/manage/voucher/vouchers_inline.html:82
 msgid "End date"
 msgstr ""
 
@@ -1772,12 +1956,13 @@ msgstr ""
 msgid "Kind of"
 msgstr ""
 
-#: manage/views/voucher.py:59 templates/manage/voucher/vouchers_inline.html:85
-#, fuzzy
+#: manage/views/voucher.py:59
+#: templates/manage/voucher/vouchers_inline.html:85
 msgid "Effective from"
-msgstr "Aktywne formaty"
+msgstr "Obowiązuje od"
 
-#: manage/views/voucher.py:61 portlet/models/featured.py:26
+#: manage/views/voucher.py:61
+#: portlet/models/featured.py:26
 #: portlet/models/forsale.py:27
 #: templates/manage/voucher/vouchers_inline.html:94
 msgid "Limit"
@@ -1805,9 +1990,7 @@ msgstr ""
 
 #: manage/views/categories/category.py:83
 #, python-format
-msgid ""
-"Do you really want to delete the category <b>'%(name)s'</b> and all its sub "
-"categories?"
+msgid "Do you really want to delete the category <b>'%(name)s'</b> and all its sub categories?"
 msgstr ""
 
 #: manage/views/categories/category.py:127
@@ -1948,11 +2131,13 @@ msgstr ""
 msgid "Seo data has been saved."
 msgstr ""
 
-#: manage/views/product/variants.py:219 manage/views/product/variants.py:308
+#: manage/views/product/variants.py:219
+#: manage/views/product/variants.py:308
 msgid "Property has been deleted."
 msgstr ""
 
-#: manage/views/product/variants.py:369 manage/views/product/variants.py:371
+#: manage/views/product/variants.py:369
+#: manage/views/product/variants.py:371
 msgid "That slug is already in use. Please use another."
 msgstr ""
 
@@ -2012,7 +2197,8 @@ msgstr ""
 msgid "sales"
 msgstr ""
 
-#: marketing/models.py:47 templates/manage/order/order.html:59
+#: marketing/models.py:47
+#: templates/manage/order/order.html:59
 msgid "Order"
 msgstr ""
 
@@ -2045,147 +2231,156 @@ msgid "Invoice lastname"
 msgstr ""
 
 #: order/models.py:65
-msgid "Invoice Line 1"
+msgid "Invoice company name"
 msgstr ""
 
 #: order/models.py:66
-msgid "Invoice Line 2"
+msgid "Invoice Line 1"
 msgstr ""
 
 #: order/models.py:67
-msgid "Invoice City"
+msgid "Invoice Line 2"
 msgstr ""
 
 #: order/models.py:68
-msgid "Invoice State"
+msgid "Invoice City"
 msgstr ""
 
 #: order/models.py:69
+msgid "Invoice State"
+msgstr ""
+
+#: order/models.py:70
 msgid "Invoice Postal Code"
 msgstr ""
 
-#: order/models.py:71
+#: order/models.py:72
 msgid "Invoice phone"
 msgstr ""
 
-#: order/models.py:73
+#: order/models.py:74
 msgid "Shipping firstname"
 msgstr ""
 
-#: order/models.py:74
+#: order/models.py:75
 msgid "Shipping lastname"
 msgstr ""
 
-#: order/models.py:75
-msgid "Shipping Line 1"
-msgstr ""
-
 #: order/models.py:76
-msgid "Shipping Line 2"
+msgid "shipping company name"
 msgstr ""
 
 #: order/models.py:77
-msgid "Shipping City"
+msgid "Shipping Line 1"
 msgstr ""
 
 #: order/models.py:78
-msgid "Shipping State"
+msgid "Shipping Line 2"
 msgstr ""
 
 #: order/models.py:79
-msgid "Shipping Postal Code"
+msgid "Shipping City"
+msgstr ""
+
+#: order/models.py:80
+msgid "Shipping State"
 msgstr ""
 
 #: order/models.py:81
-msgid "Shipping phone"
+msgid "Shipping Postal Code"
 msgstr ""
 
 #: order/models.py:83
-msgid "Shipping Method"
-msgstr ""
-
-#: order/models.py:84
-msgid "Shipping Price"
+msgid "Shipping phone"
 msgstr ""
 
 #: order/models.py:85
-msgid "Shipping Tax"
+msgid "Shipping Method"
+msgstr ""
+
+#: order/models.py:86
+msgid "Shipping Price"
 msgstr ""
 
 #: order/models.py:87
-msgid "Payment Method"
-msgstr ""
-
-#: order/models.py:88
-msgid "Payment Price"
+msgid "Shipping Tax"
 msgstr ""
 
 #: order/models.py:89
+msgid "Payment Method"
+msgstr ""
+
+#: order/models.py:90
+msgid "Payment Price"
+msgstr ""
+
+#: order/models.py:91
 msgid "Payment Tax"
 msgstr ""
 
-#: order/models.py:92
+#: order/models.py:94
 msgid "Bank identication code"
 msgstr ""
 
-#: order/models.py:96
+#: order/models.py:98
 msgid "Voucher number"
 msgstr ""
 
-#: order/models.py:97
+#: order/models.py:99
 msgid "Voucher value"
 msgstr ""
 
-#: order/models.py:98
+#: order/models.py:100
 msgid "Voucher tax"
 msgstr ""
 
-#: order/models.py:100 templates/manage/customer/customer_inline.html:134
+#: order/models.py:102
+#: templates/manage/customer/customer_inline.html:134
 #: templates/manage/order/orders_inline.html:21
 msgid "Message"
 msgstr ""
 
-#: order/models.py:101
+#: order/models.py:103
 msgid "pay_link"
 msgstr ""
 
-#: order/models.py:104
+#: order/models.py:106
 msgid "Delivery Date"
 msgstr ""
 
-#: order/models.py:133
+#: order/models.py:135
 msgid "Price net"
 msgstr ""
 
-#: order/models.py:134
+#: order/models.py:136
 msgid "Price gross"
 msgstr ""
 
-#: order/models.py:142
+#: order/models.py:144
 msgid "Product quantity"
 msgstr ""
 
-#: order/models.py:143
+#: order/models.py:145
 msgid "Product SKU"
 msgstr ""
 
-#: order/models.py:144
+#: order/models.py:146
 msgid "Product name"
 msgstr ""
 
-#: order/models.py:145
+#: order/models.py:147
 msgid "Product price net"
 msgstr ""
 
-#: order/models.py:146
+#: order/models.py:148
 msgid "Product price gross"
 msgstr ""
 
-#: order/models.py:147
+#: order/models.py:149
 msgid "Product tax"
 msgstr ""
 
-#: order/models.py:208
+#: order/models.py:210
 msgid "Order item"
 msgstr ""
 
@@ -2217,7 +2412,8 @@ msgstr ""
 msgid "Payment Flagged"
 msgstr ""
 
-#: page/models.py:21 portlet/models/text.py:15
+#: page/models.py:21
+#: portlet/models/text.py:15
 msgid "Text"
 msgstr ""
 
@@ -2225,14 +2421,16 @@ msgstr ""
 msgid "File"
 msgstr ""
 
-#: payment/models.py:76 payment/models.py:124 shipping/models.py:56
-#: shipping/models.py:110
+#: payment/models.py:72
+#: payment/models.py:123
+#: shipping/models.py:70
+#: shipping/models.py:155
 #: templates/manage/payment/payment_method_prices.html:24
 #: templates/manage/shipping/shipping_method_prices.html:24
 msgid "Priority"
 msgstr ""
 
-#: payment/models.py:79
+#: payment/models.py:75
 msgid "note"
 msgstr ""
 
@@ -2261,11 +2459,13 @@ msgstr ""
 msgid "Featured products"
 msgstr ""
 
-#: portlet/models/featured.py:27 portlet/models/forsale.py:28
+#: portlet/models/featured.py:27
+#: portlet/models/forsale.py:28
 msgid "Use current category"
 msgstr ""
 
-#: portlet/models/featured.py:28 portlet/models/forsale.py:29
+#: portlet/models/featured.py:28
+#: portlet/models/forsale.py:29
 msgid "Slideshow"
 msgstr ""
 
@@ -2278,9 +2478,8 @@ msgid "Show price filters"
 msgstr ""
 
 #: portlet/models/forsale.py:25
-#, fuzzy
 msgid "Product Forsale"
-msgstr "Wiersze produktu"
+msgstr "Wyprzedaź Produktu"
 
 #: portlet/templatetags/lfs_portlets_tags.py:137
 msgid "Recent Products"
@@ -2298,11 +2497,16 @@ msgstr ""
 msgid "Topseller"
 msgstr ""
 
-#: shipping/models.py:59
+#: shipping/models.py:73
 msgid "Note"
 msgstr ""
 
-#: shipping/models.py:108
+#: shipping/models.py:79
+#: templates/manage/shop/default_values_tab.html:9
+msgid "Price Calculator"
+msgstr ""
+
+#: shipping/models.py:153
 msgid "shipping_method"
 msgstr ""
 
@@ -2318,11 +2522,13 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: templates/manage/manage_base.html:70 templates/manage/shop/shop.html:10
+#: templates/manage/manage_base.html:70
+#: templates/manage/shop/shop.html:10
 msgid "Shop"
 msgstr ""
 
-#: templates/manage/manage_base.html:72 templates/manage/actions/action.html:9
+#: templates/manage/manage_base.html:72
+#: templates/manage/actions/action.html:9
 #: templates/manage/actions/no_actions.html:10
 msgid "Actions"
 msgstr ""
@@ -2348,10 +2554,10 @@ msgstr ""
 msgid "Shipping Methods"
 msgstr ""
 
-#: templates/manage/manage_base.html:78 templates/manage/tax/tax.html:8
-#, fuzzy
+#: templates/manage/manage_base.html:78
+#: templates/manage/tax/tax.html:8
 msgid "Product Taxes"
-msgstr "Produkty"
+msgstr "Stawki podatków Produktów"
 
 #: templates/manage/manage_base.html:79
 #: templates/manage/customer_tax/customer_tax.html:8
@@ -2363,9 +2569,8 @@ msgid "Catalog"
 msgstr ""
 
 #: templates/manage/manage_base.html:87
-#, fuzzy
 msgid "Products Overview"
-msgstr "Wiersze produktu"
+msgstr "Przegąd Produktów"
 
 #: templates/manage/manage_base.html:93
 #: templates/manage/product/properties.html:2
@@ -2392,13 +2597,15 @@ msgstr ""
 msgid "Static blocks"
 msgstr ""
 
-#: templates/manage/manage_base.html:103 templates/manage/manage_base.html:106
+#: templates/manage/manage_base.html:103
+#: templates/manage/manage_base.html:106
 #: templates/manage/customer/customers.html:16
 #: templates/manage/customer/customers_inline.html:4
 msgid "Customers"
 msgstr ""
 
-#: templates/manage/manage_base.html:105 templates/manage/cart/carts.html:17
+#: templates/manage/manage_base.html:105
+#: templates/manage/cart/carts.html:17
 #: templates/manage/cart/carts.html:20
 msgid "Carts"
 msgstr ""
@@ -2477,7 +2684,8 @@ msgstr ""
 msgid "Do you really want to delete this object?"
 msgstr ""
 
-#: templates/manage/utils.html:12 templates/manage/utils.html.py:17
+#: templates/manage/utils.html:12
+#: templates/manage/utils.html.py:17
 msgid "Utilities"
 msgstr ""
 
@@ -2532,7 +2740,8 @@ msgstr ""
 #: templates/manage/manufacturer/manufacturer.html:34
 #: templates/manage/manufacturer/manufacturer_data_inline.html:2
 #: templates/manage/page/add_page.html:14
-#: templates/manage/page/data_tab.html:2 templates/manage/page/page.html:32
+#: templates/manage/page/data_tab.html:2
+#: templates/manage/page/page.html:32
 #: templates/manage/payment/add_payment_method.html:16
 #: templates/manage/payment/manage_payment.html:28
 #: templates/manage/payment/payment_method_data.html:3
@@ -2549,9 +2758,10 @@ msgstr ""
 #: templates/manage/shipping/shipping_method_data.html:2
 #: templates/manage/shop/data_tab.html:3
 #: templates/manage/static_block/add_static_block.html:14
-#: templates/manage/static_block/static_block.html:35
-#: templates/manage/static_block/static_block.html:40
-#: templates/manage/tax/add_tax.html:15 templates/manage/tax/tax.html:36
+#: templates/manage/static_block/static_block.html:41
+#: templates/manage/static_block/static_block.html:46
+#: templates/manage/tax/add_tax.html:15
+#: templates/manage/tax/tax.html:36
 #: templates/manage/voucher/voucher_group.html:26
 msgid "Data"
 msgstr ""
@@ -2670,7 +2880,7 @@ msgstr ""
 #: templates/manage/cart/cart_inline.html:109
 #: templates/manage/cart/carts_inline.html:19
 #: templates/manage/order/order_inline.html:49
-#: templates/manage/order/order_inline.html:173
+#: templates/manage/order/order_inline.html:184
 msgid "Total"
 msgstr ""
 
@@ -2949,9 +3159,8 @@ msgstr ""
 
 #: templates/manage/category/add_category.html:12
 #: templates/manage/category/manage_category.html:23
-#, fuzzy
 msgid "Add Category"
-msgstr "Kolumny kategorii"
+msgstr "Dodaj Kategorię"
 
 #: templates/manage/category/add_category.html:26
 msgid "Add category"
@@ -2969,7 +3178,7 @@ msgstr "Treść"
 #: templates/manage/category/data.html:99
 #: templates/manage/page/data_tab.html:10
 #: templates/manage/product/data.html:358
-#: templates/manage/static_block/static_block.html:49
+#: templates/manage/static_block/static_block.html:55
 msgid "Save data"
 msgstr ""
 
@@ -2986,14 +3195,12 @@ msgid "Delete Category"
 msgstr ""
 
 #: templates/manage/category/manage_category.html:31
-#, fuzzy
 msgid "View Category"
-msgstr "Kolumny kategorii"
+msgstr "Zobacz kategorię"
 
 #: templates/manage/category/manage_category.html:35
-#, fuzzy
 msgid "Goto Category"
-msgstr "Kolumny kategorii"
+msgstr "Przejdź do Kategorii"
 
 #: templates/manage/category/manage_category.html:43
 #: templates/manage/category/view.html:3
@@ -3004,10 +3211,12 @@ msgid "View"
 msgstr ""
 
 #: templates/manage/category/manage_category.html:45
-#: templates/manage/category/seo.html:3 templates/manage/page/page.html:33
+#: templates/manage/category/seo.html:3
+#: templates/manage/page/page.html:33
 #: templates/manage/page/seo_tab.html:2
 #: templates/manage/product/product.html:105
-#: templates/manage/product/seo.html:3 templates/manage/shop/seo_tab.html:3
+#: templates/manage/product/seo.html:3
+#: templates/manage/shop/seo_tab.html:3
 #: templates/manage/shop/shop.html:13
 msgid "SEO"
 msgstr ""
@@ -3022,16 +3231,14 @@ msgstr ""
 #: templates/manage/category/products.html:7
 #: templates/manage/product/accessories_inline.html:34
 #: templates/manage/product/related_products_inline.html:33
-#, fuzzy
 msgid "Selectable Products"
-msgstr "Pokaż wszystkie produkty"
+msgstr "Produkty do wyboru"
 
 #: templates/manage/category/products.html:32
 #: templates/manage/product/accessories_inline.html:94
 #: templates/manage/product/related_products_inline.html:94
-#, fuzzy
 msgid "Selected Products"
-msgstr "Produkty"
+msgstr "Zaznaczone Produkty"
 
 #: templates/manage/category/products_inline.html:89
 msgid "Add to category"
@@ -3041,7 +3248,8 @@ msgstr ""
 msgid "Remove from category"
 msgstr ""
 
-#: templates/manage/category/seo.html:12 templates/manage/page/seo_tab.html:11
+#: templates/manage/category/seo.html:12
+#: templates/manage/page/seo_tab.html:11
 #: templates/manage/shop/seo_tab.html:12
 msgid "Save SEO"
 msgstr ""
@@ -3252,9 +3460,8 @@ msgstr ""
 
 #: templates/manage/marketing/featured.html:4
 #: templates/manage/marketing/topseller.html:4
-#, fuzzy
 msgid "Product Selection"
-msgstr "Kolumny produktu"
+msgstr "Wybrane Produkty"
 
 #: templates/manage/marketing/featured_inline.html:85
 msgid "Add to Featured Products"
@@ -3269,9 +3476,8 @@ msgid "Remove from Featured"
 msgstr ""
 
 #: templates/manage/marketing/marketing_featured.html:13
-#, fuzzy
 msgid "Featured Products"
-msgstr "Produkty"
+msgstr "Produkty polecane"
 
 #: templates/manage/marketing/rating_mails.html:18
 #: templates/manage/marketing/rating_mails.html:35
@@ -3291,9 +3497,7 @@ msgid "Send copy"
 msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:30
-msgid ""
-"The mails will also send to the shop notification email adresses (if not in "
-"test mode)"
+msgid "The mails will also send to the shop notification email adresses (if not in test mode)"
 msgstr ""
 
 #: templates/manage/marketing/rating_mails.html:40
@@ -3356,31 +3560,31 @@ msgstr ""
 msgid "Order number"
 msgstr ""
 
-#: templates/manage/order/order_inline.html:169
+#: templates/manage/order/order_inline.html:180
 msgid "Included VAT"
 msgstr ""
 
-#: templates/manage/order/order_inline.html:231
+#: templates/manage/order/order_inline.html:242
 msgid "Voucher"
 msgstr ""
 
-#: templates/manage/order/order_inline.html:248
+#: templates/manage/order/order_inline.html:259
 msgid "Shipping"
 msgstr ""
 
-#: templates/manage/order/order_inline.html:264
+#: templates/manage/order/order_inline.html:275
 msgid "Payment"
 msgstr ""
 
-#: templates/manage/order/order_inline.html:286
+#: templates/manage/order/order_inline.html:297
 msgid "Inclusive VAT"
 msgstr ""
 
-#: templates/manage/order/order_inline.html:295
+#: templates/manage/order/order_inline.html:306
 msgid "Message from the customer"
 msgstr ""
 
-#: templates/manage/order/order_inline.html:309
+#: templates/manage/order/order_inline.html:320
 msgid "Paypal Transaction ID"
 msgstr ""
 
@@ -3661,37 +3865,32 @@ msgid "Uploading images:"
 msgstr ""
 
 #: templates/manage/product/product.html:6
-#, fuzzy
 msgid "Manage Product"
-msgstr "Produkt"
+msgstr "Zarządzaj Produktem"
 
 #: templates/manage/product/product.html:43
 msgid "Base Article"
 msgstr ""
 
 #: templates/manage/product/product.html:49
-#, fuzzy
 msgid "Add Product"
-msgstr "Produkt"
+msgstr "Dodaj Produkt"
 
 #: templates/manage/product/product.html:54
 msgid "Do you really want to delete this product?"
 msgstr ""
 
 #: templates/manage/product/product.html:55
-#, fuzzy
 msgid "Delete Product"
-msgstr "Produkt"
+msgstr "Usuń Produkt"
 
 #: templates/manage/product/product.html:60
-#, fuzzy
 msgid "View Product"
-msgstr "Produkt"
+msgstr "Zobacz Produkt"
 
 #: templates/manage/product/product.html:65
-#, fuzzy
 msgid "Goto Product"
-msgstr "Produkt"
+msgstr "Przejdź do Produktu"
 
 #: templates/manage/product/product.html:104
 #: templates/manage/product/stock.html:2
@@ -3699,9 +3898,8 @@ msgid "Stock"
 msgstr ""
 
 #: templates/manage/product/product_filters_inline.html:14
-#, fuzzy
 msgid "Name/SKU"
-msgstr "Imię"
+msgstr "Nazwa/Numer katalogowy"
 
 #: templates/manage/product/product_filters_inline.html:18
 #: templates/manage/product/products_inline.html:31
@@ -3709,9 +3907,8 @@ msgid "Sub type"
 msgstr ""
 
 #: templates/manage/product/products.html:5
-#, fuzzy
 msgid "Manage Products"
-msgstr "Produkty"
+msgstr "Zarządzaj Produktami"
 
 #: templates/manage/product/products_inline.html:37
 msgid "Sale Price"
@@ -3893,10 +4090,6 @@ msgstr ""
 msgid "Select field options"
 msgstr ""
 
-#: templates/manage/properties/options_inline.html:16
-msgid "Price (optional)"
-msgstr ""
-
 #: templates/manage/properties/options_inline.html:80
 msgid "Update options"
 msgstr ""
@@ -3997,11 +4190,11 @@ msgstr ""
 
 #: templates/manage/properties/step_inline.html:32
 msgid "Steps"
-msgstr ""
+msgstr "Kroki"
 
 #: templates/manage/properties/step_inline.html:46
 msgid "Add step"
-msgstr ""
+msgstr "Dodaj krok"
 
 #: templates/manage/properties/step_inline.html:66
 msgid "Do you really want to delete this step?"
@@ -4017,25 +4210,25 @@ msgstr ""
 
 #: templates/manage/reviews/review.html:22
 msgid "Do you really want to delete this review?"
-msgstr ""
+msgstr "Czy na pewno chcesz usunąć tę opinię?"
 
 #: templates/manage/reviews/review.html:24
 msgid "Delete review"
-msgstr ""
+msgstr "Usuń opinię"
 
 #: templates/manage/reviews/review.html:43
 msgid "Review"
-msgstr ""
+msgstr "Opinia"
 
 #: templates/manage/reviews/review_inline.html:88
 #: templates/manage/reviews/reviews_inline.html:39
 msgid "Score"
-msgstr ""
+msgstr "Wynik"
 
 #: templates/manage/reviews/review_inline.html:98
 #: templates/manage/reviews/reviews_inline.html:43
 msgid "Comment"
-msgstr ""
+msgstr "Komentarz"
 
 #: templates/manage/shipping/add_shipping_method.html:5
 #: templates/manage/shipping/add_shipping_method.html:24
@@ -4061,7 +4254,7 @@ msgstr ""
 
 #: templates/manage/shop/data_tab.html:43
 msgid "E-Mails"
-msgstr ""
+msgstr "E-maile"
 
 #: templates/manage/shop/data_tab.html:81
 msgid "Google"
@@ -4073,86 +4266,78 @@ msgstr ""
 
 #: templates/manage/shop/data_tab.html:193
 msgid "Save shop"
-msgstr ""
+msgstr "Zapisz sklep"
 
 #: templates/manage/shop/default_values_tab.html:3
 #: templates/manage/shop/shop.html:11
 msgid "Default Values"
-msgstr ""
-
-#: templates/manage/shop/default_values_tab.html:9
-msgid "Price Calculator"
-msgstr ""
+msgstr "Wartości domyślne"
 
 #: templates/manage/shop/default_values_tab.html:27
 msgid "Format"
 msgstr ""
 
 #: templates/manage/shop/default_values_tab.html:131
-#, fuzzy
 msgid "Localization"
-msgstr "Pozycja"
+msgstr "Lokalizacja"
 
 #: templates/manage/shop/default_values_tab.html:160
 msgid "Save Default Values"
-msgstr ""
+msgstr "Zapisz wartości domyślne"
 
 #: templates/manage/static_block/add_static_block.html:11
-#: templates/manage/static_block/static_block.html:25
+#: templates/manage/static_block/static_block.html:31
 msgid "Add Static Block"
-msgstr ""
+msgstr "Dodaj Blok statyczny"
 
 #: templates/manage/static_block/add_static_block.html:21
 msgid "Save static block"
-msgstr ""
+msgstr "Zapisz Blok statyczny"
 
 #: templates/manage/static_block/files.html:48
 msgid "There are no files"
-msgstr ""
+msgstr "Nie ma żadnych plików"
 
 #: templates/manage/static_block/files.html:51
 msgid "Add files"
-msgstr ""
+msgstr "Dodaj pliki"
 
-#: templates/manage/static_block/static_block.html:27
+#: templates/manage/static_block/static_block.html:33
 msgid "Do you really want to delete this static block?"
 msgstr ""
 
-#: templates/manage/static_block/static_block.html:28
-#, fuzzy
+#: templates/manage/static_block/static_block.html:34
 msgid "Delete Static Block"
-msgstr "Blok statyczny"
+msgstr "Usuń Blok statyczny"
 
-#: templates/manage/static_block/static_block.html:30
-#, fuzzy
+#: templates/manage/static_block/static_block.html:36
 msgid "View Static Block"
-msgstr "Blok statyczny"
+msgstr "Zobacz Blok statyczny"
 
-#: templates/manage/tax/add_tax.html:12 templates/manage/tax/tax.html:25
-#, fuzzy
+#: templates/manage/tax/add_tax.html:12
+#: templates/manage/tax/tax.html:25
 msgid "Add Product Tax"
-msgstr "Produkt"
+msgstr "Dodaj stawkę podatku dla produktu"
 
 #: templates/manage/tax/add_tax.html:23
 msgid "Add Tax"
-msgstr ""
+msgstr "Dodaj stawkę podatku"
 
 #: templates/manage/tax/tax.html:28
 msgid "Do you really want to delete this tax?"
-msgstr ""
+msgstr "Czy na pewno chcesz usunąć tę stawkę podatku?"
 
 #: templates/manage/tax/tax.html:29
 msgid "Delete Product Tax"
-msgstr ""
+msgstr "Usunięcie stawki podatku"
 
 #: templates/manage/tax/tax.html:33
-#, fuzzy
 msgid "Product Tax"
-msgstr "Produkt"
+msgstr "Stawka podatku dla produktu"
 
 #: templates/manage/tax/tax.html:44
 msgid "Save Tax"
-msgstr ""
+msgstr "Zapis stawki podatku"
 
 #: templates/manage/voucher/add_voucher_group.html:11
 #: templates/manage/voucher/add_voucher_group.html:15
@@ -4163,7 +4348,7 @@ msgstr ""
 
 #: templates/manage/voucher/data.html:2
 msgid "Core data"
-msgstr ""
+msgstr "Dane podstawowe"
 
 #: templates/manage/voucher/data.html:12
 msgid "Save voucher group"
@@ -4172,11 +4357,11 @@ msgstr ""
 #: templates/manage/voucher/options.html:3
 #: templates/manage/voucher/voucher_group.html:28
 msgid "Options"
-msgstr ""
+msgstr "Opcje"
 
 #: templates/manage/voucher/options.html:12
 msgid "Save options"
-msgstr ""
+msgstr "Zapis opcji"
 
 #: templates/manage/voucher/voucher_group.html:7
 msgid "Voucher groups"
@@ -4242,3 +4427,4 @@ msgstr ""
 #: voucher/settings.py:18
 msgid "The voucher doesn't exist."
 msgstr ""
+
