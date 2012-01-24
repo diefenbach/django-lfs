@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-23 20:51+0100\n"
-"PO-Revision-Date: 2012-01-24 10:27+0100\n"
+"PO-Revision-Date: 2012-01-24 12:51+0100\n"
 "Last-Translator: Maciej Wiśniowski <maciej.wisniowski@natcam.pl>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
@@ -464,7 +464,7 @@ msgstr "Dostępny do dostarczenia"
 
 #: catalog/models.py:578
 msgid "Manual delivery time"
-msgstr "Ręczny czas dostawy"
+msgstr "Indywidualny czas dostawy"
 
 #: catalog/models.py:579
 #: shipping/models.py:77
@@ -493,7 +493,7 @@ msgstr "Aktywna jednostka pakowania"
 
 #: catalog/models.py:586
 msgid "Packing unit"
-msgstr "Jednostka pakowania"
+msgstr "Ilość w opakowaniu"
 
 #: catalog/models.py:592
 #: criteria/models/criteria.py:609
@@ -1183,7 +1183,7 @@ msgstr "Sposób zakupu"
 
 #: core/models.py:180
 msgid "Confirm TOC"
-msgstr "Zaakceptuj regulamin"
+msgstr "Akceptacja regulaminu"
 
 #: core/models.py:244
 msgid "Version"
@@ -2011,7 +2011,7 @@ msgstr "Wybrane Produkty zostały usunięte z Kategorii."
 
 #: manage/views/categories/view.py:43
 msgid "View data has been saved."
-msgstr "Dane podglądu zostały zapisane."
+msgstr "Dane widoku zostały zapisane."
 
 #: manage/views/marketing/featured.py:145
 msgid "Featured product has been added."
@@ -2557,12 +2557,12 @@ msgstr "Sposoby wysyłki"
 #: templates/manage/manage_base.html:78
 #: templates/manage/tax/tax.html:8
 msgid "Product Taxes"
-msgstr "Stawki podatków Produktów"
+msgstr "Podatki (produkty)"
 
 #: templates/manage/manage_base.html:79
 #: templates/manage/customer_tax/customer_tax.html:8
 msgid "Customer Taxes"
-msgstr "Stawki podatku dla klientów"
+msgstr "Podatki (klienci)"
 
 #: templates/manage/manage_base.html:83
 msgid "Catalog"
@@ -2716,7 +2716,7 @@ msgstr "Usuń akcję"
 
 #: templates/manage/actions/action.html:29
 msgid "View Shop"
-msgstr "Podgląd sklepu"
+msgstr "Widok sklepu"
 
 #: templates/manage/actions/action.html:36
 msgid "Action"
@@ -3208,7 +3208,7 @@ msgstr "Przejdź do Kategorii"
 #: templates/manage/marketing/rating_mails.html:90
 #: templates/manage/product/products_inline.html:112
 msgid "View"
-msgstr "Podgląd"
+msgstr "Widok"
 
 #: templates/manage/category/manage_category.html:45
 #: templates/manage/category/seo.html:3
@@ -3256,7 +3256,7 @@ msgstr "Zapisz SEO"
 
 #: templates/manage/category/view.html:13
 msgid "Save View"
-msgstr "Zapisz podgląd"
+msgstr "Zapisz widok"
 
 #: templates/manage/criteria/number_operators.html:3
 msgid "Equal"
@@ -3299,13 +3299,13 @@ msgstr "Zarządzaj klientami"
 
 #: templates/manage/customer_tax/add_customer_tax.html:12
 msgid "Add customer tax"
-msgstr "Dodaj stawkę podatku dla klienta"
+msgstr "Dodaj stawkę podatku"
 
 #: templates/manage/customer_tax/add_customer_tax.html:25
 #: templates/manage/customer_tax/customer_tax.html:27
 #: templates/manage/customer_tax/no_customer_taxes.html:18
 msgid "Add Customer Tax"
-msgstr "Dodaj stawke podatku dla klienta"
+msgstr "Dodaj stawkę podatku"
 
 #: templates/manage/customer_tax/customer_tax.html:30
 msgid "Do you really want to delete this customer tax?"
@@ -3624,7 +3624,7 @@ msgstr "Usuń stronę"
 
 #: templates/manage/page/page.html:23
 msgid "View Page"
-msgstr "Podgląd strony"
+msgstr "Widok strony"
 
 #: templates/manage/page/page.html:26
 msgid "Goto Page"
@@ -3895,7 +3895,7 @@ msgstr "Przejdź do Produktu"
 #: templates/manage/product/product.html:104
 #: templates/manage/product/stock.html:2
 msgid "Stock"
-msgstr "Stan magazynowy"
+msgstr "Magazyn"
 
 #: templates/manage/product/product_filters_inline.html:14
 msgid "Name/SKU"
@@ -4266,7 +4266,7 @@ msgstr "Do kasy"
 
 #: templates/manage/shop/data_tab.html:193
 msgid "Save shop"
-msgstr "Zapisz sklep"
+msgstr "Zapisz dane sklepu"
 
 #: templates/manage/shop/default_values_tab.html:3
 #: templates/manage/shop/shop.html:11
@@ -4317,7 +4317,7 @@ msgstr "Zobacz Blok statyczny"
 #: templates/manage/tax/add_tax.html:12
 #: templates/manage/tax/tax.html:25
 msgid "Add Product Tax"
-msgstr "Dodaj stawkę podatku dla produktu"
+msgstr "Dodaj stawkę podatku"
 
 #: templates/manage/tax/add_tax.html:23
 msgid "Add Tax"
