@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-23 20:51+0100\n"
-"PO-Revision-Date: 2012-01-24 12:51+0100\n"
+"POT-Creation-Date: 2012-01-24 13:55+0100\n"
+"PO-Revision-Date: 2012-01-24 14:00+0100\n"
 "Last-Translator: Maciej Wiśniowski <maciej.wisniowski@natcam.pl>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
@@ -1928,7 +1928,7 @@ msgid "Cache has been cleared."
 msgstr "Cache zostało wyczyszczone."
 
 #: manage/views/utils.py:52
-msgid "Categoy levels have been created."
+msgid "Category levels have been created."
 msgstr "Poziomy Kategorii zostały utworzone"
 
 #: manage/views/utils.py:65
@@ -1977,7 +1977,7 @@ msgid "Vouchers have been deleted."
 msgstr "Kupony zostały usunięte."
 
 #: manage/views/voucher.py:284
-msgid "Voucher data has been save."
+msgid "Voucher data has been saved."
 msgstr "Dane Kuponu zostały zapisane."
 
 #: manage/views/voucher.py:300
@@ -1985,7 +1985,7 @@ msgid "Voucher group and assigned vouchers have been deleted."
 msgstr "Grupa Kuponów oraz przypisane Kupony zostały usunięte."
 
 #: manage/views/voucher.py:318
-msgid "Voucher options has been save."
+msgid "Voucher options has been saved."
 msgstr "Opcje Kuponu zostały zapisane."
 
 #: manage/views/categories/category.py:83
@@ -2096,7 +2096,7 @@ msgid "Sub type has been changed."
 msgstr "Podtyp został zmieniony."
 
 #: manage/views/product/product.py:381
-msgid "Productdata has been saved."
+msgid "Product data has been saved."
 msgstr "Dane Produktu zostały zapisane."
 
 #: manage/views/product/product.py:439
