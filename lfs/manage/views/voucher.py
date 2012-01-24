@@ -281,7 +281,7 @@ def save_voucher_group_data(request, id):
     return render_to_ajax_response(
         (("#data_tab", data_tab(request, voucher_group)),
         ("#navigation", navigation(request, voucher_group)),),
-        _(u"Voucher data has been save."))
+        _(u"Voucher data has been saved."))
 
 
 @require_POST
@@ -315,7 +315,7 @@ def save_voucher_options(request):
 
     return render_to_ajax_response(
         (("#options_tab", options_tab(request)),),
-        _(u"Voucher options has been save.")
+        _(u"Voucher options has been saved.")
     )
 
 
