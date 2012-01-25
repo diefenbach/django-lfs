@@ -531,7 +531,9 @@ def packages(cart_item):
     amount.
     """
     cart_item = cart_item.get("obj")
-    return int(math.ceil(cart_item.amount / cart_item.product.packing_unit))
+    if cart_item.product.packing_unit:
+        return int(math.ceil(cart_item.amount / cart_item.product.packing_unit))
+    return 0
 
 
 @register.filter(name='get_price')
