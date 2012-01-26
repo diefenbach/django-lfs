@@ -605,6 +605,9 @@ class PropertiesTestCaseWithoutProperties(TestCase):
 class CategoryTestCase(TestCase):
     """Tests the Category of the lfs.catalog.
     """
+
+    fixtures = ['lfs_shop.xml']
+
     def setUp(self):
         """
         """
@@ -790,7 +793,7 @@ class CategoryTestCase(TestCase):
         """
         # format informations are inherited from shop default values
         self.assertEqual(self.c1.active_formats, False)
-        self.assertEqual({'category_cols': 3, 'product_cols': 3, 'product_rows': 3}, self.c1.get_format_info())
+        self.assertEqual({'category_cols': 1, 'product_cols': 1, 'product_rows': 10}, self.c1.get_format_info())
 
         # Add new format informations to c1
         self.c1.category_cols = 11
@@ -799,7 +802,7 @@ class CategoryTestCase(TestCase):
         self.c1.save()
 
         # But c1 still inherits from shop as active_formats is False by default
-        self.assertEqual({'category_cols': 3, 'product_cols': 3, 'product_rows': 3}, self.c1.get_format_info())
+        self.assertEqual({'category_cols': 1, 'product_cols': 1, 'product_rows': 10}, self.c1.get_format_info())
 
         # Set active_formats to True
         self.c1.active_formats = True
@@ -1037,6 +1040,7 @@ class ViewsTestCase(TestCase):
         from lfs.catalog.views import select_variant
 
         request = RequestFactory().post("/", {"variant_id": 1})
+        request.session = SessionStore()
         request.user = AnonymousUser()
 
         result = select_variant(request)
@@ -1110,6 +1114,7 @@ class ViewsTestCase(TestCase):
         from lfs.catalog.views import select_variant_from_properties
 
         request = RequestFactory().post("/", {"product_id": self.v1.id})
+        request.session = SessionStore()
         request.user = AnonymousUser()
 
         result = select_variant_from_properties(request)
