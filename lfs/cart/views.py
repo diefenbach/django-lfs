@@ -235,7 +235,7 @@ def add_to_cart(request, product_id=None):
         raise Http404()
 
     try:
-        quantity = locale.atof(request.POST.get("quantity", 1.0))
+        quantity = locale.atof(request.POST.get("quantity", "1.0"))
     except (TypeError, ValueError):
         quantity = 1.0
 

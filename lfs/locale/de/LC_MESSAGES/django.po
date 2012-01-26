@@ -4211,69 +4211,15 @@ msgstr "Der Gutschein ist für diesen Preis nicht gültig."
 msgid "The voucher doesn't exist."
 msgstr "Dieser Gutschein existiert nicht"
 
-#~ msgid "An error has occured."
-#~ msgstr "Es ist ein Fehler aufgetreten."
-
-#~ msgid "Price includes tax"
-#~ msgstr "Preis inklusive Mehrwertsteuer"
-
-#~ msgid "Price excludes tax"
-#~ msgstr "Preis exklusive Mehrwertsteuer"
-
-#~ msgid "Page has been saved."
-#~ msgstr "Seite wurde gespeichert."
-
-#~ msgid "Taxes"
-#~ msgstr "Steuern"
-
-#~ msgid "is a product of"
-#~ msgstr "ist ein Produkt von"
-
-#~ msgid "Discount"
-#~ msgstr "Rabatt"
-
-#~ msgid "Selection"
-#~ msgstr "Auswahlbox"
-
-#~ msgid "Page"
-#~ msgstr "Seite"
-
-#~ msgid "Selected products"
-#~ msgstr "Ausgewählte Produkte"
-
-#~ msgid "Price (optional)"
-#~ msgstr "Preis (optional)"
-
-#~ msgid "Add to product group"
-#~ msgstr "Zu Produktgruppe hinzufügen"
-
-#~ msgid "Assign properties"
-#~ msgstr "Eigenschaften zuweisen"
-
-#~ msgid "Assigned properties"
-#~ msgstr "Zugewiesene Eigenschaften"
-
-#~ msgid "Remove properties"
-#~ msgstr "Eigenschaften entfernen"
-
-#~ msgid "Property data"
-#~ msgstr "Eigenschaftsdaten"
-
-#~ msgid "Property Group"
-#~ msgstr "Eigenschaftsgruppe"
-
-#~ msgid "Add static block"
-#~ msgstr "Statischer Block hinzufügen"
-
-#~ msgid "Add tax"
-#~ msgstr "Mehrwertsteuer hinzufügen"
-
 # Additional msgids DO NOT DELETE THIS
-#~ msgid "Left"
-#~ msgstr "Links"
+msgid "Left"
+msgstr "Links"
 
-#~ msgid "Right"
-#~ msgstr "Rechts"
+msgid "Right"
+msgstr "Rechts"
 
-#~ msgid "Average Rating"
-#~ msgstr "Durchschnittliche Bewertung"
+msgid "Average Rating"
+msgstr "Durchschnittliche Bewertung"
+
+msgid "Zip Code"
+msgstr "PLZ"

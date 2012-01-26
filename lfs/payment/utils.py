@@ -150,7 +150,7 @@ def process_payment(request):
             if settings.LFS_PAYPAL_REDIRECT:
                 return {
                     "accepted": True,
-                    "next_url": order.get_pay_link(),
+                    "next_url": order.get_pay_link(request),
                 }
         return {
             "accepted": True,

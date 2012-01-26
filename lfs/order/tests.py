@@ -1,3 +1,6 @@
+# python imports
+import locale
+
 # django imports
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AnonymousUser
@@ -141,19 +144,21 @@ class OrderTestCase(TestCase):
 
         self.assertEqual(order.shipping_firstname, "John")
         self.assertEqual(order.shipping_lastname, "Doe")
-        self.assertEqual(order.shipping_line1, "Doe Ltd.")
-        self.assertEqual(order.shipping_line2, "Street 42")
+        self.assertEqual(order.shipping_line1, "Street 42")
+        self.assertEqual(order.shipping_line2, None)
         self.assertEqual(order.shipping_city, "Gotham City")
         self.assertEqual(order.shipping_code, "2342")
         self.assertEqual(order.shipping_phone, "555-111111")
+        self.assertEqual(order.shipping_company_name, "Doe Ltd.")
 
         self.assertEqual(order.invoice_firstname, "Jane")
         self.assertEqual(order.invoice_lastname, "Doe")
-        self.assertEqual(order.invoice_line1, "Doe Ltd.")
-        self.assertEqual(order.invoice_line2, "Street 43")
+        self.assertEqual(order.invoice_line1, "Street 43")
+        self.assertEqual(order.invoice_line2, None)
         self.assertEqual(order.invoice_city, "Smallville")
         self.assertEqual(order.invoice_code, "2443")
         self.assertEqual(order.invoice_phone, "666-111111")
+        self.assertEqual(order.invoice_company_name, "Doe Ltd.")
 
         # Items
         self.assertEqual(len(order.items.all()), 2)
@@ -181,11 +186,12 @@ class OrderTestCase(TestCase):
     def test_pay_link(self):
         """Tests empty pay link.
         """
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
         from lfs.payment.utils import process_payment
         result = process_payment(self.request)
 
         order = Order.objects.filter()[0]
-        self.assertEqual(order.get_pay_link(), "")
+        self.assertEqual(order.get_pay_link(self.request), "")
 
     def test_paypal_link(self):
         """Tests created paypal link.
@@ -203,4 +209,4 @@ class OrderTestCase(TestCase):
         result = process_payment(self.request)
 
         order = Order.objects.filter()[0]
-        self.failIf(order.get_pay_link().find("paypal") == -1)
+        self.failIf(order.get_pay_link(self.request).find("paypal") == -1)
