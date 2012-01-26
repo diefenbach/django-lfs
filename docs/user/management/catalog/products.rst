@@ -104,6 +104,20 @@ Type of Quantity Field
     places are ignored. If no type is given the default type is taken, which is
     ``Integer``.
 
+Active base price
+    If this is activated the base price of the product is displayed within
+    product detail view and category overview view.
+
+Base price unit
+    The unit of the base price. This is displayed after the base price of the
+    product.
+
+Base price amount
+    The amount, which is used to calculate the base price of the product. The
+    base price of the product is::
+
+         base price = price / base price amount
+
 Short Description
     A short description of the product. This is displayed within overviews
     like categories or the search result page.
