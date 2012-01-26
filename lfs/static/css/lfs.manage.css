@@ -779,3 +779,7 @@ ol {
     margin: 0 5px;
     padding-left: 16px;
 }
+
+#product-tabs {
+    display: None;
+}

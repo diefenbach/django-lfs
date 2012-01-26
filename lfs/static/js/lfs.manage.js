@@ -105,6 +105,8 @@ $(function() {
 
     // Product tabs
     $('#product-tabs').tabs();
+    $('#product-tabs').show();
+
     $('#product-tabs').bind('tabsshow', function(event, ui) {
         $.cookie("product_tab", ui.index);
     });
