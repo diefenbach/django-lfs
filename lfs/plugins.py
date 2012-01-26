@@ -317,19 +317,28 @@ class PriceCalculator(object):
         """
         Returns the base price of the product.
         """
-        return self.get_price(with_properties) / self.product.get_base_price_amount()
+        try:
+            return self.get_price(with_properties) / self.product.get_base_price_amount()
+        except (TypeError, ZeroDivisionError):
+            return 0.0
 
     def get_base_price(self, with_properties):
         """
         Returns the net base price of the product.
         """
-        return self.get_price_net(with_properties) / self.product.get_base_price_amount()
+        try:
+            return self.get_price_net(with_properties) / self.product.get_base_price_amount()
+        except (TypeError, ZeroDivisionError):
+            return 0.0
 
     def get_base_price_gross(self, with_properties):
         """
         Returns the gross base price of the product.
         """
-        return self.get_price_gross(with_properties) / self.product.get_base_price_amount()
+        try:
+            return self.get_price_gross(with_properties) / self.product.get_base_price_amount()
+        except (TypeError, ZeroDivisionError):
+            return 0.0
 
     def get_base_packing_price(self, request):
         """
