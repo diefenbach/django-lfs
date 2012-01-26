@@ -241,7 +241,6 @@
                     {% endif %}
                 </div>
             {% endif %}
-
         </fieldset>
 
         {% if not product.is_variant %}
@@ -273,6 +272,54 @@
                 </div>
             </fieldset>
         {% endif %}
+
+        <fieldset>
+            <legend>{% trans "Base price" %}</legend>
+
+            {% if product.is_variant %}
+                <div class="field">
+                    <div class="label">
+                        {{ form.active_base_price.label_tag }}:
+                    </div>
+                    <div>
+                        {{ form.active_base_price }}
+                        {% if product.parent.active_base_price %}
+                            {% trans 'Yes' %}
+                        {% else %}
+                            {% trans 'No' %}
+                            {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="field">
+                    <div class="label">
+                        {{ form.active_base_price.label_tag }}:
+                    </div>
+                    <div>
+                        {{ form.active_base_price }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="field">
+                <div class="label">
+                    {{ form.base_price_unit.label_tag }}:
+                </div>
+                <div>
+                    {{ form.base_price_unit }}
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="label">
+                    {{ form.base_price_amount.label_tag }}:
+                </div>
+                <div>
+                    {{ form.base_price_amount }}
+                    {{ form.base_price_amount.errors }}
+                </div>
+            </div>
+        </fieldset>
 
         <div class="field">
             <div class="label">

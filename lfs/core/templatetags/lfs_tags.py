@@ -8,7 +8,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.template import Node, TemplateSyntaxError
+from django.template import Node, TemplateSyntaxError, Variable
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -258,6 +258,9 @@ def product_navigation(context, product):
 
 
 class ActionsNode(Node):
+    """
+    Node for do_actions.
+    """
     def __init__(self, group_name):
         self.group_name = group_name
 
@@ -268,15 +271,51 @@ class ActionsNode(Node):
 
 
 def do_actions(parser, token):
-    """Returns the actions for the group with the given id.
+    """
+    Returns the actions for the group with the given id.
     """
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 2:
         raise TemplateSyntaxError(_('%s tag needs group id as argument') % bits[0])
-
     return ActionsNode(bits[1])
 register.tag('actions', do_actions)
+
+
+class CheapestVariantNode(Node):
+    """
+    Node for do_cheapest_variant.
+    """
+    def __init__(self, product_id):
+        self.product_id = template.Variable(product_id)
+
+    def render(self, context):
+        product_id = self.product_id.resolve(context)
+        request = context.get("request")
+        cheapest_variant = None
+        min_price = None
+        for variant in Product.objects.filter(parent__id=product_id):
+            price = variant.get_price_gross(request)
+            if price == 0:
+                continue
+            if (min_price is None) or (price < min_price):
+                cheapest_variant = variant
+                min_price = price
+
+        context["cheapest_variant"] = cheapest_variant
+        return ""
+
+
+def do_cheapest_variant(parser, token):
+    """
+    Returns the cheapest variant for the product with given id.
+    """
+    bits = token.contents.split()
+    len_bits = len(bits)
+    if len_bits != 2:
+        raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
+    return CheapestVariantNode(bits[1])
+register.tag('cheapest_variant', do_cheapest_variant)
 
 
 @register.inclusion_tag('lfs/shop/tabs.html', takes_context=True)
@@ -535,37 +574,75 @@ def packages(cart_item):
 
 
 @register.filter(name='get_price')
-def get_price(product, request):
+def get_price_net(product, request):
     return product.get_price(request)
 
+
 @register.filter(name='get_price_net')
-def get_price_net(object, request):
-    return object.get_price_net(request)
+def get_price_net(product, request):
+    return product.get_price_net(request)
+
 
 @register.filter(name='get_price_gross')
-def get_price_gross(object, request):
-    return object.get_price_gross(request)
+def get_price_gross(product, request):
+    return product.get_price_gross(request)
+
 
 @register.filter(name='get_standard_price')
 def get_standard_price(product, request):
     return product.get_standard_price(request)
 
+
 @register.filter(name='get_standard_price_net')
 def get_standard_price_net(product, request):
     return product.get_standard_price_net(request)
+
 
 @register.filter(name='get_standard_price_gross')
 def get_standard_price_gross(product, request):
     return product.get_standard_price_gross(request)
 
+
 @register.filter(name='get_for_sale_price')
 def get_for_sale_price(product, request):
     return product.get_for_sale_price(request)
+
 
 @register.filter(name='get_for_sale_price_net')
 def get_for_sale_price_net(product, request):
     return product.get_for_sale_price_net(request)
 
+
 @register.filter(name='get_for_sale_price_gross')
 def get_for_sale_price_gross(product, request):
     return product.get_for_sale_price_gross(request)
+
+
+@register.filter(name='get_base_price')
+def get_base_price(product, request):
+    return product.get_base_price(request)
+
+
+@register.filter(name='get_base_price_net')
+def get_base_price_net(product, request):
+    return product.get_base_price_net(request)
+
+
+@register.filter(name='get_base_price_gross')
+def get_base_price_gross(product, request):
+    return product.get_base_price_gross(request)
+
+
+@register.filter(name='get_base_packing_price')
+def get_base_packing_price(product, request):
+    return product.get_base_packing_price(request)
+
+
+@register.filter(name='get_base_packing_price_net')
+def get_base_packing_price_net(product, request):
+    return product.get_base_packing_price_net(request)
+
+
+@register.filter(name='get_base_packing_price_gross')
+def get_base_packing_price_gross(product, request):
+    return product.get_base_packing_price_gross(request)

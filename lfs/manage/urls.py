@@ -132,6 +132,7 @@ urlpatterns += patterns('lfs.manage.views.product.variants',
     url(r'^add-variants/(?P<product_id>\d*)$', "add_variants", name="lfs_add_variants"),
     url(r'^edit-sub-type/(?P<product_id>\d*)$', "edit_sub_type", name="lfs_edit_sub_type"),
     url(r'^update-default-variant/(?P<product_id>\d*)$', "update_default_variant", name="lfs_update_default_variant"),
+    url(r'^update-category-variant/(?P<product_id>\d*)$', "update_category_variant", name="lfs_update_category_variant"),
 )
 
 # Property Groups

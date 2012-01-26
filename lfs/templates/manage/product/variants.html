@@ -248,6 +248,22 @@
             </div>
         </form>
 
+        <h2 class="heading-middle">{% trans 'Category variant' %}</h2>
+        <form action="{% url lfs_update_category_variant product.id %}"
+              method="post">
+            <div class="label">
+                {{ category_variant_form.category_variant.label_tag }}:
+            </div>
+            <div>
+                {{ category_variant_form.category_variant }}
+            </div>
+            <div class="buttons">
+                <input type="submit"
+                       value="{% trans 'Change category variant' %}"
+                       class="button ajax-save-button" />
+            </div>
+        </form>
+
         <h2 class="heading-middle">{% trans 'Display type' %}</h2>
         <form action="{% url lfs.manage.views.edit_sub_type product.id %}"
               method="post">

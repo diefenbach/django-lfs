@@ -55,6 +55,9 @@ from lfs.catalog.settings import QUANTITY_FIELD_DECIMAL_1
 from lfs.catalog.settings import QUANTITY_FIELD_DECIMAL_2
 from lfs.catalog.settings import THUMBNAIL_SIZES
 from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
+from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST
+from lfs.catalog.settings import CATEGORY_VARIANT_DEFAULT
+
 from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
@@ -505,6 +508,10 @@ class Product(models.Model):
         displayed at first if the shop customer browses to a product with
         variant.
 
+    variant_category
+        The variant of a product with variants which will be displayed within
+        the category overview.
+
     variants_display_type
         This decides howt the variants of a product with variants are
         displayed. This is select box of list.
@@ -549,8 +556,8 @@ class Product(models.Model):
                                         choices=settings.LFS_PRICE_CALCULATORS,
                                         max_length=255)
     effective_price = models.FloatField(_(u"Price"), blank=True)
-    price_unit = models.CharField(_(u"Price unit"), blank=True, max_length=20)
-    unit = models.CharField(_(u"Unit"), blank=True, max_length=20)
+    price_unit = models.CharField(_(u"Price unit"), blank=True, max_length=20, choices=settings.LFS_PRICE_UNITS)
+    unit = models.CharField(_(u"Unit"), blank=True, max_length=20, choices=settings.LFS_UNITS)
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
     images = generic.GenericRelation("Image", verbose_name=_(u"Images"),
@@ -582,9 +589,9 @@ class Product(models.Model):
     manage_stock_amount = models.BooleanField(_(u"Manage stock amount"), default=False)
     stock_amount = models.FloatField(_(u"Stock amount"), default=0)
 
-    active_packing_unit = models.BooleanField(_(u"Active packing unit"), default=False)
+    active_packing_unit = models.PositiveSmallIntegerField(_(u"Active packing unit"), default=0)
     packing_unit = models.FloatField(_(u"Packing unit"), blank=True, null=True)
-    packing_unit_unit = models.CharField(_(u"Unit"), blank=True, max_length=30)
+    packing_unit_unit = models.CharField(_(u"Unit"), blank=True, max_length=30, choices=settings.LFS_PACKING_UNITS)
 
     static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="products")
 
@@ -601,6 +608,8 @@ class Product(models.Model):
 
     # Varianted Products
     default_variant = models.ForeignKey("self", verbose_name=_(u"Default variant"), blank=True, null=True)
+    category_variant = models.SmallIntegerField(_(u"Category variant"), blank=True, null=True,)
+
     variants_display_type = models.IntegerField(_(u"Variants display type"),
         choices=VARIANTS_DISPLAY_TYPE_CHOICES, default=LIST)
 
@@ -627,6 +636,11 @@ class Product(models.Model):
     # Price calculation
     active_price_calculation = models.BooleanField(_(u"Active price calculation"), default=False)
     price_calculation = models.CharField(_(u"Price Calculation"), blank=True, max_length=100)
+
+    # Base price
+    active_base_price = models.PositiveSmallIntegerField(_(u"Active base price"), default=0)
+    base_price_unit = models.CharField(_(u"Base price unit"), blank=True, max_length=30, choices=settings.LFS_BASE_PRICE_UNITS)
+    base_price_amount = models.FloatField(_(u"Base price amount"), default=0.0, blank=True, null=True)
 
     # Manufacturer
     sku_manufacturer = models.CharField(_(u"SKU Manufacturer"), blank=True, max_length=100)
@@ -808,6 +822,49 @@ class Product(models.Model):
             description = self.description
 
         return description
+
+    def get_base_price_amount(self):
+        if self.is_variant() and self.active_base_price == ACTIVE_FOR_SALE_STANDARD:
+            return self.parent.base_price_amount
+        else:
+            return self.base_price_amount
+
+    def get_base_price_unit(self):
+        if self.is_variant() and self.active_base_price == ACTIVE_FOR_SALE_STANDARD:
+            return self.parent.base_price_unit
+        else:
+            return self.base_price_unit
+
+    def get_active_base_price(self):
+        """
+        Returns true if the base price is supposed to be displayed. Takes care
+        whether the product is a variant.
+        """
+        if self.is_variant():
+            if self.active_base_price == ACTIVE_FOR_SALE_STANDARD:
+                return self.parent.active_base_price
+            else:
+                return self.active_base_price == ACTIVE_FOR_SALE_YES
+        else:
+            return self.active_base_price
+
+    def get_base_packing_price(self, request):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return self.get_base_packing_price(request)
+
+    def get_base_packing_price_net(self, request):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return self.get_base_packing_price_net(request)
+
+    def get_base_packing_price_net(self, request):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return self.get_base_packing_price_gross(request)
 
     # TODO: Check whether there is a test case for that and write one if not.
     def get_for_sale(self):
@@ -1109,6 +1166,24 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.get_for_sale_price_gross(with_properties)
 
+    def get_base_price(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_base_price(with_properties)
+
+    def get_base_price_net(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_base_price_net(with_properties)
+
+    def get_base_price_gross(self, request, with_properties=True):
+        """See lfs.plugins.PriceCalculator
+        """
+        pc = self.get_price_calculator(request)
+        return pc.get_base_price_gross(with_properties)
+
     def get_product_tax_rate(self, request):
         """See lfs.plugins.PriceCalculator
         """
@@ -1138,6 +1213,26 @@ class Product(models.Model):
         """
         pc = self.get_price_calculator(request)
         return pc.price_includes_tax()
+
+    def get_price_unit(self):
+        """
+        Returns the price_unit of the product. Takes care whether the product is
+        a variant or not.
+        """
+        if self.is_variant():
+            return self.parent.price_unit
+        else:
+            return self.price_unit
+
+    def get_unit(self):
+        """
+        Returns the unit of the product. Takes care whether the product is a
+        variant or not.
+        """
+        if self.is_variant():
+            return self.parent.unit
+        else:
+            return self.unit
 
     def get_global_properties(self):
         """Returns all global properties for the product.
@@ -1222,7 +1317,9 @@ class Product(models.Model):
         return related_products
 
     def get_default_variant(self):
-        """Returns the default variant.
+        """
+        Returns the default variant, which is supposed to be displayed within
+        the product view.
 
         This is either a selected variant or the first added variant. If the
         product has no variants it is None.
@@ -1243,6 +1340,43 @@ class Product(models.Model):
 
         cache.set(cache_key, default_variant)
         return default_variant
+
+    def get_variant_for_category(self, request):
+        """
+        Returns the variant which is supposed to be displayed within category
+        view.
+
+        This is either the cheapest variant, the default variant, an explicitly
+        selected one or None.
+        """
+        if self.category_variant == CATEGORY_VARIANT_CHEAPEST:
+            return self.get_cheapest_variant(request)
+        elif self.category_variant == CATEGORY_VARIANT_DEFAULT:
+            return self.get_default_variant()
+        else:
+            try:
+                return Product.objects.get(pk=self.category_variant)
+            except Product.DoesNotExist:
+                return self.get_default_variant()
+
+    def get_cheapest_variant(self, request):
+        """
+        Returns the cheapest variant by gross price.
+        """
+        cheapest_variant = None
+        min_price = None
+        for variant in Product.objects.filter(parent=self):
+            price = variant.get_price_gross(request)
+            if price == 0:
+                continue
+            if (min_price is None) or (price < min_price):
+                cheapest_variant = variant
+                min_price = price
+
+        return cheapest_variant
+
+    def display_cheapest_variant_for_category(self):
+        return self.category_variant == CATEGORY_VARIANT_CHEAPEST
 
     def get_static_block(self):
         """Returns the static block of the product. Takes care whether the
@@ -1343,10 +1477,24 @@ class Product(models.Model):
         else:
             return self.height
 
-    def get_packing_info(self):
-        """Returns the packing info of the product as list:
+    def get_active_packing_unit(self):
+        """
+        Returns True if the packing unit is active. Takes variant into accounts.
         """
         if self.is_variant():
+            if self.active_packing_unit == ACTIVE_FOR_SALE_STANDARD:
+                return self.parent.active_packing_unit
+            else:
+                return self.active_packing_unit == ACTIVE_FOR_SALE_YES
+        else:
+            return self.active_packing_unit
+
+    def get_packing_info(self):
+        """
+        Returns the packing info of the product as list. Takes variants into
+        account.
+        """
+        if self.is_variant() and self.active_packing_unit == ACTIVE_FOR_SALE_STANDARD:
             obj = self.parent
         else:
             obj = self

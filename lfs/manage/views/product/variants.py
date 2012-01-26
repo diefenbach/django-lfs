@@ -5,6 +5,7 @@ from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.forms import ModelForm
+from django.forms.widgets import Select
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
@@ -22,9 +23,10 @@ from lfs.catalog.models import ProductsPropertiesRelation
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyGroup
 from lfs.catalog.models import PropertyOption
-from lfs.catalog.settings import VARIANT, PROPERTY_SELECT_FIELD
+from lfs.catalog.settings import CATEGORY_VARIANT_CHOICES
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
+from lfs.catalog.settings import VARIANT, PROPERTY_SELECT_FIELD
 from lfs.core.utils import LazyEncoder
 from lfs.manage import utils as manage_utils
 
@@ -52,6 +54,26 @@ class ProductVariantSimpleForm(ModelForm):
         model = Product
         fields = ("slug", "name", "price", )
 
+
+class CategoryVariantForm(ModelForm):
+    """
+    """
+    def __init__(self, *args, **kwargs):
+        super(CategoryVariantForm, self).__init__(*args, **kwargs)
+        product = kwargs.get("instance")
+
+        choices = []
+        for cv in CATEGORY_VARIANT_CHOICES:
+            choices.append(cv)
+
+        for variant in Product.objects.filter(parent=product):
+            choices.append([variant.id, "%s (%s)" % (variant.get_name(), variant.variant_position)])
+
+        self.fields["category_variant"].widget = Select(choices=choices)
+
+    class Meta:
+        model = Product
+        fields = ("category_variant", )
 
 class DisplayTypeForm(ModelForm):
     """Form to add/edit product's sub types.
@@ -89,6 +111,7 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
     variant_simple_form = ProductVariantSimpleForm()
     display_type_form = DisplayTypeForm(instance=product)
     default_variant_form = DefaultVariantForm(instance=product)
+    category_variant_form = CategoryVariantForm(instance=product)
 
     # TODO: Delete cache when delete options
     cache_key = "%s-manage-properties-variants-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product_id)
@@ -155,6 +178,7 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
         "variant_simple_form": variant_simple_form,
         "display_type_form": display_type_form,
         "default_variant_form": default_variant_form,
+        "category_variant_form": category_variant_form,
     }))
 
     if as_string:
@@ -556,6 +580,28 @@ def update_default_variant(request, product_id):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
+def update_category_variant(request, product_id):
+    """
+    Updates the category variant of the product with passed product_id.
+    """
+    product = Product.objects.get(pk=product_id)
+
+    form = CategoryVariantForm(instance=product, data=request.POST)
+    if form.is_valid():
+        form.save()
+
+    # Send a signal to update cache
+    product_changed.send(product)
+
+    result = simplejson.dumps({
+        "html": manage_variants(request, product_id, as_string=True),
+        "message": _(u"Category variant has been saved."),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
+
+
 def _refresh_property_positions(product_id):
     """
     """
@@ -563,6 +609,7 @@ def _refresh_property_positions(product_id):
     for i, product_property in enumerate(ProductsPropertiesRelation.objects.filter(product=product_id)):
         product_property.position = i * 2
         product_property.save()
+
 
 def _selectable_products_inline(request, product):
     """Updates the product navigation on the left when variants added or

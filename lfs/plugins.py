@@ -310,6 +310,42 @@ class PriceCalculator(object):
         """
         raise NotImplementedError
 
+    def get_base_price(self, with_properties):
+        """
+        Returns the base price of the product.
+        """
+        return self.get_price(with_properties) / self.product.get_base_price_amount()
+
+    def get_base_price(self, with_properties):
+        """
+        Returns the net base price of the product.
+        """
+        return self.get_price_net(with_properties) / self.product.get_base_price_amount()
+
+    def get_base_price_gross(self, with_properties):
+        """
+        Returns the gross base price of the product.
+        """
+        return self.get_price_gross(with_properties) / self.product.get_base_price_amount()
+
+    def get_base_packing_price(self, request):
+        """
+        Returns the base packing price of the product.
+        """
+        return self.get_price(request) * self._calc_packing_amount()
+
+    def get_base_packing_price_net(self, request):
+        """
+        Returns the base packing net price of the product.
+        """
+        return self.get_price_net(request) * self._calc_packing_amount()
+
+    def get_base_packing_price_gross(self, request):
+        """
+        Returns the base packing gross price of the product.
+        """
+        return self.get_price_gross(request) * self._calc_packing_amount()
+
     def get_customer_tax_rate(self):
         """
         Returns the tax rate for the current customer and product.
@@ -369,6 +405,11 @@ class PriceCalculator(object):
         Returns the tax rate for the current customer.
         """
         return (self.get_customer_tax_rate() + 100.0) / 100.0
+
+    def _calc_packing_amount(self):
+        packing_amount, packing_unit = self.product.get_packing_info()
+        packs = math.ceil(1 / packing_amount)
+        return packs * packing_amount
 
 
 class ShippingMethodPriceCalculator(object):

@@ -201,6 +201,13 @@
             {% else %}
                 <div>
                     {{ form.active_packing_unit }}
+                    {% if product.is_variant %}
+                        {% if product.parent.active_packing_unit %}
+                            {% trans "Yes" %}
+                        {% else %}
+                            {% trans "No" %}
+                        {% endif %}
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

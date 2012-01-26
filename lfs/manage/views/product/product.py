@@ -1,10 +1,12 @@
 # django imports
+from django import forms
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.db.models import Q
-from django import forms
+from django.forms.widgets import CheckboxInput
+from django.forms.widgets import Select
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -19,7 +21,7 @@ import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
-from lfs.catalog.settings import VARIANT, PRODUCT_TYPE_FORM_CHOICES, PRODUCT_TEMPLATES
+from lfs.catalog.settings import VARIANT, PRODUCT_TYPE_FORM_CHOICES, PRODUCT_TEMPLATES, ACTIVE_FOR_SALE_CHOICES
 from lfs.core.utils import LazyEncoder
 from lfs.manage.views.product.images import manage_images
 from lfs.manage.views.product.seo import manage_seo
@@ -60,12 +62,14 @@ class ProductDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductDataForm, self).__init__(*args, **kwargs)
         self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
+        self.fields["active_base_price"].widget = CheckboxInput()
 
     class Meta:
         model = Product
         fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "tax", "price_calculator",
             "short_description", "description", "for_sale", "for_sale_price", "static_block", "template",
-            "active_price_calculation", "price_calculation", "price_unit", "unit", "type_of_quantity_field")
+            "active_price_calculation", "price_calculation", "price_unit", "unit", "type_of_quantity_field",
+            "active_base_price", "base_price_unit", "base_price_amount")
 
     def clean(self):
         super(ProductDataForm, self).clean()
@@ -86,13 +90,15 @@ class VariantDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(VariantDataForm, self).__init__(*args, **kwargs)
         self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
+        self.fields["active_base_price"].widget = Select(choices=ACTIVE_FOR_SALE_CHOICES)
 
     class Meta:
         model = Product
         fields = ("active", "active_name", "name", "slug", "active_sku", "sku", "sku_manufacturer",
             "active_price", "price", "price_calculator", "active_short_description", "short_description", "active_description",
             "description", "for_sale", "for_sale_price", "active_for_sale", "active_for_sale_price",
-            "active_related_products", "active_static_block", "static_block", "template")
+            "active_related_products", "active_static_block", "static_block", "template",
+            "active_base_price", "base_price_unit", "base_price_amount")
 
     def clean(self):
         """
@@ -106,6 +112,11 @@ class VariantDataForm(forms.ModelForm):
 
         return self.cleaned_data
 
+
+def check_active_packing_unit():
+    """
+    """
+    return True
 
 class ProductStockForm(forms.ModelForm):
     """
@@ -122,6 +133,10 @@ class ProductStockForm(forms.ModelForm):
         super(ProductStockForm, self).__init__(*args, **kwargs)
         self.fields["ordered_at"].widget.attrs = {'class': 'date-picker'}
 
+        if kwargs.get("instance").is_variant():
+            self.fields["active_packing_unit"].widget = Select(choices=ACTIVE_FOR_SALE_CHOICES)
+        else:
+            self.fields["active_packing_unit"].widget = CheckboxInput()
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_product(request, product_id, template_name="manage/product/product.html"):
@@ -167,10 +182,18 @@ def stock(request, product_id, template_name="manage/product/stock.html"):
     # prefix="stock" because <input name="length" doesn't seem to work with IE
     product = lfs_get_object_or_404(Product, pk=product_id)
 
+    # Transform empty field / "on" from checkbox to integer
+    data = dict(request.POST.items())
+    if not product.is_variant():
+        if data.get("stock-active_packing_unit"):
+            data["stock-active_packing_unit"] = 1
+        else:
+            data["stock-active_packing_unit"] = 0
+
     if request.method == "POST":
-        form = ProductStockForm(prefix="stock", instance=product, data=request.POST)
+        form = ProductStockForm(prefix="stock", instance=product, data=data)
         if form.is_valid():
-            form.save()
+            product = form.save()
             message = _(u"Product stock data has been saved.")
         else:
             message = _(u"Please correct the indicated errors.")
@@ -366,10 +389,18 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
     paginator = Paginator(products, 20)
     page = paginator.page(request.REQUEST.get("page", 1))
 
+    # Transform empty field / "on" from checkbox to integer
+    data = dict(request.POST.items())
+    if not product.is_variant():
+        if data.get("active_base_price"):
+            data["active_base_price"] = 1
+        else:
+            data["active_base_price"] = 0
+
     if product.sub_type == VARIANT:
-        form = VariantDataForm(instance=product, data=request.POST)
+        form = VariantDataForm(instance=product, data=data)
     else:
-        form = ProductDataForm(instance=product, data=request.POST)
+        form = ProductDataForm(instance=product, data=data)
 
     if form.is_valid():
         form.save()

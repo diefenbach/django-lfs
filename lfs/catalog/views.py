@@ -73,9 +73,14 @@ def calculate_packing(request, id, quantity=None, as_string=False, template_name
 
     packing_amount, packing_unit = product.get_packing_info()
 
-    packs = math.ceil(quantity / packing_amount)
-    real_quantity = packs * packing_amount
-    price = real_quantity * product.get_price(request)
+    try:
+        packs = math.ceil(quantity / packing_amount)
+        real_quantity = packs * packing_amount
+        price = real_quantity * product.get_price_gross(request)
+    except TypeError:
+        packs = 0.0
+        real_quantity = 0.0
+        price = 0.0
 
     html = render_to_string(template_name, RequestContext(request, {
         "price": price,
@@ -210,6 +215,7 @@ def set_price_filter(request, category_slug):
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
+
 
 def reset_price_filter(request, category_slug):
     """Resets the price filter. Redirects to the category with given slug.
@@ -386,9 +392,10 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
     row = []
     products = []
     for i, product in enumerate(all_products[start:start + amount]):
-        # Switch to default variant if product is a "product with variants".
-        # if product.is_product_with_variants() and product.has_variants():
-        #    product = product.get_default_variant()
+        if product.is_product_with_variants():
+            default_variant = product.get_variant_for_category(request)
+            if default_variant:
+                product = default_variant
         image = None
         product_image = product.get_image()
         if product_image:
@@ -563,7 +570,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
     if product.get_template_name() != None:
         template_name = product.get_template_name()
 
-    if product.active_packing_unit:
+    if product.get_active_packing_unit():
         packing_result = calculate_packing(request, product.id, 1, True)
     else:
         packing_result = ""
@@ -578,10 +585,10 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
         "properties": properties,
         "packing_result": packing_result,
         "attachments": attachments,
-        "quantity" : product.get_clean_quantity(1),
+        "quantity": product.get_clean_quantity(1),
         "price_includes_tax": product.price_includes_tax(request),
-        "price_unit": product.price_unit,
-        "unit": product.unit,
+        "price_unit": product.get_price_unit(),
+        "unit": product.get_unit(),
         "display_variants_list": display_variants_list,
         "for_sale": product.for_sale,
     }))

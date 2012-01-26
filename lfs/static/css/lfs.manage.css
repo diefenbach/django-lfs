@@ -549,15 +549,21 @@ select.categories {
 /* input fields */
 #id_name, #id_slug, #id_sku, #id_shop_owner, #id_from_email, #id_title, #id_redirect_to, #id_sku_manufacturer, #redirect_to, #id_position, #id_unit,
 #id_priority, #id_price, #id_for_sale_price, #id_tax, #id_module, #id_link, #id_parent, #id_static_block, #id_price_unit, #id_template, #id_meta_title,
-#id_type, #id_step_type, #id_delivery_time, #id_type_of_quantity_field, #id_price_calculator {
-    width: 300px;
+#id_type, #id_step_type, #id_delivery_time, #id_type_of_quantity_field, #id_price_calculator, #id_base_price_unit, #id_base_price_amount, #id_active_base_price {
+    width: 200px;
 }
 
 #id_rate {
     width: 195px;
 }
 
-#id_country, #id_countries, #id_slot, #id_portlet-title, #id_default_variant, #id_variants_display_type, #selected-property-groups, #id_group {
+#id_stock-active_packing_unit,
+#id_stock-packing_unit_unit {
+    width: 167px;
+}
+
+#id_country, #id_countries, #id_slot, #id_portlet-title, #id_default_variant,
+#id_variants_display_type, #selected-property-groups, #id_group {
     width: 200px;
 }
 
