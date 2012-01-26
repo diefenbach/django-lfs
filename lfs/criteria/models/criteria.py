@@ -52,7 +52,7 @@ class CartPriceCriterion(models.Model, Criterion):
     price = models.FloatField(_(u"Price"), default=0.0)
 
     def __unicode__(self):
-        return "Cart Price %s %s" % (self.get_operator_display(), self.price)
+        return _("Cart Price %(operator)s %(price)s") % {'operator': self.get_operator_display(), 'price': self.price}
 
     @property
     def content_type(self):

@@ -81,8 +81,8 @@ class PaymentMethod(models.Model):
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
     price = models.FloatField(_(u"Price"), default=0.0)
     deletable = models.BooleanField(default=True)
-    module = models.CharField(blank=True, max_length=100)
-    type = models.PositiveSmallIntegerField(choices=lfs.payment.settings.PAYMENT_METHOD_TYPES_CHOICES, default=lfs.payment.settings.PM_PLAIN)
+    module = models.CharField(_('Payment module'), blank=True, max_length=100)
+    type = models.PositiveSmallIntegerField(_('Payment type'), choices=lfs.payment.settings.PAYMENT_METHOD_TYPES_CHOICES, default=lfs.payment.settings.PM_PLAIN)
 
     criteria_objects = generic.GenericRelation(CriteriaObjects,
         object_id_field="content_id", content_type_field="content_type")
