@@ -66,6 +66,22 @@ from lfs.manufacturer.models import Manufacturer
 def get_unique_id_str():
     return str(uuid.uuid4())
 
+LFS_UNITS = []
+for u in settings.LFS_UNITS:
+    LFS_UNITS.append([u, u])
+
+LFS_PRICE_UNITS = []
+for u in settings.LFS_PRICE_UNITS:
+    LFS_PRICE_UNITS.append([u, u])
+
+LFS_BASE_PRICE_UNITS = []
+for u in settings.LFS_BASE_PRICE_UNITS:
+    LFS_BASE_PRICE_UNITS.append([u, u])
+
+LFS_PACKING_UNITS = []
+for u in settings.LFS_PACKING_UNITS:
+    LFS_PACKING_UNITS.append([u, u])
+
 
 class Category(models.Model):
     """A category is used to browse through the shop products. A category can
@@ -556,8 +572,8 @@ class Product(models.Model):
                                         choices=settings.LFS_PRICE_CALCULATORS,
                                         max_length=255)
     effective_price = models.FloatField(_(u"Price"), blank=True)
-    price_unit = models.CharField(_(u"Price unit"), blank=True, max_length=20, choices=settings.LFS_PRICE_UNITS)
-    unit = models.CharField(_(u"Unit"), blank=True, max_length=20, choices=settings.LFS_UNITS)
+    price_unit = models.CharField(_(u"Price unit"), blank=True, max_length=20, choices=LFS_PRICE_UNITS)
+    unit = models.CharField(_(u"Unit"), blank=True, max_length=20, choices=LFS_UNITS)
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
     images = generic.GenericRelation("Image", verbose_name=_(u"Images"),
@@ -591,7 +607,7 @@ class Product(models.Model):
 
     active_packing_unit = models.PositiveSmallIntegerField(_(u"Active packing unit"), default=0)
     packing_unit = models.FloatField(_(u"Packing unit"), blank=True, null=True)
-    packing_unit_unit = models.CharField(_(u"Unit"), blank=True, max_length=30, choices=settings.LFS_PACKING_UNITS)
+    packing_unit_unit = models.CharField(_(u"Unit"), blank=True, max_length=30, choices=LFS_PACKING_UNITS)
 
     static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="products")
 
@@ -639,7 +655,7 @@ class Product(models.Model):
 
     # Base price
     active_base_price = models.PositiveSmallIntegerField(_(u"Active base price"), default=0)
-    base_price_unit = models.CharField(_(u"Base price unit"), blank=True, max_length=30, choices=settings.LFS_BASE_PRICE_UNITS)
+    base_price_unit = models.CharField(_(u"Base price unit"), blank=True, max_length=30, choices=LFS_BASE_PRICE_UNITS)
     base_price_amount = models.FloatField(_(u"Base price amount"), default=0.0, blank=True, null=True)
 
     # Manufacturer

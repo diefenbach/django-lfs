@@ -93,6 +93,24 @@ LFS_RECENT_PRODUCTS_LIMIT
     The amount of recent products which are displayed within the recent
     products portlet, e.g. 3.
 
+
+.. _settings_units:
+
+Units
+=====
+
+LFS_UNITS
+    A list of available units for the product.
+
+LFS_PRICE_UNITS
+    A list of available units for the product price.
+
+LFS_BASE_PRICE_UNITS
+    A list of available units for the product base price.
+
+LFS_PACKING_UNITS
+    A list of available units for the product packaging.
+
 .. _settings_email:
 
 E-Mail
