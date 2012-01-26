@@ -876,7 +876,7 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.get_base_packing_price_net(request)
 
-    def get_base_packing_price_net(self, request):
+    def get_base_packing_price_gross(self, request):
         """See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
