@@ -19,9 +19,9 @@ class OnePageCheckoutForm(forms.Form):
     """
     invoice_firstname = forms.CharField(label=_(u"First Name"), max_length=50)
     invoice_lastname = forms.CharField(label=_(u"Last Name"), max_length=50)
-    invoice_phone = forms.CharField(label=_(u"Invoice Phone"), required=getattr(settings, "INVOICE_PHONE_REQUIRED", False), max_length=20)
-    invoice_email = forms.EmailField(label=_(u"Invoice E-mail"), required=getattr(settings, "INVOICE_EMAIL_REQUIRED", True), max_length=50)
-    invoice_company_name = forms.CharField(label=_(u"Company name"), required=getattr(settings, "INVOICE_COMPANY_NAME_REQUIRED", False), max_length=50)
+    invoice_phone = forms.CharField(label=_(u"Invoice Phone"), required=getattr(settings, "LFS_INVOICE_PHONE_REQUIRED", False), max_length=20)
+    invoice_email = forms.EmailField(label=_(u"Invoice E-mail"), required=getattr(settings, "LFS_INVOICE_EMAIL_REQUIRED", True), max_length=50)
+    invoice_company_name = forms.CharField(label=_(u"Company name"), required=getattr(settings, "LFS_INVOICE_COMPANY_NAME_REQUIRED", False), max_length=50)
 
     shipping_firstname = forms.CharField(label=_(u"First Name"), required=False, max_length=50)
     shipping_lastname = forms.CharField(label=_(u"Last Name"), required=False, max_length=50)
@@ -71,7 +71,7 @@ class OnePageCheckoutForm(forms.Form):
             if self.cleaned_data.get("shipping_lastname", "") == "":
                 self._errors["shipping_lastname"] = ErrorList([msg])
 
-            if getattr(settings, "SHIPPING_PHONE_REQUIRED"):
+            if getattr(settings, "LFS_SHIPPING_PHONE_REQUIRED"):
                 if self.cleaned_data.get("shipping_phone", "") == "":
                     self._errors["shipping_phone"] = ErrorList([msg])
 
