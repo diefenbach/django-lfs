@@ -151,7 +151,6 @@ def select_variant_from_properties(request):
     changed.
     """
     product_id = request.POST.get("product_id")
-    print product_id
 
     try:
         variant = Product.objects.get(pk=product_id)
