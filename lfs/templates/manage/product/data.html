@@ -150,19 +150,22 @@
             {% if not product.is_variant %}
                 <div class="field">
                     <div class="label">
+                        {{ form.price_unit.label_tag }}:
+                    </div>
+                    <div>
+                        {{ form.price_unit }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if not product.is_variant %}
+                <div class="field">
+                    <div class="label">
                         {{ form.tax.label_tag }}:
                     </div>
-
-                    {% if form.tax.errors %}
-                        <div class="error">
-                            {{ form.tax }}
-                            {{ form.tax.errors }}
-                        </div>
-                    {% else %}
-                        <div>
-                            {{ form.tax }}
-                        </div>
-                    {% endif %}
+                    <div>
+                        {{ form.tax }}
+                    </div>
                 </div>
             {% endif %}
 
@@ -172,17 +175,9 @@
                         {{ form.active_price_calculation }}
                         {{ form.price_calculation.label_tag }}:
                     </div>
-
-                    {% if form.price.errors %}
-                        <div class="error">
-                            {{ form.price_calculation }}
-                            {{ form.price_calculation.errors }}
-                        </div>
-                    {% else %}
-                        <div>
-                            {{ form.price_calculation }}
-                        </div>
-                    {% endif %}
+                    <div>
+                        {{ form.price_calculation }}
+                    </div>
                 </div>
             {% endif %}
 
@@ -245,21 +240,13 @@
 
         {% if not product.is_variant %}
             <fieldset>
-                <legend>{% trans "Units" %}</legend>
+                <legend>{% trans "Quantity field" %}</legend>
                 <div class="field">
                     <div class="label">
                         {{ form.unit.label_tag }}:
                     </div>
                     <div>
                         {{ form.unit }}
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="label">
-                        {{ form.price_unit.label_tag }}:
-                    </div>
-                    <div>
-                        {{ form.price_unit }}
                     </div>
                 </div>
                 <div class="field">
@@ -307,6 +294,7 @@
                 </div>
                 <div>
                     {{ form.base_price_unit }}
+                    {{ product.parent.base_price_unit }}
                 </div>
             </div>
 
@@ -316,6 +304,7 @@
                 </div>
                 <div>
                     {{ form.base_price_amount }}
+                    {{ product.parent.base_price_amount }}
                     {{ form.base_price_amount.errors }}
                 </div>
             </div>
