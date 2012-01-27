@@ -1082,6 +1082,8 @@ class ViewsTestCase(TestCase):
     def test_calculate_packing(self):
         from lfs.catalog.views import calculate_packing
         request = RequestFactory().post("/")
+        request.session = SessionStore()
+        request.user = AnonymousUser()
 
         self.p1.packing_unit = 2
         self.p1.save()
@@ -1090,10 +1092,14 @@ class ViewsTestCase(TestCase):
         self.assertEqual(result.status_code, 200)
 
         request = RequestFactory().post("/", {"quantity": "3"})
+        request.session = SessionStore()
+        request.user = AnonymousUser()
         result = calculate_packing(request, id=1)
         self.assertEqual(result.status_code, 200)
 
         request = RequestFactory().post("/", {"quantity": "3"})
+        request.session = SessionStore()
+        request.user = AnonymousUser()
         result = calculate_packing(request, id=1, as_string=True)
         self.failUnless(isinstance(result, unicode))
 
@@ -1554,12 +1560,12 @@ class ProductTestCase(TestCase):
         self.p3 = Product.objects.create(name=u"Product 3", slug=u"product-3", active=True)
 
         # Create a size property with two options
-        self.size = size = Property.objects.create(name="Size")
+        self.size = size = Property.objects.create(name="Size", type=PROPERTY_SELECT_FIELD)
         self.l = l = PropertyOption.objects.create(name="L", property=size)
         self.m = m = PropertyOption.objects.create(name="M", property=size)
 
         # Create a color property with two options
-        self.color = color = Property.objects.create(name="Color")
+        self.color = color = Property.objects.create(name="Color", type=PROPERTY_SELECT_FIELD)
         self.red = red = PropertyOption.objects.create(name="Red", property=color)
         self.green = green = PropertyOption.objects.create(name="Green", property=color)
 
@@ -1586,13 +1592,13 @@ class ProductTestCase(TestCase):
             active=True,
         )
 
-        self.ppv_color_red = ProductPropertyValue.objects.create(product=self.v1, property=self.color, value=self.red.id, type=PROPERTY_VALUE_TYPE_FILTER)
-        self.ppv_size_m = ProductPropertyValue.objects.create(product=self.v1, property=self.size, value=self.m.id, type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv_color_red = ProductPropertyValue.objects.create(product=self.v1, property=self.color, value=self.red.id, type=PROPERTY_VALUE_TYPE_VARIANT)
+        self.ppv_size_m = ProductPropertyValue.objects.create(product=self.v1, property=self.size, value=self.m.id, type=PROPERTY_VALUE_TYPE_VARIANT)
 
         # Add a variant with color = green, size = l
         self.v2 = Product.objects.create(name="Variant 2", slug="variant-2", sub_type=VARIANT, parent=self.p1, active=True)
-        self.ppv_color_green = ProductPropertyValue.objects.create(product=self.v2, property=color, value=self.green.id, type=PROPERTY_VALUE_TYPE_FILTER)
-        self.ppv_size_l = ProductPropertyValue.objects.create(product=self.v2, property=size, value=self.l.id, type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv_color_green = ProductPropertyValue.objects.create(product=self.v2, property=color, value=self.green.id, type=PROPERTY_VALUE_TYPE_VARIANT)
+        self.ppv_size_l = ProductPropertyValue.objects.create(product=self.v2, property=size, value=self.l.id, type=PROPERTY_VALUE_TYPE_VARIANT)
 
         # Add related products to p1
         self.p1.related_products.add(self.p2, self.p3)
@@ -2119,15 +2125,15 @@ class ProductTestCase(TestCase):
     def test_get_variant_properties(self):
         """
         """
-        # First add some variant property values
-        ppv_color_red = ProductPropertyValue.objects.create(product=self.v1, property=self.color, value=self.red.id, type=PROPERTY_VALUE_TYPE_VARIANT)
-        ppv_size_m = ProductPropertyValue.objects.create(product=self.v1, property=self.size, value=self.m.id, type=PROPERTY_VALUE_TYPE_VARIANT)
-        ppv_color_green = ProductPropertyValue.objects.create(product=self.v2, property=self.color, value=self.green.id, type=PROPERTY_VALUE_TYPE_VARIANT)
-        ppv_size_l = ProductPropertyValue.objects.create(product=self.v2, property=self.size, value=self.l.id, type=PROPERTY_VALUE_TYPE_VARIANT)
+        self.color.type = PROPERTY_TEXT_FIELD
+        self.color.save()
+
+        self.size.type = PROPERTY_TEXT_FIELD
+        self.size.save()
 
         options = [p["value"] for p in self.v1.get_variant_properties()]
-        self.failIf(str(ppv_color_red.value) not in options)
-        self.failIf(str(ppv_size_m.value) not in options)
+        self.failIf(str(self.ppv_color_red.value) not in options)
+        self.failIf(str(self.ppv_size_m.value) not in options)
 
         options = [p["value"] for p in self.v2.get_variant_properties()]
         self.failIf(str(self.ppv_color_green.value) not in options)
@@ -2136,6 +2142,12 @@ class ProductTestCase(TestCase):
     def test_get_displayed_properties(self):
         """
         """
+        self.color.type = PROPERTY_TEXT_FIELD
+        self.color.save()
+
+        self.size.type = PROPERTY_TEXT_FIELD
+        self.size.save()
+
         # First add some variant property values
         ppv_color_red = ProductPropertyValue.objects.create(product=self.p1, property=self.color, value=self.red.id, type=PROPERTY_VALUE_TYPE_DISPLAY)
         ppv_size_m = ProductPropertyValue.objects.create(product=self.p1, property=self.size, value=self.m.id, type=PROPERTY_VALUE_TYPE_DISPLAY)
@@ -2147,8 +2159,8 @@ class ProductTestCase(TestCase):
         self.failIf(str(ppv_size_m.value) not in options)
 
         options = [p["value"] for p in self.p2.get_displayed_properties()]
-        self.failIf(str(self.ppv_color_green.value) not in options)
-        self.failIf(str(self.ppv_size_l.value) not in options)
+        self.failIf(str(ppv_color_green.value) not in options)
+        self.failIf(str(ppv_size_l.value) not in options)
 
     def test_has_option(self):
         """
@@ -2655,6 +2667,7 @@ class ProductTestCase(TestCase):
             'slug': 'variant-slug',
             'name': 'variant',
             'price': 10.00,
+            'property_%s' % self.size.id: self.m.id,
         }
 
         # set up a user with permission to access the manage interface
@@ -2680,7 +2693,7 @@ class ProductTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(Product.objects.all()), 6)
-        variant = Product.objects.get(slug="product-1-variant-slug")
+        variant = Product.objects.get(slug="product-1-variant-slug-m")
         self.assertEqual(variant.name, 'variant')
         self.assertEqual(variant.price, 10.00)
         self.assertEqual(variant.parent, product)

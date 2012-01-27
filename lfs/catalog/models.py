@@ -1438,7 +1438,7 @@ class Product(models.Model):
         options.sort()
         options = "".join(options)
         for variant in self.variants.filter(active=True):
-            temp = variant.property_values.filter(type=PROPERTY_SELECT_FIELD)
+            temp = variant.property_values.filter(type=PROPERTY_VALUE_TYPE_VARIANT)
             temp = ["%s|%s" % (x.property.id, x.value) for x in temp]
             temp.sort()
             temp = "".join(temp)
