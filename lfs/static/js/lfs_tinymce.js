@@ -1,9 +1,9 @@
 function addEditor(selector, hide_save, height) {
     if (hide_save == true) {
-        buttons = "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,forecolor,backcolor,styleselect,formatselect,image,|,link,mylink,unlink,|,removeformat,code,|,fullscreen"
+        buttons = "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,forecolor,backcolor,styleselect,formatselect,image,media,|,link,mylink,unlink,|,removeformat,code,|,fullscreen"
     }
     else {
-        buttons  = "save,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,forecolor,backcolor,styleselect,formatselect,image,|,link,mylink,unlink,|,removeformat,code,|,fullscreen"
+        buttons  = "save,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,forecolor,backcolor,styleselect,formatselect,image,media,|,link,mylink,unlink,|,removeformat,code,|,fullscreen"
     }
 
     if (!height) {
@@ -17,7 +17,7 @@ function addEditor(selector, hide_save, height) {
 
         // General options
         theme : "advanced",
-        plugins : "safari,save,iespell,directionality,fullscreen,xhtmlxtras",
+        plugins : "safari,save,iespell,directionality,fullscreen,xhtmlxtras,media",
 
         theme_advanced_buttons1 : buttons,
         theme_advanced_buttons2 : "",
@@ -27,8 +27,9 @@ function addEditor(selector, hide_save, height) {
         theme_advanced_toolbar_align : "left",
         save_onsavecallback : "save",
         relative_urls : false,
+        cleanup : false,
         height : height,
-        content_css : "/static/css/tinymce_styles.css"
+        content_css : "/static/css/tinymce_styles.css",
    });
 };
 
