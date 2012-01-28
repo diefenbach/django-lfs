@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-27 02:52-0600\n"
+"POT-Creation-Date: 2012-01-28 19:34+0100\n"
 "PO-Revision-Date: 2009-02-22 07:20+0100\n"
 "Last-Translator: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
 "Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
@@ -404,16 +404,16 @@ msgid "Stock amount"
 msgstr "Lagerbestand"
 
 #: catalog/models.py:608
-msgid "Active packing unit"
+msgid "Active packing"
 msgstr "Verpackungseinheit aktivieren"
 
 #: catalog/models.py:609
-msgid "Packing unit"
-msgstr "Verpackungseinheit"
+msgid "Amount per packing"
+msgstr "Anzahl pro Verpackungseinheit"
 
-#: catalog/models.py:610 catalog/models.py:1761 catalog/models.py:2104
-msgid "Unit"
-msgstr "Einheit"
+#: catalog/models.py:610
+msgid "Packing unit"
+msgstr "Einheit der Verpackungseinheit"
 
 #: catalog/models.py:615 criteria/models/criteria.py:609
 #: criteria/models/criteria.py:627
@@ -614,6 +614,10 @@ msgstr "Titel"
 #: catalog/models.py:1758 catalog/models.py:1861 core/models.py:78
 msgid "Group"
 msgstr "Gruppe"
+
+#: catalog/models.py:1761 catalog/models.py:2104
+msgid "Unit"
+msgstr "Einheit"
 
 #: catalog/models.py:1762
 msgid "Display on product"
@@ -861,7 +865,7 @@ msgstr "Kategorie mit Produkten"
 msgid "Category with subcategories"
 msgstr "Kategorie mit Unterkategorien"
 
-#: catalog/views.py:55 catalog/views.py:170
+#: catalog/views.py:55 catalog/views.py:169
 msgid "The product has been changed according to your selection."
 msgstr "Das Produkt wurde gemäß Ihrer Auswahl geändert."
 
@@ -869,7 +873,7 @@ msgstr "Das Produkt wurde gemäß Ihrer Auswahl geändert."
 msgid "Price has been changed according to your selection."
 msgstr "Der Preis wurde gemäß Ihrer Auswahl geändert."
 
-#: catalog/views.py:167 catalog/views.py:623
+#: catalog/views.py:166 catalog/views.py:622
 msgid "The choosen combination of properties is not deliverable."
 msgstr "Die gewählte Kombination von Eigenschaften ist nicht lieferbar"
 
@@ -956,7 +960,8 @@ msgstr "Wie Rechnungsadresse"
 msgid "Your message to us"
 msgstr "Ihre Nachricht an uns"
 
-#: checkout/forms.py:61
+#: checkout/forms.py:61 manage/views/product/product.py:90
+#: manage/views/product/product.py:124
 msgid "This field is required."
 msgstr "Dieses Feld ist erforderlich."
 
@@ -1442,8 +1447,8 @@ msgstr "Aktion wurde gespeichert."
 #: manage/actions/views.py:98 manage/views/shop.py:140
 #: manage/views/shop.py:163 manage/views/shop.py:186 manage/views/shop.py:212
 #: manage/views/categories/category.py:129 manage/views/categories/seo.py:42
-#: manage/views/categories/view.py:45 manage/views/product/product.py:199
-#: manage/views/product/product.py:414
+#: manage/views/categories/view.py:45 manage/views/product/product.py:212
+#: manage/views/product/product.py:427
 msgid "Please correct the indicated errors."
 msgstr "Bitte korrigieren Sie die angezeigten Fehler."
 
@@ -1919,31 +1924,31 @@ msgstr "Bilder wurden aktualisiert."
 msgid "Active images has been updated."
 msgstr "Bilderstatus wurden aktualisiert."
 
-#: manage/views/product/product.py:197
+#: manage/views/product/product.py:210
 msgid "Product stock data has been saved."
 msgstr "Produkt-Lagerdaten wurden gespeichert."
 
-#: manage/views/product/product.py:366
+#: manage/views/product/product.py:379
 msgid "Sub type has been changed."
 msgstr "Produkttyp wurden gespeichert."
 
-#: manage/views/product/product.py:412
+#: manage/views/product/product.py:425
 msgid "Productdata has been saved."
 msgstr "Produktdaten wurden gespeichert."
 
-#: manage/views/product/product.py:470
+#: manage/views/product/product.py:483
 msgid "Product filters have been reset"
 msgstr "Produktfilter wurden gespeichert."
 
-#: manage/views/product/product.py:497
+#: manage/views/product/product.py:510
 msgid "Products have been deleted."
 msgstr "Produkte wurden gelöscht."
 
-#: manage/views/product/product.py:539
+#: manage/views/product/product.py:552
 msgid "Products have been saved"
 msgstr "Produkte wurden gespeichert."
 
-#: manage/views/product/product.py:617
+#: manage/views/product/product.py:630
 msgid "Product filters have been set"
 msgstr "Produktfilter wurden gespeichert."
 

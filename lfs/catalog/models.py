@@ -605,9 +605,9 @@ class Product(models.Model):
     manage_stock_amount = models.BooleanField(_(u"Manage stock amount"), default=False)
     stock_amount = models.FloatField(_(u"Stock amount"), default=0)
 
-    active_packing_unit = models.PositiveSmallIntegerField(_(u"Active packing unit"), default=0)
-    packing_unit = models.FloatField(_(u"Packing unit"), blank=True, null=True)
-    packing_unit_unit = models.CharField(_(u"Unit"), blank=True, max_length=30, choices=LFS_PACKING_UNITS)
+    active_packing_unit = models.PositiveSmallIntegerField(_(u"Active packing"), default=0)
+    packing_unit = models.FloatField(_(u"Amount per packing"), blank=True, null=True)
+    packing_unit_unit = models.CharField(_(u"Packing unit"), blank=True, max_length=30, choices=LFS_PACKING_UNITS)
 
     static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="products")
 
