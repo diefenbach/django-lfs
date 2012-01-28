@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-28 19:34+0100\n"
+"POT-Creation-Date: 2012-01-28 19:40+0100\n"
 "PO-Revision-Date: 2009-02-22 07:20+0100\n"
 "Last-Translator: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
 "Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
@@ -3828,7 +3828,7 @@ msgid "Stock Data"
 msgstr "Lagerdaten"
 
 #: templates/manage/product/stock.html:190
-msgid "Packaging Unit"
+msgid "Packing"
 msgstr "Verpackungseinheit"
 
 #: templates/manage/product/stock.html:252
@@ -4260,15 +4260,18 @@ msgstr "Der Gutschein ist für diesen Preis nicht gültig."
 msgid "The voucher doesn't exist."
 msgstr "Dieser Gutschein existiert nicht"
 
+#~ msgid "Packaging Unit"
+#~ msgstr "Verpackungseinheit"
+
 # Additional msgids DO NOT DELETE THIS
-msgid "Left"
-msgstr "Links"
+#~ msgid "Left"
+#~ msgstr "Links"
 
-msgid "Right"
-msgstr "Rechts"
+#~ msgid "Right"
+#~ msgstr "Rechts"
 
-msgid "Average Rating"
-msgstr "Durchschnittliche Bewertung"
+#~ msgid "Average Rating"
+#~ msgstr "Durchschnittliche Bewertung"
 
-msgid "Zip Code"
-msgstr "PLZ"
+#~ msgid "Zip Code"
+#~ msgstr "PLZ"
