@@ -27,7 +27,7 @@ class ShopForm(ModelForm):
         self.fields["image"].widget = LFSImageInput()
 
     class Meta:
-        model = Shop
+        model = Szhop
         fields = ("name", "shop_owner", "from_email", "notification_emails",
             "description", "image", "static_block", "checkout_type", "confirm_toc",
             "google_analytics_id", "ga_site_tracking", "ga_ecommerce_tracking")
