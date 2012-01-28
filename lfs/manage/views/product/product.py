@@ -22,8 +22,8 @@ import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
-from lfs.catalog.settings import ACTIVE_FOR_SALE_CHOICES
-from lfs.catalog.settings import ACTIVE_FOR_SALE_YES
+from lfs.catalog.settings import CHOICES
+from lfs.catalog.settings import CHOICES_YES
 from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TYPE_FORM_CHOICES
 from lfs.catalog.settings import VARIANT
@@ -99,7 +99,7 @@ class VariantDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(VariantDataForm, self).__init__(*args, **kwargs)
         self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
-        self.fields["active_base_price"].widget = Select(choices=ACTIVE_FOR_SALE_CHOICES)
+        self.fields["active_base_price"].widget = Select(choices=CHOICES)
 
     class Meta:
         model = Product
@@ -119,7 +119,7 @@ class VariantDataForm(forms.ModelForm):
             else:
                 lfs.core.utils.remove_redirect_for(self.instance.get_absolute_url())
 
-        if self.data.get("active_base_price") == str(ACTIVE_FOR_SALE_YES):
+        if self.data.get("active_base_price") == str(CHOICES_YES):
             if self.data.get("base_price_amount", "") == "":
                 self.errors["base_price_amount"] = ErrorList([_(u"This field is required.")])
 
@@ -147,7 +147,7 @@ class ProductStockForm(forms.ModelForm):
         self.fields["ordered_at"].widget.attrs = {'class': 'date-picker'}
 
         if kwargs.get("instance").is_variant():
-            self.fields["active_packing_unit"].widget = Select(choices=ACTIVE_FOR_SALE_CHOICES)
+            self.fields["active_packing_unit"].widget = Select(choices=CHOICES)
         else:
             self.fields["active_packing_unit"].widget = CheckboxInput()
 

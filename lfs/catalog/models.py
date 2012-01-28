@@ -19,9 +19,9 @@ from django.utils.importlib import import_module
 import lfs.catalog.utils
 from lfs.core.fields.thumbs import ImageWithThumbsField
 from lfs.core.managers import ActiveManager
-from lfs.catalog.settings import ACTIVE_FOR_SALE_CHOICES, CONTENT_CATEGORIES
-from lfs.catalog.settings import ACTIVE_FOR_SALE_STANDARD
-from lfs.catalog.settings import ACTIVE_FOR_SALE_YES
+from lfs.catalog.settings import CHOICES, CONTENT_CATEGORIES
+from lfs.catalog.settings import CHOICES_STANDARD
+from lfs.catalog.settings import CHOICES_YES
 from lfs.catalog.settings import PRODUCT_TYPE_CHOICES
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.catalog.settings import STANDARD_PRODUCT
@@ -638,7 +638,7 @@ class Product(models.Model):
     active_static_block = models.BooleanField(_(u"Active static bock"), default=False)
     active_description = models.BooleanField(_(u"Active description"), default=False)
     active_price = models.BooleanField(_(u"Active price"), default=False)
-    active_for_sale = models.PositiveSmallIntegerField(_("Active for sale"), choices=ACTIVE_FOR_SALE_CHOICES, default=ACTIVE_FOR_SALE_STANDARD)
+    active_for_sale = models.PositiveSmallIntegerField(_("Active for sale"), choices=CHOICES, default=CHOICES_STANDARD)
     active_for_sale_price = models.BooleanField(_(u"Active for sale price"), default=False)
     active_images = models.BooleanField(_(u"Active Images"), default=False)
     active_related_products = models.BooleanField(_(u"Active related products"), default=False)
@@ -840,13 +840,13 @@ class Product(models.Model):
         return description
 
     def get_base_price_amount(self):
-        if self.is_variant() and self.active_base_price == ACTIVE_FOR_SALE_STANDARD:
+        if self.is_variant() and self.active_base_price == CHOICES_STANDARD:
             return self.parent.base_price_amount
         else:
             return self.base_price_amount
 
     def get_base_price_unit(self):
-        if self.is_variant() and self.active_base_price == ACTIVE_FOR_SALE_STANDARD:
+        if self.is_variant() and self.active_base_price == CHOICES_STANDARD:
             return self.parent.base_price_unit
         else:
             return self.base_price_unit
@@ -857,10 +857,10 @@ class Product(models.Model):
         whether the product is a variant.
         """
         if self.is_variant():
-            if self.active_base_price == ACTIVE_FOR_SALE_STANDARD:
+            if self.active_base_price == CHOICES_STANDARD:
                 return self.parent.active_base_price
             else:
-                return self.active_base_price == ACTIVE_FOR_SALE_YES
+                return self.active_base_price == CHOICES_YES
         else:
             return self.active_base_price
 
@@ -888,9 +888,9 @@ class Product(models.Model):
         product is a variant.
         """
         if self.is_variant():
-            if self.active_for_sale == ACTIVE_FOR_SALE_STANDARD:
+            if self.active_for_sale == CHOICES_STANDARD:
                 return self.parent.for_sale
-            elif self.active_for_sale == ACTIVE_FOR_SALE_YES:
+            elif self.active_for_sale == CHOICES_YES:
                 return True
             else:
                 return False
@@ -1498,10 +1498,10 @@ class Product(models.Model):
         Returns True if the packing unit is active. Takes variant into accounts.
         """
         if self.is_variant():
-            if self.active_packing_unit == ACTIVE_FOR_SALE_STANDARD:
+            if self.active_packing_unit == CHOICES_STANDARD:
                 return self.parent.active_packing_unit
             else:
-                return self.active_packing_unit == ACTIVE_FOR_SALE_YES
+                return self.active_packing_unit == CHOICES_YES
         else:
             return self.active_packing_unit
 
@@ -1510,7 +1510,7 @@ class Product(models.Model):
         Returns the packing info of the product as list. Takes variants into
         account.
         """
-        if self.is_variant() and self.active_packing_unit == ACTIVE_FOR_SALE_STANDARD:
+        if self.is_variant() and self.active_packing_unit == CHOICES_STANDARD:
             obj = self.parent
         else:
             obj = self

@@ -7,9 +7,9 @@ from django.test import TestCase
 import lfs.catalog.utils
 import lfs.core.settings as lfs_settings
 from lfs.core.signals import property_type_changed
-from lfs.catalog.settings import ACTIVE_FOR_SALE_YES
-from lfs.catalog.settings import ACTIVE_FOR_SALE_STANDARD
-from lfs.catalog.settings import ACTIVE_FOR_SALE_NO
+from lfs.catalog.settings import CHOICES_YES
+from lfs.catalog.settings import CHOICES_STANDARD
+from lfs.catalog.settings import CHOICES_NO
 from lfs.catalog.settings import CONTENT_CATEGORIES
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_HOURS
@@ -327,17 +327,17 @@ class GrossPriceTestCase(TestCase):
         self.p1.for_sale = True
         self.p1.save()
 
-        self.v1.active_for_sale = ACTIVE_FOR_SALE_STANDARD
+        self.v1.active_for_sale = CHOICES_STANDARD
         self.v1.save()
 
         self.assertEqual(self.v1.get_for_sale(), True)
 
-        self.v1.active_for_sale = ACTIVE_FOR_SALE_YES
+        self.v1.active_for_sale = CHOICES_YES
         self.v1.save()
 
         self.assertEqual(self.v1.get_for_sale(), True)
 
-        self.v1.active_for_sale = ACTIVE_FOR_SALE_NO
+        self.v1.active_for_sale = CHOICES_NO
         self.v1.save()
 
         self.assertEqual(self.v1.get_for_sale(), False)
@@ -346,17 +346,17 @@ class GrossPriceTestCase(TestCase):
         self.p1.for_sale = False
         self.p1.save()
 
-        self.v1.active_for_sale = ACTIVE_FOR_SALE_STANDARD
+        self.v1.active_for_sale = CHOICES_STANDARD
         self.v1.save()
 
         self.assertEqual(self.v1.get_for_sale(), False)
 
-        self.v1.active_for_sale = ACTIVE_FOR_SALE_YES
+        self.v1.active_for_sale = CHOICES_YES
         self.v1.save()
 
         self.assertEqual(self.v1.get_for_sale(), True)
 
-        self.v1.active_for_sale = ACTIVE_FOR_SALE_NO
+        self.v1.active_for_sale = CHOICES_NO
         self.v1.save()
 
         self.assertEqual(self.v1.get_for_sale(), False)
