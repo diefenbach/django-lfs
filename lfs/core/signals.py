@@ -15,8 +15,9 @@ topseller_changed = django.dispatch.Signal()
 featured_changed = django.dispatch.Signal()
 
 # Order
-order_submitted = django.dispatch.Signal()
+order_created = django.dispatch.Signal()
 order_sent = django.dispatch.Signal()
+order_submitted = django.dispatch.Signal()
 
 # Property
 property_type_changed = django.dispatch.Signal()

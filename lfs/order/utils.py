@@ -6,6 +6,7 @@ import lfs.discounts.utils
 import lfs.voucher.utils
 from lfs.cart import utils as cart_utils
 from lfs.core.models import Country
+from lfs.core.signals import order_created
 from lfs.core.utils import import_module
 from lfs.core.utils import import_symbol
 from lfs.customer import utils as customer_utils
@@ -185,6 +186,9 @@ def add_order(request):
             product_price_gross=-discount["price"],
             product_tax=-discount["tax"],
         )
+
+    # Send signal before cart is deleted.
+    order_created.send({"order":order, "cart": cart, "request": request})
 
     cart.delete()
 
