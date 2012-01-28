@@ -18,7 +18,7 @@
                 <h2>{% trans 'Send rating mails' %}</h2>
 
                 <form action="{% url lfs_send_rating_mails %}"
-                      method="post">
+                      method="post">{% csrf_token %}
                     <div>
                         <input type="checkbox"
                                name="test"
