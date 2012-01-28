@@ -93,6 +93,22 @@ LFS_RECENT_PRODUCTS_LIMIT
     The amount of recent products which are displayed within the recent
     products portlet, e.g. 3.
 
+.. _settings_addresses:
+
+Addresses
+=========
+
+LFS_INVOICE_EMAIL_REQUIRED
+    If True the e-mail address of the invoice address is required.
+
+LFS_INVOICE_PHONE_REQUIRED
+    If True the phone of the invoice address is required.
+
+LFS_INVOICE_COMPANY_NAME_REQUIRED
+    If True the company name of the invoice address is required.
+
+LFS_SHIPPING_PHONE_REQUIRED
+    If True the phone of the shipping address is required.
 
 .. _settings_units:
 
@@ -113,8 +129,8 @@ LFS_PACKING_UNITS
 
 .. _settings_email:
 
-E-Mail
-======
+E-Eails
+=======
 
 LFS_SEND_ORDER_MAIL_ON_CHECKOUT
     If true, an e-mail with the order details is send to the customer after
