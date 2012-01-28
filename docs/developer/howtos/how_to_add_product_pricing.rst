@@ -13,8 +13,8 @@ First you need to create a default Django application (or use an existing one).
 If you do not know how to do this, please refer to the excellent `Django
 tutorial <http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_.
 
-Implement the pricecalculator class
-===================================
+Implement the price calculator class
+====================================
 
 Within ``__init__.py`` file of your application (or anywhere you choose) create
 a class that inherits from lfs.plugins.PricingCalculator and implement all

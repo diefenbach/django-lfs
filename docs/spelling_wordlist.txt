@@ -18,11 +18,13 @@ Django
 django
 english
 github
+gros
 gz
 hg
 html
 Indices
 init
+internet
 JMeter
 JMeter
 jQuery
@@ -37,6 +39,7 @@ PayPal
 paypal
 percentaged
 plugin
+plugins
 Portlet
 portlet
 Portlets

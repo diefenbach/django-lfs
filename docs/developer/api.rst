@@ -2,8 +2,8 @@
 API
 ===
 
-Plugins
-=======
+Plug-ins
+========
 
 .. _order_number_generator:
 

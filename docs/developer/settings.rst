@@ -14,7 +14,7 @@ for LFS, please visit `Django settings
 
 .. _settings_plugins:
 
-Plugins
+Plug-ins
 ========
 
 .. _settings_lfs_order_numbers_generators:
@@ -129,7 +129,7 @@ LFS_PACKING_UNITS
 
 .. _settings_email:
 
-E-Eails
+E-Mails
 =======
 
 LFS_SEND_ORDER_MAIL_ON_CHECKOUT

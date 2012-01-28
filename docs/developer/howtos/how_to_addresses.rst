@@ -1,7 +1,7 @@
 How to use localized addresses
 ==============================
 
-Address localisation is turned on by default in LFS. To turn off Address l10n
+Address localization is turned on by default in LFS. To turn off Address l10n
 in settings.py set::
 
     POSTAL_ADDRESS_L10N = False
