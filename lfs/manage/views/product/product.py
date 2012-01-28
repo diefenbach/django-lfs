@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.db.models import Q
+from django.forms.util import ErrorList
 from django.forms.widgets import CheckboxInput
 from django.forms.widgets import Select
 from django.http import HttpResponseRedirect
@@ -21,7 +22,11 @@ import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
-from lfs.catalog.settings import VARIANT, PRODUCT_TYPE_FORM_CHOICES, PRODUCT_TEMPLATES, ACTIVE_FOR_SALE_CHOICES
+from lfs.catalog.settings import ACTIVE_FOR_SALE_CHOICES
+from lfs.catalog.settings import ACTIVE_FOR_SALE_YES
+from lfs.catalog.settings import PRODUCT_TEMPLATES
+from lfs.catalog.settings import PRODUCT_TYPE_FORM_CHOICES
+from lfs.catalog.settings import VARIANT
 from lfs.core.utils import LazyEncoder
 from lfs.manage.views.product.images import manage_images
 from lfs.manage.views.product.seo import manage_seo
@@ -80,6 +85,10 @@ class ProductDataForm(forms.ModelForm):
             else:
                 lfs.core.utils.remove_redirect_for(self.instance.get_absolute_url())
 
+        if self.data.get("active_base_price", 0):
+            if self.data.get("base_price_amount", "") == "":
+                self.errors["base_price_amount"] = ErrorList([_(u"This field is required.")])
+
         return self.cleaned_data
 
 
@@ -109,6 +118,10 @@ class VariantDataForm(forms.ModelForm):
                 lfs.core.utils.set_redirect_for(self.instance.get_absolute_url(), redirect_to)
             else:
                 lfs.core.utils.remove_redirect_for(self.instance.get_absolute_url())
+
+        if self.data.get("active_base_price") == str(ACTIVE_FOR_SALE_YES):
+            if self.data.get("base_price_amount", "") == "":
+                self.errors["base_price_amount"] = ErrorList([_(u"This field is required.")])
 
         return self.cleaned_data
 
