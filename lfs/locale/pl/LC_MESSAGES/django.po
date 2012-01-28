@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-26 21:12+0100\n"
-"PO-Revision-Date: 2012-01-28 14:08+0100\n"
+"PO-Revision-Date: 2012-01-28 16:04+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
@@ -1453,7 +1453,7 @@ msgstr "Miejscowość"
 #: templates/manage/order/orders_inline.html:13
 #: templates/manage/order/orders_inline.html:125
 msgid "State"
-msgstr "Województwo"
+msgstr "Stan"
 
 #: customer/models.py:78
 #: templates/manage/order/order_inline.html:106
