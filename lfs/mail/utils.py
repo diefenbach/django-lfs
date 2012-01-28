@@ -13,7 +13,7 @@ def send_order_sent_mail(order):
     import lfs.core.utils
     shop = lfs.core.utils.get_default_shop()
 
-    subject = _(u"Your order has been received")
+    subject = _(u"Your order has been sent")
     from_email = shop.from_email
     to = [order.customer_email]
     bcc = shop.get_notification_emails()
