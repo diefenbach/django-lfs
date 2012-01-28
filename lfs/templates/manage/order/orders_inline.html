@@ -70,11 +70,11 @@
 			</td>
 			<td>
 				<a href="{% url lfs_set_order_filters_date %}?start=0&amp;end=0"
-				   class="ajax-link">T</a>
+				   class="ajax-link" title="{% trans "today" %}">{% trans "T" context "today" %}</a>
 				<a href="{% url lfs_set_order_filters_date %}?start=1&amp;end=1"
-				   class="ajax-link">Y</a>
+				   class="ajax-link" title="{% trans "yesterday" %}">{% trans "Y" context "yesterday" %}</a>
 				<a href="{% url lfs_set_order_filters_date %}?start=7&amp;end=0"
-				   class="ajax-link">W</a>
+				   class="ajax-link" title="{% trans "week" %}">{% trans "W" context "week" %}</a>
 			</td>
 			<td>
 				<input type="text"

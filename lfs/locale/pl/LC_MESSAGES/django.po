@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-26 21:12+0100\n"
-"PO-Revision-Date: 2012-01-28 16:04+0100\n"
+"POT-Creation-Date: 2012-01-28 16:21+0100\n"
+"PO-Revision-Date: 2012-01-28 16:22+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
@@ -374,6 +374,7 @@ msgid "Price"
 msgstr "Cena"
 
 #: catalog/models.py:540
+#: core/models.py:177
 msgid "Price calculator"
 msgstr "Kalkulator ceny"
 
@@ -791,6 +792,7 @@ msgstr "Standard"
 #: catalog/settings.py:9
 #: templates/manage/manage_base.html:176
 #: templates/manage/customer/customer_inline.html:59
+#: templates/manage/order/orders_inline.html:152
 #: templates/manage/product/data.html:216
 #: templates/manage/product/product_filters_inline.html:42
 #: templates/manage/product/product_filters_inline.html:49
@@ -807,6 +809,7 @@ msgstr "Tak"
 #: catalog/settings.py:10
 #: templates/manage/manage_base.html:177
 #: templates/manage/customer/customer_inline.html:61
+#: templates/manage/order/orders_inline.html:154
 #: templates/manage/product/data.html:218
 #: templates/manage/product/product_filters_inline.html:43
 #: templates/manage/product/product_filters_inline.html:50
@@ -886,6 +889,7 @@ msgid "day"
 msgstr "dzień"
 
 #: catalog/settings.py:69
+#: templates/manage/order/orders_inline.html:77
 msgid "week"
 msgstr "tydzień"
 
@@ -1790,8 +1794,8 @@ msgstr "Domyślne wartości dla sklepu zostały zapisane."
 #: manage/views/categories/category.py:115
 #: manage/views/categories/seo.py:42
 #: manage/views/categories/view.py:45
-#: manage/views/product/product.py:169
-#: manage/views/product/product.py:371
+#: manage/views/product/product.py:168
+#: manage/views/product/product.py:370
 msgid "Please correct the indicated errors."
 msgstr "Proszę poprawić wskazane błędy."
 
@@ -1984,31 +1988,31 @@ msgstr "Obrazy zostały uaktualnione."
 msgid "Active images has been updated."
 msgstr "Aktywne obrazy zostały uaktualnione."
 
-#: manage/views/product/product.py:167
+#: manage/views/product/product.py:166
 msgid "Product stock data has been saved."
 msgstr "Dane magazynowe produktu zostały zapisane."
 
-#: manage/views/product/product.py:331
+#: manage/views/product/product.py:330
 msgid "Sub type has been changed."
 msgstr "Podtyp został zmieniony."
 
-#: manage/views/product/product.py:369
+#: manage/views/product/product.py:368
 msgid "Productdata has been saved."
 msgstr "Dane Produktu zostały zapisane."
 
-#: manage/views/product/product.py:425
+#: manage/views/product/product.py:424
 msgid "Product filters have been reset"
 msgstr "Filtry produktu zostały zresetowane"
 
-#: manage/views/product/product.py:451
+#: manage/views/product/product.py:450
 msgid "Products have been deleted."
 msgstr "Produkty zostały usunięte."
 
-#: manage/views/product/product.py:493
+#: manage/views/product/product.py:492
 msgid "Products have been saved"
 msgstr "Produkty zostały zapisane"
 
-#: manage/views/product/product.py:569
+#: manage/views/product/product.py:568
 msgid "Product filters have been set"
 msgstr "Filtry Produktu zostały ustawione"
 
@@ -3345,6 +3349,26 @@ msgstr "Wiadomość od klienta"
 msgid "Paypal Transaction ID"
 msgstr "ID transakcji Paypal"
 
+#: templates/manage/order/orders_inline.html:73
+msgid "today"
+msgstr "dziś"
+
+#: templates/manage/order/orders_inline.html:73
+msgid "T"
+msgstr "D"
+
+#: templates/manage/order/orders_inline.html:75
+msgid "yesterday"
+msgstr "wczoraj"
+
+#: templates/manage/order/orders_inline.html:75
+msgid "Y"
+msgstr "W"
+
+#: templates/manage/order/orders_inline.html:77
+msgid "W"
+msgstr "T"
+
 #: templates/manage/order/orders_inline.html:162
 msgid "There are no orders"
 msgstr "Nie ma żadnych zamówień"
@@ -4168,6 +4192,10 @@ msgstr "Kupon nie jest poprawny dla takiej ceny zakupu."
 #: voucher/settings.py:18
 msgid "The voucher doesn't exist."
 msgstr "Kupon nie istnieje."
+
+#, fuzzy
+#~ msgid "W_week"
+#~ msgstr "tydzień"
 
 #~ msgid "Type of quantity field"
 #~ msgstr "Typ pola z ilością"
