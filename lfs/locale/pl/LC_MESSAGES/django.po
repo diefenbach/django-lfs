@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-28 16:34+0100\n"
-"PO-Revision-Date: 2012-01-29 11:59+0100\n"
+"PO-Revision-Date: 2012-01-29 20:18+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
@@ -1502,12 +1502,12 @@ msgstr "Zostałeś wylogowany"
 #: discounts/settings.py:7
 #: voucher/settings.py:7
 msgid "Absolute"
-msgstr "Absolutna"
+msgstr "Absolutny"
 
 #: discounts/settings.py:8
 #: voucher/settings.py:8
 msgid "Percentage"
-msgstr "Procentowa"
+msgstr "Procentowy"
 
 #: export/models.py:19
 msgid "Script"
