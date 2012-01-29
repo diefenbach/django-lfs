@@ -9,6 +9,7 @@ from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.template import Node, TemplateSyntaxError
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -449,7 +450,7 @@ def currency(value, grouping=True):
         if result[-1] == '-':
             length = len(locale.nl_langinfo(locale.CRNCYSTR))
             result = '%s-%s' % (result[0:length], result[length:-1])
-        return '<span class="negative">%s</span>' % result
+        return mark_safe('<span class="negative">%s</span>' % result)
     return result
 
 @register.filter
