@@ -53,6 +53,11 @@ class Command(BaseCommand):
         from lfs.catalog.settings import QUANTITY_FIELD_TYPES
 
         db.add_column("catalog_product", "type_of_quantity_field", models.PositiveSmallIntegerField(_(u"Type of quantity field"), null=True, blank=True, choices=QUANTITY_FIELD_TYPES))
+        db.add_column("catalog_product", "category_variant", models.SmallIntegerField(_(u"Category variant"), blank=True, null=True))
+        db.add_column("catalog_product", "active_base_price", models.PositiveSmallIntegerField(_(u"Active base price"), default=0))
+        db.add_column("catalog_product", "base_price_unit", models.CharField(_(u"Base price unit"), blank=True, null=True, max_length=30, choices=settings.LFS_BASE_PRICE_UNITS))
+        db.add_column("catalog_product", "base_price_amount", models.FloatField(_(u"Base price amount"), default=0.0, blank=True, null=True))
+        db.alter_column('catalog_product', 'active_packing_unit', models.PositiveSmallIntegerField(_(u"Active packing"), default=0))
 
         # Pages
         print "Migrating to 0.7"
