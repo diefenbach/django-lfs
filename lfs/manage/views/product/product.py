@@ -422,7 +422,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
         else:
             form = ProductDataForm(instance=product)
 
-        message = _(u"Productdata has been saved.")
+        message = _(u"Product data has been saved.")
     else:
         message = _(u"Please correct the indicated errors.")
 

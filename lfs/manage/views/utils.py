@@ -49,7 +49,7 @@ def set_category_levels(request):
     lfs.core.utils.set_category_levels()
     return lfs.core.utils.set_message_cookie(
         url=reverse("lfs_manage_utils"),
-        msg=_(u"Categoy levels have been created."),
+        msg=_(u"Category levels have been created."),
     )
 
 
