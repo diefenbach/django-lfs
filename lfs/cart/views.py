@@ -229,7 +229,7 @@ def add_to_cart(request, product_id=None):
 
     try:
         quantity = float(request.POST.get("quantity", 1))
-    except TypeError:
+    except (TypeError, ValueError):
         quantity = 1
 
     # Validate properties (They are added below)

@@ -174,7 +174,7 @@ class Shop(models.Model):
     # You can find locale information here: http://en.wikipedia.org/wiki/Locale
     default_locale = models.CharField(_(u"Default Shop Locale"), max_length=20, default="en_US.UTF-8")
     use_international_currency_code = models.BooleanField(_(u"Use international currency codes"), default=False)
-    price_calculator = models.CharField(choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(), max_length=255, default=lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR)
+    price_calculator = models.CharField(_('Price calculator'), choices=lfs_settings.LFS_PRICE_CALCULATOR_DICTIONARY.items(), max_length=255, default=lfs_settings.LFS_DEFAULT_PRICE_CALCULATOR)
 
     checkout_type = models.PositiveSmallIntegerField(_(u"Checkout type"), choices=CHECKOUT_TYPES, default=CHECKOUT_TYPE_SELECT)
     confirm_toc = models.BooleanField(_(u"Confirm TOC"), default=False)

@@ -70,11 +70,11 @@
 			</td>
 			<td>
 				<a href="{% url lfs_set_order_filters_date %}?start=0&amp;end=0"
-				   class="ajax-link">T</a>
+				   class="ajax-link" title="{% trans "today" %}">{% trans "T" %}</a>
 				<a href="{% url lfs_set_order_filters_date %}?start=1&amp;end=1"
-				   class="ajax-link">Y</a>
+				   class="ajax-link" title="{% trans "yesterday" %}">{% trans "Y" %}</a>
 				<a href="{% url lfs_set_order_filters_date %}?start=7&amp;end=0"
-				   class="ajax-link">W</a>
+				   class="ajax-link" title="{% trans "week" %}">{% trans "W" %}</a>
 			</td>
 			<td>
 				<input type="text"
@@ -149,9 +149,9 @@
 	                </td>
 	                <td class="right-padding">
 	                    {% if order.message %}
-	                        Yes
+	                        {% trans "Yes" %}
 	                    {% else %}
-	                        No
+	                        {% trans "No" %}
 	                    {% endif %}
 	                </td>
 	            </tr>

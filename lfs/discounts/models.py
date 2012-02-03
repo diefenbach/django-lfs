@@ -38,11 +38,11 @@ class Discount(models.Model):
         Criteria which must all valid to make the discount happen.
 
     """
-    name = models.CharField(max_length=100)
+    name = models.CharField(_(u"Name"), max_length=100)
     value = models.FloatField(_(u"Value"))
     type = models.PositiveSmallIntegerField(_(u"Type"), choices=DISCOUNT_TYPE_CHOICES, default=DISCOUNT_TYPE_ABSOLUTE)
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
-    sku = models.CharField(blank=True, max_length=50)
+    sku = models.CharField(_(u"SKU"), blank=True, max_length=50)
     criteria_objects = generic.GenericRelation(CriteriaObjects,
         object_id_field="content_id", content_type_field="content_type")
 

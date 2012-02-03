@@ -136,7 +136,6 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
         product = Product.objects.get(pk=product_id)
     except Exception:
         return HttpResponse("")
-
     return render_to_response(template_name, RequestContext(request, {
         "product": product,
         "product_filters": product_filters_inline(request, page, paginator, product_id),
