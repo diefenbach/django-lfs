@@ -26,11 +26,12 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.models import ProductAttachment
+from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
+from lfs.catalog.settings import CONTENT_PRODUCTS
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
-from lfs.catalog.settings import VARIANT
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
 from lfs.catalog.settings import SELECT
-from lfs.catalog.settings import CONTENT_PRODUCTS
+from lfs.catalog.settings import VARIANT
 from lfs.core.utils import LazyEncoder
 from lfs.core.templatetags import lfs_tags
 from lfs.utils import misc as lfs_utils
@@ -395,6 +396,7 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
             default_variant = product.get_variant_for_category(request)
             if default_variant:
                 product = default_variant
+
         image = None
         product_image = product.get_image()
         if product_image:
@@ -404,8 +406,6 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
             "slug": product.slug,
             "name": product.get_name(),
             "image": image,
-            "price": product.get_price(request),
-            "standard_price": product.get_standard_price(request),
             "price_unit": product.price_unit,
             "price_includes_tax": product.price_includes_tax(request),
         })
