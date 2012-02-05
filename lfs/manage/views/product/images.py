@@ -43,7 +43,7 @@ def manage_images(request, product_id, as_string=False, template_name="manage/pr
 
 
 # Actions
-# @permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def add_image(request, product_id):
     """Adds an image to product with passed product_id.
     """
