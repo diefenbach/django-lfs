@@ -607,11 +607,9 @@ class CategoryProductPricesGrossNode(Node):
             context["base_price_starting_from"] = info["starting_from"]
         else:
             if product.get_for_sale():
-                context["for_sale_price"] = product.get_for_sale_price(request)
                 context["standard_price"] = product.get_standard_price(request)
-            else:
-                context["price"] = product.get_price_gross(request)
-                context["price_starting_from"] = False
+            context["price"] = product.get_price_gross(request)
+            context["price_starting_from"] = False
 
             context["base_price"] = product.get_base_price_gross(request)
             context["base_price_starting_from"] = False
