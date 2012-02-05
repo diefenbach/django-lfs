@@ -31,6 +31,14 @@ The latest development state can be found here:
 Changes
 =======
 
+0.6.5 (2012-02-03)
+------------------
+
+* Bugfix: added csrftoken for rating mails (Maciej Wiśniowski)
+* Bugfix: fixed ImageWithThumbsField (Maciej Wiśniowski)
+* Updated romanian translations (olimpiu)
+* Updated polish translations (Maciej Wiśniowski)
+
 0.6.4 (2012-01-08)
 ------------------
 
@@ -72,4 +80,3 @@ HISTORY
 =======
 
 For the complete history please look into HISTORY.txt
-=======
