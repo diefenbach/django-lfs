@@ -395,6 +395,8 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
             "image": image,
             "price": product.get_price(request),
             "standard_price": product.get_standard_price(request),
+            "for_sale_price": product.for_sale_price,
+            "get_for_sale": product.get_for_sale(),
             "price_unit": product.price_unit,
             "price_includes_tax": product.price_includes_tax,
         })
