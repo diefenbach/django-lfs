@@ -591,8 +591,12 @@ class CategoryProductPricesGrossNode(Node):
         product_id = self.product_id.resolve(context)
         product = Product.objects.get(pk=product_id)
 
-        if product.is_variant() and product.parent.category_variant == CATEGORY_VARIANT_CHEAPEST_PRICES:
+        if product.is_variant():
             parent = product.parent
+        else:
+            parent = product
+
+        if parent.category_variant == CATEGORY_VARIANT_CHEAPEST_PRICES:
             if product.get_for_sale():
                 info = parent.get_cheapest_standard_price_gross(request)
                 context["standard_price"] = info["price"]
