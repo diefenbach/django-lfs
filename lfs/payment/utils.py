@@ -5,7 +5,6 @@ import locale
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
-from django.utils.importlib import import_module
 
 # lfs imports
 import lfs.core.utils
@@ -14,7 +13,6 @@ from lfs.core.models import Shop
 from lfs.core.signals import order_submitted
 from lfs.criteria import utils as criteria_utils
 from lfs.customer import utils as customer_utils
-from lfs.order.settings import PAID
 from lfs.payment.models import PaymentMethod
 from lfs.payment.settings import PAYPAL
 from lfs.payment.settings import PM_ORDER_IMMEDIATELY
@@ -112,27 +110,24 @@ def process_payment(request):
     message.
     """
     payment_method = get_selected_payment_method(request)
-    shop = lfs.core.utils.get_default_shop(request)
 
     if payment_method.module:
         payment_class = lfs.core.utils.import_symbol(payment_method.module)
-        instance = payment_class(request)
+        payment_instance = payment_class(request)
 
-        create_order_time = instance.get_create_order_time()
+        create_order_time = payment_instance.get_create_order_time()
         if create_order_time == PM_ORDER_IMMEDIATELY:
             order = lfs.order.utils.add_order(request)
-            instance.order = order
-            result = instance.process()
+            payment_instance.order = order
+            result = payment_instance.process()
+            if result.get("order_state"):
+                order.state = result.get("order_state")
+                order.save()
+            order_submitted.send({"order": order, "request": request})
         else:
             cart = lfs.cart.utils.get_cart(request)
-            instance.cart = cart
-            result = instance.process()
-
-        if result.get("order_state"):
-            order.state = result.get("order_state")
-            order.save()
-
-        order_submitted.send({"order": order, "request": request})
+            payment_instance.cart = cart
+            result = payment_instance.process()
 
         if result["accepted"]:
             if create_order_time == PM_ORDER_ACCEPTED:
@@ -176,9 +171,9 @@ def get_pay_link(request, payment_method, order):
         return get_paypal_link_for_order(order)
     elif payment_method.module:
         payment_class = lfs.core.utils.import_symbol(payment_method.module)
-        instance = payment_class(request=request, order=order)
+        payment_instance = payment_class(request=request, order=order)
         try:
-            return instance.get_pay_link()
+            return payment_instance.get_pay_link()
         except AttributeError:
             return ""
     else:
