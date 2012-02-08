@@ -12,7 +12,10 @@ class GrossShippingMethodPriceCalculator(ShippingMethodPriceCalculator):
     def get_price_net(self):
         """See lfs.plugins.ShippingMethodPriceCalculator.
         """
-        return self.shipping_method.price / ((100 + self.shipping_method.tax.rate) / 100)
+        try:
+            return self.shipping_method.price / ((100 + self.shipping_method.tax.rate) / 100)
+        except AttributeError:
+            return self.shipping_method.price
 
     def get_price_gross(self):
         """See lfs.plugins.ShippingMethodPriceCalculator.
@@ -33,4 +36,7 @@ class NetShippingMethodPriceCalculator(ShippingMethodPriceCalculator):
     def get_price_gross(self):
         """See lfs.plugins.ShippingMethodPriceCalculator.
         """
-        return self.shipping_method.price * ((100 + self.shipping_method.tax.rate) / 100)
+        try:
+            return self.shipping_method.price * ((100 + self.shipping_method.tax.rate) / 100)
+        except AttributeError:
+            return self.shipping_method.price
