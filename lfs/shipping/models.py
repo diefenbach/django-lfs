@@ -76,7 +76,7 @@ class ShippingMethod(models.Model):
     price = models.FloatField(_(u"Price"), default=0.0)
     delivery_time = models.ForeignKey(DeliveryTime, verbose_name=_(u"Delivery time"), blank=True, null=True)
     criteria_objects = generic.GenericRelation(CriteriaObjects, object_id_field="content_id", content_type_field="content_type")
-    price_calculator = models.CharField(_(u"Price Calculator"), max_length=200, choices=settings.LFS_SHIPPING_PRICE_CALCULATORS, default=settings.LFS_SHIPPING_PRICE_CALCULATORS[0][0])
+    price_calculator = models.CharField(_(u"Price Calculator"), max_length=200, choices=settings.LFS_SHIPPING_METHOD_PRICE_CALCULATORS, default=settings.LFS_SHIPPING_METHOD_PRICE_CALCULATORS[0][0])
 
     objects = ActiveShippingMethodManager()
 
@@ -96,14 +96,16 @@ class ShippingMethod(models.Model):
         from lfs.criteria import utils as criteria_utils
         return criteria_utils.is_valid(self, request, product)
 
-    # DEPRECATED 0.7
     def get_price(self, request):
         """Returns the gross price of the shipping method.
 
         This method is DEPRECATED.
         """
-        logger.info("Decprecated: lfs.shipping.ShippingMethod: the method 'get_price' is deprecated. Please use 'get_price_gross' or 'get_price_net'.")
-        return self.get_price_gross(request)
+        if self.price_calculator:
+            price_class = import_symbol(self.price_calculator)
+            return price_class(request, self).get_price()
+        else:
+            return self.price
 
     def get_price_gross(self, request):
         """
@@ -125,6 +127,15 @@ class ShippingMethod(models.Model):
         else:
             return self.price
 
+    def get_tax(self, request):
+        """
+        Returns the absolute tax of the shipping method.
+        """
+        if self.price_calculator:
+            price_class = import_symbol(self.price_calculator)
+            return price_class(request, self).get_tax()
+        else:
+            return self.tax.rate
 
 class ShippingMethodPrice(models.Model):
     """
