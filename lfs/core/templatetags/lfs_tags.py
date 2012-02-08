@@ -17,9 +17,10 @@ import lfs.catalog.utils
 import lfs.utils.misc
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
+from lfs.catalog.settings import CONFIGURABLE_PRODUCT
+from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import STANDARD_PRODUCT
-from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
@@ -575,6 +576,62 @@ def packages(cart_item):
     if cart_item.product.packing_unit:
         return int(math.ceil(cart_item.amount / cart_item.product.packing_unit))
     return 0
+
+
+class CategoryProductPricesGrossNode(Node):
+    """
+    Node to calculate needed gross prices of a product for the category view.
+    """
+    def __init__(self, product_id):
+        self.product_id = template.Variable(product_id)
+
+    def render(self, context):
+        request = context.get("request")
+
+        product_id = self.product_id.resolve(context)
+        product = Product.objects.get(pk=product_id)
+
+        if product.is_variant():
+            parent = product.parent
+        else:
+            parent = product
+
+        if parent.category_variant == CATEGORY_VARIANT_CHEAPEST_PRICES:
+            if product.get_for_sale():
+                info = parent.get_cheapest_standard_price_gross(request)
+                context["standard_price"] = info["price"]
+                context["standard_price_starting_from"] = info["starting_from"]
+
+            info = parent.get_cheapest_price_gross(request)
+            context["price"] = info["price"]
+            context["price_starting_from"] = info["starting_from"]
+
+            info = parent.get_cheapest_base_price_gross(request)
+            context["base_price"] = info["price"]
+            context["base_price_starting_from"] = info["starting_from"]
+        else:
+            if product.get_for_sale():
+                context["standard_price"] = product.get_standard_price(request)
+            context["price"] = product.get_price_gross(request)
+            context["price_starting_from"] = False
+
+            context["base_price"] = product.get_base_price_gross(request)
+            context["base_price_starting_from"] = False
+
+        if product.get_active_packing_unit():
+            context["base_packing_price_gross"] = product.get_base_packing_price_gross(request)
+
+        return ""
+
+def do_category_product_prices_gross(parser, token):
+    """
+    Calculates needed gross price of a product for the category view.
+    """
+    bits = token.contents.split()
+    if len(bits) != 2:
+        raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
+    return CategoryProductPricesGrossNode(bits[1])
+register.tag('category_product_prices_gross', do_category_product_prices_gross)
 
 
 @register.filter(name='get_price')

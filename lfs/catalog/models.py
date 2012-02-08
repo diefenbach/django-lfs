@@ -55,7 +55,9 @@ from lfs.catalog.settings import QUANTITY_FIELD_DECIMAL_1
 from lfs.catalog.settings import QUANTITY_FIELD_DECIMAL_2
 from lfs.catalog.settings import THUMBNAIL_SIZES
 from lfs.catalog.settings import VARIANTS_DISPLAY_TYPE_CHOICES
-from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST
+from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICE
+from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_BASE_PRICE
+from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
 from lfs.catalog.settings import CATEGORY_VARIANT_DEFAULT
 
 from lfs.tax.models import Tax
@@ -1365,8 +1367,12 @@ class Product(models.Model):
         This is either the cheapest variant, the default variant, an explicitly
         selected one or None.
         """
-        if self.category_variant == CATEGORY_VARIANT_CHEAPEST:
+        if self.category_variant == CATEGORY_VARIANT_CHEAPEST_PRICE:
             return self.get_cheapest_variant(request)
+        elif self.category_variant == CATEGORY_VARIANT_CHEAPEST_BASE_PRICE:
+            return self.get_cheapest_variant_by_base_price(request)
+        elif self.category_variant == CATEGORY_VARIANT_CHEAPEST_PRICES:
+            return self.get_default_variant()
         elif self.category_variant == CATEGORY_VARIANT_DEFAULT:
             return self.get_default_variant()
         else:
@@ -1391,8 +1397,86 @@ class Product(models.Model):
 
         return cheapest_variant
 
-    def display_cheapest_variant_for_category(self):
-        return self.category_variant == CATEGORY_VARIANT_CHEAPEST
+    def get_cheapest_variant_by_base_price(self, request):
+        """
+        Returns the cheapest variant by base gross price.
+        """
+        cheapest_variant = None
+        min_price = None
+        for variant in Product.objects.filter(parent=self):
+            price = variant.get_base_price_gross(request)
+            if price == 0:
+                continue
+            if (min_price is None) or (price < min_price):
+                cheapest_variant = variant
+                min_price = price
+
+        return cheapest_variant
+
+    def get_cheapest_for_sale_price_gross(self, request):
+        """
+        Returns the min price and min base price as dict.
+        """
+        if self.is_variant():
+            product = self.parent
+        else:
+            product = self
+
+        prices = []
+        for variant in Product.objects.filter(parent=product, active=True):
+            price = variant.get_for_sale_price_gross(request)
+            if price not in prices:
+                prices.append(price)
+
+            return {
+            "price": min(prices),
+            "starting_from": len(prices) > 1,
+        }
+
+    def get_cheapest_standard_price_gross(self, request):
+        """
+        Returns the min price and min base price as dict.
+        """
+        prices = []
+        for variant in Product.objects.filter(parent=self, active=True):
+            price = variant.get_standard_price_gross(request)
+            if price not in prices:
+                prices.append(price)
+
+        return {
+            "price": min(prices),
+            "starting_from": len(prices) > 1,
+        }
+
+    def get_cheapest_price_gross(self, request):
+        """
+        Returns the min price and min base price as dict.
+        """
+        prices = []
+        for variant in Product.objects.filter(parent=self, active=True):
+            price = variant.get_price_gross(request)
+            if price not in prices:
+                prices.append(price)
+
+        return {
+            "price": min(prices),
+            "starting_from": len(prices) > 1,
+        }
+
+    def get_cheapest_base_price_gross(self, request):
+        """
+        Returns the min price and min base price as dict.
+        """
+        prices = []
+        for variant in Product.objects.filter(parent=self, active=True):
+            price = variant.get_base_price_gross(request)
+            if price not in prices:
+                prices.append(price)
+
+        return {
+            "price": min(prices),
+            "starting_from": len(prices) > 1,
+        }
 
     def get_static_block(self):
         """Returns the static block of the product. Takes care whether the
