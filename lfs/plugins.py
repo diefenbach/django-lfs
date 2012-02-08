@@ -440,6 +440,12 @@ class ShippingMethodPriceCalculator(object):
         self.shipping_method = shipping_method
         self.request = request
 
+    def get_price(self):
+        """
+        Returns the stored price without any calculations.
+        """
+        return self.shipping_method.price
+
     def get_price_net(self):
         """
         Returns the net price of the shipping method.
