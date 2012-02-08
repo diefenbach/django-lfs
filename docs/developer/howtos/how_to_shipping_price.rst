@@ -72,7 +72,7 @@ calculator:
 
 #. Add your application to the PYTHONPATH.
 
-#. Add the class to the :ref:`LFS_SHIPPING_PRICE_CALCULATORS
+#. Add the class to the :ref:`LFS_SHIPPING_METHOD_PRICE_CALCULATORS
    <settings_lfs_shipping_price_calculators>` setting.
 
 #. If your are using models (which is completely up to you), add the application

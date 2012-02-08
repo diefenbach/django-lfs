@@ -56,14 +56,14 @@ LFS_PRICE_CALCULATORS
 
 .. _settings_lfs_shipping_price_calculators:
 
-LFS_SHIPPING_PRICE_CALCULATORS
+LFS_SHIPPING_METHOD_PRICE_CALCULATORS
     List of list of available shipping method price calculators, whereas the
     first entry is the dotted name to a ShippingMethodPriceCalculator and the
     second entry is the name, which is displayed. These are provided for
     selection within the shipping method. LFS is shipped with following
     entries::
 
-        LFS_SHIPPING_PRICE_CALCULATORS = [
+        LFS_SHIPPING_METHOD_PRICE_CALCULATORS = [
             ["lfs.shipping.GrossShippingMethodPriceCalculator", _(u'Price includes tax')],
             ["lfs.shipping.NetShippingMethodPriceCalculator", _(u'Price excludes tax')],
         ]
