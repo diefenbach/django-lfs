@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-28 16:34+0100\n"
-"PO-Revision-Date: 2012-01-29 20:23+0100\n"
+"PO-Revision-Date: 2012-02-07 23:12+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
@@ -2568,7 +2568,7 @@ msgstr "Narzędzia"
 
 #: templates/manage/utils.html:19
 msgid "Clear Cache"
-msgstr "Wyczyść Cache?"
+msgstr "Wyczyść Cache"
 
 #: templates/manage/utils.html:22
 msgid "Set category levels"

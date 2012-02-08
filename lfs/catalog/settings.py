@@ -132,6 +132,7 @@ CATEGORY_TEMPLATES = (
         "name": _(u"Category with subcategories"),
     }),
 )
+CATEGORY_TEMPLATES = getattr(settings, 'CATEGORY_TEMPLATES', CATEGORY_TEMPLATES)
 
 # Template configuration for product display
 PRODUCT_TEMPLATES = (
@@ -140,5 +141,6 @@ PRODUCT_TEMPLATES = (
         "name": _(u"Default")
     },),
 )
+PRODUCT_TEMPLATES = getattr(settings, 'PRODUCT_TEMPLATES', PRODUCT_TEMPLATES)
 
 THUMBNAIL_SIZES = getattr(settings, 'LFS_THUMBNAIL_SIZES', ((60, 60), (100, 100), (200, 200), (300, 300), (400, 400)))
