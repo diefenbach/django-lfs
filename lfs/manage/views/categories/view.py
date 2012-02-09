@@ -52,8 +52,9 @@ def category_view(request, category_id, template_name="manage/category/view.html
     }))
 
     if request.is_ajax():
+        html = [["#view", view_html]]
         return HttpResponse(simplejson.dumps({
-            "view": view_html,
+            "html": html,
             "message": message,
         }, cls=LazyEncoder))
     else:

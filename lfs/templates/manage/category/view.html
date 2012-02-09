@@ -4,12 +4,9 @@
 
 <form action="{% url lfs_manage_category_view category.id %}"
       method="post"
-      class="category-data-form"
-      enctype="multipart/form-data">
+      class="category-data-form">
     {% csrf_token %}
-
     {% include "manage/lfs_form.html" %}
-
     <div class="buttons">
         <input value="{% trans 'Save View' %}"
                type="submit"
