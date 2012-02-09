@@ -560,27 +560,6 @@ def edit_sub_type(request, product_id):
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def update_default_variant(request, product_id):
-    """Updates the default variant of the product with passed product_id
-    """
-    product = Product.objects.get(pk=product_id)
-
-    form = DefaultVariantForm(instance=product, data=request.POST)
-    if form.is_valid():
-        form.save()
-
-    # Send a signal to update cache
-    product_changed.send(product)
-
-    result = simplejson.dumps({
-        "html": manage_variants(request, product_id, as_string=True),
-        "message": _(u"Default variant has been saved."),
-    }, cls=LazyEncoder)
-
-    return HttpResponse(result)
-
-
-@permission_required("core.manage_shop", login_url="/login/")
 def update_category_variant(request, product_id):
     """
     Updates the category variant of the product with passed product_id.
@@ -594,8 +573,10 @@ def update_category_variant(request, product_id):
     # Send a signal to update cache
     product_changed.send(product)
 
+    html = (("#variants", manage_variants(request, product_id, as_string=True)),)
+
     result = simplejson.dumps({
-        "html": manage_variants(request, product_id, as_string=True),
+        "html": html,
         "message": _(u"Category variant has been saved."),
     }, cls=LazyEncoder)
 
