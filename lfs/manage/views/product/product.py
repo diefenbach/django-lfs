@@ -96,11 +96,6 @@ class VariantDataForm(forms.ModelForm):
     """
     Form to add and edit master data of a variant.
     """
-    def __init__(self, *args, **kwargs):
-        super(VariantDataForm, self).__init__(*args, **kwargs)
-        self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
-        self.fields["active_base_price"].widget = Select(choices=CHOICES)
-
     class Meta:
         model = Product
         fields = ("active", "active_name", "name", "slug", "active_sku", "sku", "sku_manufacturer",
@@ -109,9 +104,12 @@ class VariantDataForm(forms.ModelForm):
             "active_related_products", "active_static_block", "static_block", "template",
             "active_base_price", "base_price_unit", "base_price_amount")
 
+    def __init__(self, *args, **kwargs):
+        super(VariantDataForm, self).__init__(*args, **kwargs)
+        self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
+        self.fields["active_base_price"].widget = Select(choices=CHOICES)
+
     def clean(self):
-        """
-        """
         if self.instance:
             redirect_to = self.data.get("redirect_to", "")
             if redirect_to != "":
@@ -125,11 +123,6 @@ class VariantDataForm(forms.ModelForm):
 
         return self.cleaned_data
 
-
-def check_active_packing_unit():
-    """
-    """
-    return True
 
 class ProductStockForm(forms.ModelForm):
     """
@@ -150,6 +143,14 @@ class ProductStockForm(forms.ModelForm):
             self.fields["active_packing_unit"].widget = Select(choices=CHOICES)
         else:
             self.fields["active_packing_unit"].widget = CheckboxInput()
+
+    def clean(self):
+        if self.data.get("stock-active_packing_unit") == str(CHOICES_YES):
+            if self.data.get("stock-packing_unit", "") == "":
+                self.errors["packing_unit"] = ErrorList([_(u"This field is required.")])
+
+        return self.cleaned_data
+
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_product(request, product_id, template_name="manage/product/product.html"):

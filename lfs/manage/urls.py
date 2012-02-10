@@ -98,6 +98,13 @@ urlpatterns += patterns('lfs.manage.views',
     url(r'^change-product-categories/(?P<product_id>\d*)$', "change_categories", name="lfs_manage_product_categories"),
 )
 
+urlpatterns += patterns('lfs.manage.images.views',
+    url(r'^imagebrowser$', "imagebrowser", name="lfs_manage_imagebrowser"),
+    url(r'^global-images$', "images", name="lfs_manage_global_images"),
+    url(r'^delete-global-images$', "delete_images", name="lfs_manage_delete_images"),
+    url(r'^add-global-images$', "add_images", name="lfs_manage_add_global_image"),
+)
+
 # Product Images
 urlpatterns += patterns('lfs.manage.views.product.images',
     url(r'^add-image/(?P<product_id>\d*)$', "add_image", name="lfs_manage_add_image"),

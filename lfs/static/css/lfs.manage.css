@@ -332,6 +332,7 @@ a.button {
     border: 1px solid #aaa;
 }
 
+.site-actions .select-all,
 .site-actions .overview,
 .site-actions .delete,
 .site-actions .add,
@@ -782,4 +783,43 @@ ol {
 
 #product-tabs {
     display: None;
+}
+
+#imagebrowser td.image {
+    border: 1px solid #aaa;
+}
+
+#imagebrowser #insert-image,
+#imagebrowser #image-size,
+#imagebrowser #image-class {
+    width: 150px;
+}
+
+.manage-images .input {
+    padding: 0;
+    margin: 0;
+}
+
+.manage-images .image-form {
+    float: left;
+    margin: 10px;
+}
+
+.manage-images .image {
+    height: 100px;
+    width: 100px;
+    border: 1px solid #aaa;
+    padding:10px;
+}
+
+#imagebrowser .image-form {
+    float: left;
+    margin: 10px;
+}
+
+#imagebrowser div.image {
+    height: 100px;
+    width: 100px;
+    border: 1px solid #aaa;
+    padding:10px;
 }

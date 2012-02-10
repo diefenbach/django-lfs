@@ -40,6 +40,7 @@ Concepts
    user/concepts/marketing.rst
    user/concepts/reviews.rst
    user/concepts/pages.rst
+   user/concepts/images.rst
 
 .. _index_users_management_interface:
 

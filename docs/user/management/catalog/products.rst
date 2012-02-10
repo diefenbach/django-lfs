@@ -174,7 +174,7 @@ Categories``.
     You can also :doc:`assign products to categories
     </user/management/catalog/categories>`.
 
-.. _product-images-label:
+.. _products_management_images:
 
 Images
 ------

@@ -1,0 +1,83 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/shop/images.html{% endblock %}
+
+{% block title %}{% trans "Manage images" %}{% endblock %}
+{% block section %}manage-images{% endblock %}
+
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <div class="site-actions">
+    </div>
+
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#images">{% trans 'Global images' %}</a></li>
+        </ul>
+
+        <div id="images">
+            <form action="{% url lfs_manage_delete_images %}"
+                  method="POST">
+                {% csrf_token %}
+                <h2>{% trans "Global images" %}</h2>
+                {% for image in images %}
+                    <div class="image-form">
+                        <input class="select-images" type="checkbox" name="images" value="{{ image.id }}" />
+                        <div class="image">
+                            <img src="{{ image.image.url_100x100 }}" />
+                        </div>
+                    </div>
+                {% endfor %}
+                <br clear="both" />
+                <input type="submit" value="{% trans 'Delete images' %}" />
+                <input type="button"
+                       class="select-all"
+                       value="{% trans "Toggle selection" %}"
+                       data="select-images" />
+
+            </form>
+            <h2 class="heading-middle">{% trans 'Add images' %}</h2>
+
+            <div id="content">
+                <form id="file_upload" action="{% url lfs_manage_add_global_image %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input class="button" type="file" name="file" multiple>
+                </form>
+                <table id="files" data="{% url lfs_manage_global_images %}" msg='{% trans "Uploading images:" %}'></table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            $('#file_upload').fileUploadUI({
+                uploadTable: $('#files'),
+                multiFileRequest : true,
+                buildUploadRow: function (files) {
+                    var fileNames = '';
+                    for (i = 0; i < files.length; i += 1) {
+                        fileNames = fileNames + files[i].name + '<br>';
+                    }
+                    var msg = $("#files").attr("msg");
+                    return $(
+                        '<tr>' +
+                        '<td><div style="font-weight:bold; padding-bottom:10px">' + msg + '<img src="{{ STATIC_URL }}img/ajax-loader.gif" style="padding:8px 0 0 10px" /></div>' + fileNames + '<\/td>' +
+                        '<\/tr>'
+                    );
+                },
+                onLoadAll: function(files) {
+                    var url = $("#files").attr("data");
+                    window.location = url;
+                    return false;
+                    $.get(url, function(data) {
+                        data = $.parseJSON(data);
+                        $("#images").html(data["images"]);
+                        $.jGrowl(data["message"]);
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -15,3 +15,4 @@ This section describes the management interfaces of the ``Shop`` menu.
    shipping_methods.rst
    product_taxes.rst
    customer_taxes.rst
+   images.rst

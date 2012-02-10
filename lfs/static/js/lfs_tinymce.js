@@ -1,3 +1,5 @@
+var editor;
+
 function addEditor(selector, hide_save, height) {
     if (hide_save == true) {
         buttons = "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,forecolor,backcolor,styleselect,formatselect,image,media,|,link,mylink,unlink,|,removeformat,code,|,fullscreen"
@@ -30,6 +32,15 @@ function addEditor(selector, hide_save, height) {
         cleanup : false,
         height : height,
         content_css : "/static/css/tinymce_styles.css",
+        setup : function(ed) {
+            ed.addButton('image', {
+                onclick : function(e) {
+                    imagebrowser(e, ed);
+                }
+            });
+
+        }
+
    });
 };
 
@@ -49,4 +60,34 @@ function save(ed) {
             show_message(data["message"]);
         }
     })
+}
+
+function imagebrowser(e, ed) {
+    editor = ed;
+    node = editor.selection.getNode();
+    url = node.src || "";
+    title = node.title || "";
+    klass = node.className || ""
+    var id = $("#obj-id").attr("data");
+    $.get("/manage/imagebrowser?url=" + url + "&title=" + title + "&class=" + klass, function(data) {
+        data = $.parseJSON(data);
+        $("#dialog").html(data["html"]);
+    });
+
+    $("#dialog").dialog({
+        autoOpen: false,
+        closeOnEscape: true,
+        modal: true,
+        width: 800,
+        height: 500,
+        draggable: false,
+        resizable: false,
+        position: ["center", "center"]
+    });
+
+    $("#dialog").dialog("open");
+}
+
+function insertHTML(html) {
+    editor.selection.setContent(html);
 }

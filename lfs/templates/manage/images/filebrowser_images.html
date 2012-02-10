@@ -1,0 +1,45 @@
+{% load i18n %}
+
+<h2>{% trans "Select image" %}</h2>
+<div id="imagebrowser">
+    {% for image in images %}
+        <div class="image-form">
+            <input type="radio"
+                   class="image"
+                   name="image"
+                   value="{{ image.url }}"
+                   {% if image.checked %}checked="checked"{% endif %} />
+            <div class="image">
+                <img src="{{ image.url }}" />
+            </div>
+        </div>
+    {% empty %}
+        <div>
+            {% trans "There are no images yet" %}
+        </div>
+    {% endfor %}
+    <br clear="both" />
+    <h2>{% trans "Insert image" %}</h2>
+    <div class="form">
+        <div>
+            <select id="image-class">
+                {% for klass in classes %}
+                    <option value="{{ klass.value }}" {% if klass.selected %}selected="selected"{% endif %}>{{ klass.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <select id="image-size">
+                <option value="">{% trans "Original" %}</option>
+                {% for size in sizes %}
+                    <option value="{{ size.value }}" {% if size.selected %}selected="selected"{% endif %}>{{ size.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <input type="button"
+                   id="insert-image"
+                   value='{% trans "Insert" %}' />
+        </div>
+    </div>
+</div>

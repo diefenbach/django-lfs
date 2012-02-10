@@ -200,6 +200,14 @@ $(function() {
         });
     });
 
+    $("input.select-all").live("click", function() {
+        var selector = "." + $(this).attr("data");
+        $(selector).each(function() {
+            this.checked = !this.checked;
+        });
+        return False;
+    });
+
     // Criteria
     $(".criterion-add-first-button").live("click", function() {
         var position = $(this).siblings(".position").val()
@@ -445,7 +453,25 @@ $(function() {
             }
         });
     });
+    $("#insert-image").live("click", function(e) {
+        var url = $("input.image:checked").attr("value");
+        var size = $("#image-size").val();
+        var klass = $("#image-class").val();
 
+        if (size)
+            url = url.replace("100x100", size);
+        else
+            url = url.replace(".100x100", "");
+
+        if (klass)
+            html = "<img class='" + klass + "' src='" + url + "' />"
+        else
+            html = "<img src='" + url + "' />"
+
+        insertHTML(html);
+        $("#dialog").dialog("close");
+        return false;
+    })
 })
 
 $(document).ajaxComplete(function() {
