@@ -76,9 +76,15 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
         try:
             temp_url = "/".join(parsed_url.path.split("/")[2:])
             result = re.search("(.*)(\.)(\d+x\d+)(.*)", temp_url)
-            temp_url = result.groups()[0] + result.groups()[3]
-            selected_image = Image.objects.get(image=temp_url)
-            selected_size = result.groups()[2]
+            if result:
+                temp_url = result.groups()[0] + result.groups()[3]
+                selected_image = Image.objects.get(image=temp_url)
+                selected_size = result.groups()[2]
+            else:
+                value = None
+                title = None
+                selected_size = None
+
         except (IndexError, Image.DoesNotExist):
             pass
 
