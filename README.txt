@@ -31,6 +31,18 @@ The latest development state can be found here:
 Changes
 =======
 
+0.6.6 (2012-02-09)
+------------------
+
+* Bugfix: fixed url for Pages at breadcrums (Maciej Wiśniowski)
+* Bugfix: display sale price at category products page (Maciej Wiśniowski)
+* Bugfix: fix product pagination (Maciej Wiśniowski)
+* Bugfix: added short_description to Category management UI
+* Bugfix: display category descriptions
+* Bugfix: fixed template selection; issue #134
+* Improvement: allow easy modification of category/product templates (Maciej Wiśniowski)
+* Updated polish translations (Maciej Wiśniowski)
+
 0.6.5 (2012-02-03)
 ------------------
 

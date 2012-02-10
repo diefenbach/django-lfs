@@ -1,13 +1,13 @@
 {% load i18n %}
 
-<select onchange ="document.getElementById('{{selectimageid}}').src=this.options[this.selectedIndex].title" {{ finalattrs|safe }}>
+<select {{ finalattrs|safe }}>
     {% for id, urls in choices %}
         {% with id|stringformat:"s" as idstring %}
-            {% ifequal id currentvalue %}
-                <option value="{{ id }}" title="{{urls.image}}" selected="selected">{{urls.name}}</option>
+            {% if idstring == currentvalue or id == currentvalue %}
+                <option value="{{ id }}" title="{{ urls.image }}" selected="selected">{{ urls.name }}</option>
             {% else %}
-                <option value="{{ id }}" title="{{urls.image}}">{{urls.name}}</option>
-            {% endifequal %}
+                <option value="{{ id }}" title="{{ urls.image }}">{{ urls.name }}</option>
+            {% endif %}
         {% endwith %}
     {% endfor %}
 </select>
