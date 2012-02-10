@@ -254,7 +254,10 @@ def add_to_cart(request, product_id=None):
                     continue
 
                 if property.is_number_field:
-                    value = locale.atof(value)
+                    try:
+                        value = locale.atof(value)
+                    except ValueError:
+                        value = locale.atof("0.0")
 
                 properties_dict[property_id] = unicode(value)
 
