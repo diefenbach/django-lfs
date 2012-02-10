@@ -498,6 +498,11 @@ def currency(value, request=None, grouping=True):
 def decimal_l10n(value):
     """Returns the decimal value of value based on current locale.
     """
+    try:
+        value = float(value)
+    except ValueError:
+        pass
+
     return locale.format_string("%.2f", value)
 
 
