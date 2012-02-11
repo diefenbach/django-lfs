@@ -1637,6 +1637,17 @@ class Product(models.Model):
         else:
             return self.deliverable
 
+    def get_manual_delivery_time(self):
+        """Returns the manual delivery time of a product or None.
+        """
+        if self.manual_delivery_time:
+            return self.delivery_time
+
+        if self.is_variant() and self.parent.manual_delivery_time:
+            return self.parent.delivery_time
+
+        return None
+
     def get_clean_quantity(self, quantity=1):
         """Returns the correct formatted quantity based on the product's type
         of quantity field.
