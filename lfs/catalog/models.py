@@ -1469,7 +1469,7 @@ class Product(models.Model):
         """
         prices = []
         for variant in Product.objects.filter(parent=self, active=True):
-            price = variant.get_base_price_gross(request)
+            price = float("%.2f" % variant.get_base_price_gross(request))
             if price not in prices:
                 prices.append(price)
 
