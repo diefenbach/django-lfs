@@ -78,18 +78,25 @@ class Command(BaseCommand):
         PortletAssignment.objects.create(slot=left_slot, content=shop, portlet=pages_portlet)
 
         # Payment methods
-        PaymentMethod.objects.create(pk=1, name="Direct debit", priority=1, active=1, deletable=0, type=PM_BANK)
-        PaymentMethod.objects.create(pk=2, name="Cash on delivery", priority=2, active=1, deletable=0)
-        PaymentMethod.objects.create(pk=3, name="PayPal", priority=3, active=1, deletable=0)
-        PaymentMethod.objects.create(pk=4, name="Prepayment", priority=4, active=1, deletable=0)
+        pm = PaymentMethod.objects.create(name="Direct debit", priority=1, active=1, deletable=0, type=PM_BANK)
+        pm.id=1; pm.save()
+        pm = PaymentMethod.objects.create(name="Cash on delivery", priority=2, active=1, deletable=0)
+        pm.id=2; pm.save()
+        pm = PaymentMethod.objects.create(name="PayPal", priority=3, active=1, deletable=0)
+        pm.id=3; pm.save()
+        pm = PaymentMethod.objects.create(name="Prepayment", priority=4, active=1, deletable=0)
+        pm.id=4; pm.save()
 
         # Shipping methods
         ShippingMethod.objects.create(name="Standard", priority=1, active=1)
 
         # Pages
-        Page.objects.create(id=1, title="Root", slug="", active=1, exclude_from_navigation=1)
-        Page.objects.create(title="Terms and Conditions", slug="terms-and-conditions", active=1, body="Enter your terms and conditions here.")
-        Page.objects.create(title="Imprint", slug="imprint", active=1, body="Enter your imprint here.")
+        p = Page.objects.create(title="Root", slug="", active=1, exclude_from_navigation=1)
+        p.id = 1; p.save()
+        p = Page.objects.create(title="Terms and Conditions", slug="terms-and-conditions", active=1, body="Enter your terms and conditions here.")
+        p.id = 2; p.save()
+        p = Page.objects.create(title="Imprint", slug="imprint", active=1, body="Enter your imprint here.")
+        p.id = 3; p.save()
 
         # Order Numbers
         ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
