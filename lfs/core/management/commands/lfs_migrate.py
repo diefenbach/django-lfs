@@ -43,6 +43,8 @@ class Command(BaseCommand):
             print "You are up-to-date"
 
     def migrate_to_07(self, application, version):
+        from lfs.catalog.models import Product
+        from lfs.catalog.settings import VARIANT
         from lfs.core.utils import get_default_shop
         from lfs.page.models import Page
         from lfs.shipping.models import ShippingMethod
@@ -57,7 +59,15 @@ class Command(BaseCommand):
         db.add_column("catalog_product", "active_base_price", models.PositiveSmallIntegerField(_(u"Active base price"), default=0))
         db.add_column("catalog_product", "base_price_unit", models.CharField(_(u"Base price unit"), blank=True, null=True, max_length=30, choices=settings.LFS_BASE_PRICE_UNITS))
         db.add_column("catalog_product", "base_price_amount", models.FloatField(_(u"Base price amount"), default=0.0, blank=True, null=True))
-        db.alter_column('catalog_product', 'active_packing_unit', models.PositiveSmallIntegerField(_(u"Active packing"), default=0))
+
+        if db.backend_name == "postgres":
+            db.execute('ALTER TABLE catalog_product ALTER active_packing_unit TYPE smallint USING CASE WHEN active_packing_unit=FALSE THEN 0 ELSE 1 END;')
+        else:
+            db.alter_column('catalog_product', 'active_packing_unit', models.PositiveSmallIntegerField(_(u"Active packing"), default=0))
+            for product in Product.objects.all():
+                if product.active_packing_unit != 0:
+                    product.active_packing_unit = 1
+                    product.save()
 
         # Pages
         print "Migrating to 0.7"
