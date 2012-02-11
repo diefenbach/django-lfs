@@ -76,10 +76,14 @@ class Command(BaseCommand):
         PortletAssignment.objects.create(slot=left_slot, content=shop, portlet=pages_portlet)
 
         # Payment methods
-        PaymentMethod.objects.create(pk=1, name="Direct debit", priority=1, active=1, deletable=0, type=PM_BANK)
-        PaymentMethod.objects.create(pk=2, name="Cash on delivery", priority=2, active=1, deletable=0)
-        PaymentMethod.objects.create(pk=3, name="PayPal", priority=3, active=1, deletable=0)
-        PaymentMethod.objects.create(pk=4, name="Prepayment", priority=4, active=1, deletable=0)
+        pm = PaymentMethod.objects.create(name="Direct debit", priority=1, active=1, deletable=0, type=PM_BANK)
+        pm.id=1; pm.save()
+        pm = PaymentMethod.objects.create(name="Cash on delivery", priority=2, active=1, deletable=0)
+        pm.id=2; pm.save()
+        pm = PaymentMethod.objects.create(name="PayPal", priority=3, active=1, deletable=0)
+        pm.id=3; pm.save()
+        pm = PaymentMethod.objects.create(name="Prepayment", priority=4, active=1, deletable=0)
+        pm.id=4; pm.save()
 
         # Shipping methods
         ShippingMethod.objects.create(name="Standard", priority=1, active=1)
