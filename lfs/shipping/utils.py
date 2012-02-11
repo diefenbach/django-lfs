@@ -55,9 +55,8 @@ def get_product_delivery_time(request, product, for_cart=False):
         if variant is not None:
             product = variant
 
-    if product.manual_delivery_time:
-        delivery_time = product.delivery_time
-    else:
+    delivery_time = product.get_manual_delivery_time()
+    if not delivery_time:
         if for_cart:
             sm = get_selected_shipping_method(request)
             # Within the cart we have to take care of the selected shipping
