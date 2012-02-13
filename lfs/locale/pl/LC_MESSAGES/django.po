@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-28 16:34+0100\n"
-"PO-Revision-Date: 2012-02-07 23:12+0100\n"
-"Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
+"POT-Creation-Date: 2012-02-13 08:12+0100\n"
+"PO-Revision-Date: 2012-02-13 08:14+0100\n"
+"Last-Translator: Maciej Wiśniowski <maciej.wisniowski@natcam.pl>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -684,9 +684,21 @@ msgstr "Grupa"
 msgid "Display on product"
 msgstr "Wyświetlaj przy produkcie"
 
+#: catalog/models.py:1528
+msgid "Local"
+msgstr "Lokalna"
+
+#: catalog/models.py:1529
+msgid "Filterable"
+msgstr "Widoczny w filtrze"
+
 #: catalog/models.py:1530
 msgid "Display no results"
 msgstr "Wyświetlaj gdy brak wyników"
+
+#: catalog/models.py:1531
+msgid "Configurable"
+msgstr "Konfigurowalny"
 
 #: catalog/models.py:1532
 #: catalog/models.py:1720
@@ -725,6 +737,10 @@ msgstr "Krok"
 #: catalog/models.py:1541
 msgid "Decimal places"
 msgstr "Miejsca dziesiętne"
+
+#: catalog/models.py:1543
+msgid "Required"
+msgstr "Wymagane"
 
 #: catalog/models.py:1545
 #: templates/manage/properties/step_inline.html:2
@@ -889,6 +905,9 @@ msgid "day"
 msgstr "dzień"
 
 #: catalog/settings.py:69
+#: templates/manage/cart/cart.html:36
+#: templates/manage/cart/carts_inline.html:76
+#: templates/manage/order/order_inline.html:24
 #: templates/manage/order/orders_inline.html:77
 msgid "week"
 msgstr "tydzień"
@@ -929,7 +948,7 @@ msgstr "Kategoria z Produktami"
 msgid "Category with subcategories"
 msgstr "Kategoria z podkategoriami"
 
-#: catalog/settings.py:120
+#: catalog/settings.py:121
 #: export/settings.py:11
 #: templates/manage/product/variants.html:188
 msgid "Default"
@@ -945,7 +964,7 @@ msgid "Price has been changed according to your selection."
 msgstr "Cena została zmieniona zgodnie z Twoim wyborem."
 
 #: catalog/views.py:156
-#: catalog/views.py:610
+#: catalog/views.py:612
 msgid "The choosen combination of properties is not deliverable."
 msgstr "Wybrana kombinacja cech jest niemozliwa do dostarczenia."
 
@@ -1171,28 +1190,28 @@ msgstr "Cena z podatkiem"
 msgid "Price excludes tax"
 msgstr "Cena bez podatku"
 
-#: core/templatetags/lfs_tags.py:161
+#: core/templatetags/lfs_tags.py:162
 #: portlet/templatetags/lfs_portlets_tags.py:119
 msgid "Information"
 msgstr "Informacja"
 
-#: core/templatetags/lfs_tags.py:277
+#: core/templatetags/lfs_tags.py:278
 #, python-format
 msgid "%s tag needs group id as argument"
 msgstr "znacznik %s wymaga id grupy jako argumentu"
 
-#: core/templatetags/lfs_tags.py:357
-#: core/templatetags/lfs_tags.py:387
+#: core/templatetags/lfs_tags.py:358
+#: core/templatetags/lfs_tags.py:388
 #, python-format
 msgid "%s tag needs no argument"
 msgstr "znacznik %s nie wymaga żadnych argumentów"
 
-#: core/templatetags/lfs_tags.py:411
+#: core/templatetags/lfs_tags.py:412
 #, python-format
 msgid "%s tag needs product as argument"
 msgstr "znacznik %s wymaga produktu jako argumentu"
 
-#: core/widgets/file.py:14
+#: core/widgets/file.py:15
 msgid "Delete file"
 msgstr "Usuń plik"
 
@@ -1547,6 +1566,9 @@ msgid "All"
 msgstr "Wszystko"
 
 #: mail/utils.py:16
+msgid "Your order has been sent"
+msgstr "Twoje zamówienie zostało wysłane."
+
 #: mail/utils.py:43
 msgid "Your order has been received"
 msgstr "Twoje zamówienie zostało przyjęte"
@@ -2590,6 +2612,41 @@ msgstr "Zarządzaj koszykiem"
 msgid "Overview"
 msgstr "Przegląd"
 
+#: templates/manage/cart/cart.html:32
+#: templates/manage/cart/carts_inline.html:72
+#: templates/manage/order/order_inline.html:20
+#: templates/manage/order/orders_inline.html:73
+msgid "today"
+msgstr "dziś"
+
+#: templates/manage/cart/cart.html:32
+#: templates/manage/cart/carts_inline.html:72
+#: templates/manage/order/order_inline.html:20
+#: templates/manage/order/orders_inline.html:73
+msgid "T"
+msgstr "D"
+
+#: templates/manage/cart/cart.html:34
+#: templates/manage/cart/carts_inline.html:74
+#: templates/manage/order/order_inline.html:22
+#: templates/manage/order/orders_inline.html:75
+msgid "yesterday"
+msgstr "wczoraj"
+
+#: templates/manage/cart/cart.html:34
+#: templates/manage/cart/carts_inline.html:74
+#: templates/manage/order/order_inline.html:22
+#: templates/manage/order/orders_inline.html:75
+msgid "Y"
+msgstr "W"
+
+#: templates/manage/cart/cart.html:36
+#: templates/manage/cart/carts_inline.html:76
+#: templates/manage/order/order_inline.html:24
+#: templates/manage/order/orders_inline.html:77
+msgid "W"
+msgstr "T"
+
 #: templates/manage/cart/cart_inline.html:7
 #: templates/manage/category/data.html:12
 #: templates/manage/customer/customer_inline.html:41
@@ -3348,26 +3405,6 @@ msgstr "Wiadomość od klienta"
 #: templates/manage/order/order_inline.html:376
 msgid "Paypal Transaction ID"
 msgstr "ID transakcji Paypal"
-
-#: templates/manage/order/orders_inline.html:73
-msgid "today"
-msgstr "dziś"
-
-#: templates/manage/order/orders_inline.html:73
-msgid "T"
-msgstr "D"
-
-#: templates/manage/order/orders_inline.html:75
-msgid "yesterday"
-msgstr "wczoraj"
-
-#: templates/manage/order/orders_inline.html:75
-msgid "Y"
-msgstr "W"
-
-#: templates/manage/order/orders_inline.html:77
-msgid "W"
-msgstr "T"
 
 #: templates/manage/order/orders_inline.html:162
 msgid "There are no orders"
