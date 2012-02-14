@@ -1348,7 +1348,7 @@ class Product(models.Model):
         if self.manage_stock_amount and self.stock_amount <= 0 and not self.order_time:
             return False
         else:
-            return self.deliverable
+            return self.deliverable and (self.parent is None or self.parent.is_deliverable())
 
     # 3rd party contracts
     def get_parent_for_portlets(self):
