@@ -45,8 +45,8 @@ class CategoryForm(ModelForm):
 
     class Meta:
         model = Category
-        fields = ("name", "slug", "short_description", "description",
-                  "exclude_from_navigation", "image", "static_block")
+        fields = ("name", "slug", "short_description", "description", "short_description",
+        "exclude_from_navigation", "image", "static_block")
 
 
 @permission_required("core.manage_shop", login_url="/login/")

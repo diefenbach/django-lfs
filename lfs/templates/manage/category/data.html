@@ -49,23 +49,38 @@
             {% endif %}
         </div>
     </fieldset>
-    <fieldset>
-        <legend>{% trans "Content" %}</legend>
-            <div class="field">
-                <div class="label">
-                    {{ form.description.label_tag }}:
-                </div>
-                {% if form.description.errors %}
-                    <div class="error">
-                        {{ form.description }}
-                        {{ form.description.errors }}
-                    </div>
-                {% else %}
-                    <div>
-                        {{ form.description }}
-                    </div>
-                {% endif %}
+    <div class="field">
+        <div class="label">
+            {{ form.short_description.label_tag }}:
+        </div>
+        {% if form.short_description.errors %}
+            <div class="error">
+                {{ form.short_description }}
+                {{ form.short_description.errors }}
             </div>
+        {% else %}
+            <div>
+                {{ form.short_description }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="field">
+        <div class="label">
+            {{ form.description.label_tag }}:
+        </div>
+        {% if form.description.errors %}
+            <div class="error">
+                {{ form.description }}
+                {{ form.description.errors }}
+            </div>
+        {% else %}
+            <div>
+                {{ form.description }}
+            </div>
+        {% endif %}
+    </div>
+    <fieldset>
+        <legend>{% trans "Appearance" %}</legend>
             <div class="field">
                 <div class="label">
                     {% trans "Image" %}
