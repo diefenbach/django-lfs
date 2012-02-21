@@ -495,7 +495,7 @@ def currency(value, request=None, grouping=True):
 
 
 @register.filter
-def decimal_l10n(value):
+def decimal_l10n(value, digits=2):
     """Returns the decimal value of value based on current locale.
     """
     try:
@@ -503,7 +503,8 @@ def decimal_l10n(value):
     except ValueError:
         pass
 
-    return locale.format_string("%.2f", value)
+    format_str = "%%.%sf" % digits
+    return locale.format_string(format_str, value)
 
 
 @register.filter
