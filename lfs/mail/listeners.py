@@ -4,11 +4,19 @@ from django.conf import settings
 from lfs.core.signals import customer_added
 from lfs.core.signals import order_submitted
 from lfs.core.signals import order_sent
+from lfs.core.signals import order_paid
 from lfs.mail import utils as mail_utils
 
 # reviews imports
 from reviews.signals import review_added
 
+
+def order_paid_listener(sender, **kwargs):
+    """Listen to order payed signal.
+    """
+    order = sender.get("order")
+    mail_utils.send_order_paid_mail(order)
+order_paid.connect(order_paid_listener)
 
 def order_sent_listener(sender, **kwargs):
     """Listen to order payed signal.

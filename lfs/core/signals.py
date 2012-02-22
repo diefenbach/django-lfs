@@ -16,6 +16,7 @@ featured_changed = django.dispatch.Signal()
 
 # Order
 order_created = django.dispatch.Signal()
+order_paid = django.dispatch.Signal()
 order_sent = django.dispatch.Signal()
 order_submitted = django.dispatch.Signal()
 

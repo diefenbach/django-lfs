@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.mail import EmailMultiAlternatives
+from django.template.base import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -13,7 +14,11 @@ def send_order_sent_mail(order):
     import lfs.core.utils
     shop = lfs.core.utils.get_default_shop()
 
-    subject = _(u"Your order has been sent")
+    try:
+        subject = render_to_string("lfs/mail/order_sent_subject.txt", {"order": order})
+    except TemplateDoesNotExist:
+        subject = _(u"Your order has been sent")
+
     from_email = shop.from_email
     to = [order.customer_email]
     bcc = shop.get_notification_emails()
@@ -32,6 +37,35 @@ def send_order_sent_mail(order):
     mail.send(fail_silently=True)
 
 
+def send_order_paid_mail(order):
+    """Sends an order has been paid mail to the shop customer.
+    """
+    import lfs.core.utils
+    shop = lfs.core.utils.get_default_shop()
+
+    try:
+        subject = render_to_string("lfs/mail/order_paid_subject.txt", {"order": order})
+    except TemplateDoesNotExist:
+        subject = _(u"Your order has been paid")
+
+    from_email = shop.from_email
+    to = [order.customer_email]
+    bcc = shop.get_notification_emails()
+
+    # text
+    text = render_to_string("lfs/mail/order_paid_mail.txt", {"order": order})
+    mail = EmailMultiAlternatives(
+        subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
+
+    # html
+    html = render_to_string("lfs/mail/order_paid_mail.html", {
+        "order": order
+    })
+
+    mail.attach_alternative(html, "text/html")
+    mail.send(fail_silently=True)
+
+
 def send_order_received_mail(order):
     """Sends an order received mail to the shop customer.
 
@@ -40,7 +74,11 @@ def send_order_received_mail(order):
     import lfs.core.utils
     shop = lfs.core.utils.get_default_shop()
 
-    subject = _(u"Your order has been received")
+    try:
+        subject = render_to_string("lfs/mail/order_received_subject.txt", {"order": order})
+    except TemplateDoesNotExist:
+        subject = _(u"Your order has been received")
+
     from_email = shop.from_email
     to = [order.customer_email]
     bcc = shop.get_notification_emails()

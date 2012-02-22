@@ -402,6 +402,8 @@ def change_order_state(request):
 
     if order.state == lfs.order.settings.SENT:
         lfs.core.signals.order_sent.send({"order": order, "request": request})
+    if order.state == lfs.order.settings.PAID:
+        lfs.core.signals.order_paid.send({"order": order, "request": request})
 
     msg = _(u"State has been changed")
 
