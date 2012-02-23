@@ -256,7 +256,8 @@ def products(request, template_name="manage/product/products.html"):
     Displays an overview list of all products.
     """
     products = _get_filtered_products(request)
-    paginator = Paginator(products, 20)
+    amount = _get_stored_amount(request)
+    paginator = Paginator(products, amount)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     return render_to_response(template_name, RequestContext(request, {
@@ -644,8 +645,18 @@ def set_products_page(request):
     Sets the displayed product page.
     """
     product_id = request.GET.get("product-id")
-    products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, 20)
+
+    print product_id
+    if product_id == "0":
+        # products overview
+        products = _get_filtered_products(request)
+        amount = _get_stored_amount(request)
+    else:
+        # product view
+        products = _get_filtered_products_for_product_view(request)
+        amount = 25
+
+    paginator = Paginator(products, amount)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     html = (
@@ -736,3 +747,11 @@ def _get_filtered_products(request):
     products = products.order_by("%s%s" % (product_ordering_order, product_ordering))
 
     return products
+
+
+def _get_stored_amount(request):
+    product_filters = request.session.get("product_filters", {})
+    try:
+        return int(product_filters.get("amount", 25))
+    except TypeError:
+        return 25
