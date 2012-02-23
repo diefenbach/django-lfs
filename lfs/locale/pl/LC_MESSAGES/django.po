@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-02-19 14:49+0100\n"
-"PO-Revision-Date: 2012-02-19 14:50+0100\n"
+"PO-Revision-Date: 2012-02-23 19:31+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
@@ -4024,7 +4024,7 @@ msgstr "Aktualizuj kroki"
 #: templates/manage/reviews/review_inline.html:31
 #: templates/manage/reviews/reviews_inline.html:82
 msgid "Filter reviews"
-msgstr "Filtruj oceny"
+msgstr "Filtruj opinie"
 
 #: templates/manage/reviews/review_inline.html:46
 msgid "Do you really want to delete this review?"
