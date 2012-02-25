@@ -27,7 +27,8 @@
             </td>
             <td>
                 <input type="submit"
-                       class="ajax-save-button" />
+                       class="ajax-save-button"
+                       value="{% trans "Filter reviews" %}"/>
 
                 <a href="{% url lfs_reset_review_filters %}?came-from=review;review-id={{ review.id }}"
                    class="ajax-link reset">&nbsp;</a>

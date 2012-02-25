@@ -362,7 +362,7 @@ def add_variants(request, product_id):
         variant = None
         # need to validate the amalgamated slug to make sure it is not already in use
         try:
-            product = Product.objects.get(slug=slug)
+            variant = Product.objects.get(slug=slug)
             message = _(u"That slug is already in use. Please use another.")
         except Product.MultipleObjectsReturned:
             message = _(u"That slug is already in use. Please use another.")

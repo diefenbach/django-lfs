@@ -200,5 +200,5 @@ def update_topseller(request):
 
 def _update_positions():
     for i, topseller in enumerate(Topseller.objects.all()):
-        topseller.position = (i + 1) * 10
+        topseller.position = (i + 1)
         topseller.save()
