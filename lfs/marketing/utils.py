@@ -62,6 +62,7 @@ def get_topseller(limit=5):
     cursor = connection.cursor()
     cursor.execute("""SELECT product_id, sum(product_amount) as sum
                       FROM order_orderitem
+                      where product_id is not null
                       GROUP BY product_id
                       ORDER BY sum DESC limit %s""" % (limit * 2))
 

@@ -44,8 +44,8 @@ class ShippingMethodTestCase(TestCase):
         self.dt2 = DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
         self.dt3 = DeliveryTime.objects.create(min=5, max=6, unit=DELIVERY_TIME_UNIT_DAYS)
 
-        self.sm1 = ShippingMethod.objects.create(name="Standard", active=True, price=1, delivery_time=self.dt1)
-        self.sm2 = ShippingMethod.objects.create(name="Express", active=True, delivery_time=self.dt2)
+        self.sm1 = ShippingMethod.objects.create(name="Standard", active=True, price=1, delivery_time=self.dt1, priority=1)
+        self.sm2 = ShippingMethod.objects.create(name="Express", active=True, delivery_time=self.dt2, priority=2)
 
         self.p1 = Product.objects.create(name="Product 1", slug="p1", price=9, weight=6.0)
         self.p2 = Product.objects.create(name="Product 2", slug="p2", price=11, weight=12.0)

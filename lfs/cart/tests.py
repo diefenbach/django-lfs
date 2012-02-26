@@ -152,9 +152,7 @@ class AddToCartTestCase(TestCase):
         request.session = self.session
         request.user = self.user
 
-        # This need to result in a message to the customer
-        result = add_to_cart(request)
-        self.failIf(result.cookies.get("message").__str__().find("Sorry%2C%20but%20%27Product%201%27%20is%20not%20available%20anymore.") == -1)
+        self.assertRaises(Http404, add_to_cart, request)
 
         # But no message if product is ordered ...
         self.p1.order_time = self.dt

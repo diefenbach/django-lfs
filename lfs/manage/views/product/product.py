@@ -646,7 +646,6 @@ def set_products_page(request):
     """
     product_id = request.GET.get("product-id")
 
-    print product_id
     if product_id == "0":
         # products overview
         products = _get_filtered_products(request)

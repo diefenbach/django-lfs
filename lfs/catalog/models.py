@@ -1635,7 +1635,10 @@ class Product(models.Model):
         if self.manage_stock_amount and self.stock_amount <= 0 and not self.order_time:
             return False
         else:
-            return self.deliverable
+            if self.is_variant():
+                return self.deliverable and self.parent.deliverable
+            else:
+                return self.deliverable
 
     def get_manual_delivery_time(self):
         """Returns the manual delivery time of a product or None.
@@ -1855,10 +1858,10 @@ class Property(models.Model):
     position = models.IntegerField(_(u"Position"), blank=True, null=True)
     unit = models.CharField(_(u"Unit"), blank=True, max_length=15)
     display_on_product = models.BooleanField(_(u"Display on product"), default=True)
-    local = models.BooleanField(default=False)
-    filterable = models.BooleanField(default=True)
+    local = models.BooleanField(_(u"Local"), default=False)
+    filterable = models.BooleanField(_(u"Filterable"), default=True)
     display_no_results = models.BooleanField(_(u"Display no results"), default=False)
-    configurable = models.BooleanField(default=False)
+    configurable = models.BooleanField(_(u"Configurable"), default=False)
     type = models.PositiveSmallIntegerField(_(u"Type"), choices=PROPERTY_FIELD_CHOICES, default=PROPERTY_TEXT_FIELD)
     price = models.FloatField(_(u"Price"), blank=True, null=True)
     display_price = models.BooleanField(_(u"Display price"), default=True)
@@ -1870,7 +1873,7 @@ class Property(models.Model):
     unit_step = models.FloatField(_(u"Step"), blank=True, null=True)
     decimal_places = models.PositiveSmallIntegerField(_(u"Decimal places"), default=0)
 
-    required = models.BooleanField(default=False)
+    required = models.BooleanField(_(u"Required"), default=False)
 
     step_type = models.PositiveSmallIntegerField(_(u"Step type"), choices=PROPERTY_STEP_TYPE_CHOICES, default=PROPERTY_STEP_TYPE_AUTOMATIC)
     step = models.IntegerField(_(u"Step"), blank=True, null=True)
