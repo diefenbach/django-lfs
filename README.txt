@@ -31,6 +31,20 @@ The latest development state can be found here:
 Changes
 =======
 
+0.6.7 (2012-02-26)
+------------------
+
+* Bugfix: fixed displaying of manual topsellers (Maciej Wiśniowski)
+* Bugfix: topsellers - avoid empty product_id for discounts (Maciej Wiśniowski)
+* Bugfix: take care of variants for deliverability (Maciej Wiśniowski)
+* Bugfix: fixed bug causing strange behaviour while creating variants (Maciej Wiśniowski)
+* Bugfix: fixed product filtering for product management views; #issue 142
+* Bugfix: added csrf token to active-images-update-form
+* Bugfix: fixed lfs_init for Postgres; issue #129
+* Added translations for filter buttons and fix for topseller positions (Maciej Wiśniowski)
+* Updated polish translations (Maciej Wiśniowski)
+* Updated german translations
+
 0.6.6 (2012-02-09)
 ------------------
 
