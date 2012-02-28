@@ -125,17 +125,17 @@ Following all pieces are sticked together to the complete plugin:
         """
         Implements the ACME payment processor.
         """
-        def process(self, request, cart=None, order=None):
+        def process(self):
             return {
                 "accepted": True,
-                "next_url": self.get_pay_link(order),
+                "next_url": self.get_pay_link(),
             }
 
         def get_create_order_item(self):
             return PM_ORDER_IMMEDIATELY
 
-        def get_pay_link(self, order):
-            total = order.price
+        def get_pay_link(self):
+            total = self.order.price
             return "http://www.acme.com/payment?id=4711&total=%s" % total
 
 In this example the order is created immediately and the customer is redirected
@@ -152,7 +152,7 @@ Now as the code is ready, you can easily plugin your payment method:
 
 #. Add your application to the PYTHONPATH.
 
-#. Add the class to the :ref:`LFS_PAYMENT_MODULES
+#. Add the class to the :ref:`LFS_PAYMENT_METHOD_PROCESSORS
    <settings_lfs_payment_method_processors>` setting.
 
 #. If your are using models (which is completely up to you), add the application
