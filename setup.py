@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = 'dev'
+version = '0.6.7'
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
