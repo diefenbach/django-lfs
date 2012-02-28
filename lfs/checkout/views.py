@@ -367,6 +367,7 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
         "display_bank_account": display_bank_account,
         "display_credit_card": display_credit_card,
         "voucher_number": lfs.voucher.utils.get_current_voucher_number(request),
+        "settings": settings,
     }))
 
     return response

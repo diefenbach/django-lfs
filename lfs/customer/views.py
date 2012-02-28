@@ -336,6 +336,7 @@ def address_inline(request, prefix, form):
     return render_to_string(template_name, RequestContext(request, {
         "address_form": address_form,
         "form": form,
+        "settings": settings,
     }))
 
 
