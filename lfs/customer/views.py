@@ -163,7 +163,7 @@ def orders(request, template_name="lfs/customer/orders.html"):
         date_filter = None
     else:
         now = datetime.datetime.now()
-        start = now - datetime.timedelta(days=date_filter)
+        start = now - datetime.timedelta(days=date_filter*30)
         orders = orders.filter(created__gte=start)
 
     options = []
