@@ -23,7 +23,7 @@ def calculate_product_sales():
     ProductSales.objects.all().delete()
 
     products = {}
-    for order_item in OrderItem.objects.all():
+    for order_item in OrderItem.objects.filter(product__isnull=False):
         if order_item.product.is_variant():
             product = order_item.product.parent
             if product is None:
