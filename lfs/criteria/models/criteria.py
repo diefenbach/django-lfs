@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes import generic
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template import RequestContext
 from django.template.loader import render_to_string
 
@@ -52,7 +52,7 @@ class CartPriceCriterion(models.Model, Criterion):
     price = models.FloatField(_(u"Price"), default=0.0)
 
     def __unicode__(self):
-        return _("Cart Price %(operator)s %(price)s") % {'operator': self.get_operator_display(), 'price': self.price}
+        return ugettext("Cart Price: %(operator)s %(price)s") % {'operator': self.get_operator_display(), 'price': self.price}
 
     @property
     def content_type(self):
@@ -67,7 +67,7 @@ class CartPriceCriterion(models.Model, Criterion):
     def name(self):
         """Returns the descriptive name of the criterion.
         """
-        return _(u"Cart Price")
+        return ugettext(u"Cart Price")
 
     def is_valid(self, request, product=None):
         """Returns True if the criterion is valid.
@@ -113,7 +113,8 @@ class CombinedLengthAndGirthCriterion(models.Model, Criterion):
     clag = models.FloatField(_(u"Width"), default=0.0)
 
     def __unicode__(self):
-        return "CLAG: %s %s" % (self.get_operator_display(), self.clag)
+        return ugettext("CLAG: %(operator)s %(clag)s") % {'operator': self.get_operator_display(),
+                                                          'clag': self.clag}
 
     @property
     def content_type(self):
@@ -128,7 +129,7 @@ class CombinedLengthAndGirthCriterion(models.Model, Criterion):
     def name(self):
         """Returns the descriptive name of the criterion.
         """
-        return _(u"Combined length and girth")
+        return ugettext(u"Combined length and girth")
 
     def is_valid(self, request, product=None):
         """Returns True if the criterion is valid.
@@ -190,7 +191,8 @@ class CountryCriterion(models.Model, Criterion):
         for value in self.value.all():
             values.append(value.name)
 
-        return "%s %s %s" % ("Country", self.get_operator_display(), ", ".join(values))
+        return ugettext("Country: %(operator)s %(countries)s") % {'operator': self.get_operator_display(),
+                                                                 'countries': ", ".join(values)}
 
     @property
     def content_type(self):
@@ -205,7 +207,7 @@ class CountryCriterion(models.Model, Criterion):
     def name(self):
         """Returns the descriptive name of the criterion.
         """
-        return _(u"Country")
+        return ugettext(u"Country")
 
     def is_valid(self, request, product=None):
         """Returns True if the criterion is valid.
@@ -257,7 +259,8 @@ class HeightCriterion(models.Model, Criterion):
     height = models.FloatField(_(u"Height"), default=0.0)
 
     def __unicode__(self):
-        return "Height: %s %s" % (self.get_operator_display(), self.height)
+        return ugettext("Height: %(operator)s %(height)s") % {'operator': self.get_operator_display(),
+                                                              'height': self.height}
 
     @property
     def content_type(self):
@@ -272,7 +275,7 @@ class HeightCriterion(models.Model, Criterion):
     def name(self):
         """Returns the descriptive name of the criterion.
         """
-        return _(u"Height")
+        return ugettext(u"Height")
 
     def is_valid(self, request, product=None):
         """Returns True if the criterion is valid.
@@ -319,7 +322,8 @@ class LengthCriterion(models.Model, Criterion):
     length = models.FloatField(_(u"Length"), default=0.0)
 
     def __unicode__(self):
-        return "Length: %s %s" % (self.get_operator_display(), self.length)
+        return ugettext("Length: %(operator)s %(length)s") % {'operator': self.get_operator_display(),
+                                                              'length': self.length}
 
     @property
     def content_type(self):
@@ -334,7 +338,7 @@ class LengthCriterion(models.Model, Criterion):
     def name(self):
         """Returns the descriptive name of the criterion.
         """
-        return _(u"Length")
+        return ugettext(u"Length")
 
     def is_valid(self, request, product=None):
         """Returns True if the criterion is valid.
@@ -389,7 +393,8 @@ class PaymentMethodCriterion(models.Model, Criterion):
         for value in self.value.all():
             values.append(value.name)
 
-        return "%s %s %s" % ("Payment", self.get_operator_display(), ", ".join(values))
+        return ugettext("Payment: %(operator)s %(payments)s") % {'operator': self.get_operator_display(),
+                                                                'payments': ", ".join(values)}
 
     @property
     def content_type(self):
@@ -404,7 +409,7 @@ class PaymentMethodCriterion(models.Model, Criterion):
     def name(self):
         """Returns the descriptive name of the criterion.
         """
-        return _(u"Payment method")
+        return ugettext(u"Payment method")
 
     def is_valid(self, request, product=None):
         """Returns True if the criterion is valid.
@@ -483,7 +488,8 @@ class ShippingMethodCriterion(models.Model, Criterion):
         for value in self.value.all():
             values.append(value.name)
 
-        return "%s %s %s" % ("Shipping", self.get_operator_display(), ", ".join(values))
+        return ugettext("Shipping: %(operator)s %(shipping)s") % {'operator': self.get_operator_display(),
+                                                                 'shipping': ", ".join(values)}
 
     @property
     def content_type(self):
@@ -498,7 +504,7 @@ class ShippingMethodCriterion(models.Model, Criterion):
     def name(self):
         """Returns the descriptive name of the criterion.
         """
-        return _(u"Shipping method")
+        return ugettext(u"Shipping method")
 
     def is_valid(self, request, product=None):
         """Returns True if the criterion is valid.
@@ -588,7 +594,7 @@ class UserCriterion(models.Model, Criterion):
     def name(self):
         """Returns the descriptive name of the criterion.
         """
-        return _(u"User")
+        return ugettext(u"User")
 
     def is_valid(self, request, product=None):
         """Returns True if the criterion is valid.
@@ -609,7 +615,8 @@ class WeightCriterion(models.Model, Criterion):
     weight = models.FloatField(_(u"Weight"), default=0.0)
 
     def __unicode__(self):
-        return "Weight: %s %s" % (self.get_operator_display(), self.weight)
+        return ugettext("Weight: %(operator)s %(weight)s") % {'operator': self.get_operator_display(),
+                                                              'weight': self.weight}
 
     @property
     def content_type(self):
@@ -624,7 +631,7 @@ class WeightCriterion(models.Model, Criterion):
     def name(self):
         """Returns the descriptive name of the criterion.
         """
-        return _(u"Weight")
+        return ugettext(u"Weight")
 
     def is_valid(self, request, product=None):
         """Returns True if the criterion is valid.
@@ -672,7 +679,8 @@ class WidthCriterion(models.Model, Criterion):
     width = models.FloatField(_(u"Width"), default=0.0)
 
     def __unicode__(self):
-        return "Width: %s %s" % (self.get_operator_display(), self.width)
+        return ugettext("Width: %(operator)s %(width)s") % {'operator': self.get_operator_display(),
+                                                            'width': self.width}
 
     @property
     def content_type(self):
@@ -687,7 +695,7 @@ class WidthCriterion(models.Model, Criterion):
     def name(self):
         """Returns the descriptive name of the criterion.
         """
-        return _(u"Height")
+        return ugettext(u"Height")
 
     def is_valid(self, request, product=None):
         """Returns True if the criterion is valid.
@@ -736,7 +744,8 @@ class DistanceCriterion(models.Model, Criterion):
     module = models.CharField(blank=True, max_length=100)
 
     def __unicode__(self):
-        return "Distance: %s %s" % (self.get_operator_display(), self.distance)
+        return ugettext("Distance: %(operator)s %(distance)s") % {'operator': self.get_operator_display(),
+                                                                  'distance': self.distance}
 
     @property
     def content_type(self):
@@ -751,7 +760,7 @@ class DistanceCriterion(models.Model, Criterion):
     def name(self):
         """Returns the descriptive name of the criterion.
         """
-        return _(u"Distance")
+        return ugettext(u"Distance")
 
     def is_valid(self, request, product=None):
         """Returns True if the criterion is valid.
