@@ -103,6 +103,15 @@ class TopsellerUtilsTestCase(TestCase):
 
         calculate_product_sales()
 
+    def test_calculate_product_sales(self):
+        calculate_product_sales()
+
+        # This should not break calculate_product_sales()
+        self.oi1.product = None
+        self.oi1.save()
+
+        calculate_product_sales()
+
     def test_topseller_1(self):
         """Tests general topsellers.
         """
