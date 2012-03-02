@@ -220,7 +220,7 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
         form_class = form_factory(country_iso)
         invoice_form = form_class(request.POST, prefix=prefix)
 
-        # Validate invoice address
+        # Validate shipping address
         prefix="shipping"
         country_iso = request.POST.get(prefix + "-country", shop.default_country.code)
         form_class = form_factory(country_iso)

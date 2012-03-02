@@ -222,7 +222,22 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
                     form.errors = {}
                 form.errors["confirm_toc"] = _(u"Please confirm our terms and conditions")
 
-        if form.is_valid() and toc:
+        # Validate invoice address
+        prefix="invoice"
+        country_iso = request.POST.get(prefix + "-country", shop.default_country.code)
+        form_class = form_factory(country_iso)
+        invoice_form = form_class(request.POST, prefix=prefix)
+
+        # Validate shipping address
+        valid_shipping_form = True
+        if not request.POST.get("no_shipping"):
+            prefix="shipping"
+            country_iso = request.POST.get(prefix + "-country", shop.default_country.code)
+            form_class = form_factory(country_iso)
+            shipping_form = form_class(request.POST, prefix=prefix)
+            valid_shipping_form = shipping_form.is_valid()
+
+        if form.is_valid() and invoice_form.is_valid() and valid_shipping_form and toc:
             # save invoice details
             customer.selected_invoice_address.firstname = request.POST.get("invoice_firstname")
             customer.selected_invoice_address.lastname = request.POST.get("invoice_lastname")
@@ -283,9 +298,6 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
             customer.selected_invoice_address.email = request.POST.get("invoice_email")
             customer.selected_invoice_address.company_name = request.POST.get("invoice_company_name")
 
-            # Create or update invoice address
-            save_address(request, customer, INVOICE_PREFIX)
-
             # If the shipping address differs from invoice firstname we create
             # or update the shipping address.
             if not form.data.get("no_shipping"):
@@ -296,8 +308,6 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
                 customer.selected_shipping_address.email = request.POST.get("shipping_email")
                 customer.selected_shipping_address.company_name = request.POST.get("shipping_company_name")
                 customer.save()
-
-                save_address(request, customer, SHIPPING_PREFIX)
 
             # Payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
