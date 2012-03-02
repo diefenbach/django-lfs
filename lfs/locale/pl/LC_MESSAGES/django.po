@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-19 14:49+0100\n"
-"PO-Revision-Date: 2012-02-23 19:31+0100\n"
+"POT-Creation-Date: 2012-02-29 23:43+0100\n"
+"PO-Revision-Date: 2012-02-29 23:43+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: cart/models.py:48
-#: criteria/models/criteria.py:591
+#: criteria/models/criteria.py:597
 #: order/models.py:43
 #: templates/manage/cart/carts_inline.html:111
 msgid "User"
@@ -57,9 +57,9 @@ msgid "Cart"
 msgstr "Koszyk"
 
 #: cart/models.py:232
-#: catalog/models.py:1395
-#: catalog/models.py:1649
-#: catalog/models.py:1715
+#: catalog/models.py:1398
+#: catalog/models.py:1652
+#: catalog/models.py:1718
 #: marketing/models.py:13
 #: marketing/models.py:26
 #: marketing/models.py:33
@@ -71,7 +71,7 @@ msgid "Product"
 msgstr "Produkt"
 
 #: cart/models.py:233
-#: catalog/models.py:1398
+#: catalog/models.py:1401
 #: templates/manage/product/accessories_inline.html:116
 msgid "Quantity"
 msgstr "Ilość"
@@ -81,11 +81,11 @@ msgid "Cart item"
 msgstr "Towar w koszyku"
 
 #: cart/models.py:390
-#: catalog/models.py:1602
-#: catalog/models.py:1627
-#: catalog/models.py:1650
-#: catalog/models.py:1675
-#: catalog/models.py:1717
+#: catalog/models.py:1605
+#: catalog/models.py:1630
+#: catalog/models.py:1653
+#: catalog/models.py:1678
+#: catalog/models.py:1720
 #: order/models.py:204
 #: templates/manage/properties/property.html:31
 msgid "Property"
@@ -121,9 +121,9 @@ msgstr "Przepraszamy ale '%(product)s' jest dostępne tylko %(amount)s razy"
 
 #: catalog/models.py:135
 #: catalog/models.py:536
-#: catalog/models.py:1521
-#: catalog/models.py:1677
-#: catalog/models.py:1838
+#: catalog/models.py:1524
+#: catalog/models.py:1680
+#: catalog/models.py:1841
 #: core/models.py:19
 #: core/models.py:154
 #: discounts/models.py:41
@@ -175,7 +175,7 @@ msgstr "Adres URL"
 
 #: catalog/models.py:137
 #: catalog/models.py:601
-#: catalog/models.py:1716
+#: catalog/models.py:1719
 #: core/models.py:80
 msgid "Parent"
 msgstr "Rodzic"
@@ -185,8 +185,8 @@ msgid "Show all products"
 msgstr "Pokaż wszystkie produkty"
 
 #: catalog/models.py:143
-#: catalog/models.py:1428
-#: catalog/models.py:1524
+#: catalog/models.py:1431
+#: catalog/models.py:1527
 #: catalog/settings.py:50
 #: export/models.py:18
 #: templates/manage/manage_base.html:96
@@ -213,7 +213,7 @@ msgstr "Krótki opis"
 
 #: catalog/models.py:145
 #: catalog/models.py:547
-#: catalog/models.py:1864
+#: catalog/models.py:1867
 #: core/models.py:159
 #: payment/models.py:78
 #: shipping/models.py:58
@@ -222,7 +222,7 @@ msgid "Description"
 msgstr "Opis"
 
 #: catalog/models.py:146
-#: catalog/models.py:1766
+#: catalog/models.py:1769
 #: core/models.py:160
 #: payment/models.py:80
 #: shipping/models.py:60
@@ -232,12 +232,12 @@ msgid "Image"
 msgstr "Grafika"
 
 #: catalog/models.py:147
-#: catalog/models.py:1397
-#: catalog/models.py:1525
-#: catalog/models.py:1628
-#: catalog/models.py:1651
-#: catalog/models.py:1679
-#: catalog/models.py:1767
+#: catalog/models.py:1400
+#: catalog/models.py:1528
+#: catalog/models.py:1631
+#: catalog/models.py:1654
+#: catalog/models.py:1682
+#: catalog/models.py:1770
 #: core/models.py:79
 #: criteria/models/criteria_objects.py:24
 #: marketing/models.py:14
@@ -339,8 +339,8 @@ msgstr "Twój unikalny numer produktu."
 
 #: catalog/models.py:539
 #: catalog/models.py:543
-#: catalog/models.py:1533
-#: catalog/models.py:1678
+#: catalog/models.py:1536
+#: catalog/models.py:1681
 #: criteria/models/criteria.py:52
 #: order/models.py:51
 #: payment/models.py:82
@@ -384,8 +384,8 @@ msgstr "Jednostka ceny"
 
 #: catalog/models.py:545
 #: catalog/models.py:579
-#: catalog/models.py:1526
-#: catalog/models.py:1863
+#: catalog/models.py:1529
+#: catalog/models.py:1866
 msgid "Unit"
 msgstr "Jednostka ilości"
 
@@ -483,8 +483,8 @@ msgid "Packing unit"
 msgstr "Ilość w opakowaniu"
 
 #: catalog/models.py:584
-#: criteria/models/criteria.py:609
-#: criteria/models/criteria.py:627
+#: criteria/models/criteria.py:615
+#: criteria/models/criteria.py:634
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:17
 #: templates/manage/criteria/country_criterion.html:17
 #: templates/manage/criteria/distance_criterion.html:17
@@ -500,9 +500,9 @@ msgid "Weight"
 msgstr "Waga"
 
 #: catalog/models.py:585
-#: criteria/models/criteria.py:257
-#: criteria/models/criteria.py:275
-#: criteria/models/criteria.py:690
+#: criteria/models/criteria.py:259
+#: criteria/models/criteria.py:278
+#: criteria/models/criteria.py:698
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:11
 #: templates/manage/criteria/country_criterion.html:11
 #: templates/manage/criteria/distance_criterion.html:11
@@ -518,8 +518,8 @@ msgid "Height"
 msgstr "Wysokość"
 
 #: catalog/models.py:586
-#: criteria/models/criteria.py:319
-#: criteria/models/criteria.py:337
+#: criteria/models/criteria.py:322
+#: criteria/models/criteria.py:341
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:12
 #: templates/manage/criteria/country_criterion.html:12
 #: templates/manage/criteria/distance_criterion.html:12
@@ -536,7 +536,7 @@ msgstr "Długość"
 
 #: catalog/models.py:587
 #: criteria/models/criteria.py:113
-#: criteria/models/criteria.py:672
+#: criteria/models/criteria.py:679
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:16
 #: templates/manage/criteria/country_criterion.html:16
 #: templates/manage/criteria/distance_criterion.html:16
@@ -660,12 +660,12 @@ msgstr "Numer katalogowy producenta"
 msgid "Manufacturer"
 msgstr "Producent"
 
-#: catalog/models.py:1396
+#: catalog/models.py:1399
 msgid "Accessory"
 msgstr "Akcesoria"
 
-#: catalog/models.py:1522
-#: catalog/models.py:1765
+#: catalog/models.py:1525
+#: catalog/models.py:1768
 #: core/models.py:76
 #: page/models.py:15
 #: templates/manage/portlets/portlets_inline.html:41
@@ -674,34 +674,34 @@ msgstr "Akcesoria"
 msgid "Title"
 msgstr "Tytuł"
 
-#: catalog/models.py:1523
-#: catalog/models.py:1626
+#: catalog/models.py:1526
+#: catalog/models.py:1629
 #: core/models.py:78
 msgid "Group"
 msgstr "Grupa"
 
-#: catalog/models.py:1527
+#: catalog/models.py:1530
 msgid "Display on product"
 msgstr "Wyświetlaj przy produkcie"
 
-#: catalog/models.py:1528
+#: catalog/models.py:1531
 msgid "Local"
 msgstr "Lokalna"
 
-#: catalog/models.py:1529
+#: catalog/models.py:1532
 msgid "Filterable"
 msgstr "Widoczny w filtrze"
 
-#: catalog/models.py:1530
+#: catalog/models.py:1533
 msgid "Display no results"
 msgstr "Wyświetlaj gdy brak wyników"
 
-#: catalog/models.py:1531
+#: catalog/models.py:1534
 msgid "Configurable"
 msgstr "Konfigurowalny"
 
-#: catalog/models.py:1532
-#: catalog/models.py:1720
+#: catalog/models.py:1535
+#: catalog/models.py:1723
 #: customer/models.py:104
 #: discounts/models.py:43
 #: templates/manage/portlets/portlets_inline.html:38
@@ -709,45 +709,45 @@ msgstr "Konfigurowalny"
 msgid "Type"
 msgstr "Typ"
 
-#: catalog/models.py:1534
+#: catalog/models.py:1537
 msgid "Display price"
 msgstr "Wyświetlaj cenę"
 
-#: catalog/models.py:1535
+#: catalog/models.py:1538
 #: templates/manage/payment/payment_method_prices.html:9
 #: templates/manage/shipping/shipping_method_prices.html:9
 msgid "Add price"
 msgstr "Dodaj cenę"
 
-#: catalog/models.py:1538
-#: catalog/models.py:1861
+#: catalog/models.py:1541
+#: catalog/models.py:1864
 msgid "Min"
 msgstr "Min"
 
-#: catalog/models.py:1539
-#: catalog/models.py:1862
+#: catalog/models.py:1542
+#: catalog/models.py:1865
 msgid "Max"
 msgstr "Max"
 
-#: catalog/models.py:1540
-#: catalog/models.py:1546
+#: catalog/models.py:1543
+#: catalog/models.py:1549
 msgid "Step"
 msgstr "Krok"
 
-#: catalog/models.py:1541
+#: catalog/models.py:1544
 msgid "Decimal places"
 msgstr "Miejsca dziesiętne"
 
-#: catalog/models.py:1543
+#: catalog/models.py:1546
 msgid "Required"
 msgstr "Wymagane"
 
-#: catalog/models.py:1545
+#: catalog/models.py:1548
 #: templates/manage/properties/step_inline.html:2
 msgid "Step type"
 msgstr "Rodzaj kroku"
 
-#: catalog/models.py:1551
+#: catalog/models.py:1554
 #: templates/manage/manage_base.html:100
 #: templates/manage/manage_base.html:102
 #: templates/manage/product/product.html:108
@@ -757,40 +757,40 @@ msgstr "Rodzaj kroku"
 msgid "Properties"
 msgstr "Cechy"
 
-#: catalog/models.py:1718
+#: catalog/models.py:1721
 #: discounts/models.py:42
 #: manage/views/voucher.py:55
 #: templates/manage/voucher/vouchers_inline.html:73
 msgid "Value"
 msgstr "Wartość"
 
-#: catalog/models.py:1719
+#: catalog/models.py:1722
 msgid "Value as float"
 msgstr "Wartość jako liczba zmiennoprzecinkowa"
 
-#: catalog/models.py:1761
-#: catalog/models.py:1803
+#: catalog/models.py:1764
+#: catalog/models.py:1806
 #: criteria/models/criteria_objects.py:20
 msgid "Content type"
 msgstr "Typ treści"
 
-#: catalog/models.py:1762
-#: catalog/models.py:1804
+#: catalog/models.py:1765
+#: catalog/models.py:1807
 #: criteria/models/criteria_objects.py:17
 #: criteria/models/criteria_objects.py:21
 msgid "Content id"
 msgstr "Id treści"
 
-#: catalog/models.py:1839
+#: catalog/models.py:1842
 msgid "Display files"
 msgstr "Wyświetlaj pliki"
 
-#: catalog/models.py:1840
+#: catalog/models.py:1843
 #: templates/manage/manage_base.html:107
 msgid "HTML"
 msgstr ""
 
-#: catalog/models.py:1841
+#: catalog/models.py:1844
 #: templates/manage/static_block/files.html:2
 #: templates/manage/static_block/static_block.html:35
 msgid "Files"
@@ -1266,26 +1266,31 @@ msgstr "Nie jest poprawne"
 
 #: criteria/models/criteria.py:51
 #: criteria/models/criteria.py:112
-#: criteria/models/criteria.py:185
-#: criteria/models/criteria.py:318
-#: criteria/models/criteria.py:381
-#: criteria/models/criteria.py:475
-#: criteria/models/criteria.py:608
-#: criteria/models/criteria.py:671
-#: criteria/models/criteria.py:734
+#: criteria/models/criteria.py:186
+#: criteria/models/criteria.py:321
+#: criteria/models/criteria.py:385
+#: criteria/models/criteria.py:480
+#: criteria/models/criteria.py:614
+#: criteria/models/criteria.py:678
+#: criteria/models/criteria.py:742
 msgid "Operator"
 msgstr "Operator"
 
 #: criteria/models/criteria.py:55
 #, python-format
-msgid "Cart Price %(operator)s %(price)s"
-msgstr "Cena koszyka %(operator)s %(price)s"
+msgid "Cart Price: %(operator)s %(price)s"
+msgstr "Wartość koszyka: %(operator)s %(price)s"
 
 #: criteria/models/criteria.py:70
 msgid "Cart Price"
 msgstr "Cena w koszyku"
 
-#: criteria/models/criteria.py:131
+#: criteria/models/criteria.py:116
+#, python-format
+msgid "CLAG: %(operator)s %(clag)s"
+msgstr "Długość i obwód: %(operator)s %(clag)s"
+
+#: criteria/models/criteria.py:132
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:9
 #: templates/manage/criteria/country_criterion.html:9
 #: templates/manage/criteria/distance_criterion.html:9
@@ -1300,12 +1305,17 @@ msgstr "Cena w koszyku"
 msgid "Combined length and girth"
 msgstr "W sumie długość i obwód"
 
-#: criteria/models/criteria.py:186
+#: criteria/models/criteria.py:187
 #: templates/manage/shop/default_values.html:81
 msgid "Countries"
 msgstr "Kraje"
 
-#: criteria/models/criteria.py:208
+#: criteria/models/criteria.py:194
+#, python-format
+msgid "Country: %(operator)s %(countries)s"
+msgstr "Kraj: %(operator)s %(countries)s"
+
+#: criteria/models/criteria.py:210
 #: customer/models.py:77
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:8
 #: templates/manage/criteria/country_criterion.html:8
@@ -1321,12 +1331,27 @@ msgstr "Kraje"
 msgid "Country"
 msgstr "Kraj"
 
-#: criteria/models/criteria.py:382
+#: criteria/models/criteria.py:262
+#, python-format
+msgid "Height: %(operator)s %(height)s"
+msgstr "Wysokość: %(operator)s %(height)s"
+
+#: criteria/models/criteria.py:325
+#, python-format
+msgid "Length: %(operator)s %(length)s"
+msgstr "Długość: %(operator)s %(length)s"
+
+#: criteria/models/criteria.py:386
 #: templates/manage/payment/payment_methods.html:3
 msgid "Payment methods"
 msgstr "Metody płatności"
 
-#: criteria/models/criteria.py:407
+#: criteria/models/criteria.py:396
+#, python-format
+msgid "Payment: %(operator)s %(payments)s"
+msgstr "Płatność: %(operator)s %(payments)s"
+
+#: criteria/models/criteria.py:412
 #: payment/models.py:122
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:13
 #: templates/manage/criteria/country_criterion.html:13
@@ -1343,12 +1368,17 @@ msgstr "Metody płatności"
 msgid "Payment method"
 msgstr "Metoda płatności"
 
-#: criteria/models/criteria.py:476
+#: criteria/models/criteria.py:481
 #: templates/manage/shipping/shipping_methods.html:4
 msgid "Shipping methods"
 msgstr "Metody wysyłki"
 
-#: criteria/models/criteria.py:501
+#: criteria/models/criteria.py:491
+#, python-format
+msgid "Shipping: %(operator)s %(shipping)s"
+msgstr "Sposób wysyłki: %(operator)s %(shipping)s"
+
+#: criteria/models/criteria.py:507
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:15
 #: templates/manage/criteria/country_criterion.html:15
 #: templates/manage/criteria/distance_criterion.html:15
@@ -1364,8 +1394,18 @@ msgstr "Metody wysyłki"
 msgid "Shipping method"
 msgstr "Metoda wysyłki"
 
-#: criteria/models/criteria.py:735
-#: criteria/models/criteria.py:754
+#: criteria/models/criteria.py:618
+#, python-format
+msgid "Weight: %(operator)s %(weight)s"
+msgstr "Waga: %(operator)s %(weight)s"
+
+#: criteria/models/criteria.py:682
+#, python-format
+msgid "Width: %(operator)s %(width)s"
+msgstr "Szerokość %(operator)s %(width)s"
+
+#: criteria/models/criteria.py:743
+#: criteria/models/criteria.py:763
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:10
 #: templates/manage/criteria/country_criterion.html:10
 #: templates/manage/criteria/distance_criterion.html:10
@@ -1379,6 +1419,11 @@ msgstr "Metoda wysyłki"
 #: templates/manage/criteria/width_criterion.html:10
 msgid "Distance"
 msgstr "Odległość"
+
+#: criteria/models/criteria.py:747
+#, python-format
+msgid "Distance: %(operator)s %(distance)s"
+msgstr "Odległość %(operator)s %(distance)s"
 
 #: criteria/models/criteria_objects.py:16
 msgid "Criterion type"
@@ -1817,7 +1862,7 @@ msgstr "Domyślne wartości dla sklepu zostały zapisane."
 #: manage/views/categories/seo.py:42
 #: manage/views/categories/view.py:45
 #: manage/views/product/product.py:168
-#: manage/views/product/product.py:370
+#: manage/views/product/product.py:371
 msgid "Please correct the indicated errors."
 msgstr "Proszę poprawić wskazane błędy."
 
@@ -2014,27 +2059,27 @@ msgstr "Aktywne obrazy zostały uaktualnione."
 msgid "Product stock data has been saved."
 msgstr "Dane magazynowe produktu zostały zapisane."
 
-#: manage/views/product/product.py:330
+#: manage/views/product/product.py:331
 msgid "Sub type has been changed."
 msgstr "Podtyp został zmieniony."
 
-#: manage/views/product/product.py:368
+#: manage/views/product/product.py:369
 msgid "Productdata has been saved."
 msgstr "Dane Produktu zostały zapisane."
 
-#: manage/views/product/product.py:424
+#: manage/views/product/product.py:425
 msgid "Product filters have been reset"
 msgstr "Filtry produktu zostały zresetowane"
 
-#: manage/views/product/product.py:450
+#: manage/views/product/product.py:451
 msgid "Products have been deleted."
 msgstr "Produkty zostały usunięte."
 
-#: manage/views/product/product.py:492
+#: manage/views/product/product.py:493
 msgid "Products have been saved"
 msgstr "Produkty zostały zapisane"
 
-#: manage/views/product/product.py:568
+#: manage/views/product/product.py:569
 msgid "Product filters have been set"
 msgstr "Filtry Produktu zostały ustawione"
 
