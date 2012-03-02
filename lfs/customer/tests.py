@@ -60,7 +60,7 @@ class AddressTestCase(TestCase):
             firstname="John",
             lastname="Doe",
             company_name="Doe Ltd.",
-            street="Street 42",
+            line1="Street 42",
             city="Gotham City",
             zip_code="2342",
             country=de,
@@ -72,7 +72,7 @@ class AddressTestCase(TestCase):
             firstname="Jane",
             lastname="Doe",
             company_name="Doe Ltd.",
-            street="Street 43",
+            line1="Street 43",
             city="Smallville",
             zip_code="2443",
             country=de,
@@ -154,8 +154,13 @@ class AddressTestCase(TestCase):
         address_data = {'invoice_firstname': 'Joe', 'invoice_lastname': 'Bloggs',
                         'invoice-line1': 'de company name', 'invoice-line2': 'de street',
                         'invoice-city': 'Dallas', 'invoice-state': 'TX',
-                        'invoice-code': '84003', 'invoice-country': 'us',
-                        'shipping-country': 'ie'}
+                        'invoice-code': '84003', 'invoice-country': 'US',
+
+                        'shipping_firstname': 'Joe', 'shipping_lastname': 'Bloggs',
+                        'shipping-line1': 'de company name', 'shipping-line2': 'de street',
+                        'shipping-city': 'Dallas', 'shipping-state': 'TX',
+                        'shipping-code': '84003', 'shipping-country': 'US', }
+
         address_response = self.c.post(reverse('lfs_my_addresses'), address_data)
 
         self.assertEquals(Address.objects.count(), 4)

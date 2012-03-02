@@ -316,7 +316,6 @@ def address_inline(request, prefix, form):
                 address_form = PostalAddressForm(prefix=prefix, data=request.POST,)
             if countries is not None:
                 address_form.fields["country"].choices = [(c.code.upper(), c.name) for c in countries]
-            save_address(request, customer, prefix)
         else:
             # If there are addresses intialize the form.
             initial = {}
@@ -327,6 +326,7 @@ def address_inline(request, prefix, form):
                 initial.update({
                     "line1": customer_selected_address.line1,
                     "line2": customer_selected_address.line2,
+                    "city" : customer_selected_address.city,
                     "state": customer_selected_address.state,
                     "code": customer_selected_address.zip_code,
                     "country": customer_selected_address.country.code.upper(),

@@ -127,13 +127,13 @@ class Command(BaseCommand):
         db.add_column("customer_address", "line2", models.CharField(_("Line 2"), max_length=100, blank=True, null=True))
 
         cursor = connection.cursor()
-        cursor.execute("""SELECT id, city FROM customer_address""")
+        cursor.execute("""SELECT id, street FROM customer_address""")
         for row in cursor.fetchall():
             address = Address.objects.get(pk=row[0])
             address.line1 = row[1]
             address.save()
 
-        db.delete_column("customer_address", "city")
+        db.delete_column("customer_address", "street")
 
         application.version = "0.7"
         application.save()
