@@ -46,6 +46,7 @@ class Command(BaseCommand):
         from lfs.catalog.models import Product
         from lfs.catalog.settings import VARIANT
         from lfs.core.utils import get_default_shop
+        from lfs.customer.models import Address
         from lfs.page.models import Page
         from lfs.shipping.models import ShippingMethod
         from lfs_order_numbers.models import OrderNumberGenerator
@@ -120,6 +121,19 @@ class Command(BaseCommand):
 
         # Static Block
         db.add_column("catalog_staticblock", "position", models.PositiveSmallIntegerField(_(u"Position"), default=999))
+
+        # Addresses
+        db.add_column("customer_address", "line1", models.CharField(_("Line 1"), max_length=100, blank=True, null=True))
+        db.add_column("customer_address", "line2", models.CharField(_("Line 2"), max_length=100, blank=True, null=True))
+
+        cursor = connection.cursor()
+        cursor.execute("""SELECT id, city FROM customer_address""")
+        for row in cursor.fetchall():
+            address = Address.objects.get(pk=row[0])
+            address.line1 = row[1]
+            address.save()
+
+        db.delete_column("customer_address", "city")
 
         application.version = "0.7"
         application.save()

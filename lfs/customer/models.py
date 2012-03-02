@@ -69,10 +69,11 @@ class Address(models.Model):
 
     firstname = models.CharField(_("Firstname"), max_length=50)
     lastname = models.CharField(_("Lastname"), max_length=50)
+    line1 = models.CharField(_("Line 1"), max_length=100, blank=True, null=True)
+    line2 = models.CharField(_("Line 2"), max_length=100, blank=True, null=True)
     company_name = models.CharField(_("Company name"), max_length=50, blank=True, null=True)
     street = models.CharField(_("Street"), max_length=100)
     zip_code = models.CharField(_("Zip code"), max_length=10)
-    city = models.CharField(_("City"), max_length=50)
     state = models.CharField(_("State"), max_length=50, blank=True)
     country = models.ForeignKey(Country, verbose_name=_("Country"), blank=True, null=True)
     phone = models.CharField(_("Phone"), blank=True, max_length=20)
