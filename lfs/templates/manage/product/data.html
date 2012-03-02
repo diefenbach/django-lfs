@@ -38,7 +38,28 @@
                         {% endif %}
                     </div>                                        
                 {% endif %}
-            </div>            
+            </div>
+
+            <div class="field">
+                <div class="label">
+                    {{ form.manufacturer.label_tag }}:
+                </div>
+
+                {% if form.manufacturer.errors %}
+                    <div class="error">
+                        {{ form.manufacturer }}
+                        {{ form.manufacturer.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {% if product.is_variant %}
+                            {{ product.get_manufacturer }}
+                        {% else %}
+                            {{ form.manufacturer }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
         </fieldset>
 
         <fieldset>

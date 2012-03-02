@@ -59,7 +59,7 @@ class ProductDataForm(ModelForm):
 
     class Meta:
         model = Product
-        fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "tax", "price_calculator",
+        fields = ("active", "name", "slug", "manufacturer", "sku", "sku_manufacturer", "price", "tax", "price_calculator",
             "short_description", "description", "for_sale", "for_sale_price", "static_block", "template",
             "active_price_calculation", "price_calculation", "price_unit", "unit")
 
@@ -84,7 +84,7 @@ class VariantDataForm(ModelForm):
 
     class Meta:
         model = Product
-        fields = ("active", "active_name", "name", "slug", "active_sku", "sku", "sku_manufacturer",
+        fields = ("active", "active_name", "name", "slug", "manufacturer", "active_sku", "sku", "sku_manufacturer",
             "active_price", "price", "price_calculator", "active_short_description", "short_description", "active_description",
             "description", "for_sale", "for_sale_price", "active_for_sale", "active_for_sale_price",
             "active_related_products", "active_static_block", "static_block", "template")
