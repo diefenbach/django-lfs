@@ -161,7 +161,7 @@ Format
 .. _preferences_seo:
 
 SEO
----
+===
 
 This tab is used to optimize the start page for search engines. One can enter
 data for all usual HTML meta data fields.
