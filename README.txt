@@ -31,6 +31,14 @@ The latest development state can be found here:
 Changes
 =======
 
+0.6.8 (2012-03-03)
+------------------
+
+* Bugfix: fixed duplicate labels and invalid tags (Maciej Wiśniowski)
+* Bugfix: fixed calculation of topsellers when order items has no product (Maciej Wiśniowski)
+* Updated polish translations (Maciej Wiśniowski)
+* Updated german translations
+
 0.6.7 (2012-02-26)
 ------------------
 
