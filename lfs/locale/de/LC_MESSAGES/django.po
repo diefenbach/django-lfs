@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-25 11:17-0600\n"
+"POT-Creation-Date: 2012-03-03 00:52-0600\n"
 "PO-Revision-Date: 2009-02-22 07:20+0100\n"
 "Last-Translator: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
 "Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: cart/models.py:48 criteria/models/criteria.py:591 order/models.py:43
+#: cart/models.py:48 criteria/models/criteria.py:597 order/models.py:43
 #: templates/manage/cart/carts_inline.html:111
 msgid "User"
 msgstr "Benutzer"
@@ -50,8 +50,8 @@ msgstr "Änderungsdatum"
 msgid "Cart"
 msgstr "Warenkorb"
 
-#: cart/models.py:232 catalog/models.py:1395 catalog/models.py:1649
-#: catalog/models.py:1715 marketing/models.py:13 marketing/models.py:26
+#: cart/models.py:232 catalog/models.py:1398 catalog/models.py:1652
+#: catalog/models.py:1718 marketing/models.py:13 marketing/models.py:26
 #: marketing/models.py:33 templates/manage/cart/cart_inline.html:100
 #: templates/manage/product/product.html:89
 #: templates/manage/reviews/review_inline.html:141
@@ -59,7 +59,7 @@ msgstr "Warenkorb"
 msgid "Product"
 msgstr "Produkt"
 
-#: cart/models.py:233 catalog/models.py:1398
+#: cart/models.py:233 catalog/models.py:1401
 #: templates/manage/product/accessories_inline.html:116
 msgid "Quantity"
 msgstr "Menge"
@@ -68,8 +68,8 @@ msgstr "Menge"
 msgid "Cart item"
 msgstr "Artikel"
 
-#: cart/models.py:390 catalog/models.py:1602 catalog/models.py:1627
-#: catalog/models.py:1650 catalog/models.py:1675 catalog/models.py:1717
+#: cart/models.py:390 catalog/models.py:1605 catalog/models.py:1630
+#: catalog/models.py:1653 catalog/models.py:1678 catalog/models.py:1720
 #: order/models.py:204 templates/manage/properties/property.html:31
 msgid "Property"
 msgstr "Eigenschaften"
@@ -103,8 +103,8 @@ msgstr "Es tut uns leid, '%(product)s' ist nur noch einmal im Lager."
 msgid "Sorry, but '%(product)s' is only %(amount)s times available."
 msgstr "Es tut uns leid, '%(product)s' ist nur noch %(amount)s Mal im Lager."
 
-#: catalog/models.py:135 catalog/models.py:536 catalog/models.py:1521
-#: catalog/models.py:1677 catalog/models.py:1838 core/models.py:19
+#: catalog/models.py:135 catalog/models.py:536 catalog/models.py:1524
+#: catalog/models.py:1680 catalog/models.py:1841 core/models.py:19
 #: core/models.py:154 discounts/models.py:41 export/models.py:16
 #: manufacturer/models.py:10 payment/models.py:77 shipping/models.py:57
 #: templates/manage/category/products_inline.html:47
@@ -146,7 +146,7 @@ msgstr "Name"
 msgid "Slug"
 msgstr "Slug"
 
-#: catalog/models.py:137 catalog/models.py:601 catalog/models.py:1716
+#: catalog/models.py:137 catalog/models.py:601 catalog/models.py:1719
 #: core/models.py:80
 msgid "Parent"
 msgstr "Kategorie"
@@ -155,7 +155,7 @@ msgstr "Kategorie"
 msgid "Show all products"
 msgstr "Alle Produkte anzeigen"
 
-#: catalog/models.py:143 catalog/models.py:1428 catalog/models.py:1524
+#: catalog/models.py:143 catalog/models.py:1431 catalog/models.py:1527
 #: catalog/settings.py:50 export/models.py:18
 #: templates/manage/manage_base.html:96
 #: templates/manage/cart/carts_inline.html:120
@@ -178,22 +178,22 @@ msgstr "Produkte"
 msgid "Short description"
 msgstr "Kurzbeschreibung"
 
-#: catalog/models.py:145 catalog/models.py:547 catalog/models.py:1864
+#: catalog/models.py:145 catalog/models.py:547 catalog/models.py:1867
 #: core/models.py:159 payment/models.py:78 shipping/models.py:58
 #: tax/models.py:18
 msgid "Description"
 msgstr "Beschreibung"
 
-#: catalog/models.py:146 catalog/models.py:1766 core/models.py:160
+#: catalog/models.py:146 catalog/models.py:1769 core/models.py:160
 #: payment/models.py:80 shipping/models.py:60
 #: templates/manage/category/data.html:86
 #: templates/manage/product/images.html:34
 msgid "Image"
 msgstr "Bild"
 
-#: catalog/models.py:147 catalog/models.py:1397 catalog/models.py:1525
-#: catalog/models.py:1628 catalog/models.py:1651 catalog/models.py:1679
-#: catalog/models.py:1767 core/models.py:79
+#: catalog/models.py:147 catalog/models.py:1400 catalog/models.py:1528
+#: catalog/models.py:1631 catalog/models.py:1654 catalog/models.py:1682
+#: catalog/models.py:1770 core/models.py:79
 #: criteria/models/criteria_objects.py:24 marketing/models.py:14
 #: marketing/models.py:34 page/models.py:17
 #: templates/manage/marketing/featured_inline.html:108
@@ -280,8 +280,8 @@ msgstr "Artikelnummer"
 msgid "Your unique article number of the product."
 msgstr "Ihre eindeutige Artikelnummer des Produkts."
 
-#: catalog/models.py:539 catalog/models.py:543 catalog/models.py:1533
-#: catalog/models.py:1678 criteria/models/criteria.py:52 order/models.py:51
+#: catalog/models.py:539 catalog/models.py:543 catalog/models.py:1536
+#: catalog/models.py:1681 criteria/models/criteria.py:52 order/models.py:51
 #: payment/models.py:82 payment/models.py:123 shipping/models.py:62
 #: shipping/models.py:109 templates/manage/cart/cart_inline.html:103
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:14
@@ -317,8 +317,8 @@ msgstr "Preiskalkulator"
 msgid "Price unit"
 msgstr "Preiseinheit"
 
-#: catalog/models.py:545 catalog/models.py:579 catalog/models.py:1526
-#: catalog/models.py:1863
+#: catalog/models.py:545 catalog/models.py:579 catalog/models.py:1529
+#: catalog/models.py:1866
 msgid "Unit"
 msgstr "Einheit"
 
@@ -407,8 +407,8 @@ msgstr "Verpackungseinheit aktivieren"
 msgid "Packing unit"
 msgstr "Verpackungseinheit"
 
-#: catalog/models.py:584 criteria/models/criteria.py:609
-#: criteria/models/criteria.py:627
+#: catalog/models.py:584 criteria/models/criteria.py:615
+#: criteria/models/criteria.py:634
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:17
 #: templates/manage/criteria/country_criterion.html:17
 #: templates/manage/criteria/distance_criterion.html:17
@@ -423,8 +423,8 @@ msgstr "Verpackungseinheit"
 msgid "Weight"
 msgstr "Gewicht"
 
-#: catalog/models.py:585 criteria/models/criteria.py:257
-#: criteria/models/criteria.py:275 criteria/models/criteria.py:690
+#: catalog/models.py:585 criteria/models/criteria.py:259
+#: criteria/models/criteria.py:278 criteria/models/criteria.py:698
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:11
 #: templates/manage/criteria/country_criterion.html:11
 #: templates/manage/criteria/distance_criterion.html:11
@@ -439,8 +439,8 @@ msgstr "Gewicht"
 msgid "Height"
 msgstr "Höhe"
 
-#: catalog/models.py:586 criteria/models/criteria.py:319
-#: criteria/models/criteria.py:337
+#: catalog/models.py:586 criteria/models/criteria.py:322
+#: criteria/models/criteria.py:341
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:12
 #: templates/manage/criteria/country_criterion.html:12
 #: templates/manage/criteria/distance_criterion.html:12
@@ -456,7 +456,7 @@ msgid "Length"
 msgstr "Länge"
 
 #: catalog/models.py:587 criteria/models/criteria.py:113
-#: criteria/models/criteria.py:672
+#: criteria/models/criteria.py:679
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:16
 #: templates/manage/criteria/country_criterion.html:16
 #: templates/manage/criteria/distance_criterion.html:16
@@ -572,82 +572,82 @@ msgstr "Artikelnummer Hersteller"
 msgid "Manufacturer"
 msgstr "Hersteller"
 
-#: catalog/models.py:1396
+#: catalog/models.py:1399
 msgid "Accessory"
 msgstr "Zubehör"
 
-#: catalog/models.py:1522 catalog/models.py:1765 core/models.py:76
+#: catalog/models.py:1525 catalog/models.py:1768 core/models.py:76
 #: page/models.py:15 templates/manage/portlets/portlets_inline.html:41
 #: templates/manage/product/images.html:37
 #: templates/manage/static_block/files.html:17
 msgid "Title"
 msgstr "Titel"
 
-#: catalog/models.py:1523 catalog/models.py:1626 core/models.py:78
+#: catalog/models.py:1526 catalog/models.py:1629 core/models.py:78
 msgid "Group"
 msgstr "Gruppe"
 
-#: catalog/models.py:1527
+#: catalog/models.py:1530
 msgid "Display on product"
 msgstr "Am Produkt anzeigen"
 
-#: catalog/models.py:1528
+#: catalog/models.py:1531
 msgid "Local"
 msgstr "Lokal"
 
-#: catalog/models.py:1529
+#: catalog/models.py:1532
 msgid "Filterable"
 msgstr "Filterbar"
 
-#: catalog/models.py:1530
+#: catalog/models.py:1533
 msgid "Display no results"
 msgstr "Keine Ergebnisse anzeigen"
 
-#: catalog/models.py:1531
+#: catalog/models.py:1534
 msgid "Configurable"
 msgstr "Konfigurierbar"
 
-#: catalog/models.py:1532 catalog/models.py:1720 customer/models.py:104
+#: catalog/models.py:1535 catalog/models.py:1723 customer/models.py:104
 #: discounts/models.py:43 templates/manage/portlets/portlets_inline.html:38
 #: templates/manage/voucher/vouchers_inline.html:70
 msgid "Type"
 msgstr "Typ"
 
-#: catalog/models.py:1534
+#: catalog/models.py:1537
 msgid "Display price"
 msgstr "Price anzeigen"
 
-#: catalog/models.py:1535
+#: catalog/models.py:1538
 #: templates/manage/payment/payment_method_prices.html:9
 #: templates/manage/shipping/shipping_method_prices.html:9
 msgid "Add price"
 msgstr "Preis hinzufügen"
 
-#: catalog/models.py:1538 catalog/models.py:1861
+#: catalog/models.py:1541 catalog/models.py:1864
 msgid "Min"
 msgstr "Min"
 
-#: catalog/models.py:1539 catalog/models.py:1862
+#: catalog/models.py:1542 catalog/models.py:1865
 msgid "Max"
 msgstr "Max"
 
-#: catalog/models.py:1540 catalog/models.py:1546
+#: catalog/models.py:1543 catalog/models.py:1549
 msgid "Step"
 msgstr "Schritt"
 
-#: catalog/models.py:1541
+#: catalog/models.py:1544
 msgid "Decimal places"
 msgstr "Dezimalstellen"
 
-#: catalog/models.py:1543
+#: catalog/models.py:1546
 msgid "Required"
 msgstr "Erforderlich"
 
-#: catalog/models.py:1545 templates/manage/properties/step_inline.html:2
+#: catalog/models.py:1548 templates/manage/properties/step_inline.html:2
 msgid "Step type"
 msgstr "Schritttyp"
 
-#: catalog/models.py:1551 templates/manage/manage_base.html:100
+#: catalog/models.py:1554 templates/manage/manage_base.html:100
 #: templates/manage/manage_base.html:102
 #: templates/manage/product/product.html:108
 #: templates/manage/properties/properties_inline.html:6
@@ -656,35 +656,35 @@ msgstr "Schritttyp"
 msgid "Properties"
 msgstr "Eigenschaften"
 
-#: catalog/models.py:1718 discounts/models.py:42 manage/views/voucher.py:55
+#: catalog/models.py:1721 discounts/models.py:42 manage/views/voucher.py:55
 #: templates/manage/voucher/vouchers_inline.html:73
 msgid "Value"
 msgstr "Wert"
 
-#: catalog/models.py:1719
+#: catalog/models.py:1722
 msgid "Value as float"
 msgstr "Wert als Dezimalzahl"
 
-#: catalog/models.py:1761 catalog/models.py:1803
+#: catalog/models.py:1764 catalog/models.py:1806
 #: criteria/models/criteria_objects.py:20
 msgid "Content type"
 msgstr "Inhaltstyp"
 
-#: catalog/models.py:1762 catalog/models.py:1804
+#: catalog/models.py:1765 catalog/models.py:1807
 #: criteria/models/criteria_objects.py:17
 #: criteria/models/criteria_objects.py:21
 msgid "Content id"
 msgstr "Inhalts ID"
 
-#: catalog/models.py:1839
+#: catalog/models.py:1842
 msgid "Display files"
 msgstr "Dateien anzeigen"
 
-#: catalog/models.py:1840 templates/manage/manage_base.html:107
+#: catalog/models.py:1843 templates/manage/manage_base.html:107
 msgid "HTML"
 msgstr "HTML"
 
-#: catalog/models.py:1841 templates/manage/static_block/files.html:2
+#: catalog/models.py:1844 templates/manage/static_block/files.html:2
 #: templates/manage/static_block/static_block.html:35
 msgid "Files"
 msgstr "Dateien"
@@ -1123,23 +1123,28 @@ msgid "Is not valid"
 msgstr "Ist nicht gültig"
 
 #: criteria/models/criteria.py:51 criteria/models/criteria.py:112
-#: criteria/models/criteria.py:185 criteria/models/criteria.py:318
-#: criteria/models/criteria.py:381 criteria/models/criteria.py:475
-#: criteria/models/criteria.py:608 criteria/models/criteria.py:671
-#: criteria/models/criteria.py:734
+#: criteria/models/criteria.py:186 criteria/models/criteria.py:321
+#: criteria/models/criteria.py:385 criteria/models/criteria.py:480
+#: criteria/models/criteria.py:614 criteria/models/criteria.py:678
+#: criteria/models/criteria.py:742
 msgid "Operator"
 msgstr "Operator"
 
 #: criteria/models/criteria.py:55
 #, python-format
-msgid "Cart Price %(operator)s %(price)s"
-msgstr ""
+msgid "Cart Price: %(operator)s %(price)s"
+msgstr "Preis Warenkorb: %(operator)s %(price)s"
 
 #: criteria/models/criteria.py:70
 msgid "Cart Price"
 msgstr "Preise Warenkorb"
 
-#: criteria/models/criteria.py:131
+#: criteria/models/criteria.py:116
+#, python-format
+msgid "CLAG: %(operator)s %(clag)s"
+msgstr "Gurtmaß: %(operator)s %(clag)s"
+
+#: criteria/models/criteria.py:132
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:9
 #: templates/manage/criteria/country_criterion.html:9
 #: templates/manage/criteria/distance_criterion.html:9
@@ -1154,12 +1159,17 @@ msgstr "Preise Warenkorb"
 msgid "Combined length and girth"
 msgstr "Gurtmaß"
 
-#: criteria/models/criteria.py:186
+#: criteria/models/criteria.py:187
 #: templates/manage/shop/default_values.html:81
 msgid "Countries"
 msgstr "Länder"
 
-#: criteria/models/criteria.py:208 customer/models.py:77
+#: criteria/models/criteria.py:194
+#, python-format
+msgid "Country: %(operator)s %(countries)s"
+msgstr "Land: %(operator)s %(countries)s"
+
+#: criteria/models/criteria.py:210 customer/models.py:77
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:8
 #: templates/manage/criteria/country_criterion.html:8
 #: templates/manage/criteria/distance_criterion.html:8
@@ -1174,12 +1184,27 @@ msgstr "Länder"
 msgid "Country"
 msgstr "Land"
 
-#: criteria/models/criteria.py:382
+#: criteria/models/criteria.py:262
+#, python-format
+msgid "Height: %(operator)s %(height)s"
+msgstr "Höhe: %(operator)s %(height)s"
+
+#: criteria/models/criteria.py:325
+#, python-format
+msgid "Length: %(operator)s %(length)s"
+msgstr "Länge: %(operator)s %(length)s"
+
+#: criteria/models/criteria.py:386
 #: templates/manage/payment/payment_methods.html:3
 msgid "Payment methods"
 msgstr "Zahlungsweisen"
 
-#: criteria/models/criteria.py:407 payment/models.py:122
+#: criteria/models/criteria.py:396
+#, python-format
+msgid "Payment: %(operator)s %(payments)s"
+msgstr "Zahlungsweise: %(operator)s %(payments)s"
+
+#: criteria/models/criteria.py:412 payment/models.py:122
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:13
 #: templates/manage/criteria/country_criterion.html:13
 #: templates/manage/criteria/distance_criterion.html:13
@@ -1195,12 +1220,17 @@ msgstr "Zahlungsweisen"
 msgid "Payment method"
 msgstr "Zahlungsweise"
 
-#: criteria/models/criteria.py:476
+#: criteria/models/criteria.py:481
 #: templates/manage/shipping/shipping_methods.html:4
 msgid "Shipping methods"
 msgstr "Lieferarten"
 
-#: criteria/models/criteria.py:501
+#: criteria/models/criteria.py:491
+#, python-format
+msgid "Shipping: %(operator)s %(shipping)s"
+msgstr "Lieferart: %(operator)s %(shipping)s"
+
+#: criteria/models/criteria.py:507
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:15
 #: templates/manage/criteria/country_criterion.html:15
 #: templates/manage/criteria/distance_criterion.html:15
@@ -1216,7 +1246,17 @@ msgstr "Lieferarten"
 msgid "Shipping method"
 msgstr "Lieferart"
 
-#: criteria/models/criteria.py:735 criteria/models/criteria.py:754
+#: criteria/models/criteria.py:618
+#, python-format
+msgid "Weight: %(operator)s %(weight)s"
+msgstr "Gewicht: %(operator)s %(weight)s"
+
+#: criteria/models/criteria.py:682
+#, python-format
+msgid "Width: %(operator)s %(width)s"
+msgstr "Breite: %(operator)s %(width)s"
+
+#: criteria/models/criteria.py:743 criteria/models/criteria.py:763
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:10
 #: templates/manage/criteria/country_criterion.html:10
 #: templates/manage/criteria/distance_criterion.html:10
@@ -1230,6 +1270,11 @@ msgstr "Lieferart"
 #: templates/manage/criteria/width_criterion.html:10
 msgid "Distance"
 msgstr "Entfernung"
+
+#: criteria/models/criteria.py:747
+#, python-format
+msgid "Distance: %(operator)s %(distance)s"
+msgstr "Entfernung: %(operator)s %(distance)s"
 
 #: criteria/models/criteria_objects.py:16
 msgid "Criterion type"
