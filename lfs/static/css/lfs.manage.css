@@ -662,6 +662,7 @@ button {
 input.button {
     text-transform: uppercase;
 }
+
 .dialog-buttons {
     float: right;
     padding-top:10px;
@@ -781,6 +782,8 @@ ol {
     padding-left: 16px;
 }
 
+#manage-tabs,
+#category-tabs,
 #product-tabs {
     display: None;
 }
