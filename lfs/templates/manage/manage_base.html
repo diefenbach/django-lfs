@@ -164,9 +164,11 @@
 
         <div id="dialog" title="LFS Dialog"></div>
 
-        <div class="delete-dialog" title='{% trans "Please Confirm" %}' id="delete-dialog">
+        <div class="delete-dialog"
+             id="delete-dialog"
+             title='{% trans "Please Confirm" %}'
+             style="display:none">
             <p class="message">{% trans "Do you really want to delete this object?" %}</p>
-
             <form action="."
                   method="POST">
                 {% csrf_token %}

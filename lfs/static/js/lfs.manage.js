@@ -102,6 +102,7 @@ $(function() {
 
     // General product tabs
     $('#manage-tabs').tabs();
+    $('#manage-tabs').show();
 
     // Product tabs
     $('#product-tabs').tabs();
@@ -116,6 +117,7 @@ $(function() {
 
     // Category tabs
     $('#category-tabs').tabs();
+    $('#category-tabs').show();
     $('#category-tabs').bind('tabsshow', function(event, ui) {
         $.cookie("category_tab", ui.index);
     });
@@ -205,7 +207,7 @@ $(function() {
         $(selector).each(function() {
             this.checked = !this.checked;
         });
-        return False;
+        return false;
     });
 
     // Criteria

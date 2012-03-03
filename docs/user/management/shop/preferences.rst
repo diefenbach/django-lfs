@@ -8,6 +8,9 @@ Preferences
 
 This section describes the preferences management interface.
 
+
+.. _preferences_shop:
+
 Shop
 ====
 
@@ -77,10 +80,11 @@ Static block
 Image
     The image of the shop.
 
-Default values
-==============
 
-.. _preferences_management:
+.. _preferences_default_values:
+
+Default Values
+==============
 
 Price calculator
 ----------------
@@ -129,7 +133,58 @@ Use international currency codes
     If checked the international currency code of the currency is used, e.g. USD
     or EUR.
 
+
+.. _preferences_order_numbers:
+
+.. index:: Order Numbers
+
+Order Numbers
+=============
+
+Last order number
+    This field stores the integer part of the last given order number, which is
+    the base for the next given order number.
+
+Format
+    This field stores the format of the ordern number. The integer part which is
+    stored in ``Last order number`` can be formatted with `Python's string
+    formatting operators <http://docs.python.org/library/stdtypes.html#string-formatting-operations>`_,
+    e.g.::
+
+        DOE-%04d-2012 will return DOE-0001-2012
+
+    Whereas ``%04d`` represents the integer part of the order number, which is
+    stored in ``Last order number``.
+
+.. index:: SEO
+
+.. _preferences_seo:
+
+SEO
+---
+
+This tab is used to optimize the start page for search engines. One can enter
+data for all usual HTML meta data fields.
+
+Meta title
+    This is displayed within the ``meta title`` tag of the start page. By
+    default the ``Name`` field of the ``Shop`` tab is used (see above).
+
+Meta keywords
+    This is displayed within the ``meta keywords`` tag of the start page.
+
+Meta description
+    This is displayed within the ``meta description`` tag of the start page.
+
+.. note::
+
+    Following placeholder can be used within these fields:
+
+    <name>
+        The name of the product.
+
 .. _preferences_portlets:
+
 .. index:: Portlets
 
 Portlets
