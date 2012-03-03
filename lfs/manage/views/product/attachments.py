@@ -64,9 +64,7 @@ def update_attachments(request, product_id):
     """Saves/deletes attachments with given ids (passed by request body).
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
-
     action = request.POST.get("action")
-
     message = _(u"Attachment has been updated.")
 
     if action == "delete":
@@ -78,29 +76,13 @@ def update_attachments(request, product_id):
                     attachment = ProductAttachment.objects.get(pk=id).delete()
                 except (IndexError, ObjectDoesNotExist):
                     pass
-
     elif action == "update":
         message = _(u"Attachment has been updated.")
-        for key, value in request.POST.items():
-            if key.startswith("title-"):
-                id = key.split("-")[1]
-                try:
-                    attachment = ProductAttachment.objects.get(pk=id)
-                except ObjectDoesNotExist:
-                    pass
-                else:
-                    attachment.title = value
-                    attachment.save()
-
-            elif key.startswith("position-"):
-                try:
-                    id = key.split("-")[1]
-                    attachment = ProductAttachment.objects.get(pk=id)
-                except (IndexError, ObjectDoesNotExist):
-                    pass
-                else:
-                    attachment.position = value
-                    attachment.save()
+        for attachment in ProductAttachment.objects.all():
+            attachment.title = request.POST.get("title-%s" % attachment.id)
+            attachment.position = request.POST.get("position-%s" % attachment.id)
+            attachment.description = request.POST.get("description-%s" % attachment.id)
+            attachment.save()
 
     # Refresh positions
     for i, attachment in enumerate(product.attachments.all()):
