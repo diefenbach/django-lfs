@@ -386,25 +386,25 @@ Packing unit:
 SEO
 ---
 
-This tab is used to optimize your product for search engines. You can enter data
+This tab is used to optimize the product for search engines. One can enter data
 for all usual HTML meta data fields. However LFS provides some reasonable
 default values for all fields.
 
 Meta title
-    This is displayed within the meta title tag of the product's HTML tags. By
-    default the name of the product is used.
+    This is displayed within the ``meta title`` tag of the product's detail
+    view. By default the name of the product is used.
 
 Meta keywords
-    This is displayed within the meta keywords tag of the product's detail view.
-    By default the short description of the product is used.
+    This is displayed within the ``meta keywords`` tag of the product's detail
+    view. By default the short description of the product is used.
 
 Meta description
-    This is displayed within the meta description tag of the product's  detail
-    view. By default the short description of the product is used.
+    This is displayed within the ``meta description`` tag of the product's
+    detail view. By default the short description of the product is used.
 
 .. note::
 
-    You can use several placeholders within these fields:
+    Following placeholders can be used within these fields:
 
     <name>
         The name of the product.
