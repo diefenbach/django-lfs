@@ -334,6 +334,8 @@ def save_payment_method_data(request, payment_method_id):
 
     if payment_form.is_valid():
         payment_form.save()
+        if request.POST.get("delete_image"):
+            payment_method.image.delete()
 
     return lfs.core.utils.set_message_cookie(
         url=reverse("lfs_manage_payment_method", kwargs={"payment_method_id": payment_method.id}),

@@ -341,6 +341,8 @@ def save_shipping_method_data(request, shipping_method_id):
 
     if shipping_form.is_valid():
         shipping_form.save()
+        if request.POST.get("delete_image"):
+            shipping_method.image.delete()
 
     return lfs.core.utils.set_message_cookie(
         url=reverse("lfs_manage_shipping_method", kwargs={"shipping_method_id": shipping_method.id}),
