@@ -78,7 +78,7 @@ def update_attachments(request, product_id):
                     pass
     elif action == "update":
         message = _(u"Attachment has been updated.")
-        for attachment in ProductAttachment.objects.all():
+        for attachment in product.attachments.all():
             attachment.title = request.POST.get("title-%s" % attachment.id)
             attachment.position = request.POST.get("position-%s" % attachment.id)
             attachment.description = request.POST.get("description-%s" % attachment.id)
