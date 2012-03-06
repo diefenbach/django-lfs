@@ -289,6 +289,5 @@ class ManageURLsTestCase(TestCase):
 
         from lfs.manage.urls import urlpatterns
         for url in urlpatterns:
-            print url
             result = url.callback(request)
             self.failUnless(result["Location"].startswith("/login/?next=/"))
