@@ -83,6 +83,7 @@ def default_values_part(request, template_name="manage/shop/default_values.html"
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def save_default_values(request):
     """Saves the default value part
     """

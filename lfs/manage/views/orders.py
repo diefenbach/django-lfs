@@ -50,6 +50,7 @@ def orders_view(request, template_name="manage/order/orders.html"):
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def orders_inline(request, as_string=False, template_name="manage/order/orders_inline.html"):
     """Displays the orders. This is factored out in order to reload it via
     ajax request.
@@ -96,6 +97,7 @@ def orders_inline(request, as_string=False, template_name="manage/order/orders_i
         return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def set_order_filters(request):
     """Sets order filters given by passed request.
     """
@@ -146,6 +148,7 @@ def set_order_filters(request):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def set_order_filters_date(request):
     """Sets the date filter by given short cut link
     """
@@ -177,6 +180,7 @@ def set_order_filters_date(request):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def reset_order_filters(request):
     """resets order filter.
     """
@@ -291,8 +295,8 @@ def selectable_orders_inline(request, as_string=False,
 
 
 # Actions
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_order(request, order_id):
     """Deletes order with provided order id.
     """
@@ -321,6 +325,7 @@ def send_order(request, order_id):
     )
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def change_order_state(request):
     """Changes the state of an order, given by request post variables.
     """

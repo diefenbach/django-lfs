@@ -94,8 +94,8 @@ def add_action(request, template_name="manage/shop/add_action.html"):
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_action(request, id):
     """Deletes the action with passed id.
     """

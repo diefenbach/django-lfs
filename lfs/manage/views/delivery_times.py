@@ -92,8 +92,8 @@ def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_delivery_time(request, id):
     """Deletes the delivery time with passed id.
     """

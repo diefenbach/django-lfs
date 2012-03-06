@@ -132,8 +132,8 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             pass
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_portlet(request, portletassignment_id):
     """Deletes a portlet for given portlet assignment.
     """

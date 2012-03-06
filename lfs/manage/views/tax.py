@@ -82,8 +82,8 @@ def add_tax(request, template_name="manage/tax/add_tax.html"):
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_tax(request, id):
     """Deletes tax with passed id.
     """

@@ -216,8 +216,8 @@ def manage_properties(request, product_id, template_name="manage/product/propert
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def update_property_groups(request, product_id):
     """Updates property groups for the product with passed id.
     """
@@ -240,8 +240,8 @@ def update_property_groups(request, product_id):
     return HttpResponseRedirect(url)
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def update_properties(request, product_id):
     """Updates properties for product with passed id.
     """

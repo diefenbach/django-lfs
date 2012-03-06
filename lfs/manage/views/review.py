@@ -35,6 +35,7 @@ def review(request, review_id, template_name="manage/reviews/review.html"):
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def review_inline(request, review_id, as_string=False, template_name="manage/reviews/review_inline.html"):
     """Displays review with provided review id.
     """
@@ -103,6 +104,7 @@ def reviews_inline(request, as_string=False, template_name="manage/reviews/revie
         return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def selectable_reviews_inline(request, review_id=0, as_string=False,
     template_name="manage/reviews/selectable_reviews_inline.html"):
     """Display selectable reviews.
@@ -134,6 +136,7 @@ def selectable_reviews_inline(request, review_id=0, as_string=False,
         return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def set_ordering(request, ordering):
     """Sets review ordering given by passed request.
     """
@@ -163,6 +166,7 @@ def set_ordering(request, ordering):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def set_review_filters(request):
     """Sets review filters given by passed request.
     """
@@ -201,6 +205,7 @@ def set_review_filters(request):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def reset_review_filters(request):
     """Resets all review filters.
     """
@@ -226,8 +231,8 @@ def reset_review_filters(request):
     return HttpResponse(result)
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_review(request, review_id):
     """Deletes review with passed review id.
     """
@@ -242,6 +247,7 @@ def delete_review(request, review_id):
         reverse("lfs_manage_reviews"), _(u"Review has been deleted."))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def set_state(request, review_id):
     """Sets the state for given review.
     """

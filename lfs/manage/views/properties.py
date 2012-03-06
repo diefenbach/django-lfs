@@ -125,8 +125,8 @@ def manage_property(request, id, template_name="manage/properties/property.html"
       }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def update_property_type(request, id):
     """Updates the type of the property.
 
@@ -160,6 +160,7 @@ def select_field(request, property, template_name="manage/properties/property_se
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 @require_POST
 def save_select_field(request, property_id):
     """Saves the data of a property select field.
@@ -184,8 +185,8 @@ def number_field(request, property, template_name="manage/properties/property_nu
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def save_number_field_validators(request, property_id):
     """Saves the validators for the property with passed property_id.
     """
@@ -214,8 +215,8 @@ def steps_inline(request, property_id, template_name="manage/properties/step_inl
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def save_step_range(request, property_id):
     """Save the steps of the property with given id.
     """
@@ -231,8 +232,8 @@ def save_step_range(request, property_id):
     return HttpResponse(result)
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def save_step_type(request, property_id):
     """Save the step type of the property with given id.
     """
@@ -249,8 +250,8 @@ def save_step_type(request, property_id):
     return HttpResponse(result)
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def add_step(request, property_id):
     """Adds a step to property with passed property id resp. updates steps of
     property with passed property id dependent on the given action parameter.
@@ -334,8 +335,8 @@ def add_property(request, template_name="manage/properties/add_property.html"):
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_property(request, id):
     """Deletes the property with given id.
     """
@@ -351,8 +352,8 @@ def delete_property(request, id):
     return HttpResponseRedirect(url)
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def add_option(request, property_id):
     """Adds option to property with passed property id.
     """

@@ -110,8 +110,8 @@ def add_property_group(request, template_name="manage/properties/add_property_gr
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_property_group(request, id):
     """Deletes the property group with passed id.
     """

@@ -33,6 +33,7 @@ def customer(request, customer_id, template_name="manage/customer/customer.html"
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def customer_inline(request, customer_id, as_string=False, template_name="manage/customer/customer_inline.html"):
     """Displays customer with provided customer id.
     """
@@ -136,6 +137,7 @@ def customers_inline(request, as_string=False, template_name="manage/customer/cu
         return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def selectable_customers_inline(request, customer_id=0, as_string=False,
     template_name="manage/customer/selectable_customers_inline.html"):
     """Display selectable customers.
@@ -167,6 +169,7 @@ def selectable_customers_inline(request, customer_id=0, as_string=False,
         return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def set_ordering(request, ordering):
     """Sets customer ordering given by passed request.
     """
@@ -202,6 +205,7 @@ def set_ordering(request, ordering):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def set_customer_filters(request):
     """Sets customer filters given by passed request.
     """
@@ -234,6 +238,7 @@ def set_customer_filters(request):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def reset_customer_filters(request):
     """Resets all customer filters.
     """
