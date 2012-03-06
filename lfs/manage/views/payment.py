@@ -343,8 +343,8 @@ def save_payment_method_data(request, payment_method_id):
     )
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_payment_method(request, payment_method_id):
     """Deletes payment method with passed payment id.
 
@@ -368,8 +368,8 @@ def delete_payment_method(request, payment_method_id):
     )
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def sort_payment_methods(request):
     """Sorts payment methods after drag 'n drop.
     """

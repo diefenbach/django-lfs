@@ -77,6 +77,7 @@ def files(request, sb, template_name="manage/static_block/files.html"):
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def update_files(request, id):
     """
     """
@@ -132,6 +133,7 @@ def update_files(request, id):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def reload_files(request, id):
     """
     """
@@ -146,6 +148,7 @@ def reload_files(request, id):
     return HttpResponse(result)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def add_files(request, id):
     """Adds files to static block with passed id.
     """
@@ -198,8 +201,8 @@ def preview_static_block(request, id, template_name="manage/static_block/preview
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def sort_static_blocks(request):
     """Sorts static blocks after drag 'n drop.
     """
@@ -221,8 +224,8 @@ def sort_static_blocks(request):
         return HttpResponse(result)
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_static_block(request, id):
     """Deletes static block with passed id.
     """

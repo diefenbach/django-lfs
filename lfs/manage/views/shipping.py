@@ -350,8 +350,8 @@ def save_shipping_method_data(request, shipping_method_id):
     )
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_shipping_method(request, shipping_method_id):
     """Deletes shipping method with passed shipping id.
 
@@ -375,8 +375,8 @@ def delete_shipping_method(request, shipping_method_id):
     )
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def sort_shipping_methods(request):
     """Sorts shipping methods after drag 'n drop.
     """

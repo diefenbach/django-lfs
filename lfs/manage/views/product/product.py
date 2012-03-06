@@ -382,8 +382,8 @@ def change_subtype(request, product_id):
     )
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_product(request, product_id):
     """Deletes product with passed id.
     """
@@ -394,8 +394,8 @@ def delete_product(request, product_id):
     return HttpResponseRedirect(url)
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def edit_product_data(request, product_id, template_name="manage/product/data.html"):
     """Edits the product with given.
     """
@@ -488,8 +488,8 @@ def reset_filters(request):
     return HttpResponse(result)
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def save_products(request):
     """
     Saves products with passed ids (by request body).

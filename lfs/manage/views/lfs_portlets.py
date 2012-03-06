@@ -130,8 +130,9 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
         except ContentType.DoesNotExist:
             pass
 
-@require_POST
+
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_portlet(request, portletassignment_id):
     """Deletes a portlet for given portlet assignment.
     """
@@ -194,6 +195,7 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
         }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def move_portlet(request, portletassignment_id):
     """
     Moves a portlet up/down within a slot.

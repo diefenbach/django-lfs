@@ -181,8 +181,8 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_category(request, id):
     """Deletes category with given id.
     """
@@ -195,6 +195,7 @@ def delete_category(request, id):
     return HttpResponseRedirect(url)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def sort_categories(request):
     """Sort categories
     """

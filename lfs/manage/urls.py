@@ -1,12 +1,8 @@
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
 
-urlpatterns = patterns('django.views.generic.simple',
-    (r'^products-new', 'direct_to_template', {'template': 'manage/new/product.html'}),
-)
-
 # General
-urlpatterns += patterns('lfs.manage.views',
+urlpatterns = patterns('lfs.manage.views',
     url(r'^$', "dashboard", name="lfs_manage_dashboard"),
 )
 
