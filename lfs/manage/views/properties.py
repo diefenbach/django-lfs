@@ -139,6 +139,7 @@ def select_field(request, property, template_name="manage/properties/property_se
         "form" : form,
     }))
 
+@permission_required("core.manage_shop", login_url="/login/")
 def save_select_field(request, property_id):
     """
     """
@@ -160,6 +161,7 @@ def number_field(request, property, template_name="manage/properties/property_nu
         "number_field_form" : number_field_form,
     }))
 
+@permission_required("core.manage_shop", login_url="/login/")
 def save_number_field_validators(request, property_id):
     """
     """
@@ -190,6 +192,7 @@ def steps_inline(request, property_id, template_name="manage/properties/step_inl
         "step_type_form" : step_type_form,
     }))
 
+@permission_required("core.manage_shop", login_url="/login/")
 def save_step(request, property_id):
     """Save the steps of the property with given id.
     """
@@ -205,6 +208,7 @@ def save_step(request, property_id):
 
     return HttpResponse(result)
 
+@permission_required("core.manage_shop", login_url="/login/")
 def save_step_type(request, property_id):
     """Save the step type of the property with given id.
     """

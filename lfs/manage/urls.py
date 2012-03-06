@@ -1,12 +1,8 @@
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
 
-urlpatterns = patterns('django.views.generic.simple',
-    (r'^products-new', 'direct_to_template', { 'template': 'manage/new/product.html' }),
-)
-
 # General
-urlpatterns += patterns('lfs.manage.views',
+urlpatterns = patterns('lfs.manage.views',
     url(r'^$', "dashboard", name="lfs_manage_dashboard"),
 )
 
@@ -154,11 +150,11 @@ urlpatterns += patterns('lfs.manage.views.properties',
     url(r'^save-shop-property-step-type/(?P<property_id>\d*)', "save_step_type", name="lfs_save_shop_property_step_type"),
     url(r'^delete-shop-property-option/(?P<id>\d*)', "delete_option", name="lfs_delete_shop_property_option"),
     url(r'^delete-shop-property-step/(?P<id>\d*)', "delete_step", name="lfs_delete_shop_property_step"),
-    
+
     url(r'^save-number-field-validators/(?P<property_id>\d*)', "save_number_field_validators", name="lfs_save_number_field_validators"),
     url(r'^save-select-field/(?P<property_id>\d*)', "save_select_field", name="lfs_save_select_field"),
 
-    
+
 )
 
 # Product properties
@@ -323,7 +319,7 @@ urlpatterns += patterns('lfs.manage.views.static_blocks',
     url(r'^manage-static-block/(?P<id>\d*)$', "manage_static_block", name="lfs_manage_static_block"),
     url(r'^add_files/(?P<id>[-\w]*)', "add_files", name="lfs_add_files_to_static_block"),
     url(r'^update_files/(?P<id>[-\w]*)', "update_files", name="lfs_manage_update_files_sb"),
-    url(r'^reload_files/(?P<id>[-\w]*)', "reload_files", name="lfs_reload_files"),    
+    url(r'^reload_files/(?P<id>[-\w]*)', "reload_files", name="lfs_reload_files"),
 )
 
 # Reviews

@@ -38,7 +38,7 @@ def manage_images(request, product_id, as_string=False, template_name="manage/pr
         return HttpResponse(result)
 
 # Actions
-# @permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop", login_url="/login/")
 def add_image(request, product_id):
     """Adds an image to product with passed product_id.
     """
@@ -61,7 +61,7 @@ def update_images(request, product_id):
     """Saves/deletes images with given ids (passed by request body).
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
-    
+
     action = request.POST.get("action")
     if action == "delete":
         message = _(u"Images has been deleted.")

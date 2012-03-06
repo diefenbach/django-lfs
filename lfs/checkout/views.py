@@ -130,7 +130,7 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
     cart_costs = cart_utils.get_cart_costs(request, cart)
     cart_price = cart_costs["price"] + shipping_costs["price"] + payment_costs["price"]
     cart_tax = cart_costs["tax"] + shipping_costs["tax"] + payment_costs["tax"]
-    
+
     discounts = lfs.discounts.utils.get_valid_discounts(request)
     for discount in discounts:
         cart_price = cart_price - discount["price"]
@@ -163,7 +163,7 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
         "cart_price" : cart_price,
         "cart_tax" : cart_tax,
         "display_voucher" : display_voucher,
-        "discounts" : discounts,        
+        "discounts" : discounts,
         "voucher_value" : voucher_value,
         "voucher_tax" : voucher_tax,
         "shipping_price" : shipping_costs["price"],
@@ -188,9 +188,9 @@ def one_page_checkout(request, checkout_form = OnePageCheckoutForm,
     customer = customer_utils.get_or_create_customer(request)
     if request.method == "POST":
         form = checkout_form(request.POST)
-        
+
         toc = True
-                
+
         if shop.confirm_toc:
             if not request.POST.has_key("confirm_toc"):
                 toc = False

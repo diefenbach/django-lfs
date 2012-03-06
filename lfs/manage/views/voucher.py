@@ -55,6 +55,7 @@ class VoucherForm(forms.Form):
         self.fields["tax"].choices = taxes
 
 # Parts
+@permission_required("core.manage_shop", login_url="/login/")
 def voucher_group(request, id, template_name="manage/voucher/voucher_group.html"):
     """Main view to display a voucher group.
     """
@@ -154,6 +155,8 @@ def set_vouchers_page(request):
     return HttpResponse(
         simplejson.dumps({ "html" : html }, cls = LazyEncoder))
 
+
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_vouchers(request):
     """Redirects to the first voucher group or to the add voucher form.
     """
@@ -166,6 +169,7 @@ def manage_vouchers(request):
 
     return HttpResponseRedirect(url)
 
+@permission_required("core.manage_shop", login_url="/login/")
 def add_vouchers(request, group_id):
     """
     """
@@ -205,6 +209,7 @@ def add_vouchers(request, group_id):
         (("#vouchers", vouchers_tab(request, voucher_group)), ),
         msg)
 
+@permission_required("core.manage_shop", login_url="/login/")
 def delete_vouchers(request, group_id):
     """Deletes checked vouchers.
     """
@@ -218,6 +223,8 @@ def delete_vouchers(request, group_id):
         (("#vouchers", vouchers_tab(request, voucher_group, deleted=True)), ),
         _(u"Vouchers have been deleted."))
 
+
+@permission_required("core.manage_shop", login_url="/login/")
 def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.html"):
     """Adds a voucher group
     """
@@ -237,6 +244,7 @@ def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.h
         "voucher_groups" : VoucherGroup.objects.all(),
     }))
 
+@permission_required("core.manage_shop", login_url="/login/")
 def save_voucher_group_data(request, id):
     """Saves the data of the voucher group with passed id.
     """
@@ -253,6 +261,7 @@ def save_voucher_group_data(request, id):
         ("#navigation", navigation(request, voucher_group)),),
         _(u"Voucher data has been save."))
 
+@permission_required("core.manage_shop", login_url="/login/")
 def delete_voucher_group(request, id):
     """Deletes voucher group with given id and all assigned vouchers.
     """
@@ -265,8 +274,9 @@ def delete_voucher_group(request, id):
         return lfs.core.utils.set_message_cookie(
             url = reverse("lfs_manage_vouchers"),
             msg = _(u"Voucher group and assigned vouchers have been deleted."),
-        )            
+        )
 
+@permission_required("core.manage_shop", login_url="/login/")
 def save_voucher_options(request):
     """Saves voucher options.
     """

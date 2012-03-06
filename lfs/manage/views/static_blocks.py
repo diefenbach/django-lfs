@@ -70,6 +70,7 @@ def files(request, sb, template_name="manage/static_block/files.html"):
         "static_block" : sb,
     }))
 
+@permission_required("core.manage_shop", login_url="/login/")
 def update_files(request, id):
     """
     """
@@ -108,15 +109,15 @@ def update_files(request, id):
                 else:
                     file.position = value
                     file.save()
-                    
+
     for i, file in enumerate(static_block.files.all()):
         file.position = (i + 1) * 10
         file.save()
-    
+
     html = (
         ("#files", files(request, static_block)),
     )
-    
+
     result = simplejson.dumps({
         "html" : html,
         "message" : message,
@@ -124,6 +125,7 @@ def update_files(request, id):
 
     return HttpResponse(result)
 
+@permission_required("core.manage_shop", login_url="/login/")
 def reload_files(request, id):
     """
     """
@@ -137,6 +139,7 @@ def reload_files(request, id):
 
     return HttpResponse(result)
 
+@permission_required("core.manage_shop", login_url="/login/")
 def add_files(request, id):
     """Adds files to static block with passed id.
     """

@@ -95,7 +95,7 @@ class ProductStockForm(ModelForm):
         model = Product
         fields = ("weight", "width", "height", "length", "manage_stock_amount",
                   "stock_amount", "manual_delivery_time", "delivery_time",
-                  "deliverable", "order_time", "ordered_at", "active_dimensions", 
+                  "deliverable", "order_time", "ordered_at", "active_dimensions",
                   "packing_unit", "packing_unit_unit", "active_packing_unit")
 
     def __init__(self, *args, **kwargs):
@@ -257,6 +257,7 @@ def selectable_products_inline(request, page, paginator, product_id=0, template_
     }))
 
 # Actions
+@permission_required("core.manage_shop", login_url="/login/")
 def add_product(request, template_name="manage/product/add_product.html"):
     """Shows a simplified product form and adds a new product.
     """

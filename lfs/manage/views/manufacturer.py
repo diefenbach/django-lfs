@@ -1,5 +1,6 @@
 # django imports
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import permission_required
 from django.forms import ModelForm
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -26,6 +27,7 @@ class ManufacturerDataForm(ModelForm):
     class Meta:
         model = Manufacturer
 
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_manufacturer(request, manufacturer_id, template_name="manage/manufacturer/manufacturer.html"):
     """The main view to display factories.
     """
@@ -71,6 +73,8 @@ def selectable_manufacturers_inline(request, manufacturer_id,
         "manufacturer_id" : int(manufacturer_id),
     }))
 
+
+@permission_required("core.manage_shop", login_url="/login/")
 def manufacturer_inline(request, manufacturer_id, category_id,
     template_name="manage/manufacturer/manufacturer_inline.html"):
     """Returns categories and products for given manufacturer id and category id.
@@ -116,6 +120,8 @@ def manufacturer_inline(request, manufacturer_id, category_id,
     return HttpResponse(
         simplejson.dumps({ "html" : html }))
 
+
+@permission_required("core.manage_shop", login_url="/login/")
 def add_manufacturer(request, template_name="manage/manufacturer/add_manufacturer.html"):
     """Form and logic to add a manufacturer.
     """
@@ -134,7 +140,9 @@ def add_manufacturer(request, template_name="manage/manufacturer/add_manufacture
         "selectable_manufacturers_inline" : selectable_manufacturers_inline(request, 0),
     }))
 
+
 # Actions
+@permission_required("core.manage_shop", login_url="/login/")
 def manufacturer_dispatcher(request):
     """Dispatches to the first manufacturer or to the add form.
     """
@@ -146,6 +154,8 @@ def manufacturer_dispatcher(request):
         return HttpResponseRedirect(
             reverse("lfs_manufacturer", kwargs = {"manufacturer_id" : manufacturer.id }))
 
+
+@permission_required("core.manage_shop", login_url="/login/")
 def delete_manufacturer(request, manufacturer_id):
     """Deletes Manufacturer with passed manufacturer id.
     """
@@ -158,6 +168,8 @@ def delete_manufacturer(request, manufacturer_id):
 
     return HttpResponseRedirect(reverse("lfs_manufacturer_dispatcher"))
 
+
+@permission_required("core.manage_shop", login_url="/login/")
 def edit_category(request, manufacturer_id, category_id):
     """Adds/Removes products of given category to given manufacturer.
     """
@@ -175,6 +187,8 @@ def edit_category(request, manufacturer_id, category_id):
 
     return HttpResponse("")
 
+
+@permission_required("core.manage_shop", login_url="/login/")
 def edit_product(request, manufacturer_id, product_id):
     """Adds/Removes given product to given manufacturer.
     """
@@ -190,6 +204,8 @@ def edit_product(request, manufacturer_id, product_id):
 
     return HttpResponse("")
 
+
+@permission_required("core.manage_shop", login_url="/login/")
 def category_state(request, manufacturer_id, category_id):
     """Sets the state (klass and checking) for given category for given
     manufacturer.
@@ -213,6 +229,8 @@ def category_state(request, manufacturer_id, category_id):
         })
     )
 
+
+@permission_required("core.manage_shop", login_url="/login/")
 def update_data(request, manufacturer_id):
     """Updates data of manufacturer with given manufacturer id.
     """
@@ -235,6 +253,7 @@ def update_data(request, manufacturer_id):
     }, cls = LazyEncoder)
 
     return HttpResponse(result)
+
 
 def _get_category_state(manufacturer, category):
     """Calculates the state for given category for given manufacturer.

@@ -24,10 +24,10 @@ class ShopForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ShopForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
-    
+
     class Meta:
         model = Shop
-        fields = ("name", "shop_owner", "from_email", "notification_emails", 
+        fields = ("name", "shop_owner", "from_email", "notification_emails",
             "description", "image", "static_block", "checkout_type", "confirm_toc",
             "google_analytics_id", "ga_site_tracking", "ga_ecommerce_tracking")
 
@@ -37,9 +37,9 @@ class ShopDefaultValuesForm(ModelForm):
 
     class Meta:
         model = Shop
-        fields = ("product_cols", "product_rows", "category_cols", 
+        fields = ("product_cols", "product_rows", "category_cols",
             "default_country", "countries")
-    
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_shop(request, template_name="manage/shop/shop.html"):
     """Displays the form to manage shop data.
@@ -48,14 +48,14 @@ def manage_shop(request, template_name="manage/shop/shop.html"):
     if request.method == "POST":
         form = ShopForm(instance=shop, data=request.POST, files=request.FILES)
         if form.is_valid():
-            form.save()            
+            form.save()
             return lfs.core.utils.set_message_cookie(
                 url = reverse("lfs_manage_shop"),
                 msg = _(u"Shop data has been saved."),
-            )            
+            )
     else:
         form = ShopForm(instance=shop)
-    
+
     return render_to_response(template_name, RequestContext(request, {
         "shop" : shop,
         "form" : form,
@@ -63,38 +63,39 @@ def manage_shop(request, template_name="manage/shop/shop.html"):
         "portlets" : portlets_inline(request, shop),
     }))
 
-@permission_required("core.manage_shop", login_url="/login/")    
+@permission_required("core.manage_shop", login_url="/login/")
 def default_values_part(request, template_name="manage/shop/default_values.html"):
     """Displays the default value part of the shop form.
     """
     shop = lfs_get_object_or_404(Shop, pk=1)
-    
+
     if request.method == "POST":
         form = ShopDefaultValuesForm(instance=shop, data=request.POST)
     else:
         form = ShopDefaultValuesForm(instance=shop)
-    
+
     return render_to_string(template_name, RequestContext(request, {
         "shop" : shop,
         "form" : form,
     }))
 
+@permission_required("core.manage_shop", login_url="/login/")
 def save_default_values(request):
     """Saves the default value part
     """
     shop = lfs_get_object_or_404(Shop, pk=1)
     form = ShopDefaultValuesForm(instance=shop, data=request.POST)
-    
+
     if form.is_valid():
         shop = form.save()
         shop_changed.send(shop)
         message = _(u"Shop default values have been saved.")
     else:
         message = _(u"Please correct the indicated errors.")
-    
+
     result = simplejson.dumps({
         "html" : default_values_part(request),
         "message" : message
     }, cls = LazyEncoder)
-    
-    return HttpResponse(result)    
+
+    return HttpResponse(result)

@@ -29,7 +29,7 @@ def manage_delivery_times(request):
         url = reverse("lfs_manage_delivery_time", kwargs={"id": delivery_time.id})
     except IndexError:
         url = reverse("lfs_add_delivery_time")
-    
+
     return HttpResponseRedirect(url)
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -44,10 +44,10 @@ def manage_delivery_time(request, id, template_name="manage/delivery_times/base.
             return lfs.core.utils.set_message_cookie(
                 url = reverse("lfs_manage_delivery_time", kwargs={"id" : id}),
                 msg = _(u"Delivery time has been saved."),
-            )            
+            )
     else:
         form = DeliveryTimeForm(instance=delivery_time)
-    
+
     return render_to_response(template_name, RequestContext(request, {
         "delivery_time" : delivery_time,
         "delivery_times" : DeliveryTime.objects.all(),
@@ -55,7 +55,7 @@ def manage_delivery_time(request, id, template_name="manage/delivery_times/base.
         "current_id" : int(id),
     }))
 
-@permission_required("core.manage_shop", login_url="/login/")    
+@permission_required("core.manage_shop", login_url="/login/")
 def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
     """Provides a form to add a new delivery time.
     """
@@ -67,14 +67,14 @@ def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
             return lfs.core.utils.set_message_cookie(
                 url = reverse("lfs_manage_delivery_time", kwargs={"id" : delivery_time.id}),
                 msg = _(u"Delivery time has been added."),
-            )            
+            )
 
     else:
         form = DeliveryTimeForm()
 
     return render_to_response(template_name, RequestContext(request, {
         "form" : form,
-        "delivery_times" : DeliveryTime.objects.all(),        
+        "delivery_times" : DeliveryTime.objects.all(),
     }))
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -85,12 +85,12 @@ def delete_delivery_time(request, id):
     for product in Product.objects.filter(delivery_time=id):
         product.delivery_time = None
         product.save()
-    
+
     # Remove the delivery time from all products order_time
     for product in Product.objects.filter(order_time=id):
         product.order_time = None
         product.save()
-    
+
     delivery_time = get_object_or_404(DeliveryTime, pk=id)
     delivery_time.delete()
 
