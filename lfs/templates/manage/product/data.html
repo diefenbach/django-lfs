@@ -53,7 +53,7 @@
                 {% else %}
                     <div>
                         {% if product.is_variant %}
-                            {{ product.get_manufacturer }}
+                            {{ product.get_manufacturer|default_if_none:"-" }}
                         {% else %}
                             {{ form.manufacturer }}
                             <input type="text" id="id_manufacturer_autocomplete" value="{{ form.instance.manufacturer.name }}" />

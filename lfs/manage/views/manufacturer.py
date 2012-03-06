@@ -284,7 +284,6 @@ def _get_category_state(manufacturer, category):
 @never_cache
 @permission_required("core.manage_shop", login_url="/login/")
 def manufacturers_ajax(request):
-    #[ { label: "Choice1", value: "value1" }, ... ]
     """ Returns list of manufacturers for autocomplete
     """
     term = request.GET.get('term', '')
