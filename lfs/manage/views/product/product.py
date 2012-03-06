@@ -14,6 +14,7 @@ from django.template import RequestContext
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
+from django.forms.widgets import HiddenInput
 
 # lfs imports
 import lfs.core.utils
@@ -56,6 +57,7 @@ class ProductDataForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductDataForm, self).__init__(*args, **kwargs)
         self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
+        self.fields["manufacturer"].widget = HiddenInput()
 
     class Meta:
         model = Product
@@ -129,7 +131,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
 
     product = lfs_get_object_or_404(Product, pk=product_id)
     products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     try:
@@ -351,7 +353,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
     products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     if product.sub_type == VARIANT:
@@ -411,7 +413,7 @@ def reset_filters(request):
         del request.session["product_filters"]
 
     products = _get_filtered_products(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     product_id = request.REQUEST.get("product-id", 0)
@@ -434,7 +436,7 @@ def save_products(request):
     """Saves products with passed ids (by request body).
     """
     products = _get_filtered_products(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     if request.POST.get("action") == "delete":
@@ -517,7 +519,7 @@ def set_name_filter(request):
     request.session["product_filters"] = product_filters
 
     products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     product_id = request.REQUEST.get("product-id", 0)

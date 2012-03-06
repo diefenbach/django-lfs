@@ -56,6 +56,7 @@
                             {{ product.get_manufacturer }}
                         {% else %}
                             {{ form.manufacturer }}
+                            <input type="text" id="id_manufacturer_autocomplete" value="{{ form.instance.manufacturer.name }}" />
                         {% endif %}
                     </div>
                 {% endif %}

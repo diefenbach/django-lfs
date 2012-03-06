@@ -112,8 +112,16 @@ $(function() {
 			// ReferenceError due to undefined tinymce
 	    }
         show_ajax_loading();
+
+        // trigger form-save-start event when form is about to be submitted
+        var form = $(this).closest("form");
+        var form_id = form.get(0).id;
+        var event = jQuery.Event("form-save-start");
+        event.form_id = form_id;
+        $('body').trigger(event);
+
         var action = $(this).attr("name")
-        $(this).parents("form:first").ajaxSubmit({
+        form.ajaxSubmit({
             data : {"action" : action},
             success : function(data) {
                 data = $.parseJSON(data);
@@ -132,6 +140,11 @@ $(function() {
                 }
                 hide_ajax_loading();
                 update_editor();
+
+                // trigger form-save-end event when new HTML has already been injected into page
+                var event = jQuery.Event("form-save-end");
+                event.form_id = form_id;
+                $('body').trigger(event);
             }
         })
         return false;
@@ -248,66 +261,64 @@ $(function() {
         knot.parent().find(".category-state").html("");
     };
 
-    $(function() {
-        $(".category-ajax-link").live("click", function() {
-            var url = $(this).attr("href");
+    $(".category-ajax-link").live("click", function() {
+        var url = $(this).attr("href");
 
-            // Loads children of clicked category.
-            if ($(this).hasClass("collapsed")) {
-                $.post(url, function(data) {
-                    data = $.parseJSON(data);
-                    for (var html in data["html"])
-                        $(data["html"][html][0]).html(data["html"][html][1]);
-                })
-                $(this).removeClass("collapsed");
-                $(this).addClass("expanded");
-            }
-            // Removes children of clicked category.
-            else {
-                $(this).siblings("div").html("")
-                $(this).removeClass("expanded");
-                $(this).addClass("collapsed");
-            }
-            return false;
-        });
+        // Loads children of clicked category.
+        if ($(this).hasClass("collapsed")) {
+            $.post(url, function(data) {
+                data = $.parseJSON(data);
+                for (var html in data["html"])
+                    $(data["html"][html][0]).html(data["html"][html][1]);
+            })
+            $(this).removeClass("collapsed");
+            $(this).addClass("expanded");
+        }
+        // Removes children of clicked category.
+        else {
+            $(this).siblings("div").html("")
+            $(this).removeClass("expanded");
+            $(this).addClass("collapsed");
+        }
+        return false;
+    });
 
-        $(".export-category-input").live("click", function() {
+    $(".export-category-input").live("click", function() {
 
-            // select / deselect all child nodes
-            var input = $(this);
-            var parent_checked = this.checked;
-            $(this).parent().find("input").each(function() { this.checked = parent_checked; })
+        // select / deselect all child nodes
+        var input = $(this);
+        var parent_checked = this.checked;
+        $(this).parent().find("input").each(function() { this.checked = parent_checked; })
 
-            // Updates child and parent categories of clicked category
-            var url = $(this).attr("data");
-            if (parent_checked == true) {
-                $.post(url, {"action" : "add"}, function(data) {
-                    update_sub_categories(input);
-                    update_parent_categories(input);
-                });
-            }
-            else {
-                $.post(url, {"action" : "remove"}, function(data) {
-                    update_sub_categories(input);
-                    update_parent_categories(input);
-                });
-            }
-        });
+        // Updates child and parent categories of clicked category
+        var url = $(this).attr("data");
+        if (parent_checked == true) {
+            $.post(url, {"action" : "add"}, function(data) {
+                update_sub_categories(input);
+                update_parent_categories(input);
+            });
+        }
+        else {
+            $.post(url, {"action" : "remove"}, function(data) {
+                update_sub_categories(input);
+                update_parent_categories(input);
+            });
+        }
+    });
 
-        $(".export-product-input").live("click", function() {
-            // Add / Remove product
-            var input = $(this);
-            var url = $(this).attr("data");
-            var checked = this.checked;
+    $(".export-product-input").live("click", function() {
+        // Add / Remove product
+        var input = $(this);
+        var url = $(this).attr("data");
+        var checked = this.checked;
 
-            // Updates parent catgories of clicked product
-            if (checked == true) {
-                $.post(url, {"action" : "add"}, function(data) { update_parent_categories(input) } );
-            }
-            else {
-                $.post(url, {"action" : "remove"}, function(data) { update_parent_categories(input) });
-            }
-        });
+        // Updates parent catgories of clicked product
+        if (checked == true) {
+            $.post(url, {"action" : "add"}, function(data) { update_parent_categories(input) } );
+        }
+        else {
+            $.post(url, {"action" : "remove"}, function(data) { update_parent_categories(input) });
+        }
     });
 
     $(".category-variants-options").live("change", function() {

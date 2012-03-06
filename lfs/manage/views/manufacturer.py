@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
+from django.views.decorators.cache import never_cache
 
 # lfs imports
 import lfs.core.utils
@@ -19,7 +20,6 @@ from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 from lfs.core.utils import LazyEncoder
-from lfs.manufacturer.models import Manufacturer
 from lfs.manufacturer.models import Manufacturer
 
 
@@ -279,3 +279,21 @@ def _get_category_state(manufacturer, category):
         klass = ""
 
     return (checked, klass)
+
+
+@never_cache
+@permission_required("core.manage_shop", login_url="/login/")
+def manufacturers_ajax(request):
+    #[ { label: "Choice1", value: "value1" }, ... ]
+    """ Returns list of manufacturers for autocomplete
+    """
+    term = request.GET.get('term', '')
+    manufacturers = Manufacturer.objects.filter(name__istartswith=term)[:10]
+
+    out = []
+    for man in manufacturers:
+        out.append({'label': man.name,
+                    'value': man.pk})
+
+    result = simplejson.dumps(out, cls=LazyEncoder)
+    return HttpResponse(result)
