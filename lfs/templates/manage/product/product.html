@@ -8,6 +8,13 @@
 {% block help_link %}user/management/catalog/products.html{% endblock %}
 {% block section %}manage-product{% endblock %}
 
+{% block javascript %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.manage.product.js"></script>
+    <script type="text/javascript">
+        var MANUFACTURERS_AJAX_URL = '{% url lfs_manufacturers_ajax %}';
+    </script>
+{% endblock %}
+
 {% block left_slot %}
     <form action="{% url lfs_set_product_name_filter %}"
           method="post">
