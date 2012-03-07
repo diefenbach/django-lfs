@@ -10,7 +10,6 @@ $(function() {
              return false;
          },
          focus: function(event, ui){
-            console.log('focus')
              $('#id_manufacturer').val(ui.item.value);
              $('#id_manufacturer_autocomplete').val(ui.item.label);
              return false;
