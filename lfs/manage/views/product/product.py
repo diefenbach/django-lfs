@@ -15,6 +15,7 @@ from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.forms.widgets import HiddenInput
+from django.conf import settings
 
 # lfs imports
 import lfs.core.utils
@@ -22,6 +23,7 @@ from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 from lfs.catalog.settings import VARIANT, PRODUCT_TYPE_FORM_CHOICES, PRODUCT_TEMPLATES
+from lfs.manufacturer.models import Manufacturer
 from lfs.core.utils import LazyEncoder
 from lfs.manage.views.product.images import manage_images
 from lfs.manage.views.product.seo import manage_seo
@@ -57,7 +59,11 @@ class ProductDataForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductDataForm, self).__init__(*args, **kwargs)
         self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
-        self.fields["manufacturer"].widget = HiddenInput()
+        man_count = Manufacturer.objects.count()
+        if man_count > getattr(settings, 'LFS_SELECT_LIMIT', 20):
+            # use autocomplete if there is more manufacturers
+            # than LFS_SELECT_LIMIT
+            self.fields["manufacturer"].widget = HiddenInput()
 
     class Meta:
         model = Product
