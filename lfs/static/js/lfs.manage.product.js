@@ -9,6 +9,12 @@ $(function() {
              $('#id_manufacturer_autocomplete').val(ui.item.label);
              return false;
          },
+         focus: function(event, ui){
+            console.log('focus')
+             $('#id_manufacturer').val(ui.item.value);
+             $('#id_manufacturer_autocomplete').val(ui.item.label);
+             return false;
+         },
          change: function(event, ui){
              if (ui.item === null){
                  // only accept items selected from the list
@@ -18,7 +24,7 @@ $(function() {
              return false;
          },
          minLength: 1
-    }
+    };
 
     $('#id_manufacturer_autocomplete').autocomplete(MANUFACTURER_AUTOCOMPLETE_SETTINGS);
     // when form is reloaded we have to reattach autocomplete
