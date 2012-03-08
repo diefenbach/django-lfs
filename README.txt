@@ -27,6 +27,11 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.5.0 (2012-03-08)
+------------------
+
+* Security fix
+
 0.5.0 beta 8 (2011-06-25)
 -------------------------
 
@@ -89,7 +94,7 @@ Changes
 * Bugfix manage property form: display validators for float field
 * Bugfix: Using property title instead of name
 * Bugfix Product.get_variant_properties: display only variant properties
-* Bugfix order_inline.html: display product.unit instead of price_unit; 
+* Bugfix order_inline.html: display product.unit instead of price_unit;
   display title of property
 * Bugfix cart: inject correct html after refresh the cart
 * Check also for existing username within RegisterForm
@@ -101,7 +106,7 @@ Changes
 
 * Cleaned up contact form
 
-0.5.0 beta 1 (2009-12-27) 
+0.5.0 beta 1 (2009-12-27)
 -------------------------
 
 * First public beta release
