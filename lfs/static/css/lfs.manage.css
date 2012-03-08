@@ -550,7 +550,8 @@ select.categories {
 /* input fields */
 #id_name, #id_slug, #id_sku, #id_shop_owner, #id_from_email, #id_title, #id_redirect_to, #id_sku_manufacturer, #redirect_to, #id_position, #id_unit,
 #id_priority, #id_price, #id_for_sale_price, #id_tax, #id_module, #id_link, #id_parent, #id_static_block, #id_price_unit, #id_template, #id_meta_title,
-#id_type, #id_step_type, #id_delivery_time, #id_type_of_quantity_field, #id_price_calculator, #id_base_price_unit, #id_base_price_amount, #id_active_base_price {
+#id_type, #id_step_type, #id_delivery_time, #id_type_of_quantity_field, #id_price_calculator, #id_base_price_unit, #id_base_price_amount, #id_active_base_price,
+#id_manufacturer_autocomplete, #id_manufacturer {
     width: 200px;
 }
 

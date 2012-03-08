@@ -16,6 +16,8 @@ from django.template import RequestContext
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
+from django.forms.widgets import HiddenInput
+from django.conf import settings
 
 # lfs imports
 import lfs.core.utils
@@ -34,6 +36,7 @@ from lfs.manage.views.product.properties import manage_properties
 from lfs.manage.views.product.attachments import manage_attachments
 from lfs.manage.views.lfs_portlets import portlets_inline
 from lfs.manage.utils import get_current_page
+from lfs.manufacturer.models import Manufacturer
 from lfs.utils.widgets import SelectImage
 
 
@@ -68,10 +71,13 @@ class ProductDataForm(forms.ModelForm):
         super(ProductDataForm, self).__init__(*args, **kwargs)
         self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
         self.fields["active_base_price"].widget = CheckboxInput()
+        man_count = Manufacturer.objects.count()
+        if man_count > getattr(settings, 'LFS_SELECT_LIMIT', 20):
+            self.fields["manufacturer"].widget = HiddenInput()
 
     class Meta:
         model = Product
-        fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "tax", "price_calculator",
+        fields = ("active", "name", "slug", "manufacturer", "sku", "sku_manufacturer", "price", "tax", "price_calculator",
             "short_description", "description", "for_sale", "for_sale_price", "static_block", "template",
             "active_price_calculation", "price_calculation", "price_unit", "unit", "type_of_quantity_field",
             "active_base_price", "base_price_unit", "base_price_amount")
@@ -98,7 +104,7 @@ class VariantDataForm(forms.ModelForm):
     """
     class Meta:
         model = Product
-        fields = ("active", "active_name", "name", "slug", "active_sku", "sku", "sku_manufacturer",
+        fields = ("active", "active_name", "name", "slug", "manufacturer", "active_sku", "sku", "sku_manufacturer",
             "active_price", "price", "price_calculator", "active_short_description", "short_description", "active_description",
             "description", "for_sale", "for_sale_price", "active_for_sale", "active_for_sale_price",
             "active_related_products", "active_static_block", "static_block", "template",
@@ -157,13 +163,11 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
     """
     Displays the whole manage/edit form for the product with the passed id.
     """
-    AMOUNT = 20
     product = lfs_get_object_or_404(Product, pk=product_id)
     products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, AMOUNT)
-
+    paginator = Paginator(products, 25)
     temp = product.parent if product.is_variant() else product
-    page = get_current_page(request, products, temp, AMOUNT)
+    page = get_current_page(request, products, temp, 25)
 
     try:
         page = paginator.page(page)
@@ -401,7 +405,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
     products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     # Transform empty field / "on" from checkbox to integer
@@ -471,7 +475,7 @@ def reset_filters(request):
         del request.session["product_filters"]
 
     products = _get_filtered_products(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     product_id = request.REQUEST.get("product-id", 0)
@@ -495,7 +499,7 @@ def save_products(request):
     Saves products with passed ids (by request body).
     """
     products = _get_filtered_products(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     if request.POST.get("action") == "delete":
@@ -579,7 +583,7 @@ def set_name_filter(request):
     request.session["product_filters"] = product_filters
 
     products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     product_id = request.REQUEST.get("product-id", 0)

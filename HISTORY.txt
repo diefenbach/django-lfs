@@ -146,6 +146,18 @@ HISTORY
 * Using Python's locale to display currencies
 * New contact form
 
+0.5.0 (2012-03-08)
+------------------
+
+* Security fix
+
+0.5.0 beta 8 (2011-06-25)
+-------------------------
+
+* Bugfix: pinned version of djangorecipe to 0.23.1
+* Enhancement: added active_name and active_price to variants management view; issue #51
+* Enhancement: cleaned up password reset templates
+
 0.5.0 beta 7 (2011-04-13)
 -------------------------
 
