@@ -31,6 +31,17 @@ The latest development state can be found here:
 Changes
 =======
 
+0.7.0 beta 2
+------------
+
+* Security fix
+* Added manufacturer field to product management (Maciej Wiśniowski)
+* Bugfix: fixed pagination for product page; issue #152 (Maciej Wiśniowski)
+* Bugfix: fixed deleting of image for payment and shipping methods; issue #150
+* Bugfix: fixed markup; #issue #148
+* Bugfix: fixed updating of attachments; issue #147
+* Improved javascript: prevent FOUC for category-tabs and manage-tabs;
+
 0.7.0 beta 1
 ------------
 

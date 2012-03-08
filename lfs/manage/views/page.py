@@ -208,8 +208,8 @@ def add_page(request, template_name="manage/page/add_page.html"):
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_page(request, id):
     """Deletes the page with passed id.
     """
@@ -222,8 +222,8 @@ def delete_page(request, id):
     )
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def sort_pages(request):
     """Sorts pages after drag 'n drop.
     """

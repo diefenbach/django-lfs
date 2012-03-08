@@ -179,8 +179,8 @@ def save_discount_data(request, id):
     )
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_discount(request, id):
     """Deletes discount with passed id.
     """

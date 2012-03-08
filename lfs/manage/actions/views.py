@@ -80,8 +80,8 @@ def navigation(request, action, template_name="manage/actions/navigation.html"):
 
 
 # Actions
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def save_action(request, id):
     """Saves the actions with passed id.
     """
@@ -133,8 +133,8 @@ def add_action(request, template_name="manage/actions/add_action.html"):
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_action(request, id):
     """Deletes the action with passed id.
     """
@@ -147,8 +147,8 @@ def delete_action(request, id):
     )
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def sort_actions(request):
     """Sorts actions after drag 'n drop.
     """

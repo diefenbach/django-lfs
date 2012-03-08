@@ -98,6 +98,7 @@ def customers_filters_inline(request, template_name="manage/customer/customers_f
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def customer_inline(request, customer_id, template_name="manage/customer/customer_inline.html"):
     """Displays customer with provided customer id.
     """
@@ -130,6 +131,7 @@ def customer_inline(request, customer_id, template_name="manage/customer/custome
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def customers_inline(request, template_name="manage/customer/customers_inline.html"):
     """Displays carts overview.
     """
@@ -168,6 +170,7 @@ def customers_inline(request, template_name="manage/customer/customers_inline.ht
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def selectable_customers_inline(request, customer_id, template_name="manage/customer/selectable_customers_inline.html"):
     """Display selectable customers.
     """

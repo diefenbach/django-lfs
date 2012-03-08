@@ -119,8 +119,8 @@ def seo_tab(request, shop, form, template_name="manage/shop/seo_tab.html"):
 
 
 # Actions
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def save_data_tab(request):
     """Saves the data tab of the default shop.
     """
@@ -147,8 +147,8 @@ def save_data_tab(request):
     return HttpResponse(result)
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def save_default_values_tab(request):
     """Saves the default value part
     """
@@ -170,8 +170,8 @@ def save_default_values_tab(request):
     return HttpResponse(result)
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def save_seo_tab(request):
     """Saves the seo tab of the default shop.
     """
@@ -193,8 +193,8 @@ def save_seo_tab(request):
     return HttpResponse(result)
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def save_order_numbers_tab(request):
     """Saves the order number tab of the default shop.
     """
