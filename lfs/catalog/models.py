@@ -1142,6 +1142,14 @@ class Product(models.Model):
         else:
             return self.sku
 
+    def get_manufacturer(self):
+        """Always return parent manufacturer for variants.
+        """
+        if self.is_variant():
+            return self.parent.manufacturer
+        else:
+            return self.manufacturer
+
     def get_tax_rate(self, request):
         """Returns the tax rate of the product.
         """

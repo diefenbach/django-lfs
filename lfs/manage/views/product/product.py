@@ -14,6 +14,8 @@ from django.template import RequestContext
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
+from django.forms.widgets import HiddenInput
+from django.conf import settings
 
 # lfs imports
 import lfs.core.utils
@@ -21,6 +23,7 @@ from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 from lfs.catalog.settings import VARIANT, PRODUCT_TYPE_FORM_CHOICES, PRODUCT_TEMPLATES
+from lfs.manufacturer.models import Manufacturer
 from lfs.core.utils import LazyEncoder
 from lfs.manage.views.product.images import manage_images
 from lfs.manage.views.product.seo import manage_seo
@@ -56,10 +59,15 @@ class ProductDataForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductDataForm, self).__init__(*args, **kwargs)
         self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
+        man_count = Manufacturer.objects.count()
+        if man_count > getattr(settings, 'LFS_SELECT_LIMIT', 20):
+            # use autocomplete if there is more manufacturers
+            # than LFS_SELECT_LIMIT
+            self.fields["manufacturer"].widget = HiddenInput()
 
     class Meta:
         model = Product
-        fields = ("active", "name", "slug", "sku", "sku_manufacturer", "price", "tax", "price_calculator",
+        fields = ("active", "name", "slug", "manufacturer", "sku", "sku_manufacturer", "price", "tax", "price_calculator",
             "short_description", "description", "for_sale", "for_sale_price", "static_block", "template",
             "active_price_calculation", "price_calculation", "price_unit", "unit")
 
@@ -84,7 +92,7 @@ class VariantDataForm(ModelForm):
 
     class Meta:
         model = Product
-        fields = ("active", "active_name", "name", "slug", "active_sku", "sku", "sku_manufacturer",
+        fields = ("active", "active_name", "name", "slug", "manufacturer", "active_sku", "sku", "sku_manufacturer",
             "active_price", "price", "price_calculator", "active_short_description", "short_description", "active_description",
             "description", "for_sale", "for_sale_price", "active_for_sale", "active_for_sale_price",
             "active_related_products", "active_static_block", "static_block", "template")
@@ -129,7 +137,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
 
     product = lfs_get_object_or_404(Product, pk=product_id)
     products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     try:
@@ -352,7 +360,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
     products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     if product.sub_type == VARIANT:
@@ -412,7 +420,7 @@ def reset_filters(request):
         del request.session["product_filters"]
 
     products = _get_filtered_products(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     product_id = request.REQUEST.get("product-id", 0)
@@ -435,7 +443,7 @@ def save_products(request):
     """Saves products with passed ids (by request body).
     """
     products = _get_filtered_products(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     if request.POST.get("action") == "delete":
@@ -518,7 +526,7 @@ def set_name_filter(request):
     request.session["product_filters"] = product_filters
 
     products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, 20)
+    paginator = Paginator(products, 25)
     page = paginator.page(request.REQUEST.get("page", 1))
 
     product_id = request.REQUEST.get("product-id", 0)

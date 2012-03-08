@@ -24,6 +24,7 @@ urlpatterns += patterns('lfs.manage.views.manufacturer',
     url(r'^edit-product-manufacturer/(?P<manufacturer_id>\d*)/(?P<product_id>\d*)$', "edit_product", name="lfs_manufacturer_edit_product"),
     url(r'^category-state-manufacturer/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "category_state", name="lfs_manufacturer_category_state"),
     url(r'^manufacturer-inline/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "manufacturer_inline", name="lfs_manufacturer_inline"),
+    url(r'^manufacturers-ajax/$', "manufacturers_ajax", name="lfs_manufacturers_ajax"),
 )
 
 # Marketing
