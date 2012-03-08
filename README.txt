@@ -31,6 +31,15 @@ The latest development state can be found here:
 Changes
 =======
 
+0.6.9 (2012-03-08)
+------------------
+
+* Security fix
+* Added manufacturer field to product management (Maciej Wiśniowski)
+* Bugfix: fixed pagination for product page; issue #152 (Maciej Wiśniowski)
+* Bugfix: fixed deleting of image for payment and shipping methods; issue #150
+* Bugfix: fixed markup; #issue #148
+
 0.6.8 (2012-03-03)
 ------------------
 
