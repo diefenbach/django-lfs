@@ -98,9 +98,6 @@ LFS_RECENT_PRODUCTS_LIMIT
 Addresses
 =========
 
-LFS_INVOICE_EMAIL_REQUIRED
-    If True the e-mail address of the invoice address is required.
-
 LFS_INVOICE_PHONE_REQUIRED
     If True the phone of the invoice address is required.
 
@@ -109,6 +106,12 @@ LFS_INVOICE_COMPANY_NAME_REQUIRED
 
 LFS_SHIPPING_PHONE_REQUIRED
     If True the phone of the shipping address is required.
+
+LFS_SHIPPING_COMPANY_NAME_REQUIRED
+    If True the company name of the shipping address is required.
+
+LFS_SHIPPING_EMAIL_REQUIRED
+    If True the e-mail of the shipping address is required.
 
 .. _settings_units:
 
