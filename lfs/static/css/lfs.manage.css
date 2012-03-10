@@ -106,6 +106,10 @@ table.lfs-manage-table.images td {
     vertical-align: top;
 }
 
+table.lfs-manage-table.top td {
+    vertical-align: top !important;
+}
+
 .lfs-manage-table td.top {
     vertical-align: top;
 }
