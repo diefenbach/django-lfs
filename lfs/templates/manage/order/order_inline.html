@@ -87,14 +87,11 @@
                     {{ current_order.shipping_line2 }}
                 </div>
             {% endif %}
-                <div>
-                {{ current_order.shipping_city }}
+            <div>
+                {{ current_order.shipping_code }} {{ current_order.shipping_city }}
             </div>
             <div>
                 {{ current_order.shipping_state }}
-            </div>
-            <div>
-                {{ current_order.shipping_code }}
             </div>
             <div>
                 {{ current_order.shipping_country }}
@@ -121,13 +118,10 @@
                 </div>
             {% endif %}
             <div>
-                {{ current_order.invoice_city }}
+                {{ current_order.invoice_code }} {{ current_order.invoice_city }}
             </div>
             <div>
                 {{ current_order.invoice_state }}
-            </div>
-            <div>
-                {{ current_order.invoice_code }}
             </div>
             <div>
                 {{ current_order.invoice_country }}

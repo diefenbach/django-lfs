@@ -75,6 +75,7 @@ def carts_filters_inline(request, template_name="manage/cart/carts_filters_inlin
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def carts_inline(request, template_name="manage/cart/carts_inline.html"):
     """Displays carts overview.
     """
@@ -123,6 +124,7 @@ def carts_inline(request, template_name="manage/cart/carts_inline.html"):
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def cart_inline(request, cart_id, template_name="manage/cart/cart_inline.html"):
     """Displays cart with provided cart id.
     """
@@ -150,6 +152,7 @@ def cart_inline(request, cart_id, template_name="manage/cart/cart_inline.html"):
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def selectable_carts_inline(request, cart_id, template_name="manage/cart/selectable_carts_inline.html"):
     """Displays selectable carts section within cart view.
     """

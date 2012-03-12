@@ -84,8 +84,8 @@ def add_customer_tax(request, template_name="manage/customer_tax/add_customer_ta
     }))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_customer_tax(request, id):
     """Deletes customer tax with passed id.
     """

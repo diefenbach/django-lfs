@@ -103,6 +103,31 @@
                     </div>
                 {% endif %}
             </div>
+
+            <div class="field">
+                <div class="label">
+                    {{ form.manufacturer.label_tag }}:
+                </div>
+
+                {% if form.manufacturer.errors %}
+                    <div class="error">
+                        {{ form.manufacturer }}
+                        {{ form.manufacturer.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {% if product.is_variant %}
+                            {{ product.get_manufacturer|default_if_none:"-" }}
+                        {% else %}
+                            {{ form.manufacturer }}
+                            {% if form.manufacturer.is_hidden %}
+                                <input type="text" id="id_manufacturer_autocomplete" value="{{ form.instance.manufacturer.name }}" />
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
             <div class="field">
                 <div class="label">
                     {{ form.sku_manufacturer.label_tag }}:

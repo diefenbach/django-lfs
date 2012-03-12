@@ -1313,6 +1313,14 @@ class Product(models.Model):
         else:
             return self.sku
 
+    def get_manufacturer(self):
+        """Always return parent manufacturer for variants.
+        """
+        if self.is_variant():
+            return self.parent.manufacturer
+        else:
+            return self.manufacturer
+
     def has_related_products(self):
         """Returns True if the product has related products.
         """

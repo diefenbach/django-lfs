@@ -277,3 +277,17 @@ class TagsTestCase(TestCase):
 
         self.assertEqual(currency(0.0, None, False), "USD 0.00")
         self.assertEqual(currency(1.0, None, False), "USD 1.00")
+
+
+class ManageURLsTestCase(TestCase):
+    def test_manage_urls_anonymous(self):
+        """Tests that all manage urls cannot accessed by anonymous user.
+        """
+        rf = RequestFactory()
+        request = rf.get("/")
+        request.user = AnonymousUser()
+
+        from lfs.manage.urls import urlpatterns
+        for url in urlpatterns:
+            result = url.callback(request)
+            self.failUnless(result["Location"].startswith("/login/?next=/"))

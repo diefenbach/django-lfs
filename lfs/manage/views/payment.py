@@ -334,6 +334,8 @@ def save_payment_method_data(request, payment_method_id):
 
     if payment_form.is_valid():
         payment_form.save()
+        if request.POST.get("delete_image"):
+            payment_method.image.delete()
 
     return lfs.core.utils.set_message_cookie(
         url=reverse("lfs_manage_payment_method", kwargs={"payment_method_id": payment_method.id}),
@@ -341,8 +343,8 @@ def save_payment_method_data(request, payment_method_id):
     )
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_payment_method(request, payment_method_id):
     """Deletes payment method with passed payment id.
 
@@ -366,8 +368,8 @@ def delete_payment_method(request, payment_method_id):
     )
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def sort_payment_methods(request):
     """Sorts payment methods after drag 'n drop.
     """

@@ -33,6 +33,7 @@ class ExportDataForm(ModelForm):
         exclude = ("products", )
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_export(request, export_id, template_name="manage/export/export.html"):
     """The main view to display exports.
     """
@@ -100,6 +101,7 @@ def selectable_exports_inline(request, export_id,
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def export_inline(request, export_id, category_id,
     template_name="manage/export/export_inline.html"):
     """Returns categories and products for given export id and category id.
@@ -164,6 +166,7 @@ def export_inline(request, export_id, category_id,
         simplejson.dumps({"html": html}))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def add_export(request, template_name="manage/export/add_export.html"):
     """Form and logic to add a export.
     """
@@ -184,6 +187,7 @@ def add_export(request, template_name="manage/export/add_export.html"):
 
 
 # Actions
+@permission_required("core.manage_shop", login_url="/login/")
 def export_dispatcher(request):
     """Dispatches to the first export or to the add form.
     """
@@ -196,8 +200,8 @@ def export_dispatcher(request):
             reverse("lfs_export", kwargs={"export_id": export.id}))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_export(request, export_id):
     """Deletes export with passed export id.
     """
@@ -211,6 +215,7 @@ def delete_export(request, export_id):
     return HttpResponseRedirect(reverse("lfs_export_dispatcher"))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def edit_category(request, export_id, category_id):
     """Adds/Removes products of given category to given export.
     """
@@ -227,6 +232,7 @@ def edit_category(request, export_id, category_id):
     return HttpResponse("")
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def edit_product(request, export_id, product_id):
     """Adds/Removes given product to given export.
     """
@@ -241,6 +247,7 @@ def edit_product(request, export_id, product_id):
     return HttpResponse("")
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def export(request, slug):
     """Exports the export with passed export id.
     """
@@ -249,6 +256,7 @@ def export(request, slug):
     return getattr(module, export.script.method)(request, export)
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def category_state(request, export_id, category_id):
     """Sets the state (klass and checking) for given category for given
     export.
@@ -273,6 +281,7 @@ def category_state(request, export_id, category_id):
     )
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def update_category_variants_option(request, export_id, category_id):
     """Stores / deletes options for the variants handling of category with
     given id.
@@ -311,6 +320,7 @@ def update_category_variants_option(request, export_id, category_id):
     return HttpResponse("")
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def update_data(request, export_id):
     """Updates data of export with given export id.
     """

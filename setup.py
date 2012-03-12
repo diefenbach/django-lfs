@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.6.7'
+version = 'dev'
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
@@ -38,6 +38,7 @@ setup(name='django-lfs',
         'django-tagging == 0.3.1',
         'djangorestframework == 0.2.3',
         'lfs-contact == 1.0',
+        'lfs-order-numbers == 1.0b1',
         'Pillow == 1.7.5',
         'South == 0.7.3',
       ],

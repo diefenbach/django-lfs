@@ -277,8 +277,8 @@ def reset_review_filters(request):
     return HttpResponse(result)
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_review(request, review_id):
     """Deletes review with passed review id.
     """

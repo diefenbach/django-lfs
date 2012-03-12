@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
+from django.views.decorators.cache import never_cache
 
 # lfs imports
 import lfs.core.utils
@@ -19,7 +20,6 @@ from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 from lfs.core.utils import LazyEncoder
-from lfs.manufacturer.models import Manufacturer
 from lfs.manufacturer.models import Manufacturer
 
 
@@ -30,6 +30,7 @@ class ManufacturerDataForm(ModelForm):
         model = Manufacturer
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def manage_manufacturer(request, manufacturer_id, template_name="manage/manufacturer/manufacturer.html"):
     """The main view to display manufacturers.
     """
@@ -78,6 +79,7 @@ def selectable_manufacturers_inline(request, manufacturer_id,
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def manufacturer_inline(request, manufacturer_id, category_id,
     template_name="manage/manufacturer/manufacturer_inline.html"):
     """Returns categories and products for given manufacturer id and category id.
@@ -124,6 +126,7 @@ def manufacturer_inline(request, manufacturer_id, category_id,
         simplejson.dumps({"html": html}))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def add_manufacturer(request, template_name="manage/manufacturer/add_manufacturer.html"):
     """Form and logic to add a manufacturer.
     """
@@ -145,6 +148,7 @@ def add_manufacturer(request, template_name="manage/manufacturer/add_manufacture
 
 
 # Actions
+@permission_required("core.manage_shop", login_url="/login/")
 def manufacturer_dispatcher(request):
     """Dispatches to the first manufacturer or to the add form.
     """
@@ -157,8 +161,8 @@ def manufacturer_dispatcher(request):
             reverse("lfs_manufacturer", kwargs={"manufacturer_id": manufacturer.id}))
 
 
-@require_POST
 @permission_required("core.manage_shop", login_url="/login/")
+@require_POST
 def delete_manufacturer(request, manufacturer_id):
     """Deletes Manufacturer with passed manufacturer id.
     """
@@ -172,6 +176,7 @@ def delete_manufacturer(request, manufacturer_id):
     return HttpResponseRedirect(reverse("lfs_manufacturer_dispatcher"))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def edit_category(request, manufacturer_id, category_id):
     """Adds/Removes products of given category to given manufacturer.
     """
@@ -190,6 +195,7 @@ def edit_category(request, manufacturer_id, category_id):
     return HttpResponse("")
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def edit_product(request, manufacturer_id, product_id):
     """Adds/Removes given product to given manufacturer.
     """
@@ -206,6 +212,7 @@ def edit_product(request, manufacturer_id, product_id):
     return HttpResponse("")
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def category_state(request, manufacturer_id, category_id):
     """Sets the state (klass and checking) for given category for given
     manufacturer.
@@ -230,6 +237,7 @@ def category_state(request, manufacturer_id, category_id):
     )
 
 
+@permission_required("core.manage_shop", login_url="/login/")
 def update_data(request, manufacturer_id):
     """Updates data of manufacturer with given manufacturer id.
     """
@@ -279,3 +287,20 @@ def _get_category_state(manufacturer, category):
         klass = ""
 
     return (checked, klass)
+
+
+@never_cache
+@permission_required("core.manage_shop", login_url="/login/")
+def manufacturers_ajax(request):
+    """ Returns list of manufacturers for autocomplete
+    """
+    term = request.GET.get('term', '')
+    manufacturers = Manufacturer.objects.filter(name__istartswith=term)[:10]
+
+    out = []
+    for man in manufacturers:
+        out.append({'label': man.name,
+                    'value': man.pk})
+
+    result = simplejson.dumps(out, cls=LazyEncoder)
+    return HttpResponse(result)
