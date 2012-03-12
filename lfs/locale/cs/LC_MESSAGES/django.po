@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: lfstheme\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-03-09 18:28+0100\n"
-"PO-Revision-Date: 2012-03-10 21:13+0100\n"
+"PO-Revision-Date: 2012-03-12 08:31+0100\n"
 "Last-Translator: Radim Novotny <novotny.radim@gmail.com>\n"
 "Language-Team: Czech <info@dms4u.cz>\n"
 "MIME-Version: 1.0\n"
@@ -677,17 +677,17 @@ msgstr "Výpočet ceny"
 #: catalog/models.py:659
 #: core/management/commands/lfs_migrate.py:60
 msgid "Active base price"
-msgstr "Aktivní výchozí cena"
+msgstr "Zobrazit základní cenu"
 
 #: catalog/models.py:660
 #: core/management/commands/lfs_migrate.py:61
 msgid "Base price unit"
-msgstr "Jednotka výchozí ceny"
+msgstr "Jednotka základní ceny"
 
 #: catalog/models.py:661
 #: core/management/commands/lfs_migrate.py:62
 msgid "Base price amount"
-msgstr "Výchozí cena (hodnota)"
+msgstr "Základní cena (hodnota)"
 
 #: catalog/models.py:664
 msgid "SKU Manufacturer"
@@ -700,7 +700,7 @@ msgstr "Výrobce"
 #: catalog/models.py:666
 #: core/management/commands/lfs_migrate.py:58
 msgid "Type of quantity field"
-msgstr ""
+msgstr "Typ pole množství"
 
 #: catalog/models.py:1729
 msgid "Accessory"
@@ -735,7 +735,7 @@ msgstr "Zobrazit u produktu"
 
 #: catalog/models.py:1861
 msgid "Local"
-msgstr ""
+msgstr "Lokální"
 
 #: catalog/models.py:1862
 msgid "Filterable"
@@ -743,7 +743,7 @@ msgstr "Filtrovatelné"
 
 #: catalog/models.py:1863
 msgid "Display no results"
-msgstr ""
+msgstr "Zobrazit, i když nejsou žádné položky"
 
 #: catalog/models.py:1864
 msgid "Configurable"
@@ -766,7 +766,7 @@ msgstr "Zobrazit cenu"
 #: templates/manage/payment/payment_method_prices.html:9
 #: templates/manage/shipping/shipping_method_prices.html:9
 msgid "Add price"
-msgstr "Přidat cenu"
+msgstr "Navýšit cenu"
 
 #: catalog/models.py:1871
 #: catalog/models.py:2200
@@ -850,14 +850,12 @@ msgid "Integer"
 msgstr "Celé číslo"
 
 #: catalog/settings.py:10
-#, fuzzy
 msgid "Decimal 0.1"
-msgstr "Počet desetinných míst"
+msgstr "Desetinné 0.1"
 
 #: catalog/settings.py:11
-#, fuzzy
 msgid "Decimal 0.01"
-msgstr "Počet desetinných míst"
+msgstr "Desetinné 0.01"
 
 #: catalog/settings.py:18
 #: catalog/settings.py:29
@@ -918,7 +916,7 @@ msgstr "Produkt s kombinacemi"
 #: templates/manage/product/product_filters_inline.html:58
 #: templates/manage/product/products_inline.html:86
 msgid "Variant"
-msgstr "Kombinace"
+msgstr "Varianty"
 
 #: catalog/settings.py:32
 #: catalog/settings.py:39
@@ -1245,7 +1243,7 @@ msgstr "Výchozí národní nastavení"
 #: core/models.py:176
 #: core/management/commands/lfs_migrate.py:175
 msgid "Use international currency codes"
-msgstr ""
+msgstr "Použít mezinárodní kódy měn"
 
 #: core/models.py:179
 msgid "Checkout type"
@@ -1370,7 +1368,7 @@ msgstr "Operace"
 #: criteria/models/criteria.py:55
 #, python-format
 msgid "Cart Price: %(operator)s %(price)s"
-msgstr ""
+msgstr "Cena v košíku: %(operator)s %(price)s"
 
 #: criteria/models/criteria.py:70
 msgid "Cart Price"
@@ -1379,7 +1377,7 @@ msgstr "Cena košíku"
 #: criteria/models/criteria.py:116
 #, python-format
 msgid "CLAG: %(operator)s %(clag)s"
-msgstr ""
+msgstr "CLAG: %(operator)s %(clag)s"
 
 #: criteria/models/criteria.py:132
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:9
@@ -1405,7 +1403,7 @@ msgstr "Seznam zemí"
 #: criteria/models/criteria.py:194
 #, python-format
 msgid "Country: %(operator)s %(countries)s"
-msgstr ""
+msgstr "Země: %(operator)s %(countries)s"
 
 #: criteria/models/criteria.py:210
 #: customer/models.py:78
@@ -1426,12 +1424,12 @@ msgstr "Země"
 #: criteria/models/criteria.py:262
 #, python-format
 msgid "Height: %(operator)s %(height)s"
-msgstr ""
+msgstr "Výška: %(operator)s %(height)s"
 
 #: criteria/models/criteria.py:325
 #, python-format
 msgid "Length: %(operator)s %(length)s"
-msgstr ""
+msgstr "Délka: %(operator)s %(length)s"
 
 #: criteria/models/criteria.py:386
 #: templates/manage/payment/payment_methods.html:3
@@ -1441,7 +1439,7 @@ msgstr "Způsoby platby"
 #: criteria/models/criteria.py:396
 #, python-format
 msgid "Payment: %(operator)s %(payments)s"
-msgstr ""
+msgstr "Platba: %(operator)s %(payments)s"
 
 #: criteria/models/criteria.py:412
 #: payment/models.py:121
@@ -1468,7 +1466,7 @@ msgstr "Způsoby dodání"
 #: criteria/models/criteria.py:491
 #, python-format
 msgid "Shipping: %(operator)s %(shipping)s"
-msgstr ""
+msgstr "Dodaní: %(operator)s %(shipping)s"
 
 #: criteria/models/criteria.py:507
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:15
@@ -1489,12 +1487,12 @@ msgstr "Způsob dodání"
 #: criteria/models/criteria.py:618
 #, python-format
 msgid "Weight: %(operator)s %(weight)s"
-msgstr ""
+msgstr "Váha: %(operator)s %(weight)s"
 
 #: criteria/models/criteria.py:682
 #, python-format
 msgid "Width: %(operator)s %(width)s"
-msgstr ""
+msgstr "Šířka: %(operator)s %(width)s"
 
 #: criteria/models/criteria.py:743
 #: criteria/models/criteria.py:763
@@ -1515,7 +1513,7 @@ msgstr "Vzdálenost"
 #: criteria/models/criteria.py:747
 #, python-format
 msgid "Distance: %(operator)s %(distance)s"
-msgstr ""
+msgstr "Vzdálenost: %(operator)s %(distance)s"
 
 #: criteria/models/criteria_objects.py:16
 msgid "Criterion type"
@@ -1927,9 +1925,8 @@ msgid "Validators have been saved."
 msgstr "Validátory byly uloženy."
 
 #: manage/views/properties.py:228
-#, fuzzy
 msgid "Step range has been saved."
-msgstr "Typ kroku byl uložen"
+msgstr "Rozsah kroku byl uložen"
 
 #: manage/views/properties.py:247
 msgid "Step type has been saved."
@@ -1944,9 +1941,8 @@ msgid "Steps have been updated."
 msgstr "Kroky byly uloženy"
 
 #: manage/views/properties.py:300
-#, fuzzy
 msgid "The step has been saved."
-msgstr "Typ kroku byl uložen"
+msgstr "Krok byl uložen"
 
 #: manage/views/properties.py:327
 #: manage/views/product/variants.py:221
@@ -1959,9 +1955,8 @@ msgid "Option has been added."
 msgstr "Volba přidána"
 
 #: manage/views/properties.py:374
-#, fuzzy
 msgid "Option could not be added."
-msgstr "Volba přidána"
+msgstr "Volba nemohla být přidána."
 
 #: manage/views/properties.py:393
 msgid "Options have been update."
@@ -1996,9 +1991,8 @@ msgid "Shipping method has been deleted."
 msgstr "Způsob dodání byl smazán"
 
 #: manage/views/shipping.py:393
-#, fuzzy
 msgid "The shipping methods have been sorted."
-msgstr "Způsob dodání byl uložen"
+msgstr "Pořadí způsobů dodání bylo změněno."
 
 #: manage/views/shop.py:138
 msgid "Shop data has been saved."
@@ -2065,9 +2059,8 @@ msgid "Cache has been cleared."
 msgstr "Cache byla vymazána"
 
 #: manage/views/utils.py:52
-#, fuzzy
 msgid "Category levels have been created."
-msgstr "Úrovně kategorií byly aktualizovány"
+msgstr "Úrovně kategorií byly vytvořeny."
 
 #: manage/views/utils.py:65
 msgid "Effective prices have been set."
@@ -2115,18 +2108,16 @@ msgid "Vouchers have been deleted."
 msgstr "Kupóny byly smazány"
 
 #: manage/views/voucher.py:284
-#, fuzzy
 msgid "Voucher data has been saved."
-msgstr "Kupóny byly změněny"
+msgstr "Informace o kupónu byla uložena."
 
 #: manage/views/voucher.py:300
 msgid "Voucher group and assigned vouchers have been deleted."
 msgstr "Skupina kupónů a všechny přiřazené kupóny byly odstraněny."
 
 #: manage/views/voucher.py:318
-#, fuzzy
 msgid "Voucher options has been saved."
-msgstr "Nastavení kupónu bylo uloženo"
+msgstr "Nastavení kupónu bylo uloženo."
 
 #: manage/views/categories/category.py:83
 #, python-format
@@ -2200,14 +2191,12 @@ msgstr "Přílohy byly přidány."
 
 #: manage/views/product/attachments.py:70
 #: manage/views/product/attachments.py:83
-#, fuzzy
 msgid "Attachment has been updated."
-msgstr "Portlet byl aktualizován"
+msgstr "Přílohy byly aktualizovány."
 
 #: manage/views/product/attachments.py:73
-#, fuzzy
 msgid "Attachment has been deleted."
-msgstr "Akce byla odstraněna"
+msgstr "Přiloha byla odstraněna."
 
 #: manage/views/product/categories.py:92
 msgid "Categories have been saved."
@@ -2238,18 +2227,16 @@ msgid "Sub type has been changed."
 msgstr "Podtyp byl změněn"
 
 #: manage/views/product/product.py:427
-#, fuzzy
 msgid "Product data has been saved."
-msgstr "Údaje byly uloženy"
+msgstr "Údaje byly uloženy."
 
 #: manage/views/product/product.py:485
 msgid "Product filters have been reset"
 msgstr "Filtry byly smazány"
 
 #: manage/views/product/product.py:512
-#, fuzzy
 msgid "Products have been deleted."
-msgstr "Ceny byly smazány"
+msgstr "Produkty byly smazány."
 
 #: manage/views/product/product.py:554
 msgid "Products have been saved"
@@ -2277,9 +2264,8 @@ msgstr "SEO data byla uložena"
 
 #: manage/views/product/variants.py:243
 #: manage/views/product/variants.py:332
-#, fuzzy
 msgid "Property has been deleted."
-msgstr "Skupina vlastností byla smazána"
+msgstr "Vlastnost byla smazána."
 
 #: manage/views/product/variants.py:393
 #: manage/views/product/variants.py:395
@@ -2287,29 +2273,24 @@ msgid "That slug is already in use. Please use another."
 msgstr "Tento krátký název je již použit. Zvolte prosím jiný."
 
 #: manage/views/product/variants.py:417
-#, fuzzy
 msgid "Variants have been added."
-msgstr "Přislušenství bylo přidáno"
+msgstr "Kombinace byly přidány."
 
 #: manage/views/product/variants.py:441
-#, fuzzy
 msgid "Variants have been deleted."
-msgstr "Ceny byly smazány"
+msgstr "Kombinace byly smazány."
 
 #: manage/views/product/variants.py:455
-#, fuzzy
 msgid "Variants have been saved."
-msgstr "Kroky byly uloženy"
+msgstr "Kombinace byly uloženy."
 
 #: manage/views/product/variants.py:556
-#, fuzzy
 msgid "Sup type has been saved."
-msgstr "Typ kroku byl uložen"
+msgstr "Typ produktu byl změněn."
 
 #: manage/views/product/variants.py:580
-#, fuzzy
 msgid "Category variant has been saved."
-msgstr "Kategorie byla uložena"
+msgstr "Kombinace kategorie byla uložena."
 
 #: manage/views/property_groups/products.py:126
 msgid "Products have been assigned."
@@ -2629,7 +2610,7 @@ msgstr "Zobrazit filtr cen"
 
 #: portlet/models/forsale.py:25
 msgid "Product Forsale"
-msgstr ""
+msgstr "Produkt v akci"
 
 #: portlet/templatetags/lfs_portlets_tags.py:137
 msgid "Recent Products"
@@ -3621,7 +3602,7 @@ msgstr "Smazat export"
 
 #: templates/manage/export/export.html:30
 msgid "Download Export"
-msgstr ""
+msgstr "Stáhnout export"
 
 #: templates/manage/export/export_data_inline.html:10
 msgid "Save Export"
@@ -4078,7 +4059,7 @@ msgstr "Množství"
 
 #: templates/manage/product/data.html:264
 msgid "Base price"
-msgstr "Výchozí cena"
+msgstr "Základní cena"
 
 #: templates/manage/product/images.html:14
 msgid "Active images"
@@ -4098,7 +4079,7 @@ msgstr "Spravovat produkt"
 
 #: templates/manage/product/product.html:43
 msgid "Base Article"
-msgstr "Základní produkt"
+msgstr "Výchozí produkt"
 
 #: templates/manage/product/product.html:49
 msgid "Add Product"
@@ -4181,7 +4162,6 @@ msgid "Update default values"
 msgstr "Aktualizovat výchozí hodnoty"
 
 #: templates/manage/product/properties.html:91
-#, fuzzy
 msgid "Filter values"
 msgstr "Hodnoty filtrů"
 
@@ -4198,13 +4178,12 @@ msgid "Update displayed values"
 msgstr "Aktualizovat zobrazené hodnoty"
 
 #: templates/manage/product/properties.html:203
-#, fuzzy
 msgid "Property values"
-msgstr "Skupiny vlastností"
+msgstr "Hodnoty vlastností"
 
 #: templates/manage/product/properties.html:204
 msgid "Please go to the variants to assign property values."
-msgstr ""
+msgstr "Pokud chcete přiřadit hodnoty vlastností, přejděte prosím na záložku Kombinace"
 
 #: templates/manage/product/related_products_inline.html:89
 msgid "Add to related products"
@@ -4299,9 +4278,8 @@ msgid "URL"
 msgstr "URL"
 
 #: templates/manage/product/variants.html:262
-#, fuzzy
 msgid "Change category variant"
-msgstr "Uložit výchozí kombinaci"
+msgstr "Uložit variantu kategorie"
 
 #: templates/manage/product/variants.html:267
 msgid "Display type"
@@ -4309,7 +4287,7 @@ msgstr "Způsob zobrazení"
 
 #: templates/manage/product/variants.html:278
 msgid "Change variant display type"
-msgstr "Změnit způsob zobrazení varianty"
+msgstr "Změnit způsob zobrazení kombinace"
 
 #: templates/manage/properties/add_property.html:10
 #: templates/manage/properties/add_property.html:20
@@ -4417,23 +4395,23 @@ msgstr "Vyberte vlastnosti pole"
 
 #: templates/manage/properties/step_inline.html:10
 msgid "Save step type"
-msgstr ""
+msgstr "Uložit typ kroku"
 
 #: templates/manage/properties/step_inline.html:17
 msgid "Step range"
-msgstr ""
+msgstr "Rozsah kroku"
 
 #: templates/manage/properties/step_inline.html:24
 msgid "Save step"
-msgstr ""
+msgstr "Uložit krok"
 
 #: templates/manage/properties/step_inline.html:32
 msgid "Steps"
-msgstr ""
+msgstr "Kroky"
 
 #: templates/manage/properties/step_inline.html:46
 msgid "Add step"
-msgstr ""
+msgstr "Přidat krok"
 
 #: templates/manage/properties/step_inline.html:66
 msgid "Do you really want to delete this step?"
@@ -4441,11 +4419,11 @@ msgstr "Opravdu chcete smazat tento krok?"
 
 #: templates/manage/properties/step_inline.html:71
 msgid "Delete step"
-msgstr ""
+msgstr "Smazat krok"
 
 #: templates/manage/properties/step_inline.html:79
 msgid "Update steps"
-msgstr ""
+msgstr "Aktualizovat krok"
 
 #: templates/manage/reviews/review.html:22
 msgid "Do you really want to delete this review?"
