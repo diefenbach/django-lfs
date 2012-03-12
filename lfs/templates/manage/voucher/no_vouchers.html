@@ -1,0 +1,22 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}/user/management/marketing/vouchers.html{% endblock %}
+
+{% block sextion %}no-vouchers{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <h2>{% trans "Vouchers" %}</h2>
+    <div class="no-content">
+        {% trans "There are no vouchers yet." %}
+    </div>
+
+    <div class="buttons">
+        <input class="button"
+               onclick="window.location='{% url lfs_manage_add_voucher_group %}'"
+               value="{% trans 'Add Voucher Group' %}">
+    </div>
+
+
+{% endblock %}

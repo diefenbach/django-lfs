@@ -192,6 +192,10 @@ tr.odd {
 }
 
 /* General formats */
+.no-content {
+    padding: 10px 0 20px 0;
+}
+
 .discreet {
     font-size: 90%;
     color: #aaa;

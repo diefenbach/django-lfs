@@ -42,10 +42,11 @@ urlpatterns += patterns('lfs.manage.views.marketing',
 )
 
 # Voucher
-urlpatterns += patterns('lfs.manage.views.voucher',
-    url(r'^manage-vouchers$', "manage_vouchers", name="lfs_manage_vouchers"),
+urlpatterns += patterns('lfs.manage.voucher.views',
+    url(r'^vouchers$', "manage_vouchers", name="lfs_manage_vouchers"),
+    url(r'^no-vouchers$', "no_vouchers", name="lfs_no_vouchers"),
     url(r'^add-voucher-group$', "add_voucher_group", name="lfs_manage_add_voucher_group"),
-    url(r'^manage-voucher-group/(?P<id>\d+)$', "voucher_group", name="lfs_manage_voucher_group"),
+    url(r'^voucher-group/(?P<id>\d+)$', "voucher_group", name="lfs_manage_voucher_group"),
     url(r'^delete-voucher-group/(?P<id>\d+)$', "delete_voucher_group", name="lfs_delete_voucher_group"),
     url(r'^save-voucher-group-data/(?P<id>\d+)$', "save_voucher_group_data", name="lfs_manage_save_voucher_group_data"),
     url(r'^save-voucher-options$', "save_voucher_options", name="lfs_manage_save_voucher_options"),

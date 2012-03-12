@@ -1,5 +1,4 @@
 # django imports
-from django import forms
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
@@ -21,61 +20,31 @@ from lfs.tax.models import Tax
 from lfs.voucher.models import Voucher
 from lfs.voucher.models import VoucherGroup
 from lfs.voucher.models import VoucherOptions
-from lfs.voucher.settings import KIND_OF_CHOICES
+from lfs.manage.voucher.forms import VoucherForm
+from lfs.manage.voucher.forms import VoucherGroupAddForm
+from lfs.manage.voucher.forms import VoucherGroupForm
+from lfs.manage.voucher.forms import VoucherOptionsForm
 
 
-# Forms
-class VoucherOptionsForm(forms.ModelForm):
-    """Form to manage voucher options.
+# Views
+@permission_required("core.manage_shop", login_url="/login/")
+def no_vouchers(request, template_name="manage/voucher/no_vouchers.html"):
+    """Displays that no vouchers exist.
     """
-    class Meta:
-        model = VoucherOptions
+    if len(VoucherGroup.objects.all()) == 0:
+        return render_to_response(template_name, RequestContext(request, {}))
+    else:
+        return manage_vouchers(request)
 
 
-class VoucherGroupAddForm(forms.ModelForm):
-    """Form to add a VoucherGroup.
-    """
-    class Meta:
-        model = VoucherGroup
-        fields = ("name",)
-
-
-class VoucherGroupForm(forms.ModelForm):
-    """Form to add a VoucherGroup.
-    """
-    class Meta:
-        model = VoucherGroup
-        fields = ("name", "position")
-
-
-class VoucherForm(forms.Form):
-    """Form to add a Voucher.
-    """
-    amount = forms.IntegerField(label=_(u"Amount"), required=True)
-    value = forms.FloatField(label=_(u"Value"), required=True)
-    start_date = forms.DateField(label=_(u"Start date"), required=True)
-    end_date = forms.DateField(label=_(u"End date"), required=True)
-    kind_of = forms.ChoiceField(label=_(u"Kind of"), choices=KIND_OF_CHOICES, required=True)
-    effective_from = forms.FloatField(label=_(u"Effective from"), required=True)
-    tax = forms.ChoiceField(label=_(u"Tax"), required=False)
-    limit = forms.IntegerField(label=_(u"Limit"), initial=1, required=True)
-
-    def __init__(self, *args, **kwargs):
-        super(VoucherForm, self).__init__(*args, **kwargs)
-
-        taxes = [["", "---"]]
-        taxes.extend([(t.id, t.rate) for t in Tax.objects.all()])
-        self.fields["tax"].choices = taxes
-        self.fields["start_date"].widget.attrs = {'class': 'date-picker'}
-        self.fields["end_date"].widget.attrs = {'class': 'date-picker'}
-
-
-# Parts
 @permission_required("core.manage_shop", login_url="/login/")
 def voucher_group(request, id, template_name="manage/voucher/voucher_group.html"):
     """Main view to display a voucher group.
     """
-    voucher_group = VoucherGroup.objects.get(pk=id)
+    try:
+        voucher_group = VoucherGroup.objects.get(pk=id)
+    except VoucherGroup.DoesNotExist:
+        return manage_vouchers(request)
 
     return render_to_response(template_name, RequestContext(request, {
         "voucher_group": voucher_group,
@@ -86,6 +55,7 @@ def voucher_group(request, id, template_name="manage/voucher/voucher_group.html"
     }))
 
 
+# Parts
 def navigation(request, voucher_group, template_name="manage/voucher/navigation.html"):
     """Displays the navigation.
     """
@@ -180,12 +150,12 @@ def set_vouchers_page(request):
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_vouchers(request):
-    """Redirects to the first voucher group or to the add voucher form.
+    """Redirects to the first voucher group or to no voucher groups view.
     """
     try:
         voucher_group = VoucherGroup.objects.all()[0]
     except IndexError:
-        url = reverse("lfs_manage_add_voucher_group")
+        url = reverse("lfs_no_vouchers")
     else:
         url = reverse("lfs_manage_voucher_group", kwargs={"id": voucher_group.id})
 
