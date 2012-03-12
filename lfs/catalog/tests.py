@@ -1025,6 +1025,22 @@ class ViewsTestCase(TestCase):
 
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
+    def test_category_view_short_description(self):
+        # add product to a category
+        self.c1.products.add(self.p1)
+        self.c1.save()
+
+        desc = 'This is a short description'
+        self.p1.short_description = desc
+        self.p1.save()
+
+        url = reverse("lfs_category", kwargs={"slug": "category-1"})
+
+        # Since we don't override variant description, template should use
+        # short_description from the variant's parent product
+        response = self.client.get(url, {'sorting': ''})
+        self.failUnless(desc in response.content)
+
     def test_file(self):
         request = RequestFactory().get("/")
 
