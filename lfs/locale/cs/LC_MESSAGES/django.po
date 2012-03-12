@@ -499,7 +499,7 @@ msgstr "Výchozí kombinace"
 #: catalog/models.py:629 core/management/commands/lfs_migrate.py:59
 #: templates/manage/product/variants.html:251
 msgid "Category variant"
-msgstr "Varianta kategorie"
+msgstr "Kombinace zobrazená na stránce výpisu kategorie"
 
 #: catalog/models.py:631
 msgid "Variants display type"
@@ -2088,7 +2088,7 @@ msgstr "Typ produktu byl změněn."
 
 #: manage/views/product/variants.py:580
 msgid "Category variant has been saved."
-msgstr "Kombinace kategorie byla uložena."
+msgstr "Nastavení bylo uloženo."
 
 #: manage/views/property_groups/products.py:126
 msgid "Products have been assigned."
@@ -4063,7 +4063,7 @@ msgstr "URL"
 
 #: templates/manage/product/variants.html:262
 msgid "Change category variant"
-msgstr "Uložit variantu kategorie"
+msgstr "Uložit nastavení kombinace"
 
 #: templates/manage/product/variants.html:267
 msgid "Display type"
