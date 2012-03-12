@@ -142,7 +142,7 @@ def add_order(request):
     order.save()
 
     # Copy cart items
-    for cart_item in cart.cartitem_set.all():
+    for cart_item in cart.get_items():
         order_item = OrderItem.objects.create(
             order=order,
 

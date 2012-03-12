@@ -107,6 +107,7 @@ class CheckoutTestCase(TestCase):
             price=1.1,
             tax=tax,
             stock_amount=100,
+            active=True,
         )
 
         p2 = Product.objects.create(
@@ -116,6 +117,7 @@ class CheckoutTestCase(TestCase):
             price=2.2,
             tax=tax,
             stock_amount=50,
+            active=True,
         )
 
         cart = Cart.objects.create(

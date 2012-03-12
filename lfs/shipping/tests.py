@@ -47,8 +47,8 @@ class ShippingMethodTestCase(TestCase):
         self.sm1 = ShippingMethod.objects.create(name="Standard", active=True, price=1, delivery_time=self.dt1, priority=1)
         self.sm2 = ShippingMethod.objects.create(name="Express", active=True, delivery_time=self.dt2, priority=2)
 
-        self.p1 = Product.objects.create(name="Product 1", slug="p1", price=9, weight=6.0)
-        self.p2 = Product.objects.create(name="Product 2", slug="p2", price=11, weight=12.0)
+        self.p1 = Product.objects.create(name="Product 1", slug="p1", price=9, weight=6.0, active=True)
+        self.p2 = Product.objects.create(name="Product 2", slug="p2", price=11, weight=12.0, active=True)
 
         # Delete the cart for every test method.
         cart = cart_utils.get_cart(self.request)

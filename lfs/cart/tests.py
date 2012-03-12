@@ -41,12 +41,15 @@ class CartModelsTestCase(TestCase):
 
         self.tax = Tax.objects.create(rate=19.0)
 
-        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, tax=self.tax)
-        self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=100.0, tax=self.tax)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, tax=self.tax, active=True)
+        self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=100.0, tax=self.tax, active=True)
+        # This product is not considered as it is not active
+        self.p3 = Product.objects.create(name="Product 3", slug="product-3", price=1000.0, tax=self.tax, active=False)
 
         self.cart = Cart.objects.create()
         CartItem.objects.create(cart=self.cart, product=self.p1, amount=1)
         CartItem.objects.create(cart=self.cart, product=self.p2, amount=1)
+        CartItem.objects.create(cart=self.cart, product=self.p3, amount=1)
 
     def test_get_price(self):
         """
