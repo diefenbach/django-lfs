@@ -131,7 +131,7 @@ class OrderItem(models.Model):
 
     # A optional reference to the origin product. This is optional in case the
     # product has been deleted. TODO: Decide: Are products able to be delete?
-    product = models.ForeignKey(Product, blank=True, null=True)
+    product = models.ForeignKey(Product, blank=True, null=True, on_delete=models.SET_NULL)
 
     # Values of the product at the time the orders has been created
     product_amount = models.FloatField(_(u"Product quantity"), blank=True, null=True)

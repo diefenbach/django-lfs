@@ -16,6 +16,7 @@ from lfs.core.models import Country
 from lfs.customer.models import Address
 from lfs.customer.models import Customer
 from lfs.order.models import Order
+from lfs.order.models import OrderItem
 from lfs.order.utils import add_order
 from lfs.order.settings import SUBMITTED
 from lfs.payment.models import PaymentMethod
@@ -90,7 +91,7 @@ class OrderTestCase(TestCase):
             selected_invoice_address=address2,
         )
 
-        p1 = Product.objects.create(
+        self.p1 = Product.objects.create(
             name="Product 1",
             slug="product-1",
             sku="sku-1",
@@ -99,7 +100,7 @@ class OrderTestCase(TestCase):
             active=True,
         )
 
-        p2 = Product.objects.create(
+        self.p2 = Product.objects.create(
             name="Product 2",
             slug="product-2",
             sku="sku-2",
@@ -114,13 +115,13 @@ class OrderTestCase(TestCase):
 
         item = CartItem.objects.create(
             cart=cart,
-            product=p1,
+            product=self.p1,
             amount=2,
         )
 
         item = CartItem.objects.create(
             cart=cart,
-            product=p2,
+            product=self.p2,
             amount=3,
         )
 
@@ -206,3 +207,11 @@ class OrderTestCase(TestCase):
 
         order = Order.objects.filter()[0]
         self.failIf(order.get_pay_link().find("paypal") == -1)
+
+    def test_delete_product(self):
+        """Tests that OrderItems are not deleted when a product is deleted.
+        """
+        order = Order.objects.create()
+        order_item_1 = OrderItem.objects.create(order=order, product=self.p1)
+        self.p1.delete()
+        OrderItem.objects.get(pk=order_item_1.id)
