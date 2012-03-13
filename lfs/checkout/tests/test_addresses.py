@@ -96,6 +96,7 @@ class CheckoutAddressesTestCase(TestCase):
             sku="sku-1",
             price=1.1,
             tax=tax,
+            active=True,
         )
 
         p2 = Product.objects.create(
@@ -104,6 +105,7 @@ class CheckoutAddressesTestCase(TestCase):
             sku="sku-2",
             price=2.2,
             tax=tax,
+            active=True,
         )
 
         cart = Cart.objects.create(

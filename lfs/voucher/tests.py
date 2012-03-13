@@ -82,8 +82,8 @@ class VoucherTestCase(TestCase):
             limit=2,
         )
 
-        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0)
-        self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=100.0)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, active=True)
+        self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=100.0, active=True)
 
         self.cart = Cart.objects.create()
         CartItem.objects.create(cart=self.cart, product=self.p1, amount=1)
