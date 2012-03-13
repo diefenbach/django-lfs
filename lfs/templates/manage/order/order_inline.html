@@ -184,7 +184,13 @@
                 {{ item.product_sku }}
             </td>
             <td>
-                {{ item.product_name }}
+                {% if item.product %}
+                    <a href="{% url lfs_manage_product item.product.id %}">
+                        {{ item.product_name }}
+                    </a>
+                {% else %}
+                    {{ item.product_name }}
+                {% endif %}
                 {% for property in item.product.get_displayed_properties %}
                     <div>
                         {{ property.title }} : {{ property.value }} {{ property.unit|safe }}
