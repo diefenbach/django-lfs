@@ -72,15 +72,15 @@ class OnePageCheckoutForm(forms.Form):
             if self.cleaned_data.get("shipping_lastname", "") == "":
                 self._errors["shipping_lastname"] = ErrorList([msg])
 
-            if getattr(settings, "LFS_SHIPPING_COMPANY_NAME_REQUIRED"):
+            if getattr(settings, "LFS_SHIPPING_COMPANY_NAME_REQUIRED", False):
                 if self.cleaned_data.get("shipping_company_name", "") == "":
                     self._errors["shipping_company_name"] = ErrorList([msg])
 
-            if getattr(settings, "LFS_SHIPPING_PHONE_REQUIRED"):
+            if getattr(settings, "LFS_SHIPPING_PHONE_REQUIRED", False):
                 if self.cleaned_data.get("shipping_phone", "") == "":
                     self._errors["shipping_phone"] = ErrorList([msg])
 
-            if getattr(settings, "LFS_SHIPPING_EMAIL_REQUIRED"):
+            if getattr(settings, "LFS_SHIPPING_EMAIL_REQUIRED", False):
                 if self.cleaned_data.get("shipping_email", "") == "":
                     self._errors["shipping_email"] = ErrorList([msg])
 
