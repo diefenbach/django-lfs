@@ -281,13 +281,14 @@ urlpatterns += patterns('lfs.manage.views',
 )
 
 # Discounts
-urlpatterns += patterns('lfs.manage.views.discounts',
+urlpatterns += patterns('lfs.manage.discounts.views',
     url(r'^discounts$', "manage_discounts", name="lfs_manage_discounts"),
     url(r'^discount/(?P<id>\d*)$', "manage_discount", name="lfs_manage_discount"),
     url(r'^add-discount', "add_discount", name="lfs_manage_add_discount"),
     url(r'^save-discount-data/(?P<id>\d*)$', "save_discount_data", name="lfs_manage_save_discount_data"),
     url(r'^delete-discount/(?P<id>\d*)$', "delete_discount", name="lfs_manage_delete_discount"),
     url(r'^save-discount-criteria/(?P<id>\d*)$', "save_discount_criteria", name="lfs_manage_save_discount_criteria"),
+    url(r'^no-discounts$', "no_discounts", name="lfs_manage_no_discounts"),
 )
 
 # Pages

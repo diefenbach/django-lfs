@@ -2,10 +2,8 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
@@ -17,17 +15,9 @@ from django.views.decorators.http import require_POST
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
-from lfs.core.widgets.image import LFSImageInput
 from lfs.criteria import utils as criteria_utils
-from lfs.customer.models import Customer
 from lfs.discounts.models import Discount
-
-
-class DiscountForm(ModelForm):
-    """Form to manage discount data.
-    """
-    class Meta:
-        model = Discount
+from lfs.manage.discounts.forms import DiscountForm
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -38,7 +28,7 @@ def manage_discounts(request):
     try:
         discount = Discount.objects.all()[0]
     except IndexError:
-        url = reverse("lfs_manage_add_discount")
+        url = reverse("lfs_manage_no_discounts")
     else:
         url = reverse("lfs_manage_discount", kwargs={"id": discount.id})
 
@@ -52,7 +42,10 @@ def manage_discount(request, id, template_name="manage/discounts/discount.html")
     This view collects the various parts of the discount form (data, criteria,
     and displays them.
     """
-    discount = Discount.objects.get(pk=id)
+    try:
+        discount = Discount.objects.get(pk=id)
+    except Discount.DoesNotExist:
+        return HttpResponseRedirect(reverse("lfs_manage_discounts"))
 
     return render_to_response(template_name, RequestContext(request, {
         "discount": discount,
@@ -60,6 +53,13 @@ def manage_discount(request, id, template_name="manage/discounts/discount.html")
         "data": discount_data(request, id),
         "criteria": discount_criteria(request, id),
     }))
+
+
+@permission_required("core.manage_shop", login_url="/login/")
+def no_discounts(request, template_name="manage/discounts/no_discounts.html"):
+    """Displays no discounts view
+    """
+    return render_to_response(template_name, RequestContext(request, {}))
 
 
 # Parts of the manage discount view.
@@ -132,6 +132,7 @@ def add_discount(request, template_name="manage/discounts/add_discount.html"):
     return render_to_response(template_name, RequestContext(request, {
         "navigation": navigation(request),
         "form": form,
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_discounts")),
     }))
 
 
@@ -142,7 +143,6 @@ def save_discount_criteria(request, id):
     """
     discount = lfs_get_object_or_404(Discount, pk=id)
     criteria_utils.save_criteria(request, discount)
-    criteria = discount_criteria(request, id)
 
     html = [["#criteria", discount_criteria(request, id)]]
 
@@ -163,12 +163,6 @@ def save_discount_data(request, id):
     """
     discount = Discount.objects.get(pk=id)
     discount_form = DiscountForm(instance=discount, data=request.POST)
-
-    form = render_to_string(
-        "manage/discounts/data.html", RequestContext(request, {
-        "form": discount_form,
-        "discount": discount,
-    }))
 
     if discount_form.is_valid():
         discount_form.save()
