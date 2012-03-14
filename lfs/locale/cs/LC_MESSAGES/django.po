@@ -787,7 +787,7 @@ msgstr "Produkt s kombinacemi"
 #: templates/manage/product/product_filters_inline.html:58
 #: templates/manage/product/products_inline.html:86
 msgid "Variant"
-msgstr "Varianty"
+msgstr "Varianta"
 
 #: catalog/settings.py:32 catalog/settings.py:39 catalog/settings.py:45
 #: templates/manage/product/product_filters_inline.html:59
@@ -3825,7 +3825,7 @@ msgstr "Nejsou definovány žádné kategorie"
 
 #: templates/manage/product/data.html:45
 msgid "Urls"
-msgstr "Adresy"
+msgstr "Webové Adresy"
 
 #: templates/manage/product/data.html:69
 msgid "Redirect to"
@@ -3833,7 +3833,7 @@ msgstr "Přesměrovat na"
 
 #: templates/manage/product/data.html:82
 msgid "Article numbers"
-msgstr "Čísla položek"
+msgstr "Identifikace položky"
 
 #: templates/manage/product/data.html:268
 msgid "Quantity field"
