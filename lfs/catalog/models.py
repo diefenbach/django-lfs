@@ -1765,7 +1765,7 @@ class PropertyGroup(models.Model):
     products
           The assigned products of the property group.
     """
-    name = models.CharField(blank=True, max_length=50)
+    name = models.CharField(_(u"Name"), blank=True, max_length=50)
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="property_groups")
 
     class Meta:
