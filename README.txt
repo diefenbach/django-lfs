@@ -31,6 +31,12 @@ The latest development state can be found here:
 Changes
 =======
 
+0.6.10 (2012-03-xx)
+------------------
+
+* Bugfix: don't display non-active products within cart nor add them to order with checkout; Adapt tests; fixed issue #154.
+* Bugfix: don't delete OrderItems when a product is deleted.
+
 0.6.9 (2012-03-08)
 ------------------
 
