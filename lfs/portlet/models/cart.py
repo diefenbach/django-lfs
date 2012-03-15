@@ -24,19 +24,23 @@ class CartPortlet(Portlet):
         """Renders the portlet as html.
         """
         import lfs.cart.utils
-
         request = context.get("request")
+
         cart = lfs.cart.utils.get_cart(request)
         if cart is None:
-            amount_of_items = None
+            amount_of_items_locale = None
+            amount_of_items_int = None
             price = None
         else:
-            amount_of_items = locale.format("%.2f", cart.get_amount_of_items())
+            cart_amount_of_items = cart.get_amount_of_items()
+            amount_of_items_locale = locale.format("%.2f", cart_amount_of_items)
+            amount_of_items_int = int(cart_amount_of_items)
             price = cart.get_price_gross(request, total=True)
 
         return render_to_string("lfs/portlets/cart.html", RequestContext(request, {
             "title": self.title,
-            "amount_of_items": amount_of_items,
+            "amount_of_items_locale": amount_of_items_locale,
+            "amount_of_items_int": amount_of_items_int,
             "price": price,
         }))
 
