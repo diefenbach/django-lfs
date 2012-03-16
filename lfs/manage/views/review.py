@@ -290,7 +290,7 @@ def delete_review(request, review_id):
         review.delete()
 
     try:
-        ordering = "%s%s" % (request.session.get("review-ordering-order", "id"), request.session.get("review-ordering", "id"))
+        ordering = "%s%s" % (request.session.get("review-ordering-order", ""), request.session.get("review-ordering", "id"))
         review = Review.objects.all().order_by(ordering)[0]
     except IndexError:
         url = reverse("lfs_manage_reviews")
