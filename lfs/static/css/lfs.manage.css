@@ -197,6 +197,12 @@ tr.odd {
     color: #aaa;
 }
 
+div.section-info{
+    font-size: 90%;
+    color: #aaa;
+    margin-bottom: 5px;
+}
+
 .label {
     font-weight: bold;
     color: #58585a;

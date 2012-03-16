@@ -266,6 +266,9 @@
         {% if not product.is_variant %}
             <fieldset>
                 <legend>{% trans "Quantity field" %}</legend>
+                <div class="section-info">
+                    {% blocktrans %}Define how Quantity field (one used by customers to enter amount of items) is displayed for this product.{% endblocktrans %}
+                </div>
                 <div class="field">
                     <div class="label">
                         {{ form.unit.label_tag }}:
@@ -287,31 +290,24 @@
 
         <fieldset>
             <legend>{% trans "Base price" %}</legend>
+            <div class="section-info">
+                {% blocktrans %}Define how base price for product should be calculated. Formula is: base price = price / base price amount{% endblocktrans %}
+            </div>
 
-            {% if product.is_variant %}
-                <div class="field">
-                    <div class="label">
-                        {{ form.active_base_price.label_tag }}:
-                    </div>
-                    <div>
-                        {{ form.active_base_price }}
-                        {% if product.parent.active_base_price %}
-                            {% trans 'Yes' %}
-                        {% else %}
-                            {% trans 'No' %}
-                            {% endif %}
-                    </div>
+
+            <div class="field">
+                <div class="label">
+                    {{ form.active_base_price.label_tag }}:
                 </div>
-            {% else %}
-                <div class="field">
-                    <div class="label">
-                        {{ form.active_base_price.label_tag }}:
-                    </div>
-                    <div>
-                        {{ form.active_base_price }}
-                    </div>
+                <div>
+                    {{ form.active_base_price }}
+                    {% if product.is_variant and product.parent.active_base_price %}
+                        {% trans 'Yes' %}
+                    {% else %}
+                        {% trans 'No' %}
+                    {% endif %}
                 </div>
-            {% endif %}
+            </div>
 
             <div class="field">
                 <div class="label">
@@ -319,7 +315,9 @@
                 </div>
                 <div>
                     {{ form.base_price_unit }}
-                    {{ product.parent.base_price_unit }}
+                    {% if product.is_variant and product.parent.base_price_unit %}
+                        {{ product.parent.base_price_unit }}
+                    {% endif %}
                 </div>
             </div>
 
