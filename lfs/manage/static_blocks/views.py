@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -20,16 +19,10 @@ from lfs.core.utils import LazyEncoder
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import StaticBlock
 from lfs.catalog.models import File
+from lfs.manage.static_blocks.forms import StaticBlockForm
 
 
-class StaticBlockForm(ModelForm):
-    """Form to add and edit a static block.
-    """
-    class Meta:
-        model = StaticBlock
-        exclude = ("position", )
-
-
+# views
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_static_blocks(request):
     """Dispatches to the first static block or to the add static block form.
@@ -38,7 +31,7 @@ def manage_static_blocks(request):
         sb = StaticBlock.objects.all()[0]
         url = reverse("lfs_manage_static_block", kwargs={"id": sb.id})
     except IndexError:
-        url = reverse("lfs_add_static_block")
+        url = reverse("lfs_manage_no_static_blocks")
 
     return HttpResponseRedirect(url)
 
@@ -69,6 +62,14 @@ def manage_static_block(request, id, template_name="manage/static_block/static_b
 
 
 @permission_required("core.manage_shop", login_url="/login/")
+def no_static_blocks(request, template_name="manage/static_block/no_static_blocks.html"):
+    """Displays the main form to manage static blocks.
+    """
+    return render_to_response(template_name, RequestContext(request, {}))
+
+
+# parts
+@permission_required("core.manage_shop", login_url="/login/")
 def files(request, sb, template_name="manage/static_block/files.html"):
     """Displays the files tab of the passed static block.
     """
@@ -77,6 +78,7 @@ def files(request, sb, template_name="manage/static_block/files.html"):
     }))
 
 
+# actions
 @permission_required("core.manage_shop", login_url="/login/")
 def update_files(request, id):
     """

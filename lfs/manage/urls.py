@@ -346,8 +346,8 @@ urlpatterns += patterns('lfs.manage.views.criteria',
 )
 
 # Static blocks
-urlpatterns += patterns('lfs.manage.views.static_blocks',
-    url(r'^add-static-block$', "add_static_block", name="lfs_add_static_block"),
+urlpatterns += patterns('lfs.manage.static_blocks.views',
+    url(r'^add-static-block$', "add_static_block", name="lfs_manage_add_static_block"),
     url(r'^delete-static-block/(?P<id>\d*)$', "delete_static_block", name="lfs_delete_static_block"),
     url(r'^preview-static-block/(?P<id>\d*)$', "preview_static_block", name="lfs_preview_static_block"),
     url(r'^manage-static-blocks$', "manage_static_blocks", name="lfs_manage_static_blocks"),
@@ -355,17 +355,10 @@ urlpatterns += patterns('lfs.manage.views.static_blocks',
     url(r'^add_files/(?P<id>[-\w]*)', "add_files", name="lfs_add_files_to_static_block"),
     url(r'^update_files/(?P<id>[-\w]*)', "update_files", name="lfs_manage_update_files_sb"),
     url(r'^reload_files/(?P<id>[-\w]*)', "reload_files", name="lfs_reload_files"),
-    url(r'^reload_files/(?P<id>[-\w]*)', "reload_files", name="lfs_reload_files"),
     url(r'^sort-static-blocks$', "sort_static_blocks", name="lfs_sort_static_blocks"),
+    url(r'^no-static-blocks$', "no_static_blocks", name="lfs_manage_no_static_blocks"),
 )
 
-# Reviews
-# urlpatterns += patterns('lfs.manage.views.review',
-#     url(r'^manage-reviews$', "manage_reviews", name="lfs_manage_reviews"),
-#     url(r'^manage-review/(?P<review_id>\d*)$', "manage_review", name="lfs_manage_review"),
-#     url(r'^add-review$', "add_review", name="lfs_add_review"),
-#     url(r'^delete-review/(?P<review_id>\d*)$', "delete_review", name="lfs_delete_review"),
-# )
 
 # Reviews
 urlpatterns += patterns('lfs.manage.views.review',
