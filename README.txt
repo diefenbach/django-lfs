@@ -34,13 +34,17 @@ Changes
 0.7.0 beta 3
 ------------
 
-* Using django-postal 0.9
-* Bugfix: don't display non-active products within cart nor add them to order with checkout; adapt tests; fixed issue #154.
-* Bugfix: don't delete OrderItems when a product is deleted.
-* Bugfix: added default values for LFS_SHIPPING_* settings.
+* Bugfix: fixed number of columns within cart template (Maciej Wiśniowski)
+* Bugfix: fixed display of localized amount of items within cart portlet; issue #159
+* Bugfix: don't display non-active products within cart nor add them to order with checkout; adapt tests; fixed issue #154
+* Bugfix: don't delete OrderItems when a product is deleted
+* Bugfix: added default values for LFS_SHIPPING_* settings
 * Bugfix: removed redundant javascript code; issue #153
+* Changed: using django-postal 0.9
+* Changed: removed djangorestframework from dependencies
+* Improved: added label to PropertyGroup's name field; issue #158
 * Improved: added link to product within order detail view in LM; issue #149
-* Improved: cleaned up displaying of addresses of orders within LM.
+* Improved: cleaned up displaying of addresses of orders within LM
 * Updated: Czech translation (naro)
 * Updated: German translation
 
