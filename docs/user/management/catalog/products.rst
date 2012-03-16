@@ -81,14 +81,14 @@ Price calculator
     Determines how the product price is calculated using the product price and
     tax stored in the database. If you leave this field blank, your pricing
     calculator will default to the shop :ref:`price calculator
-    <preferences_management>`.
+    <preferences_default_values>`.
 
     LFS ships with two pricing calculator methods: ``Price Includes Tax``, which
     means the product price in the database includes tax and ``Price Excludes
     Tax``, which means the product price in the database excludes tax.
 
 For sale
-    If the checkbox is activated the entered for sale price is active. On all
+    If the check box is activated the entered for sale price is active. On all
     views the standard price is displayed stroked and the for sale price is
     displayed emphasized.
 
@@ -113,7 +113,7 @@ Type of quantity field
     quantity must be an integer and all decimal places are ignored. ``Decimal
     0.1``, which means the quantity must be a decimal number with one place and
     more decimal places are ignored. ``Decimal 0.01``, which means the quantity
-    must be a decimal number with two places andMore decimal places are ignored.
+    must be a decimal number with two places and more decimal places are ignored.
 
 Active base price
     If this is activated the base price of the product is displayed within
@@ -122,7 +122,7 @@ Active base price
     For variants following is true:
 
     Standard
-        Inherits the activate base price from the bae article. Values for ``base
+        Inherits the activate base price from the base article. Values for ``base
         price unit`` and ``base price amount`` are taken from the base article.
 
     Yes
@@ -200,7 +200,7 @@ Move images
     To move images just click on the up or down arrow beside the image.
 
 Delete Images
-    To delete images select the checkboxes beside all images you want to delete
+    To delete images select the check boxes beside all images you want to delete
     and click the ``Delete`` button.
 
 .. _products_management_attachments:
@@ -227,7 +227,7 @@ Move attachments
     attachment.
 
 Delete attachments
-    To delete attachments select the checkboxes beside all images you want to
+    To delete attachments select the check boxes beside all images you want to
     delete and click the ``Delete`` button.
 
 .. _products_management_accessories:
@@ -240,7 +240,7 @@ Within this tab you can manage the accessories of this product.
 Add accessories
 ^^^^^^^^^^^^^^^
 
-Within the ``Selectable Products`` section select all checkbox beside the
+Within the ``Selectable Products`` section select all check box beside the
 product you want to add as accessory to the product and click on ``Add To
 Accessories``.
 
@@ -265,7 +265,7 @@ Quantity
 Remove accessories
 ^^^^^^^^^^^^^^^^^^
 
-Within the ``Selected Products`` section select all checkboxes beside the
+Within the ``Selected Products`` section select all check boxes beside the
 products you want to remove from the product and click on ``Remove From
 Accessories``.
 
@@ -279,7 +279,7 @@ Within this tab you can manage the related products of this product.
 Add related products
 ^^^^^^^^^^^^^^^^^^^^
 
-Within the ``Selectable Products`` section select all checkbox beside the
+Within the ``Selectable Products`` section select all check box beside the
 product you want to add as related products to the product and click on
 ``Add To Related Products``.
 
@@ -291,7 +291,7 @@ product you want to add as related products to the product and click on
 Remove related products
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Within the ``Selected Products`` section select all checkboxes beside the
+Within the ``Selected Products`` section select all check boxes beside the
 products you want to remove from the product and click on ``Remove From Related
 Prouducts``.
 

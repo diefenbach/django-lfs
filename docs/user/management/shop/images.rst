@@ -20,7 +20,7 @@ Add images
     see a progress bar meanwhile your images are being uploaded.
 
 Delete Images
-    To delete images select the checkboxes above all images you want to delete
+    To delete images select the check boxes above all images you want to delete
     and click the ``Delete`` button. Alternative you can click on the ``Toggle
     selection`` button in order to inverse the current selection.
 

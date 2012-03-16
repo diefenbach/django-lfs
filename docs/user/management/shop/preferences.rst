@@ -146,7 +146,7 @@ Last order number
     the base for the next given order number.
 
 Format
-    This field stores the format of the ordern number. The integer part which is
+    This field stores the format of the order number. The integer part which is
     stored in ``Last order number`` can be formatted with `Python's string
     formatting operators <http://docs.python.org/library/stdtypes.html#string-formatting-operations>`_,
     e.g.::

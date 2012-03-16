@@ -14,7 +14,7 @@ Steps
 
 2. Extract TinyMCE into your ``theme``
 
-    Extract downloaded ``TinyMCE`` into your :doc:`Theme </developer/howtos/theme/index>`, eg. ``theme/static/manage/tiny_mce_x_x/``
+    Extract downloaded ``TinyMCE`` into your :doc:`Theme </developer/howtos/theme/index>`, e.g. ``theme/static/manage/tiny_mce_x_x/``
 
 3. Download TinyMCE language file(s)
 
@@ -22,7 +22,7 @@ Steps
 
 4. Extract TinyMCE language files into your ``theme``
 
-    Go to folder where you've just extracted main package of TinyMCE, eg: ``theme/static/manage/tiny_mce_x_x/``
+    Go to folder where you've just extracted main package of TinyMCE, e.g.: ``theme/static/manage/tiny_mce_x_x/``
     and extract language files into proper directories.
 
 5. Copy ``manage_base.html`` to your theme
@@ -95,4 +95,4 @@ Steps
 
    Note that for some languages ``LANGUAGE_CODE`` used by Django may differ from language code used by TinyMCE.
    For such cases you'll probably have to write your own tag/filter that will map Django's language code to TinyMCE's
-   language code (or you'll just harcode it).
+   language code (or you'll just hard code it).
