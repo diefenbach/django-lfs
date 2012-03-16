@@ -60,6 +60,10 @@ Redirect to
 SKU
     Your unique product id.
 
+Manufacturer
+    Product :doc:`manufacturer </user/management/shop/manufacturers>`. If you have defined more than 20 manufacturers
+    then this field is shown as autocomplete (start typing to see hints).
+
 SKU manufacturer
     The unique product id of the manufacturer (external SKU).
 
