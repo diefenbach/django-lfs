@@ -1,7 +1,4 @@
-{% load i18n %}
-{% load sql %}
-{% load adminmedia %}
-{% load compress %}
+{% load i18n sql compress %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -49,14 +46,14 @@
             <div class="username">
                 {% if user.is_authenticated %}
                     {% if user.last_name %}
-                        <span>{{user.first_name}} {{user.last_name}}</span>
+                        <span>{{ user.get_full_name }}</span>
                     {% else %}
                         <span>{{ user.username }}</span>
                     {% endif %}
                     | <a class="logout"
-                         href="/logout">{% trans 'Logout' %}</a>
+                         href="{% url lfs_logout %}">{% trans 'Logout' %}</a>
                 {% else %}
-                    <a href="/login">{% trans 'Login' %}</a>
+                    <a href="{% url lfs_login %}">{% trans 'Login' %}</a>
                 {% endif %}
             </div>
 
@@ -127,7 +124,7 @@
                             {% block help_wrapper %}
                                 <li><a href="{{ LFS_DOCS }}{% block help_link %}{% endblock %}"
                                        target="_blank">
-                                       Help
+                                       {% trans "Help" %}
                                     </a>
                                 <li>
                             {% endblock %}
@@ -178,9 +175,5 @@
                 </div>
             </form>
         </div>
-
     </body>
 </html>
-<script>
-    $(".button").button();
-</script>

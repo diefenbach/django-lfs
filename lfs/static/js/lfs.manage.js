@@ -64,7 +64,7 @@ function sortable() {
         toleranceElement: '> div',
         stop: function(event, ui){
             var url = $(this).attr("href");
-            serialized = $('ul.sortable').sortable('serialize');
+            var serialized = $('ul.sortable').sortable('serialize');
             $.ajax({
                 url: url,
                 context: document.body,
@@ -438,34 +438,33 @@ $(function() {
         firstDay: 1
     });
 
-    $(function() {
-        $('ol.sortable').nestedSortable({
-            placeholder: 'placeholder',
-            forcePlaceholderSize: true,
-            handle: '.handle',
-            helper: 'clone',
-            items: 'li',
-            opacity: .6,
-            revert: 250,
-            tabSize: 25,
-            tolerance: 'pointer',
-            toleranceElement: '> div',
-            stop: function(event, ui){
-                var url = $(this).attr("href");
-                serialized = $('ol.sortable').nestedSortable('serialize');
-                $.ajax({
-                    url: url,
-                    context: document.body,
-                    type: "POST",
-                    data: {"categories": serialized},
-                    success: function(data) {
-                        data = $.parseJSON(data);
-                        $.jGrowl(data["message"])
-                    }
-               });
-            }
-        });
+    $('ol.sortable').nestedSortable({
+        placeholder: 'placeholder',
+        forcePlaceholderSize: true,
+        handle: '.handle',
+        helper: 'clone',
+        items: 'li',
+        opacity: .6,
+        revert: 250,
+        tabSize: 25,
+        tolerance: 'pointer',
+        toleranceElement: '> div',
+        stop: function(event, ui){
+            var url = $(this).attr("href");
+            serialized = $('ol.sortable').nestedSortable('serialize');
+            $.ajax({
+                url: url,
+                context: document.body,
+                type: "POST",
+                data: {"categories": serialized},
+                success: function(data) {
+                    data = $.parseJSON(data);
+                    $.jGrowl(data["message"])
+                }
+           });
+        }
     });
+
     $("#insert-image").live("click", function(e) {
         var url = $("input.image:checked").attr("value");
         var size = $("#image-size").val();
