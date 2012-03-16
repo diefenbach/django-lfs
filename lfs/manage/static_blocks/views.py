@@ -63,7 +63,7 @@ def manage_static_block(request, id, template_name="manage/static_block/static_b
 
 @permission_required("core.manage_shop", login_url="/login/")
 def no_static_blocks(request, template_name="manage/static_block/no_static_blocks.html"):
-    """Displays the main form to manage static blocks.
+    """Displays that no static blocks exist.
     """
     return render_to_response(template_name, RequestContext(request, {}))
 
