@@ -7,16 +7,17 @@
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
-    <h2>{% trans "Vouchers" %}</h2>
+    <h2>
+        {% trans "Vouchers" %}
+    </h2>
     <div class="no-content">
         {% trans "There are no vouchers yet." %}
     </div>
-
     <div class="buttons">
-        <input class="button"
-               onclick="window.location='{% url lfs_manage_add_voucher_group %}'"
-               value="{% trans 'Add Voucher Group' %}">
+        <form action="{% url lfs_manage_add_voucher_group %}">
+            <input type="submit"
+                   class="button"
+                   value="{% trans 'Add Voucher Group' %}">
+        </form>
     </div>
-
-
 {% endblock %}
