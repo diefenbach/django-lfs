@@ -12,7 +12,7 @@
             {% trans 'Order number' %}:
         </td>
         <td width="25%">
-            {{ current_order.number }}
+            {{ current_order.number|default_if_none:"-" }}
         </td>
         <td width="25%"
             class="label">
@@ -49,7 +49,7 @@
             {% trans 'Total' %}:
         </td>
         <td>
-            {{ current_order.price|currency }}
+            {{ current_order.price|currency:request }}
         </td>
     </tr>
 
@@ -208,7 +208,7 @@
                         <div>
                             {{ property.title }} : {{ property.value }} {{ property.unit|safe }}
                             {% if property.display_price %}
-                                ({{ property.price|currency }})
+                                ({{ property.price|currency:request }})
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -216,7 +216,7 @@
             </td>
 
             <td class="number">
-               {{ item.product_amount }} {{ item.product.unit }}
+               {{ item.amount }} {{ item.product.unit }}
                 {% if item.product.active_packing_unit %}
                     <span class="packing-unit">
                         ({{ item|packages }} {{ item.product.packing_unit_unit }})
@@ -225,13 +225,13 @@
 
             </td>
             <td class="number">
-               {{ item.product_price_gross|currency }}{% if item.product.price_unit %} / {{ item.product.price_unit }}{% endif %}
+               {{ item.product_price_gross|currency:request }}{% if item.product.price_unit %} / {{ item.product.price_unit }}{% endif %}
             </td>
             <td class="number">
-               ({{ item.product_tax|currency }})
+               ({{ item.product_tax|currency:request }})
             </td>
             <td class="number">
-               {{ item.price_gross|currency }}
+               {{ item.price_gross|currency:request }}
             </td>
         </tr>
     {% endfor %}
@@ -245,11 +245,11 @@
                 1
             </td>
             <td class="number">
-                - {{ current_order.voucher_price|currency }}
+                - {{ current_order.voucher_price|currency:request }}
             </td>
             <td></td>
             <td class="number">
-                - {{ current_order.voucher_price|currency }}
+                - {{ current_order.voucher_price|currency:request }}
             </td>
         </tr>
     {% endif %}
@@ -262,11 +262,11 @@
             1
         </td>
         <td class="number">
-            {{ current_order.shipping_price|currency }}
+            {{ current_order.shipping_price|currency:request }}
         </td>
         <td></td>
         <td class="number">
-            {{ current_order.shipping_price|currency }}
+            {{ current_order.shipping_price|currency:request }}
         </td>
     </tr>
     <tr>
@@ -278,24 +278,24 @@
             1
         </td>
         <td class="number">
-            {{ current_order.payment_price|currency }}
+            {{ current_order.payment_price|currency:request }}
         </td>
         <td></td>
         <td class="number">
-            {{ current_order.payment_price|currency }}
+            {{ current_order.payment_price|currency:request }}
         </td>
     </tr>
     <tr class="total">
         <td colspan="6"
             class="number total">
-            {{ current_order.price|currency }}
+            {{ current_order.price|currency:request }}
         </td>
     </tr>
     <tr>
         <td colspan="6"
             class="number tax">
             <span class="total-label">{% trans 'Inclusive VAT' %}:</span>
-            {{ current_order.tax|currency }}
+            {{ current_order.tax|currency:request }}
         </td>
     </tr>
 </table>

@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-03-16 20:58+0100\n"
-"PO-Revision-Date: 2012-03-16 20:58+0100\n"
+"PO-Revision-Date: 2012-03-16 22:54+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
@@ -3048,7 +3048,7 @@ msgstr ""
 #: templates/manage/order/order_inline.html:38
 #: templates/manage/order/orders_inline.html:32
 msgid "DATETIME_FORMAT"
-msgstr ""
+msgstr "Y-m-d H:i:s"
 
 #: templates/manage/cart/cart_inline.html:74
 #: templates/manage/cart/carts_inline.html:22
@@ -4623,7 +4623,7 @@ msgstr "Data ostatniego użycia"
 
 #: templates/manage/voucher/vouchers_inline.html:157
 msgid "DATE_FORMAT"
-msgstr ""
+msgstr "%Y-%m-%d"
 
 #: templates/manage/voucher/vouchers_inline.html:164
 msgid "Delete vouchers"

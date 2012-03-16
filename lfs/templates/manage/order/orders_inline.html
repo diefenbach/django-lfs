@@ -26,7 +26,7 @@
 			<tr class="clickable {% cycle 'even' 'odd' %}"
 			    onclick="window.location='{% url lfs.manage.views.order_view order.id %}'">
                 <td>
-                    {{ order.number }}
+                    {{ order.number|default_if_none:"-" }}
                 </td>
                 <td>
                     {{ order.created|date:_("DATETIME_FORMAT") }}
