@@ -157,7 +157,7 @@ urlpatterns += patterns('lfs.manage.views.property_groups.products',
 )
 
 # Shop Properties
-urlpatterns += patterns('lfs.manage.views.properties',
+urlpatterns += patterns('lfs.manage.property.views',
     url(r'^shop-properties$', "manage_properties", name="lfs_manage_shop_properties"),
     url(r'^shop-property/(?P<id>\d*)', "manage_property", name="lfs_manage_shop_property"),
     url(r'^update-shop-property-type/(?P<id>\d*)', "update_property_type", name="lfs_update_shop_property_type"),
@@ -169,9 +169,9 @@ urlpatterns += patterns('lfs.manage.views.properties',
     url(r'^save-shop-property-step-type/(?P<property_id>\d*)', "save_step_type", name="lfs_save_shop_property_step_type"),
     url(r'^delete-shop-property-option/(?P<id>\d*)', "delete_option", name="lfs_delete_shop_property_option"),
     url(r'^delete-shop-property-step/(?P<id>\d*)', "delete_step", name="lfs_delete_shop_property_step"),
-
     url(r'^save-number-field-validators/(?P<property_id>\d*)', "save_number_field_validators", name="lfs_save_number_field_validators"),
     url(r'^save-select-field/(?P<property_id>\d*)', "save_select_field", name="lfs_save_select_field"),
+    url(r'^no-properties$', "no_properties", name="lfs_manage_no_shop_properties"),
 )
 
 # Product properties

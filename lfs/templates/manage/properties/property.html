@@ -21,7 +21,7 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_add_shop_property %}">{% trans 'Add Property' %}</a>
+           href="{% url lfs_add_shop_property %}?came_from={% url lfs_manage_shop_property property.id %}">{% trans 'Add Property' %}</a>
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this property?' %}"
            href="{% url lfs_delete_shop_property property.id %}">{% trans 'Delete Property' %}</a>

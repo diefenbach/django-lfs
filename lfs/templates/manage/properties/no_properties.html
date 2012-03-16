@@ -1,0 +1,23 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/properties/properties.html{% endblock %}
+
+{% block sextion %}no-vouchers{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <h2>
+        {% trans "Properties" %}
+    </h2>
+    <div class="no-content">
+        {% trans "There are no properties yet." %}
+    </div>
+    <div class="buttons">
+        <form action="{% url lfs_add_shop_property %}">
+            <input type="submit"
+                   class="button"
+                   value="{% trans 'Add Property' %}">
+        </form>
+    </div>
+{% endblock %}

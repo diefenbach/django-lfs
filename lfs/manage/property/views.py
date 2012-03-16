@@ -1,7 +1,6 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -19,65 +18,16 @@ from lfs.core.signals import property_type_changed
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.models import FilterStep
+from lfs.manage.property.forms import PropertyAddForm
+from lfs.manage.property.forms import PropertyDataForm
+from lfs.manage.property.forms import PropertyTypeForm
+from lfs.manage.property.forms import StepTypeForm
+from lfs.manage.property.forms import SelectFieldForm
+from lfs.manage.property.forms import NumberFieldForm
+from lfs.manage.property.forms import StepRangeForm
 
 
-class PropertyAddForm(ModelForm):
-    """Form to add a property.
-    """
-    class Meta:
-        model = Property
-        fields = ["name"]
-
-
-class PropertyDataForm(ModelForm):
-    """Form to manage core data of a property.
-    """
-    class Meta:
-        model = Property
-        fields = ["position", "name", "title", "unit", "filterable", "display_no_results",
-            "configurable", "required", "display_on_product"]
-
-
-class PropertyTypeForm(ModelForm):
-    """Form to manage property type.
-    """
-    class Meta:
-        model = Property
-        fields = ["type"]
-
-
-class StepTypeForm(ModelForm):
-    """Form to manage the step type of a property.
-    """
-    class Meta:
-        model = Property
-        fields = ["step_type"]
-
-
-class SelectFieldForm(ModelForm):
-    """Form to manage attributes for select field.
-    """
-    class Meta:
-        model = Property
-        fields = ["display_price", "add_price"]
-
-
-class NumberFieldForm(ModelForm):
-    """Form to manage the number field.
-    """
-    class Meta:
-        model = Property
-        fields = ["decimal_places", "unit_min", "unit_max", "unit_step"]
-
-
-class StepRangeForm(ModelForm):
-    """Form to manage step range.
-    """
-    class Meta:
-        model = Property
-        fields = ["step"]
-
-
+# Views
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_properties(request):
     """The main view to manage properties.
@@ -86,7 +36,7 @@ def manage_properties(request):
         property = Property.objects.filter(local=False)[0]
         url = reverse("lfs_manage_shop_property", kwargs={"id": property.id})
     except IndexError:
-        url = reverse("lfs_add_shop_property")
+        url = reverse("lfs_manage_no_shop_properties")
 
     return HttpResponseRedirect(url)
 
@@ -99,7 +49,7 @@ def manage_property(request, id, template_name="manage/properties/property.html"
     if request.method == "POST":
         form = PropertyDataForm(instance=property, data=request.POST)
         if form.is_valid():
-            new_property = form.save()
+            form.save()
             _update_property_positions()
             return lfs.core.utils.set_message_cookie(
                 url=reverse("lfs_manage_shop_property", kwargs={"id": property.id}),
@@ -125,6 +75,14 @@ def manage_property(request, id, template_name="manage/properties/property.html"
       }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
+def no_properties(request, template_name="manage/properties/no_properties.html"):
+    """Displays that no properties exist.
+    """
+    return render_to_response(template_name, RequestContext(request, {}))
+
+
+# Actions
 @permission_required("core.manage_shop", login_url="/login/")
 @require_POST
 def update_property_type(request, id):
@@ -256,15 +214,12 @@ def add_step(request, property_id):
     """Adds a step to property with passed property id resp. updates steps of
     property with passed property id dependent on the given action parameter.
     """
-    property = get_object_or_404(Property, pk=property_id)
-
     if request.POST.get("action") == "add":
         start = request.POST.get("start", "")
         if start != "":
-            option = FilterStep.objects.create(start=start, property_id=property_id)
+            FilterStep.objects.create(start=start, property_id=property_id)
         message = _(u"Step has been added.")
     else:
-
         for step_id in request.POST.getlist("step"):
 
             try:
@@ -333,6 +288,7 @@ def add_property(request, template_name="manage/properties/add_property.html"):
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "properties": Property.objects.filter(local=False),
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_shop_properties")),
     }))
 
 
