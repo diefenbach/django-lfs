@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-03-16 17:36+0100\n"
-"PO-Revision-Date: 2012-03-16 18:07+0100\n"
+"PO-Revision-Date: 2012-03-16 18:49+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
@@ -2688,12 +2688,12 @@ msgstr "Sposoby wysyłki"
 #: templates/manage/manage_base.html:78
 #: templates/manage/tax/tax.html:8
 msgid "Product Taxes"
-msgstr "Podatki (produkty)"
+msgstr "Podatki dla produktów"
 
 #: templates/manage/manage_base.html:79
 #: templates/manage/customer_tax/customer_tax.html:8
 msgid "Customer Taxes"
-msgstr "Stawki podatku klienta"
+msgstr "Podatki wg. krajów"
 
 #: templates/manage/manage_base.html:84
 msgid "Catalog"
