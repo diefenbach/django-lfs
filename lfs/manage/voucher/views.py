@@ -238,6 +238,7 @@ def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.h
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "voucher_groups": VoucherGroup.objects.all(),
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_vouchers")),
     }))
 
 
