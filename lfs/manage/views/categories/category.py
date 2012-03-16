@@ -10,7 +10,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from django.utils import simplejson
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 
 # lfs imports
 from lfs.caching.utils import lfs_get_object_or_404
@@ -80,7 +80,7 @@ def manage_category(request, category_id, template_name="manage/category/manage_
         "seo": edit_seo(request, category_id),
         "view": category_view(request, category_id),
         "portlets": portlets_inline(request, category),
-        "dialog_message": _("Do you really want to delete the category <b>'%(name)s'</b> and all its sub categories?" % {"name": category.name}),
+        "dialog_message": ugettext("Do you really want to delete the category <b>'%(name)s'</b> and all its sub categories?") % {"name": category.name},
     }))
 
 
