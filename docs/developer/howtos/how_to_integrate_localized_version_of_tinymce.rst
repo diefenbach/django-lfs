@@ -60,7 +60,7 @@ Steps
           relative_urls : false,
           cleanup : false,
           height : height,
-          language : LFC_LANGUAGE,
+          language : LFS_LANGUAGE,
           content_css : "/static/css/tinymce_styles.css",
           setup : function(ed) {
               ed.addButton('image', {
@@ -90,7 +90,7 @@ Steps
      .. code-block:: html
 
          <script type="text/javascript">
-           var LFC_LANGUAGE = '{{ LANGUAGE_CODE|lower }}';
+           var LFS_LANGUAGE = '{{ LANGUAGE_CODE|lower }}';
          </script>
 
    Note that for some languages ``LANGUAGE_CODE`` used by Django may differ from language code used by TinyMCE.
