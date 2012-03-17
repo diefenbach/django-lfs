@@ -266,9 +266,6 @@
         {% if not product.is_variant %}
             <fieldset>
                 <legend>{% trans "Quantity field" %}</legend>
-                <div class="section-info">
-                    {% blocktrans %}Define how Quantity field (one used by customers to enter amount of items) is displayed for this product.{% endblocktrans %}
-                </div>
                 <div class="field">
                     <div class="label">
                         {{ form.unit.label_tag }}:
@@ -290,11 +287,6 @@
 
         <fieldset>
             <legend>{% trans "Base price" %}</legend>
-            <div class="section-info">
-                {% blocktrans %}Define how base price for product should be calculated. Formula is: base price = price / base price amount{% endblocktrans %}
-            </div>
-
-
             <div class="field">
                 <div class="label">
                     {{ form.active_base_price.label_tag }}:
