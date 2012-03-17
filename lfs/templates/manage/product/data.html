@@ -166,7 +166,7 @@
                     <div>
                         {{ form.price }}
                         {% if product.is_variant %}
-                            {{ product.parent.price|currency }}
+                            {{ product.parent.price|currency:request }}
                         {% endif %}
                     </div>
                 {% endif %}
@@ -237,7 +237,7 @@
                     </div>
                     <div>
                         {{ form.for_sale_price }}
-                        {{ product.parent.for_sale_price|currency }}
+                        {{ product.parent.for_sale_price|currency:request }}
                     </div>
 
                 </div>

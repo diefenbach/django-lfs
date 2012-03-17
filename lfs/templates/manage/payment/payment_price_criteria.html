@@ -3,7 +3,7 @@
 <div id="price-criteria">
 
     <h1>
-        {% trans 'Edit criteria for' %} {{payment_price.price|currency}}
+        {% trans 'Edit criteria for' %} {{payment_price.price|currency:request}}
     </h1>
 
     <form action="{% url lfs_manage_save_payment_price_criteria payment_price.id %}"

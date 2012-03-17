@@ -56,7 +56,7 @@
             </td>
             <td class="right-padding">
 				{% if customer.cart_price %}
-					{{ customer.cart_price|currency }}
+					{{ customer.cart_price|currency:request }}
 				{% endif %}
             </td>
         </tr>

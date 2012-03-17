@@ -38,7 +38,7 @@
 					{{ order.get_state_display }}
 				</td>
                 <td class="number">
-                    {{ order.price|currency }}
+                    {{ order.price|currency:request }}
                 </td>
                 <td class="right-padding">
                     {% if order.message %}

@@ -82,7 +82,7 @@
                                     {{ order.state_modified|date:_("DATETIME_FORMAT") }}
                                 </td>
                                 <td class="number middle">
-                                    {{ order.price|currency }}
+                                    {{ order.price|currency:request }}
                                 </td>
                                 <td class="right small">
                                     <a href="{% url lfs_manage_order order.id %}">

@@ -82,7 +82,7 @@
             {% trans 'Total' %}:
         </td>
         <td>
-            {{ total|currency }}
+            {{ total|currency:request }}
         </td>
     </tr>
 </table>
@@ -122,13 +122,13 @@
                 	{{ item.product.get_name }}
                 </td>
                 <td class="number">
-                    {{ item.product|get_price:request|currency }}
+                    {{ item.product|get_price:request|currency:request }}
                 </td>
                 <td class="number">
                     {{ item.amount }}
                 </td>
                 <td class="number">
-                    {{ item|get_price_gross:request|currency }}
+                    {{ item|get_price_gross:request|currency:request }}
                 </td>
             </tr>
         {% endfor %}

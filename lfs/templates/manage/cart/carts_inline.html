@@ -47,7 +47,7 @@
                 {% endif %}
             </td>
             <td class="number" nowrap="nowrap">
-                {{ cart.total|currency }}
+                {{ cart.total|currency:request }}
             </td>
             <td class="right-padding">
                 {{ cart.get_amount_of_items }}

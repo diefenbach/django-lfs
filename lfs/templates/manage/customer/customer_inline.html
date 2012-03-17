@@ -147,7 +147,7 @@
 					{{ order.get_state_display }}
 				</td>
 	            <td class="number">
-	                {{order.price|currency}}
+	                {{order.price|currency:request}}
 	            </td>
 	            <td class="number">
 	                {% if order.message %}
@@ -185,7 +185,7 @@
 				{{ cart.modification_date|date:_("DATETIME_FORMAT") }}
 			</td>
             <td class="number">
-                {{ cart_price|currency }}
+                {{ cart_price|currency:request }}
             </td>
 		</tr>
 	</table>
