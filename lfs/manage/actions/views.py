@@ -130,6 +130,7 @@ def add_action(request, template_name="manage/actions/add_action.html"):
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "groups": ActionGroup.objects.all(),
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_actions")),
     }))
 
 
