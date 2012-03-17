@@ -215,14 +215,6 @@ $(function() {
         });
     });
 
-    $("input.select-all").live("click", function() {
-        var selector = "." + $(this).attr("data");
-        $(selector).each(function() {
-            this.checked = !this.checked;
-        });
-        return false;
-    });
-
     // Criteria
     $(".criterion-add-first-button").live("click", function() {
         var position = $(this).siblings(".position").val()
