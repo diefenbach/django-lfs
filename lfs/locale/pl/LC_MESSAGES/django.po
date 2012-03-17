@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-16 20:58+0100\n"
-"PO-Revision-Date: 2012-03-16 22:54+0100\n"
+"POT-Creation-Date: 2012-03-17 17:36+0100\n"
+"PO-Revision-Date: 2012-03-17 17:37+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: Jarek Miazga <jaroslaw.miazga@gmail.com>\n"
 "Language: \n"
@@ -23,6 +23,26 @@ msgstr "Cena bez podatku"
 #: other_translations.py:4
 msgid "Price includes tax"
 msgstr "Cena z podatkiem"
+
+#: other_translations.py:5
+msgid "Street"
+msgstr "Ulica"
+
+#: other_translations.py:6
+msgid "Left"
+msgstr "Lewo"
+
+#: other_translations.py:7
+msgid "Right"
+msgstr "Prawo"
+
+#: other_translations.py:8
+msgid "Average Rating"
+msgstr "Średnia ocena"
+
+#: other_translations.py:9
+msgid "Zip Code"
+msgstr "Kod pocztowy"
 
 #: cart/models.py:48
 #: criteria/models/criteria.py:597
@@ -134,6 +154,7 @@ msgstr "Przepraszamy ale '%(product)s' jest dostępne tylko %(amount)s razy"
 #: catalog/models.py:2018
 #: catalog/models.py:2182
 #: core/models.py:19
+#: core/models.py:38
 #: core/models.py:154
 #: discounts/models.py:41
 #: export/models.py:16
@@ -305,7 +326,7 @@ msgstr "Kolumny kategorii"
 
 #: catalog/models.py:183
 #: catalog/models.py:584
-#: core/models.py:182
+#: core/models.py:184
 #: core/management/commands/lfs_migrate.py:75
 #: core/management/commands/lfs_migrate.py:99
 #: page/models.py:24
@@ -314,7 +335,7 @@ msgstr "Meta tytuł"
 
 #: catalog/models.py:184
 #: catalog/models.py:585
-#: core/models.py:183
+#: core/models.py:185
 #: core/management/commands/lfs_migrate.py:76
 #: core/management/commands/lfs_migrate.py:100
 #: page/models.py:25
@@ -323,7 +344,7 @@ msgstr "Meta słowa kluczowe"
 
 #: catalog/models.py:185
 #: catalog/models.py:586
-#: core/models.py:184
+#: core/models.py:186
 #: core/management/commands/lfs_migrate.py:77
 #: core/management/commands/lfs_migrate.py:101
 #: page/models.py:26
@@ -399,6 +420,7 @@ msgid "Price"
 msgstr "Cena"
 
 #: catalog/models.py:573
+#: core/models.py:179
 msgid "Price calculator"
 msgstr "Kalkulator ceny"
 
@@ -413,7 +435,7 @@ msgstr "Jednostka pola z ilością"
 #: catalog/models.py:581
 #: templates/manage/manage_base.html:77
 #: templates/manage/product/images.html:3
-#: templates/manage/product/product.html:102
+#: templates/manage/product/product.html:99
 msgid "Images"
 msgstr "Obrazy"
 
@@ -807,7 +829,7 @@ msgstr "Rodzaj kroku"
 #: catalog/models.py:1892
 #: templates/manage/manage_base.html:88
 #: templates/manage/manage_base.html:90
-#: templates/manage/product/product.html:114
+#: templates/manage/product/product.html:111
 #: templates/manage/properties/properties_inline.html:6
 #: templates/manage/properties/property.html:7
 #: templates/manage/properties/property_group.html:33
@@ -878,7 +900,7 @@ msgstr "Standard"
 #: templates/manage/manage_base.html:173
 #: templates/manage/customer/customer_inline.html:30
 #: templates/manage/product/data.html:227
-#: templates/manage/product/data.html:299
+#: templates/manage/product/data.html:297
 #: templates/manage/product/product_filters_inline.html:42
 #: templates/manage/product/product_filters_inline.html:49
 #: templates/manage/product/stock.html:206
@@ -896,7 +918,7 @@ msgstr "Tak"
 #: templates/manage/manage_base.html:174
 #: templates/manage/customer/customer_inline.html:32
 #: templates/manage/product/data.html:229
-#: templates/manage/product/data.html:301
+#: templates/manage/product/data.html:299
 #: templates/manage/product/product_filters_inline.html:43
 #: templates/manage/product/product_filters_inline.html:50
 #: templates/manage/product/stock.html:208
@@ -966,7 +988,7 @@ msgstr "Lista rozwijana"
 #: templates/manage/manage_base.html:83
 #: templates/manage/category/manage_categories_portlet.html:2
 #: templates/manage/product/categories.html:3
-#: templates/manage/product/product.html:99
+#: templates/manage/product/product.html:96
 msgid "Categories"
 msgstr "Kategorie"
 
@@ -1253,15 +1275,15 @@ msgstr "Domyślne ustawienia językowe sklepu"
 msgid "Use international currency codes"
 msgstr "Używaj międzynarodowych kodów walut"
 
-#: core/models.py:179
+#: core/models.py:181
 msgid "Checkout type"
 msgstr "Sposób zakupu"
 
-#: core/models.py:180
+#: core/models.py:182
 msgid "Confirm TOC"
 msgstr "Akceptacja regulaminu"
 
-#: core/models.py:244
+#: core/models.py:246
 msgid "Version"
 msgstr "Wersja"
 
@@ -1676,7 +1698,7 @@ msgid "Script"
 msgstr "Skrypt"
 
 #: export/models.py:20
-#: templates/manage/product/product.html:106
+#: templates/manage/product/product.html:103
 #: templates/manage/product/variants.html:97
 msgid "Variants"
 msgstr "Warianty"
@@ -2625,7 +2647,7 @@ msgid "Recent Products"
 msgstr "Ostatnie produkty"
 
 #: portlet/templatetags/lfs_portlets_tags.py:152
-#: templates/manage/product/product.html:110
+#: templates/manage/product/product.html:107
 msgid "Related Products"
 msgstr "Powiązane produkty"
 
@@ -2797,7 +2819,7 @@ msgstr "Inne ustawienia"
 
 #: templates/manage/manage_base.html:127
 msgid "Help"
-msgstr ""
+msgstr "Pomoc"
 
 #: templates/manage/manage_base.html:154
 msgid "Powered by"
@@ -2890,7 +2912,7 @@ msgstr "Akcja"
 #: templates/manage/payment/payment_method_data.html:3
 #: templates/manage/product/add_product.html:20
 #: templates/manage/product/data.html:3
-#: templates/manage/product/product.html:95
+#: templates/manage/product/product.html:92
 #: templates/manage/properties/add_property.html:13
 #: templates/manage/properties/add_property_group.html:17
 #: templates/manage/properties/property.html:36
@@ -3350,13 +3372,13 @@ msgid "None"
 msgstr "Brak"
 
 #: templates/manage/category/data.html:80
-#: templates/manage/product/data.html:379
+#: templates/manage/product/data.html:369
 msgid "Appearance"
 msgstr "Sposób prezentacji"
 
 #: templates/manage/category/data.html:114
 #: templates/manage/page/data_tab.html:10
-#: templates/manage/product/data.html:419
+#: templates/manage/product/data.html:409
 #: templates/manage/static_block/static_block.html:55
 msgid "Save data"
 msgstr "Zapisz dane"
@@ -3393,7 +3415,7 @@ msgstr "Widok"
 #: templates/manage/category/seo.html:3
 #: templates/manage/page/page.html:33
 #: templates/manage/page/seo_tab.html:2
-#: templates/manage/product/product.html:112
+#: templates/manage/product/product.html:109
 #: templates/manage/product/seo.html:3
 #: templates/manage/shop/seo_tab.html:3
 #: templates/manage/shop/shop.html:13
@@ -3402,7 +3424,7 @@ msgstr ""
 
 #: templates/manage/category/manage_category.html:46
 #: templates/manage/page/page.html:35
-#: templates/manage/product/product.html:113
+#: templates/manage/product/product.html:110
 #: templates/manage/shop/shop.html:14
 msgid "Portlets"
 msgstr "Portlety"
@@ -3784,7 +3806,7 @@ msgid "Resend order"
 msgstr "Wyślij ponownie zamówienie"
 
 #: templates/manage/order/order.html:53
-#: templates/manage/product/product.html:85
+#: templates/manage/product/product.html:84
 #: templates/manage/reviews/review.html:38
 msgid "Change"
 msgstr "Zmień"
@@ -3993,7 +4015,7 @@ msgid "Add portlet"
 msgstr "Dodaj portlet"
 
 #: templates/manage/product/accessories.html:4
-#: templates/manage/product/product.html:109
+#: templates/manage/product/product.html:106
 msgid "Accessories"
 msgstr "Akcesoria"
 
@@ -4021,7 +4043,7 @@ msgid "Add product"
 msgstr "Dodaj produkt"
 
 #: templates/manage/product/attachments.html:3
-#: templates/manage/product/product.html:103
+#: templates/manage/product/product.html:100
 msgid "Attachments"
 msgstr "Załączniki"
 
@@ -4113,7 +4135,7 @@ msgstr "Zobacz Produkt"
 msgid "Goto Product"
 msgstr "Przejdź do Produktu"
 
-#: templates/manage/product/product.html:111
+#: templates/manage/product/product.html:108
 #: templates/manage/product/stock.html:2
 msgid "Stock"
 msgstr "Magazyn"
@@ -4660,9 +4682,6 @@ msgstr "Kupon nie jest poprawny dla takiej ceny zakupu."
 #: voucher/settings.py:18
 msgid "The voucher doesn't exist."
 msgstr "Kupon nie istnieje."
-
-#~ msgid "Street"
-#~ msgstr "Ulica"
 
 #~ msgid "Action has been saved."
 #~ msgstr "Akcja została zapisana."

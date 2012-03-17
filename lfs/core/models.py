@@ -35,7 +35,7 @@ class ActionGroup(models.Model):
     name
         The name of the group.
     """
-    name = models.CharField(blank=True, max_length=100, unique=True)
+    name = models.CharField(_(u"Name"), blank=True, max_length=100, unique=True)
 
     class Meta:
         ordering = ("name", )
@@ -174,7 +174,9 @@ class Shop(models.Model):
     # You can find locale information here: http://en.wikipedia.org/wiki/Locale
     default_locale = models.CharField(_(u"Default Shop Locale"), max_length=20, default="en_US.UTF-8")
     use_international_currency_code = models.BooleanField(_(u"Use international currency codes"), default=False)
-    price_calculator = models.CharField(choices=settings.LFS_PRICE_CALCULATORS, max_length=255, default=settings.LFS_PRICE_CALCULATORS[0][0])
+    price_calculator = models.CharField(choices=settings.LFS_PRICE_CALCULATORS, max_length=255,
+                                        default=settings.LFS_PRICE_CALCULATORS[0][0],
+                                        verbose_name=_(u"Price calculator"))
 
     checkout_type = models.PositiveSmallIntegerField(_(u"Checkout type"), choices=CHECKOUT_TYPES, default=CHECKOUT_TYPE_SELECT)
     confirm_toc = models.BooleanField(_(u"Confirm TOC"), default=False)

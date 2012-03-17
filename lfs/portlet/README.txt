@@ -1,4 +1,4 @@
 LFS Portlets
 ============
 
-LFS' implementation for django-portlets http://code.google.com/p/django-portlets/
+LFS' implementation for django-portlets http://bitbucket.org/diefenbach/django_portlets/

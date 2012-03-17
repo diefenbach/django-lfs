@@ -72,7 +72,6 @@
                {% trans 'Goto Product' %}
             </a>
 
-
             {% if not product.is_variant %}
                 <form style="display:inline; padding-left:15px"
                       action="{% url lfs_change_product_subtype product.id %}"
@@ -84,9 +83,7 @@
                     <input type="submit"
                            value="{% trans 'Change' %}" />
                 </form>
-
-            <img class="ajax-loading" src="{{ STATIC_URL }}img/ajax-loader.gif" alt="" style="padding:0; margin:0" />
-
+                <img class="ajax-loading" src="{{ STATIC_URL }}img/ajax-loader.gif" alt="" style="padding:0; margin:0" />
             {% endif %}
         </div>
         <div id="product-tabs">
@@ -141,7 +138,6 @@
             <div id="portlets">
                 {{ portlets|safe }}
             </div>
-
         </div>
     </div>
 {% endblock %}
