@@ -11,6 +11,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
 from django.views.decorators.http import require_POST
+from django.utils.translation import ugettext as _
 
 # lfs imports
 from lfs.catalog.models import Image
@@ -99,13 +100,15 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
             "selected": size == selected_size,
         })
 
-    classes = []
-    for klass in ("inline", "left", "right"):
-        classes.append({
-            "value": klass,
-            "title": klass,
-            "selected": klass == selected_class,
-        })
+    classes = [{"value": 'inline',
+                "title": _(u'inline'),
+                "selected": 'inline' == selected_class},
+               {"value": 'left',
+                "title": _(u'left'),
+                "selected": 'left' == selected_class},
+               {"value": 'right',
+                "title": _(u'right'),
+                "selected": 'right' == selected_class}]
 
     images = []
     for image in Image.objects.all():
