@@ -215,6 +215,13 @@ $(function() {
         });
     });
 
+    $(".toggle-all").live("click", function() {
+        var selector = ".toggle-" + $(this).attr("data")
+        $(selector).each(function() {
+            this.checked = !this.checked;
+        });
+    });
+
     // Criteria
     $(".criterion-add-first-button").live("click", function() {
         var position = $(this).siblings(".position").val()
