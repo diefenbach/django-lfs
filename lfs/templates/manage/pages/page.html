@@ -1,0 +1,49 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/html/page.html{% endblock %}
+{% block section %}manage-page{% endblock %}
+{% block left_slot %}
+    <div id="navigation">
+        {{ navigation|safe }}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="site-actions">
+            <a class="add"
+               href="{% url lfs_add_page %}?came_from={% url lfs_manage_page page.id %}">{% trans 'Add Page' %}</a>
+
+            {% if page.id != 1 %}
+                <a class="delete delete-link"
+                   dialog_message="{% trans 'Do you really want to delete this page?' %}"
+                   href="{% url lfs_delete_page page.id %}">{% trans 'Delete Page' %}</a>
+
+                <a class="view popup-link"
+                   href="{% url lfs_page_view_by_id page.id %}">{% trans 'View Page' %}</a>
+
+                <a class="goto"
+                   href="{% url lfs_page_view_by_id page.id %}">{% trans 'Goto Page' %}</a>
+            {% endif %}
+        </div>
+        <div id="manage-tabs">
+            <ul>
+                {% if page.id != 1 %}
+                    <li class="ui-tabs-nav-item"><a href="#data_tab">{% trans 'Data' %}</a></li>
+                    <li class="ui-tabs-nav-item"><a href="#seo_tab">{% trans 'SEO' %}</a></li>
+                {% endif %}
+                <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
+            </ul>
+            {% if page.id != 1 %}
+                <div id="data_tab">
+                    {{ data_tab|safe }}
+                </div>
+                <div id="seo_tab">
+                    {{ seo_tab|safe }}
+                </div>
+            {% endif %}
+            <div id="portlets">
+                {{ portlets|safe }}
+            </div>
+        </div>
+{% endblock %}

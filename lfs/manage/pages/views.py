@@ -1,7 +1,6 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -17,38 +16,11 @@ from django.views.decorators.http import require_POST
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
-from lfs.core.widgets.file import LFSFileInput
 from lfs.manage.views.lfs_portlets import portlets_inline
+from lfs.manage.pages.forms import PageAddForm
+from lfs.manage.pages.forms import PageForm
+from lfs.manage.pages.forms import PageSEOForm
 from lfs.page.models import Page
-
-
-# Forms
-class PageForm(ModelForm):
-    """Form to edit a page.
-    """
-    def __init__(self, *args, **kwargs):
-        super(PageForm, self).__init__(*args, **kwargs)
-        self.fields["file"].widget = LFSFileInput()
-
-    class Meta:
-        model = Page
-        exclude = ("position", "meta_title", "meta_description", "meta_keywords")
-
-
-class PageSEOForm(ModelForm):
-    """Form to edit page's seo data.
-    """
-    class Meta:
-        model = Page
-        fields = ("meta_title", "meta_description", "meta_keywords")
-
-
-class PageAddForm(ModelForm):
-    """Form to add a page.
-    """
-    class Meta:
-        model = Page
-        fields = ("title", "slug")
 
 
 # Views
@@ -67,7 +39,7 @@ def manage_pages(request):
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def manage_page(request, id, template_name="manage/page/page.html"):
+def manage_page(request, id, template_name="manage/pages/page.html"):
     """Provides a form to edit the page with the passed id.
     """
     page = get_object_or_404(Page, pk=id)
@@ -94,7 +66,7 @@ def page_view_by_id(request, id, template_name="lfs/page/page.html"):
 
 
 # Parts
-def data_tab(request, page, template_name="manage/page/data_tab.html"):
+def data_tab(request, page, template_name="manage/pages/data_tab.html"):
     """Renders the data tab for passed page.
     """
     if request.method == "POST":
@@ -115,7 +87,7 @@ def data_tab(request, page, template_name="manage/page/data_tab.html"):
     }))
 
 
-def seo_tab(request, page, template_name="manage/page/seo_tab.html"):
+def seo_tab(request, page, template_name="manage/pages/seo_tab.html"):
     """Renders the SEO tab for passed page.
     """
     if request.method == "POST":
@@ -131,7 +103,7 @@ def seo_tab(request, page, template_name="manage/page/seo_tab.html"):
     }))
 
 
-def navigation(request, page, template_name="manage/page/navigation.html"):
+def navigation(request, page, template_name="manage/pages/navigation.html"):
     """Renders the navigation for passed page.
     """
     return render_to_string(template_name, RequestContext(request, {
@@ -186,7 +158,7 @@ def save_seo_tab(request, id):
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def add_page(request, template_name="manage/page/add_page.html"):
+def add_page(request, template_name="manage/pages/add_page.html"):
     """Provides a form to add a new page.
     """
     if request.method == "POST":
@@ -205,6 +177,7 @@ def add_page(request, template_name="manage/page/add_page.html"):
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "pages": Page.objects.all(),
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_pages")),
     }))
 
 

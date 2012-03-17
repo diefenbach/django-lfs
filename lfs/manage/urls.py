@@ -294,7 +294,7 @@ urlpatterns += patterns('lfs.manage.discounts.views',
 )
 
 # Pages
-urlpatterns += patterns('lfs.manage.views.page',
+urlpatterns += patterns('lfs.manage.pages.views',
     url(r'^add-page$', "add_page", name="lfs_add_page"),
     url(r'^delete-page/(?P<id>\d*)$', "delete_page", name="lfs_delete_page"),
     url(r'^manage-pages$', "manage_pages", name="lfs_manage_pages"),
