@@ -51,7 +51,7 @@ class Cart(models.Model):
     modification_date = models.DateTimeField(_(u"Modification date"), auto_now=True, auto_now_add=True)
 
     def __unicode__(self):
-        return "%s, %s" % (self.user, self.session)
+        return u"%s, %s" % (self.user, self.session)
 
     # DEPRECATED 0.6
     @property
@@ -242,7 +242,9 @@ class CartItem(models.Model):
         ordering = ['id']
 
     def __unicode__(self):
-        return "Product: %s, Quantity: %f, Cart: %s" % (self.product, self.amount, self.cart)
+        return u"Product: %(product)s, Quantity: %(amount)f, Cart: %(cart)s" % {'product': self.product,
+                                                                                'amount': self.amount,
+                                                                                'cart': self.cart}
 
     # DEPRECATED 0.6
     def get_price(self, request):

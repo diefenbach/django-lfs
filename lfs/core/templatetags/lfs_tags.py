@@ -578,7 +578,6 @@ def packages(cart_item):
     """Returns the packages based on product's package unit and cart items
     amount.
     """
-    cart_item = cart_item.get("obj")
     if cart_item.product.packing_unit:
         return int(math.ceil(cart_item.amount / cart_item.product.packing_unit))
     return 0
