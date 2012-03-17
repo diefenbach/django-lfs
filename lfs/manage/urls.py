@@ -1,3 +1,4 @@
+
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
 
@@ -140,17 +141,18 @@ urlpatterns += patterns('lfs.manage.views.product.variants',
 )
 
 # Property Groups
-urlpatterns += patterns('lfs.manage.views.property_groups.property_groups',
+urlpatterns += patterns('lfs.manage.property_groups.views',
     url(r'^property-groups', "manage_property_groups", name="lfs_manage_property_groups"),
     url(r'^property-group/(?P<id>\d*)', "manage_property_group", name="lfs_manage_property_group"),
-    url(r'^add-property-group', "add_property_group", name="lfs_add_property_group"),
+    url(r'^add-property-group', "add_property_group", name="lfs_manage_add_property_group"),
     url(r'^delete-property-group/(?P<id>\d*)', "delete_property_group", name="lfs_delete_property_group"),
     url(r'^assign-properties/(?P<group_id>\d*)', "assign_properties", name="lfs_assign_properties"),
     url(r'^update-properties/(?P<group_id>\d*)', "update_properties", name="lfs_update_properties"),
+    url(r'^no-property-groups$', "no_property_groups", name="lfs_manage_no_property_groups"),
 )
 
 # Property Groups / Products
-urlpatterns += patterns('lfs.manage.views.property_groups.products',
+urlpatterns += patterns('lfs.manage.property_groups.views',
     url(r'^assign-products-to-property-group/(?P<group_id>\d*)', "assign_products", name="lfs_assign_products_to_property_group"),
     url(r'^remove-products-from-property-group/(?P<group_id>\d*)', "remove_products", name="lfs_pg_remove_products"),
     url(r'^pg-products-inline/(?P<product_group_id>\d*)', "products_inline", name="lfs_pg_products_inline"),

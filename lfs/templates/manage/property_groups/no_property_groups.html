@@ -1,0 +1,23 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/properties/properties.html{% endblock %}
+
+{% block sextion %}no-property-groups{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <h2>
+        {% trans "Property Groups" %}
+    </h2>
+    <div class="no-content">
+        {% trans "There are no property groups yet." %}
+    </div>
+    <div class="buttons">
+        <form action="{% url lfs_manage_add_property_group %}">
+            <input type="submit"
+                   class="button"
+                   value="{% trans 'Add Property Group' %}">
+        </form>
+    </div>
+{% endblock %}

@@ -1753,9 +1753,10 @@ class ProductAccessories(models.Model):
 
 
 class PropertyGroup(models.Model):
-    """Groups product properties together.
+    """
+    Groups product properties together.
 
-    Can belong to several products, products can have several groups
+    Can belong to several products, products can have several groups.
 
     **Attributes**:
 
@@ -1765,7 +1766,7 @@ class PropertyGroup(models.Model):
     products
           The assigned products of the property group.
     """
-    name = models.CharField(blank=True, max_length=50)
+    name = models.CharField(_("Property Group"), max_length=50)
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="property_groups")
 
     class Meta:
