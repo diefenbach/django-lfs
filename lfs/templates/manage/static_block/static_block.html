@@ -28,7 +28,7 @@
 
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_manage_add_static_block %}">{% trans 'Add Static Block' %}</a>
+           href="{% url lfs_manage_add_static_block %}?came_from={% url lfs_manage_static_block static_block.id %}">{% trans 'Add Static Block' %}</a>
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this static block?' %}"
            href="{% url lfs_delete_static_block static_block.id %}">{% trans 'Delete Static Block' %}</a>
