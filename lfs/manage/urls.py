@@ -7,11 +7,13 @@ urlpatterns = patterns('lfs.manage.views',
     url(r'^$', "dashboard", name="lfs_manage_dashboard"),
 )
 
-urlpatterns += patterns('lfs.manage.views.delivery_times',
+# Delivery Times
+urlpatterns += patterns('lfs.manage.delivery_times.views',
     url(r'^delivery_times$', "manage_delivery_times", name="lfs_manage_delivery_times"),
     url(r'^delivery_time/(?P<id>\d*)$', "manage_delivery_time", name="lfs_manage_delivery_time"),
-    url(r'^add-delivery-time$', "add_delivery_time", name="lfs_add_delivery_time"),
+    url(r'^add-delivery-time$', "add_delivery_time", name="lfs_manage_add_delivery_time"),
     url(r'^delete-delivery-time/(?P<id>\d*)$', "delete_delivery_time", name="lfs_delete_delivery_time"),
+    url(r'^no-times$', "no_delivery_times", name="lfs_no_delivery_times"),
 )
 
 # Manufacturer

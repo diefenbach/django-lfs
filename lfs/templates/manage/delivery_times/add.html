@@ -1,9 +1,8 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
-{% block help_link %}user/management/shop/delivery_times.html{% endblock %}
-
 {% block title %}{% trans "Add Delivery Time" %}{% endblock %}
+{% block help_link %}user/management/shop/delivery_times.html{% endblock %}
 {% block section %}add-delivery-time{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
@@ -14,24 +13,18 @@
         </ul>
         <div id="data">
             <h2>{% trans 'Data' %}</h2>
-            <form action="{% url lfs_add_delivery_time %}"
-                  method="post">
+            <form method="post">
                 {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
-
                 <div class="buttons">
                     <input type="submit"
                            class="button"
                            value="{% trans 'Add Delivery Time' %}" />
                     <input type="button"
                            class="button"
-                           onclick="window.location='{{ next }}'"
+                           onclick="window.location='{{ came_from }}'"
                            value="{% trans 'Cancel' %}" />
-                    <input type="hidden"
-                           name="next"
-                           value="{{ next }}" />
                 </div>
-
             </form>
         </div>
     </div>
