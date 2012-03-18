@@ -293,10 +293,12 @@
                 </div>
                 <div>
                     {{ form.active_base_price }}
-                    {% if product.is_variant and product.parent.active_base_price %}
-                        {% trans 'Yes' %}
-                    {% else %}
-                        {% trans 'No' %}
+                    {% if product.is_variant %}
+                        {% if product.parent.active_base_price %}
+                            {% trans 'Yes' %}
+                        {% else %}
+                            {% trans 'No' %}
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
