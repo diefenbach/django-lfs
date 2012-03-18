@@ -124,15 +124,15 @@ urlpatterns += patterns('lfs.manage.product.seo',
 
 # Product Variants
 urlpatterns += patterns('lfs.manage.product.variants',
-    url(r'^properties/(?P<product_id>\d*)$', "manage_variants"),
-    url(r'^add-property/(?P<product_id>\d*)$', "add_property"),
-    url(r'^add-property-option/(?P<product_id>\d*)$', "add_property_option"),
-    url(r'^delete-property/(?P<product_id>\d*)/(?P<property_id>\d*)$', "delete_property"),
-    url(r'^delete-property-option/(?P<product_id>\d*)/(?P<option_id>\d*)$', "delete_property_option"),
-    url(r'^change-property-position$', "change_property_position"),
+    url(r'^properties/(?P<product_id>\d*)$', "manage_variants", name="lfs_manage_variants"),
+    url(r'^add-property/(?P<product_id>\d*)$', "add_property", name="lfs_manage_add_property"),
+    url(r'^add-property-option/(?P<product_id>\d*)$', "add_property_option", name="lfs_manage_add_property_option"),
+    url(r'^delete-property/(?P<product_id>\d*)/(?P<property_id>\d*)$', "delete_property", name="lfs_manage_delete_property"),
+    url(r'^delete-property-option/(?P<product_id>\d*)/(?P<option_id>\d*)$', "delete_property_option", name="lfs_manage_delete_property_option"),
+    url(r'^change-property-position$', "change_property_position", name="lfs_manage_change_property_position"),
     url(r'^update-variants/(?P<product_id>\d*)$', "update_variants", name="lfs_manage_update_variants"),
-    url(r'^add-variants/(?P<product_id>\d*)$', "add_variants", name="lfs_add_variants"),
-    url(r'^edit-sub-type/(?P<product_id>\d*)$', "edit_sub_type", name="lfs_edit_sub_type"),
+    url(r'^add-variants/(?P<product_id>\d*)$', "add_variants", name="lfs_manage_add_variants"),
+    url(r'^edit-sub-type/(?P<product_id>\d*)$', "edit_sub_type", name="lfs_manage_edit_sub_type"),
     url(r'^update-category-variant/(?P<product_id>\d*)$', "update_category_variant", name="lfs_update_category_variant"),
 )
 

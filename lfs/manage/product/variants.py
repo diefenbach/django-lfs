@@ -598,9 +598,9 @@ def _selectable_products_inline(request, product):
     """
     # Somewhat ugly but it works for now. This is will be updated if the
     # planned refactoring of the whole product management takes place
-    from lfs.manage.views.product.product import selectable_products_inline
-    from lfs.manage.views.product.product import _get_filtered_products_for_product_view
-    from lfs.manage.views.product.product import get_current_page
+    from lfs.manage.product.product import selectable_products_inline
+    from lfs.manage.product.product import _get_filtered_products_for_product_view
+    from lfs.manage.product.product import get_current_page
     from django.core.paginator import Paginator
     AMOUNT = 20
     products = _get_filtered_products_for_product_view(request)

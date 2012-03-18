@@ -2679,7 +2679,7 @@ class ProductTestCase(TestCase):
         # login the manager account so we can access the add variant function
         self.client.login(username='manager', password='pass')
 
-        response = self.client.post(reverse('lfs_add_variants', args=(product.id,)), variant_data)
+        response = self.client.post(reverse('lfs_manage_add_variants', args=(product.id,)), variant_data)
         # following code in try loop will only be relevant if there are errors in the form
         try:
             if hasattr(response, 'context'):
