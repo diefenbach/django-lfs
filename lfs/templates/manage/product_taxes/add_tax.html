@@ -1,9 +1,9 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block title %}{% trans "Add Product Tax" %}{% endblock %}
+{% block section %}add-product-tax{% endblock %}
 {% block help_link %}/user/management/shop/product_taxes.html{% endblock %}
-
-{% block sextion %}add-tax{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
@@ -13,8 +13,7 @@
         </ul>
         <div id="data">
             <h2>{% trans "Data" %}</h2>
-            <form action="{% url lfs_add_tax %}"
-                  method="post">
+            <form method="post">
                 {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
                 <div class="buttons">

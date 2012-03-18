@@ -1,7 +1,6 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
@@ -13,20 +12,9 @@ from django.views.decorators.http import require_POST
 import lfs.core.utils
 from lfs.catalog.models import Product
 from lfs.tax.models import Tax
+from lfs.manage.product_taxes.forms import TaxAddForm
+from lfs.manage.product_taxes.forms import TaxForm
 
-
-class TaxForm(ModelForm):
-    """Form to edit a tax.
-    """
-    class Meta:
-        model = Tax
-
-class TaxAddForm(ModelForm):
-    """Form to add a tax.
-    """
-    class Meta:
-        model = Tax
-        fields = ("rate", )
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_taxes(request):
@@ -36,13 +24,13 @@ def manage_taxes(request):
         tax = Tax.objects.all()[0]
         url = reverse("lfs_manage_tax", kwargs={"id": tax.id})
     except IndexError:
-        url = reverse("lfs_add_tax")
+        url = reverse("lfs_manage_no_taxes")
 
     return HttpResponseRedirect(url)
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def manage_tax(request, id, template_name="manage/tax/tax.html"):
+def manage_tax(request, id, template_name="manage/product_taxes/tax.html"):
     """Displays the main form to manage taxes.
     """
     tax = get_object_or_404(Tax, pk=id)
@@ -66,7 +54,14 @@ def manage_tax(request, id, template_name="manage/tax/tax.html"):
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def add_tax(request, template_name="manage/tax/add_tax.html"):
+def no_taxes(request, template_name="manage/product_taxes/no_taxes.html"):
+    """Displays that there are no taxes.
+    """
+    return render_to_response(template_name, RequestContext(request, {}))
+
+
+@permission_required("core.manage_shop", login_url="/login/")
+def add_tax(request, template_name="manage/product_taxes/add_tax.html"):
     """Provides a form to add a new tax.
     """
     if request.method == "POST":

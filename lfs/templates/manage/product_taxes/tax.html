@@ -1,6 +1,8 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
+{% block title %}{% trans "Product Tax" %}{% endblock %}
+{% block section %}product-tax{% endblock %}
 {% block help_link %}/user/management/shop/product_taxes.html{% endblock %}
 
 {% block left_slot %}
@@ -22,7 +24,7 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_add_tax %}">{% trans 'Add Product Tax' %}</a>
+           href="{% url lfs_manage_add_tax %}?came_from={% url lfs_manage_tax tax.id %}">{% trans 'Add Product Tax' %}</a>
 
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this tax?' %}"
