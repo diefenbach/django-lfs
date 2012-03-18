@@ -30,10 +30,10 @@ from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TYPE_FORM_CHOICES
 from lfs.catalog.settings import VARIANT
 from lfs.core.utils import LazyEncoder
-from lfs.manage.views.product.images import manage_images
-from lfs.manage.views.product.seo import manage_seo
-from lfs.manage.views.product.properties import manage_properties
-from lfs.manage.views.product.attachments import manage_attachments
+from lfs.manage.product.images import manage_images
+from lfs.manage.product.seo import manage_seo
+from lfs.manage.product.properties import manage_properties
+from lfs.manage.product.attachments import manage_attachments
 from lfs.manage.views.lfs_portlets import portlets_inline
 from lfs.manage.utils import get_current_page
 from lfs.manufacturer.models import Manufacturer
@@ -189,6 +189,13 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
         "form": ProductSubTypeForm(instance=product),
         "name_filter_value": request.session.get("product_filters", {}).get("product_name", ""),
     }))
+
+
+@permission_required("core.manage_shop", login_url="/login/")
+def no_products(request, template_name="manage/product/no_products.html"):
+    """Displays that there are no products
+    """
+    return render_to_response(template_name, RequestContext(request, {}))
 
 
 # Tabs
@@ -368,7 +375,7 @@ def add_product(request, template_name="manage/product/add_product.html"):
 
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
-        "next": request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_product_dispatcher")),
     }))
 
 
@@ -461,7 +468,7 @@ def product_dispatcher(request):
         product = Product.objects.exclude(sub_type=VARIANT)[0]
         url = reverse("lfs_manage_product", kwargs={"product_id": product.id})
     except IndexError:
-        url = reverse("lfs_manage_add_product")
+        url = reverse("lfs_manage_no_products")
 
     return HttpResponseRedirect(url)
 

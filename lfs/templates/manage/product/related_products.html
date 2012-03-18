@@ -7,9 +7,9 @@
     <form id="related-products-update-form"
           action="{% url lfs_manage_update_related_products product.id %}"
           method="post">
-        <input type="checkbox" 
-               name="active_related_products" 
-               {% if product.active_related_products %}checked="checked"{% endif %} />                   
+        <input type="checkbox"
+               name="active_related_products"
+               {% if product.active_related_products %}checked="checked"{% endif %} />
         <label for="active_related_products">
             {% trans 'Active related products' %}
         </label>
@@ -17,23 +17,23 @@
                type="submit" value="{% trans "Update" %}" />
     </form>
     <div class="separator"></div>
-{% endif %}    
+{% endif %}
 
 <form id="filter-related-products-form"
-      action="{% url lfs.manage.views.manage_related_products_inline product.id %}"
+      action="{% url lfs_manage_related_products_inline product.id %}"
       onsubmit="return false">
     <input class="refresh-on-keyup" type="text" name="filter"/>
-    
+
     {% category_filter "refresh-on-change" "related_products_category_filter" %}
 
     <select class="refresh-on-change"
             name="related-products-amount">
         {% for option in amount_options %}
-            <option {% if option.selected %}selected="selected"{% endif %} 
+            <option {% if option.selected %}selected="selected"{% endif %}
                     value="{{ option.value }}">{{ option.value }}</option>
         {% endfor %}
     </select>
-    
+
 </form>
 
 {{ related_products_inline }}
