@@ -24,6 +24,12 @@ Credits
 
   Contributor.
 
+* Maciej Wiśniowski
+
+  Contributor.
+
+  Bug fixes. Autocompletion for manufacturers. Polish translations.
+
 * Kai Diefenbach (diefenbach, http://www.iqpp.de)
 
   Founder.

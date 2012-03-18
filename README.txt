@@ -47,6 +47,7 @@ Changes
 * Improved: cleaned up displaying of addresses of orders within LM
 * Updated: Czech translation (naro)
 * Updated: German translation
+* Update: Polish translations (Maciej Wiśniowski)
 
 0.7.0 beta 2
 ------------
