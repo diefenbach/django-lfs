@@ -2398,6 +2398,73 @@ class ProductTestCase(TestCase):
 
         self.assertEqual(self.v1.get_for_sale(), False)
 
+    def test_get_base_price(self):
+        """Tests the base price of a product.
+        """
+        self.request.user = AnonymousUser()
+        self.assertEqual(self.p1.get_base_price(self.request), 0.0)
+        self.assertEqual(self.p1.get_base_price_net(self.request), 0.0)
+        self.assertEqual(self.p1.get_base_price_gross(self.request), 0.0)
+
+        self.p1.base_price_amount = 0.5
+        self.p1.save()
+
+        self.assertEqual(self.p1.get_base_price(self.request), 2)
+        self.assertEqual("%.2f" % self.p1.get_base_price_net(self.request), "1.68")
+        self.assertEqual(self.p1.get_base_price_gross(self.request), 2)
+
+        self.p1.price_calculator = "lfs.net_price.NetPriceCalculator"
+        self.p1.save()
+
+        self.assertEqual(self.p1.get_base_price(self.request), 2)
+        self.assertEqual(self.p1.get_base_price_net(self.request), 2)
+        self.assertEqual("%.2f" % self.p1.get_base_price_gross(self.request), "2.38")
+
+    def test_get_base_price_for_variant(self):
+        """Tests the base price of a product.
+        """
+        self.request.user = AnonymousUser()
+        self.assertEqual(self.v1.get_base_price(self.request), 0.0)
+        self.assertEqual(self.v1.get_base_price_net(self.request), 0.0)
+        self.assertEqual(self.v1.get_base_price_gross(self.request), 0.0)
+
+        self.p1.base_price_amount = 0.5
+        self.p1.save()
+
+        self.assertEqual(self.v1.get_base_price(self.request), 2)
+        self.assertEqual("%.2f" % self.v1.get_base_price_net(self.request), "1.68")
+        self.assertEqual(self.v1.get_base_price_gross(self.request), 2)
+
+        self.v1.base_price_amount = 0.25
+        self.v1.save()
+
+        # base price for variant is not active, so the amount of the parent is taken.
+        self.assertEqual(self.v1.get_base_price(self.request), 2)
+        self.assertEqual("%.2f" % self.v1.get_base_price_net(self.request), "1.68")
+        self.assertEqual(self.v1.get_base_price_gross(self.request), 2)
+
+        self.v1.active_base_price = True
+        self.v1.save()
+
+        self.assertEqual(self.v1.get_base_price(self.request), 4)
+        self.assertEqual("%.2f" % self.v1.get_base_price_net(self.request), "3.36")
+        self.assertEqual(self.v1.get_base_price_gross(self.request), 4)
+
+        self.p1.price_calculator = "lfs.net_price.NetPriceCalculator"
+        self.p1.save()
+
+        self.assertEqual(self.v1.get_base_price(self.request), 4)
+        self.assertEqual(self.v1.get_base_price_net(self.request), 4)
+        self.assertEqual("%.2f" % self.v1.get_base_price_gross(self.request), "4.76")
+
+        self.v1.base_price_amount = 0
+        self.v1.save()
+
+        # Base price for variant is active but the value is 0
+        self.assertEqual(self.v1.get_base_price(self.request), 0)
+        self.assertEqual(self.v1.get_base_price_net(self.request), 0)
+        self.assertEqual(self.v1.get_base_price_gross(self.request), 0)
+
     def test_get_sku(self):
         """
         """

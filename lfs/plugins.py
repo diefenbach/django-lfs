@@ -322,7 +322,7 @@ class PriceCalculator(object):
         except (TypeError, ZeroDivisionError):
             return 0.0
 
-    def get_base_price(self, with_properties):
+    def get_base_price_net(self, with_properties):
         """
         Returns the net base price of the product.
         """
