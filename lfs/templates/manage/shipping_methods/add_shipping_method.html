@@ -1,0 +1,31 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Add shipping method" %}{% endblock %}
+{% block section %}add-shipping-method{% endblock %}
+{% block help_link %}user/management/shop/shipping_methods.html{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add Shipping Method' %}</a></li>
+        </ul>
+        <div id="data">
+            <h2>{% trans 'Data' %}</h2>
+            <form method="post">
+                {% csrf_token %}
+                {% include "manage/lfs_form.html" %}
+                <div class="buttons">
+                    <input type="submit"
+                           class="button"
+                           value="{% trans 'Add shipping method' %}" />
+                    <input type="button"
+                           class="button"
+                           onclick="window.location='{{ came_from }}'"
+                           value="{% trans 'Cancel' %}" />
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

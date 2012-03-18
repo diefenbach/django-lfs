@@ -30,7 +30,7 @@
     </h2>
     <form id="property-add-form"
           class="property-edit-field"
-          action="{% url lfs.manage.views.add_property product.id %}"
+          action="{% url lfs_manage_add_property product.id %}"
           method="post">
         {{ property_form.name }}
         <input class="ajax-save-button"
@@ -41,7 +41,7 @@
     {% for property in local_properties %}
         <div style="font-weight:bold">{{ property.name }}</div>
         {% if not forloop.first %}
-            <a href="{% url lfs.manage.views.change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=up"
+            <a href="{% url lfs_manage_change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=up"
                class="ajax-link property-edit-field">
                 <image src="{{ STATIC_URL }}icons/arrow_up.png"
                        alt="{% trans 'Up' %}"
@@ -50,7 +50,7 @@
             </a>
         {% endif %}
         {% if not forloop.last %}
-            <a href="{% url lfs.manage.views.change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=down"
+            <a href="{% url lfs_manage_change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=down"
                     class="ajax-link property-edit-field">
                 <image src="{{ STATIC_URL }}icons/arrow_down.png"
                        alt="{% trans 'Down' %}"
@@ -58,7 +58,7 @@
             </a>
         {% endif %}
 
-        <a href="{% url lfs.manage.views.delete_property product.id property.id %}"
+        <a href="{% url lfs_manage_delete_property product.id property.id %}"
            class="delete-link property-edit-field"
            dialog_message="{% trans 'Do you really want to delete this property and all its options?' %}"
            dialog_yes_button_class="ajax-save-button">
@@ -70,7 +70,7 @@
             {% for option in property.options.all %}
                 <div>
                     {{ option.name }}
-                    <a href="{% url lfs.manage.views.delete_property_option product.id option.id %}"
+                    <a href="{% url lfs_manage_delete_property_option product.id option.id %}"
                        class="delete-link property-edit-field"
                        dialog_message="{% trans 'Do you really want to delete this option?' %}"
                        dialog_yes_button_class="ajax-save-button">
@@ -82,7 +82,7 @@
                 </div>
             {% endfor %}
             <div class="property-edit-field">
-                <form action="{% url lfs.manage.views.add_property_option product.id %}"
+                <form action="{% url lfs_manage_add_property_option product.id %}"
                       method="post">
                     {{ property_option_form.name }}
                     <input type="hidden" name="property_id" value="{{ property.id }}" />
@@ -95,7 +95,7 @@
     {% endfor %}
 
     <h2 class="heading-middle">{% trans 'Variants' %}</h2>
-    <form action="{% url lfs.manage.views.add_variants product.id %}"
+    <form action="{% url lfs_manage_add_variants product.id %}"
           class="variants-add-form"
           method="post">
         <table>
@@ -265,7 +265,7 @@
         </form>
 
         <h2 class="heading-middle">{% trans 'Display type' %}</h2>
-        <form action="{% url lfs.manage.views.edit_sub_type product.id %}"
+        <form action="{% url lfs_manage_edit_sub_type product.id %}"
               method="post">
             <div class="label">
                 {{ display_type_form.variants_display_type.label_tag }}:

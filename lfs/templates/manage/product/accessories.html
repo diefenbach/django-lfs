@@ -13,16 +13,16 @@
         <label for="active_accessories">
             {% trans 'Active accessories' %}
         </label>
-        <input class="ajax-save-button button" 
-               type="submit" 
+        <input class="ajax-save-button button"
+               type="submit"
                value='{% trans "Update" %}' />
     </form>
     <div class="separator"></div>
-    
+
 {% endif %}
 
 <form id="filter-accessories-form"
-      action="{% url lfs.manage.views.manage_accessories_inline product.id %}"
+      action="{% url lfs_manage_accessories_inline product.id %}"
       onsubmit="return false">
     <input class="refresh-on-keyup" type="text" name="filter"/>
 

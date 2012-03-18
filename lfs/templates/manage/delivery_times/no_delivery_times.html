@@ -1,0 +1,22 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/shop/delivery_times.html{% endblock %}
+{% block section %}no-delivery-times{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <h2>
+        {% trans "Delivery Time" %}
+    </h2>
+    <div class="no-content">
+        {% trans "There are no delivery times yet." %}
+    </div>
+    <div class="buttons">
+        <form action="{% url lfs_manage_add_delivery_time %}">
+            <input type="submit"
+                   class="button"
+                   value="{% trans 'Add Delivery Time' %}">
+        </form>
+    </div>
+{% endblock %}

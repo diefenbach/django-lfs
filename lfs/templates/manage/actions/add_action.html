@@ -2,7 +2,6 @@
 {% load i18n %}
 
 {% block help_link %}user/management/shop/actions.html{% endblock %}
-
 {% block section %}add-action{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
@@ -11,25 +10,20 @@
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add action' %}</a></li>
         </ul>
-
         <div id="data">
             <h2>{% trans 'Data' %}</h2>
-            <form action="{% url lfs_add_action %}"
-                  method="post">
+            <form method="post">
                 {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
-
                 <div class="buttons">
                     <input type="submit"
                            class="button"
                            value="{% trans 'Add' %}" />
-
                     <input type="button"
                            class="button"
-                           onclick="window.location='{{request.META.HTTP_REFERER}}'"
+                           onclick="window.location='{{ came_from }}'"
                            value="{% trans 'Cancel' %}" />
                 </div>
-
             </form>
         </div>
     </div>

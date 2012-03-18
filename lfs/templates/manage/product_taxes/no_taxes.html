@@ -1,0 +1,23 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "No Product Taxes" %}{% endblock %}
+{% block section %}no-product-taxes{% endblock %}
+{% block help_link %}/user/management/shop/product_taxes.html{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <h2>
+        {% trans "Product Taxes" %}
+    </h2>
+    <div class="no-content">
+        {% trans "There are no product taxes yet." %}
+    </div>
+    <div class="buttons">
+        <form action="{% url lfs_manage_add_tax %}">
+            <input type="submit"
+                   class="button"
+                   value="{% trans 'Add Product Tax' %}">
+        </form>
+    </div>
+{% endblock %}

@@ -52,7 +52,7 @@
             {% endif %}
 
             <a class="add"
-               href="{% url lfs_manage_add_product %}">
+               href="{% url lfs_manage_add_product %}?came_from={% url lfs_manage_product product.id %}">
                 {% trans 'Add Product' %}
             </a>
 
@@ -63,12 +63,12 @@
             </a>
 
             <a class="view popup-link"
-               href="{% url lfs.manage.views.product_by_id product.id %}">
+               href="{% url lfs_manage_product_by_id product.id %}">
                {% trans 'View Product' %}
             </a>
 
             <a class="goto"
-               href="{% url lfs.manage.views.product_by_id product.id %}">
+               href="{% url lfs_manage_product_by_id product.id %}">
                {% trans 'Goto Product' %}
             </a>
 

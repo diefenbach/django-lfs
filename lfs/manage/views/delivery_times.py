@@ -39,7 +39,7 @@ def manage_delivery_times(request):
         delivery_time = DeliveryTime.objects.all()[0]
         url = reverse("lfs_manage_delivery_time", kwargs={"id": delivery_time.id})
     except IndexError:
-        url = reverse("lfs_add_delivery_time")
+        url = reverse("lfs_manage_add_delivery_time")
 
     return HttpResponseRedirect(url)
 

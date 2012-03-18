@@ -2,9 +2,9 @@
 {% load i18n %}
 
 {% block help_link %}user/management/shop/delivery_times.html{% endblock %}
-
 {% block title %}{% trans "Manage Delivery Time" %}{% endblock %}
 {% block section %}manage-delivery-time{% endblock %}
+
 {% block left_slot %}
     <h2 class="navigation-title">
         {% trans "Delivery times" %}
@@ -22,16 +22,13 @@
 {% endblock %}
 
 {% block content %}
-
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_add_delivery_time %}">{% trans 'Add Delivery Time' %}</a>
-
+           href="{% url lfs_manage_add_delivery_time %}?came_from={% url lfs_manage_delivery_time delivery_time.id %}">{% trans 'Add Delivery Time' %}</a>
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this delivery time?' %}"
            href="{% url lfs_delete_delivery_time delivery_time.id %}">{% trans 'Delete Delivery Time' %}</a>
     </div>
-
     <div id="manage-tabs">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Delivery Time' %}</a></li>

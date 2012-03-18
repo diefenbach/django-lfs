@@ -1,101 +1,108 @@
 {% load i18n %}
 {% load lfs_tags %}
 
-<table class="lfs-manage-table">
-    <tr>
-        <th class="tiny">
-            <a class="ajax-link"
-               href='{% url lfs_set_review_ordering "id" %}'>
-                {% trans 'ID' %}
-            </a>
-        </th>
-        <th class="middle">
-            <a class="ajax-link"
-               href='{% url lfs_set_review_ordering "creation_date" %}'>
-                {% trans 'Creation date' %}
-            </a>
-        </th>
-        <th class="long">
-            <a class="ajax-link"
-               href='{% url lfs_set_review_ordering "user_name" %}'>
-                {% trans 'Name' %}
-            </a>
-        </th>
-        <th>
-            <a class="ajax-link"
-               href='{% url lfs_set_review_ordering "user_email" %}'>
-                {% trans 'E-Mail' %}
-            </a>
-        </th>
-        <th>
-            <a class="ajax-link"
-               href='{% url lfs_set_review_ordering "product" %}'>
-                {% trans 'Product' %}
-            </a>
-        </th>
-        <th class="small">
-            <a class="ajax-link"
-               href='{% url lfs_set_review_ordering "score" %}'>
-                {% trans 'Score' %}
-            </a>
-        </th>
-        <th class="small">
-            {% trans 'Comment' %}
-        </th>
-        <th class="tiny">
-            {% trans 'Active' %}
-        </th>
-    </tr>
-
-    {% for review in page.object_list %}
-        <tr class="clickable {% cycle 'even' 'odd' %}"
-            onclick="window.location='{% url lfs_manage_review review.id %}'">
-            <td>
-                {{ review.id }}
-            </td>
-            <td>
-                {{ review.creation_date|date:"d.m.Y" }}
-            </td>
-            <td>
-                {% if review.user_name %}
-                    {{ review.user_name }}
-                {% else %}
-                    ---
-                {% endif %}
-            </td>
-            <td>
-                {% if review.user_email %}
-                    {{ review.user_email }}
-                {% else %}
-                    ---
-                {% endif %}
-            </td>
-            <td>
-                <a href="{{ review.content.get_absolute_url }}">
-                    {{ review.content.get_name }}
+{% if not page.object_list %}
+    <div>
+        {% trans "There are no reviews yet." %}
+    </div>
+{% else %}
+    <table class="lfs-manage-table">
+        <tr>
+            <th class="tiny">
+                <a class="ajax-link"
+                   href='{% url lfs_set_review_ordering "id" %}'>
+                    {% trans 'ID' %}
                 </a>
-            </td>
-            <td>
-                {{ review.score }}
-            </td>
-            <td>
-                {% if review.comment %}
-                    <img src="{{ STATIC_URL }}icons/tick.png"
-                         alt="{% trans 'Yes' %}">
-                {% else %}
-                    <img src="{{ STATIC_URL }}icons/cross.png"
-                         alt="{% trans 'No' %}">
-                {% endif %}
-            </td>
-            <td>
-                {% if review.active %}
-                    <img src="{{ STATIC_URL }}icons/tick.png"
-                         alt="{% trans 'Yes' %}">
-                {% else %}
-                    <img src="{{ STATIC_URL }}icons/cross.png"
-                         alt="{% trans 'No' %}">
-                {% endif %}
-            </td>
+            </th>
+            <th class="middle">
+                <a class="ajax-link"
+                   href='{% url lfs_set_review_ordering "creation_date" %}'>
+                    {% trans 'Creation date' %}
+                </a>
+            </th>
+            <th class="long">
+                <a class="ajax-link"
+                   href='{% url lfs_set_review_ordering "user_name" %}'>
+                    {% trans 'Name' %}
+                </a>
+            </th>
+            <th>
+                <a class="ajax-link"
+                   href='{% url lfs_set_review_ordering "user_email" %}'>
+                    {% trans 'E-Mail' %}
+                </a>
+            </th>
+            <th>
+                <a class="ajax-link"
+                   href='{% url lfs_set_review_ordering "product" %}'>
+                    {% trans 'Product' %}
+                </a>
+            </th>
+            <th class="small">
+                <a class="ajax-link"
+                   href='{% url lfs_set_review_ordering "score" %}'>
+                    {% trans 'Score' %}
+                </a>
+            </th>
+            <th class="small">
+                {% trans 'Comment' %}
+            </th>
+            <th class="tiny">
+                {% trans 'Active' %}
+            </th>
         </tr>
-    {% endfor %}
-</table>
+
+        {% for review in page.object_list %}
+            <tr class="clickable {% cycle 'even' 'odd' %}"
+                onclick="window.location='{% url lfs_manage_review review.id %}'">
+                <td>
+                    {{ review.id }}
+                </td>
+                <td>
+                    {{ review.creation_date|date:"d.m.Y" }}
+                </td>
+                <td>
+                    {% if review.user_name %}
+                        {{ review.user_name }}
+                    {% else %}
+                        ---
+                    {% endif %}
+                </td>
+                <td>
+                    {% if review.user_email %}
+                        {{ review.user_email }}
+                    {% else %}
+                        ---
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ review.content.get_absolute_url }}">
+                        {{ review.content.get_name }}
+                    </a>
+                </td>
+                <td>
+                    {{ review.score }}
+                </td>
+                <td>
+                    {% if review.comment %}
+                        <img src="{{ STATIC_URL }}icons/tick.png"
+                             alt="{% trans 'Yes' %}">
+                    {% else %}
+                        <img src="{{ STATIC_URL }}icons/cross.png"
+                             alt="{% trans 'No' %}">
+                    {% endif %}
+                </td>
+                <td>
+                    {% if review.active %}
+                        <img src="{{ STATIC_URL }}icons/tick.png"
+                             alt="{% trans 'Yes' %}">
+                    {% else %}
+                        <img src="{{ STATIC_URL }}icons/cross.png"
+                             alt="{% trans 'No' %}">
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+

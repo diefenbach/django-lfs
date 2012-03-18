@@ -1,0 +1,60 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Manage Manufacturer" %}{% endblock %}
+{% block section %}manage-manufacturer{% endblock %}
+{% block help_link %}user/management/shop/manufacturers.html{% endblock %}
+
+{% block left_slot %}
+    <h2 class="navigation-title">{% trans "Manufacturers" %}</h2>
+    <div class="navigation-body"
+         id="selectable-manufacturers">
+        {{ selectable_manufacturers_inline|safe }}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="site-actions">
+        <a class="add"
+           href="{% url lfs_manufacturer_add_manufacturer %}?came_from={% url lfs_manufacturer manufacturer_id %}">
+           {% trans 'Add Manufacturer' %}</a>
+        <a class="delete delete-link"
+           dialog_message="{% trans 'Do you really want to delete this manufacturer?' %}"
+           href="{% url lfs_manufacturer_delete_manufacturer manufacturer_id %}">
+           {% trans 'Delete Manufacturer' %}</a>
+    </div>
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Products' %}</a></li>
+        </ul>
+        <div id="data">
+            {{ manufacturer_data_inline|safe }}
+        </div>
+        <div id="products">
+            <h2>{% trans "Products" %}</h2>
+            <ul class="manufacturer-tree">
+
+                {% for category in categories %}
+                    <li class="category {{ category.klass }}"
+                        data="{% url lfs_manufacturer_category_state manufacturer_id category.id %}">
+                        <input id="factory-category-input-{{ category.id }}"
+                               class="export-category-input"
+                               type="checkbox"
+                               data="{% url lfs_manufacturer_edit_category manufacturer_id category.id %}"
+                               {% if category.checked %}checked="checked"{% endif %} />
+
+                        <a class="category-ajax-link collapsed"
+                           id="{{ category.id }}"
+                           href="{% url lfs_manufacturer_inline manufacturer_id category.id %}">
+                            {{ category.name }}
+                        </a>
+                        <span class="category-state" id="category-state-{{ category.id }}">
+                            {% ifequal category.klass "half" %}(1/2){% endifequal %}
+                        </span>
+                        <div id="sub-categories-{{ category.id }}"></div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+{% endblock %}

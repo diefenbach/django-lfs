@@ -17,7 +17,7 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_manage_add_discount %}">
+           href="{% url lfs_manage_add_discount %}?came_from={% url lfs_manage_discount discount.id %}">
             {% trans 'Add discount' %}</a>
 
         <a class="delete delete-link"

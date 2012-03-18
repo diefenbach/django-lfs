@@ -1,0 +1,20 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}/user/management/marketing/discounts.html{% endblock %}
+
+{% block sextion %}no-discounts{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <h2>{% trans "Discounts" %}</h2>
+    <div class="no-content">
+        {% trans "There are no discounts yet." %}
+    </div>
+
+    <div class="buttons">
+        <input class="button"
+               onclick="window.location='{% url lfs_manage_add_discount %}'"
+               value="{% trans 'Add Discount' %}">
+    </div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Product Tax" %}{% endblock %}
+{% block section %}product-tax{% endblock %}
+{% block help_link %}/user/management/shop/product_taxes.html{% endblock %}
+
+{% block left_slot %}
+    <h2 class="navigation-title">
+        {% trans "Product Taxes" %}
+    </h2>
+    <div class="navigation-body">
+        {% for tax in taxes %}
+            <div>
+                <a href="{% url lfs_manage_tax tax.id %}"
+                   class="selectable {% ifequal tax.id current_id %}selected{% endifequal %}">
+                   {{ tax.rate }}%
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="site-actions">
+        <a class="add"
+           href="{% url lfs_manage_add_tax %}?came_from={% url lfs_manage_tax tax.id %}">{% trans 'Add Product Tax' %}</a>
+
+        <a class="delete delete-link"
+           dialog_message="{% trans 'Do you really want to delete this tax?' %}"
+           href="{% url lfs_delete_tax tax.id %}">{% trans 'Delete Product Tax' %}</a>
+    </div>
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Product Tax' %}</a></li>
+        </ul>
+        <div id="data">
+            <h2>{% trans 'Data' %}</h2>
+            <form action="{% url lfs_manage_tax tax.id %}"
+                  method="post">
+                {% csrf_token %}
+                {% include "manage/lfs_form.html" %}
+                <div class="buttons">
+                    <input type="submit"
+                           class="button"
+                           value="{% trans 'Save Tax' %}">
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Manage Shipping Methods" %}{% endblock %}
+{% block section %}manage-shipping-methods{% endblock %}
+{% block help_link %}user/management/shop/shipping_methods.html{% endblock %}
+
+{% block left_slot %}
+    <div id="shipping-methods">
+        {{ shipping_methods }}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="site-actions">
+        <a class="add"
+           href="{% url lfs_manage_add_shipping_method %}?came_from={% url lfs_manage_shipping_method shipping_method.id %}">
+            {% trans 'Add shipping method' %}
+        </a>
+        <a class="delete delete-link"
+           dialog_message="{% trans 'Do you really want to delete this shipping method?' %}"
+           href="{% url lfs_manage_delete_shipping_method shipping_method.id %}">
+            {% trans 'Delete Shipping Method' %}
+        </a>
+    </div>
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#criteria">{% trans 'Criteria' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#prices">{% trans 'Prices' %}</a></li>
+        </ul>
+        <div id="data">
+            {{ data }}
+        </div>
+        <div id="criteria">
+            {{ method_criteria }}
+        </div>
+        <div id="prices">
+            {{ method_prices }}
+        </div>
+    </div>
+{% endblock %}

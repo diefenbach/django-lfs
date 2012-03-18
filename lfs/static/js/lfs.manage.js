@@ -215,12 +215,11 @@ $(function() {
         });
     });
 
-    $("input.select-all").live("click", function() {
-        var selector = "." + $(this).attr("data");
+    $(".toggle-all").live("click", function() {
+        var selector = ".toggle-" + $(this).attr("data")
         $(selector).each(function() {
             this.checked = !this.checked;
         });
-        return false;
     });
 
     // Criteria

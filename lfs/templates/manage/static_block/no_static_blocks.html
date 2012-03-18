@@ -1,0 +1,23 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}/user/management/html/static_block.html{% endblock %}
+
+{% block sextion %}no-static-blocks{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <h2>
+        {% trans "Static Blocks" %}
+    </h2>
+    <div class="no-content">
+        {% trans "There are no static blocks yet." %}
+    </div>
+    <div class="buttons">
+        <form action="{% url lfs_manage_add_static_block %}">
+            <input type="submit"
+                   class="button"
+                   value="{% trans 'Add Static Block' %}" />
+        </form>
+    </div>
+{% endblock %}

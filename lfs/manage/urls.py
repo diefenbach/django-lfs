@@ -6,15 +6,17 @@ urlpatterns = patterns('lfs.manage.views',
     url(r'^$', "dashboard", name="lfs_manage_dashboard"),
 )
 
-urlpatterns += patterns('lfs.manage.views.delivery_times',
+# Delivery Times
+urlpatterns += patterns('lfs.manage.delivery_times.views',
     url(r'^delivery_times$', "manage_delivery_times", name="lfs_manage_delivery_times"),
     url(r'^delivery_time/(?P<id>\d*)$', "manage_delivery_time", name="lfs_manage_delivery_time"),
-    url(r'^add-delivery-time$', "add_delivery_time", name="lfs_add_delivery_time"),
+    url(r'^add-delivery-time$', "add_delivery_time", name="lfs_manage_add_delivery_time"),
     url(r'^delete-delivery-time/(?P<id>\d*)$', "delete_delivery_time", name="lfs_delete_delivery_time"),
+    url(r'^no-times$', "no_delivery_times", name="lfs_no_delivery_times"),
 )
 
 # Manufacturer
-urlpatterns += patterns('lfs.manage.views.manufacturer',
+urlpatterns += patterns('lfs.manage.manufacturers.views',
     url(r'^manufacturer-dispatcher$', "manufacturer_dispatcher", name="lfs_manufacturer_dispatcher"),
     url(r'^manufacturer/(?P<manufacturer_id>\d*)$', "manage_manufacturer", name="lfs_manufacturer"),
     url(r'^update-manufacturer-data/(?P<manufacturer_id>\d*)$', "update_data", name="lfs_manufacturer_update_manufacturer_data"),
@@ -25,6 +27,7 @@ urlpatterns += patterns('lfs.manage.views.manufacturer',
     url(r'^category-state-manufacturer/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "category_state", name="lfs_manufacturer_category_state"),
     url(r'^manufacturer-inline/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "manufacturer_inline", name="lfs_manufacturer_inline"),
     url(r'^manufacturers-ajax/$', "manufacturers_ajax", name="lfs_manufacturers_ajax"),
+    url(r'^no-manufacturers$', "no_manufacturers", name="lfs_manage_no_manufacturers"),
 )
 
 # Marketing
@@ -42,10 +45,11 @@ urlpatterns += patterns('lfs.manage.views.marketing',
 )
 
 # Voucher
-urlpatterns += patterns('lfs.manage.views.voucher',
-    url(r'^manage-vouchers$', "manage_vouchers", name="lfs_manage_vouchers"),
+urlpatterns += patterns('lfs.manage.voucher.views',
+    url(r'^vouchers$', "manage_vouchers", name="lfs_manage_vouchers"),
+    url(r'^no-vouchers$', "no_vouchers", name="lfs_no_vouchers"),
     url(r'^add-voucher-group$', "add_voucher_group", name="lfs_manage_add_voucher_group"),
-    url(r'^manage-voucher-group/(?P<id>\d+)$', "voucher_group", name="lfs_manage_voucher_group"),
+    url(r'^voucher-group/(?P<id>\d+)$', "voucher_group", name="lfs_manage_voucher_group"),
     url(r'^delete-voucher-group/(?P<id>\d+)$', "delete_voucher_group", name="lfs_delete_voucher_group"),
     url(r'^save-voucher-group-data/(?P<id>\d+)$', "save_voucher_group_data", name="lfs_manage_save_voucher_group_data"),
     url(r'^save-voucher-options$', "save_voucher_options", name="lfs_manage_save_voucher_options"),
@@ -64,13 +68,13 @@ urlpatterns += patterns('lfs.manage.views.lfs_portlets',
 )
 
 # Product
-urlpatterns += patterns('lfs.manage.views',
+urlpatterns += patterns('lfs.manage.product.product',
     url(r'^product-dispatcher$', "product_dispatcher", name="lfs_manage_product_dispatcher"),
-    url(r'^product-by-id/(?P<product_id>\d*)$', "product_by_id", name="lfs_product_by_id"),
+    url(r'^product-by-id/(?P<product_id>\d*)$', "product_by_id", name="lfs_manage_product_by_id"),
     url(r'^product/(?P<product_id>\d*)$', "manage_product", name="lfs_manage_product"),
     url(r'^product-data-form/(?P<product_id>\d*)$', "product_data_form"),
     url(r'^add-product$', "add_product", name="lfs_manage_add_product"),
-    url(r'^edit-product-data/(?P<product_id>\d*)$', "edit_product_data"),
+    url(r'^edit-product-data/(?P<product_id>\d*)$', "edit_product_data", name="lfs_manage_edit_product_data"),
     url(r'^delete-product/(?P<product_id>\d*)$', "delete_product", name="lfs_manage_delete_product"),
     url(r'^selectable-products-inline$', "selectable_products_inline", name="lfs_manage_selectable_products_inline"),
     url(r'^save-product-stock/(?P<product_id>\d*)$', "stock", name="lfs_save_product_stock"),
@@ -82,28 +86,22 @@ urlpatterns += patterns('lfs.manage.views',
     url(r'^set-product-name-filter$', "set_name_filter", name="lfs_set_product_name_filter"),
     url(r'^reset-product-filters$', "reset_filters", name="lfs_reset_product_filters"),
     url(r'^set-products-page$', "set_products_page", name="lfs_set_products_page"),
+    url(r'^no-products$', "no_products", name="lfs_manage_no_products"),
 )
 
-urlpatterns += patterns('lfs.manage.views.product',
+urlpatterns += patterns('lfs.manage.product',
     url(r'^product-categories-tab/(?P<product_id>\d*)$', "categories.manage_categories", name="lfs_product_categories_tab"),
     url(r'^product-accessories-tab/(?P<product_id>\d*)$', "accessories.load_tab", name="lfs_manage_product_accessories_tab"),
     url(r'^product-relateds-tab/(?P<product_id>\d*)$', "related_products.load_tab", name="lfs_manage_product_related_products_tab"),
     url(r'^product-variants-tab/(?P<product_id>\d*)$', "variants.manage_variants", name="lfs_manage_product_variants_tab"),
 )
 
-urlpatterns += patterns('lfs.manage.views',
+urlpatterns += patterns('lfs.manage.product.categories',
     url(r'^change-product-categories/(?P<product_id>\d*)$', "change_categories", name="lfs_manage_product_categories"),
 )
 
-urlpatterns += patterns('lfs.manage.images.views',
-    url(r'^imagebrowser$', "imagebrowser", name="lfs_manage_imagebrowser"),
-    url(r'^global-images$', "images", name="lfs_manage_global_images"),
-    url(r'^delete-global-images$', "delete_images", name="lfs_manage_delete_images"),
-    url(r'^add-global-images$', "add_images", name="lfs_manage_add_global_image"),
-)
-
 # Product Images
-urlpatterns += patterns('lfs.manage.views.product.images',
+urlpatterns += patterns('lfs.manage.product.images',
     url(r'^add-image/(?P<product_id>\d*)$', "add_image", name="lfs_manage_add_image"),
     url(r'^update-images/(?P<product_id>\d*)$', "update_images", name="lfs_manage_update_images"),
     url(r'^product-images/(?P<product_id>\d*)$', "manage_images", name="lfs_manage_images"),
@@ -112,7 +110,7 @@ urlpatterns += patterns('lfs.manage.views.product.images',
 )
 
 # Product Attachments
-urlpatterns += patterns('lfs.manage.views.product.attachments',
+urlpatterns += patterns('lfs.manage.product.attachments',
     url(r'^add-attachment/(?P<product_id>\d*)$', "add_attachment", name="lfs_manage_add_attachment"),
     url(r'^update-attachments/(?P<product_id>\d*)$', "update_attachments", name="lfs_manage_update_attachments"),
     url(r'^product-attachments/(?P<product_id>\d*)$', "manage_attachments", name="lfs_manage_attachments"),
@@ -120,43 +118,52 @@ urlpatterns += patterns('lfs.manage.views.product.attachments',
 )
 
 # Product SEO
-urlpatterns += patterns('lfs.manage.views',
+urlpatterns += patterns('lfs.manage.product.seo',
     url(r'^manage-seo/(?P<product_id>\d*)$', "manage_seo", name="lfs_manage_product_seo"),
 )
 
-# Variants
-urlpatterns += patterns('lfs.manage.views.product.variants',
-    url(r'^properties/(?P<product_id>\d*)$', "manage_variants"),
-    url(r'^add-property/(?P<product_id>\d*)$', "add_property"),
-    url(r'^add-property-option/(?P<product_id>\d*)$', "add_property_option"),
-    url(r'^delete-property/(?P<product_id>\d*)/(?P<property_id>\d*)$', "delete_property"),
-    url(r'^delete-property-option/(?P<product_id>\d*)/(?P<option_id>\d*)$', "delete_property_option"),
-    url(r'^change-property-position$', "change_property_position"),
+# Product Variants
+urlpatterns += patterns('lfs.manage.product.variants',
+    url(r'^properties/(?P<product_id>\d*)$', "manage_variants", name="lfs_manage_variants"),
+    url(r'^add-property/(?P<product_id>\d*)$', "add_property", name="lfs_manage_add_property"),
+    url(r'^add-property-option/(?P<product_id>\d*)$', "add_property_option", name="lfs_manage_add_property_option"),
+    url(r'^delete-property/(?P<product_id>\d*)/(?P<property_id>\d*)$', "delete_property", name="lfs_manage_delete_property"),
+    url(r'^delete-property-option/(?P<product_id>\d*)/(?P<option_id>\d*)$', "delete_property_option", name="lfs_manage_delete_property_option"),
+    url(r'^change-property-position$', "change_property_position", name="lfs_manage_change_property_position"),
     url(r'^update-variants/(?P<product_id>\d*)$', "update_variants", name="lfs_manage_update_variants"),
-    url(r'^add-variants/(?P<product_id>\d*)$', "add_variants", name="lfs_add_variants"),
-    url(r'^edit-sub-type/(?P<product_id>\d*)$', "edit_sub_type", name="lfs_edit_sub_type"),
+    url(r'^add-variants/(?P<product_id>\d*)$', "add_variants", name="lfs_manage_add_variants"),
+    url(r'^edit-sub-type/(?P<product_id>\d*)$', "edit_sub_type", name="lfs_manage_edit_sub_type"),
     url(r'^update-category-variant/(?P<product_id>\d*)$', "update_category_variant", name="lfs_update_category_variant"),
 )
 
+# Global Images
+urlpatterns += patterns('lfs.manage.images.views',
+    url(r'^imagebrowser$', "imagebrowser", name="lfs_manage_imagebrowser"),
+    url(r'^global-images$', "images", name="lfs_manage_global_images"),
+    url(r'^delete-global-images$', "delete_images", name="lfs_manage_delete_images"),
+    url(r'^add-global-images$', "add_images", name="lfs_manage_add_global_image"),
+)
+
 # Property Groups
-urlpatterns += patterns('lfs.manage.views.property_groups.property_groups',
+urlpatterns += patterns('lfs.manage.property_groups.views',
     url(r'^property-groups', "manage_property_groups", name="lfs_manage_property_groups"),
     url(r'^property-group/(?P<id>\d*)', "manage_property_group", name="lfs_manage_property_group"),
-    url(r'^add-property-group', "add_property_group", name="lfs_add_property_group"),
+    url(r'^add-property-group', "add_property_group", name="lfs_manage_add_property_group"),
     url(r'^delete-property-group/(?P<id>\d*)', "delete_property_group", name="lfs_delete_property_group"),
     url(r'^assign-properties/(?P<group_id>\d*)', "assign_properties", name="lfs_assign_properties"),
     url(r'^update-properties/(?P<group_id>\d*)', "update_properties", name="lfs_update_properties"),
+    url(r'^no-property-groups$', "no_property_groups", name="lfs_manage_no_property_groups"),
 )
 
 # Property Groups / Products
-urlpatterns += patterns('lfs.manage.views.property_groups.products',
+urlpatterns += patterns('lfs.manage.property_groups.views',
     url(r'^assign-products-to-property-group/(?P<group_id>\d*)', "assign_products", name="lfs_assign_products_to_property_group"),
     url(r'^remove-products-from-property-group/(?P<group_id>\d*)', "remove_products", name="lfs_pg_remove_products"),
     url(r'^pg-products-inline/(?P<product_group_id>\d*)', "products_inline", name="lfs_pg_products_inline"),
 )
 
 # Shop Properties
-urlpatterns += patterns('lfs.manage.views.properties',
+urlpatterns += patterns('lfs.manage.property.views',
     url(r'^shop-properties$', "manage_properties", name="lfs_manage_shop_properties"),
     url(r'^shop-property/(?P<id>\d*)', "manage_property", name="lfs_manage_shop_property"),
     url(r'^update-shop-property-type/(?P<id>\d*)', "update_property_type", name="lfs_update_shop_property_type"),
@@ -168,33 +175,32 @@ urlpatterns += patterns('lfs.manage.views.properties',
     url(r'^save-shop-property-step-type/(?P<property_id>\d*)', "save_step_type", name="lfs_save_shop_property_step_type"),
     url(r'^delete-shop-property-option/(?P<id>\d*)', "delete_option", name="lfs_delete_shop_property_option"),
     url(r'^delete-shop-property-step/(?P<id>\d*)', "delete_step", name="lfs_delete_shop_property_step"),
-
     url(r'^save-number-field-validators/(?P<property_id>\d*)', "save_number_field_validators", name="lfs_save_number_field_validators"),
     url(r'^save-select-field/(?P<property_id>\d*)', "save_select_field", name="lfs_save_select_field"),
+    url(r'^no-properties$', "no_properties", name="lfs_manage_no_shop_properties"),
 )
 
 # Product properties
-urlpatterns += patterns('lfs.manage.views.product.properties',
+urlpatterns += patterns('lfs.manage.product.properties',
     url(r'^update-product-properties/(?P<product_id>\d*)$', "update_properties", name="lfs_update_product_properties"),
     url(r'^update-product-property-groups/(?P<product_id>\d*)$', "update_property_groups", name="lfs_update_product_property_groups"),
-
 )
 
 # Accesories
-urlpatterns += patterns('lfs.manage.views',
-    url(r'^accessories/(?P<product_id>\d*)$', "manage_accessories"),
-    url(r'^accessories-inline/(?P<product_id>\d*)$', "manage_accessories_inline"),
-    url(r'^add-accessories/(?P<product_id>\d*)$', "add_accessories"),
-    url(r'^remove-accessories/(?P<product_id>\d*)$', "remove_accessories"),
+urlpatterns += patterns('lfs.manage.product.accessories',
+    url(r'^accessories/(?P<product_id>\d*)$', "manage_accessories", name="lfs_manage_accessories"),
+    url(r'^accessories-inline/(?P<product_id>\d*)$', "manage_accessories_inline", name="lfs_manage_accessories_inline"),
+    url(r'^add-accessories/(?P<product_id>\d*)$', "add_accessories", name="lfs_manage_add_accessories"),
+    url(r'^remove-accessories/(?P<product_id>\d*)$', "remove_accessories", name="lfs_manage_remove_accessories"),
     url(r'^update-accessories/(?P<product_id>\d*)$', "update_accessories", name="lfs_manage_update_accessories"),
 )
 
 # Related Products
-urlpatterns += patterns('lfs.manage.views',
-    url(r'^related-products/(?P<product_id>\d*)$', "manage_related_products"),
-    url(r'^related-products-inline/(?P<product_id>\d*)$', "manage_related_products_inline"),
-    url(r'^add-related-products/(?P<product_id>\d*)$', "add_related_products"),
-    url(r'^remove-related-products/(?P<product_id>\d*)$', "remove_related_products"),
+urlpatterns += patterns('lfs.manage.product.related_products',
+    url(r'^related-products/(?P<product_id>\d*)$', "manage_related_products", name="lfs_manage_related_products"),
+    url(r'^related-products-inline/(?P<product_id>\d*)$', "manage_related_products_inline", name="lfs_manage_related_products_inline"),
+    url(r'^add-related-products/(?P<product_id>\d*)$', "add_related_products", name="lfs_manage_add_related_products"),
+    url(r'^remove-related-products/(?P<product_id>\d*)$', "remove_related_products", name="lfs_manage_remove_related_products"),
     url(r'^manage-related-products/(?P<product_id>\d*)$', "update_related_products", name="lfs_manage_update_related_products"),
 )
 
@@ -213,7 +219,7 @@ urlpatterns += patterns('lfs.manage.views.carts',
 )
 
 # Categories
-urlpatterns += patterns('lfs.manage.views.categories',
+urlpatterns += patterns('lfs.manage.categories',
     url(r'^categories$', "manage_categories", name="lfs_manage_categories"),
     url(r'^category/(?P<category_id>\d*)$', "manage_category", name="lfs_manage_category"),
     url(r'^category-by-id/(?P<category_id>\d*)$', "category_by_id", name="lfs_category_by_id"),
@@ -228,10 +234,11 @@ urlpatterns += patterns('lfs.manage.views.categories',
     url(r'^selected-products/(?P<category_id>\d*)$', "selected_products", name="lfs_selected_products"),
     url(r'^load-products-tab/(?P<category_id>\d*)$', "products_tab", name="lfs_load_products_tab"),
     url(r'^sort-categories$', "sort_categories", name="lfs_sort_categories"),
+    url(r'^no-categories$', "no_categories", name="lfs_manage_no_categories"),
 )
 
 # Categories / SEO
-urlpatterns += patterns('lfs.manage.views.categories.seo',
+urlpatterns += patterns('lfs.manage.categories.seo',
     url(r'^edit-category-seo/(?P<category_id>\d*)$', "edit_seo", name="lfs_manage_category_seo"),
 )
 
@@ -264,33 +271,35 @@ urlpatterns += patterns('lfs.manage.views.export',
     url(r'^update-category-variants-option/(?P<export_id>\d*)/(?P<category_id>\d*)$', "update_category_variants_option", name="lfs_export_update_category_variants_option"),
 )
 
-# Shipping
-urlpatterns += patterns('lfs.manage.views',
+# Shipping Methods
+urlpatterns += patterns('lfs.manage.shipping_methods.views',
     url(r'^shipping$', "manage_shipping", name="lfs_manage_shipping"),
     url(r'^shipping-method/(?P<shipping_method_id>\d*)$', "manage_shipping_method", name="lfs_manage_shipping_method"),
-    url(r'^add-shipping-method', "add_shipping_method"),
+    url(r'^add-shipping-method', "add_shipping_method", name="lfs_manage_add_shipping_method"),
     url(r'^save-shipping-data/(?P<shipping_method_id>\d*)$', "save_shipping_method_data", name="lfs_manage_save_shipping_method_data"),
-    url(r'^delete-shipping-method/(?P<shipping_method_id>\d*)$', "delete_shipping_method"),
+    url(r'^delete-shipping-method/(?P<shipping_method_id>\d*)$', "delete_shipping_method", name="lfs_manage_delete_shipping_method"),
     url(r'^add-shipping-price/(?P<shipping_method_id>\d*)$', "add_shipping_price", name="lfs_manage_add_shipping_price"),
     url(r'^update-shipping-prices/(?P<shipping_method_id>\d*)$', "update_shipping_prices", name="lfs_manage_update_shipping_prices"),
     url(r'^shipping-price-criteria/(?P<shipping_price_id>\d*)$', "shipping_price_criteria", name="lfs_manage_shipping_price_criteria"),
     url(r'^save-shipping-price-criteria/(?P<shipping_price_id>\d*)$', "save_shipping_price_criteria", name="lfs_manage_save_shipping_price_criteria"),
     url(r'^save-shipping-method-criteria/(?P<shipping_method_id>\d*)$', "save_shipping_method_criteria", name="lfs_manage_save_shipping_method_criteria"),
     url(r'^sort-shipping-methods$', "sort_shipping_methods", name="lfs_sort_shipping_methods"),
+    url(r'^no-shipping-methods$', "no_shipping_methods", name="lfs_manage_no_shipping_methods"),
 )
 
 # Discounts
-urlpatterns += patterns('lfs.manage.views.discounts',
+urlpatterns += patterns('lfs.manage.discounts.views',
     url(r'^discounts$', "manage_discounts", name="lfs_manage_discounts"),
     url(r'^discount/(?P<id>\d*)$', "manage_discount", name="lfs_manage_discount"),
     url(r'^add-discount', "add_discount", name="lfs_manage_add_discount"),
     url(r'^save-discount-data/(?P<id>\d*)$', "save_discount_data", name="lfs_manage_save_discount_data"),
     url(r'^delete-discount/(?P<id>\d*)$', "delete_discount", name="lfs_manage_delete_discount"),
     url(r'^save-discount-criteria/(?P<id>\d*)$', "save_discount_criteria", name="lfs_manage_save_discount_criteria"),
+    url(r'^no-discounts$', "no_discounts", name="lfs_manage_no_discounts"),
 )
 
 # Pages
-urlpatterns += patterns('lfs.manage.views.page',
+urlpatterns += patterns('lfs.manage.pages.views',
     url(r'^add-page$', "add_page", name="lfs_add_page"),
     url(r'^delete-page/(?P<id>\d*)$', "delete_page", name="lfs_delete_page"),
     url(r'^manage-pages$', "manage_pages", name="lfs_manage_pages"),
@@ -344,26 +353,19 @@ urlpatterns += patterns('lfs.manage.views.criteria',
 )
 
 # Static blocks
-urlpatterns += patterns('lfs.manage.views.static_blocks',
-    url(r'^add-static-block$', "add_static_block", name="lfs_add_static_block"),
+urlpatterns += patterns('lfs.manage.static_blocks.views',
+    url(r'^add-static-block$', "add_static_block", name="lfs_manage_add_static_block"),
     url(r'^delete-static-block/(?P<id>\d*)$', "delete_static_block", name="lfs_delete_static_block"),
     url(r'^preview-static-block/(?P<id>\d*)$', "preview_static_block", name="lfs_preview_static_block"),
-    url(r'^manage-static-blocks$', "manage_static_blocks", name="lfs_manage_static_blocks"),
-    url(r'^manage-static-block/(?P<id>\d*)$', "manage_static_block", name="lfs_manage_static_block"),
+    url(r'^static-blocks$', "manage_static_blocks", name="lfs_manage_static_blocks"),
+    url(r'^static-block/(?P<id>\d*)$', "manage_static_block", name="lfs_manage_static_block"),
     url(r'^add_files/(?P<id>[-\w]*)', "add_files", name="lfs_add_files_to_static_block"),
     url(r'^update_files/(?P<id>[-\w]*)', "update_files", name="lfs_manage_update_files_sb"),
     url(r'^reload_files/(?P<id>[-\w]*)', "reload_files", name="lfs_reload_files"),
-    url(r'^reload_files/(?P<id>[-\w]*)', "reload_files", name="lfs_reload_files"),
     url(r'^sort-static-blocks$', "sort_static_blocks", name="lfs_sort_static_blocks"),
+    url(r'^no-static-blocks$', "no_static_blocks", name="lfs_manage_no_static_blocks"),
 )
 
-# Reviews
-# urlpatterns += patterns('lfs.manage.views.review',
-#     url(r'^manage-reviews$', "manage_reviews", name="lfs_manage_reviews"),
-#     url(r'^manage-review/(?P<review_id>\d*)$', "manage_review", name="lfs_manage_review"),
-#     url(r'^add-review$', "add_review", name="lfs_add_review"),
-#     url(r'^delete-review/(?P<review_id>\d*)$', "delete_review", name="lfs_delete_review"),
-# )
 
 # Reviews
 urlpatterns += patterns('lfs.manage.views.review',
@@ -397,12 +399,13 @@ urlpatterns += patterns('lfs.manage.actions.views',
     url(r'^sort-actions$', "sort_actions", name="lfs_sort_actions"),
 )
 
-# Taxes
-urlpatterns += patterns('lfs.manage.views.tax',
-    url(r'^add-product-tax$', "add_tax", name="lfs_add_tax"),
+# Prodcut Taxes
+urlpatterns += patterns('lfs.manage.product_taxes.views',
+    url(r'^add-product-tax$', "add_tax", name="lfs_manage_add_tax"),
     url(r'^delete-product-tax/(?P<id>\d*)$', "delete_tax", name="lfs_delete_tax"),
     url(r'^product-taxes$', "manage_taxes", name="lfs_manage_taxes"),
     url(r'^product-tax/(?P<id>\d*)$', "manage_tax", name="lfs_manage_tax"),
+    url(r'^no-product-taxes$', "no_taxes", name="lfs_manage_no_taxes"),
 )
 
 # Customer tax

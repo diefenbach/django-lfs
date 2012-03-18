@@ -4,9 +4,9 @@
     <div class="navigation-pages-inline">
         {% if page.has_previous %}
             <a class="ajax-link"
-               href="{% url lfs.manage.views.manage_accessories_inline product.id%}?page=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
+               href="{% url lfs_manage_accessories_inline product.id%}?page=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
             <a class="ajax-link"
-               href="{% url lfs.manage.views.manage_accessories_inline product.id%}?page={{ page.previous_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
+               href="{% url lfs_manage_accessories_inline product.id%}?page={{ page.previous_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
         {% else %}
             <img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' />
             <img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' />
@@ -33,7 +33,7 @@
             <td width="50%">
                 <h2>{% trans "Selectable Products" %}</h2>
                 <form id="add-accessories-form"
-                      action="{% url lfs.manage.views.add_accessories product.id %}"
+                      action="{% url lfs_manage_add_accessories product.id %}"
                       method="post">
 
                     <div id="accessories-left" style="padding-bottom:10px">
@@ -93,7 +93,7 @@
             <td width="50%">
                 <h2>{% trans 'Selected Products' %}</h2>
                 <form id="accessories-update-form"
-                      action="{% url lfs.manage.views.remove_accessories product.id %}"
+                      action="{% url lfs_manage_remove_accessories product.id %}"
                       method="post">
                     <div id="accessories-right" style="padding-bottom:10px">
                         <table class="lfs-manage-table">

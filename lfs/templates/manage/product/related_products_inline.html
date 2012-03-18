@@ -4,9 +4,9 @@
     <div class="navigation-pages-inline">
         {% if page.has_previous %}
             <a class="ajax-link"
-               href="{% url lfs.manage.views.manage_related_products_inline product.id%}?page=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
+               href="{% url lfs_manage_related_products_inline product.id%}?page=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
             <a class="ajax-link"
-               href="{% url lfs.manage.views.manage_related_products_inline product.id%}?page={{ page.previous_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
+               href="{% url lfs_manage_related_products_inline product.id%}?page={{ page.previous_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
         {% else %}
             <img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' />
             <img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></span>
@@ -18,9 +18,9 @@
 
         {% if page.has_next %}
             <a class="ajax-link"
-               href="{% url lfs.manage.views.manage_related_products_inline product.id%}?page={{ page.next_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
+               href="{% url lfs_manage_related_products_inline product.id%}?page={{ page.next_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
             <a class="ajax-link"
-               href="{% url lfs.manage.views.manage_related_products_inline product.id%}?page={{ paginator.num_pages }}"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
+               href="{% url lfs_manage_related_products_inline product.id%}?page={{ paginator.num_pages }}"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
 
         {% else %}
             <span><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></span>
@@ -32,7 +32,7 @@
             <td width="50%">
                 <h2>{% trans "Selectable Products" %}</h2>
                 <form id="add-related-products-form"
-                      action="{% url lfs.manage.views.add_related_products product.id %}"
+                      action="{% url lfs_manage_add_related_products product.id %}"
                       method="post">
 
                     <div id="related-products-left" style="padding-bottom:10px">
@@ -93,7 +93,7 @@
             <td width="50%">
                 <h2>{% trans "Selected Products" %}</h2>
                 <form id="remove-related-products-form"
-                      action="{% url lfs.manage.views.remove_related_products product.id %}"
+                      action="{% url lfs_manage_remove_related_products product.id %}"
                       method="post">
                     <div id="related-products-right" style="padding-bottom:10px">
                         <table class="lfs-manage-table">

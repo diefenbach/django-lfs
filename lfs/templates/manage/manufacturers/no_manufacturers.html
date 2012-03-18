@@ -1,0 +1,22 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/shop/manufacturers.html{% endblock %}
+{% block sextion %}no-manufacturers{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <h2>
+        {% trans "Manufacturers" %}
+    </h2>
+    <div class="no-content">
+        {% trans "There are no manufacturers yet." %}
+    </div>
+    <div class="buttons">
+        <form action="{% url lfs_manufacturer_add_manufacturer %}">
+            <input type="submit"
+                   class="button"
+                   value="{% trans 'Add Manufacturers' %}">
+        </form>
+    </div>
+{% endblock %}

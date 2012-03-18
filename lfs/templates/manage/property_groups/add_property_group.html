@@ -1,0 +1,30 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/properties/property_groups.html{% endblock %}
+{% block section %}add-property-group{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add property Group' %}</a></li>
+        </ul>
+        <div id="data">
+            <h2>
+                {% trans 'Data' %}
+            </h2>
+            <form method="post">
+                {% csrf_token %}
+                {% include "manage/lfs_form.html" %}
+                <input type="submit"
+                       class="button"
+                       value="{% trans 'Add property group' %}" />
+                <input type="button"
+                       class="button"
+                       onclick="window.location='{{ came_from }}'"
+                       value="{% trans 'Cancel' %}" />
+            </form>
+        </div>
+    </div>
+{% endblock %}

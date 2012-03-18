@@ -1,0 +1,42 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/html/page.html{% endblock %}
+{% block section %}add-page{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add page' %}</a></li>
+        </ul>
+        <div id="data">
+            <h2>{% trans 'Data' %}</h2>
+            <form action="{% url lfs_add_page %}"
+                  method="post"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+                {% include "manage/lfs_form.html" %}
+                <div class="buttons">
+                    <input type="submit"
+                           class="button"
+                           value="{% trans 'Add page' %}" />
+                    <input type="button"
+                           class="button"
+                           onclick="window.location='{{ came_from }}'"
+                           value="{% trans 'Cancel' %}" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        $(function() {
+            $("#id_title").live("keyup", function() {
+                var slug = $("#id_title").val()
+                slug = URLify(slug, 200)
+                $("#id_slug").val(slug);
+            });
+            tinyMCE.execCommand('mceAddControl', true, 'id_body');
+        });
+    </script>
+{% endblock %}

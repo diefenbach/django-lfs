@@ -10,25 +10,20 @@
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add voucher group' %}</a></li>
         </ul>
-
         <div id="data">
-            <h2>{% trans 'Add voucher group' %}</h2>
-
-            <form action="{% url lfs_manage_add_voucher_group %}"
-                  method="post">
+            <h2>
+              {% trans 'Add voucher group' %}
+            </h2>
+            <form method="post">
                 {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
-
                 <input type="submit"
                        class="button"
                        value="{% trans 'Add voucher group' %}" />
-
-                    {% if  request.META.HTTP_REFERER %}
-                        <input type="button"
-                               class="button"
-                               onclick="window.location='{{ request.META.HTTP_REFERER }}'"
-                               value="{% trans 'Cancel' %}" />
-                    {% endif %}
+                <input type="button"
+                       class="button"
+                       onclick="window.location='{{ came_from }}'"
+                       value="{% trans 'Cancel' %}" />
             </form>
         </div>
     </div>

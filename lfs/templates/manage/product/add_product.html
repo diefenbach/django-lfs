@@ -3,23 +3,20 @@
 {% load i18n %}
 {% load lfs_tags %}
 
-{% block help_link %}user/management/catalog/products.html{% endblock %}
 {% block section %}add-product{% endblock %}
+{% block help_link %}user/management/catalog/products.html{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
-
     <div id="product">
-
         <div id="manage-tabs">
             <ul>
                 <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add product' %}</a></li>
             </ul>
-
             <div id="data">
                 <h2>{% trans "Data" %}</h2>
                 <form id="product-data-form"
-                      action="{% url lfs.manage.views.add_product %}"
+                      action="{% url lfs_manage_add_product %}"
                       method="post">
                     {% csrf_token %}
                     {% include "manage/lfs_form.html" %}
@@ -32,12 +29,8 @@
 
                         <input type="button"
                                class="button"
-                               onclick="window.location='{{ next }}'"
+                               onclick="window.location='{{ came_from }}'"
                                value="{% trans 'Cancel' %}" />
-
-                        <input type="hidden"
-                               name="next"
-                               value="{{ next }}" />
                     </div>
                 </form>
             </div>

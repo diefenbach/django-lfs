@@ -1,0 +1,56 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/properties/property_groups.html{% endblock %}
+{% block left_slot %}
+    <h2 class="navigation-title">
+        {% trans "Property groups" %}
+    </h2>
+    <div class="navigation-body">
+        {% for property_group in property_groups %}
+            <div>
+                <a href="{% url lfs_manage_property_group property_group.id %}"
+                   class="selectable {% ifequal property_group.id current_id %}selected{% endifequal %}">
+                    {{ property_group.name }}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="site-actions">
+        <a class="add"
+           href="{% url lfs_manage_add_property_group %}?came_from={% url lfs_manage_property_group property_group.id %}">{% trans 'Add Property Group' %}</a>
+        <a class="delete delete-link"
+           dialog_message="{% trans 'Do you really want to delete this property group?' %}"
+           href="{% url lfs_delete_property_group property_group.id %}">{% trans 'Delete Property Group' %}</a>
+    </div>
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Products' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#properties">{% trans 'Properties' %}</a></li>
+        </ul>
+        <div id="data">
+            <h2>{% trans 'Data' %}</h2>
+            <form action="{% url lfs_manage_property_group property_group.id %}"
+                  method="post">
+                {% csrf_token %}
+                {% include "manage/lfs_form.html" %}
+                <div class="buttons">
+                    <input type="submit"
+                           class="button"
+                           value="{% trans 'Save property group' %}">
+                </div>
+            </form>
+        </div>
+        <div id="properties">
+            {{ properties|safe }}
+        </div>
+
+        <div id="products">
+            {{ products|safe }}
+        </div>
+    </div>
+{% endblock %}

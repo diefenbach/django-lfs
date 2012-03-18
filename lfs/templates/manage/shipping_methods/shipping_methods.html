@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<h2 class="navigation-title">
+    {% trans "Shipping methods" %}
+</h2>
+
+<div class="navigation-body">
+    <ul class="manage-pages-list sortable"
+        href="{% url lfs_sort_shipping_methods %}">
+        {% for shipping_method in shipping_methods %}
+            <li id="shipping_method_{{ shipping_method.id }}">
+                <div>
+                    <a class="selectable {% ifequal current_id shipping_method.id %}selected{% endifequal %}"
+                       href="{% url lfs_manage_shipping_method shipping_method.id %}">
+                        <img class="handle" src="{{ STATIC_URL }}img/handle.png" alt="Handle" />
+                        {{ shipping_method.name }}
+                    </a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<script>sortable()</script>

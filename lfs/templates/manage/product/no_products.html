@@ -1,0 +1,23 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "No Products" %}{% endblock %}
+{% block section %}no-products{% endblock %}
+{% block help_link %}user/management/catalog/products.html{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <h2>
+        {% trans "Products" %}
+    </h2>
+    <div class="no-content">
+        {% trans "There are no products yet." %}
+    </div>
+    <div class="buttons">
+        <form action="{% url lfs_manage_add_product %}">
+            <input type="submit"
+                   class="button"
+                   value="{% trans 'Add Product' %}">
+        </form>
+    </div>
+{% endblock %}

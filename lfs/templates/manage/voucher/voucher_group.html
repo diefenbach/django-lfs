@@ -14,7 +14,7 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_manage_add_voucher_group %}">{% trans 'Add voucher group' %}</a>
+           href="{% url lfs_manage_add_voucher_group %}?came_from={% url lfs_manage_voucher_group voucher_group.id %}">{% trans 'Add voucher group' %}</a>
 
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this voucher group?' %}"

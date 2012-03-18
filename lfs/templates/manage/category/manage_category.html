@@ -14,12 +14,12 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_manage_add_top_category %}">
+           href="{% url lfs_manage_add_top_category %}?came_from={% url lfs_manage_category category.id %}">
             {% trans 'Add Top Category' %}
         </a>
         {% if category %}
             <a class="add"
-               href="{% url lfs_manage_add_category category.id %}">
+               href="{% url lfs_manage_add_category category.id %}?came_from={% url lfs_manage_category category.id %}">
                 {% trans 'Add Category' %}
             </a>
             <a class="delete delete-link"

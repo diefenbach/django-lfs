@@ -1,0 +1,23 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}/user/management/marketing/vouchers.html{% endblock %}
+
+{% block sextion %}no-vouchers{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <h2>
+        {% trans "Vouchers" %}
+    </h2>
+    <div class="no-content">
+        {% trans "There are no vouchers yet." %}
+    </div>
+    <div class="buttons">
+        <form action="{% url lfs_manage_add_voucher_group %}">
+            <input type="submit"
+                   class="button"
+                   value="{% trans 'Add Voucher Group' %}">
+        </form>
+    </div>
+{% endblock %}

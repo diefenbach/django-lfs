@@ -22,21 +22,24 @@
                   method="POST">
                 {% csrf_token %}
                 <h2>{% trans "Global images" %}</h2>
-                {% for image in images %}
-                    <div class="image-form">
-                        <input class="select-images" type="checkbox" name="images" value="{{ image.id }}" />
-                        <div class="image">
-                            <img src="{{ image.image.url_100x100 }}" />
+                {% if images %}
+                    {% for image in images %}
+                        <div class="image-form">
+                            <input class="toggle-images" type="checkbox" name="images" value="{{ image.id }}" />
+                            <div class="image">
+                                <img src="{{ image.image.url_100x100 }}" />
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-                <br clear="both" />
-                <input type="submit" value="{% trans 'Delete images' %}" />
-                <input type="button"
-                       class="select-all"
-                       value="{% trans "Toggle selection" %}"
-                       data="select-images" />
-
+                    {% endfor %}
+                    <br clear="both" />
+                    <input type="submit" value="{% trans 'Delete images' %}" />
+                    <input type="button"
+                           class="toggle-all"
+                           value="{% trans "Toggle selection" %}"
+                           data="images" />
+                {% else %}
+                    {% trans "There are no images yet." %}
+                {% endif %}
             </form>
             <h2 class="heading-middle">{% trans 'Add images' %}</h2>
 

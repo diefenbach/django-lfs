@@ -1753,9 +1753,10 @@ class ProductAccessories(models.Model):
 
 
 class PropertyGroup(models.Model):
-    """Groups product properties together.
+    """
+    Groups product properties together.
 
-    Can belong to several products, products can have several groups
+    Can belong to several products, products can have several groups.
 
     **Attributes**:
 
