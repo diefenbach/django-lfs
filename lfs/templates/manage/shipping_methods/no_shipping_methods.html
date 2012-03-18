@@ -1,0 +1,23 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "No Shipping Methods" %}{% endblock %}
+{% block section %}no-shipping-mehods{% endblock %}
+{% block help_link %}user/management/shop/shipping_methods.html{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <h2>
+        {% trans "Shipping Methods" %}
+    </h2>
+    <div class="no-content">
+        {% trans "There are no shipping methods yet." %}
+    </div>
+    <div class="buttons">
+        <form action="{% url lfs_manage_add_shipping_method %}">
+            <input type="submit"
+                   class="button"
+                   value="{% trans 'Add Shipping Method' %}">
+        </form>
+    </div>
+{% endblock %}

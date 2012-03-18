@@ -20,29 +20,11 @@ from lfs.core.utils import LazyEncoder
 from lfs.core.widgets.image import LFSImageInput
 from lfs.criteria import utils as criteria_utils
 from lfs.customer.models import Customer
+from lfs.manage.shipping_methods.forms import ShippingMethodAddForm
+from lfs.manage.shipping_methods.forms import ShippingMethodForm
 from lfs.shipping.models import ShippingMethod
 from lfs.shipping.models import ShippingMethodPrice
 from lfs.shipping import utils as shipping_utils
-
-
-class ShippingMethodAddForm(ModelForm):
-    """Form to add a shipping method.
-    """
-    class Meta:
-        model = ShippingMethod
-        fields = ["name"]
-
-
-class ShippingMethodForm(ModelForm):
-    """
-    """
-    def __init__(self, *args, **kwargs):
-        super(ShippingMethodForm, self).__init__(*args, **kwargs)
-        self.fields["image"].widget = LFSImageInput()
-
-    class Meta:
-        model = ShippingMethod
-        exclude = ("priority", )
 
 
 # Starting pages. This pages are called directly via a request
@@ -54,16 +36,16 @@ def manage_shipping(request):
     try:
         shipping_method = ShippingMethod.objects.all()[0]
     except IndexError:
-        url = reverse("lfs.manage.views.add_shipping_method")
+        url = reverse("lfs_manage_no_shipping_methods")
     else:
-        url = reverse("lfs.manage.views.manage_shipping_method",
+        url = reverse("lfs_manage_shipping_method",
             kwargs={"shipping_method_id": shipping_method.id})
     return HttpResponseRedirect(url)
 
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_shipping_method(request, shipping_method_id,
-    template_name="manage/shipping/manage_shipping.html"):
+    template_name="manage/shipping_methods/manage_shipping.html"):
     """The main view to manage the shipping method with given id.
 
     This view collects the various parts of the shipping form (data, criteria,
@@ -80,9 +62,16 @@ def manage_shipping_method(request, shipping_method_id,
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
+def no_shipping_methods(request, template_name="manage/shipping_methods/no_shipping_methods.html"):
+    """Displays that there are no shipping methods.
+    """
+    return render_to_response(template_name, RequestContext(request, {}))
+
+
 # Parts of the manage shipping view.
 @permission_required("core.manage_shop", login_url="/login/")
-def shipping_methods(request, template_name="manage/shipping/shipping_methods.html"):
+def shipping_methods(request, template_name="manage/shipping_methods/shipping_methods.html"):
     """Returns all shipping methods as html.
 
     This view is used as a part within the manage shipping view.
@@ -100,7 +89,7 @@ def shipping_methods(request, template_name="manage/shipping/shipping_methods.ht
 
 @permission_required("core.manage_shop", login_url="/login/")
 def shipping_method_data(request, shipping_id,
-    template_name="manage/shipping/shipping_method_data.html"):
+    template_name="manage/shipping_methods/shipping_method_data.html"):
     """Returns the shipping data as html.
 
     This view is used as a part within the manage shipping view.
@@ -115,7 +104,7 @@ def shipping_method_data(request, shipping_id,
 
 @permission_required("core.manage_shop", login_url="/login/")
 def shipping_method_criteria(request, shipping_method_id,
-    template_name="manage/shipping/shipping_method_criteria.html"):
+    template_name="manage/shipping_methods/shipping_method_criteria.html"):
     """Returns the criteria of the shipping method with passed id as HTML.
 
     This view is used as a part within the manage shipping view.
@@ -137,7 +126,7 @@ def shipping_method_criteria(request, shipping_method_id,
 
 @permission_required("core.manage_shop", login_url="/login/")
 def shipping_method_prices(request, shipping_method_id,
-    template_name="manage/shipping/shipping_method_prices.html"):
+    template_name="manage/shipping_methods/shipping_method_prices.html"):
     """Returns the shipping method prices for the shipping method with given id.
 
     This view is used as a part within the manage shipping view.
@@ -152,7 +141,7 @@ def shipping_method_prices(request, shipping_method_id,
 
 @permission_required("core.manage_shop", login_url="/login/")
 def shipping_price_criteria(request, shipping_price_id, as_string=False,
-    template_name="manage/shipping/shipping_price_criteria.html"):
+    template_name="manage/shipping_methods/shipping_price_criteria.html"):
     """Returns the criteria of the shipping price with passed id.
 
     This view is used as a part within the manage shipping view.
@@ -183,10 +172,11 @@ def shipping_price_criteria(request, shipping_price_id, as_string=False,
 
         return HttpResponse(result)
 
+
 # Actions
 @permission_required("core.manage_shop", login_url="/login/")
 def add_shipping_method(request,
-    template_name="manage/shipping/add_shipping_method.html"):
+    template_name="manage/shipping_methods/add_shipping_method.html"):
     """Provides an add form and saves a new shipping method.
     """
     if request.method == "POST":
@@ -194,7 +184,7 @@ def add_shipping_method(request,
         if form.is_valid():
             new_shipping_method = form.save()
             return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs.manage.views.manage_shipping_method", kwargs={"shipping_method_id": new_shipping_method.id}),
+                url=reverse("lfs_manage_shipping_method", kwargs={"shipping_method_id": new_shipping_method.id}),
                 msg=_(u"Shipping method has been added."),
             )
     else:
@@ -202,7 +192,7 @@ def add_shipping_method(request,
 
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
-        "next": request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_shipping")),
     }))
 
 
@@ -333,12 +323,6 @@ def save_shipping_method_data(request, shipping_method_id):
     shipping_method = ShippingMethod.objects.get(pk=shipping_method_id)
     shipping_form = ShippingMethodForm(instance=shipping_method, data=request.POST, files=request.FILES)
 
-    form = render_to_string(
-        "manage/shipping/shipping_method_data.html", RequestContext(request, {
-        "form": shipping_form,
-        "shipping_method": shipping_method,
-    }))
-
     if shipping_form.is_valid():
         shipping_form.save()
         if request.POST.get("delete_image"):
@@ -396,6 +380,7 @@ def sort_shipping_methods(request):
         }, cls=LazyEncoder)
 
         return HttpResponse(result)
+
 
 def _update_price_positions(shipping_method):
     for i, price in enumerate(shipping_method.prices.all()):

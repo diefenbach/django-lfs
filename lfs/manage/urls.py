@@ -270,19 +270,20 @@ urlpatterns += patterns('lfs.manage.views.export',
     url(r'^update-category-variants-option/(?P<export_id>\d*)/(?P<category_id>\d*)$', "update_category_variants_option", name="lfs_export_update_category_variants_option"),
 )
 
-# Shipping
-urlpatterns += patterns('lfs.manage.views',
+# Shipping Methods
+urlpatterns += patterns('lfs.manage.shipping_methods.views',
     url(r'^shipping$', "manage_shipping", name="lfs_manage_shipping"),
     url(r'^shipping-method/(?P<shipping_method_id>\d*)$', "manage_shipping_method", name="lfs_manage_shipping_method"),
-    url(r'^add-shipping-method', "add_shipping_method"),
+    url(r'^add-shipping-method', "add_shipping_method", name="lfs_manage_add_shipping_method"),
     url(r'^save-shipping-data/(?P<shipping_method_id>\d*)$', "save_shipping_method_data", name="lfs_manage_save_shipping_method_data"),
-    url(r'^delete-shipping-method/(?P<shipping_method_id>\d*)$', "delete_shipping_method"),
+    url(r'^delete-shipping-method/(?P<shipping_method_id>\d*)$', "delete_shipping_method", name="lfs_manage_delete_shipping_method"),
     url(r'^add-shipping-price/(?P<shipping_method_id>\d*)$', "add_shipping_price", name="lfs_manage_add_shipping_price"),
     url(r'^update-shipping-prices/(?P<shipping_method_id>\d*)$', "update_shipping_prices", name="lfs_manage_update_shipping_prices"),
     url(r'^shipping-price-criteria/(?P<shipping_price_id>\d*)$', "shipping_price_criteria", name="lfs_manage_shipping_price_criteria"),
     url(r'^save-shipping-price-criteria/(?P<shipping_price_id>\d*)$', "save_shipping_price_criteria", name="lfs_manage_save_shipping_price_criteria"),
     url(r'^save-shipping-method-criteria/(?P<shipping_method_id>\d*)$', "save_shipping_method_criteria", name="lfs_manage_save_shipping_method_criteria"),
     url(r'^sort-shipping-methods$', "sort_shipping_methods", name="lfs_sort_shipping_methods"),
+    url(r'^no-shipping-methods$', "no_shipping_methods", name="lfs_manage_no_shipping_methods"),
 )
 
 # Discounts

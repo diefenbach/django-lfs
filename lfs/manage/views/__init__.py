@@ -9,4 +9,3 @@ from product.seo import *
 from carts import *
 from dashboard import *
 from orders import *
-from shipping import *
