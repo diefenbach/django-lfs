@@ -2,6 +2,7 @@
 from django.contrib.auth.decorators import permission_required
 from django.forms import ModelForm
 from django.http import HttpResponse
+from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
@@ -59,3 +60,11 @@ def category_view(request, category_id, template_name="manage/category/view.html
         }, cls=LazyEncoder))
     else:
         return view_html
+
+
+@permission_required("core.manage_shop", login_url="/login/")
+def no_categories(request, template_name="manage/category/no_categories.html"):
+    """Displays that there are no categories.
+    """
+    return render_to_response(template_name, RequestContext(request, {}))
+

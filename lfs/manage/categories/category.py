@@ -19,10 +19,10 @@ from lfs.core.utils import LazyEncoder
 from lfs.core.utils import set_category_levels
 from lfs.core.widgets.image import LFSImageInput
 from lfs.manage import utils as manage_utils
-from lfs.manage.views.categories.products import manage_products
-from lfs.manage.views.categories.seo import edit_seo
-from lfs.manage.views.categories.view import category_view
-from lfs.manage.views.categories.portlet import manage_categories_portlet
+from lfs.manage.categories.products import manage_products
+from lfs.manage.categories.seo import edit_seo
+from lfs.manage.categories.view import category_view
+from lfs.manage.categories.portlet import manage_categories_portlet
 from lfs.manage.views.lfs_portlets import portlets_inline
 
 
@@ -60,7 +60,7 @@ def manage_categories(request):
     try:
         category = Category.objects.all()[0]
     except IndexError:
-        url = reverse("lfs_manage_add_top_category")
+        url = reverse("lfs_manage_no_categories")
     else:
         url = reverse("lfs_manage_category", kwargs={"category_id": category.id})
 
@@ -175,9 +175,9 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
         form = CategoryAddForm(initial={"parent": category_id})
 
     return render_to_response(template_name, RequestContext(request, {
-        "next": request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
         "category": parent,
         "form": form,
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_categories")),
     }))
 
 

@@ -13,8 +13,7 @@
         </ul>
         <div id="data">
             <h2>{% trans "Data" %}</h2>
-            <form action="{% url lfs_manage_add_category category.id %}"
-                  method="post">
+            <form method="post">
                 {% csrf_token %}
                 <table>
                     {% include "manage/lfs_form.html" %}
@@ -24,15 +23,10 @@
                     <input type="submit"
                            class="button"
                            value="{% trans 'Add category' %}" />
-
                     <input type="button"
                            class="button"
-                           onclick="window.location='{{ next }}'"
+                           onclick="window.location='{{ came_from }}'"
                            value="{% trans 'Cancel' %}" />
-
-                    <input type="hidden"
-                           name="next"
-                           value="{{ next }}" />
                 </div>
             </form>
         </div>

@@ -219,7 +219,7 @@ urlpatterns += patterns('lfs.manage.views.carts',
 )
 
 # Categories
-urlpatterns += patterns('lfs.manage.views.categories',
+urlpatterns += patterns('lfs.manage.categories',
     url(r'^categories$', "manage_categories", name="lfs_manage_categories"),
     url(r'^category/(?P<category_id>\d*)$', "manage_category", name="lfs_manage_category"),
     url(r'^category-by-id/(?P<category_id>\d*)$', "category_by_id", name="lfs_category_by_id"),
@@ -234,10 +234,11 @@ urlpatterns += patterns('lfs.manage.views.categories',
     url(r'^selected-products/(?P<category_id>\d*)$', "selected_products", name="lfs_selected_products"),
     url(r'^load-products-tab/(?P<category_id>\d*)$', "products_tab", name="lfs_load_products_tab"),
     url(r'^sort-categories$', "sort_categories", name="lfs_sort_categories"),
+    url(r'^no-categories$', "no_categories", name="lfs_manage_no_categories"),
 )
 
 # Categories / SEO
-urlpatterns += patterns('lfs.manage.views.categories.seo',
+urlpatterns += patterns('lfs.manage.categories.seo',
     url(r'^edit-category-seo/(?P<category_id>\d*)$', "edit_seo", name="lfs_manage_category_seo"),
 )
 

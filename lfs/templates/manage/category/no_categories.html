@@ -1,0 +1,23 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "No Categories" %}{% endblock %}
+{% block section %}no-categories{% endblock %}
+{% block help_link %}user/management/catalog/categories.html{% endblock %}
+{% block left-slot-wrapper %}{% endblock %}
+
+{% block content %}
+    <h2>
+        {% trans "Categories" %}
+    </h2>
+    <div class="no-content">
+        {% trans "There are no categories yet." %}
+    </div>
+    <div class="buttons">
+        <form action="{% url lfs_manage_add_top_category %}">
+            <input type="submit"
+                   class="button"
+                   value="{% trans 'Add Category' %}">
+        </form>
+    </div>
+{% endblock %}
