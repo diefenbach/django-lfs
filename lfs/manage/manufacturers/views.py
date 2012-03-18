@@ -1,11 +1,9 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
-from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
@@ -14,24 +12,17 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
 
 # lfs imports
-import lfs.core.utils
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 from lfs.core.utils import LazyEncoder
+from lfs.manage.manufacturers.forms import ManufacturerDataForm
 from lfs.manufacturer.models import Manufacturer
 
 
-class ManufacturerDataForm(ModelForm):
-    """Form to manage selection data.
-    """
-    class Meta:
-        model = Manufacturer
-
-
 @permission_required("core.manage_shop", login_url="/login/")
-def manage_manufacturer(request, manufacturer_id, template_name="manage/manufacturer/manufacturer.html"):
+def manage_manufacturer(request, manufacturer_id, template_name="manage/manufacturers/manufacturer.html"):
     """The main view to display manufacturers.
     """
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
@@ -58,9 +49,16 @@ def manage_manufacturer(request, manufacturer_id, template_name="manage/manufact
     }))
 
 
+@permission_required("core.manage_shop", login_url="/login/")
+def no_manufacturers(request, template_name="manage/manufacturers/no_manufacturers.html"):
+    """Displays that there are no manufacturers.
+    """
+    return render_to_response(template_name, RequestContext(request, {}))
+
+
 # Parts
 def manufacturer_data_inline(request, manufacturer_id, form,
-    template_name="manage/manufacturer/manufacturer_data_inline.html"):
+    template_name="manage/manufacturers/manufacturer_data_inline.html"):
     """Displays the data form of the current manufacturer.
     """
     return render_to_string(template_name, RequestContext(request, {
@@ -70,7 +68,7 @@ def manufacturer_data_inline(request, manufacturer_id, form,
 
 
 def selectable_manufacturers_inline(request, manufacturer_id,
-    template_name="manage/manufacturer/selectable_manufacturers_inline.html"):
+    template_name="manage/manufacturers/selectable_manufacturers_inline.html"):
     """Displays all selectable manufacturers.
     """
     return render_to_string(template_name, RequestContext(request, {
@@ -81,7 +79,7 @@ def selectable_manufacturers_inline(request, manufacturer_id,
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manufacturer_inline(request, manufacturer_id, category_id,
-    template_name="manage/manufacturer/manufacturer_inline.html"):
+    template_name="manage/manufacturers/manufacturer_inline.html"):
     """Returns categories and products for given manufacturer id and category id.
     """
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
@@ -127,7 +125,7 @@ def manufacturer_inline(request, manufacturer_id, category_id,
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def add_manufacturer(request, template_name="manage/manufacturer/add_manufacturer.html"):
+def add_manufacturer(request, template_name="manage/manufacturers/add_manufacturer.html"):
     """Form and logic to add a manufacturer.
     """
     if request.method == "POST":
@@ -143,7 +141,7 @@ def add_manufacturer(request, template_name="manage/manufacturer/add_manufacture
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "selectable_manufacturers_inline": selectable_manufacturers_inline(request, 0),
-        "next": request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
+        "came_from": request.REQUEST.get("came_from", reverse("lfs_manufacturer_dispatcher")),
     }))
 
 
@@ -155,7 +153,7 @@ def manufacturer_dispatcher(request):
     try:
         manufacturer = Manufacturer.objects.all()[0]
     except IndexError:
-        return HttpResponseRedirect(reverse("lfs_manufacturer_add_manufacturer"))
+        return HttpResponseRedirect(reverse("lfs_manage_no_manufacturers"))
     else:
         return HttpResponseRedirect(
             reverse("lfs_manufacturer", kwargs={"manufacturer_id": manufacturer.id}))

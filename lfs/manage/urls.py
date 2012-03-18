@@ -17,7 +17,7 @@ urlpatterns += patterns('lfs.manage.delivery_times.views',
 )
 
 # Manufacturer
-urlpatterns += patterns('lfs.manage.views.manufacturer',
+urlpatterns += patterns('lfs.manage.manufacturers.views',
     url(r'^manufacturer-dispatcher$', "manufacturer_dispatcher", name="lfs_manufacturer_dispatcher"),
     url(r'^manufacturer/(?P<manufacturer_id>\d*)$', "manage_manufacturer", name="lfs_manufacturer"),
     url(r'^update-manufacturer-data/(?P<manufacturer_id>\d*)$', "update_data", name="lfs_manufacturer_update_manufacturer_data"),
@@ -28,6 +28,7 @@ urlpatterns += patterns('lfs.manage.views.manufacturer',
     url(r'^category-state-manufacturer/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "category_state", name="lfs_manufacturer_category_state"),
     url(r'^manufacturer-inline/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "manufacturer_inline", name="lfs_manufacturer_inline"),
     url(r'^manufacturers-ajax/$', "manufacturers_ajax", name="lfs_manufacturers_ajax"),
+    url(r'^no-manufacturers$', "no_manufacturers", name="lfs_manage_no_manufacturers"),
 )
 
 # Marketing

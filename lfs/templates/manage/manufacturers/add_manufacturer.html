@@ -2,7 +2,6 @@
 {% load i18n %}
 
 {% block help_link %}user/management/shop/manufacturers.html{% endblock %}
-
 {% block section %}add-manufacturer{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
@@ -11,27 +10,19 @@
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add Manufacturer' %}</a></li>
         </ul>
-
         <div id="data">
             <h2>{% trans "Data" %}</h2>
-            <form class="lfc-form"
-                  method="post"
-                  action="{% url lfs_manufacturer_add_manufacturer %}">
+            <form method="post">
                 {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
                 <input type="submit"
                        class="button"
                        name="save"
                        value="{% trans 'Add Manufacturer' %}" />
-
                 <input type="button"
                        class="button"
-                       onclick="window.location='{{ next }}'"
+                       onclick="window.location='{{ came_from }}'"
                        value="{% trans 'Cancel' %}" />
-
-                <input type="hidden"
-                       name="next"
-                       value="{{ next }}" />
             </form>
         </div>
     </div>
