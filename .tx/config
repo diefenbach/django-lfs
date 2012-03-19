@@ -1,7 +1,7 @@
 [main]
 host = http://www.transifex.net
 
-[lfs.lfs]
+[lfs.lfs-06]
 source_file = lfs/locale/de/LC_MESSAGES/django.po
 source_lang = de
 trans.es = lfs/locale/es/LC_MESSAGES/django.po
