@@ -16,7 +16,7 @@ Enter Shop Preferences
 
 #. Browse http://localhost:8000/manage.
 
-#. Login, if your aren't yet.
+#. Login, if you aren't yet.
 
 #. Browse to ``Shop / Preferences``.
 
@@ -35,10 +35,12 @@ Enter Shop Preferences
 #. Enter ``Notification E-Mail Addresses``. To this addresses all notification
    messages will be sent. For example, if an order has been submitted.
 
+#. Click on the ``Save Shop`` button.
+
 #. Go to the ``Default Values`` tab.
 
-#. Select the default ``Price Type``. This is the default for all products, if
-   the price type is not explicitly selected on a product.
+#. Select the default ``Price Calculator:``. This is the default for all
+   products, if the price calculator is not explicitly selected on a product.
 
 #. Select ``Invoice Countries`` and ``Shipping Countries``. All selected
    countries will be available to the shop customers for selection.
@@ -46,15 +48,16 @@ Enter Shop Preferences
 #. Select ``Default Country``. This country will be preselected as default
    country.
 
+#. Click on the ``Save Default Values`` button.
+
 Add Product Taxes
 =================
 
-#. Go to ``Shop / Product Taxes``. As there are no taxes yet, you are redirected
-   automatically to the  form.
+#. Go to ``Shop / Product Taxes`` and click on the ``Add Product Tax`` button.
 
 #. Enter the ``Rate`` (in percentage), for instance 19.0.
 
-#. Click on ``Add Tax`` button.
+#. Click on the ``Add Tax`` button.
 
 #. You can add more taxes by clicking on the ``Add Product Tax`` site action
    and executing steps 2 to 3.
@@ -62,8 +65,8 @@ Add Product Taxes
 Add Delivery Times
 ==================
 
-#. Go to ``Shop / Delivery Times``. As there are no delivery times yet, your are
-   redirected automatically to the add form.
+#. Go to ``Shop / Delivery Times`` and click on the ``Add Delivery Time``
+   button.
 
 #. Enter ``Min``, the minimal delivery time.
 
@@ -71,19 +74,17 @@ Add Delivery Times
 
 #. Enter the ``Unit`` of this delivery time.
 
-#. Enter the ``Description``. This is just for internal purposes.
-
-#. Click on ``Add delivery time`` button.
+#. Click on the ``Add Delivery Time`` button.
 
 #. You can add more delivery times by clicking on ``Add delivery time`` link and
-   executing steps 2 to 4.
+   executing steps 2 to 3.
 
 Add Categories
 ==============
 
 #. Now go to ``Catalog / Categories``.
 
-#. Click on ``Add Category``.
+#. Click on the ``Add Category`` button.
 
 #. Enter a ``name`` and a ``slug``.
 
@@ -93,6 +94,8 @@ Add Categories
 
 #. Enter a ``Description``. This will be displayed within the detail view of
    a category.
+
+#. Click on the ``Save Data`` button.
 
 #. Go to the ``View`` tab.
 
@@ -104,8 +107,7 @@ Add Categories
 Add Products
 ============
 
-#. Now go to ``Catalog / Products`` and add a new Product. Since there is no
-   product yet, you will redirected automatically to the add form.
+#. Now go to ``Catalog / Products`` and click on the ``Add Product`` button.
 
 #. Enter ``name`` and a ``slug``.
 
@@ -122,10 +124,10 @@ Add Products
    displayed within a overview, e.g. when a category displays it's assigned
    products.
 
-#. Enter a ``description``. This will be displayed within the detail view of
+#. Enter a ``Description``. This will be displayed within the detail view of
    a product.
 
-#. Click on ``Save Data``.
+#. Click on the ``Save Data`` button.
 
 #. Go to the ``Categories`` tab
 
@@ -133,15 +135,15 @@ Add Products
 
 #. Go to the ``Images`` tab
 
-#. Click ``Select Images``, browse to your images and select all images you want
+#. Click ``Choose Files``, browse to your images and select all images you want
    to upload. You will see an upload indicator and all images will be uploaded.
 
-#. Go back to the ``Product`` tab
+#. Go back to the ``Data`` tab
 
 #. Check the ``Active`` check box. Only active products are displayed to the
    customers.
 
-#. Click ``Save data``.
+#. Click on the ``Save Data`` button.
 
 #. Click on ``Goto Product`` to visit the new product.
 
@@ -160,6 +162,10 @@ To install an english locale (on Debian/Ubuntu) please enter::
 
     sudo apt-get install language-support-en
 
+.. Note::
+
+   After you have changed the locale you need to restart your instance to make it
+   active.
 
 What's Next?
 ============
