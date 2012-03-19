@@ -34,6 +34,7 @@ Changes
 Unreleased
 ----------
 
+* Bugfix: fixed edit/view product urls; issue #164 (Frank Feng)
 * Bugfix: removed typo; issue #163 (Frank Feng)
 * Bugfix: fixed accessories tab in manage; #issue #162 (Frank Feng)
 * Bugfix: get_base_price_net; #issue #161
