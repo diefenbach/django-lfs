@@ -31,6 +31,18 @@ The latest development state can be found here:
 Changes
 =======
 
+Unreleased
+----------
+
+* Bugfix: removed typo; issue #163 (Frank Feng)
+* Bugfix: fixed accessories tab in manage; #issue #162 (Frank Feng)
+* Bugfix: get_base_price_net; #issue #161
+* Bugfix: display only parent's active base price value for variants
+* Bugfix: take the parent's price calculator for variants
+* Added: default footer for email messages (Maciej Wiśniowski)
+* Improved: email templates (Maciej Wiśniowski)
+* Updated: German translations
+
 0.7.0 beta 3
 ------------
 
