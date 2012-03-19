@@ -233,7 +233,7 @@ $(function() {
             }
             else {
                 var q = $("#search-input").attr("value");
-                var url = $("#search-input").attr("data");
+                var url = $("#search-input").data("url");
                 $.get(url, {"q" : q}, function(data) {
                     data = $.parseJSON(data);
                     if (data["state"] == "success") {
