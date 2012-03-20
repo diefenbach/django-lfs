@@ -5,6 +5,7 @@ import urllib
 # django imports
 from django.conf import settings
 from django.core.cache import cache
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.http import HttpResponse
@@ -32,7 +33,7 @@ from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
 from lfs.catalog.settings import SELECT
 from lfs.catalog.settings import VARIANT
-from lfs.core.utils import LazyEncoder
+from lfs.core.utils import LazyEncoder, lfs_pagination
 from lfs.core.templatetags import lfs_tags
 from lfs.utils import misc as lfs_utils
 
@@ -269,7 +270,7 @@ def set_sorting(request):
 def category_view(request, slug, template_name="lfs/catalog/category_base.html"):
     """
     """
-    start = request.REQUEST.get("start", 0)
+    start = request.REQUEST.get("start", 1)
     category = lfs_get_object_or_404(Category, slug=slug)
     if category.get_content() == CONTENT_PRODUCTS:
         inline = category_products(request, slug, start)
@@ -329,7 +330,7 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
     return result
 
 
-def category_products(request, slug, start=0, template_name="lfs/catalog/categories/product/default.html"):
+def category_products(request, slug, start=1, template_name="lfs/catalog/categories/product/default.html"):
     """Displays the products of the category with passed slug.
 
     This view is called if the user chooses a template that is situated in settings.PRODUCT_PATH ".
@@ -378,7 +379,7 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
     try:
         start = int(start)
     except (ValueError, TypeError):
-        start = 0
+        start = 1
 
     format_info = category.get_format_info()
     amount_of_rows = format_info["product_rows"]
@@ -388,10 +389,18 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
     all_products = lfs.catalog.utils.get_filtered_products_for_category(
         category, product_filter, price_filter, sorting)
 
+    # prepare paginator
+    paginator = Paginator(all_products, amount)
+
+    try:
+        current_page = paginator.page(start)
+    except (EmptyPage, InvalidPage):
+        current_page = paginator.page(paginator.num_pages)
+
     # Calculate products
     row = []
     products = []
-    for i, product in enumerate(all_products[start:start + amount]):
+    for i, product in enumerate(current_page.object_list):
         if product.is_product_with_variants():
             default_variant = product.get_variant_for_category(request)
             if default_variant:
@@ -419,24 +428,7 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
     amount_of_products = all_products.count()
 
     # Calculate urls
-    pages = []
-    for i in range(0, amount_of_products / amount + 1):
-        page_start = i * amount
-        pages.append({
-            "name": i + 1,
-            "start": page_start,
-            "selected": start == page_start,
-        })
-
-    if (start + amount) < amount_of_products:
-        next_url = "%s?start=%s" % (category.get_absolute_url(), start + amount)
-    else:
-        next_url = None
-
-    if (start - amount) >= 0:
-        previous_url = "%s?start=%s" % (category.get_absolute_url(), start - amount)
-    else:
-        previous_url = None
+    pagination_data = lfs_pagination(request, current_page, url=category.get_absolute_url())
 
     render_template = category.get_template_name()
     if render_template != None:
@@ -445,11 +437,8 @@ def category_products(request, slug, start=0, template_name="lfs/catalog/categor
     result = render_to_string(template_name, RequestContext(request, {
         "category": category,
         "products": products,
-        "next_url": next_url,
-        "previous_url": previous_url,
         "amount_of_products": amount_of_products,
-        "pages": pages,
-        "show_pages": amount_of_products > amount,
+        "pagination": pagination_data,
         "all_products": all_products,
     }))
 
