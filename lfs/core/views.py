@@ -15,6 +15,10 @@ from django.template import RequestContext
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
 
+# Load logger
+import logging
+logger = logging.getLogger("default")
+
 
 def shop_view(request, template_name="lfs/shop/shop.html"):
     """Displays the shop.
@@ -56,4 +60,7 @@ def server_error(request):
 
 def one_time_setup():
     shop = lfs_get_object_or_404(Shop, pk=1)
-    locale.setlocale(locale.LC_ALL, str(shop.default_locale))
+    try:
+        locale.setlocale(locale.LC_ALL, str(shop.default_locale))
+    except locale.Error, e:
+        logger.error("Unsupported locale in LMI/Preferences/Default Values/Default Shop Locale: '%s'." % shop.default_locale)
