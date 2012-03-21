@@ -1,0 +1,4573 @@
+# LFS TRADITIONAL CHINESE LANGUAGE TRANSLATION
+# Copyright (C) 2012 YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the package.
+# AUTHOR: FRANK FENG 
+# Enail: fengxl@tiroxlab.com
+
+msgid ""
+msgstr ""
+"Project-Id-Version: LFS TRADITIONAL CHINESE\n"
+"Report-Msgid-Bugs-To: https://bitbucket.org/callbay/django-lfs/issues\n"
+"POT-Creation-Date: 2012-03-17 15:33+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FRANK FENG <fengxl@tiroxlab.com>\n"
+"Language-Team: GAVIN WU <gavin@tiroxlab.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#: other_translations.py:3
+msgid "Price excludes tax"
+msgstr "不含稅"
+
+#: other_translations.py:4
+msgid "Price includes tax"
+msgstr "凈價"
+
+#: other_translations.py:5
+msgid "Street"
+msgstr "街區"
+
+#: other_translations.py:6
+msgid "Left"
+msgstr "左"
+
+#: other_translations.py:7
+msgid "Right"
+msgstr "右"
+
+#: other_translations.py:8
+msgid "Average Rating"
+msgstr "平均分"
+
+#: other_translations.py:9
+msgid "Zip Code"
+msgstr "郵編"
+
+#: cart/models.py:48 criteria/models/criteria.py:597 order/models.py:48
+#: templates/manage/cart/carts_inline.html:16
+msgid "User"
+msgstr "用戶"
+
+#: cart/models.py:49 order/models.py:49
+msgid "Session"
+msgstr "事務"
+
+#: cart/models.py:50 cart/models.py:238 catalog/models.py:598
+#: templates/manage/cart/cart_inline.html:58
+#: templates/manage/cart/cart_inline.html:97
+#: templates/manage/cart/carts_inline.html:10
+#: templates/manage/customer/customer_inline.html:125
+#: templates/manage/reviews/review_inline.html:33
+#: templates/manage/reviews/reviews_inline.html:20
+msgid "Creation date"
+msgstr "創建日期"
+
+#: cart/models.py:51 cart/models.py:239
+#: templates/manage/cart/cart_inline.html:66
+#: templates/manage/cart/carts_inline.html:13
+#: templates/manage/customer/customer_inline.html:173
+msgid "Modification date"
+msgstr "修改日期"
+
+#: cart/models.py:235 portlet/templatetags/lfs_portlets_tags.py:92
+#: templates/manage/cart/cart.html:26
+#: templates/manage/customer/customer_inline.html:165
+#: templates/manage/customer/customers_inline.html:35
+msgid "Cart"
+msgstr "購物車"
+
+#: cart/models.py:236 catalog/models.py:1741 catalog/models.py:1996
+#: catalog/models.py:2062 catalog/models.py:2400 marketing/models.py:13
+#: marketing/models.py:26 marketing/models.py:33
+#: templates/manage/cart/cart_inline.html:100
+#: templates/manage/reviews/review_inline.html:78
+#: templates/manage/reviews/reviews_inline.html:38
+msgid "Product"
+msgstr "商品"
+
+#: cart/models.py:237 catalog/models.py:1744
+#: templates/manage/product/accessories_inline.html:116
+msgid "Quantity"
+msgstr "數量"
+
+#: cart/models.py:395
+msgid "Cart item"
+msgstr "購物商品"
+
+#: cart/models.py:396 catalog/models.py:1949 catalog/models.py:1974
+#: catalog/models.py:1997 catalog/models.py:2022 catalog/models.py:2064
+#: order/models.py:211 templates/manage/properties/property.html:32
+msgid "Property"
+msgstr "屬性"
+
+#: cart/views.py:268
+#, python-format
+msgid "%(name)s must be between %(min)s and %(max)s %(unit)s."
+msgstr "%(name)s 必須介於 %(min)s 和 %(max)s %(unit)s 之間。"
+
+#: cart/views.py:282
+#, python-format
+msgid ""
+"Your entered value for %(name)s (%(value)s) is not in valid step width, "
+"which is %(step)s."
+msgstr "您輸入的 %(name)s (%(value)s)不是有效的步長，有效步長是 %(step)s."
+
+#: cart/views.py:298 cart/views.py:402
+#, python-format
+msgid "Sorry, but '%(product)s' is not available anymore."
+msgstr "對不起，商品 '%(product)s' 已售完。"
+
+#: cart/views.py:300 cart/views.py:404
+#, python-format
+msgid "Sorry, but '%(product)s' is only one time available."
+msgstr "對不起，商品 '%(product)s' 只有壹件可用。"
+
+#: cart/views.py:302 cart/views.py:406
+#, python-format
+msgid "Sorry, but '%(product)s' is only %(amount)s times available."
+msgstr "對不起，商品 '%(product)s' 僅有 %(amount)s 可用。"
+
+#: catalog/models.py:160 catalog/models.py:569 catalog/models.py:1774
+#: catalog/models.py:1868 catalog/models.py:2024 catalog/models.py:2188
+#: core/models.py:19 core/models.py:38 core/models.py:154
+#: discounts/models.py:41 export/models.py:16 manufacturer/models.py:10
+#: payment/models.py:73 shipping/models.py:71
+#: templates/manage/category/products_inline.html:47
+#: templates/manage/category/selected_products.html:42
+#: templates/manage/customer/customer_filters_inline.html:12
+#: templates/manage/customer/customers_filters_inline.html:10
+#: templates/manage/marketing/featured_inline.html:44
+#: templates/manage/marketing/featured_inline.html:102
+#: templates/manage/marketing/rating_mails.html:48
+#: templates/manage/marketing/topseller_inline.html:44
+#: templates/manage/marketing/topseller_inline.html:103
+#: templates/manage/order/order_filters_inline.html:15
+#: templates/manage/order/order_inline.html:162
+#: templates/manage/order/orders_filter.html:11
+#: templates/manage/order/orders_filters_inline.html:11
+#: templates/manage/order/orders_inline.html:12
+#: templates/manage/product/accessories_inline.html:48
+#: templates/manage/product/accessories_inline.html:107
+#: templates/manage/product/products_inline.html:17
+#: templates/manage/product/related_products_inline.html:47
+#: templates/manage/product/related_products_inline.html:107
+#: templates/manage/product/variants.html:107
+#: templates/manage/product/variants.html:174
+#: templates/manage/properties/options_inline.html:13
+#: templates/manage/property_groups/products_inline.html:45
+#: templates/manage/property_groups/products_inline.html:105
+#: templates/manage/property_groups/properties_inline.html:18
+#: templates/manage/property_groups/properties_inline.html:68
+#: templates/manage/reviews/review_filters_inline.html:11
+#: templates/manage/reviews/review_inline.html:41
+#: templates/manage/reviews/reviews_filters_inline.html:9
+#: templates/manage/reviews/reviews_inline.html:26
+msgid "Name"
+msgstr "名稱"
+
+#: catalog/models.py:161 catalog/models.py:570 export/models.py:17
+#: page/models.py:17 supplier/models.py:14
+#: templates/manage/product/products_inline.html:20
+#: templates/manage/product/variants.html:104
+msgid "Slug"
+msgstr "URL中唯壹名稱"
+
+#: catalog/models.py:162 catalog/models.py:636 catalog/models.py:2063
+#: core/models.py:80
+msgid "Parent"
+msgstr "上級"
+
+#: catalog/models.py:166
+msgid "Show all products"
+msgstr "展示所有商品"
+
+#: catalog/models.py:168 catalog/models.py:1775 catalog/models.py:1871
+#: catalog/settings.py:70 export/models.py:18
+#: templates/manage/manage_base.html:87
+#: templates/manage/cart/carts_inline.html:25
+#: templates/manage/category/manage_category.html:44
+#: templates/manage/export/export.html:36
+#: templates/manage/export/export.html:44
+#: templates/manage/manufacturers/manufacturer.html:29
+#: templates/manage/manufacturers/manufacturer.html:35
+#: templates/manage/marketing/featured_inline.html:31
+#: templates/manage/marketing/topseller_inline.html:31
+#: templates/manage/product/no_products.html:11
+#: templates/manage/product/products.html:21
+#: templates/manage/property_groups/products.html:4
+#: templates/manage/property_groups/products_inline.html:32
+#: templates/manage/property_groups/property_group.html:32
+msgid "Products"
+msgstr "商品"
+
+#: catalog/models.py:169 catalog/models.py:579
+msgid "Short description"
+msgstr "簡述"
+
+#: catalog/models.py:170 catalog/models.py:580 catalog/models.py:2217
+#: catalog/models.py:2398 core/models.py:159 customer_tax/models.py:24
+#: payment/models.py:74 shipping/models.py:72 tax/models.py:18
+#: templates/manage/product/attachments.html:21
+msgid "Description"
+msgstr "描述"
+
+#: catalog/models.py:171 catalog/models.py:2113 core/models.py:160
+#: payment/models.py:76 shipping/models.py:74
+#: templates/manage/category/data.html:83
+#: templates/manage/product/images.html:34
+msgid "Image"
+msgstr "圖片"
+
+#: catalog/models.py:172 catalog/models.py:1743 catalog/models.py:1872
+#: catalog/models.py:1975 catalog/models.py:1998 catalog/models.py:2026
+#: catalog/models.py:2114 catalog/models.py:2192 catalog/models.py:2401
+#: core/models.py:79 core/management/commands/lfs_migrate.py:123
+#: criteria/models/criteria_objects.py:24 marketing/models.py:14
+#: marketing/models.py:34 page/models.py:18
+#: templates/manage/marketing/featured_inline.html:108
+#: templates/manage/marketing/topseller_inline.html:109
+#: templates/manage/product/accessories_inline.html:113
+#: templates/manage/product/attachments.html:24
+#: templates/manage/product/images.html:40
+#: templates/manage/properties/options_inline.html:10
+#: templates/manage/property_groups/properties_inline.html:65
+#: templates/manage/static_block/files.html:20
+msgid "Position"
+msgstr "順序"
+
+#: catalog/models.py:173 page/models.py:19
+msgid "Exclude from navigation"
+msgstr "不出現在導航菜單"
+
+#: catalog/models.py:175 catalog/models.py:614 core/models.py:161
+msgid "Static block"
+msgstr "靜態板塊"
+
+#: catalog/models.py:176
+msgid "Category template"
+msgstr "商品分類模板"
+
+#: catalog/models.py:177
+msgid "Active formats"
+msgstr "啟用格式"
+
+#: catalog/models.py:179 core/models.py:164
+msgid "Product rows"
+msgstr "頁面顯示商品行數"
+
+#: catalog/models.py:180 core/models.py:163
+msgid "Product cols"
+msgstr "頁面顯示商品列數"
+
+#: catalog/models.py:181 core/models.py:165
+msgid "Category cols"
+msgstr "頁面顯示商品分類列數"
+
+#: catalog/models.py:183 catalog/models.py:584 core/models.py:184
+#: core/management/commands/lfs_migrate.py:75
+#: core/management/commands/lfs_migrate.py:99 page/models.py:24
+msgid "Meta title"
+msgstr ""
+
+#: catalog/models.py:184 catalog/models.py:585 core/models.py:185
+#: core/management/commands/lfs_migrate.py:76
+#: core/management/commands/lfs_migrate.py:100 page/models.py:25
+msgid "Meta keywords"
+msgstr ""
+
+#: catalog/models.py:185 catalog/models.py:586 core/models.py:186
+#: core/management/commands/lfs_migrate.py:77
+#: core/management/commands/lfs_migrate.py:101 page/models.py:26
+msgid "Meta description"
+msgstr ""
+
+#: catalog/models.py:569
+msgid "The name of the product."
+msgstr "商品名稱"
+
+#: catalog/models.py:570
+msgid "The unique last part of the Product's URL."
+msgstr "商品唯壹的URL名稱"
+
+#: catalog/models.py:571 discounts/models.py:45
+#: templates/manage/category/products_inline.html:50
+#: templates/manage/category/selected_products.html:45
+#: templates/manage/marketing/featured_inline.html:47
+#: templates/manage/marketing/featured_inline.html:105
+#: templates/manage/marketing/topseller_inline.html:47
+#: templates/manage/marketing/topseller_inline.html:106
+#: templates/manage/order/order_inline.html:159
+#: templates/manage/product/accessories_inline.html:51
+#: templates/manage/product/accessories_inline.html:110
+#: templates/manage/product/products_inline.html:23
+#: templates/manage/product/related_products_inline.html:50
+#: templates/manage/product/related_products_inline.html:110
+#: templates/manage/product/variants.html:170
+#: templates/manage/property_groups/products_inline.html:48
+#: templates/manage/property_groups/products_inline.html:108
+msgid "SKU"
+msgstr "貨號"
+
+#: catalog/models.py:571
+msgid "Your unique article number of the product."
+msgstr "您的商品統壹編號"
+
+#: catalog/models.py:572 catalog/models.py:576 catalog/models.py:1880
+#: catalog/models.py:2025 criteria/models/criteria.py:52 order/models.py:56
+#: payment/models.py:78 payment/models.py:122 shipping/models.py:76
+#: shipping/models.py:165 templates/manage/cart/cart_inline.html:103
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:14
+#: templates/manage/criteria/country_criterion.html:14
+#: templates/manage/criteria/distance_criterion.html:14
+#: templates/manage/criteria/height_criterion.html:14
+#: templates/manage/criteria/length_criterion.html:12
+#: templates/manage/criteria/payment_method_criterion.html:14
+#: templates/manage/criteria/price_criterion.html:14
+#: templates/manage/criteria/shipping_method_criterion.html:14
+#: templates/manage/criteria/user_criterion.html:14
+#: templates/manage/criteria/weight_criterion.html:14
+#: templates/manage/criteria/width_criterion.html:14
+#: templates/manage/customer/customer_inline.html:131
+#: templates/manage/customer/customer_inline.html:176
+#: templates/manage/marketing/rating_mails.html:60
+#: templates/manage/order/order_inline.html:170
+#: templates/manage/order/orders_inline.html:18
+#: templates/manage/payment/payment_method_prices.html:27
+#: templates/manage/product/products_inline.html:34
+#: templates/manage/product/variants.html:110
+#: templates/manage/product/variants.html:185
+#: templates/manage/properties/options_inline.html:16
+#: templates/manage/shipping_methods/shipping_method_prices.html:27
+msgid "Price"
+msgstr "價格"
+
+#: catalog/models.py:573 core/models.py:179
+msgid "Price calculator"
+msgstr "價格計算"
+
+#: catalog/models.py:577
+msgid "Price unit"
+msgstr "價格單位"
+
+#: catalog/models.py:578
+msgid "Quanity field unit"
+msgstr "數量單位"
+
+#: catalog/models.py:581 templates/manage/manage_base.html:80
+#: templates/manage/product/images.html:3
+#: templates/manage/product/product.html:99
+msgid "Images"
+msgstr "圖片"
+
+#: catalog/models.py:588 templates/manage/product/related_products.html:4
+msgid "Related products"
+msgstr "相關商品"
+
+#: catalog/models.py:591
+msgid "Acessories"
+msgstr "相關配件"
+
+#: catalog/models.py:595
+#: templates/manage/product/product_filters_inline.html:17
+msgid "For sale"
+msgstr "啟用促銷價"
+
+#: catalog/models.py:596
+msgid "For sale price"
+msgstr "促銷價"
+
+#: catalog/models.py:597 core/models.py:75 marketing/models.py:35
+#: page/models.py:15 payment/models.py:71 payment/models.py:124
+#: shipping/models.py:69 shipping/models.py:167
+#: templates/manage/category/products_inline.html:53
+#: templates/manage/category/selected_products.html:48
+#: templates/manage/marketing/featured_inline.html:50
+#: templates/manage/marketing/featured_inline.html:111
+#: templates/manage/marketing/topseller_inline.html:50
+#: templates/manage/marketing/topseller_inline.html:112
+#: templates/manage/product/accessories_inline.html:54
+#: templates/manage/product/accessories_inline.html:119
+#: templates/manage/product/product_filters_inline.html:16
+#: templates/manage/product/products_inline.html:28
+#: templates/manage/product/related_products_inline.html:53
+#: templates/manage/product/related_products_inline.html:113
+#: templates/manage/product/variants.html:163
+#: templates/manage/property_groups/products_inline.html:51
+#: templates/manage/property_groups/products_inline.html:111
+#: templates/manage/reviews/review.html:29
+#: templates/manage/reviews/review_filters_inline.html:12
+#: templates/manage/reviews/review_inline.html:21
+#: templates/manage/reviews/reviews_filters_inline.html:10
+#: templates/manage/reviews/reviews_inline.html:51
+#: templates/manage/voucher/vouchers_inline.html:88
+msgid "Active"
+msgstr "有效"
+
+#: catalog/models.py:602
+msgid "Deliverable"
+msgstr "可送貨"
+
+#: catalog/models.py:603
+msgid "Manual delivery time"
+msgstr "人工送貨時間"
+
+#: catalog/models.py:604 shipping/models.py:77
+msgid "Delivery time"
+msgstr "送貨時間"
+
+#: catalog/models.py:605
+msgid "Order time"
+msgstr "下單時間"
+
+#: catalog/models.py:606
+msgid "Ordered at"
+msgstr "下單"
+
+#: catalog/models.py:607
+msgid "Manage stock amount"
+msgstr "自動庫存管理"
+
+#: catalog/models.py:608
+msgid "Stock amount"
+msgstr "庫存數量"
+
+#: catalog/models.py:610 core/management/commands/lfs_migrate.py:67
+msgid "Active packing"
+msgstr "啟用包裝"
+
+#: catalog/models.py:611
+msgid "Amount per packing"
+msgstr "數量/包"
+
+#: catalog/models.py:612
+msgid "Packing unit"
+msgstr "打包單位"
+
+#: catalog/models.py:617 criteria/models/criteria.py:615
+#: criteria/models/criteria.py:634
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:17
+#: templates/manage/criteria/country_criterion.html:17
+#: templates/manage/criteria/distance_criterion.html:17
+#: templates/manage/criteria/height_criterion.html:17
+#: templates/manage/criteria/length_criterion.html:17
+#: templates/manage/criteria/payment_method_criterion.html:17
+#: templates/manage/criteria/price_criterion.html:17
+#: templates/manage/criteria/shipping_method_criterion.html:17
+#: templates/manage/criteria/user_criterion.html:17
+#: templates/manage/criteria/weight_criterion.html:17
+#: templates/manage/criteria/width_criterion.html:17
+msgid "Weight"
+msgstr "重量"
+
+#: catalog/models.py:618 criteria/models/criteria.py:259
+#: criteria/models/criteria.py:278 criteria/models/criteria.py:698
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:11
+#: templates/manage/criteria/country_criterion.html:11
+#: templates/manage/criteria/distance_criterion.html:11
+#: templates/manage/criteria/height_criterion.html:11
+#: templates/manage/criteria/length_criterion.html:13
+#: templates/manage/criteria/payment_method_criterion.html:11
+#: templates/manage/criteria/price_criterion.html:11
+#: templates/manage/criteria/shipping_method_criterion.html:11
+#: templates/manage/criteria/user_criterion.html:11
+#: templates/manage/criteria/weight_criterion.html:11
+#: templates/manage/criteria/width_criterion.html:11
+msgid "Height"
+msgstr "高"
+
+#: catalog/models.py:619 criteria/models/criteria.py:322
+#: criteria/models/criteria.py:341
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:12
+#: templates/manage/criteria/country_criterion.html:12
+#: templates/manage/criteria/distance_criterion.html:12
+#: templates/manage/criteria/height_criterion.html:12
+#: templates/manage/criteria/length_criterion.html:14
+#: templates/manage/criteria/payment_method_criterion.html:12
+#: templates/manage/criteria/price_criterion.html:12
+#: templates/manage/criteria/shipping_method_criterion.html:12
+#: templates/manage/criteria/user_criterion.html:12
+#: templates/manage/criteria/weight_criterion.html:12
+#: templates/manage/criteria/width_criterion.html:12
+msgid "Length"
+msgstr "長"
+
+#: catalog/models.py:620 criteria/models/criteria.py:113
+#: criteria/models/criteria.py:679
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:16
+#: templates/manage/criteria/country_criterion.html:16
+#: templates/manage/criteria/distance_criterion.html:16
+#: templates/manage/criteria/height_criterion.html:16
+#: templates/manage/criteria/length_criterion.html:16
+#: templates/manage/criteria/payment_method_criterion.html:16
+#: templates/manage/criteria/price_criterion.html:16
+#: templates/manage/criteria/shipping_method_criterion.html:16
+#: templates/manage/criteria/user_criterion.html:16
+#: templates/manage/criteria/weight_criterion.html:16
+#: templates/manage/criteria/width_criterion.html:16
+msgid "Width"
+msgstr "寬"
+
+#: catalog/models.py:623 discounts/models.py:44 manage/voucher/forms.py:45
+#: order/models.py:57 order/models.py:137 payment/models.py:77
+#: shipping/models.py:75 templates/manage/voucher/vouchers_inline.html:76
+#: voucher/models.py:102
+msgid "Tax"
+msgstr "稅"
+
+#: catalog/models.py:624
+msgid "Subtype"
+msgstr "子類"
+
+#: catalog/models.py:628
+msgid "Default variant"
+msgstr "默認衍生商品"
+
+#: catalog/models.py:629 core/management/commands/lfs_migrate.py:59
+#: templates/manage/product/variants.html:251
+msgid "Category variant"
+msgstr "分類中衍生商品優先顯示"
+
+#: catalog/models.py:631
+msgid "Variants display type"
+msgstr "衍生商品顯示方式"
+
+#: catalog/models.py:637
+msgid "Active name"
+msgstr "使用模板商品名稱"
+
+#: catalog/models.py:638
+msgid "Active SKU"
+msgstr "使用模板商品SKU"
+
+#: catalog/models.py:639
+msgid "Active short description"
+msgstr "使用模板商品簡述"
+
+#: catalog/models.py:640
+msgid "Active static bock"
+msgstr "使用模板商品靜態板塊"
+
+#: catalog/models.py:641
+msgid "Active description"
+msgstr "使用模板商品描述"
+
+#: catalog/models.py:642
+msgid "Active price"
+msgstr "使用模板商品價格"
+
+#: catalog/models.py:643
+msgid "Active for sale"
+msgstr "使用模板商品促銷設置"
+
+#: catalog/models.py:644
+msgid "Active for sale price"
+msgstr "使用模板商品促銷價"
+
+#: catalog/models.py:645
+msgid "Active Images"
+msgstr "使用模板商品圖片"
+
+#: catalog/models.py:646 templates/manage/product/related_products.html:14
+msgid "Active related products"
+msgstr "使用模板商品的相關商品"
+
+#: catalog/models.py:647 templates/manage/product/accessories.html:14
+msgid "Active accessories"
+msgstr "使用模板商品的商品配件"
+
+#: catalog/models.py:648
+msgid "Active meta title"
+msgstr "使用模板商品的 Meta Title"
+
+#: catalog/models.py:649
+msgid "Active meta description"
+msgstr "使用模板商品的 Meta Description"
+
+#: catalog/models.py:650
+msgid "Active meta keywords"
+msgstr "使用模板商品的 Meta Keyworlds"
+
+#: catalog/models.py:651
+msgid "Active dimensions"
+msgstr "使用模板商品尺寸"
+
+#: catalog/models.py:652
+msgid "Product template"
+msgstr "商品顯示頁面模板"
+
+#: catalog/models.py:655
+msgid "Active price calculation"
+msgstr "使用模板商品價格計算"
+
+#: catalog/models.py:656
+msgid "Price Calculation"
+msgstr "價格計算"
+
+#: catalog/models.py:659 core/management/commands/lfs_migrate.py:60
+msgid "Active base price"
+msgstr "使用模板商品基價"
+
+#: catalog/models.py:660 core/management/commands/lfs_migrate.py:61
+msgid "Base price unit"
+msgstr "基價單位"
+
+#: catalog/models.py:661 core/management/commands/lfs_migrate.py:62
+msgid "Base price amount"
+msgstr "基價數量"
+
+#: catalog/models.py:664
+msgid "SKU Manufacturer"
+msgstr "生產商SKU"
+
+#: catalog/models.py:665
+msgid "Manufacturer"
+msgstr "生產商"
+
+#: catalog/models.py:666 core/management/commands/lfs_migrate.py:58
+msgid "Type of quantity field"
+msgstr "商品數量類型"
+
+#: catalog/models.py:1742
+msgid "Accessory"
+msgstr "商品配件"
+
+#: catalog/models.py:1869 catalog/models.py:2112 catalog/models.py:2397
+#: core/models.py:76 page/models.py:16
+#: templates/manage/portlets/portlets_inline.html:40
+#: templates/manage/product/attachments.html:18
+#: templates/manage/product/images.html:37
+#: templates/manage/static_block/files.html:17
+msgid "Title"
+msgstr "標題"
+
+#: catalog/models.py:1870 catalog/models.py:1973 core/models.py:78
+msgid "Group"
+msgstr "組"
+
+#: catalog/models.py:1873 catalog/models.py:2216
+msgid "Unit"
+msgstr "單位"
+
+#: catalog/models.py:1874
+msgid "Display on product"
+msgstr "顯示在商品頁面"
+
+#: catalog/models.py:1875
+msgid "Local"
+msgstr "個體屬性"
+
+#: catalog/models.py:1876
+msgid "Filterable"
+msgstr "過濾導航"
+
+#: catalog/models.py:1877
+msgid "Display no results"
+msgstr "無過濾結果時顯示"
+
+#: catalog/models.py:1878
+msgid "Configurable"
+msgstr "可配置"
+
+#: catalog/models.py:1879 catalog/models.py:2067 customer/models.py:105
+#: discounts/models.py:43 templates/manage/portlets/portlets_inline.html:37
+#: templates/manage/voucher/vouchers_inline.html:70
+msgid "Type"
+msgstr "類型"
+
+#: catalog/models.py:1881
+msgid "Display price"
+msgstr "顯示價格"
+
+#: catalog/models.py:1882
+#: templates/manage/payment/payment_method_prices.html:9
+#: templates/manage/shipping_methods/shipping_method_prices.html:9
+msgid "Add price"
+msgstr ""
+
+#: catalog/models.py:1885 catalog/models.py:2214
+msgid "Min"
+msgstr "最小"
+
+#: catalog/models.py:1886 catalog/models.py:2215
+msgid "Max"
+msgstr "最大"
+
+#: catalog/models.py:1887 catalog/models.py:1893
+msgid "Step"
+msgstr "步長"
+
+#: catalog/models.py:1888
+msgid "Decimal places"
+msgstr "小數位"
+
+#: catalog/models.py:1890
+msgid "Required"
+msgstr "必須"
+
+#: catalog/models.py:1892 templates/manage/properties/step_inline.html:2
+msgid "Step type"
+msgstr "步長類型"
+
+#: catalog/models.py:1898 templates/manage/manage_base.html:91
+#: templates/manage/manage_base.html:93
+#: templates/manage/product/product.html:111
+#: templates/manage/properties/no_properties.html:11
+#: templates/manage/properties/property.html:7
+#: templates/manage/property_groups/properties_inline.html:6
+#: templates/manage/property_groups/property_group.html:33
+msgid "Properties"
+msgstr "屬性"
+
+#: catalog/models.py:2065 discounts/models.py:42 manage/voucher/forms.py:40
+#: templates/manage/voucher/vouchers_inline.html:73
+msgid "Value"
+msgstr "值"
+
+#: catalog/models.py:2066
+msgid "Value as float"
+msgstr "數值類型"
+
+#: catalog/models.py:2108 catalog/models.py:2150
+#: criteria/models/criteria_objects.py:20
+msgid "Content type"
+msgstr "內容類型"
+
+#: catalog/models.py:2109 catalog/models.py:2151
+#: criteria/models/criteria_objects.py:17
+#: criteria/models/criteria_objects.py:21
+msgid "Content id"
+msgstr "內容ID"
+
+#: catalog/models.py:2189
+msgid "Display files"
+msgstr "顯示文件下載鏈接"
+
+#: catalog/models.py:2190 templates/manage/manage_base.html:98
+msgid "HTML"
+msgstr "網頁"
+
+#: catalog/models.py:2191 templates/manage/static_block/files.html:2
+#: templates/manage/static_block/static_block.html:42
+msgid "Files"
+msgstr "文件"
+
+#: catalog/settings.py:9
+msgid "Integer"
+msgstr "整數"
+
+#: catalog/settings.py:10
+msgid "Decimal 0.1"
+msgstr "小數 0.1"
+
+#: catalog/settings.py:11
+msgid "Decimal 0.01"
+msgstr "小數 0.01"
+
+#: catalog/settings.py:18 catalog/settings.py:29 catalog/settings.py:36
+#: catalog/settings.py:43
+#: templates/manage/product/product_filters_inline.html:56
+#: templates/manage/product/products_inline.html:84
+msgid "Standard"
+msgstr "標準商品"
+
+#: catalog/settings.py:19 templates/manage/manage_base.html:176
+#: templates/manage/customer/customer_inline.html:30
+#: templates/manage/product/data.html:227
+#: templates/manage/product/data.html:298
+#: templates/manage/product/product_filters_inline.html:42
+#: templates/manage/product/product_filters_inline.html:49
+#: templates/manage/product/stock.html:206
+#: templates/manage/reviews/review.html:32
+#: templates/manage/reviews/review_filters_inline.html:23
+#: templates/manage/reviews/review_inline.html:25
+#: templates/manage/reviews/review_inline.html:70
+#: templates/manage/reviews/reviews_filters_inline.html:75
+#: templates/manage/reviews/reviews_inline.html:89
+#: templates/manage/reviews/reviews_inline.html:98
+msgid "Yes"
+msgstr "是"
+
+#: catalog/settings.py:20 templates/manage/manage_base.html:177
+#: templates/manage/customer/customer_inline.html:32
+#: templates/manage/product/data.html:229
+#: templates/manage/product/data.html:300
+#: templates/manage/product/product_filters_inline.html:43
+#: templates/manage/product/product_filters_inline.html:50
+#: templates/manage/product/stock.html:208
+#: templates/manage/reviews/review.html:33
+#: templates/manage/reviews/review_filters_inline.html:24
+#: templates/manage/reviews/review_inline.html:27
+#: templates/manage/reviews/review_inline.html:72
+#: templates/manage/reviews/reviews_filters_inline.html:76
+#: templates/manage/reviews/reviews_inline.html:92
+#: templates/manage/reviews/reviews_inline.html:101
+msgid "No"
+msgstr "否"
+
+#: catalog/settings.py:30 catalog/settings.py:37 catalog/settings.py:44
+#: templates/manage/product/product_filters_inline.html:57
+#: templates/manage/product/products_inline.html:85
+msgid "Product with variants"
+msgstr "模板商品"
+
+#: catalog/settings.py:31 catalog/settings.py:38 export/models.py:72
+#: templates/manage/product/product_filters_inline.html:58
+#: templates/manage/product/products_inline.html:86
+msgid "Variant"
+msgstr "衍生商品"
+
+#: catalog/settings.py:32 catalog/settings.py:39 catalog/settings.py:45
+#: templates/manage/product/product_filters_inline.html:59
+#: templates/manage/product/products_inline.html:87
+msgid "Configurable product"
+msgstr "配置商品"
+
+#: catalog/settings.py:53 catalog/settings.py:141 export/settings.py:11
+#: templates/manage/product/variants.html:188
+msgid "Default"
+msgstr "默認"
+
+#: catalog/settings.py:54
+msgid "Cheapest price"
+msgstr "最低價"
+
+#: catalog/settings.py:55
+msgid "Cheapest base price"
+msgstr "最低基本價"
+
+#: catalog/settings.py:56
+msgid "Cheapest prices"
+msgstr "低價"
+
+#: catalog/settings.py:62
+msgid "List"
+msgstr "列表"
+
+#: catalog/settings.py:63
+msgid "Select"
+msgstr "下拉列表"
+
+#: catalog/settings.py:71 portlet/templatetags/lfs_portlets_tags.py:107
+#: templates/manage/manage_base.html:86
+#: templates/manage/category/manage_categories_portlet.html:2
+#: templates/manage/category/no_categories.html:11
+#: templates/manage/product/categories.html:3
+#: templates/manage/product/product.html:96
+msgid "Categories"
+msgstr "分類"
+
+#: catalog/settings.py:80
+msgid "hours"
+msgstr "小時"
+
+#: catalog/settings.py:81
+msgid "days"
+msgstr "天"
+
+#: catalog/settings.py:82
+msgid "weeks"
+msgstr "周"
+
+#: catalog/settings.py:83
+msgid "months"
+msgstr "月"
+
+#: catalog/settings.py:87
+msgid "hour"
+msgstr "小時"
+
+#: catalog/settings.py:88
+msgid "day"
+msgstr "天"
+
+#: catalog/settings.py:89
+msgid "week"
+msgstr "周"
+
+#: catalog/settings.py:90
+msgid "month"
+msgstr "月"
+
+#: catalog/settings.py:103
+msgid "Float field"
+msgstr "數值"
+
+#: catalog/settings.py:104
+msgid "Text field"
+msgstr "文字"
+
+#: catalog/settings.py:105
+msgid "Select field"
+msgstr "列表"
+
+#: catalog/settings.py:113
+msgid "Automatic"
+msgstr "自動"
+
+#: catalog/settings.py:114
+msgid "Fixed step"
+msgstr "固定步長"
+
+#: catalog/settings.py:115
+msgid "Manual steps"
+msgstr "手動步長"
+
+#: catalog/settings.py:128
+msgid "Category with products"
+msgstr "分類及商品"
+
+#: catalog/settings.py:132
+msgid "Category with subcategories"
+msgstr "分類及子類"
+
+#: catalog/views.py:56 catalog/views.py:170
+msgid "The product has been changed according to your selection."
+msgstr "按照您的選擇商品已經做了變更。"
+
+#: catalog/views.py:143
+msgid "Price has been changed according to your selection."
+msgstr "按照您的選擇價格已經做了變更。"
+
+#: catalog/views.py:167 catalog/views.py:622
+msgid "The choosen combination of properties is not deliverable."
+msgstr "所選的屬性組和不能送貨。"
+
+#: checkout/forms.py:20 checkout/forms.py:26 customer/forms.py:13
+#: customer/forms.py:18
+msgid "First Name"
+msgstr "名"
+
+#: checkout/forms.py:21 checkout/forms.py:27 customer/forms.py:14
+#: customer/forms.py:19
+msgid "Last Name"
+msgstr "姓"
+
+#: checkout/forms.py:22 customer/forms.py:15
+msgid "Invoice Phone"
+msgstr "電話"
+
+#: checkout/forms.py:23 customer/forms.py:16
+msgid "Invoice E-mail"
+msgstr "郵件"
+
+#: checkout/forms.py:24 checkout/forms.py:30 customer/forms.py:17
+#: customer/forms.py:22 customer/models.py:72
+msgid "Company name"
+msgstr "公司名"
+
+#: checkout/forms.py:28 customer/forms.py:20
+msgid "Shipping Phone"
+msgstr ""
+
+#: checkout/forms.py:29 customer/forms.py:21
+msgid "Shipping E-mail"
+msgstr ""
+
+#: checkout/forms.py:32
+msgid "Requested Delivery Date"
+msgstr ""
+
+#: checkout/forms.py:34
+msgid "Account Number"
+msgstr "銀行帳號"
+
+#: checkout/forms.py:35
+msgid "Bank Indentification Code"
+msgstr "銀行代碼"
+
+#: checkout/forms.py:36
+msgid "Bankname"
+msgstr "銀行名稱"
+
+#: checkout/forms.py:37 customer/models.py:94 order/models.py:96
+msgid "Depositor"
+msgstr "戶主"
+
+#: checkout/forms.py:41
+msgid "Credit Card Type"
+msgstr "信用卡類型"
+
+#: checkout/forms.py:42
+msgid "Credit Card Owner"
+msgstr "信用卡持有人"
+
+#: checkout/forms.py:43
+msgid "Credit Card Number"
+msgstr "信用卡號"
+
+#: checkout/forms.py:44
+msgid "Expiration Date Month"
+msgstr "有效期(月)"
+
+#: checkout/forms.py:45
+msgid "Expiration Date Year"
+msgstr "有效期(年)"
+
+#: checkout/forms.py:46
+msgid "Verification Number"
+msgstr "驗證碼(信用卡背面)"
+
+#: checkout/forms.py:48
+msgid "Same as invoice"
+msgstr "與發票信息相同"
+
+#: checkout/forms.py:49
+msgid "Your message to us"
+msgstr "客戶留言"
+
+#: checkout/forms.py:61 manage/product/product.py:96
+#: manage/product/product.py:128 manage/product/product.py:156
+msgid "This field is required."
+msgstr "請您輸入相關信息。"
+
+#: checkout/forms.py:97
+msgid "Invalid shipping country."
+msgstr "無效的送貨國家。"
+
+#: checkout/settings.py:7
+msgid "Anonymous and Authenticated"
+msgstr "匿名和鑒權"
+
+#: checkout/settings.py:8
+msgid "Anonymous only"
+msgstr "僅匿名"
+
+#: checkout/settings.py:9
+msgid "Authenticated only"
+msgstr "僅驗證"
+
+#: checkout/views.py:65 customer/models.py:80 customer/views.py:56
+#: templates/manage/customer/customers_inline.html:28
+#: templates/manage/marketing/rating_mails.html:51
+#: templates/manage/reviews/review_inline.html:54
+#: templates/manage/reviews/reviews_inline.html:32
+msgid "E-Mail"
+msgstr ""
+
+#: checkout/views.py:75 customer/views.py:72
+msgid "You have been logged in."
+msgstr "您已經登錄。"
+
+#: checkout/views.py:98 customer/views.py:104
+msgid "You have been registered and logged in."
+msgstr "您已近註冊並登錄。"
+
+#: checkout/views.py:223
+msgid "Please confirm our terms and conditions"
+msgstr "請您確認已經閱讀並同意我們的服務條款"
+
+#: checkout/views.py:251
+msgid "Invalid invoice address"
+msgstr "無效的發票地址"
+
+#: checkout/views.py:267
+msgid "Invalid shipping address"
+msgstr "無效的送貨地址"
+
+#: core/models.py:18
+msgid "Country code"
+msgstr "國家代碼"
+
+#: core/models.py:77
+msgid "Link"
+msgstr ""
+
+#: core/models.py:155
+msgid "Shop owner"
+msgstr "店主"
+
+#: core/models.py:156
+msgid "From e-mail address"
+msgstr "外發郵件地址"
+
+#: core/models.py:157
+msgid "Notification email addresses"
+msgstr "通知郵件地址"
+
+#: core/models.py:166
+msgid "Google Analytics ID"
+msgstr "Google Analytics 標識（ID）"
+
+#: core/models.py:167
+msgid "Google Analytics Site Tracking"
+msgstr "Google Aanlytics 網站跟蹤記錄"
+
+#: core/models.py:168
+msgid "Google Analytics E-Commerce Tracking"
+msgstr "Google Analytics 電子商務跟蹤記錄"
+
+#: core/models.py:170
+msgid "Invoice countries"
+msgstr "發票國家"
+
+#: core/models.py:171
+msgid "Shipping countries"
+msgstr "送貨國家"
+
+#: core/models.py:172
+msgid "Default shipping country"
+msgstr "默認的送貨國家"
+
+#: core/models.py:175 core/management/commands/lfs_migrate.py:173
+msgid "Default Shop Locale"
+msgstr "默認的商城"
+
+#: core/models.py:176 core/management/commands/lfs_migrate.py:175
+msgid "Use international currency codes"
+msgstr "使用國際貨幣代碼"
+
+#: core/models.py:181
+msgid "Checkout type"
+msgstr "結算方式"
+
+#: core/models.py:182
+msgid "Confirm TOC"
+msgstr "確認閱讀並認可我們的服務條款"
+
+#: core/models.py:246
+msgid "Version"
+msgstr "版本"
+
+#: core/settings.py:10
+msgid "Tabs"
+msgstr "頁眉"
+
+#: core/settings.py:11
+msgid "Footer"
+msgstr "頁腳"
+
+#: core/management/commands/lfs_migrate.py:126 customer/models.py:73
+msgid "Line 1"
+msgstr ""
+
+#: core/management/commands/lfs_migrate.py:127 customer/models.py:74
+msgid "Line 2"
+msgstr ""
+
+#: core/management/commands/lfs_migrate.py:178
+msgid "Supplier"
+msgstr "供貨商"
+
+#: core/templatetags/lfs_tags.py:162
+#: portlet/templatetags/lfs_portlets_tags.py:122
+msgid "Information"
+msgstr "資訊"
+
+#: core/templatetags/lfs_tags.py:282
+#, python-format
+msgid "%s tag needs group id as argument"
+msgstr "%s 標簽需要組ID作為參數"
+
+#: core/templatetags/lfs_tags.py:397 core/templatetags/lfs_tags.py:427
+#, python-format
+msgid "%s tag needs no argument"
+msgstr "%s 標簽不需要參數"
+
+#: core/templatetags/lfs_tags.py:451
+#, python-format
+msgid "%s tag needs product as argument"
+msgstr "%s 標簽需要商品作為參數"
+
+#: core/widgets/file.py:19
+msgid "Delete file"
+msgstr "刪除文件"
+
+#: core/widgets/image.py:19
+msgid "Delete image"
+msgstr "刪除圖片"
+
+#: criteria/settings.py:16 criteria/settings.py:24
+msgid "Equal to"
+msgstr "等於"
+
+#: criteria/settings.py:17 templates/manage/criteria/number_operators.html:4
+msgid "Less than"
+msgstr "小於"
+
+#: criteria/settings.py:18
+msgid "Less than or equal to"
+msgstr "小於或等於"
+
+#: criteria/settings.py:19 templates/manage/criteria/number_operators.html:6
+msgid "Greater than"
+msgstr "大於"
+
+#: criteria/settings.py:20
+msgid "Greater than or equal to"
+msgstr "大於或等於"
+
+#: criteria/settings.py:25
+msgid "Contain"
+msgstr "包含"
+
+#: criteria/settings.py:29
+msgid "Is"
+msgstr "是"
+
+#: criteria/settings.py:30
+msgid "Is not"
+msgstr "不是"
+
+#: criteria/settings.py:31
+#: templates/manage/criteria/selection_operators.html:5
+msgid "Is valid"
+msgstr "有效"
+
+#: criteria/settings.py:32
+#: templates/manage/criteria/selection_operators.html:6
+msgid "Is not valid"
+msgstr "無效"
+
+#: criteria/models/criteria.py:51 criteria/models/criteria.py:112
+#: criteria/models/criteria.py:186 criteria/models/criteria.py:321
+#: criteria/models/criteria.py:385 criteria/models/criteria.py:480
+#: criteria/models/criteria.py:614 criteria/models/criteria.py:678
+#: criteria/models/criteria.py:742
+msgid "Operator"
+msgstr "操作"
+
+#: criteria/models/criteria.py:55
+#, python-format
+msgid "Cart Price: %(operator)s %(price)s"
+msgstr "購物累計金額: %(operator)s %(price)s"
+
+#: criteria/models/criteria.py:70
+msgid "Cart Price"
+msgstr "購物金額"
+
+#: criteria/models/criteria.py:116
+#, python-format
+msgid "CLAG: %(operator)s %(clag)s"
+msgstr ""
+
+#: criteria/models/criteria.py:132
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:9
+#: templates/manage/criteria/country_criterion.html:9
+#: templates/manage/criteria/distance_criterion.html:9
+#: templates/manage/criteria/height_criterion.html:9
+#: templates/manage/criteria/length_criterion.html:9
+#: templates/manage/criteria/payment_method_criterion.html:9
+#: templates/manage/criteria/price_criterion.html:9
+#: templates/manage/criteria/shipping_method_criterion.html:9
+#: templates/manage/criteria/user_criterion.html:9
+#: templates/manage/criteria/weight_criterion.html:9
+#: templates/manage/criteria/width_criterion.html:9
+msgid "Combined length and girth"
+msgstr "組和長度和周長"
+
+#: criteria/models/criteria.py:187 customer_tax/models.py:25
+#: templates/manage/shop/default_values_tab.html:81
+msgid "Countries"
+msgstr "國家"
+
+#: criteria/models/criteria.py:194
+#, python-format
+msgid "Country: %(operator)s %(countries)s"
+msgstr "國家: %(operator)s %(countries)s"
+
+#: criteria/models/criteria.py:210 customer/models.py:78
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:8
+#: templates/manage/criteria/country_criterion.html:8
+#: templates/manage/criteria/distance_criterion.html:8
+#: templates/manage/criteria/height_criterion.html:8
+#: templates/manage/criteria/length_criterion.html:8
+#: templates/manage/criteria/payment_method_criterion.html:8
+#: templates/manage/criteria/price_criterion.html:8
+#: templates/manage/criteria/shipping_method_criterion.html:8
+#: templates/manage/criteria/user_criterion.html:8
+#: templates/manage/criteria/weight_criterion.html:8
+#: templates/manage/criteria/width_criterion.html:8
+msgid "Country"
+msgstr "國家"
+
+#: criteria/models/criteria.py:262
+#, python-format
+msgid "Height: %(operator)s %(height)s"
+msgstr "高度: %(operator)s %(height)s"
+
+#: criteria/models/criteria.py:325
+#, python-format
+msgid "Length: %(operator)s %(length)s"
+msgstr "長度: %(operator)s %(length)s"
+
+#: criteria/models/criteria.py:386
+#: templates/manage/payment/payment_methods.html:3
+msgid "Payment methods"
+msgstr "支付方式"
+
+#: criteria/models/criteria.py:396
+#, python-format
+msgid "Payment: %(operator)s %(payments)s"
+msgstr "支付: %(operator)s %(payments)s"
+
+#: criteria/models/criteria.py:412 payment/models.py:121
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:13
+#: templates/manage/criteria/country_criterion.html:13
+#: templates/manage/criteria/distance_criterion.html:13
+#: templates/manage/criteria/height_criterion.html:13
+#: templates/manage/criteria/length_criterion.html:11
+#: templates/manage/criteria/payment_method_criterion.html:13
+#: templates/manage/criteria/price_criterion.html:13
+#: templates/manage/criteria/shipping_method_criterion.html:13
+#: templates/manage/criteria/user_criterion.html:13
+#: templates/manage/criteria/weight_criterion.html:13
+#: templates/manage/criteria/width_criterion.html:13
+#: templates/manage/order/order_inline.html:69
+msgid "Payment method"
+msgstr "支付方式"
+
+#: criteria/models/criteria.py:481
+#: templates/manage/shipping_methods/shipping_methods.html:4
+msgid "Shipping methods"
+msgstr "送貨方式"
+
+#: criteria/models/criteria.py:491
+#, python-format
+msgid "Shipping: %(operator)s %(shipping)s"
+msgstr "送貨: %(operator)s %(shipping)s"
+
+#: criteria/models/criteria.py:507
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:15
+#: templates/manage/criteria/country_criterion.html:15
+#: templates/manage/criteria/distance_criterion.html:15
+#: templates/manage/criteria/height_criterion.html:15
+#: templates/manage/criteria/length_criterion.html:15
+#: templates/manage/criteria/payment_method_criterion.html:15
+#: templates/manage/criteria/price_criterion.html:15
+#: templates/manage/criteria/shipping_method_criterion.html:15
+#: templates/manage/criteria/user_criterion.html:15
+#: templates/manage/criteria/weight_criterion.html:15
+#: templates/manage/criteria/width_criterion.html:15
+#: templates/manage/order/order_inline.html:66
+msgid "Shipping method"
+msgstr "送貨方式"
+
+#: criteria/models/criteria.py:618
+#, python-format
+msgid "Weight: %(operator)s %(weight)s"
+msgstr "重量: %(operator)s %(weight)s"
+
+#: criteria/models/criteria.py:682
+#, python-format
+msgid "Width: %(operator)s %(width)s"
+msgstr "寬度: %(operator)s %(width)s"
+
+#: criteria/models/criteria.py:743 criteria/models/criteria.py:763
+#: templates/manage/criteria/combinedlengthandgirth_criterion.html:10
+#: templates/manage/criteria/country_criterion.html:10
+#: templates/manage/criteria/distance_criterion.html:10
+#: templates/manage/criteria/height_criterion.html:10
+#: templates/manage/criteria/length_criterion.html:10
+#: templates/manage/criteria/payment_method_criterion.html:10
+#: templates/manage/criteria/price_criterion.html:10
+#: templates/manage/criteria/shipping_method_criterion.html:10
+#: templates/manage/criteria/user_criterion.html:10
+#: templates/manage/criteria/weight_criterion.html:10
+#: templates/manage/criteria/width_criterion.html:10
+msgid "Distance"
+msgstr "距離"
+
+#: criteria/models/criteria.py:747
+#, python-format
+msgid "Distance: %(operator)s %(distance)s"
+msgstr "距離: %(operator)s %(distance)s"
+
+#: criteria/models/criteria_objects.py:16
+msgid "Criterion type"
+msgstr "標準"
+
+#: customer/forms.py:36 customer/forms.py:42
+#: templates/manage/order/order_inline.html:27
+msgid "E-mail"
+msgstr ""
+
+#: customer/forms.py:44
+msgid "Password"
+msgstr "密碼"
+
+#: customer/forms.py:46
+msgid "Confirm password"
+msgstr "確認密碼"
+
+#: customer/forms.py:55
+msgid "The two passwords do not match."
+msgstr "兩次輸入的密碼不相同。"
+
+#: customer/forms.py:65
+msgid "That email address is already in use."
+msgstr "該郵件地址已被使用。"
+
+#: customer/models.py:26
+msgid "Selected shipping method"
+msgstr "請選擇送貨方式"
+
+#: customer/models.py:27
+msgid "Selected payment method"
+msgstr "請選擇送貨方式"
+
+#: customer/models.py:28
+msgid "Bank account"
+msgstr "銀行帳號"
+
+#: customer/models.py:29
+msgid "Credit card"
+msgstr "信用卡"
+
+#: customer/models.py:30
+msgid "Selected shipping address"
+msgstr "請選擇送貨地址"
+
+#: customer/models.py:31
+msgid "Selected invoice address"
+msgstr "請選擇發票地址"
+
+#: customer/models.py:32
+msgid "Selected country"
+msgstr "請選擇國家"
+
+#: customer/models.py:68 customer/models.py:89 customer/models.py:103
+#: templates/manage/cart/cart_inline.html:21
+#: templates/manage/customer/customer.html:23
+msgid "Customer"
+msgstr "客戶"
+
+#: customer/models.py:70 templates/manage/customer/customers_inline.html:16
+msgid "Firstname"
+msgstr "名"
+
+#: customer/models.py:71 templates/manage/customer/customers_inline.html:22
+msgid "Lastname"
+msgstr "姓"
+
+#: customer/models.py:75
+msgid "Zip code"
+msgstr "郵編"
+
+#: customer/models.py:76
+msgid "City"
+msgstr "城市"
+
+#: customer/models.py:77 order/models.py:53
+#: templates/manage/customer/customer_inline.html:128
+#: templates/manage/order/order.html:34
+#: templates/manage/order/order_filters_inline.html:16
+#: templates/manage/order/order_inline.html:35
+#: templates/manage/order/orders_filter.html:12
+#: templates/manage/order/orders_filters_inline.html:12
+#: templates/manage/order/orders_inline.html:15
+msgid "State"
+msgstr ""
+
+#: customer/models.py:79 templates/manage/order/order_inline.html:43
+msgid "Phone"
+msgstr "電話"
+
+#: customer/models.py:91 order/models.py:93
+msgid "Account number"
+msgstr "帳號"
+
+#: customer/models.py:92
+msgid "Bank identification code"
+msgstr "銀行代碼"
+
+#: customer/models.py:93 order/models.py:95
+msgid "Bank name"
+msgstr "銀行名稱"
+
+#: customer/models.py:106
+msgid "Owner"
+msgstr "持卡人"
+
+#: customer/models.py:107 templates/manage/order/orders_inline.html:6
+#: templates/manage/voucher/vouchers_inline.html:67
+msgid "Number"
+msgstr "號碼"
+
+#: customer/models.py:108
+msgid "Expiration date month"
+msgstr "有效期（月）"
+
+#: customer/models.py:109
+msgid "Expiration date year"
+msgstr "有效期（年）"
+
+#: customer/views.py:140
+msgid "You have been logged out."
+msgstr "您已經安全退出。"
+
+#: customer_tax/models.py:23 tax/models.py:17
+msgid "Rate"
+msgstr "稅"
+
+#: discounts/settings.py:7 voucher/settings.py:7
+msgid "Absolute"
+msgstr "絕對"
+
+#: discounts/settings.py:8 voucher/settings.py:8
+msgid "Percentage"
+msgstr "百分比"
+
+#: export/models.py:19
+msgid "Script"
+msgstr "腳本"
+
+#: export/models.py:20 templates/manage/product/product.html:103
+#: templates/manage/product/variants.html:97
+msgid "Variants"
+msgstr "衍生商品"
+
+#: export/models.py:70 templates/manage/product/product_filters_inline.html:15
+msgid "Category"
+msgstr "分類"
+
+#: export/models.py:71 templates/manage/manage_base.html:123
+msgid "Export"
+msgstr "導出"
+
+#: export/settings.py:10
+msgid "---"
+msgstr ""
+
+#: export/settings.py:12
+msgid "Cheapest"
+msgstr "最低價"
+
+#: export/settings.py:13 templates/manage/category/category_filter.html:5
+#: templates/manage/order/order_filters_inline.html:50
+#: templates/manage/order/orders_filter.html:98
+#: templates/manage/order/orders_filters_inline.html:100
+#: templates/manage/product/variants.html:132
+msgid "All"
+msgstr "所有"
+
+#: mail/utils.py:20
+msgid "Your order has been sent"
+msgstr "您的訂單已經提交。"
+
+#: mail/utils.py:49
+msgid "Your order has been paid"
+msgstr "您的訂單已經付款。"
+
+#: mail/utils.py:80
+msgid "Your order has been received"
+msgstr "您的訂單已經收到。"
+
+#: mail/utils.py:105
+#, python-format
+msgid "Welcome to %s"
+msgstr "歡迎來到 %s"
+
+#: mail/utils.py:137
+msgid "New review has been added"
+msgstr "有新評論"
+
+#: manage/actions/views.py:96
+msgid "The action has been saved."
+msgstr "菜單項保存。"
+
+#: manage/actions/views.py:98 manage/categories/category.py:129
+#: manage/categories/seo.py:42 manage/categories/view.py:46
+#: manage/product/product.py:224 manage/product/product.py:440
+#: manage/views/shop.py:140 manage/views/shop.py:163 manage/views/shop.py:186
+#: manage/views/shop.py:212
+msgid "Please correct the indicated errors."
+msgstr "請您修改指出的錯誤。"
+
+#: manage/actions/views.py:125
+msgid "Action has been added."
+msgstr "菜單項已被添加。"
+
+#: manage/actions/views.py:147
+msgid "Action has been deleted."
+msgstr "菜單項已被刪除。"
+
+#: manage/actions/views.py:167
+msgid "The actions have been sorted."
+msgstr "菜單項已經做了排序。"
+
+#: manage/categories/category.py:83
+#, python-format
+msgid ""
+"Do you really want to delete the category <b>'%(name)s'</b> and all its sub "
+"categories?"
+msgstr "您確認要刪除分類 <b>'%(name)s'</b> 及其所屬子類嗎?"
+
+#: manage/categories/category.py:127
+msgid "Category data have been saved."
+msgstr "分類數據已被保存。"
+
+#: manage/categories/category.py:224
+msgid "The categories have been sorted."
+msgstr "分類數據已被排序。"
+
+#: manage/categories/products.py:206
+msgid "Selected products have been added to category."
+msgstr "所選商品已被添加到該分類。"
+
+#: manage/categories/products.py:235
+msgid "Selected products have been removed from category."
+msgstr "所選商品已經從該分類移除。"
+
+#: manage/categories/seo.py:40 manage/pages/views.py:154
+msgid "SEO data has been saved."
+msgstr "SEO 數據已被保存。"
+
+#: manage/categories/view.py:44
+msgid "View data has been saved."
+msgstr "顯示樣式已被保存。"
+
+#: manage/customer_tax/forms.py:25
+#, python-format
+msgid ""
+"There is already a customer tax with country %(country)s, see %(customer_tax)"
+"s %% "
+msgstr "國家 %(country)s 已有消費稅，見 %(customer_tax)s %%"
+
+#: manage/customer_tax/views.py:43
+msgid "Customer tax has been saved."
+msgstr "消費稅已經保存。"
+
+#: manage/customer_tax/views.py:75
+msgid "Customer tax has been added."
+msgstr "消費稅已被添加。"
+
+#: manage/customer_tax/views.py:97
+msgid "Customer tax has been deleted."
+msgstr "消費稅已經刪除。"
+
+#: manage/delivery_times/views.py:44 manage/views/delivery_times.py:58
+msgid "Delivery time has been saved."
+msgstr "送貨時間已被保存。"
+
+#: manage/delivery_times/views.py:75 manage/views/delivery_times.py:82
+msgid "Delivery time has been added."
+msgstr "送貨時間已被添加。"
+
+#: manage/delivery_times/views.py:108 manage/views/delivery_times.py:115
+msgid "Delivery time has been deleted."
+msgstr "送貨時間已被刪除。"
+
+#: manage/discounts/views.py:127
+msgid "Discount method has been added."
+msgstr "折扣方案已被添加。"
+
+#: manage/discounts/views.py:151 manage/shipping_methods/views.py:212
+#: manage/shipping_methods/views.py:234 manage/views/payment.py:223
+#: manage/views/payment.py:245
+msgid "Modifications have been changed."
+msgstr "修改已經生效。"
+
+#: manage/discounts/views.py:172
+msgid "Discount data has been saved."
+msgstr "折扣數據已被保存。"
+
+#: manage/discounts/views.py:190
+msgid "Discount has been deleted."
+msgstr "折扣已被刪除。"
+
+#: manage/images/views.py:104
+msgid "inline"
+msgstr "文件"
+
+#: manage/images/views.py:107
+msgid "left"
+msgstr "左"
+
+#: manage/images/views.py:110
+msgid "right"
+msgstr "右"
+
+#: manage/manufacturers/views.py:248
+msgid "Manufacturer data has been saved."
+msgstr "商戶數據被保存。"
+
+#: manage/pages/views.py:133
+msgid "Data has been saved."
+msgstr "數據已被保存。"
+
+#: manage/pages/views.py:172
+msgid "Page has been added."
+msgstr "頁面已被添加。"
+
+#: manage/pages/views.py:194
+msgid "Page has been deleted."
+msgstr "頁面已被刪除。"
+
+#: manage/pages/views.py:215
+msgid "The pages have been sorted."
+msgstr "頁面已被排序。"
+
+#: manage/product/accessories.py:162
+msgid "Accessories have been added."
+msgstr "配件已被添加。"
+
+#: manage/product/accessories.py:194
+msgid "Accessories have been removed."
+msgstr "配件已被移除。"
+
+#: manage/product/accessories.py:224 manage/product/accessories.py:244
+msgid "Accessories have been updated."
+msgstr "配件已被更新。"
+
+#: manage/product/attachments.py:36
+msgid "Attachments have been added."
+msgstr "附件已被添加。"
+
+#: manage/product/attachments.py:68 manage/product/attachments.py:80
+msgid "Attachment has been updated."
+msgstr "附件已被更新。"
+
+#: manage/product/attachments.py:71
+msgid "Attachment has been deleted."
+msgstr "附件已被刪除。"
+
+#: manage/product/categories.py:92
+msgid "Categories have been saved."
+msgstr "分類已被保存。"
+
+#: manage/product/images.py:40
+msgid "Images has been added."
+msgstr "圖片已被添加。"
+
+#: manage/product/images.py:80
+msgid "Images has been deleted."
+msgstr "圖片已被刪除。"
+
+#: manage/product/images.py:90
+msgid "Images has been updated."
+msgstr "圖片已被更新。"
+
+#: manage/product/images.py:188
+msgid "Active images has been updated."
+msgstr "啟用圖片操作已經生效。"
+
+#: manage/product/product.py:222
+msgid "Product stock data has been saved."
+msgstr "商品庫存數據已被保存。"
+
+#: manage/product/product.py:392
+msgid "Sub type has been changed."
+msgstr "子類已被修改。"
+
+#: manage/product/product.py:438
+msgid "Product data has been saved."
+msgstr "商品數已據被保存。"
+
+#: manage/product/product.py:496
+msgid "Product filters have been reset"
+msgstr "商品過濾條件被重置"
+
+#: manage/product/product.py:523
+msgid "Products have been deleted."
+msgstr "商品已被刪除。"
+
+#: manage/product/product.py:565
+msgid "Products have been saved"
+msgstr "商品已被保存"
+
+#: manage/product/product.py:643
+msgid "Product filters have been set"
+msgstr "商品過濾已被設置"
+
+#: manage/product/related_products.py:161
+msgid "Related products have been added."
+msgstr "相關商品已被添加。"
+
+#: manage/product/related_products.py:189
+msgid "Related products have been removed."
+msgstr "相關商品已被移除。"
+
+#: manage/product/related_products.py:210
+msgid "Related products have been updated."
+msgstr "相關商品已被更新。"
+
+#: manage/product/seo.py:48
+msgid "Seo data has been saved."
+msgstr "SEO 數據已被保存。"
+
+#: manage/product/variants.py:221 manage/property/views.py:283
+msgid "Property has been added."
+msgstr "屬性已被添加。"
+
+#: manage/product/variants.py:243 manage/product/variants.py:332
+msgid "Property has been deleted."
+msgstr "屬性已被刪除。"
+
+#: manage/product/variants.py:310 manage/property/views.py:329
+msgid "Option has been added."
+msgstr "選項已被添加。"
+
+#: manage/product/variants.py:393 manage/product/variants.py:395
+msgid "That slug is already in use. Please use another."
+msgstr "該商品的 URL 名稱已被使用，請重新輸入。"
+
+#: manage/product/variants.py:417
+msgid "Variants have been added."
+msgstr "衍生商品被添加。"
+
+#: manage/product/variants.py:441
+msgid "Variants have been deleted."
+msgstr "衍生商品被刪除。"
+
+#: manage/product/variants.py:455
+msgid "Variants have been saved."
+msgstr "衍生商品被保存。"
+
+#: manage/product/variants.py:556
+msgid "Sup type has been saved."
+msgstr "子類已被保存。"
+
+#: manage/product/variants.py:580
+msgid "Category variant has been saved."
+msgstr ""
+
+#: manage/product_taxes/views.py:43
+msgid "Tax has been saved."
+msgstr "稅已被保存。"
+
+#: manage/product_taxes/views.py:74
+msgid "Tax has been added."
+msgstr "稅已被添加。"
+
+#: manage/product_taxes/views.py:102
+msgid "Tax has been deleted."
+msgstr "稅已被刪除。"
+
+#: manage/property/views.py:56
+msgid "Property type has been saved."
+msgstr "屬性類型已被保存。"
+
+#: manage/property/views.py:105
+msgid "Property type has been changed."
+msgstr "屬性類型已被改變。"
+
+#: manage/property/views.py:157
+msgid "Validators have been saved."
+msgstr "驗證條件已被保存。"
+
+#: manage/property/views.py:187
+msgid "Step range has been saved."
+msgstr "步長範圍已被保存。"
+
+#: manage/property/views.py:206
+msgid "Step type has been saved."
+msgstr "步長類型已被保存。"
+
+#: manage/property/views.py:221
+msgid "Step has been added."
+msgstr "步長已被添加。"
+
+#: manage/property/views.py:232
+msgid "Steps have been updated."
+msgstr "步長已被更新。"
+
+#: manage/property/views.py:256
+msgid "The step has been saved."
+msgstr "步長已被保存。"
+
+#: manage/property/views.py:331
+msgid "Option could not be added."
+msgstr "選項不能被添加。"
+
+#: manage/property/views.py:350
+msgid "Options have been update."
+msgstr "選項已被更新。"
+
+#: manage/property_groups/views.py:55
+msgid "Property group has been saved."
+msgstr "屬性組已被保存。"
+
+#: manage/property_groups/views.py:107
+msgid "Property group has been added."
+msgstr "屬性組已被添加。"
+
+#: manage/property_groups/views.py:129
+msgid "Property group has been deleted."
+msgstr "屬性組已被刪除。"
+
+#: manage/property_groups/views.py:148
+msgid "Properties have been assigned."
+msgstr "屬性已被分配。"
+
+#: manage/property_groups/views.py:167
+msgid "Properties have been removed."
+msgstr "屬性已被移除。"
+
+#: manage/property_groups/views.py:174
+msgid "Properties have been updated."
+msgstr "屬性已被更新。"
+
+#: manage/property_groups/views.py:292
+msgid "Products have been assigned."
+msgstr "商品已被分配。"
+
+#: manage/property_groups/views.py:316
+msgid "Products have been removed."
+msgstr "商品已被移除。"
+
+#: manage/shipping_methods/views.py:188
+msgid "Shipping method has been added."
+msgstr "送貨方式已被添加。"
+
+#: manage/shipping_methods/views.py:256 manage/views/payment.py:271
+msgid "Price has been added"
+msgstr "價格已被添加。"
+
+#: manage/shipping_methods/views.py:276 manage/views/payment.py:286
+msgid "Prices have been deleted"
+msgstr "價格已被刪除。"
+
+#: manage/shipping_methods/views.py:288 manage/views/payment.py:297
+msgid "Prices have been updated"
+msgstr "價格已被更新。"
+
+#: manage/shipping_methods/views.py:333
+msgid "Shipping method has been saved."
+msgstr "送貨方式已被保存。"
+
+#: manage/shipping_methods/views.py:358
+msgid "Shipping method has been deleted."
+msgstr "送貨方式已被刪除。"
+
+#: manage/shipping_methods/views.py:379
+msgid "The shipping methods have been sorted."
+msgstr "送貨方式已被排序。"
+
+#: manage/static_blocks/views.py:50
+msgid "Static block has been saved."
+msgstr "靜態板塊已被保存。"
+
+#: manage/static_blocks/views.py:90
+msgid "Files has been deleted."
+msgstr "文件已被刪除。"
+
+#: manage/static_blocks/views.py:100
+msgid "Files has been updated."
+msgstr "文件已被更新。"
+
+#: manage/static_blocks/views.py:147
+msgid "Files has been added."
+msgstr "文件已被添加。"
+
+#: manage/static_blocks/views.py:184
+msgid "Static block has been added."
+msgstr "靜態板塊已被添加。"
+
+#: manage/static_blocks/views.py:224
+msgid "The static blocks have been sorted."
+msgstr "靜態板塊已被排序。"
+
+#: manage/static_blocks/views.py:246
+msgid "Static block has been deleted."
+msgstr "靜態板塊已被刪除。"
+
+#: manage/views/carts.py:242
+msgid "Cart filters has been set."
+msgstr "購物車過濾已被設置。"
+
+#: manage/views/carts.py:278
+msgid "Cart filters has been set"
+msgstr "購物車過濾已被設置"
+
+#: manage/views/carts.py:304
+msgid "Cart filters has been reset"
+msgstr "購物車過濾被重置"
+
+#: manage/views/customer.py:286
+msgid "Customer filters have been set"
+msgstr "客戶過濾已被設置"
+
+#: manage/views/customer.py:313
+msgid "Customer filters has been reset"
+msgstr "客戶過濾已被重置"
+
+#: manage/views/export.py:333
+msgid "Export data has been saved."
+msgstr "導出數據已被保存。"
+
+#: manage/views/lfs_portlets.py:76
+msgid "Portlet has been updated."
+msgstr "頁面組件已被更新。"
+
+#: manage/views/lfs_portlets.py:111
+msgid "Portlet has been added."
+msgstr "頁面組件已被添加。"
+
+#: manage/views/lfs_portlets.py:149
+msgid "Portlet has been deleted."
+msgstr "頁面組件已被刪除。"
+
+#: manage/views/lfs_portlets.py:177
+msgid "Portlet has been saved."
+msgstr "頁面組件已被保存。"
+
+#: manage/views/orders.py:247 manage/views/orders.py:283
+msgid "Filters has been set"
+msgstr "過濾已被設置。"
+
+#: manage/views/orders.py:313
+msgid "Filters has been reset"
+msgstr "過濾被重置。"
+
+#: manage/views/orders.py:383
+msgid "Order has been sent."
+msgstr "訂單已經發出。"
+
+#: manage/views/orders.py:409
+msgid "State has been changed"
+msgstr "狀態已經改變"
+
+#: manage/views/payment.py:197
+msgid "Payment method has been added."
+msgstr "支付方式已被添加。"
+
+#: manage/views/payment.py:342
+msgid "Payment method has been saved."
+msgstr "支付方式已被保存。"
+
+#: manage/views/payment.py:367
+msgid "Payment method has been deleted."
+msgstr "支付方式已被刪除。"
+
+#: manage/views/payment.py:388
+msgid "The payment methods have been sorted."
+msgstr "支付方式已被排序。"
+
+#: manage/views/review.py:240
+msgid "Review filters have been set"
+msgstr "評論過濾已被設置"
+
+#: manage/views/review.py:270
+msgid "Review filters have been reset"
+msgstr "評論過濾已被設置"
+
+#: manage/views/review.py:300
+msgid "Review has been deleted."
+msgstr "評論已被刪除。"
+
+#: manage/views/review.py:320
+msgid "Review state has been set"
+msgstr "評論狀態已被設置"
+
+#: manage/views/shop.py:138
+msgid "Shop data has been saved."
+msgstr "商城數據被保存。"
+
+#: manage/views/shop.py:161
+msgid "Shop default values have been saved."
+msgstr "商城默認值已被保存。"
+
+#: manage/views/shop.py:184
+msgid "Shop SEO data has been saved."
+msgstr "商城 SEO 數據已被保存。"
+
+#: manage/views/shop.py:210
+msgid "Order numbers has been saved."
+msgstr "訂單編號已被保存。"
+
+#: manage/views/utils.py:30
+msgid "Topseller have been reindexed."
+msgstr "熱銷商品已被重新索引。"
+
+#: manage/views/utils.py:41
+msgid "Cache has been cleared."
+msgstr "緩存已被清理。"
+
+#: manage/views/utils.py:52
+msgid "Category levels have been created."
+msgstr "分類級別已經創建。"
+
+#: manage/views/utils.py:65
+msgid "Effective prices have been set."
+msgstr "有效價格已被設置。"
+
+#: manage/views/marketing/featured.py:145
+msgid "Featured product has been added."
+msgstr "特色商品已被添加。"
+
+#: manage/views/marketing/featured.py:174
+msgid "Featured product has been removed."
+msgstr "特色商品已被移除。"
+
+#: manage/views/marketing/featured.py:196
+msgid "Featured product has been updated."
+msgstr "特色商品已被更新。"
+
+#: manage/views/marketing/rating_mails.py:35
+msgid "Please rate your products on "
+msgstr "請評價您的所購商品 "
+
+#: manage/views/marketing/topseller.py:145
+msgid "Topseller have been added."
+msgstr "熱銷商品已被添加。"
+
+#: manage/views/marketing/topseller.py:174
+msgid "Topseller have been removed."
+msgstr "熱銷商品已被移除。"
+
+#: manage/views/marketing/topseller.py:195
+msgid "Topseller have been updated."
+msgstr "熱銷商品已被更新。"
+
+#: manage/voucher/forms.py:39 templates/manage/cart/cart_inline.html:106
+#: templates/manage/order/order_inline.html:166
+#: templates/manage/product/product_filters_inline.html:13
+msgid "Amount"
+msgstr "數量"
+
+#: manage/voucher/forms.py:41 templates/manage/voucher/vouchers_inline.html:79
+msgid "Start date"
+msgstr "起始日期"
+
+#: manage/voucher/forms.py:42 templates/manage/voucher/vouchers_inline.html:82
+msgid "End date"
+msgstr "結束日期"
+
+#: manage/voucher/forms.py:43
+msgid "Kind of"
+msgstr "種類"
+
+#: manage/voucher/forms.py:44 templates/manage/voucher/vouchers_inline.html:85
+msgid "Effective from"
+msgstr "有效，自"
+
+#: manage/voucher/forms.py:46 portlet/models/featured.py:26
+#: portlet/models/forsale.py:27
+#: templates/manage/voucher/vouchers_inline.html:94
+msgid "Limit"
+msgstr "限制"
+
+#: manage/voucher/views.py:198
+msgid "Vouchers have been created."
+msgstr "優惠卷已被生成。"
+
+#: manage/voucher/views.py:220
+msgid "Vouchers have been deleted."
+msgstr "優惠卷已被刪除。"
+
+#: manage/voucher/views.py:260
+msgid "Voucher data has been saved."
+msgstr "優惠卷已被保存。"
+
+#: manage/voucher/views.py:276
+msgid "Voucher group and assigned vouchers have been deleted."
+msgstr "優惠卷組及所屬優惠卷已被刪除。"
+
+#: manage/voucher/views.py:295
+msgid "Voucher options has been saved."
+msgstr "優惠卷選項已被保存。"
+
+#: marketing/models.py:27
+msgid "sales"
+msgstr "銷售量"
+
+#: marketing/models.py:47 templates/manage/order/order.html:59
+msgid "Order"
+msgstr "訂單"
+
+#: order/models.py:51
+msgid "Created"
+msgstr "創建時間"
+
+#: order/models.py:54
+msgid "State modified"
+msgstr "狀態修改時間"
+
+#: order/models.py:59
+msgid "firstname"
+msgstr "名"
+
+#: order/models.py:60
+msgid "lastname"
+msgstr "姓"
+
+#: order/models.py:61
+msgid "email"
+msgstr "Email"
+
+#: order/models.py:63
+msgid "Invoice firstname"
+msgstr ""
+
+#: order/models.py:64
+msgid "Invoice lastname"
+msgstr ""
+
+#: order/models.py:65
+msgid "Invoice company name"
+msgstr ""
+
+#: order/models.py:66
+msgid "Invoice Line 1"
+msgstr ""
+
+#: order/models.py:67
+msgid "Invoice Line 2"
+msgstr ""
+
+#: order/models.py:68
+msgid "Invoice City"
+msgstr ""
+
+#: order/models.py:69
+msgid "Invoice State"
+msgstr ""
+
+#: order/models.py:70
+msgid "Invoice Postal Code"
+msgstr ""
+
+#: order/models.py:72
+msgid "Invoice phone"
+msgstr ""
+
+#: order/models.py:74
+msgid "Shipping firstname"
+msgstr ""
+
+#: order/models.py:75
+msgid "Shipping lastname"
+msgstr ""
+
+#: order/models.py:76
+msgid "shipping company name"
+msgstr ""
+
+#: order/models.py:77
+msgid "Shipping Line 1"
+msgstr ""
+
+#: order/models.py:78
+msgid "Shipping Line 2"
+msgstr ""
+
+#: order/models.py:79
+msgid "Shipping City"
+msgstr ""
+
+#: order/models.py:80
+msgid "Shipping State"
+msgstr ""
+
+#: order/models.py:81
+msgid "Shipping Postal Code"
+msgstr ""
+
+#: order/models.py:83
+msgid "Shipping phone"
+msgstr ""
+
+#: order/models.py:85
+msgid "Shipping Method"
+msgstr ""
+
+#: order/models.py:86
+msgid "Shipping Price"
+msgstr ""
+
+#: order/models.py:87
+msgid "Shipping Tax"
+msgstr ""
+
+#: order/models.py:89
+msgid "Payment Method"
+msgstr "支付方式"
+
+#: order/models.py:90
+msgid "Payment Price"
+msgstr "支付金額"
+
+#: order/models.py:91
+msgid "Payment Tax"
+msgstr "消費稅"
+
+#: order/models.py:94
+msgid "Bank identication code"
+msgstr "銀行代碼"
+
+#: order/models.py:98
+msgid "Voucher number"
+msgstr "優惠卷號"
+
+#: order/models.py:99
+msgid "Voucher value"
+msgstr "優惠卷金額"
+
+#: order/models.py:100
+msgid "Voucher tax"
+msgstr "優惠卷稅"
+
+#: order/models.py:102 templates/manage/customer/customer_inline.html:134
+#: templates/manage/order/orders_inline.html:21
+msgid "Message"
+msgstr "留言"
+
+#: order/models.py:103
+msgid "pay_link"
+msgstr ""
+
+#: order/models.py:106
+msgid "Delivery Date"
+msgstr "送貨時間"
+
+#: order/models.py:135
+msgid "Price net"
+msgstr "凈價"
+
+#: order/models.py:136
+msgid "Price gross"
+msgstr "總價"
+
+#: order/models.py:144
+msgid "Product quantity"
+msgstr "數量"
+
+#: order/models.py:145
+msgid "Product SKU"
+msgstr "商品SKU"
+
+#: order/models.py:146
+msgid "Product name"
+msgstr "商品名"
+
+#: order/models.py:147
+msgid "Product price net"
+msgstr "商品凈價"
+
+#: order/models.py:148
+msgid "Product price gross"
+msgstr "商品總價"
+
+#: order/models.py:149
+msgid "Product tax"
+msgstr "商品稅"
+
+#: order/models.py:210
+msgid "Order item"
+msgstr "訂單項"
+
+#: order/settings.py:13
+msgid "Submitted"
+msgstr "提交"
+
+#: order/settings.py:14
+msgid "Paid"
+msgstr "已支付"
+
+#: order/settings.py:15
+msgid "Sent"
+msgstr "發貨"
+
+#: order/settings.py:16
+msgid "Closed"
+msgstr "關閉"
+
+#: order/settings.py:17
+msgid "Canceled"
+msgstr "取消"
+
+#: order/settings.py:18
+msgid "Payment Failed"
+msgstr "支付失敗"
+
+#: order/settings.py:19
+msgid "Payment Flagged"
+msgstr "支付狀態"
+
+#: page/models.py:21 portlet/models/text.py:15
+msgid "Text"
+msgstr "文本"
+
+#: page/models.py:22
+msgid "File"
+msgstr "文件"
+
+#: payment/models.py:72 payment/models.py:123 shipping/models.py:70
+#: shipping/models.py:166
+#: templates/manage/payment/payment_method_prices.html:24
+#: templates/manage/shipping_methods/shipping_method_prices.html:24
+msgid "Priority"
+msgstr "優先級"
+
+#: payment/models.py:75
+msgid "note"
+msgstr "留言"
+
+#: payment/settings.py:16
+msgid "Mastercard"
+msgstr ""
+
+#: payment/settings.py:17
+msgid "Visacard"
+msgstr ""
+
+#: payment/settings.py:25
+msgid "Plain"
+msgstr "普通"
+
+#: payment/settings.py:26
+msgid "Bank"
+msgstr "銀行"
+
+#: payment/settings.py:27
+msgid "Credit Card"
+msgstr "信用卡"
+
+#: portlet/models/featured.py:24
+#: templates/manage/marketing/featured_inline.html:89
+msgid "Featured products"
+msgstr "特色商品"
+
+#: portlet/models/featured.py:27 portlet/models/forsale.py:28
+msgid "Use current category"
+msgstr "當前分類"
+
+#: portlet/models/featured.py:28 portlet/models/forsale.py:29
+msgid "Slideshow"
+msgstr "滾動顯示"
+
+#: portlet/models/filter.py:18
+msgid "Show product filters"
+msgstr "顯示商品過濾"
+
+#: portlet/models/filter.py:19
+msgid "Show price filters"
+msgstr "顯示價格過濾"
+
+#: portlet/models/forsale.py:25
+msgid "Product Forsale"
+msgstr "熱銷商品"
+
+#: portlet/templatetags/lfs_portlets_tags.py:137
+msgid "Recent Products"
+msgstr "最近瀏覽"
+
+#: portlet/templatetags/lfs_portlets_tags.py:152
+#: templates/manage/product/product.html:107
+msgid "Related Products"
+msgstr "相關商品"
+
+#: portlet/templatetags/lfs_portlets_tags.py:167
+#: templates/manage/manage_base.html:115
+#: templates/manage/marketing/marketing.html:16
+#: templates/manage/marketing/topseller_inline.html:90
+msgid "Topseller"
+msgstr "熱銷"
+
+#: shipping/models.py:73
+msgid "Note"
+msgstr "留言"
+
+#: shipping/models.py:79 templates/manage/shop/default_values_tab.html:9
+msgid "Price Calculator"
+msgstr "價格計算"
+
+#: shipping/models.py:164
+msgid "shipping_method"
+msgstr "送貨方式"
+
+#: templates/manage/dashboard.html:3
+msgid "Dashboard"
+msgstr "公告板"
+
+#: templates/manage/manage_base.html:57
+msgid "Logout"
+msgstr "退出"
+
+#: templates/manage/manage_base.html:59
+msgid "Login"
+msgstr "登錄"
+
+#: templates/manage/manage_base.html:70 templates/manage/shop/shop.html:10
+msgid "Shop"
+msgstr "商城"
+
+#: templates/manage/manage_base.html:72 templates/manage/actions/action.html:9
+#: templates/manage/actions/no_actions.html:10
+msgid "Actions"
+msgstr "菜單"
+
+#: templates/manage/manage_base.html:73
+msgid "Delivery Times"
+msgstr "送貨時間"
+
+#: templates/manage/manage_base.html:74
+#: templates/manage/manufacturers/manufacturer.html:9
+#: templates/manage/manufacturers/no_manufacturers.html:10
+msgid "Manufacturers"
+msgstr "生產商"
+
+#: templates/manage/manage_base.html:75
+msgid "Payment Methods"
+msgstr "支付方式"
+
+#: templates/manage/manage_base.html:76
+msgid "Preferences"
+msgstr "商城參數"
+
+#: templates/manage/manage_base.html:77
+#: templates/manage/shipping_methods/no_shipping_methods.html:11
+msgid "Shipping Methods"
+msgstr "送貨方式"
+
+#: templates/manage/manage_base.html:78
+#: templates/manage/product_taxes/no_taxes.html:11
+#: templates/manage/product_taxes/tax.html:10
+msgid "Product Taxes"
+msgstr "商品稅"
+
+#: templates/manage/manage_base.html:79
+#: templates/manage/customer_tax/customer_tax.html:8
+msgid "Customer Taxes"
+msgstr "消費稅"
+
+#: templates/manage/manage_base.html:84
+msgid "Catalog"
+msgstr "分類"
+
+#: templates/manage/manage_base.html:88
+msgid "Products Overview"
+msgstr "商品概況"
+
+#: templates/manage/manage_base.html:94
+#: templates/manage/product/properties.html:2
+#: templates/manage/product/variants.html:4
+#: templates/manage/property_groups/no_property_groups.html:11
+msgid "Property Groups"
+msgstr "屬性組"
+
+#: templates/manage/manage_base.html:100
+#: templates/manage/cart/carts_filters_inline.html:9
+#: templates/manage/cart/selectable_carts_inline.html:2
+#: templates/manage/customer/customers_filters_inline.html:9
+#: templates/manage/customer/selectable_customers_inline.html:3
+#: templates/manage/order/orders_filter.html:7
+#: templates/manage/order/orders_filters_inline.html:7
+#: templates/manage/order/selectable_orders_inline.html:3
+#: templates/manage/pages/navigation.html:3
+#: templates/manage/reviews/reviews_filters_inline.html:8
+#: templates/manage/reviews/selectable_reviews_inline.html:2
+msgid "Pages"
+msgstr "頁"
+
+#: templates/manage/manage_base.html:101
+#: templates/manage/static_block/static_block.html:7
+msgid "Static blocks"
+msgstr "靜態板塊"
+
+#: templates/manage/manage_base.html:104 templates/manage/manage_base.html:107
+#: templates/manage/customer/customers.html:16
+#: templates/manage/customer/customers_inline.html:4
+msgid "Customers"
+msgstr "客戶"
+
+#: templates/manage/manage_base.html:106 templates/manage/cart/carts.html:17
+#: templates/manage/cart/carts.html:20
+msgid "Carts"
+msgstr "購物車"
+
+#: templates/manage/manage_base.html:108
+#: templates/manage/customer/customer_inline.html:117
+#: templates/manage/customer/customers_inline.html:32
+#: templates/manage/order/orders.html:15
+#: templates/manage/order/orders_inline.html:2
+msgid "Orders"
+msgstr "訂單"
+
+#: templates/manage/manage_base.html:109
+#: templates/manage/reviews/reviews.html:14
+#: templates/manage/reviews/reviews.html:17
+msgid "Reviews"
+msgstr "評論"
+
+#: templates/manage/manage_base.html:112
+msgid "Marketing"
+msgstr "市場"
+
+#: templates/manage/manage_base.html:114
+msgid "Featured"
+msgstr "特色"
+
+#: templates/manage/manage_base.html:116
+#: templates/manage/voucher/no_vouchers.html:11
+#: templates/manage/voucher/voucher_group.html:27
+#: templates/manage/voucher/vouchers.html:3
+msgid "Vouchers"
+msgstr "優惠卷"
+
+#: templates/manage/manage_base.html:117
+#: templates/manage/discounts/discount.html:9
+#: templates/manage/discounts/no_discounts.html:10
+msgid "Discounts"
+msgstr "折扣"
+
+#: templates/manage/manage_base.html:118
+#: templates/manage/marketing/rating_mails.html:13
+msgid "Rating Mails"
+msgstr "郵件評論"
+
+#: templates/manage/manage_base.html:121
+msgid "Utils"
+msgstr "操作"
+
+#: templates/manage/manage_base.html:124
+msgid "Miscellaneous"
+msgstr "其它"
+
+#: templates/manage/manage_base.html:130
+msgid "Help"
+msgstr "幫助"
+
+#: templates/manage/manage_base.html:157
+msgid "Powered by"
+msgstr ""
+
+#: templates/manage/manage_base.html:159
+msgid "by"
+msgstr ""
+
+#: templates/manage/manage_base.html:159
+msgid "All rights reserved"
+msgstr "保留版權"
+
+#: templates/manage/manage_base.html:161
+msgid "Distributed under the"
+msgstr ""
+
+#: templates/manage/manage_base.html:161
+msgid "BSD-License"
+msgstr ""
+
+#: templates/manage/manage_base.html:169
+msgid "Please Confirm"
+msgstr "請確認"
+
+#: templates/manage/manage_base.html:171
+msgid "Do you really want to delete this object?"
+msgstr "您確認要刪除該對象？"
+
+#: templates/manage/utils.html:12 templates/manage/utils.html.py:17
+msgid "Utilities"
+msgstr "操作"
+
+#: templates/manage/utils.html:20
+msgid "Clear Cache"
+msgstr "清理緩存"
+
+#: templates/manage/utils.html:23
+msgid "Set category levels"
+msgstr "設置分類級別"
+
+#: templates/manage/utils.html:26
+msgid "Reindex topseller"
+msgstr "熱銷商品重新索引"
+
+#: templates/manage/actions/action.html:20
+#: templates/manage/actions/add_action.html:11
+msgid "Add action"
+msgstr "添加菜單項"
+
+#: templates/manage/actions/action.html:23
+msgid "Do you really want to delete this action?"
+msgstr "您確認要刪除該菜單項嗎？"
+
+#: templates/manage/actions/action.html:24
+msgid "Delete action"
+msgstr "刪除菜單項"
+
+#: templates/manage/actions/action.html:28
+msgid "View Shop"
+msgstr "商城效果"
+
+#: templates/manage/actions/action.html:34
+msgid "Action"
+msgstr "菜單"
+
+#: templates/manage/actions/add_action.html:14
+#: templates/manage/actions/data_tab.html:2
+#: templates/manage/category/add_category.html:15
+#: templates/manage/category/data.html:3
+#: templates/manage/category/manage_category.html:42
+#: templates/manage/customer_tax/add_customer_tax.html:15
+#: templates/manage/customer_tax/customer_tax.html:39
+#: templates/manage/delivery_times/add.html:15
+#: templates/manage/delivery_times/base.html:38
+#: templates/manage/discounts/data.html:2
+#: templates/manage/discounts/discount.html:31
+#: templates/manage/export/add_export.html:15
+#: templates/manage/export/export.html:35
+#: templates/manage/export/export_data_inline.html:2
+#: templates/manage/manufacturers/add_manufacturer.html:14
+#: templates/manage/manufacturers/manufacturer.html:28
+#: templates/manage/manufacturers/manufacturer_data_inline.html:2
+#: templates/manage/pages/add_page.html:14
+#: templates/manage/pages/data_tab.html:2 templates/manage/pages/page.html:32
+#: templates/manage/payment/add_payment_method.html:16
+#: templates/manage/payment/manage_payment.html:28
+#: templates/manage/payment/payment_method_data.html:3
+#: templates/manage/product/add_product.html:17
+#: templates/manage/product/data.html:3
+#: templates/manage/product/product.html:92
+#: templates/manage/product_taxes/add_tax.html:15
+#: templates/manage/product_taxes/tax.html:38
+#: templates/manage/properties/add_property.html:13
+#: templates/manage/properties/property.html:36
+#: templates/manage/property_groups/add_property_group.html:15
+#: templates/manage/property_groups/property_group.html:31
+#: templates/manage/property_groups/property_group.html:36
+#: templates/manage/shipping_methods/add_shipping_method.html:15
+#: templates/manage/shipping_methods/manage_shipping.html:28
+#: templates/manage/shipping_methods/shipping_method_data.html:2
+#: templates/manage/shop/data_tab.html:3
+#: templates/manage/static_block/add_static_block.html:15
+#: templates/manage/static_block/static_block.html:41
+#: templates/manage/static_block/static_block.html:46
+#: templates/manage/voucher/voucher_group.html:26
+msgid "Data"
+msgstr "數據"
+
+#: templates/manage/actions/add_action.html:21
+#: templates/manage/discounts/criteria.html:12
+#: templates/manage/shipping_methods/shipping_method_criteria.html:13
+msgid "Add"
+msgstr "添加"
+
+#: templates/manage/actions/add_action.html:25
+#: templates/manage/category/add_category.html:29
+#: templates/manage/customer_tax/add_customer_tax.html:30
+#: templates/manage/delivery_times/add.html:26
+#: templates/manage/discounts/add_discount.html:31
+#: templates/manage/export/add_export.html:31
+#: templates/manage/manufacturers/add_manufacturer.html:25
+#: templates/manage/pages/add_page.html:27
+#: templates/manage/payment/add_payment_method.html:28
+#: templates/manage/product/add_product.html:33
+#: templates/manage/product_taxes/add_tax.html:27
+#: templates/manage/properties/add_property.html:23
+#: templates/manage/property_groups/add_property_group.html:26
+#: templates/manage/shipping_methods/add_shipping_method.html:26
+#: templates/manage/static_block/add_static_block.html:26
+#: templates/manage/voucher/add_voucher_group.html:26
+msgid "Cancel"
+msgstr "取消"
+
+#: templates/manage/actions/data_tab.html:10
+msgid "Save action"
+msgstr "保存"
+
+#: templates/manage/actions/no_actions.html:12
+msgid "There are no actions defined yet."
+msgstr "尚未定義菜單"
+
+#: templates/manage/actions/no_actions.html:18
+msgid "Add Action"
+msgstr "添加菜單"
+
+#: templates/manage/cart/cart.html:6
+msgid "Manage Cart"
+msgstr "購物車管理"
+
+#: templates/manage/cart/cart.html:21
+#: templates/manage/customer/customer.html:19
+#: templates/manage/customer/customer_inline.html:6
+#: templates/manage/order/order.html:21
+#: templates/manage/product/products_inline.html:6
+#: templates/manage/reviews/review.html:19
+msgid "Overview"
+msgstr "概況"
+
+#: templates/manage/cart/cart_filters_inline.html:13
+#: templates/manage/cart/carts_filters_inline.html:11
+#: templates/manage/order/order_filters_inline.html:13
+#: templates/manage/order/orders_filter.html:9
+#: templates/manage/order/orders_filters_inline.html:9
+msgid "Start"
+msgstr "開始"
+
+#: templates/manage/cart/cart_filters_inline.html:14
+#: templates/manage/cart/carts_filters_inline.html:12
+#: templates/manage/order/order_filters_inline.html:14
+#: templates/manage/order/orders_filter.html:10
+#: templates/manage/order/orders_filters_inline.html:10
+msgid "End"
+msgstr "結束"
+
+#: templates/manage/cart/cart_filters_inline.html:19
+#: templates/manage/cart/carts_filters_inline.html:72
+#: templates/manage/order/order_filters_inline.html:21
+#: templates/manage/order/orders_filter.html:72
+#: templates/manage/order/orders_filters_inline.html:72
+msgid "Today"
+msgstr "今天"
+
+#: templates/manage/cart/cart_filters_inline.html:19
+msgid "T"
+msgstr ""
+
+#: templates/manage/cart/cart_filters_inline.html:21
+#: templates/manage/cart/carts_filters_inline.html:74
+#: templates/manage/order/order_filters_inline.html:23
+#: templates/manage/order/orders_filter.html:74
+#: templates/manage/order/orders_filters_inline.html:74
+msgid "Yesterday"
+msgstr "昨天"
+
+#: templates/manage/cart/cart_filters_inline.html:21
+msgid "Y"
+msgstr ""
+
+#: templates/manage/cart/cart_filters_inline.html:23
+#: templates/manage/cart/carts_filters_inline.html:76
+#: templates/manage/order/order_filters_inline.html:25
+#: templates/manage/order/orders_filter.html:76
+#: templates/manage/order/orders_filters_inline.html:76
+msgid "Week"
+msgstr "本周"
+
+#: templates/manage/cart/cart_filters_inline.html:23
+msgid "W"
+msgstr ""
+
+#: templates/manage/cart/cart_inline.html:7
+#: templates/manage/category/data.html:9
+#: templates/manage/customer/customer_inline.html:12
+#: templates/manage/order/order_inline.html:6
+#: templates/manage/product/data.html:10
+#: templates/manage/reviews/review_inline.html:7
+#: templates/manage/shop/data_tab.html:8
+msgid "General"
+msgstr "通用"
+
+#: templates/manage/cart/cart_inline.html:13
+#: templates/manage/cart/cart_inline.html:94
+#: templates/manage/cart/carts_inline.html:7
+#: templates/manage/customer/customer_inline.html:18
+#: templates/manage/customer/customer_inline.html:122
+#: templates/manage/customer/customer_inline.html:170
+#: templates/manage/customer/customers_inline.html:10
+#: templates/manage/marketing/rating_mails.html:45
+#: templates/manage/reviews/review_inline.html:13
+#: templates/manage/reviews/reviews_inline.html:14
+msgid "ID"
+msgstr ""
+
+#: templates/manage/cart/cart_inline.html:61
+#: templates/manage/cart/cart_inline.html:69
+#: templates/manage/cart/cart_inline.html:119
+#: templates/manage/cart/carts_inline.html:36
+#: templates/manage/cart/carts_inline.html:39
+#: templates/manage/cart/selectable_carts_inline.html:60
+#: templates/manage/customer/customer_inline.html:144
+#: templates/manage/customer/customer_inline.html:185
+#: templates/manage/marketing/rating_mails.html:79
+#: templates/manage/marketing/rating_mails.html:82
+#: templates/manage/order/order_inline.html:22
+#: templates/manage/order/order_inline.html:38
+#: templates/manage/order/orders_inline.html:32
+msgid "DATETIME_FORMAT"
+msgstr ""
+
+#: templates/manage/cart/cart_inline.html:74
+#: templates/manage/cart/carts_inline.html:22
+msgid "Items"
+msgstr "數量"
+
+#: templates/manage/cart/cart_inline.html:82
+#: templates/manage/cart/cart_inline.html:109
+#: templates/manage/cart/carts_inline.html:19
+#: templates/manage/order/order_inline.html:49
+#: templates/manage/order/order_inline.html:178
+msgid "Total"
+msgstr "總計"
+
+#: templates/manage/cart/cart_inline.html:137
+msgid "This cart has no items"
+msgstr "購物車為空"
+
+#: templates/manage/cart/carts.html:7
+msgid "Manage Carts"
+msgstr "購物車管理"
+
+#: templates/manage/cart/carts_filters_inline.html:21
+#: templates/manage/cart/carts_filters_inline.html:22
+#: templates/manage/cart/carts_filters_inline.html:32
+#: templates/manage/cart/carts_filters_inline.html:33
+#: templates/manage/cart/selectable_carts_inline.html:9
+#: templates/manage/cart/selectable_carts_inline.html:10
+#: templates/manage/cart/selectable_carts_inline.html:21
+#: templates/manage/cart/selectable_carts_inline.html:22
+#: templates/manage/category/products_inline.html:11
+#: templates/manage/category/products_inline.html:15
+#: templates/manage/category/selected_products.html:7
+#: templates/manage/category/selected_products.html:11
+#: templates/manage/customer/customers_filters_inline.html:19
+#: templates/manage/customer/customers_filters_inline.html:20
+#: templates/manage/customer/customers_filters_inline.html:30
+#: templates/manage/customer/customers_filters_inline.html:31
+#: templates/manage/customer/selectable_customers_inline.html:9
+#: templates/manage/customer/selectable_customers_inline.html:10
+#: templates/manage/customer/selectable_customers_inline.html:21
+#: templates/manage/customer/selectable_customers_inline.html:22
+#: templates/manage/marketing/featured_inline.html:6
+#: templates/manage/marketing/featured_inline.html:10
+#: templates/manage/marketing/topseller_inline.html:6
+#: templates/manage/marketing/topseller_inline.html:10
+#: templates/manage/order/orders_filter.html:21
+#: templates/manage/order/orders_filter.html:22
+#: templates/manage/order/orders_filter.html:32
+#: templates/manage/order/orders_filter.html:33
+#: templates/manage/order/orders_filters_inline.html:21
+#: templates/manage/order/orders_filters_inline.html:22
+#: templates/manage/order/orders_filters_inline.html:32
+#: templates/manage/order/orders_filters_inline.html:33
+#: templates/manage/order/selectable_orders_inline.html:9
+#: templates/manage/order/selectable_orders_inline.html:10
+#: templates/manage/order/selectable_orders_inline.html:21
+#: templates/manage/order/selectable_orders_inline.html:22
+#: templates/manage/product/accessories_inline.html:7
+#: templates/manage/product/accessories_inline.html:11
+#: templates/manage/product/pages_inline.html:7
+#: templates/manage/product/pages_inline.html:8
+#: templates/manage/product/pages_inline.html:19
+#: templates/manage/product/pages_inline.html:20
+#: templates/manage/product/related_products_inline.html:7
+#: templates/manage/product/related_products_inline.html:11
+#: templates/manage/property_groups/products_inline.html:6
+#: templates/manage/property_groups/products_inline.html:10
+#: templates/manage/reviews/reviews_filters_inline.html:19
+#: templates/manage/reviews/reviews_filters_inline.html:20
+#: templates/manage/reviews/reviews_filters_inline.html:30
+#: templates/manage/reviews/reviews_filters_inline.html:31
+#: templates/manage/reviews/selectable_reviews_inline.html:8
+#: templates/manage/reviews/selectable_reviews_inline.html:9
+#: templates/manage/reviews/selectable_reviews_inline.html:20
+#: templates/manage/reviews/selectable_reviews_inline.html:21
+#: templates/manage/voucher/vouchers_inline.html:9
+#: templates/manage/voucher/vouchers_inline.html:10
+#: templates/manage/voucher/vouchers_inline.html:21
+#: templates/manage/voucher/vouchers_inline.html:22
+msgid "First"
+msgstr "首頁"
+
+#: templates/manage/cart/carts_filters_inline.html:27
+#: templates/manage/cart/carts_filters_inline.html:28
+#: templates/manage/cart/carts_filters_inline.html:35
+#: templates/manage/cart/carts_filters_inline.html:36
+#: templates/manage/cart/selectable_carts_inline.html:15
+#: templates/manage/cart/selectable_carts_inline.html:16
+#: templates/manage/cart/selectable_carts_inline.html:26
+#: templates/manage/cart/selectable_carts_inline.html:27
+#: templates/manage/category/products_inline.html:13
+#: templates/manage/category/products_inline.html:16
+#: templates/manage/category/selected_products.html:9
+#: templates/manage/category/selected_products.html:12
+#: templates/manage/customer/customers_filters_inline.html:25
+#: templates/manage/customer/customers_filters_inline.html:26
+#: templates/manage/customer/customers_filters_inline.html:33
+#: templates/manage/customer/customers_filters_inline.html:34
+#: templates/manage/customer/selectable_customers_inline.html:15
+#: templates/manage/customer/selectable_customers_inline.html:16
+#: templates/manage/customer/selectable_customers_inline.html:26
+#: templates/manage/customer/selectable_customers_inline.html:27
+#: templates/manage/marketing/featured_inline.html:8
+#: templates/manage/marketing/featured_inline.html:11
+#: templates/manage/marketing/topseller_inline.html:8
+#: templates/manage/marketing/topseller_inline.html:11
+#: templates/manage/order/orders_filter.html:27
+#: templates/manage/order/orders_filter.html:28
+#: templates/manage/order/orders_filter.html:35
+#: templates/manage/order/orders_filter.html:36
+#: templates/manage/order/orders_filters_inline.html:27
+#: templates/manage/order/orders_filters_inline.html:28
+#: templates/manage/order/orders_filters_inline.html:35
+#: templates/manage/order/orders_filters_inline.html:36
+#: templates/manage/order/selectable_orders_inline.html:15
+#: templates/manage/order/selectable_orders_inline.html:16
+#: templates/manage/order/selectable_orders_inline.html:26
+#: templates/manage/order/selectable_orders_inline.html:27
+#: templates/manage/product/accessories_inline.html:9
+#: templates/manage/product/accessories_inline.html:12
+#: templates/manage/product/pages_inline.html:13
+#: templates/manage/product/pages_inline.html:14
+#: templates/manage/product/pages_inline.html:24
+#: templates/manage/product/pages_inline.html:25
+#: templates/manage/product/related_products_inline.html:9
+#: templates/manage/product/related_products_inline.html:12
+#: templates/manage/property_groups/products_inline.html:8
+#: templates/manage/property_groups/products_inline.html:11
+#: templates/manage/reviews/reviews_filters_inline.html:25
+#: templates/manage/reviews/reviews_filters_inline.html:26
+#: templates/manage/reviews/reviews_filters_inline.html:33
+#: templates/manage/reviews/reviews_filters_inline.html:34
+#: templates/manage/reviews/selectable_reviews_inline.html:14
+#: templates/manage/reviews/selectable_reviews_inline.html:15
+#: templates/manage/reviews/selectable_reviews_inline.html:25
+#: templates/manage/reviews/selectable_reviews_inline.html:26
+#: templates/manage/voucher/vouchers_inline.html:15
+#: templates/manage/voucher/vouchers_inline.html:16
+#: templates/manage/voucher/vouchers_inline.html:26
+#: templates/manage/voucher/vouchers_inline.html:27
+msgid "Previous"
+msgstr "上壹頁"
+
+#: templates/manage/cart/carts_filters_inline.html:39
+#: templates/manage/cart/selectable_carts_inline.html:31
+#: templates/manage/category/products_inline.html:20
+#: templates/manage/category/selected_products.html:16
+#: templates/manage/customer/customers_filters_inline.html:37
+#: templates/manage/customer/selectable_customers_inline.html:31
+#: templates/manage/marketing/featured_inline.html:15
+#: templates/manage/marketing/topseller_inline.html:15
+#: templates/manage/order/orders_filter.html:39
+#: templates/manage/order/orders_filters_inline.html:39
+#: templates/manage/order/selectable_orders_inline.html:31
+#: templates/manage/product/accessories_inline.html:16
+#: templates/manage/product/pages_inline.html:29
+#: templates/manage/product/related_products_inline.html:16
+#: templates/manage/property_groups/products_inline.html:15
+#: templates/manage/reviews/reviews_filters_inline.html:37
+#: templates/manage/reviews/selectable_reviews_inline.html:30
+#: templates/manage/voucher/vouchers_inline.html:31
+msgid "of"
+msgstr "/"
+
+#: templates/manage/cart/carts_filters_inline.html:45
+#: templates/manage/cart/carts_filters_inline.html:46
+#: templates/manage/cart/carts_filters_inline.html:58
+#: templates/manage/cart/carts_filters_inline.html:59
+#: templates/manage/cart/selectable_carts_inline.html:37
+#: templates/manage/cart/selectable_carts_inline.html:38
+#: templates/manage/cart/selectable_carts_inline.html:48
+#: templates/manage/cart/selectable_carts_inline.html:49
+#: templates/manage/category/products_inline.html:25
+#: templates/manage/category/products_inline.html:30
+#: templates/manage/category/selected_products.html:21
+#: templates/manage/category/selected_products.html:26
+#: templates/manage/customer/customers_filters_inline.html:43
+#: templates/manage/customer/customers_filters_inline.html:44
+#: templates/manage/customer/customers_filters_inline.html:56
+#: templates/manage/customer/customers_filters_inline.html:57
+#: templates/manage/customer/selectable_customers_inline.html:37
+#: templates/manage/customer/selectable_customers_inline.html:38
+#: templates/manage/customer/selectable_customers_inline.html:48
+#: templates/manage/customer/selectable_customers_inline.html:49
+#: templates/manage/marketing/featured_inline.html:20
+#: templates/manage/marketing/featured_inline.html:24
+#: templates/manage/marketing/topseller_inline.html:20
+#: templates/manage/marketing/topseller_inline.html:24
+#: templates/manage/order/orders_filter.html:45
+#: templates/manage/order/orders_filter.html:46
+#: templates/manage/order/orders_filter.html:58
+#: templates/manage/order/orders_filter.html:59
+#: templates/manage/order/orders_filters_inline.html:45
+#: templates/manage/order/orders_filters_inline.html:46
+#: templates/manage/order/orders_filters_inline.html:58
+#: templates/manage/order/orders_filters_inline.html:59
+#: templates/manage/order/selectable_orders_inline.html:37
+#: templates/manage/order/selectable_orders_inline.html:38
+#: templates/manage/order/selectable_orders_inline.html:48
+#: templates/manage/order/selectable_orders_inline.html:49
+#: templates/manage/product/accessories_inline.html:21
+#: templates/manage/product/accessories_inline.html:26
+#: templates/manage/product/pages_inline.html:35
+#: templates/manage/product/pages_inline.html:36
+#: templates/manage/product/pages_inline.html:46
+#: templates/manage/product/pages_inline.html:47
+#: templates/manage/product/related_products_inline.html:21
+#: templates/manage/product/related_products_inline.html:26
+#: templates/manage/property_groups/products_inline.html:20
+#: templates/manage/property_groups/products_inline.html:24
+#: templates/manage/reviews/reviews_filters_inline.html:43
+#: templates/manage/reviews/reviews_filters_inline.html:44
+#: templates/manage/reviews/reviews_filters_inline.html:56
+#: templates/manage/reviews/reviews_filters_inline.html:57
+#: templates/manage/reviews/selectable_reviews_inline.html:36
+#: templates/manage/reviews/selectable_reviews_inline.html:37
+#: templates/manage/reviews/selectable_reviews_inline.html:47
+#: templates/manage/reviews/selectable_reviews_inline.html:48
+#: templates/manage/voucher/vouchers_inline.html:37
+#: templates/manage/voucher/vouchers_inline.html:38
+#: templates/manage/voucher/vouchers_inline.html:48
+#: templates/manage/voucher/vouchers_inline.html:49
+msgid "Next"
+msgstr "下壹頁"
+
+#: templates/manage/cart/carts_filters_inline.html:51
+#: templates/manage/cart/carts_filters_inline.html:52
+#: templates/manage/cart/carts_filters_inline.html:63
+#: templates/manage/cart/carts_filters_inline.html:64
+#: templates/manage/cart/selectable_carts_inline.html:43
+#: templates/manage/cart/selectable_carts_inline.html:44
+#: templates/manage/cart/selectable_carts_inline.html:51
+#: templates/manage/cart/selectable_carts_inline.html:52
+#: templates/manage/category/products_inline.html:27
+#: templates/manage/category/products_inline.html:31
+#: templates/manage/category/selected_products.html:23
+#: templates/manage/category/selected_products.html:27
+#: templates/manage/customer/customers_filters_inline.html:49
+#: templates/manage/customer/customers_filters_inline.html:50
+#: templates/manage/customer/customers_filters_inline.html:61
+#: templates/manage/customer/customers_filters_inline.html:62
+#: templates/manage/customer/selectable_customers_inline.html:43
+#: templates/manage/customer/selectable_customers_inline.html:44
+#: templates/manage/customer/selectable_customers_inline.html:51
+#: templates/manage/customer/selectable_customers_inline.html:52
+#: templates/manage/marketing/featured_inline.html:22
+#: templates/manage/marketing/featured_inline.html:25
+#: templates/manage/marketing/topseller_inline.html:22
+#: templates/manage/marketing/topseller_inline.html:25
+#: templates/manage/order/orders_filter.html:51
+#: templates/manage/order/orders_filter.html:52
+#: templates/manage/order/orders_filter.html:63
+#: templates/manage/order/orders_filter.html:64
+#: templates/manage/order/orders_filters_inline.html:51
+#: templates/manage/order/orders_filters_inline.html:52
+#: templates/manage/order/orders_filters_inline.html:63
+#: templates/manage/order/orders_filters_inline.html:64
+#: templates/manage/order/selectable_orders_inline.html:43
+#: templates/manage/order/selectable_orders_inline.html:44
+#: templates/manage/order/selectable_orders_inline.html:51
+#: templates/manage/order/selectable_orders_inline.html:52
+#: templates/manage/product/accessories_inline.html:23
+#: templates/manage/product/accessories_inline.html:27
+#: templates/manage/product/pages_inline.html:41
+#: templates/manage/product/pages_inline.html:42
+#: templates/manage/product/pages_inline.html:49
+#: templates/manage/product/pages_inline.html:50
+#: templates/manage/product/related_products_inline.html:23
+#: templates/manage/product/related_products_inline.html:27
+#: templates/manage/property_groups/products_inline.html:22
+#: templates/manage/property_groups/products_inline.html:25
+#: templates/manage/reviews/reviews_filters_inline.html:49
+#: templates/manage/reviews/reviews_filters_inline.html:50
+#: templates/manage/reviews/reviews_filters_inline.html:61
+#: templates/manage/reviews/reviews_filters_inline.html:62
+#: templates/manage/reviews/selectable_reviews_inline.html:42
+#: templates/manage/reviews/selectable_reviews_inline.html:43
+#: templates/manage/reviews/selectable_reviews_inline.html:50
+#: templates/manage/reviews/selectable_reviews_inline.html:51
+#: templates/manage/voucher/vouchers_inline.html:43
+#: templates/manage/voucher/vouchers_inline.html:44
+#: templates/manage/voucher/vouchers_inline.html:51
+#: templates/manage/voucher/vouchers_inline.html:52
+msgid "Last"
+msgstr "末頁"
+
+#: templates/manage/category/add_category.html:12
+#: templates/manage/category/manage_category.html:23
+#: templates/manage/category/no_categories.html:20
+msgid "Add Category"
+msgstr "添加分類"
+
+#: templates/manage/category/add_category.html:25
+msgid "Add category"
+msgstr "添加分類"
+
+#: templates/manage/category/category_filter.html:6
+msgid "None"
+msgstr "暫無"
+
+#: templates/manage/category/data.html:80
+#: templates/manage/product/data.html:371
+msgid "Appearance"
+msgstr "外觀"
+
+#: templates/manage/category/data.html:114
+#: templates/manage/pages/data_tab.html:10
+#: templates/manage/product/data.html:411
+#: templates/manage/static_block/static_block.html:55
+msgid "Save data"
+msgstr "保存"
+
+#: templates/manage/category/manage_category.html:6
+msgid "Manage Category"
+msgstr "分類管理"
+
+#: templates/manage/category/manage_category.html:18
+msgid "Add Top Category"
+msgstr "添加頂級分類"
+
+#: templates/manage/category/manage_category.html:28
+msgid "Delete Category"
+msgstr "刪除分類"
+
+#: templates/manage/category/manage_category.html:31
+msgid "View Category"
+msgstr "分類效果"
+
+#: templates/manage/category/manage_category.html:35
+msgid "Goto Category"
+msgstr "轉到分類頁面"
+
+#: templates/manage/category/manage_category.html:43
+#: templates/manage/category/view.html:3
+#: templates/manage/marketing/rating_mails.html:63
+#: templates/manage/marketing/rating_mails.html:90
+#: templates/manage/product/products_inline.html:112
+msgid "View"
+msgstr "視圖"
+
+#: templates/manage/category/manage_category.html:45
+#: templates/manage/category/seo.html:3 templates/manage/pages/page.html:33
+#: templates/manage/pages/seo_tab.html:2
+#: templates/manage/product/product.html:109
+#: templates/manage/product/seo.html:3 templates/manage/shop/seo_tab.html:3
+#: templates/manage/shop/shop.html:13
+msgid "SEO"
+msgstr "搜索優化"
+
+#: templates/manage/category/manage_category.html:46
+#: templates/manage/pages/page.html:35
+#: templates/manage/product/product.html:110
+#: templates/manage/shop/shop.html:14
+msgid "Portlets"
+msgstr "網頁組件"
+
+#: templates/manage/category/no_categories.html:4
+msgid "No Categories"
+msgstr "沒有分類"
+
+#: templates/manage/category/no_categories.html:14
+msgid "There are no categories yet."
+msgstr "暫無分類"
+
+#: templates/manage/category/products.html:7
+#: templates/manage/product/accessories_inline.html:34
+#: templates/manage/product/related_products_inline.html:33
+msgid "Selectable Products"
+msgstr "可選商品"
+
+#: templates/manage/category/products.html:32
+#: templates/manage/product/accessories_inline.html:94
+#: templates/manage/product/related_products_inline.html:94
+msgid "Selected Products"
+msgstr "已選商品"
+
+#: templates/manage/category/products_inline.html:89
+msgid "Add to category"
+msgstr "添加到分類"
+
+#: templates/manage/category/selected_products.html:82
+msgid "Remove from category"
+msgstr "從分類中移除"
+
+#: templates/manage/category/seo.html:12
+#: templates/manage/pages/seo_tab.html:11 templates/manage/product/seo.html:71
+#: templates/manage/shop/seo_tab.html:12
+msgid "Save SEO"
+msgstr "保存"
+
+#: templates/manage/category/view.html:11
+msgid "Save View"
+msgstr "保存"
+
+#: templates/manage/criteria/number_operators.html:3
+msgid "Equal"
+msgstr "等於"
+
+#: templates/manage/criteria/number_operators.html:5
+msgid "Less than equal to"
+msgstr "小於等於"
+
+#: templates/manage/criteria/number_operators.html:7
+msgid "Greater than equal to"
+msgstr "大於等於"
+
+#: templates/manage/criteria/selection_operators.html:3
+msgid "Is selected"
+msgstr ""
+
+#: templates/manage/criteria/selection_operators.html:4
+msgid "Is not selected"
+msgstr ""
+
+#: templates/manage/customer/customer_inline.html:26
+#: templates/manage/reviews/review_inline.html:66
+msgid "Registriert"
+msgstr "註冊"
+
+#: templates/manage/customer/customer_inline.html:41
+#: templates/manage/order/order_inline.html:63
+msgid "Invoice address"
+msgstr "發票地址"
+
+#: templates/manage/customer/customer_inline.html:44
+#: templates/manage/order/order_inline.html:60
+msgid "Shipping address"
+msgstr "收貨地址"
+
+#: templates/manage/customer/customers.html:6
+msgid "Manage customers"
+msgstr "客戶管理"
+
+#: templates/manage/customer_tax/add_customer_tax.html:12
+msgid "Add customer tax"
+msgstr "添加消費稅"
+
+#: templates/manage/customer_tax/add_customer_tax.html:25
+#: templates/manage/customer_tax/customer_tax.html:27
+#: templates/manage/customer_tax/no_customer_taxes.html:18
+msgid "Add Customer Tax"
+msgstr "添加消費稅"
+
+#: templates/manage/customer_tax/customer_tax.html:30
+msgid "Do you really want to delete this customer tax?"
+msgstr "您確認要刪除該消費稅嗎？"
+
+#: templates/manage/customer_tax/customer_tax.html:31
+msgid "Delete Customer Tax"
+msgstr "刪除消費稅"
+
+#: templates/manage/customer_tax/customer_tax.html:36
+msgid "Customer Tax"
+msgstr "消費稅"
+
+#: templates/manage/customer_tax/customer_tax.html:49
+msgid "Save Customer Tax"
+msgstr "保存"
+
+#: templates/manage/customer_tax/no_customer_taxes.html:10
+msgid "Customer taxes"
+msgstr "消費稅"
+
+#: templates/manage/customer_tax/no_customer_taxes.html:12
+msgid "There are no customer taxes defined yet."
+msgstr "尚未定義消費稅。"
+
+#: templates/manage/delivery_times/add.html:4
+#: templates/manage/delivery_times/add.html:22
+#: templates/manage/delivery_times/base.html:27
+#: templates/manage/delivery_times/no_delivery_times.html:19
+msgid "Add Delivery Time"
+msgstr "添加送貨時間"
+
+#: templates/manage/delivery_times/add.html:12
+msgid "Add delivery time"
+msgstr "添加送貨時間"
+
+#: templates/manage/delivery_times/base.html:5
+msgid "Manage Delivery Time"
+msgstr "送貨時間管理"
+
+#: templates/manage/delivery_times/base.html:10
+msgid "Delivery times"
+msgstr "送貨時間"
+
+#: templates/manage/delivery_times/base.html:29
+msgid "Do you really want to delete this delivery time?"
+msgstr "您確認要刪除該送貨時間嗎？"
+
+#: templates/manage/delivery_times/base.html:30
+msgid "Delete Delivery Time"
+msgstr "刪除送貨時間"
+
+#: templates/manage/delivery_times/base.html:34
+#: templates/manage/delivery_times/no_delivery_times.html:10
+msgid "Delivery Time"
+msgstr "送貨時間"
+
+#: templates/manage/delivery_times/base.html:47
+msgid "Save Delivery Time"
+msgstr "保存"
+
+#: templates/manage/delivery_times/no_delivery_times.html:13
+msgid "There are no delivery times yet."
+msgstr "暫無送貨時間"
+
+#: templates/manage/discounts/add_discount.html:12
+#: templates/manage/discounts/add_discount.html:16
+#: templates/manage/discounts/add_discount.html:26
+#: templates/manage/discounts/discount.html:21
+msgid "Add discount"
+msgstr "添加折扣"
+
+#: templates/manage/discounts/criteria.html:3
+#: templates/manage/discounts/discount.html:32
+#: templates/manage/payment/manage_payment.html:29
+#: templates/manage/payment/payment_method_criteria.html:3
+#: templates/manage/shipping_methods/manage_shipping.html:29
+#: templates/manage/shipping_methods/shipping_method_criteria.html:3
+msgid "Criteria"
+msgstr "標準"
+
+#: templates/manage/discounts/criteria.html:14
+#: templates/manage/payment/payment_method_criteria.html:15
+#: templates/manage/payment/payment_price_criteria.html:18
+#: templates/manage/shipping_methods/shipping_method_criteria.html:15
+#: templates/manage/shipping_methods/shipping_price_criteria.html:17
+#: templates/manage/shipping_methods/shipping_price_criteria.html:18
+msgid "Add criterion"
+msgstr "添加標準"
+
+#: templates/manage/discounts/criteria.html:27
+#: templates/manage/payment/payment_method_criteria.html:28
+#: templates/manage/payment/payment_price_criteria.html:31
+#: templates/manage/shipping_methods/shipping_method_criteria.html:28
+#: templates/manage/shipping_methods/shipping_price_criteria.html:31
+msgid "Save criteria"
+msgstr "保存"
+
+#: templates/manage/discounts/data.html:13
+#: templates/manage/product/products_inline.html:122
+#: templates/manage/product/variants.html:247
+#: templates/manage/properties/property_select_field.html:13
+#: templates/manage/shipping_methods/shipping_method_data.html:15
+msgid "Save"
+msgstr "保存"
+
+#: templates/manage/discounts/discount.html:24
+msgid "Do you really want to delete this discount?"
+msgstr "您確認要刪除該折扣嗎？"
+
+#: templates/manage/discounts/discount.html:26
+msgid "Delete discount"
+msgstr "刪除折扣"
+
+#: templates/manage/discounts/no_discounts.html:12
+msgid "There are no discounts yet."
+msgstr "暫無折扣"
+
+#: templates/manage/discounts/no_discounts.html:18
+msgid "Add Discount"
+msgstr "添加折扣"
+
+#: templates/manage/export/add_export.html:12
+#: templates/manage/export/add_export.html:27
+#: templates/manage/export/export.html:21
+msgid "Add Export"
+msgstr "添加導出規則"
+
+#: templates/manage/export/export.html:9
+msgid "Exports"
+msgstr "數據導出"
+
+#: templates/manage/export/export.html:24
+msgid "Do you really want to delete this export?"
+msgstr "您確認要刪除該導出規則嗎？"
+
+#: templates/manage/export/export.html:26
+msgid "Delete Export"
+msgstr "刪除導出規則"
+
+#: templates/manage/export/export.html:30
+msgid "Download Export"
+msgstr "下載導出數據"
+
+#: templates/manage/export/export_data_inline.html:10
+msgid "Save Export"
+msgstr "保存"
+
+#: templates/manage/images/filebrowser_images.html:3
+msgid "Select image"
+msgstr "選擇圖片"
+
+#: templates/manage/images/filebrowser_images.html:18
+msgid "There are no images yet"
+msgstr "暫無圖片"
+
+#: templates/manage/images/filebrowser_images.html:22
+msgid "Insert image"
+msgstr "插入圖片"
+
+#: templates/manage/images/filebrowser_images.html:33
+msgid "Original"
+msgstr "原始"
+
+#: templates/manage/images/filebrowser_images.html:42
+msgid "Insert"
+msgstr "插入"
+
+#: templates/manage/images/images.html:6
+msgid "Manage images"
+msgstr "圖片管理"
+
+#: templates/manage/images/images.html:17
+#: templates/manage/images/images.html:24
+msgid "Global images"
+msgstr "全局圖片"
+
+#: templates/manage/images/images.html:35
+#: templates/manage/product/images.html:89
+msgid "Delete images"
+msgstr "刪除圖片"
+
+#: templates/manage/images/images.html:38
+msgid "Toggle selection"
+msgstr "反選"
+
+#: templates/manage/images/images.html:41
+msgid "There are no images yet."
+msgstr "暫無圖片"
+
+#: templates/manage/images/images.html:44
+#: templates/manage/product/images.html:96
+msgid "Add images"
+msgstr "添加圖片"
+
+#: templates/manage/images/images.html:51
+#: templates/manage/product/images.html:103
+#: templates/manage/static_block/files.html:58
+msgid "Uploading images:"
+msgstr "上傳圖片"
+
+#: templates/manage/manufacturers/add_manufacturer.html:11
+#: templates/manage/manufacturers/add_manufacturer.html:21
+#: templates/manage/manufacturers/manufacturer.html:20
+msgid "Add Manufacturer"
+msgstr "添加生產商"
+
+#: templates/manage/manufacturers/manufacturer.html:4
+msgid "Manage Manufacturer"
+msgstr "生產商管理"
+
+#: templates/manage/manufacturers/manufacturer.html:22
+msgid "Do you really want to delete this manufacturer?"
+msgstr "您確認要刪除該生產商嗎？"
+
+#: templates/manage/manufacturers/manufacturer.html:24
+msgid "Delete Manufacturer"
+msgstr "刪除生產商"
+
+#: templates/manage/manufacturers/manufacturer_data_inline.html:10
+msgid "Save manufacturer"
+msgstr "保存"
+
+#: templates/manage/manufacturers/no_manufacturers.html:13
+msgid "There are no manufacturers yet."
+msgstr "暫無生產商"
+
+#: templates/manage/manufacturers/no_manufacturers.html:19
+msgid "Add Manufacturers"
+msgstr "添加生產商"
+
+#: templates/manage/marketing/featured.html:4
+#: templates/manage/marketing/topseller.html:4
+msgid "Product Selection"
+msgstr "可選商品"
+
+#: templates/manage/marketing/featured_inline.html:85
+msgid "Add to Featured Products"
+msgstr "添加到特色商品"
+
+#: templates/manage/marketing/featured_inline.html:159
+msgid "Save Featured"
+msgstr "保存"
+
+#: templates/manage/marketing/featured_inline.html:164
+msgid "Remove from Featured"
+msgstr "從特色商品中移除"
+
+#: templates/manage/marketing/marketing_featured.html:13
+msgid "Featured Products"
+msgstr "特色商品"
+
+#: templates/manage/marketing/rating_mails.html:18
+#: templates/manage/marketing/rating_mails.html:35
+msgid "Send rating mails"
+msgstr "發送郵件評價"
+
+#: templates/manage/marketing/rating_mails.html:25
+msgid "Test"
+msgstr "測試"
+
+#: templates/manage/marketing/rating_mails.html:25
+msgid "The mails will get to the shop notification email adresses"
+msgstr "這些郵件將會發送到商城的通知郵件地址"
+
+#: templates/manage/marketing/rating_mails.html:30
+msgid "Send copy"
+msgstr "發送副本"
+
+#: templates/manage/marketing/rating_mails.html:30
+msgid ""
+"The mails will also send to the shop notification email adresses (if not in "
+"test mode)"
+msgstr "這些郵件也會發送到商城通知郵件地址(非測試模式下)"
+
+#: templates/manage/marketing/rating_mails.html:40
+msgid "Rating mails sent"
+msgstr "發送評論郵件"
+
+#: templates/manage/marketing/rating_mails.html:54
+#: templates/manage/order/order_inline.html:19
+#: templates/manage/order/orders_inline.html:9
+msgid "Date"
+msgstr "日期"
+
+#: templates/manage/marketing/rating_mails.html:57
+msgid "Date Closed"
+msgstr "結束日期"
+
+#: templates/manage/marketing/rating_mails.html:91
+msgid "View order"
+msgstr "查看訂單"
+
+#: templates/manage/marketing/rating_mails.html:98
+msgid "No e-mails have been sent"
+msgstr "沒有郵件可發送"
+
+#: templates/manage/marketing/topseller_inline.html:85
+msgid "Add to topseller"
+msgstr "添加到熱銷商品"
+
+#: templates/manage/marketing/topseller_inline.html:156
+msgid "Save topseller"
+msgstr "保存"
+
+#: templates/manage/marketing/topseller_inline.html:161
+msgid "Remove from topseller"
+msgstr "從熱銷商品中移除"
+
+#: templates/manage/order/order.html:24
+msgid "Do you really want to delete this order?"
+msgstr "您確認要刪除該訂單嗎？"
+
+#: templates/manage/order/order.html:26
+msgid "Delete order"
+msgstr "刪除訂單"
+
+#: templates/manage/order/order.html:29
+msgid "Do you really want to resend this order?"
+msgstr "您確認要重發該訂單嗎？"
+
+#: templates/manage/order/order.html:31
+msgid "Resend order"
+msgstr "重發訂單"
+
+#: templates/manage/order/order.html:53
+#: templates/manage/product/product.html:84
+#: templates/manage/reviews/review.html:38
+msgid "Change"
+msgstr "變更"
+
+#: templates/manage/order/order_inline.html:12
+msgid "Order number"
+msgstr "訂單號碼"
+
+#: templates/manage/order/order_inline.html:174
+msgid "Included VAT"
+msgstr "含稅"
+
+#: templates/manage/order/order_inline.html:242
+msgid "Voucher"
+msgstr "優惠卷"
+
+#: templates/manage/order/order_inline.html:259
+msgid "Shipping"
+msgstr ""
+
+#: templates/manage/order/order_inline.html:275
+msgid "Payment"
+msgstr "支付"
+
+#: templates/manage/order/order_inline.html:297
+msgid "Inclusive VAT"
+msgstr "不含稅"
+
+#: templates/manage/order/order_inline.html:306
+msgid "Message from the customer"
+msgstr "客戶留言"
+
+#: templates/manage/order/order_inline.html:320
+msgid "Paypal Transaction ID"
+msgstr "Paypal交易號碼"
+
+#: templates/manage/order/orders_inline.html:55
+msgid "There are no orders"
+msgstr "暫無訂單"
+
+#: templates/manage/order/selectable_orders_inline.html:63
+msgid "N/A"
+msgstr "N/A"
+
+#: templates/manage/order_numbers/order_numbers_tab.html:3
+#: templates/manage/shop/shop.html:12
+msgid "Order Numbers"
+msgstr "訂單號碼"
+
+#: templates/manage/order_numbers/order_numbers_tab.html:12
+msgid "Save order numbers"
+msgstr "保存"
+
+#: templates/manage/pages/add_page.html:11
+#: templates/manage/pages/add_page.html:23
+msgid "Add page"
+msgstr "添加頁面"
+
+#: templates/manage/pages/page.html:15
+msgid "Add Page"
+msgstr "添加頁面"
+
+#: templates/manage/pages/page.html:19
+msgid "Do you really want to delete this page?"
+msgstr "您確認要刪除該頁面嗎？"
+
+#: templates/manage/pages/page.html:20
+msgid "Delete Page"
+msgstr "刪除頁面"
+
+#: templates/manage/pages/page.html:23
+msgid "View Page"
+msgstr "頁面效果"
+
+#: templates/manage/pages/page.html:26
+msgid "Goto Page"
+msgstr "轉入頁面"
+
+#: templates/manage/payment/add_payment_method.html:4
+msgid "Add payment Method"
+msgstr "添加支付方式"
+
+#: templates/manage/payment/add_payment_method.html:13
+#: templates/manage/payment/manage_payment.html:18
+msgid "Add Payment Method"
+msgstr "添加支付方式"
+
+#: templates/manage/payment/add_payment_method.html:23
+msgid "Add payment method"
+msgstr "添加支付方式"
+
+#: templates/manage/payment/manage_payment.html:4
+msgid "Manage Payment Methods"
+msgstr "支付方式管理"
+
+#: templates/manage/payment/manage_payment.html:21
+msgid "Do you really want to delete this payment method?"
+msgstr "您確認要刪除該支付方式嗎？"
+
+#: templates/manage/payment/manage_payment.html:23
+msgid "Delete payment method"
+msgstr "刪除支付方式"
+
+#: templates/manage/payment/manage_payment.html:30
+#: templates/manage/payment/payment_method_prices.html:3
+#: templates/manage/product/data.html:150
+#: templates/manage/shipping_methods/manage_shipping.html:30
+#: templates/manage/shipping_methods/shipping_method_prices.html:3
+msgid "Prices"
+msgstr "價格"
+
+#: templates/manage/payment/payment_method_data.html:14
+msgid "Save Payment Method"
+msgstr "保存"
+
+#: templates/manage/payment/payment_method_prices.html:13
+#: templates/manage/shipping_methods/shipping_method_prices.html:13
+msgid "Existing prices"
+msgstr "已有價格"
+
+#: templates/manage/payment/payment_method_prices.html:43
+#: templates/manage/shipping_methods/shipping_method_prices.html:43
+msgid "Edit criteria"
+msgstr "修改標準"
+
+#: templates/manage/payment/payment_method_prices.html:58
+#: templates/manage/shipping_methods/shipping_method_prices.html:58
+msgid "Delete prices"
+msgstr "刪除價格"
+
+#: templates/manage/payment/payment_method_prices.html:59
+#: templates/manage/shipping_methods/shipping_method_prices.html:59
+msgid "Update prices"
+msgstr "更新價格"
+
+#: templates/manage/payment/payment_price_criteria.html:6
+#: templates/manage/shipping_methods/shipping_price_criteria.html:6
+msgid "Edit criteria for"
+msgstr "修改標準"
+
+#: templates/manage/portlets/portlet_add.html:6
+#: templates/manage/portlets/portlet_edit.html:6
+#: templates/manage/portlets/portlets_inline.html:30
+msgid "Slot"
+msgstr "區域"
+
+#: templates/manage/portlets/portlet_add.html:29
+#: templates/manage/portlets/portlet_edit.html:25
+msgid "Save portlet"
+msgstr "保存"
+
+#: templates/manage/portlets/portlets_inline.html:8
+msgid "Blocked parent slots"
+msgstr "屏蔽全局組件區域"
+
+#: templates/manage/portlets/portlets_inline.html:22
+msgid "Save blocked parent slots"
+msgstr "保存"
+
+#: templates/manage/portlets/portlets_inline.html:27
+msgid "Slots"
+msgstr "組件區域"
+
+#: templates/manage/portlets/portlets_inline.html:43
+#: templates/manage/product/attachments.html:27
+#: templates/manage/product/images.html:43
+#: templates/manage/product/products_inline.html:45
+msgid "Manage"
+msgstr "管理"
+
+#: templates/manage/portlets/portlets_inline.html:59
+#: templates/manage/product/attachments.html:51
+#: templates/manage/product/images.html:71
+msgid "Move Up"
+msgstr "上移"
+
+#: templates/manage/portlets/portlets_inline.html:66
+#: templates/manage/product/attachments.html:56
+#: templates/manage/product/images.html:76
+msgid "Move Down"
+msgstr "下移"
+
+#: templates/manage/portlets/portlets_inline.html:72
+msgid "Do you really want to delete this portlet?"
+msgstr "您確認要刪除該網頁組件嗎？"
+
+#: templates/manage/portlets/portlets_inline.html:74
+#: templates/manage/product/products_inline.html:127
+#: templates/manage/product/variants.html:246
+#: templates/manage/properties/options_inline.html:71
+#: templates/manage/properties/step_inline.html:70
+#: templates/manage/static_block/files.html:44
+msgid "Delete"
+msgstr "刪除"
+
+#: templates/manage/portlets/portlets_inline.html:80
+msgid "There are no portlets assigned"
+msgstr "暫無網頁組件"
+
+#: templates/manage/portlets/portlets_inline.html:85
+msgid "Add new portlet"
+msgstr "添加網頁組件"
+
+#: templates/manage/portlets/portlets_inline.html:101
+msgid "Add portlet"
+msgstr "添加網頁組件"
+
+#: templates/manage/product/accessories.html:4
+#: templates/manage/product/product.html:106
+msgid "Accessories"
+msgstr "配件"
+
+#: templates/manage/product/accessories.html:18
+#: templates/manage/product/related_products.html:17
+#: templates/manage/static_block/files.html:42
+msgid "Update"
+msgstr "更新"
+
+#: templates/manage/product/accessories_inline.html:89
+msgid "Add to accessories"
+msgstr "添加為配件"
+
+#: templates/manage/product/accessories_inline.html:170
+msgid "Save accessories"
+msgstr "保存"
+
+#: templates/manage/product/accessories_inline.html:175
+msgid "Remove from accessories"
+msgstr "從配件中移除"
+
+#: templates/manage/product/add_product.html:14
+#: templates/manage/product/add_product.html:28
+msgid "Add product"
+msgstr "添加商品"
+
+#: templates/manage/product/attachments.html:3
+#: templates/manage/product/product.html:100
+msgid "Attachments"
+msgstr "附件"
+
+#: templates/manage/product/attachments.html:67
+msgid "Update attachments"
+msgstr "更新附件"
+
+#: templates/manage/product/attachments.html:69
+msgid "Delete attachments"
+msgstr "刪除附件"
+
+#: templates/manage/product/attachments.html:73
+msgid "There are no attachments"
+msgstr "暫無附件"
+
+#: templates/manage/product/attachments.html:76
+msgid "Add attachments"
+msgstr "添加附件"
+
+#: templates/manage/product/attachments.html:83
+msgid "Uploading attachments:"
+msgstr "上傳附件:"
+
+#: templates/manage/product/categories.html:23
+msgid "Save categories"
+msgstr "保存"
+
+#: templates/manage/product/categories.html:27
+msgid "There are no categories"
+msgstr "暫無分類"
+
+#: templates/manage/product/data.html:45
+msgid "Urls"
+msgstr "網頁鏈接地址"
+
+#: templates/manage/product/data.html:69
+msgid "Redirect to"
+msgstr "商品不可用時跳轉頁面鏈接"
+
+#: templates/manage/product/data.html:82
+msgid "Article numbers"
+msgstr "商品編號"
+
+#: templates/manage/product/data.html:268
+msgid "Quantity field"
+msgstr "數量"
+
+#: templates/manage/product/data.html:289
+msgid "Base price"
+msgstr "基價"
+
+#: templates/manage/product/images.html:14
+msgid "Active images"
+msgstr "使用模板圖片"
+
+#: templates/manage/product/images.html:87
+msgid "Update images"
+msgstr "更新圖片"
+
+#: templates/manage/product/images.html:93
+msgid "There are no images"
+msgstr "暫無圖片"
+
+#: templates/manage/product/no_products.html:4
+msgid "No Products"
+msgstr "暫無商品"
+
+#: templates/manage/product/no_products.html:14
+msgid "There are no products yet."
+msgstr "暫無商品"
+
+#: templates/manage/product/no_products.html:20
+#: templates/manage/product/product.html:56
+msgid "Add Product"
+msgstr "添加商品"
+
+#: templates/manage/product/product.html:6
+msgid "Manage Product"
+msgstr "商品管理"
+
+#: templates/manage/product/product.html:50
+msgid "Base Article"
+msgstr "模板商品"
+
+#: templates/manage/product/product.html:61
+msgid "Do you really want to delete this product?"
+msgstr "您確認要刪除該商品嗎？"
+
+#: templates/manage/product/product.html:62
+msgid "Delete Product"
+msgstr "刪除商品"
+
+#: templates/manage/product/product.html:67
+msgid "View Product"
+msgstr "商品效果展示"
+
+#: templates/manage/product/product.html:72
+msgid "Goto Product"
+msgstr "跳轉到商品頁面"
+
+#: templates/manage/product/product.html:108
+#: templates/manage/product/stock.html:2
+msgid "Stock"
+msgstr "庫存"
+
+#: templates/manage/product/product_filters_inline.html:14
+msgid "Name/SKU"
+msgstr "名稱/SKU"
+
+#: templates/manage/product/product_filters_inline.html:18
+#: templates/manage/product/products_inline.html:31
+msgid "Sub type"
+msgstr "子類"
+
+#: templates/manage/product/product_filters_inline.html:64
+msgid "Fiter products"
+msgstr "商品過濾"
+
+#: templates/manage/product/products.html:5
+msgid "Manage Products"
+msgstr "商品管理"
+
+#: templates/manage/product/products_inline.html:37
+msgid "Sale Price"
+msgstr "促銷價"
+
+#: templates/manage/product/products_inline.html:42
+msgid "For Sale"
+msgstr "促銷"
+
+#: templates/manage/product/products_inline.html:111
+#: templates/manage/product/variants.html:27
+msgid "Edit"
+msgstr "修改"
+
+#: templates/manage/product/products_inline.html:113
+msgid "Goto"
+msgstr "跳轉"
+
+#: templates/manage/product/products_inline.html:131
+msgid "No products found."
+msgstr "未找到所需商品"
+
+#: templates/manage/product/properties.html:5
+#: templates/manage/property_groups/no_property_groups.html:14
+msgid "There are no property groups yet."
+msgstr "尚未定義屬性組"
+
+#: templates/manage/product/properties.html:24
+#: templates/manage/product/variants.html:20
+msgid "Update property groups"
+msgstr "更新屬性組"
+
+#: templates/manage/product/properties.html:33
+msgid "Default values"
+msgstr "默認值"
+
+#: templates/manage/product/properties.html:82
+msgid "Update default values"
+msgstr "更新默認值"
+
+#: templates/manage/product/properties.html:91
+msgid "Filter values"
+msgstr "過濾值"
+
+#: templates/manage/product/properties.html:140
+msgid "Update filter values"
+msgstr "更新過濾值"
+
+#: templates/manage/product/properties.html:149
+msgid "Displayed values"
+msgstr "顯示值"
+
+#: templates/manage/product/properties.html:196
+msgid "Update displayed values"
+msgstr "更新顯示值"
+
+#: templates/manage/product/properties.html:203
+msgid "Property values"
+msgstr "屬性值"
+
+#: templates/manage/product/properties.html:204
+msgid "Please go to the variants to assign property values."
+msgstr "請給衍生商品分配屬性值。"
+
+#: templates/manage/product/related_products_inline.html:89
+msgid "Add to related products"
+msgstr "添加為相關商品"
+
+#: templates/manage/product/related_products_inline.html:150
+msgid "Remove from related products"
+msgstr "從相關商品中移除"
+
+#: templates/manage/product/stock.html:10
+msgid "Dimension"
+msgstr "尺寸"
+
+#: templates/manage/product/stock.html:25
+msgid "kg"
+msgstr "公斤"
+
+#: templates/manage/product/stock.html:42
+#: templates/manage/product/stock.html:59
+#: templates/manage/product/stock.html:76
+msgid "m"
+msgstr "米"
+
+#: templates/manage/product/stock.html:83
+msgid "Stock Data"
+msgstr "庫存數據"
+
+#: templates/manage/product/stock.html:190
+msgid "Packing"
+msgstr "打包"
+
+#: templates/manage/product/stock.html:252
+msgid "Save stock"
+msgstr "保存"
+
+#: templates/manage/product/variants.html:24
+msgid "Local properties"
+msgstr "本地屬性"
+
+#: templates/manage/product/variants.html:28
+#: templates/manage/product/variants.html:239
+msgid "Edit variant"
+msgstr ""
+
+#: templates/manage/product/variants.html:38
+msgid "Add property"
+msgstr "添加屬性"
+
+#: templates/manage/product/variants.html:47
+#: templates/manage/product/variants.html:48
+msgid "Up"
+msgstr "上"
+
+#: templates/manage/product/variants.html:56
+#: templates/manage/product/variants.html:57
+msgid "Down"
+msgstr "下"
+
+#: templates/manage/product/variants.html:63
+msgid "Do you really want to delete this property and all its options?"
+msgstr "您確認要刪除該屬性及所屬項嗎？"
+
+#: templates/manage/product/variants.html:67
+msgid "Delete property"
+msgstr "刪除屬性"
+
+#: templates/manage/product/variants.html:75
+#: templates/manage/properties/options_inline.html:68
+msgid "Do you really want to delete this option?"
+msgstr "您確認要刪除該項嗎？"
+
+#: templates/manage/product/variants.html:79
+#: templates/manage/properties/options_inline.html:72
+msgid "Delete option"
+msgstr "刪除屬性項"
+
+#: templates/manage/product/variants.html:91
+#: templates/manage/properties/options_inline.html:38
+msgid "Add option"
+msgstr "添加屬性項"
+
+#: templates/manage/product/variants.html:143
+msgid "Add variant(s)"
+msgstr "添加衍生商品"
+
+#: templates/manage/product/variants.html:159
+msgid "Pos."
+msgstr "位置"
+
+#: templates/manage/product/variants.html:166
+msgid "URL"
+msgstr ""
+
+#: templates/manage/product/variants.html:262
+msgid "Change category variant"
+msgstr "保存"
+
+#: templates/manage/product/variants.html:267
+msgid "Display type"
+msgstr "顯示類型"
+
+#: templates/manage/product/variants.html:278
+msgid "Change variant display type"
+msgstr "保存"
+
+#: templates/manage/product_taxes/add_tax.html:4
+#: templates/manage/product_taxes/add_tax.html:12
+#: templates/manage/product_taxes/no_taxes.html:20
+#: templates/manage/product_taxes/tax.html:27
+msgid "Add Product Tax"
+msgstr "添加商品稅"
+
+#: templates/manage/product_taxes/add_tax.html:22
+msgid "Add Tax"
+msgstr "添加商品稅"
+
+#: templates/manage/product_taxes/no_taxes.html:4
+msgid "No Product Taxes"
+msgstr "暫無商品稅"
+
+#: templates/manage/product_taxes/no_taxes.html:14
+msgid "There are no product taxes yet."
+msgstr "暫無商品稅"
+
+#: templates/manage/product_taxes/tax.html:4
+#: templates/manage/product_taxes/tax.html:35
+msgid "Product Tax"
+msgstr "商品稅"
+
+#: templates/manage/product_taxes/tax.html:30
+msgid "Do you really want to delete this tax?"
+msgstr "您確認要刪除該商品稅嗎？"
+
+#: templates/manage/product_taxes/tax.html:31
+msgid "Delete Product Tax"
+msgstr "刪除商品稅"
+
+#: templates/manage/product_taxes/tax.html:46
+msgid "Save Tax"
+msgstr "保存"
+
+#: templates/manage/properties/add_property.html:10
+#: templates/manage/properties/add_property.html:19
+#: templates/manage/properties/no_properties.html:20
+#: templates/manage/properties/property.html:24
+msgid "Add Property"
+msgstr "添加屬性"
+
+#: templates/manage/properties/no_properties.html:14
+msgid "There are no properties yet."
+msgstr "尚未定義屬性"
+
+#: templates/manage/properties/options_inline.html:3
+msgid "Select field options"
+msgstr "列表項"
+
+#: templates/manage/properties/options_inline.html:80
+msgid "Update options"
+msgstr "更新選項"
+
+#: templates/manage/properties/property.html:26
+msgid "Do you really want to delete this property?"
+msgstr "您確認要刪除該屬性嗎？"
+
+#: templates/manage/properties/property.html:27
+msgid "Delete Property"
+msgstr "刪除屬性"
+
+#: templates/manage/properties/property.html:46
+msgid "Save property"
+msgstr "保存"
+
+#: templates/manage/properties/property.html:50
+msgid "Field type"
+msgstr "屬性類型"
+
+#: templates/manage/properties/property.html:57
+msgid "Save property type"
+msgstr "保存"
+
+#: templates/manage/properties/property_number_field.html:2
+msgid "Validators"
+msgstr "驗證"
+
+#: templates/manage/properties/property_number_field.html:15
+msgid "Save validators"
+msgstr "保存"
+
+#: templates/manage/properties/property_select_field.html:2
+msgid "Select field properties"
+msgstr "列表屬性"
+
+#: templates/manage/properties/step_inline.html:10
+msgid "Save step type"
+msgstr "保存"
+
+#: templates/manage/properties/step_inline.html:17
+msgid "Step range"
+msgstr "步長範圍"
+
+#: templates/manage/properties/step_inline.html:24
+msgid "Save step"
+msgstr "保存"
+
+#: templates/manage/properties/step_inline.html:32
+msgid "Steps"
+msgstr "步長"
+
+#: templates/manage/properties/step_inline.html:46
+msgid "Add step"
+msgstr "添加步長"
+
+#: templates/manage/properties/step_inline.html:66
+msgid "Do you really want to delete this step?"
+msgstr "您確認要刪除該步長嗎？"
+
+#: templates/manage/properties/step_inline.html:71
+msgid "Delete step"
+msgstr "刪除步長"
+
+#: templates/manage/properties/step_inline.html:79
+msgid "Update steps"
+msgstr "更新步長"
+
+#: templates/manage/property_groups/add_property_group.html:11
+msgid "Add property Group"
+msgstr "添加屬性組"
+
+#: templates/manage/property_groups/add_property_group.html:22
+msgid "Add property group"
+msgstr "添加屬性組"
+
+#: templates/manage/property_groups/no_property_groups.html:20
+#: templates/manage/property_groups/property_group.html:24
+msgid "Add Property Group"
+msgstr "添加屬性組"
+
+#: templates/manage/property_groups/products_inline.html:87
+#: templates/manage/property_groups/properties_inline.html:47
+msgid "Add to Property Group"
+msgstr "添加到屬性組"
+
+#: templates/manage/property_groups/products_inline.html:92
+msgid "Assigned products"
+msgstr "屬性組商品"
+
+#: templates/manage/property_groups/products_inline.html:148
+#: templates/manage/property_groups/properties_inline.html:105
+msgid "Remove from Property Group"
+msgstr "從屬性組移除"
+
+#: templates/manage/property_groups/properties_inline.html:38
+msgid "All properties are selected"
+msgstr "所有屬性都被選用"
+
+#: templates/manage/property_groups/properties_inline.html:52
+msgid "Selected Properties"
+msgstr "可選屬性"
+
+#: templates/manage/property_groups/properties_inline.html:95
+msgid "No properties assigned"
+msgstr "屬性組暫無屬性"
+
+#: templates/manage/property_groups/properties_inline.html:109
+msgid "Update properties"
+msgstr "更新屬性"
+
+#: templates/manage/property_groups/property_group.html:7
+msgid "Property groups"
+msgstr "屬性組"
+
+#: templates/manage/property_groups/property_group.html:26
+msgid "Do you really want to delete this property group?"
+msgstr "您確認要刪除該屬性組嗎？"
+
+#: templates/manage/property_groups/property_group.html:27
+msgid "Delete Property Group"
+msgstr "刪除屬性組"
+
+#: templates/manage/property_groups/property_group.html:44
+msgid "Save property group"
+msgstr "保存"
+
+#: templates/manage/reviews/review.html:22
+msgid "Do you really want to delete this review?"
+msgstr "您確認要刪除該評論嗎？"
+
+#: templates/manage/reviews/review.html:24
+msgid "Delete review"
+msgstr "刪除評論"
+
+#: templates/manage/reviews/review.html:43
+msgid "Review"
+msgstr "評論"
+
+#: templates/manage/reviews/review_inline.html:88
+#: templates/manage/reviews/reviews_inline.html:44
+msgid "Score"
+msgstr "評分"
+
+#: templates/manage/reviews/review_inline.html:98
+#: templates/manage/reviews/reviews_inline.html:48
+msgid "Comment"
+msgstr "內容"
+
+#: templates/manage/reviews/reviews_inline.html:6
+msgid "There are no reviews yet."
+msgstr "暫無評論"
+
+#: templates/manage/shipping_methods/add_shipping_method.html:4
+#: templates/manage/shipping_methods/add_shipping_method.html:22
+#: templates/manage/shipping_methods/manage_shipping.html:18
+msgid "Add shipping method"
+msgstr "添加送貨方式"
+
+#: templates/manage/shipping_methods/add_shipping_method.html:12
+#: templates/manage/shipping_methods/no_shipping_methods.html:20
+msgid "Add Shipping Method"
+msgstr "添加送貨方式"
+
+#: templates/manage/shipping_methods/manage_shipping.html:4
+msgid "Manage Shipping Methods"
+msgstr "送貨方式管理"
+
+#: templates/manage/shipping_methods/manage_shipping.html:21
+msgid "Do you really want to delete this shipping method?"
+msgstr "您確認要刪除該送貨方式嗎？"
+
+#: templates/manage/shipping_methods/manage_shipping.html:23
+msgid "Delete Shipping Method"
+msgstr "刪除送貨方式"
+
+#: templates/manage/shipping_methods/no_shipping_methods.html:4
+msgid "No Shipping Methods"
+msgstr "暫無送貨方式"
+
+#: templates/manage/shipping_methods/no_shipping_methods.html:14
+msgid "There are no shipping methods yet."
+msgstr "暫無送貨方式"
+
+#: templates/manage/shop/data_tab.html:43
+msgid "E-Mails"
+msgstr ""
+
+#: templates/manage/shop/data_tab.html:81
+msgid "Google"
+msgstr ""
+
+#: templates/manage/shop/data_tab.html:116
+msgid "Checkout"
+msgstr "結算"
+
+#: templates/manage/shop/data_tab.html:143
+msgid "Content"
+msgstr "內容"
+
+#: templates/manage/shop/data_tab.html:193
+msgid "Save shop"
+msgstr "保存"
+
+#: templates/manage/shop/default_values_tab.html:3
+#: templates/manage/shop/shop.html:11
+msgid "Default Values"
+msgstr "默認值"
+
+#: templates/manage/shop/default_values_tab.html:27
+msgid "Format"
+msgstr "格式"
+
+#: templates/manage/shop/default_values_tab.html:131
+msgid "Localization"
+msgstr "本地化"
+
+#: templates/manage/shop/default_values_tab.html:160
+msgid "Save Default Values"
+msgstr "保存"
+
+#: templates/manage/static_block/add_static_block.html:11
+#: templates/manage/static_block/no_static_blocks.html:20
+#: templates/manage/static_block/static_block.html:31
+msgid "Add Static Block"
+msgstr "添加靜態板塊"
+
+#: templates/manage/static_block/add_static_block.html:22
+msgid "Save static block"
+msgstr "保存"
+
+#: templates/manage/static_block/files.html:48
+msgid "There are no files"
+msgstr "暫無文件"
+
+#: templates/manage/static_block/files.html:51
+msgid "Add files"
+msgstr "添加文件"
+
+#: templates/manage/static_block/no_static_blocks.html:11
+msgid "Static Blocks"
+msgstr "靜態板塊"
+
+#: templates/manage/static_block/no_static_blocks.html:14
+msgid "There are no static blocks yet."
+msgstr "尚未定義靜態板塊"
+
+#: templates/manage/static_block/static_block.html:33
+msgid "Do you really want to delete this static block?"
+msgstr "您確認要刪除靜態板塊嗎？"
+
+#: templates/manage/static_block/static_block.html:34
+msgid "Delete Static Block"
+msgstr "刪除靜態板塊"
+
+#: templates/manage/static_block/static_block.html:36
+msgid "View Static Block"
+msgstr "靜態板塊效果"
+
+#: templates/manage/voucher/add_voucher_group.html:11
+#: templates/manage/voucher/add_voucher_group.html:15
+#: templates/manage/voucher/add_voucher_group.html:22
+#: templates/manage/voucher/voucher_group.html:17
+msgid "Add voucher group"
+msgstr "添加優惠卷組"
+
+#: templates/manage/voucher/data.html:2
+msgid "Core data"
+msgstr "數據"
+
+#: templates/manage/voucher/data.html:12
+msgid "Save voucher group"
+msgstr "保存"
+
+#: templates/manage/voucher/no_vouchers.html:14
+msgid "There are no vouchers yet."
+msgstr "該組暫無優惠卷"
+
+#: templates/manage/voucher/no_vouchers.html:20
+msgid "Add Voucher Group"
+msgstr "添加優惠卷組"
+
+#: templates/manage/voucher/options.html:3
+#: templates/manage/voucher/voucher_group.html:28
+msgid "Options"
+msgstr "選項"
+
+#: templates/manage/voucher/options.html:12
+msgid "Save options"
+msgstr "保存"
+
+#: templates/manage/voucher/voucher_group.html:7
+msgid "Voucher groups"
+msgstr "優惠卷組"
+
+#: templates/manage/voucher/voucher_group.html:20
+msgid "Do you really want to delete this voucher group?"
+msgstr "您確認要刪除該優惠卷組嗎？"
+
+#: templates/manage/voucher/voucher_group.html:21
+msgid "Delete voucher group"
+msgstr "刪除優惠卷組"
+
+#: templates/manage/voucher/vouchers.html:9
+#: templates/manage/voucher/vouchers.html:18
+msgid "Add vouchers"
+msgstr "添加優惠卷"
+
+#: templates/manage/voucher/vouchers_inline.html:91
+msgid "Used"
+msgstr "使用"
+
+#: templates/manage/voucher/vouchers_inline.html:97
+msgid "Last used date"
+msgstr "上次使用時間"
+
+#: templates/manage/voucher/vouchers_inline.html:157
+msgid "DATE_FORMAT"
+msgstr ""
+
+#: templates/manage/voucher/vouchers_inline.html:164
+msgid "Delete vouchers"
+msgstr "刪除優惠卷"
+
+#: templates/manage/voucher/vouchers_inline.html:167
+msgid "There are no vouchers for this group yet."
+msgstr "該組暫無優惠卷"
+
+#: voucher/settings.py:12
+msgid "The voucher is valid."
+msgstr "優惠卷有效。"
+
+#: voucher/settings.py:13
+msgid "The voucher is not active."
+msgstr "優惠卷無效。"
+
+#: voucher/settings.py:14
+msgid "The voucher has been already used."
+msgstr "優惠卷已被使用過。"
+
+#: voucher/settings.py:15
+msgid "The voucher is not active yet."
+msgstr "優惠卷尚未啟用。"
+
+#: voucher/settings.py:16
+msgid "The voucher is not active any more."
+msgstr "優惠卷已經過期失效。"
+
+#: voucher/settings.py:17
+msgid "The voucher is not valid for this cart price."
+msgstr "優惠卷不適用於當前購物金額。"
+
+#: voucher/settings.py:18
+msgid "The voucher doesn't exist."
+msgstr "優惠卷不存在。"
+
