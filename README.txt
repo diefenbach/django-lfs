@@ -34,18 +34,27 @@ Changes
 Unreleased
 ----------
 
+* Bugfix: prevent setting of unsupported locale; #issue 165.
+* Bugfix: removed double slash from logo URLs; issue #166
+
+0.7.0 beta 4 (21.03.2012)
+-------------------------
+
 * Bugfix: fixed edit/view product urls; issue #164 (Frank Feng)
 * Bugfix: removed typo; issue #163 (Frank Feng)
 * Bugfix: fixed accessories tab in manage; #issue #162 (Frank Feng)
 * Bugfix: get_base_price_net; #issue #161
 * Bugfix: display only parent's active base price value for variants
 * Bugfix: take the parent's price calculator for variants
+* Added: Chinese Translations (Frank Feng)
 * Added: default footer for email messages (Maciej Wiśniowski)
+* Improved: page pagination for category products view (Maciej Wiśniowski)
 * Improved: email templates (Maciej Wiśniowski)
 * Updated: German translations
+* Updated: Polish translations (Maciej Wiśniowski)
 
-0.7.0 beta 3
-------------
+0.7.0 beta 3 (18.03.2012)
+-------------------------
 
 * Bugfix: fixed number of columns within cart template (Maciej Wiśniowski)
 * Bugfix: fixed display of localized amount of items within cart portlet; issue #159
@@ -60,10 +69,10 @@ Unreleased
 * Improved: cleaned up displaying of addresses of orders within LM
 * Updated: Czech translation (naro)
 * Updated: German translation
-* Update: Polish translations (Maciej Wiśniowski)
+* Updated: Polish translations (Maciej Wiśniowski)
 
-0.7.0 beta 2
-------------
+0.7.0 beta 2 (08.03.2012)
+-------------------------
 
 * Security fix
 * Added manufacturer field to product management (Maciej Wiśniowski)
@@ -73,8 +82,8 @@ Unreleased
 * Bugfix: fixed updating of attachments; issue #147
 * Improved javascript: prevent FOUC for category-tabs and manage-tabs;
 
-0.7.0 beta 1
-------------
+0.7.0 beta 1 (03.03.2012)
+-------------------------
 
 * Added customer related taxes
 * Added global image management
