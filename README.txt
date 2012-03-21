@@ -31,6 +31,11 @@ The latest development state can be found here:
 Changes
 =======
 
+Unreleased
+----------
+
+* Fixed logo URLs; issue #166
+
 0.7.0 beta 4 (21.03.2012)
 -------------------------
 
