@@ -24,11 +24,16 @@ Credits
 
   Contributor.
 
-* Maciej Wiśniowski
+* Maciej Wiśniowski (pigletto)
 
   Contributor.
 
-  Bug fixes. Autocompletion for manufacturers. Polish translations.
+  Bug fixes. Improvements. Autocompletion for manufacturers. Google like style
+  for page pagination. Polish translations.
+
+* Maciej Wiśniowski (pigletto)
+
+  Contributor.
 
 * Kai Diefenbach (diefenbach, http://www.iqpp.de)
 
