@@ -13,4 +13,6 @@ trans.nl = lfs/locale/nl/LC_MESSAGES/django.po
 trans.pl = lfs/locale/pl/LC_MESSAGES/django.po
 trans.ro = lfs/locale/ro/LC_MESSAGES/django.po
 trans.ru = lfs/locale/ru/LC_MESSAGES/django.po
+trans.zh_CN = lfs/locale/zh_CN/LC_MESSAGES/django.po
+trans.zh_TW = lfs/locale/zh_TW/LC_MESSAGES/django.po
 
