@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-22 06:48-0500\n"
+"POT-Creation-Date: 2012-03-23 10:14-0500\n"
 "PO-Revision-Date: 2009-02-22 07:20+0100\n"
 "Last-Translator: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
 "Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
@@ -68,7 +68,7 @@ msgstr "Session"
 #: templates/manage/cart/carts_inline.html:10
 #: templates/manage/customer/customer_inline.html:125
 #: templates/manage/reviews/review_inline.html:33
-#: templates/manage/reviews/reviews_inline.html:20
+#: templates/manage/reviews/reviews_inline.html:18
 msgid "Creation date"
 msgstr "Erstellungsdatum"
 
@@ -91,7 +91,7 @@ msgstr "Warenkorb"
 #: marketing/models.py:26 marketing/models.py:33
 #: templates/manage/cart/cart_inline.html:100
 #: templates/manage/reviews/review_inline.html:78
-#: templates/manage/reviews/reviews_inline.html:38
+#: templates/manage/reviews/reviews_inline.html:36
 msgid "Product"
 msgstr "Produkt"
 
@@ -157,7 +157,7 @@ msgstr "Es tut uns leid, '%(product)s' ist nur noch %(amount)s Mal im Lager."
 #: templates/manage/order/order_inline.html:162
 #: templates/manage/order/orders_filter.html:11
 #: templates/manage/order/orders_filters_inline.html:11
-#: templates/manage/order/orders_inline.html:12
+#: templates/manage/order/orders_inline.html:16
 #: templates/manage/product/accessories_inline.html:48
 #: templates/manage/product/accessories_inline.html:107
 #: templates/manage/product/products_inline.html:17
@@ -173,7 +173,7 @@ msgstr "Es tut uns leid, '%(product)s' ist nur noch %(amount)s Mal im Lager."
 #: templates/manage/reviews/review_filters_inline.html:11
 #: templates/manage/reviews/review_inline.html:41
 #: templates/manage/reviews/reviews_filters_inline.html:9
-#: templates/manage/reviews/reviews_inline.html:26
+#: templates/manage/reviews/reviews_inline.html:24
 msgid "Name"
 msgstr "Name"
 
@@ -343,7 +343,7 @@ msgstr "Ihre eindeutige Artikelnummer des Produkts."
 #: templates/manage/customer/customer_inline.html:176
 #: templates/manage/marketing/rating_mails.html:60
 #: templates/manage/order/order_inline.html:170
-#: templates/manage/order/orders_inline.html:18
+#: templates/manage/order/orders_inline.html:22
 #: templates/manage/payment/payment_method_prices.html:27
 #: templates/manage/product/products_inline.html:34
 #: templates/manage/product/variants.html:110
@@ -410,7 +410,7 @@ msgstr "Angebotspreis"
 #: templates/manage/reviews/review_filters_inline.html:12
 #: templates/manage/reviews/review_inline.html:21
 #: templates/manage/reviews/reviews_filters_inline.html:10
-#: templates/manage/reviews/reviews_inline.html:51
+#: templates/manage/reviews/reviews_inline.html:49
 #: templates/manage/voucher/vouchers_inline.html:88
 msgid "Active"
 msgstr "Aktiv"
@@ -784,7 +784,7 @@ msgstr "Standard"
 
 #: catalog/settings.py:19 templates/manage/manage_base.html:176
 #: templates/manage/customer/customer_inline.html:30
-#: templates/manage/order/orders_inline.html:45
+#: templates/manage/order/orders_inline.html:48
 #: templates/manage/product/data.html:227
 #: templates/manage/product/data.html:298
 #: templates/manage/product/product_filters_inline.html:42
@@ -795,14 +795,14 @@ msgstr "Standard"
 #: templates/manage/reviews/review_inline.html:25
 #: templates/manage/reviews/review_inline.html:70
 #: templates/manage/reviews/reviews_filters_inline.html:75
-#: templates/manage/reviews/reviews_inline.html:89
-#: templates/manage/reviews/reviews_inline.html:98
+#: templates/manage/reviews/reviews_inline.html:87
+#: templates/manage/reviews/reviews_inline.html:96
 msgid "Yes"
 msgstr "Ja"
 
 #: catalog/settings.py:20 templates/manage/manage_base.html:177
 #: templates/manage/customer/customer_inline.html:32
-#: templates/manage/order/orders_inline.html:47
+#: templates/manage/order/orders_inline.html:50
 #: templates/manage/product/data.html:229
 #: templates/manage/product/data.html:300
 #: templates/manage/product/product_filters_inline.html:43
@@ -813,8 +813,8 @@ msgstr "Ja"
 #: templates/manage/reviews/review_inline.html:27
 #: templates/manage/reviews/review_inline.html:72
 #: templates/manage/reviews/reviews_filters_inline.html:76
-#: templates/manage/reviews/reviews_inline.html:92
-#: templates/manage/reviews/reviews_inline.html:101
+#: templates/manage/reviews/reviews_inline.html:90
+#: templates/manage/reviews/reviews_inline.html:99
 msgid "No"
 msgstr "Nein"
 
@@ -1054,7 +1054,7 @@ msgstr "Nur authentifiziert"
 #: templates/manage/customer/customers_inline.html:28
 #: templates/manage/marketing/rating_mails.html:51
 #: templates/manage/reviews/review_inline.html:54
-#: templates/manage/reviews/reviews_inline.html:32
+#: templates/manage/reviews/reviews_inline.html:30
 msgid "E-Mail"
 msgstr "E-Mail"
 
@@ -1468,7 +1468,7 @@ msgstr "Stadt"
 #: templates/manage/order/order_inline.html:35
 #: templates/manage/order/orders_filter.html:12
 #: templates/manage/order/orders_filters_inline.html:12
-#: templates/manage/order/orders_inline.html:15
+#: templates/manage/order/orders_inline.html:19
 msgid "State"
 msgstr "Status"
 
@@ -1492,7 +1492,7 @@ msgstr "Name der Bank"
 msgid "Owner"
 msgstr "Eigentümer"
 
-#: customer/models.py:107 templates/manage/order/orders_inline.html:6
+#: customer/models.py:107 templates/manage/order/orders_inline.html:10
 #: templates/manage/voucher/vouchers_inline.html:67
 msgid "Number"
 msgstr "Nummer"
@@ -2316,7 +2316,7 @@ msgid "Voucher tax"
 msgstr "Gutschein MwSt."
 
 #: order/models.py:102 templates/manage/customer/customer_inline.html:134
-#: templates/manage/order/orders_inline.html:21
+#: templates/manage/order/orders_inline.html:25
 msgid "Message"
 msgstr "Nachricht"
 
@@ -2865,7 +2865,7 @@ msgstr "Allgemein"
 #: templates/manage/customer/customers_inline.html:10
 #: templates/manage/marketing/rating_mails.html:45
 #: templates/manage/reviews/review_inline.html:13
-#: templates/manage/reviews/reviews_inline.html:14
+#: templates/manage/reviews/reviews_inline.html:12
 msgid "ID"
 msgstr "ID"
 
@@ -2881,7 +2881,7 @@ msgstr "ID"
 #: templates/manage/marketing/rating_mails.html:82
 #: templates/manage/order/order_inline.html:22
 #: templates/manage/order/order_inline.html:38
-#: templates/manage/order/orders_inline.html:32
+#: templates/manage/order/orders_inline.html:35
 msgid "DATETIME_FORMAT"
 msgstr ""
 
@@ -3611,7 +3611,7 @@ msgstr "Bewertungsmails wurden versendet."
 
 #: templates/manage/marketing/rating_mails.html:54
 #: templates/manage/order/order_inline.html:19
-#: templates/manage/order/orders_inline.html:9
+#: templates/manage/order/orders_inline.html:13
 msgid "Date"
 msgstr "Datum"
 
@@ -3693,9 +3693,9 @@ msgstr "Nachricht vom Kunden"
 msgid "Paypal Transaction ID"
 msgstr "PayPal Transaktions-ID"
 
-#: templates/manage/order/orders_inline.html:55
-msgid "There are no orders"
-msgstr "Es gibt keine Bestellungen"
+#: templates/manage/order/orders_inline.html:5
+msgid "No orders found."
+msgstr "Es wurden keine Bestellungen gefunden."
 
 #: templates/manage/order/selectable_orders_inline.html:63
 msgid "N/A"
@@ -4006,7 +4006,7 @@ msgstr "Name/Artikelnr."
 #: templates/manage/product/product_filters_inline.html:18
 #: templates/manage/product/products_inline.html:31
 msgid "Sub type"
-msgstr "Unterart"
+msgstr "Typ"
 
 #: templates/manage/product/product_filters_inline.html:64
 msgid "Fiter products"
@@ -4374,16 +4374,16 @@ msgid "Review"
 msgstr "Bewertung"
 
 #: templates/manage/reviews/review_inline.html:88
-#: templates/manage/reviews/reviews_inline.html:44
+#: templates/manage/reviews/reviews_inline.html:42
 msgid "Score"
 msgstr "Wert"
 
 #: templates/manage/reviews/review_inline.html:98
-#: templates/manage/reviews/reviews_inline.html:48
+#: templates/manage/reviews/reviews_inline.html:46
 msgid "Comment"
 msgstr "Kommentar"
 
-#: templates/manage/reviews/reviews_inline.html:6
+#: templates/manage/reviews/reviews_inline.html:5
 msgid "There are no reviews yet."
 msgstr "Es sind noch keine Bewertungen vorhanden."
 
