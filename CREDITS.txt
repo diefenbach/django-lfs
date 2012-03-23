@@ -31,10 +31,6 @@ Credits
   Bug fixes. Improvements. Autocompletion for manufacturers. Google like style
   for page pagination. Polish translations.
 
-* Maciej Wiśniowski (pigletto)
-
-  Contributor.
-
 * Kai Diefenbach (diefenbach, http://www.iqpp.de)
 
   Founder.
