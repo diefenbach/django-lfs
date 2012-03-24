@@ -31,6 +31,11 @@ The latest development state can be found here:
 Changes
 =======
 
+Unreleased
+----------
+
+* Bugfix: fixed local variable 'message' referenced before assignment (Maciej Wiśniowski)
+
 0.6.11 (2012-03-24)
 -------------------
 
