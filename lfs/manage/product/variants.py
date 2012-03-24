@@ -346,10 +346,12 @@ def add_variants(request, product_id):
     product = Product.objects.get(pk=product_id)
 
     # Add variant(s)
-    variant_simple_form = ProductVariantSimpleForm(data=request.POST)
+    #variant_simple_form = ProductVariantSimpleForm(data=request.POST)
 
     # We don't have to check whether the form is valid. If the fields
     # are empty we create default ones.
+
+    variants_count = product.variants.count()
 
     # First we need to prepare the requested properties for the use
     # with cartesian product. That means if the keyword "all" is
@@ -394,7 +396,8 @@ def add_variants(request, product_id):
         except Product.MultipleObjectsReturned:
             message = _(u"That slug is already in use. Please use another.")
         except Product.DoesNotExist:
-            variant = Product(name=name, slug=slug, sku=sku, parent=product, price=price, variant_position=(i + 1) * 10, sub_type=VARIANT)
+            variant = Product(name=name, slug=slug, sku=sku, parent=product, price=price,
+                              variant_position=(variants_count + i + 1) * 10, sub_type=VARIANT)
             try:
                 variant.save()
             except IntegrityError:
