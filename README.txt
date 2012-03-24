@@ -31,6 +31,13 @@ The latest development state can be found here:
 Changes
 =======
 
+0.6.11 (2012-03-24)
+-------------------
+
+* Bugfix: added csrf token to password reset forms; issue #170
+* Bugfix: removed double slash from logo URLs; issue #166
+* Updated German translations
+
 0.6.10 (2012-03-17)
 -------------------
 
