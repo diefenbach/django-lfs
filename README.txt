@@ -34,8 +34,10 @@ Changes
 Unreleased
 ----------
 
+* Bugfix: added csrf token to password reset forms; issue #170
 * Bugfix: prevent setting of unsupported locale; #issue 165.
 * Bugfix: removed double slash from logo URLs; issue #166
+* Updated German translations
 
 0.7.0 beta 4 (21.03.2012)
 -------------------------
