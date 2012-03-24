@@ -161,6 +161,7 @@ def update_properties(request, group_id):
         message = _(u"Properties have been removed.")
 
     else:
+        message = _(u"There are no properties to update.")
         for gp in GroupsPropertiesRelation.objects.filter(group=group_id):
             position = request.POST.get("position-%s" % gp.property.id, 999)
             gp.position = int(position)
