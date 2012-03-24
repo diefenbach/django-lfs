@@ -31,6 +31,13 @@ The latest development state can be found here:
 Changes
 =======
 
+Unreleased
+----------
+
+* Bugfix: fixed local variable 'message' referenced before assignment (Maciej Wiśniowski)
+* Updated: Polish translations (Maciej Wiśniowski)
+* Updated: Chinese translations (Frank Feng)
+
 0.7.0 beta 5 (24.03.2012)
 -------------------------
 
@@ -48,7 +55,7 @@ Changes
 * Bugfix: get_base_price_net; #issue #161
 * Bugfix: display only parent's active base price value for variants
 * Bugfix: take the parent's price calculator for variants
-* Added: Chinese Translations (Frank Feng)
+* Added: Chinese translations (Frank Feng)
 * Added: default footer for email messages (Maciej Wiśniowski)
 * Improved: page pagination for category products view (Maciej Wiśniowski)
 * Improved: email templates (Maciej Wiśniowski)
