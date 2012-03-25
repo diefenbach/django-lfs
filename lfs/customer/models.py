@@ -108,4 +108,4 @@ class CreditCard(models.Model):
     expiration_date_year = models.IntegerField(_(u"Expiration date year"), )
 
     def __unicode__(self):
-        return "%s / %s" % (self.card_type, self.card_owner)
+        return "%s / %s" % (self.type, self.owner)
