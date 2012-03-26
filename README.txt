@@ -34,6 +34,7 @@ Changes
 Unreleased
 ----------
 
+* Bugfix: fixed positions of newly added variants (Maciej Wiśniowski)
 * Bugfix: fixed layout, when there are no portlets at right; issue #173 (Frank Feng)
 * Bugfix: fixed local variable 'message' referenced before assignment (Maciej Wiśniowski)
 * Updated: Polish translations (Maciej Wiśniowski)
