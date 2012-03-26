@@ -31,6 +31,18 @@ Credits
   Bug fixes. Improvements. Autocompletion for manufacturers. Google like style
   for page pagination. Polish translations.
 
+* Frank Feng
+
+  Contributor.
+
+  Bug fixes. Chinese translations.
+
+* Radim Novotny (naro)
+
+  Contributor.
+
+  Bug fixes. Czech translations.
+
 * Kai Diefenbach (diefenbach, http://www.iqpp.de)
 
   Founder.
