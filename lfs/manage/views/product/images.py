@@ -1,5 +1,6 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -16,6 +17,7 @@ from lfs.catalog.models import Image
 from lfs.catalog.models import Product
 from lfs.core.signals import product_changed
 from lfs.core.utils import LazyEncoder
+from lfs.manage.utils import get_user_from_session_key
 
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_images(request, product_id, as_string=False, template_name="manage/product/images.html"):
@@ -37,11 +39,14 @@ def manage_images(request, product_id, as_string=False, template_name="manage/pr
 
         return HttpResponse(result)
 
+
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
 def add_image(request, product_id):
     """Adds an image to product with passed product_id.
     """
+    user = get_user_from_session_key(request.POST.get("sessionid"))
+    if not user.has_perm("core.manage_shop"):
+        return HttpResponseRedirect("/login/")
     product = lfs_get_object_or_404(Product, pk=product_id)
     if request.method == "POST":
         for file_content in request.FILES.values():

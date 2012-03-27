@@ -19,6 +19,7 @@ from lfs.core.utils import LazyEncoder
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import StaticBlock
 from lfs.catalog.models import File
+from lfs.manage.utils import get_user_from_session_key
 
 class StaticBlockForm(ModelForm):
     """Form to add and edit a static block.
@@ -139,10 +140,12 @@ def reload_files(request, id):
 
     return HttpResponse(result)
 
-@permission_required("core.manage_shop", login_url="/login/")
 def add_files(request, id):
     """Adds files to static block with passed id.
     """
+    user = get_user_from_session_key(request.POST.get("sessionid"))
+    if not user.has_perm("core.manage_shop"):
+        return HttpResponseRedirect("/login/")
     static_block = lfs_get_object_or_404(StaticBlock, pk=id)
     if request.method == "POST":
         for file_content in request.FILES.values():
