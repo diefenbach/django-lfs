@@ -62,26 +62,26 @@ class OnePageCheckoutForm(forms.Form):
 
         if self.data.get("is_anonymous") == "1" and \
            getattr(settings, "LFS_INVOICE_EMAIL_REQUIRED") and \
-           not self.cleaned_data.get("invoice_email"):
+           self.cleaned_data.get("invoice_email") == "":
             self._errors["invoice_email"] = ErrorList([msg])
 
         if not self.cleaned_data.get("no_shipping"):
-            if self.cleaned_data.get("shipping_firstname", "") == "":
+            if self.cleaned_data.get("shipping_firstname") == "":
                 self._errors["shipping_firstname"] = ErrorList([msg])
 
-            if self.cleaned_data.get("shipping_lastname", "") == "":
+            if self.cleaned_data.get("shipping_lastname") == "":
                 self._errors["shipping_lastname"] = ErrorList([msg])
 
             if getattr(settings, "LFS_SHIPPING_COMPANY_NAME_REQUIRED", False):
-                if self.cleaned_data.get("shipping_company_name", "") == "":
+                if self.cleaned_data.get("shipping_company_name") == "":
                     self._errors["shipping_company_name"] = ErrorList([msg])
 
             if getattr(settings, "LFS_SHIPPING_PHONE_REQUIRED", False):
-                if self.cleaned_data.get("shipping_phone", "") == "":
+                if self.cleaned_data.get("shipping_phone") == "":
                     self._errors["shipping_phone"] = ErrorList([msg])
 
             if getattr(settings, "LFS_SHIPPING_EMAIL_REQUIRED", False):
-                if self.cleaned_data.get("shipping_email", "") == "":
+                if self.cleaned_data.get("shipping_email") == "":
                     self._errors["shipping_email"] = ErrorList([msg])
 
         # check that shipping country is in the shops shipping countries list
