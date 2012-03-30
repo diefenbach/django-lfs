@@ -27,6 +27,11 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.5.1 (2012-03-30)
+------------------
+
+* Bugfix: fixed upload of images and files.
+
 0.5.0 (2012-03-08)
 ------------------
 
