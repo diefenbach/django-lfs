@@ -67,6 +67,15 @@ class ShopTestCase(TestCase):
         self.assertEqual(shop.meta_keywords, u"")
         self.assertEqual(shop.meta_description, u"")
 
+    def test_unsupported_locale(self):
+        """
+        """
+        shop = lfs.core.utils.get_default_shop()
+        shop.default_locale = "unsupported"
+        shop.save()
+
+        self.client.get("/")
+
     def test_from_email(self):
         """
         """

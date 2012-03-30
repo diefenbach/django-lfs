@@ -80,7 +80,7 @@ class Address(models.Model):
     email = models.EmailField(_("E-Mail"), blank=True, null=True, max_length=50)
 
     def __unicode__(self):
-        return "%s / %s" % (self.street, self.city)
+        return "%s / %s" % (self.line1, self.city)
 
 
 class BankAccount(models.Model):
@@ -109,4 +109,4 @@ class CreditCard(models.Model):
     expiration_date_year = models.IntegerField(_(u"Expiration date year"), )
 
     def __unicode__(self):
-        return "%s / %s" % (self.card_type, self.card_owner)
+        return "%s / %s" % (self.type, self.owner)

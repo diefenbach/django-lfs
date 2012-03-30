@@ -6,11 +6,28 @@ from django.core.urlresolvers import reverse
 from django.core import mail
 
 # lfs imports
-from lfs.core.models import Shop, Country
-from lfs.customer.models import Customer, Address
+from lfs.customer.models import Address
+from lfs.core.models import Country
+from lfs.core.models import Shop
+from lfs.customer.models import CreditCard
+from lfs.customer.models import Customer
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.payment.models import PaymentMethod
+
+
+class CreditCardTestCase(TestCase):
+    def setUp(self):
+        self.cc = CreditCard(
+            type = "mastercard",
+            owner = "John Doe",
+            number = "4711",
+            expiration_date_month = 8,
+            expiration_date_year = 2012
+        )
+
+    def test_unicode(self):
+        self.assertEquals(self.cc.__unicode__(), "%s / %s" % (self.cc.type, self.cc.owner))
 
 
 class AddressTestCase(TestCase):
@@ -56,7 +73,7 @@ class AddressTestCase(TestCase):
             tax=tax,
         )
 
-        address1 = Address.objects.create(
+        self.address1 = Address.objects.create(
             firstname="John",
             lastname="Doe",
             company_name="Doe Ltd.",
@@ -68,7 +85,7 @@ class AddressTestCase(TestCase):
             email="john@doe.com",
         )
 
-        address2 = Address.objects.create(
+        self.address2 = Address.objects.create(
             firstname="Jane",
             lastname="Doe",
             company_name="Doe Ltd.",
@@ -91,10 +108,13 @@ class AddressTestCase(TestCase):
             user=new_user,
             selected_shipping_method=shipping_method,
             selected_payment_method=payment_method,
-            selected_shipping_address=address1,
-            selected_invoice_address=address2,
+            selected_shipping_address=self.address1,
+            selected_invoice_address=self.address2,
         )
         self.c = Client()
+
+    def test_unicode(self):
+        self.assertEqual(self.address1.__unicode__(), u"%s / %s" % (self.address1.line1, self.address1.city))
 
     def test_address_page(self):
         """
