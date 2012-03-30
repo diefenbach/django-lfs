@@ -501,7 +501,7 @@ def decimal_l10n(value, digits=2):
     try:
         value = float(value)
     except ValueError:
-        pass
+        return value
 
     format_str = "%%.%sf" % digits
     return locale.format_string(format_str, value)
