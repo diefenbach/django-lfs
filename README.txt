@@ -34,6 +34,9 @@ Changes
 Unreleased
 ----------
 
+* Bugfix: fixed decimal_l10n tag: return origin value if it's no float
+* Bugfix: fixed error messages within checkout; issue #176 (Maciej Wiśniowski)
+* Bugfix: fixed __unicode__ methods of several models; issue #172
 * Bugfix: fixed positions of newly added variants (Maciej Wiśniowski)
 * Bugfix: fixed layout, when there are no portlets at right; issue #173 (Frank Feng)
 * Bugfix: fixed local variable 'message' referenced before assignment (Maciej Wiśniowski)
