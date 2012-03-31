@@ -24,15 +24,11 @@ A demo shop can be tried here:
 
 * http://demo.getlfs.com
 
-The latest development state can be found here:
-
-* http://dev.getlfs.com
-
 Changes
 =======
 
-Unreleased
-----------
+0.7.0 beta 6 (2012-03-31)
+-------------------------
 
 * Bugfix: added safe filter to static block; issue #174 (Frank Feng)
 * Bugfix: Fixed display of short description for variants
@@ -44,8 +40,9 @@ Unreleased
 * Bugfix: fixed local variable 'message' referenced before assignment (Maciej Wiśniowski)
 * Updated: Polish translations (Maciej Wiśniowski)
 * Updated: Chinese translations (Frank Feng)
+* Updated: German translations
 
-0.7.0 beta 5 (24.03.2012)
+0.7.0 beta 5 (2012-03-24)
 -------------------------
 
 * Bugfix: added csrf token to password reset forms; issue #170
@@ -53,7 +50,7 @@ Unreleased
 * Bugfix: removed double slash from logo URLs; issue #166
 * Updated German translations
 
-0.7.0 beta 4 (21.03.2012)
+0.7.0 beta 4 (2012-03-21)
 -------------------------
 
 * Bugfix: fixed edit/view product urls; issue #164 (Frank Feng)
@@ -69,7 +66,7 @@ Unreleased
 * Updated: German translations
 * Updated: Polish translations (Maciej Wiśniowski)
 
-0.7.0 beta 3 (18.03.2012)
+0.7.0 beta 3 (2012-03-18)
 -------------------------
 
 * Bugfix: fixed number of columns within cart template (Maciej Wiśniowski)
@@ -87,7 +84,7 @@ Unreleased
 * Updated: German translation
 * Updated: Polish translations (Maciej Wiśniowski)
 
-0.7.0 beta 2 (08.03.2012)
+0.7.0 beta 2 (2012-03-08)
 -------------------------
 
 * Security fix
@@ -98,7 +95,7 @@ Unreleased
 * Bugfix: fixed updating of attachments; issue #147
 * Improved javascript: prevent FOUC for category-tabs and manage-tabs;
 
-0.7.0 beta 1 (03.03.2012)
+0.7.0 beta 1 (2012-03-03)
 -------------------------
 
 * Added customer related taxes
