@@ -24,17 +24,15 @@ A demo shop can be tried here:
 
 * http://demo.getlfs.com
 
-The latest development state can be found here:
-
-* http://dev.getlfs.com
-
 Changes
 =======
 
-Unreleased
-----------
+0.6.12 (2012-03-31)
+-------------------
 
 * Bugfix: fixed local variable 'message' referenced before assignment (Maciej Wiśniowski)
+* Bugfix: fixed CreditCard's __unicode__ method; issue #172
+* Bugfix: added safe filter to static block; issue #174
 
 0.6.11 (2012-03-24)
 -------------------
