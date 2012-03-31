@@ -425,3 +425,8 @@ urlpatterns += patterns('lfs.manage.views.utils',
     url(r'^update-effective-price$', "update_effective_price", name="lfs_update_effective_price"),
     url(r'^reindex-topseller$', "reindex_topseller", name="lfs_reindex_topseller"),
 )
+
+# Information
+urlpatterns += patterns('lfs.manage.information.views',
+    url(r'^environment$', "environment", name="lfs_manage_environment"),
+)

@@ -1,0 +1,42 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block left-slot-wrapper %}{% endblock %}
+{% block content %}
+    <div id="manage-tabs">
+        <ul>
+            <li class="ui-tabs-nav-item"><a href="#versions">{% trans 'Versions' %}</a></li>
+        </ul>
+        <div id="versions">
+            <table class="lfs-manage-table">
+                <tr>
+                    <th class="middle">
+                        {% trans "Package" %}
+                    </th>
+                    <th>
+                        {% trans "Version" %}
+                    </th>
+                </tr>
+                <tr class="even">
+                    <td>
+                        LFS
+                    </td>
+                    <td>
+                        {{ lfs_version }}
+                    </td>
+                </tr>
+                {% for app in apps %}
+                    <tr class="{% cycle 'odd' 'even' %}">
+                        <td>
+                            {{ app.name }}
+                        </td>
+                        <td>
+                            {{ app.version }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
