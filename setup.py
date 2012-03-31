@@ -1,13 +1,16 @@
-from setuptools import setup, find_packages
+# python imports
 import os
+from setuptools import find_packages
+from setuptools import setup
 
-version = 'dev'
+# lfs imports
+from lfs import __version__
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 
 setup(name='django-lfs',
-      version=version,
+      version=__version__,
       description='LFS - Lightning Fast Shop',
       long_description=README,
       classifiers=[
