@@ -24,15 +24,11 @@ A demo shop can be tried here:
 
 * http://demo.getlfs.com
 
-The latest development state can be found here:
-
-* http://dev.getlfs.com
-
 Changes
 =======
 
-Unreleased
-----------
+0.6.12 (2012-03-31)
+-------------------
 
 * Bugfix: added safe filter to static block; issue #174 (Frank Feng)
 * Bugfix: Fixed display of short description for variants

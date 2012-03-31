@@ -1,6 +1,36 @@
 HISTORY
 =======
 
+0.6.12 (2012-03-31)
+-------------------
+
+* Bugfix: fixed local variable 'message' referenced before assignment (Maciej Wiśniowski)
+* Bugfix: fixed CreditCard's __unicode__ method; issue #172
+* Bugfix: added safe filter to static block; issue #174
+
+0.6.11 (2012-03-24)
+-------------------
+
+* Bugfix: added csrf token to password reset forms; issue #170
+* Bugfix: removed double slash from logo URLs; issue #166
+* Updated German translations
+
+0.6.10 (2012-03-17)
+-------------------
+
+* Using django-postal 0.9
+* Bugfix: don't display non-active products within cart nor add them to order with checkout; adapt tests; fixed issue #154.
+* Bugfix: don't delete OrderItems when a product is deleted.
+
+0.6.9 (2012-03-08)
+------------------
+
+* Security fix
+* Added manufacturer field to product management (Maciej Wiśniowski)
+* Bugfix: fixed pagination for product page; issue #152 (Maciej Wiśniowski)
+* Bugfix: fixed deleting of image for payment and shipping methods; issue #150
+* Bugfix: fixed markup; #issue #148
+
 0.6.8 (2012-03-03)
 ------------------
 
@@ -145,6 +175,11 @@ HISTORY
 * Removed SWFUpload (Flash) in favour of jquery.fileupload (Javascript)
 * Using Python's locale to display currencies
 * New contact form
+
+0.5.1 (2012-03-30)
+------------------
+
+* Bugfix: fixed upload of images and files.
 
 0.5.0 (2012-03-08)
 ------------------
