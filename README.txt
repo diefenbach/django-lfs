@@ -40,6 +40,7 @@ Changes
 * Bugfix: fixed local variable 'message' referenced before assignment (Maciej Wiśniowski)
 * Updated: Polish translations (Maciej Wiśniowski)
 * Updated: Chinese translations (Frank Feng)
+* Updated: German translations
 
 0.7.0 beta 5 (24.03.2012)
 -------------------------
