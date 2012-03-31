@@ -27,8 +27,8 @@ A demo shop can be tried here:
 Changes
 =======
 
-0.6.12 (2012-03-31)
--------------------
+0.7.0 beta 6 (24.03.2012)
+-------------------------
 
 * Bugfix: added safe filter to static block; issue #174 (Frank Feng)
 * Bugfix: Fixed display of short description for variants
