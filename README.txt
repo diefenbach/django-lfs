@@ -27,6 +27,11 @@ A demo shop can be tried here:
 Changes
 =======
 
+Unreleased
+----------
+
+New: added view to display environment
+
 0.7.0 beta 6 (2012-03-31)
 -------------------------
 
