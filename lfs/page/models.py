@@ -17,7 +17,7 @@ class Page(models.Model):
     slug = models.SlugField(_(u"Slug"), max_length=100)
     position = models.IntegerField(_(u"Position"), default=999)
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
-    short_text = models.TextField(blank=True)
+    short_text = models.TextField(_(u"Short text"), blank=True)
     body = models.TextField(_(u"Text"), blank=True)
     file = models.FileField(_(u"File"), blank=True, upload_to="files")
 
