@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-29 14:34-0500\n"
-"PO-Revision-Date: 2012-03-29 21:38+0100\n"
+"POT-Creation-Date: 2012-04-02 11:38-0500\n"
+"PO-Revision-Date: 2012-04-02 18:39+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: natcam.pl <hello@natcam.pl>\n"
 "Language: \n"
@@ -2610,6 +2610,10 @@ msgstr "Nieudana płatność"
 #: order/settings.py:19
 msgid "Payment Flagged"
 msgstr "Oznaczona płatność"
+
+#: page/models.py:20
+msgid "Short text"
+msgstr "Skrócony tekst"
 
 #: page/models.py:21
 #: portlet/models/text.py:15

@@ -16,7 +16,7 @@ from lfs.marketing.models import FeaturedProduct
 
 
 class FeaturedPortlet(Portlet):
-    """A portlet for displaying for sale products.
+    """A portlet for displaying featured products.
     """
     class Meta:
         app_label = 'portlet'
