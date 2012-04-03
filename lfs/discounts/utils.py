@@ -12,7 +12,8 @@ def get_valid_discounts(request, product=None):
                 "id": discount.id,
                 "name": discount.name,
                 "sku": discount.sku,
-                "price": discount.get_price_gross(request, product),
+                "price_net": discount.get_price_net(request, product),
+                "price_gross": discount.get_price_gross(request, product),
                 "tax": discount.get_tax(request, product)
             })
 
