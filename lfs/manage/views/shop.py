@@ -134,6 +134,8 @@ def save_data_tab(request):
         if request.POST.get("delete_image"):
             shop.image.delete()
 
+        # reinitialize form in order to properly display uploaded image
+        form = ShopDataForm(instance=shop)
         shop_changed.send(shop)
         message = _(u"Shop data has been saved.")
     else:
