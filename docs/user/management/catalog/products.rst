@@ -61,8 +61,9 @@ SKU
     Your unique product id.
 
 Manufacturer
-    Product :doc:`manufacturer </user/management/shop/manufacturers>`. If you have defined more than 20 manufacturers
-    then this field is shown as autocomplete (start typing to see hints).
+    Product :doc:`manufacturer </user/management/shop/manufacturers>`. If you
+    have defined more than 20 manufacturers then this field is shown as auto
+    complete (start typing to see hints).
 
 SKU manufacturer
     The unique product id of the manufacturer (external SKU).
@@ -235,6 +236,139 @@ Delete attachments
     delete and click the ``Delete`` button.
 
 .. _products_management_accessories:
+
+Variants
+--------
+
+Within this tab you can manage the variants of a ``Product with Variants``.
+
+.. note::
+
+    This is only displayed for ``Products with Variants``.
+
+Property Groups
+^^^^^^^^^^^^^^^
+
+Select all property groups which are supposed to be used to create variants.
+After you have selected the property groups you want, you will notice that the
+properties of the groups are provided to create variants within the ``Variants``
+section below.
+
+.. note::
+
+    Only properties with select fields will be taken into account.
+
+Local Properties
+^^^^^^^^^^^^^^^^
+
+``Local Properties`` can be used to create variants without using ``Property
+Groups``. To add properties click on the stencil and add properties and property
+options. After you add local properties you will note that these are provided to
+create variants within the ``Variants`` section below.
+
+.. note::
+
+    Local properties can not be used for filtering.
+
+Variants
+^^^^^^^^
+
+Within this section single variants of the ``Product with Variants`` are
+managed.
+
+Add Variants
+    To add variants to the ``Product with Variants``, select the options
+    combination you want to add and click on the ``Add Variant(s)`` button. If
+    you select ``all`` all combinations of this property and its options will be
+    created automatically.
+
+    You can pre-fill several fields of the new variants. All fields can be
+    changed later.
+
+    Slug
+        The slugs of the variants will be pre-filled with the slug of the base
+        product, plus the slug you provide, plus all options of the properties
+        for which are selected for the variant.
+
+    Name
+        The name of the variants will be pre-filled with the name you provide.
+
+    Price
+        The price of the variants will be pre-filled with the price you provide.
+
+Edit Variants
+    There are several fields of the variants which you can edit directly on this
+    section. All others can be edit on the variant detail view.
+
+    Position
+        The position of the variant within the list view.
+
+    Active
+        If checked the variant is displayed.
+
+    URL
+        The URL of the variant
+
+    SKU
+        The SKU of th variant. This is only taken if the check box on the left
+        is checked. Otherwise the SKU of the base product is taken.
+
+    Name
+        The name of th variant. This is only taken if the check box on the left
+        is checked. Otherwise the name of the base product is taken.
+
+    Price
+        The price of th variant. This is only taken if the check box on the left
+        is checked. Otherwise the price of the base product is taken.
+
+    Default
+        The default variant, which pre-selected when the product is displayed.
+
+    To save changed variants click on the ``Save`` button.
+
+Delete Variants
+    To delete variants select all check boxes of the variants you want to delete
+    and click on the ``Delete`` button.
+
+Category Variant
+^^^^^^^^^^^^^^^^
+
+The category variant determines which variant is displayed within the category
+products view.
+
+Default
+    Displays the above selected default variant
+
+Cheapest Price
+    Displays the variant with the cheapest price
+
+Cheapest Base Price
+    Displays the variant with the cheapest base price
+
+Cheapest Prices
+    Displays the variant with the cheapest price and cheapest base price
+
+Explicit Variant
+    Displays selected variant (all variants are provided for selection by name and
+    position).
+
+Display Type
+^^^^^^^^^^^^
+
+The display type determines how variants are displayed within the product detail
+view
+
+List
+    All existing variants are displayed within a list.
+
+Select
+    All properties are displayed as select boxes with the property options as
+    options.
+
+    .. note::
+
+        If the customer selects a combination, which doesn't exist he will get
+        a message which says so.
 
 Accessories
 -----------
