@@ -66,7 +66,7 @@ class SEOView(View):
                                     "form": form
                                 }))
 
-    def render_to_response(self, form=None, message=''):
+    def render_to_response(self, form, message=''):
         """Prepare the output
         """
         seo_html = self.render(self.request, form.instance, form)
