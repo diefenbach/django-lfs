@@ -17,7 +17,7 @@ from lfs.utils.widgets import SelectImage
 
 
 class ViewForm(ModelForm):
-    """Form to add/edit seo properties of a category.
+    """Form to add/edit category.
     """
     def __init__(self, *args, **kwargs):
         super(ViewForm, self).__init__(*args, **kwargs)

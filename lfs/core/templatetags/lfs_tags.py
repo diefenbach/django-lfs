@@ -160,7 +160,7 @@ def breadcrumbs(context, obj):
         objects = []
         objects.append({
             "name": _(u"Information"),
-            "url": reverse("lfs_pages")}),
+            "url": reverse("lfs_pages")})
         objects.append({"name": obj.title})
 
         result = {

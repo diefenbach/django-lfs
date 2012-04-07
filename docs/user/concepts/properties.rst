@@ -11,7 +11,7 @@ This section describes the concepts of properties.
 Overview
 ========
 
-Generally, properties are used to extend products with miscellaneous date fields.
+Generally, properties are used to extend products with miscellaneous data fields.
 Properties are attached to products with the help of :doc:`property groups
 </user/management/properties/property_groups>`.
 
