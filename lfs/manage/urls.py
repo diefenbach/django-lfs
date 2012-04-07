@@ -1,5 +1,15 @@
+# General imports
 from django.conf.urls.defaults import *
-from django.views.generic.simple import direct_to_template
+
+# LFS imports
+from lfs.core.models import Shop
+from lfs.manage.product.seo import SEOForm as ProductSEOForm
+from lfs.manage.pages.views import PageSEOView
+from lfs.manage.views.shop import ShopSEOView
+from lfs.catalog.models import Product, Category
+from lfs.page.models import Page
+from lfs.manage.seo.views import SEOView
+
 
 # General
 urlpatterns = patterns('lfs.manage.views',
@@ -118,9 +128,7 @@ urlpatterns += patterns('lfs.manage.product.attachments',
 )
 
 # Product SEO
-urlpatterns += patterns('lfs.manage.product.seo',
-    url(r'^manage-seo/(?P<product_id>\d*)$', "manage_seo", name="lfs_manage_product_seo"),
-)
+urlpatterns += SEOView.get_seo_urlpattern(Product, form_klass=ProductSEOForm, template_name='manage/product/seo.html')
 
 # Product Variants
 urlpatterns += patterns('lfs.manage.product.variants',
@@ -238,9 +246,7 @@ urlpatterns += patterns('lfs.manage.categories',
 )
 
 # Categories / SEO
-urlpatterns += patterns('lfs.manage.categories.seo',
-    url(r'^edit-category-seo/(?P<category_id>\d*)$', "edit_seo", name="lfs_manage_category_seo"),
-)
+urlpatterns += SEOView.get_seo_urlpattern(Category)
 
 # Customers
 urlpatterns += patterns('lfs.manage.views.customer',
@@ -307,8 +313,10 @@ urlpatterns += patterns('lfs.manage.pages.views',
     url(r'^page-by-id/(?P<id>\d*)$', "page_view_by_id", name="lfs_page_view_by_id"),
     url(r'^sort-pages$', "sort_pages", name="lfs_sort_pages"),
     url(r'^save-page-data-tab/(?P<id>\d*)$', "save_data_tab", name="lfs_save_page_data_tab"),
-    url(r'^save-page-seo-tab/(?P<id>\d*)$', "save_seo_tab", name="lfs_save_page_seo_tab"),
 )
+
+# Pages / SEO
+urlpatterns += PageSEOView.get_seo_urlpattern(Page)
 
 # Payment
 urlpatterns += patterns('lfs.manage.views.payment',
@@ -385,8 +393,10 @@ urlpatterns += patterns('lfs.manage.views.shop',
     url(r'^shop$', "manage_shop", name="lfs_manage_shop"),
     url(r'^save-shop-data-tab$', "save_data_tab", name="lfs_save_shop_data_tab"),
     url(r'^save-shop-default-values-tab$', "save_default_values_tab", name="lfs_save_shop_default_values_tab"),
-    url(r'^save-shop-seo-tab$', "save_seo_tab", name="lfs_save_shop_seo_tab"),
 )
+
+# Shop / SEO
+urlpatterns += ShopSEOView.get_seo_urlpattern(Shop)
 
 # Actions
 urlpatterns += patterns('lfs.manage.actions.views',

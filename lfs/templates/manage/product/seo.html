@@ -2,13 +2,13 @@
 
 <h2>{% trans 'SEO' %}</h2>
 
-<form action="{% url lfs_manage_product_seo product.id %}"
+<form action="{{ action_url }}"
       method="post"
       id="product-seo-form">
 
     <div class="field">
         <div class="label">
-            {% if product.is_variant %}
+            {% if obj.is_variant %}
                 {{ form.active_meta_title }}
             {% endif %}
             {{ form.meta_title.label_tag }}:
@@ -28,7 +28,7 @@
 
     <div class="field">
         <div class="label">
-            {% if product.is_variant %}
+            {% if obj.is_variant %}
                 {{ form.active_meta_keywords }}
             {% endif %}
             {{ form.meta_keywords.label_tag }}:
@@ -48,7 +48,7 @@
 
     <div class="field">
         <div class="label">
-            {% if product.is_variant %}
+            {% if obj.is_variant %}
                 {{ form.active_meta_description }}
             {% endif %}
                             

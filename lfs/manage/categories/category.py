@@ -20,9 +20,9 @@ from lfs.core.utils import set_category_levels
 from lfs.core.widgets.image import LFSImageInput
 from lfs.manage import utils as manage_utils
 from lfs.manage.categories.products import manage_products
-from lfs.manage.categories.seo import edit_seo
 from lfs.manage.categories.view import category_view
 from lfs.manage.categories.portlet import manage_categories_portlet
+from lfs.manage.seo.views import SEOView
 from lfs.manage.views.lfs_portlets import portlets_inline
 
 
@@ -77,7 +77,7 @@ def manage_category(request, category_id, template_name="manage/category/manage_
         "categories_portlet": manage_categories_portlet(request, category_id),
         "category": category,
         "data": category_data(request, category_id),
-        "seo": edit_seo(request, category_id),
+        "seo": SEOView(Category).render(request, category),
         "view": category_view(request, category_id),
         "portlets": portlets_inline(request, category),
         "dialog_message": _("Do you really want to delete the category <b>'%(name)s'</b> and all its sub categories?") % {"name": category.name},

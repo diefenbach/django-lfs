@@ -2,9 +2,9 @@
 
 <h2>{% trans 'SEO' %}</h2>
 
-<form action="{% url lfs_manage_category_seo category.id %}"
+<form action="{{ action_url }}"
       method="post"
-      id="category-seo-form">
+      id="manufacturer-seo-form">
         {% include "manage/lfs_form.html" %}
     
     <div class="buttons">

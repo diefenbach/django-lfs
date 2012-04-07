@@ -21,6 +21,14 @@ from lfs.core.utils import import_symbol
 from lfs.core.utils import LazyEncoder
 from lfs.core.widgets.image import LFSImageInput
 from lfs.manage.views.lfs_portlets import portlets_inline
+from lfs.manage.seo.views import SEOView
+
+
+class ShopSEOView(SEOView):
+    def form_valid(self, form):
+        res = super(ShopSEOView, self).form_valid(form)
+        shop_changed.send(form.instance)
+        return res
 
 
 class ShopDataForm(ModelForm):
@@ -35,14 +43,6 @@ class ShopDataForm(ModelForm):
         fields = ("name", "shop_owner", "from_email", "notification_emails",
             "description", "image", "static_block", "checkout_type", "confirm_toc",
             "google_analytics_id", "ga_site_tracking", "ga_ecommerce_tracking")
-
-
-class ShopSEOForm(ModelForm):
-    """Form to edit shop SEO data.
-    """
-    class Meta:
-        model = Shop
-        fields = ("meta_title", "meta_keywords", "meta_description")
 
 
 class ShopDefaultValuesForm(ModelForm):
@@ -60,7 +60,6 @@ def manage_shop(request, template_name="manage/shop/shop.html"):
     """
     shop = lfs.core.utils.get_default_shop()
     data_form = ShopDataForm(instance=shop)
-    seo_form = ShopSEOForm(instance=shop)
     default_values_form = ShopDefaultValuesForm(instance=shop)
 
     ong = lfs.core.utils.import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
@@ -76,7 +75,7 @@ def manage_shop(request, template_name="manage/shop/shop.html"):
         "data": data_tab(request, shop, data_form),
         "default_values": default_values_tab(request, shop, default_values_form),
         "order_numbers": order_numbers_tab(request, shop, order_numbers_form),
-        "seo": seo_tab(request, shop, seo_form),
+        "seo": ShopSEOView(Shop).render(request, shop),
         "portlets": portlets_inline(request, shop),
     }))
 
@@ -102,15 +101,6 @@ def order_numbers_tab(request, shop, form, template_name="manage/order_numbers/o
 
 def default_values_tab(request, shop, form, template_name="manage/shop/default_values_tab.html"):
     """Renders the default value tab of the shop.
-    """
-    return render_to_string(template_name, RequestContext(request, {
-        "shop": shop,
-        "form": form,
-    }))
-
-
-def seo_tab(request, shop, form, template_name="manage/shop/seo_tab.html"):
-    """Renders the SEO tab of the shop.
     """
     return render_to_string(template_name, RequestContext(request, {
         "shop": shop,
@@ -167,29 +157,6 @@ def save_default_values_tab(request):
     result = simplejson.dumps({
         "html": [["#default_values", default_values_tab(request, shop, form)]],
         "message": message
-    }, cls=LazyEncoder)
-
-    return HttpResponse(result)
-
-
-@permission_required("core.manage_shop", login_url="/login/")
-@require_POST
-def save_seo_tab(request):
-    """Saves the seo tab of the default shop.
-    """
-    shop = lfs.core.utils.get_default_shop()
-
-    form = ShopSEOForm(instance=shop, data=request.POST)
-    if form.is_valid():
-        form.save()
-        shop_changed.send(shop)
-        message = _(u"Shop SEO data has been saved.")
-    else:
-        message = _(u"Please correct the indicated errors.")
-
-    result = simplejson.dumps({
-        "html": [["#seo", seo_tab(request, shop, form)]],
-        "message": message,
     }, cls=LazyEncoder)
 
     return HttpResponse(result)

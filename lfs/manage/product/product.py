@@ -31,11 +31,12 @@ from lfs.catalog.settings import PRODUCT_TYPE_FORM_CHOICES
 from lfs.catalog.settings import VARIANT
 from lfs.core.utils import LazyEncoder
 from lfs.manage.product.images import manage_images
-from lfs.manage.product.seo import manage_seo
 from lfs.manage.product.properties import manage_properties
 from lfs.manage.product.attachments import manage_attachments
+from lfs.manage.product.seo import SEOForm
 from lfs.manage.views.lfs_portlets import portlets_inline
 from lfs.manage.utils import get_current_page
+from lfs.manage.seo.views import SEOView
 from lfs.manufacturer.models import Manufacturer
 from lfs.utils.widgets import SelectImage
 
@@ -182,7 +183,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
         "images": manage_images(request, product_id, as_string=True),
         "attachments": manage_attachments(request, product_id, as_string=True),
         "selectable_products": selectable_products_inline(request, page, paginator, product.id),
-        "seo": manage_seo(request, product_id),
+        "seo": SEOView(Product, form_klass=SEOForm, template_name='manage/product/seo.html').render(request, product),
         "stock": stock(request, product_id),
         "portlets": portlets_inline(request, product),
         "properties": manage_properties(request, product_id),
