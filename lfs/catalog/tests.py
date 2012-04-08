@@ -1417,12 +1417,12 @@ class ProductTestCase(TestCase):
         self.p3 = Product.objects.create(name=u"Product 3", slug=u"product-3", active=True)
 
         # Create a size property with two options
-        self.size = size = Property.objects.create(name="Size")
+        self.size = size = Property.objects.create(name="Size", position=10)
         self.l = l = PropertyOption.objects.create(name="L", property=size)
         self.m = m = PropertyOption.objects.create(name="M", property=size)
 
         # Create a color property with two options
-        self.color = color = Property.objects.create(name="Color")
+        self.color = color = Property.objects.create(name="Color", position=20)
         self.red = red = PropertyOption.objects.create(name="Red", property=color)
         self.green = green = PropertyOption.objects.create(name="Green", property=color)
 

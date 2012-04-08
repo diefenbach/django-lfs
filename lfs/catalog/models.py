@@ -919,7 +919,7 @@ class Product(models.Model):
             return properties
 
         properties = []
-        for ppv in self.property_values.filter(property__display_on_product=True, type=PROPERTY_VALUE_TYPE_DISPLAY).order_by("property__position"):
+        for ppv in self.property_values.filter(property__display_on_product=True, type=PROPERTY_VALUE_TYPE_DISPLAY):
             if ppv.property.is_select_field:
                 try:
                     po = PropertyOption.objects.get(pk=int(float(ppv.value)))
@@ -927,15 +927,20 @@ class Product(models.Model):
                     continue
                 else:
                     value = po.name
+                    position = po.position
             else:
                 value = ppv.value
+                position = 1
+
             properties.append({
                 "name": ppv.property.name,
                 "title": ppv.property.title,
                 "value": value,
+                "position": (ppv.property.position * 1000) + position,
                 "unit": ppv.property.unit,
             })
 
+        properties.sort(lambda a, b: cmp(a["position"], b["position"]))
         cache.set(cache_key, properties)
         return properties
 
