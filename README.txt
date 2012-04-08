@@ -32,6 +32,17 @@ Unreleased
 
 New: added view to display environment
 
+0.7.0 beta 7 (2012-04-08)
+-------------------------
+
+* Bugfix: display ``displayed properties`` in the correct order py positions; issue #184
+* Bugfix: display property options in the correct order by positions within filter portlet
+* Bugfix: fixed image presentation directly after upload within shop management interface (Maciej Wiśniowski)
+* Bugfix: fixed display of discounts
+* New: added variants tab to documentation
+* Updated Polish translations (Maciej Wiśniowski)
+* Updated German translations
+
 0.7.0 beta 6 (2012-03-31)
 -------------------------
 
