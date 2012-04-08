@@ -319,9 +319,11 @@ def get_product_filters(category, product_filter, price_filter, sorting):
 
         # If the property is a select field we want to display the name of the
         # option instead of the id.
+        position = 1
         if property.is_select_field:
             try:
                 name = options_mapping[row[1]].name
+                position = options_mapping[row[1]].position
             except KeyError:
                 name = row[1]
         elif property.is_number_field:
@@ -342,6 +344,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                     "id": row[0],
                     "value": value,
                     "name": name,
+                    "position": position,
                     "quantity": amount[row[0]][row[1]],
                     "show_quantity": False,
                 }]
@@ -353,6 +356,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                 "id": row[0],
                 "value": value,
                 "name": name,
+                "position": position,
                 "quantity": amount[row[0]][row[1]],
                 "show_quantity": True,
             })
@@ -367,7 +371,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
         # Sort the values. NOTE: This has to be done here (and not via SQL) as
         # the value field of the property is a char field and can't ordered
         # properly for numbers.
-        values.sort(lambda a, b: cmp(a["value"], b["value"]))
+        values.sort(lambda a, b: cmp(a["position"], b["position"]))
 
         result.append({
             "id": property_id,
