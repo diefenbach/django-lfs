@@ -27,6 +27,12 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.6.13 (2012-04-08)
+-------------------
+
+* Bugfix: display ``displayed properties`` in the correct order py positions; issue #184
+* Bugfix: display property options in the correct order by positions within filter portlet
+
 0.6.12 (2012-03-31)
 -------------------
 
