@@ -179,5 +179,8 @@ class ManageURLsTestCase(TestCase):
 
         from lfs.manage.urls import urlpatterns
         for url in urlpatterns:
+            # Within this views the permission check is made inside.
+            if url.name in ("lfs_manage_add_image", "lfs_add_files_to_static_block"):
+                continue
             result = url.callback(request)
             self.failUnless(result["Location"].startswith("/login/?next=/"))
