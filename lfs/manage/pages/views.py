@@ -1,7 +1,7 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -16,14 +16,26 @@ from django.views.decorators.http import require_POST
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
+from lfs.manage.seo.views import SEOView
 from lfs.manage.views.lfs_portlets import portlets_inline
 from lfs.manage.pages.forms import PageAddForm
 from lfs.manage.pages.forms import PageForm
-from lfs.manage.pages.forms import PageSEOForm
 from lfs.page.models import Page
 
 
 # Views
+class PageSEOView(SEOView):
+    def get(self, request, id):
+        if id == '1':
+            return HttpResponseForbidden()
+        return super(PageSEOView, self).get(request, id)
+
+    def post(self, request, id):
+        if id == '1':
+            return HttpResponseForbidden()
+        return super(PageSEOView, self).post(request, id)
+
+
 @permission_required("core.manage_shop", login_url="/login/")
 def manage_pages(request):
     """Dispatches to the first page or to the form to add a page (if there is no
@@ -47,7 +59,7 @@ def manage_page(request, id, template_name="manage/pages/page.html"):
     return render_to_response(template_name, RequestContext(request, {
         "page": page,
         "navigation": navigation(request, page),
-        "seo_tab": seo_tab(request, page),
+        "seo_tab": PageSEOView(Page).render(request, page),
         "data_tab": data_tab(request, page),
         "portlets": portlets_inline(request, page),
     }))
@@ -87,22 +99,6 @@ def data_tab(request, page, template_name="manage/pages/data_tab.html"):
     }))
 
 
-def seo_tab(request, page, template_name="manage/pages/seo_tab.html"):
-    """Renders the SEO tab for passed page.
-    """
-    if request.method == "POST":
-        form = PageSEOForm(instance=page, data=request.POST)
-        if form.is_valid():
-            page = form.save()
-    else:
-        form = PageSEOForm(instance=page)
-
-    return render_to_string(template_name, RequestContext(request, {
-        "form": form,
-        "page": page,
-    }))
-
-
 def navigation(request, page, template_name="manage/pages/navigation.html"):
     """Renders the navigation for passed page.
     """
@@ -131,27 +127,6 @@ def save_data_tab(request, id):
     result = simplejson.dumps({
         "html": html,
         "message": _(u"Data has been saved."),
-    }, cls=LazyEncoder)
-
-    return HttpResponse(result)
-
-
-@permission_required("core.manage_shop", login_url="/login/")
-def save_seo_tab(request, id):
-    """Saves the seo tab.
-    """
-    if id == 1:
-        raise Http404()
-
-    page = lfs_get_object_or_404(Page, pk=id)
-
-    html = (
-        ("seo_tab", seo_tab(request, page)),
-    )
-
-    result = simplejson.dumps({
-        "html": html,
-        "message": _(u"SEO data has been saved."),
     }, cls=LazyEncoder)
 
     return HttpResponse(result)

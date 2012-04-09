@@ -18,14 +18,6 @@ class PageForm(ModelForm):
         exclude = ("position", "meta_title", "meta_description", "meta_keywords")
 
 
-class PageSEOForm(ModelForm):
-    """Form to edit page's seo data.
-    """
-    class Meta:
-        model = Page
-        fields = ("meta_title", "meta_description", "meta_keywords")
-
-
 class PageAddForm(ModelForm):
     """Form to add a page.
     """
