@@ -31,7 +31,7 @@ def environment(request, template_name="manage/information/environment.html"):
     """
     apps = []
     for app in settings.INSTALLED_APPS:
-        if app in ["lfs", "lfstheme"] or \
+        if app in ["lfs"] or \
            app.startswith("lfs.") or \
            app.startswith("django."):
             continue

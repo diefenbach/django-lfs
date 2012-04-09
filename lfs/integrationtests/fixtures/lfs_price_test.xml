@@ -1534,7 +1534,6 @@
         <field type="BooleanField" name="ga_site_tracking">False</field>
         <field type="BooleanField" name="ga_ecommerce_tracking">False</field>
         <field to="core.country" name="default_country" rel="ManyToOneRel">101</field>
-        <field type="CharField" name="default_locale">de_DE.UTF-8</field>
         <field type="PositiveSmallIntegerField" name="checkout_type">0</field>
         <field type="BooleanField" name="confirm_toc">False</field>
         <field to="core.country" name="invoice_countries" rel="ManyToManyRel">

@@ -86,6 +86,18 @@ LFS_DOCS
     within the management interface. Defaults to
     http://docs.getlfs.com/en/latest/.
 
+LFS_LOCALE
+    Sets the locale for the shop, which is the base for number formatting and
+    the displayed currency. If you don't set it, the current locale of your
+    Python is not touched at all. Example::
+
+        LFS_LOCALE = "en_US.UTF-8"
+
+    You can find more about locale here:
+
+        * http://en.wikipedia.org/wiki/Locale
+        * http://docs.python.org/library/locale.html
+
 LFS_LOG_FILE
     Absolute path to LFS' log file.
 

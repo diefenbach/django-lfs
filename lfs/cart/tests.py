@@ -1,5 +1,8 @@
 # coding: utf-8
 
+# python imports
+import locale
+
 # django imports
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.file import SessionStore
@@ -432,13 +435,11 @@ class AddedToCartTestCase(TestCase):
         request.session = self.session
         request.user = self.user
 
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+
         # Added product_1 to cart
         add_to_cart(request)
         response = added_to_cart_items(request)
-
-        # Check we are using german locale
-        shop = lfs_get_object_or_404(Shop, pk=1)
-        self.assertEqual(shop.default_locale, 'en_US.UTF-8')
 
         # need to test for two versions of currency output (Mac and Ubuntu differ)
         self.failIf(response.find(u"Total: $10.00") == -1)
@@ -456,9 +457,7 @@ class AddedToCartTestCase(TestCase):
         request.session = self.session
         request.user = self.user
 
-        # Check we are using german locale
-        shop = lfs_get_object_or_404(Shop, pk=1)
-        self.assertEqual(shop.default_locale, 'en_US.UTF-8')
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
         # Added product_1 two times to cart
         add_to_cart(request)

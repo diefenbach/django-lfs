@@ -51,7 +51,7 @@ class ShopDefaultValuesForm(ModelForm):
     class Meta:
         model = Shop
         fields = ("price_calculator", "product_cols", "product_rows", "category_cols",
-            "default_country", "invoice_countries", "shipping_countries", "default_locale", "use_international_currency_code")
+            "default_country", "invoice_countries", "shipping_countries", "use_international_currency_code")
 
 
 @permission_required("core.manage_shop", login_url="/login/")

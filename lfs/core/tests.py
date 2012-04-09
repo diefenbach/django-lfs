@@ -70,9 +70,8 @@ class ShopTestCase(TestCase):
     def test_unsupported_locale(self):
         """
         """
-        shop = lfs.core.utils.get_default_shop()
-        shop.default_locale = "unsupported"
-        shop.save()
+        from django.conf import settings
+        settings.LFS_LOCALE = "unsupported"
 
         self.client.get("/")
 

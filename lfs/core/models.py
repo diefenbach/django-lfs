@@ -87,69 +87,72 @@ class Action(models.Model):
 
 
 class Shop(models.Model):
-    """Holds all shop related information.
+    """
+    Holds all shop related information.
 
-    At the moment there must be exactly one shop with id == 1. (This may be
-    changed in future to provide multi shops.)
-
-    Instance variables:
-
-    - name
+    name
        The name of the shop. This is used for the the title of the HTML pages
 
-    - shop_owner
+    shop_owner
        The shop owner. This is displayed within several places for instance the
        checkout page
 
-    - from_email
+    from_email
        This e-mail address is used for the from header of all outgoing e-mails
 
-    - notification_emails
+    notification_emails
        This e-mail addresses are used for incoming notification e-mails, e.g.
        received an order. One e-mail address per line.
 
-    - description
+    description
        A description of the shop
 
-    - image
+    image
       An image which can be used as default image if a category doesn't have one
 
-    - product_cols, product_rows, category_cols
+    product_cols, product_rows, category_cols
        Upmost format information, which defines how products and categories are
        displayed within several views. These may be inherited by categories and
        sub categories.
 
-    - google_analytics_id
+    google_analytics_id
        Used to generate google analytics tracker code and e-commerce code. the
        id has the format UA-xxxxxxx-xx and is provided by Google.
 
-    - ga_site_tracking
+    ga_site_tracking
        If selected and the google_analytics_id is given google analytics site
        tracking code is inserted into the HTML source code.
 
-    - ga_ecommerce_tracking
+    ga_ecommerce_tracking
        If selected and the google_analytics_id is given google analytics
        e-commerce tracking code is inserted into the HTML source code.
 
-    - countries
+    countries
        Selected countries will be offered to the shop customer tho choose for
        shipping and invoice address.
 
-    - default_country
+    default_country
        This country will be used to calculate shipping price if the shop
        customer doesn't have select a country yet.
 
-    - price_calculator
+    use_international_currency_code
+        If this is True the international currency code from the current locale
+        is used.
+
+    price_calculator
         Class that implements lfs.price.PriceCalculator for calculating product
         price. This is the default price calculator for all products.
 
-    - checkout_type
+    checkout_type
        Decides whether the customer has to login, has not to login or has the
        choice to to login or not to be able to check out.
 
-    - confirm_toc
+    confirm_toc
        If this is activated the shop customer has to confirm terms and
        conditions to checkout.
+
+    meta*
+        This information is used within HTML meta tags of the shop view.
     """
     name = models.CharField(_(u"Name"), max_length=30)
     shop_owner = models.CharField(_(u"Shop owner"), max_length=100, blank=True)
@@ -171,8 +174,6 @@ class Shop(models.Model):
     shipping_countries = models.ManyToManyField(Country, verbose_name=_(u"Shipping countries"), related_name="shipping")
     default_country = models.ForeignKey(Country, verbose_name=_(u"Default shipping country"))
 
-    # You can find locale information here: http://en.wikipedia.org/wiki/Locale
-    default_locale = models.CharField(_(u"Default Shop Locale"), max_length=20, default="en_US.UTF-8")
     use_international_currency_code = models.BooleanField(_(u"Use international currency codes"), default=False)
     price_calculator = models.CharField(choices=settings.LFS_PRICE_CALCULATORS, max_length=255,
                                         default=settings.LFS_PRICE_CALCULATORS[0][0],

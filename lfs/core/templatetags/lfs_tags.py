@@ -14,7 +14,9 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.catalog.utils
+import lfs.core.utils
 import lfs.utils.misc
+import logging
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT
@@ -24,11 +26,12 @@ from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
-import lfs.core.utils
 from lfs.core.models import Action
 from lfs.page.models import Page
 from lfs.shipping import utils as shipping_utils
 
+
+logger = logging.getLogger("default")
 register = template.Library()
 
 
@@ -472,7 +475,10 @@ def get_slug_from_request(request):
 @register.filter
 def currency(value, request=None, grouping=True):
     """
+    Returns the currency based on the given locale within settings.LFS_LOCALE
+
     e.g.
+
     import locale
     locale.setlocale(locale.LC_ALL, 'de_CH.UTF-8')
     currency(123456.789)  # Fr. 123'456.79
@@ -484,8 +490,9 @@ def currency(value, request=None, grouping=True):
     shop = lfs.core.utils.get_default_shop(request)
     try:
         result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
-    except ValueError:
+    except ValueError, e:
         result = value
+        logger.error("currency filter: %s" % e)
 
     # add css class if value is negative
     if value < 0:
@@ -630,6 +637,7 @@ class CategoryProductPricesGrossNode(Node):
             context["base_packing_price_gross"] = product.get_base_packing_price_gross(request)
 
         return ""
+
 
 def do_category_product_prices_gross(parser, token):
     """

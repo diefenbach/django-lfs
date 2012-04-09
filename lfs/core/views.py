@@ -59,8 +59,9 @@ def server_error(request):
 
 
 def one_time_setup():
-    shop = lfs_get_object_or_404(Shop, pk=1)
-    try:
-        locale.setlocale(locale.LC_ALL, str(shop.default_locale))
-    except locale.Error, e:
-        logger.error("Unsupported locale in LMI/Preferences/Default Values/Default Shop Locale: '%s'." % shop.default_locale)
+    lfs_locale = getattr(settings, "LFS_LOCALE", None)
+    if lfs_locale:
+        try:
+            locale.setlocale(locale.LC_ALL, lfs_locale)
+        except locale.Error, e:
+            logger.error("Unsupported locale in settings.LFS_LOCALE: '%s'." % lfs_locale)

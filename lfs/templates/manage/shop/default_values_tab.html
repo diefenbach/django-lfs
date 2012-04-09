@@ -131,21 +131,6 @@
         <legend>{% trans "Localization" %}</legend>
         <div class="field">
             <div class="label">
-                {{ form.default_locale.label_tag }}:
-            </div>
-            {% if form.default_locale.errors %}
-                <div class="error">
-                    {{ form.default_locale }}
-                    {{ form.default_locale.errors }}
-                </div>
-            {% else %}
-                <div>
-                    {{ form.default_locale }}
-                </div>
-            {% endif %}
-        </div>
-        <div class="field">
-            <div class="label">
                 {{ form.use_international_currency_code.label_tag }}:
             </div>
             <div>
