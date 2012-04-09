@@ -29,6 +29,7 @@ function addEditor(selector, hide_save, height) {
         theme_advanced_toolbar_align : "left",
         save_onsavecallback : "save",
         relative_urls : false,
+        verify_html : false,
         cleanup : false,
         height : height,
         content_css : "/static/css/tinymce_styles.css",
