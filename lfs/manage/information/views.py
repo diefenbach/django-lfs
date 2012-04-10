@@ -23,7 +23,7 @@ from lfs.manage.discounts.forms import DiscountForm
 
 # versions
 from lfs import __version__ as lfs_version
-from lfstheme import __version__ as lfstheme_version
+from lfs_theme import __version__ as lfs_theme_version
 
 @permission_required("core.manage_shop", login_url="/login/")
 def environment(request, template_name="manage/information/environment.html"):
@@ -50,6 +50,6 @@ def environment(request, template_name="manage/information/environment.html"):
 
     return render_to_response(template_name, RequestContext(request, {
         "lfs_version": lfs_version,
-        "lfstheme_version": lfstheme_version,
+        "lfs_theme_version": lfs_theme_version,
         "apps": apps,
     }))
