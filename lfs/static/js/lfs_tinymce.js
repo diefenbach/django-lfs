@@ -30,7 +30,6 @@ function addEditor(selector, hide_save, height) {
         save_onsavecallback : "save",
         relative_urls : false,
         verify_html : false,
-        cleanup : false,
         height : height,
         content_css : "/static/css/tinymce_styles.css",
         setup : function(ed) {
