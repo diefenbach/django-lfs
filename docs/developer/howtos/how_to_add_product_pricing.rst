@@ -41,16 +41,16 @@ Plug in the custom price calculator
 
 3. If your are using models (which is completely up to you), sync your database.
 
-4. Edit the dictionary lfs.core.settings.LFS_PRICE_CALCULATOR_DICTIONARY to make
+4. Edit the dictionary lfs.core.settings.LFS_PRICE_CALCULATORS to make
    your custom pricing calculator available to products in the manage interface
 
 .. code-block:: python
 
-    LFS_PRICE_CALCULATOR_DICTIONARY = {
-        'lfs.gross_price.GrossPriceCalculator': 'Price including tax',
-        'lfs.net_price.NetPriceCalculator': 'Price excluding tax',
-        'mycustom_price.CustomPriceCalculator': 'My Pricing Calculator',
-    }
+    LFS_PRICE_CALCULATORS = [
+        ["lfs.gross_price.GrossPriceCalculator", _(u"Price includes tax")],
+        ["lfs.net_price.NetPriceCalculator", _(u"Price excludes tax")],
+        ["mycustom_price.CustomPriceCalculator", _(u"My Pricing Calculator")],
+    ]
 
 Set the shop default price calculator
 =====================================
