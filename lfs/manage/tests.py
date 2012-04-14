@@ -2,7 +2,6 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.test.client import Client
 from lfs.catalog.models import Category
 
 from lfs.manage.api.handlers import CategorySortView
@@ -14,8 +13,6 @@ class ManageTestCase(TestCase):
     def setUp(self):
         for i in range(1, 4):
             cat, created = Category.objects.get_or_create(pk=i, name="cat" + str(i), slug="cat" + str(i), position=10, parent=None)
-
-        self.client = Client()
 
     def test_category_sorting(self):
         """

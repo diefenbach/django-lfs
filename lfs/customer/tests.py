@@ -1,7 +1,6 @@
 # django imports
 from django.test import TestCase
 from django.contrib.auth.models import User
-from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.core import mail
 
@@ -111,7 +110,6 @@ class AddressTestCase(TestCase):
             selected_shipping_address=self.address1,
             selected_invoice_address=self.address2,
         )
-        self.c = Client()
 
     def test_unicode(self):
         self.assertEqual(self.address1.__unicode__(), u"%s / %s" % (self.address1.line1, self.address1.city))
@@ -121,10 +119,10 @@ class AddressTestCase(TestCase):
         Tests that we can see a shipping and an invoice address
         """
          # login as our customer
-        logged_in = self.c.login(username=self.username, password=self.password)
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
-        address_response = self.c.get(reverse('lfs_my_addresses'))
+        address_response = self.client.get(reverse('lfs_my_addresses'))
         #self.dump_response(address_response)
         self.assertContains(address_response, 'Smallville', status_code=200)
         self.assertContains(address_response, 'Gotham City', status_code=200)
@@ -134,7 +132,7 @@ class AddressTestCase(TestCase):
         # we should have one customer starting
         self.assertEqual(len(Customer.objects.all()), 1)
 
-        registration_response = self.c.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
+        registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
         self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
 
@@ -142,7 +140,7 @@ class AddressTestCase(TestCase):
         self.assertEquals(len(mail.outbox), 1)
 
         # see if we can view the address page
-        address_response = self.c.get(reverse('lfs_my_addresses'))
+        address_response = self.client.get(reverse('lfs_my_addresses'))
         self.assertContains(address_response, 'City', status_code=200)
 
         # we should now have 2 customers
@@ -158,7 +156,7 @@ class AddressTestCase(TestCase):
         self.assertEquals(Address.objects.count(), 2)
 
         # register a new user
-        registration_response = self.c.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
+        registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
         self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
 
@@ -181,7 +179,7 @@ class AddressTestCase(TestCase):
                         'shipping-city': 'Dallas', 'shipping-state': 'TX',
                         'shipping-code': '84003', 'shipping-country': 'US', }
 
-        address_response = self.c.post(reverse('lfs_my_addresses'), address_data)
+        address_response = self.client.post(reverse('lfs_my_addresses'), address_data)
 
         self.assertEquals(Address.objects.count(), 4)
         self.assertRedirects(address_response, reverse('lfs_my_addresses'), status_code=302, target_status_code=200,)

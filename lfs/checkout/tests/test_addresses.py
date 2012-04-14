@@ -4,7 +4,6 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
 from django.shortcuts import get_object_or_404
 from django.test import TestCase
-from django.test.client import Client
 from django.core.urlresolvers import reverse
 from django.conf import settings
 
@@ -124,8 +123,6 @@ class CheckoutAddressesTestCase(TestCase):
             amount=3,
         )
 
-        self.c = Client()
-
     def dump_response(self, http_response):
         fo = open('tests_checkout_addresses.html', 'w')
         fo.write(str(http_response))
@@ -135,13 +132,13 @@ class CheckoutAddressesTestCase(TestCase):
         """Tests that checkout page gets populated with correct details
         """
         # login as our customer
-        logged_in = self.c.login(username=self.username, password=self.password)
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
-        cart_response = self.c.get(reverse('lfs_cart'))
+        cart_response = self.client.get(reverse('lfs_cart'))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
-        checkout_response = self.c.get(reverse('lfs_checkout'))
+        checkout_response = self.client.get(reverse('lfs_checkout'))
 
         # we expect a list of irish counties in the response as we have an Irish shipping address
         self.assertContains(checkout_response, 'Offaly', status_code=200)
@@ -151,14 +148,14 @@ class CheckoutAddressesTestCase(TestCase):
 
     def test_address_changed_on_checkout(self):
         # login as our customer
-        logged_in = self.c.login(username=self.username, password=self.password)
+        logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         self.assertEquals(Address.objects.count(), 2)
-        cart_response = self.c.get(reverse('lfs_cart'))
+        cart_response = self.client.get(reverse('lfs_cart'))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
-        checkout_response = self.c.get(reverse('lfs_checkout'))
+        checkout_response = self.client.get(reverse('lfs_checkout'))
         checkout_data = {'invoice_firstname': 'bob',
                          'invoice_lastname': 'builder',
                          'invoice-line1': 'de company',
@@ -182,7 +179,7 @@ class CheckoutAddressesTestCase(TestCase):
                          'payment_method': self.by_invoice.id,
                          }
 
-        checkout_post_response = self.c.post(reverse('lfs_checkout'), checkout_data)
+        checkout_post_response = self.client.post(reverse('lfs_checkout'), checkout_data)
         #self.dump_response(checkout_post_response)
         self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
 
@@ -193,7 +190,7 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertEquals(Address.objects.count(), 2)
 
         # register a new user
-        registration_response = self.c.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
+        registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
         self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
 
@@ -205,7 +202,7 @@ class CheckoutAddressesTestCase(TestCase):
 
         # test that an ajax request creates a new customer address
         form_data = {'invoice-country': 'ie'}
-        ajax_respons = self.c.post(reverse('lfs_changed_invoice_country'), form_data)
+        ajax_respons = self.client.post(reverse('lfs_changed_invoice_country'), form_data)
         self.assertEquals(Address.objects.count(), 4)
 
         # refetch our customer
@@ -220,12 +217,12 @@ class CheckoutAddressesTestCase(TestCase):
                      'invoice-code': 'a code',
                      'invoice-state': 'a state',
                      }
-        ajax_respons = self.c.post(reverse('lfs_changed_invoice_country'), form_data)
+        ajax_respons = self.client.post(reverse('lfs_changed_invoice_country'), form_data)
         self.assertEquals(Address.objects.count(), 4)
 
         # post some shipping address info
         form_data = {'shipping-line1': 'de missusesss house'}
-        ajax_respons = self.c.post(reverse('lfs_changed_shipping_country'), form_data)
+        ajax_respons = self.client.post(reverse('lfs_changed_shipping_country'), form_data)
         self.assertEquals(Address.objects.count(), 4)
 
         # refetch our customer
@@ -239,5 +236,5 @@ class CheckoutAddressesTestCase(TestCase):
                      'shipping-city': 'a city',
                      'shipping-code': 'a code',
                      'shipping-state': 'a state', }
-        ajax_respons = self.c.post(reverse('lfs_changed_shipping_country'), form_data)
+        ajax_respons = self.client.post(reverse('lfs_changed_shipping_country'), form_data)
         self.assertEquals(Address.objects.count(), 4)

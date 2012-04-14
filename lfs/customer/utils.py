@@ -23,6 +23,9 @@ def create_customer(request):
     This shouldn't be called directly. Instead get_or_create_customer should be
     called.
     """
+    if request.session.session_key is None:
+        request.session.save()
+
     customer = Customer(session=request.session.session_key)
     if request.user.is_authenticated():
         customer.user = request.user

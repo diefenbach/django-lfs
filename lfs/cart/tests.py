@@ -118,6 +118,7 @@ class AddToCartTestCase(TestCase):
         self.dt = DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
         self.user = User.objects.create(username="doe")
         self.session = SessionStore()
+        self.session.save()
 
     def test_add_to_cart_non_active(self):
         """Try to add product to the cart which is not active.
@@ -254,6 +255,7 @@ class RefreshCartTestCase(TestCase):
         self.dt = DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
         self.user = User.objects.create(username="doe")
         self.session = SessionStore()
+        self.session.save()
 
     def test_amount_1(self):
         """Don't manage stock amount.
@@ -426,6 +428,7 @@ class AddedToCartTestCase(TestCase):
         self.dt = DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
         self.user = User.objects.create(username="doe")
         self.session = SessionStore()
+        self.session.save()
 
     def test_totals_1(self):
         """Add a product without quantity to cart (implicit 1)

@@ -125,6 +125,9 @@ def create_cart(request):
     """
     Creates a cart for the current session and/or user.
     """
+    if request.session.session_key is None:
+        request.session.save()
+
     cart = Cart(session=request.session.session_key)
     if request.user.is_authenticated():
         cart.user = request.user

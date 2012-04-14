@@ -2,7 +2,6 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.test.client import Client
 
 # lfs imports
 from lfs.core.models import Country
@@ -59,9 +58,6 @@ class PayPalPaymentTestCase(TestCase):
             "mc_gross": "10.00",
             "quantity": "1",
         }
-
-        # Every test needs a client.
-        self.client = Client()
 
     def test_successful_order_transaction_created(self):
         """Tests we have a transaction associated with an order after payment

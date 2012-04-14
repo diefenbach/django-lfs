@@ -38,6 +38,7 @@ class OrderTestCase(TestCase):
         """
         """
         session = SessionStore()
+        session.save()
 
         rf = RequestFactory()
         self.request = rf.get('/')

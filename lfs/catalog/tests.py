@@ -1531,6 +1531,7 @@ class ProductTestCase(TestCase):
         """
         self.request = RequestFactory().get("/")
         self.request.session = SessionStore()
+        self.request.user = AnonymousUser()
 
         # Create a tax
         self.t1 = Tax.objects.create(rate=19.0)

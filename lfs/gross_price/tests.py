@@ -1,4 +1,5 @@
 # django imports
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -51,6 +52,7 @@ class GrossPriceTestCase(TestCase):
         """
         self.request = RequestFactory().get("/")
         self.request.session = SessionStore()
+        self.request.user = AnonymousUser()
 
         # Create a tax
         self.t1 = Tax.objects.create(rate=19.0)

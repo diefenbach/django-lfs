@@ -32,7 +32,6 @@ from django.core.urlresolvers import reverse
 from django.template.loader import get_template_from_string
 from django.template import Context
 from django.test import TestCase
-from django.test.client import Client
 
 # lfs imports
 import lfs.core.utils
