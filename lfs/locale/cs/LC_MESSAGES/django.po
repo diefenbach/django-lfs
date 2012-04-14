@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lfstheme\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-12 09:04+0100\n"
-"PO-Revision-Date: 2012-03-12 08:31+0100\n"
+"POT-Creation-Date: 2012-04-09 16:03+0200\n"
+"PO-Revision-Date: 2012-04-09 18:27+0100\n"
 "Last-Translator: Radim Novotny <novotny.radim@gmail.com>\n"
 "Language-Team: Czech <info@dms4u.cz>\n"
 "MIME-Version: 1.0\n"
@@ -17,60 +17,115 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Poedit-Basepath: /zope/lfs-buildout-development/parts/lfs/lfs\n"
 
-#: cart/models.py:48 criteria/models/criteria.py:597 order/models.py:48
+#: other_translations.py:3
+msgid "Price excludes tax"
+msgstr "Cena neobsahuje daň"
+
+#: other_translations.py:4
+msgid "Price includes tax"
+msgstr "Cena včetně daně"
+
+#: other_translations.py:5
+msgid "Street"
+msgstr "Ulice"
+
+#: other_translations.py:6
+msgid "Left"
+msgstr "Vlevo"
+
+#: other_translations.py:7
+msgid "Right"
+msgstr "Vpravo"
+
+#: other_translations.py:8
+msgid "Average Rating"
+msgstr "Průměrné hodnocení"
+
+#: other_translations.py:9
+msgid "Zip Code"
+msgstr "PSČ"
+
+#: other_translations.py:10
+msgid "Last Order Number"
+msgstr "Číslo poslední objednávky"
+
+#: other_translations.py:11
+#: templates/manage/shop/default_values_tab.html:27
+msgid "Format"
+msgstr "Formát"
+
+#: cart/models.py:48
+#: criteria/models/criteria.py:597
+#: order/models.py:48
 #: templates/manage/cart/carts_inline.html:16
 msgid "User"
 msgstr "Uživatel"
 
-#: cart/models.py:49 order/models.py:49
+#: cart/models.py:49
+#: order/models.py:49
 msgid "Session"
 msgstr "Sezení"
 
-#: cart/models.py:50 cart/models.py:238 catalog/models.py:598
+#: cart/models.py:50
+#: cart/models.py:238
+#: catalog/models.py:598
 #: templates/manage/cart/cart_inline.html:58
 #: templates/manage/cart/cart_inline.html:97
 #: templates/manage/cart/carts_inline.html:10
 #: templates/manage/customer/customer_inline.html:125
 #: templates/manage/reviews/review_inline.html:33
-#: templates/manage/reviews/reviews_inline.html:15
+#: templates/manage/reviews/reviews_inline.html:20
 msgid "Creation date"
 msgstr "Datum vytvoření"
 
-#: cart/models.py:51 cart/models.py:239
+#: cart/models.py:51
+#: cart/models.py:239
 #: templates/manage/cart/cart_inline.html:66
 #: templates/manage/cart/carts_inline.html:13
 #: templates/manage/customer/customer_inline.html:173
 msgid "Modification date"
 msgstr "Datum změny"
 
-#: cart/models.py:235 portlet/templatetags/lfs_portlets_tags.py:92
+#: cart/models.py:235
+#: portlet/templatetags/lfs_portlets_tags.py:92
 #: templates/manage/cart/cart.html:26
 #: templates/manage/customer/customer_inline.html:165
 #: templates/manage/customer/customers_inline.html:35
 msgid "Cart"
 msgstr "Košík"
 
-#: cart/models.py:236 catalog/models.py:1736 catalog/models.py:1990
-#: catalog/models.py:2056 catalog/models.py:2394 marketing/models.py:13
-#: marketing/models.py:26 marketing/models.py:33
+#: cart/models.py:236
+#: catalog/models.py:1741
+#: catalog/models.py:1996
+#: catalog/models.py:2062
+#: catalog/models.py:2400
+#: marketing/models.py:13
+#: marketing/models.py:26
+#: marketing/models.py:33
 #: templates/manage/cart/cart_inline.html:100
 #: templates/manage/reviews/review_inline.html:78
-#: templates/manage/reviews/reviews_inline.html:33
+#: templates/manage/reviews/reviews_inline.html:38
 msgid "Product"
 msgstr "Produkt"
 
-#: cart/models.py:237 catalog/models.py:1739
+#: cart/models.py:237
+#: catalog/models.py:1744
 #: templates/manage/product/accessories_inline.html:116
 msgid "Quantity"
 msgstr "Množství"
 
-#: cart/models.py:393
+#: cart/models.py:395
 msgid "Cart item"
 msgstr "Položka"
 
-#: cart/models.py:394 catalog/models.py:1943 catalog/models.py:1968
-#: catalog/models.py:1991 catalog/models.py:2016 catalog/models.py:2058
-#: order/models.py:211 templates/manage/properties/property.html:32
+#: cart/models.py:396
+#: catalog/models.py:1949
+#: catalog/models.py:1974
+#: catalog/models.py:1997
+#: catalog/models.py:2022
+#: catalog/models.py:2064
+#: order/models.py:211
+#: templates/manage/properties/property.html:32
 msgid "Property"
 msgstr "Vlastnost"
 
@@ -81,32 +136,41 @@ msgstr "%(name)s musí být mezi %(min)s a %(max)s %(unit)s."
 
 #: cart/views.py:282
 #, python-format
-msgid ""
-"Your entered value for %(name)s (%(value)s) is not in valid step width, "
-"which is %(step)s."
-msgstr ""
-"Your entered value for %(name)s (%(value)s) is not in valid step width, "
-"which is %(step)s."
+msgid "Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s."
+msgstr "Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s."
 
-#: cart/views.py:298 cart/views.py:402
+#: cart/views.py:298
+#: cart/views.py:402
 #, python-format
 msgid "Sorry, but '%(product)s' is not available anymore."
 msgstr "Je nám líto, ale '%(product)s' byl vyřazen z našeho katalogu."
 
-#: cart/views.py:300 cart/views.py:404
+#: cart/views.py:300
+#: cart/views.py:404
 #, python-format
 msgid "Sorry, but '%(product)s' is only one time available."
 msgstr "Je nám líto, ale '%(product)s' je k dispozici pouze jednou."
 
-#: cart/views.py:302 cart/views.py:406
+#: cart/views.py:302
+#: cart/views.py:406
 #, python-format
 msgid "Sorry, but '%(product)s' is only %(amount)s times available."
 msgstr "Je nám líto, ale '%(product)s' je k dispozici pouze %(amount)s krát."
 
-#: catalog/models.py:160 catalog/models.py:569 catalog/models.py:1862
-#: catalog/models.py:2018 catalog/models.py:2182 core/models.py:19
-#: core/models.py:154 discounts/models.py:41 export/models.py:16
-#: manufacturer/models.py:10 payment/models.py:73 shipping/models.py:71
+#: catalog/models.py:160
+#: catalog/models.py:569
+#: catalog/models.py:1774
+#: catalog/models.py:1868
+#: catalog/models.py:2024
+#: catalog/models.py:2188
+#: core/models.py:19
+#: core/models.py:38
+#: core/models.py:154
+#: discounts/models.py:41
+#: export/models.py:16
+#: manufacturer/models.py:10
+#: payment/models.py:73
+#: shipping/models.py:71
 #: templates/manage/category/products_inline.html:47
 #: templates/manage/category/selected_products.html:42
 #: templates/manage/customer/customer_filters_inline.html:12
@@ -120,7 +184,7 @@ msgstr "Je nám líto, ale '%(product)s' je k dispozici pouze %(amount)s krát."
 #: templates/manage/order/order_inline.html:162
 #: templates/manage/order/orders_filter.html:11
 #: templates/manage/order/orders_filters_inline.html:11
-#: templates/manage/order/orders_inline.html:12
+#: templates/manage/order/orders_inline.html:18
 #: templates/manage/product/accessories_inline.html:48
 #: templates/manage/product/accessories_inline.html:107
 #: templates/manage/product/products_inline.html:17
@@ -129,25 +193,30 @@ msgstr "Je nám líto, ale '%(product)s' je k dispozici pouze %(amount)s krát."
 #: templates/manage/product/variants.html:107
 #: templates/manage/product/variants.html:174
 #: templates/manage/properties/options_inline.html:13
-#: templates/manage/properties/pg_products_inline.html:45
-#: templates/manage/properties/pg_products_inline.html:105
-#: templates/manage/properties/properties_inline.html:18
-#: templates/manage/properties/properties_inline.html:68
+#: templates/manage/property_groups/products_inline.html:45
+#: templates/manage/property_groups/products_inline.html:105
+#: templates/manage/property_groups/properties_inline.html:18
+#: templates/manage/property_groups/properties_inline.html:68
 #: templates/manage/reviews/review_filters_inline.html:11
 #: templates/manage/reviews/review_inline.html:41
 #: templates/manage/reviews/reviews_filters_inline.html:9
-#: templates/manage/reviews/reviews_inline.html:21
+#: templates/manage/reviews/reviews_inline.html:26
 msgid "Name"
 msgstr "Název"
 
-#: catalog/models.py:161 catalog/models.py:570 export/models.py:17
-#: page/models.py:17 supplier/models.py:14
+#: catalog/models.py:161
+#: catalog/models.py:570
+#: export/models.py:17
+#: page/models.py:17
+#: supplier/models.py:14
 #: templates/manage/product/products_inline.html:20
 #: templates/manage/product/variants.html:104
 msgid "Slug"
 msgstr "Slug"
 
-#: catalog/models.py:162 catalog/models.py:636 catalog/models.py:2057
+#: catalog/models.py:162
+#: catalog/models.py:636
+#: catalog/models.py:2063
 #: core/models.py:80
 msgid "Parent"
 msgstr "Nadřazená položka"
@@ -156,64 +225,90 @@ msgstr "Nadřazená položka"
 msgid "Show all products"
 msgstr "Zobrazit všechny produkty"
 
-#: catalog/models.py:168 catalog/models.py:1769 catalog/models.py:1865
-#: catalog/settings.py:70 export/models.py:18
+#: catalog/models.py:168
+#: catalog/models.py:1775
+#: catalog/models.py:1871
+#: catalog/settings.py:70
+#: export/models.py:18
 #: templates/manage/manage_base.html:87
 #: templates/manage/cart/carts_inline.html:25
 #: templates/manage/category/manage_category.html:44
 #: templates/manage/export/export.html:36
 #: templates/manage/export/export.html:44
-#: templates/manage/manufacturer/manufacturer.html:35
-#: templates/manage/manufacturer/manufacturer.html:43
+#: templates/manage/manufacturers/manufacturer.html:29
+#: templates/manage/manufacturers/manufacturer.html:35
 #: templates/manage/marketing/featured_inline.html:31
 #: templates/manage/marketing/topseller_inline.html:31
+#: templates/manage/product/no_products.html:11
 #: templates/manage/product/products.html:21
-#: templates/manage/properties/pg_products.html:4
-#: templates/manage/properties/pg_products_inline.html:32
-#: templates/manage/properties/property_group.html:32
+#: templates/manage/property_groups/products.html:4
+#: templates/manage/property_groups/products_inline.html:32
+#: templates/manage/property_groups/property_group.html:32
 msgid "Products"
 msgstr "Produkty"
 
-#: catalog/models.py:169 catalog/models.py:579
+#: catalog/models.py:169
+#: catalog/models.py:579
 msgid "Short description"
 msgstr "Krátký popis"
 
-#: catalog/models.py:170 catalog/models.py:580 catalog/models.py:2211
-#: catalog/models.py:2392 core/models.py:159 customer_tax/models.py:24
-#: payment/models.py:74 shipping/models.py:72 tax/models.py:18
+#: catalog/models.py:170
+#: catalog/models.py:580
+#: catalog/models.py:2217
+#: catalog/models.py:2398
+#: core/models.py:159
+#: customer_tax/models.py:24
+#: payment/models.py:74
+#: shipping/models.py:72
+#: tax/models.py:18
 #: templates/manage/product/attachments.html:21
 msgid "Description"
 msgstr "Popis"
 
-#: catalog/models.py:171 catalog/models.py:2107 core/models.py:160
-#: payment/models.py:76 shipping/models.py:74
+#: catalog/models.py:171
+#: catalog/models.py:2113
+#: core/models.py:160
+#: payment/models.py:76
+#: shipping/models.py:74
 #: templates/manage/category/data.html:83
 #: templates/manage/product/images.html:34
 msgid "Image"
 msgstr "Obrázek"
 
-#: catalog/models.py:172 catalog/models.py:1738 catalog/models.py:1866
-#: catalog/models.py:1969 catalog/models.py:1992 catalog/models.py:2020
-#: catalog/models.py:2108 catalog/models.py:2186 catalog/models.py:2395
-#: core/models.py:79 core/management/commands/lfs_migrate.py:123
-#: criteria/models/criteria_objects.py:24 marketing/models.py:14
-#: marketing/models.py:34 page/models.py:18
+#: catalog/models.py:172
+#: catalog/models.py:1743
+#: catalog/models.py:1872
+#: catalog/models.py:1975
+#: catalog/models.py:1998
+#: catalog/models.py:2026
+#: catalog/models.py:2114
+#: catalog/models.py:2192
+#: catalog/models.py:2401
+#: core/models.py:79
+#: core/management/commands/lfs_migrate.py:123
+#: criteria/models/criteria_objects.py:24
+#: marketing/models.py:14
+#: marketing/models.py:34
+#: page/models.py:18
 #: templates/manage/marketing/featured_inline.html:108
 #: templates/manage/marketing/topseller_inline.html:109
 #: templates/manage/product/accessories_inline.html:113
 #: templates/manage/product/attachments.html:24
 #: templates/manage/product/images.html:40
 #: templates/manage/properties/options_inline.html:10
-#: templates/manage/properties/properties_inline.html:65
+#: templates/manage/property_groups/properties_inline.html:65
 #: templates/manage/static_block/files.html:20
 msgid "Position"
 msgstr "Pozice"
 
-#: catalog/models.py:173 page/models.py:19
+#: catalog/models.py:173
+#: page/models.py:19
 msgid "Exclude from navigation"
 msgstr "Vyloučit z navigace"
 
-#: catalog/models.py:175 catalog/models.py:614 core/models.py:161
+#: catalog/models.py:175
+#: catalog/models.py:614
+#: core/models.py:161
 msgid "Static block"
 msgstr "Statický blok"
 
@@ -225,33 +320,45 @@ msgstr "Šablona kategorie"
 msgid "Active formats"
 msgstr "Aktivní formáty"
 
-#: catalog/models.py:179 core/models.py:164
+#: catalog/models.py:179
+#: core/models.py:164
 msgid "Product rows"
 msgstr "Počet řádků s produkty"
 
-#: catalog/models.py:180 core/models.py:163
+#: catalog/models.py:180
+#: core/models.py:163
 msgid "Product cols"
 msgstr "Počet sloupců s produkty"
 
-#: catalog/models.py:181 core/models.py:165
+#: catalog/models.py:181
+#: core/models.py:165
 msgid "Category cols"
 msgstr "Počet sloupců kategorií"
 
-#: catalog/models.py:183 catalog/models.py:584 core/models.py:182
+#: catalog/models.py:183
+#: catalog/models.py:584
+#: core/models.py:184
 #: core/management/commands/lfs_migrate.py:75
-#: core/management/commands/lfs_migrate.py:99 page/models.py:24
+#: core/management/commands/lfs_migrate.py:99
+#: page/models.py:24
 msgid "Meta title"
 msgstr "Meta nadpis"
 
-#: catalog/models.py:184 catalog/models.py:585 core/models.py:183
+#: catalog/models.py:184
+#: catalog/models.py:585
+#: core/models.py:185
 #: core/management/commands/lfs_migrate.py:76
-#: core/management/commands/lfs_migrate.py:100 page/models.py:25
+#: core/management/commands/lfs_migrate.py:100
+#: page/models.py:25
 msgid "Meta keywords"
 msgstr "Meta klíčová slova"
 
-#: catalog/models.py:185 catalog/models.py:586 core/models.py:184
+#: catalog/models.py:185
+#: catalog/models.py:586
+#: core/models.py:186
 #: core/management/commands/lfs_migrate.py:77
-#: core/management/commands/lfs_migrate.py:101 page/models.py:26
+#: core/management/commands/lfs_migrate.py:101
+#: page/models.py:26
 msgid "Meta description"
 msgstr "Meta popis"
 
@@ -263,7 +370,8 @@ msgstr "Jméno produktu"
 msgid "The unique last part of the Product's URL."
 msgstr "Unikátní poslední část URL produktu."
 
-#: catalog/models.py:571 discounts/models.py:45
+#: catalog/models.py:571
+#: discounts/models.py:45
 #: templates/manage/category/products_inline.html:50
 #: templates/manage/category/selected_products.html:45
 #: templates/manage/marketing/featured_inline.html:47
@@ -277,8 +385,8 @@ msgstr "Unikátní poslední část URL produktu."
 #: templates/manage/product/related_products_inline.html:50
 #: templates/manage/product/related_products_inline.html:110
 #: templates/manage/product/variants.html:170
-#: templates/manage/properties/pg_products_inline.html:48
-#: templates/manage/properties/pg_products_inline.html:108
+#: templates/manage/property_groups/products_inline.html:48
+#: templates/manage/property_groups/products_inline.html:108
 msgid "SKU"
 msgstr "SKU"
 
@@ -286,10 +394,17 @@ msgstr "SKU"
 msgid "Your unique article number of the product."
 msgstr "Unikátní číslo produktu"
 
-#: catalog/models.py:572 catalog/models.py:576 catalog/models.py:1874
-#: catalog/models.py:2019 criteria/models/criteria.py:52 order/models.py:56
-#: payment/models.py:78 payment/models.py:122 shipping/models.py:76
-#: shipping/models.py:165 templates/manage/cart/cart_inline.html:103
+#: catalog/models.py:572
+#: catalog/models.py:576
+#: catalog/models.py:1880
+#: catalog/models.py:2025
+#: criteria/models/criteria.py:52
+#: order/models.py:56
+#: payment/models.py:78
+#: payment/models.py:122
+#: shipping/models.py:76
+#: shipping/models.py:165
+#: templates/manage/cart/cart_inline.html:103
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:14
 #: templates/manage/criteria/country_criterion.html:14
 #: templates/manage/criteria/distance_criterion.html:14
@@ -305,17 +420,18 @@ msgstr "Unikátní číslo produktu"
 #: templates/manage/customer/customer_inline.html:176
 #: templates/manage/marketing/rating_mails.html:60
 #: templates/manage/order/order_inline.html:170
-#: templates/manage/order/orders_inline.html:18
+#: templates/manage/order/orders_inline.html:24
 #: templates/manage/payment/payment_method_prices.html:27
 #: templates/manage/product/products_inline.html:34
 #: templates/manage/product/variants.html:110
 #: templates/manage/product/variants.html:185
 #: templates/manage/properties/options_inline.html:16
-#: templates/manage/shipping/shipping_method_prices.html:27
+#: templates/manage/shipping_methods/shipping_method_prices.html:27
 msgid "Price"
 msgstr "Cena"
 
 #: catalog/models.py:573
+#: core/models.py:179
 msgid "Price calculator"
 msgstr "Výpočet ceny"
 
@@ -327,13 +443,15 @@ msgstr "Jednotka ceny"
 msgid "Quanity field unit"
 msgstr "Jednotka množství"
 
-#: catalog/models.py:581 templates/manage/manage_base.html:80
+#: catalog/models.py:581
+#: templates/manage/manage_base.html:80
 #: templates/manage/product/images.html:3
-#: templates/manage/product/product.html:102
+#: templates/manage/product/product.html:99
 msgid "Images"
 msgstr "Obrázky"
 
-#: catalog/models.py:588 templates/manage/product/related_products.html:4
+#: catalog/models.py:588
+#: templates/manage/product/related_products.html:4
 msgid "Related products"
 msgstr "Příbuzné produkty"
 
@@ -350,9 +468,14 @@ msgstr "Produkt v akci"
 msgid "For sale price"
 msgstr "Akční cena"
 
-#: catalog/models.py:597 core/models.py:75 marketing/models.py:35
-#: page/models.py:15 payment/models.py:71 payment/models.py:124
-#: shipping/models.py:69 shipping/models.py:167
+#: catalog/models.py:597
+#: core/models.py:75
+#: marketing/models.py:35
+#: page/models.py:15
+#: payment/models.py:71
+#: payment/models.py:124
+#: shipping/models.py:69
+#: shipping/models.py:167
 #: templates/manage/category/products_inline.html:53
 #: templates/manage/category/selected_products.html:48
 #: templates/manage/marketing/featured_inline.html:50
@@ -366,13 +489,13 @@ msgstr "Akční cena"
 #: templates/manage/product/related_products_inline.html:53
 #: templates/manage/product/related_products_inline.html:113
 #: templates/manage/product/variants.html:163
-#: templates/manage/properties/pg_products_inline.html:51
-#: templates/manage/properties/pg_products_inline.html:111
+#: templates/manage/property_groups/products_inline.html:51
+#: templates/manage/property_groups/products_inline.html:111
 #: templates/manage/reviews/review.html:29
 #: templates/manage/reviews/review_filters_inline.html:12
 #: templates/manage/reviews/review_inline.html:21
 #: templates/manage/reviews/reviews_filters_inline.html:10
-#: templates/manage/reviews/reviews_inline.html:46
+#: templates/manage/reviews/reviews_inline.html:51
 #: templates/manage/voucher/vouchers_inline.html:88
 msgid "Active"
 msgstr "Aktivní"
@@ -385,7 +508,8 @@ msgstr "K dodání"
 msgid "Manual delivery time"
 msgstr "Vlastní doba dodání"
 
-#: catalog/models.py:604 shipping/models.py:77
+#: catalog/models.py:604
+#: shipping/models.py:77
 msgid "Delivery time"
 msgstr "Doba dodání"
 
@@ -405,7 +529,8 @@ msgstr "Spravovat skladové zásoby"
 msgid "Stock amount"
 msgstr "Počet položek skladem"
 
-#: catalog/models.py:610 core/management/commands/lfs_migrate.py:67
+#: catalog/models.py:610
+#: core/management/commands/lfs_migrate.py:67
 msgid "Active packing"
 msgstr "Aktivní balení"
 
@@ -417,7 +542,8 @@ msgstr "Množství v balení"
 msgid "Packing unit"
 msgstr "Jednotka balení"
 
-#: catalog/models.py:617 criteria/models/criteria.py:615
+#: catalog/models.py:617
+#: criteria/models/criteria.py:615
 #: criteria/models/criteria.py:634
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:17
 #: templates/manage/criteria/country_criterion.html:17
@@ -433,8 +559,10 @@ msgstr "Jednotka balení"
 msgid "Weight"
 msgstr "Váha"
 
-#: catalog/models.py:618 criteria/models/criteria.py:259
-#: criteria/models/criteria.py:278 criteria/models/criteria.py:698
+#: catalog/models.py:618
+#: criteria/models/criteria.py:259
+#: criteria/models/criteria.py:278
+#: criteria/models/criteria.py:698
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:11
 #: templates/manage/criteria/country_criterion.html:11
 #: templates/manage/criteria/distance_criterion.html:11
@@ -449,7 +577,8 @@ msgstr "Váha"
 msgid "Height"
 msgstr "Výška"
 
-#: catalog/models.py:619 criteria/models/criteria.py:322
+#: catalog/models.py:619
+#: criteria/models/criteria.py:322
 #: criteria/models/criteria.py:341
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:12
 #: templates/manage/criteria/country_criterion.html:12
@@ -465,7 +594,8 @@ msgstr "Výška"
 msgid "Length"
 msgstr "Délka"
 
-#: catalog/models.py:620 criteria/models/criteria.py:113
+#: catalog/models.py:620
+#: criteria/models/criteria.py:113
 #: criteria/models/criteria.py:679
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:16
 #: templates/manage/criteria/country_criterion.html:16
@@ -481,9 +611,14 @@ msgstr "Délka"
 msgid "Width"
 msgstr "Šířka"
 
-#: catalog/models.py:623 discounts/models.py:44 manage/views/voucher.py:60
-#: order/models.py:57 order/models.py:137 payment/models.py:77
-#: shipping/models.py:75 templates/manage/voucher/vouchers_inline.html:76
+#: catalog/models.py:623
+#: discounts/models.py:44
+#: manage/voucher/forms.py:45
+#: order/models.py:57
+#: order/models.py:137
+#: payment/models.py:77
+#: shipping/models.py:75
+#: templates/manage/voucher/vouchers_inline.html:76
 #: voucher/models.py:102
 msgid "Tax"
 msgstr "Daň"
@@ -496,7 +631,8 @@ msgstr "Podtyp"
 msgid "Default variant"
 msgstr "Výchozí kombinace"
 
-#: catalog/models.py:629 core/management/commands/lfs_migrate.py:59
+#: catalog/models.py:629
+#: core/management/commands/lfs_migrate.py:59
 #: templates/manage/product/variants.html:251
 msgid "Category variant"
 msgstr "Kombinace zobrazená na stránce výpisu kategorie"
@@ -541,11 +677,13 @@ msgstr "Aktuální akční cena"
 msgid "Active Images"
 msgstr "Aktuální obrázky"
 
-#: catalog/models.py:646 templates/manage/product/related_products.html:14
+#: catalog/models.py:646
+#: templates/manage/product/related_products.html:14
 msgid "Active related products"
 msgstr "Aktuální příbuzné produkty"
 
-#: catalog/models.py:647 templates/manage/product/accessories.html:14
+#: catalog/models.py:647
+#: templates/manage/product/accessories.html:14
 msgid "Active accessories"
 msgstr "Aktuální příslušenství"
 
@@ -577,15 +715,18 @@ msgstr "Aktuální výpočet ceny"
 msgid "Price Calculation"
 msgstr "Výpočet ceny"
 
-#: catalog/models.py:659 core/management/commands/lfs_migrate.py:60
+#: catalog/models.py:659
+#: core/management/commands/lfs_migrate.py:60
 msgid "Active base price"
 msgstr "Zobrazit základní cenu"
 
-#: catalog/models.py:660 core/management/commands/lfs_migrate.py:61
+#: catalog/models.py:660
+#: core/management/commands/lfs_migrate.py:61
 msgid "Base price unit"
 msgstr "Jednotka základní ceny"
 
-#: catalog/models.py:661 core/management/commands/lfs_migrate.py:62
+#: catalog/models.py:661
+#: core/management/commands/lfs_migrate.py:62
 msgid "Base price amount"
 msgstr "Základní cena (hodnota)"
 
@@ -597,16 +738,20 @@ msgstr "SKU výrobce"
 msgid "Manufacturer"
 msgstr "Výrobce"
 
-#: catalog/models.py:666 core/management/commands/lfs_migrate.py:58
+#: catalog/models.py:666
+#: core/management/commands/lfs_migrate.py:58
 msgid "Type of quantity field"
 msgstr "Typ pole množství"
 
-#: catalog/models.py:1737
+#: catalog/models.py:1742
 msgid "Accessory"
 msgstr "Přislušenství"
 
-#: catalog/models.py:1863 catalog/models.py:2106 catalog/models.py:2391
-#: core/models.py:76 page/models.py:16
+#: catalog/models.py:1869
+#: catalog/models.py:2112
+#: catalog/models.py:2397
+#: core/models.py:76
+#: page/models.py:16
 #: templates/manage/portlets/portlets_inline.html:40
 #: templates/manage/product/attachments.html:18
 #: templates/manage/product/images.html:37
@@ -614,112 +759,131 @@ msgstr "Přislušenství"
 msgid "Title"
 msgstr "Nadpis"
 
-#: catalog/models.py:1864 catalog/models.py:1967 core/models.py:78
+#: catalog/models.py:1870
+#: catalog/models.py:1973
+#: core/models.py:78
 msgid "Group"
 msgstr "Skupina"
 
-#: catalog/models.py:1867 catalog/models.py:2210
+#: catalog/models.py:1873
+#: catalog/models.py:2216
 msgid "Unit"
 msgstr "Jednotka"
 
-#: catalog/models.py:1868
+#: catalog/models.py:1874
 msgid "Display on product"
 msgstr "Zobrazit u produktu"
 
-#: catalog/models.py:1869
+#: catalog/models.py:1875
 msgid "Local"
 msgstr "Lokální"
 
-#: catalog/models.py:1870
+#: catalog/models.py:1876
 msgid "Filterable"
 msgstr "Filtrovatelné"
 
-#: catalog/models.py:1871
+#: catalog/models.py:1877
 msgid "Display no results"
 msgstr "Zobrazit, i když nejsou žádné položky"
 
-#: catalog/models.py:1872
+#: catalog/models.py:1878
 msgid "Configurable"
 msgstr "Konfigurovatelné"
 
-#: catalog/models.py:1873 catalog/models.py:2061 customer/models.py:105
-#: discounts/models.py:43 templates/manage/portlets/portlets_inline.html:37
+#: catalog/models.py:1879
+#: catalog/models.py:2067
+#: customer/models.py:105
+#: discounts/models.py:43
+#: payment/models.py:81
+#: templates/manage/portlets/portlets_inline.html:37
 #: templates/manage/voucher/vouchers_inline.html:70
 msgid "Type"
 msgstr "Typ"
 
-#: catalog/models.py:1875
+#: catalog/models.py:1881
 msgid "Display price"
 msgstr "Zobrazit cenu"
 
-#: catalog/models.py:1876
+#: catalog/models.py:1882
 #: templates/manage/payment/payment_method_prices.html:9
-#: templates/manage/shipping/shipping_method_prices.html:9
+#: templates/manage/shipping_methods/shipping_method_prices.html:9
 msgid "Add price"
 msgstr "Navýšit cenu"
 
-#: catalog/models.py:1879 catalog/models.py:2208
+#: catalog/models.py:1885
+#: catalog/models.py:2214
 msgid "Min"
 msgstr "Min"
 
-#: catalog/models.py:1880 catalog/models.py:2209
+#: catalog/models.py:1886
+#: catalog/models.py:2215
 msgid "Max"
 msgstr "Max"
 
-#: catalog/models.py:1881 catalog/models.py:1887
+#: catalog/models.py:1887
+#: catalog/models.py:1893
 msgid "Step"
 msgstr "Krok"
 
-#: catalog/models.py:1882
+#: catalog/models.py:1888
 msgid "Decimal places"
 msgstr "Počet desetinných míst"
 
-#: catalog/models.py:1884
+#: catalog/models.py:1890
 msgid "Required"
 msgstr "Vyžadováno"
 
-#: catalog/models.py:1886 templates/manage/properties/step_inline.html:2
+#: catalog/models.py:1892
+#: templates/manage/properties/step_inline.html:2
 msgid "Step type"
 msgstr "Typ kroku"
 
-#: catalog/models.py:1892 templates/manage/manage_base.html:91
+#: catalog/models.py:1898
+#: templates/manage/manage_base.html:91
 #: templates/manage/manage_base.html:93
-#: templates/manage/product/product.html:114
-#: templates/manage/properties/properties_inline.html:6
+#: templates/manage/product/product.html:111
+#: templates/manage/properties/no_properties.html:11
 #: templates/manage/properties/property.html:7
-#: templates/manage/properties/property_group.html:33
+#: templates/manage/property_groups/properties_inline.html:6
+#: templates/manage/property_groups/property_group.html:33
 msgid "Properties"
 msgstr "Vlastnosti"
 
-#: catalog/models.py:2059 discounts/models.py:42 manage/views/voucher.py:55
+#: catalog/models.py:2065
+#: discounts/models.py:42
+#: manage/voucher/forms.py:40
 #: templates/manage/voucher/vouchers_inline.html:73
 msgid "Value"
 msgstr "Hodnota"
 
-#: catalog/models.py:2060
+#: catalog/models.py:2066
 msgid "Value as float"
 msgstr "Hodnota (desetinné číslo)"
 
-#: catalog/models.py:2102 catalog/models.py:2144
+#: catalog/models.py:2108
+#: catalog/models.py:2150
 #: criteria/models/criteria_objects.py:20
 msgid "Content type"
 msgstr "Typ položky"
 
-#: catalog/models.py:2103 catalog/models.py:2145
+#: catalog/models.py:2109
+#: catalog/models.py:2151
 #: criteria/models/criteria_objects.py:17
 #: criteria/models/criteria_objects.py:21
 msgid "Content id"
 msgstr "ID položky"
 
-#: catalog/models.py:2183
+#: catalog/models.py:2189
 msgid "Display files"
 msgstr "Zobrazit soubory"
 
-#: catalog/models.py:2184 templates/manage/manage_base.html:98
+#: catalog/models.py:2190
+#: templates/manage/manage_base.html:98
 msgid "HTML"
 msgstr "HTML"
 
-#: catalog/models.py:2185 templates/manage/static_block/files.html:2
+#: catalog/models.py:2191
+#: templates/manage/static_block/files.html:2
 #: templates/manage/static_block/static_block.html:42
 msgid "Files"
 msgstr "Soubory"
@@ -736,17 +900,21 @@ msgstr "Desetinné 0.1"
 msgid "Decimal 0.01"
 msgstr "Desetinné 0.01"
 
-#: catalog/settings.py:18 catalog/settings.py:29 catalog/settings.py:36
+#: catalog/settings.py:18
+#: catalog/settings.py:29
+#: catalog/settings.py:36
 #: catalog/settings.py:43
 #: templates/manage/product/product_filters_inline.html:56
 #: templates/manage/product/products_inline.html:84
 msgid "Standard"
 msgstr "Výchozí"
 
-#: catalog/settings.py:19 templates/manage/manage_base.html:176
+#: catalog/settings.py:19
+#: templates/manage/manage_base.html:176
 #: templates/manage/customer/customer_inline.html:30
+#: templates/manage/order/orders_inline.html:50
 #: templates/manage/product/data.html:227
-#: templates/manage/product/data.html:299
+#: templates/manage/product/data.html:298
 #: templates/manage/product/product_filters_inline.html:42
 #: templates/manage/product/product_filters_inline.html:49
 #: templates/manage/product/stock.html:206
@@ -755,15 +923,17 @@ msgstr "Výchozí"
 #: templates/manage/reviews/review_inline.html:25
 #: templates/manage/reviews/review_inline.html:70
 #: templates/manage/reviews/reviews_filters_inline.html:75
-#: templates/manage/reviews/reviews_inline.html:84
-#: templates/manage/reviews/reviews_inline.html:93
+#: templates/manage/reviews/reviews_inline.html:89
+#: templates/manage/reviews/reviews_inline.html:98
 msgid "Yes"
 msgstr "Ano"
 
-#: catalog/settings.py:20 templates/manage/manage_base.html:177
+#: catalog/settings.py:20
+#: templates/manage/manage_base.html:177
 #: templates/manage/customer/customer_inline.html:32
+#: templates/manage/order/orders_inline.html:52
 #: templates/manage/product/data.html:229
-#: templates/manage/product/data.html:301
+#: templates/manage/product/data.html:300
 #: templates/manage/product/product_filters_inline.html:43
 #: templates/manage/product/product_filters_inline.html:50
 #: templates/manage/product/stock.html:208
@@ -772,30 +942,38 @@ msgstr "Ano"
 #: templates/manage/reviews/review_inline.html:27
 #: templates/manage/reviews/review_inline.html:72
 #: templates/manage/reviews/reviews_filters_inline.html:76
-#: templates/manage/reviews/reviews_inline.html:87
-#: templates/manage/reviews/reviews_inline.html:96
+#: templates/manage/reviews/reviews_inline.html:92
+#: templates/manage/reviews/reviews_inline.html:101
 msgid "No"
 msgstr "Ne"
 
-#: catalog/settings.py:30 catalog/settings.py:37 catalog/settings.py:44
+#: catalog/settings.py:30
+#: catalog/settings.py:37
+#: catalog/settings.py:44
 #: templates/manage/product/product_filters_inline.html:57
 #: templates/manage/product/products_inline.html:85
 msgid "Product with variants"
 msgstr "Produkt s kombinacemi"
 
-#: catalog/settings.py:31 catalog/settings.py:38 export/models.py:72
+#: catalog/settings.py:31
+#: catalog/settings.py:38
+#: export/models.py:72
 #: templates/manage/product/product_filters_inline.html:58
 #: templates/manage/product/products_inline.html:86
 msgid "Variant"
 msgstr "Varianta"
 
-#: catalog/settings.py:32 catalog/settings.py:39 catalog/settings.py:45
+#: catalog/settings.py:32
+#: catalog/settings.py:39
+#: catalog/settings.py:45
 #: templates/manage/product/product_filters_inline.html:59
 #: templates/manage/product/products_inline.html:87
 msgid "Configurable product"
 msgstr "Konfigurovatelný produkt"
 
-#: catalog/settings.py:53 catalog/settings.py:141 export/settings.py:11
+#: catalog/settings.py:53
+#: catalog/settings.py:141
+#: export/settings.py:11
 #: templates/manage/product/variants.html:188
 msgid "Default"
 msgstr "Výchozí"
@@ -820,11 +998,13 @@ msgstr "Seznam"
 msgid "Select"
 msgstr "Výběr"
 
-#: catalog/settings.py:71 portlet/templatetags/lfs_portlets_tags.py:107
+#: catalog/settings.py:71
+#: portlet/templatetags/lfs_portlets_tags.py:107
 #: templates/manage/manage_base.html:86
 #: templates/manage/category/manage_categories_portlet.html:2
+#: templates/manage/category/no_categories.html:11
 #: templates/manage/product/categories.html:3
-#: templates/manage/product/product.html:99
+#: templates/manage/product/product.html:96
 msgid "Categories"
 msgstr "Kategorie"
 
@@ -838,11 +1018,11 @@ msgstr "dní"
 
 #: catalog/settings.py:82
 msgid "weeks"
-msgstr "týdnů"
+msgstr "týdny"
 
 #: catalog/settings.py:83
 msgid "months"
-msgstr "měsíců"
+msgstr "měsíce"
 
 #: catalog/settings.py:87
 msgid "hour"
@@ -892,48 +1072,61 @@ msgstr "Kategorie s produkty"
 msgid "Category with subcategories"
 msgstr "Kategorie s podkategoriemi"
 
-#: catalog/views.py:56 catalog/views.py:170
+#: catalog/views.py:57
+#: catalog/views.py:171
 msgid "The product has been changed according to your selection."
 msgstr "Nastavení produktu bylo změněno podle vašeho výběru"
 
-#: catalog/views.py:143
+#: catalog/views.py:144
 msgid "Price has been changed according to your selection."
 msgstr "Cena byla změněna podle vašeho výběru"
 
-#: catalog/views.py:167 catalog/views.py:622
+#: catalog/views.py:168
+#: catalog/views.py:611
 msgid "The choosen combination of properties is not deliverable."
 msgstr "Vybraná kombinace vlastností není dostupná"
 
-#: checkout/forms.py:20 checkout/forms.py:26 customer/forms.py:13
+#: checkout/forms.py:20
+#: checkout/forms.py:26
+#: customer/forms.py:13
 #: customer/forms.py:18
 msgid "First Name"
 msgstr "Jméno"
 
-#: checkout/forms.py:21 checkout/forms.py:27 customer/forms.py:14
+#: checkout/forms.py:21
+#: checkout/forms.py:27
+#: customer/forms.py:14
 #: customer/forms.py:19
 msgid "Last Name"
 msgstr "Příjmení"
 
-#: checkout/forms.py:22 customer/forms.py:15
+#: checkout/forms.py:22
+#: customer/forms.py:15
 msgid "Invoice Phone"
-msgstr "Faktura - telefon"
+msgstr "Telefon"
 
-#: checkout/forms.py:23 customer/forms.py:16
+#: checkout/forms.py:23
+#: customer/forms.py:16
 msgid "Invoice E-mail"
-msgstr "Faktura - E-mail"
+msgstr "E-mail"
 
-#: checkout/forms.py:24 checkout/forms.py:30 customer/forms.py:17
-#: customer/forms.py:22 customer/models.py:72
+#: checkout/forms.py:24
+#: checkout/forms.py:30
+#: customer/forms.py:17
+#: customer/forms.py:22
+#: customer/models.py:72
 msgid "Company name"
 msgstr "Firma"
 
-#: checkout/forms.py:28 customer/forms.py:20
+#: checkout/forms.py:28
+#: customer/forms.py:20
 msgid "Shipping Phone"
-msgstr "Dodání - telefon"
+msgstr "Telefon"
 
-#: checkout/forms.py:29 customer/forms.py:21
+#: checkout/forms.py:29
+#: customer/forms.py:21
 msgid "Shipping E-mail"
-msgstr "Dodání - email"
+msgstr "Email"
 
 #: checkout/forms.py:32
 msgid "Requested Delivery Date"
@@ -951,7 +1144,9 @@ msgstr "Kód banky"
 msgid "Bankname"
 msgstr "Název banky"
 
-#: checkout/forms.py:37 customer/models.py:94 order/models.py:96
+#: checkout/forms.py:37
+#: customer/models.py:94
+#: order/models.py:96
 msgid "Depositor"
 msgstr "Deponent"
 
@@ -987,8 +1182,10 @@ msgstr "Stejná jako fakturační"
 msgid "Your message to us"
 msgstr "Vaše zpráva pro nás"
 
-#: checkout/forms.py:61 manage/views/product/product.py:96
-#: manage/views/product/product.py:128 manage/views/product/product.py:156
+#: checkout/forms.py:61
+#: manage/product/product.py:96
+#: manage/product/product.py:128
+#: manage/product/product.py:156
 msgid "This field is required."
 msgstr "Pole je povinné"
 
@@ -1008,19 +1205,23 @@ msgstr "Pouze nepřihlášení"
 msgid "Authenticated only"
 msgstr "Pouze registrovaní"
 
-#: checkout/views.py:65 customer/models.py:80 customer/views.py:56
+#: checkout/views.py:65
+#: customer/models.py:80
+#: customer/views.py:56
 #: templates/manage/customer/customers_inline.html:28
 #: templates/manage/marketing/rating_mails.html:51
 #: templates/manage/reviews/review_inline.html:54
-#: templates/manage/reviews/reviews_inline.html:27
+#: templates/manage/reviews/reviews_inline.html:32
 msgid "E-Mail"
 msgstr "E-mail"
 
-#: checkout/views.py:75 customer/views.py:72
+#: checkout/views.py:75
+#: customer/views.py:72
 msgid "You have been logged in."
 msgstr "Proběhlo vaše přihlášení"
 
-#: checkout/views.py:98 customer/views.py:104
+#: checkout/views.py:98
+#: customer/views.py:104
 msgid "You have been registered and logged in."
 msgstr "Proběhla vaše registrace i přihlášení."
 
@@ -1074,29 +1275,31 @@ msgstr "Fakturace - země"
 
 #: core/models.py:171
 msgid "Shipping countries"
-msgstr "Dodání - země"
+msgstr "Země"
 
 #: core/models.py:172
 msgid "Default shipping country"
 msgstr "Výchozí země dodání"
 
-#: core/models.py:175 core/management/commands/lfs_migrate.py:173
+#: core/models.py:175
+#: core/management/commands/lfs_migrate.py:173
 msgid "Default Shop Locale"
 msgstr "Výchozí národní nastavení"
 
-#: core/models.py:176 core/management/commands/lfs_migrate.py:175
+#: core/models.py:176
+#: core/management/commands/lfs_migrate.py:175
 msgid "Use international currency codes"
 msgstr "Použít mezinárodní kódy měn"
 
-#: core/models.py:179
+#: core/models.py:181
 msgid "Checkout type"
 msgstr "Možnost nákupu"
 
-#: core/models.py:180
+#: core/models.py:182
 msgid "Confirm TOC"
 msgstr "Potvrdit obchodní podmínky"
 
-#: core/models.py:244
+#: core/models.py:246
 msgid "Version"
 msgstr "Verze"
 
@@ -1108,11 +1311,13 @@ msgstr "Záložky"
 msgid "Footer"
 msgstr "Patička"
 
-#: core/management/commands/lfs_migrate.py:126 customer/models.py:73
+#: core/management/commands/lfs_migrate.py:126
+#: customer/models.py:73
 msgid "Line 1"
 msgstr "Řádek 1"
 
-#: core/management/commands/lfs_migrate.py:127 customer/models.py:74
+#: core/management/commands/lfs_migrate.py:127
+#: customer/models.py:74
 msgid "Line 2"
 msgstr "Řádek 2"
 
@@ -1130,7 +1335,8 @@ msgstr "Informace"
 msgid "%s tag needs group id as argument"
 msgstr "Značka %s vyžaduje jako parametr id skupiny."
 
-#: core/templatetags/lfs_tags.py:397 core/templatetags/lfs_tags.py:427
+#: core/templatetags/lfs_tags.py:397
+#: core/templatetags/lfs_tags.py:427
 #, python-format
 msgid "%s tag needs no argument"
 msgstr "Značka %s nemá žádné parametry"
@@ -1148,11 +1354,13 @@ msgstr "Odebrat soubor"
 msgid "Delete image"
 msgstr "Smazat obrázek"
 
-#: criteria/settings.py:16 criteria/settings.py:24
+#: criteria/settings.py:16
+#: criteria/settings.py:24
 msgid "Equal to"
 msgstr "je stejné jako"
 
-#: criteria/settings.py:17 templates/manage/criteria/number_operators.html:4
+#: criteria/settings.py:17
+#: templates/manage/criteria/number_operators.html:4
 msgid "Less than"
 msgstr "je menší než"
 
@@ -1160,7 +1368,8 @@ msgstr "je menší než"
 msgid "Less than or equal to"
 msgstr "je menší nebo stejné než"
 
-#: criteria/settings.py:19 templates/manage/criteria/number_operators.html:6
+#: criteria/settings.py:19
+#: templates/manage/criteria/number_operators.html:6
 msgid "Greater than"
 msgstr "je větší než"
 
@@ -1190,10 +1399,14 @@ msgstr "je platné"
 msgid "Is not valid"
 msgstr "není platné"
 
-#: criteria/models/criteria.py:51 criteria/models/criteria.py:112
-#: criteria/models/criteria.py:186 criteria/models/criteria.py:321
-#: criteria/models/criteria.py:385 criteria/models/criteria.py:480
-#: criteria/models/criteria.py:614 criteria/models/criteria.py:678
+#: criteria/models/criteria.py:51
+#: criteria/models/criteria.py:112
+#: criteria/models/criteria.py:186
+#: criteria/models/criteria.py:321
+#: criteria/models/criteria.py:385
+#: criteria/models/criteria.py:480
+#: criteria/models/criteria.py:614
+#: criteria/models/criteria.py:678
 #: criteria/models/criteria.py:742
 msgid "Operator"
 msgstr "Operace"
@@ -1227,7 +1440,8 @@ msgstr "CLAG: %(operator)s %(clag)s"
 msgid "Combined length and girth"
 msgstr "Velikost (2xšířka + 2xvýška + délka)"
 
-#: criteria/models/criteria.py:187 customer_tax/models.py:25
+#: criteria/models/criteria.py:187
+#: customer_tax/models.py:25
 #: templates/manage/shop/default_values_tab.html:81
 msgid "Countries"
 msgstr "Seznam zemí"
@@ -1237,7 +1451,8 @@ msgstr "Seznam zemí"
 msgid "Country: %(operator)s %(countries)s"
 msgstr "Země: %(operator)s %(countries)s"
 
-#: criteria/models/criteria.py:210 customer/models.py:78
+#: criteria/models/criteria.py:210
+#: customer/models.py:78
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:8
 #: templates/manage/criteria/country_criterion.html:8
 #: templates/manage/criteria/distance_criterion.html:8
@@ -1272,7 +1487,8 @@ msgstr "Způsoby platby"
 msgid "Payment: %(operator)s %(payments)s"
 msgstr "Platba: %(operator)s %(payments)s"
 
-#: criteria/models/criteria.py:412 payment/models.py:121
+#: criteria/models/criteria.py:412
+#: payment/models.py:121
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:13
 #: templates/manage/criteria/country_criterion.html:13
 #: templates/manage/criteria/distance_criterion.html:13
@@ -1289,7 +1505,7 @@ msgid "Payment method"
 msgstr "Způsob platby"
 
 #: criteria/models/criteria.py:481
-#: templates/manage/shipping/shipping_methods.html:4
+#: templates/manage/shipping_methods/shipping_methods.html:4
 msgid "Shipping methods"
 msgstr "Způsoby dodání"
 
@@ -1324,7 +1540,8 @@ msgstr "Váha: %(operator)s %(weight)s"
 msgid "Width: %(operator)s %(width)s"
 msgstr "Šířka: %(operator)s %(width)s"
 
-#: criteria/models/criteria.py:743 criteria/models/criteria.py:763
+#: criteria/models/criteria.py:743
+#: criteria/models/criteria.py:763
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:10
 #: templates/manage/criteria/country_criterion.html:10
 #: templates/manage/criteria/distance_criterion.html:10
@@ -1348,7 +1565,8 @@ msgstr "Vzdálenost: %(operator)s %(distance)s"
 msgid "Criterion type"
 msgstr "Typ podmínky"
 
-#: customer/forms.py:36 customer/forms.py:42
+#: customer/forms.py:36
+#: customer/forms.py:42
 #: templates/manage/order/order_inline.html:27
 msgid "E-mail"
 msgstr "E-mail"
@@ -1397,17 +1615,21 @@ msgstr "Použitá fakturační adresa"
 msgid "Selected country"
 msgstr "Vybraná země"
 
-#: customer/models.py:68 customer/models.py:89 customer/models.py:103
+#: customer/models.py:68
+#: customer/models.py:89
+#: customer/models.py:103
 #: templates/manage/cart/cart_inline.html:21
 #: templates/manage/customer/customer.html:23
 msgid "Customer"
 msgstr "Zákazník"
 
-#: customer/models.py:70 templates/manage/customer/customers_inline.html:16
+#: customer/models.py:70
+#: templates/manage/customer/customers_inline.html:16
 msgid "Firstname"
 msgstr "Jméno"
 
-#: customer/models.py:71 templates/manage/customer/customers_inline.html:22
+#: customer/models.py:71
+#: templates/manage/customer/customers_inline.html:22
 msgid "Lastname"
 msgstr "Příjmení"
 
@@ -1419,22 +1641,25 @@ msgstr "PSČ"
 msgid "City"
 msgstr "Město"
 
-#: customer/models.py:77 order/models.py:53
+#: customer/models.py:77
+#: order/models.py:53
 #: templates/manage/customer/customer_inline.html:128
 #: templates/manage/order/order.html:34
 #: templates/manage/order/order_filters_inline.html:16
 #: templates/manage/order/order_inline.html:35
 #: templates/manage/order/orders_filter.html:12
 #: templates/manage/order/orders_filters_inline.html:12
-#: templates/manage/order/orders_inline.html:15
+#: templates/manage/order/orders_inline.html:21
 msgid "State"
 msgstr "Stát"
 
-#: customer/models.py:79 templates/manage/order/order_inline.html:43
+#: customer/models.py:79
+#: templates/manage/order/order_inline.html:43
 msgid "Phone"
 msgstr "Telefon"
 
-#: customer/models.py:91 order/models.py:93
+#: customer/models.py:91
+#: order/models.py:93
 msgid "Account number"
 msgstr "Číslo účtu"
 
@@ -1442,7 +1667,8 @@ msgstr "Číslo účtu"
 msgid "Bank identification code"
 msgstr "Kód banky"
 
-#: customer/models.py:93 order/models.py:95
+#: customer/models.py:93
+#: order/models.py:95
 msgid "Bank name"
 msgstr "Název banky"
 
@@ -1450,7 +1676,8 @@ msgstr "Název banky"
 msgid "Owner"
 msgstr "Majitel"
 
-#: customer/models.py:107 templates/manage/order/orders_inline.html:6
+#: customer/models.py:107
+#: templates/manage/order/orders_inline.html:12
 #: templates/manage/voucher/vouchers_inline.html:67
 msgid "Number"
 msgstr "Číslo"
@@ -1467,15 +1694,18 @@ msgstr "Datum expirace - rok"
 msgid "You have been logged out."
 msgstr "Proběhlo vaše odhlášení"
 
-#: customer_tax/models.py:23 tax/models.py:17
+#: customer_tax/models.py:23
+#: tax/models.py:17
 msgid "Rate"
 msgstr "Sazba"
 
-#: discounts/settings.py:7 voucher/settings.py:7
+#: discounts/settings.py:7
+#: voucher/settings.py:7
 msgid "Absolute"
 msgstr "Absolutně"
 
-#: discounts/settings.py:8 voucher/settings.py:8
+#: discounts/settings.py:8
+#: voucher/settings.py:8
 msgid "Percentage"
 msgstr "Percentuelně"
 
@@ -1483,16 +1713,19 @@ msgstr "Percentuelně"
 msgid "Script"
 msgstr "Skript"
 
-#: export/models.py:20 templates/manage/product/product.html:106
+#: export/models.py:20
+#: templates/manage/product/product.html:103
 #: templates/manage/product/variants.html:97
 msgid "Variants"
 msgstr "Kombinace"
 
-#: export/models.py:70 templates/manage/product/product_filters_inline.html:15
+#: export/models.py:70
+#: templates/manage/product/product_filters_inline.html:15
 msgid "Category"
 msgstr "Kategorie"
 
-#: export/models.py:71 templates/manage/manage_base.html:123
+#: export/models.py:71
+#: templates/manage/manage_base.html:123
 msgid "Export"
 msgstr "Export"
 
@@ -1504,7 +1737,8 @@ msgstr "---"
 msgid "Cheapest"
 msgstr "Nejlevnější"
 
-#: export/settings.py:13 templates/manage/category/category_filter.html:5
+#: export/settings.py:13
+#: templates/manage/category/category_filter.html:5
 #: templates/manage/order/order_filters_inline.html:50
 #: templates/manage/order/orders_filter.html:98
 #: templates/manage/order/orders_filters_inline.html:100
@@ -1537,11 +1771,16 @@ msgstr "Vaše hodnocení bylo přidáno"
 msgid "The action has been saved."
 msgstr "Akce byla uložena."
 
-#: manage/actions/views.py:98 manage/views/shop.py:140
-#: manage/views/shop.py:163 manage/views/shop.py:186 manage/views/shop.py:212
-#: manage/views/categories/category.py:129 manage/views/categories/seo.py:42
-#: manage/views/categories/view.py:45 manage/views/product/product.py:217
-#: manage/views/product/product.py:433
+#: manage/actions/views.py:98
+#: manage/categories/category.py:129
+#: manage/categories/seo.py:42
+#: manage/categories/view.py:46
+#: manage/product/product.py:224
+#: manage/product/product.py:440
+#: manage/views/shop.py:142
+#: manage/views/shop.py:165
+#: manage/views/shop.py:188
+#: manage/views/shop.py:214
 msgid "Please correct the indicated errors."
 msgstr "Opravte prosím vyznačené chyby"
 
@@ -1549,21 +1788,48 @@ msgstr "Opravte prosím vyznačené chyby"
 msgid "Action has been added."
 msgstr "Akce byla přidána"
 
-#: manage/actions/views.py:146
+#: manage/actions/views.py:147
 msgid "Action has been deleted."
 msgstr "Akce byla odstraněna"
 
-#: manage/actions/views.py:166
+#: manage/actions/views.py:167
 msgid "The actions have been sorted."
 msgstr "Pořadí akcí bylo změněno."
 
+#: manage/categories/category.py:83
+#, python-format
+msgid "Do you really want to delete the category <b>'%(name)s'</b> and all its sub categories?"
+msgstr "Opravdu chcete smazat kategorii <b>'%(name)s'</b> a všechny její podkategorie?"
+
+#: manage/categories/category.py:127
+msgid "Category data have been saved."
+msgstr "Kategorie byla uložena"
+
+#: manage/categories/category.py:224
+msgid "The categories have been sorted."
+msgstr "Kategorie byly seřazeny."
+
+#: manage/categories/products.py:206
+msgid "Selected products have been added to category."
+msgstr "Vybrané produkty byly přiřazeny do kategorie."
+
+#: manage/categories/products.py:235
+msgid "Selected products have been removed from category."
+msgstr "Vybrané produkty byly odebrány z kategorie."
+
+#: manage/categories/seo.py:40
+#: manage/pages/views.py:154
+msgid "SEO data has been saved."
+msgstr "SEO data uložena"
+
+#: manage/categories/view.py:44
+msgid "View data has been saved."
+msgstr "Data uložena"
+
 #: manage/customer_tax/forms.py:25
 #, python-format
-msgid ""
-"There is already a customer tax with country %(country)s, see %(customer_tax)"
-"s %% "
-msgstr ""
-"Zákaznická daň pro zemi %(country)s již existuje. Viz. %(customer_tax)s %% "
+msgid "There is already a customer tax with country %(country)s, see %(customer_tax)s %% "
+msgstr "Zákaznická daň pro zemi %(country)s již existuje. Viz. %(customer_tax)s %% "
 
 #: manage/customer_tax/views.py:43
 msgid "Customer tax has been saved."
@@ -1576,6 +1842,350 @@ msgstr "Zákaznická daň byla přidána."
 #: manage/customer_tax/views.py:97
 msgid "Customer tax has been deleted."
 msgstr "Zákaznická daň byla smazána."
+
+#: manage/delivery_times/views.py:44
+#: manage/views/delivery_times.py:58
+msgid "Delivery time has been saved."
+msgstr "Doba dodání uložena"
+
+#: manage/delivery_times/views.py:75
+#: manage/views/delivery_times.py:82
+msgid "Delivery time has been added."
+msgstr "Doba dodání přidána"
+
+#: manage/delivery_times/views.py:108
+#: manage/views/delivery_times.py:115
+msgid "Delivery time has been deleted."
+msgstr "Doba dodání smazána"
+
+#: manage/discounts/views.py:127
+msgid "Discount method has been added."
+msgstr "Způsob slevy přidán"
+
+#: manage/discounts/views.py:151
+#: manage/shipping_methods/views.py:212
+#: manage/shipping_methods/views.py:234
+#: manage/views/payment.py:223
+#: manage/views/payment.py:245
+msgid "Modifications have been changed."
+msgstr "Modifikace byly změněny."
+
+#: manage/discounts/views.py:172
+msgid "Discount data has been saved."
+msgstr "Způsob slevy uložen"
+
+#: manage/discounts/views.py:190
+msgid "Discount has been deleted."
+msgstr "Sleva byla smazána"
+
+#: manage/images/views.py:104
+msgid "inline"
+msgstr "v textu"
+
+#: manage/images/views.py:107
+msgid "left"
+msgstr "doleva"
+
+#: manage/images/views.py:110
+msgid "right"
+msgstr "doprava"
+
+#: manage/manufacturers/views.py:248
+msgid "Manufacturer data has been saved."
+msgstr "Data výrobce byla uložena"
+
+#: manage/pages/views.py:133
+msgid "Data has been saved."
+msgstr "Data byla uložena."
+
+#: manage/pages/views.py:172
+msgid "Page has been added."
+msgstr "Stránka byla přidána"
+
+#: manage/pages/views.py:194
+msgid "Page has been deleted."
+msgstr "Stránka byla smazána"
+
+#: manage/pages/views.py:215
+msgid "The pages have been sorted."
+msgstr "Stránky byly seřazeny."
+
+#: manage/product/accessories.py:162
+msgid "Accessories have been added."
+msgstr "Přislušenství bylo přidáno"
+
+#: manage/product/accessories.py:194
+msgid "Accessories have been removed."
+msgstr "Příslušenství bylo odebráno"
+
+#: manage/product/accessories.py:224
+#: manage/product/accessories.py:244
+msgid "Accessories have been updated."
+msgstr "Příslušenství bylo aktualizováno"
+
+#: manage/product/attachments.py:36
+msgid "Attachments have been added."
+msgstr "Přílohy byly přidány."
+
+#: manage/product/attachments.py:68
+#: manage/product/attachments.py:80
+msgid "Attachment has been updated."
+msgstr "Přílohy byly aktualizovány."
+
+#: manage/product/attachments.py:71
+msgid "Attachment has been deleted."
+msgstr "Přiloha byla odstraněna."
+
+#: manage/product/categories.py:92
+msgid "Categories have been saved."
+msgstr "Kategorie byly uloženy"
+
+#: manage/product/images.py:40
+msgid "Images has been added."
+msgstr "Obrázky byly přidány"
+
+#: manage/product/images.py:80
+msgid "Images has been deleted."
+msgstr "Obrázky byly smazány"
+
+#: manage/product/images.py:90
+msgid "Images has been updated."
+msgstr "Obrázky byly aktualizovány"
+
+#: manage/product/images.py:188
+msgid "Active images has been updated."
+msgstr "Aktivní obrázky byly aktualizovány"
+
+#: manage/product/product.py:222
+msgid "Product stock data has been saved."
+msgstr "Nastavení skladových zásob bylo aktualizováno"
+
+#: manage/product/product.py:392
+msgid "Sub type has been changed."
+msgstr "Podtyp byl změněn"
+
+#: manage/product/product.py:438
+msgid "Product data has been saved."
+msgstr "Údaje byly uloženy."
+
+#: manage/product/product.py:496
+msgid "Product filters have been reset"
+msgstr "Filtry byly smazány"
+
+#: manage/product/product.py:523
+msgid "Products have been deleted."
+msgstr "Produkty byly smazány."
+
+#: manage/product/product.py:565
+msgid "Products have been saved"
+msgstr "Produkty byly uloženy"
+
+#: manage/product/product.py:643
+msgid "Product filters have been set"
+msgstr "Filtry byly nastaveny"
+
+#: manage/product/related_products.py:161
+msgid "Related products have been added."
+msgstr "Příbuzné produkty byly přidány"
+
+#: manage/product/related_products.py:189
+msgid "Related products have been removed."
+msgstr "Příbuzné produkty byly odebrány"
+
+#: manage/product/related_products.py:210
+msgid "Related products have been updated."
+msgstr "Příbuzné produkty byly aktualizovány"
+
+#: manage/product/seo.py:48
+msgid "Seo data has been saved."
+msgstr "SEO data byla uložena"
+
+#: manage/product/variants.py:221
+#: manage/property/views.py:283
+msgid "Property has been added."
+msgstr "Vlastnost byla přidána"
+
+#: manage/product/variants.py:243
+#: manage/product/variants.py:332
+msgid "Property has been deleted."
+msgstr "Vlastnost byla smazána."
+
+#: manage/product/variants.py:310
+#: manage/property/views.py:329
+msgid "Option has been added."
+msgstr "Volba přidána"
+
+#: manage/product/variants.py:395
+#: manage/product/variants.py:397
+msgid "That slug is already in use. Please use another."
+msgstr "Tento krátký název je již použit. Zvolte prosím jiný."
+
+#: manage/product/variants.py:420
+msgid "Variants have been added."
+msgstr "Kombinace byly přidány."
+
+#: manage/product/variants.py:444
+msgid "Variants have been deleted."
+msgstr "Kombinace byly smazány."
+
+#: manage/product/variants.py:458
+msgid "Variants have been saved."
+msgstr "Kombinace byly uloženy."
+
+#: manage/product/variants.py:559
+msgid "Sup type has been saved."
+msgstr "Typ produktu byl změněn."
+
+#: manage/product/variants.py:583
+msgid "Category variant has been saved."
+msgstr "Nastavení bylo uloženo."
+
+#: manage/product_taxes/views.py:43
+msgid "Tax has been saved."
+msgstr "Daň byla uložena"
+
+#: manage/product_taxes/views.py:74
+msgid "Tax has been added."
+msgstr "Daň byla přidána"
+
+#: manage/product_taxes/views.py:102
+msgid "Tax has been deleted."
+msgstr "Daň byla smazána"
+
+#: manage/property/views.py:56
+msgid "Property type has been saved."
+msgstr "Typ vlastnosti byl uložen"
+
+#: manage/property/views.py:105
+msgid "Property type has been changed."
+msgstr "Typ vlastnosti byl změněn"
+
+#: manage/property/views.py:157
+msgid "Validators have been saved."
+msgstr "Validátory byly uloženy."
+
+#: manage/property/views.py:187
+msgid "Step range has been saved."
+msgstr "Rozsah kroku byl uložen"
+
+#: manage/property/views.py:206
+msgid "Step type has been saved."
+msgstr "Typ kroku byl uložen"
+
+#: manage/property/views.py:221
+msgid "Step has been added."
+msgstr "Krok byl přidán"
+
+#: manage/property/views.py:232
+msgid "Steps have been updated."
+msgstr "Kroky byly uloženy"
+
+#: manage/property/views.py:256
+msgid "The step has been saved."
+msgstr "Krok byl uložen"
+
+#: manage/property/views.py:331
+msgid "Option could not be added."
+msgstr "Volba nemohla být přidána."
+
+#: manage/property/views.py:350
+msgid "Options have been update."
+msgstr "Volba aktualizována"
+
+#: manage/property_groups/views.py:55
+msgid "Property group has been saved."
+msgstr "Skupina vlastností byla uložena"
+
+#: manage/property_groups/views.py:107
+msgid "Property group has been added."
+msgstr "Skupina vlastností byla přidána"
+
+#: manage/property_groups/views.py:129
+msgid "Property group has been deleted."
+msgstr "Skupina vlastností byla smazána"
+
+#: manage/property_groups/views.py:148
+msgid "Properties have been assigned."
+msgstr "Vlastnosti byly přiřazeny"
+
+#: manage/property_groups/views.py:167
+msgid "Properties have been removed."
+msgstr "Vlastnosti byly odebrány"
+
+#: manage/property_groups/views.py:170
+msgid "There are no properties to update."
+msgstr "Nejsou žádné vlastnosti"
+
+#: manage/property_groups/views.py:175
+msgid "Properties have been updated."
+msgstr "Vlastnosti byly aktualizovány"
+
+#: manage/property_groups/views.py:293
+msgid "Products have been assigned."
+msgstr "Produkty byly přiřazeny"
+
+#: manage/property_groups/views.py:317
+msgid "Products have been removed."
+msgstr "Produkty byly odebrány"
+
+#: manage/shipping_methods/views.py:188
+msgid "Shipping method has been added."
+msgstr "Způsob dodání byl přidán"
+
+#: manage/shipping_methods/views.py:256
+#: manage/views/payment.py:271
+msgid "Price has been added"
+msgstr "Cena byla přidána"
+
+#: manage/shipping_methods/views.py:276
+#: manage/views/payment.py:286
+msgid "Prices have been deleted"
+msgstr "Ceny byly smazány"
+
+#: manage/shipping_methods/views.py:288
+#: manage/views/payment.py:297
+msgid "Prices have been updated"
+msgstr "Ceny byly aktualizovány"
+
+#: manage/shipping_methods/views.py:333
+msgid "Shipping method has been saved."
+msgstr "Způsob dodání byl uložen"
+
+#: manage/shipping_methods/views.py:358
+msgid "Shipping method has been deleted."
+msgstr "Způsob dodání byl smazán"
+
+#: manage/shipping_methods/views.py:379
+msgid "The shipping methods have been sorted."
+msgstr "Pořadí způsobů dodání bylo změněno."
+
+#: manage/static_blocks/views.py:50
+msgid "Static block has been saved."
+msgstr "Statický blok byl uložen"
+
+#: manage/static_blocks/views.py:90
+msgid "Files has been deleted."
+msgstr "Soubory byly smazány"
+
+#: manage/static_blocks/views.py:100
+msgid "Files has been updated."
+msgstr "Soubory byly aktualizovány "
+
+#: manage/static_blocks/views.py:147
+msgid "Files has been added."
+msgstr "Soubory byly přidány"
+
+#: manage/static_blocks/views.py:184
+msgid "Static block has been added."
+msgstr "Statický blok byl přidán"
+
+#: manage/static_blocks/views.py:224
+msgid "The static blocks have been sorted."
+msgstr "Statické bloky byly seřazeny."
+
+#: manage/static_blocks/views.py:246
+msgid "Static block has been deleted."
+msgstr "Statický blok byl smazán"
 
 #: manage/views/carts.py:242
 msgid "Cart filters has been set."
@@ -1597,36 +2207,6 @@ msgstr "Filtry zákazníka byly nastaveny"
 msgid "Customer filters has been reset"
 msgstr "Filtry zákazníka byly zrušeny"
 
-#: manage/views/delivery_times.py:58
-msgid "Delivery time has been saved."
-msgstr "Doba dodání uložena"
-
-#: manage/views/delivery_times.py:82
-msgid "Delivery time has been added."
-msgstr "Doba dodání přidána"
-
-#: manage/views/delivery_times.py:115
-msgid "Delivery time has been deleted."
-msgstr "Doba dodání smazána"
-
-#: manage/views/discounts.py:127
-msgid "Discount method has been added."
-msgstr "Způsob slevy přidán"
-
-#: manage/views/discounts.py:151 manage/views/payment.py:223
-#: manage/views/payment.py:245 manage/views/shipping.py:222
-#: manage/views/shipping.py:244
-msgid "Modifications have been changed."
-msgstr "Modifikace byly změněny."
-
-#: manage/views/discounts.py:178
-msgid "Discount data has been saved."
-msgstr "Způsob slevy uložen"
-
-#: manage/views/discounts.py:196
-msgid "Discount has been deleted."
-msgstr "Sleva byla smazána"
-
 #: manage/views/export.py:333
 msgid "Export data has been saved."
 msgstr "Nastavení exportu bylo uloženo"
@@ -1647,11 +2227,8 @@ msgstr "Portlet byl smazán"
 msgid "Portlet has been saved."
 msgstr "Porltet byl uložen"
 
-#: manage/views/manufacturer.py:250
-msgid "Manufacturer data has been saved."
-msgstr "Data výrobce byla uložena"
-
-#: manage/views/orders.py:247 manage/views/orders.py:283
+#: manage/views/orders.py:247
+#: manage/views/orders.py:283
 msgid "Filters has been set"
 msgstr "Filtry byly nastaveny"
 
@@ -1667,41 +2244,9 @@ msgstr "Objednávka byla odeslána"
 msgid "State has been changed"
 msgstr "Stav změněn"
 
-#: manage/views/page.py:161
-msgid "Data has been saved."
-msgstr "Data byla uložena."
-
-#: manage/views/page.py:182 manage/views/categories/seo.py:40
-msgid "SEO data has been saved."
-msgstr "SEO data uložena"
-
-#: manage/views/page.py:200
-msgid "Page has been added."
-msgstr "Stránka byla přidána"
-
-#: manage/views/page.py:221
-msgid "Page has been deleted."
-msgstr "Stránka byla smazána"
-
-#: manage/views/page.py:242
-msgid "The pages have been sorted."
-msgstr "Stránky byly seřazeny."
-
 #: manage/views/payment.py:197
 msgid "Payment method has been added."
 msgstr "Způsob platby byl přidán"
-
-#: manage/views/payment.py:271 manage/views/shipping.py:266
-msgid "Price has been added"
-msgstr "Cena byla přidána"
-
-#: manage/views/payment.py:286 manage/views/shipping.py:286
-msgid "Prices have been deleted"
-msgstr "Ceny byly smazány"
-
-#: manage/views/payment.py:297 manage/views/shipping.py:298
-msgid "Prices have been updated"
-msgstr "Ceny byly aktualizovány"
 
 #: manage/views/payment.py:342
 msgid "Payment method has been saved."
@@ -1714,54 +2259,6 @@ msgstr "Způsob platby byl smazán"
 #: manage/views/payment.py:388
 msgid "The payment methods have been sorted."
 msgstr "Způsoby platby byly seřazeny."
-
-#: manage/views/properties.py:106
-msgid "Property type has been saved."
-msgstr "Typ vlastnosti byl uložen"
-
-#: manage/views/properties.py:147
-msgid "Property type has been changed."
-msgstr "Typ vlastnosti byl změněn"
-
-#: manage/views/properties.py:199
-msgid "Validators have been saved."
-msgstr "Validátory byly uloženy."
-
-#: manage/views/properties.py:229
-msgid "Step range has been saved."
-msgstr "Rozsah kroku byl uložen"
-
-#: manage/views/properties.py:248
-msgid "Step type has been saved."
-msgstr "Typ kroku byl uložen"
-
-#: manage/views/properties.py:265
-msgid "Step has been added."
-msgstr "Krok byl přidán"
-
-#: manage/views/properties.py:277
-msgid "Steps have been updated."
-msgstr "Kroky byly uloženy"
-
-#: manage/views/properties.py:301
-msgid "The step has been saved."
-msgstr "Krok byl uložen"
-
-#: manage/views/properties.py:328 manage/views/product/variants.py:221
-msgid "Property has been added."
-msgstr "Vlastnost byla přidána"
-
-#: manage/views/properties.py:373 manage/views/product/variants.py:310
-msgid "Option has been added."
-msgstr "Volba přidána"
-
-#: manage/views/properties.py:375
-msgid "Option could not be added."
-msgstr "Volba nemohla být přidána."
-
-#: manage/views/properties.py:394
-msgid "Options have been update."
-msgstr "Volba aktualizována"
 
 #: manage/views/review.py:240
 msgid "Review filters have been set"
@@ -1779,77 +2276,21 @@ msgstr "Hodnocení bylo smazáno"
 msgid "Review state has been set"
 msgstr "Hodnocení bylo uloženo"
 
-#: manage/views/shipping.py:198
-msgid "Shipping method has been added."
-msgstr "Způsob dodání byl přidán"
-
-#: manage/views/shipping.py:349
-msgid "Shipping method has been saved."
-msgstr "Způsob dodání byl uložen"
-
-#: manage/views/shipping.py:374
-msgid "Shipping method has been deleted."
-msgstr "Způsob dodání byl smazán"
-
-#: manage/views/shipping.py:395
-msgid "The shipping methods have been sorted."
-msgstr "Pořadí způsobů dodání bylo změněno."
-
-#: manage/views/shop.py:138
+#: manage/views/shop.py:140
 msgid "Shop data has been saved."
 msgstr "Nastavení obchodu bylo uloženo"
 
-#: manage/views/shop.py:161
+#: manage/views/shop.py:163
 msgid "Shop default values have been saved."
 msgstr "Nastavení obchodu bylo uloženo"
 
-#: manage/views/shop.py:184
+#: manage/views/shop.py:186
 msgid "Shop SEO data has been saved."
 msgstr "SEO nastavení bylo uloženo."
 
-#: manage/views/shop.py:210
+#: manage/views/shop.py:212
 msgid "Order numbers has been saved."
 msgstr "Nastavení způsobu číslování objednávek bylo uloženo."
-
-#: manage/views/static_blocks.py:57
-msgid "Static block has been saved."
-msgstr "Statický blok byl uložen"
-
-#: manage/views/static_blocks.py:88
-msgid "Files has been deleted."
-msgstr "Soubory byly smazány"
-
-#: manage/views/static_blocks.py:98
-msgid "Files has been updated."
-msgstr "Soubory byly aktualizovány "
-
-#: manage/views/static_blocks.py:145
-msgid "Files has been added."
-msgstr "Soubory byly přidány"
-
-#: manage/views/static_blocks.py:182
-msgid "Static block has been added."
-msgstr "Statický blok byl přidán"
-
-#: manage/views/static_blocks.py:221
-msgid "The static blocks have been sorted."
-msgstr "Statické bloky byly seřazeny."
-
-#: manage/views/static_blocks.py:243
-msgid "Static block has been deleted."
-msgstr "Statický blok byl smazán"
-
-#: manage/views/tax.py:55
-msgid "Tax has been saved."
-msgstr "Daň byla uložena"
-
-#: manage/views/tax.py:79
-msgid "Tax has been added."
-msgstr "Daň byla přidána"
-
-#: manage/views/tax.py:107
-msgid "Tax has been deleted."
-msgstr "Daň byla smazána"
 
 #: manage/views/utils.py:30
 msgid "Topseller have been reindexed."
@@ -1866,83 +2307,6 @@ msgstr "Úrovně kategorií byly vytvořeny."
 #: manage/views/utils.py:65
 msgid "Effective prices have been set."
 msgstr "Aktuální ceny byly nastaveny."
-
-#: manage/views/voucher.py:54 templates/manage/cart/cart_inline.html:106
-#: templates/manage/order/order_inline.html:166
-#: templates/manage/product/product_filters_inline.html:13
-msgid "Amount"
-msgstr "Množství"
-
-#: manage/views/voucher.py:56 templates/manage/voucher/vouchers_inline.html:79
-msgid "Start date"
-msgstr "Datum začátku"
-
-#: manage/views/voucher.py:57 templates/manage/voucher/vouchers_inline.html:82
-msgid "End date"
-msgstr "Datum konce"
-
-#: manage/views/voucher.py:58
-msgid "Kind of"
-msgstr "Druh"
-
-#: manage/views/voucher.py:59 templates/manage/voucher/vouchers_inline.html:85
-msgid "Effective from"
-msgstr "Platné od"
-
-#: manage/views/voucher.py:61 portlet/models/featured.py:26
-#: portlet/models/forsale.py:27
-#: templates/manage/voucher/vouchers_inline.html:94
-msgid "Limit"
-msgstr "Limit"
-
-#: manage/views/voucher.py:228
-msgid "Vouchers have been created."
-msgstr "Kupóny byly vytvořeny"
-
-#: manage/views/voucher.py:250
-msgid "Vouchers have been deleted."
-msgstr "Kupóny byly smazány"
-
-#: manage/views/voucher.py:289
-msgid "Voucher data has been saved."
-msgstr "Informace o kupónu byla uložena."
-
-#: manage/views/voucher.py:305
-msgid "Voucher group and assigned vouchers have been deleted."
-msgstr "Skupina kupónů a všechny přiřazené kupóny byly odstraněny."
-
-#: manage/views/voucher.py:324
-msgid "Voucher options has been saved."
-msgstr "Nastavení kupónu bylo uloženo."
-
-#: manage/views/categories/category.py:83
-#, python-format
-msgid ""
-"Do you really want to delete the category <b>'%(name)s'</b> and all its sub "
-"categories?"
-msgstr ""
-"Opravdu chcete smazat kategorii <b>'%(name)s'</b> a všechny její "
-"podkategorie?"
-
-#: manage/views/categories/category.py:127
-msgid "Category data have been saved."
-msgstr "Kategorie byla uložena"
-
-#: manage/views/categories/category.py:224
-msgid "The categories have been sorted."
-msgstr "Kategorie byly seřazeny."
-
-#: manage/views/categories/products.py:206
-msgid "Selected products have been added to category."
-msgstr "Vybrané produkty byly přiřazeny do kategorie."
-
-#: manage/views/categories/products.py:235
-msgid "Selected products have been removed from category."
-msgstr "Vybrané produkty byly odebrány z kategorie."
-
-#: manage/views/categories/view.py:43
-msgid "View data has been saved."
-msgstr "Data uložena"
 
 #: manage/views/marketing/featured.py:145
 msgid "Featured product has been added."
@@ -1972,161 +2336,65 @@ msgstr "Položka byla z nejprodávanějších odebrána"
 msgid "Topseller have been updated."
 msgstr "Položka byla aktualizována"
 
-#: manage/views/product/accessories.py:162
-msgid "Accessories have been added."
-msgstr "Přislušenství bylo přidáno"
+#: manage/voucher/forms.py:39
+#: templates/manage/cart/cart_inline.html:106
+#: templates/manage/order/order_inline.html:166
+#: templates/manage/product/product_filters_inline.html:13
+msgid "Amount"
+msgstr "Množství"
 
-#: manage/views/product/accessories.py:194
-msgid "Accessories have been removed."
-msgstr "Příslušenství bylo odebráno"
+#: manage/voucher/forms.py:41
+#: templates/manage/voucher/vouchers_inline.html:79
+msgid "Start date"
+msgstr "Datum začátku"
 
-#: manage/views/product/accessories.py:224
-#: manage/views/product/accessories.py:244
-msgid "Accessories have been updated."
-msgstr "Příslušenství bylo aktualizováno"
+#: manage/voucher/forms.py:42
+#: templates/manage/voucher/vouchers_inline.html:82
+msgid "End date"
+msgstr "Datum konce"
 
-#: manage/views/product/attachments.py:36
-msgid "Attachments have been added."
-msgstr "Přílohy byly přidány."
+#: manage/voucher/forms.py:43
+msgid "Kind of"
+msgstr "Druh"
 
-#: manage/views/product/attachments.py:68
-#: manage/views/product/attachments.py:80
-msgid "Attachment has been updated."
-msgstr "Přílohy byly aktualizovány."
+#: manage/voucher/forms.py:44
+#: templates/manage/voucher/vouchers_inline.html:85
+msgid "Effective from"
+msgstr "Platné od"
 
-#: manage/views/product/attachments.py:71
-msgid "Attachment has been deleted."
-msgstr "Přiloha byla odstraněna."
+#: manage/voucher/forms.py:46
+#: portlet/models/featured.py:26
+#: portlet/models/forsale.py:27
+#: templates/manage/voucher/vouchers_inline.html:94
+msgid "Limit"
+msgstr "Limit"
 
-#: manage/views/product/categories.py:92
-msgid "Categories have been saved."
-msgstr "Kategorie byly uloženy"
+#: manage/voucher/views.py:198
+msgid "Vouchers have been created."
+msgstr "Kupóny byly vytvořeny"
 
-#: manage/views/product/images.py:40
-msgid "Images has been added."
-msgstr "Obrázky byly přidány"
+#: manage/voucher/views.py:220
+msgid "Vouchers have been deleted."
+msgstr "Kupóny byly smazány"
 
-#: manage/views/product/images.py:80
-msgid "Images has been deleted."
-msgstr "Obrázky byly smazány"
+#: manage/voucher/views.py:260
+msgid "Voucher data has been saved."
+msgstr "Informace o kupónu byla uložena."
 
-#: manage/views/product/images.py:90
-msgid "Images has been updated."
-msgstr "Obrázky byly aktualizovány"
+#: manage/voucher/views.py:276
+msgid "Voucher group and assigned vouchers have been deleted."
+msgstr "Skupina kupónů a všechny přiřazené kupóny byly odstraněny."
 
-#: manage/views/product/images.py:188
-msgid "Active images has been updated."
-msgstr "Aktivní obrázky byly aktualizovány"
-
-#: manage/views/product/product.py:215
-msgid "Product stock data has been saved."
-msgstr "Nastavení skladových zásob bylo aktualizováno"
-
-#: manage/views/product/product.py:385
-msgid "Sub type has been changed."
-msgstr "Podtyp byl změněn"
-
-#: manage/views/product/product.py:431
-msgid "Product data has been saved."
-msgstr "Údaje byly uloženy."
-
-#: manage/views/product/product.py:489
-msgid "Product filters have been reset"
-msgstr "Filtry byly smazány"
-
-#: manage/views/product/product.py:516
-msgid "Products have been deleted."
-msgstr "Produkty byly smazány."
-
-#: manage/views/product/product.py:558
-msgid "Products have been saved"
-msgstr "Produkty byly uloženy"
-
-#: manage/views/product/product.py:636
-msgid "Product filters have been set"
-msgstr "Filtry byly nastaveny"
-
-#: manage/views/product/related_products.py:161
-msgid "Related products have been added."
-msgstr "Příbuzné produkty byly přidány"
-
-#: manage/views/product/related_products.py:189
-msgid "Related products have been removed."
-msgstr "Příbuzné produkty byly odebrány"
-
-#: manage/views/product/related_products.py:210
-msgid "Related products have been updated."
-msgstr "Příbuzné produkty byly aktualizovány"
-
-#: manage/views/product/seo.py:48
-msgid "Seo data has been saved."
-msgstr "SEO data byla uložena"
-
-#: manage/views/product/variants.py:243 manage/views/product/variants.py:332
-msgid "Property has been deleted."
-msgstr "Vlastnost byla smazána."
-
-#: manage/views/product/variants.py:393 manage/views/product/variants.py:395
-msgid "That slug is already in use. Please use another."
-msgstr "Tento krátký název je již použit. Zvolte prosím jiný."
-
-#: manage/views/product/variants.py:417
-msgid "Variants have been added."
-msgstr "Kombinace byly přidány."
-
-#: manage/views/product/variants.py:441
-msgid "Variants have been deleted."
-msgstr "Kombinace byly smazány."
-
-#: manage/views/product/variants.py:455
-msgid "Variants have been saved."
-msgstr "Kombinace byly uloženy."
-
-#: manage/views/product/variants.py:556
-msgid "Sup type has been saved."
-msgstr "Typ produktu byl změněn."
-
-#: manage/views/product/variants.py:580
-msgid "Category variant has been saved."
-msgstr "Nastavení bylo uloženo."
-
-#: manage/views/property_groups/products.py:126
-msgid "Products have been assigned."
-msgstr "Produkty byly přiřazeny"
-
-#: manage/views/property_groups/products.py:150
-msgid "Products have been removed."
-msgstr "Produkty byly odebrány"
-
-#: manage/views/property_groups/property_groups.py:57
-msgid "Property group has been saved."
-msgstr "Skupina vlastností byla uložena"
-
-#: manage/views/property_groups/property_groups.py:102
-msgid "Property group has been added."
-msgstr "Skupina vlastností byla přidána"
-
-#: manage/views/property_groups/property_groups.py:123
-msgid "Property group has been deleted."
-msgstr "Skupina vlastností byla smazána"
-
-#: manage/views/property_groups/property_groups.py:142
-msgid "Properties have been assigned."
-msgstr "Vlastnosti byly přiřazeny"
-
-#: manage/views/property_groups/property_groups.py:161
-msgid "Properties have been removed."
-msgstr "Vlastnosti byly odebrány"
-
-#: manage/views/property_groups/property_groups.py:168
-msgid "Properties have been updated."
-msgstr "Vlastnosti byly aktualizovány"
+#: manage/voucher/views.py:295
+msgid "Voucher options has been saved."
+msgstr "Nastavení kupónu bylo uloženo."
 
 #: marketing/models.py:27
 msgid "sales"
 msgstr "Prodáno"
 
-#: marketing/models.py:47 templates/manage/order/order.html:59
+#: marketing/models.py:47
+#: templates/manage/order/order.html:59
 msgid "Order"
 msgstr "Objednávka"
 
@@ -2152,75 +2420,75 @@ msgstr "email"
 
 #: order/models.py:63
 msgid "Invoice firstname"
-msgstr "Faktura - jméno"
+msgstr "Jméno"
 
 #: order/models.py:64
 msgid "Invoice lastname"
-msgstr "Faktura - příjmení"
+msgstr "Příjmení"
 
 #: order/models.py:65
 msgid "Invoice company name"
-msgstr "Faktura - název firmy"
+msgstr "Název firmy"
 
 #: order/models.py:66
 msgid "Invoice Line 1"
-msgstr "Faktura - řádek 1"
+msgstr "Adresa 1"
 
 #: order/models.py:67
 msgid "Invoice Line 2"
-msgstr "Faktura - řádek 2"
+msgstr "Adresa 2"
 
 #: order/models.py:68
 msgid "Invoice City"
-msgstr "Faktura - město"
+msgstr "Město"
 
 #: order/models.py:69
 msgid "Invoice State"
-msgstr "Faktura - stát"
+msgstr "Stát"
 
 #: order/models.py:70
 msgid "Invoice Postal Code"
-msgstr "Faktura - PSČ"
+msgstr "PSČ"
 
 #: order/models.py:72
 msgid "Invoice phone"
-msgstr "Faktura - telefon"
+msgstr "Telefon"
 
 #: order/models.py:74
 msgid "Shipping firstname"
-msgstr "Dodaní - jméno"
+msgstr "Jméno"
 
 #: order/models.py:75
 msgid "Shipping lastname"
-msgstr "Dodání - příjmení"
+msgstr "Příjmení"
 
 #: order/models.py:76
 msgid "shipping company name"
-msgstr "Dodání - firma"
+msgstr "Firma"
 
 #: order/models.py:77
 msgid "Shipping Line 1"
-msgstr "Dodání - řádek 1"
+msgstr "Adresa 1"
 
 #: order/models.py:78
 msgid "Shipping Line 2"
-msgstr "Dodání - řádek 2"
+msgstr "Adresa 2"
 
 #: order/models.py:79
 msgid "Shipping City"
-msgstr "Dodání - město"
+msgstr "Město"
 
 #: order/models.py:80
 msgid "Shipping State"
-msgstr "Dodání - stát"
+msgstr "Stát"
 
 #: order/models.py:81
 msgid "Shipping Postal Code"
-msgstr "Dodání - PSČ"
+msgstr "PSČ"
 
 #: order/models.py:83
 msgid "Shipping phone"
-msgstr "Dodání - telefon"
+msgstr "Telefon"
 
 #: order/models.py:85
 msgid "Shipping Method"
@@ -2262,8 +2530,9 @@ msgstr "Hodnota kupónu"
 msgid "Voucher tax"
 msgstr "Daň kupónu"
 
-#: order/models.py:102 templates/manage/customer/customer_inline.html:134
-#: templates/manage/order/orders_inline.html:21
+#: order/models.py:102
+#: templates/manage/customer/customer_inline.html:134
+#: templates/manage/order/orders_inline.html:27
 msgid "Message"
 msgstr "Zpráva"
 
@@ -2339,7 +2608,12 @@ msgstr "Platba neproběhla"
 msgid "Payment Flagged"
 msgstr "Platba označena"
 
-#: page/models.py:21 portlet/models/text.py:15
+#: page/models.py:20
+msgid "Short text"
+msgstr "Krátký text"
+
+#: page/models.py:21
+#: portlet/models/text.py:15
 msgid "Text"
 msgstr "Text"
 
@@ -2347,16 +2621,22 @@ msgstr "Text"
 msgid "File"
 msgstr "Soubor"
 
-#: payment/models.py:72 payment/models.py:123 shipping/models.py:70
+#: payment/models.py:72
+#: payment/models.py:123
+#: shipping/models.py:70
 #: shipping/models.py:166
 #: templates/manage/payment/payment_method_prices.html:24
-#: templates/manage/shipping/shipping_method_prices.html:24
+#: templates/manage/shipping_methods/shipping_method_prices.html:24
 msgid "Priority"
 msgstr "Priorita"
 
 #: payment/models.py:75
 msgid "note"
 msgstr "Poznámka"
+
+#: payment/models.py:80
+msgid "Module"
+msgstr "Modul"
 
 #: payment/settings.py:16
 msgid "Mastercard"
@@ -2383,11 +2663,13 @@ msgstr "Kreditní karta"
 msgid "Featured products"
 msgstr "Oblíbené produkty"
 
-#: portlet/models/featured.py:27 portlet/models/forsale.py:28
+#: portlet/models/featured.py:27
+#: portlet/models/forsale.py:28
 msgid "Use current category"
 msgstr "Použít aktuální kategorii"
 
-#: portlet/models/featured.py:28 portlet/models/forsale.py:29
+#: portlet/models/featured.py:28
+#: portlet/models/forsale.py:29
 msgid "Slideshow"
 msgstr "Slideshow"
 
@@ -2408,7 +2690,7 @@ msgid "Recent Products"
 msgstr "Nejnovější produkty"
 
 #: portlet/templatetags/lfs_portlets_tags.py:152
-#: templates/manage/product/product.html:110
+#: templates/manage/product/product.html:107
 msgid "Related Products"
 msgstr "Podobné produkty"
 
@@ -2423,7 +2705,8 @@ msgstr "Nejprodávanější"
 msgid "Note"
 msgstr "Poznámka"
 
-#: shipping/models.py:79 templates/manage/shop/default_values_tab.html:9
+#: shipping/models.py:79
+#: templates/manage/shop/default_values_tab.html:9
 msgid "Price Calculator"
 msgstr "Výpočet ceny"
 
@@ -2443,11 +2726,13 @@ msgstr "Odhlášení"
 msgid "Login"
 msgstr "Přihlášení"
 
-#: templates/manage/manage_base.html:70 templates/manage/shop/shop.html:10
+#: templates/manage/manage_base.html:70
+#: templates/manage/shop/shop.html:10
 msgid "Shop"
 msgstr "Obchod"
 
-#: templates/manage/manage_base.html:72 templates/manage/actions/action.html:9
+#: templates/manage/manage_base.html:72
+#: templates/manage/actions/action.html:9
 #: templates/manage/actions/no_actions.html:10
 msgid "Actions"
 msgstr "Akce (záložky)"
@@ -2457,7 +2742,8 @@ msgid "Delivery Times"
 msgstr "Dodací lhůty"
 
 #: templates/manage/manage_base.html:74
-#: templates/manage/manufacturer/manufacturer.html:10
+#: templates/manage/manufacturers/manufacturer.html:9
+#: templates/manage/manufacturers/no_manufacturers.html:10
 msgid "Manufacturers"
 msgstr "Výrobci"
 
@@ -2470,10 +2756,13 @@ msgid "Preferences"
 msgstr "Předvolby"
 
 #: templates/manage/manage_base.html:77
+#: templates/manage/shipping_methods/no_shipping_methods.html:11
 msgid "Shipping Methods"
 msgstr "Způsoby dodání"
 
-#: templates/manage/manage_base.html:78 templates/manage/tax/tax.html:8
+#: templates/manage/manage_base.html:78
+#: templates/manage/product_taxes/no_taxes.html:11
+#: templates/manage/product_taxes/tax.html:10
 msgid "Product Taxes"
 msgstr "Daňové skupiny"
 
@@ -2493,6 +2782,7 @@ msgstr "Přehled produktů"
 #: templates/manage/manage_base.html:94
 #: templates/manage/product/properties.html:2
 #: templates/manage/product/variants.html:4
+#: templates/manage/property_groups/no_property_groups.html:11
 msgid "Property Groups"
 msgstr "Skupiny vlastností"
 
@@ -2504,7 +2794,7 @@ msgstr "Skupiny vlastností"
 #: templates/manage/order/orders_filter.html:7
 #: templates/manage/order/orders_filters_inline.html:7
 #: templates/manage/order/selectable_orders_inline.html:3
-#: templates/manage/page/navigation.html:3
+#: templates/manage/pages/navigation.html:3
 #: templates/manage/reviews/reviews_filters_inline.html:8
 #: templates/manage/reviews/selectable_reviews_inline.html:2
 msgid "Pages"
@@ -2515,13 +2805,15 @@ msgstr "Stránky"
 msgid "Static blocks"
 msgstr "Statické bloky"
 
-#: templates/manage/manage_base.html:104 templates/manage/manage_base.html:107
+#: templates/manage/manage_base.html:104
+#: templates/manage/manage_base.html:107
 #: templates/manage/customer/customers.html:16
 #: templates/manage/customer/customers_inline.html:4
 msgid "Customers"
 msgstr "Zákazníci"
 
-#: templates/manage/manage_base.html:106 templates/manage/cart/carts.html:17
+#: templates/manage/manage_base.html:106
+#: templates/manage/cart/carts.html:17
 #: templates/manage/cart/carts.html:20
 msgid "Carts"
 msgstr "Košíky"
@@ -2549,6 +2841,7 @@ msgid "Featured"
 msgstr "Oblíbené"
 
 #: templates/manage/manage_base.html:116
+#: templates/manage/voucher/no_vouchers.html:11
 #: templates/manage/voucher/voucher_group.html:27
 #: templates/manage/voucher/vouchers.html:3
 msgid "Vouchers"
@@ -2556,6 +2849,7 @@ msgstr "Kupóny"
 
 #: templates/manage/manage_base.html:117
 #: templates/manage/discounts/discount.html:9
+#: templates/manage/discounts/no_discounts.html:10
 msgid "Discounts"
 msgstr "Slevy"
 
@@ -2571,6 +2865,10 @@ msgstr "Nástroje"
 #: templates/manage/manage_base.html:124
 msgid "Miscellaneous"
 msgstr "Různé"
+
+#: templates/manage/manage_base.html:130
+msgid "Help"
+msgstr "Nápověda"
 
 #: templates/manage/manage_base.html:157
 msgid "Powered by"
@@ -2600,7 +2898,8 @@ msgstr "Prosím potvrďte"
 msgid "Do you really want to delete this object?"
 msgstr "Opravdu chcete smazat tento objekt?"
 
-#: templates/manage/utils.html:12 templates/manage/utils.html.py:17
+#: templates/manage/utils.html:12
+#: templates/manage/utils.html.py:17
 msgid "Utilities"
 msgstr "Nástroje"
 
@@ -2616,91 +2915,93 @@ msgstr "Korekce úrovní kategorií a subkategorií"
 msgid "Reindex topseller"
 msgstr "Reindexace nejprodávanějšího zboží"
 
-#: templates/manage/actions/action.html:21
-#: templates/manage/actions/add_action.html:12
+#: templates/manage/actions/action.html:20
+#: templates/manage/actions/add_action.html:11
 msgid "Add action"
 msgstr "Přidat akci"
 
-#: templates/manage/actions/action.html:24
+#: templates/manage/actions/action.html:23
 msgid "Do you really want to delete this action?"
 msgstr "Opravdu chcete smazat tuto akci?"
 
-#: templates/manage/actions/action.html:25
+#: templates/manage/actions/action.html:24
 msgid "Delete action"
 msgstr "Odebrat akci"
 
-#: templates/manage/actions/action.html:29
+#: templates/manage/actions/action.html:28
 msgid "View Shop"
 msgstr "Zobrazit v obchodě"
 
-#: templates/manage/actions/action.html:36
+#: templates/manage/actions/action.html:34
 msgid "Action"
 msgstr "Akce"
 
-#: templates/manage/actions/add_action.html:16
+#: templates/manage/actions/add_action.html:14
 #: templates/manage/actions/data_tab.html:2
 #: templates/manage/category/add_category.html:15
 #: templates/manage/category/data.html:3
 #: templates/manage/category/manage_category.html:42
 #: templates/manage/customer_tax/add_customer_tax.html:15
 #: templates/manage/customer_tax/customer_tax.html:39
-#: templates/manage/delivery_times/add.html:16
-#: templates/manage/delivery_times/base.html:41
+#: templates/manage/delivery_times/add.html:15
+#: templates/manage/delivery_times/base.html:38
 #: templates/manage/discounts/data.html:2
 #: templates/manage/discounts/discount.html:31
 #: templates/manage/export/add_export.html:15
 #: templates/manage/export/export.html:35
 #: templates/manage/export/export_data_inline.html:2
-#: templates/manage/manufacturer/add_manufacturer.html:16
-#: templates/manage/manufacturer/manufacturer.html:34
-#: templates/manage/manufacturer/manufacturer_data_inline.html:2
-#: templates/manage/page/add_page.html:14
-#: templates/manage/page/data_tab.html:2 templates/manage/page/page.html:32
+#: templates/manage/manufacturers/add_manufacturer.html:14
+#: templates/manage/manufacturers/manufacturer.html:28
+#: templates/manage/manufacturers/manufacturer_data_inline.html:2
+#: templates/manage/pages/add_page.html:14
+#: templates/manage/pages/data_tab.html:2
+#: templates/manage/pages/page.html:32
 #: templates/manage/payment/add_payment_method.html:16
 #: templates/manage/payment/manage_payment.html:28
 #: templates/manage/payment/payment_method_data.html:3
-#: templates/manage/product/add_product.html:20
+#: templates/manage/product/add_product.html:17
 #: templates/manage/product/data.html:3
-#: templates/manage/product/product.html:95
+#: templates/manage/product/product.html:92
+#: templates/manage/product_taxes/add_tax.html:15
+#: templates/manage/product_taxes/tax.html:38
 #: templates/manage/properties/add_property.html:13
-#: templates/manage/properties/add_property_group.html:17
 #: templates/manage/properties/property.html:36
-#: templates/manage/properties/property_group.html:31
-#: templates/manage/properties/property_group.html:36
-#: templates/manage/shipping/add_shipping_method.html:15
-#: templates/manage/shipping/manage_shipping.html:29
-#: templates/manage/shipping/shipping_method_data.html:2
+#: templates/manage/property_groups/add_property_group.html:15
+#: templates/manage/property_groups/property_group.html:31
+#: templates/manage/property_groups/property_group.html:36
+#: templates/manage/shipping_methods/add_shipping_method.html:15
+#: templates/manage/shipping_methods/manage_shipping.html:28
+#: templates/manage/shipping_methods/shipping_method_data.html:2
 #: templates/manage/shop/data_tab.html:3
-#: templates/manage/static_block/add_static_block.html:14
+#: templates/manage/static_block/add_static_block.html:15
 #: templates/manage/static_block/static_block.html:41
 #: templates/manage/static_block/static_block.html:46
-#: templates/manage/tax/add_tax.html:15 templates/manage/tax/tax.html:36
 #: templates/manage/voucher/voucher_group.html:26
 msgid "Data"
 msgstr "Data"
 
-#: templates/manage/actions/add_action.html:25
+#: templates/manage/actions/add_action.html:21
 #: templates/manage/discounts/criteria.html:12
-#: templates/manage/shipping/shipping_method_criteria.html:13
+#: templates/manage/shipping_methods/shipping_method_criteria.html:13
 msgid "Add"
 msgstr "Přidat"
 
-#: templates/manage/actions/add_action.html:30
-#: templates/manage/category/add_category.html:31
+#: templates/manage/actions/add_action.html:25
+#: templates/manage/category/add_category.html:29
 #: templates/manage/customer_tax/add_customer_tax.html:30
-#: templates/manage/delivery_times/add.html:29
-#: templates/manage/discounts/add_discount.html:32
+#: templates/manage/delivery_times/add.html:26
+#: templates/manage/discounts/add_discount.html:31
 #: templates/manage/export/add_export.html:31
-#: templates/manage/manufacturer/add_manufacturer.html:30
-#: templates/manage/page/add_page.html:29
+#: templates/manage/manufacturers/add_manufacturer.html:25
+#: templates/manage/pages/add_page.html:27
 #: templates/manage/payment/add_payment_method.html:28
-#: templates/manage/product/add_product.html:36
-#: templates/manage/properties/add_property.html:25
-#: templates/manage/properties/add_property_group.html:30
-#: templates/manage/shipping/add_shipping_method.html:29
-#: templates/manage/static_block/add_static_block.html:27
-#: templates/manage/tax/add_tax.html:28
-#: templates/manage/voucher/add_voucher_group.html:30
+#: templates/manage/product/add_product.html:33
+#: templates/manage/product_taxes/add_tax.html:27
+#: templates/manage/properties/add_property.html:23
+#: templates/manage/property_groups/add_property_group.html:26
+#: templates/manage/shipping_methods/add_shipping_method.html:26
+#: templates/manage/static_block/add_static_block.html:26
+#: templates/manage/voucher/add_voucher_group.html:26
 msgid "Cancel"
 msgstr "Storno"
 
@@ -2800,7 +3101,7 @@ msgstr "Obecné"
 #: templates/manage/customer/customers_inline.html:10
 #: templates/manage/marketing/rating_mails.html:45
 #: templates/manage/reviews/review_inline.html:13
-#: templates/manage/reviews/reviews_inline.html:9
+#: templates/manage/reviews/reviews_inline.html:14
 msgid "ID"
 msgstr "ID"
 
@@ -2816,7 +3117,7 @@ msgstr "ID"
 #: templates/manage/marketing/rating_mails.html:82
 #: templates/manage/order/order_inline.html:22
 #: templates/manage/order/order_inline.html:38
-#: templates/manage/order/orders_inline.html:32
+#: templates/manage/order/orders_inline.html:37
 msgid "DATETIME_FORMAT"
 msgstr "d.m.Y H:M"
 
@@ -2885,8 +3186,8 @@ msgstr "Správa košíků"
 #: templates/manage/product/pages_inline.html:20
 #: templates/manage/product/related_products_inline.html:7
 #: templates/manage/product/related_products_inline.html:11
-#: templates/manage/properties/pg_products_inline.html:6
-#: templates/manage/properties/pg_products_inline.html:10
+#: templates/manage/property_groups/products_inline.html:6
+#: templates/manage/property_groups/products_inline.html:10
 #: templates/manage/reviews/reviews_filters_inline.html:19
 #: templates/manage/reviews/reviews_filters_inline.html:20
 #: templates/manage/reviews/reviews_filters_inline.html:30
@@ -2946,8 +3247,8 @@ msgstr "První"
 #: templates/manage/product/pages_inline.html:25
 #: templates/manage/product/related_products_inline.html:9
 #: templates/manage/product/related_products_inline.html:12
-#: templates/manage/properties/pg_products_inline.html:8
-#: templates/manage/properties/pg_products_inline.html:11
+#: templates/manage/property_groups/products_inline.html:8
+#: templates/manage/property_groups/products_inline.html:11
 #: templates/manage/reviews/reviews_filters_inline.html:25
 #: templates/manage/reviews/reviews_filters_inline.html:26
 #: templates/manage/reviews/reviews_filters_inline.html:33
@@ -2977,7 +3278,7 @@ msgstr "Předchozí"
 #: templates/manage/product/accessories_inline.html:16
 #: templates/manage/product/pages_inline.html:29
 #: templates/manage/product/related_products_inline.html:16
-#: templates/manage/properties/pg_products_inline.html:15
+#: templates/manage/property_groups/products_inline.html:15
 #: templates/manage/reviews/reviews_filters_inline.html:37
 #: templates/manage/reviews/selectable_reviews_inline.html:30
 #: templates/manage/voucher/vouchers_inline.html:31
@@ -3028,8 +3329,8 @@ msgstr "z"
 #: templates/manage/product/pages_inline.html:47
 #: templates/manage/product/related_products_inline.html:21
 #: templates/manage/product/related_products_inline.html:26
-#: templates/manage/properties/pg_products_inline.html:20
-#: templates/manage/properties/pg_products_inline.html:24
+#: templates/manage/property_groups/products_inline.html:20
+#: templates/manage/property_groups/products_inline.html:24
 #: templates/manage/reviews/reviews_filters_inline.html:43
 #: templates/manage/reviews/reviews_filters_inline.html:44
 #: templates/manage/reviews/reviews_filters_inline.html:56
@@ -3089,8 +3390,8 @@ msgstr "Další"
 #: templates/manage/product/pages_inline.html:50
 #: templates/manage/product/related_products_inline.html:23
 #: templates/manage/product/related_products_inline.html:27
-#: templates/manage/properties/pg_products_inline.html:22
-#: templates/manage/properties/pg_products_inline.html:25
+#: templates/manage/property_groups/products_inline.html:22
+#: templates/manage/property_groups/products_inline.html:25
 #: templates/manage/reviews/reviews_filters_inline.html:49
 #: templates/manage/reviews/reviews_filters_inline.html:50
 #: templates/manage/reviews/reviews_filters_inline.html:61
@@ -3108,10 +3409,11 @@ msgstr "Poslední"
 
 #: templates/manage/category/add_category.html:12
 #: templates/manage/category/manage_category.html:23
+#: templates/manage/category/no_categories.html:20
 msgid "Add Category"
 msgstr "Přidat kategorii"
 
-#: templates/manage/category/add_category.html:26
+#: templates/manage/category/add_category.html:25
 msgid "Add category"
 msgstr "Přidat kategorii"
 
@@ -3120,13 +3422,13 @@ msgid "None"
 msgstr "Žádná"
 
 #: templates/manage/category/data.html:80
-#: templates/manage/product/data.html:379
+#: templates/manage/product/data.html:371
 msgid "Appearance"
 msgstr "Vzhled"
 
 #: templates/manage/category/data.html:114
-#: templates/manage/page/data_tab.html:10
-#: templates/manage/product/data.html:419
+#: templates/manage/pages/data_tab.html:10
+#: templates/manage/product/data.html:411
 #: templates/manage/static_block/static_block.html:55
 msgid "Save data"
 msgstr "Uložit údaje"
@@ -3160,20 +3462,30 @@ msgid "View"
 msgstr "Zobrazit"
 
 #: templates/manage/category/manage_category.html:45
-#: templates/manage/category/seo.html:3 templates/manage/page/page.html:33
-#: templates/manage/page/seo_tab.html:2
-#: templates/manage/product/product.html:112
-#: templates/manage/product/seo.html:3 templates/manage/shop/seo_tab.html:3
+#: templates/manage/category/seo.html:3
+#: templates/manage/pages/page.html:33
+#: templates/manage/pages/seo_tab.html:2
+#: templates/manage/product/product.html:109
+#: templates/manage/product/seo.html:3
+#: templates/manage/shop/seo_tab.html:3
 #: templates/manage/shop/shop.html:13
 msgid "SEO"
 msgstr "SEO"
 
 #: templates/manage/category/manage_category.html:46
-#: templates/manage/page/page.html:35
-#: templates/manage/product/product.html:113
+#: templates/manage/pages/page.html:35
+#: templates/manage/product/product.html:110
 #: templates/manage/shop/shop.html:14
 msgid "Portlets"
 msgstr "Portlety"
+
+#: templates/manage/category/no_categories.html:4
+msgid "No Categories"
+msgstr "Žádné kategorie"
+
+#: templates/manage/category/no_categories.html:14
+msgid "There are no categories yet."
+msgstr "Nejsou definovány žádné kategorie"
 
 #: templates/manage/category/products.html:7
 #: templates/manage/product/accessories_inline.html:34
@@ -3195,8 +3507,10 @@ msgstr "Přidat do kategorie"
 msgid "Remove from category"
 msgstr "Odebrat z kategorie"
 
-#: templates/manage/category/seo.html:12 templates/manage/page/seo_tab.html:11
-#: templates/manage/product/seo.html:71 templates/manage/shop/seo_tab.html:12
+#: templates/manage/category/seo.html:12
+#: templates/manage/pages/seo_tab.html:11
+#: templates/manage/product/seo.html:71
+#: templates/manage/shop/seo_tab.html:12
 msgid "Save SEO"
 msgstr "Uložit SEO"
 
@@ -3277,17 +3591,18 @@ msgstr "Zákaznické daně"
 msgid "There are no customer taxes defined yet."
 msgstr "Nejsou zde přiřazeny žádné portlety"
 
-#: templates/manage/delivery_times/add.html:6
-#: templates/manage/delivery_times/add.html:25
-#: templates/manage/delivery_times/base.html:28
+#: templates/manage/delivery_times/add.html:4
+#: templates/manage/delivery_times/add.html:22
+#: templates/manage/delivery_times/base.html:27
+#: templates/manage/delivery_times/no_delivery_times.html:19
 msgid "Add Delivery Time"
 msgstr "Přidat dobu dodání"
 
-#: templates/manage/delivery_times/add.html:13
+#: templates/manage/delivery_times/add.html:12
 msgid "Add delivery time"
 msgstr "Přidat dobu dodání"
 
-#: templates/manage/delivery_times/base.html:6
+#: templates/manage/delivery_times/base.html:5
 msgid "Manage Delivery Time"
 msgstr "Spravovat dobu dodání"
 
@@ -3295,21 +3610,26 @@ msgstr "Spravovat dobu dodání"
 msgid "Delivery times"
 msgstr "Doby dodání"
 
-#: templates/manage/delivery_times/base.html:31
+#: templates/manage/delivery_times/base.html:29
 msgid "Do you really want to delete this delivery time?"
 msgstr "Opravdu chcete smazat tento způsob dodání?"
 
-#: templates/manage/delivery_times/base.html:32
+#: templates/manage/delivery_times/base.html:30
 msgid "Delete Delivery Time"
 msgstr "Smazat dobu dodání"
 
-#: templates/manage/delivery_times/base.html:37
+#: templates/manage/delivery_times/base.html:34
+#: templates/manage/delivery_times/no_delivery_times.html:10
 msgid "Delivery Time"
 msgstr "Doba dodání"
 
-#: templates/manage/delivery_times/base.html:50
+#: templates/manage/delivery_times/base.html:47
 msgid "Save Delivery Time"
 msgstr "Uložit dobu dodání"
+
+#: templates/manage/delivery_times/no_delivery_times.html:13
+msgid "There are no delivery times yet."
+msgstr "Prozatím nejsou žádné časy dodání."
 
 #: templates/manage/discounts/add_discount.html:12
 #: templates/manage/discounts/add_discount.html:16
@@ -3322,25 +3642,25 @@ msgstr "Přidat slevu"
 #: templates/manage/discounts/discount.html:32
 #: templates/manage/payment/manage_payment.html:29
 #: templates/manage/payment/payment_method_criteria.html:3
-#: templates/manage/shipping/manage_shipping.html:30
-#: templates/manage/shipping/shipping_method_criteria.html:3
+#: templates/manage/shipping_methods/manage_shipping.html:29
+#: templates/manage/shipping_methods/shipping_method_criteria.html:3
 msgid "Criteria"
 msgstr "Podmínky"
 
 #: templates/manage/discounts/criteria.html:14
 #: templates/manage/payment/payment_method_criteria.html:15
 #: templates/manage/payment/payment_price_criteria.html:18
-#: templates/manage/shipping/shipping_method_criteria.html:15
-#: templates/manage/shipping/shipping_price_criteria.html:17
-#: templates/manage/shipping/shipping_price_criteria.html:18
+#: templates/manage/shipping_methods/shipping_method_criteria.html:15
+#: templates/manage/shipping_methods/shipping_price_criteria.html:17
+#: templates/manage/shipping_methods/shipping_price_criteria.html:18
 msgid "Add criterion"
 msgstr "Přidat podmínku"
 
 #: templates/manage/discounts/criteria.html:27
 #: templates/manage/payment/payment_method_criteria.html:28
 #: templates/manage/payment/payment_price_criteria.html:31
-#: templates/manage/shipping/shipping_method_criteria.html:28
-#: templates/manage/shipping/shipping_price_criteria.html:31
+#: templates/manage/shipping_methods/shipping_method_criteria.html:28
+#: templates/manage/shipping_methods/shipping_price_criteria.html:31
 msgid "Save criteria"
 msgstr "Uložit podmínku"
 
@@ -3348,7 +3668,7 @@ msgstr "Uložit podmínku"
 #: templates/manage/product/products_inline.html:122
 #: templates/manage/product/variants.html:247
 #: templates/manage/properties/property_select_field.html:13
-#: templates/manage/shipping/shipping_method_data.html:15
+#: templates/manage/shipping_methods/shipping_method_data.html:15
 msgid "Save"
 msgstr "Uložit"
 
@@ -3359,6 +3679,14 @@ msgstr "Opravdu chcete smazat tuto slevu?"
 #: templates/manage/discounts/discount.html:26
 msgid "Delete discount"
 msgstr "Smazat slevu"
+
+#: templates/manage/discounts/no_discounts.html:12
+msgid "There are no discounts yet."
+msgstr "Prozatím nejsou žádné slevy."
+
+#: templates/manage/discounts/no_discounts.html:18
+msgid "Add Discount"
+msgstr "Přidat slevu"
 
 #: templates/manage/export/add_export.html:12
 #: templates/manage/export/add_export.html:27
@@ -3415,47 +3743,59 @@ msgstr "Správa obrázků"
 msgid "Global images"
 msgstr "Globální obrázky"
 
-#: templates/manage/images/images.html:34
+#: templates/manage/images/images.html:35
 #: templates/manage/product/images.html:89
 msgid "Delete images"
 msgstr "Smazat obrázky"
 
-#: templates/manage/images/images.html:37
+#: templates/manage/images/images.html:38
 msgid "Toggle selection"
 msgstr "Obrátit výběr"
 
 #: templates/manage/images/images.html:41
+msgid "There are no images yet."
+msgstr "Prozatím nejsou žádné obrázky."
+
+#: templates/manage/images/images.html:44
 #: templates/manage/product/images.html:96
 msgid "Add images"
 msgstr "Přidat obrázky"
 
-#: templates/manage/images/images.html:48
+#: templates/manage/images/images.html:51
 #: templates/manage/product/images.html:103
 #: templates/manage/static_block/files.html:58
 msgid "Uploading images:"
 msgstr "Nahrávám obrázky:"
 
-#: templates/manage/manufacturer/add_manufacturer.html:12
-#: templates/manage/manufacturer/add_manufacturer.html:25
-#: templates/manage/manufacturer/manufacturer.html:22
+#: templates/manage/manufacturers/add_manufacturer.html:11
+#: templates/manage/manufacturers/add_manufacturer.html:21
+#: templates/manage/manufacturers/manufacturer.html:20
 msgid "Add Manufacturer"
 msgstr "Přidat výrobce"
 
-#: templates/manage/manufacturer/manufacturer.html:6
+#: templates/manage/manufacturers/manufacturer.html:4
 msgid "Manage Manufacturer"
 msgstr "Správa výrobce"
 
-#: templates/manage/manufacturer/manufacturer.html:26
+#: templates/manage/manufacturers/manufacturer.html:22
 msgid "Do you really want to delete this manufacturer?"
 msgstr "Opravdu chcete smazat tohoto výrobce?"
 
-#: templates/manage/manufacturer/manufacturer.html:28
+#: templates/manage/manufacturers/manufacturer.html:24
 msgid "Delete Manufacturer"
 msgstr "Smazat výrobce"
 
-#: templates/manage/manufacturer/manufacturer_data_inline.html:10
+#: templates/manage/manufacturers/manufacturer_data_inline.html:10
 msgid "Save manufacturer"
 msgstr "Uložit výrobce"
+
+#: templates/manage/manufacturers/no_manufacturers.html:13
+msgid "There are no manufacturers yet."
+msgstr "Prozatím nejsou žádní výrobci."
+
+#: templates/manage/manufacturers/no_manufacturers.html:19
+msgid "Add Manufacturers"
+msgstr "Přidat výrobce"
 
 #: templates/manage/marketing/featured.html:4
 #: templates/manage/marketing/topseller.html:4
@@ -3496,12 +3836,8 @@ msgid "Send copy"
 msgstr "Odeslat kopii"
 
 #: templates/manage/marketing/rating_mails.html:30
-msgid ""
-"The mails will also send to the shop notification email adresses (if not in "
-"test mode)"
-msgstr ""
-"Testovací emaily budou zaslány také na notifikační adresy (pokud se nejdná o "
-"testovací režim)"
+msgid "The mails will also send to the shop notification email adresses (if not in test mode)"
+msgstr "Testovací emaily budou zaslány také na notifikační adresy (pokud se nejdná o testovací režim)"
 
 #: templates/manage/marketing/rating_mails.html:40
 msgid "Rating mails sent"
@@ -3509,7 +3845,7 @@ msgstr "Emaily odeslány"
 
 #: templates/manage/marketing/rating_mails.html:54
 #: templates/manage/order/order_inline.html:19
-#: templates/manage/order/orders_inline.html:9
+#: templates/manage/order/orders_inline.html:15
 msgid "Date"
 msgstr "Datum"
 
@@ -3554,7 +3890,7 @@ msgid "Resend order"
 msgstr "Znovu odeslat objednávku"
 
 #: templates/manage/order/order.html:53
-#: templates/manage/product/product.html:85
+#: templates/manage/product/product.html:84
 #: templates/manage/reviews/review.html:38
 msgid "Change"
 msgstr "Změnit"
@@ -3567,33 +3903,33 @@ msgstr "Číslo objednávky"
 msgid "Included VAT"
 msgstr "včetně DPH"
 
-#: templates/manage/order/order_inline.html:236
+#: templates/manage/order/order_inline.html:242
 msgid "Voucher"
 msgstr "Kopón"
 
-#: templates/manage/order/order_inline.html:253
+#: templates/manage/order/order_inline.html:259
 msgid "Shipping"
 msgstr "Dodání"
 
-#: templates/manage/order/order_inline.html:269
+#: templates/manage/order/order_inline.html:275
 msgid "Payment"
 msgstr "Platba"
 
-#: templates/manage/order/order_inline.html:291
+#: templates/manage/order/order_inline.html:297
 msgid "Inclusive VAT"
 msgstr "DPH"
 
-#: templates/manage/order/order_inline.html:300
+#: templates/manage/order/order_inline.html:306
 msgid "Message from the customer"
 msgstr "Zpráva od zákazníka"
 
-#: templates/manage/order/order_inline.html:314
+#: templates/manage/order/order_inline.html:320
 msgid "Paypal Transaction ID"
 msgstr "Číslo Paypal transakce"
 
-#: templates/manage/order/orders_inline.html:55
-msgid "There are no orders"
-msgstr "Nejsou žádné objednávky"
+#: templates/manage/order/orders_inline.html:6
+msgid "No orders found."
+msgstr "Nebyly nalezeny žádné objednávky."
 
 #: templates/manage/order/selectable_orders_inline.html:63
 msgid "N/A"
@@ -3608,28 +3944,28 @@ msgstr "Číslování objednávek"
 msgid "Save order numbers"
 msgstr "Uložit způsob číslování objednávek"
 
-#: templates/manage/page/add_page.html:11
-#: templates/manage/page/add_page.html:24
+#: templates/manage/pages/add_page.html:11
+#: templates/manage/pages/add_page.html:23
 msgid "Add page"
 msgstr "Přidat stránku"
 
-#: templates/manage/page/page.html:15
+#: templates/manage/pages/page.html:15
 msgid "Add Page"
 msgstr "Přidat stránku"
 
-#: templates/manage/page/page.html:19
+#: templates/manage/pages/page.html:19
 msgid "Do you really want to delete this page?"
 msgstr "Opravdu chcete smazat tutuo stránku?"
 
-#: templates/manage/page/page.html:20
+#: templates/manage/pages/page.html:20
 msgid "Delete Page"
 msgstr "Smazat stránku"
 
-#: templates/manage/page/page.html:23
+#: templates/manage/pages/page.html:23
 msgid "View Page"
 msgstr "Zobrazit stránku"
 
-#: templates/manage/page/page.html:26
+#: templates/manage/pages/page.html:26
 msgid "Goto Page"
 msgstr "Přejít na stránku"
 
@@ -3661,8 +3997,8 @@ msgstr "Smazat způsob platby"
 #: templates/manage/payment/manage_payment.html:30
 #: templates/manage/payment/payment_method_prices.html:3
 #: templates/manage/product/data.html:150
-#: templates/manage/shipping/manage_shipping.html:31
-#: templates/manage/shipping/shipping_method_prices.html:3
+#: templates/manage/shipping_methods/manage_shipping.html:30
+#: templates/manage/shipping_methods/shipping_method_prices.html:3
 msgid "Prices"
 msgstr "Ceny"
 
@@ -3671,27 +4007,27 @@ msgid "Save Payment Method"
 msgstr "Uložit způsob platby"
 
 #: templates/manage/payment/payment_method_prices.html:13
-#: templates/manage/shipping/shipping_method_prices.html:13
+#: templates/manage/shipping_methods/shipping_method_prices.html:13
 msgid "Existing prices"
 msgstr "Definované ceny"
 
 #: templates/manage/payment/payment_method_prices.html:43
-#: templates/manage/shipping/shipping_method_prices.html:43
+#: templates/manage/shipping_methods/shipping_method_prices.html:43
 msgid "Edit criteria"
 msgstr "Upravit podmínky"
 
 #: templates/manage/payment/payment_method_prices.html:58
-#: templates/manage/shipping/shipping_method_prices.html:58
+#: templates/manage/shipping_methods/shipping_method_prices.html:58
 msgid "Delete prices"
 msgstr "Odebrat ceny"
 
 #: templates/manage/payment/payment_method_prices.html:59
-#: templates/manage/shipping/shipping_method_prices.html:59
+#: templates/manage/shipping_methods/shipping_method_prices.html:59
 msgid "Update prices"
 msgstr "Aktualizovat ceny"
 
 #: templates/manage/payment/payment_price_criteria.html:6
-#: templates/manage/shipping/shipping_price_criteria.html:6
+#: templates/manage/shipping_methods/shipping_price_criteria.html:6
 msgid "Edit criteria for"
 msgstr "Upravit podmínku pro"
 
@@ -3763,7 +4099,7 @@ msgid "Add portlet"
 msgstr "Přidat portlet"
 
 #: templates/manage/product/accessories.html:4
-#: templates/manage/product/product.html:109
+#: templates/manage/product/product.html:106
 msgid "Accessories"
 msgstr "Příslušenství"
 
@@ -3785,13 +4121,13 @@ msgstr "Uložit příslušenství"
 msgid "Remove from accessories"
 msgstr "Odebrat z příslušenství"
 
-#: templates/manage/product/add_product.html:16
-#: templates/manage/product/add_product.html:31
+#: templates/manage/product/add_product.html:14
+#: templates/manage/product/add_product.html:28
 msgid "Add product"
 msgstr "Přidat produkt"
 
 #: templates/manage/product/attachments.html:3
-#: templates/manage/product/product.html:103
+#: templates/manage/product/product.html:100
 msgid "Attachments"
 msgstr "Přílohy"
 
@@ -3855,6 +4191,19 @@ msgstr "Aktualizovat obrázky"
 msgid "There are no images"
 msgstr "Nejsou žádné obrázky"
 
+#: templates/manage/product/no_products.html:4
+msgid "No Products"
+msgstr "Žádné produkty"
+
+#: templates/manage/product/no_products.html:14
+msgid "There are no products yet."
+msgstr "Prozatím nejsou žádné produkty."
+
+#: templates/manage/product/no_products.html:20
+#: templates/manage/product/product.html:56
+msgid "Add Product"
+msgstr "Přidat produkt"
+
 #: templates/manage/product/product.html:6
 msgid "Manage Product"
 msgstr "Spravovat produkt"
@@ -3862,10 +4211,6 @@ msgstr "Spravovat produkt"
 #: templates/manage/product/product.html:50
 msgid "Base Article"
 msgstr "Výchozí produkt"
-
-#: templates/manage/product/product.html:56
-msgid "Add Product"
-msgstr "Přidat produkt"
 
 #: templates/manage/product/product.html:61
 msgid "Do you really want to delete this product?"
@@ -3883,7 +4228,7 @@ msgstr "Zobrazit produkt"
 msgid "Goto Product"
 msgstr "Přejít na produkt"
 
-#: templates/manage/product/product.html:111
+#: templates/manage/product/product.html:108
 #: templates/manage/product/stock.html:2
 msgid "Stock"
 msgstr "Sklad"
@@ -3927,6 +4272,7 @@ msgid "No products found."
 msgstr "Nebyly nalezeny žádné produkty"
 
 #: templates/manage/product/properties.html:5
+#: templates/manage/property_groups/no_property_groups.html:14
 msgid "There are no property groups yet."
 msgstr "Nejsou zde zatím žádné skupiny vlastností."
 
@@ -3965,9 +4311,7 @@ msgstr "Hodnoty vlastností"
 
 #: templates/manage/product/properties.html:204
 msgid "Please go to the variants to assign property values."
-msgstr ""
-"Pokud chcete přiřadit hodnoty vlastností, přejděte prosím na záložku "
-"Kombinace"
+msgstr "Pokud chcete přiřadit hodnoty vlastností, přejděte prosím na záložku Kombinace"
 
 #: templates/manage/product/related_products_inline.html:89
 msgid "Add to related products"
@@ -4073,19 +4417,52 @@ msgstr "Způsob zobrazení"
 msgid "Change variant display type"
 msgstr "Změnit způsob zobrazení kombinace"
 
+#: templates/manage/product_taxes/add_tax.html:4
+#: templates/manage/product_taxes/add_tax.html:12
+#: templates/manage/product_taxes/no_taxes.html:20
+#: templates/manage/product_taxes/tax.html:27
+msgid "Add Product Tax"
+msgstr "Přidat daňovou skupinu"
+
+#: templates/manage/product_taxes/add_tax.html:22
+msgid "Add Tax"
+msgstr "Přidat daň"
+
+#: templates/manage/product_taxes/no_taxes.html:4
+msgid "No Product Taxes"
+msgstr "Nejsou žádné daňové skupiny"
+
+#: templates/manage/product_taxes/no_taxes.html:14
+msgid "There are no product taxes yet."
+msgstr "Nejsou zde zatím žádné daňové skupiny"
+
+#: templates/manage/product_taxes/tax.html:4
+#: templates/manage/product_taxes/tax.html:35
+msgid "Product Tax"
+msgstr "Daňová skupina"
+
+#: templates/manage/product_taxes/tax.html:30
+msgid "Do you really want to delete this tax?"
+msgstr "Opravdu chcete smazat tuto daň?"
+
+#: templates/manage/product_taxes/tax.html:31
+msgid "Delete Product Tax"
+msgstr "Smazat daňovou skupinu"
+
+#: templates/manage/product_taxes/tax.html:46
+msgid "Save Tax"
+msgstr "Uložit daňovou skupinu"
+
 #: templates/manage/properties/add_property.html:10
-#: templates/manage/properties/add_property.html:20
+#: templates/manage/properties/add_property.html:19
+#: templates/manage/properties/no_properties.html:20
 #: templates/manage/properties/property.html:24
 msgid "Add Property"
 msgstr "Přidat vlastnost"
 
-#: templates/manage/properties/add_property_group.html:13
-msgid "Add property Group"
-msgstr "Přidat skupinu vlastností"
-
-#: templates/manage/properties/add_property_group.html:25
-msgid "Add property group"
-msgstr "Přidat skupinu vlastností"
+#: templates/manage/properties/no_properties.html:14
+msgid "There are no properties yet."
+msgstr "Nejsou zde zatím žádné vlastnosti."
 
 #: templates/manage/properties/options_inline.html:3
 msgid "Select field options"
@@ -4094,36 +4471,6 @@ msgstr "Vybrat možnosti pole"
 #: templates/manage/properties/options_inline.html:80
 msgid "Update options"
 msgstr "Aktualizovat možnosti"
-
-#: templates/manage/properties/pg_products_inline.html:87
-#: templates/manage/properties/properties_inline.html:47
-msgid "Add to Property Group"
-msgstr "Přidat do skupiny vlastností"
-
-#: templates/manage/properties/pg_products_inline.html:92
-msgid "Assigned products"
-msgstr "Přiřazené produkty"
-
-#: templates/manage/properties/pg_products_inline.html:148
-#: templates/manage/properties/properties_inline.html:105
-msgid "Remove from Property Group"
-msgstr "Odebrat ze skupiny vlastností"
-
-#: templates/manage/properties/properties_inline.html:38
-msgid "All properties are selected"
-msgstr "Všechny vlastnosti vybrány"
-
-#: templates/manage/properties/properties_inline.html:52
-msgid "Selected Properties"
-msgstr "Vybrané vlastnosti"
-
-#: templates/manage/properties/properties_inline.html:95
-msgid "No properties assigned"
-msgstr "Nebyly přiřazeny žádné vlastnosti"
-
-#: templates/manage/properties/properties_inline.html:109
-msgid "Update properties"
-msgstr "Aktualizovat vlastnosti"
 
 #: templates/manage/properties/property.html:26
 msgid "Do you really want to delete this property?"
@@ -4144,26 +4491,6 @@ msgstr "Typ pole"
 #: templates/manage/properties/property.html:57
 msgid "Save property type"
 msgstr "Uložit typ pole"
-
-#: templates/manage/properties/property_group.html:7
-msgid "Property groups"
-msgstr "Skupiny vlastností"
-
-#: templates/manage/properties/property_group.html:24
-msgid "Add Property Group"
-msgstr "Přidat skupinu vlastností"
-
-#: templates/manage/properties/property_group.html:26
-msgid "Do you really want to delete this property group?"
-msgstr "Opravdu chcete smazat tuto skupinu vlastností?"
-
-#: templates/manage/properties/property_group.html:27
-msgid "Delete Property Group"
-msgstr "Odebrat skupinu vlastností"
-
-#: templates/manage/properties/property_group.html:44
-msgid "Save property group"
-msgstr "Uložit skupinu vlastností"
 
 #: templates/manage/properties/property_number_field.html:2
 msgid "Validators"
@@ -4209,6 +4536,65 @@ msgstr "Smazat krok"
 msgid "Update steps"
 msgstr "Aktualizovat krok"
 
+#: templates/manage/property_groups/add_property_group.html:11
+msgid "Add property Group"
+msgstr "Přidat skupinu vlastností"
+
+#: templates/manage/property_groups/add_property_group.html:22
+msgid "Add property group"
+msgstr "Přidat skupinu vlastností"
+
+#: templates/manage/property_groups/no_property_groups.html:20
+#: templates/manage/property_groups/property_group.html:24
+msgid "Add Property Group"
+msgstr "Přidat skupinu vlastností"
+
+#: templates/manage/property_groups/products_inline.html:87
+#: templates/manage/property_groups/properties_inline.html:47
+msgid "Add to Property Group"
+msgstr "Přidat do skupiny vlastností"
+
+#: templates/manage/property_groups/products_inline.html:92
+msgid "Assigned products"
+msgstr "Přiřazené produkty"
+
+#: templates/manage/property_groups/products_inline.html:148
+#: templates/manage/property_groups/properties_inline.html:105
+msgid "Remove from Property Group"
+msgstr "Odebrat ze skupiny vlastností"
+
+#: templates/manage/property_groups/properties_inline.html:38
+msgid "All properties are selected"
+msgstr "Všechny vlastnosti vybrány"
+
+#: templates/manage/property_groups/properties_inline.html:52
+msgid "Selected Properties"
+msgstr "Vybrané vlastnosti"
+
+#: templates/manage/property_groups/properties_inline.html:95
+msgid "No properties assigned"
+msgstr "Nebyly přiřazeny žádné vlastnosti"
+
+#: templates/manage/property_groups/properties_inline.html:109
+msgid "Update properties"
+msgstr "Aktualizovat vlastnosti"
+
+#: templates/manage/property_groups/property_group.html:7
+msgid "Property groups"
+msgstr "Skupiny vlastností"
+
+#: templates/manage/property_groups/property_group.html:26
+msgid "Do you really want to delete this property group?"
+msgstr "Opravdu chcete smazat tuto skupinu vlastností?"
+
+#: templates/manage/property_groups/property_group.html:27
+msgid "Delete Property Group"
+msgstr "Odebrat skupinu vlastností"
+
+#: templates/manage/property_groups/property_group.html:44
+msgid "Save property group"
+msgstr "Uložit skupinu vlastností"
+
 #: templates/manage/reviews/review.html:22
 msgid "Do you really want to delete this review?"
 msgstr "Opravdu chcete smazat toto hodnocení?"
@@ -4222,36 +4608,49 @@ msgid "Review"
 msgstr "Hodnocení"
 
 #: templates/manage/reviews/review_inline.html:88
-#: templates/manage/reviews/reviews_inline.html:39
+#: templates/manage/reviews/reviews_inline.html:44
 msgid "Score"
 msgstr "Skóre"
 
 #: templates/manage/reviews/review_inline.html:98
-#: templates/manage/reviews/reviews_inline.html:43
+#: templates/manage/reviews/reviews_inline.html:48
 msgid "Comment"
 msgstr "Poznámka"
 
-#: templates/manage/shipping/add_shipping_method.html:5
-#: templates/manage/shipping/add_shipping_method.html:24
-#: templates/manage/shipping/manage_shipping.html:17
+#: templates/manage/reviews/reviews_inline.html:6
+msgid "There are no reviews yet."
+msgstr "Prozatím nejsou žádná hodnocení."
+
+#: templates/manage/shipping_methods/add_shipping_method.html:4
+#: templates/manage/shipping_methods/add_shipping_method.html:22
+#: templates/manage/shipping_methods/manage_shipping.html:18
 msgid "Add shipping method"
 msgstr "Přidat způsob dodání"
 
-#: templates/manage/shipping/add_shipping_method.html:12
+#: templates/manage/shipping_methods/add_shipping_method.html:12
+#: templates/manage/shipping_methods/no_shipping_methods.html:20
 msgid "Add Shipping Method"
 msgstr "Přidat způsob dodání"
 
-#: templates/manage/shipping/manage_shipping.html:5
+#: templates/manage/shipping_methods/manage_shipping.html:4
 msgid "Manage Shipping Methods"
 msgstr "Způsoby dodání"
 
-#: templates/manage/shipping/manage_shipping.html:21
+#: templates/manage/shipping_methods/manage_shipping.html:21
 msgid "Do you really want to delete this shipping method?"
 msgstr "Opravdu chcete odebrat tento způsob dodání?"
 
-#: templates/manage/shipping/manage_shipping.html:23
+#: templates/manage/shipping_methods/manage_shipping.html:23
 msgid "Delete Shipping Method"
 msgstr "Odebrat způsob dodání"
+
+#: templates/manage/shipping_methods/no_shipping_methods.html:4
+msgid "No Shipping Methods"
+msgstr "Nejsou žádné způsoby dodání"
+
+#: templates/manage/shipping_methods/no_shipping_methods.html:14
+msgid "There are no shipping methods yet."
+msgstr "Prozatím nejsou žádné způsoby dodání."
 
 #: templates/manage/shop/data_tab.html:43
 msgid "E-Mails"
@@ -4278,10 +4677,6 @@ msgstr "Uložit obchod"
 msgid "Default Values"
 msgstr "Výchozí hodnoty"
 
-#: templates/manage/shop/default_values_tab.html:27
-msgid "Format"
-msgstr "Formát"
-
 #: templates/manage/shop/default_values_tab.html:131
 msgid "Localization"
 msgstr "Lokalizace"
@@ -4291,11 +4686,12 @@ msgid "Save Default Values"
 msgstr "Uložit výchozí hodnoty"
 
 #: templates/manage/static_block/add_static_block.html:11
+#: templates/manage/static_block/no_static_blocks.html:20
 #: templates/manage/static_block/static_block.html:31
 msgid "Add Static Block"
 msgstr "Přidat statický blok"
 
-#: templates/manage/static_block/add_static_block.html:21
+#: templates/manage/static_block/add_static_block.html:22
 msgid "Save static block"
 msgstr "Uložit statický blok"
 
@@ -4306,6 +4702,14 @@ msgstr "Nejsou k dispozici žádné soubory"
 #: templates/manage/static_block/files.html:51
 msgid "Add files"
 msgstr "Přidat soubory"
+
+#: templates/manage/static_block/no_static_blocks.html:11
+msgid "Static Blocks"
+msgstr "Statické bloky"
+
+#: templates/manage/static_block/no_static_blocks.html:14
+msgid "There are no static blocks yet."
+msgstr "Nejsou definovány žádné statické bloky."
 
 #: templates/manage/static_block/static_block.html:33
 msgid "Do you really want to delete this static block?"
@@ -4319,33 +4723,9 @@ msgstr "Smazat statický blok"
 msgid "View Static Block"
 msgstr "Zobrazit statický blok"
 
-#: templates/manage/tax/add_tax.html:12 templates/manage/tax/tax.html:25
-msgid "Add Product Tax"
-msgstr "Přidat daňovou skupinu"
-
-#: templates/manage/tax/add_tax.html:23
-msgid "Add Tax"
-msgstr "Přidat daň"
-
-#: templates/manage/tax/tax.html:28
-msgid "Do you really want to delete this tax?"
-msgstr "Opravdu chcete smazat tuto daň?"
-
-#: templates/manage/tax/tax.html:29
-msgid "Delete Product Tax"
-msgstr "Smazat daňovou skupinu"
-
-#: templates/manage/tax/tax.html:33
-msgid "Product Tax"
-msgstr "Daňová skupina"
-
-#: templates/manage/tax/tax.html:44
-msgid "Save Tax"
-msgstr "Uložit daňovou skupinu"
-
 #: templates/manage/voucher/add_voucher_group.html:11
 #: templates/manage/voucher/add_voucher_group.html:15
-#: templates/manage/voucher/add_voucher_group.html:24
+#: templates/manage/voucher/add_voucher_group.html:22
 #: templates/manage/voucher/voucher_group.html:17
 msgid "Add voucher group"
 msgstr "Přidat skupinu kupónů"
@@ -4357,6 +4737,14 @@ msgstr "Data"
 #: templates/manage/voucher/data.html:12
 msgid "Save voucher group"
 msgstr "Uložit skupinu kupónů"
+
+#: templates/manage/voucher/no_vouchers.html:14
+msgid "There are no vouchers yet."
+msgstr "Prozatím nejsou žádné kupóny."
+
+#: templates/manage/voucher/no_vouchers.html:20
+msgid "Add Voucher Group"
+msgstr "Přidat skupinu kupónů"
 
 #: templates/manage/voucher/options.html:3
 #: templates/manage/voucher/voucher_group.html:28
@@ -4432,11 +4820,11 @@ msgstr "Tento kupón nelze použít pro aktuální hodnotu košíku."
 msgid "The voucher doesn't exist."
 msgstr "Kupón neexistuje"
 
+#~ msgid "There are no orders"
+#~ msgstr "Nejsou žádné objednávky"
+
 #~ msgid "Default template"
 #~ msgstr "Výchozí šablona"
-
-#~ msgid "Street"
-#~ msgstr "Ulice"
 
 #~ msgid "An error has been occured."
 #~ msgstr "Nastala chyba"
@@ -4451,16 +4839,16 @@ msgstr "Kupón neexistuje"
 #~ msgstr "Údaje byly uloženy"
 
 #~ msgid "Invoice street"
-#~ msgstr "Faktura - ulice"
+#~ msgstr "Ulice"
 
 #~ msgid "Invoice zip code"
-#~ msgstr "Faktura - PSČ"
+#~ msgstr "PSČ"
 
 #~ msgid "Shipping street"
-#~ msgstr "Dodání - ulice"
+#~ msgstr "Ulice"
 
 #~ msgid "Shipping zip code"
-#~ msgstr "Dodání - PSČ"
+#~ msgstr "PSČ"
 
 #~ msgid "Taxes"
 #~ msgstr "Daně"
