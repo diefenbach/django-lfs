@@ -27,6 +27,14 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.7.0 (2012-04-14)
+------------------
+
+* Bugfix: TinyMCE exchanged "cleanup" with verify_html (Radim Novotny)
+* Updated: Czech localization (Radim Novotny)
+* Improved: accessibility for some input-label fields (Radim Novotny)
+* Improved: text portlet can be title less now (Radim Novotny)
+
 0.7.0 beta 7 (2012-04-08)
 -------------------------
 
