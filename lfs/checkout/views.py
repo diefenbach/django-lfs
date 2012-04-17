@@ -363,8 +363,8 @@ def one_page_checkout(request, checkout_form=OnePageCheckoutForm,
     valid_payment_methods = lfs.payment.utils.get_valid_payment_methods(request)
     valid_payment_method_ids = [m.id for m in valid_payment_methods]
 
-    display_bank_account = DIRECT_DEBIT in valid_payment_method_ids
-    display_credit_card = CREDIT_CARD in valid_payment_method_ids
+    display_bank_account = any([pm.type == lfs.payment.settings.PM_BANK for pm in valid_payment_methods])
+    display_credit_card = any([pm.type == lfs.payment.settings.PM_CREDIT_CARD for pm in valid_payment_methods])
 
     response = render_to_response(template_name, RequestContext(request, {
         "form": form,
