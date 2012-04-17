@@ -131,7 +131,7 @@ Following all pieces are sticked together to the complete plugin:
                 "next_url": self.get_pay_link(),
             }
 
-        def get_create_order_item(self):
+        def get_create_order_time(self):
             return PM_ORDER_IMMEDIATELY
 
         def get_pay_link(self):
@@ -178,8 +178,8 @@ Further hints
   current cart are available as instance variables::
 
     self.request
-    self.cart (only when get_create_order_item returns PM_ORDER_ACCEPTED)
-    self.order (only when get_create_order_item returns PM_ORDER_IMMEDIATELY)
+    self.cart (only when get_create_order_time returns PM_ORDER_ACCEPTED)
+    self.order (only when get_create_order_time returns PM_ORDER_IMMEDIATELY)
 
 * When an external payment processor redirects to LFS the current order is still
   in the session. This means you can redirect to an own view and set the order
