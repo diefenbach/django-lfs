@@ -64,7 +64,7 @@ function sortable() {
         toleranceElement: '> div',
         stop: function(event, ui){
             var url = $(this).attr("href");
-            var serialized = $('ul.sortable').sortable('serialize');
+            var serialized = ui.item.closest('ul.sortable').sortable('serialize')
             $.ajax({
                 url: url,
                 context: document.body,
