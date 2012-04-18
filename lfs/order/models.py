@@ -186,7 +186,8 @@ class OrderItem(models.Model):
                 "unit": property_value.property.unit,
                 "display_price": property_value.property.display_price,
                 "value": value,
-                "price": price
+                "price": price,
+                "obj": property_value.property
             })
 
         return properties

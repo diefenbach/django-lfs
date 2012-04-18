@@ -373,6 +373,7 @@ class CartItem(models.Model):
                 "display_price": property.display_price,
                 "value": value,
                 "price": price,
+                "obj": property
             })
 
         return properties

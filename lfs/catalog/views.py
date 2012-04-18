@@ -21,7 +21,7 @@ import lfs.catalog.utils
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.cart.views import add_to_cart
-from lfs.catalog.models import Category
+from lfs.catalog.models import Category, Property
 from lfs.catalog.models import File
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
@@ -112,17 +112,22 @@ def calculate_price(request, id):
     for key, option_id in request.POST.items():
         if key.startswith("property"):
             try:
-                po = PropertyOption.objects.get(pk=option_id)
-            except (ValueError, PropertyOption.DoesNotExist):
-                pass
-            else:
-                if po.property.add_price:
+                property = Property.objects.get(pk=key.split('-')[1])
+                if property.is_select_field:
                     try:
-                        po_price = float(po.price)
-                    except (TypeError, ValueError):
+                        po = PropertyOption.objects.get(pk=option_id)
+                    except (ValueError, PropertyOption.DoesNotExist, Property.DoesNotExist):
                         pass
                     else:
-                        property_price += po_price
+                        if po.property.add_price:
+                            try:
+                                po_price = float(po.price)
+                            except (TypeError, ValueError):
+                                pass
+                            else:
+                                property_price += po_price
+            except Property.DoesNotExist:
+                pass
 
     if product.for_sale:
         for_sale_standard_price = product.get_standard_price(request, with_properties=False)
