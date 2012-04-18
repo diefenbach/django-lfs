@@ -112,21 +112,14 @@ def calculate_price(request, id):
     for key, option_id in request.POST.items():
         if key.startswith("property"):
             try:
-                property = Property.objects.get(pk=key.split('-')[1])
+                property_id = int(key.split('-')[1])
+                property = Property.objects.get(pk=property_id)
                 if property.is_select_field:
-                    try:
-                        po = PropertyOption.objects.get(pk=option_id)
-                    except (ValueError, PropertyOption.DoesNotExist, Property.DoesNotExist):
-                        pass
-                    else:
-                        if po.property.add_price:
-                            try:
-                                po_price = float(po.price)
-                            except (TypeError, ValueError):
-                                pass
-                            else:
-                                property_price += po_price
-            except Property.DoesNotExist:
+                    po = PropertyOption.objects.get(property=property, pk=option_id)
+                    if property.add_price:
+                        po_price = float(po.price)
+                        property_price += po_price
+            except (IndexError, ValueError, TypeError, PropertyOption.DoesNotExist, Property.DoesNotExist):
                 pass
 
     if product.for_sale:
