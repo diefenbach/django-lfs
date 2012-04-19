@@ -347,7 +347,7 @@ def add_option(request, property_id):
                 option.name = request.POST.get("name-%s" % option_id, "")
                 option.price = price
                 option.save()
-        message = _(u"Options have been update.")
+        message = _(u"Options have been updated.")
 
     _update_positions(property)
 

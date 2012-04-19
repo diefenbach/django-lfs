@@ -161,7 +161,7 @@ class OrderItem(models.Model):
         """
         properties = []
         for property_value in self.properties.all():
-
+            price = ""
             if property_value.property.is_select_field:
                 try:
                     option = PropertyOption.objects.get(pk=int(float(property_value.value)))
@@ -171,14 +171,14 @@ class OrderItem(models.Model):
                 else:
                     value = option.name
                     price = option.price
-            else:
+            elif property_value.property.is_number_field:
                 format_string = "%%.%sf" % property_value.property.decimal_places
                 try:
                     value = format_string % float(property_value.value)
                 except ValueError:
                     value = "%.2f" % float(property_value.value)
-
-                price = ""
+            else:
+                value = property_value.value
 
             properties.append({
                 "name": property_value.property.name,
@@ -186,7 +186,8 @@ class OrderItem(models.Model):
                 "unit": property_value.property.unit,
                 "display_price": property_value.property.display_price,
                 "value": value,
-                "price": price
+                "price": price,
+                "obj": property_value.property
             })
 
         return properties

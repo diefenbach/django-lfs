@@ -15,7 +15,7 @@ function addEditor(selector, hide_save, height) {
     // Theme options
     $(selector).tinymce({
         // Location of TinyMCE script
-        script_url : '/static/tiny_mce-3.4.2/tiny_mce.js',
+        script_url : '/static/tiny_mce-3.5b3/tiny_mce.js',
 
         // General options
         theme : "advanced",
