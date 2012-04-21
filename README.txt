@@ -33,7 +33,7 @@ Changes
 * Bugfix: fixed display prices for properties (Maciej Wiśniowski)
 * Bugfix: fixed TinyMCE for several browsers (Maciej Wiśniowski)
 * Bugfix: display credit card fields if the type of the selected payment method is credit card; issue: #191
-* Bugfix: fixed sorting of actions; issue #192
+* Bugfix: fixed sorting of actions; issue #192 (Maciej Wiśniowski)
 * Bugfix: fixed typos in docs; issue #193
 * Added: added documentation for Price Calculation field; issue #188
 * Updated: Polish translations (Maciej Wiśniowski)
