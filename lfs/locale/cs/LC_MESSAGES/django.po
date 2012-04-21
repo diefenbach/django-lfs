@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lfstheme\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-12 11:35+0200\n"
+"POT-Creation-Date: 2012-04-21 13:57+0200\n"
 "PO-Revision-Date: 2012-04-09 18:27+0100\n"
 "Last-Translator: Radim Novotny <novotny.radim@gmail.com>\n"
 "Language-Team: Czech <info@dms4u.cz>\n"
@@ -110,12 +110,12 @@ msgstr "Položka"
 msgid "Property"
 msgstr "Vlastnost"
 
-#: cart/views.py:268
+#: cart/views.py:275
 #, python-format
 msgid "%(name)s must be between %(min)s and %(max)s %(unit)s."
 msgstr "%(name)s musí být mezi %(min)s a %(max)s %(unit)s."
 
-#: cart/views.py:282
+#: cart/views.py:289
 #, python-format
 msgid ""
 "Your entered value for %(name)s (%(value)s) is not in valid step width, "
@@ -124,17 +124,17 @@ msgstr ""
 "Your entered value for %(name)s (%(value)s) is not in valid step width, "
 "which is %(step)s."
 
-#: cart/views.py:298 cart/views.py:402
+#: cart/views.py:305 cart/views.py:413
 #, python-format
 msgid "Sorry, but '%(product)s' is not available anymore."
 msgstr "Je nám líto, ale '%(product)s' byl vyřazen z našeho katalogu."
 
-#: cart/views.py:300 cart/views.py:404
+#: cart/views.py:307 cart/views.py:415
 #, python-format
 msgid "Sorry, but '%(product)s' is only one time available."
 msgstr "Je nám líto, ale '%(product)s' je k dispozici pouze jednou."
 
-#: cart/views.py:302 cart/views.py:406
+#: cart/views.py:309 cart/views.py:417
 #, python-format
 msgid "Sorry, but '%(product)s' is only %(amount)s times available."
 msgstr "Je nám líto, ale '%(product)s' je k dispozici pouze %(amount)s krát."
@@ -3678,29 +3678,29 @@ msgstr "Číslo objednávky"
 
 #: templates/manage/order/order_inline.html:174
 msgid "Included VAT"
-msgstr "včetně DPH"
+msgstr "DPH"
 
-#: templates/manage/order/order_inline.html:242
+#: templates/manage/order/order_inline.html:251
 msgid "Voucher"
 msgstr "Kopón"
 
-#: templates/manage/order/order_inline.html:259
+#: templates/manage/order/order_inline.html:268
 msgid "Shipping"
 msgstr "Dodání"
 
-#: templates/manage/order/order_inline.html:275
+#: templates/manage/order/order_inline.html:284
 msgid "Payment"
 msgstr "Platba"
 
-#: templates/manage/order/order_inline.html:297
+#: templates/manage/order/order_inline.html:306
 msgid "Inclusive VAT"
 msgstr "DPH"
 
-#: templates/manage/order/order_inline.html:306
+#: templates/manage/order/order_inline.html:315
 msgid "Message from the customer"
 msgstr "Zpráva od zákazníka"
 
-#: templates/manage/order/order_inline.html:320
+#: templates/manage/order/order_inline.html:329
 msgid "Paypal Transaction ID"
 msgstr "Číslo Paypal transakce"
 
