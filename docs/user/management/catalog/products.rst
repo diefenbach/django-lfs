@@ -82,6 +82,48 @@ Tax
     dependents on the selected price calculator for this product (see
     below).
 
+Price Calculation
+
+    .. warning::
+
+        This is experimental feature. Use it with care and take notice that
+        these could be replaced with something different in future.
+
+    .. note::
+
+        This is only available for ``Configurable Products``.
+
+    If the check box is checked the input field could contain a formula to
+    calculate the price of a ``Configurable Product``. In this case one can
+    refer to the values of a property in order to calculate the price.
+
+    Generally the formula could contain any valid Python expression which is
+    able to be evaluated with ``eval`` with two additionally tokens.
+
+    If an error, occurs the default price of the product is taken.
+
+    Available tokens::
+
+    product(<attribute>)
+        Refers to the attribute of the current product
+
+    property(<id>)
+        Refers to the value of the property with the given <id>
+
+    Example 1::
+
+        property(15) * product(price)
+
+    Which means: take the entered value of the property with the id 15 and
+    multiply it with the product's price.
+
+    Example 2::
+
+        product(price) * property(54) * property(55) + property(56)
+
+    Which means: multiply the product's price with the values of the properties
+    with ids 54, 55 and add the value of the property with the id 56.
+
 Price calculator
     Determines how the product price is calculated using the product price and
     tax stored in the database. If you leave this field blank, your pricing

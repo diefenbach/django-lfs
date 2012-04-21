@@ -340,6 +340,8 @@ class CartItem(models.Model):
         """
         properties = []
         for property in self.product.get_properties():
+            price = ""
+
             try:
                 cipv = CartItemPropertyValue.objects.get(cart_item=self, property=property)
             except CartItemPropertyValue.DoesNotExist:
@@ -355,14 +357,14 @@ class CartItem(models.Model):
                     value = option.name
                     price = option.price
 
-            else:
+            elif property.is_number_field:
                 format_string = "%%.%sf" % property.decimal_places
                 try:
                     value = format_string % float(cipv.value)
                 except ValueError:
                     value = "%.2f" % float(cipv.value)
-
-                price = ""
+            else:
+                value = cipv.value
 
             properties.append({
                 "name": property.name,
@@ -371,6 +373,7 @@ class CartItem(models.Model):
                 "display_price": property.display_price,
                 "value": value,
                 "price": price,
+                "obj": property
             })
 
         return properties
