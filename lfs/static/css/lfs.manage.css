@@ -835,3 +835,11 @@ ol {
     border: 1px solid #aaa;
     padding:10px;
 }
+
+tr.order-state-0 { background-color: #FFDD99;}  /* submitted */
+tr.order-state-1 { background-color: #DDEEFF; } /* paid */
+tr.order-state-2 { background-color: #EEDDFF; } /* sent */
+tr.order-state-3 { background-color: #EBDDE2; } /* closed */
+tr.order-state-4 { background-color: #DADADA; } /* cancelled */
+tr.order-state-5 { background-color: #F75D59; } /* payment failed */
+tr.order-state-6 { background-color: #ADD8E6; } /* payment_flagged */
