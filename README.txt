@@ -27,6 +27,13 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.6.14 (2012-04-21)
+-------------------
+
+* Bugfix: fixed display prices for properties (Maciej Wiśniowski)
+* Bugfix: fixed TinyMCE for several browsers (Maciej Wiśniowski)
+* Bugfix: display credit card fields if the type of the selected payment method is credit card; #issue: 191
+
 0.6.13 (2012-04-08)
 -------------------
 
