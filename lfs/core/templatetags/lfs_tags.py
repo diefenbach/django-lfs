@@ -627,7 +627,7 @@ class CategoryProductPricesGrossNode(Node):
             context["base_price_starting_from"] = False
 
         if product.get_active_packing_unit():
-            context["base_packing_price_gross"] = product.get_base_packing_price_gross(request)
+            context["base_packing_price"] = product.get_base_packing_price_gross(request)
 
         return ""
 
