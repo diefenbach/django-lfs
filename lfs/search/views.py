@@ -1,5 +1,6 @@
 # django imports
 from django.db.models import Q
+from django.core.exceptions import FieldError
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -62,7 +63,13 @@ def search(request, template_name="lfs/search/search_results.html"):
     # Sorting
     sorting = request.session.get("sorting")
     if sorting:
-        products = products.order_by(sorting)
+        try:
+            products = products.order_by(sorting)
+        except FieldError:
+            # this should not happen but I experienced it when
+            # switching on/off lfs_solr which uses different
+            # field specification for sorting but the same session key
+            del request.session["sorting"]
 
     total = 0
     if products:
