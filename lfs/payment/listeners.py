@@ -6,6 +6,7 @@ from lfs.order.models import Order
 from lfs.order.settings import PAID, PAYMENT_FAILED, PAYMENT_FLAGGED
 from lfs.mail import utils as mail_utils
 from models import PayPalOrderTransaction
+from lfs.core.signals import order_paid
 
 # other imports
 import logging
@@ -22,8 +23,11 @@ def mark_payment(pp_obj, order_state=PAID):
         order = Order.objects.get(uuid=order_uuid)
         if order is not None:
             if order.state != PAID and order_state == PAID:
+                order_paid.send({"order": order, "request": None})
+
                 if getattr(settings, 'LFS_SEND_ORDER_MAIL_ON_PAYMENT', False):
                     mail_utils.send_order_received_mail(order)
+
             order.state = order_state
             order.save()
     except Order.DoesNotExist, e:

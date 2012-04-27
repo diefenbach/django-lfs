@@ -409,7 +409,7 @@ urlpatterns += patterns('lfs.manage.actions.views',
     url(r'^sort-actions$', "sort_actions", name="lfs_sort_actions"),
 )
 
-# Prodcut Taxes
+# Product Taxes
 urlpatterns += patterns('lfs.manage.product_taxes.views',
     url(r'^add-product-tax$', "add_tax", name="lfs_manage_add_tax"),
     url(r'^delete-product-tax/(?P<id>\d*)$', "delete_tax", name="lfs_delete_tax"),

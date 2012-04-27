@@ -24,11 +24,9 @@ from lfs.core.signals import cart_changed
 from lfs.core import utils as core_utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
-from lfs.catalog.settings import QUANTITY_FIELD_INTEGER
 from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
 from lfs.core.models import Country
-from lfs.core.utils import l10n_float
 from lfs.core.utils import LazyEncoder
 from lfs.shipping import utils as shipping_utils
 from lfs.payment import utils as payment_utils
@@ -339,7 +337,7 @@ def add_to_cart(request, product_id=None):
     try:
         url_name = settings.LFS_AFTER_ADD_TO_CART
     except AttributeError:
-        url_name = "lfs.cart.views.added_to_cart"
+        url_name = "lfs_added_to_cart"
 
     if message:
         return lfs.core.utils.set_message_cookie(reverse(url_name), message)

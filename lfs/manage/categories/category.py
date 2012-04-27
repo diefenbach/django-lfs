@@ -19,7 +19,6 @@ from lfs.core.utils import LazyEncoder
 from lfs.core.utils import set_category_levels
 from lfs.core.widgets.image import LFSImageInput
 from lfs.manage import utils as manage_utils
-from lfs.manage.categories.products import manage_products
 from lfs.manage.categories.view import category_view
 from lfs.manage.categories.portlet import manage_categories_portlet
 from lfs.manage.seo.views import SEOView
@@ -110,7 +109,7 @@ def category_by_id(request, category_id):
     products are displayed by slug, for the manager by id).
     """
     category = Category.objects.get(pk=category_id)
-    url = reverse("lfs.catalog.views.category_view", kwargs={"slug": category.slug})
+    url = reverse("lfs_category", kwargs={"slug": category.slug})
     return HttpResponseRedirect(url)
 
 

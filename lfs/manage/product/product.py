@@ -687,7 +687,7 @@ def product_by_id(request, product_id):
     products are displayed by slug, for the manager by id).
     """
     product = Product.objects.get(pk=product_id)
-    url = reverse("lfs.catalog.views.product_view", kwargs={"slug": product.slug})
+    url = reverse("lfs_product", kwargs={"slug": product.slug})
     return HttpResponseRedirect(url)
 
 

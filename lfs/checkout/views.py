@@ -28,14 +28,11 @@ from lfs.checkout.settings import CHECKOUT_TYPE_AUTH
 from lfs.checkout.settings import INVOICE_PREFIX, SHIPPING_PREFIX
 from lfs.customer import utils as customer_utils
 from lfs.core.models import Country
-from lfs.customer.models import Address
 from lfs.customer.models import BankAccount
 from lfs.customer.forms import RegisterForm
 from lfs.customer.views import address_inline, save_address
 from lfs.payment.models import PaymentMethod
-from lfs.payment.settings import PAYPAL
 from lfs.payment.settings import DIRECT_DEBIT
-from lfs.payment.settings import CREDIT_CARD
 from lfs.voucher.models import Voucher
 from lfs.voucher.settings import MESSAGES
 
@@ -387,7 +384,7 @@ def empty_page_checkout(request, template_name="lfs/checkout/empty_page_checkout
     """
     """
     return render_to_response(template_name, RequestContext(request, {
-        "shopping_url": reverse("lfs.core.views.shop_view"),
+        "shopping_url": reverse("lfs_shop_view"),
     }))
 
 

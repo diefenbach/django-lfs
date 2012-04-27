@@ -1,7 +1,6 @@
 # Python imports
 import locale
 import math
-import re
 import uuid
 
 # django imports
@@ -13,7 +12,6 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from django.utils.importlib import import_module
 
 # lfs imports
 import lfs.catalog.utils
@@ -197,7 +195,7 @@ class Category(models.Model):
     def get_absolute_url(self):
         """Returns the absolute_url.
         """
-        return ("lfs.catalog.views.category_view", (), {"slug": self.slug})
+        return ("lfs_category", (), {"slug": self.slug})
     get_absolute_url = models.permalink(get_absolute_url)
 
     @property
@@ -689,7 +687,7 @@ class Product(models.Model):
     def get_absolute_url(self):
         """Returns the absolute url of the product.
         """
-        return ("lfs.catalog.views.product_view", (), {"slug": self.slug})
+        return ("lfs_product", (), {"slug": self.slug})
     get_absolute_url = models.permalink(get_absolute_url)
 
     @property

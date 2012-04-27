@@ -55,7 +55,7 @@
 
 {% for order in page.object_list %}
     <div class="navigation-body">
-        <a href="{% url lfs.manage.views.order_view order.id %}"
+        <a href="{% url lfs_manage_order order.id %}"
            class="selectable {% ifequal order.id current_order.id %}selected{% endifequal %}">
             {% if order.number %}
                 {{ order.number }}
