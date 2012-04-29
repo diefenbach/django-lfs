@@ -582,7 +582,7 @@ def packages(cart_item):
     amount.
     """
     if cart_item.product.packing_unit:
-        return int(math.ceil(cart_item.amount / cart_item.product.packing_unit))
+        return int(math.ceil(float(cart_item.amount) / cart_item.product.packing_unit))
     return 0
 
 
