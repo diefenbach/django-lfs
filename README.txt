@@ -27,6 +27,14 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.6.15 (2012-04-30)
+-------------------
+
+* Bugfix: fixed management of criteria
+* Bugfix: fixed display of image for category sub-categories view
+* Changed: added 100x100px box to search results to prevent content jumping from left to right when the page is loaded (naro)
+* Changed: clean up display of package result
+
 0.6.14 (2012-04-21)
 -------------------
 
