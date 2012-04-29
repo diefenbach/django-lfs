@@ -29,7 +29,7 @@ setup(name='django-lfs',
       install_requires=[
         'setuptools',
         'django-compressor == 1.1.1',
-        'django-lfstheme == 0.7.1',
+        'django-lfstheme == 0.7.2',
         'django-pagination == 1.0.7',
         'django-paypal == 0.1.2',
         'django-portlets == 1.1.1',
