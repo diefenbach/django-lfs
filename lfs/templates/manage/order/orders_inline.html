@@ -28,8 +28,8 @@
             </th>
         </tr>
             {% for order in page.object_list %}
-                <tr class="clickable {% cycle 'even' 'odd' %}"
-                    onclick="window.location='{% url lfs_manage_order order.id %}'">
+                <tr class="clickable {% cycle 'even' 'odd' %} order-state-{{ order.state }}"
+                    onclick="window.location='{% url lfs.manage.views.order_view order.id %}'">
                     <td>
                         {{ order.number|default_if_none:"-" }}
                     </td>

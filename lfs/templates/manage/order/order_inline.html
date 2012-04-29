@@ -153,9 +153,12 @@
     </tr>
 </table>
 
-<table class="lfs-manage-table">
+<table class="lfs-manage-table order-inline">
     <tr>
-        <th width="200px">
+        <th width="100px">
+            {% trans 'Image' %}
+        </th>
+        <th width="100px">
             {% trans 'SKU' %}
         </th>
         <th>
@@ -179,11 +182,21 @@
         </th>
     </tr>
     {% for item in current_order.items.all %}
-        <tr>
-            <td>
+        <tr class="product-row">
+            <td class="top">
+                {% if item.product.get_image.image %}
+                <a href="{% url lfs_manage_product item.product.id %}">
+                    <img alt="{{ item.product_name }}"
+                         src="{{ item.product.get_image.image.url_100x100 }}" />
+                 </a>
+                {% else %}
+                &nbsp;
+                {% endif %}
+            </td>
+            <td class="top">
                 {{ item.product_sku }}
             </td>
-            <td>
+            <td class="top">
                 {% if item.product %}
                     <a href="{% url lfs_manage_product item.product.id %}">
                         {{ item.product_name }}
@@ -215,7 +228,7 @@
                 {% endif %}
             </td>
 
-            <td class="number">
+            <td class="number top">
                {{ item.amount }} {{ item.product.unit }}
                 {% if item.product.active_packing_unit %}
                     <span class="packing-unit">
@@ -224,13 +237,13 @@
                 {% endif %}
 
             </td>
-            <td class="number">
+            <td class="number top">
                {{ item.product_price_gross|currency:request }}{% if item.product.price_unit %} / {{ item.product.price_unit }}{% endif %}
             </td>
-            <td class="number">
+            <td class="number top">
                ({{ item.product_tax|currency:request }})
             </td>
-            <td class="number">
+            <td class="number top">
                {{ item.price_gross|currency:request }}
             </td>
         </tr>

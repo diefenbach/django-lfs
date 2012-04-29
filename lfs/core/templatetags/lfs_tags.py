@@ -589,7 +589,7 @@ def packages(cart_item):
     amount.
     """
     if cart_item.product.packing_unit:
-        return int(math.ceil(cart_item.amount / cart_item.product.packing_unit))
+        return int(math.ceil(float(cart_item.amount) / cart_item.product.packing_unit))
     return 0
 
 
@@ -634,7 +634,7 @@ class CategoryProductPricesGrossNode(Node):
             context["base_price_starting_from"] = False
 
         if product.get_active_packing_unit():
-            context["base_packing_price_gross"] = product.get_base_packing_price_gross(request)
+            context["base_packing_price"] = product.get_base_packing_price_gross(request)
 
         return ""
 

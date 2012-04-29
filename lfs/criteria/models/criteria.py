@@ -38,7 +38,7 @@ class Criterion(object):
         template = "manage/criteria/%s_criterion.html" % self.content_type
 
         return render_to_string(template, RequestContext(request, {
-            "id": "ex%s" % self.id,
+            "id": "%s%s" % (self.content_type, self.id),
             "operator": self.operator,
             "value": self.value,
             "position": position,
@@ -244,7 +244,7 @@ class CountryCriterion(models.Model, Criterion):
             })
 
         return render_to_string("manage/criteria/country_criterion.html", RequestContext(request, {
-            "id": "ex%s" % self.id,
+            "id": "%s%s" % (self.content_type, self.id),
             "operator": self.operator,
             "value": self.value,
             "position": position,
@@ -466,7 +466,7 @@ class PaymentMethodCriterion(models.Model, Criterion):
             })
 
         return render_to_string("manage/criteria/payment_method_criterion.html", RequestContext(request, {
-            "id": "ex%s" % self.id,
+            "id": "%s%s" % (self.content_type, self.id),
             "operator": self.operator,
             "value": self.value,
             "position": position,
@@ -568,7 +568,7 @@ class ShippingMethodCriterion(models.Model, Criterion):
             })
 
         return render_to_string("manage/criteria/shipping_method_criterion.html", RequestContext(request, {
-            "id": "ex%s" % self.id,
+            "id": "%s%s" % (self.content_type, self.id),
             "operator": self.operator,
             "value": self.value,
             "position": position,

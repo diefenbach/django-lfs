@@ -233,7 +233,11 @@ def add_to_cart(request, product_id=None):
         raise Http404()
 
     try:
-        quantity = locale.atof(request.POST.get("quantity", "1.0"))
+        value = request.POST.get("quantity", "1.0")
+        if isinstance(value, unicode):
+            # atof() on unicode string fails in some environments, like Czech
+            value = value.encode("utf-8")
+        quantity = locale.atof(value)
     except (TypeError, ValueError):
         quantity = 1.0
 
@@ -253,6 +257,9 @@ def add_to_cart(request, product_id=None):
 
                 if property.is_number_field:
                     try:
+                        if isinstance(value, unicode):
+                            # atof() on unicode string fails in some environments, like Czech
+                            value = value.encode("utf-8")
                         value = locale.atof(value)
                     except ValueError:
                         value = locale.atof("0.0")
@@ -387,7 +394,11 @@ def refresh_cart(request):
     message = ""
     for item in cart.get_items():
         try:
-            amount = locale.atof(request.POST.get("amount-cart-item_%s" % item.id, "0.0"))
+            value = request.POST.get("amount-cart-item_%s" % item.id, "0.0")
+            if isinstance(value, unicode):
+                # atof() on unicode string fails in some environments, like Czech
+                value = value.encode("utf-8")
+            amount = locale.atof(value)
         except (TypeError, ValueError):
             amount = 1.0
 
