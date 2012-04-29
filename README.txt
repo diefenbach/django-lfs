@@ -27,6 +27,22 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.7.2 (2012-04-29)
+-------------------
+
+* Added: CSS and JS files for custamization by integrators (naro)
+* Bugfix: fixed calculation of packages for order items (within packages filter tag)
+* Bugfix: fixed management of criteria
+* Bugfix: fixed problem with locale.atof (naro)
+* Bugfix: fixed display of image for category sub-categories view
+* Bugfix: fixed order_detail mail template field names (naro)
+* Changed: added order-state-X css class to the orders_inline (naro)
+* Changed: allow passing custom paginator object to the search results template (naro)
+* Changed: added 100x100px box to search results to prevent content jumping from left to right when the page is loaded (naro)
+* Changed: show product image on order detail page (naro)
+* Changed: clean up display of package result
+* Updated Czech translation (naro)
+
 0.7.1 (2012-04-21)
 ------------------
 
