@@ -1212,13 +1212,13 @@ class Product(models.Model):
         pc = self.get_price_calculator(request)
         return pc.get_base_price_gross(with_properties)
 
-    def get_product_tax_rate(self, request):
+    def get_product_tax_rate(self, request=None):
         """See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
         return pc.get_product_tax_rate()
 
-    def get_product_tax(self):
+    def get_product_tax(self, request=None):
         """See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
