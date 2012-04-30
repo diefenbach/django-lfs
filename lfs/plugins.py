@@ -213,9 +213,9 @@ class PriceCalculator(object):
 
     def get_standard_price(self, with_properties=True):
         """
-        Returns always the standard price for the product. Independent
+        Returns always the stored standard price for the product. Independent
         whether the product is for sale or not. If you want the real price of
-        the product use get_price instead.
+        the product use ``get_price`` instead.
 
         **Parameters:**
 
@@ -237,11 +237,11 @@ class PriceCalculator(object):
 
         return price
 
-    def get_standard_price_net(self, with_properties):
+    def get_standard_price_net(self, with_properties=True):
         """
         Returns always the standard net price for the product. Independent
         whether the product is for sale or not. If you want the real net price
-        of the product use get_price_net instead.
+        of the product use ``get_price_net`` instead.
 
         **Parameters:**
 
@@ -251,11 +251,11 @@ class PriceCalculator(object):
         """
         raise NotImplementedError
 
-    def get_standard_price_gross(self, with_properties):
+    def get_standard_price_gross(self, with_properties=True):
         """
-        Returns always the gros standard price for the product. Independent
+        Returns always the gross standard price for the product. Independent
         whether the product is for sale or not. If you want the real gross
-        price of the product use get_price_gross instead.
+        price of the product use ``get_price_gross`` instead.
 
         **Parameters:**
 
@@ -265,7 +265,7 @@ class PriceCalculator(object):
         """
         raise NotImplementedError
 
-    def get_for_sale_price(self, with_properties):
+    def get_for_sale_price(self, with_properties=True):
         """
         Returns the sale price for the product.
 
@@ -289,7 +289,7 @@ class PriceCalculator(object):
 
         return price
 
-    def get_for_sale_price_net(self, with_properties):
+    def get_for_sale_price_net(self, with_properties=True):
         """
         Returns the sale net price for the product.
 
@@ -301,7 +301,7 @@ class PriceCalculator(object):
         """
         raise NotImplementedError
 
-    def get_for_sale_price_gross(self, with_properties):
+    def get_for_sale_price_gross(self, with_properties=True):
         """
         Returns the sale net price for the product.
 
@@ -313,7 +313,7 @@ class PriceCalculator(object):
         """
         raise NotImplementedError
 
-    def get_base_price(self, with_properties):
+    def get_base_price(self, with_properties=True):
         """
         Returns the base price of the product.
         """
@@ -322,7 +322,7 @@ class PriceCalculator(object):
         except (TypeError, ZeroDivisionError):
             return 0.0
 
-    def get_base_price_net(self, with_properties):
+    def get_base_price_net(self, with_properties=True):
         """
         Returns the net base price of the product.
         """
@@ -331,7 +331,7 @@ class PriceCalculator(object):
         except (TypeError, ZeroDivisionError):
             return 0.0
 
-    def get_base_price_gross(self, with_properties):
+    def get_base_price_gross(self, with_properties=True):
         """
         Returns the gross base price of the product.
         """
@@ -340,23 +340,23 @@ class PriceCalculator(object):
         except (TypeError, ZeroDivisionError):
             return 0.0
 
-    def get_base_packing_price(self, request):
+    def get_base_packing_price(self):
         """
         Returns the base packing price of the product.
         """
-        return self.get_price(request) * self._calc_packing_amount()
+        return self.get_price(self.request) * self._calc_packing_amount()
 
-    def get_base_packing_price_net(self, request):
+    def get_base_packing_price_net(self):
         """
         Returns the base packing net price of the product.
         """
-        return self.get_price_net(request) * self._calc_packing_amount()
+        return self.get_price_net(self.request) * self._calc_packing_amount()
 
-    def get_base_packing_price_gross(self, request):
+    def get_base_packing_price_gross(self):
         """
         Returns the base packing gross price of the product.
         """
-        return self.get_price_gross(request) * self._calc_packing_amount()
+        return self.get_price_gross(self.request) * self._calc_packing_amount()
 
     def get_customer_tax_rate(self):
         """
@@ -379,8 +379,8 @@ class PriceCalculator(object):
 
     def get_product_tax_rate(self):
         """
-        Returns the stored tax rate of the product. If the product is a
-        variant it returns the parent's tax rate.
+        Returns the stored tax rate of the product. If the product is a variant
+        it returns the parent's tax rate.
         """
         if self.product.is_variant():
             obj = self.product.parent
@@ -392,14 +392,14 @@ class PriceCalculator(object):
         except AttributeError:
             return 0.0
 
-    def get_product_tax(self):
+    def get_product_tax(self, with_properties=True):
         """
         Returns the calculated tax for the current product independent of the
         customer.
         """
         return self.get_price(with_properties) - self.get_price(with_properties)
 
-    def price_includes_tax(self, request):
+    def price_includes_tax(self):
         """
         Returns True if stored price includes tax. False if not.
         """
