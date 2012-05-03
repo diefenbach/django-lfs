@@ -1,6 +1,7 @@
 # django imports
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.db import IntegrityError
 from django.test import TestCase
 from django.test.client import Client
 
@@ -149,3 +150,7 @@ class PageTestCase(TestCase):
         self.page.save()
 
         self.assertEqual("This is a short text - John Doe - Page Title", self.page.get_meta_description())
+
+    def test_add_page_with_existing_slug(self):
+        Page.objects.create(title="Test1", slug="test")
+        self.assertRaises(IntegrityError, Page.objects.create, title="Test2", slug="test")

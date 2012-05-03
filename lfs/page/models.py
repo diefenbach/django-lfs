@@ -14,7 +14,7 @@ class Page(models.Model):
     """
     active = models.BooleanField(_(u"Active"), default=False)
     title = models.CharField(_(u"Title"), max_length=100)
-    slug = models.SlugField(_(u"Slug"), max_length=100)
+    slug = models.SlugField(_(u"Slug"), unique=True, max_length=100)
     position = models.IntegerField(_(u"Position"), default=999)
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
     short_text = models.TextField(_(u"Short text"), blank=True)
