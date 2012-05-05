@@ -15,8 +15,6 @@ from lfs.customer import utils as customer_utils
 from lfs.shipping.models import ShippingMethod
 from lfs.shipping.models import ShippingMethodPrice
 from lfs.shipping import utils
-from lfs.criteria.models import UserCriterion
-from lfs.criteria.models import CriteriaObjects
 from lfs.criteria.models import CartPriceCriterion
 from lfs.criteria.models import WeightCriterion
 from lfs.criteria.settings import GREATER_THAN, LESS_THAN
@@ -72,14 +70,10 @@ class ShippingMethodTestCase(TestCase):
         customer.save()
 
         # Create a weigth criterion and add it to the shipping method 1.
-        c = WeightCriterion.objects.create(weight=10.0, operator=GREATER_THAN)
-        co = CriteriaObjects(criterion=c, content=self.sm1)
-        co.save()
+        c = WeightCriterion.objects.create(content=self.sm1, value=10.0, operator=GREATER_THAN)
 
         # Create a weigth criterion and add it to the shipping method 2.
-        c = WeightCriterion.objects.create(weight=10.0, operator=LESS_THAN)
-        co = CriteriaObjects(criterion=c, content=self.sm2)
-        co.save()
+        c = WeightCriterion.objects.create(content=self.sm2, value=10.0, operator=LESS_THAN)
 
         # Now we ask for the delivery time for product 1. As sm1 is not valid
         # (p1 has an weight of 6.0) we should get the delivery time from sm2,
@@ -145,9 +139,7 @@ class ShippingMethodTestCase(TestCase):
 
         # Create a weigth criterion and add it to the shipping method 1. That
         # means sm1 is not valid anymore for p1.
-        c = WeightCriterion.objects.create(weight=10.0, operator=GREATER_THAN)
-        co = CriteriaObjects(criterion=c, content=self.sm1)
-        co.save()
+        c = WeightCriterion.objects.create(content=self.sm1, value=10.0, operator=GREATER_THAN)
 
         # And even if the customer select sm1 explicitely ...
         customer.selected_shipping_method = self.sm1
@@ -182,13 +174,6 @@ class ShippingMethodTestCase(TestCase):
     def test_valid_shipping_methods_1(self):
         """Tests valid shipping methods.
         """
-        # Add the a user criterion with the current user to the shipping method.
-        c = UserCriterion.objects.create()
-        c.users = (self.user, )
-        c.save()
-
-        co = CriteriaObjects.objects.create(criterion=c, content=self.sm1)
-
         # And its still valid.
         sms = utils.get_valid_shipping_methods(self.request)
         self.assertEqual(len(sms), 2)
@@ -203,7 +188,7 @@ class ShippingMethodTestCase(TestCase):
 
         # And the shipping method is not valid any more.
         sms = utils.get_valid_shipping_methods(self.request)
-        self.assertEqual(len(sms), 1)
+        self.assertEqual(len(sms), 2)
 
         # Tests that the correct shipping methods are returned
         sm_names = [sm.name for sm in sms]
@@ -216,9 +201,7 @@ class ShippingMethodTestCase(TestCase):
         request = DummyRequest(user=user)
 
         # Create a cart price criterion and add it to the shipping method 1
-        c = CartPriceCriterion.objects.create(price=10.0, operator=GREATER_THAN)
-        co = CriteriaObjects(criterion=c, content=self.sm1)
-        co.save()
+        c = CartPriceCriterion.objects.create(content=self.sm1, value=10.0, operator=GREATER_THAN)
 
         # Cart price is 0.0 sms1 is not valid
         sms = utils.get_valid_shipping_methods(request)
@@ -249,17 +232,18 @@ class ShippingMethodTestCase(TestCase):
         request = DummyRequest(user=user)
 
         # Create a weigth criterion and add it to the shipping method 1.
-        c = WeightCriterion.objects.create(weight=10.0, operator=GREATER_THAN)
-        co = CriteriaObjects(criterion=c, content=self.sm1)
-        co.save()
+        c = WeightCriterion.objects.create(content=self.sm1, value=10.0, operator=GREATER_THAN)
 
         # As the product has a weigth of 6.0 the shipping method is not valid
-        result = c.is_valid(request, product=self.p1)
+        c.product = self.p1
+        c.request = request
+        result = c.is_valid()
         self.assertEqual(result, False)
 
-        # As product 2 has a weigth of 12.0 the shipping method is valid
-        result = c.is_valid(request, product=self.p1)
-        self.assertEqual(result, False)
+        # As product 2 has a weigth of 11.0 the shipping method is valid
+        c.product = self.p2
+        result = c.is_valid()
+        self.assertEqual(result, True)
 
     def test_get_first_valid_shipping_method(self):
         """Test utils.get_first_valid_shipping_method
@@ -269,15 +253,10 @@ class ShippingMethodTestCase(TestCase):
         request = DummyRequest(user=user)
 
         # Create a weigth criterion and add it to the shipping method 1.
-        c = WeightCriterion.objects.create(weight=5.0, operator=GREATER_THAN)
-        c = WeightCriterion.objects.create(weight=10.0, operator=LESS_THAN)
-        co = CriteriaObjects(criterion=c, content=self.sm1)
-        co.save()
+        c = WeightCriterion.objects.create(content=self.sm1, value=10.0, operator=LESS_THAN)
 
         # Create a weigth criterion and add it to the shipping method 2.
-        c = WeightCriterion.objects.create(weight=10.0, operator=GREATER_THAN)
-        co = CriteriaObjects(criterion=c, content=self.sm2)
-        co.save()
+        c = WeightCriterion.objects.create(content=self.sm2, value=10.0, operator=GREATER_THAN)
 
         # For product 1 (weight: 6.0) the sm1 is the first valid (weight: 5.0 - 10.0)
         result = utils.get_first_valid_shipping_method(request, product=self.p1)
@@ -312,8 +291,7 @@ class ShippingMethodTestCase(TestCase):
         smp = ShippingMethodPrice.objects.create(shipping_method=self.sm1, price=5)
 
         # Add a criterion the to the price
-        c = CartPriceCriterion.objects.create(price=10.0, operator=GREATER_THAN)
-        co = CriteriaObjects.objects.create(criterion=c, content=smp)
+        c = CartPriceCriterion.objects.create(content=smp, value=10.0, operator=GREATER_THAN)
 
         # The cart price is less than 10, hence the price is not valid and the
         # shipping price is the default price of the shipping method , which is

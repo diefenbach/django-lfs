@@ -42,7 +42,7 @@ def get_valid_payment_methods(request):
     """
     result = []
     for pm in PaymentMethod.objects.filter(active=True):
-        if criteria_utils.is_valid(request, pm):
+        if pm.is_valid(request):
             result.append(pm)
     return result
 

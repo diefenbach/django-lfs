@@ -5,15 +5,17 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.criteria.utils
+from lfs.criteria.base import Criteria
+from lfs.criteria.models import Criterion
 from lfs.discounts.settings import DISCOUNT_TYPE_CHOICES
 from lfs.discounts.settings import DISCOUNT_TYPE_ABSOLUTE
 from lfs.discounts.settings import DISCOUNT_TYPE_PERCENTAGE
-from lfs.payment.models import CriteriaObjects
 from lfs.tax.models import Tax
 
 
-class Discount(models.Model):
-    """A discount which is given to the customer if several criteria
+class Discount(models.Model, Criteria):
+    """
+    A discount which is given to the customer if several criteria
     fullfilled.
 
     **Attributes:**
@@ -34,28 +36,15 @@ class Discount(models.Model):
     sku
         The SKU of the discount.
 
-    criteria_objects
-        Criteria which must all valid to make the discount happen.
-
     """
     name = models.CharField(_(u"Name"), max_length=100)
     value = models.FloatField(_(u"Value"))
     type = models.PositiveSmallIntegerField(_(u"Type"), choices=DISCOUNT_TYPE_CHOICES, default=DISCOUNT_TYPE_ABSOLUTE)
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
     sku = models.CharField(_(u"SKU"), blank=True, max_length=50)
-    criteria_objects = generic.GenericRelation(CriteriaObjects,
-        object_id_field="content_id", content_type_field="content_type")
 
     def __unicode__(self):
         return self.name
-
-    def is_valid(self, request, product=None):
-        """The shipping method is valid if it has no criteria or if all assigned
-        criteria are true.
-
-        If product is given the product is tested otherwise the whole cart.
-        """
-        return lfs.criteria.utils.is_valid(request, self, product)
 
     def get_tax(self, request, product=None):
         """Returns the absolute tax of the voucher.

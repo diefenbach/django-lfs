@@ -81,6 +81,29 @@ LFS_AFTER_ADD_TO_CART
     product, which has been added to the cart. A reasonable alternative is
     ``lfs_checkout_dispatcher``, which redirects directly to the checkout view.
 
+.. _settings_lfs_criteria:
+
+LFS_CRITERIA
+    List of list of available criteria, whereas the first entry is the dotted
+    name to a criterion and the second entry is the name of the criterion, which
+    is displayed to the users. These criteria are provided for selection within
+    several places. LFS is shipped with following criteria::
+
+        LFS_CRITERIA = [
+            ["lfs.criteria.models.CartPriceCriterion", _(u"Cart Price")],
+            ["lfs.criteria.models.CombinedLengthAndGirthCriterion", _(u"Combined Length and Girth")],
+            ["lfs.criteria.models.CountryCriterion", _(u"Country")],
+            ["lfs.criteria.models.HeightCriterion", _(u"Height")],
+            ["lfs.criteria.models.LengthCriterion", _(u"Length")],
+            ["lfs.criteria.models.WidthCriterion", _(u"Width")],
+            ["lfs.criteria.models.WeightCriterion", _(u"Weight")],
+            ["lfs.criteria.models.ShippingMethodCriterion", _(u"Shipping Method")],
+            ["lfs.criteria.models.PaymentMethodCriterion", _(u"Payment Method")],
+        ]
+
+    See also :doc:`Criteria concept </user/concepts/criteria>` and
+    :doc:`/developer/howtos/how_to_add_own_criteria/index`.
+
 LFS_DOCS
     Base URL to the LFS docs. This is used for the context aware help link
     within the management interface. Defaults to

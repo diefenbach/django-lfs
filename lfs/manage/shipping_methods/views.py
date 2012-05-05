@@ -113,9 +113,9 @@ def shipping_method_criteria(request, shipping_method_id,
 
     criteria = []
     position = 0
-    for criterion_object in shipping_method.criteria_objects.all():
+    for criterion in shipping_method.get_criteria():
         position += 10
-        criterion_html = criterion_object.criterion.as_html(request, position)
+        criterion_html = criterion.render(request, position)
         criteria.append(criterion_html)
 
     return render_to_string(template_name, RequestContext(request, {
@@ -150,9 +150,9 @@ def shipping_price_criteria(request, shipping_price_id, as_string=False,
 
     criteria = []
     position = 0
-    for criterion_object in shipping_price.criteria_objects.all():
+    for criterion in shipping_price.get_criteria():
         position += 10
-        criterion_html = criterion_object.criterion.as_html(request, position)
+        criterion_html = criterion.render(request, position)
         criteria.append(criterion_html)
 
     dialog = render_to_string(template_name, RequestContext(request, {
@@ -202,8 +202,7 @@ def save_shipping_method_criteria(request, shipping_method_id):
     are passed via request body.
     """
     shipping_method = lfs_get_object_or_404(ShippingMethod, pk=shipping_method_id)
-
-    criteria_utils.save_criteria(request, shipping_method)
+    shipping_method.save_criteria(request)
 
     html = [["#criteria", shipping_method_criteria(request, shipping_method_id)]]
 
@@ -221,8 +220,7 @@ def save_shipping_price_criteria(request, shipping_price_id):
     are passed via request body.
     """
     shipping_price = get_object_or_404(ShippingMethodPrice, pk=shipping_price_id)
-
-    criteria_utils.save_criteria(request, shipping_price)
+    shipping_price.save_criteria(request)
 
     html = [
         ["#price-criteria", shipping_price_criteria(request, shipping_price_id, as_string=True)],

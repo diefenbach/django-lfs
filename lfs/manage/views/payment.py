@@ -124,9 +124,9 @@ def payment_method_criteria(request, payment_method_id,
 
     criteria = []
     position = 0
-    for criterion_object in payment_method.criteria_objects.all():
+    for criterion in payment_method.get_criteria():
         position += 10
-        criterion_html = criterion_object.criterion.as_html(request, position)
+        criterion_html = criterion.render(request, position)
         criteria.append(criterion_html)
 
     return render_to_string(template_name, RequestContext(request, {
@@ -160,9 +160,9 @@ def payment_price_criteria(request, payment_price_id, as_string=False, template_
 
     criteria = []
     position = 0
-    for criterion_object in payment_price.criteria_objects.all():
+    for criterion in payment_price.get_criteria():
         position += 10
-        criterion_html = criterion_object.criterion.as_html(request, position)
+        criterion_html = criterion.render(request, position)
         criteria.append(criterion_html)
 
     dialog = render_to_string(template_name, RequestContext(request, {
@@ -213,8 +213,7 @@ def save_payment_method_criteria(request, payment_method_id):
     are passed via request body.
     """
     payment_method = lfs_get_object_or_404(PaymentMethod, pk=payment_method_id)
-
-    criteria_utils.save_criteria(request, payment_method)
+    payment_method.save_criteria(request)
 
     html = [["#criteria", payment_method_criteria(request, payment_method_id)]]
 
@@ -232,8 +231,7 @@ def save_payment_price_criteria(request, payment_price_id):
     are passed via request body.
     """
     payment_price = get_object_or_404(PaymentMethodPrice, pk=payment_price_id)
-
-    criteria_utils.save_criteria(request, payment_price)
+    payment_price.save_criteria(request)
 
     html = [
         ["#price-criteria", payment_price_criteria(request, payment_price_id, as_string=True)],
