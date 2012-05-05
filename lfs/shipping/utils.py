@@ -128,7 +128,7 @@ def get_valid_shipping_methods(request, product=None):
     """
     result = []
     for sm in ShippingMethod.objects.filter(active=True):
-        if criteria_utils.is_valid(request, sm, product):
+        if sm.is_valid(request, product):
             result.append(sm)
     return result
 

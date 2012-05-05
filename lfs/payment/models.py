@@ -5,8 +5,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
+from lfs.criteria.base import Criteria
 import lfs.payment.settings
-from lfs.criteria.models.criteria_objects import CriteriaObjects
 from lfs.tax.models import Tax
 
 
@@ -22,7 +22,7 @@ class ActivePaymentMethodManager(models.Manager):
         return super(ActivePaymentMethodManager, self).get_query_set().filter(active=True)
 
 
-class PaymentMethod(models.Model):
+class PaymentMethod(models.Model, Criteria):
     """
     Payment methods are provided to the customer to select the kind of how
     products are paid.
@@ -79,10 +79,6 @@ class PaymentMethod(models.Model):
     deletable = models.BooleanField(default=True)
     module = models.CharField(_(u'Module'), blank=True, max_length=100, choices=getattr(settings, "LFS_PAYMENT_METHOD_PROCESSORS", []))
     type = models.PositiveSmallIntegerField(_(u'Type'), choices=lfs.payment.settings.PAYMENT_METHOD_TYPES_CHOICES, default=lfs.payment.settings.PM_PLAIN)
-
-    criteria_objects = generic.GenericRelation(CriteriaObjects,
-        object_id_field="content_id", content_type_field="content_type")
-
     objects = ActivePaymentMethodManager()
 
     class Meta:
@@ -92,7 +88,7 @@ class PaymentMethod(models.Model):
         return self.name
 
 
-class PaymentMethodPrice(models.Model):
+class PaymentMethodPrice(models.Model, Criteria):
     """
     An additional price for a payment method.
 
@@ -122,15 +118,6 @@ class PaymentMethodPrice(models.Model):
     price = models.FloatField(_(u"Price"), default=0.0)
     priority = models.IntegerField(_(u"Priority"), default=0)
     active = models.BooleanField(_(u"Active"), default=False)
-    criteria_objects = generic.GenericRelation(CriteriaObjects, object_id_field="content_id", content_type_field="content_type")
-
-    def is_valid(self, request):
-        """
-        Returns True if the payment method is valid. This is calculated via the
-        attached criteria.
-        """
-        from lfs.criteria import utils as criteria_utils
-        return criteria_utils.is_valid(self, request)
 
 
 from lfs.order.models import Order

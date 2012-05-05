@@ -123,6 +123,7 @@ How-tos
    developer/howtos/how_to_add_own_order_numbers/index.rst
    developer/howtos/how_to_shipping_price.rst
    developer/howtos/how_to_integrate_localized_version_of_tinymce.rst
+   developer/howtos/how_to_add_own_criteria/index.rst
 
 =========================
 Miscellaneous Information

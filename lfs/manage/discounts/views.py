@@ -13,9 +13,9 @@ from django.views.decorators.http import require_POST
 
 # lfs imports
 import lfs.core.utils
+import lfs.criteria.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
-from lfs.criteria import utils as criteria_utils
 from lfs.discounts.models import Discount
 from lfs.manage.discounts.forms import DiscountForm
 
@@ -102,9 +102,9 @@ def discount_criteria(request, id, template_name="manage/discounts/criteria.html
 
     criteria = []
     position = 0
-    for criterion_object in discount.criteria_objects.all():
+    for criterion_object in discount.get_criteria():
         position += 10
-        criterion_html = criterion_object.criterion.as_html(request, position)
+        criterion_html = criterion_object.get_content_object().render(request, position)
         criteria.append(criterion_html)
 
     return render_to_string(template_name, RequestContext(request, {
@@ -142,7 +142,7 @@ def save_discount_criteria(request, id):
     are passed via request body.
     """
     discount = lfs_get_object_or_404(Discount, pk=id)
-    criteria_utils.save_criteria(request, discount)
+    discount.save_criteria(request)
 
     html = [["#criteria", discount_criteria(request, id)]]
 

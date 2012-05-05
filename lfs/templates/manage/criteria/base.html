@@ -1,0 +1,68 @@
+{% load i18n %}
+<tr class="criterion" id="criterion-{{ id }}">
+    <td>
+        <input type="text" size="2" class="position" name="position-{{ id }}" value="{{ position }}" />
+    </td>
+    <td style="padding:0 3px">
+        {% block criteria %}
+            <select class="criterion-type" name="type-{{ id }}">
+                {% for criterion in criteria %}
+                    <option {% if criterion.selected %}selected="selected"{% endif %} value="{{ criterion.module }}">{{ criterion.name }}</option>
+                {% endfor %}
+            </select>
+        {% endblock %}
+    </td>
+    <td style="padding:0 3px">
+        {% block operators %}
+            <select class="criterion-operator"
+                    name="operator-{{ id }}"
+                    style="width:170px">
+                {% for operator in operators %}
+                    <option value="{{ operator.id }}" {% if operator.selected %}selected="selected"{% endif %}>{{ operator.name }}</option>
+                {% endfor %}
+            </select>
+        {% endblock %}
+    </td>
+    <td style="padding:0 3px">
+        {% block values %}
+            {% if value_type == criterion.INPUT %}
+                <input class="criterion-value"
+                       type="text"
+                       name="value-{{ id }}"
+                       value="{{ value }}"
+                       style="width:193px"/>
+            {% endif %}
+            {% if value_type == criterion.SELECT %}
+                <select name="value-{{ id }}"
+                        size="5"
+                        style="width:200px">
+                    {% for value in selectable_values %}
+                        <option value="{{ value.id }}" {% if value.selected %}selected="selected"{% endif %}>{{ value.name }}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+            {% if value_type == criterion.MULTIPLE_SELECT %}
+                <select name="value-{{ id }}"
+                        multiple="multiple"
+                        size="5"
+                        style="width:200px">
+                    {% for value in selectable_values %}
+                        <option value="{{ value.id }}" {% if value.selected %}selected="selected"{% endif %}>{{ value.name }}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
+        {% endblock %}
+    </td>
+    <td>
+        <a class="criterion-add-button"
+           href="{% url lfs_add_criterion %}">
+            <img src="{{ STATIC_URL }}icons/add.png"
+                 alt="Add" />
+        </a>
+        <a class="criterion-delete-button"
+           style="cursor:pointer">
+            <img src="{{ STATIC_URL }}icons/delete.png"
+                 alt="Delete" />
+        </a>
+    </td>
+</tr>

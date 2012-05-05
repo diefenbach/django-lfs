@@ -3,9 +3,9 @@
 <h2>{% trans 'Prices' %}</h2>
 <form action="{% url lfs_manage_add_payment_price payment_method.id %}"
       method="post">
-    <input type="text" name="price" /> 
-    <input class="ajax-save-button button" 
-           type="submit" 
+    <input type="text" name="price" />
+    <input class="ajax-save-button button"
+           type="submit"
            value="{% trans 'Add price' %}" />
 </form>
 
@@ -13,11 +13,11 @@
     <h2 class="heading-middle">{% trans 'Existing prices' %}</h2>
     <form action="{% url lfs_manage_update_payment_prices payment_method.id %}"
           method="post">
-        <table>
+        <table class="criteria">
             <tr>
                 <th>
-                    <input type="checkbox" 
-                           class="select-all" 
+                    <input type="checkbox"
+                           class="select-all"
                            value="prices" />
                 </th>
                 <th>
@@ -41,11 +41,11 @@
                         <a href="{% url lfs_manage_payment_price_criteria price.id %}"
                            class="ajax-link">
                            {% trans 'Edit criteria' %}
-                        </a>                        
+                        </a>
                     </div>
-                    {% for criterion_object in price.criteria_objects.all %}
+                    {% for criterion in price.get_criteria %}
                         <div style="padding-left:3px">
-                            {{ criterion_object.criterion }}
+                            {{ criterion }}
                         </div>
                     {% endfor %}
                 </td>
@@ -60,7 +60,7 @@
                     </div>
                 </td>
             </tr>
-        
+
         </table>
     </form>
 {% endif %}
