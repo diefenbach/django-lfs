@@ -86,8 +86,9 @@ LFS_AFTER_ADD_TO_CART
 LFS_CRITERIA
     List of list of available criteria, whereas the first entry is the dotted
     name to a criterion and the second entry is the name of the criterion, which
-    is displayed to the users. These criteria are provided for selection within
-    several places. LFS is shipped with following criteria::
+    is displayed to the users. These criteria are provided to a :term:`shop
+    manager` for selection for on several locations. LFS is shipped with
+    following criteria::
 
         LFS_CRITERIA = [
             ["lfs.criteria.models.CartPriceCriterion", _(u"Cart Price")],
@@ -101,8 +102,8 @@ LFS_CRITERIA
             ["lfs.criteria.models.PaymentMethodCriterion", _(u"Payment Method")],
         ]
 
-    See also :doc:`Criteria concept </user/concepts/criteria>` and
-    :doc:`/developer/howtos/how_to_add_own_criteria/index`.
+    See also :doc:`Concept of criteria </user/concepts/criteria>` and
+    :doc:`How to add own criteria </developer/howtos/how_to_add_own_criteria/index>`.
 
 LFS_DOCS
     Base URL to the LFS docs. This is used for the context aware help link

@@ -1,6 +1,6 @@
-==========================
-How to add an own criteria
-==========================
+=======================
+How to add own criteria
+=======================
 
 In this how-to you will learn how to add own criteria to LFS.
 

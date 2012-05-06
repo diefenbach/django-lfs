@@ -9,7 +9,7 @@ Glossary
         software license. See also: http://en.wikipedia.org/wiki/BSD_licenses
 
     Django
-        The web framework LFS is build upon. See http://www.djangoproject.com.
+        The web framework LFS is build upon. See also http://www.djangoproject.com.
 
     LMI
         Acronym for LFS Management Interface. See also :term:`MI`.
@@ -25,8 +25,8 @@ Glossary
         The person who buys goods from the shop.
 
     Shop manager
-        The person who puts content into shop, like products, categories,
-        shipping methods and that like.
+        The person who puts content into the shop, like products, categories,
+        shipping methods and alike.
 
     Shop owner
         The person who sells goods within the shop.
@@ -36,9 +36,9 @@ Glossary
         Slots are display left and right beside the main content.
 
     Static Block
-        A static block is a piece of HTML which is centrally managed and which
-        can be reused from several content objects like the shop, a category or
-        a product.
+        A static block is a piece of HTML, which is managed on a central
+        location and which can be reused from several content objects like the
+        shop, a category, a product or a page.
 
     Templates
         Templates are used to structure the content of a category or product.
