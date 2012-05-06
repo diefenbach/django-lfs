@@ -104,11 +104,11 @@ Price Calculation
 
     Available tokens::
 
-    product(<attribute>)
-        Refers to the attribute of the current product
+        product(<attribute>)
+            Refers to the attribute of the current product
 
-    property(<id>)
-        Refers to the value of the property with the given <id>
+        property(<id>)
+            Refers to the value of the property with the given <id>
 
     Example 1::
 

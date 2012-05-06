@@ -8,6 +8,9 @@ Glossary
         LFS is distributed under the BSD-License, which is a permissive free
         software license. See also: http://en.wikipedia.org/wiki/BSD_licenses
 
+    Django
+        The web framework LFS is build upon. See http://www.djangoproject.com.
+
     LMI
         Acronym for LFS Management Interface. See also :term:`MI`.
 
@@ -17,6 +20,16 @@ Glossary
     Portlet
     Portlets
         A portlet is a piece of content which are managed in :term:`Slots`.
+
+    Shop customer
+        The person who buys goods from the shop.
+
+    Shop manager
+        The person who puts content into shop, like products, categories,
+        shipping methods and that like.
+
+    Shop owner
+        The person who sells goods within the shop.
 
     Slot
     Slots
@@ -36,5 +49,3 @@ Glossary
     WYSIWYG
         Acronym for ``What You See Is What You Get``. See also:
         http://en.wikipedia.org/wiki/WYSIWYG.
-
-

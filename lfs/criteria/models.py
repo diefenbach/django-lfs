@@ -25,78 +25,78 @@ class Criterion(models.Model):
 
     **Attributes:**
 
-        cart
-            The current cart of the current customer.
+    cart
+        The current cart of the current customer.
 
-        content
-            The content object the criterion belongs to.
+    content
+        The content object the criterion belongs to.
 
-        operator
-            The current selected operator for the criterion.
+    operator
+        The current selected operator for the criterion.
 
-        position
-            The position of the criterion within a list of criteria of the
-            content object.
+    position
+        The position of the criterion within a list of criteria of the
+        content object.
 
-        product
-            The product, if the criterion is called from a product detail view.
-            Otherwise this is None.
+    product
+        The product, if the criterion is called from a product detail view.
+        Otherwise this is None.
 
-        request
-            The current request.
+    request
+        The current request.
 
     **Constants:**
 
-        EQUAL, LESS_THAN, LESS_THAN_EQUAL, GREATER_THAN, GREATER_THAN_EQUAL, IS_SELECTED, IS_NOT_SELECTED, IS_VALID, IS_NOT_VALID, CONTAINS
-            Integers which represents certain operators.
+    EQUAL, LESS_THAN, LESS_THAN_EQUAL, GREATER_THAN, GREATER_THAN_EQUAL, IS_SELECTED, IS_NOT_SELECTED, IS_VALID, IS_NOT_VALID, CONTAINS
+        Integers which represents certain operators.
 
-        INPUT, SELECT, MULTIPLE_SELECT
-            Constants which represents the types of selectable values. One of
-            these must be returned from ``get_value_type``.
+    INPUT, SELECT, MULTIPLE_SELECT
+        Constants which represents the types of selectable values. One of
+        these must be returned from ``get_value_type``.
 
-        NUMBER_OPERATORS
-            A list of operators which can be returned from ``get_operators``.
+    NUMBER_OPERATORS
+        A list of operators which can be returned from ``get_operators``.
 
-            .. code-block:: python
+        .. code-block:: python
 
-                [
-                    [EQUAL, _(u"Equal to")],
-                    [LESS_THAN, _(u"Less than")],
-                    [LESS_THAN_EQUAL, _(u"Less than equal to")],
-                    [GREATER_THAN, _(u"Greater than")],
-                    [GREATER_THAN_EQUAL, _(u"Greater than equal to")],
-                ]
+            [
+                [EQUAL, _(u"Equal to")],
+                [LESS_THAN, _(u"Less than")],
+                [LESS_THAN_EQUAL, _(u"Less than equal to")],
+                [GREATER_THAN, _(u"Greater than")],
+                [GREATER_THAN_EQUAL, _(u"Greater than equal to")],
+            ]
 
 
-        SELECTION_OPERATORS
-            A list of operators which can be returned from ``get_operators``.
+    SELECTION_OPERATORS
+        A list of operators which can be returned from ``get_operators``.
 
-            .. code-block:: python
+        .. code-block:: python
 
-                [
-                    [IS_SELECTED, _(u"Is selected")],
-                    [IS_NOT_SELECTED, _(u"Is not selected")],
-                ]
+            [
+                [IS_SELECTED, _(u"Is selected")],
+                [IS_NOT_SELECTED, _(u"Is not selected")],
+            ]
 
-        VALID_OPERATORS
-            A list of operators which can be returned from ``get_operators``.
+    VALID_OPERATORS
+        A list of operators which can be returned from ``get_operators``.
 
-            .. code-block:: python
+        .. code-block:: python
 
-                [
-                    [IS_VALID, _(u"Is valid")],
-                    [IS_NOT_VALID, _(u"Is not valid")],
-                ]
+            [
+                [IS_VALID, _(u"Is valid")],
+                [IS_NOT_VALID, _(u"Is not valid")],
+            ]
 
-        STRING_OPERATORS
-            A list of operators which can be return from ``get_operators``.
+    STRING_OPERATORS
+        A list of operators which can be return from ``get_operators``.
 
-            .. code-block:: python
+        .. code-block:: python
 
-                [
-                    [EQUAL, _(u"Equal to")],
-                    [CONTAINS, _(u"Contains")],
-                ]
+            [
+                [EQUAL, _(u"Equal to")],
+                [CONTAINS, _(u"Contains")],
+            ]
     """
     content_type = models.ForeignKey(ContentType, verbose_name=_(u"Content type"), related_name="content_type")
     content_id = models.PositiveIntegerField(_(u"Content id"))
@@ -379,7 +379,7 @@ class CartPriceCriterion(Criterion):
 
     def is_valid(self):
         """
-        If product is given the weigth is taken from the product, otherwise it
+        If product is given, the price is taken from the product, otherwise it
         is the total price of all products within the cart.
         """
         if self.product:
@@ -417,8 +417,8 @@ class CombinedLengthAndGirthCriterion(Criterion):
 
     def is_valid(self):
         """
-        If product is given the clag is taken from the product, otherwise it
-        is the clag of all products within the cart.
+        If product is given, the clag is taken from the product, otherwise it is
+        the clag of all products within the cart.
         """
         if self.product:
             clag = (2 * self.product.get_width()) + (2 * self.product.get_height()) + self.product.get_length()
@@ -508,7 +508,7 @@ class HeightCriterion(Criterion):
 
     def is_valid(self):
         """
-        If product is given the weigth is taken from the product, otherwise it
+        If product is given, the height is taken from the product, otherwise it
         is the total height of all products within the cart.
         """
         if self.product:
@@ -546,7 +546,7 @@ class LengthCriterion(Criterion):
 
     def is_valid(self):
         """
-        If product is given the length is taken from the product otherwise it
+        If product is given, the length is taken from the product otherwise it
         is the max length of all products within the cart.
         """
         if self.product:
@@ -709,7 +709,7 @@ class WeightCriterion(Criterion):
 
     def is_valid(self):
         """
-        If product is given the weigth is taken from the product, otherwise it
+        If product is given, the weigth is taken from the product, otherwise it
         is the total weight of all products within the cart.
         """
         if self.product:
@@ -747,7 +747,7 @@ class WidthCriterion(Criterion):
 
     def is_valid(self):
         """
-        If product is given the width is taken from the product, otherwise it
+        If product is given, the width is taken from the product, otherwise it
         is the max width of all products within the cart.
         """
         if self.product:

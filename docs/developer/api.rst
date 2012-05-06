@@ -16,82 +16,78 @@ Criterion
 
     **Attributes:**
 
-        cart
-            The current cart of the current customer.
+    cart
+        The current cart of the current customer.
 
-        content
-            The content object the criterion belongs to.
+    content
+        The content object the criterion belongs to.
 
-        operator
-            The current selected operator for the criterion.
+    operator
+        The current selected operator for the criterion.
 
-        position
-            The position of the criterion within a list of criteria of the
-            content object.
+    position
+        The position of the criterion within a list of criteria of the
+        content object.
 
-        product
-            The product, if the criterion is called from a product detail view.
-            Otherwise this is None.
+    product
+        The product, if the criterion is called from a product detail view.
+        Otherwise this is None.
 
-        request
-            The current request.
+    request
+        The current request.
 
     **Constants:**
 
-        EQUAL, LESS_THAN, LESS_THAN_EQUAL, GREATER_THAN, GREATER_THAN_EQUAL, IS_SELECTED, IS_NOT_SELECTED, IS_VALID, IS_NOT_VALID, CONTAINS
-            Integers which represents certain operators.
+    EQUAL, LESS_THAN, LESS_THAN_EQUAL, GREATER_THAN, GREATER_THAN_EQUAL, IS_SELECTED, IS_NOT_SELECTED, IS_VALID, IS_NOT_VALID, CONTAINS
+        Integers which represents certain operators.
 
-        INPUT, SELECT, MULTIPLE_SELECT
-            Constants which represents the types of selectable values. One of
-            these must be returned from the ``get_value_type`` method.
+    INPUT, SELECT, MULTIPLE_SELECT
+        Constants which represents the types of selectable values. One of
+        these must be returned from ``get_value_type``.
 
-        NUMBER_OPERATORS
-            A list of operators which can be returned from the ``get_operators``
-            method.
+    NUMBER_OPERATORS
+        A list of operators which can be returned from ``get_operators``.
 
-            .. code-block:: python
+        .. code-block:: python
 
-                [
-                    [EQUAL, _(u"Equal to")],
-                    [LESS_THAN, _(u"Less than")],
-                    [LESS_THAN_EQUAL, _(u"Less than equal to")],
-                    [GREATER_THAN, _(u"Greater than")],
-                    [GREATER_THAN_EQUAL, _(u"Greater than equal to")],
-                ]
+            [
+                [EQUAL, _(u"Equal to")],
+                [LESS_THAN, _(u"Less than")],
+                [LESS_THAN_EQUAL, _(u"Less than equal to")],
+                [GREATER_THAN, _(u"Greater than")],
+                [GREATER_THAN_EQUAL, _(u"Greater than equal to")],
+            ]
 
 
-        SELECTION_OPERATORS
-            A list of operators which can be returned from the ``get_operators``
-            method.
+    SELECTION_OPERATORS
+        A list of operators which can be returned from ``get_operators``.
 
-            .. code-block:: python
+        .. code-block:: python
 
-                [
-                    [IS_SELECTED, _(u"Is selected")],
-                    [IS_NOT_SELECTED, _(u"Is not selected")],
-                ]
+            [
+                [IS_SELECTED, _(u"Is selected")],
+                [IS_NOT_SELECTED, _(u"Is not selected")],
+            ]
 
-        VALID_OPERATORS
-            A list of operators which can be returned from the ``get_operators``
-            method.
+    VALID_OPERATORS
+        A list of operators which can be returned from ``get_operators``.
 
-            .. code-block:: python
+        .. code-block:: python
 
-                [
-                    [IS_VALID, _(u"Is valid")],
-                    [IS_NOT_VALID, _(u"Is not valid")],
-                ]
+            [
+                [IS_VALID, _(u"Is valid")],
+                [IS_NOT_VALID, _(u"Is not valid")],
+            ]
 
-        STRING_OPERATORS
-            A list of operators which can be returned from the ``get_operators``
-            method.
+    STRING_OPERATORS
+        A list of operators which can be return from ``get_operators``.
 
-            .. code-block:: python
+        .. code-block:: python
 
-                [
-                    [EQUAL, _(u"Equal to")],
-                    [CONTAINS, _(u"Contains")],
-                ]
+            [
+                [EQUAL, _(u"Equal to")],
+                [CONTAINS, _(u"Contains")],
+            ]
 
     .. py:method:: lfs.criteria.models.Criterion.get_operators
 
@@ -140,6 +136,10 @@ Criterion
                 },
             ]
 
+    .. py:method:: lfs.criteria.models.Criterion.get_template(request)
+
+        Returns the template to render the criterion.
+
     .. py:method:: lfs.criteria.models.Criterion.get_value_type
 
         Returns the type of the selectable values field. Must return one of:
@@ -155,6 +155,11 @@ Criterion
     .. py:method:: lfs.criteria.models.Criterion.is_valid(request, product=None)
 
         Returns ``True`` if the criterion is valid otherwise ``False``.
+
+    .. py:method:: lfs.criteria.models.Criterion.render(request, position)
+
+        Renders the criterion as html in order to displayed it within the
+        management form.
 
     .. py:method:: lfs.criteria.models.Criterion.update(value)
 

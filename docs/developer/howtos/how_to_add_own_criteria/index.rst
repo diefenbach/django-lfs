@@ -2,29 +2,28 @@
 How to add an own criteria
 ==========================
 
-In this how-to you will learn how to add an own criterion.
+In this how-to you will learn how to add own criteria to LFS.
 
-The goal is to create a criterion, in which the customer can enter a SKU and
-decide (via operators) whether the criterion is valid if the product, with the
-entered SKU, is in the cart or not.
+The goal in this how-to is to create a criterion, for which the :term:`shop
+manager` can enter a SKU and decide (via operators) whether the criterion is
+valid if the product with the entered SKU is within the cart or not.
 
-Please see also the example application  :download:`product_criterion
-<product_criterion.tar.gz>` or refer to the default implementation of LFS within
-``lfs.criteria.models``.
+You can :download:`download the example application
+<product_criterion.tar.gz>` here.
 
 Create an application
 =====================
 
-First you need to create a default Django application (or use an existing one),
-where  you can put in your plugin. If you do not know how to do this, please
-refer to the excellent `Django tutorial
+First you need to create a default :term:`Django` application (or use an
+existing one), where  you can put in your plugin. If you do not know how to do
+this, please refer to the excellent `Django tutorial
 <http://docs.djangoproject.com/en/dev/intro/tutorial01/>`_.
 
 Implement the Criterion Model
 =============================
 
-The main part of the criterion consists of a model which must inherit from the
-``Criterion`` base class.
+The main part of the application consists of a criterion model which must
+inherit from the ``Criterion`` base class.
 
 Create the Class
 ----------------
@@ -34,16 +33,17 @@ Create the Class
     class ProductCriterion(Criterion):
         value = models.CharField(max_length=100)
 
-The only attribute we need is the value the shop admin will save for the
-criterion. The attribute can have any type you need. In this example we use a
-simple character field. This example criterion will be valid, when the the
-product with the given SKU is within the card.
+The only attribute we need is the value the :term:`shop manager` will save for
+the criterion. The attribute can have any type you need. In this example we use
+a simple character field. The entered SKU is checked within the products in the
+cart. Dependent on the chosen operator the criteria is valid if the product is
+within the cart or not.
 
 Implement necessary Methods
 ---------------------------
 
 In the next steps we implement all necessary methods which are needed to make
-the criterion work.
+the criterion work. In this case these are ``get_operators`` and ``is_valid``.
 
 The ``get_operators`` method needs to return the available operators for this
 criterion. It is a list of list, whereas the first value is an integer and the
@@ -87,9 +87,6 @@ not valid.
         request
             The current request.
 
-Please see also the example application :download:`product_criterion
-<product_criterion.tar.gz>` for the complete implementation of the model.
-
 Plug in the Criterion
 =====================
 
@@ -99,21 +96,21 @@ Now as the code is ready, you can easily plugin your own criterion:
 
 #. Add your application to settings.INSTALLED_APPS and sync your database::
 
-    INSTALLED_APPS = (
-        ...
-        "product_criterion",
-    )
+     INSTALLED_APPS = (
+          ...
+          "product_criterion",
+     )
 
 #. Add the class to the :ref:`LFS_CRITERIA <settings_lfs_criteria>` setting::
 
-    LFS_CRITERIA = [
-        ...
-        ["product_criterion.models.CartPriceCriterion", _(u"Product Criterion")],
-    ]
+     LFS_CRITERIA = [
+         ...
+         ["product_criterion.models.ProductCriterion", _(u"Product Criterion")],
+     ]
 
 #. As all criteria are models, you have to synchronize your database::
 
-    $ bin/django syncdb
+     $ bin/django syncdb
 
 #. Restart your instance and the criterion should be available for selection,
    for instance within the discount criteria tab.
