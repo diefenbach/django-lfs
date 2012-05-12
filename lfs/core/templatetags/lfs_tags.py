@@ -648,6 +648,61 @@ def do_category_product_prices_gross(parser, token):
 register.tag('category_product_prices_gross', do_category_product_prices_gross)
 
 
+class CategoryProductPricesNetNode(Node):
+    def __init__(self, product_id):
+        self.product_id = template.Variable(product_id)
+
+    def render(self, context):
+        request = context.get("request")
+
+        product_id = self.product_id.resolve(context)
+        product = Product.objects.get(pk=product_id)
+
+        if product.is_variant():
+            parent = product.parent
+        else:
+            parent = product
+
+        if parent.category_variant == CATEGORY_VARIANT_CHEAPEST_PRICES:
+            if product.get_for_sale():
+                info = parent.get_cheapest_standard_price_net(request)
+                context["standard_price"] = info["price"]
+                context["standard_price_starting_from"] = info["starting_from"]
+
+            info = parent.get_cheapest_price_net(request)
+            context["price"] = info["price"]
+            context["price_starting_from"] = info["starting_from"]
+
+            info = parent.get_cheapest_base_price_net(request)
+            context["base_price"] = info["price"]
+            context["base_price_starting_from"] = info["starting_from"]
+        else:
+            if product.get_for_sale():
+                context["standard_price"] = product.get_standard_price_net(request)
+            context["price"] = product.get_price_net(request)
+            context["price_starting_from"] = False
+
+            context["base_price"] = product.get_base_price_net(request)
+            context["base_price_starting_from"] = False
+
+        if product.get_active_packing_unit():
+            context["base_packing_price"] = product.get_base_packing_price_net(request)
+
+        return ""
+
+
+def do_category_product_prices_net(parser, token):
+    """
+    Injects all needed net prices for the default category products view into
+    the context.
+    """
+    bits = token.contents.split()
+    if len(bits) != 2:
+        raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
+    return CategoryProductPricesNetNode(bits[1])
+register.tag('category_product_prices_net', do_category_product_prices_net)
+
+
 @register.filter(name='get_price')
 def get_price_net(product, request):
     return product.get_price(request)
