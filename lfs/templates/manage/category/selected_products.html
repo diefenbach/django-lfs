@@ -20,7 +20,7 @@
         <a class="ajax-link"
            href="{% url lfs_manage_category_products_inline category.id %}?page_2={{ page_2.next_page_number }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
         <a class="ajax-link"
-           href="{% url lfs_manage_category_products_inline category.id%}?page_2={{ paginator.num_pages }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
+           href="{% url lfs_manage_category_products_inline category.id%}?page_2={{ paginator_2.num_pages }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
 
     {% else %}
         <span><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></span>
