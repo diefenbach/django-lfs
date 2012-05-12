@@ -594,9 +594,6 @@ def packages(cart_item):
 
 
 class CategoryProductPricesGrossNode(Node):
-    """
-    Node to calculate needed gross prices of a product for the category view.
-    """
     def __init__(self, product_id):
         self.product_id = template.Variable(product_id)
 
@@ -641,7 +638,8 @@ class CategoryProductPricesGrossNode(Node):
 
 def do_category_product_prices_gross(parser, token):
     """
-    Calculates needed gross price of a product for the category view.
+    Injects all needed gross prices for the default category products view into
+    the context.
     """
     bits = token.contents.split()
     if len(bits) != 2:
