@@ -27,6 +27,20 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.7.3 (2012-05-13)
+-------------------
+
+* Bugfix: update product view after images has beend changed; issue #200.
+* Bugfix: fixed wrong label for e-mail field; issue #202.
+* Bugfix: fixed pagination link. (Maciej Wiśniowski)
+* Bugfix: fixed Product.get_product_tax method: added request to parameters; issue #199.
+* Bugfix: fixed display of standard price within category products view.
+* Bugfix: don't allow pages with same slug.
+* Added: added CategoryProductPricesNetNode to lfs_tags.
+* Added: added CategoryProductPricesNode to lfs_tags.
+* Updated: cleaned up PriceCalculators.
+
+
 0.7.2 (2012-04-29)
 -------------------
 
