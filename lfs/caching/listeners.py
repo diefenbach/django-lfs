@@ -178,7 +178,8 @@ def update_product_cache(instance):
 
     cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.slug))
-    cache.delete("%s-product-inline-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
+    cache.delete("%s-product-inline-True-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
+    cache.delete("%s-product-inline-False-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-images-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-related-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-manage-properties-variants-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))

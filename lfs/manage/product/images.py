@@ -163,6 +163,8 @@ def move_image(request, id):
         image.position = (i + 1) * 10
         image.save()
 
+    product_changed.send(product, request=request)
+
     html = [["#images", manage_images(request, product.id, as_string=True)]]
 
     result = simplejson.dumps({
