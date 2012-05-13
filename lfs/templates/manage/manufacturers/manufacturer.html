@@ -22,6 +22,14 @@
            dialog_message="{% trans 'Do you really want to delete this manufacturer?' %}"
            href="{% url lfs_manufacturer_delete_manufacturer manufacturer_id %}">
            {% trans 'Delete Manufacturer' %}</a>
+        <a class="preview popup-link"
+           href="{{ manufacturer.get_absolute_url }}">
+            {% trans 'View Manufacturer' %}
+        </a>
+        <a class="preview"
+           href="{{ manufacturer.get_absolute_url }}">
+            {% trans 'Goto Manufacturer' %}
+        </a>
     </div>
     <div id="manufacturer-tabs">
         <ul>
