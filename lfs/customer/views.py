@@ -58,6 +58,7 @@ def login(request, template_name="lfs/customer/login.html"):
 
     if request.POST.get("action") == "login":
         login_form = AuthenticationForm(data=request.POST)
+        login_form.fields["username"].label = _(u"E-Mail")
 
         if login_form.is_valid():
             redirect_to = request.POST.get("next")
