@@ -91,12 +91,12 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         voucher_message = MESSAGES[6]
     else:
         lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
-        is_voucher_effective, voucher_message = voucher.is_effective(cart)
+        is_voucher_effective, voucher_message = voucher.is_effective(request, cart)
         if is_voucher_effective:
             display_voucher = True
-            voucher_value = voucher.get_price_gross(cart)
+            voucher_value = voucher.get_price_gross(request, cart)
             cart_price = cart_price - voucher_value
-            voucher_tax = voucher.get_tax(cart)
+            voucher_tax = voucher.get_tax(request, cart)
         else:
             display_voucher = False
             voucher_value = 0
