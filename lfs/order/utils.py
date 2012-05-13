@@ -73,11 +73,11 @@ def add_order(request):
     except Voucher.DoesNotExist:
         voucher = None
     else:
-        is_voucher_effective, voucher_message = voucher.is_effective(cart)
+        is_voucher_effective, voucher_message = voucher.is_effective(request, cart)
         if is_voucher_effective:
             voucher_number = voucher.number
-            voucher_price = voucher.get_price_gross(cart)
-            voucher_tax = voucher.get_tax(cart)
+            voucher_price = voucher.get_price_gross(request, cart)
+            voucher_tax = voucher.get_tax(request, cart)
 
             price -= voucher_price
             tax -= voucher_tax
