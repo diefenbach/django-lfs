@@ -27,6 +27,13 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.6.16 (2012-05-13)
+-------------------
+
+* Bugfix: fixed pagination within products tab of category management (Maciej Wiśniowski)
+* Bugfix: fixed wrong label for e-mail field; issue #202.
+* Bugfix: fixed update product view after images has beend changed; issue #200.
+
 0.6.15 (2012-04-30)
 -------------------
 
