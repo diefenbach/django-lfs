@@ -1,0 +1,52 @@
+{% load i18n %}
+{% load lfs_manage_tags %}
+
+<table class="lfs-manage-table" style="margin-bottom:0">
+    <tr>
+        <td width="50%">
+            <h2>{% trans "Selectable Products" %}</h2>
+            <form id="manufacturers-products-filter-form"
+                  action="{% url lfs_manage_manufacturer_products_inline manufacturer.pk %}"
+                  onsubmit="return false">
+
+                <input type="hidden"
+                       name="keep-session"
+                       value="1" />
+
+                <input class="refresh-on-keyup"
+                       type="text"
+                       name="manufacturer_filter" />
+
+                {% category_filter "refresh-on-change" "manufacturer_category_filter" %}
+
+                <select class="refresh-on-change"
+                        name="manufacturer-products-amount">
+                    {% for option in amount_options %}
+                        <option {% if option.selected %}selected="selected"{% endif %}
+                                value="{{ option.value }}">{{ option.value }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </td>
+        <td width="50%">
+            <h2>{% trans "Selected Products" %}</h2>
+
+            <form id="manufacturer-selected-products-filter-form"
+                  action="{% url lfs_manage_manufacturer_selected_products manufacturer.pk %}"
+                  onsubmit="return false">
+
+                <input type="hidden"
+                       name="keep-session"
+                       value="1" />
+
+                <input class="refresh-on-keyup"
+                       type="text"
+                       name="manufacturer_filter_2" />
+            </form>
+        </td>
+    </tr>
+</table>
+
+<span id="products-inline">
+    {{ products_inline }}
+</span>

@@ -8,6 +8,7 @@ from lfs.manage.pages.views import PageSEOView
 from lfs.manage.views.shop import ShopSEOView
 from lfs.catalog.models import Product, Category
 from lfs.page.models import Page
+from lfs.manufacturer.models import Manufacturer
 from lfs.manage.seo.views import SEOView
 
 
@@ -28,7 +29,7 @@ urlpatterns += patterns('lfs.manage.delivery_times.views',
 # Manufacturer
 urlpatterns += patterns('lfs.manage.manufacturers.views',
     url(r'^manufacturer-dispatcher$', "manufacturer_dispatcher", name="lfs_manufacturer_dispatcher"),
-    url(r'^manufacturer/(?P<manufacturer_id>\d*)$', "manage_manufacturer", name="lfs_manufacturer"),
+    url(r'^manufacturer/(?P<manufacturer_id>\d*)$', "manage_manufacturer", name="lfs_manage_manufacturer"),
     url(r'^update-manufacturer-data/(?P<manufacturer_id>\d*)$', "update_data", name="lfs_manufacturer_update_manufacturer_data"),
     url(r'^add-manufacturer$', "add_manufacturer", name="lfs_manufacturer_add_manufacturer"),
     url(r'^delete-manufacturer/(?P<manufacturer_id>\d*)$', "delete_manufacturer", name="lfs_manufacturer_delete_manufacturer"),
@@ -38,7 +39,19 @@ urlpatterns += patterns('lfs.manage.manufacturers.views',
     url(r'^manufacturer-inline/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$', "manufacturer_inline", name="lfs_manufacturer_inline"),
     url(r'^manufacturers-ajax/$', "manufacturers_ajax", name="lfs_manufacturers_ajax"),
     url(r'^no-manufacturers$', "no_manufacturers", name="lfs_manage_no_manufacturers"),
+    url(r'^edit-manufacturer-view/(?P<manufacturer_id>\d*)$', "manufacturer_view", name="lfs_manage_manufacturer_view"),
 )
+
+urlpatterns += patterns('lfs.manage.manufacturers.products',
+    url(r'^manufacturer-products-inline/(?P<manufacturer_id>\d*)$', "products_inline", name="lfs_manage_manufacturer_products_inline"),
+    url(r'^manufacturer-selected-products/(?P<manufacturer_id>\d*)$', "selected_products", name="lfs_manage_manufacturer_selected_products"),
+    url(r'^manufacturer-add-products/(?P<manufacturer_id>\d*)$', "add_products", name="lfs_manage_manufacturer_add_products"),
+    url(r'^manufacturer-remove-products/(?P<manufacturer_id>\d*)$', "remove_products", name="lfs_manage_manufacturer_remove_products"),
+    url(r'^manufacturer-load-products-tab/(?P<manufacturer_id>\d*)$', "products_tab", name="lfs_manufacturer_load_products_tab"),
+)
+
+# Manufacturer / SEO
+urlpatterns += SEOView.get_seo_urlpattern(Manufacturer)
 
 # Marketing
 urlpatterns += patterns('lfs.manage.views.marketing',

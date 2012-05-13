@@ -136,6 +136,16 @@ $(function() {
         position: ["center", 200]
     });
 
+    // Category tabs
+    $('#manufacturer-tabs').tabs();
+    $('#manufacturer-tabs').show();
+    $('#manufacturer-tabs').bind('tabsshow', function(event, ui) {
+        $.cookie("manufacturer_tab", ui.index);
+    });
+    var manufacturer_tab_cookie = $.cookie("manufacturer_tab");
+    index = (manufacturer_tab_cookie != null) ? parseInt(manufacturer_tab_cookie) : 0;
+    $('#manufacturer-tabs').tabs('select', index)
+
     // Generic ajax save button
     $(".ajax-save-button").live("click", function() {
 		try {

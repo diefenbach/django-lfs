@@ -18,10 +18,12 @@ from lfs.core.signals import product_changed
 from lfs.core.signals import category_changed
 from lfs.core.signals import shop_changed
 from lfs.core.signals import topseller_changed
+from lfs.core.signals import manufacturer_changed
 from lfs.marketing.models import Topseller
 from lfs.order.models import OrderItem
 from lfs.page.models import Page
 from lfs.shipping.models import ShippingMethod
+from lfs.core.utils import invalidate_cache_group_id
 
 # reviews imports
 from reviews.signals import review_added
@@ -58,6 +60,17 @@ pre_save.connect(category_saved_listener, sender=Category)
 def category_changed_listener(sender, **kwargs):
     update_category_cache(sender)
 category_changed.connect(category_changed_listener)
+
+
+# Manufacturer
+def manufacturer_changed_listener(sender, **kwargs):
+    # filtered lists of products assigned to manufacturer used at manufacturer page
+    cache.delete("%s-manufacturer-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, sender.slug))
+    # list of all manufacturer products
+    cache.delete("%s-manufacturer-all-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, sender.pk))
+    # if manufacturer assignment was changed then product navigation might be different too
+    invalidate_cache_group_id('product_navigation')
+manufacturer_changed.connect(manufacturer_changed_listener)
 
 
 # OrderItem
@@ -176,6 +189,8 @@ def update_product_cache(instance):
     else:
         parent = instance
 
+    # if product was changed then we have to clear all product_navigation caches
+    invalidate_cache_group_id('product_navigation')
     cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.slug))
     cache.delete("%s-product-inline-True-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
@@ -185,7 +200,9 @@ def update_product_cache(instance):
     cache.delete("%s-manage-properties-variants-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-categories-%s-False" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-categories-%s-True" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
-    cache.delete("%s-product-navigation-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.slug))
+    if parent.manufacturer:
+        cache.delete("%s-manufacturer-all-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.manufacturer.pk))
+        cache.delete("%s-manufacturer-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.manufacturer.slug))
 
     try:
         c = cache.get("%s-shipping-delivery-time" % settings.CACHE_MIDDLEWARE_KEY_PREFIX)
@@ -202,7 +219,6 @@ def update_product_cache(instance):
         cache.delete("%s-related-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
         cache.delete("%s-product-categories-%s-False" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
         cache.delete("%s-product-categories-%s-True" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
-        cache.delete("%s-product-navigation-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.slug))
         cache.delete("%s-product-shipping-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.slug))
 
 

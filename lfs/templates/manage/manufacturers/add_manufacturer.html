@@ -26,4 +26,13 @@
             </form>
         </div>
     </div>
+    <script>
+        $(function() {
+            $("#id_name").live("keyup", function() {
+                var slug = $("#id_name").val()
+                slug = URLify(slug, 200)
+                $("#id_slug").val(slug);
+            });
+        });
+    </script>
 {% endblock %}

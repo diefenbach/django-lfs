@@ -16,22 +16,39 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_manufacturer_add_manufacturer %}?came_from={% url lfs_manufacturer manufacturer_id %}">
+           href="{% url lfs_manufacturer_add_manufacturer %}?came_from={% url lfs_manage_manufacturer manufacturer_id %}">
            {% trans 'Add Manufacturer' %}</a>
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this manufacturer?' %}"
            href="{% url lfs_manufacturer_delete_manufacturer manufacturer_id %}">
            {% trans 'Delete Manufacturer' %}</a>
+        <a class="preview popup-link"
+           href="{{ manufacturer.get_absolute_url }}">
+            {% trans 'View Manufacturer' %}
+        </a>
+        <a class="preview"
+           href="{{ manufacturer.get_absolute_url }}">
+            {% trans 'Goto Manufacturer' %}
+        </a>
     </div>
-    <div id="manage-tabs">
+    <div id="manufacturer-tabs">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Products' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#view">{% trans 'View' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="{% url lfs_manufacturer_load_products_tab manufacturer.pk %}">{% trans 'Products' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#products-tree">{% trans 'Products tree' %}</a></li>
         </ul>
         <div id="data">
             {{ manufacturer_data_inline|safe }}
         </div>
-        <div id="products">
+        <div id="view">
+            {{ view|safe }}
+        </div>
+        <div id="seo">
+            {{ seo|safe }}
+        </div>
+        <div id="products-tree">
             <h2>{% trans "Products" %}</h2>
             <ul class="manufacturer-tree">
 

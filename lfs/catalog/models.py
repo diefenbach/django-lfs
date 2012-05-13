@@ -851,6 +851,15 @@ class Product(models.Model):
         request.session["last_category"] = category
         return category
 
+    def get_come_from_page(self, request):
+        """Returns manufacturer or category that was last visited.
+           Used to generate 'back to overview' url
+        """
+        lm = request.session.get('last_manufacturer')
+        if lm and self.manufacturer == lm:
+            return self.manufacturer
+        return self.get_current_category(request)
+
     def get_description(self):
         """
         Returns the description of the product. Takes care whether the product
