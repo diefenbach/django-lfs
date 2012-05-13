@@ -19,7 +19,7 @@ import lfs.utils.misc
 import logging
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
-from lfs.catalog.settings import CONFIGURABLE_PRODUCT
+from lfs.catalog.settings import CONFIGURABLE_PRODUCT, VARIANT
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import STANDARD_PRODUCT
@@ -29,7 +29,7 @@ from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
 from lfs.core.models import Action
 from lfs.page.models import Page
 from lfs.shipping import utils as shipping_utils
-
+from lfs.manufacturer.models import Manufacturer
 
 logger = logging.getLogger("default")
 register = template.Library()
@@ -139,14 +139,27 @@ def breadcrumbs(context, obj):
             return []
         else:
             request = context.get("request")
-            category = obj.get_current_category(request)
-            if category is None:
-                return []
+            # product page may be visited from manufacturer or category
+            lm = request.session.get('last_manufacturer')
+
+            objects = [{
+                        "name": obj.get_name(),
+                        "url": obj.get_absolute_url(),
+                    }]
+
+            if lm and obj.manufacturer == lm:
+                objects.insert(0, {
+                        "name": lm.name,
+                        "url": lm.get_absolute_url(),
+                    })
+                objects.insert(0, {
+                            "name": _(u"Manufacturers"),
+                            "url": reverse("lfs_manufacturers")})
             else:
-                objects = [{
-                    "name": obj.get_name(),
-                    "url": obj.get_absolute_url(),
-                }]
+                category = obj.get_current_category(request)
+                if category is None:
+                    return []
+
                 while category is not None:
                     objects.insert(0, {
                         "name": category.name,
@@ -165,6 +178,17 @@ def breadcrumbs(context, obj):
             "name": _(u"Information"),
             "url": reverse("lfs_pages")})
         objects.append({"name": obj.title})
+
+        result = {
+            "objects": objects,
+            "STATIC_URL": context.get("STATIC_URL"),
+        }
+    elif isinstance(obj, Manufacturer):
+        objects = []
+        objects.append({
+            "name": _(u"Manufacturers"),
+            "url": reverse("lfs_manufacturers")})
+        objects.append({"name": obj.name})
 
         result = {
             "objects": objects,
@@ -190,17 +214,6 @@ def product_navigation(context, product):
 
     slug = product.slug
 
-    cache_key = "%s-product-navigation-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
-    temp = None  # cache.get(cache_key)
-
-    if temp is not None:
-        try:
-            return temp[sorting]
-        except KeyError:
-            pass
-    else:
-        temp = dict()
-
     # To calculate the position we take only STANDARD_PRODUCT into account.
     # That means if the current product is a VARIANT we switch to its parent
     # product.
@@ -208,58 +221,75 @@ def product_navigation(context, product):
         product = product.parent
         slug = product.slug
 
-    category = product.get_current_category(request)
-    if category is None:
-        return {"display": False}
+    # prepare cache key for product_navigation group
+    # used to invalidate cache for all product_navigations at once
+    pn_cache_key = lfs.core.utils.get_cache_group_id('product_navigation')
+
+    # if there is last_manufacturer then product was visited from manufacturer view
+    # as category view removes last_manufacturer from the session
+    lm = request.session.get('last_manufacturer')
+    if lm and product.manufacturer == lm:
+        cache_key = "%s-%s-product-navigation-manufacturer-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
+                                                                  pn_cache_key,
+                                                                  slug)
+        res = cache.get(cache_key)
+        if res and sorting in res:
+            return res[sorting]
+
+        products = Product.objects.filter(manufacturer=lm)
     else:
-        # First we collect all sub categories. This and using the in operator makes
-        # batching more easier
-        categories = [category]
-
-        if category.show_all_products:
-            categories.extend(category.get_all_children())
-
-        # This is necessary as we display non active products to superusers.
-        # So we have to take care for the product navigation too.
-        if request.user.is_superuser:
-            products = Product.objects.filter(
-                categories__in=categories,
-                sub_type__in=(STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT),
-            ).distinct().order_by(sorting)
+        category = product.get_current_category(request)
+        if category is None:
+            return {"display": False}
         else:
-            products = Product.objects.filter(
-                categories__in=categories,
-                sub_type__in=(STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT),
-                active=True,
-            ).distinct().order_by(sorting)
+            cache_key = "%s-%s-product-navigation-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
+                                                         pn_cache_key,
+                                                         slug)
+            res = cache.get(cache_key)
+            if res and sorting in res:
+                return res[sorting]
 
-        product_slugs = [p.slug for p in products]
-        product_index = product_slugs.index(slug)
+            # First we collect all sub categories. This and using the in operator makes
+            # batching more easier
+            categories = [category]
 
-        if product_index > 0:
-            previous = product_slugs[product_index - 1]
-        else:
-            previous = None
+            if category.show_all_products:
+                categories.extend(category.get_all_children())
 
-        total = len(product_slugs)
-        if product_index < total - 1:
-            next = product_slugs[product_index + 1]
-        else:
-            next = None
+            products = Product.objects.filter(categories__in=categories)
 
-        result = {
-            "display": True,
-            "previous": previous,
-            "next": next,
-            "current": product_index + 1,
-            "total": total,
-            "STATIC_URL": context.get("STATIC_URL"),
-        }
+    # This is necessary as we display non active products to superusers.
+    # So we have to take care for the product navigation too.
+    if not request.user.is_superuser:
+        products = products.filter(active=True)
+    products = products.exclude(sub_type=VARIANT).distinct().order_by(sorting)
 
-        temp[sorting] = result
-        cache.set(cache_key, temp)
+    product_slugs = list(products.values_list('slug', flat=True))
+    product_index = product_slugs.index(slug)
 
-        return result
+    if product_index > 0:
+        previous = product_slugs[product_index - 1]
+    else:
+        previous = None
+
+    total = len(product_slugs)
+    if product_index < total - 1:
+        next = product_slugs[product_index + 1]
+    else:
+        next = None
+
+    result = {
+        "display": True,
+        "previous": previous,
+        "next": next,
+        "current": product_index + 1,
+        "total": total,
+        "STATIC_URL": context.get("STATIC_URL"),
+    }
+
+    cache.set(cache_key, {'sorting': result})
+
+    return result
 
 
 class ActionsNode(Node):
@@ -455,6 +485,30 @@ def do_current_category(parser, token):
 
     return CurrentCategoryNode()
 register.tag('current_category', do_current_category)
+
+
+class ComeFromPageNode(Node):
+    """
+    """
+    def render(self, context):
+        request = context.get("request")
+        product = context.get("product")
+
+        context["come_from_page"] = \
+            product.get_come_from_page(request)
+        return ''
+
+
+def do_come_from_page(parser, token):
+    """Calculates current manufacturer or category.
+    """
+    bits = token.contents.split()
+    len_bits = len(bits)
+    if len_bits != 2:
+        raise TemplateSyntaxError(_('%s tag needs product as argument') % bits[0])
+
+    return ComeFromPageNode()
+register.tag('come_from_page', do_come_from_page)
 
 
 # TODO: Move this to shop utils or similar

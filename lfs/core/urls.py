@@ -78,6 +78,12 @@ urlpatterns += patterns('lfs.customer.views',
     url(r'^my-password', "password", name="lfs_my_password"),
 )
 
+# Manufacturers
+urlpatterns += patterns('lfs.manufacturer.views',
+    url(r'^manufacturers/$', "manufacturers", name="lfs_manufacturers"),
+    url(r'^manufacturer-(?P<slug>[-\w]*)$', "manufacturer_view", name="lfs_manufacturer"),
+)
+
 # Page
 urlpatterns += patterns('lfs.page.views',
     url(r'^page/(?P<slug>[-\w]*)$', "page_view", name="lfs_page_view"),

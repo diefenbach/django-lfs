@@ -12,13 +12,16 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
 
 # lfs imports
+from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 from lfs.core.utils import LazyEncoder
-from lfs.manage.manufacturers.forms import ManufacturerDataForm
+from lfs.manage.manufacturers.forms import ManufacturerDataForm, ManufacturerAddForm
 from lfs.manufacturer.models import Manufacturer
+from lfs.manage.manufacturers.forms import ViewForm
+from lfs.manage.seo.views import SEOView
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -40,12 +43,14 @@ def manage_manufacturer(request, manufacturer_id, template_name="manage/manufact
             "klass": klass,
         })
 
-    data_form = ManufacturerDataForm(instance=manufacturer)
     return render_to_response(template_name, RequestContext(request, {
         "categories": categories,
+        "manufacturer": manufacturer,
         "manufacturer_id": manufacturer_id,
         "selectable_manufacturers_inline": selectable_manufacturers_inline(request, manufacturer_id),
-        "manufacturer_data_inline": manufacturer_data_inline(request, manufacturer_id, data_form),
+        "manufacturer_data_inline": manufacturer_data_inline(request, manufacturer_id),
+        "seo": SEOView(Manufacturer).render(request, manufacturer),
+        "view": manufacturer_view(request, manufacturer_id),
     }))
 
 
@@ -57,14 +62,52 @@ def no_manufacturers(request, template_name="manage/manufacturers/no_manufacture
 
 
 # Parts
-def manufacturer_data_inline(request, manufacturer_id, form,
-    template_name="manage/manufacturers/manufacturer_data_inline.html"):
+def manufacturer_data_inline(request, manufacturer_id,
+                             template_name="manage/manufacturers/manufacturer_data_inline.html"):
     """Displays the data form of the current manufacturer.
     """
+    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
+    if request.method == "POST":
+        form = ManufacturerDataForm(instance=manufacturer, data=request.POST)
+    else:
+        form = ManufacturerDataForm(instance=manufacturer)
     return render_to_string(template_name, RequestContext(request, {
-        "manufacturer_id": manufacturer_id,
+        "manufacturer": manufacturer,
         "form": form,
     }))
+
+
+@permission_required("core.manage_shop", login_url="/login/")
+def manufacturer_view(request, manufacturer_id, template_name="manage/manufacturers/view.html"):
+    """Displays the view data for the manufacturer with passed manufacturer id.
+
+    This is used as a part of the whole category form.
+    """
+    manufacturer = lfs_get_object_or_404(Manufacturer, pk=manufacturer_id)
+
+    if request.method == "POST":
+        form = ViewForm(instance=manufacturer, data=request.POST)
+        if form.is_valid():
+            form.save()
+            message = _(u"View data has been saved.")
+        else:
+            message = _(u"Please correct the indicated errors.")
+    else:
+        form = ViewForm(instance=manufacturer)
+
+    view_html = render_to_string(template_name, RequestContext(request, {
+        "manufacturer": manufacturer,
+        "form": form,
+    }))
+
+    if request.is_ajax():
+        html = [["#view", view_html]]
+        return HttpResponse(simplejson.dumps({
+            "html": html,
+            "message": message,
+        }, cls=LazyEncoder))
+    else:
+        return view_html
 
 
 def selectable_manufacturers_inline(request, manufacturer_id,
@@ -129,14 +172,14 @@ def add_manufacturer(request, template_name="manage/manufacturers/add_manufactur
     """Form and logic to add a manufacturer.
     """
     if request.method == "POST":
-        form = ManufacturerDataForm(data=request.POST)
+        form = ManufacturerAddForm(data=request.POST)
         if form.is_valid():
             new_manufacturer = form.save()
             return HttpResponseRedirect(
-                reverse("lfs_manufacturer", kwargs={"manufacturer_id": new_manufacturer.id}))
+                reverse("lfs_manage_manufacturer", kwargs={"manufacturer_id": new_manufacturer.id}))
 
     else:
-        form = ManufacturerDataForm()
+        form = ManufacturerAddForm()
 
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
@@ -156,7 +199,7 @@ def manufacturer_dispatcher(request):
         return HttpResponseRedirect(reverse("lfs_manage_no_manufacturers"))
     else:
         return HttpResponseRedirect(
-            reverse("lfs_manufacturer", kwargs={"manufacturer_id": manufacturer.id}))
+            reverse("lfs_manage_manufacturer", kwargs={"manufacturer_id": manufacturer.id}))
 
 
 @permission_required("core.manage_shop", login_url="/login/")
@@ -240,15 +283,21 @@ def update_data(request, manufacturer_id):
     """Updates data of manufacturer with given manufacturer id.
     """
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
-    form = ManufacturerDataForm(instance=manufacturer, data=request.POST)
+    form = ManufacturerDataForm(instance=manufacturer, data=request.POST,
+                                files=request.FILES)
 
     if form.is_valid():
-        form.save()
+        manufacturer = form.save()
+        msg = _(u"Manufacturer data has been saved.")
+    else:
+        msg = _(u"Please correct the indicated errors.")
 
-    msg = _(u"Manufacturer data has been saved.")
+    # Delete image
+    if request.POST.get("delete_image"):
+        manufacturer.image.delete()
 
     html = (
-        ("#data", manufacturer_data_inline(request, manufacturer_id, form)),
+        ("#data", manufacturer_data_inline(request, manufacturer.pk)),
         ("#selectable-manufacturers", selectable_manufacturers_inline(request, manufacturer_id)),
     )
 

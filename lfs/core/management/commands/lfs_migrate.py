@@ -8,10 +8,13 @@ from django.db import connection
 from django.db import transaction
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.template.defaultfilters import slugify
 
 # lfs imports
 import lfs.core.settings as lfs_settings
 from lfs.voucher.models import Voucher
+from lfs.manufacturer.models import Manufacturer
+from lfs.core.fields.thumbs import ImageWithThumbsField
 
 # south imports
 from south.db import db
@@ -265,6 +268,48 @@ class Command(BaseCommand):
         transaction.commit_unless_managed()
 
         db.delete_table("criteria_shippingmethodcriterion_shipping_methods")
+
+        # Manufacturers
+        # Adding field 'Manufacturer.position'
+        db.add_column('manufacturer_manufacturer', 'position', models.IntegerField(default=1000), keep_default=False)
+
+        # Adding field 'Manufacturer.short_description'
+        db.add_column('manufacturer_manufacturer', 'short_description', models.TextField(default='', blank=True), keep_default=False)
+
+        # Adding field 'Manufacturer.description'
+        db.add_column('manufacturer_manufacturer', 'description', models.TextField(default='', blank=True), keep_default=False)
+
+        # Adding field 'Manufacturer.image'
+        db.add_column('manufacturer_manufacturer', 'image', ImageWithThumbsField(blank=True, max_length=100, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400))), keep_default=False)
+
+        # Adding field 'Manufacturer.meta_title'
+        db.add_column('manufacturer_manufacturer', 'meta_title', models.CharField(default='<name>', max_length=100), keep_default=False)
+
+        # Adding field 'Manufacturer.meta_keywords'
+        db.add_column('manufacturer_manufacturer', 'meta_keywords', models.TextField(default='', blank=True), keep_default=False)
+
+        # Adding field 'Manufacturer.meta_description'
+        db.add_column('manufacturer_manufacturer', 'meta_description', models.TextField(default='', blank=True), keep_default=False)
+
+        # Adding field 'Manufacturer.slug'
+        db.add_column('manufacturer_manufacturer', 'slug', models.SlugField(default='', max_length=50, db_index=True, null=True), keep_default=False)
+
+        # Adding field 'Manufacturer.active_formats'
+        db.add_column('manufacturer_manufacturer', 'active_formats', models.fields.BooleanField(default=False), keep_default=False)
+
+        # Adding field 'Manufacturer.product_rows'
+        db.add_column('manufacturer_manufacturer', 'product_rows', models.fields.IntegerField(default=3), keep_default=False)
+
+        # Adding field 'Manufacturer.product_cols'
+        db.add_column('manufacturer_manufacturer', 'product_cols', models.fields.IntegerField(default=3), keep_default=False)
+
+        for i, manufacturer in enumerate(Manufacturer.objects.all()):
+            manufacturer.slug = slugify(manufacturer.name)
+            manufacturer.position = (i + 1) * 10
+            manufacturer.save()
+
+        # Set field 'Manufacturer.slug' to not null
+        db.alter_column('manufacturer_manufacturer', 'slug', models.SlugField(unique=True, max_length=50))
 
     def migrate_to_07(self, application, version):
         from lfs.catalog.models import Product

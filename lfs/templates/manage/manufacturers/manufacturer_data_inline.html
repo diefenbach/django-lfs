@@ -1,9 +1,9 @@
 {% load i18n %}
 <h2>{% trans "Data" %}</h2>
-<form action="{% url lfs_manufacturer_update_manufacturer_data manufacturer_id %}"
+<form action="{% url lfs_manufacturer_update_manufacturer_data manufacturer.pk %}"
       method="post">
 
-        {% include "manage/lfs_form.html" %}
+    {% include "manage/lfs_form.html" %}
     
     <div class="buttons">
         <input type="submit"

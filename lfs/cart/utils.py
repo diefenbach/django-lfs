@@ -168,9 +168,10 @@ def get_cart(request):
 
 def get_go_on_shopping_url(request):
     """
-    Calculates the go on shopping url based on the last visited category.
+    Calculates the go on shopping url based on the last visited category or last visited manufacturer
     """
-    lc = request.session.get("last_category")
+    # visiting category clears last_manufacturer so manufacturer has higher priority
+    lc = request.session.get("last_manufacturer", request.session.get("last_category"))
     if lc:
         return lc.get_absolute_url()
     else:

@@ -269,7 +269,7 @@ tr.odd {
     text-align:center;
 }
 
-.manage-category .navigation-pages-inline {
+.manage-category .navigation-pages-inline, .manage-manufacturer .navigation-pages-inline {
     margin-bottom: 30px;
 }
 
@@ -757,6 +757,18 @@ ul.manufacturer-tree {
 
 ul.manufacturer-tree ul {
     padding: 0 0 0 15px;
+}
+
+.category-ajax-link.expanded:before{
+    content: "-";
+}
+
+.category-ajax-link.collapsed:before{
+    content: "+";
+}
+
+span.indicator{
+    color: #aaaaaa;
 }
 
 #properties select {

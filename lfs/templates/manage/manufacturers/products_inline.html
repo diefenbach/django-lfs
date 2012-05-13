@@ -1,0 +1,99 @@
+{% load i18n %}
+{% load lfs_tags %}
+{% load lfs_manage_tags %}
+
+<table class="lfs-manage-table">
+    <tr>
+        <td width="50%">
+            <div class="navigation-pages-inline">
+                {% if page.has_previous %}
+                    <a class="ajax-link"
+                       href="{% url lfs_manage_manufacturer_products_inline manufacturer.pk %}?manufacturer_page=1&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
+                    <a class="ajax-link"
+                       href="{% url lfs_manage_manufacturer_products_inline manufacturer.pk %}?manufacturer_page={{ page.previous_page_number }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
+                {% else %}
+                    <span><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></span>
+                    <span><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></span>
+                {% endif %}
+
+                <span style="position: relative; top:-4px ">
+                    {{ page.number }} {% trans "of" %} {{ paginator.num_pages }}
+                </span>
+
+                {% if page.has_next %}
+                    <a class="ajax-link"
+                       href="{% url lfs_manage_manufacturer_products_inline manufacturer.pk %}?manufacturer_page={{ page.next_page_number }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
+                    <a class="ajax-link"
+                       href="{% url lfs_manage_manufacturer_products_inline manufacturer.pk %}?manufacturer_page={{ paginator.num_pages }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
+
+                {% else %}
+                    <span><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></span>
+                    <span><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></span>
+                {% endif %}
+            </div>
+            <form id="manufacturer-products-add-form"
+                  action="{% url lfs_manage_manufacturer_add_products manufacturer.pk %}"
+                  method="post">
+
+                <div id="manufacturer-products-left">
+                    <table class="lfs-manage-table">
+                        <tr>
+                            <th class="checkbox">
+                                <input type="checkbox"
+                                       class="select-all"
+                                       value="products" />
+                            </th>
+                            <th>
+                                {% trans 'Name' %}
+                            </th>
+                            <th class="middle">
+                                {% trans 'Manufacturer' %}
+                            </th>
+                            <th class="tiny right-padding">
+                                {% trans 'Active' %}
+                            </th>
+                        </tr>
+                        {% for product in page.object_list %}
+                            <tr class="{% cycle 'even' 'odd' %}">
+                                <td>
+                                    <input type="checkbox"
+                                           class="select-products"
+                                           name="{{ product.id }}" />
+                                </td>
+                                <td>
+                                    <a href="{% url lfs_manage_product product.id %}">
+                                        {{ product.get_name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    {{ product.manufacturer|default_if_none:"" }}
+                                </td>
+                                <td class="right-padding">
+                                    {% if product.is_active %}
+                                        <img src="{{ STATIC_URL }}icons/tick.png" />
+                                    {% else %}
+                                        <img src="{{ STATIC_URL }}icons/cross.png" />
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <input type="hidden"
+                       name="keep-session"
+                       value="1" />
+                
+                <div class="buttons">
+                    <input type="submit"
+                           class="ajax-save-button button"
+                           value="{% trans 'Add to manufacturer' %}" />
+                </div>       
+            </form>
+        </td>
+        <td width="50%">
+            <div id="selected-products">
+                {{ selected_products }}
+            </div>
+        </td>
+    </tr>
+</table>

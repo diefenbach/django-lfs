@@ -14,7 +14,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ungettext
 
 # lfs imports
 import lfs.catalog.utils
@@ -277,6 +277,8 @@ def category_view(request, slug, template_name="lfs/catalog/category_base.html")
     # Set last visited category for later use, e.g. Display breadcrumbs,
     # selected menu points, etc.
     request.session["last_category"] = category
+    if "last_manufacturer" in request.session:
+        del(request.session["last_manufacturer"])
 
     # TODO: Factor top_category out to a inclusion tag, so that people can
     # omit if they don't need it.
@@ -427,6 +429,10 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
 
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=category.get_absolute_url())
+
+    pagination_data['total_text'] = ungettext('%(count)d product',
+                                              '%(count)d products',
+                                              amount_of_products) % {'count': amount_of_products}
 
     render_template = category.get_template_name()
     if render_template != None:

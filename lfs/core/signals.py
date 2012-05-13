@@ -27,5 +27,8 @@ property_type_changed = django.dispatch.Signal()
 # an explicit relation ship class
 product_removed_property_group = django.dispatch.Signal()
 
+# Manufacturer
+manufacturer_changed = django.dispatch.Signal()
+
 # User
 customer_added = django.dispatch.Signal()

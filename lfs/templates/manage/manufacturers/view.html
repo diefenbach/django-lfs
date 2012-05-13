@@ -1,0 +1,38 @@
+{% load i18n %}
+
+<h2>{% trans 'View' %}</h2>
+
+<form action="{% url lfs_manage_manufacturer_view manufacturer.id %}"
+      method="post"
+      class="manufacturer-data-form">
+    {% csrf_token %}
+    {% include "manage/lfs_form.html" %}
+    <div class="buttons">
+        <input value="{% trans 'Save View' %}"
+               type="submit"
+               class="ajax-save-button button" />
+    </div>
+</form>
+<script>
+    $(function() {
+        update_form();
+
+        $("#id_active_formats").click(function() {
+            update_form();
+        });
+
+        $("#id_template").change(function() {
+            update_form();
+        });
+
+        function update_form() {
+            if ($("#id_active_formats:checked").val() == null) {
+                $("#id_product_cols, #id_product_rows").parents(".field").hide();
+            }
+
+            else {
+                $("#id_product_cols, #id_product_rows").parents(".field").show();
+            }
+        }
+    })
+</script>

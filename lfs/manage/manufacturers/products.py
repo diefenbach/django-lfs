@@ -1,7 +1,6 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
-from django.db import IntegrityError
 from django.db.models import Q
 from django.http import HttpResponse
 from django.template import RequestContext
@@ -12,31 +11,33 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.signals import product_changed
-from lfs.core.signals import category_changed
+from lfs.core.signals import manufacturer_changed
 from lfs.core.utils import LazyEncoder
 from lfs.catalog.settings import VARIANT
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 
-
 # Views
+from lfs.manufacturer.models import Manufacturer
+
+
 @permission_required("core.manage_shop", login_url="/login/")
-def manage_products(request, category_id, template_name="manage/category/products.html"):
+def manage_products(request, manufacturer_id, template_name="manage/manufacturers/products.html"):
     """
     """
-    category = Category.objects.get(pk=category_id)
-    inline = products_inline(request, category_id, True)
+    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
+    inline = products_inline(request, manufacturer_id, True)
 
     # amount options
     amount_options = []
     for value in (10, 25, 50, 100):
         amount_options.append({
             "value": value,
-            "selected": value == request.session.get("category-products-amount")
+            "selected": value == request.session.get("manufacturer-products-amount")
         })
 
     return render_to_string(template_name, RequestContext(request, {
-        "category": category,
+        "manufacturer": manufacturer,
         "products_inline": inline,
         "amount_options": amount_options,
     }))
@@ -44,36 +45,34 @@ def manage_products(request, category_id, template_name="manage/category/product
 
 # Parts
 @permission_required("core.manage_shop", login_url="/login/")
-def products_inline(request, category_id, as_string=False, template_name="manage/category/products_inline.html"):
-    """Displays the products-tab of a category.
+def products_inline(request, manufacturer_id, as_string=False, template_name="manage/manufacturers/products_inline.html"):
+    """Displays the products-tab of a manufacturer.
 
     This is called at start from the manage_products view to assemble the
-    whole manage category view and is subsequently called via ajax requests to
+    whole manage manufacturer view and is subsequently called via ajax requests to
     update this part independent of others.
     """
-    category = Category.objects.get(pk=category_id)
-
-    product_ids = Product.objects.filter(categories=category).values_list('pk', flat=True)
+    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
 
     if request.REQUEST.get("keep-session"):
-        page = request.REQUEST.get("page", request.session.get("page", 1))
-        filter_ = request.REQUEST.get("filter", request.session.get("filter", ""))
-        category_filter = request.REQUEST.get("category_filter", request.session.get("category_filter", ""))
+        page = request.REQUEST.get("manufacturer_page", request.session.get("manufacturer_page", 1))
+        filter_ = request.REQUEST.get("manufacturer_filter", request.session.get("manufacturer_filter", ""))
+        category_filter = request.REQUEST.get("manufacturer_category_filter", request.session.get("manufacturer_category_filter", ""))
     else:
         page = 1
         filter_ = ""
         category_filter = ""
 
     s = request.session
-    s["page"] = page
-    s["filter"] = filter_
-    s["category_filter"] = category_filter
+    s["manufacturer_page"] = page
+    s["manufacturer_filter"] = filter_
+    s["manufacturer_category_filter"] = category_filter
 
     try:
-        s["category-products-amount"] = int(request.REQUEST.get("category-products-amount",
-                                      s.get("category-products-amount")))
+        s["manufacturer-products-amount"] = int(request.REQUEST.get("manufacturer-products-amount",
+                                                                    s.get("manufacturer-products-amount")))
     except TypeError:
-        s["category-products-amount"] = 25
+        s["manufacturer-products-amount"] = 25
 
     filters = Q()
     if filter_:
@@ -90,20 +89,21 @@ def products_inline(request, category_id, as_string=False, template_name="manage
 
             filters &= Q(categories__in=categories_temp)
 
-    selectable_products = Product.objects.filter(
-        filters).exclude(sub_type=VARIANT).distinct()
 
-    paginator = Paginator(selectable_products.exclude(pk__in=product_ids), s["category-products-amount"])
+    selectable_products = Product.objects.filter(
+        filters).exclude(sub_type=VARIANT).exclude(manufacturer=manufacturer).distinct()
+
+    paginator = Paginator(selectable_products, s["manufacturer-products-amount"])
     try:
         page = paginator.page(page)
     except (EmptyPage, InvalidPage):
         page = paginator.page(1)
 
     result = render_to_string(template_name, RequestContext(request, {
-        "category": category,
+        "manufacturer": manufacturer,
         "paginator": paginator,
         "page": page,
-        "selected_products": selected_products(request, category_id, as_string=True),
+        "selected_products": selected_products(request, manufacturer_id, as_string=True),
     }))
 
     if as_string:
@@ -116,54 +116,52 @@ def products_inline(request, category_id, as_string=False, template_name="manage
 
 # Actions
 @permission_required("core.manage_shop", login_url="/login/")
-def products_tab(request, category_id):
-    """Returns the products tab for given category id.
+def products_tab(request, manufacturer_id):
+    """Returns the products tab for given manufacturer id.
     """
-    result = manage_products(request, category_id)
+    result = manage_products(request, manufacturer_id)
     return HttpResponse(result)
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def selected_products(request, category_id, as_string=False, template_name="manage/category/selected_products.html"):
-    """The selected products part of the products-tab of a category.
+def selected_products(request, manufacturer_id, as_string=False, template_name="manage/manufacturers/selected_products.html"):
+    """The selected products part of the products-tab of a manufacturer.
 
     This is called at start from the products_inline method to assemble the
     whole manage category view and is later called via ajax requests to update
     this part independent of others.
     """
-    category = Category.objects.get(pk=category_id)
+    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
 
     if request.REQUEST.get("keep-session"):
-        page_2 = request.REQUEST.get("page_2", request.session.get("page_2", 2))
-        filter_2 = request.REQUEST.get("filter_2", request.session.get("filter_2", ""))
-        category_filter_2 = request.REQUEST.get("category_filter_2", request.session.get("category_filter_2", ""))
+        page_2 = request.REQUEST.get("manufacturer_page_2", request.session.get("manufacturer_page_2", 2))
+        filter_2 = request.REQUEST.get("manufacturer_filter_2", request.session.get("manufacturer_filter_2", ""))
     else:
         page_2 = 1
         filter_2 = ""
-        category_filter_2 = ""
 
-    request.session["page_2"] = page_2
-    request.session["filter_2"] = filter_2
+    request.session["manufacturer_page_2"] = page_2
+    request.session["manufacturer_filter_2"] = filter_2
 
     try:
-        request.session["category-products-amount"] = int(request.REQUEST.get("category-products-amount", request.session.get("category-products-amount")))
+        request.session["manufacturer-products-amount"] = int(request.REQUEST.get("manufacturer-products-amount", request.session.get("manufacturer-products-amount")))
     except TypeError:
-        request.session["category-products-amount"] = 25
+        request.session["manufacturer-products-amount"] = 25
 
-    filters = Q(categories=category)
+    filters = Q(manufacturer=manufacturer)
     if filter_2:
         filters &= (Q(name__icontains=filter_2) | Q(sku__icontains=filter_2))
 
     products = Product.objects.filter(filters).exclude(sub_type=VARIANT).distinct()
 
-    paginator_2 = Paginator(products, request.session["category-products-amount"])
+    paginator_2 = Paginator(products, request.session["manufacturer-products-amount"])
     try:
         page_2 = paginator_2.page(page_2)
     except (EmptyPage, InvalidPage):
         page_2 = paginator_2.page(1)
 
     result = render_to_string(template_name, RequestContext(request, {
-        "category": category,
+        "manufacturer": manufacturer,
         "products": products,
         "paginator_2": paginator_2,
         "page_2": page_2,
@@ -179,59 +177,57 @@ def selected_products(request, category_id, as_string=False, template_name="mana
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def add_products(request, category_id):
+def add_products(request, manufacturer_id):
     """Adds products (passed via request body) to category with passed id.
     """
-    category = Category.objects.get(pk=category_id)
+    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
 
     for product_id in request.POST.keys():
-        if product_id.startswith("page") or product_id.startswith("filter") or \
+        if product_id.startswith("manufacturer_page") or product_id.startswith("manufacturer_filter") or \
            product_id.startswith("keep-session") or product_id.startswith("action"):
             continue
+
         try:
-            category.products.add(product_id)
-        except IntegrityError:
+            product = Product.objects.get(pk=product_id)
+            product.manufacturer = manufacturer
+            product.save()
+            product_changed.send(product)
+        except Product.DoesNotExist:
             continue
+    manufacturer_changed.send(manufacturer)
 
-        product = Product.objects.get(pk=product_id)
-        product_changed.send(product)
-
-    category_changed.send(category)
-
-    html = [["#products-inline", products_inline(request, category_id, as_string=True)]]
+    html = [["#products-inline", products_inline(request, manufacturer_id, as_string=True)]]
 
     result = simplejson.dumps({
         "html": html,
-        "message": _(u"Selected products have been added to category.")
+        "message": _(u"Selected products have been assigned to manufacturer.")
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def remove_products(request, category_id):
+def remove_products(request, manufacturer_id):
     """Removes product (passed via request body) from category with passed id.
     """
-    category = Category.objects.get(pk=category_id)
+    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
 
     for product_id in request.POST.keys():
-
-        if product_id.startswith("page") or product_id.startswith("filter") or \
+        if product_id.startswith("manufacturer_page") or product_id.startswith("manufacturer_filter") or \
            product_id.startswith("keep-session") or product_id.startswith("action"):
             continue
 
         product = Product.objects.get(pk=product_id)
+        product.manufacturer = None
+        product.save()
         product_changed.send(product)
+    manufacturer_changed.send(manufacturer)
 
-        category.products.remove(product_id)
-
-    category_changed.send(category)
-
-    html = [["#products-inline", products_inline(request, category_id, as_string=True)]]
+    html = [["#products-inline", products_inline(request, manufacturer_id, as_string=True)]]
 
     result = simplejson.dumps({
         "html": html,
-        "message": _(u"Selected products have been removed from category.")
+        "message": _(u"Selected products are no longer assigned to manufacturer.")
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
