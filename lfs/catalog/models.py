@@ -901,26 +901,26 @@ class Product(models.Model):
         else:
             return self.active_base_price
 
-    def get_base_packing_price(self, request):
+    def get_base_packing_price(self, request, with_properties=True):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_base_packing_price(request)
+        return pc.get_base_packing_price(with_properties)
 
-    def get_base_packing_price_net(self, request):
+    def get_base_packing_price_net(self, request, with_properties=True):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_base_packing_price_net(request)
+        return pc.get_base_packing_price_net(with_properties)
 
-    def get_base_packing_price_gross(self, request):
+    def get_base_packing_price_gross(self, request, with_properties=True):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_base_packing_price_gross(request)
+        return pc.get_base_packing_price_gross(with_properties)
 
     # TODO: Check whether there is a test case for that and write one if not.
     def get_for_sale(self):
