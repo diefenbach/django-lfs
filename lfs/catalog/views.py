@@ -64,7 +64,7 @@ def select_variant(request):
     return HttpResponse(result)
 
 
-def calculate_packing(request, id, quantity=None, as_string=False, template_name="lfs/catalog/packing_result.html"):
+def calculate_packing(request, id, quantity=None, with_properties=False, as_string=False, template_name="lfs/catalog/packing_result.html"):
     """Calculates the actual amount of pieces to buy on base on packing
     information.
     """
@@ -78,7 +78,9 @@ def calculate_packing(request, id, quantity=None, as_string=False, template_name
     try:
         packs = math.ceil(quantity / packing_amount)
         real_quantity = packs * packing_amount
-        price = real_quantity * product.get_price_gross(request)
+        price = product.get_price_gross(request, with_properties=with_properties)
+        price += _calculate_property_price(request)
+        price *= real_quantity
     except TypeError:
         packs = 0.0
         real_quantity = 0.0
@@ -107,20 +109,7 @@ def calculate_price(request, id):
     a customer has selected a property on product view.
     """
     product = Product.objects.get(pk=id)
-
-    property_price = 0
-    for key, option_id in request.POST.items():
-        if key.startswith("property"):
-            try:
-                property_id = int(key.split('-')[1])
-                property = Property.objects.get(pk=property_id)
-                if property.is_select_field:
-                    po = PropertyOption.objects.get(property=property, pk=option_id)
-                    if property.add_price:
-                        po_price = float(po.price)
-                        property_price += po_price
-            except (IndexError, ValueError, TypeError, PropertyOption.DoesNotExist, Property.DoesNotExist):
-                pass
+    property_price = _calculate_property_price(request)
 
     if product.for_sale:
         for_sale_standard_price = product.get_standard_price(request, with_properties=False)
@@ -139,6 +128,7 @@ def calculate_price(request, id):
         "price": lfs_tags.currency(price, request),
         "for-sale-standard-price": lfs_tags.currency(for_sale_standard_price),
         "for-sale-price": lfs_tags.currency(for_sale_price),
+        "packing-result": calculate_packing(request, id, as_string=True),
         "message": _("Price has been changed according to your selection."),
     }, cls=LazyEncoder)
 
@@ -563,7 +553,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
         template_name = product.get_template_name()
 
     if product.get_active_packing_unit():
-        packing_result = calculate_packing(request, product.id, 1, True)
+        packing_result = calculate_packing(request, product.id, 1, True, True)
     else:
         packing_result = ""
 
@@ -616,3 +606,23 @@ def product_form_dispatcher(request):
             )
 
         return HttpResponseRedirect(variant.get_absolute_url())
+
+
+def _calculate_property_price(request):
+    """
+    Calculates the price of the currently selected properties.
+    """
+    property_price = 0
+    for key, option_id in request.POST.items():
+        if key.startswith("property"):
+            try:
+                property_id = int(key.split('-')[1])
+                property = Property.objects.get(pk=property_id)
+                if property.is_select_field:
+                    po = PropertyOption.objects.get(property=property, pk=option_id)
+                    if property.add_price:
+                        po_price = float(po.price)
+                        property_price += po_price
+            except (IndexError, ValueError, TypeError, PropertyOption.DoesNotExist, Property.DoesNotExist):
+                pass
+    return property_price
