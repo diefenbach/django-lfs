@@ -192,6 +192,12 @@ class PriceCalculator(object):
     def get_price_net(self, with_properties=True):
         """
         Returns the net price of the product.
+
+        **Parameters:**
+
+        with_properties
+            If the instance is a configurable product and with_properties is
+            True the prices of the default properties are added to the price.
         """
         raise NotImplementedError
 
@@ -313,6 +319,12 @@ class PriceCalculator(object):
     def get_base_price(self, with_properties=True):
         """
         Returns the base price of the product.
+
+        **Parameters:**
+
+        with_properties
+            If the instance is a configurable product and with_properties is
+            True the prices of the default properties are added to the price.
         """
         try:
             return self.get_price(with_properties) / self.product.get_base_price_amount()
@@ -322,6 +334,12 @@ class PriceCalculator(object):
     def get_base_price_net(self, with_properties=True):
         """
         Returns the net base price of the product.
+
+        **Parameters:**
+
+        with_properties
+            If the instance is a configurable product and with_properties is
+            True the prices of the default properties are added to the price.
         """
         try:
             return self.get_price_net(with_properties) / self.product.get_base_price_amount()
@@ -331,29 +349,53 @@ class PriceCalculator(object):
     def get_base_price_gross(self, with_properties=True):
         """
         Returns the gross base price of the product.
+
+        **Parameters:**
+
+        with_properties
+            If the instance is a configurable product and with_properties is
+            True the prices of the default properties are added to the price.
         """
         try:
             return self.get_price_gross(with_properties) / self.product.get_base_price_amount()
         except (TypeError, ZeroDivisionError):
             return 0.0
 
-    def get_base_packing_price(self):
+    def get_base_packing_price(self, with_properties=True):
         """
         Returns the base packing price of the product.
-        """
-        return self.get_price(self.request) * self._calc_packing_amount()
 
-    def get_base_packing_price_net(self):
+        **Parameters:**
+
+        with_properties
+            If the instance is a configurable product and with_properties is
+            True the prices of the default properties are added to the price.
+        """
+        return self.get_price(with_properties) * self._calc_packing_amount()
+
+    def get_base_packing_price_net(self, with_properties=True):
         """
         Returns the base packing net price of the product.
-        """
-        return self.get_price_net(self.request) * self._calc_packing_amount()
 
-    def get_base_packing_price_gross(self):
+        **Parameters:**
+
+        with_properties
+            If the instance is a configurable product and with_properties is
+            True the prices of the default properties are added to the price.
+        """
+        return self.get_price_net(with_properties) * self._calc_packing_amount()
+
+    def get_base_packing_price_gross(self, with_properties=True):
         """
         Returns the base packing gross price of the product.
+
+        **Parameters:**
+
+        with_properties
+            If the instance is a configurable product and with_properties is
+            True the prices of the default properties are added to the price.
         """
-        return self.get_price_gross(self.request) * self._calc_packing_amount()
+        return self.get_price_gross(with_properties) * self._calc_packing_amount()
 
     def get_customer_tax_rate(self):
         """
