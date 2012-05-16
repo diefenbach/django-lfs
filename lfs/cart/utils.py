@@ -197,14 +197,10 @@ def update_cart_after_login(request):
             session_cart.save()
         else:
             for session_cart_item in session_cart.get_items():
-                try:
-                    user_cart_item = CartItem.objects.get(cart=user_cart, product=session_cart_item.product)
-                except ObjectDoesNotExist:
-                    session_cart_item.cart = user_cart
-                    session_cart_item.save()
-                else:
-                    user_cart_item.amount += session_cart_item.amount
-                    user_cart_item.save()
+                properties = {}
+                for pv in session_cart_item.properties.all():
+                    properties[unicode(pv.property.id)] = pv.value
+                user_cart.add(session_cart_item.product, properties=properties, amount=session_cart_item.amount)
             session_cart.delete()
     except ObjectDoesNotExist:
         pass
