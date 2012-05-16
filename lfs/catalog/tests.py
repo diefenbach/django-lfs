@@ -13,13 +13,11 @@ from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 
 # lfs imports
-from lfs.caching.utils import lfs_get_object_or_404
 import lfs.catalog.utils
 from lfs.core.signals import property_type_changed
 from lfs.catalog.settings import CHOICES_YES
 from lfs.catalog.settings import CHOICES_STANDARD
 from lfs.catalog.settings import CHOICES_NO
-from lfs.catalog.settings import CONTENT_CATEGORIES
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_HOURS
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_WEEKS
@@ -35,6 +33,7 @@ from lfs.catalog.settings import QUANTITY_FIELD_INTEGER
 from lfs.catalog.settings import QUANTITY_FIELD_DECIMAL_1
 from lfs.catalog.settings import QUANTITY_FIELD_DECIMAL_2
 from lfs.catalog.settings import STANDARD_PRODUCT
+from lfs.catalog.settings import THUMBNAIL_SIZES
 from lfs.catalog.settings import LIST
 from lfs.catalog.models import Category
 from lfs.catalog.models import DeliveryTime
@@ -50,7 +49,6 @@ from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import ProductsPropertiesRelation
 from lfs.catalog.models import StaticBlock
 from lfs.catalog.models import ProductAttachment
-from lfs.core.models import Shop
 from lfs.core.signals import product_changed
 from lfs.core.signals import product_removed_property_group
 from lfs.tax.models import Tax
@@ -2972,3 +2970,40 @@ class MiscTestCase(TestCase):
         id = get_unique_id_str()
         self.failUnless(isinstance(id, str))
         self.assertEqual(len(id), len("dad27436-3468-4d27-97e4-5fd761db85da"))
+
+    def test_delete_file(self):
+        """
+        Tests whether files on the file system are deleted properly when a File
+        object has been deleted.
+        """
+        fh = open(os.path.join(os.getcwd(), "src/lfs/lfs/utils/data/image1.jpg"))
+        cf_1 = ContentFile(fh.read())
+
+        file = File.objects.create(pk=1, title="Test File", slug="test-file", file=None)
+        file.file.save("Laminat01.jpg", cf_1)
+
+        self.failUnless(os.path.exists(file.file._get_path()))
+        file.delete()
+        self.failIf(os.path.exists(file.file._get_path()))
+
+    def test_delete_image(self):
+        """
+        Tests whether images on the file system are deleted properly when a
+        Image object has been deleted.
+        """
+        fh = open(os.path.join(os.getcwd(), "src/lfs/lfs/utils/data/image1.jpg"))
+        cf_1 = ContentFile(fh.read())
+
+        image = Image(title="Image 1")
+        image.image.save("Laminat01.jpg", cf_1)
+        image.save()
+
+        path = image.image._get_path()
+        base, ext = os.path.splitext(path)
+        for width, height in THUMBNAIL_SIZES:
+            self.failUnless(os.path.exists("%s.%sx%s%s" % (base, width, height, ext)))
+
+        image.delete()
+
+        for width, height in THUMBNAIL_SIZES:
+            self.failIf(os.path.exists("%s.%sx%s%s" % (base, width, height, ext)))

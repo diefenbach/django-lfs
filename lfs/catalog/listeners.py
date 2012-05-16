@@ -1,14 +1,21 @@
+# Python imports
+import os
+
 # django imports
-from django.db.models.signals import pre_delete, m2m_changed
-from django.conf import settings
-from django.core.cache import cache
+from django.db.models.signals import post_delete
+from django.db.models.signals import pre_delete
 
 # lfs imports
+from lfs.catalog.models import File
+from lfs.catalog.models import Image
+from lfs.catalog.models import ProductAttachment
 from lfs.catalog.models import PropertyGroup
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.models import GroupsPropertiesRelation
-from lfs.catalog.models import Category
+from lfs.catalog.settings import DELETE_FILES
+from lfs.catalog.settings import DELETE_IMAGES
+from lfs.catalog.settings import THUMBNAIL_SIZES
 from lfs.core.signals import property_type_changed
 from lfs.core.signals import product_removed_property_group
 
@@ -79,3 +86,46 @@ def property_type_changed_listener(sender, **kwargs):
     """
     ProductPropertyValue.objects.filter(property=sender).delete()
 property_type_changed.connect(property_type_changed_listener)
+
+
+def delete_image_files(sender, **kwargs):
+    """
+    Deletes Image files on file system after an Image object has been deleted.
+    """
+    if DELETE_IMAGES:
+        image = kwargs.get("instance")
+        try:
+            path = image.image._get_path()
+        except ValueError:
+            pass
+        else:
+            try:
+                os.remove(path)
+            except OSError:
+                pass
+            base, ext = os.path.splitext(path)
+            for width, height in THUMBNAIL_SIZES:
+                try:
+                    os.remove("%s.%sx%s%s" % (base, width, height, ext))
+                except OSError:
+                    continue
+post_delete.connect(delete_image_files, sender=Image)
+
+
+def delete_file_files(sender, **kwargs):
+    """
+    Deletes File files on file system after an File object has been deleted.
+    """
+    if DELETE_FILES:
+        file = kwargs.get("instance")
+        try:
+            path = file.file._get_path()
+        except ValueError:
+            pass
+        else:
+            try:
+                os.remove(path)
+            except OSError:
+                pass
+post_delete.connect(delete_file_files, sender=ProductAttachment)
+post_delete.connect(delete_file_files, sender=File)

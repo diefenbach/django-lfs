@@ -105,6 +105,17 @@ LFS_CRITERIA
     See also :doc:`Concept of criteria </user/concepts/criteria>` and
     :doc:`How to add own criteria </developer/howtos/how_to_add_own_criteria/index>`.
 
+LFS_DELETE_IMAGES
+    If this is set to True images on the file system are going to be deleted
+    after an image has been deleted via the management interface, otherwise they
+    are left untouched. This setting is optional, the default value is ``True``.
+
+LFS_DELETE_FILES
+    If this is set to True files on the file system are going to be deleted
+    after an file/attachment has been deleted via the management interface,
+    otherwise they are left untouched. This setting is optional, the default
+    value is ``True``.
+
 LFS_DOCS
     Base URL to the LFS docs. This is used for the context aware help link
     within the management interface. Defaults to
