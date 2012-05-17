@@ -93,6 +93,13 @@ Price calculator
     The default price calculator of the shop. If a product doesn't have an
     explicit price calculator this one is used.
 
+Delivery time
+-------------
+
+Delivery time
+    The default delivery time, which is used if no delivery time can be
+    calculated for a product.
+
 Format
 ------
 

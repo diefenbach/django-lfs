@@ -5,10 +5,10 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
-import lfs.core.settings as lfs_settings
 from lfs.checkout.settings import CHECKOUT_TYPES
 from lfs.checkout.settings import CHECKOUT_TYPE_SELECT
 from lfs.core.fields.thumbs import ImageWithThumbsField
+from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import StaticBlock
 
 
@@ -115,6 +115,10 @@ class Shop(models.Model):
        displayed within several views. These may be inherited by categories and
        sub categories.
 
+    delivery_time
+        The default delivery time, which is used if no delivery time can be
+        calculated for a product.
+
     google_analytics_id
        Used to generate google analytics tracker code and e-commerce code. the
        id has the format UA-xxxxxxx-xx and is provided by Google.
@@ -166,6 +170,8 @@ class Shop(models.Model):
     product_cols = models.IntegerField(_(u"Product cols"), default=1)
     product_rows = models.IntegerField(_(u"Product rows"), default=10)
     category_cols = models.IntegerField(_(u"Category cols"), default=1)
+    delivery_time = models.ForeignKey(DeliveryTime, verbose_name=_(u"Delivery time"), blank=True, null=True)
+
     google_analytics_id = models.CharField(_(u"Google Analytics ID"), blank=True, max_length=20)
     ga_site_tracking = models.BooleanField(_(u"Google Analytics Site Tracking"), default=False)
     ga_ecommerce_tracking = models.BooleanField(_(u"Google Analytics E-Commerce Tracking"), default=False)
