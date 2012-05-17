@@ -71,7 +71,10 @@ def calculate_packing(request, id, quantity=None, with_properties=False, as_stri
     product = Product.objects.get(pk=id)
 
     if quantity is None:
-        quantity = float(request.POST.get("quantity"))
+        try:
+            quantity = float(request.POST.get("quantity"))
+        except (TypeError, ValueError):
+            quantity = 1
 
     packing_amount, packing_unit = product.get_packing_info()
 
