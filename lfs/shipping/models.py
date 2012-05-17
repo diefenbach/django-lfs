@@ -86,9 +86,8 @@ class ShippingMethod(models.Model, Criteria):
         return self.name
 
     def get_price(self, request):
-        """Returns the gross price of the shipping method.
-
-        This method is DEPRECATED.
+        """
+        Returns the gross price of the shipping method.
         """
         if self.price_calculator:
             price_class = import_symbol(self.price_calculator)

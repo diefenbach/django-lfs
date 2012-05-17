@@ -36,25 +36,6 @@ def get_current_top_category(request, obj):
 
     return category
 
-# DEPRECATED 0.6
-def get_current_product_category(request, product):
-    """Returns product category based on actual categories of the given product
-    and the last visited category.
-
-    This is needed if the category has more than one category to display
-    breadcrumbs, selected menu points, etc. appropriately.
-    """
-    logger.info("Decprecated: lfs.catalog.utils: the function 'get_current_product_category' is deprecated. Please use 'get_current_category'of the Product class.")
-    return product.get_current_category(request)
-
-
-# DEPRECATED 0.6
-def get_property_groups(category):
-    """Returns all property groups for given category
-    """
-    logger.info("Decprecated: lfs.catalog.utils: the function 'get_property_groups' is deprecated. Please use 'get_property_groups'of the Category class.")
-    return category.get_property_groups()
-
 
 def get_price_filters(category, product_filter, price_filter):
     """Creates price filter links based on the min and max price of the
@@ -653,20 +634,3 @@ def _calculate_quantity(product_ids, property_id, min, max):
         amount += 1
 
     return amount
-
-
-# DEPRECATED 0.6
-def calculate_packages(product, quantity):
-    """Returns amount of packages passed on passes product and quantity.
-    DEPRECATED.
-    """
-    logger.info("Decprecated: lfs.catalog.utils: the function 'calculate_packages' is deprecated.")
-    return math.ceil(quantity / product.packing_unit)
-
-
-# DEPRECATED 0.6
-def calculate_real_amount(product, quantity):
-    """Returns the amount of pieces in package units. DEPRECATED.
-    """
-    logger.info("Decprecated: lfs.catalog.utils: the function 'calculate_real_amount' is deprecated. Please use 'get_amount_by_packages'of the Product class.")
-    return product.get_amount_by_packages(quantity)
