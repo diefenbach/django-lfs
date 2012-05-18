@@ -53,6 +53,7 @@ class Command(BaseCommand):
 
     def migrate_to_08(self, application, version):
         from django.contrib.contenttypes.models import ContentType
+        from lfs.catalog.models import DeliveryTime
         from lfs.criteria.models import CartPriceCriterion
         from lfs.criteria.models import CombinedLengthAndGirthCriterion
         from lfs.criteria.models import CountryCriterion
@@ -310,6 +311,12 @@ class Command(BaseCommand):
 
         # Set field 'Manufacturer.slug' to not null
         db.alter_column('manufacturer_manufacturer', 'slug', models.SlugField(unique=True, max_length=50))
+
+        # Delivery Time
+        db.add_column('core_shop', 'delivery_time', models.ForeignKey(DeliveryTime, verbose_name=_(u"Delivery time"), blank=True, null=True))
+
+        application.version = "0.8"
+        application.save()
 
     def migrate_to_07(self, application, version):
         from lfs.catalog.models import Product
