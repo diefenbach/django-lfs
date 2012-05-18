@@ -10,23 +10,23 @@
     </object>
     <object pk="3" model="core.country">
         <field type="CharField" name="name">USA</field>
-        <field type="CharField" name="code">us</field>        
+        <field type="CharField" name="code">us</field>
     </object>
     <object pk="4" model="core.country">
         <field type="CharField" name="name">Netherlands</field>
-        <field type="CharField" name="code">nl</field>        
+        <field type="CharField" name="code">nl</field>
     </object>
     <object pk="5" model="core.country">
         <field type="CharField" name="name">Ireland</field>
-        <field type="CharField" name="code">ie</field>        
+        <field type="CharField" name="code">ie</field>
     </object>
     <object pk="6" model="core.country">
         <field type="CharField" name="name">Great Britain</field>
-        <field type="CharField" name="code">gb</field>        
+        <field type="CharField" name="code">gb</field>
     </object>
     <object pk="7" model="core.country">
         <field type="CharField" name="name">France</field>
-        <field type="CharField" name="code">fr</field>        
+        <field type="CharField" name="code">fr</field>
     </object>
     <!-- Shop -->
     <object pk="1" model="core.shop">
@@ -48,7 +48,7 @@
         	<object pk="4"></object>
         	<object pk="5"></object>
         </field>
-    </object>    
+    </object>
 
     <!-- Portlets -->
     <object pk="1" model="portlets.slot">
@@ -57,8 +57,8 @@
     <object pk="2" model="portlets.slot">
         <field type="CharField" name="name">Right</field>
     </object>
-    
-    <!-- Paymentmethod -->    
+
+    <!-- Paymentmethod -->
     <object pk="1" model="payment.paymentmethod">
         <field type="CharField" name="name">Direct debit</field>
         <field type="TextField" name="description"></field>
@@ -76,7 +76,7 @@
         <field type="IntegerField" name="priority">2</field>
         <field type="FileField" name="image"></field>
         <field type="BooleanField" name="active">1</field>
-        <field type="BooleanField" name="deletable">0</field>        
+        <field type="BooleanField" name="deletable">0</field>
         <field type="FloatField" name="price">17.9</field>
     </object>
     <object pk="3" model="payment.paymentmethod">
@@ -86,8 +86,9 @@
         <field type="IntegerField" name="priority">3</field>
         <field type="FileField" name="image"></field>
         <field type="BooleanField" name="active">1</field>
-        <field type="BooleanField" name="deletable">0</field>        
+        <field type="BooleanField" name="deletable">0</field>
         <field type="FloatField" name="price">0.0</field>
+        <field type="Textfield" name="module">lfs_paypal.PayPalProcessor</field>
     </object>
     <object pk="4" model="payment.paymentmethod">
         <field type="CharField" name="name">Prepayment</field>
@@ -98,7 +99,7 @@
         <field type="BooleanField" name="active">1</field>
         <field type="BooleanField" name="deletable">0</field>
         <field type="FloatField" name="price">0.0</field>
-    </object>    
+    </object>
     <object pk="5" model="payment.paymentmethod">
         <field type="CharField" name="name">By invoice</field>
         <field type="TextField" name="description"></field>
@@ -108,5 +109,5 @@
         <field type="BooleanField" name="active">1</field>
         <field type="BooleanField" name="deletable">0</field>
         <field type="FloatField" name="price">0.0</field>
-    </object>    
+    </object>
 </django-objects>

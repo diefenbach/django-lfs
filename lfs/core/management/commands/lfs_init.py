@@ -88,7 +88,7 @@ class Command(BaseCommand):
         pm.id=1; pm.save()
         pm = PaymentMethod.objects.create(name="Cash on delivery", priority=2, active=1, deletable=0)
         pm.id=2; pm.save()
-        pm = PaymentMethod.objects.create(name="PayPal", priority=3, active=1, deletable=0)
+        pm = PaymentMethod.objects.create(name="PayPal", priority=3, active=1, deletable=0, module="lfs_paypal.PayPalProcessor")
         pm.id=3; pm.save()
         pm = PaymentMethod.objects.create(name="Prepayment", priority=4, active=1, deletable=0)
         pm.id=4; pm.save()

@@ -13,7 +13,6 @@ from lfs.shipping.tests import *
 from lfs.voucher.tests import *
 from lfs.customer.tests import *
 from lfs.checkout.tests import *
-from lfs.payment.tests import *
 # from lfs.manage.tests import *
 from lfs.gross_price.tests import *
 from lfs.net_price.tests import *
@@ -24,6 +23,10 @@ try:
 except ImportError:
     pass
 
+try:
+    from lfs_paypal.tests import *
+except ImportError:
+    pass
 
 # django imports
 from django.contrib.auth.models import User

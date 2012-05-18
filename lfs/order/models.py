@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.payment.utils
+import lfs.core.utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
@@ -114,7 +115,15 @@ class Order(models.Model):
     def get_pay_link(self, request):
         """Returns a pay link for the selected payment method.
         """
-        return lfs.payment.utils.get_pay_link(request, self.payment_method, self)
+        if self.payment_method.module:
+            payment_class = lfs.core.utils.import_symbol(self.payment_method.module)
+            payment_instance = payment_class(request=request, order=self)
+            try:
+                return payment_instance.get_pay_link()
+            except AttributeError:
+                return ""
+        else:
+            return ""
 
     def get_name(self):
         order_name = ""

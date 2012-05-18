@@ -315,6 +315,11 @@ class Command(BaseCommand):
         # Delivery Time
         db.add_column('core_shop', 'delivery_time', models.ForeignKey(DeliveryTime, verbose_name=_(u"Delivery time"), blank=True, null=True))
 
+        # PayPal
+        paypal = PaymentMethod.objects.get(pk=3)
+        paypal.module = "lfs_paypal.PayPalProcessor"
+        paypal.save()
+
         application.version = "0.8"
         application.save()
 
