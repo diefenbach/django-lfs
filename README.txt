@@ -30,15 +30,15 @@ Changes
 0.7.4 (2012-05-20)
 -------------------
 
-Improved shipping and payment method management: display form errors; using ajax; issue #151.
-Bugfix: send order_paid signal after successful callback arrived from PayPal; issue #198.
-Bugfix: make PayPal callbacks work with csrf protection; issue #197.
-Bugfix: catch wrong floats in calculate_packing.
-Bugfix: fixed update cart after login for configurable products; #issue gh #8
-Bugfix: cleaned up parameters and arguments of PriceCalculator.
-Bugfix: don't pass request to PriceCalculator base_packing_price methods.
-Bugfix: fixed calculation of package prices for configurable products.
-Bugfix: Fixed wrong arguments in calls to voucher API. (Pavel Zagrebelin)
+* Improved shipping and payment method management: display form errors; using ajax; issue #151.
+* Bugfix: send order_paid signal after successful callback arrived from PayPal; issue #198.
+* Bugfix: make PayPal callbacks work with csrf protection; issue #197.
+* Bugfix: catch wrong floats in calculate_packing.
+* Bugfix: fixed update cart after login for configurable products; #issue gh #8
+* Bugfix: cleaned up parameters and arguments of PriceCalculator.
+* Bugfix: don't pass request to PriceCalculator base_packing_price methods.
+* Bugfix: fixed calculation of package prices for configurable products.
+* Bugfix: Fixed wrong arguments in calls to voucher API. (Pavel Zagrebelin)
 
 0.7.3 (2012-05-13)
 -------------------
