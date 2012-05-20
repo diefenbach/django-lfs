@@ -30,6 +30,7 @@ Changes
 0.6.17 (2012-05-20)
 -------------------
 
+* Bugfix: fixed update cart after login for configurable products; #issue gh #8
 * Bugfix: make PayPal callbacks work with CSRF protection; issue #197 (Dmitry Chaplinsky)
 * Bugfix: Fixed wrong arguments in calls to voucher API (Pavel Zagrebelin)
 * Bugfix: catch wrong floats in calculate_packing
