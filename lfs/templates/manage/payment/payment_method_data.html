@@ -1,5 +1,4 @@
 {% load i18n %}
-
 <h2>{% trans 'Data' %}</h2>
 
 <form method="post"
@@ -9,14 +8,8 @@
     {% csrf_token %}
     {% include "manage/lfs_form.html" %}
     <div class="buttons">
-        <input class="ajax-form-button button"
+        <input class="ajax-save-button button"
                type="submit"
                value="{% trans 'Save Payment Method' %}" />
     </div>
 </form>
-<script type="text/javascript">
-    $(function() {
-        tinyMCE.execCommand('mceAddControl', true, 'id_description');
-        tinyMCE.execCommand('mceAddControl', true, 'id_note');
-    });
-</script>
