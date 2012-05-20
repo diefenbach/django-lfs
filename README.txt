@@ -27,6 +27,13 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.6.17 (2012-05-20)
+-------------------
+
+* Bugfix: make PayPal callbacks work with CSRF protection; issue #197 (Dmitry Chaplinsky)
+* Bugfix: Fixed wrong arguments in calls to voucher API (Pavel Zagrebelin)
+* Bugfix: catch wrong floats in calculate_packing
+
 0.6.16 (2012-05-13)
 -------------------
 
