@@ -88,16 +88,17 @@ def shipping_methods(request, template_name="manage/shipping_methods/shipping_me
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def shipping_method_data(request, shipping_id,
-    template_name="manage/shipping_methods/shipping_method_data.html"):
+def shipping_method_data(request, shipping_id, form=None, template_name="manage/shipping_methods/shipping_method_data.html"):
     """Returns the shipping data as html.
 
     This view is used as a part within the manage shipping view.
     """
     shipping_method = ShippingMethod.objects.get(pk=shipping_id)
+    if form is None:
+        form = ShippingMethodForm(instance=shipping_method)
 
     return render_to_string(template_name, RequestContext(request, {
-        "form": ShippingMethodForm(instance=shipping_method),
+        "form": form,
         "shipping_method": shipping_method,
     }))
 
@@ -323,13 +324,25 @@ def save_shipping_method_data(request, shipping_method_id):
 
     if shipping_form.is_valid():
         shipping_form.save()
+        # Makes an uploaded image appear immediately
+        shipping_form = ShippingMethodForm(instance=shipping_method)
         if request.POST.get("delete_image"):
             shipping_method.image.delete()
+        message = _(u"Shipping method has been saved.")
+    else:
+        message = _(u"Please correct the indicated errors.")
 
-    return lfs.core.utils.set_message_cookie(
-        url=reverse("lfs_manage_shipping_method", kwargs={"shipping_method_id": shipping_method.id}),
-        msg=_(u"Shipping method has been saved."),
-    )
+    html = [
+        ["#data", shipping_method_data(request, shipping_method.id, shipping_form)],
+        ["#shipping-methods", shipping_methods(request)],
+    ]
+
+    result = simplejson.dumps({
+        "html": html,
+        "message": message,
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
 
 
 @permission_required("core.manage_shop", login_url="/login/")
