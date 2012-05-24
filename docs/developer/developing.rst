@@ -44,9 +44,8 @@ first:
    use case. Find us on `IRC <irc://irc.freenode.net/django-lfs>`_ or the
    `LFS Google Group <http://groups.google.com/group/django-lfs>`_.
 
-#. Fork LFS on `Bitbucket <https://bitbucket.org/diefenbach/django-lfs>`_ or
-   `GitHub <https://github.com/diefenbach/django-lfs>`_ and send us pull
-   requests.
+#. Fork LFS `GitHub <https://github.com/diefenbach/django-lfs>`_ and send us
+   pull requests.
 
 #. Please make sure that you just add related code to your fork. This makes it
    easier to review and pull your code.
