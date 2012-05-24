@@ -16,7 +16,7 @@
                   enctype="multipart/form-data">
                 {% csrf_token %}
                 {% include "manage/lfs_form.html" %}
-                
+
                 <div class="buttons">
                     <input type="submit"
                            class="button"
@@ -39,7 +39,6 @@
                 slug = URLify(slug, 200)
                 $("#id_slug").val(slug);
             });
-            tinyMCE.execCommand('mceAddControl', true, 'id_body');
         });
     </script>
 {% endblock %}
