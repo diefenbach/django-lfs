@@ -12,7 +12,7 @@ Creating a Development Environment
 There is an installer based on `zc.buildout <http://www.buildout.org/>`_, which
 should make the installation straightforward:
 
-#. $ hg cl https://bitbucket.org/diefenbach/lfs-buildout-development
+#. $ git clone https://github.com/diefenbach/lfs-buildout-development.git
 
 #. $ cd lfs-buildout-development
 
@@ -28,9 +28,8 @@ should make the installation straightforward:
 
 .. note::
 
-  You might want to fork LFS on `Bitbucket <https://bitbucket.org/diefenbach
-  /django-lfs>`_ or `GitHub <https://github.com/diefenbach/django-lfs>`_ and
-  point to it within buildout.cfg first.
+  You might want to fork LFS on `GitHub <https://github.com/diefenbach/django-lfs>`_
+  and point to it within buildout.cfg first.
 
 Contributing Code to the Core
 =============================
