@@ -26,6 +26,10 @@ should make the installation straightforward:
 
 #. $ bin/django test lfs.core
 
+#. $ bin/django runserver
+
+#. Browse to http://localhost:8000
+
 .. note::
 
   You might want to fork LFS on `GitHub <https://github.com/diefenbach/django-lfs>`_

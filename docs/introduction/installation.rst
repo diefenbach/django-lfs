@@ -38,7 +38,12 @@ execute following steps:
 
 #. $ bin/django runserver
 
-#. Browse to http://localhost:8000/
+#. Browse to http://localhost:8000
+
+.. note::
+
+    If you encounter problems, please see :ref:`trouble shooting
+    <trouble_shooting_installation>`.
 
 Migration
 =========

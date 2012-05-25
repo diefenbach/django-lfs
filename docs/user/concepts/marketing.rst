@@ -14,8 +14,8 @@ Accessories
 ===========
 
 Accessories are products which are supposed to be sold together with a product,
-like shingles to a summerhouse. They are not bidirectional but they need need to
-be entered on each product itself.
+like shingles to a summerhouse. They are not bidirectional but they need to be
+entered on each product itself.
 
 Accessories are displayed within the ``product view`` and could be added to the
 cart alongside with the product. They are also displayed within the ``added to
