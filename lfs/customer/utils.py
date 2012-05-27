@@ -2,7 +2,8 @@
 from django.core.exceptions import ObjectDoesNotExist
 
 # lfs imports
-from lfs.customer.models import Customer, Address
+from lfs.addresses.settings import ADDRESS_MODEL
+from lfs.customer.models import Customer
 import lfs.core.utils
 
 
@@ -30,8 +31,10 @@ def create_customer(request):
     if request.user.is_authenticated():
         customer.user = request.user
     shop = lfs.core.utils.get_default_shop(request)
-    customer.selected_invoice_address = Address.objects.create(customer=customer, country=shop.default_country)
-    customer.selected_shipping_address = Address.objects.create(customer=customer, country=shop.default_country)
+
+    address_model = lfs.core.utils.import_symbol(ADDRESS_MODEL)
+    customer.selected_invoice_address = address_model.objects.create(customer=customer, country=shop.default_country)
+    customer.selected_shipping_address = address_model.objects.create(customer=customer, country=shop.default_country)
     customer.save()
     return customer
 

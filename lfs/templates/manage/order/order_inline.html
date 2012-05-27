@@ -71,64 +71,10 @@
     </tr>
     <tr>
         <td class="top">
-            <div>
-                {{ current_order.shipping_firstname }} {{ current_order.shipping_lastname }}
-            </div>
-            {% if current_order.shipping_company_name %}
-                <div>
-                    {{ current_order.shipping_company_name }}
-                </div>
-            {% endif %}
-                <div>
-                {{ current_order.shipping_line1 }}
-            </div>
-            {% if current_order.shipping_line2 %}
-                <div>
-                    {{ current_order.shipping_line2 }}
-                </div>
-            {% endif %}
-            <div>
-                {{ current_order.shipping_code }} {{ current_order.shipping_city }}
-            </div>
-            <div>
-                {{ current_order.shipping_state }}
-            </div>
-            <div>
-                {{ current_order.shipping_country }}
-            </div>
-            <div>
-                {{ current_order.shipping_phone }}
-            </div>
+            {{ shipping_address|safe }}
         </td>
         <td class="top">
-            <div>
-                {{ current_order.invoice_firstname }} {{ current_order.invoice_lastname }}
-            </div>
-            {% if current_order.invoice_company_name %}
-                <div>
-                    {{ current_order.invoice_company_name }}
-                </div>
-            {% endif %}
-                <div>
-                {{ current_order.invoice_line1 }}
-            </div>
-            {% if current_order.invoice_line2 %}
-                <div>
-                    {{ current_order.invoice_line2 }}
-                </div>
-            {% endif %}
-            <div>
-                {{ current_order.invoice_code }} {{ current_order.invoice_city }}
-            </div>
-            <div>
-                {{ current_order.invoice_state }}
-            </div>
-            <div>
-                {{ current_order.invoice_country }}
-            </div>
-            <div>
-                {{ current_order.invoice_phone }}
-            </div>
+            {{ invoice_address|safe }}
         </td>
         <td class="top">
             {{ current_order.shipping_method }}

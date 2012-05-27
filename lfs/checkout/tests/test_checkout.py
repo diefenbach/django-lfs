@@ -16,7 +16,8 @@ from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
 from lfs.core.models import Shop, Country
 from lfs.core.utils import get_default_shop
-from lfs.customer.models import Customer, Address
+from lfs.customer.models import Customer
+from lfs.addresses.models import Address
 from lfs.order.models import Order
 from lfs.order.settings import SUBMITTED
 from lfs.order.utils import add_order

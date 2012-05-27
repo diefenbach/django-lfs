@@ -118,6 +118,8 @@ def order_inline(request, order_id, template_name="manage/order/order_inline.htm
         "end": order_filters.get("end", ""),
         "name": order_filters.get("name", ""),
         "states": states,
+        "invoice_address": order.invoice_address.as_html(request, "invoice"),
+        "shipping_address": order.invoice_address.as_html(request, "shipping"),
     }))
 
 

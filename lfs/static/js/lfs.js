@@ -262,10 +262,10 @@ $(function() {
     $("#id_no_shipping").live("click", function() {
         var table = $('.shipping-address');
         if ($("#id_no_shipping:checked").val() != null) {
-            table.slideUp("fast");
+            table.hide();
         }
         else {
-            table.slideDown("fast");
+            table.show();
         }
         var data = $(".checkout-form").ajaxSubmit({
             url : $(".checkout-form").attr("data"),
@@ -293,16 +293,16 @@ $(function() {
 
     $(".payment-methods").live("click", function() {
         if ($(".payment-method-type-1:checked").val() != null) {
-            $("#bank-account").slideDown("fast");
+            $("#bank-account").show();
         }
         else {
-            $("#bank-account").slideUp("fast");
+            $("#bank-account").hide();
         }
         if ($(".payment-method-type-2:checked").val() != null) {
-            $('#credit-card').slideDown("fast");
+            $('#credit-card').show();
         }
         else {
-            $('#credit-card').slideUp("fast");
+            $('#credit-card').hide();
         }
     })
 

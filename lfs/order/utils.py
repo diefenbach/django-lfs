@@ -1,3 +1,6 @@
+# python imports
+from copy import deepcopy
+
 # django imports
 from django.conf import settings
 
@@ -84,6 +87,15 @@ def add_order(request):
         else:
             voucher = None
 
+    # Copy addresses
+    invoice_address = deepcopy(customer.selected_invoice_address)
+    invoice_address.id = None
+    invoice_address.save()
+
+    shipping_address = deepcopy(customer.selected_shipping_address)
+    shipping_address.id = None
+    shipping_address.save()
+
     order = Order.objects.create(
         user=user,
         session=request.session.session_key,
@@ -101,30 +113,17 @@ def add_order(request):
         payment_price=payment_costs["price"],
         payment_tax=payment_costs["tax"],
 
-        invoice_firstname=customer.selected_invoice_address.firstname,
-        invoice_lastname=customer.selected_invoice_address.lastname,
-        invoice_company_name=customer.selected_invoice_address.company_name,
-        invoice_line1=invoice_address.line1,
-        invoice_line2=invoice_address.line2,
-        invoice_city=invoice_address.city,
-        invoice_state=invoice_address.state,
-        invoice_code=invoice_address.zip_code,
-        invoice_country=Country.objects.get(code=invoice_address.country.code),
-        invoice_phone=customer.selected_invoice_address.phone,
-
-        shipping_firstname=shipping_address.firstname,
-        shipping_lastname=shipping_address.lastname,
-        shipping_company_name=shipping_address.company_name,
-        shipping_line1=shipping_address.line1,
-        shipping_line2=shipping_address.line2,
-        shipping_city=shipping_address.city,
-        shipping_state=shipping_address.state,
-        shipping_code=shipping_address.zip_code,
-        shipping_country=Country.objects.get(code=shipping_address.country.code),
-        shipping_phone=shipping_address.phone,
+        invoice_address = invoice_address,
+        shipping_address = shipping_address,
 
         message=request.POST.get("message", ""),
     )
+
+    invoice_address.order = order
+    invoice_address.save()
+
+    shipping_address.order = order
+    shipping_address.save()
 
     requested_delivery_date = request.POST.get("requested_delivery_date", None)
     if requested_delivery_date is not None:

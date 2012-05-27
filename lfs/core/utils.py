@@ -8,13 +8,14 @@ import urllib
 
 # django imports
 from django.conf import settings
+from django.contrib.redirects.models import Redirect
+from django.core.cache import cache
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.utils import simplejson
 from django.utils.functional import Promise
 from django.utils.encoding import force_unicode
-from django.contrib.redirects.models import Redirect
-from django.core.cache import cache
+from django.shortcuts import render_to_response
 
 # lfs imports
 import lfs.catalog.utils
@@ -92,6 +93,31 @@ def import_symbol(symbol):
     return getattr(module, symbol_str)
 
 
+class MessageHttpResponseRedirect(HttpResponseRedirect):
+    """
+    Django's HttpResponseRedirect with a LFS message
+    """
+    def __init__(self, redirect_to, msg):
+        HttpResponseRedirect.__init__(self, redirect_to)
+        if msg:
+            # We just keep the message two seconds.
+            max_age = 2
+            expires = datetime.datetime.strftime(
+                datetime.datetime.utcnow() +
+                datetime.timedelta(seconds=max_age), "%a, %d-%b-%Y %H:%M:%S GMT")
+
+            self.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
+
+
+def render_to_message_response(*args, **kwargs):
+    """
+    Django's render_to_response with a LFS message.
+    """
+    msg = kwargs.get("msg")
+    del kwargs["msg"]
+    return set_message_to(render_to_response(*args, **kwargs), msg)
+
+
 def set_message_to(response, msg):
     """Sets message cookie with passed message to passed response.
     """
@@ -100,8 +126,8 @@ def set_message_to(response, msg):
     expires = datetime.datetime.strftime(
         datetime.datetime.utcnow() +
         datetime.timedelta(seconds=max_age), "%a, %d-%b-%Y %H:%M:%S GMT")
-
-    response.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
+    if msg:
+        response.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
     return response
 
 

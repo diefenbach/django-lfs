@@ -46,65 +46,15 @@
     </tr>
     <tr>
         <td style="width:50%">
-			{% if customer.selected_invoice_address %}
-				<div>
-					{{ customer.selected_invoice_address.firstname }}
-					{{ customer.selected_invoice_address.lastname }}
-
-					(<a href="mailto:{{ customer.get_email_address }}">{{ customer.get_email_address }}</a>)
-				</div>
-				<div>
-					{{ customer.selected_invoice_address.company_name }}
-				</div>
-				<div>
-					{{ customer.selected_invoice_address.street }}
-				</div>
-				<div>
-					{{ customer.selected_invoice_address.city }}
-				</div>
-				<div>
-					{{ customer.selected_invoice_address.state }}
-				</div>
-				<div>
-					{{ customer.selected_invoice_address.zip_code }}
-				</div>
-				<div>
-					{{ customer.selected_invoice_address.country }}
-				</div>
-				<div>
-					{{ customer.selected_invoice_address.phone }}
-				</div>
-			{% else %}
+			{% if invoice_address %}
+                {{ invoice_address|safe }}
+            {% else %}
 				---
 			{% endif %}
         </td>
         <td>
-			{% if customer.selected_shipping_address %}
-				<div>
-					{{ customer.selected_shipping_address.firstname }}
-					{{ customer.selected_shipping_address.lastname }}
-				</div>
-				<div>
-					{{ customer.selected_shipping_address.company_name }}
-				</div>
-				<div>
-					{{ customer.selected_shipping_address.street }}
-				</div>
-				<div>
-					{{ customer.selected_shipping_address.city }}
-				</div>
-				<div>
-					{{ customer.selected_shipping_address.state }}
-				</div>
-				<div>
-					{{ customer.selected_shipping_address.zip_code }}
-				</div>
-				<div>
-					{{ customer.selected_shipping_address.country }}
-				</div>
-				<div>
-					{{ customer.selected_shipping_address.phone }}
-				</div>
+			{% if shipping_address %}
+                {{ shipping_address|safe }}
 			{% else %}
 				---
 			{% endif %}

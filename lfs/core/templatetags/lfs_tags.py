@@ -819,7 +819,7 @@ register.tag('category_product_prices', do_category_product_prices)
 
 
 @register.filter(name='get_price')
-def get_price_net(product, request):
+def get_price(product, request):
     return product.get_price(request)
 
 

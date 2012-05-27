@@ -1,33 +1,88 @@
+# payment imports
+import datetime
+
 # django imports
 from django import forms
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.forms.util import ErrorList
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
-from lfs.core.utils import get_default_shop
+import lfs.payment.settings
 from lfs.customer.models import BankAccount
+from lfs.customer.models import CreditCard
+from lfs.payment.models import PaymentMethod
 
 
-class AddressForm(forms.Form):
-    invoice_firstname = forms.CharField(label=_(u"First Name"), max_length=50)
-    invoice_lastname = forms.CharField(label=_(u"Last Name"), max_length=50)
-    invoice_phone = forms.CharField(label=_(u"Invoice Phone"), max_length=20, required=False)
-    invoice_email = forms.EmailField(label=_(u"Invoice E-mail"), required=False, max_length=50)
-    invoice_company_name = forms.CharField(label=_(u"Company name"), required=False, max_length=50)
-    shipping_firstname = forms.CharField(label=_(u"First Name"), max_length=50)
-    shipping_lastname = forms.CharField(label=_(u"Last Name"), max_length=50)
-    shipping_phone = forms.CharField(label=_(u"Shipping Phone"), required=False, max_length=20)
-    shipping_email = forms.EmailField(label=_(u"Shipping E-mail"), required=False, max_length=50)
-    shipping_company_name = forms.CharField(label=_(u"Company name"), required=False, max_length=50)
-
-
-class BankForm(forms.ModelForm):
-    """Form to edit bank account
+class BankAccountForm(forms.ModelForm):
+    """
+    The default bank account form which is displayed within the checkout form
+    if a shop customer selects a payment method of type ``bank``.
     """
     class Meta:
         model = BankAccount
-        exclude = ("customer", "email")
+        exclude = ("customer", )
+
+    def clean(self):
+        msg = _(u"This field is required.")
+
+        payment_method_id = self.data.get("payment_method")
+        payment_method = PaymentMethod.objects.get(pk=payment_method_id)
+
+        if payment_method.type == lfs.payment.settings.PM_BANK:
+            if self.cleaned_data.get("account_number", "") == "":
+                self._errors["account_number"] = ErrorList([msg])
+
+            if self.cleaned_data.get("bank_identification_code", "") == "":
+                self._errors["bank_identification_code"] = ErrorList([msg])
+
+            if self.cleaned_data.get("bank_name", "") == "":
+                self._errors["bank_name"] = ErrorList([msg])
+
+            if self.cleaned_data.get("depositor", "") == "":
+                self._errors["depositor"] = ErrorList([msg])
+
+        return self.cleaned_data
+
+
+class CreditCardForm(forms.ModelForm):
+    """
+    The default credit card form which is displayed within the checkout form
+    if a shop customer selects a payment method of type ``credit card``.
+    """
+    verification = forms.CharField(label=_(u"Verification Number"), max_length=4, required=False, widget=forms.TextInput(attrs={"size": 4}))
+
+    class Meta:
+        model = CreditCard
+        exclude = ("customer", )
+
+    def __init__(self, *args, **kwargs):
+        super(CreditCardForm, self).__init__(*args, **kwargs)
+
+        year = datetime.datetime.now().year
+        self.fields["type"].widget = forms.Select(choices=lfs.payment.settings.CREDIT_CARD_TYPE_CHOICES)
+        self.fields["expiration_date_month"].widget = forms.Select(choices=[(i, i) for i in range(1, 13)])
+        self.fields["expiration_date_year"].widget = forms.Select(choices=[(i, i) for i in range(year, year + 10)])
+
+    def clean(self):
+        msg = _(u"This field is required.")
+
+        # Check data of selected payment method
+        payment_method_id = self.data.get("payment_method")
+        payment_method = PaymentMethod.objects.get(pk=payment_method_id)
+
+        if payment_method.type == lfs.payment.settings.PM_CREDIT_CARD:
+            if self.cleaned_data.get("owner", "") == "":
+                self._errors["owner"] = ErrorList([msg])
+
+            if self.cleaned_data.get("number", "") == "":
+                self._errors["number"] = ErrorList([msg])
+
+            if self.cleaned_data.get("verification", "") == "":
+                self._errors["verification"] = ErrorList([msg])
+
+        return self.cleaned_data
 
 
 class EmailForm(forms.Form):

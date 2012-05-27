@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.core import mail
 
 # lfs imports
-from lfs.customer.models import Address
+from lfs.addresses.models import Address
 from lfs.core.models import Country
 from lfs.core.models import Shop
 from lfs.customer.models import CreditCard
@@ -18,11 +18,11 @@ from lfs.payment.models import PaymentMethod
 class CreditCardTestCase(TestCase):
     def setUp(self):
         self.cc = CreditCard(
-            type = "mastercard",
-            owner = "John Doe",
-            number = "4711",
-            expiration_date_month = 8,
-            expiration_date_year = 2012
+            type="mastercard",
+            owner="John Doe",
+            number="4711",
+            expiration_date_month=8,
+            expiration_date_year=2012
         )
 
     def test_unicode(self):

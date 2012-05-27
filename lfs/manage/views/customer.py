@@ -123,11 +123,23 @@ def customer_inline(request, customer_id, template_name="manage/customer/custome
 
         cart_price = cart.get_price_gross(request) + shipping_costs["price"] + payment_costs["price"]
 
+    if customer.selected_shipping_address:
+        shipping_address = customer.selected_shipping_address.as_html(request, "shipping")
+    else:
+        shipping_address = None
+
+    if customer.selected_invoice_address:
+        invoice_address = customer.selected_invoice_address.as_html(request, "invoice")
+    else:
+        invoice_address = None
+
     return render_to_string(template_name, RequestContext(request, {
         "customer": customer,
         "orders": orders,
         "cart": cart,
         "cart_price": cart_price,
+        "shipping_address": shipping_address,
+        "invoice_address": invoice_address,
     }))
 
 
@@ -327,13 +339,13 @@ def _get_filtered_customers(request, customer_filters):
     customer_ordering = request.session.get("customer-ordering", "id")
     customer_ordering_order = request.session.get("customer-ordering-order", "")
 
-    customers = Customer.objects.exclude(selected_invoice_address=None)
+    customers = Customer.objects.exclude(sa_object_id=None)
 
     # Filter
     name = customer_filters.get("name", "")
     if name != "":
-        f = Q(selected_invoice_address__lastname__icontains=name)
-        f |= Q(selected_invoice_address__firstname__icontains=name)
+        f = Q(sa_object_id__lastname__icontains=name)
+        f |= Q(sa_object_id__firstname__icontains=name)
         customers = customers.filter(f)
 
     # Ordering

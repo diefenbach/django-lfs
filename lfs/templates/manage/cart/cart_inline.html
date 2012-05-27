@@ -144,7 +144,7 @@
                     {% endif %}
                 </td>
                 <td class="number">
-                    {{ item|get_price:request|currency:request }}
+                    {{ item.product|get_price_gross:request|currency:request }}
                 </td>
                 <td class="number">
                     {{ item.amount }}
