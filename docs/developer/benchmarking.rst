@@ -34,9 +34,12 @@ JMeter
 
  * Set DEBUG to False
 
-4. Start JMeter::
+4. Start JMeter
 
-    $ bin/jmeter -t path/to/lfs_bench/jmeter/lfs.jmx -p path/to/lfs_bench/jmeter/user.properties
+  Make sure you start it from the buildout base directory (that's the same
+  directory you start Django from)::
+
+    $ /path/to/jmeter/bin/jmeter -t src/lfs_bench/lfs_bench/jmeter/lfs.jmx -p src/lfs_bench/lfs_bench/jmeter/user.properties
 
 5. Execute the Testplan and check the result within ``Summary Report`` for
    instance.

@@ -8,8 +8,8 @@ Via DVCS
 ========
 
 If your are a (Django-)developer you might want to fork django-lfs and
-django-lfstheme on `Bitbucket <https://bitbucket.org/diefenbach/django-lfs>`_
-add the translations as `used to <https://docs.djangoproject.com/en/dev/topics/i18n/translation/#localization-how-to-create-language-files>`_,
+lfs-theme on `github <https://github.com/diefenbach>`_ add the translations as
+`used to <https://docs.djangoproject.com/en/dev/topics/i18n/translation/#localization-how-to-create-language-files>`_,
 commit them and send us a pull request.
 
 .. Note::

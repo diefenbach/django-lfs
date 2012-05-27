@@ -19,7 +19,6 @@ def is_valid(request, object, product=None):
     Passed object is an object which can have criteria. At the moment these are
     discounts, shipping/payment methods and shipping/payment prices.
     """
-    import pdb; pdb.set_trace()
     logger.info("Decprecated: lfs.criteria.utils.is_valid: this function is deprecated. Please use the Criteria class instead.")
     for criterion_object in get_criteria(object):
         criterion_object.request = request

@@ -100,6 +100,11 @@ def delete_delivery_time(request, id):
         product.order_time = None
         product.save()
 
+    # Remove the delivery time from the shop
+    shop = lfs.core.utils.get_default_shop(request)
+    shop.delivery_time = None
+    shop.save()
+
     delivery_time = get_object_or_404(DeliveryTime, pk=id)
     delivery_time.delete()
 

@@ -39,8 +39,8 @@ os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
 if on_rtd:
     sys.path.insert(0, os.path.abspath('../../latest'))
 else:
-    sys.path.insert(0, os.path.abspath('../../../parts/lfs'))
-    sys.path.insert(0, os.path.abspath('../../../eggs/Django-1.3.1-py2.7.egg'))
+    sys.path.insert(0, os.path.abspath('../../../src/lfs'))
+    sys.path.insert(0, os.path.abspath('../../../eggs/Django-1.4-py2.7.egg'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -50,8 +50,8 @@ else:
 
 extensions = ['sphinx.ext.autodoc']
 
-if not on_rtd:
-    extensions.append('sphinxcontrib.spelling')
+# if not on_rtd:
+#     extensions.append('sphinxcontrib.spelling')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

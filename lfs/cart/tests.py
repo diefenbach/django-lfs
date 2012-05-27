@@ -5,30 +5,184 @@ import locale
 
 # django imports
 from django.contrib.auth.models import User
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
 from django.http import Http404
 from django.test import TestCase
 from django.utils import simplejson
 
 # lfs imports
-from lfs.caching.utils import lfs_get_object_or_404
 import lfs.cart.utils
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
+from lfs.cart.utils import get_cart
+from lfs.cart.utils import update_cart_after_login
 from lfs.cart.views import add_to_cart
 from lfs.cart.views import added_to_cart_items
 from lfs.cart.views import refresh_cart
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import Product
+from lfs.catalog.models import GroupsPropertiesRelation
+from lfs.catalog.models import Property
+from lfs.catalog.models import PropertyGroup
+from lfs.catalog.settings import CONFIGURABLE_PRODUCT
+from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
-from lfs.core.models import Shop
+from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.tests.utils import RequestFactory
-from lfs.tests.utils import create_request
 from lfs.tax.models import Tax
-from lfs.voucher.models import Voucher
-from lfs.voucher.models import VoucherGroup
-from lfs.voucher.settings import ABSOLUTE
-from lfs.voucher.settings import PERCENTAGE
+
+
+class LoginTestCase(TestCase):
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
+    def setUp(self):
+        self.p0 = Product.objects.create(name="Product 0", slug="product-0", price=5, active=True, sub_type=STANDARD_PRODUCT)
+
+        self.pg = PropertyGroup.objects.create(name="T-Shirts")
+        self.pp1 = Property.objects.create(name="Length", type=PROPERTY_TEXT_FIELD)
+        self.gpr1 = GroupsPropertiesRelation.objects.create(group=self.pg, property=self.pp1)
+
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=5, active=True, sub_type=CONFIGURABLE_PRODUCT)
+        self.pg.products = [self.p1]
+        self.pg.save()
+
+        self.admin = User.objects.get(username="admin")
+
+    def test_standard_product(self):
+        session = SessionStore()
+        rf = RequestFactory()
+
+        request = rf.post("/", {"product_id": self.p0.id, "quantity": 1})
+        request.session = session
+        request.user = AnonymousUser()
+
+        cart = get_cart(request)
+        self.assertEqual(cart, None)
+
+        add_to_cart(request)
+
+        cart = get_cart(request)
+        self.assertEqual(int(cart.get_items()[0].amount), 1)
+
+        # 1l login admin
+        request = rf.get("/")
+        request.session = session
+        request.user = self.admin
+
+        cart = get_cart(request)
+        self.assertEqual(cart, None)
+
+        update_cart_after_login(request)
+
+        cart = get_cart(request)
+        self.assertEqual(int(cart.get_items()[0].amount), 1)
+
+        # logout
+        session = SessionStore()
+        request = rf.post("/", {"product_id": self.p0.id, "quantity": 2})
+        request.session = session
+        request.user = AnonymousUser()
+
+        cart = get_cart(request)
+        self.assertEqual(cart, None)
+
+        add_to_cart(request)
+
+        cart = get_cart(request)
+        self.assertEqual(int(cart.get_items()[0].amount), 2)
+
+        # 2. login admin
+        request = rf.get("/")
+        request.session = session
+        request.user = self.admin
+
+        cart = get_cart(request)
+        self.assertEqual(int(cart.get_items()[0].amount), 1)
+
+        update_cart_after_login(request)
+
+        cart = get_cart(request)
+        self.assertEqual(int(cart.get_items()[0].amount), 3)
+
+    def test_configurable_product(self):
+        rf = RequestFactory()
+        session = SessionStore()
+
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1, "property-%s" % self.pp1.id: "A"})
+        request.session = session
+        request.user = AnonymousUser()
+
+        cart = get_cart(request)
+        self.assertEqual(cart, None)
+
+        add_to_cart(request)
+
+        cart = get_cart(request)
+        self.assertEqual(int(cart.get_items()[0].amount), 1)
+
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 10, "property-%s" % self.pp1.id: "B"})
+        request.session = session
+        request.user = AnonymousUser()
+        add_to_cart(request)
+
+        cart = get_cart(request)
+        self.assertEqual(int(cart.get_items()[0].amount), 1)
+        self.assertEqual(int(cart.get_items()[1].amount), 10)
+
+        # 1. login admin
+        request = rf.get("/")
+        request.session = session
+        request.user = self.admin
+
+        cart = get_cart(request)
+        self.assertEqual(cart, None)
+
+        update_cart_after_login(request)
+
+        cart = get_cart(request)
+        self.assertEqual(int(cart.get_items()[0].amount), 1)
+        self.assertEqual(int(cart.get_items()[1].amount), 10)
+
+        # logout
+        session = SessionStore()
+
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2, "property-%s" % self.pp1.id: "A"})
+        request.session = session
+        request.user = AnonymousUser()
+
+        cart = get_cart(request)
+        self.assertEqual(cart, None)
+
+        add_to_cart(request)
+
+        cart = get_cart(request)
+        self.assertEqual(int(cart.get_items()[0].amount), 2)
+
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 20, "property-%s" % self.pp1.id: "B"})
+        request.session = session
+        request.user = AnonymousUser()
+        add_to_cart(request)
+
+        cart = get_cart(request)
+        self.assertEqual(int(cart.get_items()[0].amount), 2)
+        self.assertEqual(int(cart.get_items()[1].amount), 20)
+
+        # 2. login admin
+        request = rf.get("/")
+        request.session = session
+        request.user = self.admin
+
+        cart = get_cart(request)
+        self.assertEqual(int(cart.get_items()[0].amount), 1)
+        self.assertEqual(int(cart.get_items()[1].amount), 10)
+
+        update_cart_after_login(request)
+
+        cart = get_cart(request)
+        self.assertEqual(int(cart.get_items()[0].amount), 3)
+        self.assertEqual(int(cart.get_items()[1].amount), 30)
+
 
 class CartModelsTestCase(TestCase):
     """
@@ -76,7 +230,7 @@ class CartModelsTestCase(TestCase):
         """
         """
         amount = self.cart.get_amount_of_items()
-        self.assertEqual(2, 2)
+        self.assertEqual(amount, 2)
 
     def test_get_items(self):
         """
@@ -266,7 +420,7 @@ class RefreshCartTestCase(TestCase):
         request.user = self.user
 
         # Add product to cart
-        result = add_to_cart(request)
+        add_to_cart(request)
 
         cart = lfs.cart.utils.get_cart(request)
         self.assertEqual(cart.get_amount_of_items(), 1.0)

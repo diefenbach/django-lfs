@@ -53,43 +53,6 @@ class Cart(models.Model):
     def __unicode__(self):
         return u"%s, %s" % (self.user, self.session)
 
-    # DEPRECATED 0.6
-    @property
-    def amount_of_items(self):
-        """
-        Returns the amount of items of the cart.
-
-        This method is DEPRECATED.
-        """
-        logger.info("Decprecated: lfs.cart.models.Cart: the property 'amount_of_items' is deprecated. Please use 'get_amount_of_items'.")
-        return self.get_amount_of_items()
-
-    # DEPRECATED 0.6
-    def items(self):
-        """
-        Returns the items of the cart.
-
-        This method is DEPRECATED.
-        """
-        logger.info("Decprecated: lfs.cart.models.Cart: the method 'items' is deprecated. Please use 'get_items'.")
-        return self.get_items()
-
-    # DEPRECATED 0.6
-    def get_name(self):
-        """
-        Returns a name for the cart.
-
-        This method is DEPRECATED.
-        """
-        logger.info("Decprecated: lfs.cart.models.Cart: the method 'get_name' is deprecated. (There is no replacement as this method makes no sense at all.)")
-        cart_name = ""
-        for cart_item in self.items.all():
-            if cart_name.product is not None:
-                cart_name = cart_name + cart_name.product.get_name() + ", "
-
-        cart_name.strip(', ')
-        return cart_name
-
     def add(self, product, properties=None, amount=1):
         """
         Adds passed product to the cart.
@@ -245,14 +208,6 @@ class CartItem(models.Model):
         return u"Product: %(product)s, Quantity: %(amount)f, Cart: %(cart)s" % {'product': self.product,
                                                                                 'amount': self.amount,
                                                                                 'cart': self.cart}
-
-    # DEPRECATED 0.6
-    def get_price(self, request):
-        """
-        Convenient method to return the gross price of the product.
-        """
-        logger.info("Decprecated: lfs.cart.models.CartItem: the method 'get_price' is deprecated. Please use the methods 'get_price_gross' and 'get_price_net'.")
-        return self.get_price_gross(request)
 
     def get_price_net(self, request):
         """

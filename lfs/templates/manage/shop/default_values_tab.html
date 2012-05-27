@@ -24,6 +24,24 @@
         </div>
     </fieldset>
     <fieldset>
+        <legend>{% trans "Delivery Time" %}</legend>
+        <div class="field">
+            <div class="label">
+                {{ form.delivery_time.label_tag }}:
+            </div>
+            {% if form.delivery_time.errors %}
+                <div class="error">
+                    {{ form.delivery_time }}
+                    {{ form.delivery_time.errors }}
+                </div>
+            {% else %}
+                <div>
+                    {{ form.delivery_time }}
+                </div>
+            {% endif %}
+        </div>
+    </fieldset>
+    <fieldset>
         <legend>{% trans 'Format' %}</legend>
         <div class="field">
             <div class="label">

@@ -30,6 +30,8 @@ class Command(BaseCommand):
     help = 'Initializes LFS'
 
     def handle(self, *args, **options):
+        from lfs.catalog.models import DeliveryTime
+        from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
         from lfs.core.models import ActionGroup
         from lfs.core.models import Action
         from lfs.core.models import Application
@@ -51,9 +53,13 @@ class Command(BaseCommand):
         # Country
         usa = Country.objects.create(code="us", name="USA")
 
+        # Default delivery time
+        delivery_time = DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
+
         # Shop
         shop = Shop.objects.create(name="LFS", shop_owner="John Doe",
-            from_email="john@doe.com", notification_emails="john@doe.com", description=SHOP_DESCRIPTION, default_country=usa)
+                from_email="john@doe.com", notification_emails="john@doe.com",
+                description=SHOP_DESCRIPTION, default_country=usa, delivery_time=delivery_time)
         shop.invoice_countries.add(usa)
         shop.shipping_countries.add(usa)
 
@@ -82,7 +88,7 @@ class Command(BaseCommand):
         pm.id=1; pm.save()
         pm = PaymentMethod.objects.create(name="Cash on delivery", priority=2, active=1, deletable=0)
         pm.id=2; pm.save()
-        pm = PaymentMethod.objects.create(name="PayPal", priority=3, active=1, deletable=0)
+        pm = PaymentMethod.objects.create(name="PayPal", priority=3, active=1, deletable=0, module="lfs_paypal.PayPalProcessor")
         pm.id=3; pm.save()
         pm = PaymentMethod.objects.create(name="Prepayment", priority=4, active=1, deletable=0)
         pm.id=4; pm.save()

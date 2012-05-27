@@ -1,7 +1,6 @@
 # django imports
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
-from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
@@ -16,7 +15,6 @@ import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
 from lfs.core.signals import shop_changed
-from lfs.core.utils import import_module
 from lfs.core.utils import import_symbol
 from lfs.core.utils import LazyEncoder
 from lfs.core.widgets.image import LFSImageInput
@@ -51,7 +49,7 @@ class ShopDefaultValuesForm(ModelForm):
     class Meta:
         model = Shop
         fields = ("price_calculator", "product_cols", "product_rows", "category_cols",
-            "default_country", "invoice_countries", "shipping_countries", "use_international_currency_code")
+            "default_country", "invoice_countries", "shipping_countries", "use_international_currency_code", "delivery_time")
 
 
 @permission_required("core.manage_shop", login_url="/login/")

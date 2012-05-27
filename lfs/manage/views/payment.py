@@ -99,16 +99,19 @@ def payment_methods(request, template_name="manage/payment/payment_methods.html"
 
 
 @permission_required("core.manage_shop", login_url="/login/")
-def payment_method_data(request, payment_id,
-    template_name="manage/payment/payment_method_data.html"):
-    """Returns the payment data as html.
+def payment_method_data(request, payment_id, form=None, template_name="manage/payment/payment_method_data.html"):
+    """
+    Returns the payment data as html.
 
     This view is used as a part within the manage payment view.
     """
     payment_method = PaymentMethod.objects.get(pk=payment_id)
 
+    if form is None:
+        form = PaymentMethodForm(instance=payment_method)
+
     return render_to_string(template_name, RequestContext(request, {
-        "form": PaymentMethodForm(instance=payment_method),
+        "form": form,
         "payment_method": payment_method,
     }))
 
@@ -332,13 +335,25 @@ def save_payment_method_data(request, payment_method_id):
 
     if payment_form.is_valid():
         payment_form.save()
+        # Makes an uploaded image appear immediately
+        payment_form = PaymentMethodForm(instance=payment_method)
         if request.POST.get("delete_image"):
             payment_method.image.delete()
+        message = _(u"Payment method has been saved.")
+    else:
+        message = _(u"Please correct the indicated errors.")
 
-    return lfs.core.utils.set_message_cookie(
-        url=reverse("lfs_manage_payment_method", kwargs={"payment_method_id": payment_method.id}),
-        msg=_(u"Payment method has been saved."),
-    )
+    html = [
+        ["#data", payment_method_data(request, payment_method.id, payment_form)],
+        ["#payment-methods", payment_methods(request)],
+    ]
+
+    result = simplejson.dumps({
+        "html": html,
+        "message": message,
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
 
 
 @permission_required("core.manage_shop", login_url="/login/")

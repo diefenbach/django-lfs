@@ -1,6 +1,5 @@
 # django imports
 from django.conf import settings
-from django.contrib.contenttypes import generic
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -8,10 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from lfs.criteria.base import Criteria
 import lfs.payment.settings
 from lfs.tax.models import Tax
-
-
-# paypal imports
-from paypal.standard.ipn.models import PayPalIPN
 
 
 class ActivePaymentMethodManager(models.Manager):
@@ -118,12 +113,3 @@ class PaymentMethodPrice(models.Model, Criteria):
     price = models.FloatField(_(u"Price"), default=0.0)
     priority = models.IntegerField(_(u"Priority"), default=0)
     active = models.BooleanField(_(u"Active"), default=False)
-
-
-from lfs.order.models import Order
-class PayPalOrderTransaction(models.Model):
-    order = models.ForeignKey(Order, unique=True)
-    ipn = models.ManyToManyField(PayPalIPN)
-
-
-from listeners import *

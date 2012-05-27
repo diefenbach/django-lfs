@@ -4,13 +4,10 @@ from datetime import datetime
 # django imports
 from django.conf import settings
 from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist
 
 # lfs imports
 import lfs.core.utils
-from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import DeliveryTime
-from lfs.catalog.models import Product
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.criteria import utils as criteria_utils
@@ -82,9 +79,9 @@ def get_product_delivery_time(request, product, for_cart=False):
             except AttributeError:
                 delivery_time = None
 
-    # TODO: Define default delivery time for the shop
     if delivery_time is None:
-        delivery_time = DeliveryTime(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
+        delivery_time = lfs.core.utils.get_default_shop(request).delivery_time or \
+                        DeliveryTime(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
 
     # Calculate the total delivery time if the product is not on stock.
     if (product.stock_amount <= 0) and (product.order_time):
