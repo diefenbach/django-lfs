@@ -43,8 +43,9 @@ class SEOView(View):
         form_k = form_klass if form_klass else self.form_klass
         if not form_k:
             # if form_klass is not specified then prepare default model form for SEO management
-            self.form_klass = modelform_factory(model_klass,
-                                                fields=("meta_title", "meta_keywords", "meta_description"))
+            form_k = modelform_factory(model_klass,
+                                       fields=("meta_title", "meta_keywords", "meta_description"))
+        self.form_klass = form_k
         self.model_klass = model_klass
         self.template_name = template_name
 
