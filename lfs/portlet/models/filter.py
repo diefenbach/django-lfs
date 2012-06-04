@@ -28,7 +28,7 @@ class FilterPortlet(Portlet):
         """Renders the portlet as html.
         """
         request = context.get("request")
-        sorting = request.session.get("sorting")
+        sorting = request.session.get("sorting", "price")
 
         category = context.get("category")
         if category is None:

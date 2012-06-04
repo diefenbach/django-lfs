@@ -346,8 +346,8 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
         default_sorting = settings.LFS_PRODUCTS_SORTING
     except AttributeError:
         default_sorting = "price"
-
     sorting = request.session.get("sorting", default_sorting)
+
     product_filter = request.session.get("product-filter", {})
     product_filter = product_filter.items()
 

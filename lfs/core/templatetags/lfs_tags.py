@@ -24,6 +24,7 @@ from lfs.catalog.settings import CONFIGURABLE_PRODUCT, VARIANT
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import STANDARD_PRODUCT
+from lfs.catalog.settings import SORTING_MAP
 from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
@@ -103,7 +104,12 @@ def sorting(context):
     """
     """
     request = context.get("request")
-    return {"current": request.session.get("sorting")}
+    sorting = request.session.get("sorting")
+    # prepare list of available sort options, sorted by SORTING_MAP_ORDER
+    sort_options = []
+    for item in SORTING_MAP:
+        sort_options.append(item)
+    return {"current": sorting, "sort_options": sort_options}
 
 
 @register.inclusion_tag('lfs/catalog/breadcrumbs.html', takes_context=True)
@@ -209,9 +215,7 @@ def product_navigation(context, product):
     """Provides previous and next product links.
     """
     request = context.get("request")
-    sorting = request.session.get("sorting", "price")
-    if sorting == "":
-        sorting = "price"
+    sorting = request.session.get("sorting", 'price')
 
     slug = product.slug
 

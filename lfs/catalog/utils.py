@@ -5,6 +5,7 @@ import math
 from django.conf import settings
 from django.core.cache import cache
 from django.db import connection
+from django.core.exceptions import FieldError
 
 # import lfs
 import lfs.catalog.models
@@ -486,7 +487,11 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         products = lfs.catalog.models.Product.objects.filter(pk__in=matched_product_ids)
 
     if sorting:
-        products = products.order_by(sorting)
+        try:
+            products = products.order_by(sorting)
+        except FieldError:
+            # ignore invalid sort order which may be stored in the session
+            pass
 
     return products
 
