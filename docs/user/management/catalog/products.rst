@@ -28,7 +28,7 @@ Goto product
     product.
 
 Product type
-    Select box to change the :ref:`type of the product <product-types-label>`.
+    Select box to change the :ref:`type of the product <product_types_label>`.
 
 .. _products_management_tabs:
 
@@ -70,7 +70,7 @@ SKU manufacturer
 
 Price
     The price of the product. Whether this price is considered net or gross
-    dependents on the selected price calculator for this product (see
+    dependents on the selected price calculator for a product (see
     below).
 
 Price unit
@@ -79,7 +79,7 @@ Price unit
 
 Tax
     The tax rate of the product. Whether this is included or excluded
-    dependents on the selected price calculator for this product (see
+    dependents on the selected price calculator for a product (see
     below).
 
 Price Calculation
@@ -415,7 +415,8 @@ Select
 Accessories
 -----------
 
-Within this tab you can manage the accessories of this product.
+Within this tab you can manage the :ref:`accessories <marketing_concepts_accessories>`
+of a product.
 
 Add accessories
 ^^^^^^^^^^^^^^^
@@ -454,7 +455,8 @@ Accessories``.
 Related products
 ----------------
 
-Within this tab you can manage the related products of this product.
+Within this tab you can manage the :ref:`related products <marketing_concepts_related_products>`
+of a product.
 
 Add related products
 ^^^^^^^^^^^^^^^^^^^^
@@ -511,7 +513,7 @@ Deliverable
 
 Manual delivery time
     By default the delivery time is calculated automatically by the currently
-    valid shipping method for this product. With this field the shop owner can
+    valid shipping method for a product. With this field the shop owner can
     overwrite this behavior and can put in a manual delivery time.
 
 Manage stock amount
