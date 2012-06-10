@@ -120,9 +120,9 @@ def _send_order_received_mail(order):
 
 def send_customer_added(user):
     try:
-        _send_customer_added.delay(order)
+        _send_customer_added.delay(user)
     except AttributeError:
-        _send_customer_added(order)
+        _send_customer_added(user)
 
 
 def _send_customer_added(user):
