@@ -15,6 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs.catalog.utils
 import lfs.core.utils
+import lfs.core.views
 import lfs.utils.misc
 import logging
 from lfs.caching.utils import lfs_get_object_or_404
@@ -538,6 +539,9 @@ def currency(value, request=None, grouping=True):
     currency(123456.789)  # Fr. 123'456.79
     currency(-123456.789) # <span class="negative">Fr. -123'456.79</span>
     """
+    if locale.getlocale(locale.LC_ALL)[0] is None:
+        lfs.core.views.one_time_setup()
+
     if not value:
         value = 0.0
 

@@ -18,6 +18,7 @@ def order_paid_listener(sender, **kwargs):
     mail_utils.send_order_paid_mail(order)
 order_paid.connect(order_paid_listener)
 
+
 def order_sent_listener(sender, **kwargs):
     """Listen to order payed signal.
     """

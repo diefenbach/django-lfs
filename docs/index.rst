@@ -74,6 +74,7 @@ How-tos
    user/howtos/how_to_shipping_method
    user/howtos/how_to_paypal.rst
    user/howtos/how_to_export_script
+   user/howtos/how_to_use_celery
 
 .. _index_developers:
 
