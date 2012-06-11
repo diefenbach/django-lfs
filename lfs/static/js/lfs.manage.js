@@ -39,6 +39,14 @@ function update_positions() {
     });
 };
 
+function setup_datepicker(){
+    $("input.date-picker").datepicker({
+        dateFormat: 'yy-mm-dd',
+        showWeek: true,
+        firstDay: 1
+    });
+}
+
 function send_form_and_refresh(mythis) {
     mythis.parents("form:first").ajaxSubmit({
         success : function(data) {
@@ -180,6 +188,7 @@ $(function() {
                 }
                 hide_ajax_loading();
                 update_editor();
+                setup_datepicker();
 
                 // trigger form-save-end event when new HTML has already been injected into page
                 var event = jQuery.Event("form-save-end");
@@ -441,11 +450,7 @@ $(function() {
         return false;
     })
 
-    $("input.date-picker").datepicker({
-        dateFormat: 'yy-mm-dd',
-        showWeek: true,
-        firstDay: 1
-    });
+    setup_datepicker();
 
     $('ol.sortable').nestedSortable({
         placeholder: 'placeholder',
