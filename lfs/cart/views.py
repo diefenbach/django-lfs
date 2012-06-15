@@ -289,7 +289,7 @@ def add_to_cart(request, product_id=None):
                             product.get_absolute_url(), msg)
 
     if product.active_packing_unit:
-        quantity = lfs.catalog.utils.calculate_real_amount(product, quantity)
+        quantity = product.get_amount_by_packages(quantity)
 
     cart = cart_utils.get_or_create_cart(request)
 
@@ -416,7 +416,7 @@ def refresh_cart(request):
 
 
         if item.product.active_packing_unit:
-            item.amount = lfs.catalog.utils.calculate_real_amount(item.product, float(amount))
+            item.amount = item.product.get_amount_by_packages(float(amount))
         else:
             item.amount = amount
 
