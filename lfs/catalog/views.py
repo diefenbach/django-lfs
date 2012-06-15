@@ -1,4 +1,5 @@
 # python imports
+import locale
 import math
 import urllib
 
@@ -72,7 +73,7 @@ def calculate_packing(request, id, quantity=None, with_properties=False, as_stri
 
     if quantity is None:
         try:
-            quantity = float(request.POST.get("quantity"))
+            quantity = locale.atof(request.POST.get("quantity"))
         except (TypeError, ValueError):
             quantity = 1
 
