@@ -2,16 +2,20 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
+from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
+from django.template.loader import render_to_string
+from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
 # lfs imports
 import lfs.core.utils
 from lfs.catalog.models import Product
+from lfs.core.utils import LazyEncoder
 from lfs.customer_tax.models import CustomerTax
 from lfs.manage.customer_tax.forms import CustomerTaxForm
 
@@ -34,22 +38,51 @@ def manage_customer_tax(request, id, template_name="manage/customer_tax/customer
     """Displays the main form to manage customer taxes.
     """
     customer_tax = get_object_or_404(CustomerTax, pk=id)
-    if request.method == "POST":
-        form = CustomerTaxForm(instance=customer_tax, data=request.POST, files=request.FILES)
-        if form.is_valid():
-            form.save()
-            return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_customer_tax", kwargs={"id": customer_tax.id}),
-                msg=_(u"Customer tax has been saved."),
-            )
-    else:
-        form = CustomerTaxForm(instance=customer_tax)
-
     return render_to_response(template_name, RequestContext(request, {
         "customer_tax": customer_tax,
-        "customer_taxes": CustomerTax.objects.all(),
+        "data": data(request, customer_tax),
+        "criteria": criteria(request, customer_tax),
+        "navigation": navigation(request, customer_tax),
+    }))
+
+
+# Parts
+def data(request, customer_tax, form=None, template_name="manage/customer_tax/data.html"):
+    """
+    Renders the data tab of customer taxes.
+    """
+    if form is None:
+        form = CustomerTaxForm(instance=customer_tax)
+
+    return render_to_string(template_name, RequestContext(request, {
+        "customer_tax": customer_tax,
         "form": form,
-        "current_id": int(id),
+    }))
+
+
+def criteria(request, customer_tax, template_name="manage/customer_tax/criteria.html"):
+    """Returns the criteria of the passed customer tax.
+    """
+    criteria = []
+    position = 0
+    for criterion in customer_tax.get_criteria():
+        position += 10
+        criterion_html = criterion.render(request, position)
+        criteria.append(criterion_html)
+
+    return render_to_string(template_name, RequestContext(request, {
+        "customer_tax": customer_tax,
+        "criteria": criteria,
+    }))
+
+
+def navigation(request, customer_tax, template_name="manage/customer_tax/navigation.html"):
+    """
+    Renders the navigation of customer taxes.
+    """
+    return render_to_string(template_name, RequestContext(request, {
+        "customer_taxes": CustomerTax.objects.all(),
+        "current_id": customer_tax.id,
     }))
 
 
@@ -87,7 +120,8 @@ def add_customer_tax(request, template_name="manage/customer_tax/add_customer_ta
 @permission_required("core.manage_shop", login_url="/login/")
 @require_POST
 def delete_customer_tax(request, id):
-    """Deletes customer tax with passed id.
+    """
+    Deletes customer tax with passed id.
     """
     customer_tax = get_object_or_404(CustomerTax, pk=id)
     customer_tax.delete()
@@ -96,3 +130,47 @@ def delete_customer_tax(request, id):
         url=reverse("lfs_manage_customer_taxes"),
         msg=_(u"Customer tax has been deleted."),
     )
+
+
+@permission_required("core.manage_shop", login_url="/login/")
+def save_criteria(request, id):
+    """
+    Saves the criteria for the customer tax with given id. The criteria are
+    passed via request body.
+    """
+    customer_tax = get_object_or_404(CustomerTax, pk=id)
+    customer_tax.save_criteria(request)
+
+    html = [["#criteria", criteria(request, customer_tax)]]
+
+    result = simplejson.dumps({
+        "html": html,
+        "message": _(u"Criteria have been changed."),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
+
+
+@permission_required("core.manage_shop", login_url="/login/")
+@require_POST
+def save_data(request, id):
+    """
+    Saves the data for the customer tax with given id.
+    """
+    customer_tax = get_object_or_404(CustomerTax, pk=id)
+    form = CustomerTaxForm(instance=customer_tax, data=request.POST, files=request.FILES)
+    if form.is_valid():
+        form.save()
+        form = None
+
+    html = [
+        ["#data", data(request, customer_tax, form=form)],
+        ["#navigation", navigation(request, customer_tax)],
+    ]
+
+    result = simplejson.dumps({
+        "html": html,
+        "message": _(u"Data have been saved."),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)

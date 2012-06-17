@@ -1,0 +1,14 @@
+{% load i18n %}
+<h2>{% trans 'Data' %}</h2>
+<form action="{% url lfs_manage_save_customer_tax_data customer_tax.id %}"
+      method="post">
+
+    {% csrf_token %}
+    {% include "manage/lfs_form.html" %}
+
+    <div class="buttons">
+        <input type="submit"
+               class="button ajax-save-button"
+               value="{% trans 'Save Customer Tax' %}">
+    </div>
+</form>

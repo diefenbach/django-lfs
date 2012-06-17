@@ -438,6 +438,8 @@ urlpatterns += patterns('lfs.manage.customer_tax.views',
     url(r'^customer-taxes$', "manage_customer_taxes", name="lfs_manage_customer_taxes"),
     url(r'^customer-tax/(?P<id>\d*)$', "manage_customer_tax", name="lfs_manage_customer_tax"),
     url(r'^no-customer-taxes$', "no_customer_taxes", name="lfs_manage_no_customer_taxes"),
+    url(r'^save-customer-tax-criteria/(?P<id>\d*)$', "save_criteria", name="lfs_manage_save_customer_tax_criteria"),
+    url(r'^save-customer-tax-data/(?P<id>\d*)$', "save_data", name="lfs_manage_save_customer_tax_data"),
 )
 
 # Utils
