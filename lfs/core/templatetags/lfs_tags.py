@@ -99,7 +99,10 @@ def sorting(context):
     """
     """
     request = context.get("request")
-    return {"current": request.session.get("sorting")}
+    sorting = request.session.get("sorting")
+    if " " in sorting:
+        sorting = ''
+    return {"current": sorting}
 
 
 @register.inclusion_tag('lfs/catalog/breadcrumbs.html', takes_context=True)
@@ -182,7 +185,7 @@ def product_navigation(context, product):
     """
     request = context.get("request")
     sorting = request.session.get("sorting", "price")
-    if sorting == "":
+    if (sorting == "") or (" " in sorting):
         sorting = "price"
 
     slug = product.slug
