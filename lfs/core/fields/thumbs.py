@@ -35,7 +35,7 @@ def generate_thumb(img, thumb_size, format):
     image = Image.open(img)
 
     # Convert to RGB if necessary
-    if image.mode not in ('L', 'RGB'):
+    if image.mode not in ('L', 'RGB', 'RGBA'):
         image = image.convert('RGB')
 
     new_image = scale_to_max_size(image, *thumb_size)
