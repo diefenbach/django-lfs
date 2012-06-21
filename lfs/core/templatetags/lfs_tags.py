@@ -100,8 +100,8 @@ def sorting(context):
     """
     request = context.get("request")
     sorting = request.session.get("sorting")
-    if " " in sorting:
-        sorting = ''
+    if sorting and (" " in sorting):
+        sorting = None
     return {"current": sorting}
 
 
