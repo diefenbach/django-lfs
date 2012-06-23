@@ -63,7 +63,7 @@ def add_order(request):
     # Discounts
     discounts = lfs.discounts.utils.get_valid_discounts(request)
     for discount in discounts:
-        price = price - discount["price"]
+        price = price - discount["price_gross"]
         tax = tax - discount["tax"]
 
     # Add voucher if one exists
@@ -177,15 +177,15 @@ def add_order(request):
     for discount in discounts:
         OrderItem.objects.create(
             order=order,
-            price_net=-(discount["price"] - discount["tax"]),
-            price_gross=-discount["price"],
+            price_net=-(discount["price_net"] - discount["tax"]),
+            price_gross=-discount["price_gross"],
             tax=-discount["tax"],
 
             product_sku=discount["sku"],
             product_name=discount["name"],
             product_amount=1,
-            product_price_net=-(discount["price"] - discount["tax"]),
-            product_price_gross=-discount["price"],
+            product_price_net=-(discount["price_net"] - discount["tax"]),
+            product_price_gross=-discount["price_gross"],
             product_tax=-discount["tax"],
         )
 
