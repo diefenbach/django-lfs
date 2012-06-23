@@ -576,7 +576,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
         "price_unit": product.get_price_unit(),
         "unit": product.get_unit(),
         "display_variants_list": display_variants_list,
-        "for_sale": product.for_sale,
+        "for_sale": product.get_for_sale(),
     }))
 
     cache.set(cache_key, result)
