@@ -27,13 +27,18 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.7.6 (2012-06-24)
+------------------
+
+* Bugfix: fixed saving of property values for products with variants (introduced with 0.7.5.).
+
 0.7.5 (2012-06-23)
 ------------------
 
 * Bugfix: Don't convert images with mode RGBA to RGB. That results in loss of alpha channel. (Michael Jenny)
 * Bugfix: fixed saving of property values for products with variants. (Michael Jenny)
 * Bugfix: fixed calculation of discount price.
-* Bugfix: fixed display of for sale price for variants within wthin product detail view.
+* Bugfix: fixed display of for sale price for variants within product detail view.
 * Bugfix: fixed datepicker handling for stock etc. (Maciej Wiśniowski)
 
 HISTORY
