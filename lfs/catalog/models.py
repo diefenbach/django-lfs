@@ -1123,7 +1123,7 @@ class Product(models.Model):
         options = cache.get("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id))
         if options is None:
             options = {}
-            for pvo in self.property_values.all():
+            for pvo in self.property_values.filter(type=PROPERTY_VALUE_TYPE_VARIANT):
                 options[pvo.property_id] = pvo.value
             cache.set("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id), options)
 
