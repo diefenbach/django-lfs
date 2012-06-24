@@ -501,7 +501,7 @@ def update_variants(request, product_id):
                         pass
                     else:
                         product.save()
-                
+
                 variant.save()
 
             elif key.startswith("property"):
@@ -509,8 +509,8 @@ def update_variants(request, product_id):
                 temp = key.split("-")[1]
                 variant_id, property_id = temp.split("|")
                 variant = Product.objects.get(pk=variant_id)
-                try:    
-                    ppv = variant.property_values.get(property_id=property_id, type=PROPERTY_VALUE_TYPE_VARIANT)
+                try:
+                    ppv = variant.property_values.get(property=property_id, type=PROPERTY_VALUE_TYPE_VARIANT)
                 except ProductPropertyValue.DoesNotExist:
                     # TODO: When creating new propertys (local or global), they are not copied onto existing variants.
                     continue
