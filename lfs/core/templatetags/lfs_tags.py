@@ -187,7 +187,7 @@ def product_navigation(context, product):
     """Provides previous and next product links.
     """
     request = context.get("request")
-    sorting = request.session.get("sorting")
+    sorting = request.session.get("sorting", 'price')
 
     slug = product.slug
 
