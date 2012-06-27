@@ -144,3 +144,18 @@ PRODUCT_TEMPLATES = (
 PRODUCT_TEMPLATES = getattr(settings, 'PRODUCT_TEMPLATES', PRODUCT_TEMPLATES)
 
 THUMBNAIL_SIZES = getattr(settings, 'LFS_THUMBNAIL_SIZES', ((60, 60), (100, 100), (200, 200), (300, 300), (400, 400)))
+
+if getattr(settings, 'SOLR_ENABLED', False):
+    SORTING_MAP = (
+        {'default': 'price', 'ftx': 'price asc', 'title': _('Price ascending')},
+        {'default': '-price', 'ftx': 'price desc', 'title': _('Price descending')},
+        {'default': 'name', 'ftx': 'name asc', 'title': _('Name ascending')},
+        {'default': '-name', 'ftx': 'name desc', 'title': _('Name descending')},
+    )
+else:
+    SORTING_MAP = (
+        {'default': 'price', 'ftx': 'price', 'title': _('Price ascending')},
+        {'default': '-price', 'ftx': '-price', 'title': _('Price descending')},
+        {'default': 'name', 'ftx': 'name', 'title': _('Name ascending')},
+        {'default': '-name', 'ftx': '-name', 'title': _('Name descending')},
+    )

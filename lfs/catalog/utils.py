@@ -506,11 +506,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         products = lfs.catalog.models.Product.objects.filter(pk__in=matched_product_ids)
 
     if sorting:
-        try:
-            products = products.order_by(sorting)
-        except FieldError:
-            # ignore wrong sort order which may be stored in old session
-            pass
+        products = products.order_by(sorting)
 
     return products
 
