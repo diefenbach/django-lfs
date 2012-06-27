@@ -643,11 +643,13 @@ def option_name_for_property_value(property_value):
 
 @register.filter
 def packages(cart_item):
-    """Returns the packages based on product's package unit and cart items
+    """
+    Returns the packages based on product's package unit and cart items
     amount.
     """
-    if cart_item.product.packing_unit:
-        return int(math.ceil(float(cart_item.amount) / cart_item.product.packing_unit))
+    packing_unit, packing_unit_unit = cart_item.product.get_packing_info()
+    if packing_unit:
+        return int(math.ceil(float(cart_item.amount) / packing_unit))
     return 0
 
 
