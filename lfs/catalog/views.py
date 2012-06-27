@@ -1,4 +1,5 @@
 # python imports
+import locale
 import math
 import urllib
 
@@ -72,8 +73,12 @@ def calculate_packing(request, id, quantity=None, with_properties=False, as_stri
 
     if quantity is None:
         try:
-            quantity = float(request.POST.get("quantity"))
-        except (TypeError, ValueError):
+            quantity = request.POST.get("quantity")
+            if isinstance(quantity, unicode):
+                # atof() on unicode string fails in some environments, like Czech
+                quantity = quantity.encode("utf-8")
+            quantity = locale.atof(quantity)
+        except (AttributeError, TypeError, ValueError):
             quantity = 1
 
     packing_amount, packing_unit = product.get_packing_info()
@@ -569,7 +574,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
         "price_unit": product.get_price_unit(),
         "unit": product.get_unit(),
         "display_variants_list": display_variants_list,
-        "for_sale": product.for_sale,
+        "for_sale": product.get_for_sale(),
     }))
 
     cache.set(cache_key, result)

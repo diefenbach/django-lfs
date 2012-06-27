@@ -768,8 +768,9 @@ class Product(models.Model):
     def get_amount_by_packages(self, quantity):
         """
         """
-        packages = math.ceil(quantity / self.packing_unit)
-        return packages * self.packing_unit
+        packing_unit, packing_unit_unit = self.get_packing_info()
+        packages = math.ceil(quantity / packing_unit)
+        return packages * packing_unit
 
     def get_categories(self, with_parents=False):
         """
@@ -1123,7 +1124,7 @@ class Product(models.Model):
         options = cache.get("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id))
         if options is None:
             options = {}
-            for pvo in self.property_values.all():
+            for pvo in self.property_values.filter(type=PROPERTY_VALUE_TYPE_VARIANT):
                 options[pvo.property_id] = pvo.value
             cache.set("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id), options)
 
