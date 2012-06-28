@@ -315,7 +315,7 @@ class CartItem(models.Model):
                     po = PropertyOption.objects.get(pk=ppv.value)
                     value = po.price
                 else:
-                    value = lfs.core.utils.atof(ppv.value)
+                    value = float(ppv.value)
                 pc = pc.replace(token, str(value))
             elif token.startswith("number"):
                 mo = re.match("number\((\d+)\)", token)
@@ -363,7 +363,7 @@ class CartItem(models.Model):
                 try:
                     value = format_string % float(cipv.value)
                 except ValueError:
-                    value = locale.format("%.2f", lfs.core.utils.atof(cipv.value))
+                    value = locale.format("%.2f", float(cipv.value))
             else:
                 value = cipv.value
 

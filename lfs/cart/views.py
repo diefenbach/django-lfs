@@ -259,10 +259,7 @@ def add_to_cart(request, product_id=None):
 
                 if property.is_number_field:
                     try:
-                        if isinstance(value, unicode):
-                            # atof() on unicode string fails in some environments, like Czech
-                            value = value.encode("utf-8")
-                        value = locale.atof(value)
+                        value = lfs.core.utils.atof(value)
                     except ValueError:
                         value = locale.atof("0.0")
 
