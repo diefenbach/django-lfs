@@ -1,9 +1,10 @@
 # python imports
+from collections import deque
 import datetime
+from itertools import count
+import locale
 import sys
 import urllib
-from collections import deque
-from itertools import count
 
 # django imports
 from django.conf import settings
@@ -33,6 +34,15 @@ def l10n_float(string):
         return float(string)
     except ValueError:
         return 0.0
+
+
+def atof(value):
+    """
+    locale.atof() on unicode string fails in some environments, like Czech.
+    """
+    if isinstance(value, unicode):
+        value = value.encode("utf-8")
+    return locale.atof(value)
 
 
 def get_default_shop(request=None):
