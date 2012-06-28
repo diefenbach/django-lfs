@@ -1,4 +1,5 @@
-
+# python imports
+import locale
 import re
 
 # django imports
@@ -269,7 +270,7 @@ class CartItem(models.Model):
                     po = PropertyOption.objects.get(pk=ppv.value)
                     value = po.price
                 else:
-                    value = ppv.value
+                    value = lfs.core.utils.atof(ppv.value)
                 pc = pc.replace(token, str(value))
             elif token.startswith("number"):
                 mo = re.match("number\((\d+)\)", token)
@@ -317,7 +318,7 @@ class CartItem(models.Model):
                 try:
                     value = format_string % float(cipv.value)
                 except ValueError:
-                    value = "%.2f" % float(cipv.value)
+                    value = locale.format("%.2f", lfs.core.utils.atof(cipv.value))
             else:
                 value = cipv.value
 
