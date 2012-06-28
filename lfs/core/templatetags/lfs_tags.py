@@ -828,6 +828,11 @@ def get_price_net(product, request):
     return product.get_price_net(request)
 
 
+@register.filter(name='get_product_price_gross')
+def get_product_price_gross(product, request):
+    return product.get_product_price_gross(request)
+
+
 @register.filter(name='get_price_gross')
 def get_price_gross(product, request):
     return product.get_price_gross(request)
