@@ -157,26 +157,26 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
         checkout_response = self.client.get(reverse('lfs_checkout'))
-        checkout_data = {'invoice_firstname': 'bob',
-                         'invoice_lastname': 'builder',
+        checkout_data = {'invoice-firstname': 'bob',
+                         'invoice-lastname': 'builder',
                          'invoice-line1': 'de company',
                          'invoice-line2': 'de street',
                          'invoice-city': 'de area',
                          'invoice-state': 'de town',
                          'invoice-code': 'cork',
-                         'invoice-country': "IE",
-                         'invoice_email': 'a@a.com',
-                         'invoice_phone': '1234567',
-                         'shipping_firstname': 'hans',
-                         'shipping_lastname': 'schmidt',
+                         'invoice-country': "DE",
+                         'invoice-email': 'a@a.com',
+                         'invoice-phone': '1234567',
+                         'shipping-firstname': 'hans',
+                         'shipping-lastname': 'schmidt',
                          'shipping-line1': 'orianenberger strasse',
                          'shipping-line2': 'de town',
                          'shipping-city': 'stuff',
                          'shipping-state': 'BE',
                          'shipping-code': '12345',
                          'shipping-country': "DE",
-                         'shipping_email': 'b@b.com',
-                         'shipping_phone': '7654321',
+                         'shipping-email': 'b@b.com',
+                         'shipping-phone': '7654321',
                          'payment_method': self.by_invoice.id,
                          }
 
@@ -217,12 +217,16 @@ class CheckoutAddressesTestCase(TestCase):
                      'invoice-city': 'a city',
                      'invoice-code': 'a code',
                      'invoice-state': 'a state',
+                     'invoice-country': 'ie',
                      }
         ajax_respons = self.client.post(reverse('lfs_changed_invoice_country'), form_data)
         self.assertEquals(Address.objects.count(), 4)
 
         # post some shipping address info
-        form_data = {'shipping-line1': 'de missusesss house'}
+        form_data = {
+            'shipping-line1': 'de missusesss house',
+            'shipping-country': 'ie',
+        }
         ajax_respons = self.client.post(reverse('lfs_changed_shipping_country'), form_data)
         self.assertEquals(Address.objects.count(), 4)
 
@@ -236,6 +240,8 @@ class CheckoutAddressesTestCase(TestCase):
                      'shipping-line2': 'a street',
                      'shipping-city': 'a city',
                      'shipping-code': 'a code',
-                     'shipping-state': 'a state', }
+                     'shipping-state': 'a state',
+                     'shipping-country': 'ie',
+                    }
         ajax_respons = self.client.post(reverse('lfs_changed_shipping_country'), form_data)
         self.assertEquals(Address.objects.count(), 4)

@@ -227,32 +227,32 @@ class CheckoutTestCase(TestCase):
 
         # check we have no invoice or shipping phone or email prior to checkout
         our_customer = Customer.objects.all()[0]
-        self.assertEqual(our_customer.selected_invoice_address.phone, '')
+        self.assertEqual(our_customer.selected_invoice_address.phone, None)
         self.assertEqual(our_customer.selected_invoice_address.email, None)
-        self.assertEqual(our_customer.selected_shipping_address.phone, '')
+        self.assertEqual(our_customer.selected_shipping_address.phone, None)
         self.assertEqual(our_customer.selected_shipping_address.email, None)
 
-        checkout_data = {'invoice_firstname': 'bob',
-                         'invoice_lastname': 'builder',
+        checkout_data = {'invoice-firstname': 'bob',
+                         'invoice-lastname': 'builder',
                          'invoice-line1': 'de company',
                          'invoice-line2': 'de street',
                          'invoice-city': 'de area',
                          'invoice-state': 'de town',
                          'invoice-code': 'cork',
                          'invoice-country': "IE",
-                         'invoice_email': 'a@a.com',
-                         'invoice_phone': '1234567',
-                         'shipping_firstname': 'hans',
-                         'shipping_lastname': 'schmidt',
+                         'invoice-email': 'a@a.com',
+                         'invoice-phone': '1234567',
+                         'shipping-firstname': 'hans',
+                         'shipping-lastname': 'schmidt',
                          'shipping-line1': 'orianenberger strasse',
                          'shipping-line2': 'de town',
                          'shipping-city': 'stuff',
                          'shipping-state': 'BE',
                          'shipping-code': '12345',
                          'shipping-country': "DE",
+                         'shipping-email': 'b@b.com',
+                         'shipping-phone': '7654321',
                          'payment_method': self.by_invoice.id,
-                         'shipping_email': 'b@b.com',
-                         'shipping_phone': '7654321',
                          }
 
         checkout_post_response = self.client.post(reverse('lfs_checkout'), checkout_data)
@@ -293,32 +293,32 @@ class CheckoutTestCase(TestCase):
 
         # check we have no invoice or shipping phone or email prior to checkout
         our_customer = Customer.objects.all()[0]
-        self.assertEqual(our_customer.selected_invoice_address.phone, '')
+        self.assertEqual(our_customer.selected_invoice_address.phone, None)
         self.assertEqual(our_customer.selected_invoice_address.email, None)
-        self.assertEqual(our_customer.selected_shipping_address.phone, '')
+        self.assertEqual(our_customer.selected_shipping_address.phone, None)
         self.assertEqual(our_customer.selected_shipping_address.email, None)
 
-        checkout_data = {'invoice_firstname': 'bob',
-                         'invoice_lastname': 'builder',
+        checkout_data = {'invoice-firstname': 'bob',
+                         'invoice-lastname': 'builder',
                          'invoice-line1': 'de company',
                          'invoice-line2': 'de street',
                          'invoice-city': 'de area',
                          'invoice-state': 'de town',
                          'invoice-code': '1234AB',
                          'invoice-country': "NL",
-                         'invoice_email': 'a@a.com',
-                         'invoice_phone': '1234567',
-                         'shipping_firstname': 'hans',
-                         'shipping_lastname': 'schmidt',
+                         'invoice-email': 'a@a.com',
+                         'invoice-phone': '1234567',
+                         'shipping-firstname': 'hans',
+                         'shipping-lastname': 'schmidt',
                          'shipping-line1': 'orianenberger strasse',
                          'shipping-line2': 'de town',
                          'shipping-city': 'stuff',
                          'shipping-state': 'BE',
                          'shipping-code': '1234AB',
                          'shipping-country': "NL",
+                         'shipping-email': 'b@b.com',
+                         'shipping-phone': '7654321',
                          'payment_method': self.by_invoice.id,
-                         'shipping_email': 'b@b.com',
-                         'shipping_phone': '7654321',
                          }
 
         checkout_post_response = self.client.post(reverse('lfs_checkout'), checkout_data)

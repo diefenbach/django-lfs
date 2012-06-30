@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 # lfs import
+from lfs.addresses.models import Address
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 import lfs.marketing.utils
@@ -30,7 +31,8 @@ class RatingMailTestCase(TestCase):
         self.c1.products = (self.p1, )
         self.c1.save()
 
-        self.o = Order.objects.create(invoice_country_id=1, shipping_country_id=1)
+        address = Address.objects.create()
+        self.o = Order.objects.create(invoice_address=address, shipping_address=address)
         self.oi1 = OrderItem.objects.create(order=self.o, product_amount=1, product=self.p1)
 
     def test_get_orders(self):
@@ -95,7 +97,8 @@ class TopsellerUtilsTestCase(TestCase):
         self.c12.products = (self.p3, self.p4)
         self.c12.save()
 
-        self.o = Order.objects.create(invoice_country_id=1, shipping_country_id=1)
+        address = Address.objects.create()
+        self.o = Order.objects.create(invoice_address=address, shipping_address=address)
         self.oi1 = OrderItem.objects.create(order=self.o, product_amount=1, product=self.p1)
         self.oi2 = OrderItem.objects.create(order=self.o, product_amount=2, product=self.p2)
         self.oi3 = OrderItem.objects.create(order=self.o, product_amount=3, product=self.p3)

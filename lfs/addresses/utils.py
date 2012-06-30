@@ -108,7 +108,10 @@ class AddressManagement(object):
         if self.type == "shipping" and self.data.get("no_shipping"):
             return True
 
-        form_model = form_factory(self.address.country.code.upper())
+        if self.data:
+            form_model = form_factory("%s-country" % self.type)
+        else:
+            form_model = form_factory(self.address.country.code.upper())
         postal_form = form_model(data=self.data, initial=self.get_address_as_dict(), prefix=self.type)
 
         address_form_model = self.get_form_model()
