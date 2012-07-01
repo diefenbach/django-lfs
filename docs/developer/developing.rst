@@ -6,6 +6,12 @@ Developing LFS
 
 This section describes how to develop LFS.
 
+.. warning::
+
+  This is only for development. Don't use this version in production. We might
+  break the head, add stuff which need database migrations or introduce some
+  security issues, etc.
+
 Creating a Development Environment
 ===================================
 
