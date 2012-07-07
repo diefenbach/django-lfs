@@ -27,6 +27,7 @@ Concepts
 
    user/concepts/products.rst
    user/concepts/categories.rst
+   user/concepts/manufacturers.rst
    user/concepts/criteria.rst
    user/concepts/properties.rst
    user/concepts/local_properties.rst
