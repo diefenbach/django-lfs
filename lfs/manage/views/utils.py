@@ -13,14 +13,14 @@ import lfs.catalog.models
 import lfs.marketing.utils
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def utilities(request, template_name="manage/utils.html"):
     """Displays the utility view.
     """
     return render_to_response(template_name, RequestContext(request, {}))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def reindex_topseller(request):
     """Clears and reindexes the topsellers.
     """
@@ -31,7 +31,7 @@ def reindex_topseller(request):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def clear_cache(request):
     """Clears the whole cache.
     """
@@ -42,7 +42,7 @@ def clear_cache(request):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_category_levels(request):
     """Sets the category levels based on the position in category hierarchy.
     """
@@ -53,7 +53,7 @@ def set_category_levels(request):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_effective_price(request):
     """Saves the price or sale price to effective price.
     """

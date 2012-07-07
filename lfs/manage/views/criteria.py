@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from lfs.core.utils import import_symbol
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_criterion(request):
     """
     Adds a new criterion form.
@@ -26,7 +26,7 @@ def add_criterion(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def change_criterion_form(request):
     """
     Changes the changed criterion form to the given type (via request body)

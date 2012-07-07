@@ -22,7 +22,7 @@ import logging
 logger = logging.getLogger("default")
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_images(request, product_id, as_string=False, template_name="manage/product/images.html"):
     """
     """
@@ -44,7 +44,7 @@ def manage_images(request, product_id, as_string=False, template_name="manage/pr
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_image(request, product_id):
     """Adds an image to product with passed product_id.
     """
@@ -69,7 +69,7 @@ def add_image(request, product_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_images(request, product_id):
     """Saves/deletes images with given ids (passed by request body).
     """
@@ -125,7 +125,7 @@ def update_images(request, product_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def move_image(request, id):
     """Moves the image with passed id up or down.
 
@@ -174,7 +174,7 @@ def move_image(request, id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_active_images(request, product_id):
     """Updates the images activity state for product variants.
     """

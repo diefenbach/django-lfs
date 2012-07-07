@@ -20,7 +20,7 @@ from lfs.catalog.models import Product
 
 
 # Views
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_products(request, category_id, template_name="manage/category/products.html"):
     """
     """
@@ -43,7 +43,7 @@ def manage_products(request, category_id, template_name="manage/category/product
 
 
 # Parts
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def products_inline(request, category_id, as_string=False, template_name="manage/category/products_inline.html"):
     """Displays the products-tab of a category.
 
@@ -115,7 +115,7 @@ def products_inline(request, category_id, as_string=False, template_name="manage
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def products_tab(request, category_id):
     """Returns the products tab for given category id.
     """
@@ -123,7 +123,7 @@ def products_tab(request, category_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def selected_products(request, category_id, as_string=False, template_name="manage/category/selected_products.html"):
     """The selected products part of the products-tab of a category.
 
@@ -178,7 +178,7 @@ def selected_products(request, category_id, as_string=False, template_name="mana
         }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_products(request, category_id):
     """Adds products (passed via request body) to category with passed id.
     """
@@ -208,7 +208,7 @@ def add_products(request, category_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def remove_products(request, category_id):
     """Removes product (passed via request body) from category with passed id.
     """

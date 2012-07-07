@@ -19,7 +19,7 @@ from lfs.core.utils import LazyEncoder
 from lfs.marketing.models import Topseller
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_topseller(
     request, template_name="manage/marketing/topseller.html"):
     """
@@ -40,7 +40,7 @@ def manage_topseller(
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_topseller_inline(
     request, as_string=False, template_name="manage/marketing/topseller_inline.html"):
     """
@@ -126,7 +126,7 @@ def manage_topseller_inline(
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_topseller(request):
     """Adds topseller by given ids (within request body).
     """
@@ -148,7 +148,7 @@ def add_topseller(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_topseller(request):
     """Saves or removes passed topsellers passed id (within request body).
     """

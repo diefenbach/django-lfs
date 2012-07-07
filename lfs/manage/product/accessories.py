@@ -19,7 +19,7 @@ from lfs.core.signals import product_changed
 from lfs.core.utils import LazyEncoder
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_accessories(request, product_id, template_name="manage/product/accessories.html"):
     """
     """
@@ -41,7 +41,7 @@ def manage_accessories(request, product_id, template_name="manage/product/access
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_accessories_inline(request, product_id, as_string=False, template_name="manage/product/accessories_inline.html"):
     """View which shows all accessories for the product with the passed id.
     """
@@ -128,7 +128,7 @@ def manage_accessories_inline(request, product_id, as_string=False, template_nam
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def load_tab(request, product_id):
     """
     """
@@ -136,7 +136,7 @@ def load_tab(request, product_id):
     return HttpResponse(accessories)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_accessories(request, product_id):
     """Adds passed accessories to product with passed id.
     """
@@ -166,7 +166,7 @@ def add_accessories(request, product_id):
 
 
 # TODO: Rename to "update_accessories"
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def remove_accessories(request, product_id):
     """Removes passed accessories from product with passed id.
     """
@@ -227,7 +227,7 @@ def remove_accessories(request, product_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_accessories(request, product_id):
     """Updates the accessories activity state for product variants.
     """

@@ -100,7 +100,7 @@ class DefaultVariantForm(ModelForm):
         fields = ("default_variant", )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_variants(request, product_id, as_string=False, template_name="manage/product/variants.html"):
     """Manages the variants of a product.
     """
@@ -188,7 +188,7 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_property(request, product_id):
     """Adds a new property to the product with given product id.
     """
@@ -224,7 +224,7 @@ def add_property(request, product_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def delete_property(request, product_id, property_id):
     """Deletes property with passed property id.
     """
@@ -247,7 +247,7 @@ def delete_property(request, product_id, property_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def change_property_position(request):
     """Changes property position based on parameters passed by request body.
     """
@@ -278,7 +278,7 @@ def change_property_position(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_property_option(request, product_id):
     """Adds a new option to the property with given property id.
 
@@ -313,7 +313,7 @@ def add_property_option(request, product_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def delete_property_option(request, product_id, option_id):
     """Deletes property option with passed option id.
     """
@@ -336,7 +336,7 @@ def delete_property_option(request, product_id, option_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_variants(request, product_id):
     """Adds variants to product with passed product_id based on property/option-
     combinations passed within request body.
@@ -432,7 +432,7 @@ def add_variants(request, product_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_variants(request, product_id):
     """Updates/Deletes variants with passed ids (via request body) dependent on
     given action (also via request body).
@@ -538,7 +538,7 @@ def update_variants(request, product_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def edit_sub_type(request, product_id):
     """Edits the sub type of the variant with given product slug.
     """
@@ -562,7 +562,7 @@ def edit_sub_type(request, product_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_category_variant(request, product_id):
     """
     Updates the category variant of the product with passed product_id.

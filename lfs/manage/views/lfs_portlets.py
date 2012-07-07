@@ -23,7 +23,7 @@ import lfs.core.utils
 from lfs.core.utils import LazyEncoder
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def portlets_inline(request, obj, template_name="manage/portlets/portlets_inline.html"):
     """Displays the assigned portlets for given object.
     """
@@ -45,7 +45,7 @@ def portlets_inline(request, obj, template_name="manage/portlets/portlets_inline
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_portlets(request, object_type_id, object_id):
     """Update portlets blocking.
     """
@@ -79,7 +79,7 @@ def update_portlets(request, object_type_id, object_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_portlet(request, object_type_id, object_id, template_name="manage/portlets/portlet_add.html"):
     """Form and logic to add a new portlet to the object with given type and id.
     """
@@ -131,7 +131,7 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             pass
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_portlet(request, portletassignment_id):
     """Deletes a portlet for given portlet assignment.
@@ -152,7 +152,7 @@ def delete_portlet(request, portletassignment_id):
         return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def edit_portlet(request, portletassignment_id, template_name="manage/portlets/portlet_edit.html"):
     """Form and logic to edit the portlet of the given portlet assignment.
     """
@@ -195,7 +195,7 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
         }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def move_portlet(request, portletassignment_id):
     """
     Moves a portlet up/down within a slot.

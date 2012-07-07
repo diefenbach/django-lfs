@@ -28,7 +28,7 @@ from lfs.core.signals import product_removed_property_group
 from lfs.manage.property_groups.forms import PropertyGroupForm
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_property_groups(request):
     """The main view to manage properties.
     """
@@ -41,7 +41,7 @@ def manage_property_groups(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_property_group(request, id, template_name="manage/property_groups/property_group.html"):
     """Edits property group with given id.
     """
@@ -67,14 +67,14 @@ def manage_property_group(request, id, template_name="manage/property_groups/pro
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_property_groups(request, template_name="manage/property_groups/no_property_groups.html"):
     """Displays that there are no property groups.
     """
     return render_to_response(template_name, RequestContext(request, {}))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def properties_inline(request, id, template_name="manage/property_groups/properties_inline.html"):
     """
     """
@@ -94,7 +94,7 @@ def properties_inline(request, id, template_name="manage/property_groups/propert
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_property_group(request, template_name="manage/property_groups/add_property_group.html"):
     """Adds a new property group
     """
@@ -116,7 +116,7 @@ def add_property_group(request, template_name="manage/property_groups/add_proper
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_property_group(request, id):
     """Deletes the property group with passed id.
@@ -130,7 +130,7 @@ def delete_property_group(request, id):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def assign_properties(request, group_id):
     """Assignes given properties (via request body) to passed group id.
     """
@@ -151,7 +151,7 @@ def assign_properties(request, group_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_properties(request, group_id):
     """Update or Removes given properties (via request body) from passed group id.
     """
@@ -186,7 +186,7 @@ def update_properties(request, group_id):
 
 
 # Product tab
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def products_tab(request, product_group_id, template_name="manage/property_groups/products.html"):
     """Renders the products tab of the property groups management views.
     """
@@ -199,7 +199,7 @@ def products_tab(request, product_group_id, template_name="manage/property_group
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def products_inline(request, product_group_id, as_string=False,
     template_name="manage/property_groups/products_inline.html"):
     """Renders the products tab of the property groups management views.
@@ -275,7 +275,7 @@ def products_inline(request, product_group_id, as_string=False,
             }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def assign_products(request, group_id):
     """Assign products to given property group with given property_group_id.
     """
@@ -296,7 +296,7 @@ def assign_products(request, group_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def remove_products(request, group_id):
     """Remove products from given property group with given property_group_id.
     """

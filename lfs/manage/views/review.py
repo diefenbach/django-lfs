@@ -26,7 +26,7 @@ from reviews.models import Review
 
 
 # Views
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def review(request, review_id, template_name="manage/reviews/review.html"):
     """Displays review with provided review id.
     """
@@ -40,7 +40,7 @@ def review(request, review_id, template_name="manage/reviews/review.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def reviews(request, template_name="manage/reviews/reviews.html"):
     """Base view to display reviews overview.
     """
@@ -143,7 +143,7 @@ def selectable_reviews_inline(request, review_id, template_name="manage/reviews/
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_reviews_page(request):
     """Sets the page for the reviews overview view.
     """
@@ -157,7 +157,7 @@ def set_reviews_page(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_selectable_reviews_page(request):
     """Sets the page of selectable reviews.
     """
@@ -175,7 +175,7 @@ def set_selectable_reviews_page(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_ordering(request, ordering):
     """Sets review ordering given by passed request.
     """
@@ -205,7 +205,7 @@ def set_ordering(request, ordering):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_review_filters(request):
     """Sets review filters given by passed request.
     """
@@ -247,7 +247,7 @@ def set_review_filters(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def reset_review_filters(request):
     """Resets all review filters.
     """
@@ -277,7 +277,7 @@ def reset_review_filters(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_review(request, review_id):
     """Deletes review with passed review id.
@@ -300,7 +300,7 @@ def delete_review(request, review_id):
     return lfs.core.utils.set_message_cookie(url, _(u"Review has been deleted."))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_review_state(request, review_id):
     """Sets the state for given review.
     """

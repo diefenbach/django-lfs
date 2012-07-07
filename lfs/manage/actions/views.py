@@ -21,7 +21,7 @@ from lfs.manage.actions.forms import ActionAddForm
 
 
 # Views
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_actions(request):
     """Dispatches to the first action or to the form to add a action (if there
     is no action yet).
@@ -35,7 +35,7 @@ def manage_actions(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_action(request, id, template_name="manage/actions/action.html"):
     """Displays the manage view for the action with passed id.
     """
@@ -48,7 +48,7 @@ def manage_action(request, id, template_name="manage/actions/action.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_actions(request, template_name="manage/actions/no_actions.html"):
     """Displays the a view when there are no actions.
     """
@@ -80,7 +80,7 @@ def navigation(request, action, template_name="manage/actions/navigation.html"):
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def save_action(request, id):
     """Saves the actions with passed id.
@@ -110,7 +110,7 @@ def save_action(request, id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_action(request, template_name="manage/actions/add_action.html"):
     """Provides a form to add a new action.
     """
@@ -134,7 +134,7 @@ def add_action(request, template_name="manage/actions/add_action.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_action(request, id):
     """Deletes the action with passed id.
@@ -148,7 +148,7 @@ def delete_action(request, id):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def sort_actions(request):
     """Sorts actions after drag 'n drop.

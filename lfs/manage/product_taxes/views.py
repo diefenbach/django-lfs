@@ -16,7 +16,7 @@ from lfs.manage.product_taxes.forms import TaxAddForm
 from lfs.manage.product_taxes.forms import TaxForm
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_taxes(request):
     """Dispatches to the first tax or to the add tax form.
     """
@@ -29,7 +29,7 @@ def manage_taxes(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_tax(request, id, template_name="manage/product_taxes/tax.html"):
     """Displays the main form to manage taxes.
     """
@@ -53,14 +53,14 @@ def manage_tax(request, id, template_name="manage/product_taxes/tax.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_taxes(request, template_name="manage/product_taxes/no_taxes.html"):
     """Displays that there are no taxes.
     """
     return render_to_response(template_name, RequestContext(request, {}))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_tax(request, template_name="manage/product_taxes/add_tax.html"):
     """Provides a form to add a new tax.
     """
@@ -83,7 +83,7 @@ def add_tax(request, template_name="manage/product_taxes/add_tax.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_tax(request, id):
     """Deletes tax with passed id.
