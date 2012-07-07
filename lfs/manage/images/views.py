@@ -23,7 +23,7 @@ import logging
 logger = logging.getLogger("default")
 
 # views
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def images(request, template_name="manage/images/images.html"):
     """
     Display images management.
@@ -35,7 +35,7 @@ def images(request, template_name="manage/images/images.html"):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_images(request):
     """
@@ -45,7 +45,7 @@ def delete_images(request):
     return HttpResponseRedirect(reverse("lfs_manage_global_images"))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_images(request):
     """
     Adds a global images.
@@ -64,7 +64,7 @@ def add_images(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def imagebrowser(request, template_name="manage/images/filebrowser_images.html"):
     """
     Displays a browser for images.

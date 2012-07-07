@@ -26,7 +26,7 @@ from lfs.order.models import Order
 
 
 # Views
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def customer(request, customer_id, template_name="manage/customer/customer.html"):
     """Base view to display the customer with passed customer id.
     """
@@ -37,7 +37,7 @@ def customer(request, customer_id, template_name="manage/customer/customer.html"
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def customers(request, template_name="manage/customer/customers.html"):
     """Base view to display the customers overview.
     """
@@ -98,7 +98,7 @@ def customers_filters_inline(request, template_name="manage/customer/customers_f
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def customer_inline(request, customer_id, template_name="manage/customer/customer_inline.html"):
     """Displays customer with provided customer id.
     """
@@ -143,7 +143,7 @@ def customer_inline(request, customer_id, template_name="manage/customer/custome
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def customers_inline(request, template_name="manage/customer/customers_inline.html"):
     """Displays carts overview.
     """
@@ -182,7 +182,7 @@ def customers_inline(request, template_name="manage/customer/customers_inline.ht
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def selectable_customers_inline(request, customer_id, template_name="manage/customer/selectable_customers_inline.html"):
     """Display selectable customers.
     """
@@ -207,7 +207,7 @@ def selectable_customers_inline(request, customer_id, template_name="manage/cust
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_selectable_customers_page(request):
     """Sets the page of the selectable customers sections.
     """
@@ -222,7 +222,7 @@ def set_selectable_customers_page(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_customers_page(request):
     """Sets the page of the selectable customers sections.
     """
@@ -236,7 +236,7 @@ def set_customers_page(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_ordering(request, ordering):
     """Sets customer ordering given by passed request.
     """
@@ -272,7 +272,7 @@ def set_ordering(request, ordering):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_customer_filters(request):
     """Sets customer filters given by passed request.
     """
@@ -305,7 +305,7 @@ def set_customer_filters(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def reset_customer_filters(request):
     """Resets all customer filters.
     """

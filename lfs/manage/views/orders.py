@@ -29,7 +29,7 @@ from lfs.order.models import Order
 
 
 # Views
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_orders(request, template_name="manage/order/manage_orders.html"):
     """Dispatches to the first order or the order overview.
     """
@@ -42,7 +42,7 @@ def manage_orders(request, template_name="manage/order/manage_orders.html"):
             reverse("lfs_manage_order", kwargs={"order_id": order.id}))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def orders_view(request, template_name="manage/order/orders.html"):
     """Main view to display the order overview view.
     """
@@ -52,7 +52,7 @@ def orders_view(request, template_name="manage/order/orders.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def order_view(request, order_id, template_name="manage/order/order.html"):
     """Displays the management interface for the order with passed order id.
     """
@@ -79,7 +79,7 @@ def order_view(request, order_id, template_name="manage/order/order.html"):
 
 
 # Parts
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def orders_inline(request, template_name="manage/order/orders_inline.html"):
     """Displays the orders. This is factored out in order to reload it via
     ajax request when the filter is changed..
@@ -205,7 +205,7 @@ def selectable_orders_inline(request, order_id, template_name="manage/order/sele
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_order_filters(request):
     """Sets order filters given by passed request.
     """
@@ -256,7 +256,7 @@ def set_order_filters(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_order_filters_date(request):
     """Sets the date filter by given short cut link
     """
@@ -292,7 +292,7 @@ def set_order_filters_date(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def reset_order_filters(request):
     """resets order filter.
     """
@@ -322,7 +322,7 @@ def reset_order_filters(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_selectable_orders_page(request):
     """Sets the page of selectable orders.
     """
@@ -338,7 +338,7 @@ def set_selectable_orders_page(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_orders_page(request):
     """Sets the page of selectable orders.
     """
@@ -356,7 +356,7 @@ def set_orders_page(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_order(request, order_id):
     """Deletes order with provided order id.
@@ -373,7 +373,7 @@ def delete_order(request, order_id):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def send_order(request, order_id):
     """Sends order with passed order id to the customer of this order.
     """
@@ -386,7 +386,7 @@ def send_order(request, order_id):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def change_order_state(request):
     """Changes the state of an order, given by request post variables.

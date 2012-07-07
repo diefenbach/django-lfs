@@ -30,7 +30,7 @@ class DeliveryTimeForm(ModelForm):
         model = DeliveryTime
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_delivery_times(request):
     """Dispatches to the first delivery time or to the form to add a delivery
     time (if there is no delivery time yet).
@@ -44,7 +44,7 @@ def manage_delivery_times(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_delivery_time(request, id, template_name="manage/delivery_times/base.html"):
     """Provides a form to edit the delivery time with the passed id.
     """
@@ -68,7 +68,7 @@ def manage_delivery_time(request, id, template_name="manage/delivery_times/base.
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
     """Provides a form to add a new delivery time.
     """
@@ -92,7 +92,7 @@ def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_delivery_time(request, id):
     """Deletes the delivery time with passed id.

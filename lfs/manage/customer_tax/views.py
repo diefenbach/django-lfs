@@ -20,7 +20,7 @@ from lfs.customer_tax.models import CustomerTax
 from lfs.manage.customer_tax.forms import CustomerTaxForm
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_customer_taxes(request):
     """Dispatches to the first customer_tax or to the add customer_tax form.
     """
@@ -33,7 +33,7 @@ def manage_customer_taxes(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_customer_tax(request, id, template_name="manage/customer_tax/customer_tax.html"):
     """Displays the main form to manage customer taxes.
     """
@@ -86,7 +86,7 @@ def navigation(request, customer_tax, template_name="manage/customer_tax/navigat
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_customer_taxes(request, template_name="manage/customer_tax/no_customer_taxes.html"):
     """Display no taxes available.
     """
@@ -94,7 +94,7 @@ def no_customer_taxes(request, template_name="manage/customer_tax/no_customer_ta
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_customer_tax(request, template_name="manage/customer_tax/add_customer_tax.html"):
     """Provides a form to add a new customer tax.
     """
@@ -117,7 +117,7 @@ def add_customer_tax(request, template_name="manage/customer_tax/add_customer_ta
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_customer_tax(request, id):
     """
@@ -132,7 +132,7 @@ def delete_customer_tax(request, id):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def save_criteria(request, id):
     """
     Saves the criteria for the customer tax with given id. The criteria are
@@ -151,7 +151,7 @@ def save_criteria(request, id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def save_data(request, id):
     """

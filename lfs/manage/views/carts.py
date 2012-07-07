@@ -21,7 +21,7 @@ from lfs.customer.models import Customer
 
 
 # Views
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def carts_view(request, template_name="manage/cart/carts.html"):
     """Displays the carts overview.
     """
@@ -31,7 +31,7 @@ def carts_view(request, template_name="manage/cart/carts.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def cart_view(request, cart_id, template_name="manage/cart/cart.html"):
     """Displays the cart with the passed cart id.
     """
@@ -75,7 +75,7 @@ def carts_filters_inline(request, template_name="manage/cart/carts_filters_inlin
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def carts_inline(request, template_name="manage/cart/carts_inline.html"):
     """Displays carts overview.
     """
@@ -124,7 +124,7 @@ def carts_inline(request, template_name="manage/cart/carts_inline.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def cart_inline(request, cart_id, template_name="manage/cart/cart_inline.html"):
     """Displays cart with provided cart id.
     """
@@ -152,7 +152,7 @@ def cart_inline(request, cart_id, template_name="manage/cart/cart_inline.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def selectable_carts_inline(request, cart_id, template_name="manage/cart/selectable_carts_inline.html"):
     """Displays selectable carts section within cart view.
     """
@@ -175,7 +175,7 @@ def selectable_carts_inline(request, cart_id, template_name="manage/cart/selecta
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_carts_page(request):
     """Sets the page of the displayed carts.
     """
@@ -189,7 +189,7 @@ def set_carts_page(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_cart_page(request):
     """Sets the page of the selectable carts within cart view.
     """
@@ -206,7 +206,7 @@ def set_cart_page(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_cart_filters(request):
     """Sets cart filters given by passed request.
     """
@@ -249,7 +249,7 @@ def set_cart_filters(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_cart_filters_date(request):
     """Sets the date filter by given short cut link
     """
@@ -285,7 +285,7 @@ def set_cart_filters_date(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def reset_cart_filters(request):
     """Resets all cart filters.
     """

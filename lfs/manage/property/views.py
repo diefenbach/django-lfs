@@ -28,7 +28,7 @@ from lfs.manage.property.forms import StepRangeForm
 
 
 # Views
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_properties(request):
     """The main view to manage properties.
     """
@@ -41,7 +41,7 @@ def manage_properties(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_property(request, id, template_name="manage/properties/property.html"):
     """The main view to manage the property with passed id.
     """
@@ -75,7 +75,7 @@ def manage_property(request, id, template_name="manage/properties/property.html"
       }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_properties(request, template_name="manage/properties/no_properties.html"):
     """Displays that no properties exist.
     """
@@ -83,7 +83,7 @@ def no_properties(request, template_name="manage/properties/no_properties.html")
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def update_property_type(request, id):
     """Updates the type of the property.
@@ -106,7 +106,7 @@ def update_property_type(request, id):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def select_field(request, property, template_name="manage/properties/property_select_field.html"):
     """Displays the form of the select field propery type.
     """
@@ -118,7 +118,7 @@ def select_field(request, property, template_name="manage/properties/property_se
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def save_select_field(request, property_id):
     """Saves the data of a property select field.
@@ -131,7 +131,7 @@ def save_select_field(request, property_id):
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def number_field(request, property, template_name="manage/properties/property_number_field.html"):
     """Displays the form of the input field propery type
     """
@@ -143,7 +143,7 @@ def number_field(request, property, template_name="manage/properties/property_nu
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def save_number_field_validators(request, property_id):
     """Saves the validators for the property with passed property_id.
@@ -157,7 +157,7 @@ def save_number_field_validators(request, property_id):
     return lfs.core.utils.set_message_to(response, _(u"Validators have been saved."))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def steps_inline(request, property_id, template_name="manage/properties/step_inline.html"):
     """Display the steps of a property. Factored out for Ajax requests.
     """
@@ -173,7 +173,7 @@ def steps_inline(request, property_id, template_name="manage/properties/step_inl
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def save_step_range(request, property_id):
     """Save the steps of the property with given id.
@@ -190,7 +190,7 @@ def save_step_range(request, property_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def save_step_type(request, property_id):
     """Save the step type of the property with given id.
@@ -208,7 +208,7 @@ def save_step_type(request, property_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def add_step(request, property_id):
     """Adds a step to property with passed property id resp. updates steps of
@@ -239,7 +239,7 @@ def add_step(request, property_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def delete_step(request, id):
     """Deletes step with given id.
     """
@@ -256,7 +256,7 @@ def delete_step(request, id):
     return lfs.core.utils.set_message_to(response, _(u"The step has been saved."))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def options_inline(request, property_id, template_name="manage/properties/options_inline.html"):
     """Display the options of a propety. Factored out for Ajax requests.
     """
@@ -266,7 +266,7 @@ def options_inline(request, property_id, template_name="manage/properties/option
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_property(request, template_name="manage/properties/add_property.html"):
     """Adds a new property.
     """
@@ -292,7 +292,7 @@ def add_property(request, template_name="manage/properties/add_property.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_property(request, id):
     """Deletes the property with given id.
@@ -309,7 +309,7 @@ def delete_property(request, id):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def add_option(request, property_id):
     """Adds option to property with passed property id.
@@ -359,7 +359,7 @@ def add_option(request, property_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def delete_option(request, id):
     """Deletes option with given id.
     """

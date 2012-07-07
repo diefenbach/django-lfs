@@ -28,7 +28,7 @@ from lfs.shipping import utils as shipping_utils
 
 
 # Starting pages. This pages are called directly via a request
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_shipping(request):
     """Dispatches to the first shipping method or to the add shipping method
     form if there is no shipping method.
@@ -43,7 +43,7 @@ def manage_shipping(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_shipping_method(request, shipping_method_id,
     template_name="manage/shipping_methods/manage_shipping.html"):
     """The main view to manage the shipping method with given id.
@@ -62,7 +62,7 @@ def manage_shipping_method(request, shipping_method_id,
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_shipping_methods(request, template_name="manage/shipping_methods/no_shipping_methods.html"):
     """Displays that there are no shipping methods.
     """
@@ -70,7 +70,7 @@ def no_shipping_methods(request, template_name="manage/shipping_methods/no_shipp
 
 
 # Parts of the manage shipping view.
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def shipping_methods(request, template_name="manage/shipping_methods/shipping_methods.html"):
     """Returns all shipping methods as html.
 
@@ -87,7 +87,7 @@ def shipping_methods(request, template_name="manage/shipping_methods/shipping_me
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def shipping_method_data(request, shipping_id, form=None, template_name="manage/shipping_methods/shipping_method_data.html"):
     """Returns the shipping data as html.
 
@@ -103,7 +103,7 @@ def shipping_method_data(request, shipping_id, form=None, template_name="manage/
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def shipping_method_criteria(request, shipping_method_id,
     template_name="manage/shipping_methods/shipping_method_criteria.html"):
     """Returns the criteria of the shipping method with passed id as HTML.
@@ -125,7 +125,7 @@ def shipping_method_criteria(request, shipping_method_id,
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def shipping_method_prices(request, shipping_method_id,
     template_name="manage/shipping_methods/shipping_method_prices.html"):
     """Returns the shipping method prices for the shipping method with given id.
@@ -140,7 +140,7 @@ def shipping_method_prices(request, shipping_method_id,
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def shipping_price_criteria(request, shipping_price_id, as_string=False,
     template_name="manage/shipping_methods/shipping_price_criteria.html"):
     """Returns the criteria of the shipping price with passed id.
@@ -175,7 +175,7 @@ def shipping_price_criteria(request, shipping_price_id, as_string=False,
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_shipping_method(request,
     template_name="manage/shipping_methods/add_shipping_method.html"):
     """Provides an add form and saves a new shipping method.
@@ -197,7 +197,7 @@ def add_shipping_method(request,
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def save_shipping_method_criteria(request, shipping_method_id):
     """Saves the criteria for the shipping method with given id. The criteria
     are passed via request body.
@@ -215,7 +215,7 @@ def save_shipping_method_criteria(request, shipping_method_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def save_shipping_price_criteria(request, shipping_price_id):
     """Saves the criteria for the shipping price with given id. The criteria
     are passed via request body.
@@ -236,7 +236,7 @@ def save_shipping_price_criteria(request, shipping_price_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_shipping_price(request, shipping_method_id):
     """Adds given shipping price (via request body) to shipping method with
     give id.
@@ -263,7 +263,7 @@ def add_shipping_price(request, shipping_method_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_shipping_prices(request, shipping_method_id):
     """Saves/Deletes shipping prices with passed ids (via request body)
     dependent on given action (via request body).
@@ -312,7 +312,7 @@ def update_shipping_prices(request, shipping_method_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def save_shipping_method_data(request, shipping_method_id):
     """Saves shipping data (via request body) to the shipping method with passed
     id.
@@ -345,7 +345,7 @@ def save_shipping_method_data(request, shipping_method_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_shipping_method(request, shipping_method_id):
     """Deletes shipping method with passed shipping id.
@@ -370,7 +370,7 @@ def delete_shipping_method(request, shipping_method_id):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def sort_shipping_methods(request):
     """Sorts shipping methods after drag 'n drop.

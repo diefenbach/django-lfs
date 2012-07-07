@@ -18,7 +18,7 @@ from lfs.core.signals import product_changed
 from lfs.core.utils import LazyEncoder
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_attachments(request, product_id, as_string=False, template_name="manage/product/attachments.html"):
     """
     """
@@ -40,7 +40,7 @@ def manage_attachments(request, product_id, as_string=False, template_name="mana
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_attachment(request, product_id):
     """Adds an attachment to product with passed product_id.
     """
@@ -59,7 +59,7 @@ def add_attachment(request, product_id):
     return manage_attachments(request, product_id)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_attachments(request, product_id):
     """Saves/deletes attachments with given ids (passed by request body).
     """
@@ -100,7 +100,7 @@ def update_attachments(request, product_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def move_attachment(request, id):
     """Moves the attachment with passed id up or down.
 

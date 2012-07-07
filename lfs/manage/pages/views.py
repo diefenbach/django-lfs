@@ -36,7 +36,7 @@ class PageSEOView(SEOView):
         return super(PageSEOView, self).post(request, id)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_pages(request):
     """Dispatches to the first page or to the form to add a page (if there is no
     page yet).
@@ -50,7 +50,7 @@ def manage_pages(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_page(request, id, template_name="manage/pages/page.html"):
     """Provides a form to edit the page with the passed id.
     """
@@ -65,7 +65,7 @@ def manage_page(request, id, template_name="manage/pages/page.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def page_view_by_id(request, id, template_name="lfs/page/page.html"):
     """Displays page with passed id.
     """
@@ -110,7 +110,7 @@ def navigation(request, page, template_name="manage/pages/navigation.html"):
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def save_data_tab(request, id):
     """Saves the data tab.
     """
@@ -132,7 +132,7 @@ def save_data_tab(request, id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_page(request, template_name="manage/pages/add_page.html"):
     """Provides a form to add a new page.
     """
@@ -156,7 +156,7 @@ def add_page(request, template_name="manage/pages/add_page.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_page(request, id):
     """Deletes the page with passed id.
@@ -170,7 +170,7 @@ def delete_page(request, id):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def sort_pages(request):
     """Sorts pages after drag 'n drop.

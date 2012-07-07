@@ -27,7 +27,7 @@ from lfs.manage.voucher.forms import VoucherOptionsForm
 
 
 # Views
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_vouchers(request, template_name="manage/voucher/no_vouchers.html"):
     """Displays that no vouchers exist.
     """
@@ -37,7 +37,7 @@ def no_vouchers(request, template_name="manage/voucher/no_vouchers.html"):
         return manage_vouchers(request)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def voucher_group(request, id, template_name="manage/voucher/voucher_group.html"):
     """Main view to display a voucher group.
     """
@@ -130,7 +130,7 @@ def vouchers_inline(request, voucher_group, vouchers, paginator, page, template_
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_vouchers_page(request):
     """Sets the displayed voucher page.
     """
@@ -148,7 +148,7 @@ def set_vouchers_page(request):
         simplejson.dumps({"html": html}, cls=LazyEncoder))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_vouchers(request):
     """Redirects to the first voucher group or to no voucher groups view.
     """
@@ -162,7 +162,7 @@ def manage_vouchers(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_vouchers(request, group_id):
     """
     """
@@ -204,7 +204,7 @@ def add_vouchers(request, group_id):
         msg)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_vouchers(request, group_id):
     """Deletes checked vouchers.
@@ -220,7 +220,7 @@ def delete_vouchers(request, group_id):
         _(u"Vouchers have been deleted."))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.html"):
     """Adds a voucher group
     """
@@ -242,7 +242,7 @@ def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.h
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def save_voucher_group_data(request, id):
     """Saves the data of the voucher group with passed id.
     """
@@ -260,7 +260,7 @@ def save_voucher_group_data(request, id):
         _(u"Voucher data has been saved."))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_voucher_group(request, id):
     """Deletes voucher group with given id and all assigned vouchers.
@@ -277,7 +277,7 @@ def delete_voucher_group(request, id):
         )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def save_voucher_options(request):
     """Saves voucher options.
     """

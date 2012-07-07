@@ -46,7 +46,7 @@ class PaymentMethodForm(ModelForm):
 
 
 # Starting pages. This pages are called directly via a request
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_payment(request):
     """Dispatches to the first payment method or to the add payment method
     form if there is no payment method.
@@ -61,7 +61,7 @@ def manage_payment(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_payment_method(request, payment_method_id,
     template_name="manage/payment/manage_payment.html"):
     """The main view to manage the payment method with given id.
@@ -81,7 +81,7 @@ def manage_payment_method(request, payment_method_id,
 
 
 # Parts of the manage payment view.
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def payment_methods(request, template_name="manage/payment/payment_methods.html"):
     """Returns all payment methods as html.
 
@@ -98,7 +98,7 @@ def payment_methods(request, template_name="manage/payment/payment_methods.html"
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def payment_method_data(request, payment_id, form=None, template_name="manage/payment/payment_method_data.html"):
     """
     Returns the payment data as html.
@@ -116,7 +116,7 @@ def payment_method_data(request, payment_id, form=None, template_name="manage/pa
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def payment_method_criteria(request, payment_method_id,
     template_name="manage/payment/payment_method_criteria.html"):
     """Returns the criteria of the payment method with passed id as HTML.
@@ -138,7 +138,7 @@ def payment_method_criteria(request, payment_method_id,
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def payment_method_prices(request, payment_method_id,
     template_name="manage/payment/payment_method_prices.html"):
     """Returns the payment method prices for the payment method with given id.
@@ -153,7 +153,7 @@ def payment_method_prices(request, payment_method_id,
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def payment_price_criteria(request, payment_price_id, as_string=False, template_name="manage/payment/payment_price_criteria.html"):
     """Returns the criteria of the payment price with passed id.
 
@@ -186,7 +186,7 @@ def payment_price_criteria(request, payment_price_id, as_string=False, template_
         return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_payment_method(request,
     template_name="manage/payment/add_payment_method.html"):
     """Provides an add form and saves a new payment method.
@@ -210,7 +210,7 @@ def add_payment_method(request,
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def save_payment_method_criteria(request, payment_method_id):
     """Saves the criteria for the payment method with given id. The criteria
     are passed via request body.
@@ -228,7 +228,7 @@ def save_payment_method_criteria(request, payment_method_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def save_payment_price_criteria(request, payment_price_id):
     """Saves the criteria for the payment price with given id. The criteria
     are passed via request body.
@@ -249,7 +249,7 @@ def save_payment_price_criteria(request, payment_price_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_payment_price(request, payment_method_id):
     """Adds given payment price (via request body) to payment method with
     give id.
@@ -275,7 +275,7 @@ def add_payment_price(request, payment_method_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_payment_prices(request, payment_method_id):
     """Saves/Deletes payment prices with passed ids (via request body)
     dependent on given action (via request body).
@@ -323,7 +323,7 @@ def update_payment_prices(request, payment_method_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def save_payment_method_data(request, payment_method_id):
     """Saves payment data (via request body) to the payment method with passed
     id.
@@ -356,7 +356,7 @@ def save_payment_method_data(request, payment_method_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_payment_method(request, payment_method_id):
     """Deletes payment method with passed payment id.
@@ -381,7 +381,7 @@ def delete_payment_method(request, payment_method_id):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def sort_payment_methods(request):
     """Sorts payment methods after drag 'n drop.
