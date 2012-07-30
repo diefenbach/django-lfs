@@ -148,7 +148,7 @@ class ProductStockForm(forms.ModelForm):
         if kwargs.get("instance").is_variant():
             self.fields["active_packing_unit"].widget = Select(choices=CHOICES)
         else:
-            self.fields["active_packing_unit"].widget = CheckboxInput()
+            self.fields["active_packing_unit"].widget = CheckboxInput(check_test=bool)
 
     def clean(self):
         if self.data.get("stock-active_packing_unit") == str(CHOICES_YES):
