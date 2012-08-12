@@ -464,6 +464,15 @@ class Command(BaseCommand):
         paypal.module = "lfs_paypal.PayPalProcessor"
         paypal.save()
 
+        # Adding model 'LatestPortlet'
+        db.create_table('portlet_latestportlet', (
+            ('id', models.fields.AutoField(primary_key=True)),
+            ('title', fields.CharField(max_length=100, blank=True)),
+            ('limit', models.fields.IntegerField(default=5)),
+            ('current_category', models.fields.BooleanField(default=False)),
+            ('slideshow', models.fields.BooleanField(default=False)),
+        ))
+
         application.version = "0.8"
         application.save()
 
