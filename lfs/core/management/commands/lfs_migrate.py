@@ -467,7 +467,7 @@ class Command(BaseCommand):
         # Adding model 'LatestPortlet'
         db.create_table('portlet_latestportlet', (
             ('id', models.fields.AutoField(primary_key=True)),
-            ('title', fields.CharField(max_length=100, blank=True)),
+            ('title', models.fields.CharField(max_length=100, blank=True)),
             ('limit', models.fields.IntegerField(default=5)),
             ('current_category', models.fields.BooleanField(default=False)),
             ('slideshow', models.fields.BooleanField(default=False)),
