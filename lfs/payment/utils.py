@@ -1,5 +1,6 @@
 # python imports
 import locale
+import urllib
 
 # django imports
 from django.conf import settings
@@ -196,22 +197,22 @@ def get_paypal_link_for_order(order):
         "currency_code": default_currency,
         "notify_url": "http://" + current_site.domain + reverse('paypal-ipn'),
         "return": "http://" + current_site.domain + reverse('paypal-pdt'),
-        "first_name": order.invoice_firstname,
-        "last_name": order.invoice_lastname,
-        "address1": order.invoice_line1,
-        "address2": order.invoice_line2,
-        "city": order.invoice_city,
-        "state": order.invoice_state,
+        "first_name": order.invoice_firstname.encode('utf-8', 'ignore'),
+        "last_name": order.invoice_lastname.encode('utf-8', 'ignore'),
+        "address1": order.invoice_line1.encode('utf-8', 'ignore'),
+        "address2": order.invoice_line2.encode('utf-8', 'ignore'),
+        "city": order.invoice_city.encode('utf-8', 'ignore'),
+        "state": order.invoice_state.encode('utf-8', 'ignore'),
         "zip": order.invoice_code,
         "no_shipping": "1",
         "custom": order.uuid,
         "invoice": order.uuid,
-        "item_name": shop.shop_owner,
+        "item_name": shop.shop_owner.encode('utf-8', 'ignore'),
         "amount": "%.2f" % (order.price - order.tax),
         "tax": "%.2f" % order.tax,
     }
 
-    parameters = "&".join(["%s=%s" % (k, v) for (k, v) in info.items()])
+    parameters = urllib.urlencode(info)
     if getattr(settings, 'PAYPAL_DEBUG', settings.DEBUG):
         url = SANDBOX_POSTBACK_ENDPOINT + "?" + parameters
     else:
