@@ -981,7 +981,7 @@ msgstr "Número de verificación"
 
 #: checkout/forms.py:48
 msgid "Same as invoice"
-msgstr "Mismo que la factura"
+msgstr "Igual que en la factura"
 
 #: checkout/forms.py:49
 msgid "Your message to us"
