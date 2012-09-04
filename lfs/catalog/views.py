@@ -132,11 +132,16 @@ def calculate_price(request, id):
     price = product.get_price(request, with_properties=False)
     price += property_price
 
+    if product.get_active_packing_unit():
+        packing_result = calculate_packing(request, id, with_properties=True, as_string=True)
+    else:
+        packing_result = ""
+
     result = simplejson.dumps({
         "price": lfs_tags.currency(price, request),
         "for-sale-standard-price": lfs_tags.currency(for_sale_standard_price),
         "for-sale-price": lfs_tags.currency(for_sale_price),
-        "packing-result": calculate_packing(request, id, as_string=True),
+        "packing-result": packing_result,
         "message": _("Price has been changed according to your selection."),
     }, cls=LazyEncoder)
 
