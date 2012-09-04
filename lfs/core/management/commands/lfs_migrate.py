@@ -9,6 +9,7 @@ from django.db import transaction
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
+from django.core import management
 
 # lfs imports
 import lfs.core.settings as lfs_settings
@@ -466,6 +467,10 @@ class Command(BaseCommand):
 
         application.version = "0.8"
         application.save()
+
+        # Fake south migrations
+        management.call_command('syncdb', interactive=False)
+        management.call_command('migrate', all=True, fake="0001")
 
     def migrate_to_07(self, application, version):
         from lfs.catalog.models import Product
