@@ -185,7 +185,8 @@ class Category(models.Model):
 
     class Meta:
         ordering = ("position", )
-        verbose_name_plural = 'Categories'
+        verbose_name = _('Category')
+        verbose_name_plural = _('Categories')
 
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.slug)
