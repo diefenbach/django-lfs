@@ -158,9 +158,9 @@ def _send_customer_added(user):
 
 def send_review_added(review):
     try:
-        _send_review_added.delay(order)
+        _send_review_added.delay(review)
     except AttributeError:
-        _send_review_added(order)
+        _send_review_added(review)
 
 
 def _send_review_added(review):

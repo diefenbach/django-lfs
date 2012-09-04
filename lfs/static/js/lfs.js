@@ -59,6 +59,7 @@ $(function() {
         $(this).addClass("current-rating");
 
         $("#id_score").val($(this).attr("data"));
+        return false;
     });
 
     // General ################################################################
