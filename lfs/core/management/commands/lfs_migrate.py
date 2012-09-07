@@ -471,6 +471,7 @@ class Command(BaseCommand):
         # Fake south migrations
         management.call_command('syncdb', interactive=False)
         management.call_command('migrate', all=True, fake="0001")
+        management.call_command('migrate')
 
     def migrate_to_07(self, application, version):
         from lfs.catalog.models import Product
