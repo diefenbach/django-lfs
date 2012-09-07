@@ -113,7 +113,7 @@ def sorting(context):
 
 
 @register.inclusion_tag('lfs/catalog/breadcrumbs.html', takes_context=True)
-def breadcrumbs(context, obj):
+def breadcrumbs(context, obj, current_page=''):
     """
     """
     if isinstance(obj, Category):
@@ -122,7 +122,7 @@ def breadcrumbs(context, obj):
         if objects is not None:
             return objects
 
-        objects = []
+        objects = [current_page] if current_page else []
         while obj is not None:
             objects.insert(0, {
                 "name": obj.name,
