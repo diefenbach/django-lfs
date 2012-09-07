@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 # portlets imports
+from lfs.catalog.settings import VARIANT
 from portlets.models import Portlet
 
 # lfs imports
@@ -33,8 +34,8 @@ class LatestPortlet(Portlet):
         """
         request = context.get("request")
 
-        products = None
         latest_products = []
+        products = Product.objects.filter(active=True).exclude(sub_type=VARIANT)
         if self.current_category:
             obj = context.get("category") or context.get("product")
             if obj:
@@ -42,9 +43,9 @@ class LatestPortlet(Portlet):
                 categories = [category]
                 categories.extend(category.get_all_children())
                 filters = {"product__categories__in": categories}
-                products = Product.objects.filter(active=True).filter(**filters).order_by('-creation_date')[:self.limit]
+                products = products.filter(**filters).order_by('-creation_date')[:self.limit]
         else:
-            products = Product.objects.filter(active=True).order_by('-creation_date')[:self.limit]
+            products = products.order_by('-creation_date')[:self.limit]
 
         for product in products:
             if product.is_product_with_variants() and product.has_variants():
