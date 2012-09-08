@@ -153,8 +153,10 @@ def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
     except IndexError:
         accessories = []
 
+    cart_items_count = len(cart_items)
     return render_to_response(template_name, RequestContext(request, {
-        "plural": len(cart_items) > 1,
+        "plural": cart_items_count > 1,
+        "cart_items_count": cart_items_count,
         "shopping_url": request.META.get("HTTP_REFERER", "/"),
         "product_accessories": accessories,
         "cart_items": added_to_cart_items(request),
