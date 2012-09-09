@@ -1,5 +1,6 @@
 # python imports
 import math
+from django.forms.forms import BoundField
 import locale
 
 # django imports
@@ -895,3 +896,17 @@ def get_base_packing_price_net(product, request):
 @register.filter(name='get_base_packing_price_gross')
 def get_base_packing_price_gross(product, request):
     return product.get_base_packing_price_gross(request)
+
+
+@register.inclusion_tag('lfs/shop/lfs_form.html', takes_context=True)
+def lfs_form(context, form):
+    """ Render form using common form template.
+        It is also possible to pass list of fields
+        or single field to this tag.
+    """
+    if isinstance(form, BoundField):
+        form = [form]
+    context['lfs_form'] = form
+    context['lfs_form_is_form'] = hasattr(form,'non_field_errors')
+    return context
+
