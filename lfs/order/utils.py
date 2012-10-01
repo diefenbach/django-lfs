@@ -176,7 +176,7 @@ def add_order(request):
     for discount in discounts:
         OrderItem.objects.create(
             order=order,
-            price_net=-(discount["price_net"] - discount["tax"]),
+            price_net=-(discount["price_net"]),
             price_gross=-discount["price_gross"],
             tax=-discount["tax"],
 
