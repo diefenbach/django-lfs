@@ -2,6 +2,7 @@
 
 <h2>{% trans "Select image" %}</h2>
 <div id="imagebrowser">
+    {% include "lfs/catalog/categories/product/products_navigation.html" %}
     {% for image in images %}
         <div class="image-form">
             <input type="radio"
