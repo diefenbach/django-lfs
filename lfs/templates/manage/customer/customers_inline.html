@@ -49,7 +49,7 @@
                 {{ customer.customer.selected_invoice_address.lastname  }}
             </td>
             <td>
-				{{ customer.customer.get_email_address }}
+				{{ customer.customer.get_email_address|default_if_none:'-' }}
             </td>
             <td class="right-padding">
 				{{ customer.orders }}
