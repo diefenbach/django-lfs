@@ -212,7 +212,7 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
                 msg=_(u"Your addresses have been saved."),
             )
         else:
-            msg = _(u"An error has been occured.")
+            msg = _(u"An error has occured.")
     else:
         msg = None
         iam = AddressManagement(customer.selected_invoice_address, "invoice")

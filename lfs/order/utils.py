@@ -70,6 +70,7 @@ def add_order(request):
         tax = tax - discount["tax"]
 
     # Add voucher if one exists
+    is_voucher_effective = False
     try:
         voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
         voucher = Voucher.objects.get(number=voucher_number)
@@ -130,7 +131,7 @@ def add_order(request):
         order.requested_delivery_date = requested_delivery_date
         order.save()
 
-    if voucher:
+    if is_voucher_effective:
         voucher.mark_as_used()
         order.voucher_number = voucher_number
         order.voucher_price = voucher_price

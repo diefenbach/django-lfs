@@ -847,3 +847,17 @@ ol {
     border: 1px solid #aaa;
     padding:10px;
 }
+
+/* lfs pagination */
+div.lfs-pagination span.current {
+    font-weight: bold;
+}
+
+div.lfs-pagination a, div.lfs-pagination a:visited{
+    border-bottom: 1px dotted #888888;
+}
+
+div.lfs-pagination a:hover{
+    border-bottom: 1px solid #222222;
+    color: #000000;
+}
