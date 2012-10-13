@@ -19,7 +19,7 @@ function addEditor(selector, hide_save, height) {
 
         // General options
         theme : "advanced",
-        plugins : "safari,save,iespell,directionality,fullscreen,xhtmlxtras,media",
+        plugins : "advimage,safari,save,iespell,directionality,fullscreen,xhtmlxtras,media",
 
         theme_advanced_buttons1 : buttons,
         theme_advanced_buttons2 : "",

@@ -137,7 +137,6 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
                                               '%(count)d images',
                                               amount_of_images) % {'count': amount_of_images}
 
-
     images = []
     for i, image in enumerate(current_page.object_list):
         images.append({
