@@ -17,6 +17,7 @@ from django.utils.translation import ugettext_lazy as _
 import lfs.catalog.utils
 import lfs.core.utils
 import lfs.core.views
+from lfs.order.settings import SUBMITTED, PAYMENT_FLAGGED, PAYMENT_FAILED
 import lfs.utils.misc
 import logging
 from lfs.caching.utils import lfs_get_object_or_404
@@ -910,3 +911,11 @@ def lfs_form(context, form):
     context['lfs_form_is_form'] = hasattr(form,'non_field_errors')
     return context
 
+
+@register.filter(name='get_pay_link', is_safe=True)
+def get_pay_link(order, request, force_paid=False):
+    """ Only return pay link for not paid orders unless force_paid=True
+    """
+    if force_paid or order.state in (SUBMITTED, PAYMENT_FAILED, PAYMENT_FLAGGED):
+        return order.get_pay_link(request)
+    return ''
