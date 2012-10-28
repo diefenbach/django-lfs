@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-13 20:33+0200\n"
-"PO-Revision-Date: 2012-10-28 22:25+0100\n"
+"POT-Creation-Date: 2012-10-28 22:27+0100\n"
+"PO-Revision-Date: 2012-10-28 22:28+0100\n"
 "Last-Translator: Maciej Wiśniowski <pigletto@gmail.com>\n"
 "Language-Team: natcam.pl <hello@natcam.pl>\n"
 "Language: \n"
@@ -56,6 +56,14 @@ msgstr "Numer ostatniego zamówienia"
 #: templates/manage/shop/default_values_tab.html:45
 msgid "Format"
 msgstr "Format"
+
+#: other_translations.py:12
+msgid "Cart Price"
+msgstr "Cena w koszyku"
+
+#: other_translations.py:13
+msgid "Combined Length and Girth"
+msgstr "Łączna długość i obwód"
 
 #: addresses/models.py:42
 #: customer/models.py:98
@@ -150,8 +158,8 @@ msgstr "Sesja"
 #: cart/models.py:51
 #: cart/models.py:202
 #: catalog/models.py:614
-#: templates/manage/cart/cart_inline.html:58
-#: templates/manage/cart/cart_inline.html:97
+#: templates/manage/cart/cart_inline.html:60
+#: templates/manage/cart/cart_inline.html:99
 #: templates/manage/cart/carts_inline.html:10
 #: templates/manage/customer/customer_inline.html:75
 #: templates/manage/reviews/review_inline.html:33
@@ -161,7 +169,7 @@ msgstr "Data utworzenia"
 
 #: cart/models.py:52
 #: cart/models.py:203
-#: templates/manage/cart/cart_inline.html:66
+#: templates/manage/cart/cart_inline.html:68
 #: templates/manage/cart/carts_inline.html:13
 #: templates/manage/customer/customer_inline.html:123
 msgid "Modification date"
@@ -183,7 +191,7 @@ msgstr "Koszyk"
 #: marketing/models.py:13
 #: marketing/models.py:26
 #: marketing/models.py:33
-#: templates/manage/cart/cart_inline.html:100
+#: templates/manage/cart/cart_inline.html:102
 #: templates/manage/reviews/review_inline.html:78
 #: templates/manage/reviews/reviews_inline.html:38
 msgid "Product"
@@ -374,7 +382,7 @@ msgstr "Grafika"
 #: catalog/models.py:2577
 #: core/models.py:79
 #: core/management/commands/lfs_migrate.py:557
-#: criteria/models.py:106
+#: criteria/models.py:107
 #: manufacturer/models.py:23
 #: marketing/models.py:14
 #: marketing/models.py:34
@@ -510,13 +518,13 @@ msgstr "Twój unikalny numer produktu."
 #: catalog/models.py:592
 #: catalog/models.py:1993
 #: catalog/models.py:2157
-#: criteria/models.py:372
+#: criteria/models.py:379
 #: order/models.py:69
 #: payment/models.py:73
 #: payment/models.py:113
 #: shipping/models.py:76
 #: shipping/models.py:149
-#: templates/manage/cart/cart_inline.html:103
+#: templates/manage/cart/cart_inline.html:105
 #: templates/manage/customer/customer_inline.html:81
 #: templates/manage/customer/customer_inline.html:126
 #: templates/manage/marketing/rating_mails.html:60
@@ -648,22 +656,22 @@ msgid "Packing unit"
 msgstr "Jednostka pakowania"
 
 #: catalog/models.py:633
-#: criteria/models.py:702
+#: criteria/models.py:709
 msgid "Weight"
 msgstr "Waga"
 
 #: catalog/models.py:634
-#: criteria/models.py:501
+#: criteria/models.py:508
 msgid "Height"
 msgstr "Wysokość"
 
 #: catalog/models.py:635
-#: criteria/models.py:539
+#: criteria/models.py:546
 msgid "Length"
 msgstr "Długość"
 
 #: catalog/models.py:636
-#: criteria/models.py:740
+#: criteria/models.py:747
 msgid "Width"
 msgstr "Szerokość"
 
@@ -920,13 +928,13 @@ msgstr "Wartość jako liczba zmiennoprzecinkowa"
 
 #: catalog/models.py:2248
 #: catalog/models.py:2291
-#: criteria/models.py:101
+#: criteria/models.py:102
 msgid "Content type"
 msgstr "Typ treści"
 
 #: catalog/models.py:2249
 #: catalog/models.py:2292
-#: criteria/models.py:102
+#: criteria/models.py:103
 msgid "Content id"
 msgstr "Id treści"
 
@@ -1258,32 +1266,32 @@ msgstr "Domyślne ustawienia językowe sklepu"
 msgid "Supplier"
 msgstr "Dostawca"
 
-#: core/templatetags/lfs_tags.py:158
-#: core/templatetags/lfs_tags.py:191
+#: core/templatetags/lfs_tags.py:159
+#: core/templatetags/lfs_tags.py:192
 #: templates/manage/manage_base.html:77
 #: templates/manage/manufacturers/manufacturer.html:9
 #: templates/manage/manufacturers/no_manufacturers.html:10
 msgid "Manufacturers"
 msgstr "Producenci"
 
-#: core/templatetags/lfs_tags.py:180
+#: core/templatetags/lfs_tags.py:181
 #: portlet/templatetags/lfs_portlets_tags.py:122
 msgid "Information"
 msgstr "Informacja"
 
-#: core/templatetags/lfs_tags.py:317
+#: core/templatetags/lfs_tags.py:318
 #, python-format
 msgid "%s tag needs group id as argument"
 msgstr "znacznik %s wymaga id grupy jako argumentu"
 
-#: core/templatetags/lfs_tags.py:432
-#: core/templatetags/lfs_tags.py:462
+#: core/templatetags/lfs_tags.py:433
+#: core/templatetags/lfs_tags.py:463
 #, python-format
 msgid "%s tag needs no argument"
 msgstr "znacznik %s nie wymaga żadnych argumentów"
 
-#: core/templatetags/lfs_tags.py:486
-#: core/templatetags/lfs_tags.py:510
+#: core/templatetags/lfs_tags.py:487
+#: core/templatetags/lfs_tags.py:511
 #, python-format
 msgid "%s tag needs product as argument"
 msgstr "znacznik %s wymaga produktu jako argumentu"
@@ -1296,83 +1304,83 @@ msgstr "Usuń plik"
 msgid "Delete image"
 msgstr "Usuń obraz"
 
-#: criteria/models.py:104
+#: criteria/models.py:105
 #: templates/manage/product/product_filters_inline.html:18
 #: templates/manage/product/products_inline.html:31
 msgid "Sub type"
 msgstr "Podtyp"
 
-#: criteria/models.py:107
+#: criteria/models.py:108
 msgid "Operator"
 msgstr "Operator"
 
-#: criteria/models.py:128
-#: criteria/models.py:146
+#: criteria/models.py:129
+#: criteria/models.py:147
 #: criteria/settings.py:16
 #: criteria/settings.py:24
 msgid "Equal to"
 msgstr "Równe"
 
-#: criteria/models.py:129
+#: criteria/models.py:130
 #: criteria/settings.py:17
 msgid "Less than"
 msgstr "Mniejsze niż"
 
-#: criteria/models.py:130
+#: criteria/models.py:131
 msgid "Less than equal to"
 msgstr "Mniejsze lub równe"
 
-#: criteria/models.py:131
+#: criteria/models.py:132
 #: criteria/settings.py:19
 msgid "Greater than"
 msgstr "Większe niż"
 
-#: criteria/models.py:132
+#: criteria/models.py:133
 msgid "Greater than equal to"
 msgstr "Większe lub równe"
 
-#: criteria/models.py:136
+#: criteria/models.py:137
 msgid "Is selected"
 msgstr "Wybrany"
 
-#: criteria/models.py:137
+#: criteria/models.py:138
 msgid "Is not selected"
 msgstr "Nie jest zaznaczony"
 
-#: criteria/models.py:141
+#: criteria/models.py:142
 #: criteria/settings.py:31
 msgid "Is valid"
 msgstr "Jest poprawne"
 
-#: criteria/models.py:142
+#: criteria/models.py:143
 #: criteria/settings.py:32
 msgid "Is not valid"
 msgstr "Nie jest poprawne"
 
-#: criteria/models.py:147
+#: criteria/models.py:148
 msgid "Contains"
 msgstr "Zawiera"
 
-#: criteria/models.py:151
+#: criteria/models.py:158
 #, python-format
 msgid "%(name)s: %(operator)s %(value)s"
 msgstr "%(name)s: %(operator)s %(value)s"
 
-#: criteria/models.py:410
+#: criteria/models.py:417
 msgid "CLAG"
 msgstr ""
 
-#: criteria/models.py:461
+#: criteria/models.py:468
 #: templates/manage/shop/default_values_tab.html:99
 msgid "Countries"
 msgstr "Kraje"
 
-#: criteria/models.py:577
+#: criteria/models.py:584
 #: templates/manage/payment/payment_methods.html:3
 msgid "Payment methods"
 msgstr "Sposoby płatności"
 
-#: criteria/models.py:637
+#: criteria/models.py:644
 #: templates/manage/shipping_methods/shipping_methods.html:4
 msgid "Shipping methods"
 msgstr "Metody wysyłki"
@@ -2143,7 +2151,7 @@ msgid "Topseller have been updated."
 msgstr "Bestseller został uaktualniony."
 
 #: manage/voucher/forms.py:39
-#: templates/manage/cart/cart_inline.html:106
+#: templates/manage/cart/cart_inline.html:108
 #: templates/manage/order/order_inline.html:115
 #: templates/manage/product/product_filters_inline.html:13
 msgid "Amount"
@@ -2845,7 +2853,7 @@ msgid "General"
 msgstr "Ogólne"
 
 #: templates/manage/cart/cart_inline.html:13
-#: templates/manage/cart/cart_inline.html:94
+#: templates/manage/cart/cart_inline.html:96
 #: templates/manage/cart/carts_inline.html:7
 #: templates/manage/customer/customer_inline.html:18
 #: templates/manage/customer/customer_inline.html:72
@@ -2857,9 +2865,9 @@ msgstr "Ogólne"
 msgid "ID"
 msgstr ""
 
-#: templates/manage/cart/cart_inline.html:61
-#: templates/manage/cart/cart_inline.html:69
-#: templates/manage/cart/cart_inline.html:119
+#: templates/manage/cart/cart_inline.html:63
+#: templates/manage/cart/cart_inline.html:71
+#: templates/manage/cart/cart_inline.html:121
 #: templates/manage/cart/carts_inline.html:36
 #: templates/manage/cart/carts_inline.html:39
 #: templates/manage/cart/selectable_carts_inline.html:60
@@ -2873,20 +2881,20 @@ msgstr ""
 msgid "DATETIME_FORMAT"
 msgstr "Y-m-d H:i:s"
 
-#: templates/manage/cart/cart_inline.html:74
+#: templates/manage/cart/cart_inline.html:76
 #: templates/manage/cart/carts_inline.html:22
 msgid "Items"
 msgstr "Elementy"
 
-#: templates/manage/cart/cart_inline.html:82
-#: templates/manage/cart/cart_inline.html:109
+#: templates/manage/cart/cart_inline.html:84
+#: templates/manage/cart/cart_inline.html:111
 #: templates/manage/cart/carts_inline.html:19
 #: templates/manage/order/order_inline.html:49
 #: templates/manage/order/order_inline.html:127
 msgid "Total"
 msgstr "W sumie"
 
-#: templates/manage/cart/cart_inline.html:159
+#: templates/manage/cart/cart_inline.html:161
 msgid "This cart has no items"
 msgstr "W tym koszyku nie ma żadnych produktów"
 
@@ -4728,14 +4736,8 @@ msgstr "Kupon nie istnieje."
 #~ msgid "Cart Price: %(operator)s %(price)s"
 #~ msgstr "Wartość koszyka: %(operator)s %(price)s"
 
-#~ msgid "Cart Price"
-#~ msgstr "Cena w koszyku"
-
 #~ msgid "CLAG: %(operator)s %(clag)s"
 #~ msgstr "Długość i obwód: %(operator)s %(clag)s"
-
-#~ msgid "Combined length and girth"
-#~ msgstr "W sumie długość i obwód"
 
 #~ msgid "Country: %(operator)s %(countries)s"
 #~ msgstr "Kraj: %(operator)s %(countries)s"
