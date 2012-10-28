@@ -521,7 +521,7 @@ class HeightCriterion(Criterion):
         if self.product:
             height = self.product.get_height()
         elif self.cart:
-            sum([item.product.get_height() * item.amount for item in cart.get_items()])
+            height = sum([item.product.get_height() * item.amount for item in self.cart.get_items()])
         else:
             height = 0
 
