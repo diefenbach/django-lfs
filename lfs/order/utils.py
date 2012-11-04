@@ -89,11 +89,11 @@ def add_order(request):
             voucher = None
 
     # Copy addresses
-    invoice_address = deepcopy(customer.selected_invoice_address)
+    invoice_address = deepcopy(invoice_address)
     invoice_address.id = None
     invoice_address.save()
 
-    shipping_address = deepcopy(customer.selected_shipping_address)
+    shipping_address = deepcopy(shipping_address)
     shipping_address.id = None
     shipping_address.save()
 
