@@ -60,6 +60,7 @@ from lfs.catalog.settings import CATEGORY_VARIANT_DEFAULT
 from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
+from mptt.models import MPTTModel, TreeForeignKey
 
 
 def get_unique_id_str():
@@ -82,7 +83,7 @@ for u in settings.LFS_PACKING_UNITS:
     LFS_PACKING_UNITS.append([u, u])
 
 
-class Category(models.Model):
+class Category(MPTTModel):
     """A category is used to browse through the shop products. A category can
     have one parent category and several child categories.
 
@@ -155,7 +156,7 @@ class Category(models.Model):
     """
     name = models.CharField(_(u"Name"), max_length=50)
     slug = models.SlugField(_(u"Slug"), unique=True)
-    parent = models.ForeignKey("self", verbose_name=_(u"Parent"), blank=True, null=True)
+    parent = TreeForeignKey("self", verbose_name=_(u"Parent"), blank=True, null=True)
 
     # If selected it shows products of the sub categories within the product
     # view. If not it shows only direct products of the category.
@@ -179,8 +180,7 @@ class Category(models.Model):
     meta_title = models.CharField(_(u"Meta title"), max_length=100, default="<name>")
     meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
     meta_description = models.TextField(_(u"Meta description"), blank=True)
-
-    level = models.PositiveSmallIntegerField(default=1)
+    
     uid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
 
     class Meta:
@@ -208,20 +208,12 @@ class Category(models.Model):
         """
         Returns all child categories of the category.
         """
-        def _get_all_children(category, children):
-            for category in Category.objects.filter(parent=category.id):
-                children.append(category)
-                _get_all_children(category, children)
-
         cache_key = "%s-category-all-children-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         children = cache.get(cache_key)
         if children is not None:
             return children
 
-        children = []
-        for category in Category.objects.filter(parent=self.id):
-            children.append(category)
-            _get_all_children(category, children)
+        children = self.get_descendants(include_self=False)
 
         cache.set(cache_key, children)
         return children
@@ -236,7 +228,8 @@ class Category(models.Model):
         if categories is not None:
             return categories
 
-        categories = Category.objects.filter(parent=self.id)
+        categories = super(Category, self).get_children()
+
         cache.set(cache_key, categories)
 
         return categories
@@ -319,11 +312,7 @@ class Category(models.Model):
         if parents is not None:
             return parents
 
-        parents = []
-        category = self.parent
-        while category is not None:
-            parents.append(category)
-            category = category.parent
+        parents = self.get_ancestors(ascending=True)
 
         cache.set(cache_key, parents)
         return parents

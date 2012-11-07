@@ -217,7 +217,7 @@ def set_category_levels():
     """Sets the category levels based on the position in hierarchy.
     """
     for category in Category.objects.all():
-        category.level = len(category.get_parents()) + 1
+        category.level = len(category.get_parents())
         category.save()
 
 
