@@ -3,7 +3,7 @@
 <form action="{% url lfs_manage_save_voucher_group_data voucher_group.id %}"
       method="post"
       enctype="multipart/form-data">
-
+    {% csrf_token %}
     {% include "manage/lfs_form.html" %}
 
     <div class="buttons">
