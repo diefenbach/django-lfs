@@ -109,7 +109,7 @@ class AddressManagement(object):
             return True
 
         if self.data:
-            form_model = form_factory("%s-country" % self.type)
+            form_model = form_factory(self.data.get("%s-country" % self.type, self.address.country.code.upper()))
         else:
             form_model = form_factory(self.address.country.code.upper())
         postal_form = form_model(data=self.data, initial=self.get_address_as_dict(), prefix=self.type)
