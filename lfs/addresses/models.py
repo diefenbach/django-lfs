@@ -98,6 +98,7 @@ class BaseAddress(models.Model):
                 values.append({
                     "value": value,
                     "div": div,
+                    "attribute": attribute
                 })
         return values
 
