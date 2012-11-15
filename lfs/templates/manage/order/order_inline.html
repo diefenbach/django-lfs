@@ -196,7 +196,7 @@
     {% endfor %}
     {% if current_order.voucher_number %}
         <tr>
-            <td></td>
+            <td colspan="2"></td>
             <td>
                 {% trans 'Voucher' %} ({{ current_order.voucher_number }})
             </td>
@@ -213,7 +213,7 @@
         </tr>
     {% endif %}
     <tr>
-        <td></td>
+        <td colspan="2"></td>
         <td>
             {% trans 'Shipping' %} ({{ current_order.shipping_method }})
         </td>
@@ -229,7 +229,7 @@
         </td>
     </tr>
     <tr>
-        <td></td>
+        <td colspan="2"></td>
         <td>
             {% trans 'Payment' %} ({{ current_order.payment_method }})
         </td>
@@ -245,13 +245,13 @@
         </td>
     </tr>
     <tr class="total">
-        <td colspan="6"
+        <td colspan="7"
             class="number total">
             {{ current_order.price|currency:request }}
         </td>
     </tr>
     <tr>
-        <td colspan="6"
+        <td colspan="7"
             class="number tax">
             <span class="total-label">{% trans 'Inclusive VAT' %}:</span>
             {{ current_order.tax|currency:request }}
