@@ -100,6 +100,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
             voucher_value = voucher.get_price_gross(request, cart)
             cart_price = cart_price - voucher_value
             voucher_tax = voucher.get_tax(request, cart)
+            cart_tax = cart_tax - voucher_tax
         else:
             display_voucher = False
             voucher_value = 0
@@ -358,9 +359,15 @@ def delete_cart_item(request, cart_item_id):
     """
     Deletes the cart item with the given id.
     """
-    lfs_get_object_or_404(CartItem, pk=cart_item_id).delete()
-
     cart = cart_utils.get_cart(request)
+    if not cart:
+        raise Http404
+
+    item = lfs_get_object_or_404(CartItem, pk=cart_item_id)
+    if item.cart.id != cart.id:
+        raise Http404
+    item.delete()
+
     cart_changed.send(cart, request=request)
 
     return HttpResponse(cart_inline(request))
