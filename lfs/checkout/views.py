@@ -158,6 +158,7 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
             voucher_value = voucher.get_price_gross(request, cart)
             cart_price = cart_price - voucher_value
             voucher_tax = voucher.get_tax(request, cart)
+            cart_tax = cart_tax - voucher_tax
         else:
             display_voucher = False
             voucher_value = 0
