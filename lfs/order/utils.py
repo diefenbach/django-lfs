@@ -150,14 +150,8 @@ def add_order(request):
 
     # Copy cart items
     for cart_item in cart.get_items():
-        # quick fix to block selling not existing products
-        amount = cart_item.amount
-        if cart_item.product.manage_stock_amount:
-            if cart_item.amount > cart_item.product.stock_amount:
-                amount = cart_item.product.stock_amount
-
-            if amount == 0:
-                continue
+        if cart_item.amount == 0:
+            continue
         order_item = OrderItem.objects.create(
             order=order,
 
