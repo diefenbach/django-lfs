@@ -162,7 +162,7 @@ def add_order(request):
             product=cart_item.product,
             product_sku=cart_item.product.sku,
             product_name=cart_item.product.get_name(),
-            product_amount=amount,
+            product_amount=cart_item.amount,
             product_price_net=cart_item.product.get_price_net(request),
             product_price_gross=cart_item.get_product_price_gross(request),
             product_tax=cart_item.product.get_tax(request),
