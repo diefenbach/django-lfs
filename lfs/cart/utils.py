@@ -53,7 +53,7 @@ def get_cart(request):
 
     if user.is_authenticated():
         try:
-            cache_key = "%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user)
+            cache_key = "%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user.pk)
             cart = cache.get(cache_key)
             if cart is None:
                 cart = Cart.objects.get(user=user)
