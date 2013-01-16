@@ -25,28 +25,30 @@
 				<div>
 					{{ customer.selected_invoice_address.firstname }}
 					{{ customer.selected_invoice_address.lastname }}
-					(<a href="mailto:{{ customer.selected_invoice_address.email }}">{{ customer.selected_invoice_address.email }}</a>)
+                    {% if customer.selected_invoice_address.email %}
+					    (<a href="mailto:{{ customer.selected_invoice_address.email }}">{{ customer.selected_invoice_address.email }}</a>)
+                    {% endif %}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.company_name }}
+					{{ customer.selected_invoice_address.company_name|default_if_none:'' }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.street }}
+					{{ customer.selected_invoice_address.street|default_if_none:'' }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.city }}
+					{{ customer.selected_invoice_address.city|default_if_none:'' }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.state }}
+					{{ customer.selected_invoice_address.state|default_if_none:'' }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.zip_code }}
+					{{ customer.selected_invoice_address.zip_code|default_if_none:'' }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.country }}
+					{{ customer.selected_invoice_address.country|default_if_none:'-' }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.phone }}
+					{{ customer.selected_invoice_address.phone|default_if_none:'-' }}
 				</div>
 			{% else %}
 				---

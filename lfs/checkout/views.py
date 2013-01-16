@@ -158,6 +158,7 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
             voucher_value = voucher.get_price_gross(request, cart)
             cart_price = cart_price - voucher_value
             voucher_tax = voucher.get_tax(request, cart)
+            cart_tax = cart_tax - voucher_tax
         else:
             display_voucher = False
             voucher_value = 0
@@ -263,7 +264,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
                 return HttpResponseRedirect(result.get("next_url", reverse("lfs_thank_you")))
             else:
                 if "message" in result:
-                    form._errors[result.get("message_location")] = result.get("message")
+                    checkout_form._errors[result.get("message_location")] = result.get("message")
 
     else:
         checkout_form = OnePageCheckoutForm()

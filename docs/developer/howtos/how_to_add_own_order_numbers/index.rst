@@ -41,7 +41,7 @@ class and add a method to it called ``get_next``:
     from lfs.plugins import OrderNumberGenerator as Base
 
     class OrderNumberGenerator(Base):
-        def get_next(formatted):
+        def get_next(self, formatted=True):
             return "DOE-4711"
 
 The ``get_next`` method is called when the shop customer submits a new order. It
@@ -58,10 +58,6 @@ Now as the code is ready, you can easily plugin your payment method:
 #. Add your class to ``settings.py``
 
     LFS_ORDER_NUMBER_GENERATOR = "my_order_numbers.models.OrderNumberGenerator"
-
-#. Add the form to ``settings.py``
-
-    LFS_ORDER_NUMBER_GENERATOR_FORM = "my_order_numbers.forms.OrderNumberGeneratorForm"
 
 #. Add your application to settings.INSTALLED_APPS and sync the database.
 

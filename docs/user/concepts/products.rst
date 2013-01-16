@@ -11,8 +11,8 @@ This section describes the different product types of LFS.
 Overview
 ========
 
-Products are the most essential content object of LFS. They are sold to the shop
-customer. goods which are sold to customers. LFS' products manage a lot of data
+Products are the most essential content object of LFS. They are goods which are
+sold to customers. LFS' products manage a lot of data
 which are relevant for an online shop. Please see the :doc:`product management
 interface reference </user/management/catalog/products>` to see all available
 data fields in detail.

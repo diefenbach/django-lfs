@@ -257,6 +257,18 @@ class CartItemTestCase(TestCase):
         result = self.item.get_properties()
         self.assertEqual(result, [])
 
+    def test_get_items(self):
+        """ If product that is in the cart is out of stock then cart.get_items should update cart_items.
+        """
+        self.p1.manage_stock_amount = True
+        self.p1.quantity = 2
+        self.p1.save()
+
+        self.assertEqual(len(list(self.cart.get_items())), 1)
+        self.p1.quantity = 0
+        self.p1.save()
+        self.assertEqual(len(list(self.cart.get_items())), 0)
+
 
 class AddToCartTestCase(TestCase):
     """Test case for add_to_cart view.

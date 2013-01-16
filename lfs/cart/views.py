@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.utils import simplejson
@@ -17,6 +17,9 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs.cart.utils
 import lfs.catalog.utils
+from lfs.customer.models import Customer
+from lfs.payment.models import PaymentMethod
+from lfs.shipping.models import ShippingMethod
 import lfs.voucher.utils
 import lfs.discounts.utils
 from lfs.caching.utils import lfs_get_object_or_404
@@ -97,6 +100,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
             voucher_value = voucher.get_price_gross(request, cart)
             cart_price = cart_price - voucher_value
             voucher_tax = voucher.get_tax(request, cart)
+            cart_tax = cart_tax - voucher_tax
         else:
             display_voucher = False
             voucher_value = 0
@@ -153,8 +157,10 @@ def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
     except IndexError:
         accessories = []
 
+    cart_items_count = len(cart_items)
     return render_to_response(template_name, RequestContext(request, {
-        "plural": len(cart_items) > 1,
+        "plural": cart_items_count > 1,
+        "cart_items_count": cart_items_count,
         "shopping_url": request.META.get("HTTP_REFERER", "/"),
         "product_accessories": accessories,
         "cart_items": added_to_cart_items(request),
@@ -353,9 +359,15 @@ def delete_cart_item(request, cart_item_id):
     """
     Deletes the cart item with the given id.
     """
-    lfs_get_object_or_404(CartItem, pk=cart_item_id).delete()
-
     cart = cart_utils.get_cart(request)
+    if not cart:
+        raise Http404
+
+    item = lfs_get_object_or_404(CartItem, pk=cart_item_id)
+    if item.cart.id != cart.id:
+        raise Http404
+    item.delete()
+
     cart_changed.send(cart, request=request)
 
     return HttpResponse(cart_inline(request))
@@ -427,14 +439,16 @@ def refresh_cart(request):
     cart_changed.send(cart, request=request)
 
     # Update shipping method
-    customer.selected_shipping_method_id = request.POST.get("shipping_method")
+    shipping_method = get_object_or_404(ShippingMethod, pk=request.POST.get("shipping_method"))
+    customer.selected_shipping_method = shipping_method
 
     valid_shipping_methods = shipping_utils.get_valid_shipping_methods(request)
     if customer.selected_shipping_method not in valid_shipping_methods:
         customer.selected_shipping_method = shipping_utils.get_default_shipping_method(request)
 
     # Update payment method
-    customer.selected_payment_method_id = request.POST.get("payment_method")
+    payment_method = get_object_or_404(PaymentMethod, pk=request.POST.get("payment_method"))
+    customer.selected_payment_method = payment_method
 
     # Last but not least we save the customer ...
     customer.save()

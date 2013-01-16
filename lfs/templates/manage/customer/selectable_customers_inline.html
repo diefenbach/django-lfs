@@ -57,12 +57,18 @@
     <div class="navigation-body">
         <a href="{% url lfs_manage_customer c.id %}?page={{ page.number }}"
            class="selectable {% ifequal customer_id c.id %}selected{% endifequal %}">
-			{% if c.selected_invoice_address %}
-	            {{ c.selected_invoice_address.firstname }}
-	            {{ c.selected_invoice_address.lastname }}
-			{% else %}
-    			---
-			{% endif %}
+            {% with c.selected_invoice_address as ia %}
+                {% if ia %}
+                    {% if ia.firstname or ia.lastname %}
+                        {{ c.selected_invoice_address.firstname }}
+                        {{ c.selected_invoice_address.lastname }}
+                    {% else %}
+                       ({{ c.pk }}) ---
+                    {% endif %}
+                {% else %}
+                    ({{ c.pk }}) ---
+                {% endif %}
+            {% endwith %}
         </a>
     </div>
 {% endfor %}

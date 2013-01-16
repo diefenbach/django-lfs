@@ -180,6 +180,31 @@ Slideshow
 
 .. _portlets_concepts_pages:
 
+Latest Products
+---------------
+
+Display the products that were recently added to the shop
+
+Title
+    The title of the portlet.
+
+Limit
+    Only the given amount of products are displayed.
+
+Use current category
+    If this is checked only the latest products of the current category are
+    displayed.
+
+Slideshow
+    If this is checked the products are displayed with a slideshow, i.e. a
+    single product which is exchanged automatically). If this is unchecked all
+    products are display at once.
+
+.. index:: Latest Portlet
+   single: Portlet; Latest
+
+.. _portlets_concepts_latest_products:
+
 Pages
 ------
 
