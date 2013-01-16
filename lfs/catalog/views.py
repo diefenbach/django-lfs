@@ -486,10 +486,10 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
     This is factored out to be able to better cached and in might in future used
     used to be updated via ajax requests.
     """
-#    cache_key = "%s-product-inline-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, request.user.is_superuser, product.id)
-#    result = cache.get(cache_key)
-#    if result is not None:
-#        return result
+    cache_key = "%s-product-inline-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, request.user.is_superuser, product.id)
+    result = cache.get(cache_key)
+    if result is not None:
+        return result
 
     # Switching to default variant
     if product.is_product_with_variants():
@@ -588,7 +588,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
         "for_sale": product.get_for_sale(),
     }))
 
-#    cache.set(cache_key, result)
+    cache.set(cache_key, result)
     return result
 
 
