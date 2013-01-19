@@ -214,6 +214,8 @@ def add_property(request, product_id):
             product_property.position = i
             product_property.save()
 
+    product_changed.send(product)
+
     html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
     result = simplejson.dumps({
@@ -235,6 +237,7 @@ def delete_property(request, product_id, property_id):
         pass
     else:
         property.delete()
+        product_changed.send(product)
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
@@ -291,17 +294,20 @@ def add_property_option(request, product_id):
     if property_option_form.is_valid():
         names = request.POST.get("name").split(",")
         position = 999
+        property_id = request.POST.get("property_id")
         for name in names:
             property_option = PropertyOption(name=name)
-            property_option.property_id = request.POST.get("property_id")
+            property_option.property_id = property_id
             property_option.position = position
             property_option.save()
             position += 1
 
         # Refresh positions
-        for i, option in enumerate(PropertyOption.objects.filter(property=property_option.property)):
+        for i, option in enumerate(PropertyOption.objects.filter(property=property_id)):
             option.position = i
             option.save()
+
+    product_changed.send(Product.objects.get(pk=product_id))
 
     html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
@@ -324,6 +330,7 @@ def delete_property_option(request, product_id, option_id):
         pass
     else:
         property_option.delete()
+        product_changed.send(product)
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
@@ -556,7 +563,7 @@ def edit_sub_type(request, product_id):
 
     result = simplejson.dumps({
         "html": html,
-        "message": _(u"Sup type has been saved."),
+        "message": _(u"Sub type has been saved."),
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
