@@ -11,19 +11,18 @@ from lfs.tests.utils import DummyRequest
 
 # lfs imports
 import lfs.cart.utils
+from lfs.addresses.models import Address
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
 from lfs.catalog.models import Product
 from lfs.core.models import Country
-from lfs.customer.models import Address
 from lfs.customer.models import Customer
 from lfs.order.models import Order
 from lfs.order.models import OrderItem
 from lfs.order.utils import add_order
 from lfs.criteria.models import WeightCriterion
-from lfs.criteria.models import CriteriaObjects
 from lfs.criteria.settings import GREATER_THAN, LESS_THAN
 from lfs.discounts.models import Discount
 from lfs.payment.models import PaymentMethod
@@ -62,9 +61,7 @@ class DiscountsTestCase1(TestCase):
     def test_criteria(self):
         """
         """
-        c = WeightCriterion.objects.create(weight=10.0, operator=GREATER_THAN)
-        co = CriteriaObjects(criterion=c, content=self.d)
-        co.save()
+        c = WeightCriterion.objects.create(value=10.0, operator=GREATER_THAN, content=self.d)
 
         self.assertEqual(self.d.is_valid(self.request), False)
         self.assertEqual(self.d.is_valid(self.request, self.p), True)
@@ -79,6 +76,7 @@ class DiscountTestCase2(TestCase):
         """
         """
         session = SessionStore()
+        session.save()
 
         rf = RequestFactory()
         self.request = rf.get('/')
