@@ -153,7 +153,13 @@ class OrderItem(models.Model):
 
     @property
     def amount(self):
-        return self.product.get_clean_quantity(self.product_amount)
+        if self.product:
+            return self.product.get_clean_quantity(self.product_amount)
+        else:
+            try:
+                return int(self.product_amount)
+            except (ValueError, TypeError):
+                return 1
 
     def get_properties(self):
         """Returns properties of the order item. Resolves option names for
