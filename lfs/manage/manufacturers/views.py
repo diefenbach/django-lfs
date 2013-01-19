@@ -23,6 +23,9 @@ from lfs.manufacturer.models import Manufacturer
 from lfs.manage.manufacturers.forms import ViewForm
 from lfs.manage.seo.views import SEOView
 
+import logging
+logger = logging.getLogger(__file__)
+
 
 @permission_required("core.manage_shop")
 def manage_manufacturer(request, manufacturer_id, template_name="manage/manufacturers/manufacturer.html"):
@@ -294,7 +297,10 @@ def update_data(request, manufacturer_id):
 
     # Delete image
     if request.POST.get("delete_image"):
-        manufacturer.image.delete()
+        try:
+            manufacturer.image.delete()
+        except OSError as e:
+            logger.error('Error while trying to delete manufacturer image: %s' % e)
 
     html = (
         ("#data", manufacturer_data_inline(request, manufacturer.pk)),
