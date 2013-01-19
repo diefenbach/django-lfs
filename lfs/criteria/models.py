@@ -722,7 +722,7 @@ class WeightCriterion(Criterion):
         if self.product:
             weight = self.product.get_weight()
         elif self.cart:
-            weight = sum([item.product.get_weight() * item.amount for item in cart.get_items()])
+            weight = sum([item.product.get_weight() * item.amount for item in self.cart.get_items()])
         else:
             weight = 0
 
