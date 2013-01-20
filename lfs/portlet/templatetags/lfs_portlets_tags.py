@@ -100,7 +100,8 @@ def lfs_cart_portlet(context, title=None):
 
 
 @register.inclusion_tag('lfs/portlets/portlet.html', takes_context=True)
-def lfs_categories_portlet(context, title=None):
+def lfs_categories_portlet(context, title=None,
+                           start_level=1, expand_level=1):
     """Tag to render the related products portlet.
     """
     if title is None:
@@ -108,6 +109,8 @@ def lfs_categories_portlet(context, title=None):
 
     portlet = CategoriesPortlet()
     portlet.title = title
+    portlet.start_level = start_level
+    portlet.expand_level = expand_level
 
     return {
         "html": portlet.render(context)
