@@ -130,7 +130,6 @@ def _send_customer_added(user):
     """
     import lfs.core.utils
     shop = lfs.core.utils.get_default_shop()
-    subject = _(u"Welcome to %s" % shop.name)
 
     from_email = shop.from_email
     to = [user.username]
@@ -158,9 +157,9 @@ def _send_customer_added(user):
 
 def send_review_added(review):
     try:
-        _send_review_added.delay(order)
+        _send_review_added.delay(review)
     except AttributeError:
-        _send_review_added(order)
+        _send_review_added(review)
 
 
 def _send_review_added(review):

@@ -343,10 +343,10 @@ def _get_filtered_customers(request, customer_filters):
 
     # Filter
     name = customer_filters.get("name", "")
-    if name != "":
-        f = Q(sa_object_id__lastname__icontains=name)
-        f |= Q(sa_object_id__firstname__icontains=name)
-        customers = customers.filter(f)
+    #if name != "":
+    #    f = Q(sa_object_id__lastname__icontains=name)
+    #    f |= Q(sa_object_id__firstname__icontains=name)
+    #    customers = customers.filter(f)
 
     # Ordering
     customers = customers.order_by("%s%s" % (customer_ordering_order, customer_ordering))

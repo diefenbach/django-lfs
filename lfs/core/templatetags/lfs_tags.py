@@ -1,5 +1,6 @@
 # python imports
 import math
+from django.forms.forms import BoundField
 import locale
 
 # django imports
@@ -16,6 +17,7 @@ from django.utils.translation import ugettext_lazy as _
 import lfs.catalog.utils
 import lfs.core.utils
 import lfs.core.views
+from lfs.order.settings import SUBMITTED, PAYMENT_FLAGGED, PAYMENT_FAILED
 import lfs.utils.misc
 import logging
 from lfs.caching.utils import lfs_get_object_or_404
@@ -24,6 +26,7 @@ from lfs.catalog.settings import CONFIGURABLE_PRODUCT, VARIANT
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import STANDARD_PRODUCT
+from lfs.catalog.settings import SORTING_MAP
 from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
@@ -103,11 +106,16 @@ def sorting(context):
     """
     """
     request = context.get("request")
-    return {"current": request.session.get("sorting")}
+    sorting = request.session.get("sorting")
+    # prepare list of available sort options, sorted by SORTING_MAP_ORDER
+    sort_options = []
+    for item in SORTING_MAP:
+        sort_options.append(item)
+    return {"current": sorting, "sort_options": sort_options}
 
 
 @register.inclusion_tag('lfs/catalog/breadcrumbs.html', takes_context=True)
-def breadcrumbs(context, obj):
+def breadcrumbs(context, obj, current_page=''):
     """
     """
     if isinstance(obj, Category):
@@ -116,7 +124,7 @@ def breadcrumbs(context, obj):
         if objects is not None:
             return objects
 
-        objects = []
+        objects = [current_page] if current_page else []
         while obj is not None:
             objects.insert(0, {
                 "name": obj.name,
@@ -209,9 +217,7 @@ def product_navigation(context, product):
     """Provides previous and next product links.
     """
     request = context.get("request")
-    sorting = request.session.get("sorting", "price")
-    if sorting == "":
-        sorting = "price"
+    sorting = request.session.get("sorting", 'price')
 
     slug = product.slug
 
@@ -891,3 +897,25 @@ def get_base_packing_price_net(product, request):
 @register.filter(name='get_base_packing_price_gross')
 def get_base_packing_price_gross(product, request):
     return product.get_base_packing_price_gross(request)
+
+
+@register.inclusion_tag('lfs/shop/lfs_form.html', takes_context=True)
+def lfs_form(context, form):
+    """ Render form using common form template.
+        It is also possible to pass list of fields
+        or single field to this tag.
+    """
+    if isinstance(form, BoundField):
+        form = [form]
+    context['lfs_form'] = form
+    context['lfs_form_is_form'] = hasattr(form,'non_field_errors')
+    return context
+
+
+@register.filter(name='get_pay_link', is_safe=True)
+def get_pay_link(order, request, force_paid=False):
+    """ Only return pay link for not paid orders unless force_paid=True
+    """
+    if force_paid or order.state in (SUBMITTED, PAYMENT_FAILED, PAYMENT_FLAGGED):
+        return order.get_pay_link(request)
+    return ''

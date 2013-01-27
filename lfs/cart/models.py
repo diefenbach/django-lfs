@@ -123,6 +123,7 @@ class Cart(models.Model):
         """
         Returns the items of the cart.
         """
+        self._update_product_amounts()
         cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         items = cache.get(cache_key)
         if items is None:
@@ -172,6 +173,23 @@ class Cart(models.Model):
             tax += item.get_tax(request)
 
         return tax
+
+    def _update_product_amounts(self):
+        items = CartItem.objects.select_related().filter(cart=self,
+                                                         product__active=True,
+                                                         product__manage_stock_amount=True)
+        updated = False
+        for item in items:
+            if item.amount > item.product.stock_amount:
+                if item.product.stock_amount == 0:
+                    item.delete()
+                else:
+                    item.amount = item.product.stock_amount
+                    item.save()
+                updated = True
+        if updated:
+            cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+            cache.delete(cache_key)
 
 
 class CartItem(models.Model):

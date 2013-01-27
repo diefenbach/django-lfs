@@ -132,11 +132,16 @@ def calculate_price(request, id):
     price = product.get_price(request, with_properties=False)
     price += property_price
 
+    if product.get_active_packing_unit():
+        packing_result = calculate_packing(request, id, with_properties=True, as_string=True)
+    else:
+        packing_result = ""
+
     result = simplejson.dumps({
         "price": lfs_tags.currency(price, request),
         "for-sale-standard-price": lfs_tags.currency(for_sale_standard_price),
         "for-sale-price": lfs_tags.currency(for_sale_price),
-        "packing-result": calculate_packing(request, id, as_string=True),
+        "packing-result": packing_result,
         "message": _("Price has been changed according to your selection."),
     }, cls=LazyEncoder)
 
@@ -346,8 +351,8 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
         default_sorting = settings.LFS_PRODUCTS_SORTING
     except AttributeError:
         default_sorting = "price"
-
     sorting = request.session.get("sorting", default_sorting)
+
     product_filter = request.session.get("product-filter", {})
     product_filter = product_filter.items()
 
@@ -557,7 +562,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
                 "value": ppv_value,
             })
 
-    if product.get_template_name() != None:
+    if product.get_template_name() is not None:
         template_name = product.get_template_name()
 
     if product.get_active_packing_unit():

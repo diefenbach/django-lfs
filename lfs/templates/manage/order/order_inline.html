@@ -175,7 +175,7 @@
             </td>
 
             <td class="number top">
-               {{ item.amount }} {{ item.product.unit }}
+                {{ item.amount }} {{ item.product.unit }}
                 {% if item.product.active_packing_unit %}
                     <span class="packing-unit">
                         ({{ item|packages }} {{ item.product.packing_unit_unit }})
@@ -187,7 +187,7 @@
                {{ item.product_price_gross|currency:request }}{% if item.product.price_unit %} / {{ item.product.price_unit }}{% endif %}
             </td>
             <td class="number top">
-               ({{ item.product_tax|currency:request }})
+               {{ item.product_tax|currency:request }}
             </td>
             <td class="number top">
                {{ item.price_gross|currency:request }}
@@ -196,7 +196,7 @@
     {% endfor %}
     {% if current_order.voucher_number %}
         <tr>
-            <td></td>
+            <td colspan="2"></td>
             <td>
                 {% trans 'Voucher' %} ({{ current_order.voucher_number }})
             </td>
@@ -214,6 +214,7 @@
     {% endif %}
     <tr>
         <td></td>
+        <td></td>
         <td>
             {% trans 'Shipping' %} ({{ current_order.shipping_method }})
         </td>
@@ -223,12 +224,13 @@
         <td class="number">
             {{ current_order.shipping_price|currency:request }}
         </td>
-        <td></td>
+        <td>{{ current_order.shipping_tax|currency:request }}</td>
         <td class="number">
             {{ current_order.shipping_price|currency:request }}
         </td>
     </tr>
     <tr>
+        <td></td>
         <td></td>
         <td>
             {% trans 'Payment' %} ({{ current_order.payment_method }})
@@ -239,19 +241,19 @@
         <td class="number">
             {{ current_order.payment_price|currency:request }}
         </td>
-        <td></td>
+        <td>{{ current_order.payment_tax|currency:request }}</td>
         <td class="number">
             {{ current_order.payment_price|currency:request }}
         </td>
     </tr>
     <tr class="total">
-        <td colspan="6"
+        <td colspan="7"
             class="number total">
             {{ current_order.price|currency:request }}
         </td>
     </tr>
     <tr>
-        <td colspan="6"
+        <td colspan="7"
             class="number tax">
             <span class="total-label">{% trans 'Inclusive VAT' %}:</span>
             {{ current_order.tax|currency:request }}

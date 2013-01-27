@@ -70,6 +70,7 @@ def add_order(request):
         tax = tax - discount["tax"]
 
     # Add voucher if one exists
+    is_voucher_effective = False
     try:
         voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
         voucher = Voucher.objects.get(number=voucher_number)
@@ -88,11 +89,11 @@ def add_order(request):
             voucher = None
 
     # Copy addresses
-    invoice_address = deepcopy(customer.selected_invoice_address)
+    invoice_address = deepcopy(invoice_address)
     invoice_address.id = None
     invoice_address.save()
 
-    shipping_address = deepcopy(customer.selected_shipping_address)
+    shipping_address = deepcopy(shipping_address)
     shipping_address.id = None
     shipping_address.save()
 
@@ -130,7 +131,7 @@ def add_order(request):
         order.requested_delivery_date = requested_delivery_date
         order.save()
 
-    if voucher:
+    if is_voucher_effective:
         voucher.mark_as_used()
         order.voucher_number = voucher_number
         order.voucher_price = voucher_price
@@ -149,6 +150,8 @@ def add_order(request):
 
     # Copy cart items
     for cart_item in cart.get_items():
+        if cart_item.amount == 0:
+            continue
         order_item = OrderItem.objects.create(
             order=order,
 
@@ -176,14 +179,13 @@ def add_order(request):
     for discount in discounts:
         OrderItem.objects.create(
             order=order,
-            price_net=-(discount["price_net"] - discount["tax"]),
+            price_net=-discount["price_net"],
             price_gross=-discount["price_gross"],
             tax=-discount["tax"],
-
             product_sku=discount["sku"],
             product_name=discount["name"],
             product_amount=1,
-            product_price_net=-(discount["price_net"] - discount["tax"]),
+            product_price_net=-discount["price_net"],
             product_price_gross=-discount["price_gross"],
             product_tax=-discount["tax"],
         )

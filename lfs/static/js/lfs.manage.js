@@ -479,7 +479,7 @@ $(function() {
         }
     });
 
-    $("#insert-image").live("click", function(e) {
+    $('body').on('click', "#insert-image", function(e) {
         var url = $("input.image:checked").attr("value");
         var size = $("#image-size").val();
         var klass = $("#image-class").val();
@@ -498,6 +498,15 @@ $(function() {
         $("#dialog").dialog("close");
         return false;
     })
+
+    $('body').on('click', '#imagebrowser .lfs-pagination a', function(){
+        $.get($(this).prop('href'), function(data) {
+            data = $.parseJSON(data);
+            $("#dialog").html(data["html"]);
+        });
+
+        return false;
+    });
 })
 
 $(document).ajaxComplete(function() {

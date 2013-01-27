@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template import RequestContext
 from django.template.loader import render_to_string
@@ -148,10 +149,16 @@ class Criterion(models.Model):
     ]
 
     def __unicode__(self):
+        """ We're using force unicode as this basically fails:
+               from django.utils import translation
+               from django.utils.translation import ugettext_lazy as _
+               translation.activate('pl')
+               u'test: %s' % _('Payment method')
+        """
         return ugettext("%(name)s: %(operator)s %(value)s") % {
-            'name': self.get_name(),
-            'operator': self.get_current_operator_as_string(),
-            'value': self.get_value_as_string()
+            'name': force_unicode(self.get_name()),
+            'operator': force_unicode(self.get_current_operator_as_string()),
+            'value': force_unicode(self.get_value_as_string())
         }
 
     def save(self, *args, **kwargs):
@@ -514,7 +521,7 @@ class HeightCriterion(Criterion):
         if self.product:
             height = self.product.get_height()
         elif self.cart:
-            sum([item.product.get_height() * item.amount for item in cart.get_items()])
+            height = sum([item.product.get_height() * item.amount for item in self.cart.get_items()])
         else:
             height = 0
 
@@ -715,7 +722,7 @@ class WeightCriterion(Criterion):
         if self.product:
             weight = self.product.get_weight()
         elif self.cart:
-            weight = sum([item.product.get_weight() * item.amount for item in cart.get_items()])
+            weight = sum([item.product.get_weight() * item.amount for item in self.cart.get_items()])
         else:
             weight = 0
 
