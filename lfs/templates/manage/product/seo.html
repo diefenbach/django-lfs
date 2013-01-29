@@ -14,10 +14,10 @@
             {{ form.meta_title.label_tag }}:
         </div>
 
-        {% if field.errors %}
+        {% if form.meta_title.errors %}
             <div class="error">
                 {{ form.meta_title }}
-                {{ field.meta_title.errors }}
+                {{ form.meta_title.errors }}
             </div>
         {% else %}
             <div>
@@ -34,10 +34,10 @@
             {{ form.meta_keywords.label_tag }}:
         </div>
 
-        {% if field.errors %}
+        {% if form.meta_keywords.errors %}
             <div class="error">
                 {{ form.meta_keywords }}
-                {{ field.meta_keywords.errors }}
+                {{ form.meta_keywords.errors }}
             </div>
         {% else %}
             <div>
@@ -55,10 +55,10 @@
             {{ form.meta_description.label_tag }}:
         </div>
     
-        {% if field.errors %}
+        {% if form.meta_description.errors %}
             <div class="error">
                 {{ form.meta_description }}
-                {{ field.meta_description.errors }}
+                {{ form.meta_description.errors }}
             </div>
         {% else %}
             <div>
