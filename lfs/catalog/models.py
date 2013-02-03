@@ -1951,7 +1951,7 @@ class Property(models.Model):
        char field, number field or select field
 
     step
-       manuel step for filtering
+       manual step for filtering
 
     price
         The price of the property. Only used for configurable products.

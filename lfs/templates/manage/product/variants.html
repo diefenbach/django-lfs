@@ -39,33 +39,34 @@
     </form>
 
     {% for property in local_properties %}
-        <div style="font-weight:bold">{{ property.name }}</div>
-        {% if not forloop.first %}
-            <a href="{% url lfs_manage_change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=up"
-               class="ajax-link property-edit-field">
-                <image src="{{ STATIC_URL }}icons/arrow_up.png"
-                       alt="{% trans 'Up' %}"
-                       title="{% trans 'Up' %}"/>
+        <div style="font-weight:bold">{{ property.name }}
+            {% if not forloop.first %}
+                <a href="{% url lfs_manage_change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=up"
+                   class="ajax-link property-edit-field">
+                    <image src="{{ STATIC_URL }}icons/arrow_up.png"
+                           alt="{% trans 'Up' %}"
+                           title="{% trans 'Up' %}"/>
 
-            </a>
-        {% endif %}
-        {% if not forloop.last %}
-            <a href="{% url lfs_manage_change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=down"
-                    class="ajax-link property-edit-field">
-                <image src="{{ STATIC_URL }}icons/arrow_down.png"
-                       alt="{% trans 'Down' %}"
-                       title="{% trans 'Down' %}"/>
-            </a>
-        {% endif %}
+                </a>
+            {% endif %}
+            {% if not forloop.last %}
+                <a href="{% url lfs_manage_change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=down"
+                        class="ajax-link property-edit-field">
+                    <image src="{{ STATIC_URL }}icons/arrow_down.png"
+                           alt="{% trans 'Down' %}"
+                           title="{% trans 'Down' %}"/>
+                </a>
+            {% endif %}
 
-        <a href="{% url lfs_manage_delete_property product.id property.id %}"
-           class="delete-link property-edit-field"
-           dialog_message="{% trans 'Do you really want to delete this property and all its options?' %}"
-           dialog_yes_button_class="ajax-save-button">
-            <image src="{{ STATIC_URL }}icons/cross.png"
-                   alt="delete"
-                   title="{% trans 'Delete property' %}"/>
-        </a>
+            <a href="{% url lfs_manage_delete_property product.id property.id %}"
+               class="delete-link property-edit-field"
+               dialog_message="{% trans 'Do you really want to delete this property and all its options?' %}"
+               dialog_yes_button_class="ajax-save-button">
+                <image src="{{ STATIC_URL }}icons/cross.png"
+                       alt="delete"
+                       title="{% trans 'Delete property' %}"/>
+            </a>
+        </div>
         <div class="property-options">
             {% for option in property.options.all %}
                 <div>
