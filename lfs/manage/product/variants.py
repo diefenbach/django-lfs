@@ -420,7 +420,7 @@ def add_variants(request, product_id):
                 property_id, option_id = option.split("|")
                 ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_VARIANT)
                 # By default we create also the filter values as this most of
-                # the users would excect.
+                # the users would expect.
                 if Property.objects.get(pk=property_id).filterable:
                     ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_FILTER)
 

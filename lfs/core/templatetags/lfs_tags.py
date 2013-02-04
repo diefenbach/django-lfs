@@ -913,7 +913,7 @@ def lfs_form(context, form):
 
 
 @register.filter(name='get_pay_link', is_safe=True)
-def get_pay_link(order, request, force_paid=False):
+def get_pay_link(order, request=None, force_paid=False):
     """ Only return pay link for not paid orders unless force_paid=True
     """
     if force_paid or order.state in (SUBMITTED, PAYMENT_FAILED, PAYMENT_FLAGGED):

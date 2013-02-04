@@ -245,7 +245,7 @@ class CartItemTestCase(TestCase):
     def setUp(self):
         self.tax = Tax.objects.create(rate=19.0)
 
-        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, tax=self.tax)
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, tax=self.tax, active=True)
         self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=100.0, tax=self.tax)
 
         self.cart = Cart.objects.create()
@@ -260,12 +260,15 @@ class CartItemTestCase(TestCase):
     def test_get_items(self):
         """ If product that is in the cart is out of stock then cart.get_items should update cart_items.
         """
+        self.assertFalse(self.p1.manage_stock_amount)
+        self.assertTrue(self.p1.active)
+        self.assertEqual(len(list(self.cart.get_items())), 1)
         self.p1.manage_stock_amount = True
-        self.p1.quantity = 2
+        self.p1.stock_amount = 2
         self.p1.save()
 
         self.assertEqual(len(list(self.cart.get_items())), 1)
-        self.p1.quantity = 0
+        self.p1.stock_amount = 0
         self.p1.save()
         self.assertEqual(len(list(self.cart.get_items())), 0)
 
@@ -437,11 +440,17 @@ class RefreshCartTestCase(TestCase):
         cart = lfs.cart.utils.get_cart(request)
         self.assertEqual(cart.get_amount_of_items(), 1.0)
 
+        # prepare shipping/payment methods
+        from lfs.payment.models import PaymentMethod
+        from lfs.shipping.models import ShippingMethod
+        pm = PaymentMethod.objects.create(name='pm')
+        sm = ShippingMethod.objects.create(name='sm')
+
         # Refresh item amount
-        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2,
+                                "shipping_method": sm.pk, "payment_method": pm.pk})
         request.session = self.session
         request.user = self.user
-
         refresh_cart(request)
         self.assertEqual(cart.get_amount_of_items(), 2.0)
 
@@ -463,8 +472,15 @@ class RefreshCartTestCase(TestCase):
         cart = lfs.cart.utils.get_cart(request)
         self.assertEqual(cart.get_amount_of_items(), 1.0)
 
+        # prepare shipping/payment methods
+        from lfs.payment.models import PaymentMethod
+        from lfs.shipping.models import ShippingMethod
+        pm = PaymentMethod.objects.create(name='pm')
+        sm = ShippingMethod.objects.create(name='sm')
+
         # Try to increase item to two, but there is only one in stock
-        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2,
+                                "shipping_method": sm.pk, "payment_method": pm.pk})
         request.session = self.session
         request.user = self.user
 
@@ -510,8 +526,15 @@ class RefreshCartTestCase(TestCase):
         cart = lfs.cart.utils.get_cart(request)
         self.assertEqual(cart.get_amount_of_items(), 1.0)
 
+        # prepare shipping/payment methods
+        from lfs.payment.models import PaymentMethod
+        from lfs.shipping.models import ShippingMethod
+        pm = PaymentMethod.objects.create(name='pm')
+        sm = ShippingMethod.objects.create(name='sm')
+
         # Increase items to two
-        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2,
+                                "shipping_method": sm.pk, "payment_method": pm.pk})
         request.session = self.session
         request.user = self.user
 
@@ -521,7 +544,8 @@ class RefreshCartTestCase(TestCase):
         self.assertEqual(cart.get_amount_of_items(), 2.0)
 
         # Try to increase item to 3, but there are only 2 in stock
-        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 3})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 3,
+                                "shipping_method": sm.pk, "payment_method": pm.pk})
         request.session = self.session
         request.user = self.user
 
@@ -566,18 +590,29 @@ class RefreshCartTestCase(TestCase):
         cart = lfs.cart.utils.get_cart(request)
         self.assertEqual(cart.get_amount_of_items(), 1.0)
 
+        item_id = cart.get_items()[0].id
+
         self.p1.stock_amount = 0
         self.p1.save()
 
+        self.assertEqual(0, len(cart.get_items()))
+
+        # prepare shipping/payment methods
+        from lfs.payment.models import PaymentMethod
+        from lfs.shipping.models import ShippingMethod
+        pm = PaymentMethod.objects.create(name='pm')
+        sm = ShippingMethod.objects.create(name='sm')
+
         # Try to increase item to two, but there is no product in stock anymore
-        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % cart.get_items()[0].id: 2})
+        request = rf.post("/", {"product_id": self.p1.id, "amount-cart-item_%s" % item_id: 2,
+                                "shipping_method": sm.pk, "payment_method": pm.pk})
         request.session = self.session
         request.user = self.user
 
         # Refresh to amount of two is not possible
         result = simplejson.loads(refresh_cart(request).content)
-        self.assertEqual(result.get("message"), "Sorry, but 'Product 1' is not available anymore.")
         self.assertEqual(cart.get_amount_of_items(), 0.0)
+        self.assertTrue('Your Cart is empty' in result.get("html"))
 
 
 class AddedToCartTestCase(TestCase):

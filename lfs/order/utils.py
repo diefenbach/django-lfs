@@ -20,6 +20,7 @@ from lfs.payment import utils as payment_utils
 from lfs.shipping import utils as shipping_utils
 from lfs.voucher.models import Voucher
 
+
 def add_order(request):
     """Adds an order based on current cart for the current customer.
 

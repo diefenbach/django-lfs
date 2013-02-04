@@ -180,7 +180,7 @@ class Cart(models.Model):
                                                          product__manage_stock_amount=True)
         updated = False
         for item in items:
-            if item.amount > item.product.stock_amount:
+            if item.amount > item.product.stock_amount and not item.product.order_time:
                 if item.product.stock_amount == 0:
                     item.delete()
                 else:
