@@ -11,7 +11,7 @@ from django.views.decorators.http import require_POST
 
 # lfs imports
 from lfs.catalog.models import Product
-from lfs.catalog.models import ProductPropertyValue
+from lfs.catalog.models import ProductPropertyValue, PropertyOption
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyGroup
 from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
@@ -37,6 +37,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
     configurables = []
     filterables = []
     displayables = []
+    parent_local_properties = []
 
     # Configurable
     if not product.is_product_with_variants():
@@ -192,6 +193,16 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                 "properties": properties,
             })
 
+    if product.is_variant():
+        local_properties = product.parent.get_local_properties()
+        for property in local_properties:
+            try:
+                prop_val = product.property_values.get(property=property)
+                property_option = PropertyOption.objects.get(property=property, pk=prop_val.value)
+                parent_local_properties.append(property_option)
+            except (ProductPropertyValue.DoesNotExist, PropertyOption.DoesNotExist):
+                continue
+
     # Generate list of all property groups; used for group selection
     product_property_group_ids = [p.id for p in product.property_groups.all()]
     shop_property_groups = []
@@ -213,6 +224,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
         "display_displayables": display_displayables,
         "product_property_groups": product.property_groups.all(),
         "shop_property_groups": shop_property_groups,
+        "parent_local_properties": parent_local_properties
     }))
 
 

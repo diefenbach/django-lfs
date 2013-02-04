@@ -215,6 +215,7 @@
                         {% for property in variant.properties %}
                             <td>
                                 <select name="property-{{ variant.id }}|{{ property.id }}">
+                                    <option value=""></option>
                                     {% for option in property.options %}
                                         <option value="{{ option.id }}"
                                                 {% if option.selected %}selected="selected"{% endif %}>

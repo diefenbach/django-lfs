@@ -420,7 +420,7 @@ def add_variants(request, product_id):
                 property_id, option_id = option.split("|")
                 ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_VARIANT)
                 # By default we create also the filter values as this most of
-                # the users would excepct.
+                # the users would excect.
                 if Property.objects.get(pk=property_id).filterable:
                     ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_FILTER)
 
@@ -516,13 +516,40 @@ def update_variants(request, product_id):
                 temp = key.split("-")[1]
                 variant_id, property_id = temp.split("|")
                 variant = Product.objects.get(pk=variant_id)
-                try:    
-                    ppv = variant.property_values.get(property_id=property_id, type=PROPERTY_VALUE_TYPE_VARIANT)
+                property = Property.objects.get(pk=property_id)
+                ppv = None
+                ppv_filterable = None
+                try:
+                    ppv = ProductPropertyValue.objects.get(product=variant,
+                                                           property_id=property_id,
+                                                           type=PROPERTY_VALUE_TYPE_VARIANT)
+                    if property.filterable:
+                        ppv_filterable = ProductPropertyValue.objects.get(product=variant,
+                                                                          property_id=property_id,
+                                                                          type=PROPERTY_VALUE_TYPE_FILTER)
                 except ProductPropertyValue.DoesNotExist:
-                    # TODO: When creating new propertys (local or global), they are not copied onto existing variants.
-                    continue
-                ppv.value = value
-                ppv.save()
+                    pass
+
+                if value != '':
+                    if not ppv:
+                        ppv = ProductPropertyValue.objects.create(product=variant,
+                                                                  property_id=property_id,
+                                                                  type=PROPERTY_VALUE_TYPE_VARIANT,
+                                                                  value=value)
+                        if property.filterable:
+                            ProductPropertyValue.objects.create(product=variant, property_id=property_id,
+                                                                value=value,
+                                                                type=PROPERTY_VALUE_TYPE_FILTER)
+                    else:
+                        ppv.value = value
+                        ppv.save()
+                        if ppv_filterable:
+                            ppv_filterable.value = value
+                            ppv_filterable.save()
+                elif ppv:
+                    ppv.delete()
+                    if ppv_filterable:
+                        ppv_filterable.delete()
 
     # Refresh variant positions
     for i, variant in enumerate(product.variants.order_by("variant_position")):
