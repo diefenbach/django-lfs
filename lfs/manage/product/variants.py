@@ -14,8 +14,7 @@ from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
-import lfs.catalog.utils
-from lfs.caching.utils import lfs_get_object_or_404
+from lfs.caching.utils import lfs_get_object_or_404, get_cache_group_id, invalidate_cache_group_id
 from lfs.core.signals import product_changed
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
@@ -113,8 +112,9 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
     default_variant_form = DefaultVariantForm(instance=product)
     category_variant_form = CategoryVariantForm(instance=product)
 
-    # TODO: Delete cache when delete options
-    cache_key = "%s-manage-properties-variants-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product_id)
+    pid = product.get_parent().pk
+    group_id = get_cache_group_id('properties-%s' % pid)
+    cache_key = "%s-manage-properties-variants-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, product_id)
     variants = cache.get(cache_key)
     # Get all properties. We need to traverse through all property / options
     # in order to select the options of the current variant.
@@ -215,6 +215,8 @@ def add_property(request, product_id):
             product_property.save()
 
     product_changed.send(product)
+    pid = product.get_parent().pk
+    invalidate_cache_group_id('properties-%s' % pid)
 
     html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
@@ -238,6 +240,8 @@ def delete_property(request, product_id, property_id):
     else:
         property.delete()
         product_changed.send(product)
+        pid = product.get_parent().pk
+        invalidate_cache_group_id('properties-%s' % pid)
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
@@ -271,6 +275,8 @@ def change_property_position(request):
         product_property.save()
 
     _refresh_property_positions(product_id)
+    pid = Product.objects.get(pk=product_id).get_parent().pk
+    invalidate_cache_group_id('properties-%s' % pid)
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
@@ -307,7 +313,10 @@ def add_property_option(request, product_id):
             option.position = i
             option.save()
 
-    product_changed.send(Product.objects.get(pk=product_id))
+    product = Product.objects.get(pk=product_id)
+    product_changed.send(product)
+    pid = product.get_parent().pk
+    invalidate_cache_group_id('properties-%s' % pid)
 
     html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
@@ -331,6 +340,8 @@ def delete_property_option(request, product_id, option_id):
     else:
         property_option.delete()
         product_changed.send(product)
+        pid = product.get_parent().pk
+        invalidate_cache_group_id('properties-%s' % pid)
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
@@ -558,6 +569,8 @@ def update_variants(request, product_id):
 
     # Send a signal to update cache
     product_changed.send(product)
+    pid = product.get_parent().pk
+    invalidate_cache_group_id('properties-%s' % pid)
 
     html = (
         ("#variants", manage_variants(request, product_id, as_string=True)),
@@ -642,7 +655,7 @@ def _selectable_products_inline(request, product):
     AMOUNT = 20
     products = _get_filtered_products_for_product_view(request)
     paginator = Paginator(products, AMOUNT)
-    temp = product.parent if product.is_variant() else product
+    temp = product.get_parent()
     page = get_current_page(request, products, temp, AMOUNT)
 
     try:

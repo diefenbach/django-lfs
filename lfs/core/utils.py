@@ -9,7 +9,6 @@ import urllib
 # django imports
 from django.conf import settings
 from django.contrib.redirects.models import Redirect
-from django.core.cache import cache
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.utils import simplejson
@@ -18,8 +17,6 @@ from django.utils.encoding import force_unicode
 from django.shortcuts import render_to_response
 
 # lfs imports
-import lfs.catalog.utils
-from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
 from lfs.catalog.models import Category
 
@@ -436,24 +433,3 @@ def lfs_pagination(request, current_page, url='', getparam='start'):
         to_return['getvars'] = "&%s" % getvars.urlencode()
     return to_return
 
-
-def get_cache_group_id(group_code):
-    """ Get id for group_code that is stored in cache. This id is supposed to be included in cache key for all items
-        from specific group.
-    """
-    cache_group_key = '%s-%s-GROUP' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_code)
-    group_id = cache.get(cache_group_key, 0)
-    if group_id == 0:
-        group_id = 1
-        cache.set(cache_group_key, group_id, cache.default_timeout * 2)
-    return group_id
-
-
-def invalidate_cache_group_id(group_code):
-    """ Invalidation of group is in fact only incrementation of group_id
-    """
-    cache_group_key = '%s-%s-GROUP' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_code)
-    try:
-        cache.incr(cache_group_key)
-    except ValueError, e:
-        pass

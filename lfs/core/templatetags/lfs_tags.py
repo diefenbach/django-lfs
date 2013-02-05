@@ -20,7 +20,7 @@ import lfs.core.views
 from lfs.order.settings import SUBMITTED, PAYMENT_FLAGGED, PAYMENT_FAILED
 import lfs.utils.misc
 import logging
-from lfs.caching.utils import lfs_get_object_or_404
+from lfs.caching.utils import lfs_get_object_or_404, get_cache_group_id
 from lfs.catalog.models import Category
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT, VARIANT
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
@@ -230,7 +230,7 @@ def product_navigation(context, product):
 
     # prepare cache key for product_navigation group
     # used to invalidate cache for all product_navigations at once
-    pn_cache_key = lfs.core.utils.get_cache_group_id('product_navigation')
+    pn_cache_key = get_cache_group_id('product_navigation')
 
     # if there is last_manufacturer then product was visited from manufacturer view
     # as category view removes last_manufacturer from the session

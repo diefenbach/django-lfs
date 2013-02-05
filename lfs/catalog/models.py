@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 # lfs imports
+from lfs.caching.utils import get_cache_group_id
 import lfs.catalog.utils
 from lfs.core.fields.thumbs import ImageWithThumbsField
 from lfs.core.managers import ActiveManager
@@ -785,10 +786,7 @@ class Product(models.Model):
         if categories is not None:
             return categories
 
-        if self.is_variant():
-            object = self.parent
-        else:
-            object = self
+        object = self.get_parent()
 
         if with_parents:
             categories = []
@@ -807,10 +805,7 @@ class Product(models.Model):
         """
         Returns the first category of a product.
         """
-        if self.is_variant():
-            object = self.parent
-        else:
-            object = self
+        object = self.get_parent()
 
         try:
             return object.get_categories()[0]
@@ -1100,7 +1095,10 @@ class Product(models.Model):
         Returns the property value of a variant in the correct ordering of the
         properties.
         """
-        cache_key = "%s-variant-properties-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        pid = self.get_parent().pk
+        group_id = get_cache_group_id('properties-%s' % pid)
+
+        cache_key = "%s-variant-properties-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
 
         properties = cache.get(cache_key)
         if properties:
@@ -1208,7 +1206,9 @@ class Product(models.Model):
         Returns the property value of a variant in the correct ordering of the
         properties. Traverses through all parent properties
         """
-        cache_key = "%s-variant-properties-for-parent-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        pid = self.get_parent().pk
+        group_id = get_cache_group_id('properties-%s' % pid)
+        cache_key = "%s-variant-properties-for-parent-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
 
         properties = cache.get(cache_key)
         if properties:
@@ -1223,12 +1223,14 @@ class Product(models.Model):
         """
         Returns True if the variant has the given property / option combination.
         """
-        options = cache.get("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id))
+        pid = self.get_parent().pk
+        group_id = get_cache_group_id('properties-%s' % pid)
+        options = cache.get("%s-%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id))
         if options is None:
             options = {}
             for pvo in self.property_values.all():
                 options[pvo.property_id] = pvo.value
-            cache.set("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id), options)
+            cache.set("%s-%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id), options)
 
         try:
             return options[property.id] == str(option.id)
@@ -1272,11 +1274,7 @@ class Product(models.Model):
         Returns the price calculator class as defined in LFS_PRICE_CALCULATORS
         in settings.
         """
-        if self.is_variant():
-            obj = self.parent
-        else:
-            obj = self
-
+        obj = self.get_parent()
         if obj.price_calculator is not None:
             price_calculator = obj.price_calculator
         else:
@@ -1606,10 +1604,7 @@ class Product(models.Model):
         """
         Returns the min price and min base price as dict.
         """
-        if self.is_variant():
-            product = self.parent
-        else:
-            product = self
+        product = self.get_parent()
 
         prices = []
         for variant in Product.objects.filter(parent=product, active=True):
@@ -1823,6 +1818,11 @@ class Product(models.Model):
         Returns True if product is product with variants.
         """
         return self.sub_type == PRODUCT_WITH_VARIANTS
+
+    def get_parent(self):
+        if self.is_variant():
+            return self.parent
+        return self
 
     def is_variant(self):
         """
