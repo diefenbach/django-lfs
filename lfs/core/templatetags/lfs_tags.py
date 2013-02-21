@@ -218,6 +218,9 @@ def product_navigation(context, product):
     """
     request = context.get("request")
     sorting = request.session.get("sorting", 'price')
+    if sorting.strip() == '':
+        sorting = 'price'
+        request.session.set("sorting", sorting)
 
     slug = product.slug
 
