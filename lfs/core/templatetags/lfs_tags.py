@@ -919,6 +919,6 @@ def lfs_form(context, form):
 def get_pay_link(order, request=None, force_paid=False):
     """ Only return pay link for not paid orders unless force_paid=True
     """
-    if force_paid or order.state in (SUBMITTED, PAYMENT_FAILED, PAYMENT_FLAGGED):
+    if force_paid or order.can_be_paid():
         return order.get_pay_link(request)
     return ''
