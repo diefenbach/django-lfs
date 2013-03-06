@@ -89,6 +89,11 @@ def add_order(request):
         else:
             voucher = None
 
+    if price < 0:
+        price = 0
+    if tax < 0:
+        tax = 0
+
     # Copy addresses
     invoice_address = deepcopy(invoice_address)
     invoice_address.id = None
