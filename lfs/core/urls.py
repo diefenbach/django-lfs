@@ -1,6 +1,6 @@
 # django imports
 from django.conf.urls.defaults import *
-from django.views.generic.simple import direct_to_template
+from django.views.generic import TemplateView
 
 # lfs imports
 from lfs.core.sitemap import CategorySitemap
@@ -11,7 +11,7 @@ from lfs.core.views import one_time_setup
 
 # Robots
 urlpatterns = patterns('django.views.generic.simple',
-    (r'^robots.txt', 'direct_to_template', {'template': 'lfs/shop/robots.txt'}),
+    (r'^robots.txt', TemplateView.as_view(template_name='lfs/shop/robots.txt'),
 )
 
 # Sitemaps
