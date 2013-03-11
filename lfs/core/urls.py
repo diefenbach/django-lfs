@@ -1,5 +1,5 @@
 # django imports
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 from django.views.generic import TemplateView
 
 # lfs imports
@@ -11,12 +11,12 @@ from lfs.core.views import one_time_setup
 
 # Robots
 urlpatterns = patterns('django.views.generic.simple',
-    (r'^robots.txt', TemplateView.as_view(template_name='lfs/shop/robots.txt'),
+    (r'^robots.txt', TemplateView.as_view(template_name='lfs/shop/robots.txt')),
 )
 
 # Sitemaps
-urlpatterns += patterns("django.contrib.sitemaps.views",
-    url(r'^sitemap.xml$', 'sitemap', {'sitemaps': {"products": ProductSitemap, "categories": CategorySitemap, "pages": PageSitemap, "shop": ShopSitemap}})
+urlpatterns += patterns('django.contrib.sitemaps.views',
+    url(r'^sitemap.xml$', 'sitemap', {'sitemaps': {"products": ProductSitemap, "categories": CategorySitemap, "pages": PageSitemap, "shop": ShopSitemap}}),
 )
 
 # Shop
