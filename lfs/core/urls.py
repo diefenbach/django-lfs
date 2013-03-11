@@ -106,9 +106,9 @@ urlpatterns += patterns('lfs.search.views',
 )
 
 # Tagging
-urlpatterns += patterns('',
-    (r'^tagging/', include('lfs.tagging.urls')),
-)
+# urlpatterns += patterns('',
+#     (r'^tagging/', include('lfs.tagging.urls')),
+# )
 
 urlpatterns += patterns('',
     (r'', include('lfs_contact.urls')),
