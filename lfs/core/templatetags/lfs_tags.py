@@ -220,7 +220,7 @@ def product_navigation(context, product):
     sorting = request.session.get("sorting", 'price')
     if sorting.strip() == '':
         sorting = 'price'
-        request.session.set("sorting", sorting)
+        request.session["sorting"] = sorting
 
     slug = product.slug
 
