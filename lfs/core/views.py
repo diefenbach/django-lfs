@@ -6,7 +6,7 @@ import traceback
 # django imports
 from django.conf import settings
 from django.core.mail import EmailMessage
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import render_to_response
 from django.template import loader
 from django.template import RequestContext
@@ -55,7 +55,7 @@ def server_error(request):
         mail.send(fail_silently=True)
 
     t = loader.get_template('500.html')
-    return HttpResponse(t.render(RequestContext(request)), status=500)
+    return HttpResponseServerError(t.render(RequestContext(request)))
 
 
 def one_time_setup():
