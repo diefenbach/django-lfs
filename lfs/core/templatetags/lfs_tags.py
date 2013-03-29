@@ -1,7 +1,7 @@
 # python imports
-import math
-from django.forms.forms import BoundField
 import locale
+import logging
+import math
 
 # django imports
 from django import template
@@ -9,31 +9,29 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from django.forms.forms import BoundField
 from django.template import Node, TemplateSyntaxError
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
-import lfs.catalog.utils
-import lfs.core.utils
-import lfs.core.views
-from lfs.order.settings import SUBMITTED, PAYMENT_FLAGGED, PAYMENT_FAILED
-import lfs.utils.misc
-import logging
 from lfs.caching.utils import lfs_get_object_or_404
-from lfs.catalog.models import Category
+from lfs.catalog.models import Category, Product, PropertyOption
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT, VARIANT
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import SORTING_MAP
-from lfs.catalog.models import Product
-from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
+import lfs.catalog.utils
 from lfs.core.models import Action
+import lfs.core.utils
+import lfs.core.views
+from lfs.order.settings import SUBMITTED, PAYMENT_FLAGGED, PAYMENT_FAILED
 from lfs.page.models import Page
 from lfs.shipping import utils as shipping_utils
 from lfs.manufacturer.models import Manufacturer
+import lfs.utils.misc
 
 logger = logging.getLogger("default")
 register = template.Library()
