@@ -1,7 +1,8 @@
 # python imports
-import math
-from django.forms.forms import BoundField
 import locale
+import logging
+import math
+import urlparse
 
 # django imports
 from django import template
@@ -9,35 +10,59 @@ from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from django.forms.forms import BoundField
 from django.template import Node, TemplateSyntaxError
+from django.template.base import VariableDoesNotExist
+from django.template.defaulttags import URLNode, url
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
-import lfs.catalog.utils
-import lfs.core.utils
-import lfs.core.views
-from lfs.order.settings import SUBMITTED, PAYMENT_FLAGGED, PAYMENT_FAILED
-import lfs.utils.misc
-import logging
 from lfs.caching.utils import lfs_get_object_or_404
-from lfs.catalog.models import Category
+from lfs.catalog.models import Category, Product, PropertyOption
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT, VARIANT
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import SORTING_MAP
-from lfs.catalog.models import Product
-from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
+import lfs.catalog.utils
 from lfs.core.models import Action
+import lfs.core.utils
+import lfs.core.views
+from lfs.order.settings import SUBMITTED, PAYMENT_FLAGGED, PAYMENT_FAILED
 from lfs.page.models import Page
 from lfs.shipping import utils as shipping_utils
 from lfs.manufacturer.models import Manufacturer
+import lfs.utils.misc
 
 logger = logging.getLogger("default")
 register = template.Library()
 
+class AbsoluteURLNode(URLNode):
+    def render(self, context):
+        try:
+            path = template.Variable(self.view_name).resolve(context)
+        except VariableDoesNotExist:
+            path = super(AbsoluteURLNode, self).render(context)
+        
+        domain = "http://%s" % Site.objects.get_current().domain
+        
+        if self.asvar:  
+            context[self.asvar]= urlparse.urljoin(domain, context[self.asvar])  
+            return ''  
+        else:  
+            return urlparse.urljoin(domain, path)
+
+@register.tag
+def absolute_url(parser, token, node_cls=AbsoluteURLNode):
+    """Just like {% url %} but ads the domain of the current site."""
+    node_instance = url(parser, token)
+
+    return node_cls(view_name=node_instance.view_name,
+        args=node_instance.args,
+        kwargs=node_instance.kwargs,
+        asvar=node_instance.asvar)
 
 @register.inclusion_tag('lfs/portlets/category_children.html', takes_context=True)
 def category_children(context, categories):

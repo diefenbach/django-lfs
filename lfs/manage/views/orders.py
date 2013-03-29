@@ -112,14 +112,25 @@ def order_inline(request, order_id, template_name="manage/order/order_inline.htm
             "selected_order": order.state == state[0],
         })
 
+    if order.shipping_address:
+        shipping_address = order.shipping_address.as_html(request, "shipping")
+    else:
+        shipping_address = None
+
+    if order.invoice_address:
+        invoice_address = order.invoice_address.as_html(request, "invoice")
+    else:   
+        invoice_address = None
+
+
     return render_to_string(template_name, RequestContext(request, {
         "current_order": order,
         "start": order_filters.get("start", ""),
         "end": order_filters.get("end", ""),
         "name": order_filters.get("name", ""),
         "states": states,
-        "invoice_address": order.invoice_address.as_html(request, "invoice"),
-        "shipping_address": order.shipping_address.as_html(request, "shipping"),
+        "shipping_address": shipping_address,
+        "invoice_address": invoice_address,
     }))
 
 
