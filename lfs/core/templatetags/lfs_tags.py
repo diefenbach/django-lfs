@@ -2,6 +2,7 @@
 import locale
 import logging
 import math
+import urlparse
 
 # django imports
 from django import template
@@ -11,6 +12,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.forms.forms import BoundField
 from django.template import Node, TemplateSyntaxError
+from django.template.base import VariableDoesNotExist
+from django.template.defaulttags import URLNode, url
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
@@ -36,6 +39,30 @@ import lfs.utils.misc
 logger = logging.getLogger("default")
 register = template.Library()
 
+class AbsoluteURLNode(URLNode):
+    def render(self, context):
+        try:
+            path = template.Variable(self.view_name).resolve(context)
+        except VariableDoesNotExist:
+            path = super(AbsoluteURLNode, self).render(context)
+        
+        domain = "http://%s" % Site.objects.get_current().domain
+        
+        if self.asvar:  
+            context[self.asvar]= urlparse.urljoin(domain, context[self.asvar])  
+            return ''  
+        else:  
+            return urlparse.urljoin(domain, path)
+
+@register.tag
+def absolute_url(parser, token, node_cls=AbsoluteURLNode):
+    """Just like {% url %} but ads the domain of the current site."""
+    node_instance = url(parser, token)
+
+    return node_cls(view_name=node_instance.view_name,
+        args=node_instance.args,
+        kwargs=node_instance.kwargs,
+        asvar=node_instance.asvar)
 
 @register.inclusion_tag('lfs/portlets/category_children.html', takes_context=True)
 def category_children(context, categories):
