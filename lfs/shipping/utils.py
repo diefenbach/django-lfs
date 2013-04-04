@@ -17,7 +17,7 @@ from lfs.shipping.models import ShippingMethod
 
 # TODO: Move this to Product class
 def get_product_delivery_time(request, product, for_cart=False):
-    """Returns the delivery time object for the product with given slug.
+    """Returns the delivery time object for the product.
 
     If the ``for_cart`` parameter is False, the default delivery time for
     product is calculated. This is at the moment the first valid (iow with the
@@ -219,10 +219,10 @@ def get_delivery_time(request, product):
     if product.is_deliverable():
         return {
             "deliverable": False,
-            "delivery_time": get_product_delivery_time(request, product.slug)
+            "delivery_time": get_product_delivery_time(request, product)
         }
     else:
         return {
             "deliverable": True,
-            "delivery_time": get_product_delivery_time(request, product.slug)
+            "delivery_time": get_product_delivery_time(request, product)
         }

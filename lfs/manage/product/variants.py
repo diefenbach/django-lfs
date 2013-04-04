@@ -14,8 +14,7 @@ from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
-import lfs.catalog.utils
-from lfs.caching.utils import lfs_get_object_or_404
+from lfs.caching.utils import lfs_get_object_or_404, get_cache_group_id, invalidate_cache_group_id
 from lfs.core.signals import product_changed
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
@@ -113,8 +112,9 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
     default_variant_form = DefaultVariantForm(instance=product)
     category_variant_form = CategoryVariantForm(instance=product)
 
-    # TODO: Delete cache when delete options
-    cache_key = "%s-manage-properties-variants-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product_id)
+    pid = product.get_parent().pk
+    group_id = get_cache_group_id('properties-%s' % pid)
+    cache_key = "%s-manage-properties-variants-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, product_id)
     variants = cache.get(cache_key)
     # Get all properties. We need to traverse through all property / options
     # in order to select the options of the current variant.
@@ -215,6 +215,8 @@ def add_property(request, product_id):
             product_property.save()
 
     product_changed.send(product)
+    pid = product.get_parent().pk
+    invalidate_cache_group_id('properties-%s' % pid)
 
     html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
@@ -238,6 +240,8 @@ def delete_property(request, product_id, property_id):
     else:
         property.delete()
         product_changed.send(product)
+        pid = product.get_parent().pk
+        invalidate_cache_group_id('properties-%s' % pid)
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
@@ -271,6 +275,8 @@ def change_property_position(request):
         product_property.save()
 
     _refresh_property_positions(product_id)
+    pid = Product.objects.get(pk=product_id).get_parent().pk
+    invalidate_cache_group_id('properties-%s' % pid)
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
@@ -307,7 +313,10 @@ def add_property_option(request, product_id):
             option.position = i
             option.save()
 
-    product_changed.send(Product.objects.get(pk=product_id))
+    product = Product.objects.get(pk=product_id)
+    product_changed.send(product)
+    pid = product.get_parent().pk
+    invalidate_cache_group_id('properties-%s' % pid)
 
     html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
@@ -331,6 +340,8 @@ def delete_property_option(request, product_id, option_id):
     else:
         property_option.delete()
         product_changed.send(product)
+        pid = product.get_parent().pk
+        invalidate_cache_group_id('properties-%s' % pid)
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
@@ -420,7 +431,7 @@ def add_variants(request, product_id):
                 property_id, option_id = option.split("|")
                 ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_VARIANT)
                 # By default we create also the filter values as this most of
-                # the users would excepct.
+                # the users would expect.
                 if Property.objects.get(pk=property_id).filterable:
                     ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_FILTER)
 
@@ -516,13 +527,40 @@ def update_variants(request, product_id):
                 temp = key.split("-")[1]
                 variant_id, property_id = temp.split("|")
                 variant = Product.objects.get(pk=variant_id)
-                try:    
-                    ppv = variant.property_values.get(property_id=property_id, type=PROPERTY_VALUE_TYPE_VARIANT)
+                property = Property.objects.get(pk=property_id)
+                ppv = None
+                ppv_filterable = None
+                try:
+                    ppv = ProductPropertyValue.objects.get(product=variant,
+                                                           property_id=property_id,
+                                                           type=PROPERTY_VALUE_TYPE_VARIANT)
+                    if property.filterable:
+                        ppv_filterable = ProductPropertyValue.objects.get(product=variant,
+                                                                          property_id=property_id,
+                                                                          type=PROPERTY_VALUE_TYPE_FILTER)
                 except ProductPropertyValue.DoesNotExist:
-                    # TODO: When creating new propertys (local or global), they are not copied onto existing variants.
-                    continue
-                ppv.value = value
-                ppv.save()
+                    pass
+
+                if value != '':
+                    if not ppv:
+                        ppv = ProductPropertyValue.objects.create(product=variant,
+                                                                  property_id=property_id,
+                                                                  type=PROPERTY_VALUE_TYPE_VARIANT,
+                                                                  value=value)
+                        if property.filterable:
+                            ProductPropertyValue.objects.create(product=variant, property_id=property_id,
+                                                                value=value,
+                                                                type=PROPERTY_VALUE_TYPE_FILTER)
+                    else:
+                        ppv.value = value
+                        ppv.save()
+                        if ppv_filterable:
+                            ppv_filterable.value = value
+                            ppv_filterable.save()
+                elif ppv:
+                    ppv.delete()
+                    if ppv_filterable:
+                        ppv_filterable.delete()
 
     # Refresh variant positions
     for i, variant in enumerate(product.variants.order_by("variant_position")):
@@ -531,6 +569,8 @@ def update_variants(request, product_id):
 
     # Send a signal to update cache
     product_changed.send(product)
+    pid = product.get_parent().pk
+    invalidate_cache_group_id('properties-%s' % pid)
 
     html = (
         ("#variants", manage_variants(request, product_id, as_string=True)),
@@ -615,7 +655,7 @@ def _selectable_products_inline(request, product):
     AMOUNT = 20
     products = _get_filtered_products_for_product_view(request)
     paginator = Paginator(products, AMOUNT)
-    temp = product.parent if product.is_variant() else product
+    temp = product.get_parent()
     page = get_current_page(request, products, temp, AMOUNT)
 
     try:

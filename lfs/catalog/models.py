@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 # lfs imports
+from lfs.caching.utils import get_cache_group_id
 import lfs.catalog.utils
 from lfs.core.fields.thumbs import ImageWithThumbsField
 from lfs.core.managers import ActiveManager
@@ -56,6 +57,7 @@ from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICE
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_BASE_PRICE
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
 from lfs.catalog.settings import CATEGORY_VARIANT_DEFAULT
+from lfs.catalog.settings import SELECT
 
 from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
@@ -784,10 +786,7 @@ class Product(models.Model):
         if categories is not None:
             return categories
 
-        if self.is_variant():
-            object = self.parent
-        else:
-            object = self
+        object = self.get_parent()
 
         if with_parents:
             categories = []
@@ -806,10 +805,7 @@ class Product(models.Model):
         """
         Returns the first category of a product.
         """
-        if self.is_variant():
-            object = self.parent
-        else:
-            object = self
+        object = self.get_parent()
 
         try:
             return object.get_categories()[0]
@@ -1099,7 +1095,10 @@ class Product(models.Model):
         Returns the property value of a variant in the correct ordering of the
         properties.
         """
-        cache_key = "%s-variant-properties-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        pid = self.get_parent().pk
+        group_id = get_cache_group_id('properties-%s' % pid)
+
+        cache_key = "%s-variant-properties-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
 
         properties = cache.get(cache_key)
         if properties:
@@ -1128,16 +1127,110 @@ class Product(models.Model):
 
         return properties
 
+    def get_all_properties(self, variant=None):
+        """ Return all properties for current product
+            if variant is passed then select fields for it
+        """
+        if not self.is_product_with_variants():
+            return []
+        properties = []
+        if self.variants_display_type == SELECT:
+            # Get all properties (sorted). We need to traverse through all
+            # property/options to select the options of the current variant.
+            for property in self.get_property_select_fields():
+                options = []
+                selected_option_value = ''
+                for property_option in property.options.all():
+                    # check if option exists in any variant
+                    option_used = ProductPropertyValue.objects.filter(parent_id=self.pk,
+                                                                      product__active=True,
+                                                                      property=property,
+                                                                      type=PROPERTY_VALUE_TYPE_VARIANT,
+                                                                      value=property_option.pk).exists()
+                    if option_used:
+                        if variant and variant.has_option(property, property_option):
+                            selected = True
+                            selected_option_value = property_option.pk
+                        else:
+                            selected = False
+                        options.append({
+                            "id": property_option.id,
+                            "name": property_option.name,
+                            "selected": selected,
+                        })
+
+                # check for variants that do not have such property and if such variants exists add empty option
+                ppv_count = ProductPropertyValue.objects.filter(parent_id=self.pk,
+                                                                product__active=True,
+                                                                type=PROPERTY_VALUE_TYPE_VARIANT,
+                                                                property=property).count()
+                if ppv_count != self.get_variants().count():
+                    selected = False
+                    if variant and selected_option_value == '':
+                        selected = True
+                    options.insert(0, {'id': '', 'name': '', 'selected': selected})
+                if not (len(options) == 1 and options[0]['id'] == ''):
+                    properties.append({
+                        "id": property.id,
+                        "name": property.name,
+                        "title": property.title,
+                        "unit": property.unit,
+                        "options": options
+                    })
+        else:
+            sel_properties = self.get_property_select_fields()
+            for property in sel_properties:
+                selected_option_name = ''
+                selected_option_value = ''
+                if variant:
+                    try:
+                        ppv = ProductPropertyValue.objects.get(product=variant,
+                                                               type=PROPERTY_VALUE_TYPE_VARIANT,
+                                                               property=property)
+                        selected_option_value = ppv.value
+                        selected_option_name = property.options.get(pk=ppv.value).name
+                    except (ProductPropertyValue.DoesNotExist, PropertyOption.DoesNotExist):
+                        pass
+                properties.append({
+                                    "id": property.id,
+                                    "name": property.name,
+                                    "title": property.title,
+                                    "unit": property.unit,
+                                    "selected_option_name": selected_option_name,
+                                    "selected_option_value": selected_option_value
+                                 })
+        return properties
+
+    def get_variant_properties_for_parent(self):
+        """
+        Returns the property value of a variant in the correct ordering of the
+        properties. Traverses through all parent properties
+        """
+        pid = self.get_parent().pk
+        group_id = get_cache_group_id('properties-%s' % pid)
+        cache_key = "%s-variant-properties-for-parent-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
+
+        properties = cache.get(cache_key)
+        if properties:
+            return properties
+
+        properties = self.parent.get_all_properties(variant=self)
+        cache.set(cache_key, properties)
+
+        return properties
+
     def has_option(self, property, option):
         """
         Returns True if the variant has the given property / option combination.
         """
-        options = cache.get("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id))
+        pid = self.get_parent().pk
+        group_id = get_cache_group_id('properties-%s' % pid)
+        options = cache.get("%s-%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id))
         if options is None:
             options = {}
             for pvo in self.property_values.all():
                 options[pvo.property_id] = pvo.value
-            cache.set("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id), options)
+            cache.set("%s-%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id), options)
 
         try:
             return options[property.id] == str(option.id)
@@ -1181,11 +1274,7 @@ class Product(models.Model):
         Returns the price calculator class as defined in LFS_PRICE_CALCULATORS
         in settings.
         """
-        if self.is_variant():
-            obj = self.parent
-        else:
-            obj = self
-
+        obj = self.get_parent()
         if obj.price_calculator is not None:
             price_calculator = obj.price_calculator
         else:
@@ -1515,10 +1604,7 @@ class Product(models.Model):
         """
         Returns the min price and min base price as dict.
         """
-        if self.is_variant():
-            product = self.parent
-        else:
-            product = self
+        product = self.get_parent()
 
         prices = []
         for variant in Product.objects.filter(parent=product, active=True):
@@ -1622,7 +1708,14 @@ class Product(models.Model):
         objects and back to strings.
         """
         options.sort()
-        options = "".join(options)
+        parsed_options = []
+        # remove option with empty option_id (this means that variant doesn't have such property)
+        for option in options:
+            if option.find('|') == len(option) -1:
+                continue
+            parsed_options.append(option)
+        options = "".join(parsed_options)
+
         for variant in self.variants.filter(active=True):
             temp = variant.property_values.filter(type=PROPERTY_VALUE_TYPE_VARIANT)
             temp = ["%s|%s" % (x.property.id, x.value) for x in temp]
@@ -1725,6 +1818,11 @@ class Product(models.Model):
         Returns True if product is product with variants.
         """
         return self.sub_type == PRODUCT_WITH_VARIANTS
+
+    def get_parent(self):
+        if self.is_variant():
+            return self.parent
+        return self
 
     def is_variant(self):
         """
@@ -1951,7 +2049,7 @@ class Property(models.Model):
        char field, number field or select field
 
     step
-       manuel step for filtering
+       manual step for filtering
 
     price
         The price of the property. Only used for configurable products.

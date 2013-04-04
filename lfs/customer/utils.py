@@ -1,5 +1,5 @@
 # django imports
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 # lfs imports
 from lfs.addresses.settings import ADDRESS_MODEL
@@ -63,6 +63,11 @@ def _get_customer(request):
             return Customer.objects.get(session=session_key)
         except ObjectDoesNotExist:
             return None
+        except MultipleObjectsReturned:
+            customers = Customer.objects.filter(session=session_key, user__isnull=True)
+            customer = customers[0]
+            customers.exclude(pk=customer.pk).delete()
+            return customer
 
 
 def update_customer_after_login(request):

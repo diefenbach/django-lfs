@@ -20,7 +20,7 @@ import lfs.core.views
 from lfs.order.settings import SUBMITTED, PAYMENT_FLAGGED, PAYMENT_FAILED
 import lfs.utils.misc
 import logging
-from lfs.caching.utils import lfs_get_object_or_404
+from lfs.caching.utils import lfs_get_object_or_404, get_cache_group_id
 from lfs.catalog.models import Category
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT, VARIANT
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
@@ -77,6 +77,7 @@ def google_analytics_ecommerce(context, clear_session=True):
 
     return {
         "order": order,
+        "shop": shop,
         "ga_ecommerce_tracking": shop.ga_ecommerce_tracking,
         "google_analytics_id": shop.google_analytics_id,
     }
@@ -218,6 +219,9 @@ def product_navigation(context, product):
     """
     request = context.get("request")
     sorting = request.session.get("sorting", 'price')
+    if sorting.strip() == '':
+        sorting = 'price'
+        request.session["sorting"] = sorting
 
     slug = product.slug
 
@@ -230,7 +234,7 @@ def product_navigation(context, product):
 
     # prepare cache key for product_navigation group
     # used to invalidate cache for all product_navigations at once
-    pn_cache_key = lfs.core.utils.get_cache_group_id('product_navigation')
+    pn_cache_key = get_cache_group_id('product_navigation')
 
     # if there is last_manufacturer then product was visited from manufacturer view
     # as category view removes last_manufacturer from the session
@@ -913,9 +917,9 @@ def lfs_form(context, form):
 
 
 @register.filter(name='get_pay_link', is_safe=True)
-def get_pay_link(order, request, force_paid=False):
+def get_pay_link(order, request=None, force_paid=False):
     """ Only return pay link for not paid orders unless force_paid=True
     """
-    if force_paid or order.state in (SUBMITTED, PAYMENT_FAILED, PAYMENT_FLAGGED):
+    if force_paid or order.can_be_paid():
         return order.get_pay_link(request)
     return ''

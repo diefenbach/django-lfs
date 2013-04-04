@@ -20,6 +20,7 @@ from lfs.payment import utils as payment_utils
 from lfs.shipping import utils as shipping_utils
 from lfs.voucher.models import Voucher
 
+
 def add_order(request):
     """Adds an order based on current cart for the current customer.
 
@@ -87,6 +88,11 @@ def add_order(request):
             tax -= voucher_tax
         else:
             voucher = None
+
+    if price < 0:
+        price = 0
+    if tax < 0:
+        tax = 0
 
     # Copy addresses
     invoice_address = deepcopy(invoice_address)
