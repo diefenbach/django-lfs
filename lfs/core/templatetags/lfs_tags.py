@@ -77,6 +77,7 @@ def google_analytics_ecommerce(context, clear_session=True):
 
     return {
         "order": order,
+        "shop": shop,
         "ga_ecommerce_tracking": shop.ga_ecommerce_tracking,
         "google_analytics_id": shop.google_analytics_id,
     }
