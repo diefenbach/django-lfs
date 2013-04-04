@@ -111,6 +111,8 @@ def process_payment(request):
         create_order_time = payment_instance.get_create_order_time()
         if create_order_time == PM_ORDER_IMMEDIATELY:
             order = lfs.order.utils.add_order(request)
+            if order is None:
+                return {'accepted': True, 'next_url': reverse("lfs_shop_view")}
             payment_instance.order = order
             result = payment_instance.process()
             if result.get("order_state"):

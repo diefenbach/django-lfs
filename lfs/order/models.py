@@ -15,12 +15,9 @@ import lfs.catalog.models
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
-from lfs.core.models import Country
-from lfs.order.settings import ORDER_STATES
-from lfs.order.settings import SUBMITTED
+from lfs.order.settings import ORDER_STATES, SUBMITTED, PAYMENT_FAILED, PAYMENT_FLAGGED
 from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
-from lfs.payment.settings import PAYPAL
 
 
 def get_unique_id_str():
@@ -123,6 +120,9 @@ class Order(models.Model):
                 return ""
         else:
             return ""
+
+    def can_be_paid(self):
+        return self.state in (SUBMITTED, PAYMENT_FAILED, PAYMENT_FLAGGED)
 
     def get_name(self):
         order_name = ""

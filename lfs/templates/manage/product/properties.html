@@ -199,6 +199,14 @@
     {% endif %}
 {% endif %}
 
+
+{% if parent_local_properties %}
+    <h2 class="heading-middle">{% trans "Parent's local properties" %}</h2>
+    {% for property_option in parent_local_properties %}
+        <div><strong>{{ property_option.property.name }}</strong>: {{ property_option.name }}</div>
+    {% endfor %}
+{% endif %}
+
 {% if shop_property_groups and product.is_product_with_variants %}
     <h2 class="heading-middle">{% trans "Property values" %}</h2>
     {% trans "Please go to the variants to assign property values." %}

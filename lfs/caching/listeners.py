@@ -7,7 +7,7 @@ from django.db.models.signals import pre_save
 from django.db.models.signals import pre_delete
 
 # lfs imports
-from lfs.caching.utils import clear_cache
+from lfs.caching.utils import clear_cache, invalidate_cache_group_id
 from lfs.cart.models import Cart
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
@@ -23,7 +23,6 @@ from lfs.marketing.models import Topseller
 from lfs.order.models import OrderItem
 from lfs.page.models import Page
 from lfs.shipping.models import ShippingMethod
-from lfs.core.utils import invalidate_cache_group_id
 
 # reviews imports
 from reviews.signals import review_added

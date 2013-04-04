@@ -163,7 +163,7 @@ class CheckoutAddressesTestCase(TestCase):
                          'invoice-line2': 'de street',
                          'invoice-city': 'de area',
                          'invoice-state': 'de town',
-                         'invoice-code': 'cork',
+                         'invoice-code': '12345',
                          'invoice-country': "DE",
                          'invoice-email': 'a@a.com',
                          'invoice-phone': '1234567',

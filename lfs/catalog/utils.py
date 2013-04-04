@@ -206,10 +206,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
 
         property = properties_mapping[row[0]]
 
-        if property.is_number_field == False:
-            continue
-
-        if property.filterable == False:
+        if not property.is_number_field or not property.filterable:
             continue
 
         # If the filter for a property is already set, we display only the
@@ -291,10 +288,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
 
         property = properties_mapping[row[0]]
 
-        if property.is_number_field:
-            continue
-
-        if property.filterable == False:
+        if property.is_number_field or not property.filterable or not row[1]:
             continue
 
         if row[0] in properties == False:
@@ -309,16 +303,10 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                 position = options_mapping[row[1]].position
             except KeyError:
                 name = row[1]
-        elif property.is_number_field:
-            value = float(row[1])
         else:
             name = row[1]
 
-        # Transform to float for later sorting, see below
-        if property.is_number_field:
-            value = float(row[1])
-        else:
-            value = row[1]
+        value = row[1]
 
         # if the property within the set filters we just show the selected value
         if str(row[0]) in set_filters.keys():

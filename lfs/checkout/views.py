@@ -164,6 +164,11 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
             voucher_value = 0
             voucher_tax = 0
 
+    if cart_price < 0:
+        cart_price = 0
+    if cart_tax < 0:
+        cart_tax = 0
+
     cart_items = []
     for cart_item in cart.get_items():
         product = cart_item.product
