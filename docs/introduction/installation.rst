@@ -15,7 +15,7 @@ Make sure you have installed:
 Installation
 ============
 
-The installation is straightforward and should last just a few minutes. Please
+The installation is straightforward and should last just a few minutes. please
 execute following steps:
 
 #. Download the installer from http://pypi.python.org/pypi/django-lfs
