@@ -54,22 +54,21 @@ def update_portlets(request, object_type_id, object_id):
     object = object_ct.get_object_for_this_type(pk=object_id)
 
     blocked_slots = request.POST.getlist("block_slot")
+    
+    # Delete all slots that were NOT checked
+    PortletBlocking.objects.filter(
+        content_type_id=object_type_id, content_id=object_id).\
+            exclude(slot__id__in=blocked_slots).delete()
 
+    # Create the slots that are blocked 
     for slot in Slot.objects.all():
         if str(slot.id) in blocked_slots:
             try:
-                PortletBlocking.objects.create(
-                    slot_id=slot.id, content_type_id=object_type_id, content_id=object_id)
-            except IntegrityError:
-                pass
-
-        else:
-            try:
-                pb = PortletBlocking.objects.get(
-                    slot=slot, content_type=object_type_id, content_id=object_id)
-                pb.delete()
+                PortletBlocking.objects.get(
+                    slot=slot, content_type_id=object_type_id, content_id=object_id)
             except PortletBlocking.DoesNotExist:
-                pass
+                PortletBlocking.objects.create(
+                    slot=slot, content_type_id=object_type_id, content_id=object_id)
 
     result = simplejson.dumps({
         "html": [["#portlets", portlets_inline(request, object)]],
