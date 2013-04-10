@@ -1,6 +1,5 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
-from django.db import IntegrityError
 from django.core.paginator import EmptyPage
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
@@ -135,10 +134,7 @@ def assign_properties(request, group_id):
     """Assignes given properties (via request body) to passed group id.
     """
     for property_id in request.POST.getlist("property-id"):
-        try:
-            GroupsPropertiesRelation.objects.create(group_id=group_id, property_id=property_id)
-        except IntegrityError:
-            pass
+        GroupsPropertiesRelation.objects.get_or_create(group_id=group_id, property_id=property_id)
 
     _udpate_positions(group_id)
 

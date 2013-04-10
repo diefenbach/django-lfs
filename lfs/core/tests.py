@@ -272,7 +272,7 @@ class TagsTestCase(TestCase):
 
         # Now it works and "pageTracker" is found
         content = template.render(Context({"request": request}))
-        self.failIf(content.find("pageTracker") == -1)
+        self.failIf(content.find("_trackPageview") == -1)
 
     def test_currency(self):
         """

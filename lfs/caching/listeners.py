@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed
 from django.db.models.signals import pre_save
 from django.db.models.signals import pre_delete
 
@@ -59,6 +59,27 @@ pre_save.connect(category_saved_listener, sender=Category)
 def category_changed_listener(sender, **kwargs):
     update_category_cache(sender)
 category_changed.connect(category_changed_listener)
+
+
+def product_categories_changed_listener(sender, **kwargs):
+    instance = kwargs['instance']
+    reverse = kwargs['reverse']
+    pk_set = kwargs['pk_set']
+
+    if reverse:
+        product = instance
+        cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product.id, True)
+        cache.delete(cache_key)
+        cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product.id, False)
+        cache.delete(cache_key)
+    else:
+        if pk_set:
+            for product in Product.objects.filter(pk__in=pk_set):
+                cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product.id, True)
+                cache.delete(cache_key)
+                cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product.id, False)
+                cache.delete(cache_key)
+m2m_changed.connect(product_categories_changed_listener, sender=Category.products.through)
 
 
 # Manufacturer

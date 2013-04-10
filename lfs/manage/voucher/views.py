@@ -2,7 +2,6 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
-from django.db import IntegrityError
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -175,27 +174,31 @@ def add_vouchers(request, group_id):
         except TypeError:
             amount = 0
 
-        # TODO: Fix the possibility of an infinte loop.
         for i in range(0, amount):
-            while 1:
-                try:
-                    Voucher.objects.create(
-                        number=lfs.voucher.utils.create_voucher_number(),
-                        group=voucher_group,
-                        creator=request.user,
-                        kind_of=request.POST.get("kind_of", 0),
-                        value=request.POST.get("value", 0.0),
-                        start_date=request.POST.get("start_date"),
-                        end_date=request.POST.get("end_date"),
-                        effective_from=request.POST.get("effective_from"),
-                        tax_id=request.POST.get("tax"),
-                        limit=request.POST.get("limit")
-                    )
-                except IntegrityError:
-                    pass
-                else:
-                    break
-        msg = _(u"Vouchers have been created.")
+            number = lfs.voucher.utils.create_voucher_number()
+            counter = 0
+            while Voucher.objects.filter(number=number).exists() and counter < 100:
+                number = lfs.voucher.utils.create_voucher_number()
+                counter += 1
+
+            if counter == 100:
+                msg = _(u"Unable to create unique Vouchers for the options specified.")
+                break
+
+            Voucher.objects.create(
+                number=number,
+                group=voucher_group,
+                creator=request.user,
+                kind_of=request.POST.get("kind_of", 0),
+                value=request.POST.get("value", 0.0),
+                start_date=request.POST.get("start_date"),
+                end_date=request.POST.get("end_date"),
+                effective_from=request.POST.get("effective_from"),
+                tax_id=request.POST.get("tax"),
+                limit=request.POST.get("limit")
+            )
+
+            msg = _(u"Vouchers have been created.")
     else:
         msg = ""
 

@@ -1,7 +1,6 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
-from django.db import IntegrityError
 from django.db.models import Q
 from django.http import HttpResponse
 from django.template import RequestContext

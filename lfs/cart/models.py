@@ -93,6 +93,9 @@ class Cart(models.Model):
                 cart_item.amount += float(amount)
                 cart_item.save()
 
+        cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache.delete(cache_key)
+
         return cart_item
 
     def get_amount_of_items(self):
@@ -175,9 +178,9 @@ class Cart(models.Model):
         return tax
 
     def _update_product_amounts(self):
-        items = CartItem.objects.select_related().filter(cart=self,
-                                                         product__active=True,
-                                                         product__manage_stock_amount=True)
+        items = CartItem.objects.select_related('product').filter(cart=self,
+                                                                  product__active=True,
+                                                                  product__manage_stock_amount=True)
         updated = False
         for item in items:
             if item.amount > item.product.stock_amount and not item.product.order_time:

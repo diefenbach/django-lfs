@@ -558,6 +558,7 @@ def save_products(request):
                 else:
                     product.active = False
 
+                # TODO: remove IntegrityError and apply some kind of form/formset validation
                 try:
                     product.save()
                 except IntegrityError:

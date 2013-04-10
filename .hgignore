@@ -8,3 +8,4 @@ syntax: glob
 *.egg-info/
 *.git*
 *docs_de
+.idea/
