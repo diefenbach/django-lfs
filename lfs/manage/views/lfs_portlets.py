@@ -48,7 +48,7 @@ def update_portlets(request, object_type_id, object_id):
     """
     # Get content type to which the portlet should be added
     object_ct = ContentType.objects.get(pk=object_type_id)
-    object = object_ct.get_object_for_this_type(pk=object_id)
+    obj = object_ct.get_object_for_this_type(pk=object_id)
 
     blocked_slots = request.POST.getlist("block_slot")
 
@@ -56,14 +56,13 @@ def update_portlets(request, object_type_id, object_id):
     PortletBlocking.objects.filter(content_type_id=object_type_id,
                                    content_id=object_id).exclude(slot_id__in=blocked_slots).delete()
 
-    for slot in Slot.objects.all():
-        if str(slot.id) in blocked_slots:
-            PortletBlocking.objects.get_or_create(slot_id=slot.id,
-                                                  content_type_id=object_type_id,
-                                                  content_id=object_id)
+    for slot in Slot.objects.filter(id__in=blocked_slots):
+        PortletBlocking.objects.get_or_create(slot=slot,
+                                              content_type_id=object_type_id,
+                                              content_id=object_id)
 
     result = simplejson.dumps({
-        "html": [["#portlets", portlets_inline(request, object)]],
+        "html": [["#portlets", portlets_inline(request, obj)]],
         "message": _(u"Portlet has been updated.")},
         cls=LazyEncoder
     )
@@ -76,7 +75,7 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
     """
     # Get content type to which the portlet should be added
     object_ct = ContentType.objects.get(pk=object_type_id)
-    object = object_ct.get_object_for_this_type(pk=object_id)
+    obj = object_ct.get_object_for_this_type(pk=object_id)
 
     # Get the portlet type
     portlet_type = request.REQUEST.get("portlet_type", "")
@@ -90,11 +89,11 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
 
             slot_id = request.POST.get("slot")
             pa = PortletAssignment.objects.create(
-                slot_id=slot_id, content=object, portlet=portlet, position=1000)
+                slot_id=slot_id, content=obj, portlet=portlet, position=1000)
 
             update_portlet_positions(pa)
 
-            html = [["#portlets", portlets_inline(request, object)]]
+            html = [["#portlets", portlets_inline(request, obj)]]
 
             result = simplejson.dumps({
                 "html": html,

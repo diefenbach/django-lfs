@@ -413,9 +413,8 @@ class Category(models.Model):
         """
         Returns the path of the category template.
         """
-        if self.template != None:
-            id = int(self.template)
-            return CATEGORY_TEMPLATES[id][1]["file"]
+        if self.template is not None:
+            return CATEGORY_TEMPLATES[int(self.template)][1]["file"]
 
         return None
 
@@ -424,7 +423,7 @@ class Category(models.Model):
         Returns the type of content the template is rendering depending on its
         path.
         """
-        if self.get_template_name() == None:
+        if self.get_template_name() is None:
             return CONTENT_PRODUCTS
         if self.get_template_name().startswith(CAT_CATEGORY_PATH):
             return CONTENT_CATEGORIES
