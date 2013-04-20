@@ -13,6 +13,7 @@ import cStringIO
 from django.core.files.base import ContentFile
 from django.db.models import ImageField
 from django.db.models.fields.files import ImageFieldFile
+from django.conf import settings
 
 # lfs imports
 from lfs.utils.images import scale_to_max_size
@@ -153,3 +154,16 @@ class ImageWithThumbsField(ImageField):
                                                    **kwargs)
         self.sizes = sizes
 
+if 'south' in settings.INSTALLED_APPS:
+    # south rules
+    rules = [
+      (
+        (ImageWithThumbsField,),
+        [],
+        {
+            "sizes": ["sizes", {"default": None}]
+        },
+      )
+    ]
+    from south.modelsinspector import add_introspection_rules
+    add_introspection_rules(rules, ["^lfs\.core\.fields\.thumbs"])
