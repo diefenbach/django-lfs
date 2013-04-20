@@ -2401,7 +2401,7 @@ class File(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("lfs_file", kwargs={"id": self.id})
+        return reverse("lfs_file", kwargs={"file_id": self.id})
 
 
 class StaticBlock(models.Model):
