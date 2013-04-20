@@ -39,12 +39,12 @@ from lfs.core.templatetags import lfs_tags
 from lfs.utils import misc as lfs_utils
 
 
-def file(request, language=None, id=None):
+def file_download(request, language=None, file_id=None):
     """Delivers files to the browser.
     """
-    file = lfs_get_object_or_404(File, pk=id)
-    response = HttpResponse(file.file, mimetype='application/binary')
-    response['Content-Disposition'] = 'attachment; filename=%s' % file.title
+    download_file = lfs_get_object_or_404(File, pk=file_id)
+    response = HttpResponse(download_file.file, mimetype='application/binary')
+    response['Content-Disposition'] = 'attachment; filename=%s' % download_file.title
 
     return response
 
