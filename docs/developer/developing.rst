@@ -28,6 +28,8 @@ should make the installation straightforward:
 
 #. $ bin/django syncdb
 
+#. $ bin/django migrate
+
 #. $ bin/django lfs_init
 
 #. $ bin/django test lfs.core

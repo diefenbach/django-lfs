@@ -69,6 +69,10 @@ class Command(BaseCommand):
         from lfs.customer.models import Customer
         from lfs.order.models import Order
 
+        if not 'south' in settings.INSTALLED_APPS:
+            print "You have to add 'south' to settings.INSTALLED_APPS!"
+            return
+
         # Addresses
         db.add_column("customer_customer", "sa_content_type", models.ForeignKey(ContentType, related_name="sa_content_type", blank=True, null=True))
         db.add_column("customer_customer", "sa_object_id", models.PositiveIntegerField(default=0))
