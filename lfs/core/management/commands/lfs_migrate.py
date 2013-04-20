@@ -213,6 +213,16 @@ class Command(BaseCommand):
         cursor3 = connection.cursor()
         cursor4 = connection.cursor()
 
+        db.create_table('criteria_criterion', (
+            ('id', models.fields.AutoField(primary_key=True)),
+            ('content_type', models.fields.related.ForeignKey(related_name='content_type', to=ContentType)),
+            ('content_id', models.fields.PositiveIntegerField()),
+            ('sub_type', models.fields.CharField(max_length=100, blank=True)),
+            ('position', models.fields.PositiveIntegerField(default=999)),
+            ('operator', models.fields.PositiveIntegerField(null=True, blank=True)),
+        ))
+        db.send_create_signal('criteria', ['Criterion'])
+
         db.add_column("criteria_cartpricecriterion", "criterion_ptr_id", models.IntegerField(null=True))
         db.add_column("criteria_combinedlengthandgirthcriterion", "criterion_ptr_id", models.IntegerField(null=True))
         db.add_column("criteria_heightcriterion", "criterion_ptr_id", models.IntegerField(null=True))

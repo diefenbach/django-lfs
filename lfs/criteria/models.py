@@ -436,7 +436,7 @@ class CombinedLengthAndGirthCriterion(Criterion):
                 max_width = 0
                 max_length = 0
                 total_height = 0
-                for item in cart.get_items():
+                for item in self.cart.get_items():
                     if max_length < item.product.get_length():
                         max_length = item.product.get_length()
 
