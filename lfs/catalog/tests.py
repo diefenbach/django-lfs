@@ -1026,8 +1026,8 @@ class ViewsTestCase(TestCase):
     def test_file(self):
         request = RequestFactory().get("/")
 
-        from lfs.catalog.views import file
-        result = file(request, id=1)
+        from lfs.catalog.views import file_download
+        result = file_download(request, file_id=1)
 
         self.assertEqual(result.status_code, 200)
         self.assertEqual(len(result.content), 1980821)

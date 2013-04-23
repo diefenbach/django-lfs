@@ -372,9 +372,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
             products = category.get_products()
 
         # Generate ids for collected products
-        # product_ids = [str(p.id) for p in products]
-        # product_ids = ", ".join(product_ids)
-        product_ids = products.values_list('id', flat=True)
+        product_ids = ", ".join(map(str, products.values_list('id', flat=True)))
 
         # Generate filter
         temp = []

@@ -120,8 +120,8 @@ def add_order(request):
         payment_price=payment_costs["price"],
         payment_tax=payment_costs["tax"],
 
-        invoice_address = invoice_address,
-        shipping_address = shipping_address,
+        invoice_address=invoice_address,
+        shipping_address=shipping_address,
 
         message=request.POST.get("message", ""),
     )

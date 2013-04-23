@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-from lfs.cart.models import Cart
 
 
 class Command(BaseCommand):
@@ -9,6 +8,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         from lfs.customer.models import Customer
         from lfs.order.models import Order
+        from lfs.cart.models import Cart
         cnt = 0
         for customer in Customer.objects.filter(user__isnull=True):
             has_cart = Cart.objects.filter(session=customer.session).exists()

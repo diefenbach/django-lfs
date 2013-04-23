@@ -1,7 +1,6 @@
 from optparse import make_option
 import datetime
 from django.core.management.base import BaseCommand
-from lfs.cart.models import Cart
 
 
 class Command(BaseCommand):
@@ -18,6 +17,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """
         """
+        from lfs.cart.models import Cart
         days = int(options['days'])
         today = datetime.date.today()
         dt = today - datetime.timedelta(days=days)

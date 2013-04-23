@@ -220,8 +220,8 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
 
     if request.method == "POST":
         checkout_form = OnePageCheckoutForm(data=request.POST)
-        iam = AddressManagement(invoice_address, "invoice", request.POST)
-        sam = AddressManagement(shipping_address, "shipping", request.POST)
+        iam = AddressManagement(customer, invoice_address, "invoice", request.POST)
+        sam = AddressManagement(customer, shipping_address, "shipping", request.POST)
         bank_account_form = BankAccountForm(instance=bank_account, data=request.POST)
         credit_card_form = CreditCardForm(instance=credit_card, data=request.POST)
 
@@ -242,6 +242,8 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
             if request.POST.get("no_shipping", "") == "":
                 sam.save()
             else:
+                if customer.selected_shipping_address:
+                    customer.selected_shipping_address.delete()
                 shipping_address = deepcopy(customer.selected_invoice_address)
                 shipping_address.id = None
                 shipping_address.save()
@@ -273,8 +275,8 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
 
     else:
         checkout_form = OnePageCheckoutForm()
-        iam = AddressManagement(invoice_address, "invoice")
-        sam = AddressManagement(shipping_address, "shipping")
+        iam = AddressManagement(customer, invoice_address, "invoice")
+        sam = AddressManagement(customer, shipping_address, "shipping")
         bank_account_form = BankAccountForm(instance=bank_account)
         credit_card_form = CreditCardForm(instance=credit_card)
 
@@ -403,7 +405,7 @@ def changed_invoice_country(request):
         address.country = Country.objects.get(code=country_iso.lower())
         address.save()
 
-    am = AddressManagement(address, "invoice")
+    am = AddressManagement(customer, address, "invoice")
     result = simplejson.dumps({
         "invoice_address": am.render(request, country_iso),
     })
@@ -423,7 +425,7 @@ def changed_shipping_country(request):
         address.country = Country.objects.get(code=country_iso.lower())
         address.save()
 
-    am = AddressManagement(address, "shipping")
+    am = AddressManagement(customer, address, "shipping")
     result = simplejson.dumps({
         "shipping_address": am.render(request, country_iso),
     })

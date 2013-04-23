@@ -339,15 +339,15 @@ def _get_filtered_customers(request, customer_filters):
     customer_ordering = request.session.get("customer-ordering", "id")
     customer_ordering_order = request.session.get("customer-ordering-order", "")
 
-    customers = Customer.objects.exclude(sa_object_id=None)
+    customers = Customer.objects.all()
 
     # Filter
     name = customer_filters.get("name", "")
     if name != "":
-        f = Q(user__last_name__icontains=name)
-        f |= Q(user__first_name__icontains=name)
+        f = Q(addresses__lastname__icontains=name)
+        f |= Q(addresses__firstname__icontains=name)
         customers = customers.filter(f)
-        
+
     # Ordering
     customers = customers.order_by("%s%s" % (customer_ordering_order, customer_ordering))
 

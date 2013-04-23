@@ -34,7 +34,8 @@ class AddressManagement(object):
         Based on that different forms can be rendered.
 
     """
-    def __init__(self, address, type, data=None, initial=None):
+    def __init__(self, customer, address, type, data=None, initial=None):
+        self.customer = customer
         self.address = address
         self.data = data
         self.type = type
@@ -100,7 +101,6 @@ class AddressManagement(object):
             "address_form": address_form,
         }))
 
-
     def is_valid(self):
         """
         Returns True if the postal and the additional form is valid.
@@ -132,6 +132,7 @@ class AddressManagement(object):
             self.address.state = self.data.get("%s-state" % self.type)
             self.address.zip_code = self.data.get("%s-code" % self.type)
             self.address.country.code = self.data.get("%s-country" % self.type)
+            self.address.customer = self.customer
             self.address.save()
 
             address_form_model = self.get_form_model()

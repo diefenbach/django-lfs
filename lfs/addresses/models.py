@@ -1,5 +1,6 @@
 # django imports
 from django.db import models
+from django.db.models import SET_NULL
 from django.template import RequestContext
 from django.template.base import Context
 from django.template.loader import render_to_string
@@ -39,7 +40,8 @@ class BaseAddress(models.Model):
     values_before_postal = None
     values_after_postal = None
 
-    customer = models.ForeignKey(Customer, verbose_name=_(u"Customer"), blank=True, null=True, related_name="addresses")
+    customer = models.ForeignKey(Customer, verbose_name=_(u"Customer"), blank=True, null=True, related_name="addresses",
+                                 on_delete=SET_NULL)
     order = models.ForeignKey(Order, verbose_name=_(u"Order"), blank=True, null=True, related_name="addresses")
 
     firstname = models.CharField(_("Firstname"), max_length=50)
