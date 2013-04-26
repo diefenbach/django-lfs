@@ -357,7 +357,7 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     product_filter = product_filter.items()
 
     cache_key = "%s-category-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
-    sub_cache_key = "%s-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
+    sub_cache_key = "%s-sorting-%s-start-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, sorting, start)
 
     filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter]
     if filter_key:
