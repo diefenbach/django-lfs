@@ -3,6 +3,7 @@ import datetime
 
 # django imports
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.forms.util import ErrorList
@@ -88,13 +89,17 @@ class CreditCardForm(forms.ModelForm):
 class EmailForm(forms.Form):
     """Form to edit email address
     """
-    email = forms.EmailField(label=_(u"E-mail"), max_length=50)
+    email = forms.EmailField(label=_(u"E-mail"), max_length=75)
+
+
+class CustomerAuthenticationForm(AuthenticationForm):
+    username = forms.CharField(label=_("E-mail"), max_length=75)
 
 
 class RegisterForm(forms.Form):
     """Form to register a customer.
     """
-    email = forms.EmailField(label=_(u"E-mail"), max_length=30)
+    email = forms.EmailField(label=_(u"E-mail"), max_length=75)
     password_1 = forms.CharField(
         label=_(u"Password"), widget=forms.PasswordInput(), max_length=20)
     password_2 = forms.CharField(

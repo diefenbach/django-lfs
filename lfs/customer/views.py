@@ -4,7 +4,6 @@ from urlparse import urlparse
 
 # django imports
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -18,7 +17,7 @@ from django.utils.translation import ugettext_lazy as _
 import lfs
 from lfs.addresses.utils import AddressManagement
 from lfs.customer import utils as customer_utils
-from lfs.customer.forms import EmailForm
+from lfs.customer.forms import EmailForm, CustomerAuthenticationForm
 from lfs.customer.forms import RegisterForm
 from lfs.order.models import Order
 
@@ -39,13 +38,12 @@ def login(request, template_name="lfs/customer/login.html"):
     # if shop.checkout_type == CHECKOUT_TYPE_ANON:
     #     raise Http404()
 
-    # Using Djangos default AuthenticationForm
-    login_form = AuthenticationForm()
+    login_form = CustomerAuthenticationForm()
     login_form.fields["username"].label = _(u"E-Mail")
     register_form = RegisterForm()
 
     if request.POST.get("action") == "login":
-        login_form = AuthenticationForm(data=request.POST)
+        login_form = CustomerAuthenticationForm(data=request.POST)
         login_form.fields["username"].label = _(u"E-Mail")
 
         if login_form.is_valid():
@@ -69,7 +67,7 @@ def login(request, template_name="lfs/customer/login.html"):
 
             # Create user
             user = User.objects.create_user(
-                username=email, email=email, password=password)
+                username=email[:30], email=email, password=password)
 
             # Create customer
             customer = customer_utils.get_or_create_customer(request)
@@ -234,9 +232,11 @@ def email(request, template_name="lfs/customer/email.html"):
     if request.method == "POST":
         email_form = EmailForm(initial={"email": request.user.email}, data=request.POST)
         if email_form.is_valid():
+            request.user.username = email_form.cleaned_data.get("email")[:30]
             request.user.email = email_form.cleaned_data.get("email")
             request.user.save()
-            return HttpResponseRedirect(reverse("lfs_my_email"))
+            return lfs.core.utils.set_message_cookie(reverse("lfs_my_email"),
+                                                     msg=_(u"Your e-mail has been changed."))
     else:
         email_form = EmailForm(initial={"email": request.user.email})
 
@@ -253,7 +253,8 @@ def password(request, template_name="lfs/customer/password.html"):
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse("lfs_my_password"))
+            return lfs.core.utils.set_message_cookie(reverse("lfs_my_password"),
+                                                     msg=_(u"Your e-mail has been changed."))
     else:
         form = PasswordChangeForm(request.user)
 

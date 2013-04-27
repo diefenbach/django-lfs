@@ -1,5 +1,5 @@
 # django imports
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core import mail
@@ -189,3 +189,45 @@ class AddressTestCase(TestCase):
         self.assertNotEquals(our_customer.selected_shipping_address, None)
         self.assertEquals(our_customer.selected_invoice_address.firstname, 'Joe')
         self.assertEquals(our_customer.selected_invoice_address.lastname, 'Bloggs')
+
+
+
+class LoginTestCase(TestCase):
+
+    fixtures = ['lfs_shop.xml']
+
+    def test_register_customer(self):
+        client = Client()
+        response = client.get(reverse('lfs_login'))
+        self.assertEqual(response.status_code, 200)
+
+
+        self.assertFalse(User.objects.filter(username='test@example.com').exists())
+        response = client.post(reverse('lfs_login'), {'email': 'test@example.com',
+                                                      'password_1': 'test',
+                                                      'password_2': 'test',
+                                                      'action': 'register',
+                                                      'next': '/'})
+        self.assertTrue(User.objects.filter(username='test@example.com').exists())
+
+        response = client.post(reverse('lfs_login'), {'email': 'testverylongemailaddressthatislongerthanusername@example.com',
+                                                      'password_1': 'test',
+                                                      'password_2': 'test',
+                                                      'action': 'register',
+                                                      'next': '/'})
+        self.assertTrue(User.objects.filter(email='testverylongemailaddressthatislongerthanusername@example.com').exists())
+        u = User.objects.get(email='testverylongemailaddressthatislongerthanusername@example.com')
+        self.assertEqual(u.username, u.email[:30])
+
+    def test_change_email(self):
+        u = User.objects.create(username="test@example.com", email="test@example.com", is_active=True)
+        u.set_password('test')
+        u.save()
+        client = Client()
+        client.login(username='test@example.com', password='test')
+        response = client.post(reverse('lfs_my_email'),
+                               {'email': 'testverylongemailaddressthatislongerthanusername@example.com',
+                                'action': 'email'})
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(User.objects.filter(email='testverylongemailaddressthatislongerthanusername@example.com').exists())
+
