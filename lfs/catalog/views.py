@@ -1,7 +1,6 @@
 # python imports
 import locale
 import math
-import urllib
 
 # django imports
 from django.conf import settings
@@ -16,6 +15,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
 # lfs imports
 import lfs.catalog.utils
@@ -27,13 +27,9 @@ from lfs.catalog.models import File
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import PropertyOption
-from lfs.catalog.models import ProductAttachment
-from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
 from lfs.catalog.settings import CONTENT_PRODUCTS
-from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
 from lfs.catalog.settings import SELECT
-from lfs.catalog.settings import VARIANT
 from lfs.core.utils import LazyEncoder, lfs_pagination
 from lfs.core.templatetags import lfs_tags
 from lfs.utils import misc as lfs_utils
@@ -250,6 +246,7 @@ def reset_all_filter(request, category_slug):
     return HttpResponseRedirect(url)
 
 
+@csrf_exempt
 def set_sorting(request):
     """Saves the given sortings (by request body) to session.
     """
@@ -350,7 +347,7 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     product_filter = product_filter.items()
 
     cache_key = "%s-category-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
-    sub_cache_key = "%s-sorting-%s-start-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, sorting, start)
+    sub_cache_key = "%s-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
 
     filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter]
     if filter_key:
@@ -361,87 +358,85 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
         sub_cache_key += "-%s-%s" % (price_filter["min"], price_filter["max"])
 
     temp = cache.get(cache_key)
-    template_data = {}
     if temp is not None:
         try:
-            template_data = temp[sub_cache_key]
+            return temp[sub_cache_key]
         except KeyError:
             pass
     else:
         temp = dict()
 
-    if not template_data:
-        category = lfs_get_object_or_404(Category, slug=slug)
+    category = lfs_get_object_or_404(Category, slug=slug)
 
-        # Calculates parameters for display.
-        try:
-            start = int(start)
-        except (ValueError, TypeError):
-            start = 1
+    # Calculates parameters for display.
+    try:
+        start = int(start)
+    except (ValueError, TypeError):
+        start = 1
 
-        format_info = category.get_format_info()
-        amount_of_rows = format_info["product_rows"]
-        amount_of_cols = format_info["product_cols"]
-        amount = amount_of_rows * amount_of_cols
+    format_info = category.get_format_info()
+    amount_of_rows = format_info["product_rows"]
+    amount_of_cols = format_info["product_cols"]
+    amount = amount_of_rows * amount_of_cols
 
-        all_products = lfs.catalog.utils.get_filtered_products_for_category(
-            category, product_filter, price_filter, sorting)
+    all_products = lfs.catalog.utils.get_filtered_products_for_category(
+        category, product_filter, price_filter, sorting)
 
-        # prepare paginator
-        paginator = Paginator(all_products, amount)
+    # prepare paginator
+    paginator = Paginator(all_products, amount)
 
-        try:
-            current_page = paginator.page(start)
-        except (EmptyPage, InvalidPage):
-            current_page = paginator.page(paginator.num_pages)
+    try:
+        current_page = paginator.page(start)
+    except (EmptyPage, InvalidPage):
+        current_page = paginator.page(paginator.num_pages)
 
-        # Calculate products
-        row = []
-        products = []
-        for i, product in enumerate(current_page.object_list):
-            if product.is_product_with_variants():
-                default_variant = product.get_variant_for_category(request)
-                if default_variant:
-                    product = default_variant
+    # Calculate products
+    row = []
+    products = []
+    for i, product in enumerate(current_page.object_list):
+        if product.is_product_with_variants():
+            default_variant = product.get_variant_for_category(request)
+            if default_variant:
+                product = default_variant
 
-            image = None
-            product_image = product.get_image()
-            if product_image:
-                image = product_image.image
-            row.append({
-                "obj": product,
-                "slug": product.slug,
-                "name": product.get_name(),
-                "image": image,
-                "price_unit": product.price_unit,
-                "price_includes_tax": product.price_includes_tax(request),
-            })
-            if (i + 1) % amount_of_cols == 0:
-                products.append(row)
-                row = []
-
-        if len(row) > 0:
+        image = None
+        product_image = product.get_image()
+        if product_image:
+            image = product_image.image
+        row.append({
+            "obj": product,
+            "slug": product.slug,
+            "name": product.get_name(),
+            "image": image,
+            "price_unit": product.price_unit,
+            "price_includes_tax": product.price_includes_tax(request),
+        })
+        if (i + 1) % amount_of_cols == 0:
             products.append(row)
+            row = []
 
-        amount_of_products = all_products.count()
+    if len(row) > 0:
+        products.append(row)
 
-        # Calculate urls
-        pagination_data = lfs_pagination(request, current_page, url=category.get_absolute_url())
+    amount_of_products = all_products.count()
 
-        render_template = category.get_template_name()
-        if render_template is not None:
-            template_name = render_template
+    # Calculate urls
+    pagination_data = lfs_pagination(request, current_page, url=category.get_absolute_url())
 
-        template_data = {
-            "category": category,
-            "products": products,
-            "amount_of_products": amount_of_products,
-            "pagination": pagination_data
-        }
+    render_template = category.get_template_name()
+    if render_template is not None:
+        template_name = render_template
 
-        temp[sub_cache_key] = template_data
-        cache.set(cache_key, temp)
+    template_data = {
+        "category": category,
+        "products": products,
+        "amount_of_products": amount_of_products,
+        "pagination": pagination_data
+    }
     result = render_to_string(template_name, RequestContext(request, template_data))
+
+    temp[sub_cache_key] = result
+    cache.set(cache_key, temp)
 
     return result
 
