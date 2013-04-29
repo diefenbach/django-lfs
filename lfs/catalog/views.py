@@ -15,9 +15,9 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _, ungettext
+from django.views.decorators.csrf import csrf_exempt
 
 # lfs imports
-from django.views.decorators.csrf import csrf_exempt
 import lfs.catalog.utils
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
