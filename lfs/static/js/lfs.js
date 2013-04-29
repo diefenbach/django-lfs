@@ -343,7 +343,7 @@ $(function() {
         });
     }
 
-    $("#id_invoice-firstname,#id_invoice-lastname,#id_invoice-line1,#id_invoice-line2,#id_invoice-city,#id_invoice-state,#id_invoice-cpde").live("change", function() {
+    $("#id_invoice-firstname,#id_invoice-lastname,#id_invoice-line1,#id_invoice-line2,#id_invoice-city,#id_invoice-state,#id_invoice-code").live("change", function() {
     	save_invoice_address();
     });
 
@@ -361,7 +361,7 @@ $(function() {
         update_checkout();
     });
 
-    $("#id_shipping-firstname,#id_shipping-lastname,#id_shipping-line1,#id_shipping-line2,#id_shipping-city,#id_shipping-state,#id_shipping-cpde").live("change", function() {
+    $("#id_shipping-firstname,#id_shipping-lastname,#id_shipping-line1,#id_shipping-line2,#id_shipping-city,#id_shipping-state,#id_shipping-code").live("change", function() {
     	save_shipping_address();
     });
 
