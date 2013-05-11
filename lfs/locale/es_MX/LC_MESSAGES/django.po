@@ -347,7 +347,7 @@ msgstr "El número único para el producto"
 #: templates/manage/properties/options_inline.html:16
 #: templates/manage/shipping_methods/shipping_method_prices.html:27
 msgid "Price"
-msgstr "Precio"
+msgstr "Precio normal"
 
 #: catalog/models.py:588 core/models.py:186
 msgid "Price calculator"
@@ -378,7 +378,7 @@ msgstr "Accesorios"
 #: catalog/models.py:610
 #: templates/manage/product/product_filters_inline.html:17
 msgid "For sale"
-msgstr "En venta"
+msgstr "Precio de promoción"
 
 #: catalog/models.py:611
 msgid "For sale price"
@@ -524,7 +524,7 @@ msgstr "Activo a la venta"
 
 #: catalog/models.py:659
 msgid "Active for sale price"
-msgstr "Precio oferta activo"
+msgstr "Precio de oferta activo"
 
 #: catalog/models.py:660
 msgid "Active Images"
@@ -1063,7 +1063,7 @@ msgstr ""
 
 #: core/models.py:176
 msgid "Google Analytics Site Tracking"
-msgstr ""
+msgstr "Código de seguimiento de Google Analytics"
 
 #: core/models.py:177
 msgid "Google Analytics E-Commerce Tracking"
@@ -1071,15 +1071,15 @@ msgstr ""
 
 #: core/models.py:179
 msgid "Invoice countries"
-msgstr "Países"
+msgstr "Países para facturación"
 
 #: core/models.py:180
 msgid "Shipping countries"
-msgstr "Países"
+msgstr "Países para envío"
 
 #: core/models.py:181
 msgid "Default shipping country"
-msgstr "Pais por defecto"
+msgstr "País de envío por defecto"
 
 #: core/models.py:183 core/management/commands/lfs_migrate.py:456
 msgid "Use international currency codes"
@@ -1115,7 +1115,7 @@ msgstr "Línea 2"
 
 #: core/management/commands/lfs_migrate.py:454
 msgid "Default Shop Locale"
-msgstr "Idioma de la tienda"
+msgstr "Idioma pincipal de la tienda"
 
 #: core/management/commands/lfs_migrate.py:459
 msgid "Supplier"
@@ -1160,7 +1160,7 @@ msgstr "Borrar imagen"
 #: templates/manage/product/product_filters_inline.html:18
 #: templates/manage/product/products_inline.html:31
 msgid "Sub type"
-msgstr "Sub tipo"
+msgstr "Subtipo"
 
 #: criteria/models.py:107
 msgid "Operator"
@@ -2365,7 +2365,7 @@ msgstr "Nota"
 
 #: shipping/models.py:78 templates/manage/shop/default_values_tab.html:9
 msgid "Price Calculator"
-msgstr "Calculadora de precio"
+msgstr "Calculadora de precios"
 
 #: shipping/models.py:148
 msgid "shipping_method"
@@ -3269,7 +3269,7 @@ msgstr "Tiempo de Entrega"
 
 #: templates/manage/delivery_times/base.html:47
 msgid "Save Delivery Time"
-msgstr "Borrar Tiempo de Entrega"
+msgstr "Guardar el tiempo de entrega"
 
 #: templates/manage/delivery_times/no_delivery_times.html:13
 msgid "There are no delivery times yet."
@@ -3924,11 +3924,11 @@ msgstr "Administrar Productos"
 
 #: templates/manage/product/products_inline.html:37
 msgid "Sale Price"
-msgstr "Precio para la venta"
+msgstr "Precio de oferta"
 
 #: templates/manage/product/products_inline.html:42
 msgid "For Sale"
-msgstr "Venta"
+msgstr "Oferta"
 
 #: templates/manage/product/products_inline.html:111
 #: templates/manage/product/variants.html:27
