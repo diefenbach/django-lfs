@@ -1,7 +1,6 @@
 # python imports
 import locale
 import math
-import urllib
 
 # django imports
 from django.conf import settings
@@ -16,6 +15,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
 # lfs imports
 import lfs.catalog.utils
@@ -27,13 +27,9 @@ from lfs.catalog.models import File
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import PropertyOption
-from lfs.catalog.models import ProductAttachment
-from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
 from lfs.catalog.settings import CONTENT_PRODUCTS
-from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
 from lfs.catalog.settings import SELECT
-from lfs.catalog.settings import VARIANT
 from lfs.core.utils import LazyEncoder, lfs_pagination
 from lfs.core.templatetags import lfs_tags
 from lfs.utils import misc as lfs_utils
@@ -250,6 +246,7 @@ def reset_all_filter(request, category_slug):
     return HttpResponseRedirect(url)
 
 
+@csrf_exempt
 def set_sorting(request):
     """Saves the given sortings (by request body) to session.
     """
@@ -427,19 +424,20 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     pagination_data = lfs_pagination(request, current_page, url=category.get_absolute_url())
 
     render_template = category.get_template_name()
-    if render_template != None:
+    if render_template is not None:
         template_name = render_template
 
-    result = render_to_string(template_name, RequestContext(request, {
+    template_data = {
         "category": category,
         "products": products,
         "amount_of_products": amount_of_products,
-        "pagination": pagination_data,
-        "all_products": all_products,
-    }))
+        "pagination": pagination_data
+    }
+    result = render_to_string(template_name, RequestContext(request, template_data))
 
     temp[sub_cache_key] = result
     cache.set(cache_key, temp)
+
     return result
 
 

@@ -27,6 +27,21 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.7.7 (2013-01-20)
+------------------
+
+* Update: updated Czech translation (Radim Novotny).
+* Update: updated Mexican translations (tzicatl).
+* Improvement: Don't use more than one h1 tag on the product page but use h1 and h2 (Radim Novotny).
+* Improvement: Show search query in the input box if there is any query. Also added pagination to the bottom of search results page (Radim Novotny).
+* Bugfix: fixed calculation of discount net price within order; issue #36
+* Bugfix: fixed display of amount for discounts within management.
+* Bugfix: fixed sorting handling for SOLR (Radim Novotny)
+* Bugfix: fixed display of properties for locale.
+* Bugfix: fixed calculation of 'calculated price' for different locales.
+* Bugfix: fixed calculation and display of packings.
+* Bugfix: fixed display of variant property values within products management.
+
 0.7.6 (2012-06-24)
 ------------------
 

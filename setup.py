@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.7.6'
+version = '0.7.7'
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
@@ -29,7 +29,7 @@ setup(name='django-lfs',
       install_requires=[
         'setuptools',
         'django-compressor == 1.1.1',
-        'django-lfstheme == 0.7.3',
+        'django-lfstheme == 0.7.4',
         'django-pagination == 1.0.7',
         'django-paypal == 0.1.2',
         'django-portlets == 1.1.1',

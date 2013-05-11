@@ -18,4 +18,4 @@ class ActionAddForm(ModelForm):
     """
     class Meta:
         model = Action
-        fields = ("title", "group")
+        fields = ("title", "link", "group")
