@@ -1,4 +1,5 @@
 # django imports
+from copy import deepcopy
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
@@ -120,24 +121,38 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
     # in order to select the options of the current variant.
     if variants is None:
         variants = []
-        for variant in product.variants.all().order_by("variant_position"):
+
+        props = product.get_property_select_fields()
+        props_options = {}
+        for o in PropertyOption.objects.filter(property__in=props):
+            props_options.setdefault(o.property_id, {})
+            props_options[o.property_id][str(o.pk)] = {
+                "id": o.pk,
+                "name": o.name,
+                "selected": False
+            }
+
+        product_variants = product.variants.all().order_by("variant_position")
+        selected_options = {}
+        for so in ProductPropertyValue.objects.filter(property__in=props, \
+                        product__in=product_variants, type=PROPERTY_VALUE_TYPE_VARIANT):
+            ppk = so.product_id
+            selected_options.setdefault(ppk, {})[so.property_id] = so.value
+
+        for variant in product_variants:
             properties = []
-            for property in product.get_property_select_fields():
-                options = []
-                for property_option in property.options.all():
-                    if variant.has_option(property, property_option):
-                        selected = True
-                    else:
-                        selected = False
-                    options.append({
-                        "id": property_option.id,
-                        "name": property_option.name,
-                        "selected": selected
-                    })
+            for prop in props:
+                options = deepcopy(props_options.get(prop.pk, {}))
+                try:
+                    sop = selected_options[variant.pk][prop.pk]
+                    options[sop]['selected'] = True
+                except KeyError:
+                    pass
+
                 properties.append({
-                    "id": property.id,
-                    "name": property.name,
-                    "options": options
+                    "id": prop.pk,
+                    "name": prop.name,
+                    "options": options.values()
                 })
 
             variants.append({
