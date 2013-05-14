@@ -126,6 +126,3 @@ class ManageTestCase(TestCase):
         self.assertEqual(len(outvariants[0]['properties']), 1)
         self.assertEqual(outvariants[0]['properties'][0]['name'], pproperty.name)
         self.assertEqual(outvariants[0]['properties'][0]['options'][0]['name'], property_option.name)
-
-
-        self.client.login(username=self.username, password=self.password)
