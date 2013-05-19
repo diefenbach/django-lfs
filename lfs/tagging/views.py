@@ -22,7 +22,6 @@ def tag_products(request, source="description"):
     if source == "description":
         parser = tagging_utils.SimpleHTMLParser()
         for product in Product.objects.all():
-            print product.name
             parser.feed(product.description)
             Tag.objects.update_tags(product, "")
 
