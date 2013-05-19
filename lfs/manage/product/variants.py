@@ -401,6 +401,8 @@ def add_variants(request, product_id):
             else:
                 properties.append(["%s|%s" % (property_id, value)])
 
+    message = ''
+
     # Create a variant for every requested option combination
     for i, options in enumerate(manage_utils.cartesian_product(*properties)):
 
