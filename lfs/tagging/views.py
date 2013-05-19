@@ -15,6 +15,9 @@ from lfs.tagging import utils as tagging_utils
 from lfs.tagging.settings import RE_STOP_WORDS
 from lfs.tagging.settings import RE_SEPARATORS
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 def tag_products(request, source="description"):
     """Auto tags product on base of product description.
@@ -22,7 +25,7 @@ def tag_products(request, source="description"):
     if source == "description":
         parser = tagging_utils.SimpleHTMLParser()
         for product in Product.objects.all():
-            print product.name
+            logger.debug(product.name)
             parser.feed(product.description)
             Tag.objects.update_tags(product, "")
 
