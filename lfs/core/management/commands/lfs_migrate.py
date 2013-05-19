@@ -13,6 +13,7 @@ from django.core import management
 
 # lfs imports
 import lfs.core.settings as lfs_settings
+from lfs.order.models import Order
 from lfs.voucher.models import Voucher
 from lfs.manufacturer.models import Manufacturer
 from lfs.core.fields.thumbs import ImageWithThumbsField
@@ -524,6 +525,7 @@ class Command(BaseCommand):
         # Fake south migrations
         management.call_command('syncdb', interactive=False)
         management.call_command('migrate', all=True, fake="0001")
+        management.call_command('migrate', 'order', fake="0002")
         management.call_command('migrate')
 
     def migrate_to_07(self, application, version):

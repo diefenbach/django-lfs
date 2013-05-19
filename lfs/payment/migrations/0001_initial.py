@@ -6,6 +6,10 @@ from django.db import models
 
 
 class Migration(SchemaMigration):
+    depends_on = (
+        ("paypal.ipn", '0001_first_migration'),
+        ("order", "0001_initial"),
+    )
 
     def forwards(self, orm):
         # Adding model 'PaymentMethod'

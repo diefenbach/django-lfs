@@ -7,81 +7,35 @@ from django.db import models
 
 class Migration(SchemaMigration):
     depends_on = (
-        ("shipping", "0001_initial"),
+        ("payment", "0001_initial"),
     )
 
     def forwards(self, orm):
-        # Adding model 'Order'
-        db.create_table('order_order', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('number', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
-            ('session', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('state', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=0)),
-            ('state_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('price', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('tax', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('customer_firstname', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('customer_lastname', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('customer_email', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('sa_content_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='order_shipping_address', to=orm['contenttypes.ContentType'])),
-            ('sa_object_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('ia_content_type', self.gf('django.db.models.fields.related.ForeignKey')(related_name='order_invoice_address', to=orm['contenttypes.ContentType'])),
-            ('ia_object_id', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('shipping_method', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['shipping.ShippingMethod'], null=True, blank=True)),
-            ('shipping_price', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('shipping_tax', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('account_number', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
-            ('bank_identification_code', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
-            ('bank_name', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('depositor', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('voucher_number', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('voucher_price', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('voucher_tax', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('message', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('pay_link', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('uuid', self.gf('django.db.models.fields.CharField')(default='4002a710-be08-4b65-b615-ff442e6eca7c', unique=True, max_length=50)),
-            ('requested_delivery_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-        ))
-        db.send_create_signal('order', ['Order'])
+        # Adding field 'Order.payment_method'
+        db.add_column('order_order', 'payment_method',
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['payment.PaymentMethod'], null=True, blank=True),
+                      keep_default=False)
 
-        # Adding model 'OrderItem'
-        db.create_table('order_orderitem', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order', self.gf('django.db.models.fields.related.ForeignKey')(related_name='items', to=orm['order.Order'])),
-            ('price_net', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('price_gross', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('tax', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('product', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalog.Product'], null=True, on_delete=models.SET_NULL, blank=True)),
-            ('product_amount', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('product_sku', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('product_name', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('product_price_net', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('product_price_gross', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('product_tax', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-        ))
-        db.send_create_signal('order', ['OrderItem'])
+        # Adding field 'Order.payment_price'
+        db.add_column('order_order', 'payment_price',
+                      self.gf('django.db.models.fields.FloatField')(default=0.0),
+                      keep_default=False)
 
-        # Adding model 'OrderItemPropertyValue'
-        db.create_table('order_orderitempropertyvalue', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order_item', self.gf('django.db.models.fields.related.ForeignKey')(related_name='properties', to=orm['order.OrderItem'])),
-            ('property', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalog.Property'])),
-            ('value', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-        ))
-        db.send_create_signal('order', ['OrderItemPropertyValue'])
+        # Adding field 'Order.payment_tax'
+        db.add_column('order_order', 'payment_tax',
+                      self.gf('django.db.models.fields.FloatField')(default=0.0),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'Order'
-        db.delete_table('order_order')
+        # Deleting field 'Order.payment_method'
+        db.delete_column('order_order', 'payment_method_id')
 
-        # Deleting model 'OrderItem'
-        db.delete_table('order_orderitem')
+        # Deleting field 'Order.payment_price'
+        db.delete_column('order_order', 'payment_price')
 
-        # Deleting model 'OrderItemPropertyValue'
-        db.delete_table('order_orderitempropertyvalue')
+        # Deleting field 'Order.payment_tax'
+        db.delete_column('order_order', 'payment_tax')
 
 
     models = {
@@ -213,7 +167,7 @@ class Migration(SchemaMigration):
             'tax': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tax.Tax']", 'null': 'True', 'blank': 'True'}),
             'template': ('django.db.models.fields.PositiveSmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
             'type_of_quantity_field': ('django.db.models.fields.PositiveSmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'uid': ('django.db.models.fields.CharField', [], {'default': "'b23b3483-4a1a-4df6-9fac-c437544f9818'", 'unique': 'True', 'max_length': '50'}),
+            'uid': ('django.db.models.fields.CharField', [], {'default': "'cb59daf2-1cc9-4ba2-a934-25c344a1b12d'", 'unique': 'True', 'max_length': '50'}),
             'unit': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
             'variant_position': ('django.db.models.fields.IntegerField', [], {'default': '999'}),
             'variants_display_type': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
@@ -256,7 +210,7 @@ class Migration(SchemaMigration):
             'step_type': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '1'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'type': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '2'}),
-            'uid': ('django.db.models.fields.CharField', [], {'default': "'f1eb807b-6a71-48bc-8760-d106d13e303c'", 'unique': 'True', 'max_length': '50'}),
+            'uid': ('django.db.models.fields.CharField', [], {'default': "'c9fb0c31-0cb2-4b62-ae8b-5ddf61ffb863'", 'unique': 'True', 'max_length': '50'}),
             'unit': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'}),
             'unit_max': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'unit_min': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
@@ -315,6 +269,9 @@ class Migration(SchemaMigration):
             'message': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'number': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'pay_link': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'payment_method': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['payment.PaymentMethod']", 'null': 'True', 'blank': 'True'}),
+            'payment_price': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
+            'payment_tax': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
             'price': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
             'requested_delivery_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'sa_content_type': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'order_shipping_address'", 'to': "orm['contenttypes.ContentType']"}),
@@ -327,7 +284,7 @@ class Migration(SchemaMigration):
             'state_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'tax': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'}),
-            'uuid': ('django.db.models.fields.CharField', [], {'default': "'ad5ca701-9d43-4885-a658-669c43ad9e1a'", 'unique': 'True', 'max_length': '50'}),
+            'uuid': ('django.db.models.fields.CharField', [], {'default': "'53332611-888f-444f-b93a-68fd84ece8ff'", 'unique': 'True', 'max_length': '50'}),
             'voucher_number': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'voucher_price': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
             'voucher_tax': ('django.db.models.fields.FloatField', [], {'default': '0.0'})
@@ -353,6 +310,21 @@ class Migration(SchemaMigration):
             'order_item': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'properties'", 'to': "orm['order.OrderItem']"}),
             'property': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalog.Property']"}),
             'value': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'})
+        },
+        'payment.paymentmethod': {
+            'Meta': {'ordering': "('priority',)", 'object_name': 'PaymentMethod'},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'deletable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'module': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'note': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'price': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
+            'priority': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'tax': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tax.Tax']", 'null': 'True', 'blank': 'True'}),
+            'type': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '0'})
         },
         'shipping.shippingmethod': {
             'Meta': {'ordering': "('priority',)", 'object_name': 'ShippingMethod'},

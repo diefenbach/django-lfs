@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 
 # lfs imports
+from django.utils.encoding import force_unicode
 import lfs.catalog.utils
 from lfs.core.signals import property_type_changed
 from lfs.catalog.settings import CHOICES_YES
@@ -2769,12 +2770,14 @@ class ProductTestCase(TestCase):
         self.attachment_P1_1_data = dict(
             title='Attachment P1-1',
             product=self.p1,
+            position=10
         )
         self.attachment_P1_1 = ProductAttachment.objects.create(**self.attachment_P1_1_data)
 
         self.attachment_P1_2_data = dict(
             title='Attachment P1-2',
             product=self.p1,
+            position=20
         )
         self.attachment_P1_2 = ProductAttachment.objects.create(**self.attachment_P1_2_data)
 
@@ -2786,25 +2789,25 @@ class ProductTestCase(TestCase):
 
     def test_get_attachments(self):
         # retrieve attachments
-        match_titles = [self.attachment_P1_1_data['title'],
-                        self.attachment_P1_2_data['title']]
+        match_titles = [force_unicode(self.attachment_P1_1_data['title']),
+                        force_unicode(self.attachment_P1_2_data['title'])]
         attachments = self.p1.get_attachments()
-        attachments_titles = [x.title for x in attachments]
-        self.assertEqual(match_titles, attachments_titles)
+        attachments_titles = [force_unicode(x.title) for x in attachments]
+        self.assertEqual(set(match_titles), set(attachments_titles))
 
         # check data
         first = attachments[0]
         for k, v in self.attachment_P1_1_data.items():
-            self.assertEqual(getattr(first, k), v)
+            self.assertEqual(force_unicode(getattr(first, k)), force_unicode(v))
 
         second = attachments[1]
         for k, v in self.attachment_P1_2_data.items():
-            self.assertEqual(getattr(second, k), v)
+            self.assertEqual(force_unicode(getattr(second, k)), force_unicode(v))
 
         # retrieve variant attachment
         attachments = self.v1.get_attachments()
-        attachments_titles = [x.title for x in attachments]
-        match_titles = [self.attachment_V1_data['title']]
+        attachments_titles = [force_unicode(x.title) for x in attachments]
+        match_titles = [force_unicode(self.attachment_V1_data['title'])]
         self.assertEqual(attachments_titles, match_titles)
 
         # delete variant attachment: we should get parent attachments

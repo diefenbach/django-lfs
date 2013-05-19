@@ -83,7 +83,7 @@ To migrate an existing database please proceed the following steps:
 After that your database should be ready to run with the latest release.
 
 Migration from version 0.8.0 to higher one
-========================================
+==========================================
 
 #. Install the new LFS version
 
@@ -93,6 +93,21 @@ Migration from version 0.8.0 to higher one
 
 #. $ bin/django migrate
 
+Migration from 0.8.0 without South to 0.8.0 using South
+=======================================================
+
+This might be useful if you have github version of LFS that has no migrations yet, and you've updated to the version
+that does use South migrations
+
+#. Install the new LFS version
+
+#. Backup your existing database
+
+#. $ bin/django migrate --all --fake 0001
+
+#. $ bin/django migrate order --fake 0002
+
+#. $ bin/django migrate
 
 What's next?
 ============
