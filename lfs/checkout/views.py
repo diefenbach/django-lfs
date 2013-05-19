@@ -16,6 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.core.utils
+from lfs.customer.utils import create_unique_username
 import lfs.discounts.utils
 import lfs.order.utils
 import lfs.payment.settings
@@ -77,7 +78,7 @@ def login(request, template_name="lfs/checkout/login.html"):
 
             # Create user
             user = User.objects.create_user(
-                username=email, email=email, password=password)
+                username=create_unique_username(email), email=email, password=password)
 
             # Notify
             lfs.core.signals.customer_added.send(user)

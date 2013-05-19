@@ -1,4 +1,5 @@
 # django imports
+from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 # lfs imports
@@ -92,3 +93,12 @@ def update_customer_after_login(request):
             session_customer.delete()
     except ObjectDoesNotExist:
         pass
+
+
+def create_unique_username(email):
+    new_email = email[:30]
+    cnt = 0
+    while User.objects.filter(username=new_email).exists():
+        cnt += 1
+        new_email = '%s%.2d' % (new_email[:28], cnt)
+    return new_email

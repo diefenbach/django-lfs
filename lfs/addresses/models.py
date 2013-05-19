@@ -4,8 +4,6 @@ from django.db.models import SET_NULL
 from django.template import RequestContext
 from django.template.base import Context
 from django.template.loader import render_to_string
-from django.template.loader import select_template
-
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -116,7 +114,7 @@ class Address(BaseAddress):
 
     company_name = models.CharField(_("Company name"), max_length=50, blank=True, null=True)
     phone = models.CharField(_("Phone"), blank=True, null=True, max_length=20)
-    email = models.EmailField(_("E-Mail"), blank=True, null=True, max_length=50)
+    email = models.EmailField(_("E-Mail"), blank=True, null=True)
 
     def __unicode__(self):
         return u'%s %s (%s)' % (self.firstname, self.lastname, self.company_name)

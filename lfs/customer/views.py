@@ -19,6 +19,7 @@ from lfs.addresses.utils import AddressManagement
 from lfs.customer import utils as customer_utils
 from lfs.customer.forms import EmailForm, CustomerAuthenticationForm
 from lfs.customer.forms import RegisterForm
+from lfs.customer.utils import create_unique_username
 from lfs.order.models import Order
 
 
@@ -67,7 +68,7 @@ def login(request, template_name="lfs/customer/login.html"):
 
             # Create user
             user = User.objects.create_user(
-                username=email[:30], email=email, password=password)
+                username=create_unique_username(email), email=email, password=password)
 
             # Create customer
             customer = customer_utils.get_or_create_customer(request)

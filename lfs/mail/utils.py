@@ -133,7 +133,7 @@ def _send_customer_added(user):
     shop = lfs.core.utils.get_default_shop()
 
     from_email = shop.from_email
-    to = [user.username]
+    to = [user.email]
     bcc = shop.get_notification_emails()
 
     # text

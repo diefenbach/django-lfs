@@ -169,6 +169,24 @@ class CheckoutTestCase(TestCase):
 
         self.assertEqual(result.status_code, 302)
 
+    def test_register(self):
+        """Tests the login view.
+        """
+        email = 'testverylongemailaddressthatislongerthanusername1@example.com'
+        response = self.client.post(reverse('lfs_checkout_login'), {'email': email,
+                                                                    'action': 'register',
+                                                                    'password_1': 'test',
+                                                                    'password_2': 'test'})
+        self.assertEqual(User.objects.filter(email=email).count(), 1)
+        self.client.logout()
+
+        email2 = 'testverylongemailaddressthatislongerthanusername2@example.com'
+        response = self.client.post(reverse('lfs_checkout_login'), {'email': email2,
+                                                                    'action': 'register',
+                                                                    'password_1': 'test',
+                                                                    'password_2': 'test'})
+        self.assertEqual(User.objects.filter(email=email2).count(), 1)
+
     def dump_response(self, http_response):
         fo = open('tests_checkout.html', 'w')
         fo.write(str(http_response))
