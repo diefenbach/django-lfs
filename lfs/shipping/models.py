@@ -123,7 +123,8 @@ class ShippingMethod(models.Model, Criteria):
             price_class = import_symbol(self.price_calculator)
             return price_class(request, self).get_tax()
         else:
-            return self.tax.rate
+            # TODO: this should be tax not tax rate
+            return 0.0
 
 
 class ShippingMethodPrice(models.Model, Criteria):

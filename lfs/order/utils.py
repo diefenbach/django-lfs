@@ -61,7 +61,7 @@ def add_order(request):
         customer_email = customer.selected_invoice_address.email
 
     # Calculate the totals
-    price = cart.get_price_gross(request) + shipping_costs["price"] + payment_costs["price"]
+    price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
     tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
     # Discounts
@@ -114,7 +114,7 @@ def add_order(request):
         customer_email=customer_email,
 
         shipping_method=shipping_method,
-        shipping_price=shipping_costs["price"],
+        shipping_price=shipping_costs["price_gross"],
         shipping_tax=shipping_costs["tax"],
         payment_method=payment_method,
         payment_price=payment_costs["price"],

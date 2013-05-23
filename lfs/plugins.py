@@ -479,10 +479,26 @@ class ShippingMethodPriceCalculator(object):
         self.shipping_method = shipping_method
         self.request = request
 
+    def get_tax_rate(self):
+        from lfs.criteria.utils import get_first_valid
+        from lfs.customer_tax.models import CustomerTax
+
+        customer_tax = get_first_valid(self.request, CustomerTax.objects.all(), self.shipping_method)
+        if customer_tax:
+            return customer_tax.rate
+        if self.shipping_method.tax is None:
+            return 0
+        return self.shipping_method.tax.rate
+
     def get_price(self):
         """
         Returns the stored price without any calculations.
         """
+        from lfs.criteria import utils as criteria_utils
+        price = criteria_utils.get_first_valid(self.request,
+                                               self.shipping_method.prices.all())
+        if price:
+            return price.price
         return self.shipping_method.price
 
     def get_price_net(self):

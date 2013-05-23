@@ -75,7 +75,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     payment_costs = payment_utils.get_payment_costs(request, selected_payment_method)
 
     # Cart costs
-    cart_price = cart.get_price_gross(request) + shipping_costs["price"] + payment_costs["price"]
+    cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
     cart_tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
     # Discounts
@@ -128,7 +128,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         "cart_tax": cart_tax,
         "shipping_methods": shipping_utils.get_valid_shipping_methods(request),
         "selected_shipping_method": selected_shipping_method,
-        "shipping_price": shipping_costs["price"],
+        "shipping_costs": shipping_costs,
         "payment_methods": payment_utils.get_valid_payment_methods(request),
         "selected_payment_method": selected_payment_method,
         "payment_price": payment_costs["price"],
@@ -141,7 +141,6 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         "voucher_number": voucher_number,
         "voucher_value": voucher_value,
         "voucher_tax": voucher_tax,
-        "voucher_number": lfs.voucher.utils.get_current_voucher_number(request),
         "voucher_message": voucher_message,
     }))
 

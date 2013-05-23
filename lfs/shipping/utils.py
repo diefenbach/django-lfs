@@ -184,33 +184,19 @@ def get_shipping_costs(request, shipping_method):
     """
     if shipping_method is None:
         return {
-            "price": 0.0,
+            "price_net": 0.0,
+            "price_gross": 0.0,
             "tax": 0.0
         }
+    price_gross = shipping_method.get_price_gross(request)
+    price_net = shipping_method.get_price_net(request)
+    tax = shipping_method.get_tax(request)
 
-    try:
-        tax_rate = shipping_method.tax.rate
-    except AttributeError:
-        tax_rate = 0.0
-
-    price = criteria_utils.get_first_valid(request,
-        shipping_method.prices.all())
-
-    if price is None:
-        price = shipping_method.get_price_gross(request)
-        tax = shipping_method.get_tax(request)
-
-        return {
-            "price": price,
-            "tax": tax
-        }
-    else:
-        tax = (tax_rate / (tax_rate + 100)) * price.price
-
-        return {
-            "price": price.price,
-            "tax": tax
-        }
+    return {
+        "price_net": price_net,
+        "price_gross": price_gross,
+        "tax": tax
+    }
 
 
 def get_delivery_time(request, product):

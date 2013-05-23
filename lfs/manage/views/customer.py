@@ -121,7 +121,7 @@ def customer_inline(request, customer_id, template_name="manage/customer/custome
         selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
         payment_costs = lfs.payment.utils.get_payment_costs(request, selected_payment_method)
 
-        cart_price = cart.get_price_gross(request) + shipping_costs["price"] + payment_costs["price"]
+        cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
 
     if customer.selected_shipping_address:
         shipping_address = customer.selected_shipping_address.as_html(request, "shipping")
