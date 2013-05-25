@@ -262,7 +262,7 @@ def add_to_cart(request, product_id=None):
 
                 if property.is_number_field:
                     try:
-                        value = lfs.core.utils.atof(value)
+                        value = core_utils.atof(value)
                     except ValueError:
                         value = locale.atof("0.0")
 
@@ -273,7 +273,7 @@ def add_to_cart(request, product_id=None):
 
                     if (value < property.unit_min) or (value > property.unit_max):
                         msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name": property.title, "min": property.unit_min, "max": property.unit_max, "unit": property.unit}
-                        return lfs.core.utils.set_message_cookie(
+                        return core_utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
                     # calculate valid steps
@@ -287,7 +287,7 @@ def add_to_cart(request, product_id=None):
                     value = "%.2f" % value
                     if value not in steps:
                         msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": property.title, "value": value, "step": property.unit_step}
-                        return lfs.core.utils.set_message_cookie(
+                        return core_utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
     if product.get_active_packing_unit():
@@ -349,7 +349,7 @@ def add_to_cart(request, product_id=None):
         url_name = "lfs_added_to_cart"
 
     if message:
-        return lfs.core.utils.set_message_cookie(reverse(url_name), message)
+        return core_utils.set_message_cookie(reverse(url_name), message)
     else:
         return HttpResponseRedirect(reverse(url_name))
 
