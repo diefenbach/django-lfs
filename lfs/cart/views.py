@@ -239,10 +239,7 @@ def add_to_cart(request, product_id=None):
 
     try:
         value = request.POST.get("quantity", "1.0")
-        if isinstance(value, unicode):
-            # atof() on unicode string fails in some environments, like Czech
-            value = value.encode("utf-8")
-        quantity = locale.atof(value)
+        quantity = core_utils.atof(value)
     except (TypeError, ValueError):
         quantity = 1.0
 
