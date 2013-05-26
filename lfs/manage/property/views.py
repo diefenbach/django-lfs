@@ -12,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
 # lfs imports
+from lfs.caching import invalidate_cache_group_id
 import lfs.core.utils
 from lfs.core.utils import LazyEncoder
 from lfs.core.signals import property_type_changed
@@ -100,6 +101,9 @@ def update_property_type(request, id):
     if old_type != new_property.type:
         property_type_changed.send(property)
 
+    # invalidate global properties version number (all product property caches will be invalidated)
+    invalidate_cache_group_id('global-properties-version')
+
     return lfs.core.utils.set_message_cookie(
         url=reverse("lfs_manage_shop_property", kwargs={"id": property.id}),
         msg=_(u"Property type has been changed."),
@@ -128,6 +132,9 @@ def save_select_field(request, property_id):
     form = SelectFieldForm(instance=property, data=request.POST)
     property = form.save()
 
+    # invalidate global properties version number (all product property caches will be invalidated)
+    invalidate_cache_group_id('global-properties-version')
+
     return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
 
 
@@ -152,6 +159,9 @@ def save_number_field_validators(request, property_id):
 
     form = NumberFieldForm(instance=property, data=request.POST)
     property = form.save()
+
+    # invalidate global properties version number (all product property caches will be invalidated)
+    invalidate_cache_group_id('global-properties-version')
 
     response = HttpResponseRedirect(request.META.get("HTTP_REFERER"))
     return lfs.core.utils.set_message_to(response, _(u"Validators have been saved."))
@@ -183,6 +193,9 @@ def save_step_range(request, property_id):
     form = StepRangeForm(instance=property, data=request.POST)
     property = form.save()
 
+    # invalidate global properties version number (all product property caches will be invalidated)
+    invalidate_cache_group_id('global-properties-version')
+
     result = simplejson.dumps({
         "message": _(u"Step range has been saved."),
     }, cls=LazyEncoder)
@@ -199,6 +212,9 @@ def save_step_type(request, property_id):
 
     form = StepTypeForm(instance=property, data=request.POST)
     property = form.save()
+
+    # invalidate global properties version number (all product property caches will be invalidated)
+    invalidate_cache_group_id('global-properties-version')
 
     html = [["#steps", steps_inline(request, property_id)]]
     result = simplejson.dumps({
@@ -229,6 +245,8 @@ def add_step(request, property_id):
             else:
                 step.start = request.POST.get("start-%s" % step_id, "")
                 step.save()
+                # invalidate global properties version number (all product property caches will be invalidated)
+                invalidate_cache_group_id('global-properties-version')
         message = _(u"Steps have been updated.")
 
     html = [["#steps", steps_inline(request, property_id)]]
@@ -251,6 +269,8 @@ def delete_step(request, id):
         property = step.property
         url = reverse("lfs_manage_shop_property", kwargs={"id": property.id})
         step.delete()
+        # invalidate global properties version number (all product property caches will be invalidated)
+        invalidate_cache_group_id('global-properties-version')
 
     response = HttpResponseRedirect(url)
     return lfs.core.utils.set_message_to(response, _(u"The step has been saved."))
@@ -304,6 +324,8 @@ def delete_property(request, id):
     else:
         property.delete()
         _update_property_positions()
+        # invalidate global properties version number (all product property caches will be invalidated)
+        invalidate_cache_group_id('global-properties-version')
         url = reverse("lfs_manage_shop_properties")
 
     return HttpResponseRedirect(url)
@@ -350,6 +372,8 @@ def add_option(request, property_id):
         message = _(u"Options have been updated.")
 
     _update_positions(property)
+    # invalidate global properties version number (all product property caches will be invalidated)
+    invalidate_cache_group_id('global-properties-version')
 
     html = [["#options", options_inline(request, property_id)]]
     result = simplejson.dumps({
@@ -372,6 +396,8 @@ def delete_option(request, id):
         url = reverse("lfs_manage_shop_property", kwargs={"id": property.id})
         option.delete()
         _update_positions(property)
+        # invalidate global properties version number (all product property caches will be invalidated)
+        invalidate_cache_group_id('global-properties-version')
 
     return HttpResponseRedirect(url)
 

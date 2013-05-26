@@ -349,7 +349,9 @@ class Category(models.Model):
         """
         Returns property groups for given category.
         """
-        cache_key = "%s-category-property-groups-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        properties_version = get_cache_group_id('global-properties-version')
+        cache_key = "%s-%s-category-property-groups-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, properties_version,
+                                                           self.id)
         pgs = cache.get(cache_key)
         if pgs is not None:
             return pgs
@@ -1042,12 +1044,16 @@ class Product(models.Model):
         """
         Returns the id of the selected option for property with passed id.
         """
-        options = cache.get("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id))
+        pid = self.get_parent().pk
+        properties_version = get_cache_group_id('global-properties-version')
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+        cache_key = "%s-%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
+        options = cache.get(cache_key)
         if options is None:
             options = {}
             for pvo in self.property_values.all():
                 options[pvo.property_id] = pvo.value
-            cache.set("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id), options)
+            cache.set(cache_key, options)
         try:
             return options[property_id]
         except KeyError:
@@ -1057,8 +1063,10 @@ class Product(models.Model):
         """
         Returns properties with ``display_on_product`` is True.
         """
-        cache_key = "%s-displayed-properties-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
-
+        pid = self.get_parent().pk
+        properties_version = get_cache_group_id('global-properties-version')
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+        cache_key = "%s-%s-displayed-properties-%s" % (group_id, settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         properties = cache.get(cache_key)
         if properties:
             return properties
@@ -1095,8 +1103,8 @@ class Product(models.Model):
         properties.
         """
         pid = self.get_parent().pk
-        group_id = get_cache_group_id('properties-%s' % pid)
-
+        properties_version = get_cache_group_id('global-properties-version')
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
         cache_key = "%s-variant-properties-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
 
         properties = cache.get(cache_key)
@@ -1206,7 +1214,8 @@ class Product(models.Model):
         properties. Traverses through all parent properties
         """
         pid = self.get_parent().pk
-        group_id = get_cache_group_id('properties-%s' % pid)
+        properties_version = get_cache_group_id('global-properties-version')
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
         cache_key = "%s-variant-properties-for-parent-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
 
         properties = cache.get(cache_key)
@@ -1223,7 +1232,8 @@ class Product(models.Model):
         Returns True if the variant has the given property / option combination.
         """
         pid = self.get_parent().pk
-        group_id = get_cache_group_id('properties-%s' % pid)
+        properties_version = get_cache_group_id('global-properties-version')
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
         options = cache.get("%s-%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id))
         if options is None:
             options = {}

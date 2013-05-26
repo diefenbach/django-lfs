@@ -114,7 +114,8 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
     category_variant_form = CategoryVariantForm(instance=product)
 
     pid = product.get_parent().pk
-    group_id = get_cache_group_id('properties-%s' % pid)
+    properties_version = get_cache_group_id('global-properties-version')
+    group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
     cache_key = "%s-manage-properties-variants-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, product_id)
     variants = cache.get(cache_key)
     # Get all properties. We need to traverse through all property / options
@@ -474,6 +475,7 @@ def update_variants(request, product_id):
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
 
+    message = ''
     action = request.POST.get("action")
     if action == "delete":
         message = _(u"Variants have been deleted.")

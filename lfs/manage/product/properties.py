@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 
 # lfs imports
+from lfs.caching import update_product_cache
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue, PropertyOption
 from lfs.catalog.models import Property
@@ -233,6 +234,7 @@ def update_property_groups(request, product_id):
     """Updates property groups for the product with passed id.
     """
     selected_group_ids = request.POST.getlist("selected-property-groups")
+    product = Product.objects.get(pk=product_id)
 
     for property_group in PropertyGroup.objects.all():
         # if the group is within selected groups we try to add it to the product
@@ -244,8 +246,9 @@ def update_property_groups(request, product_id):
                 property_group.products.add(product_id)
         else:
             property_group.products.remove(product_id)
-            product = Product.objects.get(pk=product_id)
             product_removed_property_group.send([property_group, product])
+
+    update_product_cache(product)
 
     url = reverse("lfs_manage_product", kwargs={"product_id": product_id})
     return HttpResponseRedirect(url)
@@ -256,21 +259,22 @@ def update_property_groups(request, product_id):
 def update_properties(request, product_id):
     """Updates properties for product with passed id.
     """
-    type = request.POST.get("type")
-    ProductPropertyValue.objects.filter(product=product_id, type=type).delete()
+    ppv_type = request.POST.get("type")
+    product = get_object_or_404(Product, pk=product_id)
+    ProductPropertyValue.objects.filter(product=product_id, type=ppv_type).delete()
 
     # Update property values
     for key in request.POST.keys():
-        if key.startswith("property") == False:
+        if not key.startswith("property"):
             continue
 
         property_id = key.split("-")[1]
-        property = get_object_or_404(Property, pk=property_id)
-        product = get_object_or_404(Product, pk=product_id)
+        prop = get_object_or_404(Property, pk=property_id)
 
         for value in request.POST.getlist(key):
-            if property.is_valid_value(value):
-                ProductPropertyValue.objects.create(product=product, property=property, value=value, type=type)
+            if prop.is_valid_value(value):
+                ProductPropertyValue.objects.create(product=product, property=prop, value=value, type=ppv_type)
+    update_product_cache(product)
 
     url = reverse("lfs_manage_product", kwargs={"product_id": product_id})
     return HttpResponseRedirect(url)

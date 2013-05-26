@@ -211,15 +211,14 @@ def update_product_cache(instance):
 
     # if product was changed then we have to clear all product_navigation caches
     invalidate_cache_group_id('product_navigation')
+    invalidate_cache_group_id('properties-%s' % parent.id)
     cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.slug))
-    cache.delete("%s-product-inline-True-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
-    cache.delete("%s-product-inline-False-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-images-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-related-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
-    cache.delete("%s-manage-properties-variants-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-categories-%s-False" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-categories-%s-True" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
+    cache.delete("%s-default-variant-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     if parent.manufacturer:
         cache.delete("%s-manufacturer-all-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.manufacturer.pk))
         cache.delete("%s-manufacturer-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.manufacturer.slug))
@@ -234,7 +233,6 @@ def update_product_cache(instance):
     for variant in parent.get_variants():
         cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
         cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.slug))
-        cache.delete("%s-product-inline-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
         cache.delete("%s-product-images-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
         cache.delete("%s-related-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
         cache.delete("%s-product-categories-%s-False" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))

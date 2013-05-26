@@ -20,7 +20,7 @@ from django.views.decorators.csrf import csrf_exempt
 # lfs imports
 import lfs.catalog.utils
 import lfs.core.utils
-from lfs.caching.utils import lfs_get_object_or_404
+from lfs.caching.utils import lfs_get_object_or_404, get_cache_group_id
 from lfs.cart.views import add_to_cart
 from lfs.catalog.models import Category, Property
 from lfs.catalog.models import File
@@ -484,7 +484,11 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
     This is factored out to be able to better cached and in might in future used
     used to be updated via ajax requests.
     """
-    cache_key = "%s-product-inline-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, request.user.is_superuser, product.id)
+    pid = product.get_parent().pk
+    properties_version = get_cache_group_id('global-properties-version')
+    group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+    cache_key = "%s-%s-product-inline-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id,
+                                                request.user.is_superuser, product.id)
     result = cache.get(cache_key)
     if result is not None:
         return result
