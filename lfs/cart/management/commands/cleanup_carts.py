@@ -11,7 +11,7 @@ class Command(BaseCommand):
                 action='store',
                 dest='days',
                 default=7,
-                help='Remove carts modified before spefified number of days'),
+                help='Remove carts modified before specified number of days'),
             )
 
     def handle(self, *args, **options):

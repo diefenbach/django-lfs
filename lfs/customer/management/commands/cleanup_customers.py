@@ -14,6 +14,9 @@ class Command(BaseCommand):
             has_cart = Cart.objects.filter(session=customer.session).exists()
             has_orders = Order.objects.filter(session=customer.session).exists()
             if not has_cart and not has_orders:
+                for address in customer.addresses.all():
+                    if not address.order:
+                        address.delete()
                 customer.delete()
                 cnt += 1
         print "Removed %s customers" % cnt

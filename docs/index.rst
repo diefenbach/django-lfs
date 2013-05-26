@@ -107,6 +107,7 @@ Miscellaneous
 
    developer/api.rst
    developer/settings.rst
+   developer/management_commands.rst
 
 .. _index_developers_howtos:
 
