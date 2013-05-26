@@ -1,17 +1,6 @@
-# python imports
-from datetime import datetime
-
 # django imports
 from django import forms
-from django.conf import settings
-from django.forms.util import ErrorList
 from django.utils.translation import ugettext_lazy as _
-
-# lfs imports
-import lfs.payment.settings
-from lfs.payment.models import PaymentMethod
-from lfs.core.utils import get_default_shop
-from lfs.core.models import Country
 
 
 class OnePageCheckoutForm(forms.Form):
