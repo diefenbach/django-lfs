@@ -17,23 +17,22 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs.cart.utils
 import lfs.catalog.utils
+import lfs.core.utils
+import lfs.customer.utils
+import lfs.discounts.utils
+import lfs.payment.utils
+import lfs.shipping.utils
+import lfs.voucher.utils
 from lfs.customer.models import Customer
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
-import lfs.voucher.utils
-import lfs.discounts.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.signals import cart_changed
-from lfs.core import utils as core_utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
-from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
 from lfs.core.models import Country
 from lfs.core.utils import LazyEncoder
-from lfs.shipping import utils as shipping_utils
-from lfs.payment import utils as payment_utils
-from lfs.customer import utils as customer_utils
 from lfs.voucher.models import Voucher
 from lfs.voucher.settings import MESSAGES
 
@@ -54,25 +53,25 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
 
     This is factored out to be reused within 'normal' and ajax requests.
     """
-    cart = cart_utils.get_cart(request)
+    cart = lfs.cart.utils.get_cart(request)
     shopping_url = lfs.cart.utils.get_go_on_shopping_url(request)
     if cart is None:
         return render_to_string(template_name, RequestContext(request, {
             "shopping_url": shopping_url,
         }))
 
-    shop = core_utils.get_default_shop(request)
+    shop = lfs.core.utils.get_default_shop(request)
     countries = shop.shipping_countries.all()
-    selected_country = shipping_utils.get_selected_shipping_country(request)
+    selected_country = lfs.shipping.utils.get_selected_shipping_country(request)
 
     # Get default shipping method, so that we have a one in any case.
-    selected_shipping_method = shipping_utils.get_selected_shipping_method(request)
-    selected_payment_method = payment_utils.get_selected_payment_method(request)
+    selected_shipping_method = lfs.shipping.utils.get_selected_shipping_method(request)
+    selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
 
-    shipping_costs = shipping_utils.get_shipping_costs(request, selected_shipping_method)
+    shipping_costs = lfs.shipping.utils.get_shipping_costs(request, selected_shipping_method)
 
     # Payment
-    payment_costs = payment_utils.get_payment_costs(request, selected_payment_method)
+    payment_costs = lfs.payment.utils.get_payment_costs(request, selected_payment_method)
 
     # Cart costs
     cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
@@ -126,10 +125,10 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         "cart_items": cart_items,
         "cart_price": cart_price,
         "cart_tax": cart_tax,
-        "shipping_methods": shipping_utils.get_valid_shipping_methods(request),
+        "shipping_methods": lfs.shipping.utils.get_valid_shipping_methods(request),
         "selected_shipping_method": selected_shipping_method,
         "shipping_costs": shipping_costs,
-        "payment_methods": payment_utils.get_valid_payment_methods(request),
+        "payment_methods": lfs.payment.utils.get_valid_payment_methods(request),
         "selected_payment_method": selected_payment_method,
         "payment_price": payment_costs["price"],
         "countries": countries,
@@ -205,7 +204,7 @@ def add_accessory_to_cart(request, product_id, quantity=1):
     product = lfs_get_object_or_404(Product, pk=product_id)
 
     session_cart_items = request.session.get("cart_items", [])
-    cart = cart_utils.get_cart(request)
+    cart = lfs.cart.utils.get_cart(request)
     cart_item = cart.add(product=product, amount=quantity)
 
     # Update session
@@ -293,7 +292,7 @@ def add_to_cart(request, product_id=None):
     if product.get_active_packing_unit():
         quantity = product.get_amount_by_packages(quantity)
 
-    cart = cart_utils.get_or_create_cart(request)
+    cart = lfs.cart.utils.get_or_create_cart(request)
 
     cart_item = cart.add(product, properties_dict, quantity)
     cart_items = [cart_item]
@@ -334,11 +333,11 @@ def add_to_cart(request, product_id=None):
     cart_changed.send(cart, request=request)
 
     # Update the customer's shipping method (if appropriate)
-    customer = customer_utils.get_or_create_customer(request)
-    shipping_utils.update_to_valid_shipping_method(request, customer, save=True)
+    customer = lfs.customer.utils.get_or_create_customer(request)
+    lfs.shipping.utils.update_to_valid_shipping_method(request, customer, save=True)
 
     # Update the customer's payment method (if appropriate)
-    payment_utils.update_to_valid_payment_method(request, customer, save=True)
+    lfs.payment.utils.update_to_valid_payment_method(request, customer, save=True)
 
     # Save the cart to update modification date
     cart.save()
@@ -358,7 +357,7 @@ def delete_cart_item(request, cart_item_id):
     """
     Deletes the cart item with the given id.
     """
-    cart = cart_utils.get_cart(request)
+    cart = lfs.cart.utils.get_cart(request)
     if not cart:
         raise Http404
 
@@ -377,8 +376,8 @@ def refresh_cart(request):
     Refreshes the cart after some changes has been taken place, e.g.: the
     amount of a product or shipping/payment method.
     """
-    cart = cart_utils.get_cart(request)
-    customer = customer_utils.get_or_create_customer(request)
+    cart = lfs.cart.utils.get_cart(request)
+    customer = lfs.customer.utils.get_or_create_customer(request)
 
     # Update country
     country_iso = request.POST.get("country")
@@ -441,9 +440,9 @@ def refresh_cart(request):
     shipping_method = get_object_or_404(ShippingMethod, pk=request.POST.get("shipping_method"))
     customer.selected_shipping_method = shipping_method
 
-    valid_shipping_methods = shipping_utils.get_valid_shipping_methods(request)
+    valid_shipping_methods = lfs.shipping.utils.get_valid_shipping_methods(request)
     if customer.selected_shipping_method not in valid_shipping_methods:
-        customer.selected_shipping_method = shipping_utils.get_default_shipping_method(request)
+        customer.selected_shipping_method = lfs.shipping.utils.get_default_shipping_method(request)
 
     # Update payment method
     payment_method = get_object_or_404(PaymentMethod, pk=request.POST.get("payment_method"))
