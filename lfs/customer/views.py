@@ -255,7 +255,7 @@ def password(request, template_name="lfs/customer/password.html"):
         if form.is_valid():
             form.save()
             return lfs.core.utils.set_message_cookie(reverse("lfs_my_password"),
-                                                     msg=_(u"Your e-mail has been changed."))
+                                                     msg=_(u"Your password has been changed."))
     else:
         form = PasswordChangeForm(request.user)
 
