@@ -20,19 +20,22 @@ actions to add one.
 Step by Step
 =============
 
-1. Go to Management / Shop / Actions.
+#. Go to Management / Shop / Actions.
 
-2. Click on ``Add action``. Please note: if there are no actions yet at all you
-   will be automatically redirected to the ``Add action`` form.
+#. Click on ``Add action``.
 
-3. Enter the ``Title``. This will be displayed on the horizontal menu.
+#. Enter the ``Link`` for the action.
 
-4. Enter the ``Link``. This is just a URL, e.g. to a ``category``, a ``page`` or
-   whatever you want.
+#. Select the ``Group`` Tabs.
 
-5. Select ``Active``. Only active actions are displayed.
+#. Click on ``Add``.
 
-6. Enter the ``Position``. The actions are ordered from left to right, lower
-   numbers right.
+#. Now check the ``Active`` checkbox. Note: only active actions are displayed.
 
-7. Repeat Steps 3. - 7. for every action.
+#. Repeat Steps 2. - 6. for every action.
+
+.. Note::
+
+    In order to sort action grab the handle on the left side of an action (six
+    dots) and drag'n drop it to the new position.
+
