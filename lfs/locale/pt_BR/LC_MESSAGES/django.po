@@ -830,7 +830,7 @@ msgstr "A combinação de atributos escolhida não está disponível"
 #: checkout/forms.py:19 checkout/forms.py:24 customer/forms.py:13
 #: customer/forms.py:18
 msgid "First Name"
-msgstr "Prénome"
+msgstr "Nome"
 
 #: checkout/forms.py:20 checkout/forms.py:25 customer/forms.py:14
 #: customer/forms.py:19
@@ -1289,6 +1289,10 @@ msgstr "Rua"
 #: customer/models.py:74
 msgid "Zip code"
 msgstr "CEP"
+
+#: By myself
+msgid "Area"
+msgstr "Bairro"
 
 #: customer/models.py:75
 msgid "City"
