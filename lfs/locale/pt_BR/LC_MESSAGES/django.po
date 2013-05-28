@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: https://bitbucket.org/diefenbach/django-lfs/issues\n"
 "POT-Creation-Date: 2011-11-28 08:08-0600\n"
-"PO-Revision-Date: 2013-05-28 21:28+0000\n"
+"PO-Revision-Date: 2013-05-28 22:53+0000\n"
 "Last-Translator: alanjds <alan.justino@yahoo.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/lfs/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -277,7 +277,7 @@ msgstr "O identificador único que será usado na última parte da URL do produt
 #: templates/manage/properties/pg_products_inline.html:48
 #: templates/manage/properties/pg_products_inline.html:108
 msgid "SKU"
-msgstr "SKU"
+msgstr "Código"
 
 #: catalog/models.py:538
 msgid "Your unique article number of the product."
@@ -498,7 +498,7 @@ msgstr "Nome ativo"
 
 #: catalog/models.py:603
 msgid "Active SKU"
-msgstr "SKU ativo"
+msgstr "Código ativo"
 
 #: catalog/models.py:604
 msgid "Active short description"
@@ -566,7 +566,7 @@ msgstr "Cálculo de Preço"
 
 #: catalog/models.py:624
 msgid "SKU Manufacturer"
-msgstr "SKU do Fabricante"
+msgstr "Código no Fabricante"
 
 #: catalog/models.py:625
 #: templates/manage/manufacturer/add_manufacturer.html:10
@@ -2086,7 +2086,7 @@ msgstr "Quantidade de produtos"
 
 #: order/models.py:138
 msgid "Product SKU"
-msgstr "Código do fabricante"
+msgstr "Código do Produto"
 
 #: order/models.py:139
 msgid "Product name"
@@ -3480,7 +3480,7 @@ msgstr "Estoque"
 
 #: templates/manage/product/product_filters_inline.html:14
 msgid "Name/SKU"
-msgstr "Nome/Código do Fabricante"
+msgstr "Nome/Código"
 
 #: templates/manage/product/product_filters_inline.html:18
 #: templates/manage/product/products_inline.html:31
