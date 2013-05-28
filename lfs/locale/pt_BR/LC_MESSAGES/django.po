@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: https://bitbucket.org/diefenbach/django-lfs/issues\n"
 "POT-Creation-Date: 2011-11-28 08:08-0600\n"
-"PO-Revision-Date: 2013-05-28 17:13+0000\n"
+"PO-Revision-Date: 2013-05-28 21:28+0000\n"
 "Last-Translator: alanjds <alan.justino@yahoo.com.br>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/lfs/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -1157,7 +1157,7 @@ msgstr "País"
 #: criteria/models/criteria.py:382
 #: templates/manage/payment/payment_methods.html:3
 msgid "Payment methods"
-msgstr "Métodos de pagamento"
+msgstr "Formas de pagamento"
 
 #: criteria/models/criteria.py:407 payment/models.py:122
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:13
@@ -1173,12 +1173,12 @@ msgstr "Métodos de pagamento"
 #: templates/manage/criteria/width_criterion.html:13
 #: templates/manage/order/order_inline.html:69
 msgid "Payment method"
-msgstr "Método de pagamento"
+msgstr "Forma de pagamento"
 
 #: criteria/models/criteria.py:476
 #: templates/manage/shipping/shipping_methods.html:4
 msgid "Shipping methods"
-msgstr "Métodos de envio"
+msgstr "Forma de envio"
 
 #: criteria/models/criteria.py:501
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:15
@@ -1194,7 +1194,7 @@ msgstr "Métodos de envio"
 #: templates/manage/criteria/width_criterion.html:15
 #: templates/manage/order/order_inline.html:66
 msgid "Shipping method"
-msgstr "Método de envio"
+msgstr "Forma de envio"
 
 #: criteria/models/criteria.py:735 criteria/models/criteria.py:754
 #: templates/manage/criteria/combinedlengthandgirth_criterion.html:10
@@ -1238,11 +1238,11 @@ msgstr "O endereço de e-mail já está em uso"
 
 #: customer/models.py:26
 msgid "Selected shipping method"
-msgstr "Selecione o método de envio"
+msgstr "Selecione a forma de envio"
 
 #: customer/models.py:27
 msgid "Selected payment method"
-msgstr "Selecione o meio de pagamento"
+msgstr "Selecione a forma de pagamento"
 
 #: customer/models.py:28
 msgid "Bank account"
@@ -1515,7 +1515,7 @@ msgstr "As páginas foram classificadas."
 
 #: manage/views/payment.py:197
 msgid "Payment method has been added."
-msgstr "O método de pagamento foi adicionado."
+msgstr "A forma de pagamento foi adicionada."
 
 #: manage/views/payment.py:271 manage/views/shipping.py:266
 msgid "Price has been added"
@@ -1531,11 +1531,11 @@ msgstr "Os preços foram atualizados"
 
 #: manage/views/payment.py:346
 msgid "Payment method has been saved."
-msgstr "O método de pagamento foi salvo."
+msgstr "A forma de pagamento foi salva."
 
 #: manage/views/payment.py:371
 msgid "Payment method has been deleted."
-msgstr "O método de pagamento foi apagado."
+msgstr "A forma de pagamento foi apagada."
 
 #: manage/views/properties.py:106
 msgid "Property type has been saved."
@@ -1603,15 +1603,15 @@ msgstr "A avaliação do estado foi configurada."
 
 #: manage/views/shipping.py:197
 msgid "Shipping method has been added."
-msgstr "Método de entrega adicionado."
+msgstr "Forma de entrega adicionada."
 
 #: manage/views/shipping.py:347
 msgid "Shipping method has been saved."
-msgstr "Método de entrega salvo."
+msgstr "Forma de entrega salva."
 
 #: manage/views/shipping.py:372
 msgid "Shipping method has been deleted."
-msgstr "Método de entrega removido."
+msgstr "Forma de entrega removida."
 
 #: manage/views/shop.py:56
 msgid "Shop data has been saved."
@@ -1756,7 +1756,7 @@ msgstr "Dados SEO foram salvos."
 
 #: manage/views/categories/view.py:43
 msgid "View data has been saved."
-msgstr ""
+msgstr "Dados para Visualização foram salvos."
 
 #: manage/views/marketing/featured.py:145
 msgid "Featured product has been added."
@@ -2807,7 +2807,7 @@ msgstr "Nenhum"
 #: templates/manage/tax/add_tax.html:13 templates/manage/tax/tax.html:37
 #: templates/manage/voucher/voucher_group.html:25
 msgid "Data"
-msgstr ""
+msgstr "Dados"
 
 #: templates/manage/category/data.html:53 templates/manage/shop/shop.html:156
 msgid "Content"
