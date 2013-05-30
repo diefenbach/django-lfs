@@ -130,8 +130,7 @@ class Order(models.Model):
             if order_item.product is not None:
                 order_name = order_name + order_item.product.get_name() + ", "
 
-        order_name.strip(', ')
-        return order_name
+        return order_name.strip(', ')
 
 
 class OrderItem(models.Model):
