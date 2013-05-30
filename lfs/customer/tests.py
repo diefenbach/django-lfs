@@ -6,6 +6,7 @@ from django.core import mail
 
 # lfs imports
 from lfs.addresses.models import Address
+from lfs.addresses.utils import AddressManagement
 from lfs.core.models import Country
 from lfs.core.models import Shop
 from lfs.customer.models import CreditCard
@@ -79,7 +80,7 @@ class AddressTestCase(TestCase):
             company_name="Doe Ltd.",
             line1="Street 42",
             city="Gotham City",
-            zip_code="2342",
+            zip_code="23422",
             country=de,
             phone="555-111111",
             email="john@doe.com",
@@ -91,7 +92,7 @@ class AddressTestCase(TestCase):
             company_name="Doe Ltd.",
             line1="Street 43",
             city="Smallville",
-            zip_code="2443",
+            zip_code="24432",
             country=de,
             phone="666-111111",
             email="jane@doe.com",
@@ -190,6 +191,43 @@ class AddressTestCase(TestCase):
         self.assertNotEquals(our_customer.selected_shipping_address, None)
         self.assertEquals(our_customer.selected_invoice_address.firstname, 'Joe')
         self.assertEquals(our_customer.selected_invoice_address.lastname, 'Bloggs')
+
+    def test_change_address_page(self):
+        """
+        Tests that we can see a shipping and an invoice address
+        """
+         # login as our customer
+        logged_in = self.client.login(username=self.username, password=self.password)
+        self.assertEqual(logged_in, True)
+
+        iam = AddressManagement(self.customer, self.address2, "invoice")
+        sam = AddressManagement(self.customer, self.address1, "shipping")
+
+        iam_data = iam.get_address_as_dict()
+        sam_data = sam.get_address_as_dict()
+        data = {"invoice-firstname": "newname",
+                "invoice-lastname": self.address2.lastname,
+                "invoice-phone": self.address2.phone,
+                "invoice-email": self.address2.email,
+
+                "shipping-firstname": self.address1.firstname,
+                "shipping-lastname": self.address1.lastname,
+                "shipping-phone": self.address1.phone,
+                "shipping-email": self.address1.email,
+                }
+        for key, value in iam_data.items():
+            data['invoice-%s' % key] = value
+
+        for key, value in sam_data.items():
+            data['shipping-%s' % key] = value
+
+        data['invoice-country'] = 'AT'
+
+        response = self.client.post(reverse('lfs_my_addresses'), data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        iam2 = Address.objects.get(pk=self.address2.pk)
+        self.assertEqual(iam2.firstname, "newname")
+        self.assertEqual(iam2.country.code.upper(), "AT")
 
 
 class LoginTestCase(TestCase):
