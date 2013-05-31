@@ -67,8 +67,9 @@ def login(request, template_name="lfs/customer/login.html"):
             password = register_form.data.get("password_1")
 
             # Create user
+            unique_username = create_unique_username(email)
             user = User.objects.create_user(
-                username=create_unique_username(email), email=email, password=password)
+                username=unique_username, email=email, password=password)
 
             # Create customer
             customer = customer_utils.get_or_create_customer(request)
@@ -79,7 +80,7 @@ def login(request, template_name="lfs/customer/login.html"):
 
             # Log in user
             from django.contrib.auth import authenticate
-            user = authenticate(username=email, password=password)
+            user = authenticate(username=unique_username, password=password)
 
             from django.contrib.auth import login
             login(request, user)
