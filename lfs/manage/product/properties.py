@@ -81,11 +81,12 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     "value": ppv_value,
                 })
 
-            configurables.append({
-                "id": property_group.id,
-                "name": property_group.name,
-                "properties": properties,
-            })
+            if properties:
+                configurables.append({
+                    "id": property_group.id,
+                    "name": property_group.name,
+                    "properties": properties,
+                })
 
         # Filterable
         for property_group in product.property_groups.all():
@@ -133,12 +134,12 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     "display_text_field": not display_select_field,
                     "display_select_field": display_select_field,
                 })
-
-            filterables.append({
-                "id": property_group.id,
-                "name": property_group.name,
-                "properties": properties,
-            })
+            if properties:
+                filterables.append({
+                    "id": property_group.id,
+                    "name": property_group.name,
+                    "properties": properties,
+                })
 
         # Displayable
         for property_group in product.property_groups.all():
@@ -187,11 +188,12 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     "display_select_field": display_select_field,
                 })
 
-            displayables.append({
-                "id": property_group.id,
-                "name": property_group.name,
-                "properties": properties,
-            })
+            if properties:
+                displayables.append({
+                    "id": property_group.id,
+                    "name": property_group.name,
+                    "properties": properties,
+                })
 
     if product.is_variant():
         local_properties = product.parent.get_local_properties()
