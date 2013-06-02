@@ -436,7 +436,7 @@ class PriceCalculator(object):
         Returns the calculated tax for the current product independent of the
         customer.
         """
-        return self.get_price(with_properties) - self.get_price(with_properties)
+        raise NotImplementedError
 
     def price_includes_tax(self):
         """

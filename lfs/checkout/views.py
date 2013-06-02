@@ -143,6 +143,7 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
         cart_tax = cart_tax - discount["tax"]
 
     # Voucher
+    voucher_number = ''
     try:
         voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
         voucher = Voucher.objects.get(number=voucher_number)

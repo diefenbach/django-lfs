@@ -123,6 +123,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         })
 
     return render_to_string(template_name, RequestContext(request, {
+        "cart": cart,
         "cart_items": cart_items,
         "cart_price": cart_price,
         "cart_tax": cart_tax,
