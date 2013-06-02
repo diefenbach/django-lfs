@@ -198,7 +198,7 @@ def delete_category(request, id):
 def sort_categories(request):
     """Sort categories
     """
-    category_list = request.POST.get("categories", "").split('&')
+    category_list = request.POST.get("objs", "").split('&')
     assert (isinstance(category_list, list))
     if len(category_list) > 0:
         pos = 10
