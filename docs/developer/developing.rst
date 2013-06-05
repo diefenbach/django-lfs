@@ -83,6 +83,8 @@ first:
 
 #. New features shouldn't make LFS slower. Please see :doc:`benchmarking`.
 
+#. Add yourself to `CREDITS.txt <https://github.com/diefenbach/django-lfs/blob/master/CREDITS.txt>`_.
+
 Contributing Translations
 =========================
 
