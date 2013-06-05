@@ -218,7 +218,7 @@ class Command(BaseCommand):
             "invoice_city",
             "invoice_state",
             "invoice_code",
-            "invoice_country",
+            "invoice_country_id",
             "invoice_phone",
             "shipping_firstname",
             "shipping_lastname",
@@ -228,7 +228,7 @@ class Command(BaseCommand):
             "shipping_city",
             "shipping_state",
             "shipping_code",
-            "shipping_country",
+            "shipping_country_id",
             "shipping_phone",
         ]
 
