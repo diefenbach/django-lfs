@@ -50,6 +50,12 @@ Contributors
 
   Bug fixes. Czech translations.
 
+* Jakub Wiśniowski (restless_being)
+
+  Contributor.
+
+  Added south migrations to LFS.
+
 Ressources
 ----------
 
