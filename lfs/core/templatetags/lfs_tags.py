@@ -538,7 +538,7 @@ def get_slug_from_request(request):
 
 
 @register.filter
-def currency(value, request=None, grouping=True):
+def currency_text(value, request=None, grouping=True):
     """
     Returns the currency based on the given locale within settings.LFS_LOCALE
 
@@ -547,7 +547,40 @@ def currency(value, request=None, grouping=True):
     import locale
     locale.setlocale(locale.LC_ALL, 'de_CH.UTF-8')
     currency(123456.789)  # Fr. 123'456.79
-    currency(-123456.789) # <span class="negative">Fr. -123'456.79</span>
+    currency(-123456.789) # Fr. -123'456.79
+    """
+    if locale.getlocale(locale.LC_ALL)[0] is None:
+        lfs.core.views.one_time_setup()
+
+    if not value:
+        value = 0.0
+
+    shop = lfs.core.utils.get_default_shop(request)
+    try:
+        result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
+    except ValueError, e:
+        result = value
+        logger.error("currency filter: %s" % e)
+
+    if value < 0:
+        # replace the minus symbol if needed
+        if result[-1] == '-':
+            length = len(locale.nl_langinfo(locale.CRNCYSTR))
+            result = '%s-%s' % (result[0:length], result[length:-1])
+    return result
+
+
+@register.filter
+def currency(value, request=None, grouping=True):
+    """
+    Returns the currency based on the given locale within settings.LFS_LOCALE
+
+    e.g.
+
+    import locale
+    locale.setlocale(locale.LC_ALL, 'de_CH.UTF-8')
+    currency(123456.789)  # <span class="money">Fr. 123'456.79</span>
+    currency(-123456.789) # <span class="money negative">Fr. -123'456.79</span>
     """
     if locale.getlocale(locale.LC_ALL)[0] is None:
         lfs.core.views.one_time_setup()
@@ -563,13 +596,18 @@ def currency(value, request=None, grouping=True):
         logger.error("currency filter: %s" % e)
 
     # add css class if value is negative
+    negative = False
     if value < 0:
+        negative = True
         # replace the minus symbol if needed
         if result[-1] == '-':
             length = len(locale.nl_langinfo(locale.CRNCYSTR))
             result = '%s-%s' % (result[0:length], result[length:-1])
-        return mark_safe('<span class="negative">%s</span>' % result)
-    return result
+
+    return mark_safe('<span class="money%(negative)s">%(result)s</span>' % {
+        'result': result,
+        'negative': ' negative' if negative else '',
+    })
 
 
 @register.filter

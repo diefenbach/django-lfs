@@ -278,15 +278,17 @@ class TagsTestCase(TestCase):
         """
         """
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-        self.assertEqual(currency(0.0), "$0.00")
-        self.assertEqual(currency(1.0), "$1.00")
+        self.assertEqual(currency(0.0), '<span class="money">$0.00</span>')
+        self.assertEqual(currency(1.0), '<span class="money">$1.00</span>')
 
         shop = lfs.core.utils.get_default_shop()
         shop.use_international_currency_code = True
         shop.save()
 
-        self.assertEqual(currency(0.0, None, False), "USD 0.00")
-        self.assertEqual(currency(1.0, None, False), "USD 1.00")
+        self.assertEqual(currency(0.0, None, False), '<span class="money">USD 0.00</span>')
+        self.assertEqual(currency(1.0, None, False), '<span class="money">USD 1.00</span>')
+
+        self.assertEqual(currency(-1.0, None, False), '<span class="money negative">-USD 1.00</span>')
 
 
 class ManageURLsTestCase(TestCase):

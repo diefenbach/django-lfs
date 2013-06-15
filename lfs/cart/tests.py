@@ -646,12 +646,12 @@ class AddedToCartTestCase(TestCase):
         response = added_to_cart_items(request)
 
         # need to test for two versions of currency output (Mac and Ubuntu differ)
-        self.failIf(response.find(u"Total: $10.00") == -1)
+        self.failIf(response.find(u'Total: <span class="money">$10.00</span>') == -1)
 
         # Added product_1 to cart again
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find(u"Total: $20.00") == -1)
+        self.failIf(response.find(u'Total: <span class="money">$20.00</span>') == -1)
 
     def test_totals_2(self):
         """Add a product with explicit quantity to cart
@@ -666,9 +666,9 @@ class AddedToCartTestCase(TestCase):
         # Added product_1 two times to cart
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find(u"Total: $20.00") == -1)
+        self.failIf(response.find(u'Total: <span class="money">$20.00</span>') == -1)
 
         # Added product_1 two times to cart again
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find(u"Total: $40.00") == -1)
+        self.failIf(response.find(u'Total: <span class="money">$40.00</span>') == -1)
