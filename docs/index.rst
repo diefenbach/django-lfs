@@ -9,6 +9,7 @@ Introduction
 
    introduction/overview.rst
    introduction/installation.rst
+   introduction/upgrade_notes.rst
    introduction/getting_started.rst
 
 .. _index_users:
