@@ -17,7 +17,6 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs.cart.utils
 import lfs.catalog.utils
-from lfs.customer.models import Customer
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
 import lfs.voucher.utils
@@ -235,7 +234,7 @@ def add_to_cart(request, product_id=None):
     product = lfs_get_object_or_404(Product, pk=product_id)
 
     # Only active and deliverable products can be added to the cart.
-    if (product.is_active() and product.is_deliverable()) == False:
+    if not (product.is_active() and product.is_deliverable()):
         raise Http404()
 
     try:
@@ -254,37 +253,37 @@ def add_to_cart(request, product_id=None):
                 except IndexError:
                     continue
                 try:
-                    property = Property.objects.get(pk=property_id)
+                    prop = Property.objects.get(pk=property_id)
                 except Property.DoesNotExist:
                     continue
 
-                if property.is_number_field:
+                if prop.is_number_field:
                     try:
                         value = lfs.core.utils.atof(value)
                     except ValueError:
-                        value = locale.atof("0.0")
+                        value = 0.0
 
                 properties_dict[property_id] = unicode(value)
 
                 # validate property's value
-                if property.is_number_field:
+                if prop.is_number_field:
 
-                    if (value < property.unit_min) or (value > property.unit_max):
-                        msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name": property.title, "min": property.unit_min, "max": property.unit_max, "unit": property.unit}
+                    if (value < prop.unit_min) or (value > prop.unit_max):
+                        msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name": prop.title, "min": prop.unit_min, "max": prop.unit_max, "unit": prop.unit}
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
                     # calculate valid steps
                     steps = []
-                    x = property.unit_min
-                    while x < property.unit_max:
+                    x = prop.unit_min
+                    while x < prop.unit_max:
                         steps.append("%.2f" % x)
-                        x = x + property.unit_step
-                    steps.append("%.2f" % property.unit_max)
+                        x += prop.unit_step
+                    steps.append("%.2f" % prop.unit_max)
 
                     value = "%.2f" % value
                     if value not in steps:
-                        msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": property.title, "value": value, "step": property.unit_step}
+                        msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": prop.title, "value": value, "step": prop.unit_step}
                         return lfs.core.utils.set_message_cookie(
                             product.get_absolute_url(), msg)
 
@@ -401,10 +400,7 @@ def refresh_cart(request):
     for item in cart.get_items():
         try:
             value = request.POST.get("amount-cart-item_%s" % item.id, "0.0")
-            if isinstance(value, unicode):
-                # atof() on unicode string fails in some environments, like Czech
-                value = value.encode("utf-8")
-            amount = locale.atof(value)
+            amount = core_utils.atof(value)
         except (TypeError, ValueError):
             amount = 1.0
 
