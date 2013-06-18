@@ -59,6 +59,7 @@ def search(request, template_name="lfs/search/search_results.html"):
             Q(manufacturer__name__icontains=q) | \
             Q(sku_manufacturer__icontains=q) ) & \
             Q(sub_type__in=(STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
+
     products = Product.objects.filter(query)
 
     # Sorting
