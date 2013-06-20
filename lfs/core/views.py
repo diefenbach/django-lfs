@@ -12,6 +12,7 @@ from django.template import loader
 from django.template import RequestContext
 
 # lfs imports
+from django.views.generic import TemplateView
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
 
@@ -65,3 +66,9 @@ def one_time_setup():
             locale.setlocale(locale.LC_ALL, lfs_locale)
         except locale.Error, e:
             logger.error("Unsupported locale in settings.LFS_LOCALE: '%s'." % lfs_locale)
+
+
+class TextTemplateView(TemplateView):
+    def render_to_response(self, context, **kwargs):
+        return super(TextTemplateView, self).render_to_response(context,
+                        content_type='text/plain', **kwargs)
