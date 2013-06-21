@@ -2629,6 +2629,9 @@ class DeliveryTime(models.Model):
         else:
             return delivery_time
 
+    def get_unit_display(self):
+        return DELIVERY_TIME_UNIT_CHOICES[self.unit][0]
+
     def as_string(self):
         """
         Returns the delivery time as string.
@@ -2642,9 +2645,9 @@ class DeliveryTime(models.Model):
             else:
                 unit = self.get_unit_display()
 
-            return "%s %s" % (self.min, unit)
+            return u"%s %s" % (self.min, unit)
         else:
-            return "%s-%s %s" % (self.min, self.max, self.get_unit_display())
+            return u"%s-%s %s" % (self.min, self.max, self.get_unit_display())
 
     def round(self):
         """
