@@ -2642,9 +2642,9 @@ class DeliveryTime(models.Model):
             else:
                 unit = self.get_unit_display()
 
-            return "%s %s" % (self.min, unit)
+            return u"%s %s" % (self.min, unit)
         else:
-            return "%s-%s %s" % (self.min, self.max, self.get_unit_display())
+            return u"%s-%s %s" % (self.min, self.max, self.get_unit_display())
 
     def round(self):
         """
