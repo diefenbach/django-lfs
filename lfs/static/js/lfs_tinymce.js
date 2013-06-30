@@ -15,7 +15,7 @@ function addEditor(selector, hide_save, height) {
     // Theme options
     $(selector).tinymce({
         // Location of TinyMCE script
-        script_url : STATIC_URL + 'tiny_mce-3.5b3/tiny_mce.js',
+        script_url : STATIC_URL + 'tiny_mce-3.5.8/tiny_mce.js',
 
         // General options
         theme : "advanced",
@@ -46,12 +46,22 @@ function addEditor(selector, hide_save, height) {
 };
 
 function update_editor() {
-    addEditor("#id_description");
-    addEditor("#id_short_description");
-    addEditor("#id_short_text");
-    addEditor("#id_body");
-    addEditor('#id_html');
-    addEditor('#id_note');
+    /* for each field first detach tinymce and then attach again */
+    var TINYMCE_FIELD_IDS = [{id: '#id_description'},
+                             {id: '#id_short_description'},
+                             {id: "#id_short_text"},
+                             {id: "#id_body"},
+                             {id: '#id_html'},
+                             {id: '#id_note'}];
+    $.each(TINYMCE_FIELD_IDS, function(idx, item){
+        if (typeof(tinyMCE) != 'undefined'){
+            var obj = $(item['id']);
+            if (obj.length > 0){
+                obj.tinymce().remove();
+            }
+        }
+        addEditor(item['id'], item['hide_save'], item['height']);
+    });
 }
 
 function save(ed) {

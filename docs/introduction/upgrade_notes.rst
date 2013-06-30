@@ -16,3 +16,5 @@ This is not full reference of changes but at least some of them are described:
 * lfs/base.html has slightly different structure to the footer and colophon sections due to incorrect width of these elements in previous layout.
   div.colophon-inner and div.footer-inner html elements were added, both with padding: 10px set in main.css.
   padding: 10px was removed from '#footer .container' and '#colophon .container' in main.css
+* update_editor method in lfs_tinymce.js has been modified and requires tinymce 3.5.8 which is now being used.
+  References to tinymce were changed in manage_base.html and lfs_tinymce.js
