@@ -37,6 +37,12 @@ def create_customer(request):
     customer.selected_invoice_address = address_model.objects.create(customer=customer, country=shop.default_country)
     customer.selected_shipping_address = address_model.objects.create(customer=customer, country=shop.default_country)
     customer.save()
+
+    customer.selected_invoice_address.customer = customer
+    customer.selected_invoice_address.save()
+
+    customer.selected_shipping_address.customer = customer
+    customer.selected_shipping_address.save()
     return customer
 
 
