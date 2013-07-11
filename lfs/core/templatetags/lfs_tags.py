@@ -605,7 +605,7 @@ def currency(value, request=None, grouping=True):
             result = '%s-%s' % (result[0:length], result[length:-1])
 
     return mark_safe('<span class="money%(negative)s">%(result)s</span>' % {
-        'result': result,
+        'result': result.strip(),
         'negative': ' negative' if negative else '',
     })
 
