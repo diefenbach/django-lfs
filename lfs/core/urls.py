@@ -7,7 +7,6 @@ from lfs.core.sitemap import PageSitemap
 from lfs.core.sitemap import ProductSitemap
 from lfs.core.sitemap import ShopSitemap
 from lfs.core.views import one_time_setup, TextTemplateView
-from lfs.core.settings import TAGGING_ENABLED
 
 # Robots
 urlpatterns = patterns('django.views.generic.simple',
@@ -106,10 +105,9 @@ urlpatterns += patterns('lfs.search.views',
 )
 
 # Tagging
-if TAGGING_ENABLED:
-    urlpatterns += patterns('',
-        (r'^tagging/', include('lfs.tagging.urls')),
-    )
+urlpatterns += patterns('',
+    (r'^tagging/', include('lfs.tagging.urls')),
+)
 
 urlpatterns += patterns('',
     (r'', include('lfs_contact.urls')),
