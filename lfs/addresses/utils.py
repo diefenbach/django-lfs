@@ -131,7 +131,7 @@ class AddressManagement(object):
             self.address.line2 = self.data.get("%s-line2" % self.type)
             self.address.city = self.data.get("%s-city" % self.type)
             self.address.state = self.data.get("%s-state" % self.type)
-            self.address.zip_code = self.data.get("%s-code" % self.type)
+            self.address.zip_code = self.data.get("%s-code" % self.type, 'N/A')
 
             try:
                 country = Country.objects.get(code__iexact=self.data.get("%s-country" % self.type))
