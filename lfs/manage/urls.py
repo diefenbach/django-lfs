@@ -53,6 +53,17 @@ urlpatterns += patterns('lfs.manage.manufacturers.products',
 # Manufacturer / SEO
 urlpatterns += SEOView.get_seo_urlpattern(Manufacturer)
 
+# Supplier
+urlpatterns += patterns('lfs.manage.suppliers.views',
+    url(r'^supplier-dispatcher$', "supplier_dispatcher", name="lfs_supplier_dispatcher"),
+    url(r'^supplier/(?P<supplier_id>\d*)$', "manage_supplier", name="lfs_manage_supplier"),
+    url(r'^update-supplier-data/(?P<supplier_id>\d*)$', "update_data", name="lfs_supplier_update_supplier_data"),
+    url(r'^add-supplier$', "add_supplier", name="lfs_supplier_add_supplier"),
+    url(r'^delete-supplier/(?P<supplier_id>\d*)$', "delete_supplier", name="lfs_supplier_delete_supplier"),
+    url(r'^suppliers-ajax/$', "suppliers_ajax", name="lfs_suppliers_ajax"),
+    url(r'^no-suppliers', "no_suppliers", name="lfs_manage_no_suppliers"),
+)
+
 # Marketing
 urlpatterns += patterns('lfs.manage.views.marketing',
     url(r'^featured$', "marketing.manage_featured_page", name="lfs_manage_featured"),
