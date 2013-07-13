@@ -10,8 +10,6 @@ from portlets.models import Portlet
 
 # lfs imports
 from lfs.catalog.models import Category
-from lfs.catalog.utils import get_current_top_category
-from lfs.caching.utils import lfs_get_object
 from lfs.marketing.models import FeaturedProduct
 
 
