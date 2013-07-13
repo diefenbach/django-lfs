@@ -617,7 +617,7 @@ class Product(models.Model):
     creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
 
     # Stocks
-    supplier = models.ForeignKey(Supplier, null=True, blank=True)
+    supplier = models.ForeignKey(Supplier, related_name='product_set', null=True, blank=True)
     deliverable = models.BooleanField(_(u"Deliverable"), default=True)
     manual_delivery_time = models.BooleanField(_(u"Manual delivery time"), default=False)
     delivery_time = models.ForeignKey("DeliveryTime", verbose_name=_(u"Delivery time"), blank=True, null=True, related_name="products_delivery_time")
