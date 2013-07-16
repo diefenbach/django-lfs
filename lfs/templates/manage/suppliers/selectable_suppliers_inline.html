@@ -1,0 +1,8 @@
+{% for supplier in suppliers %}
+    <div>
+        <a class="selectable {% ifequal supplier_id supplier.id  %}selected{% endifequal %}"
+              href="{% url lfs_manage_supplier supplier.pk %}">
+            {{ supplier.name }}
+        </a>
+    </div>
+{% endfor %}
