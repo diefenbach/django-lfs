@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import EmptyPage
 from django.db import IntegrityError
 from django.forms import ModelForm
 from django.forms.widgets import Select
@@ -74,6 +75,7 @@ class CategoryVariantForm(ModelForm):
     class Meta:
         model = Product
         fields = ("category_variant", )
+
 
 class DisplayTypeForm(ModelForm):
     """Form to add/edit product's sub types.

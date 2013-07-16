@@ -224,7 +224,7 @@
         <td class="number">
             {{ current_order.shipping_price|currency:request }}
         </td>
-        <td>{{ current_order.shipping_tax|currency:request }}</td>
+        <td class="number">{{ current_order.shipping_tax|currency:request }}</td>
         <td class="number">
             {{ current_order.shipping_price|currency:request }}
         </td>
@@ -241,7 +241,7 @@
         <td class="number">
             {{ current_order.payment_price|currency:request }}
         </td>
-        <td>{{ current_order.payment_tax|currency:request }}</td>
+        <td class="number">{{ current_order.payment_tax|currency:request }}</td>
         <td class="number">
             {{ current_order.payment_price|currency:request }}
         </td>

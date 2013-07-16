@@ -4,7 +4,6 @@ from django.conf import settings
 from django.core.cache import cache
 
 # lfs imports
-from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Product
 
 from tagging.models import TaggedItem

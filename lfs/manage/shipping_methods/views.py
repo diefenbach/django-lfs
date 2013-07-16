@@ -209,7 +209,7 @@ def save_shipping_method_criteria(request, shipping_method_id):
 
     result = simplejson.dumps({
         "html": html,
-        "message": _(u"Modifications have been changed."),
+        "message": _(u"Changes have been saved."),
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
