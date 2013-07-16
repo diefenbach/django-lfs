@@ -97,10 +97,12 @@ def add_order(request):
     # Copy addresses
     invoice_address = deepcopy(invoice_address)
     invoice_address.id = None
+    invoice_address.pk = None
     invoice_address.save()
 
     shipping_address = deepcopy(shipping_address)
     shipping_address.id = None
+    shipping_address.pk = None
     shipping_address.save()
 
     order = Order.objects.create(

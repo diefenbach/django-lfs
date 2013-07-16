@@ -132,7 +132,13 @@ class OrderTestCase(TestCase):
     def test_add_order(self):
         """Tests the general adding of an order via the add_order method
         """
+        # check we have 2 addresses before the order
+        self.assertEqual(2, Address.objects.count())
+
         order = add_order(self.request)
+
+        # adding an order should deep copy our addresses above
+        self.assertEqual(4, Address.objects.count())
 
         self.assertEqual(order.state, SUBMITTED)
         self.assertEqual("%.2f" % order.price, "9.80")
