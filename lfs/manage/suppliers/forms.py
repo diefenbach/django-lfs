@@ -10,7 +10,7 @@ class SupplierAddForm(ModelForm):
     """
     class Meta:
         model = Supplier
-        fields = ("name", "slug")
+        fields = ("user", "name", "slug")
 
 
 class SupplierDataForm(ModelForm):
