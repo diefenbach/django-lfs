@@ -75,7 +75,9 @@ class ShippingMethod(models.Model, Criteria):
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
     price = models.FloatField(_(u"Price"), default=0.0)
     delivery_time = models.ForeignKey(DeliveryTime, verbose_name=_(u"Delivery time"), blank=True, null=True)
-    price_calculator = models.CharField(_(u"Price Calculator"), max_length=200, choices=settings.LFS_SHIPPING_METHOD_PRICE_CALCULATORS, default=settings.LFS_SHIPPING_METHOD_PRICE_CALCULATORS[0][0])
+    price_calculator = models.CharField(_(u"Price Calculator"), max_length=200,
+                                        choices=settings.LFS_SHIPPING_METHOD_PRICE_CALCULATORS,
+                                        default=settings.LFS_SHIPPING_METHOD_PRICE_CALCULATORS[0][0])
 
     objects = ActiveShippingMethodManager()
 
