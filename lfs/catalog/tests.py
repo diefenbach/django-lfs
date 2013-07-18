@@ -52,6 +52,7 @@ from lfs.catalog.models import StaticBlock
 from lfs.catalog.models import ProductAttachment
 from lfs.core.signals import product_changed
 from lfs.core.signals import product_removed_property_group
+from lfs.manufacturer.models import Manufacturer
 from lfs.tax.models import Tax
 from lfs.tests.utils import RequestFactory
 
@@ -73,7 +74,7 @@ class PriceFilterTestCase(TestCase):
     def test_get_price_filter_1(self):
         """
         """
-        result = lfs.catalog.utils.get_price_filters(self.c1, [], None)
+        result = lfs.catalog.utils.get_price_filters(self.c1, [], None, [])
         self.assertEqual(result["show_reset"], False)
         self.assertEqual(result["show_quantity"], True)
         self.assertEqual(result["items"][0]["min"], 1)
@@ -93,7 +94,7 @@ class PriceFilterTestCase(TestCase):
         self.p3.price = 300
         self.p3.save()
 
-        result = lfs.catalog.utils.get_price_filters(self.c1, [], None)
+        result = lfs.catalog.utils.get_price_filters(self.c1, [], None, [])
         self.assertEqual(result["show_reset"], False)
         self.assertEqual(result["show_quantity"], True)
         self.assertEqual(result["items"][0]["quantity"], 1)
@@ -103,6 +104,32 @@ class PriceFilterTestCase(TestCase):
         self.assertEqual(result["items"][2]["min"], 201)
         self.assertEqual(result["items"][2]["max"], 300)
         self.assertEqual(result["items"][2]["quantity"], 1)
+
+
+class ManufacturerFilterTestCase(TestCase):
+    """
+    """
+    def setUp(self):
+        """
+        """
+        self.m1 = Manufacturer.objects.create(name='M1', slug='m1')
+        self.m2 = Manufacturer.objects.create(name='M2', slug='m2')
+
+        self.p1 = Product.objects.create(slug="product-1", price=5, active=True, manufacturer=self.m1)
+        self.p2 = Product.objects.create(slug="product-2", price=3, active=True, manufacturer=self.m2)
+        self.p3 = Product.objects.create(slug="product-3", price=1, active=True, manufacturer=self.m2)
+
+        self.c1 = Category.objects.create(name="Category 1", slug="category-1")
+        self.c1.products = [self.p1, self.p2, self.p3]
+        self.c1.save()
+
+    def test_get_manufacturer_filter_1(self):
+        """
+        """
+        result = lfs.catalog.utils.get_manufacturer_filters(self.c1, [], None, [])
+        self.assertEqual(result["show_reset"], False)
+        self.assertFalse(result["items"][0]['selected'])
+        self.assertEqual(len(result["items"]), 2)
 
 
 class PropertiesTestCase(TestCase):
@@ -597,7 +624,7 @@ class PropertiesTestCaseWithoutProperties(TestCase):
         """
         """
         # This tests the according SQL within get_product_filters
-        f = lfs.catalog.utils.get_product_filters(self.c1, [], None, None)
+        f = lfs.catalog.utils.get_product_filters(self.c1, [], None, None, None)
         self.assertEqual(f, [])
 
 

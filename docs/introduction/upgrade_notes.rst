@@ -18,3 +18,5 @@ This is not full reference of changes but at least some of them are described:
   padding: 10px was removed from '#footer .container' and '#colophon .container' in main.css
 * update_editor method in lfs_tinymce.js has been modified and requires tinymce 3.5.8 which is now being used.
   References to tinymce were changed in manage_base.html and lfs_tinymce.js
+* filter portlet has been updated to allow for manufacturer filtering and because of that its template:
+  lfs_theme/templates/lfs/portlets/filter.html was modified - manufacturer filtering section has been added

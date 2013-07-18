@@ -32,6 +32,7 @@ from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
 from lfs.catalog.settings import SELECT
 from lfs.core.utils import LazyEncoder, lfs_pagination
 from lfs.core.templatetags import lfs_tags
+from lfs.manufacturer.models import Manufacturer
 from lfs.utils import misc as lfs_utils
 
 
@@ -215,6 +216,23 @@ def set_price_filter(request, category_slug):
     return HttpResponseRedirect(url)
 
 
+def set_manufacturer_filter(request, category_slug, manufacturer_id):
+    """ Saves the given manufacturer filter to session. Redirects to the category with given slug.
+    """
+    try:
+        manufacturer_id = int(manufacturer_id)
+        if Manufacturer.objects.filter(pk=manufacturer_id).exists():
+            mf = request.session.get("manufacturer-filter", [])
+            if manufacturer_id not in mf:
+                mf.append(manufacturer_id)
+            request.session["manufacturer-filter"] = mf
+    except (ValueError, TypeError) as e:
+        pass
+
+    url = reverse("lfs_category", kwargs={"slug": category_slug})
+    return HttpResponseRedirect(url)
+
+
 def reset_price_filter(request, category_slug):
     """Resets the price filter. Redirects to the category with given slug.
     """
@@ -238,6 +256,24 @@ def reset_filter(request, category_slug, property_id):
     return HttpResponseRedirect(url)
 
 
+def reset_manufacturer_filter(request, category_slug, manufacturer_id):
+    if "manufacturer-filter" in request.session:
+        if int(manufacturer_id) in request.session["manufacturer-filter"]:
+            request.session["manufacturer-filter"].remove(int(manufacturer_id))
+            request.session["manufacturer-filter"] = request.session["manufacturer-filter"]
+
+    url = reverse("lfs_category", kwargs={"slug": category_slug})
+    return HttpResponseRedirect(url)
+
+
+def reset_all_manufacturer_filter(request, category_slug):
+    if "manufacturer-filter" in request.session:
+        del request.session["manufacturer-filter"]
+
+    url = reverse("lfs_category", kwargs={"slug": category_slug})
+    return HttpResponseRedirect(url)
+
+
 def reset_all_filter(request, category_slug):
     """Resets all product filter. Redirects to the category with given slug.
     """
@@ -246,6 +282,9 @@ def reset_all_filter(request, category_slug):
 
     if "price-filter" in request.session:
         del request.session["price-filter"]
+
+    if "manufacturer-filter" in request.session:
+        del request.session["manufacturer-filter"]
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
@@ -364,6 +403,10 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     if price_filter:
         sub_cache_key += "-%s-%s" % (price_filter["min"], price_filter["max"])
 
+    manufacturer_filter = request.session.get("manufacturer-filter")
+    if manufacturer_filter:
+        sub_cache_key += "-%s" % ','.join(map(str, manufacturer_filter))
+
     temp = cache.get(cache_key)
     if temp is not None:
         try:
@@ -387,7 +430,7 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     amount = amount_of_rows * amount_of_cols
 
     all_products = lfs.catalog.utils.get_filtered_products_for_category(
-        category, product_filter, price_filter, sorting)
+        category, product_filter, price_filter, sorting, manufacturer_filter)
 
     # prepare paginator
     paginator = Paginator(all_products, amount)
