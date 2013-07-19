@@ -137,8 +137,8 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
 
         product_variants = product.variants.all().order_by("variant_position")
         selected_options = {}
-        for so in ProductPropertyValue.objects.filter(property__in=props, \
-                        product__in=product_variants, type=PROPERTY_VALUE_TYPE_VARIANT):
+        for so in ProductPropertyValue.objects.filter(property__in=props,
+                                                      product__in=product_variants, type=PROPERTY_VALUE_TYPE_VARIANT):
             ppk = so.product_id
             selected_options.setdefault(ppk, {})[so.property_id] = so.value
 

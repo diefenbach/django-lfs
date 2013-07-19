@@ -241,11 +241,11 @@ def set_ordering(request, ordering):
     """Sets customer ordering given by passed request.
     """
     if ordering == "lastname":
-        ordering = "selected_invoice_address__lastname"
+        ordering = "addresses__lastname"
     elif ordering == "firstname":
-        ordering = "selected_invoice_address__firstname"
+        ordering = "addresses__firstname"
     elif ordering == "email":
-        ordering = "selected_invoice_address__email"
+        ordering = "addresses__email"
 
     if ordering == request.session.get("customer-ordering"):
         if request.session.get("customer-ordering-order") == "":
@@ -349,6 +349,6 @@ def _get_filtered_customers(request, customer_filters):
         customers = customers.filter(f)
 
     # Ordering
-    customers = customers.order_by("%s%s" % (customer_ordering_order, customer_ordering))
+    customers = customers.distinct().order_by("%s%s" % (customer_ordering_order, customer_ordering))
 
     return customers
