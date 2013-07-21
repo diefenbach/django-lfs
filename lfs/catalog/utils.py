@@ -143,11 +143,11 @@ def get_manufacturer_filters(category, product_filter, price_filter, manufacture
     if not products:
         return []
 
-    # And their variants
+    # And their parents
     product_ids = []
     for product in products:
-        if product.is_product_with_variants():
-            product_ids.extend(product.variants.filter(active=True).values_list('id', flat=True))
+        if product.parent:
+            product_ids.append(product.parent_id)
         else:
             product_ids.append(product.pk)
 

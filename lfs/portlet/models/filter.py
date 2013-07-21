@@ -61,8 +61,8 @@ class FilterPortlet(Portlet):
         # calculate manufacturer filters
         if self.show_manufacturer_filters:
             manufacturer_filters = lfs.catalog.utils.get_manufacturer_filters(category, set_product_filters,
-                                                                               set_price_filters,
-                                                                               set_manufacturer_filters)
+                                                                              set_price_filters,
+                                                                              set_manufacturer_filters)
 
         return render_to_string("lfs/portlets/filter.html", RequestContext(request, {
             "show": True,
