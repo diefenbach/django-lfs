@@ -431,6 +431,7 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
 
     all_products = lfs.catalog.utils.get_filtered_products_for_category(
         category, product_filter, price_filter, sorting, manufacturer_filter)
+    all_products = all_products.select_related('parent')
 
     # prepare paginator
     paginator = Paginator(all_products, amount)

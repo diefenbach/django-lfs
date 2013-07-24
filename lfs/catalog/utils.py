@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db import connection
 from django.core.exceptions import FieldError
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Min, Max
 
 # import lfs
 import lfs.catalog.models
@@ -51,33 +51,37 @@ def get_price_filters(category, product_filter, price_filter, manufacturer_filte
         return []
 
     # And their variants
-    product_ids = []
-    for product in products:
-        if product.is_product_with_variants():
-            product_ids.extend(product.variants.filter(active=True).values_list('id', flat=True))
-        else:
-            product_ids.append(product.pk)
+    # product_ids = []
+    # for product in products:
+    #     if product.is_product_with_variants():
+    #         product_ids.extend(product.variants.filter(active=True).values_list('id', flat=True))
+    #     else:
+    #         product_ids.append(product.pk)
+    #product_ids = lfs.catalog.models.Product.objects.filter(Q(pk__in=products) | Q(parent__in=products)).values_list('id', flat=True)
 
-    product_ids_str = ", ".join(map(str, product_ids))
+    #product_ids_str = ", ".join(map(str, product_ids))
 
     # If a price filter is set we return just this.
     if price_filter:
-        min = price_filter["min"]
-        max = price_filter["max"]
-        # products = lfs.catalog.models.Product.objects.filter(effective_price__range=(min, max), pk__in=product_ids)
+        pmin = price_filter["min"]
+        pmax = price_filter["max"]
+        # products = lfs.catalog.models.Product.objects.filter(effective_price__range=(pmin, pmax), pk__in=product_ids)
 
         return {
             "show_reset": True,
             "show_quantity": False,
-            "items": [{"min": float(min), "max": float(max)}],
+            "items": [{"min": float(pmin), "max": float(pmax)}],
         }
 
-    cursor = connection.cursor()
-    cursor.execute("""SELECT min(effective_price), max(effective_price)
-                      FROM catalog_product
-                      WHERE id IN (%s)""" % product_ids_str)
+    #cursor = connection.cursor()
+    #cursor.execute("""SELECT min(effective_price), max(effective_price)
+    #                  FROM catalog_product
+    #                  WHERE id IN (%s)""" % product_ids_str)
 
-    pmin, pmax = cursor.fetchall()[0]
+    all_products = lfs.catalog.models.Product.objects.filter(Q(pk__in=products) | (Q(parent__in=products) & Q(active=True)))
+    res = all_products.aggregate(min_price=Min('effective_price'), max_price=Max('effective_price'))
+
+    pmin, pmax = res['min_price'] or 0, res['max_price'] or 0
     if pmax == pmin:
         step = pmax
     else:
@@ -107,17 +111,15 @@ def get_price_filters(category, product_filter, price_filter, manufacturer_filte
     for n, i in enumerate(range(0, int(pmax), step)):
         if i > pmax:
             break
-        min = i + 1
-        max = i + step
-        products = lfs.catalog.models.Product.objects.filter(effective_price__range=(min, max), pk__in=product_ids)
+        pmin = i + 1
+        pmax = i + step
         result.append({
-            "min": min,
-            "max": max,
-            "quantity": len(products),
+            "min": pmin,
+            "max": pmax,
+            "quantity": all_products.filter(effective_price__range=(pmin, pmax)).count(),
         })
 
     # return result
-
     new_result = []
     for n, f in enumerate(result):
         if f["quantity"] == 0:
@@ -143,13 +145,15 @@ def get_manufacturer_filters(category, product_filter, price_filter, manufacture
     if not products:
         return []
 
+    all_products = lfs.catalog.models.Product.objects.filter(Q(pk__in=products) | (Q(parent__in=products) & Q(active=True)))
+
     # And their parents
-    product_ids = []
-    for product in products:
-        if product.parent:
-            product_ids.append(product.parent_id)
-        else:
-            product_ids.append(product.pk)
+    # product_ids = []
+    # for product in products:
+    #     if product.parent:
+    #         product_ids.append(product.parent_id)
+    #     else:
+    #         product_ids.append(product.pk)
 
     out = {"show_reset": False}
     if manufacturer_filter:
@@ -159,7 +163,7 @@ def get_manufacturer_filters(category, product_filter, price_filter, manufacture
     else:
         manufacturer_filter = []
 
-    qs = Manufacturer.objects.filter(products__in=product_ids).annotate(products_count=Count('products'))
+    qs = Manufacturer.objects.filter(products__in=all_products).annotate(products_count=Count('products'))
     out['items'] = [{'obj': obj, 'selected': obj.pk in manufacturer_filter} for obj in qs]
     return out
 
@@ -198,18 +202,18 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
         return []
 
     # ... and their variants
-    product_ids = []
-    for product in products:
-        product_ids.append(product.pk)
-        product_ids.extend(product.variants.filter(active=True).values_list('id', flat=True))
+    # product_ids = []
+    # for product in products:
+    #     product_ids.append(product.pk)
+    #     product_ids.extend(product.variants.filter(active=True).values_list('id', flat=True))
+    all_products = lfs.catalog.models.Product.objects.filter(Q(pk__in=products) | (Q(parent__in=products) & Q(active=True)))
+    product_ids = all_products.values_list('id', flat=True)
 
     # Get the ids for use within the customer SQL
     product_ids_str = ", ".join(map(str, product_ids))
 
     # Create dict out of already set filters
     set_filters = dict(product_filter)
-
-    cursor = connection.cursor()
 
     property_ids = lfs.catalog.models.ProductPropertyValue.objects.distinct().values_list('property_id', flat=True)
     property_ids_str = ", ".join(map(str, property_ids))

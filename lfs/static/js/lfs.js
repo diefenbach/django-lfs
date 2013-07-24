@@ -85,7 +85,7 @@ $(function() {
             this.blur();
             this.focus();
         });
-    };
+    }
 
     $("input.variant").live("change", function() {
         var url = $(this).parents("table.product-variants").attr("data");

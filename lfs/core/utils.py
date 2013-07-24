@@ -287,7 +287,7 @@ class CategoryTree(object):
             if category.exclude_from_navigation:
                 continue
 
-            if (self.currents and category in self.currents):
+            if self.currents and category in self.currents:
                 children = self._get_sub_tree(category, level + 1)
                 is_current = True
             elif category.level <= self.expand_level:
@@ -322,7 +322,7 @@ class CategoryTree(object):
             if category.exclude_from_navigation:
                 continue
 
-            if (self.currents and category in self.currents):
+            if self.currents and category in self.currents:
                 children = self._get_sub_tree(category, level + 1)
                 is_current = True
             elif category.level <= self.expand_level:

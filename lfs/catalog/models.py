@@ -307,7 +307,7 @@ class Category(models.Model):
         if self.image:
             return self.image
         else:
-            if self.parent:
+            if self.parent_id:
                 return self.parent.get_image()
 
         return None
@@ -965,13 +965,12 @@ class Product(models.Model):
         images = cache.get(cache_key)
 
         if images is None:
-            images = []
             if self.is_variant() and not self.active_images:
-                object = self.parent
+                obj = self.parent
             else:
-                object = self
+                obj = self
 
-            images = object.images.all()
+            images = obj.images.all()
             cache.set(cache_key, images)
 
         return images
@@ -1551,7 +1550,7 @@ class Product(models.Model):
 
         if self.default_variant is not None:
             default_variant = self.default_variant
-        else:
+        elif self.is_product_with_variants():
             try:
                 default_variant = self.variants.filter(active=True)[0]
             except IndexError:
@@ -1575,6 +1574,8 @@ class Product(models.Model):
         elif self.category_variant == CATEGORY_VARIANT_CHEAPEST_PRICES:
             return self.get_default_variant()
         elif self.category_variant == CATEGORY_VARIANT_DEFAULT:
+            return self.get_default_variant()
+        elif self.category_variant is None:
             return self.get_default_variant()
         else:
             try:
