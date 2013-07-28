@@ -400,9 +400,12 @@ def delete_product(request, product_id):
     """Deletes product with passed id.
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
+    if product.is_variant():
+        url = reverse('lfs_manage_product_by_id', kwargs=dict(product_id=product.parent_id))
+    else:
+        url = reverse("lfs_manage_product_dispatcher")
     product.delete()
 
-    url = reverse("lfs_manage_product_dispatcher")
     return HttpResponseRedirect(url)
 
 
@@ -699,7 +702,7 @@ def _get_filtered_products_for_product_view(request):
     and ordering within the current session.
     """
     products = Product.objects.all()
-    product_ordering = request.session.get("product-ordering", "id")
+    product_ordering = request.session.get("product-ordering", "name")
     product_ordering_order = request.session.get("product-ordering-order", "")
 
     # Filter
