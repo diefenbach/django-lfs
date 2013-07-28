@@ -507,6 +507,8 @@ $(function() {
 
         return false;
     });
+
+    $('body').on('keypress', '.disable-enter-key', disable_enter_key);
 })
 
 $(document).ajaxComplete(function() {

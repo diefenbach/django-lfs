@@ -20,3 +20,5 @@ This is not full reference of changes but at least some of them are described:
   References to tinymce were changed in manage_base.html and lfs_tinymce.js
 * filter portlet has been updated to allow for manufacturer filtering and because of that its template:
   lfs_theme/templates/lfs/portlets/filter.html was modified - manufacturer filtering section has been added
+* Small change at lfs/templates/manage/product/product.html - removed onkeypress from filter input element in favour
+  of css class 'disable-enter-key'. Changed lfs.manage.js to add event handler for 'disable-enter-key'.
