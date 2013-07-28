@@ -400,8 +400,9 @@ def delete_product(request, product_id):
     """Deletes product with passed id.
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
+    url = reverse('lfs_manage_product_dispatcher')
     if product.is_variant():
-        url = reverse('lfs_manage_product_by_id', kwargs=dict(product_id=product.parent_id))
+        url = reverse("lfs_manage_product", kwargs={"product_id": product.parent_id})
     else:
         url = reverse("lfs_manage_product_dispatcher")
     product.delete()
