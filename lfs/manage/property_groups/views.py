@@ -79,12 +79,14 @@ def properties_inline(request, id, template_name="manage/property_groups/propert
     """
     property_group = get_object_or_404(PropertyGroup, pk=id)
 
-    gps = GroupsPropertiesRelation.objects.filter(group=id)
+    gps = GroupsPropertiesRelation.objects.filter(group=id).select_related('property')
 
     # Calculate assignable properties
-    assigned_property_ids = [p.property.id for p in gps]
-    assignable_properties = Property.objects.exclude(
-        pk__in=assigned_property_ids).exclude(local=True)
+    #assigned_property_ids = [p.property.id for p in gps]
+    #assignable_properties = Property.objects.exclude(
+    #    pk__in=assigned_property_ids).exclude(local=True)
+
+    assignable_properties = Property.objects.exclude(local=True).exclude(groupspropertiesrelation__in=gps)
 
     return render_to_string(template_name, RequestContext(request, {
         "property_group": property_group,
@@ -201,8 +203,7 @@ def products_inline(request, product_group_id, as_string=False,
     """Renders the products tab of the property groups management views.
     """
     property_group = PropertyGroup.objects.get(pk=product_group_id)
-    group_products = property_group.products.all()
-    group_product_ids = [p.id for p in group_products]
+    group_products = property_group.products.all().select_related('parent')
 
     r = request.REQUEST
     s = request.session
@@ -246,8 +247,8 @@ def products_inline(request, product_group_id, as_string=False,
 
             filters &= Q(categories__in=categories)
 
-    products = Product.objects.filter(filters)
-    paginator = Paginator(products.exclude(pk__in=group_product_ids), 25)
+    products = Product.objects.select_related('parent').filter(filters)
+    paginator = Paginator(products.exclude(pk__in=group_products), 25)
 
     try:
         page = paginator.page(page)
