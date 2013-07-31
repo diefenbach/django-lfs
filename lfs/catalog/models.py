@@ -699,12 +699,19 @@ class Product(models.Model):
         """
         Overwritten to save effective_price.
         """
-        if self.for_sale:
-            self.effective_price = self.for_sale_price
+        pc = self.get_price_calculator(None)
+        self.effective_price = pc.get_effective_price()
+        if self.is_variant():
+            dv = self.parent.get_default_variant()
+            # if this is default variant
+            if dv and self.pk == dv.pk:
+                # trigger effective price calculation for parent to have it set to price of default variant
+                super(Product, self).save(*args, **kwargs)
+                self.parent.save()
+            else:
+                super(Product, self).save(*args, **kwargs)
         else:
-            self.effective_price = self.price
-
-        super(Product, self).save(*args, **kwargs)
+            super(Product, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         """

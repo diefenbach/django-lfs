@@ -17,15 +17,13 @@ from django.utils.translation import ugettext_lazy as _
 import lfs.catalog.utils
 import lfs.core.utils
 import lfs.core.views
-from lfs.order.settings import SUBMITTED, PAYMENT_FLAGGED, PAYMENT_FAILED
 import lfs.utils.misc
 import logging
-from lfs.caching.utils import lfs_get_object_or_404, get_cache_group_id
+
+from lfs.caching.utils import get_cache_group_id
 from lfs.catalog.models import Category
-from lfs.catalog.settings import CONFIGURABLE_PRODUCT, VARIANT
+from lfs.catalog.settings import VARIANT
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
-from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
-from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import SORTING_MAP
 from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
@@ -218,9 +216,9 @@ def product_navigation(context, product):
     """Provides previous and next product links.
     """
     request = context.get("request")
-    sorting = request.session.get("sorting", 'price')
+    sorting = request.session.get("sorting", 'effective_price')
     if sorting.strip() == '':
-        sorting = 'price'
+        sorting = 'effective_price'
         request.session["sorting"] = sorting
 
     slug = product.slug

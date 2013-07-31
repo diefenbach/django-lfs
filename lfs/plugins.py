@@ -160,6 +160,13 @@ class PriceCalculator(object):
         self.request = request
         self.product = product
 
+    def get_effective_price(self):
+        """ Effective price is used for sorting and filtering.
+            Usually it is same as value from get_price but in some cases it might differ (eg. if we add eco tax to
+            product price)
+        """
+        return self.get_price()
+
     def get_price(self, with_properties=True):
         """
         Returns the stored price of the product without any tax calculations.

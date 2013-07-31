@@ -148,15 +148,15 @@ DELETE_FILES = getattr(settings, "LFS_DELETE_FILES", True)
 DELETE_IMAGES = getattr(settings, "LFS_DELETE_IMAGES", True)
 if getattr(settings, 'SOLR_ENABLED', False):
     SORTING_MAP = (
-        {'default': 'price', 'ftx': 'price asc', 'title': _('Price ascending')},
-        {'default': '-price', 'ftx': 'price desc', 'title': _('Price descending')},
+        {'default': 'effective_price', 'ftx': 'price asc', 'title': _('Price ascending')},
+        {'default': '-effective_price', 'ftx': 'price desc', 'title': _('Price descending')},
         {'default': 'name', 'ftx': 'name asc', 'title': _('Name ascending')},
         {'default': '-name', 'ftx': 'name desc', 'title': _('Name descending')},
     )
 else:
     SORTING_MAP = (
-        {'default': 'price', 'ftx': 'price', 'title': _('Price ascending')},
-        {'default': '-price', 'ftx': '-price', 'title': _('Price descending')},
+        {'default': 'effective_price', 'ftx': 'price', 'title': _('Price ascending')},
+        {'default': '-effective_price', 'ftx': '-price', 'title': _('Price descending')},
         {'default': 'name', 'ftx': 'name', 'title': _('Name ascending')},
         {'default': '-name', 'ftx': '-name', 'title': _('Name descending')},
     )

@@ -408,7 +408,8 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
         sub_cache_key += "-%s" % ','.join(map(str, manufacturer_filter))
 
     temp = cache.get(cache_key)
-    if temp is not None:
+    # TODO: removeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+    if temp is not None and 1 == 2:
         try:
             return temp[sub_cache_key]
         except KeyError:
@@ -428,6 +429,8 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     amount_of_rows = format_info["product_rows"]
     amount_of_cols = format_info["product_cols"]
     amount = amount_of_rows * amount_of_cols
+
+    print 'sorting', sorting
 
     all_products = lfs.catalog.utils.get_filtered_products_for_category(
         category, product_filter, price_filter, sorting, manufacturer_filter)
