@@ -408,8 +408,7 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
         sub_cache_key += "-%s" % ','.join(map(str, manufacturer_filter))
 
     temp = cache.get(cache_key)
-    # TODO: removeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-    if temp is not None and 1 == 2:
+    if temp is not None:
         try:
             return temp[sub_cache_key]
         except KeyError:
