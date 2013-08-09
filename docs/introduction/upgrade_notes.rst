@@ -22,3 +22,6 @@ This is not full reference of changes but at least some of them are described:
   lfs_theme/templates/lfs/portlets/filter.html was modified - manufacturer filtering section has been added
 * Small change at lfs/templates/manage/product/product.html - removed onkeypress from filter input element in favour
   of css class 'disable-enter-key'. Changed lfs.manage.js to add event handler for 'disable-enter-key'.
+* Added new ORDER state: PREPARED that can be used to mark orders as prepared to be sent.
+* Added new signal and setting that allows defining extra ORDER_STATES. Signal is order_state_changed and option is
+  LFS_EXTRA_ORDER_STATES. New states should start with id 20 or higher to avoid conflicts with built in states.

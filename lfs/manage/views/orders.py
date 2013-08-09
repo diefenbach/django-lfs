@@ -395,6 +395,8 @@ def change_order_state(request):
     state_id = request.POST.get("new-state")
     order = get_object_or_404(Order, pk=order_id)
 
+    old_state = order.state
+
     try:
         order.state = int(state_id)
     except ValueError:
@@ -407,6 +409,8 @@ def change_order_state(request):
         lfs.core.signals.order_sent.send({"order": order, "request": request})
     if order.state == lfs.order.settings.PAID:
         lfs.core.signals.order_paid.send({"order": order, "request": request})
+
+    lfs.core.signals.order_state_changed.send(sender=order, order=order, request=request, old_state=old_state)
 
     msg = _(u"State has been changed")
 
