@@ -3,6 +3,8 @@ from datetime import datetime
 from datetime import timedelta
 
 # django imports
+from django.conf import settings
+from django.core.cache import cache
 from django.db.models import Q
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import EmptyPage
@@ -411,6 +413,9 @@ def change_order_state(request):
         lfs.core.signals.order_paid.send({"order": order, "request": request})
 
     lfs.core.signals.order_state_changed.send(sender=order, order=order, request=request, old_state=old_state)
+
+    cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, Order.__name__.lower(), order.pk)
+    cache.delete(cache_key)
 
     msg = _(u"State has been changed")
 
