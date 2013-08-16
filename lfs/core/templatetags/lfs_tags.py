@@ -590,7 +590,7 @@ def currency(value, request=None, grouping=True):
     try:
         result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
     except ValueError, e:
-        result = value
+        result = str(value)
         logger.error("currency filter: %s" % e)
 
     # add css class if value is negative
