@@ -60,6 +60,8 @@ from lfs.tests.utils import RequestFactory
 class PriceFilterTestCase(TestCase):
     """
     """
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
     def setUp(self):
         """
         """
@@ -109,6 +111,8 @@ class PriceFilterTestCase(TestCase):
 class ManufacturerFilterTestCase(TestCase):
     """
     """
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
     def setUp(self):
         """
         """
@@ -135,6 +139,8 @@ class ManufacturerFilterTestCase(TestCase):
 class PropertiesTestCase(TestCase):
     """
     """
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
     def setUp(self):
         """
         """
@@ -609,6 +615,8 @@ class PropertiesTestCase(TestCase):
 class PropertiesTestCaseWithoutProperties(TestCase):
     """Test the filter methods without added properties.
     """
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
     def setUp(self):
         """
         """
