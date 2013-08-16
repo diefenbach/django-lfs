@@ -242,6 +242,8 @@ class CartModelsTestCase(TestCase):
 class CartItemTestCase(TestCase):
     """
     """
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
     def setUp(self):
         self.tax = Tax.objects.create(rate=19.0)
 
