@@ -299,9 +299,9 @@ def add_to_cart(request, product_id=None):
     message = ""
     if product.manage_stock_amount and cart_item.amount > product.stock_amount and not product.order_time:
         if product.stock_amount == 0:
-            message = _(u"Sorry, but '%(product)s' is not available anymore." % {"product": product.name})
+            message = _(u"Sorry, but '%(product)s' is not available anymore.") % {"product": product.name}
         elif product.stock_amount == 1:
-            message = _(u"Sorry, but '%(product)s' is only one time available." % {"product": product.name})
+            message = _(u"Sorry, but '%(product)s' is only one time available.") % {"product": product.name}
         else:
             message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": product.name, "amount": product.stock_amount}
         cart_item.amount = product.stock_amount
