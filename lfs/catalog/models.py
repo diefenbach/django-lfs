@@ -62,6 +62,8 @@ from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
 
+from taggit.managers import TaggableManager
+
 
 def get_unique_id_str():
     return str(uuid.uuid4())
@@ -684,6 +686,8 @@ class Product(models.Model):
     manufacturer = models.ForeignKey(Manufacturer, verbose_name=_(u"Manufacturer"), blank=True, null=True,
                                      related_name="products", on_delete=models.SET_NULL)
     type_of_quantity_field = models.PositiveSmallIntegerField(_(u"Type of quantity field"), blank=True, null=True, choices=QUANTITY_FIELD_TYPES)
+
+    tags = TaggableManager()
 
     objects = ActiveManager()
 
