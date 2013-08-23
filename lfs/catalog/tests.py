@@ -1190,18 +1190,18 @@ class ViewsTestCase(TestCase):
         self.failIf("sorting" in self.client.session)
 
         # Empty string shouldn't raise an error
-        self.client.post(url, {'sorting': ''})
+        self.client.post(url, {'sorting': ''}, HTTP_REFERER='http://foo/bar')
 
         # Post a sorting
-        self.client.post(url, {'sorting': '-name'})
+        self.client.post(url, {'sorting': '-name'}, HTTP_REFERER='http://foo/bar')
         self.assertEqual(self.client.session.get("sorting"), "-name")
 
         # Post another sorting
-        self.client.post(url, {'sorting': '+price'})
+        self.client.post(url, {'sorting': '+price'}, HTTP_REFERER='http://foo/bar')
         self.assertEqual(self.client.session.get("sorting"), "+price")
 
         # Empty string should delete session sorting key
-        self.client.post(url, {'sorting': ''})
+        self.client.post(url, {'sorting': ''}, HTTP_REFERER='http://foo/bar')
         self.failIf("sorting" in self.client.session)
 
     def test_category_view(self):
