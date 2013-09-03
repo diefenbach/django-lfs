@@ -78,7 +78,7 @@ def get_payment_costs(request, payment_method):
 
     price = criteria_utils.get_first_valid(request,
         payment_method.prices.all())
-
+    # TODO: this assumes that payment price is given as gross price, we have to add payment processor here
     if price is None:
         price = payment_method.price
         tax = (tax_rate / (tax_rate + 100)) * price

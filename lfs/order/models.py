@@ -132,6 +132,9 @@ class Order(models.Model):
 
         return order_name.strip(', ')
 
+    def price_net(self):
+        return self.price - self.tax
+
 
 class OrderItem(models.Model):
     """An order items holds the sold product, its amount and some other relevant
