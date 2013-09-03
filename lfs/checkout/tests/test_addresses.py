@@ -26,8 +26,6 @@ class CheckoutAddressesTestCase(TestCase):
         """
         """
         ie = Country.objects.get(code="ie")
-        gb = Country.objects.get(code="gb")
-        de = Country.objects.get(code="de")
         us = Country.objects.get(code="us")
 
         shop = get_default_shop()
@@ -177,7 +175,7 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
 
         # test we have same amount of address objects at end of checkout
-        self.assertEquals(Address.objects.count(), 2)
+        self.assertEquals(Address.objects.count(), 4)
 
     def test_ajax_saves_address(self):
         self.assertEquals(Address.objects.count(), 2)

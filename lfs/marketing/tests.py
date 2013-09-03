@@ -21,6 +21,8 @@ from lfs.order.settings import CLOSED
 class RatingMailTestCase(TestCase):
     """
     """
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
     def setUp(self):
         """
         """
@@ -63,6 +65,8 @@ class RatingMailTestCase(TestCase):
 class TopsellerTestCase(TestCase):
     """Tests the Topseller model
     """
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
     def setUp(self):
         """
         """
@@ -78,6 +82,8 @@ class TopsellerTestCase(TestCase):
 class TopsellerUtilsTestCase(TestCase):
     """Tests the utils of the lfs.marketing
     """
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
     def setUp(self):
         """
         """
