@@ -335,6 +335,8 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
     This view is called if the user chooses a template that is situated in settings.CATEGORY_PATH ".
     """
     cache_key = "%s-category-categories-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    if request.user.groups.exists():
+        cache_key += '-' + '-'.join(str(g) for g in request.user.groups.values_list('pk', flat=True))
 
     result = cache.get(cache_key)
     if result is not None:
@@ -394,6 +396,9 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
 
     cache_key = "%s-category-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
     sub_cache_key = "%s-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
+    if request.user.groups.exists():
+        cache_key += '-' + '-'.join(str(g) for g in request.user.groups.values_list('pk', flat=True))
+        sub_cache_key += '-' + '-'.join(str(g) for g in request.user.groups.values_list('pk', flat=True))
 
     filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter]
     if filter_key:
@@ -533,6 +538,8 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
     group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
     cache_key = "%s-%s-product-inline-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id,
                                                 request.user.is_superuser, product.id)
+    if request.user.groups.exists():
+        cache_key += '-' + '-'.join(str(g) for g in request.user.groups.values_list('pk', flat=True))
     result = cache.get(cache_key)
     if result is not None:
         return result
