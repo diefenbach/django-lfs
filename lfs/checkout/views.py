@@ -3,7 +3,6 @@ from copy import deepcopy
 
 # django imports
 from django.conf import settings
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -30,7 +29,7 @@ from lfs.checkout.settings import CHECKOUT_TYPE_ANON
 from lfs.checkout.settings import CHECKOUT_TYPE_AUTH
 from lfs.customer import utils as customer_utils
 from lfs.core.models import Country
-from lfs.customer.forms import CreditCardForm
+from lfs.customer.forms import CreditCardForm, CustomerAuthenticationForm
 from lfs.customer.forms import BankAccountForm
 from lfs.customer.forms import RegisterForm
 from lfs.payment.models import PaymentMethod
@@ -56,12 +55,11 @@ def login(request, template_name="lfs/checkout/login.html"):
         return HttpResponseRedirect(reverse("lfs_checkout"))
 
     # Using Djangos default AuthenticationForm
-    login_form = AuthenticationForm()
-    login_form.fields["username"].label = _(u"E-Mail")
+    login_form = CustomerAuthenticationForm()
     register_form = RegisterForm()
 
     if request.POST.get("action") == "login":
-        login_form = AuthenticationForm(data=request.POST)
+        login_form = CustomerAuthenticationForm(data=request.POST)
         login_form.fields["username"].label = _(u"E-Mail")
         if login_form.is_valid():
             from django.contrib.auth import login
