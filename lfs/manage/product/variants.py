@@ -434,7 +434,7 @@ def add_variants(request, product_id):
         except Product.MultipleObjectsReturned:
             message = _(u"That slug is already in use. Please use another.")
         except Product.DoesNotExist:
-            variant = Product(name=name, slug=slug, sku=sku, parent=product, price=price,
+            variant = Product(name=name, slug=slug, sku=sku, parent=product, price=float(price),
                               variant_position=(variants_count + i + 1) * 10, sub_type=VARIANT)
             try:
                 variant.save()
@@ -506,6 +506,8 @@ def update_variants(request, product_id):
                     for name in ("slug", "sku", "price"):
                         value = request.POST.get("%s-%s" % (name, id))
                         if value != "":
+                            if name == 'price':
+                                value = float(value)
                             setattr(variant, name, value)
 
                     # name
