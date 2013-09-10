@@ -1,6 +1,8 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
+from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -29,13 +31,16 @@ from lfs.manage.property.forms import StepRangeForm
 
 
 # Views
+from lfs.manage.utils import get_current_page
+
+
 @permission_required("core.manage_shop")
 def manage_properties(request):
     """The main view to manage properties.
     """
     try:
-        property = Property.objects.filter(local=False)[0]
-        url = reverse("lfs_manage_shop_property", kwargs={"id": property.id})
+        prop = Property.objects.filter(local=False)[0]
+        url = reverse("lfs_manage_shop_property", kwargs={"id": prop.pk})
     except IndexError:
         url = reverse("lfs_manage_no_shop_properties")
 
@@ -43,37 +48,170 @@ def manage_properties(request):
 
 
 @permission_required("core.manage_shop")
+def pages_inline(request, page, paginator, property_id, template_name="manage/properties/pages_inline.html"):
+    """
+    Displays the page navigation.
+    """
+    return render_to_string(template_name, RequestContext(request, {
+        "page": page,
+        "paginator": paginator,
+        "property_id": property_id,
+    }))
+
+
+@permission_required("core.manage_shop")
 def manage_property(request, id, template_name="manage/properties/property.html"):
     """The main view to manage the property with passed id.
     """
-    property = get_object_or_404(Property, pk=id)
+    prop = get_object_or_404(Property, pk=id)
     if request.method == "POST":
-        form = PropertyDataForm(instance=property, data=request.POST)
+        form = PropertyDataForm(instance=prop, data=request.POST)
         if form.is_valid():
             form.save()
             _update_property_positions()
             return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_shop_property", kwargs={"id": property.id}),
+                url=reverse("lfs_manage_shop_property", kwargs={"id": prop.id}),
                 msg=_(u"Property type has been saved."),
             )
 
     else:
-        form = PropertyDataForm(instance=property)
+        form = PropertyDataForm(instance=prop)
 
-    display_step_form = property.is_number_field and property.filterable
+    display_step_form = prop.is_number_field and prop.filterable
+
+    # return render_to_response(template_name, RequestContext(request, {
+    #     "property": prop,
+    #     "properties": Property.objects.filter(local=False),
+    #     "form": form,
+    #     "type_form": PropertyTypeForm(instance=prop),
+    #     "current_id": int(id),
+    #     "options": options_inline(request, id),
+    #     "steps": steps_inline(request, id),
+    #     "number_field": number_field(request, prop),
+    #     "select_field": select_field(request, prop),
+    #     "display_step_form": display_step_form,
+    #   }))
+
+    properties = _get_filtered_properties_for_property_view(request)
+    paginator = Paginator(properties, 25)
+    page = get_current_page(request, properties, prop, 25)
+
+    try:
+        page = paginator.page(page)
+    except EmptyPage:
+        page = paginator.page(1)
 
     return render_to_response(template_name, RequestContext(request, {
-        "property": property,
-        "properties": Property.objects.filter(local=False),
+        "property": prop,
         "form": form,
-        "type_form": PropertyTypeForm(instance=property),
+        "type_form": PropertyTypeForm(instance=prop),
         "current_id": int(id),
         "options": options_inline(request, id),
         "steps": steps_inline(request, id),
-        "number_field": number_field(request, property),
-        "select_field": select_field(request, property),
+        "number_field": number_field(request, prop),
+        "select_field": select_field(request, prop),
         "display_step_form": display_step_form,
-      }))
+
+        "selectable_properties": selectable_properties_inline(request, page, paginator, id),
+        # pagination data:
+        "properties": properties,
+        "pages_inline": pages_inline(request, page, paginator, id),
+        "name_filter_value": request.session.get("property_filters", {}).get("property_name", ""),
+    }))
+
+
+# Private Methods
+def _get_filtered_properties_for_property_view(request):
+    """
+    Returns a query set with filtered properties based on saved name filter
+    and ordering within the current session.
+    """
+    properties = Property.objects.filter(local=False)
+    property_ordering = request.session.get("property-ordering", "name")
+    property_ordering_order = request.session.get("property-ordering-order", "")
+
+    # Filter
+    property_filters = request.session.get("property_filters", {})
+    name = property_filters.get("property_name", "")
+    if name != "":
+        properties = properties.filter(Q(name__icontains=name) | Q(title__icontains=name))
+
+    properties = properties.order_by("%s%s" % (property_ordering_order, property_ordering))
+    return properties
+
+
+@permission_required("core.manage_shop")
+def selectable_properties_inline(request, page, paginator, property_id,
+                                 template_name="manage/properties/selectable_properties_inline.html"):
+    """
+    Displays the selectable properties for the property view.
+    """
+    try:
+        prop = Property.objects.get(pk=property_id)
+    except Property.DoesNotExist:
+        return ""
+
+    return render_to_string(template_name, RequestContext(request, {
+        "paginator": paginator,
+        "page": page,
+        "current_property": prop
+    }))
+
+
+@permission_required("core.manage_shop")
+def set_name_filter(request):
+    """
+    Sets property filters given by passed request.
+    """
+    property_filters = request.session.get("property_filters", {})
+
+    if request.POST.get("name", "") != "":
+        property_filters["property_name"] = request.POST.get("name")
+    else:
+        if property_filters.get("property_name"):
+            del property_filters["property_name"]
+
+    request.session["property_filters"] = property_filters
+
+    properties = _get_filtered_properties_for_property_view(request)
+    paginator = Paginator(properties, 25)
+    page = paginator.page(request.REQUEST.get("page", 1))
+
+    property_id = request.REQUEST.get("property-id", 0)
+
+    html = (
+        ("#selectable-properties-inline", selectable_properties_inline(request, page, paginator, property_id)),
+        ("#pages-inline", pages_inline(request, page, paginator, property_id)),
+    )
+
+    result = simplejson.dumps({
+        "html": html,
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)
+
+
+@permission_required("core.manage_shop")
+def set_properties_page(request):
+    """
+    Sets the displayed property page.
+    """
+    property_id = request.GET.get("property-id")
+
+    # property view
+    properties = _get_filtered_properties_for_property_view(request)
+    amount = 25
+
+    paginator = Paginator(properties, amount)
+    page = paginator.page(request.REQUEST.get("page", 1))
+
+    html = (
+        ("#pages-inline", pages_inline(request, page, paginator, property_id)),
+        ("#selectable-properties-inline", selectable_properties_inline(request, page, paginator, property_id)),
+    )
+
+    return HttpResponse(
+        simplejson.dumps({"html": html}, cls=LazyEncoder))
 
 
 @permission_required("core.manage_shop")

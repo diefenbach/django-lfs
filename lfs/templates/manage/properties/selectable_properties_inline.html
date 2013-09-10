@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% for property in page.object_list %}
+    <div>
+        <a class="selectable {% if current_property.pk == property.pk %}selected{% endif %}"
+           href="{% url lfs_manage_shop_property property.id %}?page={{ page.number }}"
+           id="selectable-property-id_{{ property.id }}">
+            {{ property.name }}
+        </a>
+    </div>
+{% endfor %}
