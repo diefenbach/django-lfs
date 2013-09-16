@@ -1,0 +1,12 @@
+{% load i18n %}
+
+<select class="{{ css_class }} manufacturer"
+        name="{{ name }}">
+    <option value="All">{% trans 'All' %}</option>
+    <option value="None" {% ifequal selected "None" %}selected="selected"{% endifequal %}>{% trans 'None' %}</option>
+    {% for manufacturer in manufacturers %}
+        <option value="{{ manufacturer.id }}" {% if manufacturer.selected %}selected="selected"{% endif %}>
+            {{ manufacturer.name }}
+        </option>
+    {% endfor %}
+</select>

@@ -620,7 +620,7 @@ def set_filters(request):
     Sets product filters given by passed request.
     """
     product_filters = request.session.get("product_filters", {})
-    for name in ("name", "active", "price", "category", "for_sale", "sub_type", "amount"):
+    for name in ("name", "active", "price", "category", "manufacturer", "for_sale", "sub_type", "amount"):
         if request.POST.get(name, "") != "":
             product_filters[name] = request.POST.get(name)
         else:
@@ -759,6 +759,15 @@ def _get_filtered_products(request):
         categories = [category]
         categories.extend(category.get_all_children())
         products = products.filter(categories__in=categories).distinct()
+
+    # manufacturer
+    manufacturer = product_filters.get("manufacturer", "")
+    if manufacturer == "None":
+        products = products.filter(manufacturer=None)
+    elif manufacturer == "All":
+        products = products.distinct()
+    elif manufacturer != "":
+        products = products.filter(manufacturer=manufacturer).distinct()
 
     products = products.order_by("%s%s" % (product_ordering_order, product_ordering))
 

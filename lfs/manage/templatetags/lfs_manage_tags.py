@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 
 # lfs imports
 from lfs.catalog.models import Category
+from lfs.manufacturer.models import Manufacturer
 
 register = template.Library()
 
@@ -53,4 +54,26 @@ def category_filter_children(request, category, name="category_filter", level=1)
         "categories": categories
     }))
 
+    return result
+
+
+
+@register.inclusion_tag('manage/manufacturers/manufacturer_filter.html', takes_context=True)
+def manufacturer_filter(context, css_class="", name="manufacturer"):
+    """Returns the categories of the shop for management purposes.
+
+    The css_class attribute is used for different ajax based requests in
+    different views.
+    """
+    request = context.get("request")
+    selected = request.session.get("product_filters", {}).get("manufacturer")
+    manufacturers = []
+    for manufacturer in Manufacturer.objects.all():
+        manufacturers.append({
+            "id": manufacturer.id,
+            "name": manufacturer.name,
+            "selected": str(manufacturer.id) == selected,
+        })
+
+    result = {"manufacturers": manufacturers, "css_class": css_class, "name": name, "selected": selected}
     return result
