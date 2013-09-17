@@ -101,43 +101,16 @@
           method="post">
         <table>
             <tr>
-                <th>
-                    {% trans 'Slug' %}
-                </th>
-                <th>
-                    {% trans 'Name' %}
-                </th>
-                <th>
-                    {% trans 'Price' %}
-                </th>
-                {% for property in all_properties %}
+                {% for field in variant_simple_form %}
                     <th>
-                        {{ property.name }}
+                        {{ field.label }}
                     </th>
                 {% endfor %}
                 <th></th>
             </tr>
             <tr>
-                <td>
-                    {{ variant_simple_form.slug }}
-                </td>
-                <td>
-                    {{ variant_simple_form.name }}
-                </td>
-                <td>
-                    {{ variant_simple_form.price }}
-                </td>
-                {% for property in all_properties %}
-                    <td>
-                        <select name="property_{{ property.id }}">
-                            <option value="all">{% trans 'All' %}</option>
-                            {% for option in property.options.all %}
-                                <option value="{{ option.id }}">
-                                    {{ option.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </td>
+                {% for field in variant_simple_form %}
+                    <td>{{ field }}</td>
                 {% endfor %}
                 <td>
                     <input type="submit"

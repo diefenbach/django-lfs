@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import EmptyPage
 from django.db import IntegrityError
-from django.forms import ModelForm
+from django.forms import ModelForm, ChoiceField
 from django.forms.widgets import Select
 from django.http import HttpResponse
 from django.template import RequestContext
@@ -49,8 +49,66 @@ class PropertyForm(ModelForm):
 
 
 class ProductVariantSimpleForm(ModelForm):
-    """Form to add/edit variants options.
+    """ Variants add form.
     """
+    def __init__(self, all_properties, *args, **kwargs):
+        super(ProductVariantSimpleForm, self).__init__(*args, **kwargs)
+        self.fields['slug'].required = False
+        for prop in all_properties:
+            choices = [('all', _('All')), ('', '---')]
+            choices.extend(list(prop.options.values_list('pk', 'name')))
+            self.fields['property_%s' % prop.id] = ChoiceField(label=prop.name, choices=choices, required=False)
+            self.initial['property_%s' % prop.id] = 'all'
+
+    class Meta:
+        model = Product
+        fields = ("slug", "name", "price", )
+
+
+class ProductVariantCreateForm(ModelForm):
+    """ Form used to create product variant for specific set of options
+    """
+    def __init__(self, options=None, product=None, *args, **kwargs):
+        super(ProductVariantCreateForm, self).__init__(*args, **kwargs)
+        self.fields['slug'].required = False
+        self.options = options
+        self.product = product
+
+    def prepare_slug(self, slug):
+        for option in self.options:
+            property_id, option_id = option.split("|")
+            o = PropertyOption.objects.get(pk=option_id)
+            if slug:
+                slug += "-"
+            slug += slugify(o.name)
+
+        product_slug = self.product.slug
+        if product_slug is None:
+            product_slug = ''
+        if product_slug + slug.replace('-', '') == '':
+            slug = ''
+        else:
+            slug = "%s-%s" % (product_slug, slug)
+            slug = slug.rstrip('-')
+
+        # create unique slug
+        slug = slug[:80]
+        new_slug = slug
+        counter = 1
+        while Product.objects.filter(slug=new_slug).exists():
+            new_slug = '%s-%s' % (slug[:(79 - len(str(counter)))], counter)
+            counter += 1
+        slug = new_slug
+
+        return slug
+
+    def clean(self):
+        cleaned_data = super(ProductVariantCreateForm, self).clean()
+        slug = self.prepare_slug(cleaned_data.get('slug', ''))
+        cleaned_data['slug'] = slug
+
+        return cleaned_data
+
     class Meta:
         model = Product
         fields = ("slug", "name", "price", )
@@ -103,14 +161,17 @@ class DefaultVariantForm(ModelForm):
 
 
 @permission_required("core.manage_shop")
-def manage_variants(request, product_id, as_string=False, template_name="manage/product/variants.html"):
+def manage_variants(request, product_id, as_string=False, variant_simple_form=None, template_name="manage/product/variants.html"):
     """Manages the variants of a product.
     """
     product = Product.objects.get(pk=product_id)
 
+    all_properties = product.get_property_select_fields()
+
     property_form = PropertyForm()
     property_option_form = PropertyOptionForm()
-    variant_simple_form = ProductVariantSimpleForm()
+    if not variant_simple_form:
+        variant_simple_form = ProductVariantSimpleForm(all_properties=all_properties)
     display_type_form = DisplayTypeForm(instance=product)
     default_variant_form = DefaultVariantForm(instance=product)
     category_variant_form = CategoryVariantForm(instance=product)
@@ -190,7 +251,7 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
         "variants": variants,
         "shop_property_groups": shop_property_groups,
         "local_properties": product.get_local_properties(),
-        "all_properties": product.get_property_select_fields(),
+        "all_properties": all_properties,
         "property_option_form": property_option_form,
         "property_form": property_form,
         "variant_simple_form": variant_simple_form,
@@ -380,86 +441,81 @@ def add_variants(request, product_id):
     cache.delete("%s-variants%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product_id))
 
     product = Product.objects.get(pk=product_id)
+    all_properties = product.get_property_select_fields()
 
-    # Add variant(s)
-    #variant_simple_form = ProductVariantSimpleForm(data=request.POST)
-
-    # We don't have to check whether the form is valid. If the fields
-    # are empty we create default ones.
-
-    variants_count = product.variants.count()
-
-    # First we need to prepare the requested properties for the use
-    # with cartesian product. That means if the keyword "all" is
-    # found we collect all options of this properties.
-    properties = []
-    for key, value in request.POST.items():
-        if key.startswith("property"):
-            property_id = key.split("_")[1]
-            if value == "all":
-                temp = []
-                for option in PropertyOption.objects.filter(property=property_id):
-                    temp.append("%s|%s" % (property_id, option.id))
-                properties.append(temp)
-            else:
-                properties.append(["%s|%s" % (property_id, value)])
+    variant_simple_form = ProductVariantSimpleForm(all_properties=all_properties, data=request.POST)
 
     message = ''
+    added_count = 0
 
-    # Create a variant for every requested option combination
-    for i, options in enumerate(manage_utils.cartesian_product(*properties)):
+    if variant_simple_form.is_valid():
+        # Add variant(s)
+        variants_count = product.variants.count()
 
-        if product.has_variant(options):
-            continue
+        # First we need to prepare the requested properties for the use
+        # with cartesian product. That means if the keyword "all" is
+        # found we collect all options of this properties.
+        properties = []
+        for key, value in variant_simple_form.cleaned_data.items():
+            if key.startswith("property"):
+                property_id = key.split("_")[1]
+                if value == "all":
+                    temp = []
+                    for option in PropertyOption.objects.filter(property=property_id):
+                        temp.append("%s|%s" % (property_id, option.id))
+                    properties.append(temp)
+                elif value == '':
+                    continue
+                else:
+                    properties.append(["%s|%s" % (property_id, value)])
 
-        name = request.POST.get("name")
-        price = request.POST.get("price")
-        slug = request.POST.get("slug")
-
-        for option in options:
-            property_id, option_id = option.split("|")
-            o = PropertyOption.objects.get(pk=option_id)
-            if slug:
-                slug += "-"
-            slug += slugify(o.name)
-
-        slug = "%s-%s" % (product.slug, slug)
-        sku = "%s-%s" % (product.sku, i + 1)
-
-        variant = None
-        # need to validate the amalgamated slug to make sure it is not already in use
-        try:
-            variant = Product.objects.get(slug=slug)
-            message = _(u"That slug is already in use. Please use another.")
-        except Product.MultipleObjectsReturned:
-            message = _(u"That slug is already in use. Please use another.")
-        except Product.DoesNotExist:
-            variant = Product(name=name, slug=slug, sku=sku, parent=product, price=float(price),
-                              variant_position=(variants_count + i + 1) * 10, sub_type=VARIANT)
-            try:
-                variant.save()
-            except IntegrityError:
+        # Create a variant for every requested option combination
+        for i, options in enumerate(manage_utils.cartesian_product(*properties)):
+            if product.has_variant(options, only_active=False):
                 continue
-            else:
+
+            pvcf = ProductVariantCreateForm(options=options, product=product, data=request.POST)
+            if pvcf.is_valid():
+                variant = pvcf.save(commit=False)
+                variant.sku = "%s-%s" % (product.sku, i + 1)
+                variant.parent = product
+                variant.variant_position = (variants_count + i + 1) * 10
+                variant.sub_type = VARIANT
+
+                try:
+                    variant.save()
+                    added_count += 1
+                except IntegrityError:
+                    continue
+
                 # By default we copy the property groups of the product to
                 # the variants
                 for property_group in product.property_groups.all():
                     variant.property_groups.add(property_group)
 
-            # Save the value for this product and property.
-            for option in options:
-                property_id, option_id = option.split("|")
-                ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_VARIANT)
-                # By default we create also the filter values as this most of
-                # the users would expect.
-                if Property.objects.get(pk=property_id).filterable:
-                    ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id, type=PROPERTY_VALUE_TYPE_FILTER)
+                # Save the value for this product and property.
+                for option in options:
+                    property_id, option_id = option.split("|")
+                    ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id,
+                                                        type=PROPERTY_VALUE_TYPE_VARIANT)
+                    # By default we create also the filter values as this most of
+                    # the users would expect.
+                    if Property.objects.get(pk=property_id).filterable:
+                        ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id,
+                                                            type=PROPERTY_VALUE_TYPE_FILTER)
+            else:
+                print pvcf.errors
+                continue
+        else:
+            message = _(u"No variants have been added.")
 
-            message = _(u"Variants have been added.")
+            if added_count > 0:
+                message = _(u"Variants have been added.")
+        variant_simple_form = ProductVariantSimpleForm(all_properties=all_properties)
 
     html = (
         ("#selectable-products-inline", _selectable_products_inline(request, product)),
-        ("#variants", manage_variants(request, product_id, as_string=True)),
+        ("#variants", manage_variants(request, product_id, as_string=True, variant_simple_form=variant_simple_form)),
     )
 
     result = simplejson.dumps({

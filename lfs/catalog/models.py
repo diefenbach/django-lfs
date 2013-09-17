@@ -1715,7 +1715,7 @@ class Product(models.Model):
         """
         return len(self.get_variants()) > 0
 
-    def get_variant(self, options):
+    def get_variant(self, options, only_active=True):
         """
         Returns the variant with the given options or None.
 
@@ -1738,7 +1738,11 @@ class Product(models.Model):
             parsed_options.append(option)
         options = "".join(parsed_options)
 
-        for variant in self.variants.filter(active=True):
+        variants = self.variants.all()
+        if only_active:
+            variants = variants.filter(active=True)
+
+        for variant in variants:
             temp = variant.property_values.filter(type=PROPERTY_VALUE_TYPE_VARIANT)
             temp = ["%s|%s" % (x.property.id, x.value) for x in temp]
             temp.sort()
@@ -1749,11 +1753,11 @@ class Product(models.Model):
 
         return None
 
-    def has_variant(self, options):
+    def has_variant(self, options, only_active=True):
         """
         Returns true if a variant with given options already exists.
         """
-        if self.get_variant(options) is None:
+        if self.get_variant(options, only_active=only_active) is None:
             return False
         else:
             return True

@@ -2764,6 +2764,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(len(Product.objects.all()), 5)
 
         product = Product.objects.get(slug="product-1")
+        all_props = product.get_property_select_fields()
 
         variant_data = {
             'slug': 'variant-slug',
@@ -2794,6 +2795,8 @@ class ProductTestCase(TestCase):
             pass
 
         self.assertEqual(response.status_code, 200)
+        # We have 2 properties with 2 options each and we already have two variants, so two new variants should have
+        # been created
         self.assertEqual(len(Product.objects.all()), 6)
         variant = Product.objects.get(slug="product-1-variant-slug-m")
         self.assertEqual(variant.name, 'variant')
