@@ -2795,8 +2795,6 @@ class ProductTestCase(TestCase):
             pass
 
         self.assertEqual(response.status_code, 200)
-        # We have 2 properties with 2 options each and we already have two variants, so two new variants should have
-        # been created
         self.assertEqual(len(Product.objects.all()), 6)
         variant = Product.objects.get(slug="product-1-variant-slug-m")
         self.assertEqual(variant.name, 'variant')

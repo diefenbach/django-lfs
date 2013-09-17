@@ -504,7 +504,6 @@ def add_variants(request, product_id):
                         ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id,
                                                             type=PROPERTY_VALUE_TYPE_FILTER)
             else:
-                print pvcf.errors
                 continue
         else:
             message = _(u"No variants have been added.")
