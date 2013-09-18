@@ -605,19 +605,23 @@ def update_variants(request, product_id):
                 temp = key.split("-")[1]
                 variant_id, property_id = temp.split("|")
                 variant = Product.objects.get(pk=variant_id)
-                property = Property.objects.get(pk=property_id)
+                prop = Property.objects.get(pk=property_id)
                 ppv = None
                 ppv_filterable = None
                 try:
                     ppv = ProductPropertyValue.objects.get(product=variant,
                                                            property_id=property_id,
                                                            type=PROPERTY_VALUE_TYPE_VARIANT)
-                    if property.filterable:
+                except ProductPropertyValue.DoesNotExist:
+                    pass
+
+                if prop.filterable:
+                    try:
                         ppv_filterable = ProductPropertyValue.objects.get(product=variant,
                                                                           property_id=property_id,
                                                                           type=PROPERTY_VALUE_TYPE_FILTER)
-                except ProductPropertyValue.DoesNotExist:
-                    pass
+                    except ProductPropertyValue.DoesNotExist:
+                        pass
 
                 if value != '':
                     if not ppv:
@@ -625,16 +629,19 @@ def update_variants(request, product_id):
                                                                   property_id=property_id,
                                                                   type=PROPERTY_VALUE_TYPE_VARIANT,
                                                                   value=value)
-                        if property.filterable:
-                            ProductPropertyValue.objects.create(product=variant, property_id=property_id,
-                                                                value=value,
-                                                                type=PROPERTY_VALUE_TYPE_FILTER)
                     else:
                         ppv.value = value
                         ppv.save()
-                        if ppv_filterable:
+
+                    if prop.filterable:
+                        if not ppv_filterable:
+                            ProductPropertyValue.objects.create(product=variant, property_id=property_id,
+                                                                value=value,
+                                                                type=PROPERTY_VALUE_TYPE_FILTER)
+                        else:
                             ppv_filterable.value = value
                             ppv_filterable.save()
+
                 elif ppv:
                     ppv.delete()
                     if ppv_filterable:
