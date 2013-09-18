@@ -275,7 +275,10 @@ def update_properties(request, product_id):
 
         for value in request.POST.getlist(key):
             if prop.is_valid_value(value):
-                ProductPropertyValue.objects.create(product=product, property=prop, value=value, type=ppv_type)
+                # we have to use get_or_create because it is possible that we get same property values twice, eg.
+                # if we have a SELECT typ property assigned to two different groups, and both these groups bound
+                # to the product. In this case we will have same property shown twice at management page
+                ProductPropertyValue.objects.get_or_create(product=product, property=prop, value=value, type=ppv_type)
     update_product_cache(product)
 
     url = reverse("lfs_manage_product", kwargs={"product_id": product_id})
