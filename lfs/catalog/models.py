@@ -1143,6 +1143,12 @@ class Product(models.Model):
 
         return properties
 
+    def is_select_display_type(self):
+        return self.variants_display_type == SELECT
+
+    def is_list_display_type(self):
+        return self.variants_display_type == LIST
+
     def get_all_properties(self, variant=None):
         """ Return all properties for current product
             if variant is passed then select fields for it
