@@ -14,7 +14,7 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue, PropertyOption
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyGroup
-from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
+from lfs.catalog.settings import PROPERTY_NUMBER_FIELD, PROPERTY_VALUE_TYPE_VARIANT
 from lfs.catalog.settings import PROPERTY_TEXT_FIELD
 from lfs.catalog.settings import PROPERTY_SELECT_FIELD
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
@@ -37,18 +37,18 @@ def manage_properties(request, product_id, template_name="manage/product/propert
     configurables = []
     filterables = []
     displayables = []
-    parent_local_properties = []
+    product_variant_properties = []
 
     # Configurable
     if not product.is_product_with_variants():
         for property_group in product.property_groups.all():
             properties = []
-            for property in property_group.properties.filter(configurable=True).order_by("groupspropertiesrelation"):
-
+            for prop in property_group.properties.filter(configurable=True).order_by("groupspropertiesrelation"):
                 display_configurables = True
 
                 try:
-                    ppv = ProductPropertyValue.objects.get(property=property, product=product, type=PROPERTY_VALUE_TYPE_DEFAULT)
+                    ppv = ProductPropertyValue.objects.get(property=prop, product=product,
+                                                           type=PROPERTY_VALUE_TYPE_DEFAULT)
                 except ProductPropertyValue.DoesNotExist:
                     ppv_id = None
                     ppv_value = ""
@@ -58,7 +58,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
 
                 # Mark selected options
                 options = []
-                for option in property.options.all():
+                for option in prop.options.all():
                     if str(option.id) == ppv_value:
                         selected = True
                     else:
@@ -71,13 +71,13 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     })
 
                 properties.append({
-                    "id": property.id,
-                    "name": property.name,
-                    "title": property.title,
-                    "type": property.type,
+                    "id": prop.id,
+                    "name": prop.name,
+                    "title": prop.title,
+                    "type": prop.type,
                     "options": options,
-                    "display_text_field": property.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
-                    "display_select_field": property.type == PROPERTY_SELECT_FIELD,
+                    "display_text_field": prop.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
+                    "display_select_field": prop.type == PROPERTY_SELECT_FIELD,
                     "value": ppv_value,
                 })
 
@@ -91,17 +91,17 @@ def manage_properties(request, product_id, template_name="manage/product/propert
         # Filterable
         for property_group in product.property_groups.all():
             properties = []
-            for property in property_group.properties.filter(filterable=True).order_by("groupspropertiesrelation"):
+            for prop in property_group.properties.filter(filterable=True).order_by("groupspropertiesrelation"):
 
                 display_filterables = True
 
                 # Try to get the value, if it already exists.
-                ppvs = ProductPropertyValue.objects.filter(property=property, product=product, type=PROPERTY_VALUE_TYPE_FILTER)
+                ppvs = ProductPropertyValue.objects.filter(property=prop, product=product, type=PROPERTY_VALUE_TYPE_FILTER)
                 value_ids = [ppv.value for ppv in ppvs]
 
                 # Mark selected options
                 options = []
-                for option in property.options.all():
+                for option in prop.options.all():
 
                     if str(option.id) in value_ids:
                         selected = True
@@ -115,7 +115,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     })
 
                 value = ""
-                if property.type == PROPERTY_SELECT_FIELD:
+                if prop.type == PROPERTY_SELECT_FIELD:
                     display_select_field = True
                 else:
                     display_select_field = False
@@ -125,10 +125,10 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                         pass
 
                 properties.append({
-                    "id": property.id,
-                    "name": property.name,
-                    "title": property.title,
-                    "type": property.type,
+                    "id": prop.id,
+                    "name": prop.name,
+                    "title": prop.title,
+                    "type": prop.type,
                     "options": options,
                     "value": value,
                     "display_text_field": not display_select_field,
@@ -144,17 +144,18 @@ def manage_properties(request, product_id, template_name="manage/product/propert
         # Displayable
         for property_group in product.property_groups.all():
             properties = []
-            for property in property_group.properties.filter(display_on_product=True).order_by("groupspropertiesrelation"):
+            for prop in property_group.properties.filter(display_on_product=True).order_by("groupspropertiesrelation"):
 
                 display_displayables = True
 
                 # Try to get the value, if it already exists.
-                ppvs = ProductPropertyValue.objects.filter(property=property, product=product, type=PROPERTY_VALUE_TYPE_DISPLAY)
+                ppvs = ProductPropertyValue.objects.filter(property=prop, product=product,
+                                                           type=PROPERTY_VALUE_TYPE_DISPLAY)
                 value_ids = [ppv.value for ppv in ppvs]
 
                 # Mark selected options
                 options = []
-                for option in property.options.all():
+                for option in prop.options.all():
 
                     if str(option.id) in value_ids:
                         selected = True
@@ -168,7 +169,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     })
 
                 value = ""
-                if property.type == PROPERTY_SELECT_FIELD:
+                if prop.type == PROPERTY_SELECT_FIELD:
                     display_select_field = True
                 else:
                     display_select_field = False
@@ -178,10 +179,10 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                         pass
 
                 properties.append({
-                    "id": property.id,
-                    "name": property.name,
-                    "title": property.title,
-                    "type": property.type,
+                    "id": prop.id,
+                    "name": prop.name,
+                    "title": prop.title,
+                    "type": prop.type,
                     "options": options,
                     "value": value,
                     "display_text_field": not display_select_field,
@@ -196,12 +197,11 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                 })
 
     if product.is_variant():
-        local_properties = product.parent.get_local_properties()
-        for property in local_properties:
+        qs = ProductPropertyValue.objects.filter(product=product, type=PROPERTY_VALUE_TYPE_VARIANT)
+        for ppv in qs:
             try:
-                prop_val = product.property_values.get(property=property)
-                property_option = PropertyOption.objects.get(property=property, pk=prop_val.value)
-                parent_local_properties.append(property_option)
+                property_option = PropertyOption.objects.get(property_id=ppv.property_id, pk=ppv.value)
+                product_variant_properties.append(property_option)
             except (ProductPropertyValue.DoesNotExist, PropertyOption.DoesNotExist):
                 continue
 
@@ -226,7 +226,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
         "display_displayables": display_displayables,
         "product_property_groups": product.property_groups.all(),
         "shop_property_groups": shop_property_groups,
-        "parent_local_properties": parent_local_properties
+        "product_variant_properties": product_variant_properties
     }))
 
 

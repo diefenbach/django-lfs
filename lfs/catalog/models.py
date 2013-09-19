@@ -1479,8 +1479,8 @@ class Product(models.Model):
             properties.extend(property_group.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("groupspropertiesrelation"))
 
         # local
-        for property in self.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("productspropertiesrelation"):
-            properties.append(property)
+        for prop in self.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("productspropertiesrelation"):
+            properties.append(prop)
 
         return properties
 
@@ -1494,8 +1494,8 @@ class Product(models.Model):
             properties.extend(property_group.properties.filter(configurable=True).order_by("groupspropertiesrelation"))
 
         # local
-        for property in self.properties.filter(configurable=True).order_by("productspropertiesrelation"):
-            properties.append(property)
+        for prop in self.properties.filter(configurable=True).order_by("productspropertiesrelation"):
+            properties.append(prop)
 
         return properties
 

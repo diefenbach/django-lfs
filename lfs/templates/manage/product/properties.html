@@ -200,9 +200,9 @@
 {% endif %}
 
 
-{% if parent_local_properties %}
-    <h2 class="heading-middle">{% trans "Parent's local properties" %}</h2>
-    {% for property_option in parent_local_properties %}
+{% if product_variant_properties %}
+    <h2 class="heading-middle">{% trans "Variant properties" %}</h2>
+    {% for property_option in product_variant_properties %}
         <div><strong>{{ property_option.property.title }}</strong>: {{ property_option.name }}</div>
     {% endfor %}
 {% endif %}
