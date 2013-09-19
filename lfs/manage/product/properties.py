@@ -96,7 +96,8 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                 display_filterables = True
 
                 # Try to get the value, if it already exists.
-                ppvs = ProductPropertyValue.objects.filter(property=prop, product=product, type=PROPERTY_VALUE_TYPE_FILTER)
+                ppvs = ProductPropertyValue.objects.filter(property=prop, product=product,
+                                                           type=PROPERTY_VALUE_TYPE_FILTER)
                 value_ids = [ppv.value for ppv in ppvs]
 
                 # Mark selected options
@@ -131,6 +132,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     "type": prop.type,
                     "options": options,
                     "value": value,
+                    "display_on_product": prop.display_on_product,
                     "display_text_field": not display_select_field,
                     "display_select_field": display_select_field,
                 })
@@ -185,6 +187,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     "type": prop.type,
                     "options": options,
                     "value": value,
+                    "filterable": prop.filterable,
                     "display_text_field": not display_select_field,
                     "display_select_field": display_select_field,
                 })
@@ -261,7 +264,7 @@ def update_property_groups(request, product_id):
 def update_properties(request, product_id):
     """Updates properties for product with passed id.
     """
-    ppv_type = request.POST.get("type")
+    ppv_type = int(request.POST.get("type"))
     product = get_object_or_404(Product, pk=product_id)
     ProductPropertyValue.objects.filter(product=product_id, type=ppv_type).delete()
 
