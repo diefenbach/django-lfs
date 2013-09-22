@@ -283,14 +283,14 @@ def product_navigation(context, product):
 
     total = len(product_slugs)
     if product_index < total - 1:
-        next = product_slugs[product_index + 1]
+        next_product = product_slugs[product_index + 1]
     else:
-        next = None
+        next_product = None
 
     result = {
         "display": True,
         "previous": previous,
-        "next": next,
+        "next": next_product,
         "current": product_index + 1,
         "total": total,
         "STATIC_URL": context.get("STATIC_URL"),
