@@ -5,11 +5,7 @@ from django.core.cache import cache
 from django.core.urlresolvers import reverse
 
 # lfs imports
-from lfs.cart.models import CartItem
 from lfs.cart.models import Cart
-from lfs.payment import utils as payment_utils
-from lfs.shipping import utils as shipping_utils
-from lfs.voucher.models import Voucher
 
 # Load logger
 import logging
