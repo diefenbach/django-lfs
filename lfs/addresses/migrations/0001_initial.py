@@ -21,6 +21,8 @@ class Migration(SchemaMigration):
             ('city', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('state', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('country', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['core.Country'], null=True, blank=True)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
         db.send_create_signal('addresses', ['BaseAddress'])
 
@@ -54,6 +56,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'BaseAddress'},
             'city': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'country': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Country']", 'null': 'True', 'blank': 'True'}),
+            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'customer': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'addresses'", 'null': 'True', 'to': "orm['customer.Customer']"}),
             'firstname': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -62,7 +65,8 @@ class Migration(SchemaMigration):
             'line2': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'order': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'addresses'", 'null': 'True', 'to': "orm['order.Order']"}),
             'state': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'zip_code': ('django.db.models.fields.CharField', [], {'max_length': '10'})
+            'zip_code': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
+            'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
         },
         'auth.group': {
             'Meta': {'object_name': 'Group'},

@@ -89,6 +89,8 @@ class Command(BaseCommand):
             ('city', models.fields.CharField(max_length=50)),
             ('state', models.fields.CharField(max_length=50, null=True, blank=True)),
             ('country', models.fields.related.ForeignKey(to=Country, null=True, blank=True)),
+            ('created', models.fields.DateTimeField(auto_now_add=True, blank=True)),
+            ('modified', models.fields.DateTimeField(auto_now=True, blank=True)),
         ))
         db.send_create_signal('addresses', ['BaseAddress'])
 
