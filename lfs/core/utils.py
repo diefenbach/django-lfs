@@ -16,10 +16,6 @@ from django.utils.functional import Promise
 from django.utils.encoding import force_unicode
 from django.shortcuts import render_to_response
 
-# lfs imports
-from lfs.core.models import Shop
-from lfs.catalog.models import Category
-
 
 def l10n_float(string):
     """Takes a country specfic decimal value as string and returns a float.
@@ -47,6 +43,7 @@ def atof(value):
 def get_default_shop(request=None):
     """Returns the default shop.
     """
+    from lfs.core.models import Shop
     if request:
         try:
             return request.shop
@@ -213,6 +210,7 @@ def remove_redirect_for(path):
 def set_category_levels():
     """Sets the category levels based on the position in hierarchy.
     """
+    from lfs.catalog.models import Category
     for category in Category.objects.all():
         category.level = len(category.get_parents()) + 1
         category.save()
@@ -276,6 +274,7 @@ class CategoryTree(object):
     def get_category_tree(self):
         """Returns a category tree
         """
+        from lfs.catalog.models import Category
         # NOTE: We don't use the level attribute of the category but calculate
         # actual position of a category based on the current tree. In this way
         # the category tree always start with level 1 (even if we start with
@@ -316,6 +315,7 @@ class CategoryTree(object):
         return categories
 
     def _get_sub_tree(self, category, level):
+        from lfs.catalog.models import Category
         categories = []
         for category in Category.objects.filter(parent=category):
 

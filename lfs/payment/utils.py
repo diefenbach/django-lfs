@@ -2,7 +2,6 @@
 from django.core.urlresolvers import reverse
 
 # lfs imports
-import lfs.core.utils
 from lfs.core.signals import order_submitted
 from lfs.criteria import utils as criteria_utils
 from lfs.customer import utils as customer_utils
@@ -102,15 +101,18 @@ def process_payment(request):
     dictionary with the success state, the next url and a optional error
     message.
     """
+    from lfs.core.utils import import_symbol
+    from lfs.order.utils import add_order
+    from lfs.cart.utils import get_cart
     payment_method = get_selected_payment_method(request)
 
     if payment_method.module:
-        payment_class = lfs.core.utils.import_symbol(payment_method.module)
+        payment_class = import_symbol(payment_method.module)
         payment_instance = payment_class(request)
 
         create_order_time = payment_instance.get_create_order_time()
         if create_order_time == PM_ORDER_IMMEDIATELY:
-            order = lfs.order.utils.add_order(request)
+            order = add_order(request)
             if order is None:
                 return {'accepted': True, 'next_url': reverse("lfs_shop_view")}
             payment_instance.order = order
@@ -120,20 +122,20 @@ def process_payment(request):
                 order.save()
             order_submitted.send({"order": order, "request": request})
         else:
-            cart = lfs.cart.utils.get_cart(request)
+            cart = get_cart(request)
             payment_instance.cart = cart
             result = payment_instance.process()
 
         if result["accepted"]:
             if create_order_time == PM_ORDER_ACCEPTED:
-                order = lfs.order.utils.add_order(request)
+                order = add_order(request)
                 if result.get("order_state"):
                     order.state = result.get("order_state")
                     order.save()
                 order_submitted.send({"order": order, "request": request})
         return result
     else:
-        order = lfs.order.utils.add_order(request)
+        order = add_order(request)
         order_submitted.send({"order": order, "request": request})
         return {
             "accepted": True,
@@ -148,10 +150,11 @@ def get_pay_link(request, payment_method, order):
     This can be used to display the link within the order mail and/or the
     thank you page after a customer has payed.
     """
+    from lfs.core.utils import import_symbol
     logger.info("Decprecated: lfs.payment.utils.get_pay_link: this function is deprecated. Please use Order.get_pay_link instead.")
 
     if payment_method.module:
-        payment_class = lfs.core.utils.import_symbol(payment_method.module)
+        payment_class = import_symbol(payment_method.module)
         payment_instance = payment_class(request=request, order=order)
         try:
             return payment_instance.get_pay_link()
