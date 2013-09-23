@@ -197,20 +197,20 @@ def set_price_filter(request, category_slug):
     """Saves the given price filter to session. Redirects to the category with
     given slug.
     """
-    min = request.REQUEST.get("min", "0")
-    max = request.REQUEST.get("max", "99999")
+    min_val = request.REQUEST.get("min", "0")
+    max_val = request.REQUEST.get("max", "99999")
 
     try:
-        float(min)
+        float(min_val)
     except (TypeError, ValueError):
-        min = "0"
+        min_val = "0"
 
     try:
-        float(max)
+        float(max_val)
     except (TypeError, ValueError):
-        max = "0"
+        max_val = "0"
 
-    request.session["price-filter"] = {"min": min, "max": max}
+    request.session["price-filter"] = {"min": min_val, "max": max_val}
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
@@ -386,7 +386,7 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     try:
         default_sorting = settings.LFS_PRODUCTS_SORTING
     except AttributeError:
-        default_sorting = "price"
+        default_sorting = "effective_price"
     sorting = request.session.get("sorting", default_sorting)
 
     product_filter = request.session.get("product-filter", {})
