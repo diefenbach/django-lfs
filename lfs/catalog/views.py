@@ -382,6 +382,8 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
             del request.session["product-filter"]
         if "price-filter" in request.session:
             del request.session["price-filter"]
+        if "manufacturer-filter" in request.session:
+            del request.session["manufacturer-filter"]
 
     try:
         default_sorting = settings.LFS_PRODUCTS_SORTING
