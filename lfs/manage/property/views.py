@@ -230,20 +230,20 @@ def update_property_type(request, id):
     This is separated from the data, because a change of type causes a deletion
     of product property values
     """
-    property = get_object_or_404(Property, pk=id)
-    old_type = property.type
-    form = PropertyTypeForm(instance=property, data=request.POST)
+    prop = get_object_or_404(Property, pk=id)
+    old_type = prop.type
+    form = PropertyTypeForm(instance=prop, data=request.POST)
     new_property = form.save()
 
     # Send signal only when the type changed as all values are deleted.
     if old_type != new_property.type:
-        property_type_changed.send(property)
+        property_type_changed.send(prop)
 
     # invalidate global properties version number (all product property caches will be invalidated)
     invalidate_cache_group_id('global-properties-version')
 
     return lfs.core.utils.set_message_cookie(
-        url=reverse("lfs_manage_shop_property", kwargs={"id": property.id}),
+        url=reverse("lfs_manage_shop_property", kwargs={"id": prop.id}),
         msg=_(u"Property type has been changed."),
     )
 
