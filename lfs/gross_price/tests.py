@@ -1,43 +1,17 @@
 # django imports
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
-from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 # lfs imports
-import lfs.catalog.utils
-import lfs.core.settings as lfs_settings
-from lfs.core.signals import property_type_changed
 from lfs.catalog.settings import CHOICES_YES
 from lfs.catalog.settings import CHOICES_STANDARD
 from lfs.catalog.settings import CHOICES_NO
-from lfs.catalog.settings import CONTENT_CATEGORIES
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT
-from lfs.catalog.settings import DELIVERY_TIME_UNIT_HOURS
-from lfs.catalog.settings import DELIVERY_TIME_UNIT_WEEKS
-from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
-from lfs.catalog.settings import DELIVERY_TIME_UNIT_MONTHS
-from lfs.catalog.settings import PROPERTY_NUMBER_FIELD
-from lfs.catalog.settings import PROPERTY_SELECT_FIELD
-from lfs.catalog.settings import PROPERTY_TEXT_FIELD
-from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
-from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import LIST
 
-from lfs.catalog.models import Category
-from lfs.catalog.models import DeliveryTime
-from lfs.catalog.models import GroupsPropertiesRelation
-from lfs.catalog.models import Image
 from lfs.catalog.models import Product
-from lfs.catalog.models import Property
-from lfs.catalog.models import PropertyGroup
-from lfs.catalog.models import PropertyOption
-from lfs.catalog.models import ProductAccessories
-from lfs.catalog.models import ProductPropertyValue
-from lfs.catalog.models import ProductsPropertiesRelation
-from lfs.core.signals import product_changed
-from lfs.core.signals import product_removed_property_group
 from lfs.tax.models import Tax
 from lfs.tests.utils import RequestFactory
 
