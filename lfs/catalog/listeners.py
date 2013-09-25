@@ -77,14 +77,12 @@ def product_removed_from_property_group_listener(sender, **kwargs):
 product_removed_property_group.connect(product_removed_from_property_group_listener)
 
 
-def property_changed_to_not_filterable_listener(sender, instance, **kwargs):
+def property_changed_to_not_filterable_listener(sender, instance, created, **kwargs):
     """
     This is called when a property that was filterable is set to not filterable
 
     Deletes all ProductPropertyValue for this property
     """
-    property_group, product = sender
-
     if not instance.filterable:
         ProductPropertyValue.objects.filter(property=instance, type=PROPERTY_VALUE_TYPE_FILTER).delete()
 post_save.connect(property_changed_to_not_filterable_listener, sender=Property)
