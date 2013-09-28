@@ -198,9 +198,10 @@ def add_accessory_to_cart(request, product_id, quantity=1):
     updates the added-to-cart view.
     """
     try:
-        quantity = float(quantity)
+        quantity = abs(core_utils.atof(quantity))
     except TypeError:
         quantity = 1
+    quantity = 1 if quantity <= 0 else quantity
 
     product = lfs_get_object_or_404(Product, pk=product_id)
 
@@ -239,9 +240,10 @@ def add_to_cart(request, product_id=None):
 
     try:
         value = request.POST.get("quantity", "1.0")
-        quantity = core_utils.atof(value)
+        quantity = abs(core_utils.atof(value))
     except (TypeError, ValueError):
         quantity = 1.0
+    quantity = 1 if quantity <= 0 else quantity
 
     # Validate properties (They are added below)
     properties_dict = {}
@@ -319,9 +321,10 @@ def add_to_cart(request, product_id=None):
             # Get quantity
             quantity = request.POST.get("quantity-%s" % accessory_id, 0)
             try:
-                quantity = float(quantity)
+                quantity = abs(core_utils.atof(quantity))
             except TypeError:
                 quantity = 1
+            quantity = 1 if quantity <= 0 else quantity
 
             cart_item = cart.add(product=accessory, amount=quantity)
             cart_items.append(cart_item)
