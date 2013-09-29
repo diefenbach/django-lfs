@@ -2014,9 +2014,10 @@ class PropertyGroup(models.Model):
     """
     name = models.CharField(_(u"Name"), blank=True, max_length=50)
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="property_groups")
+    position = models.IntegerField(_(u"Position"), default=1000)
 
     class Meta:
-        ordering = ("name", )
+        ordering = ("position", )
 
     def __unicode__(self):
         return self.name

@@ -324,3 +324,25 @@ def _udpate_positions(group_id):
     for i, gp in enumerate(GroupsPropertiesRelation.objects.filter(group=group_id)):
         gp.position = (i + 1) * 10
         gp.save()
+
+
+@permission_required("core.manage_shop")
+def sort_property_groups(request):
+    """Sort property groups
+    """
+    property_group_list = request.POST.get("serialized", "").split('&')
+    assert (isinstance(property_group_list, list))
+    if len(property_group_list) > 0:
+        pos = 10
+        for cat_str in property_group_list:
+            elem, pg_id = cat_str.split('=')
+            pg = PropertyGroup.objects.get(pk=pg_id)
+            pg.position = pos
+            pg.save()
+            pos += 10
+
+    result = simplejson.dumps({
+        "message": _(u"The Property groups have been sorted."),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)

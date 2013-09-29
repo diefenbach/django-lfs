@@ -174,6 +174,7 @@ urlpatterns += patterns('lfs.manage.property_groups.views',
     url(r'^assign-properties/(?P<group_id>\d*)', "assign_properties", name="lfs_assign_properties"),
     url(r'^update-properties/(?P<group_id>\d*)', "update_properties", name="lfs_update_properties"),
     url(r'^no-property-groups$', "no_property_groups", name="lfs_manage_no_property_groups"),
+    url(r'^sort-property-groups$', "sort_property_groups", name="lfs_manage_sort_property_groups"),
 )
 
 # Property Groups / Products

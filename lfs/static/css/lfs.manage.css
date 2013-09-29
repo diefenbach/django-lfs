@@ -787,6 +787,13 @@ div.separator {
 .handle {
     cursor: move;
     padding: 0 3px;
+    display: block;
+    float: left;
+}
+
+.sortable-item-name {
+    overflow: hidden;
+    display: block;
 }
 
 .placeholder {

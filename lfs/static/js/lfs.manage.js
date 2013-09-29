@@ -448,9 +448,36 @@ $(function() {
             $.cookie("property-edit-mode", true);
         }
         return false;
-    })
+    });
 
     setup_datepicker();
+
+    $('ol.flat-sortable').sortable({
+        placeholder: 'placeholder',
+        forcePlaceholderSize: true,
+        handle: '.handle',
+        helper: 'clone',
+        items: 'li',
+        opacity: .6,
+        revert: 250,
+        tabSize: 25,
+        tolerance: 'pointer',
+        toleranceElement: '> div',
+        stop: function(event, ui){
+            var url = $(this).attr("href");
+            serialized = $('ol.flat-sortable').sortable('serialize');
+            $.ajax({
+                url: url,
+                context: document.body,
+                type: "POST",
+                data: {"serialized": serialized},
+                success: function(data) {
+                    data = $.parseJSON(data);
+                    $.jGrowl(data["message"])
+                }
+           });
+        }
+    });
 
     $('ol.sortable').nestedSortable({
         placeholder: 'placeholder',
