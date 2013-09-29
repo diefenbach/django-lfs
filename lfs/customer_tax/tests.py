@@ -51,16 +51,22 @@ class CustomerTaxTestCase(TestCase):
         result = get_customer_tax_rate(self.request, self.product)
         self.assertEqual(result, 20.0)
 
+        # clear request cache
+        delattr(self.request, 'cached_customer_tax_rate_%s' % self.product.pk)
         self.customer.selected_shipping_address.country = self.ch
         self.customer.selected_shipping_address.save()
         result = get_customer_tax_rate(self.request, self.product)
         self.assertEqual(result, 20.0)
 
+        # clear request cache
+        delattr(self.request, 'cached_customer_tax_rate_%s' % self.product.pk)
         self.customer.selected_shipping_address.country = self.ie
         self.customer.selected_shipping_address.save()
         result = get_customer_tax_rate(self.request, self.product)
         self.assertEqual(result, 10.0)
 
+        # clear request cache
+        delattr(self.request, 'cached_customer_tax_rate_%s' % self.product.pk)
         self.customer.selected_shipping_address.country = self.de
         self.customer.selected_shipping_address.save()
         result = get_customer_tax_rate(self.request, self.product)
