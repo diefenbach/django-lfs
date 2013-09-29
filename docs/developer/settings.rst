@@ -148,10 +148,6 @@ LFS_RECENT_PRODUCTS_LIMIT
     The amount of recent products which are displayed within the recent
     products portlet, e.g. 3.
 
-LFS_FORCE_INTEGER_QUANTITY
-    If set to True then all float values inserted into quantity field will be converted to integer, eg. if one enters
-    1.6 and clicks 'Add to cart' then it will be changed to '2'. Default is False
-
 .. _settings_orders:
 
 Orders

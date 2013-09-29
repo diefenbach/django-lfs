@@ -35,7 +35,6 @@ from lfs.payment import utils as payment_utils
 from lfs.customer import utils as customer_utils
 from lfs.voucher.models import Voucher
 from lfs.voucher.settings import MESSAGES
-from lfs.cart.utils import normalize_cart_quantity
 
 
 def cart(request, template_name="lfs/cart/cart.html"):
@@ -198,9 +197,8 @@ def add_accessory_to_cart(request, product_id, quantity=1):
     Adds the product with passed product_id as an accessory to the cart and
     updates the added-to-cart view.
     """
-    quantity = normalize_cart_quantity(quantity)
-
     product = lfs_get_object_or_404(Product, pk=product_id)
+    quantity = product.get_clean_quantity_value(quantity)
 
     session_cart_items = request.session.get("cart_items", [])
     cart = cart_utils.get_cart(request)
@@ -235,7 +233,8 @@ def add_to_cart(request, product_id=None):
     if not (product.is_active() and product.is_deliverable()):
         raise Http404()
 
-    quantity = normalize_cart_quantity(request.POST.get("quantity", "1.0"))
+    quantity = request.POST.get("quantity", "1.0")
+    quantity = product.get_clean_quantity_value(quantity)
 
     # Validate properties (They are added below)
     properties_dict = {}
@@ -312,7 +311,7 @@ def add_to_cart(request, product_id=None):
 
             # Get quantity
             quantity = request.POST.get("quantity-%s" % accessory_id, 0)
-            quantity = normalize_cart_quantity(quantity)
+            quantity = accessory.get_clean_quantity_value(quantity)
 
             cart_item = cart.add(product=accessory, amount=quantity)
             cart_items.append(cart_item)
@@ -390,7 +389,7 @@ def refresh_cart(request):
     message = ""
     for item in cart.get_items():
         amount = request.POST.get("amount-cart-item_%s" % item.id, "0.0")
-        amount = normalize_cart_quantity(amount, allow_negative=True)
+        amount = item.product.get_clean_quantity_value(amount, allow_zero=True)
 
         if item.product.manage_stock_amount and amount > item.product.stock_amount and not item.product.order_time:
             amount = item.product.stock_amount

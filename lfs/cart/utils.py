@@ -5,7 +5,6 @@ from django.core.cache import cache
 from django.core.urlresolvers import reverse
 
 # lfs imports
-from lfs.core import utils as core_utils
 from lfs.cart.models import Cart
 
 # Load logger
@@ -108,17 +107,3 @@ def update_cart_after_login(request):
             session_cart.delete()
     except ObjectDoesNotExist:
         pass
-
-
-def normalize_cart_quantity(quantity, allow_negative=False):
-    try:
-        quantity = abs(core_utils.atof(quantity))
-    except (TypeError, ValueError):
-        quantity = 1.0
-
-    if getattr(settings, 'LFS_FORCE_INTEGER_QUANTITY', False):
-        quantity = round(quantity)
-
-    if allow_negative:
-        return quantity
-    return 1 if quantity <= 0 else quantity

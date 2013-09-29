@@ -16,6 +16,7 @@ from django.conf import settings
 # lfs imports
 import lfs.catalog.utils
 from lfs.core.fields.thumbs import ImageWithThumbsField
+from lfs.core import utils as core_utils
 from lfs.core.managers import ActiveManager
 from lfs.catalog.settings import CHOICES, CONTENT_CATEGORIES
 from lfs.catalog.settings import CHOICES_STANDARD
@@ -1895,13 +1896,32 @@ class Product(models.Model):
 
         return None
 
+    def get_clean_quantity_value(self, quantity=1, allow_zero=False):
+        """
+        Returns the valid quantity based on the product's type of
+        quantity field.
+        """
+        try:
+            quantity = abs(core_utils.atof(str(quantity)))
+        except (TypeError, ValueError):
+            quantity = 1.0
+
+        if not allow_zero:
+            quantity = 1 if quantity <= 0 else quantity
+
+        type_of_quantity_field = self.get_type_of_quantity_field()
+        if type_of_quantity_field == QUANTITY_FIELD_INTEGER or getattr(settings, 'LFS_FORCE_INTEGER_QUANTITY', False):
+            quantity = int(quantity)
+
+        return quantity
+
     def get_clean_quantity(self, quantity=1):
         """
         Returns the correct formatted quantity based on the product's type of
         quantity field.
         """
         try:
-            quantity = float(quantity)
+            quantity = abs(core_utils.atof(str(quantity)))
         except (TypeError, ValueError):
             quantity = 1.0
 
