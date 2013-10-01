@@ -234,13 +234,11 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
             toc = True
 
         if checkout_form.is_valid() and bank_account_form.is_valid() and iam.is_valid() and sam.is_valid() and toc:
-            # Save addresses
-            iam.save()
-
             # If there the shipping address is not given, the invoice address
             # is copied.
             not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
             if not_required_address == 'shipping':
+                iam.save()
                 if request.POST.get("no_shipping") == "":
                     sam.save()
                 else:
@@ -251,6 +249,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
                     shipping_address.save()
                     customer.selected_shipping_address = shipping_address
             else:
+                sam.save()
                 if request.POST.get("no_invoice") == "":
                     iam.save()
                 else:
