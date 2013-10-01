@@ -1,4 +1,5 @@
 # python imports
+from copy import deepcopy
 import datetime
 from urlparse import urlparse
 
@@ -200,11 +201,23 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
     customer = lfs.customer.utils.get_or_create_customer(request)
 
     if request.method == "POST":
-        iam = AddressManagement(customer, customer.selected_invoice_address, "invoice", request.POST)
-        sam = AddressManagement(customer, customer.selected_shipping_address, "shipping", request.POST)
+        iam = AddressManagement(customer, customer.default_invoice_address, "invoice", request.POST)
+        sam = AddressManagement(customer, customer.default_shipping_address, "shipping", request.POST)
+
         if iam.is_valid() and sam.is_valid():
             iam.save()
             sam.save()
+
+            # set selected_shipping_address
+            shipping_address = deepcopy(customer.default_shipping_address)
+            shipping_address.id = customer.selected_shipping_address.id
+            shipping_address.save()
+
+            # set selected_invoice_address
+            shipping_address = deepcopy(customer.default_invoice_address)
+            shipping_address.id = customer.selected_invoice_address.id
+            shipping_address.save()
+
             return lfs.core.utils.MessageHttpResponseRedirect(
                 redirect_to=reverse("lfs_my_addresses"),
                 msg=_(u"Your addresses have been saved."),
@@ -213,8 +226,8 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
             msg = _(u"An error has occured.")
     else:
         msg = None
-        iam = AddressManagement(customer, customer.selected_invoice_address, "invoice")
-        sam = AddressManagement(customer, customer.selected_shipping_address, "shipping")
+        iam = AddressManagement(customer, customer.default_invoice_address, "invoice")
+        sam = AddressManagement(customer, customer.default_shipping_address, "shipping")
 
     return lfs.core.utils.render_to_message_response(
         template_name, RequestContext(request, {
