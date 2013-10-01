@@ -239,15 +239,27 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
 
             # If there the shipping address is not given, the invoice address
             # is copied.
-            if request.POST.get("no_shipping", "") == "":
-                sam.save()
+            not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
+            if not_required_address == 'shipping':
+                if request.POST.get("no_shipping") == "":
+                    sam.save()
+                else:
+                    if customer.selected_shipping_address:
+                        customer.selected_shipping_address.delete()
+                    shipping_address = deepcopy(customer.selected_invoice_address)
+                    shipping_address.id = None
+                    shipping_address.save()
+                    customer.selected_shipping_address = shipping_address
             else:
-                if customer.selected_shipping_address:
-                    customer.selected_shipping_address.delete()
-                shipping_address = deepcopy(customer.selected_invoice_address)
-                shipping_address.id = None
-                shipping_address.save()
-                customer.selected_shipping_address = shipping_address
+                if request.POST.get("no_invoice") == "":
+                    iam.save()
+                else:
+                    if customer.selected_invoice_address:
+                        customer.selected_invoice_address.delete()
+                    invoice_address = deepcopy(customer.selected_shipping_address)
+                    invoice_address.id = None
+                    invoice_address.save()
+                    customer.selected_invoice_address = invoice_address
 
             # Save payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
@@ -436,22 +448,35 @@ def changed_shipping_country(request):
 def _save_country(request, customer):
     """
     """
-    # Update shipping country
-    country_iso = request.POST.get("shipping-country", None)
-    if request.POST.get("no_shipping") == "on":
-        country_iso = request.POST.get("invoice-country", None)
+    # Update country for address that is marked as 'same as invoice' or 'same as shipping'
+    not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
 
-    if country_iso is not None:
-        country = Country.objects.get(code=country_iso.lower())
-        if customer.selected_shipping_address:
-            customer.selected_shipping_address.country = country
-            customer.selected_shipping_address.save()
-        customer.selected_country = country
-        customer.save()
+    if not_required_address == 'shipping':
+        country_iso = request.POST.get("shipping-country", None)
 
-        lfs.shipping.utils.update_to_valid_shipping_method(request, customer)
-        lfs.payment.utils.update_to_valid_payment_method(request, customer)
-        customer.save()
+        if request.POST.get("no_shipping") == "on":
+            country_iso = request.POST.get("invoice-country", None)
+
+        if country_iso is not None:
+            country = Country.objects.get(code=country_iso.lower())
+            if customer.selected_shipping_address:
+                customer.selected_shipping_address.country = country
+                customer.selected_shipping_address.save()
+            customer.selected_country = country
+            customer.save()
+
+            lfs.shipping.utils.update_to_valid_shipping_method(request, customer)
+            lfs.payment.utils.update_to_valid_payment_method(request, customer)
+            customer.save()
+    else:
+        # update invoice address if 'same as shipping' address option is set and shipping address was changed
+        if request.POST.get("no_invoice") == "on":
+            country_iso = request.POST.get("shipping-country", None)
+            if country_iso is not None:
+                country = Country.objects.get(code=country_iso.lower())
+                if customer.selected_invoice_address:
+                    customer.selected_invoice_address.country = country
+                    customer.selected_invoice_address.save()
 
 
 def _save_customer(request, customer):

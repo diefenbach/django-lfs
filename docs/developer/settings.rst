@@ -148,6 +148,15 @@ LFS_RECENT_PRODUCTS_LIMIT
     The amount of recent products which are displayed within the recent
     products portlet, e.g. 3.
 
+LFS_CHECKOUT_NOT_REQUIRED_ADDRESS
+    During checkout it is possible to not fill in one of the addresses - it will be then copied from another one.
+    By default 'Shipping' address is same as 'Invoice address', but it can be changed with this setting.
+    Possible values are: 'shipping' and 'invoice'. Default is 'shipping'.
+    Note that you'll have to manually change checkout page template and lfs.js if you change it to 'invoice'.
+
+    By default checkout_form (used at one_page_checkout.html) has method: no_address_field that will return either
+    no_shipping or no_invoice field, depending on this setting.
+
 .. _settings_orders:
 
 Orders

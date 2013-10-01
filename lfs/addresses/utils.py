@@ -1,5 +1,5 @@
 # django imports
-from django.template.loader import render_to_string
+from django.conf import settings
 from django.template.loader import select_template
 from django.template import RequestContext
 
@@ -106,7 +106,8 @@ class AddressManagement(object):
         """
         Returns True if the postal and the additional form is valid.
         """
-        if self.type == "shipping" and self.data.get("no_shipping"):
+        not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
+        if self.type == not_required_address and self.data.get("no_%s" % not_required_address):
             return True
 
         if self.data:
@@ -124,7 +125,8 @@ class AddressManagement(object):
         """
         Saves the postal and the additional form.
         """
-        if self.type == "shipping" and self.data.get("no_shipping"):
+        not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
+        if self.type == not_required_address and self.data.get("no_%s" % not_required_address):
             return
         else:
             self.address.line1 = self.data.get("%s-line1" % self.type)

@@ -30,11 +30,20 @@ def add_order(request):
     customer = customer_utils.get_customer(request)
     order = None
 
+    not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
+
     invoice_address = customer.selected_invoice_address
-    if request.POST.get("no_shipping"):
-        shipping_address = customer.selected_invoice_address
+    shipping_address = customer.selected_shipping_address
+    if not_required_address == 'shipping':
+        if request.POST.get("no_shipping"):
+            shipping_address = customer.selected_invoice_address
+        else:
+            shipping_address = customer.selected_shipping_address
     else:
-        shipping_address = customer.selected_shipping_address
+        if request.POST.get("no_invoice"):
+            invoice_address = customer.selected_shipping_address
+        else:
+            invoice_address = customer.selected_invoice_address
 
     cart = cart_utils.get_cart(request)
     if cart is None:

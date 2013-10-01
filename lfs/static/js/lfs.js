@@ -252,31 +252,63 @@ $(function() {
     });
 
     // Checkout ##################################################################
-    var table = $('.shipping-address');
-    if ($("#id_no_shipping:checked").val() != null) {
-        table.hide();
-    }
-    else {
-        table.show();
-    }
+    var $shipping_table = $('.shipping-address');
+    var $invoice_table = $('.invoice-address');
+    var $no_shipping = $("#id_no_shipping");
+    var $no_invoice = $("#id_no_invoice");
 
-    $("#id_no_shipping").live("click", function() {
-        var table = $('.shipping-address');
-        if ($("#id_no_shipping:checked").val() != null) {
-            table.hide();
+    if ($no_shipping.length > 0){  // there is an option to mark shipping address same as invoice address
+        if ($no_shipping.prop('checked')) {
+            $shipping_table.hide();
         }
         else {
-            table.show();
+            $shipping_table.show();
         }
-        var data = $(".checkout-form").ajaxSubmit({
-            url : $(".checkout-form").attr("data"),
-            "success" : function(data) {
-                var data = $.parseJSON(data);
-                $("#cart-inline").html(data["cart"]);
-                $("#shipping-inline").html(data["shipping"]);
+
+        $('body').on('click', '#id_no_shipping', function() {
+            var table = $('.shipping-address');
+            if ($('#id_no_shipping').prop('checked')) {
+                table.hide();
             }
+            else {
+                table.show();
+            }
+            var data = $(".checkout-form").ajaxSubmit({
+                url : $(".checkout-form").attr("data"),
+                "success" : function(data) {
+                    var data = $.parseJSON(data);
+                    $("#cart-inline").html(data["cart"]);
+                    $("#shipping-inline").html(data["shipping"]);
+                }
+            });
         });
-    })
+    }
+    else {  // there is an option to mark invoice address same as shipping address
+        if ($no_invoice.prop('checked')) {
+            $invoice_table.hide();
+        }
+        else {
+            $invoice_table.show();
+        }
+
+        $('body').on('click', '#id_no_invoice', function() {
+            var table = $('.invoice-address');
+            if ($('#id_no_invoice').prop('checked')) {
+                table.hide();
+            }
+            else {
+                table.show();
+            }
+            var data = $(".checkout-form").ajaxSubmit({
+                url : $(".checkout-form").attr("data"),
+                "success" : function(data) {
+                    var data = $.parseJSON(data);
+                    $("#cart-inline").html(data["cart"]);
+                    $("#shipping-inline").html(data["shipping"]);
+                }
+            });
+        });
+    }
 
     if ($(".payment-method-type-2:checked").val() != null) {
         $("#credit-card").show();
