@@ -28,3 +28,5 @@ This is not full reference of changes but at least some of them are described:
 * Use 'SHOP' instead of 'shop' in lfs/shop/shop.html
 * Added position column to PropertyGroups and ability to order these with drag & drop in management panel - modified lfs.manage.js
   and management template for property groups.
+* Added LFS_CHECKOUT_NOT_REQUIRED_ADDRESS setting. This allows to change address that is not required at checkout page.
+  Changed one_page_checkout.html template, lfs.js and OnePageCheckout Form.
