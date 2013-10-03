@@ -16,6 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs
 from lfs.addresses.utils import AddressManagement
+from lfs.addresses import settings
 from lfs.customer import utils as customer_utils
 from lfs.customer.forms import EmailForm, CustomerAuthenticationForm
 from lfs.customer.forms import RegisterForm
@@ -208,15 +209,28 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
             iam.save()
             sam.save()
 
-            # set selected_shipping_address
-            shipping_address = deepcopy(customer.default_shipping_address)
-            shipping_address.id = customer.selected_shipping_address.id
-            shipping_address.save()
+            if settings.AUTO_UPDATE_DEFAULT_ADDRESSES:
+                # make selected addresses the same as default addresses
+                if customer.selected_invoice_address:
+                    customer.selected_invoice_address.delete()
+                customer.selected_invoice_address = customer.default_invoice_address
 
-            # set selected_invoice_address
-            shipping_address = deepcopy(customer.default_invoice_address)
-            shipping_address.id = customer.selected_invoice_address.id
-            shipping_address.save()
+                if customer.selected_shipping_address:
+                    customer.selected_shipping_address.delete()
+                customer.selected_shipping_address = customer.default_shipping_address
+
+                customer.save()
+            else:
+                # copy default addresses values to selected addresses but keep them
+                # as separate instances
+
+                shipping_address = deepcopy(customer.default_shipping_address)
+                shipping_address.id = customer.selected_shipping_address.id
+                shipping_address.save()
+
+                shipping_address = deepcopy(customer.default_invoice_address)
+                shipping_address.id = customer.selected_invoice_address.id
+                shipping_address.save()
 
             return lfs.core.utils.MessageHttpResponseRedirect(
                 redirect_to=reverse("lfs_my_addresses"),

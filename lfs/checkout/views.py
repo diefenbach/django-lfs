@@ -213,6 +213,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
         return HttpResponseRedirect(reverse("lfs_checkout_login"))
 
     customer = lfs.customer.utils.get_or_create_customer(request)
+
     invoice_address = customer.selected_invoice_address
     shipping_address = customer.selected_shipping_address
     bank_account = customer.selected_bank_account
@@ -237,6 +238,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
             # If there the shipping address is not given, the invoice address
             # is copied.
             not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
+            auto_update_addresses = getattr(settings, 'LFS_AUTO_UPDATE_DEFAULT_ADDRESSES', True)
             if not_required_address == 'shipping':
                 iam.save()
                 if request.POST.get("no_shipping", "") == "":
@@ -248,6 +250,9 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
                     shipping_address.id = None
                     shipping_address.save()
                     customer.selected_shipping_address = shipping_address
+                    if auto_update_addresses:
+                        # keep default address in sync with selected address
+                        customer.default_shipping_address = shipping_address
             else:
                 sam.save()
                 if request.POST.get("no_invoice", "") == "":
@@ -259,6 +264,9 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
                     invoice_address.id = None
                     invoice_address.save()
                     customer.selected_invoice_address = invoice_address
+                    if auto_update_addresses:
+                        # keep default address in sync with selected address
+                        customer.default_invoice_address = invoice_address
 
             # Save payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")

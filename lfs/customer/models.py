@@ -37,12 +37,15 @@ class Customer(models.Model):
     sa_content_type = models.ForeignKey(ContentType, related_name="sa_content_type")
     sa_object_id = models.PositiveIntegerField()
     selected_shipping_address = generic.GenericForeignKey('sa_content_type', 'sa_object_id')
-    default_shipping_address = generic.GenericForeignKey('sa_content_type', 'sa_object_id')
+    dsa_object_id = models.PositiveIntegerField()
+    default_shipping_address = generic.GenericForeignKey('sa_content_type', 'dsa_object_id')
 
     ia_content_type = models.ForeignKey(ContentType, related_name="ia_content_type")
     ia_object_id = models.PositiveIntegerField()
     selected_invoice_address = generic.GenericForeignKey('ia_content_type', 'ia_object_id')
-    default_invoice_address = generic.GenericForeignKey('ia_content_type', 'ia_object_id')
+
+    dia_object_id = models.PositiveIntegerField()
+    default_invoice_address = generic.GenericForeignKey('ia_content_type', 'dia_object_id')
 
     selected_country = models.ForeignKey(Country, verbose_name=_(u"Selected country"), blank=True, null=True)
 

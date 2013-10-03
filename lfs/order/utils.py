@@ -8,9 +8,7 @@ from django.conf import settings
 import lfs.discounts.utils
 import lfs.voucher.utils
 from lfs.cart import utils as cart_utils
-from lfs.core.models import Country
 from lfs.core.signals import order_created
-from lfs.core.utils import import_module
 from lfs.core.utils import import_symbol
 from lfs.customer import utils as customer_utils
 from lfs.order.models import Order
@@ -206,6 +204,27 @@ def add_order(request):
             product_price_gross=-discount["price_gross"],
             product_tax=-discount["tax"],
         )
+
+    auto_update_addresses = getattr(settings, 'LFS_AUTO_UPDATE_DEFAULT_ADDRESSES', True)
+    if not auto_update_addresses:
+        # Re-initialize selected addresses to be equal to default addresses for next order
+        if customer.selected_invoice_address:
+            customer.selected_invoice_address.delete()
+        invoice_address = deepcopy(customer.default_invoice_address)
+        invoice_address.id = None
+        invoice_address.pk = None
+        invoice_address.save()
+        customer.selected_invoice_address = invoice_address
+
+        if customer.selected_shipping_address:
+            customer.selected_shipping_address.delete()
+        shipping_address = deepcopy(customer.default_shipping_address)
+        shipping_address.id = None
+        shipping_address.pk = None
+        shipping_address.save()
+        customer.selected_shipping_address = shipping_address
+
+    customer.save()
 
     # Send signal before cart is deleted.
     order_created.send({"order": order, "cart": cart, "request": request})
