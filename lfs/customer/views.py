@@ -16,7 +16,6 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs
 from lfs.addresses.utils import AddressManagement
-from lfs.addresses import settings
 from lfs.customer import utils as customer_utils
 from lfs.customer.forms import EmailForm, CustomerAuthenticationForm
 from lfs.customer.forms import RegisterForm
