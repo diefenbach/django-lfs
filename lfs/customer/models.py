@@ -116,36 +116,6 @@ class Customer(models.Model):
         self.sync_selected_to_default_invoice_address(force)
         self.sync_selected_to_default_shipping_address(force)
 
-    def set_default_shipping_address(self, address):
-        if settings.AUTO_UPDATE_DEFAULT_ADDRESSES:
-            # make selected addresses the same as default addresses
-            if customer.selected_invoice_address:
-                customer.selected_invoice_address.delete()
-            customer.selected_invoice_address = customer.default_invoice_address
-
-            if customer.selected_shipping_address:
-                customer.selected_shipping_address.delete()
-            customer.selected_shipping_address = customer.default_shipping_address
-
-            customer.save()
-        else:
-            # copy default addresses values to selected addresses but keep them
-            # as separate instances
-
-            shipping_address = deepcopy(customer.default_shipping_address)
-            shipping_address.id = customer.selected_shipping_address.id
-            shipping_address.save()
-
-
-    def set_default_invoice_address(self, address):
-        pass
-
-    def reinitialize_selected_shipping_address(self, address):
-        pass
-
-    def reinitialize_selected_invoice_address(self, address):
-        pass
-
 
 class BankAccount(models.Model):
     """
