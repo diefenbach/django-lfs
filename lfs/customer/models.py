@@ -91,9 +91,9 @@ class Customer(models.Model):
             shipping_address.id = self.selected_shipping_address.id
             shipping_address.save()
 
-            shipping_address = deepcopy(self.default_invoice_address)
-            shipping_address.id = self.selected_invoice_address.id
-            shipping_address.save()
+            invoice_address = deepcopy(self.default_invoice_address)
+            invoice_address.id = self.selected_invoice_address.id
+            invoice_address.save()
 
     def sync_selected_to_default_invoice_address(self, force=False):
         # Synchronize default invoice address with selected address
