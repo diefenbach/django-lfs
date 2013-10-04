@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 import datetime
 from south.db import db
 from south.v2 import DataMigration
@@ -12,8 +13,18 @@ class Migration(DataMigration):
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
         for obj in orm.Customer.objects.all():
-            obj.dia_object_id = obj.ia_object_id
-            obj.dsa_object_id = obj.sa_object_id
+            address = deepcopy(obj.selected_shipping_address)
+            address.id = None
+            address.pk = None
+            address.save()
+            obj.dsa_object_id = address.id
+
+            address = deepcopy(obj.selected_invoice_address)
+            address.id = None
+            address.pk = None
+            address.save()
+            obj.dia_object_id = address.id
+
             obj.save()
 
     def backwards(self, orm):

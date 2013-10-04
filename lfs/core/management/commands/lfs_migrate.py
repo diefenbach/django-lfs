@@ -105,11 +105,9 @@ class Command(BaseCommand):
 
         db.add_column("customer_customer", "sa_content_type", models.ForeignKey(ContentType, related_name="sa_content_type", blank=True, null=True))
         db.add_column("customer_customer", "sa_object_id", models.PositiveIntegerField(default=0))
-        db.add_column("customer_customer", "dsa_object_id", models.PositiveIntegerField(default=0))
 
         db.add_column("customer_customer", "ia_content_type", models.ForeignKey(ContentType, related_name="ia_content_type", blank=True, null=True))
         db.add_column("customer_customer", "ia_object_id", models.PositiveIntegerField(default=0))
-        db.add_column("customer_customer", "dia_object_id", models.PositiveIntegerField(default=0))
 
         db.add_column("order_order", "sa_content_type", models.ForeignKey(ContentType, related_name="sa_content_type", blank=True, null=True))
         db.add_column("order_order", "sa_object_id", models.PositiveIntegerField(default=0))
@@ -137,33 +135,18 @@ class Command(BaseCommand):
             # Create new address out of old
             new_address = Address.objects.create(
                 pk=address["id"],
-                customer=customer,
-                firstname=address["firstname"],
-                lastname=address["lastname"],
-                company_name=address["company_name"],
-                line1=address["line1"],
-                line2=address["line2"],
-                zip_code=address["zip_code"],
-                city=address["city"],
-                state=address["state"],
-                country_id=address["country_id"],
-                phone=address["phone"],
-                email=address["email"],
-            )
-
-            default_address = Address.objects.create(
-                customer=customer,
-                firstname=address["firstname"],
-                lastname=address["lastname"],
-                company_name=address["company_name"],
-                line1=address["line1"],
-                line2=address["line2"],
-                zip_code=address["zip_code"],
-                city=address["city"],
-                state=address["state"],
-                country_id=address["country_id"],
-                phone=address["phone"],
-                email=address["email"],
+                customer= customer,
+                firstname = address["firstname"],
+                lastname = address["lastname"],
+                company_name = address["company_name"],
+                line1 = address["line1"],
+                line2 = address["line2"],
+                zip_code = address["zip_code"],
+                city = address["city"],
+                state = address["state"],
+                country_id = address["country_id"],
+                phone = address["phone"],
+                email = address["email"],
             )
 
             # Get current selected shipping and invoice address (these aren't
@@ -175,10 +158,8 @@ class Command(BaseCommand):
             # Assign the new address to the customer
             if cur_ia == address["id"]:
                 customer.selected_invoice_address = new_address
-                customer.default_invoice_address = default_address
             elif cur_sa == address["id"]:
                 customer.selected_shipping_address = new_address
-                customer.default_shipping_address = default_address
             customer.save()
 
         # Migrate addresses of orders
