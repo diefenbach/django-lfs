@@ -1,4 +1,5 @@
 # django imports
+from django.http import HttpRequest
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -12,10 +13,11 @@ from lfs.core.models import Country
 from lfs.core.models import Shop
 from lfs.customer.models import CreditCard
 from lfs.customer.models import Customer
-from lfs.customer.utils import create_unique_username
+from lfs.customer.utils import create_unique_username, create_customer
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.payment.models import PaymentMethod
+from django.contrib.sessions.middleware import SessionMiddleware
 
 
 class CreditCardTestCase(TestCase):
@@ -30,6 +32,66 @@ class CreditCardTestCase(TestCase):
 
     def test_unicode(self):
         self.assertEquals(self.cc.__unicode__(), "%s / %s" % (self.cc.type, self.cc.owner))
+
+
+class CustomerTestCase(TestCase):
+
+    fixtures = ['lfs_shop.xml']
+
+    def setUp(self):
+        self.username = 'joe'
+        self.password = 'bloggs'
+
+        self.user = User(username=self.username)
+        self.user.set_password(self.password)
+        self.user.save()
+
+        ie = Country.objects.get(code="ie")
+        gb = Country.objects.get(code="gb")
+        de = Country.objects.get(code="de")
+        us = Country.objects.get(code="us")
+        fr = Country.objects.get(code="fr")
+
+        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
+                                          default_country=de)
+        shop.save()
+        shop.invoice_countries.add(ie)
+        shop.invoice_countries.add(gb)
+        shop.invoice_countries.add(de)
+        shop.invoice_countries.add(us)
+        shop.invoice_countries.add(fr)
+        shop.shipping_countries.add(ie)
+        shop.shipping_countries.add(gb)
+        shop.shipping_countries.add(de)
+        shop.shipping_countries.add(us)
+        shop.shipping_countries.add(fr)
+        shop.save()
+
+        tax = Tax.objects.create(rate=19)
+
+        shipping_method = ShippingMethod.objects.create(
+            name="Standard",
+            active=True,
+            price=1.0,
+            tax=tax
+        )
+
+        payment_method = PaymentMethod.objects.create(
+            name="Direct Debit",
+            active=True,
+            tax=tax,
+        )
+
+    def test_create_customer(self):
+        request = HttpRequest()
+        request.user = self.user
+        middleware = SessionMiddleware()
+        middleware.process_request(request)
+        request.session.save()
+
+        self.assertEquals(Address.objects.count(), 0)
+        create_customer(request)
+        self.assertEquals(Address.objects.count(), 4)
 
 
 class AddressTestCase(TestCase):
