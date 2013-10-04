@@ -209,28 +209,7 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
             iam.save()
             sam.save()
 
-            if settings.AUTO_UPDATE_DEFAULT_ADDRESSES:
-                # make selected addresses the same as default addresses
-                if customer.selected_invoice_address:
-                    customer.selected_invoice_address.delete()
-                customer.selected_invoice_address = customer.default_invoice_address
-
-                if customer.selected_shipping_address:
-                    customer.selected_shipping_address.delete()
-                customer.selected_shipping_address = customer.default_shipping_address
-
-                customer.save()
-            else:
-                # copy default addresses values to selected addresses but keep them
-                # as separate instances
-
-                shipping_address = deepcopy(customer.default_shipping_address)
-                shipping_address.id = customer.selected_shipping_address.id
-                shipping_address.save()
-
-                shipping_address = deepcopy(customer.default_invoice_address)
-                shipping_address.id = customer.selected_invoice_address.id
-                shipping_address.save()
+            customer.sync_default_to_selected_addresses(force=True)
 
             return lfs.core.utils.MessageHttpResponseRedirect(
                 redirect_to=reverse("lfs_my_addresses"),

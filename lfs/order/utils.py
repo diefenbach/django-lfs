@@ -205,25 +205,8 @@ def add_order(request):
             product_tax=-discount["tax"],
         )
 
-    auto_update_addresses = getattr(settings, 'LFS_AUTO_UPDATE_DEFAULT_ADDRESSES', True)
-    if not auto_update_addresses:
-        # Re-initialize selected addresses to be equal to default addresses for next order
-        if customer.selected_invoice_address:
-            customer.selected_invoice_address.delete()
-        invoice_address = deepcopy(customer.default_invoice_address)
-        invoice_address.id = None
-        invoice_address.pk = None
-        invoice_address.save()
-        customer.selected_invoice_address = invoice_address
-
-        if customer.selected_shipping_address:
-            customer.selected_shipping_address.delete()
-        shipping_address = deepcopy(customer.default_shipping_address)
-        shipping_address.id = None
-        shipping_address.pk = None
-        shipping_address.save()
-        customer.selected_shipping_address = shipping_address
-
+    # Re-initialize selected addresses to be equal to default addresses for next order
+    customer.sync_default_to_selected_addresses()
     customer.save()
 
     # Send signal before cart is deleted.
