@@ -236,7 +236,6 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
 
         if checkout_form.is_valid() and bank_account_form.is_valid() and iam.is_valid() and sam.is_valid() and toc:
             not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
-            auto_update_addresses = getattr(settings, 'LFS_AUTO_UPDATE_DEFAULT_ADDRESSES', True)
 
             if not_required_address == 'shipping':
                 iam.save()
