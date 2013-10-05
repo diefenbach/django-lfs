@@ -124,6 +124,10 @@ Good to Know
   doesn't exist, it tries to get one of the specific templates
   (``invoice_address_form.html`` or ``shipping_address_form.html``).
 
+* By default LFS automatically updates default addresses to the values from
+  last order. It is possible to change this behavior by setting
+   ``LFS_AUTO_UPDATE_DEFAULT_ADDRESSES`` to False.
+
 See Also
 ========
 

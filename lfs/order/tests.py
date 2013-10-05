@@ -87,12 +87,38 @@ class OrderTestCase(TestCase):
             email="jane@doe.com",
         )
 
+        address3 = Address.objects.create(
+            firstname="John",
+            lastname="Doe",
+            company_name="Doe Ltd.",
+            line1="Street 42",
+            city="Gotham City",
+            zip_code="2342",
+            country=ie,
+            phone="555-111111",
+            email="john@doe.com",
+        )
+
+        address4 = Address.objects.create(
+            firstname="Jane",
+            lastname="Doe",
+            company_name="Doe Ltd.",
+            line1="Street 43",
+            city="Smallville",
+            zip_code="2443",
+            country=us,
+            phone="666-111111",
+            email="jane@doe.com",
+        )
+
         self.customer = Customer.objects.create(
             session=session.session_key,
             selected_shipping_method=shipping_method,
             selected_payment_method=payment_method,
             selected_shipping_address=address1,
             selected_invoice_address=address2,
+            default_shipping_address=address1,
+            default_invoice_address=address2,
         )
 
         self.p1 = Product.objects.create(
@@ -133,12 +159,12 @@ class OrderTestCase(TestCase):
         """Tests the general adding of an order via the add_order method
         """
         # check we have 2 addresses before the order
-        self.assertEqual(2, Address.objects.count())
+        self.assertEqual(4, Address.objects.count())
 
         order = add_order(self.request)
 
         # adding an order should deep copy our addresses above
-        self.assertEqual(4, Address.objects.count())
+        self.assertEqual(6, Address.objects.count())
 
         self.assertEqual(order.state, SUBMITTED)
         self.assertEqual("%.2f" % order.price, "9.80")

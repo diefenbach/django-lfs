@@ -213,6 +213,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
         return HttpResponseRedirect(reverse("lfs_checkout_login"))
 
     customer = lfs.customer.utils.get_or_create_customer(request)
+
     invoice_address = customer.selected_invoice_address
     shipping_address = customer.selected_shipping_address
     bank_account = customer.selected_bank_account
@@ -234,20 +235,23 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
             toc = True
 
         if checkout_form.is_valid() and bank_account_form.is_valid() and iam.is_valid() and sam.is_valid() and toc:
-            # If there the shipping address is not given, the invoice address
-            # is copied.
             not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
+
             if not_required_address == 'shipping':
                 iam.save()
                 if request.POST.get("no_shipping", "") == "":
+                    # If the shipping address is given then save it.
                     sam.save()
                 else:
+                    # If the shipping address is not given, the invoice address
+                    # is copied.
                     if customer.selected_shipping_address:
                         customer.selected_shipping_address.delete()
                     shipping_address = deepcopy(customer.selected_invoice_address)
                     shipping_address.id = None
                     shipping_address.save()
                     customer.selected_shipping_address = shipping_address
+                customer.sync_selected_to_default_shipping_address()
             else:
                 sam.save()
                 if request.POST.get("no_invoice", "") == "":
@@ -259,6 +263,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
                     invoice_address.id = None
                     invoice_address.save()
                     customer.selected_invoice_address = invoice_address
+                customer.sync_selected_to_default_invoice_address()
 
             # Save payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
@@ -415,6 +420,7 @@ def changed_invoice_country(request):
     if address:
         address.country = Country.objects.get(code=country_iso.lower())
         address.save()
+        customer.sync_selected_to_default_invoice_address()
 
     am = AddressManagement(customer, address, "invoice")
     result = simplejson.dumps({
@@ -435,6 +441,7 @@ def changed_shipping_country(request):
     if address:
         address.country = Country.objects.get(code=country_iso.lower())
         address.save()
+        customer.sync_selected_to_default_shipping_address()
 
     am = AddressManagement(customer, address, "shipping")
     result = simplejson.dumps({
@@ -464,6 +471,8 @@ def _save_country(request, customer):
             customer.selected_country = country
             customer.save()
 
+            customer.sync_selected_to_default_shipping_address()
+
             lfs.shipping.utils.update_to_valid_shipping_method(request, customer)
             lfs.payment.utils.update_to_valid_payment_method(request, customer)
             customer.save()
@@ -476,7 +485,7 @@ def _save_country(request, customer):
                 if customer.selected_invoice_address:
                     customer.selected_invoice_address.country = country
                     customer.selected_invoice_address.save()
-
+            customer.sync_selected_to_default_invoice_address()
 
 def _save_customer(request, customer):
     """
