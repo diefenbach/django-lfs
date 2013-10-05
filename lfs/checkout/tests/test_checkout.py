@@ -94,6 +94,8 @@ class CheckoutTestCase(TestCase):
             selected_payment_method=self.by_invoice,
             selected_shipping_address=address1,
             selected_invoice_address=address2,
+            default_shipping_address=address1,
+            default_invoice_address=address2,
         )
 
         self.PRODUCT1_NAME = "Surfboard"

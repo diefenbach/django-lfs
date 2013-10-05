@@ -8,9 +8,7 @@ from django.conf import settings
 import lfs.discounts.utils
 import lfs.voucher.utils
 from lfs.cart import utils as cart_utils
-from lfs.core.models import Country
 from lfs.core.signals import order_created
-from lfs.core.utils import import_module
 from lfs.core.utils import import_symbol
 from lfs.customer import utils as customer_utils
 from lfs.order.models import Order
@@ -206,6 +204,10 @@ def add_order(request):
             product_price_gross=-discount["price_gross"],
             product_tax=-discount["tax"],
         )
+
+    # Re-initialize selected addresses to be equal to default addresses for next order
+    customer.sync_default_to_selected_addresses()
+    customer.save()
 
     # Send signal before cart is deleted.
     order_created.send({"order": order, "cart": cart, "request": request})

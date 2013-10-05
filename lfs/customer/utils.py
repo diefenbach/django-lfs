@@ -34,15 +34,22 @@ def create_customer(request):
     shop = lfs.core.utils.get_default_shop(request)
 
     address_model = lfs.core.utils.import_symbol(ADDRESS_MODEL)
+    customer.default_invoice_address = address_model.objects.create(customer=customer, country=shop.default_country)
+    customer.default_shipping_address = address_model.objects.create(customer=customer, country=shop.default_country)
     customer.selected_invoice_address = address_model.objects.create(customer=customer, country=shop.default_country)
     customer.selected_shipping_address = address_model.objects.create(customer=customer, country=shop.default_country)
     customer.save()
 
+    customer.default_invoice_address.customer = customer
+    customer.default_invoice_address.save()
+    customer.default_shipping_address.customer = customer
+    customer.default_shipping_address.save()
+
     customer.selected_invoice_address.customer = customer
     customer.selected_invoice_address.save()
-
     customer.selected_shipping_address.customer = customer
     customer.selected_shipping_address.save()
+
     return customer
 
 

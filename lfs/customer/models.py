@@ -1,4 +1,6 @@
 # django imports
+from copy import deepcopy
+from lfs.addresses import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -37,10 +39,15 @@ class Customer(models.Model):
     sa_content_type = models.ForeignKey(ContentType, related_name="sa_content_type")
     sa_object_id = models.PositiveIntegerField()
     selected_shipping_address = generic.GenericForeignKey('sa_content_type', 'sa_object_id')
+    dsa_object_id = models.PositiveIntegerField()
+    default_shipping_address = generic.GenericForeignKey('sa_content_type', 'dsa_object_id')
 
     ia_content_type = models.ForeignKey(ContentType, related_name="ia_content_type")
     ia_object_id = models.PositiveIntegerField()
     selected_invoice_address = generic.GenericForeignKey('ia_content_type', 'ia_object_id')
+
+    dia_object_id = models.PositiveIntegerField()
+    default_invoice_address = generic.GenericForeignKey('ia_content_type', 'dia_object_id')
 
     selected_country = models.ForeignKey(Country, verbose_name=_(u"Selected country"), blank=True, null=True)
 
@@ -75,6 +82,39 @@ class Customer(models.Model):
         return self.selected_shipping_address or \
                self.selected_invoice_address or \
                None
+
+    def sync_default_to_selected_addresses(self, force=False):
+        # Synchronize selected addresses with default addresses
+        auto_update = getattr(settings, 'AUTO_UPDATE_DEFAULT_ADDRESSES', True)
+        if force or not auto_update:
+            shipping_address = deepcopy(self.default_shipping_address)
+            shipping_address.id = self.selected_shipping_address.id
+            shipping_address.save()
+
+            invoice_address = deepcopy(self.default_invoice_address)
+            invoice_address.id = self.selected_invoice_address.id
+            invoice_address.save()
+
+    def sync_selected_to_default_invoice_address(self, force=False):
+        # Synchronize default invoice address with selected address
+        auto_update = getattr(settings, 'AUTO_UPDATE_DEFAULT_ADDRESSES', True)
+        if force or auto_update:
+            address = deepcopy(self.selected_invoice_address)
+            address.id = self.default_invoice_address.id
+            address.save()
+
+    def sync_selected_to_default_shipping_address(self, force=False):
+        # Synchronize default shipping address with selected address
+        auto_update = getattr(settings, 'AUTO_UPDATE_DEFAULT_ADDRESSES', True)
+        if force or auto_update:
+            address = deepcopy(self.selected_shipping_address)
+            address.id = self.default_shipping_address.id
+            address.save()
+
+    def sync_selected_to_default_addresses(self, force=False):
+        # Synchronize default addresses with selected addresses
+        self.sync_selected_to_default_invoice_address(force)
+        self.sync_selected_to_default_shipping_address(force)
 
 
 class BankAccount(models.Model):

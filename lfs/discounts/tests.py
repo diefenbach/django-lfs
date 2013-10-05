@@ -114,12 +114,27 @@ class DiscountTestCase2(TestCase):
             email="john@doe.com",
         )
 
+
+        address2 = Address.objects.create(
+            firstname="John",
+            lastname="Doe",
+            company_name="Doe Ltd.",
+            line1="Street 42",
+            city="Gotham City",
+            zip_code="2342",
+            country=us,
+            phone="555-111111",
+            email="john@doe.com",
+        )
+
         self.customer = Customer.objects.create(
             session=session.session_key,
             selected_shipping_method=shipping_method,
             selected_payment_method=payment_method,
             selected_shipping_address=address1,
             selected_invoice_address=address1,
+            default_shipping_address=address2,
+            default_invoice_address=address2,
         )
 
         self.p1 = Product.objects.create(
