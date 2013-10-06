@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
 import datetime
+from django.contrib.contenttypes import generic
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+
 
 class Migration(DataMigration):
 
@@ -12,6 +14,12 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName". 
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
+        sa_gfk = generic.GenericForeignKey('sa_content_type', 'sa_object_id')
+        sa_gfk.contribute_to_class(orm.Customer, "selected_shipping_address")
+
+        ia_gfk = generic.GenericForeignKey('ia_content_type', 'ia_object_id')
+        ia_gfk.contribute_to_class(orm.Customer, "selected_invoice_address")
+
         for obj in orm.Customer.objects.all():
             address = deepcopy(obj.selected_shipping_address)
             address.id = None
