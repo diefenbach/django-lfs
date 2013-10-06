@@ -248,6 +248,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
                         customer.selected_shipping_address.delete()
                     shipping_address = deepcopy(customer.selected_invoice_address)
                     shipping_address.id = None
+                    shipping_address.pk = None
                     shipping_address.save()
                     customer.selected_shipping_address = shipping_address
             else:
@@ -259,6 +260,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
                         customer.selected_invoice_address.delete()
                     invoice_address = deepcopy(customer.selected_shipping_address)
                     invoice_address.id = None
+                    invoice_address.pk = None
                     invoice_address.save()
                     customer.selected_invoice_address = invoice_address
             customer.sync_selected_to_default_addresses()

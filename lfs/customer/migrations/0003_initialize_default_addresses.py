@@ -21,19 +21,23 @@ class Migration(DataMigration):
         ia_gfk.contribute_to_class(orm.Customer, "selected_invoice_address")
 
         for obj in orm.Customer.objects.all():
-            address = deepcopy(obj.selected_shipping_address)
-            address.id = None
-            address.pk = None
-            address.save()
-            obj.dsa_object_id = address.id
+            ssa = obj.selected_shipping_address
+            if ssa:
+                address = deepcopy(ssa)
+                address.id = None
+                address.pk = None
+                address.save()
+                obj.dsa_object_id = address.id
 
-            address = deepcopy(obj.selected_invoice_address)
-            address.id = None
-            address.pk = None
-            address.save()
-            obj.dia_object_id = address.id
-
-            obj.save()
+            sia = obj.selected_invoice_address
+            if sia:
+                address = deepcopy(sia)
+                address.id = None
+                address.pk = None
+                address.save()
+                obj.dia_object_id = address.id
+            if ssa or sia:
+                obj.save()
 
     def backwards(self, orm):
         "Write your backwards methods here."

@@ -88,12 +88,26 @@ class Customer(models.Model):
         auto_update = settings.AUTO_UPDATE_DEFAULT_ADDRESSES
         if force or not auto_update:
             shipping_address = deepcopy(self.default_shipping_address)
-            shipping_address.id = self.selected_shipping_address.id
-            shipping_address.save()
+            if self.selected_shipping_address:
+                shipping_address.id = self.selected_shipping_address.id
+                shipping_address.pk = self.selected_shipping_address.pk
+                shipping_address.save()
+            else:
+                shipping_address.id = None
+                shipping_address.pk = None
+                shipping_address.save()
+                self.save()  # save customer to set generic key id
 
             invoice_address = deepcopy(self.default_invoice_address)
-            invoice_address.id = self.selected_invoice_address.id
-            invoice_address.save()
+            if self.selected_invoice_address:
+                invoice_address.id = self.selected_invoice_address.id
+                invoice_address.pk = self.selected_invoice_address.pk
+                invoice_address.save()
+            else:
+                invoice_address.id = None
+                invoice_address.pk = None
+                invoice_address.save()
+                self.save()
 
     def sync_selected_to_default_invoice_address(self, force=False):
         # Synchronize default invoice address with selected address
@@ -101,6 +115,7 @@ class Customer(models.Model):
         if force or auto_update:
             address = deepcopy(self.selected_invoice_address)
             address.id = self.default_invoice_address.id
+            address.pk = self.default_invoice_address.pk
             address.save()
 
     def sync_selected_to_default_shipping_address(self, force=False):
@@ -109,6 +124,7 @@ class Customer(models.Model):
         if force or auto_update:
             address = deepcopy(self.selected_shipping_address)
             address.id = self.default_shipping_address.id
+            address.pk = self.default_shipping_address.pk
             address.save()
 
     def sync_selected_to_default_addresses(self, force=False):
