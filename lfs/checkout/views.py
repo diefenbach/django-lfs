@@ -251,7 +251,6 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
                     shipping_address.id = None
                     shipping_address.save()
                     customer.selected_shipping_address = shipping_address
-                customer.sync_selected_to_default_shipping_address()
             else:
                 sam.save()
                 if request.POST.get("no_invoice", "") == "":
@@ -263,7 +262,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
                     invoice_address.id = None
                     invoice_address.save()
                     customer.selected_invoice_address = invoice_address
-                customer.sync_selected_to_default_invoice_address()
+            customer.sync_selected_to_default_addresses()
 
             # Save payment method
             customer.selected_payment_method_id = request.POST.get("payment_method")
