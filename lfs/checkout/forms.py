@@ -3,6 +3,8 @@ from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
+from lfs.addresses.settings import CHECKOUT_NOT_REQUIRED_ADDRESS
+
 
 class OnePageCheckoutForm(forms.Form):
     requested_delivery_date = forms.DateField(label=_(u"Requested Delivery Date"), required=False)
@@ -14,13 +16,11 @@ class OnePageCheckoutForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(OnePageCheckoutForm, self).__init__(*args, **kwargs)
-        not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
-        if not_required_address == 'shipping':
+        if CHECKOUT_NOT_REQUIRED_ADDRESS == 'shipping':
             del self.fields['no_invoice']
         else:
             del self.fields['no_shipping']
 
     def no_address_field(self):
-        not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
-        field_name = 'no_%s' % not_required_address
+        field_name = 'no_%s' % CHECKOUT_NOT_REQUIRED_ADDRESS
         return self[field_name]

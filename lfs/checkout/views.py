@@ -15,7 +15,6 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.core.utils
-from lfs.customer.utils import create_unique_username
 import lfs.discounts.utils
 import lfs.order.utils
 import lfs.payment.settings
@@ -23,12 +22,14 @@ import lfs.payment.utils
 import lfs.shipping.utils
 import lfs.voucher.utils
 from lfs.addresses.utils import AddressManagement
+from lfs.addresses.settings import CHECKOUT_NOT_REQUIRED_ADDRESS
 from lfs.cart import utils as cart_utils
+from lfs.core.models import Country
 from lfs.checkout.forms import OnePageCheckoutForm
 from lfs.checkout.settings import CHECKOUT_TYPE_ANON
 from lfs.checkout.settings import CHECKOUT_TYPE_AUTH
 from lfs.customer import utils as customer_utils
-from lfs.core.models import Country
+from lfs.customer.utils import create_unique_username
 from lfs.customer.forms import CreditCardForm, CustomerAuthenticationForm
 from lfs.customer.forms import BankAccountForm
 from lfs.customer.forms import RegisterForm
@@ -229,15 +230,13 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
         if shop.confirm_toc and ("confirm_toc" not in request.POST):
             toc = False
             if checkout_form.errors is None:
-                checkout_form.errors = {}
+                checkout_form._errors = {}
             checkout_form.errors["confirm_toc"] = _(u"Please confirm our terms and conditions")
         else:
             toc = True
 
         if checkout_form.is_valid() and bank_account_form.is_valid() and iam.is_valid() and sam.is_valid() and toc:
-            not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
-
-            if not_required_address == 'shipping':
+            if CHECKOUT_NOT_REQUIRED_ADDRESS == 'shipping':
                 iam.save()
                 if request.POST.get("no_shipping", "") == "":
                     # If the shipping address is given then save it.
@@ -454,9 +453,7 @@ def _save_country(request, customer):
     """
     """
     # Update country for address that is marked as 'same as invoice' or 'same as shipping'
-    not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
-
-    if not_required_address == 'shipping':
+    if CHECKOUT_NOT_REQUIRED_ADDRESS == 'shipping':
         country_iso = request.POST.get("shipping-country", None)
 
         if request.POST.get("no_shipping") == "on":
