@@ -58,7 +58,7 @@
                         <input id="factory-category-input-{{ category.id }}"
                                class="export-category-input"
                                type="checkbox"
-                               data="{% url lfs_manufacturer_edit_category manufacturer_id category.id %}"
+                               data-url="{% url lfs_manufacturer_edit_category manufacturer_id category.id %}"
                                {% if category.checked %}checked="checked"{% endif %} />
 
                         <a class="category-ajax-link collapsed"

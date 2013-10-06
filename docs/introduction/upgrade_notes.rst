@@ -30,3 +30,6 @@ This is not full reference of changes but at least some of them are described:
   and management template for property groups.
 * Added LFS_CHECKOUT_NOT_REQUIRED_ADDRESS setting. This allows to change address that is not required at checkout page.
   Changed one_page_checkout.html template, lfs.js and OnePageCheckout Form.
+* refactored lfs.manage.js - do not use ``live`` anymore. Updated manage/export/export.html, manage/export/export_inline.html,
+  manage/manufactuers/manufacturer.html and manage/manufacturers/manufacturer_inline.html to use data-url instead of just 'data'
+  and use elem.data('something') in JavaScript

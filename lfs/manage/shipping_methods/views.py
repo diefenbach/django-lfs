@@ -230,7 +230,8 @@ def save_shipping_price_criteria(request, shipping_price_id):
 
     result = simplejson.dumps({
         "html": html,
-        "message": _(u"Modifications have been changed."),
+        "close-dialog": True,
+        "message": _(u"Modifications have been saved."),
     }, cls=LazyEncoder)
 
     return HttpResponse(result)
