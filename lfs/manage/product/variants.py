@@ -615,7 +615,10 @@ def update_variants(request, product_id):
                 # properties are marshalled as: property-variant_id|property_id
                 temp = key.split("-")[1]
                 variant_id, property_id = temp.split("|")
-                variant = Product.objects.get(pk=variant_id)
+                try:
+                    variant = Product.objects.get(pk=variant_id)
+                except Product.DoesNotExist:
+                    continue
                 prop = Property.objects.get(pk=property_id)
                 ppv = None
                 ppv_filterable = None
