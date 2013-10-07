@@ -539,8 +539,8 @@ def update_variants(request, product_id):
         for key in request.POST.keys():
             if key.startswith("delete-"):
                 try:
-                    id = key.split("-")[1]
-                    variant = Product.objects.get(pk=id)
+                    prop_id = key.split("-")[1]
+                    variant = Product.objects.get(pk=prop_id)
                 except (IndexError, ObjectDoesNotExist):
                     continue
                 else:
@@ -549,27 +549,38 @@ def update_variants(request, product_id):
                         product.save()
                     variant.delete()
     elif action == "update":
+        # TODO: change all of these to formsets or something that will allow for error hangling/messages
         message = _(u"Variants have been saved.")
         for key, value in request.POST.items():
             if key.startswith("variant-"):
-                id = key.split("-")[1]
+                prop_id = key.split("-")[1]
                 try:
-                    variant = Product.objects.get(pk=id)
+                    variant = Product.objects.get(pk=prop_id)
                 except ObjectDoesNotExist:
                     continue
                 else:
-                    for name in ("slug", "sku", "price"):
-                        value = request.POST.get("%s-%s" % (name, id))
+                    for name in ("sku", "price"):
+                        value = request.POST.get("%s-%s" % (name, prop_id))
                         if value != "":
                             if name == 'price':
                                 value = float(value)
                             setattr(variant, name, value)
 
+                    # handle slug - ensure it is unique
+                    slug = request.POST.get("slug-%s" % prop_id)
+                    if variant.slug != slug:
+                        counter = 1
+                        new_slug = slug
+                        while Product.objects.exclude(pk=variant.pk).filter(slug=new_slug).exists():
+                            new_slug = '%s-%s' % (slug[:(79 - len(str(counter)))], counter)
+                            counter += 1
+                        variant.slug = new_slug
+
                     # name
-                    variant.name = request.POST.get("name-%s" % id)
+                    variant.name = request.POST.get("name-%s" % prop_id)
 
                     # active
-                    active = request.POST.get("active-%s" % id)
+                    active = request.POST.get("active-%s" % prop_id)
                     if active:
                         variant.active = True
                     else:
@@ -577,14 +588,14 @@ def update_variants(request, product_id):
 
                     # active attributes
                     for name in ("active_price", "active_sku", "active_name"):
-                        value = request.POST.get("%s-%s" % (name, id))
+                        value = request.POST.get("%s-%s" % (name, prop_id))
                         if value:
                             setattr(variant, name, True)
                         else:
                             setattr(variant, name, False)
 
                     # position
-                    position = request.POST.get("position-%s" % id)
+                    position = request.POST.get("position-%s" % prop_id)
                     try:
                         variant.variant_position = int(position)
                     except ValueError:
