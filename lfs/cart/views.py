@@ -200,9 +200,13 @@ def add_accessory_to_cart(request, product_id, quantity=1):
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
     # for product with variants add default variant
-    variant = product.get_default_variant()
-    if variant:
-        product = variant
+    if product.is_product_with_variants():
+        variant = product.get_default_variant()
+        if variant:
+            product = variant
+        else:
+            return HttpResponse(added_to_cart_items(request))
+
     quantity = product.get_clean_quantity_value(quantity)
 
     session_cart_items = request.session.get("cart_items", [])
@@ -315,9 +319,12 @@ def add_to_cart(request, product_id=None):
                 continue
 
             # for product with variants add default variant
-            accessory_variant = accessory.get_default_variant()
-            if accessory_variant:
-                accessory = accessory_variant
+            if accessory.is_product_with_variants():
+                accessory_variant = accessory.get_default_variant()
+                if accessory_variant:
+                    accessory = accessory_variant
+                else:
+                    continue
 
             # Get quantity
             quantity = request.POST.get("quantity-%s" % accessory_id, 0)
