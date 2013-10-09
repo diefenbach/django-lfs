@@ -869,3 +869,14 @@ div.lfs-pagination a:hover{
     border-bottom: 1px solid #222222;
     color: #000000;
 }
+
+
+div.product-properties-info {
+    font-size: 0.8em;
+    padding-left: 10px;
+}
+
+div.product-properties-info div{
+    margin-bottom: 3px;
+    margin-top: 3px;
+}

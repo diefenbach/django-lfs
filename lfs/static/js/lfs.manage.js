@@ -48,7 +48,15 @@ function setup_datepicker(){
 }
 
 function send_form_and_refresh(elem) {
-    elem.closest("form").ajaxSubmit({
+    var form = elem.closest("form")
+    form.ajaxSubmit({
+        beforeSend: function(jqXHR, settings){
+            var jqx = form.data('jqXHR');
+            if (jqx){
+                jqx.abort();
+            }
+            form.data('jqXHR', jqXHR);
+        },
         success : function(data) {
             data = $.parseJSON(data);
             for (var html in data["html"]) {

@@ -65,6 +65,9 @@
                                         <a href="{% url lfs_manage_product product.id %}">
                                             {{ product.get_name }}
                                         </a>
+                                        <div class="product-properties-info">
+                                            {% include "lfs/catalog/products/_product_properties.html" with product=product configurable_properties=product.get_properties %}
+                                        </div>
                                     </td>
                                     <td>
                                         {{ product.get_sku }}
@@ -131,6 +134,9 @@
                                         <a href="{% url lfs_manage_product product_accessory.accessory.id %}">
                                             {{ product_accessory.accessory.get_name }}
                                         </a>
+                                        <div class="product-properties-info">
+                                            {% include "lfs/catalog/products/_product_properties.html" with product=product_accessory.accessory configurable_properties=product_accessory.accessory.get_properties %}
+                                        </div>
                                     </td>
                                     <td>
                                         {{ product_accessory.accessory.get_sku }}
