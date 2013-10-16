@@ -75,13 +75,19 @@ def customers_filters_inline(request, template_name="manage/customer/customers_f
 
     customers = []
     for customer in page.object_list:
+        query = Q()
+        if customer.session:
+            query |= Q(session=customer.session)
+        if customer.user:
+            query |= Q(user=customer.user)
+
         try:
-            cart = Cart.objects.get(session=customer.session)
+            cart = Cart.objects.get(query)
             cart_price = cart.get_price_gross(request, total=True)
         except Cart.DoesNotExist:
             cart_price = None
 
-        orders = Order.objects.filter(session=customer.session)
+        orders = Order.objects.filter(query)
         customers.append({
             "customer": customer,
             "orders": len(orders),
@@ -102,13 +108,17 @@ def customers_filters_inline(request, template_name="manage/customer/customers_f
 def customer_inline(request, customer_id, template_name="manage/customer/customer_inline.html"):
     """Displays customer with provided customer id.
     """
-    customer_filters = request.session.get("customer-filters", {})
     customer = lfs_get_object_or_404(Customer, pk=customer_id)
-    orders = Order.objects.filter(session=customer.session)
+
+    query = Q()
+    if customer.session:
+        query |= Q(session=customer.session)
+    if customer.user:
+        query |= Q(user=customer.user)
+    orders = Order.objects.filter(query)
 
     try:
-        cart = Cart.objects.get(session=customer.session)
-        cart_price = cart.get_price_gross(request)
+        cart = Cart.objects.get(query)
     except Cart.DoesNotExist:
         cart = None
         cart_price = None
@@ -159,13 +169,22 @@ def customers_inline(request, template_name="manage/customer/customers_inline.ht
 
     customers = []
     for customer in page.object_list:
+        if not customer.user_id and not customer.session:
+            continue
+
+        query = Q()
+        if customer.session:
+            query |= Q(session=customer.session)
+        if customer.user:
+            query |= Q(user=customer.user)
+
         try:
-            cart = Cart.objects.get(session=customer.session)
+            cart = Cart.objects.get(query)
             cart_price = cart.get_price_gross(request, total=True)
         except Cart.DoesNotExist:
             cart_price = None
 
-        orders = Order.objects.filter(session=customer.session)
+        orders = Order.objects.filter(query)
         customers.append({
             "customer": customer,
             "orders": len(orders),
