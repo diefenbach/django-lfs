@@ -243,7 +243,7 @@ def update_product_cache(instance):
 def update_cart_cache(instance):
     """Deletes all cart relevant caches.
     """
-    cache.delete("%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.user))
+    cache.delete("%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.user.pk))
     cache.delete("%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.session))
     cache.delete("%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
     cache.delete("%s-cart-costs-True-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
