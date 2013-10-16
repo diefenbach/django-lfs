@@ -27,7 +27,7 @@
         </td>
 		<td>
 			{% if customer.user %}
-				{% trans "Yes" %}
+				{% trans "Yes" %} ({{ customer.user.date_joined|date:_('DATE_FORMAT') }})
 			{% else %}
 				{% trans "No" %}
 			{% endif %}
