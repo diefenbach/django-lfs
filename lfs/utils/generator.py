@@ -61,11 +61,11 @@ def products(amount=20):
 
     # Images
     path = os.path.join(os.getcwd(), "parts/lfs/lfs/utils/data")
-    fh = open(os.path.join(path, "image1.jpg"))
+    fh = open(os.path.join(path, "image1.jpg"), 'rb')
     cf_1 = ContentFile(fh.read())
-    fh = open(os.path.join(path, "image2.jpg"))
+    fh = open(os.path.join(path, "image2.jpg"), 'rb')
     cf_2 = ContentFile(fh.read())
-    fh = open(os.path.join(path, "image3.jpg"))
+    fh = open(os.path.join(path, "image3.jpg"), 'rb')
     cf_3 = ContentFile(fh.read())
 
     image_1 = Image(title="Image 1")
