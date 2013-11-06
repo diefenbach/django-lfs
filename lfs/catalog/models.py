@@ -1902,9 +1902,9 @@ class Product(models.Model):
         quantity field.
         """
         try:
-            quantity = abs(core_utils.atof(str(quantity)))
+            quantity = abs(float(quantity))
         except (TypeError, ValueError):
-            quantity = 1.0
+            quantity = 1
 
         if not allow_zero:
             quantity = 1 if quantity <= 0 else quantity
@@ -1921,9 +1921,9 @@ class Product(models.Model):
         quantity field.
         """
         try:
-            quantity = abs(core_utils.atof(str(quantity)))
+            quantity = abs(float(quantity))
         except (TypeError, ValueError):
-            quantity = 1.0
+            quantity = 1
 
         type_of_quantity_field = self.get_type_of_quantity_field()
         if type_of_quantity_field == QUANTITY_FIELD_INTEGER:
