@@ -35,6 +35,15 @@ def atof(value):
     """
     locale.atof() on unicode string fails in some environments, like Czech.
     """
+    val = str(value)
+    try:
+        return float(val)
+    except ValueError:
+        try:
+            return float(val.replace(',', '.'))
+        except ValueError:
+            pass
+
     if isinstance(value, unicode):
         value = value.encode("utf-8")
     return locale.atof(value)
