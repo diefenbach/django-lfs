@@ -903,11 +903,11 @@ class Product(models.Model):
         """
         if self.is_variant():
             if self.active_base_price == CHOICES_STANDARD:
-                return self.parent.active_base_price
+                return self.parent.get_active_base_price()
             else:
                 return self.active_base_price == CHOICES_YES
         else:
-            return self.active_base_price
+            return self.active_base_price == CHOICES_YES
 
     def get_base_packing_price(self, request, with_properties=True):
         """
@@ -1816,11 +1816,11 @@ class Product(models.Model):
         """
         if self.is_variant():
             if self.active_packing_unit == CHOICES_STANDARD:
-                return self.parent.active_packing_unit
+                return self.parent.get_active_packing_unit()
             else:
                 return self.active_packing_unit == CHOICES_YES
         else:
-            return self.active_packing_unit
+            return self.active_packing_unit == CHOICES_YES
 
     def get_packing_info(self):
         """
