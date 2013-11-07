@@ -2724,7 +2724,7 @@ class ProductAttachment(models.Model):
     """
     title = models.CharField(_(u"Title"), max_length=50)
     description = models.TextField(_(u"Description"), blank=True)
-    file = models.FileField(upload_to="files")
+    file = models.FileField(upload_to="files", max_length=500)
     product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="attachments")
     position = models.IntegerField(_(u"Position"), default=1)
 
