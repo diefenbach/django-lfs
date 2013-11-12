@@ -503,7 +503,12 @@ def add_option(request, property_id):
                 except ValueError:
                     price = 0.0
 
-                option.position = request.POST.get("position-%s" % option_id, 99)
+                try:
+                    position = int(request.POST.get("position-%s" % option_id, 99))
+                except ValueError:
+                    position = 99
+
+                option.position = position
                 option.name = request.POST.get("name-%s" % option_id, "")
                 option.price = price
                 option.save()
