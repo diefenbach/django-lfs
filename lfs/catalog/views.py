@@ -326,6 +326,7 @@ def category_view(request, slug, template_name="lfs/catalog/category_base.html")
         "category": category,
         "category_inline": inline,
         "top_category": lfs.catalog.utils.get_current_top_category(request, category),
+        "pagination": request.REQUEST.get("start", 0),
     }))
 
 
@@ -515,8 +516,14 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
         recent = recent[:settings.LFS_RECENT_PRODUCTS_LIMIT + 1]
     request.session["RECENT_PRODUCTS"] = recent
 
+    if product.is_variant():
+        variant_canonical = product.parent.get_variant_for_category(request)
+    else:
+        variant_canonical = product
+
     result = render_to_response(template_name, RequestContext(request, {
         "product_inline": product_inline(request, product),
+        "variant_canonical": variant_canonical,
         "product": product,
     }))
 
