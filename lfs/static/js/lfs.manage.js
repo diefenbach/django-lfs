@@ -181,6 +181,7 @@ $(function() {
                 if (data["close-dialog"]) {
                     $("#delete-dialog").dialog("close");
                     $("#dialog").dialog("close");
+                    $("#portlets-dialog").dialog("close");
                 }
 
                 if (data["message"]) {
@@ -277,11 +278,24 @@ $(function() {
     });
 
     // Portlets
+
+    $("#portlets-dialog").dialog({
+        autoOpen: false,
+        closeOnEscape: true,
+        modal: true,
+        width: 800,
+        height: 680,
+        draggable: false,
+        resizable: false,
+        position: ["center", 200]
+    });
+
+
     $body.on('click', '.portlet-edit-button', function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
-            $("#dialog").html(data);
-            $("#dialog").dialog("open");
+            $("#portlets-dialog").html(data);
+            $("#portlets-dialog").dialog("open");
             addEditor('#id_portlet-text', true, 300);
         });
         return false;
@@ -290,8 +304,8 @@ $(function() {
     $body.on('click', '.portlet-add-button', function() {
         $(this).parents("form:first").ajaxSubmit({
             success : function(data) {
-                $("#dialog").html(data);
-                $("#dialog").dialog("open");
+                $("#portlets-dialog").html(data);
+                $("#portlets-dialog").dialog("open");
                 addEditor('#id_portlet-text', true, 300);
         }});
         return false;

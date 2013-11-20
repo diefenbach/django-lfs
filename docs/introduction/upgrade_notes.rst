@@ -33,3 +33,5 @@ This is not full reference of changes but at least some of them are described:
 * refactored lfs.manage.js - do not use ``live`` anymore. Updated manage/export/export.html, manage/export/export_inline.html,
   manage/manufactuers/manufacturer.html and manage/manufacturers/manufacturer_inline.html to use data-url instead of just 'data'
   and use elem.data('something') in JavaScript
+* added <div id="portlets-dialog" title="{% trans "Portlets dialog" %}"></div> to manage_base.html to handle properly inerting images to TinyMCE within portlets dialog
+  (changes to lfs.manage.js with portlets dialog)
