@@ -195,6 +195,7 @@ $(function() {
                 // trigger form-save-end event when new HTML has already been injected into page
                 var event = jQuery.Event("form-save-end");
                 event.form_id = form_id;
+                event.response_data = data;
                 $body.trigger(event);
             }
         });
