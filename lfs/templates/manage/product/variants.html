@@ -39,33 +39,34 @@
     </form>
 
     {% for property in local_properties %}
-        <div style="font-weight:bold">{{ property.name }}</div>
-        {% if not forloop.first %}
-            <a href="{% url lfs_manage_change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=up"
-               class="ajax-link property-edit-field">
-                <image src="{{ STATIC_URL }}icons/arrow_up.png"
-                       alt="{% trans 'Up' %}"
-                       title="{% trans 'Up' %}"/>
+        <div style="font-weight:bold">{{ property.name }}
+            {% if not forloop.first %}
+                <a href="{% url lfs_manage_change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=up"
+                   class="ajax-link property-edit-field">
+                    <image src="{{ STATIC_URL }}icons/arrow_up.png"
+                           alt="{% trans 'Up' %}"
+                           title="{% trans 'Up' %}"/>
 
-            </a>
-        {% endif %}
-        {% if not forloop.last %}
-            <a href="{% url lfs_manage_change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=down"
-                    class="ajax-link property-edit-field">
-                <image src="{{ STATIC_URL }}icons/arrow_down.png"
-                       alt="{% trans 'Down' %}"
-                       title="{% trans 'Down' %}"/>
-            </a>
-        {% endif %}
+                </a>
+            {% endif %}
+            {% if not forloop.last %}
+                <a href="{% url lfs_manage_change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=down"
+                        class="ajax-link property-edit-field">
+                    <image src="{{ STATIC_URL }}icons/arrow_down.png"
+                           alt="{% trans 'Down' %}"
+                           title="{% trans 'Down' %}"/>
+                </a>
+            {% endif %}
 
-        <a href="{% url lfs_manage_delete_property product.id property.id %}"
-           class="delete-link property-edit-field"
-           dialog_message="{% trans 'Do you really want to delete this property and all its options?' %}"
-           dialog_yes_button_class="ajax-save-button">
-            <image src="{{ STATIC_URL }}icons/cross.png"
-                   alt="delete"
-                   title="{% trans 'Delete property' %}"/>
-        </a>
+            <a href="{% url lfs_manage_delete_property product.id property.id %}"
+               class="delete-link property-edit-field"
+               dialog_message="{% trans 'Do you really want to delete this property and all its options?' %}"
+               dialog_yes_button_class="ajax-save-button">
+                <image src="{{ STATIC_URL }}icons/cross.png"
+                       alt="delete"
+                       title="{% trans 'Delete property' %}"/>
+            </a>
+        </div>
         <div class="property-options">
             {% for option in property.options.all %}
                 <div>
@@ -100,43 +101,16 @@
           method="post">
         <table>
             <tr>
-                <th>
-                    {% trans 'Slug' %}
-                </th>
-                <th>
-                    {% trans 'Name' %}
-                </th>
-                <th>
-                    {% trans 'Price' %}
-                </th>
-                {% for property in all_properties %}
+                {% for field in variant_simple_form %}
                     <th>
-                        {{ property.name }}
+                        {{ field.label }}
                     </th>
                 {% endfor %}
                 <th></th>
             </tr>
             <tr>
-                <td>
-                    {{ variant_simple_form.slug }}
-                </td>
-                <td>
-                    {{ variant_simple_form.name }}
-                </td>
-                <td>
-                    {{ variant_simple_form.price }}
-                </td>
-                {% for property in all_properties %}
-                    <td>
-                        <select name="property_{{ property.id }}">
-                            <option value="all">{% trans 'All' %}</option>
-                            {% for option in property.options.all %}
-                                <option value="{{ option.id }}">
-                                    {{ option.name }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </td>
+                {% for field in variant_simple_form %}
+                    <td>{{ field }}</td>
                 {% endfor %}
                 <td>
                     <input type="submit"
@@ -214,6 +188,7 @@
                         {% for property in variant.properties %}
                             <td>
                                 <select name="property-{{ variant.id }}|{{ property.id }}">
+                                    <option value=""></option>
                                     {% for option in property.options %}
                                         <option value="{{ option.id }}"
                                                 {% if option.selected %}selected="selected"{% endif %}>

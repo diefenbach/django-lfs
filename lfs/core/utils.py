@@ -1,25 +1,20 @@
 # python imports
+from collections import deque
 import datetime
+from itertools import count
+import locale
 import sys
 import urllib
-from collections import deque
-from itertools import count
 
 # django imports
 from django.conf import settings
+from django.contrib.redirects.models import Redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.utils import simplejson
 from django.utils.functional import Promise
 from django.utils.encoding import force_unicode
-from django.contrib.redirects.models import Redirect
-from django.core.cache import cache
-
-# lfs imports
-import lfs.catalog.utils
-from lfs.caching.utils import lfs_get_object_or_404
-from lfs.core.models import Shop
-from lfs.catalog.models import Category
+from django.shortcuts import render_to_response
 
 
 def l10n_float(string):
@@ -36,9 +31,28 @@ def l10n_float(string):
         return 0.0
 
 
+def atof(value):
+    """
+    locale.atof() on unicode string fails in some environments, like Czech.
+    """
+    val = str(value)
+    try:
+        return float(val)
+    except ValueError:
+        try:
+            return float(val.replace(',', '.'))
+        except ValueError:
+            pass
+
+    if isinstance(value, unicode):
+        value = value.encode("utf-8")
+    return locale.atof(value)
+
+
 def get_default_shop(request=None):
     """Returns the default shop.
     """
+    from lfs.core.models import Shop
     if request:
         try:
             return request.shop
@@ -82,6 +96,31 @@ def import_symbol(symbol):
     return getattr(module, symbol_str)
 
 
+class MessageHttpResponseRedirect(HttpResponseRedirect):
+    """
+    Django's HttpResponseRedirect with a LFS message
+    """
+    def __init__(self, redirect_to, msg):
+        HttpResponseRedirect.__init__(self, redirect_to)
+        if msg:
+            # We just keep the message two seconds.
+            max_age = 2
+            expires = datetime.datetime.strftime(
+                datetime.datetime.utcnow() +
+                datetime.timedelta(seconds=max_age), "%a, %d-%b-%Y %H:%M:%S GMT")
+
+            self.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
+
+
+def render_to_message_response(*args, **kwargs):
+    """
+    Django's render_to_response with a LFS message.
+    """
+    msg = kwargs.get("msg")
+    del kwargs["msg"]
+    return set_message_to(render_to_response(*args, **kwargs), msg)
+
+
 def set_message_to(response, msg):
     """Sets message cookie with passed message to passed response.
     """
@@ -90,8 +129,8 @@ def set_message_to(response, msg):
     expires = datetime.datetime.strftime(
         datetime.datetime.utcnow() +
         datetime.timedelta(seconds=max_age), "%a, %d-%b-%Y %H:%M:%S GMT")
-
-    response.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
+    if msg:
+        response.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
     return response
 
 
@@ -180,6 +219,7 @@ def remove_redirect_for(path):
 def set_category_levels():
     """Sets the category levels based on the position in hierarchy.
     """
+    from lfs.catalog.models import Category
     for category in Category.objects.all():
         category.level = len(category.get_parents()) + 1
         category.save()
@@ -243,6 +283,7 @@ class CategoryTree(object):
     def get_category_tree(self):
         """Returns a category tree
         """
+        from lfs.catalog.models import Category
         # NOTE: We don't use the level attribute of the category but calculate
         # actual position of a category based on the current tree. In this way
         # the category tree always start with level 1 (even if we start with
@@ -254,7 +295,7 @@ class CategoryTree(object):
             if category.exclude_from_navigation:
                 continue
 
-            if (self.currents and category in self.currents):
+            if self.currents and category in self.currents:
                 children = self._get_sub_tree(category, level + 1)
                 is_current = True
             elif category.level <= self.expand_level:
@@ -283,13 +324,14 @@ class CategoryTree(object):
         return categories
 
     def _get_sub_tree(self, category, level):
+        from lfs.catalog.models import Category
         categories = []
         for category in Category.objects.filter(parent=category):
 
             if category.exclude_from_navigation:
                 continue
 
-            if (self.currents and category in self.currents):
+            if self.currents and category in self.currents:
                 children = self._get_sub_tree(category, level + 1)
                 is_current = True
             elif category.level <= self.expand_level:
@@ -400,24 +442,3 @@ def lfs_pagination(request, current_page, url='', getparam='start'):
         to_return['getvars'] = "&%s" % getvars.urlencode()
     return to_return
 
-
-def get_cache_group_id(group_code):
-    """ Get id for group_code that is stored in cache. This id is supposed to be included in cache key for all items
-        from specific group.
-    """
-    cache_group_key = '%s-%s-GROUP' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_code)
-    group_id = cache.get(cache_group_key, 0)
-    if group_id == 0:
-        group_id = 1
-        cache.set(cache_group_key, group_id, cache.default_timeout * 2)
-    return group_id
-
-
-def invalidate_cache_group_id(group_code):
-    """ Invalidation of group is in fact only incrementation of group_id
-    """
-    cache_group_key = '%s-%s-GROUP' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_code)
-    try:
-        cache.incr(cache_group_key)
-    except ValueError, e:
-        pass

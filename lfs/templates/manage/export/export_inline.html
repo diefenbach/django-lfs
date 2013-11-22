@@ -5,7 +5,7 @@
 			<input id="export-category-input-{{ category.id }}"
 				   class="export-category-input {{ category.klass }}"
 			       type="checkbox"
-			       data="{% url lfs_export_edit_category export_id category.id %}"
+			       data-url="{% url lfs_export_edit_category export_id category.id %}"
 			 	   {% if category.checked %}checked="checked"{% endif %} />
 
 			<a class="category-ajax-link collapsed"
@@ -18,7 +18,7 @@
 				{% ifequal category.klass "half" %}(1/2){% endifequal %}
 			</span>
 			<select class="category-variants-options"
-				    data="{% url lfs_export_update_category_variants_option export_id category.id %}"
+				    data-url="{% url lfs_export_update_category_variants_option export_id category.id %}"
 				{% for option in category.options %}
 					<option value="{{ option.value }}"
 				            {% if option.selected %}selected="selected"{% endif %}>
@@ -33,7 +33,7 @@
 		<li>
 			<input class="export-product-input"
 				   type="checkbox"
-				   data = "{% url lfs_export_edit_product export_id product.id %}"
+				   data-url="{% url lfs_export_edit_product export_id product.id %}"
 				   {% if product.checked %}checked="checked"{% endif %} />
 			<a class="product-ajax-link"
 			   id="product-{{ product.id }}">

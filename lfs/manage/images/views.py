@@ -11,19 +11,20 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
 from django.views.decorators.http import require_POST
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ungettext
 
 # lfs imports
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from lfs.catalog.models import Image
 from lfs.catalog.settings import THUMBNAIL_SIZES
-from lfs.core.utils import LazyEncoder
+from lfs.core.utils import LazyEncoder, lfs_pagination
 
 # Load logger
 import logging
 logger = logging.getLogger("default")
 
 # views
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def images(request, template_name="manage/images/images.html"):
     """
     Display images management.
@@ -35,7 +36,7 @@ def images(request, template_name="manage/images/images.html"):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_images(request):
     """
@@ -45,7 +46,7 @@ def delete_images(request):
     return HttpResponseRedirect(reverse("lfs_manage_global_images"))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_images(request):
     """
     Adds a global images.
@@ -64,7 +65,7 @@ def add_images(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def imagebrowser(request, template_name="manage/images/filebrowser_images.html"):
     """
     Displays a browser for images.
@@ -73,6 +74,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
     selected_image = None
     selected_class = request.GET.get("class")
     url = request.GET.get("url")
+    start = request.GET.get('start', 1)
 
     if url:
         parsed_url = urlparse.urlparse(url)
@@ -110,8 +112,33 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
                 "title": _(u'right'),
                 "selected": 'right' == selected_class}]
 
+
+    # Calculates parameters for display.
+    try:
+        start = int(start)
+    except (ValueError, TypeError):
+        start = 1
+
+    # prepare paginator
+    images = Image.objects.all()
+    paginator = Paginator(images, 25)
+
+    try:
+        current_page = paginator.page(start)
+    except (EmptyPage, InvalidPage):
+        current_page = paginator.page(paginator.num_pages)
+
+    amount_of_images = images.count()
+
+    # Calculate urls
+    pagination_data = lfs_pagination(request, current_page, url=request.path)
+
+    pagination_data['total_text'] = ungettext('%(count)d image',
+                                              '%(count)d images',
+                                              amount_of_images) % {'count': amount_of_images}
+
     images = []
-    for image in Image.objects.all():
+    for i, image in enumerate(current_page.object_list):
         images.append({
             "id": image.id,
             "title": image.title,
@@ -123,6 +150,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
         "sizes": sizes,
         "classes": classes,
         "images": images,
+        "pagination": pagination_data
     }))
 
     result = simplejson.dumps({

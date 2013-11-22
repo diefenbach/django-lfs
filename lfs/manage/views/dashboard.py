@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def dashboard(request, template_name="manage/dashboard.html"):
     """
     """

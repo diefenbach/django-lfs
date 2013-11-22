@@ -13,6 +13,7 @@
             <td class="discreet">{% trans "Amount" %}</td>
             <td class="discreet">{% trans "Name/SKU" %}</td>
             <td class="discreet">{% trans "Category" %}</td>
+            <td class="discreet">{% trans "Manufacturer" %}</td>
             <td class="discreet">{% trans "Active" %}</td>
             <td class="discreet">{% trans "For sale" %}</td>
             <td class="discreet">{% trans "Sub type" %}</td>
@@ -35,6 +36,9 @@
             </td>
             <td>
                 {% category_filter "products-category-filter" %}
+            </td>
+            <td>
+                {% manufacturer_filter "products-manufacturer-filter" %}
             </td>
             <td>
                 <select name="active">

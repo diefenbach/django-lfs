@@ -45,7 +45,7 @@
                                 <div class="field">
                                     <div class="label">
                                         <a href="{% url lfs_manage_shop_property property.id %}">
-                                            {{ property.name }}:
+                                            {{ property.title }}:
                                         </a>
                                     </div>
                                     <input type="text"
@@ -102,7 +102,7 @@
                                 <div class="field">
                                     <div class="label">
                                         <a href="{% url lfs_manage_shop_property property.id %}">
-                                            {{ property.name }}:
+                                            {{ property.title }}:
                                         </a>
                                     </div>
                                     <input type="text"
@@ -114,7 +114,7 @@
                                 <div class="field">
                                     <div class="label">
                                         <a href="{% url lfs_manage_shop_property property.id %}">
-                                            {{ property.name }}:
+                                            {{ property.title }}:
                                         </a>
                                     </div>
                                     <select multiple="multiple" name="property-{{ property.id }}">
@@ -160,7 +160,7 @@
                                 <div class="field">
                                     <div class="label">
                                         <a href="{% url lfs_manage_shop_property property.id %}">
-                                            {{ property.name }}:
+                                            {{ property.title }}:
                                         </a>
                                     </div>
                                     <input type="text"
@@ -171,7 +171,7 @@
                             {% if property.display_select_field %}
                                 <div class="field">
                                     <div class="label">
-                                        {{ property.name }}:
+                                        {{ property.title }}:
                                     </div>
                                     <select multiple="multiple" name="property-{{ property.id }}">
                                         {% for option in property.options %}
@@ -197,6 +197,14 @@
             </div>
         </form>
     {% endif %}
+{% endif %}
+
+
+{% if product_variant_properties %}
+    <h2 class="heading-middle">{% trans "Variant properties" %}</h2>
+    {% for property_option in product_variant_properties %}
+        <div><strong>{{ property_option.property.title }}</strong>: {{ property_option.name }}</div>
+    {% endfor %}
 {% endif %}
 
 {% if shop_property_groups and product.is_product_with_variants %}

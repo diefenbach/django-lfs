@@ -2,12 +2,12 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, m2m_changed
 from django.db.models.signals import pre_save
 from django.db.models.signals import pre_delete
 
 # lfs imports
-from lfs.caching.utils import clear_cache
+from lfs.caching.utils import clear_cache, invalidate_cache_group_id
 from lfs.cart.models import Cart
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
@@ -23,7 +23,6 @@ from lfs.marketing.models import Topseller
 from lfs.order.models import OrderItem
 from lfs.page.models import Page
 from lfs.shipping.models import ShippingMethod
-from lfs.core.utils import invalidate_cache_group_id
 
 # reviews imports
 from reviews.signals import review_added
@@ -60,6 +59,27 @@ pre_save.connect(category_saved_listener, sender=Category)
 def category_changed_listener(sender, **kwargs):
     update_category_cache(sender)
 category_changed.connect(category_changed_listener)
+
+
+def product_categories_changed_listener(sender, **kwargs):
+    instance = kwargs['instance']
+    reverse = kwargs['reverse']
+    pk_set = kwargs['pk_set']
+
+    if reverse:
+        product = instance
+        cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product.id, True)
+        cache.delete(cache_key)
+        cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product.id, False)
+        cache.delete(cache_key)
+    else:
+        if pk_set:
+            for product in Product.objects.filter(pk__in=pk_set):
+                cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product.id, True)
+                cache.delete(cache_key)
+                cache_key = "%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product.id, False)
+                cache.delete(cache_key)
+m2m_changed.connect(product_categories_changed_listener, sender=Category.products.through)
 
 
 # Manufacturer
@@ -191,15 +211,14 @@ def update_product_cache(instance):
 
     # if product was changed then we have to clear all product_navigation caches
     invalidate_cache_group_id('product_navigation')
+    invalidate_cache_group_id('properties-%s' % parent.id)
     cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.slug))
-    cache.delete("%s-product-inline-True-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
-    cache.delete("%s-product-inline-False-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-images-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-related-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
-    cache.delete("%s-manage-properties-variants-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-categories-%s-False" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     cache.delete("%s-product-categories-%s-True" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
+    cache.delete("%s-default-variant-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     if parent.manufacturer:
         cache.delete("%s-manufacturer-all-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.manufacturer.pk))
         cache.delete("%s-manufacturer-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.manufacturer.slug))
@@ -214,7 +233,6 @@ def update_product_cache(instance):
     for variant in parent.get_variants():
         cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
         cache.delete("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.slug))
-        cache.delete("%s-product-inline-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
         cache.delete("%s-product-images-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
         cache.delete("%s-related-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
         cache.delete("%s-product-categories-%s-False" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, variant.id))
@@ -225,7 +243,9 @@ def update_product_cache(instance):
 def update_cart_cache(instance):
     """Deletes all cart relevant caches.
     """
-    cache.delete("%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.user))
+    if instance.user:
+        cache.delete("%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.user.pk))
+    
     cache.delete("%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.session))
     cache.delete("%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
     cache.delete("%s-cart-costs-True-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))

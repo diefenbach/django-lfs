@@ -2,7 +2,6 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
-from django.db import IntegrityError
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -27,7 +26,7 @@ from lfs.manage.voucher.forms import VoucherOptionsForm
 
 
 # Views
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_vouchers(request, template_name="manage/voucher/no_vouchers.html"):
     """Displays that no vouchers exist.
     """
@@ -37,7 +36,7 @@ def no_vouchers(request, template_name="manage/voucher/no_vouchers.html"):
         return manage_vouchers(request)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def voucher_group(request, id, template_name="manage/voucher/voucher_group.html"):
     """Main view to display a voucher group.
     """
@@ -130,7 +129,7 @@ def vouchers_inline(request, voucher_group, vouchers, paginator, page, template_
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_vouchers_page(request):
     """Sets the displayed voucher page.
     """
@@ -148,7 +147,7 @@ def set_vouchers_page(request):
         simplejson.dumps({"html": html}, cls=LazyEncoder))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_vouchers(request):
     """Redirects to the first voucher group or to no voucher groups view.
     """
@@ -162,7 +161,7 @@ def manage_vouchers(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_vouchers(request, group_id):
     """
     """
@@ -175,27 +174,31 @@ def add_vouchers(request, group_id):
         except TypeError:
             amount = 0
 
-        # TODO: Fix the possibility of an infinte loop.
         for i in range(0, amount):
-            while 1:
-                try:
-                    Voucher.objects.create(
-                        number=lfs.voucher.utils.create_voucher_number(),
-                        group=voucher_group,
-                        creator=request.user,
-                        kind_of=request.POST.get("kind_of", 0),
-                        value=request.POST.get("value", 0.0),
-                        start_date=request.POST.get("start_date"),
-                        end_date=request.POST.get("end_date"),
-                        effective_from=request.POST.get("effective_from"),
-                        tax_id=request.POST.get("tax"),
-                        limit=request.POST.get("limit")
-                    )
-                except IntegrityError:
-                    pass
-                else:
-                    break
-        msg = _(u"Vouchers have been created.")
+            number = lfs.voucher.utils.create_voucher_number()
+            counter = 0
+            while Voucher.objects.filter(number=number).exists() and counter < 100:
+                number = lfs.voucher.utils.create_voucher_number()
+                counter += 1
+
+            if counter == 100:
+                msg = _(u"Unable to create unique Vouchers for the options specified.")
+                break
+
+            Voucher.objects.create(
+                number=number,
+                group=voucher_group,
+                creator=request.user,
+                kind_of=request.POST.get("kind_of", 0),
+                value=request.POST.get("value", 0.0),
+                start_date=request.POST.get("start_date"),
+                end_date=request.POST.get("end_date"),
+                effective_from=request.POST.get("effective_from"),
+                tax_id=request.POST.get("tax"),
+                limit=request.POST.get("limit")
+            )
+
+            msg = _(u"Vouchers have been created.")
     else:
         msg = ""
 
@@ -204,7 +207,7 @@ def add_vouchers(request, group_id):
         msg)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_vouchers(request, group_id):
     """Deletes checked vouchers.
@@ -220,7 +223,7 @@ def delete_vouchers(request, group_id):
         _(u"Vouchers have been deleted."))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.html"):
     """Adds a voucher group
     """
@@ -242,7 +245,7 @@ def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.h
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def save_voucher_group_data(request, id):
     """Saves the data of the voucher group with passed id.
     """
@@ -260,7 +263,7 @@ def save_voucher_group_data(request, id):
         _(u"Voucher data has been saved."))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_voucher_group(request, id):
     """Deletes voucher group with given id and all assigned vouchers.
@@ -277,7 +280,7 @@ def delete_voucher_group(request, id):
         )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def save_voucher_options(request):
     """Saves voucher options.
     """

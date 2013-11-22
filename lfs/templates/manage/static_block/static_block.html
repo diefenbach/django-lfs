@@ -15,7 +15,7 @@
                         <a href="{% url lfs_manage_static_block static_block.id %}"
                            class="selectable {% ifequal static_block.id current_id %}selected{% endifequal %}">
                             <img class="handle" src="{{ STATIC_URL }}img/handle.png" alt="Handle" />
-                            {{ static_block.name }}
+                            <span class="sortable-item-name">{{ static_block.name }}</span>
                         </a>
                     </div>
                 </li>

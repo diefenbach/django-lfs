@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 QUANTITY_FIELD_INTEGER = 0
 QUANTITY_FIELD_DECIMAL_1 = 1
@@ -146,3 +146,17 @@ PRODUCT_TEMPLATES = getattr(settings, 'PRODUCT_TEMPLATES', PRODUCT_TEMPLATES)
 THUMBNAIL_SIZES = getattr(settings, 'LFS_THUMBNAIL_SIZES', ((60, 60), (100, 100), (200, 200), (300, 300), (400, 400)))
 DELETE_FILES = getattr(settings, "LFS_DELETE_FILES", True)
 DELETE_IMAGES = getattr(settings, "LFS_DELETE_IMAGES", True)
+if getattr(settings, 'SOLR_ENABLED', False):
+    SORTING_MAP = (
+        {'default': 'effective_price', 'ftx': 'price asc', 'title': _('Price ascending')},
+        {'default': '-effective_price', 'ftx': 'price desc', 'title': _('Price descending')},
+        {'default': 'name', 'ftx': 'name asc', 'title': _('Name ascending')},
+        {'default': '-name', 'ftx': 'name desc', 'title': _('Name descending')},
+    )
+else:
+    SORTING_MAP = (
+        {'default': 'effective_price', 'ftx': 'price', 'title': _('Price ascending')},
+        {'default': '-effective_price', 'ftx': '-price', 'title': _('Price descending')},
+        {'default': 'name', 'ftx': 'name', 'title': _('Name ascending')},
+        {'default': '-name', 'ftx': '-name', 'title': _('Name descending')},
+    )

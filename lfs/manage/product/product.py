@@ -149,7 +149,7 @@ class ProductStockForm(forms.ModelForm):
         if kwargs.get("instance").is_variant():
             self.fields["active_packing_unit"].widget = Select(choices=CHOICES)
         else:
-            self.fields["active_packing_unit"].widget = CheckboxInput(check_test=lambda v:v!=0)
+            self.fields["active_packing_unit"].widget = CheckboxInput(check_test=lambda v: v != 0)
 
     def clean(self):
         if self.data.get("stock-active_packing_unit") == str(CHOICES_YES):
@@ -159,7 +159,7 @@ class ProductStockForm(forms.ModelForm):
         return self.cleaned_data
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_product(request, product_id, template_name="manage/product/product.html"):
     """
     Displays the whole manage/edit form for the product with the passed id.
@@ -192,7 +192,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_products(request, template_name="manage/product/no_products.html"):
     """Displays that there are no products
     """
@@ -200,7 +200,7 @@ def no_products(request, template_name="manage/product/no_products.html"):
 
 
 # Tabs
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def stock(request, product_id, template_name="manage/product/stock.html"):
     """
     Displays and updates product's stock data.
@@ -243,7 +243,7 @@ def stock(request, product_id, template_name="manage/product/stock.html"):
         return result
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def product_data_form(request, product_id, template_name="manage/product/data.html"):
     """
     Displays the product master data form within the manage product view.
@@ -262,7 +262,7 @@ def product_data_form(request, product_id, template_name="manage/product/data.ht
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def products(request, template_name="manage/product/products.html"):
     """
     Displays an overview list of all products.
@@ -280,7 +280,7 @@ def products(request, template_name="manage/product/products.html"):
 
 
 # Parts
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def products_inline(request, page, paginator, template_name="manage/product/products_inline.html"):
     """
     Displays the list of products.
@@ -291,7 +291,7 @@ def products_inline(request, page, paginator, template_name="manage/product/prod
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def product_filters_inline(request, page, paginator, product_id=0, template_name="manage/product/product_filters_inline.html"):
     """
     Displays the filter section of the product overview view.
@@ -325,7 +325,7 @@ def product_filters_inline(request, page, paginator, product_id=0, template_name
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def pages_inline(request, page, paginator, product_id, template_name="manage/product/pages_inline.html"):
     """
     Displays the page navigation.
@@ -337,7 +337,7 @@ def pages_inline(request, page, paginator, product_id, template_name="manage/pro
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def selectable_products_inline(request, page, paginator, product_id, template_name="manage/product/selectable_products_inline.html"):
     """
     Displays the selectable products for the product view.
@@ -361,7 +361,7 @@ def selectable_products_inline(request, page, paginator, product_id, template_na
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_product(request, template_name="manage/product/add_product.html"):
     """Shows a simplified product form and adds a new product.
     """
@@ -380,7 +380,7 @@ def add_product(request, template_name="manage/product/add_product.html"):
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def change_subtype(request, product_id):
     """Changes the sub type of the product with passed id.
     """
@@ -394,19 +394,23 @@ def change_subtype(request, product_id):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_product(request, product_id):
     """Deletes product with passed id.
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
+    url = reverse('lfs_manage_product_dispatcher')
+    if product.is_variant():
+        url = reverse("lfs_manage_product", kwargs={"product_id": product.parent_id})
+    else:
+        url = reverse("lfs_manage_product_dispatcher")
     product.delete()
 
-    url = reverse("lfs_manage_product_dispatcher")
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def edit_product_data(request, product_id, template_name="manage/product/data.html"):
     """Edits the product with given.
@@ -459,7 +463,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def product_dispatcher(request):
     """
     Dispatches to the first product. This is called when the shop admin
@@ -474,7 +478,7 @@ def product_dispatcher(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def reset_filters(request):
     """
     Resets all product filters.
@@ -500,7 +504,7 @@ def reset_filters(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def save_products(request):
     """
@@ -558,6 +562,7 @@ def save_products(request):
                 else:
                     product.active = False
 
+                # TODO: remove IntegrityError and apply some kind of form/formset validation
                 try:
                     product.save()
                 except IntegrityError:
@@ -575,7 +580,7 @@ def save_products(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_name_filter(request):
     """
     Sets product filters given by passed request.
@@ -609,13 +614,13 @@ def set_name_filter(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_filters(request):
     """
     Sets product filters given by passed request.
     """
     product_filters = request.session.get("product_filters", {})
-    for name in ("name", "active", "price", "category", "for_sale", "sub_type", "amount"):
+    for name in ("name", "active", "price", "category", "manufacturer", "for_sale", "sub_type", "amount"):
         if request.POST.get(name, "") != "":
             product_filters[name] = request.POST.get(name)
         else:
@@ -651,7 +656,7 @@ def set_filters(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def set_products_page(request):
     """
     Sets the displayed product page.
@@ -680,7 +685,7 @@ def set_products_page(request):
         simplejson.dumps({"html": html}, cls=LazyEncoder))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def product_by_id(request, product_id):
     """
     Little helper which returns a product by id. (For the shop customer the
@@ -698,7 +703,7 @@ def _get_filtered_products_for_product_view(request):
     and ordering within the current session.
     """
     products = Product.objects.all()
-    product_ordering = request.session.get("product-ordering", "id")
+    product_ordering = request.session.get("product-ordering", "name")
     product_ordering_order = request.session.get("product-ordering-order", "")
 
     # Filter
@@ -754,6 +759,15 @@ def _get_filtered_products(request):
         categories = [category]
         categories.extend(category.get_all_children())
         products = products.filter(categories__in=categories).distinct()
+
+    # manufacturer
+    manufacturer = product_filters.get("manufacturer", "")
+    if manufacturer == "None":
+        products = products.filter(manufacturer=None)
+    elif manufacturer == "All":
+        products = products.distinct()
+    elif manufacturer != "":
+        products = products.filter(manufacturer=manufacturer).distinct()
 
     products = products.order_by("%s%s" % (product_ordering_order, product_ordering))
 

@@ -1,6 +1,5 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
-from django.db import IntegrityError
 from django.core.paginator import EmptyPage
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
@@ -28,20 +27,20 @@ from lfs.core.signals import product_removed_property_group
 from lfs.manage.property_groups.forms import PropertyGroupForm
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_property_groups(request):
     """The main view to manage properties.
     """
     try:
-        property = PropertyGroup.objects.all()[0]
-        url = reverse("lfs_manage_property_group", kwargs={"id": property.id})
+        prop = PropertyGroup.objects.all()[0]
+        url = reverse("lfs_manage_property_group", kwargs={"id": prop.id})
     except IndexError:
         url = reverse("lfs_manage_no_property_groups")
 
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_property_group(request, id, template_name="manage/property_groups/property_group.html"):
     """Edits property group with given id.
     """
@@ -67,25 +66,28 @@ def manage_property_group(request, id, template_name="manage/property_groups/pro
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_property_groups(request, template_name="manage/property_groups/no_property_groups.html"):
     """Displays that there are no property groups.
     """
     return render_to_response(template_name, RequestContext(request, {}))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def properties_inline(request, id, template_name="manage/property_groups/properties_inline.html"):
     """
     """
     property_group = get_object_or_404(PropertyGroup, pk=id)
 
-    gps = GroupsPropertiesRelation.objects.filter(group=id)
+    gps = GroupsPropertiesRelation.objects.filter(group=id).select_related('property')
 
     # Calculate assignable properties
-    assigned_property_ids = [p.property.id for p in gps]
-    assignable_properties = Property.objects.exclude(
-        pk__in=assigned_property_ids).exclude(local=True)
+    #assigned_property_ids = [p.property.id for p in gps]
+    #assignable_properties = Property.objects.exclude(
+    #    pk__in=assigned_property_ids).exclude(local=True)
+
+    assignable_properties = Property.objects.exclude(local=True).exclude(groupspropertiesrelation__in=gps)
+    assignable_properties = assignable_properties.order_by('name')
 
     return render_to_string(template_name, RequestContext(request, {
         "property_group": property_group,
@@ -94,7 +96,7 @@ def properties_inline(request, id, template_name="manage/property_groups/propert
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_property_group(request, template_name="manage/property_groups/add_property_group.html"):
     """Adds a new property group
     """
@@ -116,7 +118,7 @@ def add_property_group(request, template_name="manage/property_groups/add_proper
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_property_group(request, id):
     """Deletes the property group with passed id.
@@ -130,15 +132,12 @@ def delete_property_group(request, id):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def assign_properties(request, group_id):
     """Assignes given properties (via request body) to passed group id.
     """
     for property_id in request.POST.getlist("property-id"):
-        try:
-            GroupsPropertiesRelation.objects.create(group_id=group_id, property_id=property_id)
-        except IntegrityError:
-            pass
+        GroupsPropertiesRelation.objects.get_or_create(group_id=group_id, property_id=property_id)
 
     _udpate_positions(group_id)
 
@@ -151,7 +150,7 @@ def assign_properties(request, group_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_properties(request, group_id):
     """Update or Removes given properties (via request body) from passed group id.
     """
@@ -186,7 +185,7 @@ def update_properties(request, group_id):
 
 
 # Product tab
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def products_tab(request, product_group_id, template_name="manage/property_groups/products.html"):
     """Renders the products tab of the property groups management views.
     """
@@ -199,14 +198,13 @@ def products_tab(request, product_group_id, template_name="manage/property_group
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def products_inline(request, product_group_id, as_string=False,
-    template_name="manage/property_groups/products_inline.html"):
+                    template_name="manage/property_groups/products_inline.html"):
     """Renders the products tab of the property groups management views.
     """
     property_group = PropertyGroup.objects.get(pk=product_group_id)
-    group_products = property_group.products.all()
-    group_product_ids = [p.id for p in group_products]
+    group_products = property_group.products.all().select_related('parent')
 
     r = request.REQUEST
     s = request.session
@@ -250,8 +248,8 @@ def products_inline(request, product_group_id, as_string=False,
 
             filters &= Q(categories__in=categories)
 
-    products = Product.objects.filter(filters)
-    paginator = Paginator(products.exclude(pk__in=group_product_ids), 25)
+    products = Product.objects.select_related('parent').filter(filters)
+    paginator = Paginator(products.exclude(pk__in=group_products), 25)
 
     try:
         page = paginator.page(page)
@@ -275,7 +273,7 @@ def products_inline(request, product_group_id, as_string=False,
             }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def assign_products(request, group_id):
     """Assign products to given property group with given property_group_id.
     """
@@ -296,7 +294,7 @@ def assign_products(request, group_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def remove_products(request, group_id):
     """Remove products from given property group with given property_group_id.
     """
@@ -326,3 +324,25 @@ def _udpate_positions(group_id):
     for i, gp in enumerate(GroupsPropertiesRelation.objects.filter(group=group_id)):
         gp.position = (i + 1) * 10
         gp.save()
+
+
+@permission_required("core.manage_shop")
+def sort_property_groups(request):
+    """Sort property groups
+    """
+    property_group_list = request.POST.get("serialized", "").split('&')
+    assert (isinstance(property_group_list, list))
+    if len(property_group_list) > 0:
+        pos = 10
+        for cat_str in property_group_list:
+            elem, pg_id = cat_str.split('=')
+            pg = PropertyGroup.objects.get(pk=pg_id)
+            pg.position = pos
+            pg.save()
+            pos += 10
+
+    result = simplejson.dumps({
+        "message": _(u"The Property groups have been sorted."),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result)

@@ -141,7 +141,7 @@ for all fields.
 
 Meta title
     This is displayed within the meta title tag of the category's HTML tags. By
-    default the name of the product is used.
+    default the name of the category is used.
 
 Meta keywords
     This is displayed within the meta keywords tag of the category's HTML page.

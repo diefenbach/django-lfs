@@ -2,19 +2,30 @@
 {% load i18n %}
 
 {% block help_link %}user/management/properties/properties.html{% endblock %}
+
+
 {% block left_slot %}
-    <h2 class="navigation-title">
-        {% trans "Properties" %}
-    </h2>
-    <div class="navigation-body">
-        {% for property in properties %}
-            <div>
-                <a href="{% url lfs_manage_shop_property property.id %}"
-                   class="selectable {% ifequal property.id current_id %}selected{% endifequal %}">
-                    {{ property.name }}
-                </a>
-            </div>
-        {% endfor %}
+    <form action="{% url lfs_set_property_name_filter %}"
+          method="post">
+
+        <input type="text"
+               name="name"
+               class="refresh-on-keyup disable-enter-key"
+               style="width:100%"
+               value="{{ name_filter_value }}" />
+
+        <input type="hidden"
+               name="property-id"
+               value="{{ property.id }}" />
+    </form>
+
+    <div id="pages-inline">
+        {{ pages_inline|safe }}
+    </div>
+
+    <div class="navigation-body"
+         id="selectable-properties-inline">
+        {{ selectable_properties }}
     </div>
 {% endblock %}
 

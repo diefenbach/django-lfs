@@ -160,6 +160,13 @@ class PriceCalculator(object):
         self.request = request
         self.product = product
 
+    def get_effective_price(self):
+        """ Effective price is used for sorting and filtering.
+            Usually it is same as value from get_price but in some cases it might differ (eg. if we add eco tax to
+            product price)
+        """
+        return self.get_price()
+
     def get_price(self, with_properties=True):
         """
         Returns the stored price of the product without any tax calculations.
@@ -436,7 +443,7 @@ class PriceCalculator(object):
         Returns the calculated tax for the current product independent of the
         customer.
         """
-        return self.get_price(with_properties) - self.get_price(with_properties)
+        raise NotImplementedError
 
     def price_includes_tax(self):
         """
@@ -479,10 +486,26 @@ class ShippingMethodPriceCalculator(object):
         self.shipping_method = shipping_method
         self.request = request
 
+    def get_tax_rate(self):
+        from lfs.criteria.utils import get_first_valid
+        from lfs.customer_tax.models import CustomerTax
+
+        customer_tax = get_first_valid(self.request, CustomerTax.objects.all(), self.shipping_method)
+        if customer_tax:
+            return customer_tax.rate
+        if self.shipping_method.tax is None:
+            return 0
+        return self.shipping_method.tax.rate
+
     def get_price(self):
         """
         Returns the stored price without any calculations.
         """
+        from lfs.criteria import utils as criteria_utils
+        price = criteria_utils.get_first_valid(self.request,
+                                               self.shipping_method.prices.all())
+        if price:
+            return price.price
         return self.shipping_method.price
 
     def get_price_net(self):

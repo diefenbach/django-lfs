@@ -1,5 +1,6 @@
 # python imports
 import math
+from django.forms.forms import BoundField
 import locale
 
 # django imports
@@ -15,14 +16,15 @@ from django.utils.translation import ugettext_lazy as _
 # lfs imports
 import lfs.catalog.utils
 import lfs.core.utils
+import lfs.core.views
 import lfs.utils.misc
 import logging
-from lfs.caching.utils import lfs_get_object_or_404
+
+from lfs.caching.utils import get_cache_group_id
 from lfs.catalog.models import Category
-from lfs.catalog.settings import CONFIGURABLE_PRODUCT, VARIANT
+from lfs.catalog.settings import VARIANT
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
-from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
-from lfs.catalog.settings import STANDARD_PRODUCT
+from lfs.catalog.settings import SORTING_MAP
 from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
@@ -73,6 +75,7 @@ def google_analytics_ecommerce(context, clear_session=True):
 
     return {
         "order": order,
+        "shop": shop,
         "ga_ecommerce_tracking": shop.ga_ecommerce_tracking,
         "google_analytics_id": shop.google_analytics_id,
     }
@@ -102,11 +105,16 @@ def sorting(context):
     """
     """
     request = context.get("request")
-    return {"current": request.session.get("sorting")}
+    sorting = request.session.get("sorting")
+    # prepare list of available sort options, sorted by SORTING_MAP_ORDER
+    sort_options = []
+    for item in SORTING_MAP:
+        sort_options.append(item)
+    return {"current": sorting, "sort_options": sort_options}
 
 
 @register.inclusion_tag('lfs/catalog/breadcrumbs.html', takes_context=True)
-def breadcrumbs(context, obj):
+def breadcrumbs(context, obj, current_page=''):
     """
     """
     if isinstance(obj, Category):
@@ -115,7 +123,7 @@ def breadcrumbs(context, obj):
         if objects is not None:
             return objects
 
-        objects = []
+        objects = [current_page] if current_page else []
         while obj is not None:
             objects.insert(0, {
                 "name": obj.name,
@@ -208,9 +216,10 @@ def product_navigation(context, product):
     """Provides previous and next product links.
     """
     request = context.get("request")
-    sorting = request.session.get("sorting", "price")
-    if sorting == "":
-        sorting = "price"
+    sorting = request.session.get("sorting", 'effective_price')
+    if sorting.strip() == '':
+        sorting = 'effective_price'
+        request.session["sorting"] = sorting
 
     slug = product.slug
 
@@ -223,7 +232,7 @@ def product_navigation(context, product):
 
     # prepare cache key for product_navigation group
     # used to invalidate cache for all product_navigations at once
-    pn_cache_key = lfs.core.utils.get_cache_group_id('product_navigation')
+    pn_cache_key = get_cache_group_id('product_navigation')
 
     # if there is last_manufacturer then product was visited from manufacturer view
     # as category view removes last_manufacturer from the session
@@ -274,14 +283,14 @@ def product_navigation(context, product):
 
     total = len(product_slugs)
     if product_index < total - 1:
-        next = product_slugs[product_index + 1]
+        next_product = product_slugs[product_index + 1]
     else:
-        next = None
+        next_product = None
 
     result = {
         "display": True,
         "previous": previous,
-        "next": next,
+        "next": next_product,
         "current": product_index + 1,
         "total": total,
         "STATIC_URL": context.get("STATIC_URL"),
@@ -527,7 +536,7 @@ def get_slug_from_request(request):
 
 
 @register.filter
-def currency(value, request=None, grouping=True):
+def currency_text(value, request=None, grouping=True):
     """
     Returns the currency based on the given locale within settings.LFS_LOCALE
 
@@ -536,8 +545,11 @@ def currency(value, request=None, grouping=True):
     import locale
     locale.setlocale(locale.LC_ALL, 'de_CH.UTF-8')
     currency(123456.789)  # Fr. 123'456.79
-    currency(-123456.789) # <span class="negative">Fr. -123'456.79</span>
+    currency(-123456.789) # Fr. -123'456.79
     """
+    if locale.getlocale(locale.LC_ALL)[0] is None:
+        lfs.core.views.one_time_setup()
+
     if not value:
         value = 0.0
 
@@ -548,14 +560,52 @@ def currency(value, request=None, grouping=True):
         result = value
         logger.error("currency filter: %s" % e)
 
-    # add css class if value is negative
     if value < 0:
         # replace the minus symbol if needed
         if result[-1] == '-':
             length = len(locale.nl_langinfo(locale.CRNCYSTR))
             result = '%s-%s' % (result[0:length], result[length:-1])
-        return mark_safe('<span class="negative">%s</span>' % result)
     return result
+
+
+@register.filter
+def currency(value, request=None, grouping=True):
+    """
+    Returns the currency based on the given locale within settings.LFS_LOCALE
+
+    e.g.
+
+    import locale
+    locale.setlocale(locale.LC_ALL, 'de_CH.UTF-8')
+    currency(123456.789)  # <span class="money">Fr. 123'456.79</span>
+    currency(-123456.789) # <span class="money negative">Fr. -123'456.79</span>
+    """
+    if locale.getlocale(locale.LC_ALL)[0] is None:
+        lfs.core.views.one_time_setup()
+
+    if not value:
+        value = 0.0
+
+    shop = lfs.core.utils.get_default_shop(request)
+    try:
+        result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
+    except ValueError, e:
+        result = str(value)
+        logger.error("currency filter: %s" % e)
+
+    # add css class if value is negative
+    negative = False
+    if value < 0:
+        negative = True
+        # replace the minus symbol if needed
+        if result[-1] == '-':
+            length = len(locale.nl_langinfo(locale.CRNCYSTR))
+            result = '%s-%s' % (result[0:length], result[length:-1])
+
+    return mark_safe('<span class="money%(negative)s">%(result)s</span>' % {
+        'result': result.strip(),
+        'negative': ' negative' if negative else '',
+    })
 
 
 @register.filter
@@ -639,11 +689,13 @@ def option_name_for_property_value(property_value):
 
 @register.filter
 def packages(cart_item):
-    """Returns the packages based on product's package unit and cart items
+    """
+    Returns the packages based on product's package unit and cart items
     amount.
     """
-    if cart_item.product.packing_unit:
-        return int(math.ceil(float(cart_item.amount) / cart_item.product.packing_unit))
+    packing_unit, packing_unit_unit = cart_item.product.get_packing_info()
+    if packing_unit:
+        return int(math.ceil(float(cart_item.amount) / packing_unit))
     return 0
 
 
@@ -813,7 +865,7 @@ register.tag('category_product_prices', do_category_product_prices)
 
 
 @register.filter(name='get_price')
-def get_price_net(product, request):
+def get_price(product, request):
     return product.get_price(request)
 
 
@@ -885,3 +937,25 @@ def get_base_packing_price_net(product, request):
 @register.filter(name='get_base_packing_price_gross')
 def get_base_packing_price_gross(product, request):
     return product.get_base_packing_price_gross(request)
+
+
+@register.inclusion_tag('lfs/shop/lfs_form.html', takes_context=True)
+def lfs_form(context, form):
+    """ Render form using common form template.
+        It is also possible to pass list of fields
+        or single field to this tag.
+    """
+    if isinstance(form, BoundField):
+        form = [form]
+    context['lfs_form'] = form
+    context['lfs_form_is_form'] = hasattr(form,'non_field_errors')
+    return context
+
+
+@register.filter(name='get_pay_link', is_safe=True)
+def get_pay_link(order, request=None, force_paid=False):
+    """ Only return pay link for not paid orders unless force_paid=True
+    """
+    if force_paid or order.can_be_paid():
+        return order.get_pay_link(request)
+    return ''

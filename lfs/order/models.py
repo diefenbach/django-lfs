@@ -1,22 +1,23 @@
+# python imports
+import uuid
+
 # django imports
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.payment.utils
+import lfs.core.utils
+import lfs.catalog.models
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
-from lfs.core.models import Country
-from lfs.order.settings import ORDER_STATES
-from lfs.order.settings import SUBMITTED
+from lfs.order.settings import ORDER_STATES, SUBMITTED, PAYMENT_FAILED, PAYMENT_FLAGGED
 from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
-from lfs.payment.settings import PAYPAL
-
-# other imports
-import uuid
 
 
 def get_unique_id_str():
@@ -24,24 +25,33 @@ def get_unique_id_str():
 
 
 class Order(models.Model):
-    """An order is created when products have been sold.
+    """
+    An order is created when products have been sold.
 
-    **Parameters**:
+    **Attributes:**
 
     number
-        The unique order number of the order which is the reference for the
+        The unique order number of the order, which is the reference for the
         customer.
 
     voucher_number, voucher_value, voucher_tax
-
         Storing this information here assures that we have it all time, even
         when the involved voucher will be deleted.
 
     requested_delivery_date
-        a buyer requested delivery date (e.g. for a florist to deliver flowers on a specific date)
+        A buyer requested delivery date (e.g. for a florist to deliver flowers
+        on a specific date)
 
     pay_link
         A link to re-pay the order (e.g. for PayPal)
+
+    invoice_address_id
+        The invoice address of the order (this is not a FK because of circular
+        imports).
+
+    shipping_address_id
+        The shipping address of the order (this is not a FK because of circular
+        imports).
 
     """
     number = models.CharField(max_length=30)
@@ -58,29 +68,15 @@ class Order(models.Model):
 
     customer_firstname = models.CharField(_(u"firstname"), max_length=50)
     customer_lastname = models.CharField(_(u"lastname"), max_length=50)
-    customer_email = models.CharField(_(u"email"), max_length=50)
+    customer_email = models.CharField(_(u"email"), max_length=75)
 
-    invoice_firstname = models.CharField(_(u"Invoice firstname"), max_length=50)
-    invoice_lastname = models.CharField(_(u"Invoice lastname"), max_length=50)
-    invoice_company_name = models.CharField(_(u"Invoice company name"), null=True, blank=True, max_length=100)
-    invoice_line1 = models.CharField(_(u"Invoice Line 1"), null=True, blank=True, max_length=100)
-    invoice_line2 = models.CharField(_(u"Invoice Line 2"), null=True, blank=True, max_length=100)
-    invoice_city = models.CharField(_(u"Invoice City"), null=True, blank=True, max_length=100)
-    invoice_state = models.CharField(_(u"Invoice State"), null=True, blank=True, max_length=100)
-    invoice_code = models.CharField(_(u"Invoice Postal Code"), null=True, blank=True, max_length=100)
-    invoice_country = models.ForeignKey(Country, related_name="orders_invoice_country", blank=True, null=True)
-    invoice_phone = models.CharField(_(u"Invoice phone"), blank=True, max_length=20)
+    sa_content_type = models.ForeignKey(ContentType, related_name="order_shipping_address")
+    sa_object_id = models.PositiveIntegerField()
+    shipping_address = generic.GenericForeignKey('sa_content_type', 'sa_object_id')
 
-    shipping_firstname = models.CharField(_(u"Shipping firstname"), max_length=50)
-    shipping_lastname = models.CharField(_(u"Shipping lastname"), max_length=50)
-    shipping_company_name = models.CharField(_(u"shipping company name"), null=True, blank=True, max_length=100)
-    shipping_line1 = models.CharField(_(u"Shipping Line 1"), null=True, blank=True, max_length=100)
-    shipping_line2 = models.CharField(_(u"Shipping Line 2"), null=True, blank=True, max_length=100)
-    shipping_city = models.CharField(_(u"Shipping City"), null=True, blank=True, max_length=100)
-    shipping_state = models.CharField(_(u"Shipping State"), null=True, blank=True, max_length=100)
-    shipping_code = models.CharField(_(u"Shipping Postal Code"), null=True, blank=True, max_length=100)
-    shipping_country = models.ForeignKey(Country, related_name="orders_shipping_country", blank=True, null=True)
-    shipping_phone = models.CharField(_(u"Shipping phone"), blank=True, max_length=20)
+    ia_content_type = models.ForeignKey(ContentType, related_name="order_invoice_address")
+    ia_object_id = models.PositiveIntegerField()
+    invoice_address = generic.GenericForeignKey('ia_content_type', 'ia_object_id')
 
     shipping_method = models.ForeignKey(ShippingMethod, verbose_name=_(u"Shipping Method"), blank=True, null=True)
     shipping_price = models.FloatField(_(u"Shipping Price"), default=0.0)
@@ -112,9 +108,21 @@ class Order(models.Model):
         return "%s (%s %s)" % (self.created.strftime("%x %X"), self.customer_firstname, self.customer_lastname)
 
     def get_pay_link(self, request):
-        """Returns a pay link for the selected payment method.
         """
-        return lfs.payment.utils.get_pay_link(request, self.payment_method, self)
+        Returns a pay link for the selected payment method.
+        """
+        if self.payment_method.module:
+            payment_class = lfs.core.utils.import_symbol(self.payment_method.module)
+            payment_instance = payment_class(request=request, order=self)
+            try:
+                return payment_instance.get_pay_link()
+            except AttributeError:
+                return ""
+        else:
+            return ""
+
+    def can_be_paid(self):
+        return self.state in (SUBMITTED, PAYMENT_FAILED, PAYMENT_FLAGGED)
 
     def get_name(self):
         order_name = ""
@@ -122,8 +130,10 @@ class Order(models.Model):
             if order_item.product is not None:
                 order_name = order_name + order_item.product.get_name() + ", "
 
-        order_name.strip(', ')
-        return order_name
+        return order_name.strip(', ')
+
+    def price_net(self):
+        return self.price - self.tax
 
 
 class OrderItem(models.Model):
@@ -153,7 +163,13 @@ class OrderItem(models.Model):
 
     @property
     def amount(self):
-        return self.product.get_clean_quantity(self.product_amount)
+        if self.product:
+            return self.product.get_clean_quantity(self.product_amount)
+        else:
+            try:
+                return int(self.product_amount)
+            except (ValueError, TypeError):
+                return 1
 
     def get_properties(self):
         """Returns properties of the order item. Resolves option names for

@@ -13,8 +13,7 @@ from lfs.shipping.tests import *
 from lfs.voucher.tests import *
 from lfs.customer.tests import *
 from lfs.checkout.tests import *
-from lfs.payment.tests import *
-# from lfs.manage.tests import *
+from lfs.manage.tests import *
 from lfs.gross_price.tests import *
 from lfs.net_price.tests import *
 # from lfs.core.wmtests import *
@@ -24,6 +23,10 @@ try:
 except ImportError:
     pass
 
+try:
+    from lfs_paypal.tests import *
+except ImportError:
+    pass
 
 # django imports
 from django.contrib.auth.models import User
@@ -269,21 +272,23 @@ class TagsTestCase(TestCase):
 
         # Now it works and "pageTracker" is found
         content = template.render(Context({"request": request}))
-        self.failIf(content.find("pageTracker") == -1)
+        self.failIf(content.find("_trackPageview") == -1)
 
     def test_currency(self):
         """
         """
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-        self.assertEqual(currency(0.0), "$0.00")
-        self.assertEqual(currency(1.0), "$1.00")
+        self.assertEqual(currency(0.0), '<span class="money">$0.00</span>')
+        self.assertEqual(currency(1.0), '<span class="money">$1.00</span>')
 
         shop = lfs.core.utils.get_default_shop()
         shop.use_international_currency_code = True
         shop.save()
 
-        self.assertEqual(currency(0.0, None, False), "USD 0.00")
-        self.assertEqual(currency(1.0, None, False), "USD 1.00")
+        self.assertEqual(currency(0.0, None, False), '<span class="money">USD 0.00</span>')
+        self.assertEqual(currency(1.0, None, False), '<span class="money">USD 1.00</span>')
+
+        self.assertEqual(currency(-1.0, None, False), '<span class="money negative">-USD 1.00</span>')
 
 
 class ManageURLsTestCase(TestCase):

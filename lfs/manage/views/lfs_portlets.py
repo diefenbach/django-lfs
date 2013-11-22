@@ -1,8 +1,6 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.decorators import login_required
 from django.contrib.contenttypes.models import ContentType
-from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -19,11 +17,10 @@ from portlets.models import PortletRegistration
 from portlets.models import Slot
 
 # lfs imports
-import lfs.core.utils
 from lfs.core.utils import LazyEncoder
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def portlets_inline(request, obj, template_name="manage/portlets/portlets_inline.html"):
     """Displays the assigned portlets for given object.
     """
@@ -45,47 +42,40 @@ def portlets_inline(request, obj, template_name="manage/portlets/portlets_inline
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_portlets(request, object_type_id, object_id):
     """Update portlets blocking.
     """
     # Get content type to which the portlet should be added
     object_ct = ContentType.objects.get(pk=object_type_id)
-    object = object_ct.get_object_for_this_type(pk=object_id)
+    obj = object_ct.get_object_for_this_type(pk=object_id)
 
     blocked_slots = request.POST.getlist("block_slot")
 
-    for slot in Slot.objects.all():
-        if str(slot.id) in blocked_slots:
-            try:
-                PortletBlocking.objects.create(
-                    slot_id=slot.id, content_type_id=object_type_id, content_id=object_id)
-            except IntegrityError:
-                pass
+    # Delete all slots that were NOT checked
+    PortletBlocking.objects.filter(content_type_id=object_type_id,
+                                   content_id=object_id).exclude(slot_id__in=blocked_slots).delete()
 
-        else:
-            try:
-                pb = PortletBlocking.objects.get(
-                    slot=slot, content_type=object_type_id, content_id=object_id)
-                pb.delete()
-            except PortletBlocking.DoesNotExist:
-                pass
+    for slot in Slot.objects.filter(id__in=blocked_slots):
+        PortletBlocking.objects.get_or_create(slot=slot,
+                                              content_type_id=object_type_id,
+                                              content_id=object_id)
 
     result = simplejson.dumps({
-        "html": [["#portlets", portlets_inline(request, object)]],
+        "html": [["#portlets", portlets_inline(request, obj)]],
         "message": _(u"Portlet has been updated.")},
         cls=LazyEncoder
     )
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_portlet(request, object_type_id, object_id, template_name="manage/portlets/portlet_add.html"):
     """Form and logic to add a new portlet to the object with given type and id.
     """
     # Get content type to which the portlet should be added
     object_ct = ContentType.objects.get(pk=object_type_id)
-    object = object_ct.get_object_for_this_type(pk=object_id)
+    obj = object_ct.get_object_for_this_type(pk=object_id)
 
     # Get the portlet type
     portlet_type = request.REQUEST.get("portlet_type", "")
@@ -99,11 +89,11 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
 
             slot_id = request.POST.get("slot")
             pa = PortletAssignment.objects.create(
-                slot_id=slot_id, content=object, portlet=portlet, position=1000)
+                slot_id=slot_id, content=obj, portlet=portlet, position=1000)
 
             update_portlet_positions(pa)
 
-            html = [["#portlets", portlets_inline(request, object)]]
+            html = [["#portlets", portlets_inline(request, obj)]]
 
             result = simplejson.dumps({
                 "html": html,
@@ -131,7 +121,7 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             pass
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_portlet(request, portletassignment_id):
     """Deletes a portlet for given portlet assignment.
@@ -152,7 +142,7 @@ def delete_portlet(request, portletassignment_id):
         return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def edit_portlet(request, portletassignment_id, template_name="manage/portlets/portlet_edit.html"):
     """Form and logic to edit the portlet of the given portlet assignment.
     """
@@ -195,7 +185,7 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
         }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def move_portlet(request, portletassignment_id):
     """
     Moves a portlet up/down within a slot.

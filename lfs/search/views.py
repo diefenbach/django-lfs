@@ -25,9 +25,9 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
     else:
         # Products
         query = Q(active=True) & \
-                Q(name__icontains=q) | \
+                ( Q(name__icontains=q) | \
                 Q(manufacturer__name__icontains=q) | \
-                Q(sku_manufacturer__icontains=q) & \
+                Q(sku_manufacturer__icontains=q) ) & \
                 Q(sub_type__in=(STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
 
         temp = Product.objects.filter(query)
@@ -54,22 +54,18 @@ def search(request, template_name="lfs/search/search_results.html"):
     q = request.GET.get("q", "")
 
     # Products
-    query = Q(name__icontains=q) | \
+    query = Q(active=True) & \
+            ( Q(name__icontains=q) | \
             Q(manufacturer__name__icontains=q) | \
-            Q(sku_manufacturer__icontains=q) & \
+            Q(sku_manufacturer__icontains=q) ) & \
             Q(sub_type__in=(STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
-    products = Product.objects.filter(query).filter(active=True)
+
+    products = Product.objects.filter(query)
 
     # Sorting
     sorting = request.session.get("sorting")
     if sorting:
-        try:
-            products = products.order_by(sorting)
-        except FieldError:
-            # this should not happen but I experienced it when
-            # switching on/off lfs_solr which uses different
-            # field specification for sorting but the same session key
-            del request.session["sorting"]
+        products = products.order_by(sorting)
 
     total = 0
     if products:

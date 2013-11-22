@@ -21,7 +21,7 @@ from lfs.catalog.models import Product
 from lfs.manufacturer.models import Manufacturer
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_products(request, manufacturer_id, template_name="manage/manufacturers/products.html"):
     """
     """
@@ -44,7 +44,7 @@ def manage_products(request, manufacturer_id, template_name="manage/manufacturer
 
 
 # Parts
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def products_inline(request, manufacturer_id, as_string=False, template_name="manage/manufacturers/products_inline.html"):
     """Displays the products-tab of a manufacturer.
 
@@ -115,7 +115,7 @@ def products_inline(request, manufacturer_id, as_string=False, template_name="ma
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def products_tab(request, manufacturer_id):
     """Returns the products tab for given manufacturer id.
     """
@@ -123,7 +123,7 @@ def products_tab(request, manufacturer_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def selected_products(request, manufacturer_id, as_string=False, template_name="manage/manufacturers/selected_products.html"):
     """The selected products part of the products-tab of a manufacturer.
 
@@ -176,7 +176,7 @@ def selected_products(request, manufacturer_id, as_string=False, template_name="
         }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_products(request, manufacturer_id):
     """Adds products (passed via request body) to category with passed id.
     """
@@ -206,7 +206,7 @@ def add_products(request, manufacturer_id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def remove_products(request, manufacturer_id):
     """Removes product (passed via request body) from category with passed id.
     """

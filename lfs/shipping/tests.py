@@ -1,10 +1,13 @@
 # django imports
 from django.test import TestCase
-from django.test.client import Client
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AnonymousUser
+from django.conf import settings
 
 # test imports
+from lfs.core.models import Country
+from lfs.customer.utils import get_or_create_customer
+from lfs.customer_tax.models import CustomerTax
 from lfs.tests.utils import DummyRequest
 
 # lfs imports
@@ -15,7 +18,7 @@ from lfs.customer import utils as customer_utils
 from lfs.shipping.models import ShippingMethod
 from lfs.shipping.models import ShippingMethodPrice
 from lfs.shipping import utils
-from lfs.criteria.models import CartPriceCriterion
+from lfs.criteria.models import CartPriceCriterion, CountryCriterion, Criterion
 from lfs.criteria.models import WeightCriterion
 from lfs.criteria.settings import GREATER_THAN, LESS_THAN
 from lfs.cart import utils as cart_utils
@@ -272,7 +275,7 @@ class ShippingMethodTestCase(TestCase):
         # There are no shipping prices, hence the default shipping price is
         # returned, which is 1, see above.
         costs = utils.get_shipping_costs(self.request, self.sm1)
-        self.assertEqual(costs.get("price"), 1)
+        self.assertEqual(costs.get("price_gross"), 1)
 
     def test_shipping_price_2(self):
         """Tests an additional shipping method price.
@@ -282,7 +285,7 @@ class ShippingMethodTestCase(TestCase):
 
         # As this has no criteria it is valid by default
         costs = utils.get_shipping_costs(self.request, self.sm1)
-        self.assertEqual(costs["price"], 5)
+        self.assertEqual(costs["price_gross"], 5)
 
     def test_shipping_price_3(self):
         """Tests an additional shipping method price with a criterion.
@@ -297,7 +300,7 @@ class ShippingMethodTestCase(TestCase):
         # shipping price is the default price of the shipping method , which is
         # 1, see above.
         costs = utils.get_shipping_costs(self.request, self.sm1)
-        self.assertEqual(costs["price"], 1)
+        self.assertEqual(costs["price_gross"], 1)
 
         # No we add some items to the cart
         cart = cart_utils.get_or_create_cart(self.request)
@@ -307,4 +310,36 @@ class ShippingMethodTestCase(TestCase):
         # The cart price is now greater than 10, hence the price valid and the
         # shipping price is the price of the yet valid additional price.
         costs = utils.get_shipping_costs(self.request, self.sm1)
-        self.assertEqual(costs["price"], 5)
+        self.assertEqual(costs["price_gross"], 5)
+
+    def test_shipping_price_4(self):
+        """Tests an additional shipping method price with a criterion and customer price
+        """
+        # create country dependent tax
+        self.us = Country.objects.create(code="us", name="USA")
+        self.ch = Country.objects.create(code="ch", name="Switzerland")
+
+        self.request = create_request()
+        self.request.user = AnonymousUser()
+        self.customer = get_or_create_customer(self.request)
+
+        self.ct1 = CustomerTax.objects.create(rate=10.0)
+        cc = CountryCriterion.objects.create(content=self.ct1, operator=Criterion.IS_SELECTED)
+        cc.value.add(self.us)
+
+        self.sm1.price = 10
+        self.sm1.price_calculator = settings.LFS_SHIPPING_METHOD_PRICE_CALCULATORS[1][0]
+        self.sm1.save()
+
+        costs = utils.get_shipping_costs(self.request, self.sm1)
+        self.assertEqual(costs["price_gross"], 10)
+        self.assertEqual(costs["price_net"], 10)
+        self.assertEqual(costs["tax"], 0)
+
+        self.customer.selected_shipping_address.country = self.us
+        self.customer.selected_shipping_address.save()
+
+        costs = utils.get_shipping_costs(self.request, self.sm1)
+        self.assertEqual(costs["price_gross"], 11)
+        self.assertEqual(costs["price_net"], 10)
+        self.assertEqual(costs["tax"], 1)

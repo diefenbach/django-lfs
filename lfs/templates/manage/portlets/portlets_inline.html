@@ -9,10 +9,11 @@
         {% for slot in slots.items %}
             <div>
                 <input type="checkbox"
+                       id="block-slot-{{ slot.id }}"
                        name="block_slot"
                        value="{{ slot.id }}"
                        {% if slot.is_blocked %}checked="checked"{% endif %} />
-                <label class="middle">{% trans slot.name %}</label>
+                <label class="middle" for="block-slot-{{ slot.id }}">{% trans slot.name %}</label>
             </div>
         {% endfor %}
 

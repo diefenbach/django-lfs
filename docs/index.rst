@@ -9,6 +9,7 @@ Introduction
 
    introduction/overview.rst
    introduction/installation.rst
+   introduction/upgrade_notes.rst
    introduction/getting_started.rst
 
 .. _index_users:
@@ -27,6 +28,7 @@ Concepts
 
    user/concepts/products.rst
    user/concepts/categories.rst
+   user/concepts/manufacturers.rst
    user/concepts/criteria.rst
    user/concepts/properties.rst
    user/concepts/local_properties.rst
@@ -74,6 +76,7 @@ How-tos
    user/howtos/how_to_shipping_method
    user/howtos/how_to_paypal.rst
    user/howtos/how_to_export_script
+   user/howtos/how_to_use_celery
 
 .. _index_developers:
 
@@ -92,6 +95,7 @@ Developing
    developer/developing.rst
    developer/testing.rst
    developer/benchmarking.rst
+   developer/changing_models.rst
    misc/contributing_translations.rst
 
 .. _index_developers_miscellaneous:
@@ -104,6 +108,7 @@ Miscellaneous
 
    developer/api.rst
    developer/settings.rst
+   developer/management_commands.rst
 
 .. _index_developers_howtos:
 
@@ -113,6 +118,7 @@ How-tos
 .. toctree::
    :maxdepth: 1
 
+   developer/howtos/how_to_add_own_addresses/index.rst
    developer/howtos/how_to_add_own_templates.rst
    developer/howtos/how_to_add_own_payment_methods.rst
    developer/howtos/how_to_add_product_pricing.rst

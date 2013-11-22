@@ -1,9 +1,12 @@
 Credits
 =======
 
-* Dirk Kommol (Demmelhuber Holz & Raum - http://www.demmelhuber.net)
+Contributors
+------------
 
-  Power user, smart adviser, sponsor, products for demo shop and much more.
+* Kai Diefenbach (diefenbach, http://www.iqpp.de)
+
+  Founder.
 
 * Michael Thornhill (mick, http://www.maithu.com/)
 
@@ -12,6 +15,17 @@ Credits
   Integration of PayPal (django-paypal), country specific addresses
   (django-postal), continous integration with Jenkins. Fixing bugs and
   everything else.
+
+* Maciej Wiśniowski (pigletto)
+
+  Core Developer.
+
+  Bug fixes. Improvements. Autocompletion for manufacturers. Google like style
+  for page pagination. Polish translations.
+
+* Dirk Kommol (Demmelhuber Holz & Raum - http://www.demmelhuber.net)
+
+  Power user, smart adviser, sponsor, products for demo shop and much more.
 
 * Simone Orsi (simahawk)
 
@@ -23,13 +37,6 @@ Credits
 * Michaela Schmidt née Hering (hmichi)
 
   Contributor.
-
-* Maciej Wiśniowski (pigletto)
-
-  Contributor.
-
-  Bug fixes. Improvements. Autocompletion for manufacturers. Google like style
-  for page pagination. Polish translations.
 
 * Frank Feng
 
@@ -43,9 +50,14 @@ Credits
 
   Bug fixes. Czech translations.
 
-* Kai Diefenbach (diefenbach, http://www.iqpp.de)
+* Jakub Wiśniowski (restless_being)
 
-  Founder.
+  Contributor.
+
+  Added south migrations to LFS.
+
+Ressources
+----------
 
 * Icons are from Mark James' Silk icon set 1.3 (not used any more)
 

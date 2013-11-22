@@ -25,28 +25,30 @@
 				<div>
 					{{ customer.selected_invoice_address.firstname }}
 					{{ customer.selected_invoice_address.lastname }}
-					(<a href="mailto:{{ customer.selected_invoice_address.email }}">{{ customer.selected_invoice_address.email }}</a>)
+                    {% if customer.selected_invoice_address.email %}
+					    (<a href="mailto:{{ customer.selected_invoice_address.email }}">{{ customer.selected_invoice_address.email }}</a>)
+                    {% endif %}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.company_name }}
+					{{ customer.selected_invoice_address.company_name|default_if_none:'' }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.street }}
+					{{ customer.selected_invoice_address.street|default_if_none:'' }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.city }}
+					{{ customer.selected_invoice_address.city|default_if_none:'' }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.state }}
+					{{ customer.selected_invoice_address.state|default_if_none:'' }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.zip_code }}
+					{{ customer.selected_invoice_address.zip_code|default_if_none:'' }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.country }}
+					{{ customer.selected_invoice_address.country|default_if_none:'-' }}
 				</div>
 				<div>
-					{{ customer.selected_invoice_address.phone }}
+					{{ customer.selected_invoice_address.phone|default_if_none:'-' }}
 				</div>
 			{% else %}
 				---
@@ -120,9 +122,31 @@
 			    </td>
                 <td>
                 	{{ item.product.get_name }}
+                    {% for property in item.product.get_variant_properties %}
+                        <div>
+                            {{ property.title }}: {{ property.value }} {{ property.unit|safe }}
+                        </div>
+                    {% endfor %}
+
+                    {% for property in item.product.get_displayed_properties %}
+                        <div>
+                            {{ property.title }}: {{ property.value }} {{ property.unit|safe }}
+                        </div>
+                    {% endfor %}
+
+                    {% if item.product.is_configurable_product %}
+                        {% for property in item.get_properties %}
+                            <div>
+                                {{ property.title }}: {{ property.value }} {{ property.unit|safe }}
+                                {% if property.obj.is_select_field and property.display_price %}
+                                    ({{ property.price|currency:request }})
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                 </td>
                 <td class="number">
-                    {{ item|get_price:request|currency:request }}
+                    {{ item.product|get_price_gross:request|currency:request }}
                 </td>
                 <td class="number">
                     {{ item.amount }}

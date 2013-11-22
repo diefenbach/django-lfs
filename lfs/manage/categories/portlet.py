@@ -9,12 +9,12 @@ from django.core.cache import cache
 from lfs.catalog.models import Category
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_categories_portlet(request, category_id,
     template_name="manage/category/manage_categories_portlet.html"):
     """Returns a management portlet of all categories.
     """
-    cache_key = "%s-manage-category-portlet" % settings.CACHE_MIDDLEWARE_KEY_PREFIX
+    cache_key = "%s-%s-manage-category-portlet" % (category_id, settings.CACHE_MIDDLEWARE_KEY_PREFIX)
     result = cache.get(cache_key)
     if result is not None:
         return result
@@ -40,7 +40,7 @@ def manage_categories_portlet(request, category_id,
     return result
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def categories_portlet_children(request, category):
     """Returns the children of the given category as HTML.
     """

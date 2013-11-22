@@ -1,3 +1,6 @@
+# python imports
+from copy import deepcopy
+
 # django imports
 from django.conf import settings
 
@@ -5,9 +8,7 @@ from django.conf import settings
 import lfs.discounts.utils
 import lfs.voucher.utils
 from lfs.cart import utils as cart_utils
-from lfs.core.models import Country
 from lfs.core.signals import order_created
-from lfs.core.utils import import_module
 from lfs.core.utils import import_symbol
 from lfs.customer import utils as customer_utils
 from lfs.order.models import Order
@@ -16,6 +17,7 @@ from lfs.order.models import OrderItemPropertyValue
 from lfs.payment import utils as payment_utils
 from lfs.shipping import utils as shipping_utils
 from lfs.voucher.models import Voucher
+
 
 def add_order(request):
     """Adds an order based on current cart for the current customer.
@@ -26,11 +28,20 @@ def add_order(request):
     customer = customer_utils.get_customer(request)
     order = None
 
+    not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
+
     invoice_address = customer.selected_invoice_address
-    if request.POST.get("no_shipping"):
-        shipping_address = customer.selected_invoice_address
+    shipping_address = customer.selected_shipping_address
+    if not_required_address == 'shipping':
+        if request.POST.get("no_shipping"):
+            shipping_address = customer.selected_invoice_address
+        else:
+            shipping_address = customer.selected_shipping_address
     else:
-        shipping_address = customer.selected_shipping_address
+        if request.POST.get("no_invoice"):
+            invoice_address = customer.selected_shipping_address
+        else:
+            invoice_address = customer.selected_invoice_address
 
     cart = cart_utils.get_cart(request)
     if cart is None:
@@ -57,16 +68,17 @@ def add_order(request):
         customer_email = customer.selected_invoice_address.email
 
     # Calculate the totals
-    price = cart.get_price_gross(request) + shipping_costs["price"] + payment_costs["price"]
+    price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
     tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
     # Discounts
     discounts = lfs.discounts.utils.get_valid_discounts(request)
     for discount in discounts:
-        price = price - discount["price"]
+        price = price - discount["price_gross"]
         tax = tax - discount["tax"]
 
     # Add voucher if one exists
+    is_voucher_effective = False
     try:
         voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
         voucher = Voucher.objects.get(number=voucher_number)
@@ -84,6 +96,22 @@ def add_order(request):
         else:
             voucher = None
 
+    if price < 0:
+        price = 0
+    if tax < 0:
+        tax = 0
+
+    # Copy addresses
+    invoice_address = deepcopy(invoice_address)
+    invoice_address.id = None
+    invoice_address.pk = None
+    invoice_address.save()
+
+    shipping_address = deepcopy(shipping_address)
+    shipping_address.id = None
+    shipping_address.pk = None
+    shipping_address.save()
+
     order = Order.objects.create(
         user=user,
         session=request.session.session_key,
@@ -95,43 +123,30 @@ def add_order(request):
         customer_email=customer_email,
 
         shipping_method=shipping_method,
-        shipping_price=shipping_costs["price"],
+        shipping_price=shipping_costs["price_gross"],
         shipping_tax=shipping_costs["tax"],
         payment_method=payment_method,
         payment_price=payment_costs["price"],
         payment_tax=payment_costs["tax"],
 
-        invoice_firstname=customer.selected_invoice_address.firstname,
-        invoice_lastname=customer.selected_invoice_address.lastname,
-        invoice_company_name=customer.selected_invoice_address.company_name,
-        invoice_line1=invoice_address.line1,
-        invoice_line2=invoice_address.line2,
-        invoice_city=invoice_address.city,
-        invoice_state=invoice_address.state,
-        invoice_code=invoice_address.zip_code,
-        invoice_country=Country.objects.get(code=invoice_address.country.code),
-        invoice_phone=customer.selected_invoice_address.phone,
-
-        shipping_firstname=shipping_address.firstname,
-        shipping_lastname=shipping_address.lastname,
-        shipping_company_name=shipping_address.company_name,
-        shipping_line1=shipping_address.line1,
-        shipping_line2=shipping_address.line2,
-        shipping_city=shipping_address.city,
-        shipping_state=shipping_address.state,
-        shipping_code=shipping_address.zip_code,
-        shipping_country=Country.objects.get(code=shipping_address.country.code),
-        shipping_phone=shipping_address.phone,
+        invoice_address=invoice_address,
+        shipping_address=shipping_address,
 
         message=request.POST.get("message", ""),
     )
+
+    invoice_address.order = order
+    invoice_address.save()
+
+    shipping_address.order = order
+    shipping_address.save()
 
     requested_delivery_date = request.POST.get("requested_delivery_date", None)
     if requested_delivery_date is not None:
         order.requested_delivery_date = requested_delivery_date
         order.save()
 
-    if voucher:
+    if is_voucher_effective:
         voucher.mark_as_used()
         order.voucher_number = voucher_number
         order.voucher_price = voucher_price
@@ -150,6 +165,8 @@ def add_order(request):
 
     # Copy cart items
     for cart_item in cart.get_items():
+        if cart_item.amount == 0:
+            continue
         order_item = OrderItem.objects.create(
             order=order,
 
@@ -177,20 +194,23 @@ def add_order(request):
     for discount in discounts:
         OrderItem.objects.create(
             order=order,
-            price_net=-(discount["price"] - discount["tax"]),
-            price_gross=-discount["price"],
+            price_net=-discount["price_net"],
+            price_gross=-discount["price_gross"],
             tax=-discount["tax"],
-
             product_sku=discount["sku"],
             product_name=discount["name"],
             product_amount=1,
-            product_price_net=-(discount["price"] - discount["tax"]),
-            product_price_gross=-discount["price"],
+            product_price_net=-discount["price_net"],
+            product_price_gross=-discount["price_gross"],
             product_tax=-discount["tax"],
         )
 
+    # Re-initialize selected addresses to be equal to default addresses for next order
+    customer.sync_default_to_selected_addresses()
+    customer.save()
+
     # Send signal before cart is deleted.
-    order_created.send({"order":order, "cart": cart, "request": request})
+    order_created.send({"order": order, "cart": cart, "request": request})
 
     cart.delete()
 

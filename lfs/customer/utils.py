@@ -1,8 +1,10 @@
 # django imports
-from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 # lfs imports
-from lfs.customer.models import Customer, Address
+from lfs.addresses.settings import ADDRESS_MODEL
+from lfs.customer.models import Customer
 import lfs.core.utils
 
 
@@ -30,9 +32,24 @@ def create_customer(request):
     if request.user.is_authenticated():
         customer.user = request.user
     shop = lfs.core.utils.get_default_shop(request)
-    customer.selected_invoice_address = Address.objects.create(customer=customer, country=shop.default_country)
-    customer.selected_shipping_address = Address.objects.create(customer=customer, country=shop.default_country)
+
+    address_model = lfs.core.utils.import_symbol(ADDRESS_MODEL)
+    customer.default_invoice_address = address_model.objects.create(customer=customer, country=shop.default_country)
+    customer.default_shipping_address = address_model.objects.create(customer=customer, country=shop.default_country)
+    customer.selected_invoice_address = address_model.objects.create(customer=customer, country=shop.default_country)
+    customer.selected_shipping_address = address_model.objects.create(customer=customer, country=shop.default_country)
     customer.save()
+
+    customer.default_invoice_address.customer = customer
+    customer.default_invoice_address.save()
+    customer.default_shipping_address.customer = customer
+    customer.default_shipping_address.save()
+
+    customer.selected_invoice_address.customer = customer
+    customer.selected_invoice_address.save()
+    customer.selected_shipping_address.customer = customer
+    customer.selected_shipping_address.save()
+
     return customer
 
 
@@ -60,6 +77,11 @@ def _get_customer(request):
             return Customer.objects.get(session=session_key)
         except ObjectDoesNotExist:
             return None
+        except MultipleObjectsReturned:
+            customers = Customer.objects.filter(session=session_key, user__isnull=True)
+            customer = customers[0]
+            customers.exclude(pk=customer.pk).delete()
+            return customer
 
 
 def update_customer_after_login(request):
@@ -84,3 +106,12 @@ def update_customer_after_login(request):
             session_customer.delete()
     except ObjectDoesNotExist:
         pass
+
+
+def create_unique_username(email):
+    new_email = email[:30]
+    cnt = 0
+    while User.objects.filter(username=new_email).exists():
+        cnt += 1
+        new_email = '%s%.2d' % (new_email[:28], cnt)
+    return new_email

@@ -13,6 +13,7 @@ from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 
 # lfs imports
+from django.utils.encoding import force_unicode
 import lfs.catalog.utils
 from lfs.core.signals import property_type_changed
 from lfs.catalog.settings import CHOICES_YES
@@ -51,6 +52,7 @@ from lfs.catalog.models import StaticBlock
 from lfs.catalog.models import ProductAttachment
 from lfs.core.signals import product_changed
 from lfs.core.signals import product_removed_property_group
+from lfs.manufacturer.models import Manufacturer
 from lfs.tax.models import Tax
 from lfs.tests.utils import RequestFactory
 
@@ -58,6 +60,8 @@ from lfs.tests.utils import RequestFactory
 class PriceFilterTestCase(TestCase):
     """
     """
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
     def setUp(self):
         """
         """
@@ -72,7 +76,7 @@ class PriceFilterTestCase(TestCase):
     def test_get_price_filter_1(self):
         """
         """
-        result = lfs.catalog.utils.get_price_filters(self.c1, [], None)
+        result = lfs.catalog.utils.get_price_filters(self.c1, [], None, [])
         self.assertEqual(result["show_reset"], False)
         self.assertEqual(result["show_quantity"], True)
         self.assertEqual(result["items"][0]["min"], 1)
@@ -92,7 +96,7 @@ class PriceFilterTestCase(TestCase):
         self.p3.price = 300
         self.p3.save()
 
-        result = lfs.catalog.utils.get_price_filters(self.c1, [], None)
+        result = lfs.catalog.utils.get_price_filters(self.c1, [], None, [])
         self.assertEqual(result["show_reset"], False)
         self.assertEqual(result["show_quantity"], True)
         self.assertEqual(result["items"][0]["quantity"], 1)
@@ -104,9 +108,39 @@ class PriceFilterTestCase(TestCase):
         self.assertEqual(result["items"][2]["quantity"], 1)
 
 
+class ManufacturerFilterTestCase(TestCase):
+    """
+    """
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
+    def setUp(self):
+        """
+        """
+        self.m1 = Manufacturer.objects.create(name='M1', slug='m1')
+        self.m2 = Manufacturer.objects.create(name='M2', slug='m2')
+
+        self.p1 = Product.objects.create(slug="product-1", price=5, active=True, manufacturer=self.m1)
+        self.p2 = Product.objects.create(slug="product-2", price=3, active=True, manufacturer=self.m2)
+        self.p3 = Product.objects.create(slug="product-3", price=1, active=True, manufacturer=self.m2)
+
+        self.c1 = Category.objects.create(name="Category 1", slug="category-1")
+        self.c1.products = [self.p1, self.p2, self.p3]
+        self.c1.save()
+
+    def test_get_manufacturer_filter_1(self):
+        """
+        """
+        result = lfs.catalog.utils.get_manufacturer_filters(self.c1, [], None, [])
+        self.assertEqual(result["show_reset"], False)
+        self.assertFalse(result["items"][0]['selected'])
+        self.assertEqual(len(result["items"]), 2)
+
+
 class PropertiesTestCase(TestCase):
     """
     """
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
     def setUp(self):
         """
         """
@@ -581,6 +615,8 @@ class PropertiesTestCase(TestCase):
 class PropertiesTestCaseWithoutProperties(TestCase):
     """Test the filter methods without added properties.
     """
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+
     def setUp(self):
         """
         """
@@ -596,7 +632,7 @@ class PropertiesTestCaseWithoutProperties(TestCase):
         """
         """
         # This tests the according SQL within get_product_filters
-        f = lfs.catalog.utils.get_product_filters(self.c1, [], None, None)
+        f = lfs.catalog.utils.get_product_filters(self.c1, [], None, None, None)
         self.assertEqual(f, [])
 
 
@@ -1026,8 +1062,8 @@ class ViewsTestCase(TestCase):
     def test_file(self):
         request = RequestFactory().get("/")
 
-        from lfs.catalog.views import file
-        result = file(request, id=1)
+        from lfs.catalog.views import file_download
+        result = file_download(request, file_id=1)
 
         self.assertEqual(result.status_code, 200)
         self.assertEqual(len(result.content), 1980821)
@@ -2728,6 +2764,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(len(Product.objects.all()), 5)
 
         product = Product.objects.get(slug="product-1")
+        all_props = product.get_property_select_fields()
 
         variant_data = {
             'slug': 'variant-slug',
@@ -2769,12 +2806,14 @@ class ProductTestCase(TestCase):
         self.attachment_P1_1_data = dict(
             title='Attachment P1-1',
             product=self.p1,
+            position=10
         )
         self.attachment_P1_1 = ProductAttachment.objects.create(**self.attachment_P1_1_data)
 
         self.attachment_P1_2_data = dict(
             title='Attachment P1-2',
             product=self.p1,
+            position=20
         )
         self.attachment_P1_2 = ProductAttachment.objects.create(**self.attachment_P1_2_data)
 
@@ -2786,25 +2825,25 @@ class ProductTestCase(TestCase):
 
     def test_get_attachments(self):
         # retrieve attachments
-        match_titles = [self.attachment_P1_1_data['title'],
-                        self.attachment_P1_2_data['title']]
+        match_titles = [force_unicode(self.attachment_P1_1_data['title']),
+                        force_unicode(self.attachment_P1_2_data['title'])]
         attachments = self.p1.get_attachments()
-        attachments_titles = [x.title for x in attachments]
-        self.assertEqual(match_titles, attachments_titles)
+        attachments_titles = [force_unicode(x.title) for x in attachments]
+        self.assertEqual(set(match_titles), set(attachments_titles))
 
         # check data
         first = attachments[0]
         for k, v in self.attachment_P1_1_data.items():
-            self.assertEqual(getattr(first, k), v)
+            self.assertEqual(force_unicode(getattr(first, k)), force_unicode(v))
 
         second = attachments[1]
         for k, v in self.attachment_P1_2_data.items():
-            self.assertEqual(getattr(second, k), v)
+            self.assertEqual(force_unicode(getattr(second, k)), force_unicode(v))
 
         # retrieve variant attachment
         attachments = self.v1.get_attachments()
-        attachments_titles = [x.title for x in attachments]
-        match_titles = [self.attachment_V1_data['title']]
+        attachments_titles = [force_unicode(x.title) for x in attachments]
+        match_titles = [force_unicode(self.attachment_V1_data['title'])]
         self.assertEqual(attachments_titles, match_titles)
 
         # delete variant attachment: we should get parent attachments

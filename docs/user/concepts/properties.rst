@@ -27,7 +27,8 @@ information for a product which is about to be ordered.
 Types
 =====
 
-There are three types of properties.
+There are three types of properties, which are described in detail in the
+following sections.
 
 Text Field
 -----------

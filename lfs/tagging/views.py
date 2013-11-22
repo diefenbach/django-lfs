@@ -4,6 +4,7 @@
 import re
 
 # django imports
+from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
 
 # tagging imports
@@ -16,13 +17,13 @@ from lfs.tagging.settings import RE_STOP_WORDS
 from lfs.tagging.settings import RE_SEPARATORS
 
 
+@permission_required("core.manage_shop")
 def tag_products(request, source="description"):
     """Auto tags product on base of product description.
     """
     if source == "description":
         parser = tagging_utils.SimpleHTMLParser()
         for product in Product.objects.all():
-            print product.name
             parser.feed(product.description)
             Tag.objects.update_tags(product, "")
 

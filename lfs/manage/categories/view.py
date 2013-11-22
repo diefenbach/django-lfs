@@ -29,7 +29,7 @@ class ViewForm(ModelForm):
             "product_cols", "product_rows", "category_cols", )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def category_view(request, category_id, template_name="manage/category/view.html"):
     """Displays the view data for the category with passed category id.
 
@@ -62,7 +62,7 @@ def category_view(request, category_id, template_name="manage/category/view.html
         return view_html
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_categories(request, template_name="manage/category/no_categories.html"):
     """Displays that there are no categories.
     """

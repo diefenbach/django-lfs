@@ -158,6 +158,10 @@ class VoucherTestCase(TestCase):
         self.p2.tax = tax
         self.p2.save()
 
+        # clear request cache
+        delattr(self.request, 'cached_customer_tax_rate_%s' % self.p1.pk)
+        delattr(self.request, 'cached_customer_tax_rate_%s' % self.p2.pk)
+
         price_gross = self.v1.get_price_gross(self.request, self.cart)
         self.assertEqual(price_gross, 11.0)
 

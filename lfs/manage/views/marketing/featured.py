@@ -19,7 +19,7 @@ from lfs.core.utils import LazyEncoder
 from lfs.marketing.models import FeaturedProduct
 
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("manage_shop")
 def manage_featured(
     request, template_name="manage/marketing/featured.html"):
     """
@@ -40,7 +40,7 @@ def manage_featured(
     }))
 
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("manage_shop")
 def manage_featured_inline(
     request, as_string=False, template_name="manage/marketing/featured_inline.html"):
     """
@@ -125,7 +125,7 @@ def manage_featured_inline(
 
 
 # Actions
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("manage_shop")
 def add_featured(request):
     """Adds featured by given ids (within request body).
     """
@@ -148,14 +148,14 @@ def add_featured(request):
     return HttpResponse(result)
 
 
-@permission_required("manage_shop", login_url="/login/")
+@permission_required("manage_shop")
 def update_featured(request):
     """Saves or removes passed featured product passed id (within request body).
     """
     if request.POST.get("action") == "remove":
         for temp_id in request.POST.keys():
 
-            if temp_id.startswith("product") == False:
+            if not temp_id.startswith("product"):
                 continue
 
             temp_id = temp_id.split("-")[1]
@@ -164,9 +164,9 @@ def update_featured(request):
                 featured.delete()
             except (FeaturedProduct.DoesNotExist, ValueError):
                 pass
-
-            _update_positions()
-            featured_changed.send(featured)
+            else:
+                _update_positions()
+                featured_changed.send(featured)
 
         html = [["#featured-inline", manage_featured_inline(request, as_string=True)]]
         result = simplejson.dumps({

@@ -5,6 +5,8 @@ import math
 from django.conf import settings
 from django.core.cache import cache
 from django.db import connection
+from django.core.exceptions import FieldError
+from django.db.models import Q, Count, Min, Max
 
 # import lfs
 import lfs.catalog.models
@@ -15,6 +17,8 @@ from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 
 # Load logger
 import logging
+from lfs.manufacturer.models import Manufacturer
+
 logger = logging.getLogger("default")
 
 
@@ -37,46 +41,47 @@ def get_current_top_category(request, obj):
     return category
 
 
-def get_price_filters(category, product_filter, price_filter):
+def get_price_filters(category, product_filter, price_filter, manufacturer_filter):
     """Creates price filter links based on the min and max price of the
     categorie's products.
     """
     # Base are the filtered products
-    products = get_filtered_products_for_category(category, product_filter, price_filter, None)
+    products = get_filtered_products_for_category(category, product_filter, price_filter, None, manufacturer_filter)
     if not products:
         return []
 
     # And their variants
-    all_products = []
-    for product in products:
-        all_products.extend(product.variants.filter(active=True))
-        if product.is_product_with_variants():
-            all_products.extend(product.variants.filter(active=True))
-        else:
-            all_products.append(product)
+    # product_ids = []
+    # for product in products:
+    #     if product.is_product_with_variants():
+    #         product_ids.extend(product.variants.filter(active=True).values_list('id', flat=True))
+    #     else:
+    #         product_ids.append(product.pk)
+    #product_ids = lfs.catalog.models.Product.objects.filter(Q(pk__in=products) | Q(parent__in=products)).values_list('id', flat=True)
 
-    product_ids = [p.id for p in all_products]
+    #product_ids_str = ", ".join(map(str, product_ids))
 
     # If a price filter is set we return just this.
     if price_filter:
-        min = price_filter["min"]
-        max = price_filter["max"]
-        products = lfs.catalog.models.Product.objects.filter(
-            effective_price__range=(min, max), pk__in=product_ids)
+        pmin = price_filter["min"]
+        pmax = price_filter["max"]
+        # products = lfs.catalog.models.Product.objects.filter(effective_price__range=(pmin, pmax), pk__in=product_ids)
 
         return {
             "show_reset": True,
             "show_quantity": False,
-            "items": [{"min": float(min), "max": float(max)}],
-            }
+            "items": [{"min": float(pmin), "max": float(pmax)}],
+        }
 
-    product_ids_str = ", ".join([str(p.id) for p in all_products])
-    cursor = connection.cursor()
-    cursor.execute("""SELECT min(effective_price), max(effective_price)
-                      FROM catalog_product
-                      WHERE id IN (%s)""" % product_ids_str)
+    #cursor = connection.cursor()
+    #cursor.execute("""SELECT min(effective_price), max(effective_price)
+    #                  FROM catalog_product
+    #                  WHERE id IN (%s)""" % product_ids_str)
 
-    pmin, pmax = cursor.fetchall()[0]
+    all_products = lfs.catalog.models.Product.objects.filter(Q(pk__in=products) | (Q(parent__in=products) & Q(active=True)))
+    res = all_products.aggregate(min_price=Min('effective_price'), max_price=Max('effective_price'))
+
+    pmin, pmax = res['min_price'] or 0, res['max_price'] or 0
     if pmax == pmin:
         step = pmax
     else:
@@ -106,17 +111,15 @@ def get_price_filters(category, product_filter, price_filter):
     for n, i in enumerate(range(0, int(pmax), step)):
         if i > pmax:
             break
-        min = i + 1
-        max = i + step
-        products = lfs.catalog.models.Product.objects.filter(effective_price__range=(min, max), pk__in=product_ids)
+        pmin = i + 1
+        pmax = i + step
         result.append({
-            "min": min,
-            "max": max,
-            "quantity": len(products),
+            "min": pmin,
+            "max": pmax,
+            "quantity": all_products.filter(effective_price__range=(pmin, pmax)).count(),
         })
 
     # return result
-
     new_result = []
     for n, f in enumerate(result):
         if f["quantity"] == 0:
@@ -134,7 +137,38 @@ def get_price_filters(category, product_filter, price_filter):
     }
 
 
-def get_product_filters(category, product_filter, price_filter, sorting):
+def get_manufacturer_filters(category, product_filter, price_filter, manufacturer_filter):
+    """Creates manufacturer filter links based on the manufacturers bound to the products in category
+    """
+    # Base are the filtered products
+    products = get_filtered_products_for_category(category, product_filter, price_filter, None, None)
+    if not products:
+        return []
+
+    all_products = lfs.catalog.models.Product.objects.filter(Q(pk__in=products) | (Q(parent__in=products) & Q(active=True)))
+
+    # And their parents
+    # product_ids = []
+    # for product in products:
+    #     if product.parent:
+    #         product_ids.append(product.parent_id)
+    #     else:
+    #         product_ids.append(product.pk)
+
+    out = {"show_reset": False}
+    if manufacturer_filter:
+        out = {
+            "show_reset": True
+        }
+    else:
+        manufacturer_filter = []
+
+    qs = Manufacturer.objects.filter(products__in=all_products).annotate(products_count=Count('products'))
+    out['items'] = [{'obj': obj, 'selected': obj.pk in manufacturer_filter} for obj in qs]
+    return out
+
+
+def get_product_filters(category, product_filter, price_filter, manufacturer_filter, sorting):
     """Returns the next product filters based on products which are in the given
     category and within the result set of the current filters.
     """
@@ -151,8 +185,8 @@ def get_product_filters(category, product_filter, price_filter, sorting):
     else:
         ck_product_filter = ""
 
-    cache_key = "%s-productfilters-%s-%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
-        category.slug, ck_product_filter, ck_price_filter, sorting)
+    cache_key = "%s-productfilters-%s-%s-%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
+        category.slug, ck_product_filter, ck_price_filter, sorting, manufacturer_filter)
 
     result = cache.get(cache_key)
     if result is not None:
@@ -163,27 +197,26 @@ def get_product_filters(category, product_filter, price_filter, sorting):
 
     # The base for the calulation of the next filters are the filtered products
     products = get_filtered_products_for_category(
-        category, product_filter, price_filter, sorting)
+        category, product_filter, price_filter, sorting, manufacturer_filter)
     if not products:
         return []
 
     # ... and their variants
-    all_products = []
-    for product in products:
-        all_products.append(product)
-        all_products.extend(product.variants.filter(active=True))
+    # product_ids = []
+    # for product in products:
+    #     product_ids.append(product.pk)
+    #     product_ids.extend(product.variants.filter(active=True).values_list('id', flat=True))
+    all_products = lfs.catalog.models.Product.objects.filter(Q(pk__in=products) | (Q(parent__in=products) & Q(active=True)))
+    product_ids = all_products.values_list('id', flat=True)
 
     # Get the ids for use within the customer SQL
-    product_ids = ", ".join([str(p.id) for p in all_products])
+    product_ids_str = ", ".join(map(str, product_ids))
 
     # Create dict out of already set filters
     set_filters = dict(product_filter)
 
-    cursor = connection.cursor()
-    cursor.execute("""SELECT DISTINCT property_id
-                      FROM catalog_productpropertyvalue""")
-
-    property_ids = ", ".join([str(p[0]) for p in cursor.fetchall()])
+    property_ids = lfs.catalog.models.ProductPropertyValue.objects.distinct().values_list('property_id', flat=True)
+    property_ids_str = ", ".join(map(str, property_ids))
 
     # if there is either no products or no property ids there can also be no
     # product filters.
@@ -199,16 +232,13 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                       WHERE type=%s
                       AND product_id IN (%s)
                       AND property_id IN (%s)
-                      GROUP BY property_id""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
+                      GROUP BY property_id""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids_str, property_ids_str))
 
     for row in cursor.fetchall():
 
         property = properties_mapping[row[0]]
 
-        if property.is_number_field == False:
-            continue
-
-        if property.filterable == False:
+        if not property.is_number_field or not property.filterable:
             continue
 
         # If the filter for a property is already set, we display only the
@@ -229,7 +259,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
             continue
 
         # Otherwise we display all steps.
-        items = _calculate_steps(product_ids, property, row[1], row[2])
+        items = _calculate_steps(product_ids_str, property, row[1], row[2])
 
         result.append({
             "id": row[0],
@@ -250,7 +280,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                       FROM catalog_productpropertyvalue
                       WHERE type=%s
                       AND product_id IN (%s)
-                      AND property_id IN (%s)""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
+                      AND property_id IN (%s)""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids_str, property_ids_str))
 
     already_count = {}
     amount = {}
@@ -281,7 +311,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                       WHERE product_id IN (%s)
                       AND property_id IN (%s)
                       AND type=%s
-                      GROUP BY property_id, value""" % (product_ids, property_ids, PROPERTY_VALUE_TYPE_FILTER))
+                      GROUP BY property_id, value""" % (product_ids_str, property_ids_str, PROPERTY_VALUE_TYPE_FILTER))
 
     # Group properties and values (for displaying)
     set_filters = dict(product_filter)
@@ -290,10 +320,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
 
         property = properties_mapping[row[0]]
 
-        if property.is_number_field:
-            continue
-
-        if property.filterable == False:
+        if property.is_number_field or not property.filterable or not row[1]:
             continue
 
         if row[0] in properties == False:
@@ -308,16 +335,10 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                 position = options_mapping[row[1]].position
             except KeyError:
                 name = row[1]
-        elif property.is_number_field:
-            value = float(row[1])
         else:
             name = row[1]
 
-        # Transform to float for later sorting, see below
-        if property.is_number_field:
-            value = float(row[1])
-        else:
-            value = row[1]
+        value = row[1]
 
         # if the property within the set filters we just show the selected value
         if str(row[0]) in set_filters.keys():
@@ -372,77 +393,80 @@ def get_product_filters(category, product_filter, price_filter, sorting):
 
 
 # TODO: Implement this as a method of Category
-def get_filtered_products_for_category(category, filters, price_filter, sorting):
+def get_filtered_products_for_category(category, filters, price_filter, sorting, manufacturers_filter=None):
     """Returns products for given categories and current filters sorted by
     current sorting.
     """
+    from lfs.catalog.models import Product, ProductPropertyValue
     if filters:
         if category.show_all_products:
             products = category.get_all_products()
         else:
             products = category.get_products()
 
-        # Generate ids for collected products
-        product_ids = [str(p.id) for p in products]
-        product_ids = ", ".join(product_ids)
+        # All variants of category products
+        all_variants = Product.objects.filter(parent__in=products)
 
         # Generate filter
-        temp = []
+        filters_query = None
         for f in filters:
             if not isinstance(f[1], (list, tuple)):
-                temp.append("property_id='%s' AND value='%s'" % (f[0], f[1]))
+                q = Q(property_id=f[0], value=f[1])
             else:
-                temp.append("property_id='%s' AND value_as_float BETWEEN '%s' AND '%s'" % (f[0], f[1][0], f[1][1]))
+                q = Q(property_id=f[0], value_as_float__range=(f[1][0], f[1][1]))
+            if filters_query is None:
+                filters_query = q
+            else:
+                filters_query |= q
 
-        fstr = " OR ".join(temp)
-
-        # TODO: Will this work with every DB?
-
-        # Get all product ids with matching filters. The idea behind this SQL
-        # query is: If for every filter (property=value) for a product id exists
+        # The idea behind SQL query generated below is: If for every filter (property=value) for a product id exists
         # a "product property value" the product matches.
-        cursor = connection.cursor()
-        cursor.execute("""
-            SELECT product_id, count(*)
-            FROM catalog_productpropertyvalue
-            WHERE product_id IN (%s) and (%s) and type=%s
-            GROUP BY product_id
-            HAVING count(*)=%s""" % (product_ids, fstr, PROPERTY_VALUE_TYPE_FILTER, len(filters)))
+        #
+        # Example ValuesListQuerySet built by statements below is:
+        #
+        # ProductPropertyValue.objects.filter(Q(property_id=1, value='1') | Q(property_id=2, value='1'),
+        #                                     product__in=products,
+        #                                     type=PROPERTY_VALUE_TYPE_FILTER) \
+        #                             .values('product_id') \
+        #                             .annotate(cnt=Count('id')).filter(cnt=2).values_list('product_id', flat=True)
+        #
+        # it evaluates to:
+        #
+        # SELECT "catalog_productpropertyvalue"."product_id"
+        #   FROM "catalog_productpropertyvalue"
+        #  WHERE ((
+        #          ("catalog_productpropertyvalue"."value" = 1  AND "catalog_productpropertyvalue"."property_id" = 1 )
+        #          OR
+        #          ("catalog_productpropertyvalue"."value" = 1  AND "catalog_productpropertyvalue"."property_id" = 2 )
+        #        )
+        #    AND "catalog_productpropertyvalue"."type" = 0
+        #    AND "catalog_productpropertyvalue"."product_id" IN (SELECT U0."id"
+        #                                                          FROM "catalog_product" U0
+        #                                                         WHERE U0."name" LIKE %da% ESCAPE '\' ))
+        #  GROUP BY "catalog_productpropertyvalue"."product_id"
+        # HAVING COUNT("catalog_productpropertyvalue"."id") = 2
 
-        matched_product_ids = [row[0] for row in cursor.fetchall()]
+        # PRODUCTS - get all products with matching filters.
+        matching_product_ids = ProductPropertyValue.objects.filter(product__in=products,
+                                                                   type=PROPERTY_VALUE_TYPE_FILTER)
+        if filters_query is not None:
+            matching_product_ids = matching_product_ids.filter(filters_query)
+        matching_product_ids = matching_product_ids.values('product_id').annotate(cnt=Count('id')) \
+                                                   .filter(cnt=len(filters)).values_list('product_id', flat=True)
 
-        # All variants of category products
-        all_variants = lfs.catalog.models.Product.objects.filter(parent__in=products)
+        # VARIANTS - get matching variants and then their parents as we're interested in products with variants,
+        # not variants itself
+        matching_variant_ids = ProductPropertyValue.objects.filter(product__in=all_variants,
+                                                                   type=PROPERTY_VALUE_TYPE_FILTER)
+        if filters_query is not None:
+            matching_variant_ids = matching_variant_ids.filter(filters_query)
+        matching_variant_ids = matching_variant_ids.values('product_id').annotate(cnt=Count('id')) \
+                                                   .filter(cnt=len(filters)).values_list('product_id', flat=True)
+        variant_products = Product.objects.filter(pk__in=matching_variant_ids)
 
-        if all_variants:
-            all_variant_ids = [str(p.id) for p in all_variants]
-            all_variant_ids = ", ".join(all_variant_ids)
-
-            # Variants with matching filters
-            cursor.execute("""
-                SELECT product_id, count(*)
-                FROM catalog_productpropertyvalue
-                WHERE product_id IN (%s) and %s and type=%s
-                GROUP BY product_id
-                HAVING count(*)=%s""" % (all_variant_ids, fstr, PROPERTY_VALUE_TYPE_FILTER, len(filters)))
-
-            # Get the parent ids of the variants as the "product with variants"
-            # should be displayed and not the variants.
-            variant_ids = [str(row[0]) for row in cursor.fetchall()]
-            if variant_ids:
-                variant_ids = ", ".join(variant_ids)
-
-                cursor.execute("""
-                    SELECT parent_id
-                    FROM catalog_product
-                    WHERE id IN (%s)""" % variant_ids)
-
-                parent_ids = [str(row[0]) for row in cursor.fetchall()]
-                matched_product_ids.extend(parent_ids)
-
-        # As we factored out the ids of all matching products now, we get the
-        # product instances in the correct order
-        products = lfs.catalog.models.Product.objects.filter(pk__in=matched_product_ids).distinct()
+        # Merge results
+        products = Product.objects.filter(Q(pk__in=matching_product_ids) |
+                                          Q(pk__in=variant_products.values_list('parent_id', flat=True))).distinct()
     else:
         categories = [category]
         if category.show_all_products:
@@ -452,41 +476,42 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
             categories__in=categories,
             sub_type__in=[STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, CONFIGURABLE_PRODUCT]).distinct()
 
+    # TODO: It might be more effective to move price filters directly into if/else clause above
     if price_filter:
-        matched_product_ids = []
-
         # Get all variants of the products
         variants = lfs.catalog.models.Product.objects.filter(parent__in=products)
-
         # Filter the variants by price
-        variants = variants.filter(effective_price__range=[price_filter["min"], price_filter["max"]])
-
-        # Get the parent ids of the variants as the "product with variants"
-        # should be displayed and not the variants.
-        if variants:
-            variant_ids = [str(r.id) for r in variants]
-            variant_ids = ", ".join(variant_ids)
-
-            cursor = connection.cursor()
-            cursor.execute("""
-                SELECT parent_id
-                FROM catalog_product
-                WHERE id IN (%s)""" % variant_ids)
-
-            parent_ids = [str(row[0]) for row in cursor.fetchall()]
-            matched_product_ids.extend(parent_ids)
-
+        variants = variants.filter(effective_price__range=[price_filter["min"],
+                                                           price_filter["max"]])
         # Filter the products
-        products = products.filter(effective_price__range=[price_filter["min"], price_filter["max"]])
+        filtered_products = products.filter(effective_price__range=[price_filter["min"],
+                                                                    price_filter["max"]])
+        # merge the result and get a new query set of all products
+        # We get the parent ids of the variants as the "product with variants"
+        # should be displayed and not the variants.
+        products = lfs.catalog.models.Product.objects.filter(
+            Q(pk__in=filtered_products) | Q(pk__in=variants.values_list('parent_id', flat=True)))
 
-        # Merge the results
-        matched_product_ids.extend([p.id for p in products])
+    if manufacturers_filter:
+        # Get all variants of the products
+        variants = lfs.catalog.models.Product.objects.filter(parent__in=products)
+        # Filter the variants by manufacturer
+        variants = variants.filter(manufacturer__in=manufacturers_filter)
+        # Filter the products
+        filtered_products = products.filter(manufacturer__in=manufacturers_filter)
 
-        # And get a new query set of all products
-        products = lfs.catalog.models.Product.objects.filter(pk__in=matched_product_ids)
+        # merge the result and get a new query set of all products
+        # We get the parent ids of the variants as the "product with variants"
+        # should be displayed and not the variants.
+        products = lfs.catalog.models.Product.objects.filter(
+            Q(pk__in=filtered_products) | Q(pk__in=variants.values_list('parent_id', flat=True)))
 
     if sorting:
-        products = products.order_by(sorting)
+        try:
+            products = products.order_by(sorting)
+        except FieldError:
+            # ignore invalid sort order which may be stored in the session
+            pass
 
     return products
 

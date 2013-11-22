@@ -6,12 +6,13 @@ import traceback
 # django imports
 from django.conf import settings
 from django.core.mail import EmailMessage
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import render_to_response
 from django.template import loader
 from django.template import RequestContext
 
 # lfs imports
+from django.views.generic import TemplateView
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
 
@@ -23,6 +24,8 @@ logger = logging.getLogger("default")
 def shop_view(request, template_name="lfs/shop/shop.html"):
     """Displays the shop.
     """
+    # TODO: this is not necessary here as we have context processor that sets 'SHOP' variable
+    #       this should be removed at some point but is here for backward compatibility
     shop = lfs_get_object_or_404(Shop, pk=1)
     return render_to_response(template_name, RequestContext(request, {
         "shop": shop
@@ -55,7 +58,7 @@ def server_error(request):
         mail.send(fail_silently=True)
 
     t = loader.get_template('500.html')
-    return HttpResponse(t.render(RequestContext(request)), status=500)
+    return HttpResponseServerError(t.render(RequestContext(request)))
 
 
 def one_time_setup():
@@ -65,3 +68,9 @@ def one_time_setup():
             locale.setlocale(locale.LC_ALL, lfs_locale)
         except locale.Error, e:
             logger.error("Unsupported locale in settings.LFS_LOCALE: '%s'." % lfs_locale)
+
+
+class TextTemplateView(TemplateView):
+    def render_to_response(self, context, **kwargs):
+        return super(TextTemplateView, self).render_to_response(context,
+                        content_type='text/plain', **kwargs)

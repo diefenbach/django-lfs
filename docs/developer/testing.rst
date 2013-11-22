@@ -33,8 +33,8 @@ current directory)::
 
     $ bin/django test lfs.catalog --with-coverage --cover-package=lfs.catalog --cover-html
 
-Test a only one method with not capturing the output (this is helpful if you want
-to debug a test with pdb::
+Test only one method without capturing the output (this is helpful if you want
+to debug a test with pdb)::
 
     $ bin/django test lfs.catalog.tests:ViewsTestCase.test_file -s
 

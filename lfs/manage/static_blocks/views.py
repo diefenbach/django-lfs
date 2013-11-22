@@ -23,7 +23,7 @@ from lfs.manage.static_blocks.forms import StaticBlockForm
 
 
 # views
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_static_blocks(request):
     """Dispatches to the first static block or to the add static block form.
     """
@@ -36,7 +36,7 @@ def manage_static_blocks(request):
     return HttpResponseRedirect(url)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_static_block(request, id, template_name="manage/static_block/static_block.html"):
     """Displays the main form to manage static blocks.
     """
@@ -61,7 +61,7 @@ def manage_static_block(request, id, template_name="manage/static_block/static_b
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_static_blocks(request, template_name="manage/static_block/no_static_blocks.html"):
     """Displays that no static blocks exist.
     """
@@ -69,7 +69,7 @@ def no_static_blocks(request, template_name="manage/static_block/no_static_block
 
 
 # parts
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def files(request, sb, template_name="manage/static_block/files.html"):
     """Displays the files tab of the passed static block.
     """
@@ -79,7 +79,7 @@ def files(request, sb, template_name="manage/static_block/files.html"):
 
 
 # actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_files(request, id):
     """
     """
@@ -135,7 +135,7 @@ def update_files(request, id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def reload_files(request, id):
     """
     """
@@ -150,7 +150,7 @@ def reload_files(request, id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_files(request, id):
     """Adds files to static block with passed id.
     """
@@ -171,7 +171,7 @@ def add_files(request, id):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_static_block(request, template_name="manage/static_block/add_static_block.html"):
     """Provides a form to add a new static block.
     """
@@ -193,7 +193,7 @@ def add_static_block(request, template_name="manage/static_block/add_static_bloc
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def preview_static_block(request, id, template_name="manage/static_block/preview.html"):
     """Displays a preview of an static block
     """
@@ -204,7 +204,7 @@ def preview_static_block(request, id, template_name="manage/static_block/preview
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def sort_static_blocks(request):
     """Sorts static blocks after drag 'n drop.
@@ -227,7 +227,7 @@ def sort_static_blocks(request):
         return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_static_block(request, id):
     """Deletes static block with passed id.

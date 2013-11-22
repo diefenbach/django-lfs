@@ -16,6 +16,7 @@ from django.conf import settings
 # lfs imports
 import lfs.catalog.utils
 from lfs.core.fields.thumbs import ImageWithThumbsField
+from lfs.core import utils as core_utils
 from lfs.core.managers import ActiveManager
 from lfs.catalog.settings import CHOICES, CONTENT_CATEGORIES
 from lfs.catalog.settings import CHOICES_STANDARD
@@ -56,6 +57,7 @@ from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICE
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_BASE_PRICE
 from lfs.catalog.settings import CATEGORY_VARIANT_CHEAPEST_PRICES
 from lfs.catalog.settings import CATEGORY_VARIANT_DEFAULT
+from lfs.catalog.settings import SELECT
 
 from lfs.tax.models import Tax
 from lfs.supplier.models import Supplier
@@ -164,7 +166,7 @@ class Category(models.Model):
     products = models.ManyToManyField("Product", verbose_name=_(u"Products"), blank=True, related_name="categories")
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
-    image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400)))
+    image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=THUMBNAIL_SIZES)
     position = models.IntegerField(_(u"Position"), default=1000)
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
 
@@ -185,7 +187,8 @@ class Category(models.Model):
 
     class Meta:
         ordering = ("position", )
-        verbose_name_plural = 'Categories'
+        verbose_name = _('Category')
+        verbose_name_plural = _('Categories')
 
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.slug)
@@ -305,7 +308,7 @@ class Category(models.Model):
         if self.image:
             return self.image
         else:
-            if self.parent:
+            if self.parent_id:
                 return self.parent.get_image()
 
         return None
@@ -346,7 +349,10 @@ class Category(models.Model):
         """
         Returns property groups for given category.
         """
-        cache_key = "%s-category-property-groups-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        from lfs.caching.utils import get_cache_group_id
+        properties_version = get_cache_group_id('global-properties-version')
+        cache_key = "%s-%s-category-property-groups-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, properties_version,
+                                                           self.id)
         pgs = cache.get(cache_key)
         if pgs is not None:
             return pgs
@@ -410,9 +416,8 @@ class Category(models.Model):
         """
         Returns the path of the category template.
         """
-        if self.template != None:
-            id = int(self.template)
-            return CATEGORY_TEMPLATES[id][1]["file"]
+        if self.template is not None:
+            return CATEGORY_TEMPLATES[int(self.template)][1]["file"]
 
         return None
 
@@ -421,7 +426,7 @@ class Category(models.Model):
         Returns the type of content the template is rendering depending on its
         path.
         """
-        if self.get_template_name() == None:
+        if self.get_template_name() is None:
             return CONTENT_PRODUCTS
         if self.get_template_name().startswith(CAT_CATEGORY_PATH):
             return CONTENT_CATEGORIES
@@ -613,7 +618,7 @@ class Product(models.Model):
     creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
 
     # Stocks
-    supplier = models.ForeignKey(Supplier, null=True, blank=True)
+    supplier = models.ForeignKey(Supplier, related_name='product_set', null=True, blank=True)
     deliverable = models.BooleanField(_(u"Deliverable"), default=True)
     manual_delivery_time = models.BooleanField(_(u"Manual delivery time"), default=False)
     delivery_time = models.ForeignKey("DeliveryTime", verbose_name=_(u"Delivery time"), blank=True, null=True, related_name="products_delivery_time")
@@ -677,7 +682,8 @@ class Product(models.Model):
 
     # Manufacturer
     sku_manufacturer = models.CharField(_(u"SKU Manufacturer"), blank=True, max_length=100)
-    manufacturer = models.ForeignKey(Manufacturer, verbose_name=_(u"Manufacturer"), blank=True, null=True, related_name="products")
+    manufacturer = models.ForeignKey(Manufacturer, verbose_name=_(u"Manufacturer"), blank=True, null=True,
+                                     related_name="products", on_delete=models.SET_NULL)
     type_of_quantity_field = models.PositiveSmallIntegerField(_(u"Type of quantity field"), blank=True, null=True, choices=QUANTITY_FIELD_TYPES)
 
     objects = ActiveManager()
@@ -694,12 +700,19 @@ class Product(models.Model):
         """
         Overwritten to save effective_price.
         """
-        if self.for_sale:
-            self.effective_price = self.for_sale_price
+        pc = self.get_price_calculator(None)
+        self.effective_price = pc.get_effective_price()
+        if self.is_variant():
+            dv = self.parent.get_default_variant()
+            # if this is default variant
+            if dv and self.pk == dv.pk:
+                # trigger effective price calculation for parent to have it set to price of default variant
+                super(Product, self).save(*args, **kwargs)
+                self.parent.save()
+            else:
+                super(Product, self).save(*args, **kwargs)
         else:
-            self.effective_price = self.price
-
-        super(Product, self).save(*args, **kwargs)
+            super(Product, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
         """
@@ -768,8 +781,9 @@ class Product(models.Model):
     def get_amount_by_packages(self, quantity):
         """
         """
-        packages = math.ceil(quantity / self.packing_unit)
-        return packages * self.packing_unit
+        packing_unit, packing_unit_unit = self.get_packing_info()
+        packages = math.ceil(quantity / packing_unit)
+        return packages * packing_unit
 
     def get_categories(self, with_parents=False):
         """
@@ -781,10 +795,7 @@ class Product(models.Model):
         if categories is not None:
             return categories
 
-        if self.is_variant():
-            object = self.parent
-        else:
-            object = self
+        object = self.get_parent()
 
         if with_parents:
             categories = []
@@ -803,10 +814,7 @@ class Product(models.Model):
         """
         Returns the first category of a product.
         """
-        if self.is_variant():
-            object = self.parent
-        else:
-            object = self
+        object = self.get_parent()
 
         try:
             return object.get_categories()[0]
@@ -895,11 +903,11 @@ class Product(models.Model):
         """
         if self.is_variant():
             if self.active_base_price == CHOICES_STANDARD:
-                return self.parent.active_base_price
+                return self.parent.get_active_base_price()
             else:
                 return self.active_base_price == CHOICES_YES
         else:
-            return self.active_base_price
+            return self.active_base_price == CHOICES_YES
 
     def get_base_packing_price(self, request, with_properties=True):
         """
@@ -965,13 +973,12 @@ class Product(models.Model):
         images = cache.get(cache_key)
 
         if images is None:
-            images = []
             if self.is_variant() and not self.active_images:
-                object = self.parent
+                obj = self.parent
             else:
-                object = self
+                obj = self
 
-            images = object.images.all()
+            images = obj.images.all()
             cache.set(cache_key, images)
 
         return images
@@ -1044,12 +1051,17 @@ class Product(models.Model):
         """
         Returns the id of the selected option for property with passed id.
         """
-        options = cache.get("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id))
+        from lfs.caching.utils import get_cache_group_id
+        pid = self.get_parent().pk
+        properties_version = get_cache_group_id('global-properties-version')
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+        cache_key = "%s-%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
+        options = cache.get(cache_key)
         if options is None:
             options = {}
             for pvo in self.property_values.all():
                 options[pvo.property_id] = pvo.value
-            cache.set("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id), options)
+            cache.set(cache_key, options)
         try:
             return options[property_id]
         except KeyError:
@@ -1059,8 +1071,11 @@ class Product(models.Model):
         """
         Returns properties with ``display_on_product`` is True.
         """
-        cache_key = "%s-displayed-properties-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
-
+        from lfs.caching.utils import get_cache_group_id
+        pid = self.get_parent().pk
+        properties_version = get_cache_group_id('global-properties-version')
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+        cache_key = "%s-%s-displayed-properties-%s" % (group_id, settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         properties = cache.get(cache_key)
         if properties:
             return properties
@@ -1096,7 +1111,11 @@ class Product(models.Model):
         Returns the property value of a variant in the correct ordering of the
         properties.
         """
-        cache_key = "%s-variant-properties-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        from lfs.caching.utils import get_cache_group_id
+        pid = self.get_parent().pk
+        properties_version = get_cache_group_id('global-properties-version')
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+        cache_key = "%s-variant-properties-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
 
         properties = cache.get(cache_key)
         if properties:
@@ -1125,16 +1144,120 @@ class Product(models.Model):
 
         return properties
 
+    def is_select_display_type(self):
+        return self.variants_display_type == SELECT
+
+    def is_list_display_type(self):
+        return self.variants_display_type == LIST
+
+    def get_all_properties(self, variant=None):
+        """ Return all properties for current product
+            if variant is passed then select fields for it
+        """
+        if not self.is_product_with_variants():
+            return []
+        properties = []
+        if self.variants_display_type == SELECT:
+            # Get all properties (sorted). We need to traverse through all
+            # property/options to select the options of the current variant.
+            for property in self.get_property_select_fields():
+                options = []
+                selected_option_value = ''
+                for property_option in property.options.all():
+                    # check if option exists in any variant
+                    option_used = ProductPropertyValue.objects.filter(parent_id=self.pk,
+                                                                      product__active=True,
+                                                                      property=property,
+                                                                      type=PROPERTY_VALUE_TYPE_VARIANT,
+                                                                      value=property_option.pk).exists()
+                    if option_used:
+                        if variant and variant.has_option(property, property_option):
+                            selected = True
+                            selected_option_value = property_option.pk
+                        else:
+                            selected = False
+                        options.append({
+                            "id": property_option.id,
+                            "name": property_option.name,
+                            "selected": selected,
+                        })
+
+                # check for variants that do not have such property and if such variants exists add empty option
+                ppv_count = ProductPropertyValue.objects.filter(parent_id=self.pk,
+                                                                product__active=True,
+                                                                type=PROPERTY_VALUE_TYPE_VARIANT,
+                                                                property=property).count()
+                if ppv_count != self.get_variants().count():
+                    selected = False
+                    if variant and selected_option_value == '':
+                        selected = True
+                    options.insert(0, {'id': '', 'name': '', 'selected': selected})
+                if not (len(options) == 1 and options[0]['id'] == ''):
+                    properties.append({
+                        "id": property.id,
+                        "name": property.name,
+                        "title": property.title,
+                        "unit": property.unit,
+                        "options": options
+                    })
+        else:
+            sel_properties = self.get_property_select_fields()
+            for property in sel_properties:
+                selected_option_name = ''
+                selected_option_value = ''
+                if variant:
+                    try:
+                        ppv = ProductPropertyValue.objects.get(product=variant,
+                                                               type=PROPERTY_VALUE_TYPE_VARIANT,
+                                                               property=property)
+                        selected_option_value = ppv.value
+                        selected_option_name = property.options.get(pk=ppv.value).name
+                    except (ProductPropertyValue.DoesNotExist, PropertyOption.DoesNotExist):
+                        pass
+                properties.append({
+                                    "id": property.id,
+                                    "name": property.name,
+                                    "title": property.title,
+                                    "unit": property.unit,
+                                    "selected_option_name": selected_option_name,
+                                    "selected_option_value": selected_option_value
+                                 })
+        return properties
+
+    def get_variant_properties_for_parent(self):
+        """
+        Returns the property value of a variant in the correct ordering of the
+        properties. Traverses through all parent properties
+        """
+        from lfs.caching.utils import get_cache_group_id
+        pid = self.get_parent().pk
+        properties_version = get_cache_group_id('global-properties-version')
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+        cache_key = "%s-variant-properties-for-parent-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
+
+        properties = cache.get(cache_key)
+        if properties:
+            return properties
+
+        properties = self.parent.get_all_properties(variant=self)
+        cache.set(cache_key, properties)
+
+        return properties
+
     def has_option(self, property, option):
         """
         Returns True if the variant has the given property / option combination.
         """
-        options = cache.get("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id))
+        from lfs.caching.utils import get_cache_group_id
+        pid = self.get_parent().pk
+        properties_version = get_cache_group_id('global-properties-version')
+        group_id = '%s-%s' % (properties_version, get_cache_group_id('properties-%s' % pid))
+        options = cache.get("%s-%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id))
         if options is None:
             options = {}
             for pvo in self.property_values.all():
                 options[pvo.property_id] = pvo.value
-            cache.set("%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id), options)
+            cache.set("%s-%s-productpropertyvalue%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id), options)
 
         try:
             return options[property.id] == str(option.id)
@@ -1178,11 +1301,7 @@ class Product(models.Model):
         Returns the price calculator class as defined in LFS_PRICE_CALCULATORS
         in settings.
         """
-        if self.is_variant():
-            obj = self.parent
-        else:
-            obj = self
-
+        obj = self.get_parent()
         if obj.price_calculator is not None:
             price_calculator = obj.price_calculator
         else:
@@ -1367,8 +1486,8 @@ class Product(models.Model):
             properties.extend(property_group.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("groupspropertiesrelation"))
 
         # local
-        for property in self.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("productspropertiesrelation"):
-            properties.append(property)
+        for prop in self.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("productspropertiesrelation"):
+            properties.append(prop)
 
         return properties
 
@@ -1382,8 +1501,8 @@ class Product(models.Model):
             properties.extend(property_group.properties.filter(configurable=True).order_by("groupspropertiesrelation"))
 
         # local
-        for property in self.properties.filter(configurable=True).order_by("productspropertiesrelation"):
-            properties.append(property)
+        for prop in self.properties.filter(configurable=True).order_by("productspropertiesrelation"):
+            properties.append(prop)
 
         return properties
 
@@ -1445,7 +1564,7 @@ class Product(models.Model):
 
         if self.default_variant is not None:
             default_variant = self.default_variant
-        else:
+        elif self.is_product_with_variants():
             try:
                 default_variant = self.variants.filter(active=True)[0]
             except IndexError:
@@ -1469,6 +1588,8 @@ class Product(models.Model):
         elif self.category_variant == CATEGORY_VARIANT_CHEAPEST_PRICES:
             return self.get_default_variant()
         elif self.category_variant == CATEGORY_VARIANT_DEFAULT:
+            return self.get_default_variant()
+        elif self.category_variant is None:
             return self.get_default_variant()
         else:
             try:
@@ -1512,10 +1633,7 @@ class Product(models.Model):
         """
         Returns the min price and min base price as dict.
         """
-        if self.is_variant():
-            product = self.parent
-        else:
-            product = self
+        product = self.get_parent()
 
         prices = []
         for variant in Product.objects.filter(parent=product, active=True):
@@ -1604,7 +1722,7 @@ class Product(models.Model):
         """
         return len(self.get_variants()) > 0
 
-    def get_variant(self, options):
+    def get_variant(self, options, only_active=True):
         """
         Returns the variant with the given options or None.
 
@@ -1619,8 +1737,19 @@ class Product(models.Model):
         objects and back to strings.
         """
         options.sort()
-        options = "".join(options)
-        for variant in self.variants.filter(active=True):
+        parsed_options = []
+        # remove option with empty option_id (this means that variant doesn't have such property)
+        for option in options:
+            if option.find('|') == len(option) -1:
+                continue
+            parsed_options.append(option)
+        options = "".join(parsed_options)
+
+        variants = self.variants.all()
+        if only_active:
+            variants = variants.filter(active=True)
+
+        for variant in variants:
             temp = variant.property_values.filter(type=PROPERTY_VALUE_TYPE_VARIANT)
             temp = ["%s|%s" % (x.property.id, x.value) for x in temp]
             temp.sort()
@@ -1631,11 +1760,11 @@ class Product(models.Model):
 
         return None
 
-    def has_variant(self, options):
+    def has_variant(self, options, only_active=True):
         """
         Returns true if a variant with given options already exists.
         """
-        if self.get_variant(options) is None:
+        if self.get_variant(options, only_active=only_active) is None:
             return False
         else:
             return True
@@ -1687,11 +1816,11 @@ class Product(models.Model):
         """
         if self.is_variant():
             if self.active_packing_unit == CHOICES_STANDARD:
-                return self.parent.active_packing_unit
+                return self.parent.get_active_packing_unit()
             else:
                 return self.active_packing_unit == CHOICES_YES
         else:
-            return self.active_packing_unit
+            return self.active_packing_unit == CHOICES_YES
 
     def get_packing_info(self):
         """
@@ -1722,6 +1851,11 @@ class Product(models.Model):
         Returns True if product is product with variants.
         """
         return self.sub_type == PRODUCT_WITH_VARIANTS
+
+    def get_parent(self):
+        if self.is_variant():
+            return self.parent
+        return self
 
     def is_variant(self):
         """
@@ -1762,13 +1896,32 @@ class Product(models.Model):
 
         return None
 
+    def get_clean_quantity_value(self, quantity=1, allow_zero=False):
+        """
+        Returns the valid quantity based on the product's type of
+        quantity field.
+        """
+        try:
+            quantity = abs(core_utils.atof(str(quantity)))
+        except (TypeError, ValueError):
+            quantity = 1.0
+
+        if not allow_zero:
+            quantity = 1 if quantity <= 0 else quantity
+
+        type_of_quantity_field = self.get_type_of_quantity_field()
+        if type_of_quantity_field == QUANTITY_FIELD_INTEGER or getattr(settings, 'LFS_FORCE_INTEGER_QUANTITY', False):
+            quantity = int(quantity)
+
+        return quantity
+
     def get_clean_quantity(self, quantity=1):
         """
         Returns the correct formatted quantity based on the product's type of
         quantity field.
         """
         try:
-            quantity = float(quantity)
+            quantity = abs(core_utils.atof(str(quantity)))
         except (TypeError, ValueError):
             quantity = 1.0
 
@@ -1881,9 +2034,10 @@ class PropertyGroup(models.Model):
     """
     name = models.CharField(_(u"Name"), blank=True, max_length=50)
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="property_groups")
+    position = models.IntegerField(_(u"Position"), default=1000)
 
     class Meta:
-        ordering = ("name", )
+        ordering = ("position", )
 
     def __unicode__(self):
         return self.name
@@ -1948,7 +2102,7 @@ class Property(models.Model):
        char field, number field or select field
 
     step
-       manuel step for filtering
+       manual step for filtering
 
     price
         The price of the property. Only used for configurable products.
@@ -2301,7 +2455,7 @@ class File(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("lfs_file", kwargs={"id": self.id})
+        return reverse("lfs_file", kwargs={"file_id": self.id})
 
 
 class StaticBlock(models.Model):
@@ -2532,9 +2686,9 @@ class DeliveryTime(models.Model):
             else:
                 unit = self.get_unit_display()
 
-            return "%s %s" % (self.min, unit)
+            return u"%s %s" % (self.min, unit)
         else:
-            return "%s-%s %s" % (self.min, self.max, self.get_unit_display())
+            return u"%s-%s %s" % (self.min, self.max, self.get_unit_display())
 
     def round(self):
         """
@@ -2570,7 +2724,7 @@ class ProductAttachment(models.Model):
     """
     title = models.CharField(_(u"Title"), max_length=50)
     description = models.TextField(_(u"Description"), blank=True)
-    file = models.FileField(upload_to="files")
+    file = models.FileField(upload_to="files", max_length=500)
     product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="attachments")
     position = models.IntegerField(_(u"Position"), default=1)
 

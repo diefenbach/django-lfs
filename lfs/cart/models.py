@@ -1,4 +1,5 @@
-
+# python imports
+import locale
 import re
 
 # django imports
@@ -92,6 +93,9 @@ class Cart(models.Model):
                 cart_item.amount += float(amount)
                 cart_item.save()
 
+        cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+        cache.delete(cache_key)
+
         return cart_item
 
     def get_amount_of_items(self):
@@ -122,6 +126,7 @@ class Cart(models.Model):
         """
         Returns the items of the cart.
         """
+        self._update_product_amounts()
         cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         items = cache.get(cache_key)
         if items is None:
@@ -171,6 +176,23 @@ class Cart(models.Model):
             tax += item.get_tax(request)
 
         return tax
+
+    def _update_product_amounts(self):
+        items = CartItem.objects.select_related('product').filter(cart=self,
+                                                                  product__active=True,
+                                                                  product__manage_stock_amount=True)
+        updated = False
+        for item in items:
+            if item.amount > item.product.stock_amount and not item.product.order_time:
+                if item.product.stock_amount == 0:
+                    item.delete()
+                else:
+                    item.amount = item.product.stock_amount
+                    item.save()
+                updated = True
+        if updated:
+            cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
+            cache.delete(cache_key)
 
 
 class CartItem(models.Model):
@@ -269,7 +291,7 @@ class CartItem(models.Model):
                     po = PropertyOption.objects.get(pk=ppv.value)
                     value = po.price
                 else:
-                    value = ppv.value
+                    value = float(ppv.value)
                 pc = pc.replace(token, str(value))
             elif token.startswith("number"):
                 mo = re.match("number\((\d+)\)", token)
@@ -317,7 +339,7 @@ class CartItem(models.Model):
                 try:
                     value = format_string % float(cipv.value)
                 except ValueError:
-                    value = "%.2f" % float(cipv.value)
+                    value = locale.format("%.2f", float(cipv.value))
             else:
                 value = cipv.value
 

@@ -1,25 +1,17 @@
-# python imports
-import locale
-
 # django imports
-from django.conf import settings
-from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 
 # lfs imports
-import lfs.core.utils
-from lfs.caching.utils import lfs_get_object_or_404
-from lfs.core.models import Shop
 from lfs.core.signals import order_submitted
 from lfs.criteria import utils as criteria_utils
 from lfs.customer import utils as customer_utils
 from lfs.payment.models import PaymentMethod
-from lfs.payment.settings import PAYPAL
 from lfs.payment.settings import PM_ORDER_IMMEDIATELY
 from lfs.payment.settings import PM_ORDER_ACCEPTED
 
-# other imports
-from paypal.standard.conf import POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT
+# Load logger
+import logging
+logger = logging.getLogger("default")
 
 
 def update_to_valid_payment_method(request, customer, save=False):
@@ -85,7 +77,7 @@ def get_payment_costs(request, payment_method):
 
     price = criteria_utils.get_first_valid(request,
         payment_method.prices.all())
-
+    # TODO: this assumes that payment price is given as gross price, we have to add payment processor here
     if price is None:
         price = payment_method.price
         tax = (tax_rate / (tax_rate + 100)) * price
@@ -109,15 +101,20 @@ def process_payment(request):
     dictionary with the success state, the next url and a optional error
     message.
     """
+    from lfs.core.utils import import_symbol
+    from lfs.order.utils import add_order
+    from lfs.cart.utils import get_cart
     payment_method = get_selected_payment_method(request)
 
     if payment_method.module:
-        payment_class = lfs.core.utils.import_symbol(payment_method.module)
+        payment_class = import_symbol(payment_method.module)
         payment_instance = payment_class(request)
 
         create_order_time = payment_instance.get_create_order_time()
         if create_order_time == PM_ORDER_IMMEDIATELY:
-            order = lfs.order.utils.add_order(request)
+            order = add_order(request)
+            if order is None:
+                return {'accepted': True, 'next_url': reverse("lfs_shop_view")}
             payment_instance.order = order
             result = payment_instance.process()
             if result.get("order_state"):
@@ -125,41 +122,27 @@ def process_payment(request):
                 order.save()
             order_submitted.send({"order": order, "request": request})
         else:
-            cart = lfs.cart.utils.get_cart(request)
+            cart = get_cart(request)
             payment_instance.cart = cart
             result = payment_instance.process()
 
         if result["accepted"]:
             if create_order_time == PM_ORDER_ACCEPTED:
-                order = lfs.order.utils.add_order(request)
+                order = add_order(request)
                 if result.get("order_state"):
                     order.state = result.get("order_state")
                     order.save()
                 order_submitted.send({"order": order, "request": request})
         return result
-
-    elif payment_method.id == PAYPAL:
-        order = lfs.order.utils.add_order(request)
-        if order:  # if we have no cart then the order will be None
-            order_submitted.send({"order": order, "request": request})
-            if settings.LFS_PAYPAL_REDIRECT:
-                return {
-                    "accepted": True,
-                    "next_url": order.get_pay_link(request),
-                }
-        return {
-            "accepted": True,
-            "next_url": reverse("lfs_thank_you"),
-        }
     else:
-        order = lfs.order.utils.add_order(request)
+        order = add_order(request)
         order_submitted.send({"order": order, "request": request})
         return {
             "accepted": True,
             "next_url": reverse("lfs_thank_you"),
         }
 
-
+# DEPRECATED 0.8
 def get_pay_link(request, payment_method, order):
     """
     Creates a pay link for the passed payment_method and order.
@@ -167,10 +150,11 @@ def get_pay_link(request, payment_method, order):
     This can be used to display the link within the order mail and/or the
     thank you page after a customer has payed.
     """
-    if payment_method.id == PAYPAL:
-        return get_paypal_link_for_order(order)
-    elif payment_method.module:
-        payment_class = lfs.core.utils.import_symbol(payment_method.module)
+    from lfs.core.utils import import_symbol
+    logger.info("Decprecated: lfs.payment.utils.get_pay_link: this function is deprecated. Please use Order.get_pay_link instead.")
+
+    if payment_method.module:
+        payment_class = import_symbol(payment_method.module)
         payment_instance = payment_class(request=request, order=order)
         try:
             return payment_instance.get_pay_link()
@@ -178,43 +162,3 @@ def get_pay_link(request, payment_method, order):
             return ""
     else:
         return ""
-
-
-def get_paypal_link_for_order(order):
-    """
-    Creates paypal link for given order.
-    """
-    shop = lfs_get_object_or_404(Shop, pk=1)
-    current_site = Site.objects.get(id=settings.SITE_ID)
-    conv = locale.localeconv()
-    default_currency = conv['int_curr_symbol']
-
-    info = {
-        "cmd": "_xclick",
-        "upload": "1",
-        "business": settings.PAYPAL_RECEIVER_EMAIL,
-        "currency_code": default_currency,
-        "notify_url": "http://" + current_site.domain + reverse('paypal-ipn'),
-        "return": "http://" + current_site.domain + reverse('paypal-pdt'),
-        "first_name": order.invoice_firstname,
-        "last_name": order.invoice_lastname,
-        "address1": order.invoice_line1,
-        "address2": order.invoice_line2,
-        "city": order.invoice_city,
-        "state": order.invoice_state,
-        "zip": order.invoice_code,
-        "no_shipping": "1",
-        "custom": order.uuid,
-        "invoice": order.uuid,
-        "item_name": shop.shop_owner,
-        "amount": "%.2f" % (order.price - order.tax),
-        "tax": "%.2f" % order.tax,
-    }
-
-    parameters = "&".join(["%s=%s" % (k, v) for (k, v) in info.items()])
-    if getattr(settings, 'PAYPAL_DEBUG', settings.DEBUG):
-        url = SANDBOX_POSTBACK_ENDPOINT + "?" + parameters
-    else:
-        url = POSTBACK_ENDPOINT + "?" + parameters
-
-    return url

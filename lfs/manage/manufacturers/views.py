@@ -23,8 +23,11 @@ from lfs.manufacturer.models import Manufacturer
 from lfs.manage.manufacturers.forms import ViewForm
 from lfs.manage.seo.views import SEOView
 
+import logging
+logger = logging.getLogger(__file__)
 
-@permission_required("core.manage_shop", login_url="/login/")
+
+@permission_required("core.manage_shop")
 def manage_manufacturer(request, manufacturer_id, template_name="manage/manufacturers/manufacturer.html"):
     """The main view to display manufacturers.
     """
@@ -54,7 +57,7 @@ def manage_manufacturer(request, manufacturer_id, template_name="manage/manufact
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def no_manufacturers(request, template_name="manage/manufacturers/no_manufacturers.html"):
     """Displays that there are no manufacturers.
     """
@@ -77,7 +80,7 @@ def manufacturer_data_inline(request, manufacturer_id,
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manufacturer_view(request, manufacturer_id, template_name="manage/manufacturers/view.html"):
     """Displays the view data for the manufacturer with passed manufacturer id.
 
@@ -120,7 +123,7 @@ def selectable_manufacturers_inline(request, manufacturer_id,
     }))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manufacturer_inline(request, manufacturer_id, category_id,
     template_name="manage/manufacturers/manufacturer_inline.html"):
     """Returns categories and products for given manufacturer id and category id.
@@ -167,7 +170,7 @@ def manufacturer_inline(request, manufacturer_id, category_id,
         simplejson.dumps({"html": html}))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def add_manufacturer(request, template_name="manage/manufacturers/add_manufacturer.html"):
     """Form and logic to add a manufacturer.
     """
@@ -189,7 +192,7 @@ def add_manufacturer(request, template_name="manage/manufacturers/add_manufactur
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manufacturer_dispatcher(request):
     """Dispatches to the first manufacturer or to the add form.
     """
@@ -202,7 +205,7 @@ def manufacturer_dispatcher(request):
             reverse("lfs_manage_manufacturer", kwargs={"manufacturer_id": manufacturer.id}))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def delete_manufacturer(request, manufacturer_id):
     """Deletes Manufacturer with passed manufacturer id.
@@ -217,7 +220,7 @@ def delete_manufacturer(request, manufacturer_id):
     return HttpResponseRedirect(reverse("lfs_manufacturer_dispatcher"))
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def edit_category(request, manufacturer_id, category_id):
     """Adds/Removes products of given category to given manufacturer.
     """
@@ -236,7 +239,7 @@ def edit_category(request, manufacturer_id, category_id):
     return HttpResponse("")
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def edit_product(request, manufacturer_id, product_id):
     """Adds/Removes given product to given manufacturer.
     """
@@ -253,7 +256,7 @@ def edit_product(request, manufacturer_id, product_id):
     return HttpResponse("")
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def category_state(request, manufacturer_id, category_id):
     """Sets the state (klass and checking) for given category for given
     manufacturer.
@@ -278,7 +281,7 @@ def category_state(request, manufacturer_id, category_id):
     )
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def update_data(request, manufacturer_id):
     """Updates data of manufacturer with given manufacturer id.
     """
@@ -294,7 +297,10 @@ def update_data(request, manufacturer_id):
 
     # Delete image
     if request.POST.get("delete_image"):
-        manufacturer.image.delete()
+        try:
+            manufacturer.image.delete()
+        except OSError as e:
+            logger.error('Error while trying to delete manufacturer image: %s' % e)
 
     html = (
         ("#data", manufacturer_data_inline(request, manufacturer.pk)),
@@ -337,7 +343,7 @@ def _get_category_state(manufacturer, category):
 
 
 @never_cache
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manufacturers_ajax(request):
     """ Returns list of manufacturers for autocomplete
     """

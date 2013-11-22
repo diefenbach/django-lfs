@@ -16,7 +16,7 @@ from lfs.cart.models import CartItem
 from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
 from lfs.core.models import Country
-from lfs.customer.models import Address
+from lfs.addresses.models import Address
 from lfs.customer.models import Customer
 from lfs.order.models import Order
 from lfs.order.models import OrderItem
@@ -87,12 +87,38 @@ class OrderTestCase(TestCase):
             email="jane@doe.com",
         )
 
+        address3 = Address.objects.create(
+            firstname="John",
+            lastname="Doe",
+            company_name="Doe Ltd.",
+            line1="Street 42",
+            city="Gotham City",
+            zip_code="2342",
+            country=ie,
+            phone="555-111111",
+            email="john@doe.com",
+        )
+
+        address4 = Address.objects.create(
+            firstname="Jane",
+            lastname="Doe",
+            company_name="Doe Ltd.",
+            line1="Street 43",
+            city="Smallville",
+            zip_code="2443",
+            country=us,
+            phone="666-111111",
+            email="jane@doe.com",
+        )
+
         self.customer = Customer.objects.create(
             session=session.session_key,
             selected_shipping_method=shipping_method,
             selected_payment_method=payment_method,
             selected_shipping_address=address1,
             selected_invoice_address=address2,
+            default_shipping_address=address1,
+            default_invoice_address=address2,
         )
 
         self.p1 = Product.objects.create(
@@ -132,7 +158,13 @@ class OrderTestCase(TestCase):
     def test_add_order(self):
         """Tests the general adding of an order via the add_order method
         """
+        # check we have 2 addresses before the order
+        self.assertEqual(4, Address.objects.count())
+
         order = add_order(self.request)
+
+        # adding an order should deep copy our addresses above
+        self.assertEqual(6, Address.objects.count())
 
         self.assertEqual(order.state, SUBMITTED)
         self.assertEqual("%.2f" % order.price, "9.80")
@@ -146,23 +178,23 @@ class OrderTestCase(TestCase):
         self.assertEqual(order.payment_price, 0.0)
         self.assertEqual(order.payment_tax, 0.0)
 
-        self.assertEqual(order.shipping_firstname, "John")
-        self.assertEqual(order.shipping_lastname, "Doe")
-        self.assertEqual(order.shipping_line1, "Street 42")
-        self.assertEqual(order.shipping_line2, None)
-        self.assertEqual(order.shipping_city, "Gotham City")
-        self.assertEqual(order.shipping_code, "2342")
-        self.assertEqual(order.shipping_phone, "555-111111")
-        self.assertEqual(order.shipping_company_name, "Doe Ltd.")
+        self.assertEqual(order.shipping_address.firstname, "John")
+        self.assertEqual(order.shipping_address.lastname, "Doe")
+        self.assertEqual(order.shipping_address.line1, "Street 42")
+        self.assertEqual(order.shipping_address.line2, None)
+        self.assertEqual(order.shipping_address.city, "Gotham City")
+        self.assertEqual(order.shipping_address.zip_code, "2342")
+        self.assertEqual(order.shipping_address.phone, "555-111111")
+        self.assertEqual(order.shipping_address.company_name, "Doe Ltd.")
 
-        self.assertEqual(order.invoice_firstname, "Jane")
-        self.assertEqual(order.invoice_lastname, "Doe")
-        self.assertEqual(order.invoice_line1, "Street 43")
-        self.assertEqual(order.invoice_line2, None)
-        self.assertEqual(order.invoice_city, "Smallville")
-        self.assertEqual(order.invoice_code, "2443")
-        self.assertEqual(order.invoice_phone, "666-111111")
-        self.assertEqual(order.invoice_company_name, "Doe Ltd.")
+        self.assertEqual(order.invoice_address.firstname, "Jane")
+        self.assertEqual(order.invoice_address.lastname, "Doe")
+        self.assertEqual(order.invoice_address.line1, "Street 43")
+        self.assertEqual(order.invoice_address.line2, None)
+        self.assertEqual(order.invoice_address.city, "Smallville")
+        self.assertEqual(order.invoice_address.zip_code, "2443")
+        self.assertEqual(order.invoice_address.phone, "666-111111")
+        self.assertEqual(order.invoice_address.company_name, "Doe Ltd.")
 
         # Items
         self.assertEqual(len(order.items.all()), 2)
@@ -218,7 +250,8 @@ class OrderTestCase(TestCase):
     def test_delete_product(self):
         """Tests that OrderItems are not deleted when a product is deleted.
         """
-        order = Order.objects.create()
+        address = Address.objects.create()
+        order = Order.objects.create(invoice_address=address, shipping_address=address)
         order_item_1 = OrderItem.objects.create(order=order, product=self.p1)
         self.p1.delete()
         OrderItem.objects.get(pk=order_item_1.id)

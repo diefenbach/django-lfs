@@ -52,7 +52,7 @@ class ShopDefaultValuesForm(ModelForm):
             "default_country", "invoice_countries", "shipping_countries", "use_international_currency_code", "delivery_time")
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 def manage_shop(request, template_name="manage/shop/shop.html"):
     """Displays the form to manage shop data.
     """
@@ -107,7 +107,7 @@ def default_values_tab(request, shop, form, template_name="manage/shop/default_v
 
 
 # Actions
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def save_data_tab(request):
     """Saves the data tab of the default shop.
@@ -137,7 +137,7 @@ def save_data_tab(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def save_default_values_tab(request):
     """Saves the default value part
@@ -160,7 +160,7 @@ def save_default_values_tab(request):
     return HttpResponse(result)
 
 
-@permission_required("core.manage_shop", login_url="/login/")
+@permission_required("core.manage_shop")
 @require_POST
 def save_order_numbers_tab(request):
     """Saves the order number tab of the default shop.
