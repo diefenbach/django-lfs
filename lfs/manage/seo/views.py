@@ -73,7 +73,7 @@ class SEOView(View):
         seo_html = self.render(self.request, form.instance, form)
         return HttpResponse(simplejson.dumps({"seo": seo_html,
                                               "message": message
-                                             }, cls=LazyEncoder))
+                                             }, cls=LazyEncoder), mimetype='application/json')
 
     def form_valid(self, form):
         """Handle successfull validation

@@ -66,7 +66,7 @@ def update_portlets(request, object_type_id, object_id):
         "message": _(u"Portlet has been updated.")},
         cls=LazyEncoder
     )
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -101,7 +101,7 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
                 "message": _(u"Portlet has been added.")},
                 cls=LazyEncoder
             )
-            return HttpResponse(result)
+            return HttpResponse(result, mimetype='application/json')
 
         except ContentType.DoesNotExist:
             pass
@@ -139,7 +139,7 @@ def delete_portlet(request, portletassignment_id):
             "message": _(u"Portlet has been deleted.")},
             cls=LazyEncoder
         )
-        return HttpResponse(result)
+        return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -167,7 +167,7 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
             "message": _(u"Portlet has been saved.")},
             cls=LazyEncoder
         )
-        return HttpResponse(result)
+        return HttpResponse(result, mimetype='application/json')
     else:
         slots = []
         for slot in Slot.objects.all():
@@ -222,7 +222,7 @@ def move_portlet(request, portletassignment_id):
         cls=LazyEncoder
     )
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def update_portlet_positions(pa):

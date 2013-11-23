@@ -108,7 +108,7 @@ def manufacturer_view(request, manufacturer_id, template_name="manage/manufactur
         return HttpResponse(simplejson.dumps({
             "html": html,
             "message": message,
-        }, cls=LazyEncoder))
+        }, cls=LazyEncoder), mimetype='application/json')
     else:
         return view_html
 
@@ -167,7 +167,7 @@ def manufacturer_inline(request, manufacturer_id, category_id,
     html = (("#sub-categories-%s" % category_id, result),)
 
     return HttpResponse(
-        simplejson.dumps({"html": html}))
+        simplejson.dumps({"html": html}), mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -277,7 +277,7 @@ def category_state(request, manufacturer_id, category_id):
         simplejson.dumps({
             "html": html,
             "checkbox": checkbox
-        })
+        }, mimetype='application/json')
     )
 
 
@@ -312,7 +312,7 @@ def update_data(request, manufacturer_id):
         "message": msg
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def _get_category_state(manufacturer, category):
@@ -356,4 +356,4 @@ def manufacturers_ajax(request):
                     'value': man.pk})
 
     result = simplejson.dumps(out, cls=LazyEncoder)
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')

@@ -121,7 +121,7 @@ def manage_featured_inline(
         return HttpResponse(
             simplejson.dumps({
                 "html": [["#featured-inline", result]],
-            }))
+            }), mimetype='application/json')
 
 
 # Actions
@@ -145,7 +145,7 @@ def add_featured(request):
         "message": _(u"Featured product has been added.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("manage_shop")
@@ -196,7 +196,7 @@ def update_featured(request):
             "message": _(u"Featured product has been updated.")
         }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def _update_positions():

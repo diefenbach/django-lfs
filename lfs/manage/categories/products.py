@@ -110,7 +110,7 @@ def products_inline(request, category_id, as_string=False, template_name="manage
     else:
         return HttpResponse(simplejson.dumps({
             "html": [["#products-inline", result]],
-        }))
+        }), mimetype='application/json')
 
 
 # Actions
@@ -174,7 +174,7 @@ def selected_products(request, category_id, as_string=False, template_name="mana
     else:
         return HttpResponse(simplejson.dumps({
             "html": [["#selected-products", result]],
-        }))
+        }), mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -200,7 +200,7 @@ def add_products(request, category_id):
         "message": _(u"Selected products have been added to category.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -229,4 +229,4 @@ def remove_products(request, category_id):
         "message": _(u"Selected products have been removed from category.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')

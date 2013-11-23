@@ -132,7 +132,7 @@ def update_files(request, id):
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -147,7 +147,7 @@ def reload_files(request, id):
         "message": _(u"Files has been added."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -168,7 +168,7 @@ def add_files(request, id):
         file.save()
 
     result = simplejson.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -224,7 +224,7 @@ def sort_static_blocks(request):
             "message": _(u"The static blocks have been sorted."),
         }, cls=LazyEncoder)
 
-        return HttpResponse(result)
+        return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
