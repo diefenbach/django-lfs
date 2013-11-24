@@ -310,9 +310,12 @@ def category_view(request, slug, template_name="lfs/catalog/category_base.html")
     start = request.REQUEST.get("start", 1)
     category = lfs_get_object_or_404(Category, slug=slug)
     if category.get_content() == CONTENT_PRODUCTS:
-        inline = category_products(request, slug, start)
+        inline_dict = category_products(request, slug, start)
     else:
-        inline = category_categories(request, slug)
+        inline_dict = category_categories(request, slug)
+
+    inline = inline_dict['html']
+    pagination_data = inline_dict['pagination_data']
     # Set last visited category for later use, e.g. Display breadcrumbs,
     # selected menu points, etc.
     request.session["last_category"] = category
@@ -327,6 +330,7 @@ def category_view(request, slug, template_name="lfs/catalog/category_base.html")
         "category_inline": inline,
         "top_category": lfs.catalog.utils.get_current_top_category(request, category),
         "pagination": request.REQUEST.get("start", 0),
+        'pagination_data': pagination_data
     }))
 
 
@@ -335,7 +339,7 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
 
     This view is called if the user chooses a template that is situated in settings.CATEGORY_PATH ".
     """
-    cache_key = "%s-category-categories-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    cache_key = "%s-category-categories-2-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
 
     result = cache.get(cache_key)
     if result is not None:
@@ -361,10 +365,12 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
     if render_template != None:
         template_name = render_template
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result_html = render_to_string(template_name, RequestContext(request, {
         "category": category,
         "categories": categories,
     }))
+
+    result = {'pagination_data': {'current_page': 1, 'total_pages': 1, 'getparam': 'start'}, 'html': result_html}
 
     cache.set(cache_key, result)
     return result
@@ -395,8 +401,8 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     product_filter = request.session.get("product-filter", {})
     product_filter = product_filter.items()
 
-    cache_key = "%s-category-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
-    sub_cache_key = "%s-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
+    cache_key = "%s-category-products-2-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    sub_cache_key = "%s-2-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
 
     filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter]
     if filter_key:
@@ -491,7 +497,9 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
         "amount_of_products": amount_of_products,
         "pagination": pagination_data
     }
-    result = render_to_string(template_name, RequestContext(request, template_data))
+    result_html = render_to_string(template_name, RequestContext(request, template_data))
+
+    result = {'pagination_data': pagination_data, 'html': result_html}
 
     temp[sub_cache_key] = result
     cache.set(cache_key, temp)
