@@ -185,7 +185,11 @@ $(function() {
         var url = $(this).attr("href");
         $.post(url, function(data) {
             $("#cart-inline").html(data);
+            $body.trigger({
+              type:"cart-updated"
+            });
         });
+
         return false;
     });
 
@@ -196,6 +200,9 @@ $(function() {
             "success" : function(data) {
                 var data = safeParseJSON(data);
                 $("#cart-inline").html(data["html"]);
+                $body.trigger({
+                  type:"cart-updated"
+                });
                 if (data["message"])
                     $.jGrowl(data["message"]);
             }
@@ -208,6 +215,9 @@ $(function() {
             "success" : function(data) {
                 var data = safeParseJSON(data);
                 $("#cart-inline").html(data["html"]);
+                $body.trigger({
+                  type:"cart-updated"
+                });
             }
         })
     });
@@ -228,6 +238,9 @@ $(function() {
             "success" : function(data) {
                 var data = safeParseJSON(data);
                 $("#cart-inline").html(data["html"]);
+                $body.trigger({
+                  type:"cart-updated"
+                });
             }
         })
     });
