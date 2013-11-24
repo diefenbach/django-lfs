@@ -148,7 +148,7 @@ def save_criteria(request, id):
         "message": _(u"Criteria have been changed."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -173,4 +173,4 @@ def save_data(request, id):
         "message": _(u"Data have been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')

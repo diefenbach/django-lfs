@@ -59,7 +59,7 @@ def select_variant(request):
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def calculate_packing(request, id, quantity=None, with_properties=False, as_string=False, template_name="lfs/catalog/packing_result.html"):
@@ -106,7 +106,7 @@ def calculate_packing(request, id, quantity=None, with_properties=False, as_stri
         "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def calculate_price(request, id):
@@ -142,7 +142,7 @@ def calculate_price(request, id):
         "message": _("Price has been changed according to your selection."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def select_variant_from_properties(request):
@@ -173,7 +173,7 @@ def select_variant_from_properties(request):
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def set_filter(request, category_slug, property_id, value=None, min=None, max=None):

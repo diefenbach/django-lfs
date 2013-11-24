@@ -36,7 +36,7 @@ def manage_attachments(request, product_id, as_string=False, template_name="mana
             "message": _(u"Attachments have been added."),
         }, cls=LazyEncoder)
 
-        return HttpResponse(result)
+        return HttpResponse(result, mimetype='application/json')
 
 
 # Actions
@@ -97,7 +97,7 @@ def update_attachments(request, product_id):
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -144,4 +144,4 @@ def move_attachment(request, id):
          "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
