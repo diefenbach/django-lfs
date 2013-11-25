@@ -81,7 +81,7 @@ function imagebrowser(e, ed) {
     klass = node.className || ""
     var id = $("#obj-id").attr("data");
     $.get(LFS_MANAGE_IMAGEBROWSER_URL + "?url=" + url + "&title=" + title + "&class=" + klass, function(data) {
-        data = $.parseJSON(data);
+        data = safeParseJSON(data);
         $("#dialog").html(data["html"]);
     });
 
