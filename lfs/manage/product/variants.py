@@ -304,7 +304,7 @@ def add_property(request, product_id):
         "message": _(u"Property has been added."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -330,7 +330,7 @@ def delete_property(request, product_id, property_id):
         "close-dialog": True,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -363,7 +363,7 @@ def change_property_position(request):
         "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -404,7 +404,7 @@ def add_property_option(request, product_id):
         "message": _(u"Option has been added."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -430,7 +430,7 @@ def delete_property_option(request, product_id, option_id):
         "close-dialog": True,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -522,7 +522,7 @@ def add_variants(request, product_id):
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -608,7 +608,7 @@ def update_variants(request, product_id):
                         pass
                     else:
                         product.save()
-                
+
                 variant.save()
 
             elif key.startswith("property"):
@@ -681,7 +681,7 @@ def update_variants(request, product_id):
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -705,7 +705,7 @@ def edit_sub_type(request, product_id):
         "message": _(u"Sub type has been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -729,7 +729,7 @@ def update_category_variant(request, product_id):
         "message": _(u"Category variant has been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def _refresh_property_positions(product_id):

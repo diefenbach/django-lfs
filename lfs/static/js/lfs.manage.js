@@ -3,7 +3,16 @@ function popup(url, w, h) {
     w.focus();
 }
 
-function disable_enter_key(e) {
+
+function safeParseJSON(data) {
+    if (typeof(data) == 'string') {
+        data = $.parseJSON(data);
+    }
+    return data;
+}
+
+
+ function disable_enter_key(e) {
      var key;
      if (window.event)
           key = window.event.keyCode;
@@ -58,7 +67,7 @@ function send_form_and_refresh(elem) {
             form.data('jqXHR', jqXHR);
         },
         success : function(data) {
-            data = $.parseJSON(data);
+            data = safeParseJSON(data);
             for (var html in data["html"]) {
                 $(data["html"][html][0]).html(data["html"][html][1]);
             }
@@ -87,7 +96,7 @@ function sortable() {
                 type: "POST",
                 data: {"objs": serialized},
                 success: function(data) {
-                    data = $.parseJSON(data);
+                    data = safeParseJSON(data);
                     $.jGrowl(data["message"])
                 }
            });
@@ -173,7 +182,7 @@ $(function() {
         form.ajaxSubmit({
             data : {"action" : action},
             success : function(data) {
-                data = $.parseJSON(data);
+                data = safeParseJSON(data);
                 for (var html in data["html"]) {
                     $(data["html"][html][0]).html(data["html"][html][1]);
                 }
@@ -195,6 +204,7 @@ $(function() {
                 // trigger form-save-end event when new HTML has already been injected into page
                 var event = jQuery.Event("form-save-end");
                 event.form_id = form_id;
+                event.response_data = data;
                 $body.trigger(event);
             }
         });
@@ -205,7 +215,7 @@ $(function() {
     $body.on('click', ".ajax-link", function() {
         var url = $(this).attr("href");
         $.post(url, function(data) {
-            data = $.parseJSON(data);
+            data = safeParseJSON(data);
             for (var html in data["html"])
                 $(data["html"][html][0]).html(data["html"][html][1]);
             if (data["message"]) {
@@ -320,7 +330,7 @@ $(function() {
             // url = lfs_export_category_state category id
             var url = $(this).attr("data")
             $.post(url, function(data) {
-                data = $.parseJSON(data);
+                data = safeParseJSON(data);
                 // Sets 1/2
                 $(data["html"][0]).html(data["html"][1]);
                 // Sets checking
@@ -340,7 +350,7 @@ $(function() {
         // Loads children of clicked category.
         if ($(this).hasClass("collapsed")) {
             $.post(url, function(data) {
-                data = $.parseJSON(data);
+                data = safeParseJSON(data);
                 for (var html in data["html"])
                     $(data["html"][html][0]).html(data["html"][html][1]);
             });
@@ -489,7 +499,7 @@ $(function() {
                 type: "POST",
                 data: {"serialized": serialized},
                 success: function(data) {
-                    data = $.parseJSON(data);
+                    data = safeParseJSON(data);
                     $.jGrowl(data["message"])
                 }
            });
@@ -516,7 +526,7 @@ $(function() {
                 type: "POST",
                 data: {"categories": serialized},
                 success: function(data) {
-                    data = $.parseJSON(data);
+                    data = safeParseJSON(data);
                     $.jGrowl(data["message"])
                 }
            });
@@ -545,7 +555,7 @@ $(function() {
 
     $body.on('click', '#imagebrowser .lfs-pagination a', function(){
         $.get($(this).prop('href'), function(data) {
-            data = $.parseJSON(data);
+            data = safeParseJSON(data);
             $("#dialog").html(data["html"]);
         });
 

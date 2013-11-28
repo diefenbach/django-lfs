@@ -102,7 +102,7 @@
             onLoadAll: function(attachment_files) {
                 var url = $("#attachment_files").attr("data");
                 $.get(url, function(data) {
-                    data = $.parseJSON(data);
+                    data = safeParseJSON(data);
                     $("#attachments").html(data["attachments"]);
                     $.jGrowl(data["message"]);
                 });

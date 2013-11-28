@@ -124,7 +124,7 @@ def manage_related_products_inline(
         return HttpResponse(
             simplejson.dumps({
                 "html": [["#related-products-inline", result]],
-            }))
+            }), mimetype='application/json')
 
 
 # Actions
@@ -161,7 +161,7 @@ def add_related_products(request, product_id):
         "message": _(u"Related products have been added.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -189,7 +189,7 @@ def remove_related_products(request, product_id):
         "message": _(u"Related products have been removed.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -210,4 +210,4 @@ def update_related_products(request, product_id):
         "message": _(u"Related products have been updated.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')

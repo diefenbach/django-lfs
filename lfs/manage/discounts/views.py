@@ -151,7 +151,7 @@ def save_discount_criteria(request, id):
         "message": _("Modifications have been changed."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")

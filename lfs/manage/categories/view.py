@@ -57,7 +57,7 @@ def category_view(request, category_id, template_name="manage/category/view.html
         return HttpResponse(simplejson.dumps({
             "html": html,
             "message": message,
-        }, cls=LazyEncoder))
+        }, cls=LazyEncoder), mimetype='application/json')
     else:
         return view_html
 

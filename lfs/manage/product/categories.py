@@ -90,4 +90,4 @@ def change_categories(request, product_id):
 
     return HttpResponse(simplejson.dumps({
         "message": _(u"Categories have been saved."),
-    }, cls=LazyEncoder))
+    }, cls=LazyEncoder), mimetype='application/json')

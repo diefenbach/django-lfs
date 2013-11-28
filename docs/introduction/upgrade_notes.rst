@@ -35,3 +35,8 @@ This is not full reference of changes but at least some of them are described:
   and use elem.data('something') in JavaScript
 * added <div id="portlets-dialog" title="{% trans "Portlets dialog" %}"></div> to manage_base.html to handle properly inerting images to TinyMCE within portlets dialog
   (changes to lfs.manage.js with portlets dialog)
+* added some SEO related attributes to templates and canonical tags for variants
+* modified catalog/views.py -> category_products and catalog/views.py -> category_categories return value, so that it now contains
+  pagination data for use in main template (SEO optimization with rel="next/prev" (template: lfs/catalog/category_base.html)
+* modified mimetype returned by ajax calls to: application/json. This requireS changes in javascript ajax calls:
+  lfs.js, lfs.manage.js, lfs_tinymce.js, manage/product/attachments.html(!)
