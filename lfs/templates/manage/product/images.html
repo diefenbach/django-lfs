@@ -122,7 +122,7 @@
             onLoadAll: function(files) {
                 var url = $("#files").attr("data");
                 $.get(url, function(data) {
-                    data = $.parseJSON(data);
+                    data = safeParseJSON(data);
                     $("#images").html(data["images"]);
                     $.jGrowl(data["message"]);
                 });
