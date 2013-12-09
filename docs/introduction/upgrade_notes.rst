@@ -40,3 +40,4 @@ This is not full reference of changes but at least some of them are described:
   pagination data for use in main template (SEO optimization with rel="next/prev" (template: lfs/catalog/category_base.html)
 * modified mimetype returned by ajax calls to: application/json. This requireS changes in javascript ajax calls:
   lfs.js, lfs.manage.js, lfs_tinymce.js, manage/product/attachments.html(!)
+* moved javascript code from manage/product/images.html to lfs.manage.product.js and updated to use proper mimetypes in responses
