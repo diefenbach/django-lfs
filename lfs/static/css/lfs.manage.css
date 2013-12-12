@@ -827,14 +827,37 @@ ol {
     width: 150px;
 }
 
+.manage-images div.lfs-pagination {
+    padding: 10px;
+    font-size: 12px;
+}
+
 .manage-images .input {
     padding: 0;
     margin: 0;
+
 }
 
 .manage-images .image-form {
     float: left;
     margin: 10px;
+    position: relative;
+}
+
+.manage-images .image-form label.image-selector {
+    position: absolute;
+    display: block;
+    background-color: #eaea44;
+    padding: 1px;
+    top: -2px;
+    left: -2px;
+    box-shadow: 2px 2px 3px 0px #888888;
+    border: 1px solid #444444;
+    cursor: pointer;
+}
+
+.manage-images .image-form input{
+    cursor: pointer;
 }
 
 .manage-images .image {
