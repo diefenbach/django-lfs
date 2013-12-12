@@ -851,6 +851,10 @@ ol {
     padding: 1px;
     top: -2px;
     left: -2px;
+    -webkit-box-shadow: 2px 2px 3px 0px #888888;
+    -moz-box-shadow: 2px 2px 3px 0px #888888;
+    -ms-box-shadow: 2px 2px 3px 0px #888888;
+    -o-box-shadow: 2px 2px 3px 0px #888888;
     box-shadow: 2px 2px 3px 0px #888888;
     border: 1px solid #444444;
     cursor: pointer;
