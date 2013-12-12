@@ -38,7 +38,7 @@ def images(request, template_name="manage/images/images.html"):
         start = 1
 
     # filter
-    query = request.REQUEST.get('q')
+    query = request.REQUEST.get('q', '')
 
     # prepare paginator
     if query:
