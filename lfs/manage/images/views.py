@@ -150,16 +150,23 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
     except (ValueError, TypeError):
         start = 1
 
+    # filter
+    query = request.REQUEST.get('q', '')
+
     # prepare paginator
-    images = Image.objects.all()
-    paginator = Paginator(images, 25)
+    if query:
+        images_qs = Image.objects.filter(title__istartswith=query)
+    else:
+        images_qs = Image.objects.all()
+
+    paginator = Paginator(images_qs, 25)
 
     try:
         current_page = paginator.page(start)
     except (EmptyPage, InvalidPage):
         current_page = paginator.page(paginator.num_pages)
 
-    amount_of_images = images.count()
+    amount_of_images = images_qs.count()
 
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=request.path)
@@ -181,6 +188,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
         "sizes": sizes,
         "classes": classes,
         "images": images,
+        "query": query,
         "pagination": pagination_data
     }))
 

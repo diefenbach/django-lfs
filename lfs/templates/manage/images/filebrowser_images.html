@@ -3,8 +3,17 @@
 <h2>{% trans "Select image" %}</h2>
 <div id="imagebrowser">
     {% include "lfs/catalog/categories/product/products_navigation.html" %}
+
+    <div class="filter-wrapper">
+        <form action="{% url lfs_manage_imagebrowser %}" id="imagebrowser-filter" method="POST">
+            {% csrf_token %}
+            <input type="text" value="{{ query }}" name="q" /> <input class="filter-button" type="submit" value="{% trans "Filter" %}" />
+            <input type="hidden" value="{{ pagination.current_page }}" name="start" />
+        </form>
+    </div>
+
     {% for image in images %}
-        <div class="image-form">
+{% comment %}        <div class="image-form">
             <input type="radio"
                    class="image"
                    name="image"
@@ -13,7 +22,18 @@
             <div class="image">
                 <img src="{{ image.url }}" />
             </div>
+        </div>{% endcomment %}
+
+        <div class="image-form">
+            <label for="image-toggle-{{ image.id }}" class="image-selector">
+                <input id="image-toggle-{{ image.id }}" {% if image.checked %}checked="checked"{% endif %} class="toggle-images" type="radio" name="image" value="{{ image.url }}" />
+            </label>
+            <div class="image">
+                <img src="{{ image.url }}" />
+            </div>
+            <span class="image-title">{{ image.title }}</span>
         </div>
+
     {% empty %}
         <div>
             {% trans "There are no images yet" %}

@@ -43,7 +43,7 @@ function addEditor(selector, hide_save, height) {
             });
         }
    });
-};
+}
 
 function update_editor() {
     /* for each field first detach tinymce and then attach again */
