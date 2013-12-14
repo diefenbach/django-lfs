@@ -1,7 +1,5 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n %}
-{% load lfs_tags %}
-{% load lfs_manage_tags %}
+{% load i18n lfs_tags lfs_manage_tags compress %}
 
 {% block title %}{% trans "Manage Product" %}{% endblock %}
 
@@ -9,7 +7,9 @@
 {% block section %}manage-product{% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.manage.product.js"></script>
+    {% compress js %}
+        <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.manage.product.js"></script>
+    {% endcompress %}
     <script type="text/javascript">
         var MANUFACTURERS_AJAX_URL = '{% url lfs_manufacturers_ajax %}';
     </script>
