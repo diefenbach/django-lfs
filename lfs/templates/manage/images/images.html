@@ -29,7 +29,7 @@
             {% include "lfs/catalog/categories/product/products_navigation.html" %}
 
             <div class="filter-wrapper">
-                <form action="{% url lfs_manage_global_images %}" method="POST">
+                <form action="{% url lfs_manage_global_images %}" method="get">
                     {% csrf_token %}
                     <input type="text" value="{{ query }}" name="q" /> <input class="filter-button" type="submit" value="{% trans "Filter" %}" />
                     <input type="hidden" value="{{ pagination.current_page }}" name="start" />
