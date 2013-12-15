@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson
@@ -29,11 +30,42 @@ def images(request, template_name="manage/images/images.html"):
     """
     Display images management.
     """
-    result = render_to_string(template_name, RequestContext(request, {
-        "images": Image.objects.all()
-    }))
+    start = request.REQUEST.get('start')
+    # Calculates parameters for display.
+    try:
+        start = int(start)
+    except (ValueError, TypeError):
+        start = 1
 
-    return HttpResponse(result)
+    # filter
+    query = request.REQUEST.get('q', '')
+
+    # prepare paginator
+    if query:
+        images_qs = Image.objects.filter(title__istartswith=query)
+    else:
+        images_qs = Image.objects.all()
+    paginator = Paginator(images_qs, 50)
+
+    try:
+        current_page = paginator.page(start)
+    except (EmptyPage, InvalidPage):
+        current_page = paginator.page(paginator.num_pages)
+
+    amount_of_images = images_qs.count()
+
+    # Calculate urls
+    pagination_data = lfs_pagination(request, current_page, url=request.path)
+
+    pagination_data['total_text'] = ungettext('%(count)d image',
+                                              '%(count)d images',
+                                              amount_of_images) % {'count': amount_of_images}
+
+    return render(request, template_name, {
+        "images": current_page.object_list,
+        "pagination": pagination_data,
+        "query": query
+    })
 
 
 @permission_required("core.manage_shop")
@@ -112,23 +144,29 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
                 "title": _(u'right'),
                 "selected": 'right' == selected_class}]
 
-
     # Calculates parameters for display.
     try:
         start = int(start)
     except (ValueError, TypeError):
         start = 1
 
+    # filter
+    query = request.REQUEST.get('q', '')
+
     # prepare paginator
-    images = Image.objects.all()
-    paginator = Paginator(images, 25)
+    if query:
+        images_qs = Image.objects.filter(title__istartswith=query)
+    else:
+        images_qs = Image.objects.all()
+
+    paginator = Paginator(images_qs, 25)
 
     try:
         current_page = paginator.page(start)
     except (EmptyPage, InvalidPage):
         current_page = paginator.page(paginator.num_pages)
 
-    amount_of_images = images.count()
+    amount_of_images = images_qs.count()
 
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=request.path)
@@ -150,6 +188,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
         "sizes": sizes,
         "classes": classes,
         "images": images,
+        "query": query,
         "pagination": pagination_data
     }))
 

@@ -827,34 +827,59 @@ ol {
     width: 150px;
 }
 
+.manage-images div.lfs-pagination, #imagebrowser div.lfs-pagination {
+    padding: 10px;
+    font-size: 12px;
+}
+
 .manage-images .input {
     padding: 0;
     margin: 0;
 }
 
-.manage-images .image-form {
-    float: left;
+.image-form {
+    vertical-align: top;
+    display: inline-block;
     margin: 10px;
+    position: relative;
+    width: 120px;
 }
 
-.manage-images .image {
+.image-form .image-title {
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.image-form label.image-selector {
+    position: absolute;
+    display: block;
+    background-color: #eaea44;
+    padding: 3px;
+    top: -2px;
+    left: -2px;
+    -webkit-box-shadow: 2px 2px 3px 0px #888888;
+    -moz-box-shadow: 2px 2px 3px 0px #888888;
+    -ms-box-shadow: 2px 2px 3px 0px #888888;
+    -o-box-shadow: 2px 2px 3px 0px #888888;
+    box-shadow: 2px 2px 3px 0px #888888;
+    border: 1px solid #444444;
+    cursor: pointer;
+}
+
+.image-form input{
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+}
+
+.image-form .image {
     height: 100px;
     width: 100px;
     border: 1px solid #aaa;
     padding:10px;
 }
 
-#imagebrowser .image-form {
-    float: left;
-    margin: 10px;
-}
-
-#imagebrowser div.image {
-    height: 100px;
-    width: 100px;
-    border: 1px solid #aaa;
-    padding:10px;
-}
 
 /* lfs pagination */
 div.lfs-pagination span.current {
