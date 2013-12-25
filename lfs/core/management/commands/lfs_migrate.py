@@ -520,6 +520,11 @@ class Command(BaseCommand):
             ('current_category', models.fields.BooleanField(default=False)),
             ('slideshow', models.fields.BooleanField(default=False)),
         ))
+        
+        # Create an index for the product sorting fields
+        db.create_index("catalog_product", ["name"])
+        db.create_index("catalog_product", ["price"])
+        db.create_index("catalog_product", ["effective_price"])
 
         application.version = "0.8"
         application.save()
