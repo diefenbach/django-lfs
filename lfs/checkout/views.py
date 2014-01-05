@@ -133,8 +133,11 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
     payment_costs = lfs.payment.utils.get_payment_costs(request, selected_payment_method)
 
     # Cart costs
-    cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
-    cart_tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
+    cart_price = 0
+    cart_tax = 0
+    if cart is not None:
+        cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
+        cart_tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
     discounts = lfs.discounts.utils.get_valid_discounts(request)
     for discount in discounts:
@@ -143,27 +146,29 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
 
     # Voucher
     voucher_number = ''
-    try:
-        voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
-        voucher = Voucher.objects.get(number=voucher_number)
-    except Voucher.DoesNotExist:
-        display_voucher = False
-        voucher_value = 0
-        voucher_tax = 0
-        voucher_message = MESSAGES[6]
-    else:
-        lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
-        is_voucher_effective, voucher_message = voucher.is_effective(request, cart)
-        if is_voucher_effective:
-            display_voucher = True
-            voucher_value = voucher.get_price_gross(request, cart)
-            cart_price = cart_price - voucher_value
-            voucher_tax = voucher.get_tax(request, cart)
-            cart_tax = cart_tax - voucher_tax
+    display_voucher = False
+    voucher_value = 0
+    voucher_tax = 0
+    voucher_message = MESSAGES[6]
+    if cart is not None:
+        try:
+            voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
+            voucher = Voucher.objects.get(number=voucher_number)
+        except Voucher.DoesNotExist:
+            pass
         else:
-            display_voucher = False
-            voucher_value = 0
-            voucher_tax = 0
+            lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
+            is_voucher_effective, voucher_message = voucher.is_effective(request, cart)
+            if is_voucher_effective:
+                display_voucher = True
+                voucher_value = voucher.get_price_gross(request, cart)
+                cart_price = cart_price - voucher_value
+                voucher_tax = voucher.get_tax(request, cart)
+                cart_tax = cart_tax - voucher_tax
+            else:
+                display_voucher = False
+                voucher_value = 0
+                voucher_tax = 0
 
     if cart_price < 0:
         cart_price = 0
@@ -171,17 +176,18 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
         cart_tax = 0
 
     cart_items = []
-    for cart_item in cart.get_items():
-        product = cart_item.product
-        quantity = product.get_clean_quantity(cart_item.amount)
-        cart_items.append({
-            "obj": cart_item,
-            "quantity": quantity,
-            "product": product,
-            "product_price_net": cart_item.get_price_net(request),
-            "product_price_gross": cart_item.get_price_gross(request),
-            "product_tax": cart_item.get_tax(request),
-        })
+    if cart:
+        for cart_item in cart.get_items():
+            product = cart_item.product
+            quantity = product.get_clean_quantity(cart_item.amount)
+            cart_items.append({
+                "obj": cart_item,
+                "quantity": quantity,
+                "product": product,
+                "product_price_net": cart_item.get_price_net(request),
+                "product_price_gross": cart_item.get_price_gross(request),
+                "product_tax": cart_item.get_tax(request),
+            })
 
     return render_to_string(template_name, RequestContext(request, {
         "cart": cart,
