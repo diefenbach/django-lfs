@@ -451,16 +451,20 @@ def _get_filtered_orders(order_filters):
 
     # start
     start = order_filters.get("start", "")
+    s = start
     if start != "":
         s = lfs.core.utils.get_start_day(start)
-    else:
+
+    if not s:
         s = datetime.min
 
     # end
     end = order_filters.get("end", "")
+    e = end
     if end != "":
         e = lfs.core.utils.get_end_day(end)
-    else:
+
+    if not e:
         e = datetime.max
 
     orders = orders.filter(created__range=(s, e))

@@ -229,8 +229,11 @@ def get_start_day(date):
     """Takes a string such as ``2009-07-23`` and returns datetime object of
     this day.
     """
-    year, month, day = date.split("-")
-    start = datetime.datetime(int(year), int(month), int(day))
+    try:
+        year, month, day = date.split("-")
+        start = datetime.datetime(int(year), int(month), int(day))
+    except ValueError:
+        return None
     return start
 
 
@@ -238,7 +241,10 @@ def get_end_day(date):
     """Takes a string such as ``2009-07-23`` and returns a datetime object with
     last valid second of this day: 23:59:59.
     """
-    year, month, day = date.split("-")
+    try:
+        year, month, day = date.split("-")
+    except ValueError:
+        return None
     end = datetime.datetime(int(year), int(month), int(day))
     end = end + datetime.timedelta(1) - datetime.timedelta(microseconds=1)
 
