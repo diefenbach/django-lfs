@@ -534,7 +534,7 @@ $(function() {
     });
 
     $body.on('click', "#insert-image", function(e) {
-        var url = $("input.image:checked").attr("value");
+        var url = $("input.js-image:checked").prop("value");
         var size = $("#image-size").val();
         var klass = $("#image-class").val();
 

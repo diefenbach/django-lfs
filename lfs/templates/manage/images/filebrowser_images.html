@@ -26,7 +26,7 @@
 
         <div class="image-form">
             <label for="image-toggle-{{ image.id }}" class="image-selector">
-                <input id="image-toggle-{{ image.id }}" {% if image.checked %}checked="checked"{% endif %} class="toggle-images" type="radio" name="image" value="{{ image.url }}" />
+                <input id="image-toggle-{{ image.id }}" {% if image.checked %}checked="checked"{% endif %} class="toggle-images js-image" type="radio" name="image" value="{{ image.url }}" />
             </label>
             <div class="image">
                 <img src="{{ image.url }}" />
