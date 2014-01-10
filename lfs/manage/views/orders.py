@@ -147,6 +147,7 @@ def order_filters_inline(request, order_id, template_name="manage/order/order_fi
         "end": order_filters.get("end", ""),
         "name": order_filters.get("name", ""),
         "states": states,
+        "state_id": state_id
     }))
 
 
@@ -172,6 +173,7 @@ def orders_filters_inline(request, template_name="manage/order/orders_filters_in
     result = render_to_string(template_name, RequestContext(request, {
         "paginator": paginator,
         "page": page,
+        "state_id": state_id,
         "states": states,
         "start": order_filters.get("start", ""),
         "end": order_filters.get("end", ""),
@@ -244,9 +246,11 @@ def set_order_filters(request):
         html = (
             ("#selectable-orders", selectable_orders_inline(request, order_id)),
             ("#order-inline", order_inline(request, order_id=order_id)),
+            ("#orders-filters-inline", orders_filters_inline(request)),
         )
     else:
-        html = (("#orders-inline", orders_inline(request)),)
+        html = (("#orders-inline", orders_inline(request)),
+                ("#orders-filters-inline", orders_filters_inline(request)),)
 
     msg = _(u"Filters has been set")
 
@@ -451,16 +455,20 @@ def _get_filtered_orders(order_filters):
 
     # start
     start = order_filters.get("start", "")
+    s = start
     if start != "":
         s = lfs.core.utils.get_start_day(start)
-    else:
+
+    if not s:
         s = datetime.min
 
     # end
     end = order_filters.get("end", "")
+    e = end
     if end != "":
         e = lfs.core.utils.get_end_day(end)
-    else:
+
+    if not e:
         e = datetime.max
 
     orders = orders.filter(created__range=(s, e))

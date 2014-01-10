@@ -1,5 +1,4 @@
 # python imports
-from copy import deepcopy
 import datetime
 from urlparse import urlparse
 
