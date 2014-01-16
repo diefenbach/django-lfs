@@ -423,7 +423,7 @@ def changed_invoice_country(request):
     customer = lfs.customer.utils.get_or_create_customer(request)
     address = customer.selected_invoice_address
     country_iso = request.POST.get("invoice-country")
-    if address:
+    if address and country_iso:
         address.country = Country.objects.get(code=country_iso.lower())
         address.save()
         customer.sync_selected_to_default_invoice_address()
