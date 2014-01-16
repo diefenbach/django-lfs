@@ -570,7 +570,7 @@ def update_variants(request, product_id):
                     slug = request.POST.get("slug-%s" % prop_id)
                     if variant.slug != slug:
                         counter = 1
-                        new_slug = slug
+                        new_slug = slug[:80]
                         while Product.objects.exclude(pk=variant.pk).filter(slug=new_slug).exists():
                             new_slug = '%s-%s' % (slug[:(79 - len(str(counter)))], counter)
                             counter += 1
