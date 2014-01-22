@@ -301,7 +301,7 @@ def set_sorting(request):
         request.session["sorting"] = sorting
 
     # lfs_sorting_changed.send(category_id)
-    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    return HttpResponseRedirect(request.META.get("HTTP_REFERER", '/'))
 
 
 def category_view(request, slug, template_name="lfs/catalog/category_base.html"):
