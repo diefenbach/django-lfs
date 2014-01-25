@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.template.defaultfilters import striptags
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
@@ -1027,7 +1028,7 @@ class Product(models.Model):
             md = self.meta_description
 
         md = md.replace("<name>", self.get_name())
-        md = md.replace("<short-description>", self.get_short_description())
+        md = md.replace("<short-description>", striptags(self.get_short_description()))
         return md
 
     # TODO: Check whether there is a test case for that and write one if not.
