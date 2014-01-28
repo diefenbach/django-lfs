@@ -948,7 +948,7 @@ def lfs_form(context, form):
     if isinstance(form, BoundField):
         form = [form]
     context['lfs_form'] = form
-    context['lfs_form_is_form'] = hasattr(form,'non_field_errors')
+    context['lfs_form_is_form'] = hasattr(form, 'non_field_errors')
     return context
 
 

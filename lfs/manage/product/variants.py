@@ -570,7 +570,7 @@ def update_variants(request, product_id):
                     slug = request.POST.get("slug-%s" % prop_id)
                     if variant.slug != slug:
                         counter = 1
-                        new_slug = slug
+                        new_slug = slug[:80]
                         while Product.objects.exclude(pk=variant.pk).filter(slug=new_slug).exists():
                             new_slug = '%s-%s' % (slug[:(79 - len(str(counter)))], counter)
                             counter += 1
@@ -629,37 +629,33 @@ def update_variants(request, product_id):
                 except ProductPropertyValue.DoesNotExist:
                     pass
 
-                if prop.filterable:
-                    try:
-                        ppv_filterable = ProductPropertyValue.objects.get(product=variant,
+                if prop.filterable:  # it is possible that multiple values are selected for filter
+                    ppv_filterables = ProductPropertyValue.objects.filter(product=variant,
                                                                           property_id=property_id,
                                                                           type=PROPERTY_VALUE_TYPE_FILTER)
-                    except ProductPropertyValue.DoesNotExist:
-                        pass
 
                 if value != '':
+                    is_changed = True
                     if not ppv:
                         ppv = ProductPropertyValue.objects.create(product=variant,
                                                                   property_id=property_id,
                                                                   type=PROPERTY_VALUE_TYPE_VARIANT,
                                                                   value=value)
                     else:
+                        is_changed = ppv.value != value
                         ppv.value = value
                         ppv.save()
 
-                    if prop.filterable:
-                        if not ppv_filterable:
-                            ProductPropertyValue.objects.create(product=variant, property_id=property_id,
-                                                                value=value,
-                                                                type=PROPERTY_VALUE_TYPE_FILTER)
-                        else:
-                            ppv_filterable.value = value
-                            ppv_filterable.save()
+                    if prop.filterable and is_changed:
+                        ppv_filterables.delete()
+                        ProductPropertyValue.objects.create(product=variant,
+                                                            property_id=property_id,
+                                                            value=value,
+                                                            type=PROPERTY_VALUE_TYPE_FILTER)
 
                 elif ppv:
                     ppv.delete()
-                    if ppv_filterable:
-                        ppv_filterable.delete()
+                    ppv_filterables.delete()
 
     # Refresh variant positions
     for i, variant in enumerate(product.variants.order_by("variant_position")):

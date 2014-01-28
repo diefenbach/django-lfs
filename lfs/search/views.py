@@ -31,7 +31,7 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
                 Q(sub_type__in=(STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
 
         temp = Product.objects.filter(query)
-        total = len(temp)
+        total = temp.count()
         products = temp[0:5]
 
         products = render_to_string(template_name, RequestContext(request, {
@@ -67,9 +67,7 @@ def search(request, template_name="lfs/search/search_results.html"):
     if sorting:
         products = products.order_by(sorting)
 
-    total = 0
-    if products:
-        total += len(products)
+    total = products.count()
 
     return render_to_response(template_name, RequestContext(request, {
         "products": products,

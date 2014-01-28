@@ -47,7 +47,7 @@ def add_attachment(request, product_id):
     product = lfs_get_object_or_404(Product, pk=product_id)
     if request.method == "POST":
         for file_content in request.FILES.getlist("file"):
-            attachment = ProductAttachment(product=product, title=file_content.name)
+            attachment = ProductAttachment(product=product, title=file_content.name[:50])
             attachment.file.save(file_content.name, file_content, save=True)
 
     # Refresh positions
@@ -79,7 +79,7 @@ def update_attachments(request, product_id):
     elif action == "update":
         message = _(u"Attachment has been updated.")
         for attachment in product.attachments.all():
-            attachment.title = request.POST.get("title-%s" % attachment.id)
+            attachment.title = request.POST.get("title-%s" % attachment.id)[:50]
             attachment.position = request.POST.get("position-%s" % attachment.id)
             attachment.description = request.POST.get("description-%s" % attachment.id)
             attachment.save()

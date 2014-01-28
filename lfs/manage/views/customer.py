@@ -267,7 +267,7 @@ def set_ordering(request, ordering):
     elif ordering == "firstname":
         ordering = "addresses__firstname"
     elif ordering == "email":
-        ordering = "addresses__email"
+        ordering = "user__email"
 
     if ordering == request.session.get("customer-ordering"):
         if request.session.get("customer-ordering-order") == "":
