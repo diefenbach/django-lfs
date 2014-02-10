@@ -65,7 +65,7 @@ class LatestPortlet(Portlet):
         return LatestForm(instance=self, **kwargs)
 
     def __unicode__(self):
-        return "%s" % self.id
+        return u"%s" % self.id
 
 
 class LatestForm(forms.ModelForm):

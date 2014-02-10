@@ -192,7 +192,7 @@ class Category(models.Model):
         verbose_name_plural = _('Categories')
 
     def __unicode__(self):
-        return "%s (%s)" % (self.name, self.slug)
+        return u"%s (%s)" % (self.name, self.slug)
 
     def get_absolute_url(self):
         """
@@ -695,7 +695,7 @@ class Product(models.Model):
         ordering = ("name", )
 
     def __unicode__(self):
-        return "%s (%s)" % (self.name, self.slug)
+        return u"%s (%s)" % (self.name, self.slug)
 
     def save(self, *args, **kwargs):
         """
@@ -2009,7 +2009,7 @@ class ProductAccessories(models.Model):
         verbose_name_plural = "Product accessories"
 
     def __unicode__(self):
-        return "%s -> %s" % (self.product.name, self.accessory.name)
+        return u"%s -> %s" % (self.product.name, self.accessory.name)
 
     def get_price(self, request):
         """
@@ -2223,7 +2223,7 @@ class FilterStep(models.Model):
         ordering = ["start"]
 
     def __unicode__(self):
-        return "%s %s" % (self.property.name, self.start)
+        return u"%s %s" % (self.property.name, self.start)
 
 
 class GroupsPropertiesRelation(models.Model):
@@ -2356,7 +2356,7 @@ class ProductPropertyValue(models.Model):
         unique_together = ("product", "property", "value", "type")
 
     def __unicode__(self):
-        return "%s/%s: %s" % (self.product.name, self.property.name, self.value)
+        return u"%s/%s: %s" % (self.product.name, self.property.name, self.value)
 
     def save(self, *args, **kwargs):
         """

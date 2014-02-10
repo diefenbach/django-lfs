@@ -63,7 +63,7 @@ class ForsalePortlet(Portlet):
         return ForsaleForm(instance=self, **kwargs)
 
     def __unicode__(self):
-        return "%s" % self.id
+        return u"%s" % self.id
 
 
 class ForsaleForm(forms.ModelForm):

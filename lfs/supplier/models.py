@@ -15,4 +15,4 @@ class Supplier(models.Model):
     active = models.BooleanField(default=True)
 
     def __unicode__(self):
-        return "%s" % (self.name)
+        return u"%s" % (self.name)

@@ -157,4 +157,4 @@ class ShippingMethodPrice(models.Model, Criteria):
         ordering = ("priority", )
 
     def __unicode__(self):
-        return "%s" % self.price
+        return u"%s" % self.price
