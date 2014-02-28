@@ -114,10 +114,8 @@ def customer_inline(request, customer_id, template_name="manage/customer/custome
     query = Q()
     if customer.session:
         query |= Q(session=customer.session)
-    try:
+    if customer.user:
         query |= Q(user=customer.user)
-    except User.DoesNotExist:
-        pass
     orders = Order.objects.filter(query)
 
     try:
