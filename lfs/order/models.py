@@ -105,7 +105,7 @@ class Order(models.Model):
         ordering = ("-created", )
 
     def __unicode__(self):
-        return "%s (%s %s)" % (self.created.strftime("%x %X"), self.customer_firstname, self.customer_lastname)
+        return u"%s (%s %s)" % (self.created.strftime("%x %X"), self.customer_firstname, self.customer_lastname)
 
     def get_pay_link(self, request):
         """
@@ -159,7 +159,7 @@ class OrderItem(models.Model):
     product_tax = models.FloatField(_(u"Product tax"), default=0.0)
 
     def __unicode__(self):
-        return "%s" % self.product_name
+        return u"%s" % self.product_name
 
     @property
     def amount(self):

@@ -52,7 +52,7 @@ class Customer(models.Model):
     selected_country = models.ForeignKey(Country, verbose_name=_(u"Selected country"), blank=True, null=True)
 
     def __unicode__(self):
-        return "%s/%s" % (self.user, self.session)
+        return u"%s/%s" % (self.user, self.session)
 
     def get_email_address(self):
         """Returns the email address of the customer dependend on the user is
@@ -158,7 +158,7 @@ class BankAccount(models.Model):
     depositor = models.CharField(_(u"Depositor"), blank=True, max_length=100)
 
     def __unicode__(self):
-        return "%s / %s" % (self.account_number, self.bank_name)
+        return u"%s / %s" % (self.account_number, self.bank_name)
 
 
 class CreditCard(models.Model):
@@ -191,4 +191,4 @@ class CreditCard(models.Model):
     expiration_date_year = models.IntegerField(_(u"Expiration date year"), blank=True, null=True)
 
     def __unicode__(self):
-        return "%s / %s" % (self.type, self.owner)
+        return u"%s / %s" % (self.type, self.owner)

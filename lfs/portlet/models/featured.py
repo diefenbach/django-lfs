@@ -60,7 +60,7 @@ class FeaturedPortlet(Portlet):
         return FeaturedForm(instance=self, **kwargs)
 
     def __unicode__(self):
-        return "%s" % self.id
+        return u"%s" % self.id
 
 
 class FeaturedForm(forms.ModelForm):

@@ -248,27 +248,32 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
                     # If the shipping address is given then save it.
                     sam.save()
                 else:
-                    # If the shipping address is not given, the invoice address
-                    # is copied.
-                    if customer.selected_shipping_address:
-                        customer.selected_shipping_address.delete()
-                    shipping_address = deepcopy(customer.selected_invoice_address)
-                    shipping_address.id = None
-                    shipping_address.pk = None
-                    shipping_address.save()
-                    customer.selected_shipping_address = shipping_address
+                    # If the shipping address is not given, the invoice address is copied.
+                    if customer.selected_invoice_address:
+                        if customer.selected_shipping_address:
+                            # it might be possible that shipping and invoice addresses are same object
+                            if customer.selected_shipping_address.pk != customer.selected_invoice_address.pk:
+                                customer.selected_shipping_address.delete()
+                        shipping_address = deepcopy(customer.selected_invoice_address)
+                        shipping_address.id = None
+                        shipping_address.pk = None
+                        shipping_address.save()
+                        customer.selected_shipping_address = shipping_address
             else:
                 sam.save()
                 if request.POST.get("no_invoice", "") == "":
                     iam.save()
                 else:
-                    if customer.selected_invoice_address:
-                        customer.selected_invoice_address.delete()
-                    invoice_address = deepcopy(customer.selected_shipping_address)
-                    invoice_address.id = None
-                    invoice_address.pk = None
-                    invoice_address.save()
-                    customer.selected_invoice_address = invoice_address
+                    if customer.selected_shipping_address:
+                        if customer.selected_invoice_address:
+                            # it might be possible that shipping and invoice addresses are same object
+                            if customer.selected_invoice_address.pk != customer.selected_shipping_address.pk:
+                                customer.selected_invoice_address.delete()
+                        invoice_address = deepcopy(customer.selected_shipping_address)
+                        invoice_address.id = None
+                        invoice_address.pk = None
+                        invoice_address.save()
+                        customer.selected_invoice_address = invoice_address
             customer.sync_selected_to_default_addresses()
 
             # Save payment method

@@ -18,4 +18,4 @@ class Tax(models.Model):
     description = models.TextField(_(u"Description"), blank=True)
 
     def __unicode__(self):
-        return "%s%%" % self.rate
+        return u"%s%%" % self.rate

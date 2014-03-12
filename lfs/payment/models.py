@@ -104,7 +104,7 @@ class PaymentMethodPrice(models.Model, Criteria):
         for validity. Less comes first.
     """
     def __unicode__(self):
-        return "%s" % self.price
+        return u"%s" % self.price
 
     class Meta:
         ordering = ("priority", )
