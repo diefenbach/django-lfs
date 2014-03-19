@@ -52,7 +52,12 @@ def get_cart(request):
             cache_key = "%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user.pk)
             cart = cache.get(cache_key)
             if cart is None:
-                cart = Cart.objects.get(user=user)
+                try:
+                    cart = Cart.objects.get(user=user)
+                except Cart.MultipleObjectsReturned:
+                    carts = Cart.objects.filter(user=user)
+                    cart = carts[0]
+                    carts.exclude(pk=cart.pk).delete()
                 cache.set(cache_key, cart)
             return cart
         except ObjectDoesNotExist:
@@ -62,7 +67,12 @@ def get_cart(request):
             cache_key = "%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, session_key)
             cart = cache.get(cache_key)
             if cart is None:
-                cart = Cart.objects.get(session=session_key)
+                try:
+                    cart = Cart.objects.get(session=session_key)
+                except Cart.MultipleObjectsReturned:
+                    carts = Cart.objects.filter(session=session_key)
+                    cart = carts[0]
+                    carts.exclude(pk=cart.pk).delete()
                 cache.set(cache_key, cart)
             return cart
         except ObjectDoesNotExist:
