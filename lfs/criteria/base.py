@@ -16,7 +16,7 @@ class Criteria(object):
         for criterion in self.get_criteria():
             criterion.request = request
             criterion.product = product
-            if criterion.is_valid() == False:
+            if not criterion.is_valid():
                 return False
         return True
 

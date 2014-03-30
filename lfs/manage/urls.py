@@ -320,6 +320,14 @@ urlpatterns += patterns('lfs.manage.discounts.views',
     url(r'^no-discounts$', "no_discounts", name="lfs_manage_no_discounts"),
 )
 
+
+# Discounts / Products
+urlpatterns += patterns('lfs.manage.discounts.views',
+    url(r'^assign-products-to-discount/(?P<discount_id>\d*)', "assign_products", name="lfs_assign_products_to_discount"),
+    url(r'^remove-products-from-discount/(?P<discount_id>\d*)', "remove_products", name="lfs_discount_remove_products"),
+    url(r'^discount-products-inline/(?P<discount_id>\d*)', "products_inline", name="lfs_discount_products_inline"),
+)
+
 # Pages
 urlpatterns += patterns('lfs.manage.pages.views',
     url(r'^add-page$', "add_page", name="lfs_add_page"),

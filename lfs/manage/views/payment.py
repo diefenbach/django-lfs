@@ -222,7 +222,7 @@ def save_payment_method_criteria(request, payment_method_id):
 
     result = simplejson.dumps({
         "html": html,
-        "message": _(u"Modifications have been changed."),
+        "message": _(u"Changes have been saved."),
     }, cls=LazyEncoder)
 
     return HttpResponse(result, mimetype='application/json')
@@ -243,7 +243,7 @@ def save_payment_price_criteria(request, payment_price_id):
 
     result = simplejson.dumps({
         "html": html,
-        "message": _(u"Modifications have been changed."),
+        "message": _(u"Changes have been saved."),
     }, cls=LazyEncoder)
 
     return HttpResponse(result, mimetype='application/json')

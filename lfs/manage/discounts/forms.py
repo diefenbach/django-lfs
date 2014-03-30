@@ -11,3 +11,4 @@ class DiscountForm(ModelForm):
     """
     class Meta:
         model = Discount
+        fields = ('name', 'active', 'value', 'type', 'tax', 'sku')
