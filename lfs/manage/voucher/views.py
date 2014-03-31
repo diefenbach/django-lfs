@@ -169,6 +169,8 @@ def add_vouchers(request, group_id):
     voucher_group = VoucherGroup.objects.get(pk=group_id)
     form = VoucherForm(data=request.POST)
 
+    msg = ""
+
     if form.is_valid():
         try:
             amount = int(request.POST.get("amount", 0))
@@ -200,8 +202,6 @@ def add_vouchers(request, group_id):
             )
 
             msg = _(u"Vouchers have been created.")
-    else:
-        msg = ""
 
     return render_to_ajax_response(
         (("#vouchers", vouchers_tab(request, voucher_group)), ),
