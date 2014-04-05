@@ -44,7 +44,9 @@ def property_group_deleted_listener(sender, instance, **kwargs):
 
     for product in products:
         for prop in properties:
-            ProductPropertyValue.objects.filter(product=product, property=prop).delete()
+            # check if property is only in one group attached to product
+            if prop.groups.filter(pk__in=product.property_groups.all()).count() == 1:
+                ProductPropertyValue.objects.filter(product=product, property=prop).delete()
 pre_delete.connect(property_group_deleted_listener, sender=PropertyGroup)
 
 
@@ -60,7 +62,9 @@ def property_removed_from_property_group_listener(sender, instance, **kwargs):
     products = instance.group.products.all()
 
     for product in products:
-        ProductPropertyValue.objects.filter(product=product, property=prop).delete()
+        # check if property is only in one group attached to product
+        if prop.groups.filter(pk__in=product.property_groups.all()).count() == 1:
+            ProductPropertyValue.objects.filter(product=product, property=prop).delete()
 pre_delete.connect(property_removed_from_property_group_listener, sender=GroupsPropertiesRelation)
 
 
@@ -69,11 +73,13 @@ def product_removed_from_property_group_listener(sender, **kwargs):
     This is called when a product is removed from a property group.
 
     Deletes all ProductPropertyValue for this product and the properties which
-    are belong to this property group.
+    belong to this property group.
     """
     property_group, product = sender
 
-    ProductPropertyValue.objects.filter(product=product, property__groups=property_group).delete()
+    for ppv in ProductPropertyValue.objects.filter(product=product, property__groups=property_group):
+        if not ppv.product.property_groups.exclude(pk=property_group.pk).filter(properties=ppv.property).exists():
+            ppv.delete()
 product_removed_property_group.connect(product_removed_from_property_group_listener)
 
 
