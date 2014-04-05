@@ -44,7 +44,8 @@ def property_group_deleted_listener(sender, instance, **kwargs):
 
     for product in products:
         for prop in properties:
-            ProductPropertyValue.objects.filter(product=product, property=prop).delete()
+            if prop.groups.count() == 1:
+                ProductPropertyValue.objects.filter(product=product, property=prop).delete()
 pre_delete.connect(property_group_deleted_listener, sender=PropertyGroup)
 
 
