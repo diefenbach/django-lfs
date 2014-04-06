@@ -58,7 +58,7 @@ $(function() {
 
     if (message != null) {
         $.jGrowl(message);
-        $.cookie("message", null, { path: '/' });
+        $.removeCookie('message', { path: '/' });
     }
 
     // Rating #################################################################
