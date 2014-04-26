@@ -4111,7 +4111,7 @@ msgid "Name/SKU"
 msgstr "Název/SKU"
 
 #: templates/manage/product/product_filters_inline.html:68
-msgid "Fiter products"
+msgid "Filter products"
 msgstr "Filtrovat produkty"
 
 #: templates/manage/product/products.html:5
