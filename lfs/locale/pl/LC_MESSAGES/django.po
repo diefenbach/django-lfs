@@ -4082,7 +4082,7 @@ msgid "Name/SKU"
 msgstr "Nazwa/Numer katalogowy"
 
 #: templates/manage/product/product_filters_inline.html:64
-msgid "Fiter products"
+msgid "Filter products"
 msgstr "Filtruj produkty"
 
 #: templates/manage/product/products.html:5
