@@ -4276,7 +4276,7 @@ msgstr "Nom"
 
 #: templates/manage/product/product_filters_inline.html:68
 #, fuzzy
-msgid "Fiter products"
+msgid "Filter products"
 msgstr "Modifier le produit"
 
 #: templates/manage/product/products.html:5
