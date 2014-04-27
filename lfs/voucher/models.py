@@ -87,7 +87,7 @@ class Voucher(models.Model):
         - used_date
             The date the voucher has been redeemed.
 
-        - The quanity of how often the voucher can be used. Let it empty
+        - The quantity of how often the voucher can be used. Let it empty
           the voucher can be used unlimited.
     """
     number = models.CharField(max_length=100, unique=True)
