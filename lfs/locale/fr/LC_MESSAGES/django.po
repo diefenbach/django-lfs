@@ -564,7 +564,7 @@ msgid "Price unit"
 msgstr "Prix net"
 
 #: catalog/models.py:598
-msgid "Quanity field unit"
+msgid "Quantity field unit"
 msgstr ""
 
 #: catalog/models.py:601
