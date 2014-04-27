@@ -558,7 +558,7 @@ msgid "Price unit"
 msgstr "Jednostka ceny"
 
 #: catalog/models.py:597
-msgid "Quanity field unit"
+msgid "Quantity field unit"
 msgstr "Jednostka pola z ilością"
 
 #: catalog/models.py:600
