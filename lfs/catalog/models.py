@@ -596,7 +596,7 @@ class Product(models.Model):
                                         max_length=255)
     effective_price = models.FloatField(_(u"Price"), blank=True)
     price_unit = models.CharField(_(u"Price unit"), blank=True, max_length=20, choices=LFS_PRICE_UNITS)
-    unit = models.CharField(_(u"Quanity field unit"), blank=True, max_length=20, choices=LFS_UNITS)
+    unit = models.CharField(_(u"Quantity field unit"), blank=True, max_length=20, choices=LFS_UNITS)
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
     images = generic.GenericRelation("Image", verbose_name=_(u"Images"),
