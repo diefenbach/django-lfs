@@ -553,7 +553,7 @@ msgid "Price unit"
 msgstr "Jednotka ceny"
 
 #: catalog/models.py:598
-msgid "Quanity field unit"
+msgid "Quantity field unit"
 msgstr "Jednotka množství"
 
 #: catalog/models.py:601
