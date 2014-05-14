@@ -15,7 +15,6 @@ class ProductSitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.5
 
-    # So we just get standard products and the parents of products with variants
     def items(self):
         return Product.objects.filter(active=True).exclude(sub_type=2)
 
