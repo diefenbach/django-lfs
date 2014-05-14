@@ -15,8 +15,9 @@ class ProductSitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.5
 
+    # So we just get standard products and the parents of products with variants
     def items(self):
-        return Product.objects.filter(active=True)
+        return Product.objects.filter(active=True).exclude(sub_type=2)
 
     def lastmod(self, obj):
         return obj.creation_date
