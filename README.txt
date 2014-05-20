@@ -27,6 +27,14 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.7.8 (2013-05-20)
+------------------
+
+* Bugfix: excludes variants of inactive parents
+* Bugfix: fixes issue #13 in lfs_theme
+* Bugfix: fixes removing of products on manufacturer delete
+* Bugfix: adds field 'link' to action add form; updates docs; issue #51.
+
 0.7.7 (2013-01-20)
 ------------------
 
