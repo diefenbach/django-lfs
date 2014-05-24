@@ -6,8 +6,6 @@ from django.core.cache import cache
 # lfs imports
 from lfs.catalog.models import Product
 
-from tagging.models import TaggedItem
-
 register = template.Library()
 
 
@@ -27,15 +25,6 @@ def related_products_by_tags_portlet(context, product, num=None):
 
 def _get_related_products_by_tags(product, num=None):
     """Returns a dict with related products by tags.
-
-    This is just a thin wrapper for the get_related method of the
-    TaggedItem manager of the tagging product in order to provide caching.
-    From the tagging product's doc string (mutatis mutantis):
-
-    Returns a list of products which share tags with the product with passed id
-    ordered by the number of shared tags in descending order.
-
-    See there for more.
     """
     # Try to get it out of cache
     cache_key = "%s-related-products-by-tags-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product.id)
@@ -44,7 +33,7 @@ def _get_related_products_by_tags(product, num=None):
         return {"related_products": related_products}
 
     # Create related products
-    related_products = TaggedItem.objects.get_related(product, Product, num)
+    related_products = product.tags.similar_objects()
 
     # Save related_products within cache
     cache.set(cache_key, related_products)
