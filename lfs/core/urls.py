@@ -1,4 +1,5 @@
 # django imports
+from django.conf import settings
 from django.conf.urls.defaults import *
 
 # lfs imports
@@ -108,13 +109,15 @@ urlpatterns += patterns('lfs.search.views',
 )
 
 # Tagging
-urlpatterns += patterns('',
-    (r'^tagging/', include('lfs.tagging.urls')),
-)
+if 'lfs.tagging' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        (r'^tagging/', include('lfs.tagging.urls')),
+    )
 
-urlpatterns += patterns('',
-    (r'', include('lfs_contact.urls')),
-)
+if 'lfs_contact' in settings.INSTALLED_APPS:
+    urlpatterns += patterns('',
+        (r'', include('lfs_contact.urls')),
+    )
 
 
 one_time_setup()
