@@ -221,7 +221,7 @@ def set_category_levels():
     """
     from lfs.catalog.models import Category
     for category in Category.objects.all():
-        category.level = len(category.get_parents()) + 1
+        category.level = len(category.get_parents())
         category.save()
 
 
