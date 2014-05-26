@@ -2764,7 +2764,6 @@ class ProductTestCase(TestCase):
         self.assertEqual(len(Product.objects.all()), 5)
 
         product = Product.objects.get(slug="product-1")
-        all_props = product.get_property_select_fields()
 
         variant_data = {
             'slug': 'variant-slug',
