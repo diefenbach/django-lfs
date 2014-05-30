@@ -40,15 +40,10 @@ class CategoryForm(ModelForm):
         super(CategoryForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
 
-        try:
-            context = kwargs["instance"]
-        except KeyError:
-            context = None
-
     class Meta:
         model = Category
-        fields = ("name", "slug", "short_description", "description", "short_description",
-        "exclude_from_navigation", "image", "static_block")
+        fields = ("name", "slug", "short_description", "description",
+                  "exclude_from_navigation", "image", "static_block")
 
 
 @permission_required("core.manage_shop")

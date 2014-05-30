@@ -1,6 +1,5 @@
 # django imports
 from django import forms
-from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from lfs.addresses.settings import CHECKOUT_NOT_REQUIRED_ADDRESS
