@@ -382,6 +382,11 @@ $(function() {
             update_html(data);
         });
     });
+
+    $(".property-checkbox").live("change", function() {
+        var url = $(this).attr("url");
+        document.location=url;
+    });
 })
 
 $(document).ajaxSend(function(event, xhr, settings) {
@@ -405,3 +410,4 @@ $(document).ajaxSend(function(event, xhr, settings) {
         xhr.setRequestHeader("X-CSRFToken", $.cookie("csrftoken"));
     }
 });
+

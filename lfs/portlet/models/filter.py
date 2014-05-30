@@ -38,8 +38,7 @@ class FilterPortlet(Portlet):
 
         # get saved filters
         set_product_filters = request.session.get("product-filter", {})
-        set_product_filters = set_product_filters.items()
-        set_price_filters = request.session.get("price-filter")
+        set_price_filters = request.session.get("price-filter", {})
 
         # calculate product filters
         if self.show_product_filters:
