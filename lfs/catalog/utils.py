@@ -1,4 +1,5 @@
 # python imports
+import locale
 import math
 
 # django imports
@@ -64,8 +65,8 @@ def get_price_filters(category, product_filter, price_filter):
     if price_filter:
         return {
             "show_reset": True,
-            "min": price_filter["min"],
-            "max": price_filter["max"]
+            "min": locale.format("%.2f", price_filter["min"]),
+            "max": locale.format("%.2f", price_filter["max"])
         }
 
     # Otherwise we calculated min and max based on the current product filters
@@ -81,10 +82,13 @@ def get_price_filters(category, product_filter, price_filter):
                       WHERE id IN (%s)""" % product_ids)
     row = cursor.fetchall()[0]
 
+    min = locale.format("%.2f", float(row[0]))
+    max = locale.format("%.2f", float(row[1]))
+
     return {
         "show_reset": False,
-        "min": row[0] or 0,
-        "max": row[1] or 0,
+        "min": min,
+        "max": max,
         "disabled": (row[0] and row[1]) is None,
     }
 
