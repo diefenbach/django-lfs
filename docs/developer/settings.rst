@@ -177,3 +177,6 @@ LFS_PAYPAL_REDIRECT
     after he submitted his order. If False the thank-you page is displayed
     with a link to PayPal.
 
+LFS_PAYPAL_HTTPS
+    True or False. If True the ``notify`` and ``return`` url is using ``https``
+    otherwise ``http``.

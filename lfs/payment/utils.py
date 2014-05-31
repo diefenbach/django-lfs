@@ -1,5 +1,6 @@
 # python imports
 import locale
+import logging
 
 # django imports
 from django.conf import settings
@@ -20,6 +21,8 @@ from lfs.payment.settings import PM_ORDER_ACCEPTED
 
 # other imports
 from paypal.standard.conf import POSTBACK_ENDPOINT, SANDBOX_POSTBACK_ENDPOINT
+
+logger = logging.getLogger("default")
 
 
 def update_to_valid_payment_method(request, customer, save=False):
@@ -189,13 +192,18 @@ def get_paypal_link_for_order(order):
     conv = locale.localeconv()
     default_currency = conv['int_curr_symbol']
 
+    if getattr(settings, "LFS_PAYPAL_HTTPS", False):
+        paypal_host = "https"
+    else:
+        paypal_host = "http"
+
     info = {
         "cmd": "_xclick",
         "upload": "1",
         "business": settings.PAYPAL_RECEIVER_EMAIL,
         "currency_code": default_currency,
-        "notify_url": "http://" + current_site.domain + reverse('paypal-ipn'),
-        "return": "http://" + current_site.domain + reverse('paypal-pdt'),
+        "notify_url": "%s://%s%s" % (paypal_host, current_site.domain, reverse('paypal-ipn')),
+        "return": "%s://%s%s" % (paypal_host, current_site.domain, reverse('paypal-pdt')),
         "first_name": order.invoice_firstname,
         "last_name": order.invoice_lastname,
         "address1": order.invoice_line1,
@@ -216,5 +224,7 @@ def get_paypal_link_for_order(order):
         url = SANDBOX_POSTBACK_ENDPOINT + "?" + parameters
     else:
         url = POSTBACK_ENDPOINT + "?" + parameters
+
+    logger.info("PAYPAL URL: %s" % url)
 
     return url
