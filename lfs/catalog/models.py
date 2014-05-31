@@ -695,11 +695,10 @@ class Product(models.Model):
         """
         Overwritten to save effective_price.
         """
-        if self.for_sale:
-            self.effective_price = self.for_sale_price
+        if self.get_for_sale():
+            self.effective_price = self.get_for_sale_price(request=None)
         else:
-            self.effective_price = self.price
-
+            self.effective_price = self.get_price(request=None)
         super(Product, self).save(*args, **kwargs)
 
     def get_absolute_url(self):

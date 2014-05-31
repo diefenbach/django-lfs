@@ -334,10 +334,10 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
         matched_product_ids = []
 
         # Get all variants of the products
-        variants = lfs.catalog.models.Product.objects.filter(parent__in=products)
+        variants = lfs.catalog.models.Product.objects.filter(parent__in=products, active=True)
 
         # Filter the variants by price
-        variants = variants.filter(effective_price__range=[price_filter["min"], price_filter["max"]])
+        variants = variants.filter(effective_price__range=[price_filter["min"], price_filter["max"]], active=True)
 
         # Get the parent ids of the variants as the "product with variants"
         # should be displayed and not the variants.
@@ -355,7 +355,7 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting)
             matched_product_ids.extend(parent_ids)
 
         # Filter the products
-        products = products.filter(effective_price__range=[price_filter["min"], price_filter["max"]])
+        products = products.filter(effective_price__range=[price_filter["min"], price_filter["max"]], active=True)
 
         # Merge the results
         matched_product_ids.extend([p.id for p in products])
