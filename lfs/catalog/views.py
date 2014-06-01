@@ -175,8 +175,9 @@ def set_number_filter(request):
     if product_filter.get("number-filter") is None:
         product_filter["number-filter"] = {}
 
-    min = request.POST.get("min", 1)
-    max = request.POST.get("max", 1)
+    min = lfs.core.utils.atof(request.POST.get("min", 1))
+    max = lfs.core.utils.atof(request.POST.get("max", 1))
+
     property_id = request.POST.get("property_id")
     category_slug = request.POST.get("category_slug")
 

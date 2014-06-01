@@ -82,8 +82,14 @@ def get_price_filters(category, product_filter, price_filter):
                       WHERE id IN (%s)""" % product_ids)
     row = cursor.fetchall()[0]
 
-    min = locale.format("%.2f", float(row[0]))
-    max = locale.format("%.2f", float(row[1]))
+    try:
+        min = locale.format("%.2f", float(row[0]))
+    except TypeError:
+        min = 0.0
+    try:
+        max = locale.format("%.2f", float(row[1]))
+    except TypeError:
+        max = 0.0
 
     return {
         "show_reset": False,
@@ -101,7 +107,6 @@ def get_product_filters(category, product_filter, price_filter, sorting):
     options_mapping = get_option_mapping()
     property_ids = _get_property_ids()
     product_ids = _get_product_ids(category)
-    filtered_product_ids = _get_filtered_product_ids(category, product_filter, price_filter)
     set_filters = dict(product_filter)
 
     ########## Number Fields ###################################################
@@ -112,16 +117,27 @@ def get_product_filters(category, product_filter, price_filter, sorting):
                       WHERE type=%s
                       AND product_id IN (%s)
                       AND property_id IN (%s)
-                      GROUP BY property_id""" % (PROPERTY_VALUE_TYPE_FILTER, filtered_product_ids, property_ids))
+                      GROUP BY property_id""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
 
     for row in cursor.fetchall():
         prop = properties_mapping[row[0]]
         if prop.is_select_field or prop.is_text_field or not prop.filterable:
             continue
-        if product_filter.get("number-filter"):
+        if product_filter.get("number-filter", {}).get(str(prop.id)):
             min, max = product_filter.get("number-filter").get(str(prop.id))[0:2]
+            show_reset = True
         else:
             min, max = row[1:3]
+            show_reset = False
+
+        try:
+            min = locale.format("%.2f", float(min))
+        except TypeError:
+            min = 0.0
+        try:
+            max = locale.format("%.2f", float(max))
+        except TypeError:
+            max = 0.0
 
         number_fields.append({
             "id": row[0],
@@ -130,12 +146,12 @@ def get_product_filters(category, product_filter, price_filter, sorting):
             "name": prop.name,
             "title": prop.title,
             "unit": prop.unit,
-            "show_reset": product_filter.get("number-filter"),
+            "show_reset": show_reset,
             "show_quantity": True,
             "items": {"min": min, "max": max},
         })
 
-    ########## Select Fields ###################################################
+    ########## Select Fields & Text Fields #####################################
     result = []
     cursor = connection.cursor()
     cursor.execute("""SELECT property_id, value
@@ -148,6 +164,7 @@ def get_product_filters(category, product_filter, price_filter, sorting):
     properties = {}
     for row in cursor.fetchall():
         prop = properties_mapping[row[0]]
+
         if prop.is_number_field or not prop.filterable:
             continue
 
@@ -156,17 +173,16 @@ def get_product_filters(category, product_filter, price_filter, sorting):
             position = options_mapping[row[1]].position
         else:
             name = row[1]
+            position = 10
 
         if row[0] not in properties:
             properties[row[0]] = []
-
         properties[row[0]].append({
             "id": row[0],
             "value": row[1],
             "name": name,
             "title": prop.title,
             "position": position,
-            "quantity": 0,
             "show_quantity": True,
         })
 
