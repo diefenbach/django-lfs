@@ -2,15 +2,15 @@
 
 <h2>{% trans 'Criteria' %}</h2>
 
-<form action="{% url lfs_manage_save_discount_criteria discount.id %}"
+<form action="{% url 'lfs_manage_save_discount_criteria' discount.id %}"
       method="post">
     <div class="top-buttons">
         <a class="criterion-add-first-button"
-           href="{% url lfs_add_criterion %}">
-            <img class="icon-padding" 
+           href="{% url 'lfs_add_criterion' %}">
+            <img class="icon-padding"
                  src="{{ STATIC_URL }}icons/add.png"
                  alt="{% trans 'Add' %}" />
-            
+
             {% trans 'Add criterion' %}
         </a>
     </div>
@@ -19,11 +19,11 @@
         {% for criterion in criteria %}
             {{ criterion|safe }}
         {% endfor %}
-    </table>  
+    </table>
 
     <div class="buttons">
-        <input class="ajax-save-button button" 
-               type="submit" 
+        <input class="ajax-save-button button"
+               type="submit"
                value="{% trans 'Save criteria' %}" />
     </div>
 

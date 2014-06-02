@@ -4,7 +4,7 @@
 
 {% if product.is_variant %}
     <form id="active-images-update-form"
-          action="{% url lfs_manage_update_active_images product.id %}"
+          action="{% url 'lfs_manage_update_active_images' product.id %}"
           method="post">
         {% csrf_token %}
         <input type="checkbox"
@@ -20,7 +20,7 @@
 
 {% if product.images.all %}
     <form id="product-images-update-form"
-          action="{% url lfs_manage_update_images product.id %}"
+          action="{% url 'lfs_manage_update_images' product.id %}"
           method="post">
 
         <table class="lfs-manage-table images">
@@ -67,12 +67,12 @@
                     <td class="right-padding">
                         {% if not forloop.first %}
                             <a class="up ajax-link"
-                               href="{% url lfc_move_image image.id %}?direction=0"
+                               href="{% url 'lfs_move_image' image.id %}?direction=0"
                                title='{% trans "Move Up" %}'></a>
                         {% endif %}
                         {% if not forloop.last %}
                             <a class="down ajax-link"
-                               href="{% url lfc_move_image image.id %}?direction=1"
+                               href="{% url 'lfs_move_image' image.id %}?direction=1"
                                title='{% trans "Move Down" %}'></a>
                         {% else %}
                             <span class="blank"></span>
@@ -96,9 +96,9 @@
 <h2 class="heading-middle">{% trans 'Add images' %}</h2>
 
 <div id="content">
-    <form id="file_upload" action="{% url lfs_manage_add_image product.id %}" method="POST" enctype="multipart/form-data">
+    <form id="file_upload" action="{% url 'lfs_manage_add_image' product.id %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <input class="button" type="file" name="file" multiple>
     </form>
-    <table id="files" data="{% url lfs_manage_images product.id %}" msg='{% trans "Uploading images:" %}'></table>
+    <table id="files" data="{% url 'lfs_manage_images' product.id %}" msg='{% trans "Uploading images:" %}'></table>
 </div>

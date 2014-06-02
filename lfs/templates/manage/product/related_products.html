@@ -5,7 +5,7 @@
 
 {% if product.is_variant %}
     <form id="related-products-update-form"
-          action="{% url lfs_manage_update_related_products product.id %}"
+          action="{% url 'lfs_manage_update_related_products' product.id %}"
           method="post">
         <input type="checkbox"
                name="active_related_products"
@@ -20,7 +20,7 @@
 {% endif %}
 
 <form id="filter-related-products-form"
-      action="{% url lfs_manage_related_products_inline product.id %}"
+      action="{% url 'lfs_manage_related_products_inline' product.id %}"
       onsubmit="return false">
     <input class="refresh-on-keyup" type="text" name="filter"/>
 

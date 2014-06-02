@@ -129,7 +129,7 @@ urlpatterns += patterns('lfs.manage.product.images',
     url(r'^update-images/(?P<product_id>\d*)$', "update_images", name="lfs_manage_update_images"),
     url(r'^product-images/(?P<product_id>\d*)$', "manage_images", name="lfs_manage_images"),
     url(r'^update-active-images/(?P<product_id>\d*)$', "update_active_images", name="lfs_manage_update_active_images"),
-    url(r'^move-image/(?P<id>\d+)$', "move_image", name="lfc_move_image"),
+    url(r'^move-image/(?P<id>\d+)$', "move_image", name="lfs_move_image"),
 )
 
 # Product Attachments

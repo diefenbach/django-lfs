@@ -7,7 +7,7 @@
 </div>
 
 <h2 style="padding-top:20px">{% trans "Add vouchers" %}</h2>
-<form action="{% url lfs_manage_add_vouchers voucher_group.id %}"
+<form action="{% url 'lfs_manage_add_vouchers' voucher_group.id %}"
       method="post">
 
     {% include "manage/lfs_form.html" %}

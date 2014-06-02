@@ -3,9 +3,9 @@
 <h2>{% trans 'Products' %}</h2>
 <p>{% trans "If you assign products to discount then it will only be applied to selected products. If you don't select any product then Discount will be applied to whole cart." %}</p>
 <form id="filter-products-form"
-      action="{% url lfs_discount_products_inline discount.id %}"
+      action="{% url 'lfs_discount_products_inline' discount.id %}"
       onsubmit="return false">
-    <input class="refresh-on-keyup" type="text" name="filter"/>    
+    <input class="refresh-on-keyup" type="text" name="filter"/>
     {% category_filter "refresh-on-change" "products_category_filter" %}
     {% manufacturer_filter "refresh-on-change" "products_manufacturer_filter" %}
 </form>

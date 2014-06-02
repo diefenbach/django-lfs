@@ -16,11 +16,11 @@
 
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_add_customer_tax %}">{% trans 'Add Customer Tax' %}</a>
+           href="{% url 'lfs_add_customer_tax' %}">{% trans 'Add Customer Tax' %}</a>
 
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this customer tax?' %}"
-           href="{% url lfs_delete_customer_tax customer_tax.id %}">{% trans 'Delete Customer Tax' %}</a>
+           href="{% url 'lfs_delete_customer_tax' customer_tax.id %}">{% trans 'Delete Customer Tax' %}</a>
     </div>
 
     <div id="manage-tabs">

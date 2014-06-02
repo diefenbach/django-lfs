@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <h2>{% trans "Options" %}</h2>
-<form action="{% url lfs_manage_save_voucher_options %}"
+<form action="{% url 'lfs_manage_save_voucher_options' %}"
       method="post">
 
     {% include "manage/lfs_form.html" %}

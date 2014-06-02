@@ -29,7 +29,7 @@ urlpatterns += patterns('lfs.cart.views',
     url(r'^add-accessory-to-cart/(?P<product_id>\d*)/(?P<quantity>.*)$', "add_accessory_to_cart", name="lfs_add_accessory_to_cart"),
     url(r'^added-to-cart$', "added_to_cart", name="lfs_added_to_cart"),
     url(r'^delete-cart-item/(?P<cart_item_id>\d*)$', "delete_cart_item", name="lfs_delete_cart_item"),
-    url(r'^refresh-cart$', "refresh_cart"),
+    url(r'^refresh-cart$', "refresh_cart", name="lfs_refresh_cart"),
     url(r'^cart$', "cart", name="lfs_cart"),
     url(r'^check-voucher-cart/$', "check_voucher", name="lfs_check_voucher_cart"),
 )

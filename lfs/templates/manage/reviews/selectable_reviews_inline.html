@@ -3,13 +3,13 @@
 <div class="navigation-pages" style="width:100%;">
     {% if page.has_previous %}
         <a class="ajax-link"
-           href="{% url lfs_set_selectable_reviews_page %}?page=1&amp;review-id={{ review_id }}">
+           href="{% url 'lfs_set_selectable_reviews_page' %}?page=1&amp;review-id={{ review_id }}">
             <img src="{{ STATIC_URL }}icons/resultset_first.png"
                  alt="{% trans 'First' %}"
                  title="{% trans 'First' %}" />
         </a>
         <a class="ajax-link"
-           href="{% url lfs_set_selectable_reviews_page %}?page={{ page.previous_page_number }}&amp;review-id={{ review_id }}">
+           href="{% url 'lfs_set_selectable_reviews_page' %}?page={{ page.previous_page_number }}&amp;review-id={{ review_id }}">
             <img src="{{ STATIC_URL }}icons/resultset_previous.png"
                  alt="{% trans 'Previous' %}"
                  title="{% trans 'Previous' %}" />
@@ -31,13 +31,13 @@
 
     {% if page.has_next %}
         <a class="ajax-link"
-           href="{% url lfs_set_selectable_reviews_page %}?page={{ page.next_page_number }}&amp;review-id={{ review_id }}">
+           href="{% url 'lfs_set_selectable_reviews_page' %}?page={{ page.next_page_number }}&amp;review-id={{ review_id }}">
             <img src="{{ STATIC_URL }}icons/resultset_next.png"
                  alt="{% trans 'Next' %}"
                  title="{% trans 'Next' %}" />
         </a>
         <a class="ajax-link"
-           href="{% url lfs_set_selectable_reviews_page %}?page={{ paginator.num_pages }}&amp;review-id={{ review_id }}">
+           href="{% url 'lfs_set_selectable_reviews_page' %}?page={{ paginator.num_pages }}&amp;review-id={{ review_id }}">
             <img src="{{ STATIC_URL }}icons/resultset_last.png"
                  alt="{% trans 'Last' %}"
                  title="{% trans 'Last' %}" />
@@ -54,7 +54,7 @@
 
 {% for review in page.object_list %}
     <div class="navigation-body">
-        <a href="{% url lfs_manage_review review.id %}"
+        <a href="{% url 'lfs_manage_review' review.id %}"
            class="selectable {% ifequal review_id review.id %}selected{% endifequal %}">
 			{{ review.creation_date|date:"d.m.Y - H:i" }}
         </a>

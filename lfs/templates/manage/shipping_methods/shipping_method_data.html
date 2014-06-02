@@ -3,7 +3,7 @@
 
 <form method="post"
       class="ajax-form"
-      action="{% url lfs_manage_save_shipping_method_data shipping_method.id %}"
+      action="{% url 'lfs_manage_save_shipping_method_data' shipping_method.id %}"
       enctype="multipart/form-data">
     {% csrf_token %}
     {% include "manage/lfs_form.html" %}

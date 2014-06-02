@@ -2,12 +2,12 @@
 
 <h2>{% trans 'Criteria' %}</h2>
 
-<form action="{% url lfs_manage_save_customer_tax_criteria customer_tax.id %}"
+<form action="{% url 'lfs_manage_save_customer_tax_criteria' customer_tax.id %}"
       method="post">
 
     <div class="top-buttons">
         <a class="criterion-add-first-button"
-           href="{% url lfs_add_criterion %}">
+           href="{% url 'lfs_add_criterion' %}">
             <img class="icon-padding"
                  src="{{ STATIC_URL }}icons/add.png"
                  alt="{% trans 'Add' %}" />

@@ -3,13 +3,13 @@
 
 <form method="post"
       class="ajax-form"
-      action="{% url lfs_manage_save_discount_data discount.id %}">
-    {% csrf_token %}  
+      action="{% url 'lfs_manage_save_discount_data' discount.id %}">
+    {% csrf_token %}
     {% include "manage/lfs_form.html" %}
-    
+
     <div class="buttons">
-        <input class="ajax-form-button button" 
-               type="submit" 
+        <input class="ajax-form-button button"
+               type="submit"
                value="{% trans 'Save' %}" />
-    </div>           
+    </div>
 </form>

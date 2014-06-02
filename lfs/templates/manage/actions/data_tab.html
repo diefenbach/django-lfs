@@ -1,6 +1,6 @@
 {% load i18n %}
 <h2>{% trans 'Data' %}</h2>
-<form action="{% url lfs_save_action action.id %}"
+<form action="{% url 'lfs_save_action' action.id %}"
       method="post">
     {% csrf_token %}
     {% include "manage/lfs_form.html" %}

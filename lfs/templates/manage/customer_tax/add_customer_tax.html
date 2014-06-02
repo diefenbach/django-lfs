@@ -13,7 +13,7 @@
         </ul>
         <div id="data">
             <h2>{% trans "Data" %}</h2>
-            <form action="{% url lfs_add_customer_tax %}"
+            <form action="{% url 'lfs_add_customer_tax' %}"
                   method="post">
 
                 {% csrf_token %}

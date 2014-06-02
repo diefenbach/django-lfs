@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <h2>{% trans 'Data' %}</h2>
-<form action="{% url lfs_save_shop_data_tab %}"
+<form action="{% url 'lfs_save_shop_data_tab' %}"
       method="post">
     {% csrf_token %}
     <fieldset>

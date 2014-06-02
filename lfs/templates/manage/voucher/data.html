@@ -1,13 +1,13 @@
 {% load i18n %}
 <h2>{% trans "Core data" %}</h2>
-<form action="{% url lfs_manage_save_voucher_group_data voucher_group.id %}"
+<form action="{% url 'lfs_manage_save_voucher_group_data' voucher_group.id %}"
       method="post"
       enctype="multipart/form-data">
     {% csrf_token %}
     {% include "manage/lfs_form.html" %}
 
     <div class="buttons">
-        <input type="submit"            
+        <input type="submit"
                class="ajax-save-button button"
                value="{% trans 'Save voucher group' %}">
     </div>

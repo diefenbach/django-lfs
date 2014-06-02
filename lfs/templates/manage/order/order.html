@@ -17,22 +17,22 @@
     <div class="site-actions">
 
         <a class="overview"
-           href="{% url lfs_orders %}">
+           href="{% url 'lfs_orders' %}">
            {% trans 'Overview' %}</a>
 
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this order?' %}"
-           href="{% url lfs_delete_order current_order.id %}">
+           href="{% url 'lfs_delete_order' current_order.id %}">
            {% trans 'Delete order' %}</a>
 
         <a class="send delete-link"
            dialog_message="{% trans 'Do you really want to resend this order?' %}"
-           href="{% url lfs_send_order current_order.id %}">
+           href="{% url 'lfs_send_order' current_order.id %}">
            {% trans 'Resend order' %}
         </a>
 
         <label>{% trans "State" %}: </label>
-        <form action="{% url lfs_change_order_state %}"
+        <form action="{% url 'lfs_change_order_state' %}"
               method="post"
               class="inline">
             <select id="states-filter"

@@ -6,29 +6,29 @@
 {% block section %}send-rating-mails{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
-{% block content %}    
+{% block content %}
     <div id="product">
         <div id="manage-tabs">
             <ul>
-                <li class="ui-tabs-nav-item"><a href="#rating-mails">{% trans 'Rating Mails' %}</a></li>                
+                <li class="ui-tabs-nav-item"><a href="#rating-mails">{% trans 'Rating Mails' %}</a></li>
             </ul>
 
             <div id="rating-mails">
 
                 <h2>{% trans 'Send rating mails' %}</h2>
 
-                <form action="{% url lfs_send_rating_mails %}"
+                <form action="{% url 'lfs_send_rating_mails' %}"
                       method="post">{% csrf_token %}
                     <div>
                         <input type="checkbox"
                                name="test"
                                checked = "checked"><label>{% trans "Test" %} - {% trans "The mails will get to the shop notification email adresses" %}</label>
-                    </div>       
+                    </div>
                     <div>
                         <input type="checkbox"
                                name="bcc"
                                checked = "checked"><label>{% trans "Send copy" %} - {% trans "The mails will also send to the shop notification email adresses (if not in test mode)" %}</label>
-                    </div>           
+                    </div>
                     <div class="buttons">
                         <input type="submit"
                                class="button"
@@ -85,7 +85,7 @@
                                     {{ order.price|currency:request }}
                                 </td>
                                 <td class="right small">
-                                    <a href="{% url lfs_manage_order order.id %}">
+                                    <a href="{% url 'lfs_manage_order' order.id %}">
                                         <img src="{{ STATIC_URL }}icons/zoom.png"
                                              alt='{% trans "View" %}'
                                              title="{% trans 'View order' %}" />
@@ -98,7 +98,7 @@
                        {% trans "No e-mails have been sent" %}
                     {% endif %}
                 {% endif %}
-            </div>                        
+            </div>
         </div>
     </div>
 {% endblock %}

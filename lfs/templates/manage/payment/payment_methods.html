@@ -5,12 +5,12 @@
 
 <div class="navigation-body">
     <ul class="sortable"
-        href="{% url lfs_sort_payment_methods %}">
+        href="{% url 'lfs_sort_payment_methods' %}">
         {% for payment_method in payment_methods %}
             <li id="payment_method_{{ payment_method.id }}">
                 <div>
                     <a class="selectable {% ifequal current_id payment_method.id %}selected{% endifequal %}"
-                       href="{% url lfs_manage_payment_method payment_method.id %}">
+                       href="{% url 'lfs_manage_payment_method' payment_method.id %}">
                         <img class="handle" src="{{ STATIC_URL }}img/handle.png" alt="Handle" />
                         <span class="sortable-item-name">{{ payment_method.name }}</span>
                     </a>

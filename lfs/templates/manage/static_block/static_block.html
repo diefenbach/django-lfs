@@ -8,11 +8,11 @@
     </h2>
     <div class="navigation-body">
         <ul class="sortable"
-            href="{% url lfs_sort_static_blocks %}">
+            href="{% url 'lfs_sort_static_blocks' %}">
             {% for static_block in static_blocks %}
                 <li id="static_block_{{ static_block.id}}">
                     <div>
-                        <a href="{% url lfs_manage_static_block static_block.id %}"
+                        <a href="{% url 'lfs_manage_static_block' static_block.id %}"
                            class="selectable {% ifequal static_block.id current_id %}selected{% endifequal %}">
                             <img class="handle" src="{{ STATIC_URL }}img/handle.png" alt="Handle" />
                             <span class="sortable-item-name">{{ static_block.name }}</span>
@@ -28,12 +28,12 @@
 
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_manage_add_static_block %}?came_from={% url lfs_manage_static_block static_block.id %}">{% trans 'Add Static Block' %}</a>
+           href="{% url 'lfs_manage_add_static_block' %}?came_from={% url 'lfs_manage_static_block' static_block.id %}">{% trans 'Add Static Block' %}</a>
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this static block?' %}"
-           href="{% url lfs_delete_static_block static_block.id %}">{% trans 'Delete Static Block' %}</a>
+           href="{% url 'lfs_delete_static_block' static_block.id %}">{% trans 'Delete Static Block' %}</a>
         <a class="view popup-link"
-           href="{% url lfs_preview_static_block static_block.id %}">{% trans 'View Static Block' %}</a>
+           href="{% url 'lfs_preview_static_block' static_block.id %}">{% trans 'View Static Block' %}</a>
     </div>
 
     <div id="manage-tabs">
@@ -44,7 +44,7 @@
 
         <div id="data">
             <h2>{% trans 'Data' %}</h2>
-            <form action="{% url lfs_manage_static_block static_block.id %}"
+            <form action="{% url 'lfs_manage_static_block' static_block.id %}"
                   method="post">
                 {% csrf_token %}
                 {% include "manage/lfs_form.html" %}

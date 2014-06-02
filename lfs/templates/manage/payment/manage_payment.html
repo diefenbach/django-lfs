@@ -14,12 +14,12 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_add_payment_method %}">
+           href="{% url 'lfs_add_payment_method' %}">
             {% trans 'Add Payment Method' %}</a>
         {% if payment_method.deletable %}
             <a class="delete delete-link"
                dialog_message="{% trans 'Do you really want to delete this payment method?' %}"
-               href="{% url lfs_delete_payment_method payment_method.id %}">
+               href="{% url 'lfs_delete_payment_method' payment_method.id %}">
                 {% trans 'Delete payment method' %}</a>
         {% endif %}
     </div>
