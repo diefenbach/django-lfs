@@ -1210,7 +1210,8 @@ class ViewsTestCase(TestCase):
         """
         url = reverse("lfs_category", kwargs={"slug": "category-1"})
         response = self.client.get(url, {'sorting': ''})
-        templates = [t.name for t in response.template]
+
+        templates = [t.name for t in response.templates]
 
         # By default the products of a category should be displayed
         self.failIf("lfs/catalog/categories/product/default.html" not in templates)
@@ -1221,7 +1222,7 @@ class ViewsTestCase(TestCase):
         self.c1.save()
 
         response = self.client.get(url, {'sorting': ''})
-        templates = [t.name for t in response.template]
+        templates = [t.name for t in response.templates]
 
         # Now the categories template should be used
         self.failIf("lfs/catalog/categories/product/default.html" in templates)
