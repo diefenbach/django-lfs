@@ -74,7 +74,7 @@ def login(request, template_name="lfs/customer/login.html"):
             customer.user = user
 
             # Notify
-            lfs.core.signals.customer_added.send(user)
+            lfs.core.signals.customer_added.send(sender=user)
 
             # Log in user
             from django.contrib.auth import authenticate

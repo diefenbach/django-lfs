@@ -80,7 +80,7 @@ def login(request, template_name="lfs/checkout/login.html"):
                 username=create_unique_username(email), email=email, password=password)
 
             # Notify
-            lfs.core.signals.customer_added.send(user)
+            lfs.core.signals.customer_added.send(sender=user)
 
             # Log in user
             from django.contrib.auth import authenticate

@@ -223,7 +223,7 @@ class PropertiesTestCase(TestCase):
 
         # Now we remove product 1 from group 1
         self.pg.products.remove(self.p1)
-        product_removed_property_group.send([self.pg, self.p1])
+        product_removed_property_group.send(sender=self.pg, product=self.p1)
 
         # All values for the properties of the group and the product are deleted,
         # but the values for the other group are still there
@@ -240,7 +240,7 @@ class PropertiesTestCase(TestCase):
 
         # Now we remove product 1 also from group 2
         self.pg2.products.remove(self.p1)
-        product_removed_property_group.send([self.pg2, self.p1])
+        product_removed_property_group.send(sender=self.pg2, product=self.p1)
 
         # All values for the properties of the group and the product are deleted
         ppvs = ProductPropertyValue.objects.filter(product=self.p1)

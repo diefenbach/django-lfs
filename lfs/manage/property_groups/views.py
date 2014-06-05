@@ -307,7 +307,7 @@ def remove_products(request, group_id):
             property_group.products.remove(product)
 
             # Notify removing
-            product_removed_property_group.send([property_group, product])
+            product_removed_property_group.send(sender=property_group, product=product)
 
     html = [["#products-inline", products_inline(request, group_id, as_string=True)]]
     result = simplejson.dumps({

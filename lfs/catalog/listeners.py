@@ -75,7 +75,8 @@ def product_removed_from_property_group_listener(sender, **kwargs):
     Deletes all ProductPropertyValue for this product and the properties which
     belong to this property group.
     """
-    property_group, product = sender
+    property_group = sender
+    product = kwargs.get("product")
 
     for ppv in ProductPropertyValue.objects.filter(product=product, property__groups=property_group):
         if not ppv.product.property_groups.exclude(pk=property_group.pk).filter(properties=ppv.property).exists():

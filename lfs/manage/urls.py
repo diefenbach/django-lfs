@@ -1,5 +1,5 @@
 # General imports
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url
 
 # LFS imports
 from lfs.core.models import Shop

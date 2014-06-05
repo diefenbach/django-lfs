@@ -1,5 +1,5 @@
 # django imports
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url, include
 
 # lfs imports
 from lfs.core.sitemap import CategorySitemap

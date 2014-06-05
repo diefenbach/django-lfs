@@ -14,7 +14,7 @@ from reviews.signals import review_added
 def order_paid_listener(sender, **kwargs):
     """Listen to order payed signal.
     """
-    order = sender.get("order")
+    order = sender
     mail_utils.send_order_paid_mail(order)
 order_paid.connect(order_paid_listener)
 
@@ -22,7 +22,7 @@ order_paid.connect(order_paid_listener)
 def order_sent_listener(sender, **kwargs):
     """Listen to order payed signal.
     """
-    order = sender.get("order")
+    order = sender
     mail_utils.send_order_sent_mail(order)
 order_sent.connect(order_sent_listener)
 
@@ -30,11 +30,10 @@ order_sent.connect(order_sent_listener)
 def order_submitted_listener(sender, **kwargs):
     """Listen to order submitted signal.
     """
-    order = sender.get("order")
-    request = sender.get("request")
+    request = kwargs.get("request")
 
     if getattr(settings, 'LFS_SEND_ORDER_MAIL_ON_CHECKOUT', True):
-        mail_utils.send_order_received_mail(request, order)
+        mail_utils.send_order_received_mail(request, sender)
 order_submitted.connect(order_submitted_listener)
 
 
