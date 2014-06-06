@@ -404,8 +404,8 @@ def delete_step(request, id):
     except FilterStep.DoesNotExist:
         url = request.META.get("HTTP_REFERER", reverse("lfs_manage_shop_property"))
     else:
-        property = step.property
-        url = reverse("lfs_manage_shop_property", kwargs={"id": property.id})
+        prop = step.property
+        url = reverse("lfs_manage_shop_property", kwargs={"id": prop.id})
         step.delete()
         # invalidate global properties version number (all product property caches will be invalidated)
         invalidate_cache_group_id('global-properties-version')
