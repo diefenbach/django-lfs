@@ -9,6 +9,7 @@
         {% csrf_token %}
         <select id="selected-property-groups"
                 name="selected-property-groups"
+                class="selected-property-groups"
                 multiple="multiple">
             {% for property_group in shop_property_groups %}
                 <option value="{{ property_group.id }}"
