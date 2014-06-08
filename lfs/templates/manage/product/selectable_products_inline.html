@@ -4,14 +4,14 @@
     <div>
         <a class="selectable {% if product.is_variant %}variant{% endif %} {% if current_product == product %}selected{% endif %}"
            id="selectable-product-id_{{ product.id }}"
-           href="{% url lfs_manage_product product.id %}?page={{ page.number }}">
+           href="{% url 'lfs_manage_product' product.id %}?page={{ page.number }}">
             {{ product.get_name }}
         </a>
         {% if product.id == base_product.id %}
             {% for variant in base_product.variants.all %}
                 <a class="selectable {% if variant.is_variant %}variant{% endif %} {% if variant == current_product %}selected{% endif %}"
                    id="selectable-product-id_{{ product.id }}"
-                   href="{% url lfs_manage_product variant.id %}?page={{ page.number }}">
+                   href="{% url 'lfs_manage_product' variant.id %}?page={{ page.number }}">
                     {{ variant.get_name }}
                 </a>
             {% endfor %}

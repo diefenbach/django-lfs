@@ -15,7 +15,7 @@
             <h2>{% trans "Data" %}</h2>
             <form class="lfc-form"
                   method="post"
-                  action="{% url lfs_export_add_export %}">
+                  action="{% url 'lfs_export_add_export' %}">
                 {% csrf_token %}
                 <table>
                     {% include "manage/lfs_form.html" %}
@@ -27,7 +27,7 @@
                            value="{% trans 'Add Export' %}" />
                     <input type="button"
                            class="button"
-                           onclick="window.location='{% url lfs_export_dispatcher %}'"
+                           onclick="window.location='{% url 'lfs_export_dispatcher' %}'"
                            value="{% trans 'Cancel' %}" />
                 </div>
             </form>

@@ -1,7 +1,7 @@
 {% load i18n %}
 <h2>{% trans 'Stock' %}</h2>
 <form id="product-stock-form"
-      action="{% url lfs_save_product_stock product.id %}"
+      action="{% url 'lfs_save_product_stock' product.id %}"
       method="post">
 
     <fieldset>

@@ -2,7 +2,7 @@
 
 <h2>{% trans 'View' %}</h2>
 
-<form action="{% url lfs_manage_manufacturer_view manufacturer.id %}"
+<form action="{% url 'lfs_manage_manufacturer_view' manufacturer.id %}"
       method="post"
       class="manufacturer-data-form">
     {% csrf_token %}

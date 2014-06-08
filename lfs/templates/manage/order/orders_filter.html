@@ -1,5 +1,5 @@
 {% load i18n lfs_tags %}
-<form action="{% url lfs_set_order_filter %}"
+<form action="{% url 'lfs_set_order_filter' %}"
       method="POST">
 
     <table class="filters">
@@ -16,13 +16,13 @@
                 <div class="navigation-pages">
                     {% if page.has_previous %}
                         <a class="ajax-link"
-                           href="{% url lfs_orders_inline %}?page=1">
+                           href="{% url 'lfs_orders_inline' %}?page=1">
                             <img src="{{ STATIC_URL }}icons/resultset_first.png"
                                  alt="{% trans 'First' %}"
                                  title="{% trans 'First' %}" />
                         </a>
                         <a class="ajax-link"
-                           href="{% url lfs_orders_inline %}?page={{ page.previous_page_number }}">
+                           href="{% url 'lfs_orders_inline' %}?page={{ page.previous_page_number }}">
                             <img src="{{ STATIC_URL }}icons/resultset_previous.png"
                                  alt="{% trans 'Previous' %}"
                                  title="{% trans 'Previous' %}" />
@@ -40,13 +40,13 @@
 
                     {% if page.has_next %}
                         <a class="ajax-link"
-                           href="{% url lfs_orders_inline %}?page={{ page.next_page_number }}">
+                           href="{% url 'lfs_orders_inline' %}?page={{ page.next_page_number }}">
                             <img src="{{ STATIC_URL }}icons/resultset_next.png"
                                  alt="{% trans 'Next' %}"
                                  title="{% trans 'Next' %}" />
                         </a>
                         <a class="ajax-link"
-                           href="{% url lfs_orders_inline %}?page={{ paginator.num_pages }}">
+                           href="{% url 'lfs_orders_inline' %}?page={{ paginator.num_pages }}">
                             <img src="{{ STATIC_URL }}icons/resultset_last.png"
                                  alt="{% trans 'Last' %}"
                                  title="{% trans 'Last' %}" />
@@ -68,11 +68,11 @@
 
             </td>
             <td>
-                <a href="{% url lfs_set_order_filters_date %}?start=0&amp;end=0"
+                <a href="{% url 'lfs_set_order_filter's_date %}?start=0&amp;end=0"
                    class="ajax-link" title="{% trans "Today" %}">T</a>
-                <a href="{% url lfs_set_order_filters_date %}?start=1&amp;end=1"
+                <a href="{% url 'lfs_set_order_filter's_date %}?start=1&amp;end=1"
                    class="ajax-link" title="{% trans "Yesterday" %}">Y</a>
-                <a href="{% url lfs_set_order_filters_date %}?start=7&amp;end=0"
+                <a href="{% url 'lfs_set_order_filter's_date %}?start=7&amp;end=0"
                    class="ajax-link" title="{% trans "Week" %}">W</a>
             </td>
             <td>
@@ -107,7 +107,7 @@
                 <input type="submit"
                        class="ajax-save-button" />
 
-                <a href="{% url lfs_reset_order_filters %}"
+                <a href="{% url 'lfs_reset_order_filters' %}"
                    class="ajax-link reset">&nbsp;</a>
             </td>
         </tr>

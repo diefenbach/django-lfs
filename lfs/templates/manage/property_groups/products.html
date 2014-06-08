@@ -3,9 +3,9 @@
 
 <h2>{% trans 'Products' %}</h2>
 <form id="filter-products-form"
-      action="{% url lfs_pg_products_inline property_group.id %}"
+      action="{% url 'lfs_pg_products_inline' property_group.id %}"
       onsubmit="return false">
-    <input class="refresh-on-keyup" type="text" name="filter"/>    
+    <input class="refresh-on-keyup" type="text" name="filter"/>
     {% category_filter "refresh-on-change" "products_category_filter" %}
 </form>
 

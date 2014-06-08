@@ -17,14 +17,14 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_add_action %}?came_from={% url lfs_manage_action action.id %}">{% trans 'Add action' %}</a>
+           href="{% url 'lfs_add_action' %}?came_from={% url 'lfs_manage_action' action.id %}">{% trans 'Add action' %}</a>
 
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this action?' %}"
-           href="{% url lfs_delete_action action.id %}">{% trans 'Delete action' %}</a>
+           href="{% url 'lfs_delete_action' action.id %}">{% trans 'Delete action' %}</a>
 
         <a class="view popup-link"
-           href="{% url lfs_shop_view %}">
+           href="{% url 'lfs_shop_view' %}">
            {% trans 'View Shop' %}
         </a>
     </div>

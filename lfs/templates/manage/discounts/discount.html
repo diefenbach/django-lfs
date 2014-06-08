@@ -17,12 +17,12 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_manage_add_discount %}?came_from={% url lfs_manage_discount discount.id %}">
+           href="{% url 'lfs_manage_add_discount' %}?came_from={% url 'lfs_manage_discount' discount.id %}">
             {% trans 'Add discount' %}</a>
 
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this discount?' %}"
-           href="{% url lfs_manage_delete_discount discount.id %}">
+           href="{% url 'lfs_manage_delete_discount' discount.id %}">
             {% trans 'Delete discount' %}</a>
     </div>
 

@@ -14,24 +14,24 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_manage_add_top_category %}?came_from={% url lfs_manage_category category.id %}">
+           href="{% url 'lfs_manage_add_top_category' %}?came_from={% url 'lfs_manage_category' category.id %}">
             {% trans 'Add Top Category' %}
         </a>
         {% if category %}
             <a class="add"
-               href="{% url lfs_manage_add_category category.id %}?came_from={% url lfs_manage_category category.id %}">
+               href="{% url 'lfs_manage_add_category' category.id %}?came_from={% url 'lfs_manage_category' category.id %}">
                 {% trans 'Add Category' %}
             </a>
             <a class="delete delete-link"
                  dialog_message="{{ dialog_message }}"
-                 href="{% url lfs_delete_category category.id %}">
+                 href="{% url 'lfs_delete_category' category.id %}">
                  {% trans 'Delete Category' %}</a>
             <a class="preview popup-link"
-               href="{% url lfs_category_by_id category.id %}">
+               href="{% url 'lfs_category_by_id' category.id %}">
                 {% trans 'View Category' %}
             </a>
             <a class="preview"
-               href="{% url lfs_category_by_id category.id %}">
+               href="{% url 'lfs_category_by_id' category.id %}">
                 {% trans 'Goto Category' %}
             </a>
         {% endif %}
@@ -41,7 +41,7 @@
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans "Data" %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#view">{% trans 'View' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="{% url lfs_load_products_tab category.id %}">{% trans 'Products' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="{% url 'lfs_load_products_tab' category.id %}">{% trans 'Products' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
         </ul>

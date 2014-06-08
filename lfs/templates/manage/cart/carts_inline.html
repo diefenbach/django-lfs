@@ -28,7 +28,7 @@
 
     {% for cart in carts %}
         <tr class="clickable"
-            onclick="window.location='{% url lfs_manage_cart cart.id %}'">
+            onclick="window.location='{% url 'lfs_manage_cart' cart.id %}'">
             <td>
                 {{ cart.id }}
             </td>

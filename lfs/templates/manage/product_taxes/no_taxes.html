@@ -14,7 +14,7 @@
         {% trans "There are no product taxes yet." %}
     </div>
     <div class="buttons">
-        <form action="{% url lfs_manage_add_tax %}">
+        <form action="{% url 'lfs_manage_add_tax' %}">
             <input type="submit"
                    class="button"
                    value="{% trans 'Add Product Tax' %}">

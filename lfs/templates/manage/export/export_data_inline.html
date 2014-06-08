@@ -1,6 +1,6 @@
 {% load i18n %}
 <h2>{% trans "Data" %}</h2>
-<form action="{% url lfs_export_update_export_data export_id %}"
+<form action="{% url 'lfs_export_update_export_data' export_id %}"
       method="post">
     <table>
         {{ form }}

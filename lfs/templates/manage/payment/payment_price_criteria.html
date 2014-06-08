@@ -6,11 +6,11 @@
         {% trans 'Edit criteria for' %} {{payment_price.price|currency:request}}
     </h1>
 
-    <form action="{% url lfs_manage_save_payment_price_criteria payment_price.id %}"
+    <form action="{% url 'lfs_manage_save_payment_price_criteria' payment_price.id %}"
           method="post">
 
         <div class="top-buttons">
-            <a href="{% url lfs_add_criterion %}"
+            <a href="{% url 'lfs_add_criterion' %}"
                class="criterion-add-first-button">
                 <img src="{{ STATIC_URL }}icons/add.png" /
                      alt="Add" />

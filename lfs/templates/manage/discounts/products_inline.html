@@ -3,9 +3,9 @@
 <div class="navigation-pages-inline">
     {% if page.has_previous %}
         <a class="ajax-link"
-           href="{% url lfs_discount_products_inline discount.id %}?page=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
+           href="{% url 'lfs_discount_products_inline' discount.id %}?page=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
         <a class="ajax-link"
-           href="{% url lfs_discount_products_inline discount.id %}?page={{ page.previous_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
+           href="{% url 'lfs_discount_products_inline' discount.id %}?page={{ page.previous_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
     {% else %}
         <img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' />
         <img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' />
@@ -17,9 +17,9 @@
 
     {% if page.has_next %}
         <a class="ajax-link"
-           href="{% url lfs_discount_products_inline discount.id %}?page={{ page.next_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
+           href="{% url 'lfs_discount_products_inline' discount.id %}?page={{ page.next_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
         <a class="ajax-link"
-           href="{% url lfs_discount_products_inline discount.id %}?page={{ paginator.num_pages }}"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
+           href="{% url 'lfs_discount_products_inline' discount.id %}?page={{ paginator.num_pages }}"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
     {% else %}
         <img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' />
         <img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' />
@@ -31,7 +31,7 @@
         <td width="50%">
             <h2>{% trans 'Products' %}</h2>
             <form id="add-products-form"
-                  action="{% url lfs_assign_products_to_discount discount.id %}"
+                  action="{% url 'lfs_assign_products_to_discount' discount.id %}"
                   method="post">
                 <div id="property-products-left">
                     <table class="lfs-manage-table">
@@ -59,7 +59,7 @@
                                            class="select-products" />
                                 </td>
                                 <td>
-                                    <a href="{% url lfs_manage_product product.id %}">
+                                    <a href="{% url 'lfs_manage_product' product.id %}">
                                         {{ product.get_name }}
                                     </a>
                                 </td>
@@ -91,7 +91,7 @@
         <td width="50%">
             <h2>{% trans 'Assigned products' %}</h2>
             <form id="products-update-form"
-                  action="{% url lfs_discount_remove_products discount.id %}"
+                  action="{% url 'lfs_discount_remove_products' discount.id %}"
                   method="post">
                 <div id="property-products-right">
                     <table class="lfs-manage-table">
@@ -120,7 +120,7 @@
                                            class="select-assigned-products"/>
                                 </td>
                                 <td>
-                                    <a href="{% url lfs_manage_product product.id %}">
+                                    <a href="{% url 'lfs_manage_product' product.id %}">
                                         {{ product.get_name }}
                                     </a>
                                 </td>

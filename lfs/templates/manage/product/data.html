@@ -3,7 +3,7 @@
 <h2>{% trans 'Data' %}</h2>
 
 <form id="product-data-form"
-      action="{% url lfs_manage_edit_product_data product.id %}"
+      action="{% url 'lfs_manage_edit_product_data' product.id %}"
       method="post">
 
         <fieldset>

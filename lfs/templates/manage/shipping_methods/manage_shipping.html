@@ -14,12 +14,12 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_manage_add_shipping_method %}?came_from={% url lfs_manage_shipping_method shipping_method.id %}">
+           href="{% url 'lfs_manage_add_shipping_method' %}?came_from={% url 'lfs_manage_shipping_method' shipping_method.id %}">
             {% trans 'Add shipping method' %}
         </a>
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this shipping method?' %}"
-           href="{% url lfs_manage_delete_shipping_method shipping_method.id %}">
+           href="{% url 'lfs_manage_delete_shipping_method' shipping_method.id %}">
             {% trans 'Delete Shipping Method' %}
         </a>
     </div>

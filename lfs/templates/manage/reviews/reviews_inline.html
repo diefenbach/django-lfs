@@ -10,37 +10,37 @@
         <tr>
             <th class="tiny">
                 <a class="ajax-link"
-                   href='{% url lfs_set_review_ordering "id" %}'>
+                   href="{% url 'lfs_set_review_ordering' 'id' %}">
                     {% trans 'ID' %}
                 </a>
             </th>
             <th class="middle">
                 <a class="ajax-link"
-                   href='{% url lfs_set_review_ordering "creation_date" %}'>
+                   href="{% url 'lfs_set_review_ordering' 'creation_date' %}">
                     {% trans 'Creation date' %}
                 </a>
             </th>
             <th class="long">
                 <a class="ajax-link"
-                   href='{% url lfs_set_review_ordering "user_name" %}'>
+                   href="{% url 'lfs_set_review_ordering' 'user_name' %}">
                     {% trans 'Name' %}
                 </a>
             </th>
             <th>
                 <a class="ajax-link"
-                   href='{% url lfs_set_review_ordering "user_email" %}'>
+                   href="{% url 'lfs_set_review_ordering' 'user_email' %}">
                     {% trans 'E-Mail' %}
                 </a>
             </th>
             <th>
                 <a class="ajax-link"
-                   href='{% url lfs_set_review_ordering "product" %}'>
+                   href="{% url 'lfs_set_review_ordering' 'product' %}">
                     {% trans 'Product' %}
                 </a>
             </th>
             <th class="small">
                 <a class="ajax-link"
-                   href='{% url lfs_set_review_ordering "score" %}'>
+                   href="{% url 'lfs_set_review_ordering' 'score' %}">
                     {% trans 'Score' %}
                 </a>
             </th>
@@ -54,7 +54,7 @@
 
         {% for review in page.object_list %}
             <tr class="clickable {% cycle 'even' 'odd' %}"
-                onclick="window.location='{% url lfs_manage_review review.id %}'">
+                onclick="window.location='{% url 'lfs_manage_review review.id' %}'">
                 <td>
                     {{ review.id }}
                 </td>

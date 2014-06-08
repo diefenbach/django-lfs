@@ -5,13 +5,13 @@
 	            {% if category.is_current %}class="selected"{% endif %}>
                 <div>
                     <a class="selectable {% if category.is_current %}selected{% endif %}"
-                       href="{% url lfs_manage_category category.id %}">
+                       href="{% url 'lfs_manage_category' category.id %}">
                         <img class="handle" src="{{ STATIC_URL }}img/handle.png" alt="Handle"/>
                         <span class="sortable-item-name">{{ category.name }}</span>
                     </a>
                  </div>
                  {{ category.children }}
-	        </li>    
+	        </li>
 	    {% endfor %}
 	</ol>
 {% endif %}

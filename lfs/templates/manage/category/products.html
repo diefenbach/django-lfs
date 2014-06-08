@@ -6,7 +6,7 @@
         <td width="50%">
             <h2>{% trans "Selectable Products" %}</h2>
             <form id="category-products-filter-form"
-                  action="{% url lfs_manage_category_products_inline category.id %}"
+                  action="{% url 'lfs_manage_category_products_inline' category.id %}"
                   onsubmit="return false">
 
                 <input type="hidden"
@@ -32,7 +32,7 @@
             <h2>{% trans "Selected Products" %}</h2>
 
             <form id="category-selected-products-filter-form"
-                  action="{% url lfs_selected_products category.id %}"
+                  action="{% url 'lfs_selected_products' category.id %}"
                   onsubmit="return false">
 
                 <input type="hidden"
