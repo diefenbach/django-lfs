@@ -260,7 +260,7 @@ def save_voucher_group_data(request, id):
 
     return render_to_ajax_response(
         (("#data_tab", data_tab(request, voucher_group)),
-        ("#navigation", navigation(request, voucher_group)),),
+         ("#navigation", navigation(request, voucher_group)),),
         _(u"Voucher data has been saved."))
 
 

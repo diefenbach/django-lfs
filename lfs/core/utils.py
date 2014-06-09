@@ -5,13 +5,13 @@ from itertools import count
 import locale
 import sys
 import urllib
+import json
 
 # django imports
 from django.conf import settings
 from django.contrib.redirects.models import Redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
-from django.utils import simplejson
 from django.utils.functional import Promise
 from django.utils.encoding import force_unicode
 from django.shortcuts import render_to_response
@@ -150,10 +150,12 @@ def set_message_cookie(url, msg):
     return response
 
 
-def render_to_ajax_response(html=[], message=None):
+def render_to_ajax_response(html=None, message=None):
     """Encodes given html and message to JSON and returns a HTTP response.
     """
-    result = simplejson.dumps(
+    if html is None:
+        html = []
+    result = json.dumps(
         {"message": message, "html": html}, cls=LazyEncoder)
 
     return HttpResponse(result, mimetype='application/json')
@@ -269,7 +271,7 @@ def getLOL(objects, objects_per_row=3):
     return result
 
 
-class LazyEncoder(simplejson.JSONEncoder):
+class LazyEncoder(json.JSONEncoder):
     """Encodes django's lazy i18n strings.
     """
     def default(self, obj):
