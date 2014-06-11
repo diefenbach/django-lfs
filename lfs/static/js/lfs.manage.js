@@ -59,6 +59,7 @@ function setup_datepicker(){
 function send_form_and_refresh(elem) {
     var form = elem.closest("form")
     form.ajaxSubmit({
+        dataType: 'json',
         beforeSend: function(jqXHR, settings){
             var jqx = form.data('jqXHR');
             if (jqx){
@@ -181,6 +182,7 @@ $(function() {
         var action = $(this).attr("name")
         form.ajaxSubmit({
             data : {"action" : action},
+            dataType: 'json',
             success : function(data) {
                 data = safeParseJSON(data);
                 for (var html in data["html"]) {
@@ -313,6 +315,7 @@ $(function() {
 
     $body.on('click', '.portlet-add-button', function() {
         $(this).parents("form:first").ajaxSubmit({
+            dataType: 'json',
             success : function(data) {
                 $("#portlets-dialog").html(data);
                 $("#portlets-dialog").dialog("open");

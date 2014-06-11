@@ -41,7 +41,7 @@
                     </legend>
                     {% for property in property_group.properties %}
                         <div>
-                            {% if property.display_text_field %}
+                            {% if property.display_text_field or property.display_number_field %}
                                 <div class="field">
                                     <div class="label">
                                         <a href="{% url 'lfs_manage_shop_property' property.id %}">
@@ -98,7 +98,7 @@
                     </legend>
                     {% for property in property_group.properties %}
                         <div>
-                            {% if property.display_text_field %}
+                            {% if property.display_text_field or property.display_number_field %}
                                 <div class="field">
                                     <div class="label">
                                         <a href="{% url 'lfs_manage_shop_property' property.id %}">
@@ -156,7 +156,7 @@
                     </legend>
                     {% for property in property_group.properties %}
                         <div>
-                            {% if property.display_text_field %}
+                            {% if property.display_text_field or property.display_number_field %}
                                 <div class="field">
                                     <div class="label">
                                         <a href="{% url 'lfs_manage_shop_property' property.id %}">

@@ -4,7 +4,7 @@
     <div class="navigation-pages">
         {% if page.has_previous %}
             <a class="ajax-link"
-               href="{% url ''lfs_set_vouchers_page'' %}?group={{ voucher_group.id }}&amp;page=1">
+               href="{% url 'lfs_set_vouchers_page' %}?group={{ voucher_group.id }}&amp;page=1">
                 <img src="{{ STATIC_URL }}icons/resultset_first.png"
                      alt="{% trans 'First' %}"
                      title="{% trans 'First' %}" />

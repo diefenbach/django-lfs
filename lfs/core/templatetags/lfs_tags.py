@@ -74,6 +74,7 @@ def google_analytics_ecommerce(context, clear_session=True):
         del request.session["voucher"]
 
     return {
+        "request": request,
         "order": order,
         "shop": shop,
         "ga_ecommerce_tracking": shop.ga_ecommerce_tracking,

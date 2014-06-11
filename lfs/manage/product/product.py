@@ -14,7 +14,7 @@ from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.utils import simplejson
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_POST
 from django.forms.widgets import HiddenInput
 from django.conf import settings
@@ -403,8 +403,7 @@ def delete_product(request, product_id):
     url = reverse('lfs_manage_product_dispatcher')
     if product.is_variant():
         url = reverse("lfs_manage_product", kwargs={"product_id": product.parent_id})
-    else:
-        url = reverse("lfs_manage_product_dispatcher")
+
     product.delete()
 
     return HttpResponseRedirect(url)
