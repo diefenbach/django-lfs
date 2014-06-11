@@ -1051,7 +1051,7 @@ class ViewsTestCase(TestCase):
         ProductPropertyValue.objects.create(product=self.v1, property=color, value=str(red.id), type=PROPERTY_VALUE_TYPE_FILTER)
 
         # Create a test file
-        fh = open(os.path.join(os.getcwd(), "src/lfs/lfs/utils/data/image1.jpg"))
+        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"))
         cf_1 = ContentFile(fh.read())
 
         self.file = File.objects.create(pk=1, title="Test File", slug="test-file", file=None)
@@ -3016,7 +3016,7 @@ class MiscTestCase(TestCase):
         Tests whether files on the file system are deleted properly when a File
         object has been deleted.
         """
-        fh = open(os.path.join(os.getcwd(), "src/lfs/lfs/utils/data/image1.jpg"))
+        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"))
         cf_1 = ContentFile(fh.read())
 
         file = File.objects.create(pk=1, title="Test File", slug="test-file", file=None)
@@ -3031,7 +3031,7 @@ class MiscTestCase(TestCase):
         Tests whether images on the file system are deleted properly when a
         Image object has been deleted.
         """
-        fh = open(os.path.join(os.getcwd(), "src/lfs/lfs/utils/data/image1.jpg"))
+        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"))
         cf_1 = ContentFile(fh.read())
 
         image = Image(title="Image 1")
