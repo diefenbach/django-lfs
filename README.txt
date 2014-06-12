@@ -27,8 +27,14 @@ A demo shop can be tried here:
 Changes
 =======
 
-0.8.0a1
-=======
+0.8.0 alpha 2 (2014-06-12)
+==========================
+
+* Removes double columns from management forms
+* Removes django-tagging from dependencies
+
+0.8.0 alpha 1 (2014-06-11)
+==========================
 
 * Add pluggable criteria
 * Added pluggable addresses
