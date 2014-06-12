@@ -30,7 +30,7 @@ Changes
 0.8.0 alpha 2 (2014-06-12)
 ==========================
 
-* Removes double columns from management forms
+* Removes double colons from management forms
 * Removes django-tagging from dependencies
 
 0.8.0 alpha 1 (2014-06-11)
