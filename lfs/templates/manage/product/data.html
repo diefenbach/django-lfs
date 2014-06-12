@@ -10,7 +10,7 @@
             <legend>{% trans "General" %}</legend>
             <div class="field">
                 <div class="label">
-                    {{ form.active.label_tag }}:
+                    {{ form.active.label_tag }}
                 </div>
                 <div>
                     {{ form.active }}
@@ -22,7 +22,7 @@
                     {% if product.is_variant %}
                         {{ form.active_name }}
                     {% endif %}
-                    {{ form.name.label_tag }}:
+                    {{ form.name.label_tag }}
                 </div>
 
                 {% if form.name.errors %}
@@ -46,7 +46,7 @@
 
             <div class="field">
                 <div class="label">
-                    {{ form.slug.label_tag }}:
+                    {{ form.slug.label_tag }}
                 </div>
 
                 {% if form.slug.errors %}
@@ -86,7 +86,7 @@
                         {{ form.active_sku }}
                     {% endif %}
 
-                    {{ form.sku.label_tag }}:
+                    {{ form.sku.label_tag }}
                 </div>
 
                 {% if form.sku.errors %}
@@ -106,7 +106,7 @@
 
             <div class="field">
                 <div class="label">
-                    {{ form.manufacturer.label_tag }}:
+                    {{ form.manufacturer.label_tag }}
                 </div>
 
                 {% if form.manufacturer.errors %}
@@ -130,7 +130,7 @@
 
             <div class="field">
                 <div class="label">
-                    {{ form.sku_manufacturer.label_tag }}:
+                    {{ form.sku_manufacturer.label_tag }}
                 </div>
 
                 {% if form.sku.errors %}
@@ -154,7 +154,7 @@
                         {{ form.active_price }}
                     {% endif %}
 
-                    {{ form.price.label_tag }}:
+                    {{ form.price.label_tag }}
                 </div>
 
                 {% if form.price.errors %}
@@ -175,7 +175,7 @@
             {% if not product.is_variant %}
                 <div class="field">
                     <div class="label">
-                        {{ form.price_unit.label_tag }}:
+                        {{ form.price_unit.label_tag }}
                     </div>
                     <div>
                         {{ form.price_unit }}
@@ -186,7 +186,7 @@
             {% if not product.is_variant %}
                 <div class="field">
                     <div class="label">
-                        {{ form.tax.label_tag }}:
+                        {{ form.tax.label_tag }}
                     </div>
                     <div>
                         {{ form.tax }}
@@ -198,7 +198,7 @@
                 <div class="field">
                     <div class="label">
                         {{ form.active_price_calculation }}
-                        {{ form.price_calculation.label_tag }}:
+                        {{ form.price_calculation.label_tag }}
                     </div>
                     <div>
                         {{ form.price_calculation }}
@@ -209,7 +209,7 @@
             {% if not product.is_variant %}
                 <div class="field">
                     <div class="label">
-                        {{ form.price_calculator.label_tag }}:
+                        {{ form.price_calculator.label_tag }}
                     </div>
                     <div>
                         {{ form.price_calculator }}
@@ -219,7 +219,7 @@
             {% if product.is_variant %}
                 <div class="field">
                     <div class="label">
-                        {{ form.for_sale.label_tag }}:
+                        {{ form.for_sale.label_tag }}
                     </div>
                     <div>
                         {{ form.active_for_sale }}
@@ -233,7 +233,7 @@
                 <div class="field">
                     <div class="label">
                         {{ form.active_for_sale_price }}
-                        {{ form.for_sale_price.label_tag }}:
+                        {{ form.for_sale_price.label_tag }}
                     </div>
                     <div>
                         {{ form.for_sale_price }}
@@ -246,7 +246,7 @@
 
                     <div class="label">
                         {{ form.for_sale }}
-                        {{ form.for_sale.label_tag }}:
+                        {{ form.for_sale.label_tag }}
                     </div>
 
                     {% if form.for_sale_price.errors %}
@@ -268,7 +268,7 @@
                 <legend>{% trans "Quantity field" %}</legend>
                 <div class="field">
                     <div class="label">
-                        {{ form.unit.label_tag }}:
+                        {{ form.unit.label_tag }}
                     </div>
                     <div>
                         {{ form.unit }}
@@ -276,7 +276,7 @@
                 </div>
                 <div class="field">
                     <div class="label">
-                        {{ form.type_of_quantity_field.label_tag }}:
+                        {{ form.type_of_quantity_field.label_tag }}
                     </div>
                     <div>
                         {{ form.type_of_quantity_field }}
@@ -289,7 +289,7 @@
             <legend>{% trans "Base price" %}</legend>
             <div class="field">
                 <div class="label">
-                    {{ form.active_base_price.label_tag }}:
+                    {{ form.active_base_price.label_tag }}
                 </div>
                 <div>
                     {{ form.active_base_price }}
@@ -305,7 +305,7 @@
 
             <div class="field">
                 <div class="label">
-                    {{ form.base_price_unit.label_tag }}:
+                    {{ form.base_price_unit.label_tag }}
                 </div>
                 <div>
                     {{ form.base_price_unit }}
@@ -317,7 +317,7 @@
 
             <div class="field">
                 <div class="label">
-                    {{ form.base_price_amount.label_tag }}:
+                    {{ form.base_price_amount.label_tag }}
                 </div>
                 <div>
                     {{ form.base_price_amount }}
@@ -332,7 +332,7 @@
                 {% if product.is_variant %}
                     {{ form.active_short_description }}
                 {% endif %}
-                {{ form.short_description.label_tag }}:
+                {{ form.short_description.label_tag }}
             </div>
 
             {% if form.short_description.errors %}
@@ -352,7 +352,7 @@
                 {% if product.is_variant %}
                     {{ form.active_description }}
                 {% endif %}
-                {{ form.description.label_tag }}:
+                {{ form.description.label_tag }}
             </div>
 
             {% if form.description.errors %}
@@ -374,7 +374,7 @@
                     {% if product.is_variant %}
                         {{ form.active_static_block }}
                     {% endif %}
-                    {{ form.static_block.label_tag }}:
+                    {{ form.static_block.label_tag }}
                 </div>
 
                 {% if form.static_block.errors %}
@@ -391,7 +391,7 @@
 
             <div class="field">
                 <div class="label">
-                    {{ form.template.label_tag }}:
+                    {{ form.template.label_tag }}
                 </div>
                 {% if form.template.errors %}
                     <div class="error">
