@@ -1,0 +1,25 @@
+{% load lfs_tags %}
+{% if product %}
+    {% for property in product.get_variant_properties %}
+        <div class="variant-property">
+            {{ property.title }}: {{ property.value }} {{ property.unit|safe }}
+        </div>
+    {% endfor %}
+
+    {% for property in product.get_displayed_properties %}
+        <div class="displayed-property">
+            {{ property.title }}: {{ property.value }} {{ property.unit|safe }}
+        </div>
+    {% endfor %}
+
+    {% if product.is_configurable_product and configurable_properties %}
+        {% for property in configurable_properties %}
+            <div class="configurable-property">
+                {{ property.title }}: {{ property.value }} {{ property.unit|safe }}
+                {% if property.obj.is_select_field and property.display_price %}
+                    ({{ property.price|currency:request}})
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endif %}

@@ -83,10 +83,10 @@ def get_price_filters(category, product_filter, price_filter, manufacturer_filte
 
     pmin, pmax = res['min_price'] or 0, res['max_price'] or 0
     if pmax == pmin:
-        step = pmax
+        step = int(pmax)
     else:
         diff = pmax - pmin
-        step = diff / 3
+        step = int(diff / 3)
 
     if step >= 0 and step < 3:
         step = 3
