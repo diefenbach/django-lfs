@@ -39,6 +39,7 @@ from lfs.manage.utils import get_current_page
 from lfs.manage.seo.views import SEOView
 from lfs.manufacturer.models import Manufacturer
 from lfs.utils.widgets import SelectImage
+from lfs.core.widgets.checkbox import LFSCheckboxInput
 
 
 # Forms
@@ -71,7 +72,7 @@ class ProductDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductDataForm, self).__init__(*args, **kwargs)
         self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
-        self.fields["active_base_price"].widget = CheckboxInput(check_test=lambda v:v!=0)
+        self.fields["active_base_price"].widget = LFSCheckboxInput(check_test=lambda v: v!=0)
         man_count = Manufacturer.objects.count()
         if man_count > getattr(settings, 'LFS_SELECT_LIMIT', 20):
             self.fields["manufacturer"].widget = HiddenInput()
@@ -149,7 +150,7 @@ class ProductStockForm(forms.ModelForm):
         if kwargs.get("instance").is_variant():
             self.fields["active_packing_unit"].widget = Select(choices=CHOICES)
         else:
-            self.fields["active_packing_unit"].widget = CheckboxInput(check_test=lambda v: v != 0)
+            self.fields["active_packing_unit"].widget = LFSCheckboxInput(check_test=lambda v: v != 0)
 
     def clean(self):
         if self.data.get("stock-active_packing_unit") == str(CHOICES_YES):
