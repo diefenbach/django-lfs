@@ -6,7 +6,8 @@
           method="post">
         {% csrf_token %}
         <select name="selected-property-groups"
-                multiple="multiple">
+                multiple="multiple"
+                class="selected-property-groups">
             {% for property_group in shop_property_groups %}
                 <option value="{{ property_group.id }}"
                         {% if property_group.selected %}selected="selected"{% endif %}>

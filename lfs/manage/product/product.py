@@ -443,6 +443,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
         message = _(u"Product data has been saved.")
     else:
         message = _(u"Please correct the indicated errors.")
+        print form.errors
 
     form_html = render_to_string(template_name, RequestContext(request, {
         "product": product,

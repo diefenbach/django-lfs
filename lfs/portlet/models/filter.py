@@ -39,8 +39,7 @@ class FilterPortlet(Portlet):
 
         # get saved filters
         set_product_filters = request.session.get("product-filter", {})
-        set_product_filters = set_product_filters.items()
-        set_price_filters = request.session.get("price-filter")
+        set_price_filters = request.session.get("price-filter", {})
         set_manufacturer_filters = request.session.get("manufacturer-filter")
 
         product_filters = None
