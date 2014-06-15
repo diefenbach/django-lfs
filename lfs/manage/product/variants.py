@@ -381,7 +381,7 @@ def add_property_option(request, product_id):
         position = 999
         property_id = request.POST.get("property_id")
         for name in names:
-            property_option = property_option_form.save(commit=False)
+            property_option = PropertyOption(name=name)
             property_option.property_id = property_id
             property_option.position = position
             property_option.save()
