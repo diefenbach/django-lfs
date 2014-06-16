@@ -99,6 +99,9 @@
     <form action="{% url 'lfs_manage_add_variants' product.id %}"
           class="variants-add-form"
           method="post">
+        {% if variant_simple_form.non_field_errors %}
+            {{ variant_simple_form.non_field_errors }}
+        {% endif %}
         <table>
             <tr>
                 {% for field in variant_simple_form %}
