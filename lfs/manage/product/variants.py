@@ -512,10 +512,10 @@ def update_variants(request, product_id):
                 try:
                     ppv = variant.property_values.get(property=property_id, type=PROPERTY_VALUE_TYPE_VARIANT)
                 except ProductPropertyValue.DoesNotExist:
-                    # TODO: When creating new propertys (local or global), they are not copied onto existing variants.
-                    continue
-                ppv.value = value
-                ppv.save()
+                    ProductPropertyValue.objects.create(product=variant, property_id=property_id, type=PROPERTY_VALUE_TYPE_VARIANT, value=value)
+                else:
+                    ppv.value = value
+                    ppv.save()
 
     # Refresh variant positions
     for i, variant in enumerate(product.variants.order_by("variant_position")):
