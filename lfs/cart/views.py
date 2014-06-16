@@ -382,6 +382,8 @@ def refresh_cart(request):
     amount of a product or shipping/payment method.
     """
     cart = cart_utils.get_cart(request)
+    if not cart:
+        raise Http404
     customer = customer_utils.get_or_create_customer(request)
 
     # Update country
