@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
@@ -6,7 +8,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
@@ -105,7 +106,7 @@ def manufacturer_view(request, manufacturer_id, template_name="manage/manufactur
 
     if request.is_ajax():
         html = [["#view", view_html]]
-        return HttpResponse(simplejson.dumps({
+        return HttpResponse(json.dumps({
             "html": html,
             "message": message,
         }, cls=LazyEncoder), mimetype='application/json')
@@ -167,7 +168,7 @@ def manufacturer_inline(request, manufacturer_id, category_id,
     html = (("#sub-categories-%s" % category_id, result),)
 
     return HttpResponse(
-        simplejson.dumps({"html": html}), mimetype='application/json')
+        json.dumps({"html": html}), mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -274,7 +275,7 @@ def category_state(request, manufacturer_id, category_id):
     checkbox = ("#manufacturer-category-input-%s" % category_id, checked)
 
     return HttpResponse(
-        simplejson.dumps({
+        json.dumps({
             "html": html,
             "checkbox": checkbox
         }, mimetype='application/json')
@@ -307,7 +308,7 @@ def update_data(request, manufacturer_id):
         ("#selectable-manufacturers", selectable_manufacturers_inline(request, manufacturer_id)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg
     }, cls=LazyEncoder)
@@ -355,5 +356,5 @@ def manufacturers_ajax(request):
         out.append({'label': man.name,
                     'value': man.pk})
 
-    result = simplejson.dumps(out, cls=LazyEncoder)
+    result = json.dumps(out, cls=LazyEncoder)
     return HttpResponse(result, mimetype='application/json')

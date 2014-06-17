@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import EmptyPage
@@ -6,7 +8,6 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs.imports
@@ -120,7 +121,7 @@ def manage_topseller_inline(
         return result
     else:
         return HttpResponse(
-            simplejson.dumps({
+            json.dumps({
                 "html": [["#topseller-inline", result]],
             }), mimetype='application/json')
 
@@ -140,7 +141,7 @@ def add_topseller(request):
 
     _update_positions()
     html = [["#topseller-inline", manage_topseller_inline(request, as_string=True)]]
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Topseller have been added.")
     }, cls=LazyEncoder)
@@ -169,7 +170,7 @@ def update_topseller(request):
             topseller_changed.send(topseller)
 
         html = [["#topseller-inline", manage_topseller_inline(request, as_string=True)]]
-        result = simplejson.dumps({
+        result = json.dumps({
             "html": html,
             "message": _(u"Topseller have been removed.")
         }, cls=LazyEncoder)
@@ -190,7 +191,7 @@ def update_topseller(request):
 
         _update_positions()
         html = [["#topseller-inline", manage_topseller_inline(request, as_string=True)]]
-        result = simplejson.dumps({
+        result = json.dumps({
             "html": html,
             "message": _(u"Topseller have been updated.")
         }, cls=LazyEncoder)

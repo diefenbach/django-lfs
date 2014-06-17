@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
@@ -8,7 +10,6 @@ from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -124,7 +125,7 @@ def save_data_tab(request, id):
         ("#navigation", navigation(request, page)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Data has been saved."),
     }, cls=LazyEncoder)
@@ -186,7 +187,7 @@ def sort_pages(request):
             page_obj.save()
             pos = pos + 10
 
-        result = simplejson.dumps({
+        result = json.dumps({
             "message": _(u"The pages have been sorted."),
         }, cls=LazyEncoder)
 

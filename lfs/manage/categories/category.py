@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -9,7 +11,6 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -131,7 +132,7 @@ def edit_category_data(request, category_id, template_name="manage/category/data
         ["#categories-portlet", manage_categories_portlet(request, category.id)],
     ]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "message": message,
         "html" : html,
     }, cls=LazyEncoder)
@@ -214,7 +215,7 @@ def sort_categories(request):
 
     set_category_levels()
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "message": _(u"The categories have been sorted."),
     }, cls=LazyEncoder)
 

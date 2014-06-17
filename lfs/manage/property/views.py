@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator, EmptyPage
@@ -9,7 +11,6 @@ from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -184,7 +185,7 @@ def set_name_filter(request):
         ("#pages-inline", pages_inline(request, page, paginator, property_id)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
@@ -211,7 +212,7 @@ def set_properties_page(request):
     )
 
     return HttpResponse(
-        simplejson.dumps({"html": html}, cls=LazyEncoder), mimetype='application/json')
+        json.dumps({"html": html}, cls=LazyEncoder), mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -334,7 +335,7 @@ def save_step_range(request, property_id):
     # invalidate global properties version number (all product property caches will be invalidated)
     invalidate_cache_group_id('global-properties-version')
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "message": _(u"Step range has been saved."),
     }, cls=LazyEncoder)
 
@@ -355,7 +356,7 @@ def save_step_type(request, property_id):
     invalidate_cache_group_id('global-properties-version')
 
     html = [["#steps", steps_inline(request, property_id)]]
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Step type has been saved."),
     }, cls=LazyEncoder)
@@ -388,7 +389,7 @@ def add_step(request, property_id):
         message = _(u"Steps have been updated.")
 
     html = [["#steps", steps_inline(request, property_id)]]
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
@@ -519,7 +520,7 @@ def add_option(request, property_id):
     invalidate_cache_group_id('global-properties-version')
 
     html = [["#options", options_inline(request, property_id)]]
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message
     }, cls=LazyEncoder)

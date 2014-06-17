@@ -1,6 +1,7 @@
 # python imports
 import locale
 import math
+import json
 
 # django imports
 from django.conf import settings
@@ -13,7 +14,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _, ungettext
 from django.views.decorators.csrf import csrf_exempt
 
@@ -54,7 +54,7 @@ def select_variant(request):
     variant = Product.objects.get(pk=variant_id)
     msg = _(u"The product has been changed according to your selection.")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "product": product_inline(request, variant),
         "message": msg,
     }, cls=LazyEncoder)
@@ -102,7 +102,7 @@ def calculate_packing(request, id, quantity=None, with_properties=False, as_stri
     if as_string:
         return html
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
@@ -134,7 +134,7 @@ def calculate_price(request, id):
     else:
         packing_result = ""
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "price": lfs_tags.currency(price, request),
         "for-sale-standard-price": lfs_tags.currency(for_sale_standard_price),
         "for-sale-price": lfs_tags.currency(for_sale_price),
@@ -168,7 +168,7 @@ def select_variant_from_properties(request):
     else:
         msg = _(u"The product has been changed according to your selection.")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "product": product_inline(request, variant),
         "message": msg,
     }, cls=LazyEncoder)

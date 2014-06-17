@@ -1,6 +1,7 @@
 # python imports
 import re
 import urlparse
+import json
 
 # django imports
 from django.contrib.auth.decorators import permission_required
@@ -10,7 +11,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext as _, ungettext
 
@@ -93,7 +93,7 @@ def add_images(request):
                 logger.info("Upload of image failed: %s %s" % (file_content.name, e))
                 continue
 
-    result = simplejson.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
+    result = json.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
     return HttpResponse(result, mimetype='application/json')
 
 
@@ -192,7 +192,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
         "pagination": pagination_data
     }))
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": "msg",
     }, cls=LazyEncoder)

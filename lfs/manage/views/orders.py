@@ -1,6 +1,7 @@
 # python imports
 from datetime import datetime
 from datetime import timedelta
+import json
 
 # django imports
 from django.conf import settings
@@ -16,7 +17,6 @@ from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -254,7 +254,7 @@ def set_order_filters(request):
 
     msg = _(u"Filters has been set")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
@@ -290,7 +290,7 @@ def set_order_filters_date(request):
 
     msg = _(u"Filters has been set")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
@@ -320,7 +320,7 @@ def reset_order_filters(request):
 
     msg = _(u"Filters has been reset")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
@@ -337,7 +337,7 @@ def set_selectable_orders_page(request):
         ("#selectable-orders", selectable_orders_inline(request, order_id)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
@@ -355,7 +355,7 @@ def set_orders_page(request):
         ("#orders-filters-inline", orders_filters_inline(request)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
@@ -428,7 +428,7 @@ def change_order_state(request):
         ("#order-inline", order_inline(request, order_id)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
