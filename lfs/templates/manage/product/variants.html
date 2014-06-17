@@ -6,7 +6,8 @@
           method="post">
         {% csrf_token %}
         <select name="selected-property-groups"
-                multiple="multiple">
+                multiple="multiple"
+                class="selected-property-groups">
             {% for property_group in shop_property_groups %}
                 <option value="{{ property_group.id }}"
                         {% if property_group.selected %}selected="selected"{% endif %}>
@@ -99,6 +100,9 @@
     <form action="{% url 'lfs_manage_add_variants' product.id %}"
           class="variants-add-form"
           method="post">
+        {% if variant_simple_form.non_field_errors %}
+            {{ variant_simple_form.non_field_errors }}
+        {% endif %}
         <table>
             <tr>
                 {% for field in variant_simple_form %}

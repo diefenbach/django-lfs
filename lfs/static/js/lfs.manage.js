@@ -317,7 +317,7 @@ $(function() {
         $(this).parents("form:first").ajaxSubmit({
             dataType: 'json',
             success : function(data) {
-                $("#portlets-dialog").html(data);
+                $("#portlets-dialog").html(data['html']);
                 $("#portlets-dialog").dialog("open");
                 addEditor('#id_portlet-text', true, 300);
         }});

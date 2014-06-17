@@ -110,13 +110,17 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             portlet_ct = ContentType.objects.filter(model=portlet_type.lower())[0]
             mc = portlet_ct.model_class()
             form = mc().form(prefix="portlet")
-            return render_to_response(template_name, RequestContext(request, {
+            result = render_to_string(template_name, {
                 "form": form,
                 "object_id": object_id,
                 "object_type_id": object_ct.id,
                 "portlet_type": portlet_type,
                 "slots": Slot.objects.all(),
-            }))
+            }, RequestContext(request))
+
+            return HttpResponse(simplejson.dumps({'html': result}),
+                                mimetype='application/json')
+
         except ContentType.DoesNotExist:
             pass
 

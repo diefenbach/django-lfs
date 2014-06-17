@@ -47,12 +47,12 @@ function addEditor(selector, hide_save, height) {
 
 function update_editor() {
     /* for each field first detach tinymce and then attach again */
-    var TINYMCE_FIELD_IDS = [{id: '#id_description'},
-                             {id: '#id_short_description'},
-                             {id: "#id_short_text"},
-                             {id: "#id_body"},
-                             {id: '#id_html'},
-                             {id: '#id_note'}];
+    var TINYMCE_FIELD_IDS = [{id: "#id_description", hide_save: false, height: null},
+                             {id: "#id_short_description", hide_save: false, height: '200'},
+                             {id: "#id_short_text", hide_save: false, height: '200'},
+                             {id: "#id_body", hide_save: false, height: null},
+                             {id: "#id_html", hide_save: false, height: null},
+                             {id: "#id_note", hide_save: false, height: '100'}];
     $.each(TINYMCE_FIELD_IDS, function(idx, item){
         if (typeof(tinyMCE) != 'undefined'){
             var obj = $(item['id']);

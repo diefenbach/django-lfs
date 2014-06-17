@@ -77,35 +77,10 @@ class PriceFilterTestCase(TestCase):
         """
         """
         result = lfs.catalog.utils.get_price_filters(self.c1, [], None, [])
+        self.assertEqual(result["disabled"], False)
         self.assertEqual(result["show_reset"], False)
-        self.assertEqual(result["show_quantity"], True)
-        self.assertEqual(result["items"][0]["min"], 1)
-        self.assertEqual(result["items"][0]["max"], 3)
-        self.assertEqual(result["items"][0]["quantity"], 2)
-        self.assertEqual(result["items"][1]["min"], 4)
-        self.assertEqual(result["items"][1]["max"], 6)
-        self.assertEqual(result["items"][1]["quantity"], 1)
-
-    def test_get_price_filter_2(self):
-        """
-        """
-        self.p1.price = 100
-        self.p1.save()
-        self.p2.price = 200
-        self.p2.save()
-        self.p3.price = 300
-        self.p3.save()
-
-        result = lfs.catalog.utils.get_price_filters(self.c1, [], None, [])
-        self.assertEqual(result["show_reset"], False)
-        self.assertEqual(result["show_quantity"], True)
-        self.assertEqual(result["items"][0]["quantity"], 1)
-        self.assertEqual(result["items"][1]["min"], 101)
-        self.assertEqual(result["items"][1]["max"], 200)
-        self.assertEqual(result["items"][1]["quantity"], 1)
-        self.assertEqual(result["items"][2]["min"], 201)
-        self.assertEqual(result["items"][2]["max"], 300)
-        self.assertEqual(result["items"][2]["quantity"], 1)
+        self.assertEqual(result["min"], "1.00")
+        self.assertEqual(result["max"], "5.00")
 
 
 class ManufacturerFilterTestCase(TestCase):
@@ -498,33 +473,34 @@ class PropertiesTestCase(TestCase):
         """Tests the setting of a filter via request/view
         """
         url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug, "property_id": 1, "value": "Red"})
-        response = self.client.get(url)
+        self.client.get(url)
 
-        pf = self.client.session.get("product-filter", {})
+        pf = self.client.session.get("product-filter", {}).get("select-filter")
         self.assertEqual(pf["1"], "Red")
 
         url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug, "property_id": 2, "value": "M"})
-        response = self.client.get(url)
+        self.client.get(url)
 
-        pf = self.client.session.get("product-filter", {})
+        pf = self.client.session.get("product-filter", {}).get("select-filter")
         self.assertEqual(pf["1"], "Red")
         self.assertEqual(pf["2"], "M")
 
     def test_set_filter_2(self):
         """Tests the setting of a filter with min/max via request/view
         """
-        url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug, "property_id": 1, "min": "10", "max": "20"})
-        response = self.client.get(url)
+        url = reverse("lfs_set_product_number_filter")
+        self.client.post(url, {"category_slug": self.c1.slug, "property_id": 1, "min": "10", "max": "20"})
 
-        pf = self.client.session.get("product-filter", {})
-        self.assertEqual(pf["1"], ("10", "20"))
+        pf = self.client.session.get("product-filter", {}).get("number-filter")
+        self.assertEqual(pf["1"], (10.0, 20.0))
 
         url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug, "property_id": 2, "value": "M"})
-        response = self.client.get(url)
+        self.client.get(url)
 
-        pf = self.client.session.get("product-filter", {})
-        self.assertEqual(pf["1"], ("10", "20"))
-        self.assertEqual(pf["2"], "M")
+        nf = self.client.session.get("product-filter", {}).get("number-filter")
+        sf = self.client.session.get("product-filter", {}).get("select-filter")
+        self.assertEqual(nf["1"], (10.0, 20.0))
+        self.assertEqual(sf["2"], "M")
 
     # TODO implement this test case
     # def test_get_filter(self):
@@ -540,7 +516,7 @@ class PropertiesTestCase(TestCase):
         """Tests various scenarious of filtering products.
         """
         sorting = "price"
-        filters = [[self.pp1.id, "S"]]
+        filters = {"select-filter": {self.pp1.id: "S"}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p3.id)
         self.assertEqual(products[1].id, self.p1.id)
@@ -550,15 +526,15 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(products[0].id, self.p1.id)
         self.assertEqual(products[1].id, self.p3.id)
 
-        filters = [[self.pp1.id, "M"]]
+        filters = {"select-filter": {self.pp1.id: "M"}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p2.id)
 
-        filters = [[self.pp2.id, "1"]]
+        filters = {"select-filter": {self.pp2.id: "1"}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p1.id)
 
-        filters = [[self.pp2.id, "2"]]
+        filters = {"select-filter": {self.pp2.id: "2"}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p2.id)
 
@@ -571,7 +547,7 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(products[2].id, self.p1.id)
 
         # Combinations
-        filters = [[self.pp1.id, "S"], [self.pp2.id, "1"]]
+        filters = {"select-filter": {self.pp1.id: "S", self.pp2.id: "1"}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
 
         # There need to be only one product, because p3 doesn't have a color
@@ -579,33 +555,33 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(len(products), 1)
         self.assertEqual(products[0].id, self.p1.id)
 
-        filters = [[self.pp1.id, "M"], [self.pp2.id, "2"]]
+        filters = {"select-filter": {self.pp1.id: "M", self.pp2.id: "2"}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p2.id)
 
         # Doesn't exist
-        filters = [[self.pp1.id, "M"], [self.pp2.id, "1"]]
+        filters = {"select-filter": {self.pp1.id: "M", self.pp2.id: "1"}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.failIf(len(products) != 0)
 
-        filters = [[self.pp1.id, "S"], [self.pp2.id, "2"]]
+        filters = {"select-filter": {self.pp1.id: "S", self.pp2.id: "2"}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.failIf(len(products) != 0)
 
         # Min / Max
         sorting = "price"
 
-        filters = [[self.pp3.id, [0, 9]]]
+        filters = {"number-filter": {self.pp3.id: [0, 9]}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(len(products), 0)
 
-        filters = [[self.pp3.id, [10, 20]]]
+        filters = {"number-filter": {self.pp3.id: [10, 20]}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(len(products), 2)
         self.assertEqual(products[0].id, self.p2.id)
         self.assertEqual(products[1].id, self.p1.id)
 
-        filters = [[self.pp3.id, [21, 30]]]
+        filters = {"number-filter": {self.pp3.id: [21, 30]}}
         sorting = "price"
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(len(products), 1)
@@ -632,8 +608,8 @@ class PropertiesTestCaseWithoutProperties(TestCase):
         """
         """
         # This tests the according SQL within get_product_filters
-        f = lfs.catalog.utils.get_product_filters(self.c1, [], None, None, None)
-        self.assertEqual(f, [])
+        f = lfs.catalog.utils.get_product_filters(self.c1, {}, None, None, None)
+        self.assertEqual(f, {"select_fields": [], "number_fields": []})
 
 
 class CategoryTestCase(TestCase):
@@ -1090,24 +1066,24 @@ class ViewsTestCase(TestCase):
 
         result = set_price_filter(request, "test")
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(request.session["price-filter"]["min"], "0")
-        self.assertEqual(request.session["price-filter"]["max"], "99999")
+        self.assertEqual(request.session["price-filter"]["min"], 0.0)
+        self.assertEqual(request.session["price-filter"]["max"], 99999.0)
 
         request = RequestFactory().get("/", {"min": 0, "max": 100})
         request.session = SessionStore()
 
         result = set_price_filter(request, "test")
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(request.session["price-filter"]["min"], "0")
-        self.assertEqual(request.session["price-filter"]["max"], "100")
+        self.assertEqual(request.session["price-filter"]["min"], 0.0)
+        self.assertEqual(request.session["price-filter"]["max"], 100.0)
 
         request = RequestFactory().get("/", {"min": "A", "max": "B"})
         request.session = SessionStore()
 
         result = set_price_filter(request, "test")
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(request.session["price-filter"]["min"], "0")
-        self.assertEqual(request.session["price-filter"]["max"], "0")
+        self.assertEqual(request.session["price-filter"]["min"], 0.0)
+        self.assertEqual(request.session["price-filter"]["max"], 0.0)
 
         result = reset_price_filter(request, "test")
         self.assertEqual(result.status_code, 302)
@@ -1169,17 +1145,21 @@ class ViewsTestCase(TestCase):
 
     def test_set_filter(self):
         from lfs.catalog.views import set_filter
+        from lfs.catalog.views import set_number_filter
 
         request = RequestFactory().post("/", {"product_id": "1"})
         request.session = SessionStore()
 
         result = set_filter(request, "category-1", property_id=1, value="value-1")
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(request.session.get("product-filter")[1], "value-1")
+        self.assertEqual(request.session["product-filter"]["select-filter"][1], "value-1")
 
-        result = set_filter(request, "category-1", property_id=1, min="0", max="999")
+        request = RequestFactory().post("/", {"product_id": "1", "min": 0, "max": 999, "property_id": 1, "category_slug": "category-1"})
+        request.session = SessionStore()
+
+        result = set_number_filter(request)
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(request.session.get("product-filter")[1], ("0", "999"))
+        self.assertEqual(request.session["product-filter"]["number-filter"]["1"], (0.0, 999.0))
 
     def test_set_sorting(self):
         """Tests setting and deleting of the sorting session.

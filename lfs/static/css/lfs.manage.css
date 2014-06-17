@@ -574,8 +574,13 @@ select.categories {
 }
 
 #id_country, #id_countries, #id_slot, #id_portlet-title, #id_default_variant,
-#id_variants_display_type, #selected-property-groups, #id_group {
+#id_variants_display_type, #id_group {
     width: 200px;
+}
+
+.selected-property-groups {
+    width: 400px;
+    height: 150px;
 }
 
 #id_note {
