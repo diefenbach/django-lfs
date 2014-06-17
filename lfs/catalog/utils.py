@@ -66,7 +66,8 @@ def get_price_filters(category, product_filter, price_filter):
         return {
             "show_reset": True,
             "min": locale.format("%.2f", price_filter["min"]),
-            "max": locale.format("%.2f", price_filter["max"])
+            "max": locale.format("%.2f", price_filter["max"]),
+            "disabled": False,
         }
 
     # Otherwise we calculated min and max based on the current product filters

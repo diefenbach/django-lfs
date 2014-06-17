@@ -222,8 +222,15 @@ def set_price_filter(request, category_slug):
     """Saves the given price filter to session. Redirects to the category with
     given slug.
     """
-    min = lfs.core.utils.atof(request.REQUEST.get("min", "0"))
-    max = lfs.core.utils.atof(request.REQUEST.get("max", "99999"))
+    try:
+        min_val = lfs.core.utils.atof(request.REQUEST.get("min", "0"))
+    except (ValueError):
+        min_val = 0
+
+    try:
+        max_val = lfs.core.utils.atof(request.REQUEST.get("max", "99999"))
+    except:
+        max_val = 0
 
     try:
         float(min)
