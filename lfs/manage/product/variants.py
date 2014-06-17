@@ -1,5 +1,7 @@
-# django imports
+import json
 from copy import deepcopy
+
+# django imports
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
@@ -12,7 +14,6 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -299,7 +300,7 @@ def add_property(request, product_id):
 
     html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Property has been added."),
     }, cls=LazyEncoder)
@@ -324,7 +325,7 @@ def delete_property(request, product_id, property_id):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Property has been deleted."),
         "close-dialog": True,
@@ -359,7 +360,7 @@ def change_property_position(request):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
@@ -402,7 +403,7 @@ def add_property_option(request, product_id):
 
     html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
@@ -427,7 +428,7 @@ def delete_property_option(request, product_id, option_id):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Property has been deleted."),
         "close-dialog": True,
@@ -520,7 +521,7 @@ def add_variants(request, product_id):
         ("#variants", manage_variants(request, product_id, as_string=True, variant_simple_form=variant_simple_form)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
@@ -675,7 +676,7 @@ def update_variants(request, product_id):
         ("#selectable-products-inline", _selectable_products_inline(request, product)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
@@ -699,7 +700,7 @@ def edit_sub_type(request, product_id):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Sub type has been saved."),
     }, cls=LazyEncoder)
@@ -723,7 +724,7 @@ def update_category_variant(request, product_id):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Category variant has been saved."),
     }, cls=LazyEncoder)

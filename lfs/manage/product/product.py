@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django import forms
 from django.contrib.auth.decorators import permission_required
@@ -13,7 +15,6 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_POST
 from django.forms.widgets import HiddenInput
@@ -235,7 +236,7 @@ def stock(request, product_id, template_name="manage/product/stock.html"):
     html = [["#stock", result]]
 
     if request.is_ajax():
-        result = simplejson.dumps({
+        result = json.dumps({
             "html": html,
             "message": message,
         }, cls=LazyEncoder)
@@ -456,7 +457,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
         ["#data", form_html],
     ]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
@@ -500,7 +501,7 @@ def reset_filters(request):
     )
 
     msg = _(u"Product filters have been reset")
-    result = simplejson.dumps(
+    result = json.dumps(
         {"html": html, "message": msg, }, cls=LazyEncoder)
     return HttpResponse(result, mimetype='application/json')
 
@@ -573,7 +574,7 @@ def save_products(request):
 
     html = (("#products-inline", products_inline(request, page, paginator)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
@@ -608,7 +609,7 @@ def set_name_filter(request):
         ("#pages-inline", pages_inline(request, page, paginator, product_id)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
@@ -649,7 +650,7 @@ def set_filters(request):
 
     msg = _(u"Product filters have been set")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
@@ -683,7 +684,7 @@ def set_products_page(request):
     )
 
     return HttpResponse(
-        simplejson.dumps({"html": html}, cls=LazyEncoder), mimetype='application/json')
+        json.dumps({"html": html}, cls=LazyEncoder), mimetype='application/json')
 
 
 @permission_required("core.manage_shop")

@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import EmptyPage
@@ -6,7 +8,6 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs.imports
@@ -122,7 +123,7 @@ def manage_related_products_inline(
         return result
     else:
         return HttpResponse(
-            simplejson.dumps({
+            json.dumps({
                 "html": [["#related-products-inline", result]],
             }), mimetype='application/json')
 
@@ -156,7 +157,7 @@ def add_related_products(request, product_id):
 
     html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Related products have been added.")
     }, cls=LazyEncoder)
@@ -184,7 +185,7 @@ def remove_related_products(request, product_id):
 
     html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Related products have been removed.")
     }, cls=LazyEncoder)
@@ -205,7 +206,7 @@ def update_related_products(request, product_id):
 
     html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Related products have been updated.")
     }, cls=LazyEncoder)

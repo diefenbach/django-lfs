@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import EmptyPage
@@ -6,7 +8,6 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs.imports
@@ -119,7 +120,7 @@ def manage_featured_inline(
         return result
     else:
         return HttpResponse(
-            simplejson.dumps({
+            json.dumps({
                 "html": [["#featured-inline", result]],
             }), mimetype='application/json')
 
@@ -140,7 +141,7 @@ def add_featured(request):
     _update_positions()
 
     html = [["#featured-inline", manage_featured_inline(request, as_string=True)]]
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Featured product has been added.")
     }, cls=LazyEncoder)
@@ -169,7 +170,7 @@ def update_featured(request):
                 featured_changed.send(featured)
 
         html = [["#featured-inline", manage_featured_inline(request, as_string=True)]]
-        result = simplejson.dumps({
+        result = json.dumps({
             "html": html,
             "message": _(u"Featured product has been removed.")
         }, cls=LazyEncoder)
@@ -191,7 +192,7 @@ def update_featured(request):
         _update_positions()
 
         html = [["#featured-inline", manage_featured_inline(request, as_string=True)]]
-        result = simplejson.dumps({
+        result = json.dumps({
             "html": html,
             "message": _(u"Featured product has been updated.")
         }, cls=LazyEncoder)

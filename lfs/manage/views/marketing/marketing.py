@@ -1,18 +1,7 @@
 # django imports
-from django.contrib.admin import widgets
 from django.contrib.auth.decorators import permission_required
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator
-from django.core.urlresolvers import reverse
-from django.db.models import Q
-from django.forms import ModelForm
-from django.http import HttpResponseRedirect
-from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
-from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 from lfs.manage.views.marketing.topseller import manage_topseller

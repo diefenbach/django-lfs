@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
@@ -6,7 +8,6 @@ from django.forms.models import modelform_factory
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.conf.urls import patterns, url
 from django.views.generic.base import View
@@ -76,7 +77,7 @@ class SEOView(View):
         """Prepare the output
         """
         seo_html = self.render(self.request, form.instance, form)
-        return HttpResponse(simplejson.dumps({"seo": seo_html,
+        return HttpResponse(json.dumps({"seo": seo_html,
                                               "message": message
                                              }, cls=LazyEncoder), mimetype='application/json')
 

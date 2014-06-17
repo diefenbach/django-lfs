@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
@@ -5,7 +7,6 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -61,7 +62,7 @@ def update_portlets(request, object_type_id, object_id):
                                               content_type_id=object_type_id,
                                               content_id=object_id)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": [["#portlets", portlets_inline(request, obj)]],
         "message": _(u"Portlet has been updated.")},
         cls=LazyEncoder
@@ -95,7 +96,7 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
 
             html = [["#portlets", portlets_inline(request, obj)]]
 
-            result = simplejson.dumps({
+            result = json.dumps({
                 "html": html,
                 "close-dialog": True,
                 "message": _(u"Portlet has been added.")},
@@ -118,7 +119,7 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
                 "slots": Slot.objects.all(),
             }, RequestContext(request))
 
-            return HttpResponse(simplejson.dumps({'html': result}),
+            return HttpResponse(json.dumps({'html': result}),
                                 mimetype='application/json')
 
         except ContentType.DoesNotExist:
@@ -137,7 +138,7 @@ def delete_portlet(request, portletassignment_id):
     else:
         pa.delete()
         update_portlet_positions(pa)
-        result = simplejson.dumps({
+        result = json.dumps({
             "html": [["#portlets", portlets_inline(request, pa.content)]],
             "close-dialog": True,
             "message": _(u"Portlet has been deleted.")},
@@ -165,7 +166,7 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
 
         html = [["#portlets", portlets_inline(request, pa.content)]]
 
-        result = simplejson.dumps({
+        result = json.dumps({
             "html": html,
             "close-dialog": True,
             "message": _(u"Portlet has been saved.")},
@@ -221,7 +222,7 @@ def move_portlet(request, portletassignment_id):
 
     update_portlet_positions(pa)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": [["#portlets", portlets_inline(request, pa.content)]]},
         cls=LazyEncoder
     )
