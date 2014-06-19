@@ -540,6 +540,7 @@ class Command(BaseCommand):
         print "Migrating to 0.8"
         from lfs.catalog.models import Property
         db.add_column("catalog_property", "variants", models.BooleanField(_(u"For Variants"), default=False))
+        db.delete_column("catalog_property", "display_no_results")
         for prop in Property.objects.all():
             prop.variants = True
             prop.save()
