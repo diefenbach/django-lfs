@@ -62,11 +62,11 @@ execute following steps:
     templates/lfs/shop/robots.txt and place it in settings.INSTALLED_APPS before(!) 'lfs_theme'. Also note, that in
     production environment it is good to serve robots.txt directly from HTTP server like nginx or Apache.
 
-Migration from versions 0.5 - 0.7 to version 0.8
+Migration from versions 0.5 - 0.8 to version 0.9
 ================================================
 
-Migration from versions 0.5 - 0.7 to version 0.8 can be done with a migration command (``lfs_migrate``)
-which migrates existing databases up to version 0.8.
+Migration from versions 0.5 - 0.8 to version 0.9 can be done with a migration command (``lfs_migrate``)
+which migrates existing databases up to version 0.9.
 
 To migrate an existing database please proceed the following steps:
 
@@ -82,7 +82,7 @@ To migrate an existing database please proceed the following steps:
 
 After that your database should be ready to run with the latest release.
 
-Migration from version 0.8.0 to higher one
+Migration from version 0.9.0 to higher one
 ==========================================
 
 #. Install the new LFS version
@@ -93,7 +93,7 @@ Migration from version 0.8.0 to higher one
 
 #. $ bin/django migrate
 
-Migration from 0.8.0 without South to 0.8.0 using South
+Migration from 0.9.0 without South to 0.9.0 using South
 =======================================================
 
 This might be useful if you have github version of LFS that has no migrations yet, and you've updated to the version
