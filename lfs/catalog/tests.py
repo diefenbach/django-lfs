@@ -2159,9 +2159,11 @@ class ProductTestCase(TestCase):
         """
         """
         self.color.type = PROPERTY_TEXT_FIELD
+        self.color.display_on_product = True
         self.color.save()
 
         self.size.type = PROPERTY_TEXT_FIELD
+        self.size.display_on_product = True
         self.size.save()
 
         # First add some variant property values

@@ -167,7 +167,7 @@ def manage_variants(request, product_id, as_string=False, variant_simple_form=No
     """
     product = Product.objects.get(pk=product_id)
 
-    all_properties = product.get_property_select_fields()
+    all_properties = product.get_variants_properties()
 
     property_form = PropertyForm()
     property_option_form = PropertyOptionForm()
@@ -187,7 +187,7 @@ def manage_variants(request, product_id, as_string=False, variant_simple_form=No
     if variants is None:
         variants = []
 
-        props = product.get_property_select_fields()
+        props = product.get_variants_properties()
         props_options = {}
         for o in PropertyOption.objects.filter(property__in=props):
             props_options.setdefault(o.property_id, {})
@@ -252,7 +252,7 @@ def manage_variants(request, product_id, as_string=False, variant_simple_form=No
         "variants": variants,
         "shop_property_groups": shop_property_groups,
         "local_properties": product.get_local_properties(),
-        "variants_properties": product.get_variants_properties(),
+        "all_properties": all_properties,
         "property_option_form": property_option_form,
         "property_form": property_form,
         "variant_simple_form": variant_simple_form,
@@ -445,7 +445,7 @@ def add_variants(request, product_id):
     cache.delete("%s-variants%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product_id))
 
     product = Product.objects.get(pk=product_id)
-    all_properties = product.get_property_select_fields()
+    all_properties = product.get_variants_properties()
 
     variant_simple_form = ProductVariantSimpleForm(all_properties=all_properties, data=request.POST)
 
