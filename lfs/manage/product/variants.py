@@ -252,7 +252,7 @@ def manage_variants(request, product_id, as_string=False, variant_simple_form=No
         "variants": variants,
         "shop_property_groups": shop_property_groups,
         "local_properties": product.get_local_properties(),
-        "all_properties": all_properties,
+        "variants_properties": product.get_variants_properties(),
         "property_option_form": property_option_form,
         "property_form": property_form,
         "variant_simple_form": variant_simple_form,
