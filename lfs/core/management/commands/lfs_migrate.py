@@ -35,12 +35,27 @@ class Command(BaseCommand):
         if version == "0.5":
             self.migrate_to_06(application, version)
             self.migrate_to_07(application, version)
-            print "Your database has been migrated to version 0.7."
+            self.migrate_to_08(application, version)
+            print "Your database has been migrated to version 0.8"
         elif version == "0.6":
             self.migrate_to_07(application, version)
-            print "Your database has been migrated to version 0.7."
+            self.migrate_to_08(application, version)
+            print "Your database has been migrated to version 0.8"
         elif version == "0.7":
+            self.migrate_to_08(application, version)
+        elif version == "0.8":
             print "You are up-to-date"
+
+    def migrate_to_08(self, application, version):
+        print "Migrating to 0.8"
+        from lfs.catalog.models import Property
+        db.add_column("catalog_property", "variants", models.BooleanField(_(u"For Variants"), default=False))
+        for prop in Property.objects.all():
+            prop.variants = True
+            prop.save()
+
+        application.version = "0.8"
+        application.save()
 
     def migrate_to_07(self, application, version):
         from lfs.catalog.models import Product

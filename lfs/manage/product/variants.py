@@ -122,7 +122,7 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
         variants = []
         for variant in product.variants.all().order_by("variant_position"):
             properties = []
-            for property in product.get_property_select_fields():
+            for property in product.get_variants_properties():
                 options = []
                 for property_option in property.options.all():
                     if variant.has_option(property, property_option):
@@ -172,7 +172,7 @@ def manage_variants(request, product_id, as_string=False, template_name="manage/
         "variants": variants,
         "shop_property_groups": shop_property_groups,
         "local_properties": product.get_local_properties(),
-        "all_properties": product.get_property_select_fields(),
+        "variants_properties": product.get_variants_properties(),
         "property_option_form": property_option_form,
         "property_form": property_form,
         "variant_simple_form": variant_simple_form,

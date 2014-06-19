@@ -375,20 +375,6 @@ $(function() {
         $.post(url, { "variants_option" : variants_option });
     });
 
-    // No results
-    var toggle_no_results = function(checked) {
-        if (checked) {
-            $("#id_display_no_results").parents(".field").show();
-        }
-        else {
-            $("#id_display_no_results").parents(".field").hide();
-        }
-    }
-    toggle_no_results($("#id_filterable").attr("checked"));
-    $("#id_filterable").click(function() {
-        toggle_no_results(this.checked)
-    });
-
     // Required
     var toggle_required = function(checked) {
         if (checked) {

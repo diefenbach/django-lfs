@@ -110,7 +110,7 @@
                 <th>
                     {% trans 'Price' %}
                 </th>
-                {% for property in all_properties %}
+                {% for property in variants_properties %}
                     <th>
                         {{ property.name }}
                     </th>
@@ -127,7 +127,7 @@
                 <td>
                     {{ variant_simple_form.price }}
                 </td>
-                {% for property in all_properties %}
+                {% for property in variants_properties %}
                     <td>
                         <select name="property_{{ property.id }}">
                             <option value="all">{% trans 'All' %}</option>
@@ -174,7 +174,7 @@
                     <input type="checkbox" class="select-all" value="active_name" />
                     {% trans 'Name' %}
                 </th>
-                {% for property in all_properties %}
+                {% for property in variants_properties %}
                     <th>
                         {{ property.name }}
                     </th>

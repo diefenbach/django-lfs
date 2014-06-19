@@ -1349,14 +1349,14 @@ class Product(models.Model):
 
         return properties
 
-    def get_property_select_fields(self):
+    def get_variants_properties(self):
         """
         Returns all properties which are `select types`.
         """
         # global
         properties = []
         for property_group in self.property_groups.all():
-            properties.extend(property_group.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("groupspropertiesrelation"))
+            properties.extend(property_group.properties.filter(type=PROPERTY_SELECT_FIELD, variants=True).order_by("groupspropertiesrelation"))
 
         # local
         for property in self.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("productspropertiesrelation"):
@@ -1917,15 +1917,14 @@ class Property(models.Model):
     position:
         The position of the property within the management interface.
 
+    variants
+        if True the property is used to create variants
+
     filterable:
         If True the property is used for filtered navigation.
 
     configurable
         if True the property is used for configurable product.
-
-    display_no_results
-        If True filter ranges with no products will be displayed. Otherwise
-        they will be removed.
 
     display_on_product
         If True the property is displayed as an attribute on the product.
@@ -1974,10 +1973,10 @@ class Property(models.Model):
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), blank=True, null=True, through="ProductsPropertiesRelation", related_name="properties")
     position = models.IntegerField(_(u"Position"), blank=True, null=True)
     unit = models.CharField(_(u"Unit"), blank=True, max_length=15)
-    display_on_product = models.BooleanField(_(u"Display on product"), default=True)
+    display_on_product = models.BooleanField(_(u"Display on product"), default=False)
     local = models.BooleanField(_(u"Local"), default=False)
-    filterable = models.BooleanField(_(u"Filterable"), default=True)
-    display_no_results = models.BooleanField(_(u"Display no results"), default=False)
+    variants = models.BooleanField(_(u"For Variants"), default=False)
+    filterable = models.BooleanField(_(u"Filterable"), default=False)
     configurable = models.BooleanField(_(u"Configurable"), default=False)
     type = models.PositiveSmallIntegerField(_(u"Type"), choices=PROPERTY_FIELD_CHOICES, default=PROPERTY_TEXT_FIELD)
     price = models.FloatField(_(u"Price"), blank=True, null=True)
