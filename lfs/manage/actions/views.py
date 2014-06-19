@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
@@ -7,7 +9,6 @@ from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -102,12 +103,12 @@ def save_action(request, id):
         ["#navigation", navigation(request, action)],
     ]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -163,11 +164,11 @@ def sort_actions(request):
             action_obj.save()
             pos = pos + 10
 
-        result = simplejson.dumps({
+        result = json.dumps({
             "message": _(u"The actions have been sorted."),
         }, cls=LazyEncoder)
 
-        return HttpResponse(result)
+        return HttpResponse(result, mimetype='application/json')
 
 
 def _update_positions():

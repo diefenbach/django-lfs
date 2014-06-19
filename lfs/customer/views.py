@@ -1,5 +1,4 @@
 # python imports
-from copy import deepcopy
 import datetime
 from urlparse import urlparse
 
@@ -75,7 +74,7 @@ def login(request, template_name="lfs/customer/login.html"):
             customer.user = user
 
             # Notify
-            lfs.core.signals.customer_added.send(user)
+            lfs.core.signals.customer_added.send(sender=user)
 
             # Log in user
             from django.contrib.auth import authenticate
@@ -166,6 +165,7 @@ def orders(request, template_name="lfs/customer/orders.html"):
         "orders": orders,
         "options": options,
         "date_filter": date_filter,
+        "current": "orders"
     }))
 
 
@@ -179,6 +179,7 @@ def order(request, id, template_name="lfs/customer/order.html"):
     return render_to_response(template_name, RequestContext(request, {
         "current_order": order,
         "orders": orders,
+        "current": "orders"
     }))
 
 
@@ -190,6 +191,7 @@ def account(request, template_name="lfs/customer/account.html"):
 
     return render_to_response(template_name, RequestContext(request, {
         "user": user,
+        "current": "welcome"
     }))
 
 
@@ -225,6 +227,7 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
         template_name, RequestContext(request, {
             "shipping_address_inline": sam.render(request),
             "invoice_address_inline": iam.render(request),
+            "current": "addresses"
         }),
         msg=msg,
     )
@@ -246,7 +249,8 @@ def email(request, template_name="lfs/customer/email.html"):
         email_form = EmailForm(initial={"email": request.user.email})
 
     return render_to_response(template_name, RequestContext(request, {
-        "email_form": email_form
+        "email_form": email_form,
+        "current": "email"
     }))
 
 
@@ -264,5 +268,6 @@ def password(request, template_name="lfs/customer/password.html"):
         form = PasswordChangeForm(request.user)
 
     return render_to_response(template_name, RequestContext(request, {
-        "form": form
+        "form": form,
+        "current": "password"
     }))

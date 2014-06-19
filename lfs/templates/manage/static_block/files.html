@@ -3,13 +3,13 @@
 
 {% if static_block.files.all %}
     <form id="product-files-update-form"
-          action="{% url lfs_manage_update_files_sb static_block.id %}"
+          action="{% url 'lfs_manage_update_files_sb' static_block.id %}"
           method="post">
 
         <table class="lfs-manage-table">
             <tr>
                 <th class="tiny">
-                    <input type="checkbox" 
+                    <input type="checkbox"
                            class="select-all"
                            value="delete-files" />
                 </th>
@@ -26,16 +26,16 @@
                         <input type="checkbox"
                                class="select-delete-files"
                                name="delete-{{ file.id }}"
-                               style="float:left" />                
+                               style="float:left" />
                     </td>
                     <td>
-                        <input type="text" name="title-{{ file.id }}" value="{{ file.title }}" />                
+                        <input type="text" name="title-{{ file.id }}" value="{{ file.title }}" />
                     </td>
                     <td class="right-padding">
                         <input type="text" name="position-{{ file.id }}" value="{{ file.position }}" size="3" />
                     </td>
                 </tr>
-            {% endfor %}    
+            {% endfor %}
         </table>
         <div class="buttons">
             <input class="button ajax-save-button"
@@ -43,7 +43,7 @@
             <input class="button ajax-save-button"
                    type="submit" name="delete" value="{% trans 'Delete' %}" />
         </div>
-    </form>    
+    </form>
 {% else %}
     <span>{% trans 'There are no files' %}</span>
 {% endif %}
@@ -51,11 +51,11 @@
 <h2 class="heading-middle">{% trans 'Add files' %}</h2>
 
 <div id="content">
-    <form id="file_upload" action="{% url lfs_add_files_to_static_block static_block.id %}" method="POST" enctype="multipart/form-data">
+    <form id="file_upload" action="{% url 'lfs_add_files_to_static_block' static_block.id %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <input class="button" type="file" name="file" multiple>
     </form>
-    <table id="files_table" data="{% url lfs_reload_files static_block.id %}" msg='{% trans "Uploading images:" %}'></table>
+    <table id="files_table" data="{% url 'lfs_reload_files' static_block.id %}" msg='{% trans "Uploading images:" %}'></table>
 </div>
 
 <script>
@@ -67,7 +67,7 @@
                 var fileNames = '';
                 for (i = 0; i < files.length; i += 1) {
                     fileNames = fileNames + files[i].name + '<br>';
-                }                
+                }
                 var msg = $("#files_table").attr("msg");
                 return $(
                     '<tr>' +

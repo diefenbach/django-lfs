@@ -20,7 +20,7 @@ class RecentProductsPortlet(Portlet):
         app_label = 'portlet'
 
     def __unicode__(self):
-        return "%s" % self.id
+        return u"%s" % self.id
 
     def render(self, context):
         """Renders the portlet as html.

@@ -6,7 +6,7 @@ def get_valid_discounts(request, product=None):
     """Returns all valid discounts as a list.
     """
     discounts = []
-    for discount in Discount.objects.all():
+    for discount in Discount.objects.filter(active=True):
         if discount.is_valid(request, product):
             discounts.append({
                 "id": discount.id,

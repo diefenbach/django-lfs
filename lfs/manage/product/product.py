@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django import forms
 from django.contrib.auth.decorators import permission_required
@@ -13,8 +15,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_POST
 from django.forms.widgets import HiddenInput
 from django.conf import settings
@@ -39,6 +40,7 @@ from lfs.manage.utils import get_current_page
 from lfs.manage.seo.views import SEOView
 from lfs.manufacturer.models import Manufacturer
 from lfs.utils.widgets import SelectImage
+from lfs.core.widgets.checkbox import LFSCheckboxInput
 
 
 # Forms
@@ -71,7 +73,7 @@ class ProductDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductDataForm, self).__init__(*args, **kwargs)
         self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
-        self.fields["active_base_price"].widget = CheckboxInput(check_test=lambda v:v!=0)
+        self.fields["active_base_price"].widget = LFSCheckboxInput(check_test=lambda v: v!=0)
         man_count = Manufacturer.objects.count()
         if man_count > getattr(settings, 'LFS_SELECT_LIMIT', 20):
             self.fields["manufacturer"].widget = HiddenInput()
@@ -149,7 +151,7 @@ class ProductStockForm(forms.ModelForm):
         if kwargs.get("instance").is_variant():
             self.fields["active_packing_unit"].widget = Select(choices=CHOICES)
         else:
-            self.fields["active_packing_unit"].widget = CheckboxInput(check_test=lambda v: v != 0)
+            self.fields["active_packing_unit"].widget = LFSCheckboxInput(check_test=lambda v: v != 0)
 
     def clean(self):
         if self.data.get("stock-active_packing_unit") == str(CHOICES_YES):
@@ -234,11 +236,11 @@ def stock(request, product_id, template_name="manage/product/stock.html"):
     html = [["#stock", result]]
 
     if request.is_ajax():
-        result = simplejson.dumps({
+        result = json.dumps({
             "html": html,
             "message": message,
         }, cls=LazyEncoder)
-        return HttpResponse(result)
+        return HttpResponse(result, mimetype='application/json')
     else:
         return result
 
@@ -403,8 +405,7 @@ def delete_product(request, product_id):
     url = reverse('lfs_manage_product_dispatcher')
     if product.is_variant():
         url = reverse("lfs_manage_product", kwargs={"product_id": product.parent_id})
-    else:
-        url = reverse("lfs_manage_product_dispatcher")
+
     product.delete()
 
     return HttpResponseRedirect(url)
@@ -443,6 +444,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
         message = _(u"Product data has been saved.")
     else:
         message = _(u"Please correct the indicated errors.")
+        print form.errors
 
     form_html = render_to_string(template_name, RequestContext(request, {
         "product": product,
@@ -455,12 +457,12 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
         ["#data", form_html],
     ]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -499,9 +501,9 @@ def reset_filters(request):
     )
 
     msg = _(u"Product filters have been reset")
-    result = simplejson.dumps(
+    result = json.dumps(
         {"html": html, "message": msg, }, cls=LazyEncoder)
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -572,12 +574,12 @@ def save_products(request):
 
     html = (("#products-inline", products_inline(request, page, paginator)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -607,11 +609,11 @@ def set_name_filter(request):
         ("#pages-inline", pages_inline(request, page, paginator, product_id)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -648,12 +650,12 @@ def set_filters(request):
 
     msg = _(u"Product filters have been set")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -682,7 +684,7 @@ def set_products_page(request):
     )
 
     return HttpResponse(
-        simplejson.dumps({"html": html}, cls=LazyEncoder))
+        json.dumps({"html": html}, cls=LazyEncoder), mimetype='application/json')
 
 
 @permission_required("core.manage_shop")

@@ -1,6 +1,7 @@
 # python imports
 import locale
 import math
+import json
 
 # django imports
 from django.conf import settings
@@ -13,7 +14,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _, ungettext
 from django.views.decorators.csrf import csrf_exempt
 
@@ -54,12 +54,12 @@ def select_variant(request):
     variant = Product.objects.get(pk=variant_id)
     msg = _(u"The product has been changed according to your selection.")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "product": product_inline(request, variant),
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def calculate_packing(request, id, quantity=None, with_properties=False, as_string=False, template_name="lfs/catalog/packing_result.html"):
@@ -102,11 +102,11 @@ def calculate_packing(request, id, quantity=None, with_properties=False, as_stri
     if as_string:
         return html
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def calculate_price(request, id):
@@ -134,7 +134,7 @@ def calculate_price(request, id):
     else:
         packing_result = ""
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "price": lfs_tags.currency(price, request),
         "for-sale-standard-price": lfs_tags.currency(for_sale_standard_price),
         "for-sale-price": lfs_tags.currency(for_sale_price),
@@ -142,7 +142,7 @@ def calculate_price(request, id):
         "message": _("Price has been changed according to your selection."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def select_variant_from_properties(request):
@@ -168,12 +168,30 @@ def select_variant_from_properties(request):
     else:
         msg = _(u"The product has been changed according to your selection.")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "product": product_inline(request, variant),
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
+
+
+def set_number_filter(request):
+    product_filter = request.session.get("product-filter", {})
+    if product_filter.get("number-filter") is None:
+        product_filter["number-filter"] = {}
+
+    pmin = lfs.core.utils.atof(request.POST.get("min", 1))
+    pmax = lfs.core.utils.atof(request.POST.get("max", 1))
+
+    property_id = request.POST.get("property_id")
+    category_slug = request.POST.get("category_slug")
+
+    product_filter["number-filter"][property_id] = (pmin, pmax)
+    request.session["product-filter"] = product_filter
+
+    url = reverse("lfs_category", kwargs={"slug": category_slug})
+    return HttpResponseRedirect(url)
 
 
 def set_filter(request, category_slug, property_id, value=None, min=None, max=None):
@@ -181,11 +199,24 @@ def set_filter(request, category_slug, property_id, value=None, min=None, max=No
     slug.
     """
     product_filter = request.session.get("product-filter", {})
+    if product_filter.get("select-filter") is None:
+        product_filter["select-filter"] = {}
 
-    if value is not None:
-        product_filter[property_id] = value
+    if str(property_id) in product_filter["select-filter"].keys():
+        options = product_filter["select-filter"][property_id].split("|")
+        if value in options:
+            options.remove(value)
+        else:
+            options.append(value)
+        if options:
+            product_filter["select-filter"][property_id] = "|".join(options)
+        else:
+            del product_filter["select-filter"][property_id]
     else:
-        product_filter[property_id] = (min, max)
+        product_filter["select-filter"][property_id] = value
+
+    if not product_filter.get("select-filter"):
+        del product_filter["select-filter"]
 
     request.session["product-filter"] = product_filter
 
@@ -197,8 +228,15 @@ def set_price_filter(request, category_slug):
     """Saves the given price filter to session. Redirects to the category with
     given slug.
     """
-    min_val = request.REQUEST.get("min", "0")
-    max_val = request.REQUEST.get("max", "99999")
+    try:
+        min_val = lfs.core.utils.atof(request.REQUEST.get("min", "0"))
+    except (ValueError):
+        min_val = 0
+
+    try:
+        max_val = lfs.core.utils.atof(request.REQUEST.get("max", "99999"))
+    except:
+        max_val = 0
 
     try:
         float(min_val)
@@ -274,6 +312,25 @@ def reset_all_manufacturer_filter(request, category_slug):
     return HttpResponseRedirect(url)
 
 
+def reset_number_filter(request, category_slug, property_id):
+    """Resets product filter with given property id. Redirects to the category
+    with given slug.
+    """
+    try:
+        product_filter = request.session.get("product-filter")
+        del product_filter["number-filter"][property_id]
+    except KeyError:
+        pass
+    else:
+        if product_filter["number-filter"] == {}:
+            del product_filter["number-filter"]
+
+    request.session["product-filter"] = product_filter
+
+    url = reverse("lfs_category", kwargs={"slug": category_slug})
+    return HttpResponseRedirect(url)
+
+
 def reset_all_filter(request, category_slug):
     """Resets all product filter. Redirects to the category with given slug.
     """
@@ -301,7 +358,7 @@ def set_sorting(request):
         request.session["sorting"] = sorting
 
     # lfs_sorting_changed.send(category_id)
-    return HttpResponseRedirect(request.META.get("HTTP_REFERER"))
+    return HttpResponseRedirect(request.META.get("HTTP_REFERER", '/'))
 
 
 def category_view(request, slug, template_name="lfs/catalog/category_base.html"):
@@ -310,9 +367,12 @@ def category_view(request, slug, template_name="lfs/catalog/category_base.html")
     start = request.REQUEST.get("start", 1)
     category = lfs_get_object_or_404(Category, slug=slug)
     if category.get_content() == CONTENT_PRODUCTS:
-        inline = category_products(request, slug, start)
+        inline_dict = category_products(request, slug, start)
     else:
-        inline = category_categories(request, slug)
+        inline_dict = category_categories(request, slug)
+
+    inline = inline_dict['html']
+    pagination_data = inline_dict['pagination_data']
     # Set last visited category for later use, e.g. Display breadcrumbs,
     # selected menu points, etc.
     request.session["last_category"] = category
@@ -326,6 +386,8 @@ def category_view(request, slug, template_name="lfs/catalog/category_base.html")
         "category": category,
         "category_inline": inline,
         "top_category": lfs.catalog.utils.get_current_top_category(request, category),
+        "pagination": request.REQUEST.get("start", 0),
+        'pagination_data': pagination_data
     }))
 
 
@@ -334,7 +396,7 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
 
     This view is called if the user chooses a template that is situated in settings.CATEGORY_PATH ".
     """
-    cache_key = "%s-category-categories-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    cache_key = "%s-category-categories-2-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
 
     result = cache.get(cache_key)
     if result is not None:
@@ -360,10 +422,12 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
     if render_template != None:
         template_name = render_template
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result_html = render_to_string(template_name, RequestContext(request, {
         "category": category,
         "categories": categories,
     }))
+
+    result = {'pagination_data': {'current_page': 1, 'total_pages': 1, 'getparam': 'start'}, 'html': result_html}
 
     cache.set(cache_key, result)
     return result
@@ -392,12 +456,11 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     sorting = request.session.get("sorting", default_sorting)
 
     product_filter = request.session.get("product-filter", {})
-    product_filter = product_filter.items()
 
-    cache_key = "%s-category-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
-    sub_cache_key = "%s-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
+    cache_key = "%s-category-products-2-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    sub_cache_key = "%s-2-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
 
-    filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter]
+    filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter.items()]
     if filter_key:
         sub_cache_key += "-%s" % "-".join(filter_key)
 
@@ -461,7 +524,7 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
             "slug": product.slug,
             "name": product.get_name(),
             "image": image,
-            "price_unit": product.price_unit,
+            "price_unit": product.get_price_unit(),
             "price_includes_tax": product.price_includes_tax(request),
         })
         if (i + 1) % amount_of_cols == 0:
@@ -490,7 +553,9 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
         "amount_of_products": amount_of_products,
         "pagination": pagination_data
     }
-    result = render_to_string(template_name, RequestContext(request, template_data))
+    result_html = render_to_string(template_name, RequestContext(request, template_data))
+
+    result = {'pagination_data': pagination_data, 'html': result_html}
 
     temp[sub_cache_key] = result
     cache.set(cache_key, temp)
@@ -515,8 +580,14 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
         recent = recent[:settings.LFS_RECENT_PRODUCTS_LIMIT + 1]
     request.session["RECENT_PRODUCTS"] = recent
 
+    if product.is_variant():
+        variant_canonical = product.parent.get_variant_for_category(request)
+    else:
+        variant_canonical = product
+
     result = render_to_response(template_name, RequestContext(request, {
         "product_inline": product_inline(request, product),
+        "variant_canonical": variant_canonical,
         "product": product,
     }))
 

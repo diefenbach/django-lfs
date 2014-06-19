@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -7,7 +9,6 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from django.utils import simplejson
 
 # lfs.imports
 import lfs.core.utils
@@ -31,12 +32,12 @@ def manage_attachments(request, product_id, as_string=False, template_name="mana
     if as_string:
         return result
     else:
-        result = simplejson.dumps({
+        result = json.dumps({
             "attachments": result,
             "message": _(u"Attachments have been added."),
         }, cls=LazyEncoder)
 
-        return HttpResponse(result)
+        return HttpResponse(result, mimetype='application/json')
 
 
 # Actions
@@ -47,7 +48,7 @@ def add_attachment(request, product_id):
     product = lfs_get_object_or_404(Product, pk=product_id)
     if request.method == "POST":
         for file_content in request.FILES.getlist("file"):
-            attachment = ProductAttachment(product=product, title=file_content.name)
+            attachment = ProductAttachment(product=product, title=file_content.name[:50])
             attachment.file.save(file_content.name, file_content, save=True)
 
     # Refresh positions
@@ -79,7 +80,7 @@ def update_attachments(request, product_id):
     elif action == "update":
         message = _(u"Attachment has been updated.")
         for attachment in product.attachments.all():
-            attachment.title = request.POST.get("title-%s" % attachment.id)
+            attachment.title = request.POST.get("title-%s" % attachment.id)[:50]
             attachment.position = request.POST.get("position-%s" % attachment.id)
             attachment.description = request.POST.get("description-%s" % attachment.id)
             attachment.save()
@@ -92,12 +93,12 @@ def update_attachments(request, product_id):
     product_changed.send(product, request=request)
 
     html = [["#attachments", manage_attachments(request, product_id, as_string=True)]]
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -140,8 +141,8 @@ def move_attachment(request, id):
 
     html = [["#attachments", manage_attachments(request, product.id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
          "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')

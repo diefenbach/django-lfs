@@ -1,15 +1,15 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -18,7 +18,6 @@ import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
 from lfs.core.widgets.image import LFSImageInput
-from lfs.criteria import utils as criteria_utils
 from lfs.customer.models import Customer
 from lfs.manage.shipping_methods.forms import ShippingMethodAddForm
 from lfs.manage.shipping_methods.forms import ShippingMethodForm
@@ -166,12 +165,12 @@ def shipping_price_criteria(request, shipping_price_id, as_string=False,
     else:
         html = [["#dialog", dialog]]
 
-        result = simplejson.dumps({
+        result = json.dumps({
             "html": html,
             "open-dialog": True,
         }, cls=LazyEncoder)
 
-        return HttpResponse(result)
+        return HttpResponse(result, mimetype='application/json')
 
 
 # Actions
@@ -207,12 +206,12 @@ def save_shipping_method_criteria(request, shipping_method_id):
 
     html = [["#criteria", shipping_method_criteria(request, shipping_method_id)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Changes have been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -228,12 +227,13 @@ def save_shipping_price_criteria(request, shipping_price_id):
         ["#prices", shipping_method_prices(request, shipping_price.shipping_method.id)],
     ]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
-        "message": _(u"Modifications have been changed."),
+        "close-dialog": True,
+        "message": _(u"Modifications have been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -255,12 +255,12 @@ def add_shipping_price(request, shipping_method_id):
     message = _(u"Price has been added")
     html = [["#prices", shipping_method_prices(request, shipping_method_id)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -304,12 +304,12 @@ def update_shipping_prices(request, shipping_method_id):
     _update_price_positions(shipping_method)
 
     html = [["#prices", shipping_method_prices(request, shipping_method_id)]]
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -337,12 +337,12 @@ def save_shipping_method_data(request, shipping_method_id):
         ["#shipping-methods", shipping_methods(request)],
     ]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -386,11 +386,11 @@ def sort_shipping_methods(request):
             sm_obj.save()
             priority = priority + 10
 
-        result = simplejson.dumps({
+        result = json.dumps({
             "message": _(u"The shipping methods have been sorted."),
         }, cls=LazyEncoder)
 
-        return HttpResponse(result)
+        return HttpResponse(result, mimetype='application/json')
 
 
 def _update_price_positions(shipping_method):

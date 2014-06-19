@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load lfs_tags %}
 
-<form action="{% url lfs_set_customer_filters %}"
+<form action="{% url 'lfs_set_customer_filters' %}"
       method="post">
 
     <input type="hidden" name="came-from" value="customer" />
@@ -22,7 +22,7 @@
                 <input type="submit"
                        class="ajax-save-button" />
 
-                <a href="{% url lfs_reset_customer_filters %}?came-from=customer&amp;customer-id={{ customer.id }}"
+                <a href="{% url 'lfs_reset_customer_filters' %}?came-from=customer&amp;customer-id={{ customer.id }}"
                    class="ajax-link reset">&nbsp;</a>
             </td>
         </tr>

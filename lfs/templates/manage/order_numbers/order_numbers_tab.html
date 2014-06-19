@@ -3,7 +3,7 @@
     {% trans 'Order Numbers' %}
 </h2>
 
-<form action="{% url lfs_save_order_numbers_tab %}"
+<form action="{% url 'lfs_save_order_numbers_tab' %}"
       method="post">
     {% include "manage/lfs_form.html" %}
     <div class="buttons">

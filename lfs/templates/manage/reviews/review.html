@@ -16,14 +16,14 @@
     </div>
     <div class="site-actions">
         <a class="overview"
-           href="{% url lfs_manage_reviews %}">{% trans 'Overview' %}</a>
+           href="{% url 'lfs_manage_reviews' %}">{% trans 'Overview' %}</a>
 
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this review?' %}"
-           href="{% url lfs_delete_review review.id %}">
+           href="{% url 'lfs_delete_review' review.id %}">
            {% trans 'Delete review' %}</a>
 
-        <form action="{% url lfs_set_review_state review.id %}"
+        <form action="{% url 'lfs_set_review_state' review.id %}"
               method="post"
               class="inline">
             <label>{% trans "Active" %}:</label>

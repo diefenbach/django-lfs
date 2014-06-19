@@ -4,11 +4,12 @@
 {% if not shop_property_groups %}
     {% trans "There are no property groups yet." %}
 {% else %}
-    <form action="{% url lfs_update_product_property_groups product.id %}"
+    <form action="{% url 'lfs_update_product_property_groups' product.id %}"
           method="post">
         {% csrf_token %}
         <select id="selected-property-groups"
                 name="selected-property-groups"
+                class="selected-property-groups"
                 multiple="multiple">
             {% for property_group in shop_property_groups %}
                 <option value="{{ property_group.id }}"
@@ -26,7 +27,7 @@
     </form>
 
     {% if display_configurables %}
-        <form action="{% url lfs_update_product_properties product.id %}"
+        <form action="{% url 'lfs_update_product_properties' product.id %}"
               method="post">
 
             {% csrf_token %}
@@ -35,16 +36,16 @@
             {% for property_group in configurables %}
                 <fieldset>
                     <legend>
-                        <a href="{% url lfs_manage_property_group property_group.id %}">
+                        <a href="{% url 'lfs_manage_property_group' property_group.id %}">
                             {{ property_group.name }}
                         </a>
                     </legend>
                     {% for property in property_group.properties %}
                         <div>
-                            {% if property.display_text_field %}
+                            {% if property.display_text_field or property.display_number_field %}
                                 <div class="field">
                                     <div class="label">
-                                        <a href="{% url lfs_manage_shop_property property.id %}">
+                                        <a href="{% url 'lfs_manage_shop_property' property.id %}">
                                             {{ property.title }}:
                                         </a>
                                     </div>
@@ -85,23 +86,23 @@
     {% endif %}
 
     {% if display_filterables %}
-        <form action="{% url lfs_update_product_properties product.id %}"
+        <form action="{% url 'lfs_update_product_properties' product.id %}"
               method="post">
             {% csrf_token %}
             <h2 class="heading-middle">{% trans "Filter values" %}</h2>
             {% for property_group in filterables %}
                 <fieldset>
                     <legend>
-                        <a href="{% url lfs_manage_property_group property_group.id %}">
+                        <a href="{% url 'lfs_manage_property_group' property_group.id %}">
                             {{ property_group.name }}
                         </a>
                     </legend>
                     {% for property in property_group.properties %}
                         <div>
-                            {% if property.display_text_field %}
+                            {% if property.display_text_field or property.display_number_field %}
                                 <div class="field">
                                     <div class="label">
-                                        <a href="{% url lfs_manage_shop_property property.id %}">
+                                        <a href="{% url 'lfs_manage_shop_property' property.id %}">
                                             {{ property.title }}:
                                         </a>
                                     </div>
@@ -113,7 +114,7 @@
                             {% if property.display_select_field %}
                                 <div class="field">
                                     <div class="label">
-                                        <a href="{% url lfs_manage_shop_property property.id %}">
+                                        <a href="{% url 'lfs_manage_shop_property' property.id %}">
                                             {{ property.title }}:
                                         </a>
                                     </div>
@@ -143,23 +144,23 @@
     {% endif %}
 
     {% if display_displayables %}
-        <form action="{% url lfs_update_product_properties product.id %}"
+        <form action="{% url 'lfs_update_product_properties' product.id %}"
               method="post">
             {% csrf_token %}
             <h2 class="heading-middle">{% trans "Displayed values" %}</h2>
             {% for property_group in displayables %}
                 <fieldset>
                     <legend>
-                        <a href="{% url lfs_manage_property_group property_group.id %}">
+                        <a href="{% url 'lfs_manage_property_group' property_group.id %}">
                             {{ property_group.name }}
                         </a>
                     </legend>
                     {% for property in property_group.properties %}
                         <div>
-                            {% if property.display_text_field %}
+                            {% if property.display_text_field or property.display_number_field %}
                                 <div class="field">
                                     <div class="label">
-                                        <a href="{% url lfs_manage_shop_property property.id %}">
+                                        <a href="{% url 'lfs_manage_shop_property' property.id %}">
                                             {{ property.title }}:
                                         </a>
                                     </div>

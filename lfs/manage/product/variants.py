@@ -1,5 +1,7 @@
-# django imports
+import json
 from copy import deepcopy
+
+# django imports
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
@@ -12,7 +14,6 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -251,7 +252,7 @@ def manage_variants(request, product_id, as_string=False, variant_simple_form=No
         "variants": variants,
         "shop_property_groups": shop_property_groups,
         "local_properties": product.get_local_properties(),
-        "all_properties": all_properties,
+        "variants_properties": product.get_variants_properties(),
         "property_option_form": property_option_form,
         "property_form": property_form,
         "variant_simple_form": variant_simple_form,
@@ -299,12 +300,12 @@ def add_property(request, product_id):
 
     html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Property has been added."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -324,13 +325,13 @@ def delete_property(request, product_id, property_id):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Property has been deleted."),
         "close-dialog": True,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -359,11 +360,11 @@ def change_property_position(request):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -391,6 +392,9 @@ def add_property_option(request, product_id):
         for i, option in enumerate(PropertyOption.objects.filter(property=property_id)):
             option.position = i
             option.save()
+        message = _(u'Option has been added.')
+    else:
+        message = _(u'Invalid data. Correct it and try again.')
 
     product = Product.objects.get(pk=product_id)
     product_changed.send(product)
@@ -399,12 +403,12 @@ def add_property_option(request, product_id):
 
     html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
-        "message": _(u"Option has been added."),
+        "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -424,13 +428,13 @@ def delete_property_option(request, product_id, option_id):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Property has been deleted."),
         "close-dialog": True,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -517,12 +521,12 @@ def add_variants(request, product_id):
         ("#variants", manage_variants(request, product_id, as_string=True, variant_simple_form=variant_simple_form)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -539,8 +543,8 @@ def update_variants(request, product_id):
         for key in request.POST.keys():
             if key.startswith("delete-"):
                 try:
-                    id = key.split("-")[1]
-                    variant = Product.objects.get(pk=id)
+                    prop_id = key.split("-")[1]
+                    variant = Product.objects.get(pk=prop_id)
                 except (IndexError, ObjectDoesNotExist):
                     continue
                 else:
@@ -549,27 +553,38 @@ def update_variants(request, product_id):
                         product.save()
                     variant.delete()
     elif action == "update":
+        # TODO: change all of these to formsets or something that will allow for error hangling/messages
         message = _(u"Variants have been saved.")
         for key, value in request.POST.items():
             if key.startswith("variant-"):
-                id = key.split("-")[1]
+                prop_id = key.split("-")[1]
                 try:
-                    variant = Product.objects.get(pk=id)
+                    variant = Product.objects.get(pk=prop_id)
                 except ObjectDoesNotExist:
                     continue
                 else:
-                    for name in ("slug", "sku", "price"):
-                        value = request.POST.get("%s-%s" % (name, id))
+                    for name in ("sku", "price"):
+                        value = request.POST.get("%s-%s" % (name, prop_id))
                         if value != "":
                             if name == 'price':
                                 value = float(value)
                             setattr(variant, name, value)
 
+                    # handle slug - ensure it is unique
+                    slug = request.POST.get("slug-%s" % prop_id)
+                    if variant.slug != slug:
+                        counter = 1
+                        new_slug = slug[:80]
+                        while Product.objects.exclude(pk=variant.pk).filter(slug=new_slug).exists():
+                            new_slug = '%s-%s' % (slug[:(79 - len(str(counter)))], counter)
+                            counter += 1
+                        variant.slug = new_slug
+
                     # name
-                    variant.name = request.POST.get("name-%s" % id)
+                    variant.name = request.POST.get("name-%s" % prop_id)
 
                     # active
-                    active = request.POST.get("active-%s" % id)
+                    active = request.POST.get("active-%s" % prop_id)
                     if active:
                         variant.active = True
                     else:
@@ -577,14 +592,14 @@ def update_variants(request, product_id):
 
                     # active attributes
                     for name in ("active_price", "active_sku", "active_name"):
-                        value = request.POST.get("%s-%s" % (name, id))
+                        value = request.POST.get("%s-%s" % (name, prop_id))
                         if value:
                             setattr(variant, name, True)
                         else:
                             setattr(variant, name, False)
 
                     # position
-                    position = request.POST.get("position-%s" % id)
+                    position = request.POST.get("position-%s" % prop_id)
                     try:
                         variant.variant_position = int(position)
                     except ValueError:
@@ -597,14 +612,17 @@ def update_variants(request, product_id):
                         pass
                     else:
                         product.save()
-                
+
                 variant.save()
 
             elif key.startswith("property"):
                 # properties are marshalled as: property-variant_id|property_id
                 temp = key.split("-")[1]
                 variant_id, property_id = temp.split("|")
-                variant = Product.objects.get(pk=variant_id)
+                try:
+                    variant = Product.objects.get(pk=variant_id)
+                except Product.DoesNotExist:
+                    continue
                 prop = Property.objects.get(pk=property_id)
                 ppv = None
                 ppv_filterable = None
@@ -615,37 +633,33 @@ def update_variants(request, product_id):
                 except ProductPropertyValue.DoesNotExist:
                     pass
 
-                if prop.filterable:
-                    try:
-                        ppv_filterable = ProductPropertyValue.objects.get(product=variant,
+                if prop.filterable:  # it is possible that multiple values are selected for filter
+                    ppv_filterables = ProductPropertyValue.objects.filter(product=variant,
                                                                           property_id=property_id,
                                                                           type=PROPERTY_VALUE_TYPE_FILTER)
-                    except ProductPropertyValue.DoesNotExist:
-                        pass
 
                 if value != '':
+                    is_changed = True
                     if not ppv:
                         ppv = ProductPropertyValue.objects.create(product=variant,
                                                                   property_id=property_id,
                                                                   type=PROPERTY_VALUE_TYPE_VARIANT,
                                                                   value=value)
                     else:
+                        is_changed = ppv.value != value
                         ppv.value = value
                         ppv.save()
 
-                    if prop.filterable:
-                        if not ppv_filterable:
-                            ProductPropertyValue.objects.create(product=variant, property_id=property_id,
-                                                                value=value,
-                                                                type=PROPERTY_VALUE_TYPE_FILTER)
-                        else:
-                            ppv_filterable.value = value
-                            ppv_filterable.save()
+                    if prop.filterable and is_changed:
+                        ppv_filterables.delete()
+                        ProductPropertyValue.objects.create(product=variant,
+                                                            property_id=property_id,
+                                                            value=value,
+                                                            type=PROPERTY_VALUE_TYPE_FILTER)
 
                 elif ppv:
                     ppv.delete()
-                    if ppv_filterable:
-                        ppv_filterable.delete()
+                    ppv_filterables.delete()
 
     # Refresh variant positions
     for i, variant in enumerate(product.variants.order_by("variant_position")):
@@ -662,12 +676,12 @@ def update_variants(request, product_id):
         ("#selectable-products-inline", _selectable_products_inline(request, product)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -686,12 +700,12 @@ def edit_sub_type(request, product_id):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Sub type has been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -710,12 +724,12 @@ def update_category_variant(request, product_id):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Category variant has been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def _refresh_property_positions(product_id):

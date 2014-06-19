@@ -12,7 +12,7 @@
     <div class="navigation-body">
         {% for delivery_time in delivery_times %}
             <div>
-                <a href="{% url lfs_manage_delivery_time delivery_time.id %}"
+                <a href="{% url 'lfs_manage_delivery_time' delivery_time.id %}"
                    class="selectable {% ifequal delivery_time.id current_id %}selected{% endifequal %}">
                     {{ delivery_time.name }}
                 </a>
@@ -24,10 +24,10 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_manage_add_delivery_time %}?came_from={% url lfs_manage_delivery_time delivery_time.id %}">{% trans 'Add Delivery Time' %}</a>
+           href="{% url 'lfs_manage_add_delivery_time' %}?came_from={% url 'lfs_manage_delivery_time' delivery_time.id %}">{% trans 'Add Delivery Time' %}</a>
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this delivery time?' %}"
-           href="{% url lfs_delete_delivery_time delivery_time.id %}">{% trans 'Delete Delivery Time' %}</a>
+           href="{% url 'lfs_delete_delivery_time' delivery_time.id %}">{% trans 'Delete Delivery Time' %}</a>
     </div>
     <div id="manage-tabs">
         <ul>
@@ -36,7 +36,7 @@
 
         <div id="data">
             <h2>{% trans 'Data' %}</h2>
-            <form action="{% url lfs_manage_delivery_time delivery_time.id %}"
+            <form action="{% url 'lfs_manage_delivery_time' delivery_time.id %}"
                   method="post">
                 {% csrf_token %}
                 {% include "manage/lfs_form.html" %}

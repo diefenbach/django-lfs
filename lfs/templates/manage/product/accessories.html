@@ -4,7 +4,7 @@
 <h2 class="heading-first">{% trans 'Accessories' %}</h2>
 
 {% if product.is_variant %}
-    <form action="{% url lfs_manage_update_accessories product.id %}"
+    <form action="{% url 'lfs_manage_update_accessories' product.id %}"
           method="post">
         {% csrf_token %}
         <input type="checkbox"
@@ -22,7 +22,7 @@
 {% endif %}
 
 <form id="filter-accessories-form"
-      action="{% url lfs_manage_accessories_inline product.id %}"
+      action="{% url 'lfs_manage_accessories_inline' product.id %}"
       onsubmit="return false">
     <input class="refresh-on-keyup" type="text" name="filter"/>
 

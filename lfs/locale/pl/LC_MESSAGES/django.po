@@ -558,7 +558,7 @@ msgid "Price unit"
 msgstr "Jednostka ceny"
 
 #: catalog/models.py:597
-msgid "Quanity field unit"
+msgid "Quantity field unit"
 msgstr "Jednostka pola z ilością"
 
 #: catalog/models.py:600
@@ -4082,7 +4082,7 @@ msgid "Name/SKU"
 msgstr "Nazwa/Numer katalogowy"
 
 #: templates/manage/product/product_filters_inline.html:64
-msgid "Fiter products"
+msgid "Filter products"
 msgstr "Filtruj produkty"
 
 #: templates/manage/product/products.html:5

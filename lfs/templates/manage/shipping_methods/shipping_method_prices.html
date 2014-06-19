@@ -1,7 +1,7 @@
 {% load i18n %}
 
 <h2>{% trans 'Prices' %}</h2>
-<form action="{% url lfs_manage_add_shipping_price shipping_method.id %}"
+<form action="{% url 'lfs_manage_add_shipping_price' shipping_method.id %}"
       method="post">
     <input type="text" name="price" />
     <input class="ajax-save-button button"
@@ -11,7 +11,7 @@
 
 {% if prices %}
     <h2 class="heading-middle">{% trans 'Existing prices' %}</h2>
-    <form action="{% url lfs_manage_update_shipping_prices shipping_method.id %}"
+    <form action="{% url 'lfs_manage_update_shipping_prices' shipping_method.id %}"
           method="post">
         <table class="criteria">
             <tr>
@@ -38,7 +38,7 @@
                 <td>
                     <div>
                         <input type="text" name="price-{{ price.id }}" value="{{ price.price }}" />
-                        <a href="{% url lfs_manage_shipping_price_criteria price.id %}"
+                        <a href="{% url 'lfs_manage_shipping_price_criteria' price.id %}"
                            class="ajax-link">
                            {% trans 'Edit criteria' %}
                         </a>

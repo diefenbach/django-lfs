@@ -11,7 +11,7 @@
             {% if obj.is_variant %}
                 {{ form.active_meta_title }}
             {% endif %}
-            {{ form.meta_title.label_tag }}:
+            {{ form.meta_title.label_tag }}
         </div>
 
         {% if form.meta_title.errors %}
@@ -31,7 +31,7 @@
             {% if obj.is_variant %}
                 {{ form.active_meta_keywords }}
             {% endif %}
-            {{ form.meta_keywords.label_tag }}:
+            {{ form.meta_keywords.label_tag }}
         </div>
 
         {% if form.meta_keywords.errors %}
@@ -51,10 +51,10 @@
             {% if obj.is_variant %}
                 {{ form.active_meta_description }}
             {% endif %}
-                            
-            {{ form.meta_description.label_tag }}:
+
+            {{ form.meta_description.label_tag }}
         </div>
-    
+
         {% if form.meta_description.errors %}
             <div class="error">
                 {{ form.meta_description }}
@@ -67,7 +67,7 @@
         {% endif %}
     </div>
     <div class="buttons">
-        <input type="submit" 
+        <input type="submit"
                value="{% trans "Save SEO" %}"
                class="ajax-save-button button" />
     </div>

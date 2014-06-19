@@ -1,5 +1,5 @@
 # python imports
-import locale
+import json
 
 # django imports
 from django.conf import settings
@@ -11,8 +11,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 # lfs imports
 import lfs.cart.utils
@@ -162,6 +161,7 @@ def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
         "cart_items_count": cart_items_count,
         "shopping_url": request.META.get("HTTP_REFERER", "/"),
         "product_accessories": accessories,
+        "product": cart_items[0].product if cart_items else None,
         "cart_items": added_to_cart_items(request),
     }))
 
@@ -198,6 +198,14 @@ def add_accessory_to_cart(request, product_id, quantity=1):
     updates the added-to-cart view.
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
+    # for product with variants add default variant
+    if product.is_product_with_variants():
+        variant = product.get_default_variant()
+        if variant:
+            product = variant
+        else:
+            return HttpResponse(added_to_cart_items(request))
+
     quantity = product.get_clean_quantity_value(quantity)
 
     session_cart_items = request.session.get("cart_items", [])
@@ -309,6 +317,14 @@ def add_to_cart(request, product_id=None):
             except ObjectDoesNotExist:
                 continue
 
+            # for product with variants add default variant
+            if accessory.is_product_with_variants():
+                accessory_variant = accessory.get_default_variant()
+                if accessory_variant:
+                    accessory = accessory_variant
+                else:
+                    continue
+
             # Get quantity
             quantity = request.POST.get("quantity-%s" % accessory_id, 0)
             quantity = accessory.get_clean_quantity_value(quantity)
@@ -365,6 +381,8 @@ def refresh_cart(request):
     amount of a product or shipping/payment method.
     """
     cart = cart_utils.get_cart(request)
+    if not cart:
+        raise Http404
     customer = customer_utils.get_or_create_customer(request)
 
     # Update country
@@ -432,12 +450,12 @@ def refresh_cart(request):
     # Last but not least we save the customer ...
     customer.save()
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": cart_inline(request),
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def check_voucher(request):
@@ -447,8 +465,8 @@ def check_voucher(request):
     voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
     lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": (("#cart-inline", cart_inline(request)),)
     })
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')

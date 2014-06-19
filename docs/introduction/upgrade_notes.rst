@@ -30,3 +30,14 @@ This is not full reference of changes but at least some of them are described:
   and management template for property groups.
 * Added LFS_CHECKOUT_NOT_REQUIRED_ADDRESS setting. This allows to change address that is not required at checkout page.
   Changed one_page_checkout.html template, lfs.js and OnePageCheckout Form.
+* refactored lfs.manage.js - do not use ``live`` anymore. Updated manage/export/export.html, manage/export/export_inline.html,
+  manage/manufactuers/manufacturer.html and manage/manufacturers/manufacturer_inline.html to use data-url instead of just 'data'
+  and use elem.data('something') in JavaScript
+* added <div id="portlets-dialog" title="{% trans "Portlets dialog" %}"></div> to manage_base.html to handle properly inerting images to TinyMCE within portlets dialog
+  (changes to lfs.manage.js with portlets dialog)
+* added some SEO related attributes to templates and canonical tags for variants
+* modified catalog/views.py -> category_products and catalog/views.py -> category_categories return value, so that it now contains
+  pagination data for use in main template (SEO optimization with rel="next/prev" (template: lfs/catalog/category_base.html)
+* modified mimetype returned by ajax calls to: application/json. This requireS changes in javascript ajax calls:
+  lfs.js, lfs.manage.js, lfs_tinymce.js, manage/product/attachments.html(!)
+* moved javascript code from manage/product/images.html to lfs.manage.product.js and updated to use proper mimetypes in responses

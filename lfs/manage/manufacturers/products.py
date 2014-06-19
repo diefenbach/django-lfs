@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
@@ -5,7 +7,6 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -109,9 +110,9 @@ def products_inline(request, manufacturer_id, as_string=False, template_name="ma
     if as_string:
         return result
     else:
-        return HttpResponse(simplejson.dumps({
+        return HttpResponse(json.dumps({
             "html": [["#products-inline", result]],
-        }))
+        }), mimetype='application/json')
 
 
 # Actions
@@ -171,9 +172,9 @@ def selected_products(request, manufacturer_id, as_string=False, template_name="
     if as_string:
         return result
     else:
-        return HttpResponse(simplejson.dumps({
+        return HttpResponse(json.dumps({
             "html": [["#selected-products", result]],
-        }))
+        }), mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -198,12 +199,12 @@ def add_products(request, manufacturer_id):
 
     html = [["#products-inline", products_inline(request, manufacturer_id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Selected products have been assigned to manufacturer.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -225,9 +226,9 @@ def remove_products(request, manufacturer_id):
 
     html = [["#products-inline", products_inline(request, manufacturer_id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Selected products are no longer assigned to manufacturer.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')

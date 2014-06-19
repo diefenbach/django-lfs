@@ -16,7 +16,7 @@
             <div id="data">
                 <h2>{% trans "Data" %}</h2>
                 <form id="product-data-form"
-                      action="{% url lfs_manage_add_product %}"
+                      action="{% url 'lfs_manage_add_product' %}"
                       method="post">
                     {% csrf_token %}
                     {% include "manage/lfs_form.html" %}

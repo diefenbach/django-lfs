@@ -24,7 +24,7 @@ class Export(models.Model):
         ordering = ("position", "name")
 
     def __unicode__(self):
-        return "%s.%s" % (self.module, self.method)
+        return u"%s.%s" % (self.module, self.method)
 
     def get_absolute_url(self):
         """

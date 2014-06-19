@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load lfs_tags %}
 
-<form action="{% url lfs_set_review_filters %}"
+<form action="{% url 'lfs_set_review_filters' %}"
       method="POST">
     <table class="filters">
         <tr>
@@ -14,13 +14,13 @@
                 <div class="navigation-pages">
                     {% if page.has_previous %}
                         <a class="ajax-link"
-                           href="{% url lfs_set_reviews_page %}?page=1">
+                           href="{% url 'lfs_set_reviews_page' %}?page=1">
                             <img src="{{ STATIC_URL }}icons/resultset_first.png"
                                  alt="{% trans 'First' %}"
                                  title="{% trans 'First' %}" />
                         </a>
                         <a class="ajax-link"
-                           href="{% url lfs_set_reviews_page %}?page={{ page.previous_page_number }}">
+                           href="{% url 'lfs_set_reviews_page' %}?page={{ page.previous_page_number }}">
                             <img src="{{ STATIC_URL }}icons/resultset_previous.png"
                                  alt="{% trans 'Previous' %}"
                                  title="{% trans 'Previous' %}" />
@@ -38,13 +38,13 @@
 
                     {% if page.has_next %}
                         <a class="ajax-link"
-                           href="{% url lfs_set_reviews_page %}?page={{ page.next_page_number }}">
+                           href="{% url 'lfs_set_reviews_page' %}?page={{ page.next_page_number }}">
                             <img src="{{ STATIC_URL }}icons/resultset_next.png"
                                  alt="{% trans 'Next' %}"
                                  title="{% trans 'Next' %}" />
                         </a>
                         <a class="ajax-link"
-                           href="{% url lfs_set_reviews_page %}?page={{ paginator.num_pages }}">
+                           href="{% url 'lfs_set_reviews_page' %}?page={{ paginator.num_pages }}">
                             <img src="{{ STATIC_URL }}icons/resultset_last.png"
                                  alt="{% trans 'Last' %}"
                                  title="{% trans 'Last' %}" />
@@ -80,7 +80,7 @@
                 <input type="submit"
                        class="ajax-save-button" />
 
-                <a href="{% url lfs_reset_review_filters %}"
+                <a href="{% url 'lfs_reset_review_filters' %}"
                    class="ajax-link reset">&nbsp;</a>
             </td>
         </tr>

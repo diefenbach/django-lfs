@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
@@ -9,7 +11,6 @@ from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -127,12 +128,12 @@ def update_files(request, id):
         ("#files", files(request, static_block)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -142,12 +143,12 @@ def reload_files(request, id):
     static_block = lfs_get_object_or_404(StaticBlock, pk=id)
     result = files(request, static_block)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "files": result,
         "message": _(u"Files has been added."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -167,8 +168,8 @@ def add_files(request, id):
         file.position = (i + 1) * 10
         file.save()
 
-    result = simplejson.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
-    return HttpResponse(result)
+    result = json.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -220,11 +221,11 @@ def sort_static_blocks(request):
             sb_obj.save()
             position = position + 10
 
-        result = simplejson.dumps({
+        result = json.dumps({
             "message": _(u"The static blocks have been sorted."),
         }, cls=LazyEncoder)
 
-        return HttpResponse(result)
+        return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")

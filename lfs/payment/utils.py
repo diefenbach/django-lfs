@@ -120,7 +120,7 @@ def process_payment(request):
             if result.get("order_state"):
                 order.state = result.get("order_state")
                 order.save()
-            order_submitted.send({"order": order, "request": request})
+            order_submitted.send(sender=order, request=request)
         else:
             cart = get_cart(request)
             payment_instance.cart = cart
@@ -132,15 +132,16 @@ def process_payment(request):
                 if result.get("order_state"):
                     order.state = result.get("order_state")
                     order.save()
-                order_submitted.send({"order": order, "request": request})
+                order_submitted.send(sender=order, request=request)
         return result
     else:
         order = add_order(request)
-        order_submitted.send({"order": order, "request": request})
+        order_submitted.send(sender=order, request=request)
         return {
             "accepted": True,
             "next_url": reverse("lfs_thank_you"),
         }
+
 
 # DEPRECATED 0.8
 def get_pay_link(request, payment_method, order):

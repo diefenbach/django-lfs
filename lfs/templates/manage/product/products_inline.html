@@ -4,7 +4,7 @@
 
 {% if page.object_list %}
     <h2>{% trans "Overview" %}</h2>
-    <form action="{% url lfs_manage_save_products %}"
+    <form action="{% url 'lfs_manage_save_products' %}"
           method="post">
         <table class="lfs-manage-table">
             <tr>
@@ -108,9 +108,9 @@
                                {% if  product.for_sale %}checked="checked"{% endif %} />
                     </td>
                     <td class="right-padding management">
-                        <a href="{% url lfs_manage_product product.id %}">{% trans "Edit" %}</a> |
-                        <a class="popup-link" href="{% url lfs_manage_product_by_id product.id %}">{% trans 'View' %}</a> |
-                        <a href="{% url lfs_manage_product_by_id product.id %}">{% trans 'Goto' %}</a>
+                        <a href="{% url 'lfs_manage_product' product.id %}">{% trans "Edit" %}</a> |
+                        <a class="popup-link" href="{% url 'lfs_manage_product_by_id' product.id %}">{% trans 'View' %}</a> |
+                        <a href="{% url 'lfs_manage_product_by_id' product.id %}">{% trans 'Goto' %}</a>
                     </td>
                 </tr>
             {% endfor %}

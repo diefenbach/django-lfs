@@ -13,7 +13,7 @@
         {% trans "There are no delivery times yet." %}
     </div>
     <div class="buttons">
-        <form action="{% url lfs_manage_add_delivery_time %}">
+        <form action="{% url 'lfs_manage_add_delivery_time' %}">
             <input type="submit"
                    class="button"
                    value="{% trans 'Add Delivery Time' %}">

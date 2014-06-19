@@ -2,11 +2,12 @@
 
 <div id="variants">
     <h2>{% trans 'Property Groups' %}</h2>
-    <form action="{% url lfs_update_product_property_groups product.id %}"
+    <form action="{% url 'lfs_update_product_property_groups' product.id %}"
           method="post">
         {% csrf_token %}
         <select name="selected-property-groups"
-                multiple="multiple">
+                multiple="multiple"
+                class="selected-property-groups">
             {% for property_group in shop_property_groups %}
                 <option value="{{ property_group.id }}"
                         {% if property_group.selected %}selected="selected"{% endif %}>
@@ -30,7 +31,7 @@
     </h2>
     <form id="property-add-form"
           class="property-edit-field"
-          action="{% url lfs_manage_add_property product.id %}"
+          action="{% url 'lfs_manage_add_property' product.id %}"
           method="post">
         {{ property_form.name }}
         <input class="ajax-save-button"
@@ -41,7 +42,7 @@
     {% for property in local_properties %}
         <div style="font-weight:bold">{{ property.name }}
             {% if not forloop.first %}
-                <a href="{% url lfs_manage_change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=up"
+                <a href="{% url 'lfs_manage_change_property_position' %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=up"
                    class="ajax-link property-edit-field">
                     <image src="{{ STATIC_URL }}icons/arrow_up.png"
                            alt="{% trans 'Up' %}"
@@ -50,7 +51,7 @@
                 </a>
             {% endif %}
             {% if not forloop.last %}
-                <a href="{% url lfs_manage_change_property_position %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=down"
+                <a href="{% url 'lfs_manage_change_property_position' %}?product_id={{ product.id }}&amp;property_id={{ property.id }}&amp;direction=down"
                         class="ajax-link property-edit-field">
                     <image src="{{ STATIC_URL }}icons/arrow_down.png"
                            alt="{% trans 'Down' %}"
@@ -58,7 +59,7 @@
                 </a>
             {% endif %}
 
-            <a href="{% url lfs_manage_delete_property product.id property.id %}"
+            <a href="{% url 'lfs_manage_delete_property' product.id property.id %}"
                class="delete-link property-edit-field"
                dialog_message="{% trans 'Do you really want to delete this property and all its options?' %}"
                dialog_yes_button_class="ajax-save-button">
@@ -71,7 +72,7 @@
             {% for option in property.options.all %}
                 <div>
                     {{ option.name }}
-                    <a href="{% url lfs_manage_delete_property_option product.id option.id %}"
+                    <a href="{% url 'lfs_manage_delete_property_option' product.id option.id %}"
                        class="delete-link property-edit-field"
                        dialog_message="{% trans 'Do you really want to delete this option?' %}"
                        dialog_yes_button_class="ajax-save-button">
@@ -83,7 +84,7 @@
                 </div>
             {% endfor %}
             <div class="property-edit-field">
-                <form action="{% url lfs_manage_add_property_option product.id %}"
+                <form action="{% url 'lfs_manage_add_property_option' product.id %}"
                       method="post">
                     {{ property_option_form.name }}
                     <input type="hidden" name="property_id" value="{{ property.id }}" />
@@ -96,9 +97,12 @@
     {% endfor %}
 
     <h2 class="heading-middle">{% trans 'Variants' %}</h2>
-    <form action="{% url lfs_manage_add_variants product.id %}"
+    <form action="{% url 'lfs_manage_add_variants' product.id %}"
           class="variants-add-form"
           method="post">
+        {% if variant_simple_form.non_field_errors %}
+            {{ variant_simple_form.non_field_errors }}
+        {% endif %}
         <table>
             <tr>
                 {% for field in variant_simple_form %}
@@ -123,7 +127,7 @@
 
     {% if variants %}
         <form id="variants-form"
-              action="{% url lfs_manage_update_variants product.id %}"
+              action="{% url 'lfs_manage_update_variants' product.id %}"
               method="post">
             <table>
                 <th>
@@ -147,7 +151,7 @@
                     <input type="checkbox" class="select-all" value="active_name" />
                     {% trans 'Name' %}
                 </th>
-                {% for property in all_properties %}
+                {% for property in variants_properties %}
                     <th>
                         {{ property.name }}
                     </th>
@@ -208,7 +212,7 @@
                             <input type="radio" name="default_variant" value="{{ variant.id }}" {% if product.default_variant.id == variant.id %}checked="checked"{% endif %} />
                         </td>
                         <td>
-                            <a href="{% url lfs_manage_product variant.id %}">
+                            <a href="{% url 'lfs_manage_product' variant.id %}">
                                 <img src="{{ STATIC_URL }}icons/pencil.png"
                                      alt="Edit"
                                      title="{% trans 'Edit variant' %}" />
@@ -224,7 +228,7 @@
         </form>
 
         <h2 class="heading-middle">{% trans 'Category variant' %}</h2>
-        <form action="{% url lfs_update_category_variant product.id %}"
+        <form action="{% url 'lfs_update_category_variant' product.id %}"
               method="post">
             <div class="label">
                 {{ category_variant_form.category_variant.label_tag }}:
@@ -240,7 +244,7 @@
         </form>
 
         <h2 class="heading-middle">{% trans 'Display type' %}</h2>
-        <form action="{% url lfs_manage_edit_sub_type product.id %}"
+        <form action="{% url 'lfs_manage_edit_sub_type' product.id %}"
               method="post">
             <div class="label">
                 {{ display_type_form.variants_display_type.label_tag }}:

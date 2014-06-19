@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
 import datetime
+from django.contrib.contenttypes import generic
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+
 
 class Migration(DataMigration):
 
@@ -12,20 +14,30 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName". 
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
+        sa_gfk = generic.GenericForeignKey('sa_content_type', 'sa_object_id')
+        sa_gfk.contribute_to_class(orm.Customer, "selected_shipping_address")
+
+        ia_gfk = generic.GenericForeignKey('ia_content_type', 'ia_object_id')
+        ia_gfk.contribute_to_class(orm.Customer, "selected_invoice_address")
+
         for obj in orm.Customer.objects.all():
-            address = deepcopy(obj.selected_shipping_address)
-            address.id = None
-            address.pk = None
-            address.save()
-            obj.dsa_object_id = address.id
+            ssa = obj.selected_shipping_address
+            if ssa:
+                address = deepcopy(ssa)
+                address.id = None
+                address.pk = None
+                address.save()
+                obj.dsa_object_id = address.id
 
-            address = deepcopy(obj.selected_invoice_address)
-            address.id = None
-            address.pk = None
-            address.save()
-            obj.dia_object_id = address.id
-
-            obj.save()
+            sia = obj.selected_invoice_address
+            if sia:
+                address = deepcopy(sia)
+                address.id = None
+                address.pk = None
+                address.save()
+                obj.dia_object_id = address.id
+            if ssa or sia:
+                obj.save()
 
     def backwards(self, orm):
         "Write your backwards methods here."

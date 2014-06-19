@@ -27,138 +27,34 @@ A demo shop can be tried here:
 Changes
 =======
 
-0.7.2 (2012-04-29)
--------------------
+0.9.0 alpha 1 (2014-06-19)
+==========================
 
-* Added: CSS and JS files for custamization by integrators (naro)
-* Bugfix: fixed calculation of packages for order items (within packages filter tag)
-* Bugfix: fixed management of criteria
-* Bugfix: fixed problem with locale.atof (naro)
-* Bugfix: fixed display of image for category sub-categories view
-* Bugfix: fixed order_detail mail template field names (naro)
-* Changed: added order-state-X css class to the orders_inline (naro)
-* Changed: allow passing custom paginator object to the search results template (naro)
-* Changed: added 100x100px box to search results to prevent content jumping from left to right when the page is loaded (naro)
-* Changed: show product image on order detail page (naro)
-* Changed: clean up display of package result
-* Updated Czech translation (naro)
-
-0.7.1 (2012-04-21)
-------------------
-
-* Bugfix: fixed display prices for properties (Maciej Wiśniowski)
-* Bugfix: fixed TinyMCE for several browsers (Maciej Wiśniowski)
-* Bugfix: display credit card fields if the type of the selected payment method is credit card; issue: #191
-* Bugfix: fixed sorting of actions; issue #192 (Maciej Wiśniowski)
-* Bugfix: fixed typos in docs; issue #193
-* Added: added documentation for Price Calculation field; issue #188
-* Updated: Polish translations (Maciej Wiśniowski)
-
-0.7.0 (2012-04-14)
-------------------
-
-* Bugfix: TinyMCE: exchanged "cleanup" with "verify_html" (Radim Novotny)
-* Improved: accessibility for some input-label fields (Radim Novotny)
-* Improved: text portlet can be title less now (Radim Novotny)
-* Updated: Czech Translations (Radim Novotny)
-
-0.7.0 beta 7 (2012-04-08)
--------------------------
-
-* Bugfix: display ``displayed properties`` in the correct order py positions; issue #184
-* Bugfix: display property options in the correct order by positions within filter portlet
-* Bugfix: fixed image presentation directly after upload within shop management interface (Maciej Wiśniowski)
-* Bugfix: fixed display of discounts
-* New: added variants tab to documentation
-* Updated Polish translations (Maciej Wiśniowski)
-* Updated German translations
-
-0.7.0 beta 6 (2012-03-31)
--------------------------
-
-* Bugfix: added safe filter to static block; issue #174 (Frank Feng)
-* Bugfix: Fixed display of short description for variants
-* Bugfix: fixed decimal_l10n tag: return origin value if it's no float
-* Bugfix: fixed error messages within checkout; issue #176 (Maciej Wiśniowski)
-* Bugfix: fixed __unicode__ methods of several models; issue #172
-* Bugfix: fixed positions of newly added variants (Maciej Wiśniowski)
-* Bugfix: fixed layout, when there are no portlets at right; issue #173 (Frank Feng)
-* Bugfix: fixed local variable 'message' referenced before assignment (Maciej Wiśniowski)
-* Updated: Polish translations (Maciej Wiśniowski)
-* Updated: Chinese translations (Frank Feng)
-* Updated: German translations
-
-0.7.0 beta 5 (2012-03-24)
--------------------------
-
-* Bugfix: added csrf token to password reset forms; issue #170
-* Bugfix: prevent setting of unsupported locale; #issue 165.
-* Bugfix: removed double slash from logo URLs; issue #166
-* Updated German translations
-
-0.7.0 beta 4 (2012-03-21)
--------------------------
-
-* Bugfix: fixed edit/view product urls; issue #164 (Frank Feng)
-* Bugfix: removed typo; issue #163 (Frank Feng)
-* Bugfix: fixed accessories tab in manage; #issue #162 (Frank Feng)
-* Bugfix: get_base_price_net; #issue #161
-* Bugfix: display only parent's active base price value for variants
-* Bugfix: take the parent's price calculator for variants
-* Added: Chinese translations (Frank Feng)
-* Added: default footer for email messages (Maciej Wiśniowski)
-* Improved: page pagination for category products view (Maciej Wiśniowski)
-* Improved: email templates (Maciej Wiśniowski)
-* Updated: German translations
-* Updated: Polish translations (Maciej Wiśniowski)
-
-0.7.0 beta 3 (2012-03-18)
--------------------------
-
-* Bugfix: fixed number of columns within cart template (Maciej Wiśniowski)
-* Bugfix: fixed display of localized amount of items within cart portlet; issue #159
-* Bugfix: don't display non-active products within cart nor add them to order with checkout; adapt tests; fixed issue #154
-* Bugfix: don't delete OrderItems when a product is deleted
-* Bugfix: added default values for LFS_SHIPPING_* settings
-* Bugfix: removed redundant javascript code; issue #153
-* Changed: using django-postal 0.9
-* Changed: removed djangorestframework from dependencies
-* Improved: added label to PropertyGroup's name field; issue #158
-* Improved: added link to product within order detail view in LM; issue #149
-* Improved: cleaned up displaying of addresses of orders within LM
-* Updated: Czech translation (naro)
-* Updated: German translation
-* Updated: Polish translations (Maciej Wiśniowski)
-
-0.7.0 beta 2 (2012-03-08)
--------------------------
-
-* Security fix
-* Added manufacturer field to product management (Maciej Wiśniowski)
-* Bugfix: fixed pagination for product page; issue #152 (Maciej Wiśniowski)
-* Bugfix: fixed deleting of image for payment and shipping methods; issue #150
-* Bugfix: fixed markup; #issue #148
-* Bugfix: fixed updating of attachments; issue #147
-* Improved javascript: prevent FOUC for category-tabs and manage-tabs;
-
-0.7.0 beta 1 (2012-03-03)
--------------------------
-
-* Added customer related taxes
-* Added global image management
-* Added django_compressor
-* Added pluggable shipping price calculators
-* Added pluggable order number generation
-* Added calculation of base price
-* Added product attachments
-* Added more portlets: featured products, for sale products
-* Aded SEO information for shop and pages
-* Added portlets for pages
-* Added type of quantity field
-* Added context aware help for the management interface
-* Improved pluggable product price calculators
-* Improved pluggable payment processors
-* Improved mails templates
+* Removes double colons from management forms
+* Removes django-tagging from dependencies
+* Add pluggable criteria
+* Added pluggable addresses
+* Add criteria for customer taxes
+* Factored out PayPal to lfs-paypal.
+* Added support for Celery (for mailing)
+* Using South standard features for migration
+* Currency templatetag always returns HTML now, eg. <span class=”money”>Fr. 999</span>, previously HTML was only returned for negative values
+* Currency templatetag in text email templates (lfs_theme/templates/lfs/mail/order_details.txt) was removed in favour of currency_text templatetag. The latter one doesn’t return HTML (ever).
+* lfs/base.html has slightly different structure to the footer and colophon sections due to incorrect width of these elements in previous layout. div.colophon-inner and div.footer-inner html elements were added, both with padding: 10px set in main.css. padding: 10px was removed from ‘#footer .container’ and ‘#colophon .container’ in main.css
+* update_editor method in lfs_tinymce.js has been modified and requires tinymce 3.5.8 which is now being used. References to tinymce were changed in manage_base.html and lfs_tinymce.js
+* Filter portlet has been updated to allow for manufacturer filtering and because of that its template: lfs_theme/templates/lfs/portlets/filter.html was modified - manufacturer filtering section has been added
+* Small change at lfs/templates/manage/product/product.html - removed onkeypress from filter input element in favour of css class ‘disable-enter-key’. Changed lfs.manage.js to add event handler for ‘disable-enter-key’.
+* Added new ORDER state: PREPARED that can be used to mark orders as prepared to be sent.
+* Added new signal and setting that allows defining extra ORDER_STATES. Signal is order_state_changed and option is LFS_EXTRA_ORDER_STATES. New states should start with id 20 or higher to avoid conflicts with built in states.
+* Use ‘SHOP’ instead of ‘shop’ in lfs/shop/shop.html
+* Added position column to PropertyGroups and ability to order these with drag & drop in management panel - modified lfs.manage.js and management template for property groups.
+* Added LFS_CHECKOUT_NOT_REQUIRED_ADDRESS setting. This allows to change address that is not required at checkout page. Changed one_page_checkout.html template, lfs.js and OnePageCheckout Form.
+* Refactored lfs.manage.js - do not use live anymore. Updated manage/export/export.html, manage/export/export_inline.html, manage/manufactuers/manufacturer.html and manage/manufacturers/manufacturer_inline.html to use data-url instead of just ‘data’ and use elem.data(‘something’) in JavaScript
+* Added <div id=”portlets-dialog” title=”{% trans “Portlets dialog” %}”></div> to manage_base.html to handle properly inerting images to TinyMCE within portlets dialog (changes to lfs.manage.js with portlets dialog)
+* Added some SEO related attributes to templates and canonical tags for variants
+* Modified catalog/views.py -> category_products and catalog/views.py -> category_categories return value, so that it now contains pagination data for use in main template (SEO optimization with rel=”next/prev” (template: lfs/catalog/category_base.html)
+* Modified mimetype returned by ajax calls to: application/json. This requireS changes in javascript ajax calls: lfs.js, lfs.manage.js, lfs_tinymce.js, manage/product/attachments.html(!)
+* Moved javascript code from manage/product/images.html to lfs.manage.product.js and updated to use proper mimetypes in responses
 
 HISTORY
 =======

@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
@@ -6,15 +8,14 @@ from django.forms.models import modelform_factory
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
+from django.views.generic.base import View
+from django.db.utils import DatabaseError
 
 # lfs.imports
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
-
-from django.views.generic.base import View
 
 
 class SEOView(View):
@@ -27,16 +28,21 @@ class SEOView(View):
     def get_seo_urlpattern(cls, model_klass, form_klass=None, template_name='manage/seo/seo.html'):
         """Prepare urlpattern for seo tab and give it a name based on content type of the model
         """
-        ct = ContentType.objects.get_for_model(model_klass).pk
-        view_obj = cls.as_view(form_klass=form_klass,
-                               model_klass=model_klass,
-                               template_name=template_name)
+        try:
+            ct = ContentType.objects.get_for_model(model_klass).pk
+            view_obj = cls.as_view(form_klass=form_klass,
+                                   model_klass=model_klass,
+                                   template_name=template_name)
 
-        return patterns('lfs.manage.seo.views',
-                        url(r'^manage-seo/%s/(?P<id>\d*)/$' % ct,
-                            permission_required("core.manage_shop")(view_obj),
-                            name='lfs_manage_%s_seo' % ct),
-                )
+            return patterns('lfs.manage.seo.views',
+                            url(r'^manage-seo/%s/(?P<id>\d*)/$' % ct,
+                                permission_required("core.manage_shop")(view_obj),
+                                name='lfs_manage_%s_seo' % ct),
+                    )
+        # starting from django 1.4.10 (or slightly less) seems that urlpatterns are loaded during syncdb
+        # so we have to handle DatabaseError when ContentType table doesn't exist yet
+        except DatabaseError as e:
+            return []
 
     def __init__(self, model_klass, form_klass=None, template_name='manage/seo/seo.html', *args, **kwargs):
         super(SEOView, self).__init__(*args, **kwargs)
@@ -71,9 +77,9 @@ class SEOView(View):
         """Prepare the output
         """
         seo_html = self.render(self.request, form.instance, form)
-        return HttpResponse(simplejson.dumps({"seo": seo_html,
+        return HttpResponse(json.dumps({"seo": seo_html,
                                               "message": message
-                                             }, cls=LazyEncoder))
+                                             }, cls=LazyEncoder), mimetype='application/json')
 
     def form_valid(self, form):
         """Handle successfull validation

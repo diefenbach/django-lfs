@@ -2,7 +2,7 @@
 
 <h2>{% trans 'Categories' %}</h2>
 {% if categories %}
-    <form action="{% url lfs_manage_product_categories product.id %}"
+    <form action="{% url 'lfs_manage_product_categories' product.id %}"
           method="post">
         <ul class="manage-categories root">
             {% for category in categories %}
@@ -11,7 +11,7 @@
                            name="categories"
                            value="{{ category.id }}"
                            {% if category.checked %}checked="checked"{% endif %} />
-                    <a href="{% url lfs_manage_category category.id %}">
+                    <a href="{% url 'lfs_manage_category' category.id %}">
                         {{ category.name }}
                     </a>
                     {{ category.children }}

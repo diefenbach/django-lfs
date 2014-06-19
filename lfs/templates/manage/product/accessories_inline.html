@@ -33,7 +33,7 @@
             <td width="50%">
                 <h2>{% trans "Selectable Products" %}</h2>
                 <form id="add-accessories-form"
-                      action="{% url lfs_manage_add_accessories product.id %}"
+                      action="{% url 'lfs_manage_add_accessories' product.id %}"
                       method="post">
 
                     <div id="accessories-left" style="padding-bottom:10px">
@@ -62,9 +62,12 @@
                                                class="select-accessories" />
                                     </td>
                                     <td>
-                                        <a href="{% url lfs_manage_product product.id %}">
+                                        <a href="{% url 'lfs_manage_product' product.id %}">
                                             {{ product.get_name }}
                                         </a>
+                                        <div class="product-properties-info">
+                                            {% include "lfs/catalog/products/_product_properties.html" with product=product configurable_properties=product.get_properties %}
+                                        </div>
                                     </td>
                                     <td>
                                         {{ product.get_sku }}
@@ -93,7 +96,7 @@
             <td width="50%">
                 <h2>{% trans 'Selected Products' %}</h2>
                 <form id="accessories-update-form"
-                      action="{% url lfs_manage_remove_accessories product.id %}"
+                      action="{% url 'lfs_manage_remove_accessories' product.id %}"
                       method="post">
                     <div id="accessories-right" style="padding-bottom:10px">
                         <table class="lfs-manage-table">
@@ -128,9 +131,12 @@
                                                class="select-selected-accessories"/>
                                     </td>
                                     <td style="padding-right:5px">
-                                        <a href="{% url lfs_manage_product product_accessory.accessory.id %}">
+                                        <a href="{% url 'lfs_manage_product' product_accessory.accessory.id %}">
                                             {{ product_accessory.accessory.get_name }}
                                         </a>
+                                        <div class="product-properties-info">
+                                            {% include "lfs/catalog/products/_product_properties.html" with product=product_accessory.accessory configurable_properties=product_accessory.accessory.get_properties %}
+                                        </div>
                                     </td>
                                     <td>
                                         {{ product_accessory.accessory.get_sku }}

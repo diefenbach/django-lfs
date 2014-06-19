@@ -35,14 +35,13 @@ Name
 Title
     The title of the property. This is displayed to the shop customer.
 
+For Variants:
+    If this is checked the property will be used to create variants. Please be
+    aware that only select fields can be used to create variants.
+
 Filterable
     If this is checked the property will be displayed for filtering (within
     the filter :term:`portlet`).
-
-Display no results
-    If this is checked filter ranges with no products will be displayed within
-    the filter portlet. Otherwise they will be removed. This is only displayed
-    if ``Filterable`` is checked.
 
 Display on product
     If this is checked the property will be displayed on the product.

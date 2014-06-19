@@ -13,7 +13,7 @@
             <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/lfs.manage-custom.css" />
         {% endcompress %}
         <script type="text/javascript">
-            var LFS_MANAGE_IMAGEBROWSER_URL = '{% url lfs_manage_imagebrowser %}';
+            var LFS_MANAGE_IMAGEBROWSER_URL = '{% url 'lfs_manage_imagebrowser' %}';
             var STATIC_URL = '{{ STATIC_URL }}';
         </script>
         {% compress js %}
@@ -43,7 +43,7 @@
 
         <div class="lfs-header">
             <div class="logo">
-                <a href="{% url lfs_shop_view %}">
+                <a href="{% url 'lfs_shop_view' %}">
                     <img src="{{ STATIC_URL }}img/logo_management.jpg"
                          alt="LFS"
                          title="LFS - Lightning Fast Shop"/>
@@ -57,9 +57,9 @@
                         <span>{{ user.username }}</span>
                     {% endif %}
                     | <a class="logout"
-                         href="{% url lfs_logout %}">{% trans 'Logout' %}</a>
+                         href="{% url 'lfs_logout' %}">{% trans 'Logout' %}</a>
                 {% else %}
-                    <a href="{% url lfs_login %}">{% trans 'Login' %}</a>
+                    <a href="{% url 'lfs_login' %}">{% trans 'Login' %}</a>
                 {% endif %}
             </div>
 
@@ -72,60 +72,60 @@
                             width="100%">
                             <li><a>{% trans 'Shop' %}</a>
                                 <ul>
-                                    <li><a href="{% url lfs_manage_actions %}">{% trans 'Actions' %}</a></li>
-                                    <li><a href="{% url lfs_manage_delivery_times %}">{% trans 'Delivery Times' %}</a></li>
-                                    <li><a href="{% url lfs_manufacturer_dispatcher %}">{% trans 'Manufacturers' %}</a></li>
-                                    <li><a href="{% url lfs_manage_payment %}">{% trans 'Payment Methods' %}</a></li>
-                                    <li><a href="{% url lfs_manage_shop %}">{% trans 'Preferences' %}</a></li>
-                                    <li><a href="{% url lfs_manage_shipping %}">{% trans 'Shipping Methods' %}</a></li>
-                                    <li><a href="{% url lfs_manage_taxes %}">{% trans 'Product Taxes' %}</a></li>
-                                    <li><a href="{% url lfs_manage_customer_taxes %}">{% trans 'Customer Taxes' %}</a></li>
-                                    <li><a href="{% url lfs_manage_global_images %}">{% trans 'Images' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_actions' %}">{% trans 'Actions' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_delivery_times' %}">{% trans 'Delivery Times' %}</a></li>
+                                    <li><a href="{% url 'lfs_manufacturer_dispatcher' %}">{% trans 'Manufacturers' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_payment' %}">{% trans 'Payment Methods' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_shop' %}">{% trans 'Preferences' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_shipping' %}">{% trans 'Shipping Methods' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_taxes' %}">{% trans 'Product Taxes' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_customer_taxes' %}">{% trans 'Customer Taxes' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_global_images' %}">{% trans 'Images' %}</a></li>
                                 </ul>
 
                             </li>
                             <li><a>{% trans 'Catalog' %}</a>
                                 <ul>
-                                    <li><a href="{% url lfs_manage_categories %}">{% trans 'Categories' %}</a></li>
-                                    <li><a href="{% url lfs_manage_product_dispatcher %}">{% trans 'Products' %}</a></li>
-                                    <li><a href="{% url lfs_manage_products %}">{% trans 'Products Overview' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_categories' %}">{% trans 'Categories' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_product_dispatcher' %}">{% trans 'Products' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_products' %}">{% trans 'Products Overview' %}</a></li>
                                 </ul>
                             </li>
                             <li><a>{% trans 'Properties' %}</a>
                                 <ul>
-                                    <li><a href="{% url lfs_manage_shop_properties %}">{% trans 'Properties' %}</a></li>
-                                    <li><a href="{% url lfs_manage_property_groups %}">{% trans 'Property Groups' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_shop_properties' %}">{% trans 'Properties' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_property_groups' %}">{% trans 'Property Groups' %}</a></li>
                                 </ul>
                             </li>
                             <li>
                                 <a>{% trans 'HTML' %}</a>
                                 <ul>
-                                    <li><a href="{% url lfs_manage_pages %}">{% trans 'Pages' %}</a></li>
-                                    <li><a href="{% url lfs_manage_static_blocks %}">{% trans 'Static blocks' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_pages' %}">{% trans 'Pages' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_static_blocks' %}">{% trans 'Static blocks' %}</a></li>
                                 </ul>
                             </li>
                             <li><a>{% trans 'Customers' %}</a>
                                 <ul>
-                                    <li><a href="{% url lfs_manage_carts %}">{% trans 'Carts' %}</a></li>
-                                    <li><a href="{% url lfs_manage_customers %}">{% trans 'Customers' %}</a></li>
-                                    <li><a href="{% url lfs_orders %}">{% trans 'Orders' %}</a></li>
-                                    <li><a href="{% url lfs_manage_reviews %}">{% trans 'Reviews' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_carts' %}">{% trans 'Carts' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_customers' %}">{% trans 'Customers' %}</a></li>
+                                    <li><a href="{% url 'lfs_orders' %}">{% trans 'Orders' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_reviews' %}">{% trans 'Reviews' %}</a></li>
                                 </ul>
                             </li>
                             <li><a>{% trans 'Marketing' %}</a>
                                 <ul>
-                                	<li><a href="{% url lfs_manage_featured %}">{% trans 'Featured' %}</a></li>
-                                    <li><a href="{% url lfs_manage_marketing %}">{% trans 'Topseller' %}</a></li>
-                                    <li><a href="{% url lfs_manage_vouchers %}">{% trans 'Vouchers' %}</a></li>
-                                    <li><a href="{% url lfs_manage_discounts %}">{% trans 'Discounts' %}</a></li>
-                                    <li><a href="{% url lfs_manage_rating_mails %}">{% trans 'Rating Mails' %}</a></li>
+                                	<li><a href="{% url 'lfs_manage_featured' %}">{% trans 'Featured' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_marketing' %}">{% trans 'Topseller' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_vouchers' %}">{% trans 'Vouchers' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_discounts' %}">{% trans 'Discounts' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_rating_mails' %}">{% trans 'Rating Mails' %}</a></li>
                                 </ul>
                             </li>
                             <li><a>{% trans 'Utils' %}</a>
                                 <ul>
-                                    <li><a href="{% url lfs_export_dispatcher %}">{% trans 'Export' %}</a></li>
-                                    <li><a href="{% url lfs_manage_utils %}">{% trans 'Miscellaneous' %}</a></li>
-                                    <li><a href="{% url lfs_manage_environment %}">{% trans 'Environment' %}</a></li>
+                                    <li><a href="{% url 'lfs_export_dispatcher' %}">{% trans 'Export' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_utils' %}">{% trans 'Miscellaneous' %}</a></li>
+                                    <li><a href="{% url 'lfs_manage_environment' %}">{% trans 'Environment' %}</a></li>
                                 </ul>
                             </li>
                             {% block help_wrapper %}
@@ -167,6 +167,7 @@
         {% endblock %}
 
         <div id="dialog" title="{% trans "LFS Dialog" %}"></div>
+        <div id="portlets-dialog" title="{% trans "Portlets dialog" %}"></div>
 
         <div class="delete-dialog"
              id="delete-dialog"

@@ -1,14 +1,13 @@
+import json
+
 # django imports
 from django.db.models import Q
-from django.core.exceptions import FieldError
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 
 # lfs imports
-from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 from lfs.catalog.settings import STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT
 
@@ -19,7 +18,7 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
     q = request.GET.get("q", "")
 
     if q == "":
-        result = simplejson.dumps({
+        result = json.dumps({
             "state": "failure",
         })
     else:
@@ -31,7 +30,7 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
                 Q(sub_type__in=(STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
 
         temp = Product.objects.filter(query)
-        total = len(temp)
+        total = temp.count()
         products = temp[0:5]
 
         products = render_to_string(template_name, RequestContext(request, {
@@ -40,11 +39,11 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
             "total": total,
         }))
 
-        result = simplejson.dumps({
+        result = json.dumps({
             "state": "success",
             "products": products,
         })
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def search(request, template_name="lfs/search/search_results.html"):
@@ -67,9 +66,7 @@ def search(request, template_name="lfs/search/search_results.html"):
     if sorting:
         products = products.order_by(sorting)
 
-    total = 0
-    if products:
-        total += len(products)
+    total = products.count()
 
     return render_to_response(template_name, RequestContext(request, {
         "products": products,

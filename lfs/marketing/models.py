@@ -17,7 +17,7 @@ class Topseller(models.Model):
         ordering = ["position"]
 
     def __unicode__(self):
-        return "%s (%s)" % (self.product.name, self.position)
+        return u"%s (%s)" % (self.product.name, self.position)
 
 
 class ProductSales(models.Model):
@@ -38,7 +38,7 @@ class FeaturedProduct(models.Model):
         ordering = ["position"]
 
     def __unicode__(self):
-        return "%s (%s)" % (self.product.name, self.position)
+        return u"%s (%s)" % (self.product.name, self.position)
 
 
 class OrderRatingMail(models.Model):
@@ -48,4 +48,4 @@ class OrderRatingMail(models.Model):
     send_date = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return "%s (%s)" % (self.order.id, self.send_date.strftime(ugettext('DATE_FORMAT')))
+        return u"%s (%s)" % (self.order.id, self.send_date.strftime(ugettext('DATE_FORMAT')))

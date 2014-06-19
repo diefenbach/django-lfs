@@ -1,7 +1,5 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n %}
-{% load lfs_tags %}
-{% load lfs_manage_tags %}
+{% load i18n lfs_tags lfs_manage_tags compress %}
 
 {% block title %}{% trans "Manage Product" %}{% endblock %}
 
@@ -9,14 +7,16 @@
 {% block section %}manage-product{% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.manage.product.js"></script>
+    {% compress js %}
+        <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.manage.product.js"></script>
+    {% endcompress %}
     <script type="text/javascript">
-        var MANUFACTURERS_AJAX_URL = '{% url lfs_manufacturers_ajax %}';
+        var MANUFACTURERS_AJAX_URL = "{% url 'lfs_manufacturers_ajax' %}";
     </script>
 {% endblock %}
 
 {% block left_slot %}
-    <form action="{% url lfs_set_product_name_filter %}"
+    <form action="{% url 'lfs_set_product_name_filter' %}"
           method="post">
 
         <input type="text"
@@ -45,35 +45,35 @@
         <div class="site-actions">
             {% if product.is_variant %}
                 <a class="overview"
-                   href="{% url lfs_manage_product product.parent.id %}">
+                   href="{% url 'lfs_manage_product' product.parent.id %}">
                     {% trans "Base Article" %}
                 </a>
             {% endif %}
 
             <a class="add"
-               href="{% url lfs_manage_add_product %}?came_from={% url lfs_manage_product product.id %}">
+               href="{% url 'lfs_manage_add_product' %}?came_from={% url 'lfs_manage_product' product.id %}">
                 {% trans 'Add Product' %}
             </a>
 
             <a class="delete delete-link"
-               href="{% url lfs_manage_delete_product product.id %}"
+               href="{% url 'lfs_manage_delete_product' product.id %}"
                dialog_message='{% trans "Do you really want to delete this product?" %}'>
                {% trans 'Delete Product' %}
             </a>
 
             <a class="view popup-link"
-               href="{% url lfs_manage_product_by_id product.id %}">
+               href="{% url 'lfs_manage_product_by_id' product.id %}">
                {% trans 'View Product' %}
             </a>
 
             <a class="goto"
-               href="{% url lfs_manage_product_by_id product.id %}">
+               href="{% url 'lfs_manage_product_by_id' product.id %}">
                {% trans 'Goto Product' %}
             </a>
 
             {% if not product.is_variant %}
                 <form style="display:inline; padding-left:15px"
-                      action="{% url lfs_change_product_subtype product.id %}"
+                      action="{% url 'lfs_change_product_subtype' product.id %}"
                       method="post">
 
                     {% csrf_token %}
@@ -92,18 +92,18 @@
                 </li>
 
                 {% if not product.is_variant %}
-                    <li><a href="{% url lfs_product_categories_tab product.id %}">{% trans 'Categories' %}</a></li>
+                    <li><a href="{% url 'lfs_product_categories_tab' product.id %}">{% trans 'Categories' %}</a></li>
                 {% endif %}
 
                 <li><a href="#images">{% trans 'Images' %}</a></li>
                 <li><a href="#attachments">{% trans 'Attachments' %}</a></li>
 
                 {% if product.is_product_with_variants %}
-                    <li class="ui-tabs-nav-item"><a href="{% url lfs_manage_product_variants_tab product.id %}">{% trans 'Variants' %}</a></li>
+                    <li class="ui-tabs-nav-item"><a href="{% url 'lfs_manage_product_variants_tab' product.id %}">{% trans 'Variants' %}</a></li>
                 {% endif %}
 
-                <li><a href="{% url lfs_manage_product_accessories_tab product.id %}">{% trans 'Accessories' %}</a></li>
-                <li><a href="{% url lfs_manage_product_related_products_tab product.id %}">{% trans 'Related Products' %}</a></li>
+                <li><a href="{% url 'lfs_manage_product_accessories_tab' product.id %}">{% trans 'Accessories' %}</a></li>
+                <li><a href="{% url 'lfs_manage_product_related_products_tab' product.id %}">{% trans 'Related Products' %}</a></li>
                 <li><a href="#stock">{% trans 'Stock' %}</a></li>
                 <li><a href="#seo">{% trans 'SEO' %}</a></li>
                 <li><a href="#portlets">{% trans 'Portlets' %}</a></li>

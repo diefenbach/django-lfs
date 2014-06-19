@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
@@ -5,7 +7,6 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -61,12 +62,12 @@ def update_portlets(request, object_type_id, object_id):
                                               content_type_id=object_type_id,
                                               content_id=object_id)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": [["#portlets", portlets_inline(request, obj)]],
         "message": _(u"Portlet has been updated.")},
         cls=LazyEncoder
     )
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -95,13 +96,13 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
 
             html = [["#portlets", portlets_inline(request, obj)]]
 
-            result = simplejson.dumps({
+            result = json.dumps({
                 "html": html,
                 "close-dialog": True,
                 "message": _(u"Portlet has been added.")},
                 cls=LazyEncoder
             )
-            return HttpResponse(result)
+            return HttpResponse(result, mimetype='application/json')
 
         except ContentType.DoesNotExist:
             pass
@@ -110,13 +111,17 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             portlet_ct = ContentType.objects.filter(model=portlet_type.lower())[0]
             mc = portlet_ct.model_class()
             form = mc().form(prefix="portlet")
-            return render_to_response(template_name, RequestContext(request, {
+            result = render_to_string(template_name, {
                 "form": form,
                 "object_id": object_id,
                 "object_type_id": object_ct.id,
                 "portlet_type": portlet_type,
                 "slots": Slot.objects.all(),
-            }))
+            }, RequestContext(request))
+
+            return HttpResponse(json.dumps({'html': result}),
+                                mimetype='application/json')
+
         except ContentType.DoesNotExist:
             pass
 
@@ -133,13 +138,13 @@ def delete_portlet(request, portletassignment_id):
     else:
         pa.delete()
         update_portlet_positions(pa)
-        result = simplejson.dumps({
+        result = json.dumps({
             "html": [["#portlets", portlets_inline(request, pa.content)]],
             "close-dialog": True,
             "message": _(u"Portlet has been deleted.")},
             cls=LazyEncoder
         )
-        return HttpResponse(result)
+        return HttpResponse(result, mimetype='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -161,13 +166,13 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
 
         html = [["#portlets", portlets_inline(request, pa.content)]]
 
-        result = simplejson.dumps({
+        result = json.dumps({
             "html": html,
             "close-dialog": True,
             "message": _(u"Portlet has been saved.")},
             cls=LazyEncoder
         )
-        return HttpResponse(result)
+        return HttpResponse(result, mimetype='application/json')
     else:
         slots = []
         for slot in Slot.objects.all():
@@ -217,12 +222,12 @@ def move_portlet(request, portletassignment_id):
 
     update_portlet_positions(pa)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": [["#portlets", portlets_inline(request, pa.content)]]},
         cls=LazyEncoder
     )
 
-    return HttpResponse(result)
+    return HttpResponse(result, mimetype='application/json')
 
 
 def update_portlet_positions(pa):

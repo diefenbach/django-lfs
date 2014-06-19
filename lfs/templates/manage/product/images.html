@@ -4,7 +4,7 @@
 
 {% if product.is_variant %}
     <form id="active-images-update-form"
-          action="{% url lfs_manage_update_active_images product.id %}"
+          action="{% url 'lfs_manage_update_active_images' product.id %}"
           method="post">
         {% csrf_token %}
         <input type="checkbox"
@@ -20,7 +20,7 @@
 
 {% if product.images.all %}
     <form id="product-images-update-form"
-          action="{% url lfs_manage_update_images product.id %}"
+          action="{% url 'lfs_manage_update_images' product.id %}"
           method="post">
 
         <table class="lfs-manage-table images">
@@ -67,12 +67,12 @@
                     <td class="right-padding">
                         {% if not forloop.first %}
                             <a class="up ajax-link"
-                               href="{% url lfc_move_image image.id %}?direction=0"
+                               href="{% url 'lfs_move_image' image.id %}?direction=0"
                                title='{% trans "Move Up" %}'></a>
                         {% endif %}
                         {% if not forloop.last %}
                             <a class="down ajax-link"
-                               href="{% url lfc_move_image image.id %}?direction=1"
+                               href="{% url 'lfs_move_image' image.id %}?direction=1"
                                title='{% trans "Move Down" %}'></a>
                         {% else %}
                             <span class="blank"></span>
@@ -96,37 +96,9 @@
 <h2 class="heading-middle">{% trans 'Add images' %}</h2>
 
 <div id="content">
-    <form id="file_upload" action="{% url lfs_manage_add_image product.id %}" method="POST" enctype="multipart/form-data">
+    <form id="file_upload" action="{% url 'lfs_manage_add_image' product.id %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <input class="button" type="file" name="file" multiple>
     </form>
-    <table id="files" data="{% url lfs_manage_images product.id %}" msg='{% trans "Uploading images:" %}'></table>
+    <table id="files" data="{% url 'lfs_manage_images' product.id %}" msg='{% trans "Uploading images:" %}'></table>
 </div>
-<script>
-    $(function () {
-        $('#file_upload').fileUploadUI({
-            uploadTable: $('#files'),
-            multiFileRequest : true,
-            buildUploadRow: function (files) {
-                var fileNames = '';
-                for (i = 0; i < files.length; i += 1) {
-                    fileNames = fileNames + files[i].name + '<br>';
-                }
-                var msg = $("#files").attr("msg");
-                return $(
-                    '<tr>' +
-                    '<td><div style="font-weight:bold; padding-bottom:10px">' + msg + '<img src="{{ STATIC_URL }}img/ajax-loader.gif" style="padding:8px 0 0 10px" /></div>' + fileNames + '<\/td>' +
-                    '<\/tr>'
-                );
-            },
-            onLoadAll: function(files) {
-                var url = $("#files").attr("data");
-                $.get(url, function(data) {
-                    data = $.parseJSON(data);
-                    $("#images").html(data["images"]);
-                    $.jGrowl(data["message"]);
-                });
-            }
-        });
-    });
-</script>

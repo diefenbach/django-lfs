@@ -4,9 +4,9 @@
 <div class="navigation-pages-inline">
     {% if page_2.has_previous %}
         <a class="ajax-link"
-           href="{% url lfs_manage_manufacturer_products_inline manufacturer.pk %}?manufacturer_page_2=1&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
+           href="{% url 'lfs_manage_manufacturer_products_inline' manufacturer.pk %}?manufacturer_page_2=1&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
         <a class="ajax-link"
-           href="{% url lfs_manage_manufacturer_products_inline manufacturer.pk %}?manufacturer_page_2={{ page_2.previous_page_number }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
+           href="{% url 'lfs_manage_manufacturer_products_inline' manufacturer.pk %}?manufacturer_page_2={{ page_2.previous_page_number }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
     {% else %}
         <span><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></span>
         <span><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></span>
@@ -18,9 +18,9 @@
 
     {% if page_2.has_next %}
         <a class="ajax-link"
-           href="{% url lfs_manage_manufacturer_products_inline manufacturer.pk %}?manufacturer_page_2={{ page_2.next_page_number }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
+           href="{% url 'lfs_manage_manufacturer_products_inline' manufacturer.pk %}?manufacturer_page_2={{ page_2.next_page_number }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
         <a class="ajax-link"
-           href="{% url lfs_manage_manufacturer_products_inline manufacturer.pk %}?manufacturer_page_2={{ paginator_2.num_pages }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
+           href="{% url 'lfs_manage_manufacturer_products_inline' manufacturer.pk %}?manufacturer_page_2={{ paginator_2.num_pages }}&amp;keep-session=1"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
 
     {% else %}
         <span><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></span>
@@ -28,7 +28,7 @@
     {% endif %}
 </div>
 <form id="manufacturer-products-remove-form"
-      action="{% url lfs_manage_manufacturer_remove_products manufacturer.pk %}"
+      action="{% url 'lfs_manage_manufacturer_remove_products' manufacturer.pk %}"
       method="post">
     <div id="manufacturer-products-right">
         <table class="lfs-manage-table">
@@ -54,7 +54,7 @@
                         <input type="checkbox" class="select-selected-products" name="{{ product.id }}" />
                     </td>
                     <td>
-                        <a href="{% url lfs_manage_product product.id %}">
+                        <a href="{% url 'lfs_manage_product' product.id %}">
                             {{ product.get_name }}
                         </a>
                     </td>

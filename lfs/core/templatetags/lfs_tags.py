@@ -74,6 +74,7 @@ def google_analytics_ecommerce(context, clear_session=True):
         del request.session["voucher"]
 
     return {
+        "request": request,
         "order": order,
         "shop": shop,
         "ga_ecommerce_tracking": shop.ga_ecommerce_tracking,
@@ -122,7 +123,6 @@ def breadcrumbs(context, obj, current_page=''):
         objects = cache.get(cache_key)
         if objects is not None:
             return objects
-
         objects = [current_page] if current_page else []
         while obj is not None:
             objects.insert(0, {
@@ -136,38 +136,25 @@ def breadcrumbs(context, obj, current_page=''):
             "STATIC_URL": context.get("STATIC_URL"),
         }
         cache.set(cache_key, result)
-
     elif isinstance(obj, Product):
-        try:
-            if obj.is_variant():
-                parent_product = obj.parent
-            else:
-                parent_product = obj
-        except ObjectDoesNotExist:
-            return []
+        request = context.get("request")
+        objects = [{
+            "name": obj.get_name(),
+            "url": obj.get_absolute_url(),
+        }]
+        # product page may be visited from manufacturer or category
+        lm = request.session.get('last_manufacturer')
+        if lm and obj.manufacturer == lm:
+            objects.insert(0, {
+                "name": lm.name,
+                "url": lm.get_absolute_url(),
+            })
+            objects.insert(0, {
+                "name": _(u"Manufacturers"),
+                "url": reverse("lfs_manufacturers")})
         else:
-            request = context.get("request")
-            # product page may be visited from manufacturer or category
-            lm = request.session.get('last_manufacturer')
-
-            objects = [{
-                        "name": obj.get_name(),
-                        "url": obj.get_absolute_url(),
-                    }]
-
-            if lm and obj.manufacturer == lm:
-                objects.insert(0, {
-                        "name": lm.name,
-                        "url": lm.get_absolute_url(),
-                    })
-                objects.insert(0, {
-                            "name": _(u"Manufacturers"),
-                            "url": reverse("lfs_manufacturers")})
-            else:
-                category = obj.get_current_category(request)
-                if category is None:
-                    return []
-
+            category = obj.get_current_category(request)
+            if category:
                 while category is not None:
                     objects.insert(0, {
                         "name": category.name,
@@ -179,7 +166,6 @@ def breadcrumbs(context, obj, current_page=''):
             "objects": objects,
             "STATIC_URL": context.get("STATIC_URL"),
         }
-
     elif isinstance(obj, Page):
         objects = []
         objects.append({
@@ -948,7 +934,7 @@ def lfs_form(context, form):
     if isinstance(form, BoundField):
         form = [form]
     context['lfs_form'] = form
-    context['lfs_form_is_form'] = hasattr(form,'non_field_errors')
+    context['lfs_form_is_form'] = hasattr(form, 'non_field_errors')
     return context
 
 
