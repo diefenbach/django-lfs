@@ -414,21 +414,6 @@ $(function() {
         $.post(url, { "variants_option" : variants_option });
     });
 
-    // No results
-    function toggle_no_results(checked) {
-        if (checked) {
-            $("#id_display_no_results").parents(".field").show();
-        }
-        else {
-            $("#id_display_no_results").parents(".field").hide();
-        }
-    }
-
-    toggle_no_results($("#id_filterable").prop("checked"));
-    $("#id_filterable").click(function() {
-        toggle_no_results(this.checked)
-    });
-
     // Required
     function toggle_required(checked) {
         if (checked) {
