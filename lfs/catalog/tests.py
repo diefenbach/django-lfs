@@ -60,6 +60,8 @@ from lfs.tests.utils import RequestFactory
 class PriceFilterTestCase(TestCase):
     """
     """
+    fixtures = ['lfs_shop.xml']
+
     def setUp(self):
         """
         """
@@ -74,7 +76,7 @@ class PriceFilterTestCase(TestCase):
     def test_get_price_filter_1(self):
         """
         """
-        result = lfs.catalog.utils.get_price_filters(self.c1, [], None, [])
+        result = lfs.catalog.utils.get_price_filters(self.c1, [], None)
         self.assertEqual(result["disabled"], False)
         self.assertEqual(result["show_reset"], False)
         self.assertEqual(result["min"], "1.00")
@@ -84,6 +86,8 @@ class PriceFilterTestCase(TestCase):
 class PropertiesTestCase(TestCase):
     """
     """
+    fixtures = ['lfs_shop.xml']
+
     def setUp(self):
         """
         """
@@ -559,6 +563,8 @@ class PropertiesTestCase(TestCase):
 class PropertiesTestCaseWithoutProperties(TestCase):
     """Test the filter methods without added properties.
     """
+    fixtures = ['lfs_shop.xml']
+
     def setUp(self):
         """
         """
@@ -574,7 +580,7 @@ class PropertiesTestCaseWithoutProperties(TestCase):
         """
         """
         # This tests the according SQL within get_product_filters
-        f = lfs.catalog.utils.get_product_filters(self.c1, {}, None, None, None)
+        f = lfs.catalog.utils.get_product_filters(self.c1, {}, None, None)
         self.assertEqual(f, {"select_fields": [], "number_fields": []})
 
 

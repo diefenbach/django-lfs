@@ -233,16 +233,16 @@ def set_price_filter(request, category_slug):
         max_val = 0
 
     try:
-        float(min)
+        float(min_val)
     except (TypeError, ValueError):
-        min = "0"
+        min_val = "0"
 
     try:
-        float(max)
+        float(max_val)
     except (TypeError, ValueError):
-        max = "0"
+        max_val = "0"
 
-    request.session["price-filter"] = {"min": min, "max": max}
+    request.session["price-filter"] = {"min": min_val, "max": max_val}
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
