@@ -27,7 +27,7 @@
                                                value="{{ property.id }}" />
                                     </td>
                                     <td>
-                                        {{ property.name }}
+                                        <a href="{% url 'lfs_manage_shop_property' property.id %}">{{ property.name }}</a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -85,7 +85,7 @@
                                                value="{{ gp.position }}" />
                                     </td>
                                     <td>
-                                        {{ gp.property.name }}
+                                        <a href="{% url 'lfs_manage_shop_property' gp.property.id %}">{{ gp.property.name }}</a>
                                     </td>
                                 </tr>
                             {% endfor %}
