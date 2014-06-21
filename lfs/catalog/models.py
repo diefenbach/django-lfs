@@ -2341,8 +2341,8 @@ class ProductPropertyValue(models.Model):
         type the value is either a number, a text or an id of an option.
 
     type
-        The type of the product value, which is on of "filter value",
-        "default value", "display value", "variant value"
+        The type of the product value, which is one of "filter value",
+        "default value", "display value", "variant value".
     """
     product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="property_values")
     parent_id = models.IntegerField(_(u"Parent"), blank=True, null=True)
