@@ -17,6 +17,6 @@ class LFSImageInput(forms.FileInput):
 
         if value:
             trans = _(u"Delete image")
-            output += """<div><input type="checkbox" name="delete_image" id="id_delete_image" /> <label for="delete_image">%s</label></div>""" % trans._proxy____unicode_cast()
+            output += """<div><input type="checkbox" name="delete_image" id="id_delete_image" /> <label for="delete_image">%s</label></div>""" % unicode(trans)
 
         return mark_safe(output)
