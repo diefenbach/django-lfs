@@ -60,7 +60,7 @@ def products(amount=20):
     Property.objects.all().delete()
 
     # Images
-    path = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data"))
+    path = os.path.join(os.path.dirname(__file__), "data")
     fh = open(os.path.join(path, "image1.jpg"), 'rb')
     cf_1 = ContentFile(fh.read())
     fh = open(os.path.join(path, "image2.jpg"), 'rb')
