@@ -254,7 +254,7 @@ def update_property_groups(request, product_id):
                 property_group.products.add(product_id)
         else:
             property_group.products.remove(product_id)
-            product_removed_property_group.send(send=property_group, product=product)
+            product_removed_property_group.send(sender=property_group, product=product)
 
     update_product_cache(product)
 
