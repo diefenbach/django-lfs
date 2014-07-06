@@ -148,7 +148,7 @@ def assign_properties(request, group_id):
         "message": _(u"Properties have been assigned.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -182,7 +182,7 @@ def update_properties(request, group_id):
         "message": message
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 # Product tab
@@ -271,7 +271,7 @@ def products_inline(request, product_group_id, as_string=False,
         return HttpResponse(
             json.dumps({
                 "html": [["#products-inline", result]],
-            }), mimetype='application/json')
+            }), content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -292,7 +292,7 @@ def assign_products(request, group_id):
         "message": _(u"Products have been assigned.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -316,7 +316,7 @@ def remove_products(request, group_id):
         "message": _(u"Products have been removed.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def _udpate_positions(group_id):
@@ -346,4 +346,4 @@ def sort_property_groups(request):
         "message": _(u"The Property groups have been sorted."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')

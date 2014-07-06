@@ -125,7 +125,7 @@ def manage_accessories_inline(request, product_id, as_string=False, template_nam
         return HttpResponse(
             json.dumps({
                 "html": [["#accessories-inline", result]],
-            }), mimetype='application/json')
+            }), content_type='application/json')
 
 
 # Actions
@@ -163,7 +163,7 @@ def add_accessories(request, product_id):
         "message": _(u"Accessories have been added.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 # TODO: Rename to "update_accessories"
@@ -225,7 +225,7 @@ def remove_accessories(request, product_id):
             "message": _(u"Accessories have been updated.")
         }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -245,7 +245,7 @@ def update_accessories(request, product_id):
         "message": _(u"Accessories have been updated.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def _update_positions(product):

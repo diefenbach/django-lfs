@@ -170,7 +170,7 @@ def shipping_price_criteria(request, shipping_price_id, as_string=False,
             "open-dialog": True,
         }, cls=LazyEncoder)
 
-        return HttpResponse(result, mimetype='application/json')
+        return HttpResponse(result, content_type='application/json')
 
 
 # Actions
@@ -211,7 +211,7 @@ def save_shipping_method_criteria(request, shipping_method_id):
         "message": _(u"Changes have been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -233,7 +233,7 @@ def save_shipping_price_criteria(request, shipping_price_id):
         "message": _(u"Modifications have been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -260,7 +260,7 @@ def add_shipping_price(request, shipping_method_id):
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -309,7 +309,7 @@ def update_shipping_prices(request, shipping_method_id):
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -342,7 +342,7 @@ def save_shipping_method_data(request, shipping_method_id):
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -390,7 +390,7 @@ def sort_shipping_methods(request):
             "message": _(u"The shipping methods have been sorted."),
         }, cls=LazyEncoder)
 
-        return HttpResponse(result, mimetype='application/json')
+        return HttpResponse(result, content_type='application/json')
 
 
 def _update_price_positions(shipping_method):

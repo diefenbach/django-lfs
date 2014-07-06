@@ -91,4 +91,4 @@ def change_categories(request, product_id):
 
     return HttpResponse(json.dumps({
         "message": _(u"Categories have been saved."),
-    }, cls=LazyEncoder), mimetype='application/json')
+    }, cls=LazyEncoder), content_type='application/json')

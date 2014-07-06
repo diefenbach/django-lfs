@@ -184,7 +184,7 @@ def payment_price_criteria(request, payment_price_id, as_string=False, template_
             "open-dialog": True,
         }, cls=LazyEncoder)
 
-        return HttpResponse(result, mimetype='application/json')
+        return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -226,7 +226,7 @@ def save_payment_method_criteria(request, payment_method_id):
         "message": _(u"Changes have been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -247,7 +247,7 @@ def save_payment_price_criteria(request, payment_price_id):
         "message": _(u"Changes have been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -273,7 +273,7 @@ def add_payment_price(request, payment_method_id):
         "message": _(u"Price has been added"),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -321,7 +321,7 @@ def update_payment_prices(request, payment_method_id):
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -354,7 +354,7 @@ def save_payment_method_data(request, payment_method_id):
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -402,7 +402,7 @@ def sort_payment_methods(request):
             "message": _(u"The payment methods have been sorted."),
         }, cls=LazyEncoder)
 
-        return HttpResponse(result, mimetype='application/json')
+        return HttpResponse(result, content_type='application/json')
 
 
 def _update_price_positions(payment_method):

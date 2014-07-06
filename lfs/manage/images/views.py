@@ -94,7 +94,7 @@ def add_images(request):
                 continue
 
     result = json.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -197,4 +197,4 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
         "message": "msg",
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')

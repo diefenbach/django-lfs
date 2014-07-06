@@ -157,7 +157,7 @@ def render_to_ajax_response(html=None, message=None):
     result = json.dumps(
         {"message": message, "html": html}, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def get_current_categories(request, object):

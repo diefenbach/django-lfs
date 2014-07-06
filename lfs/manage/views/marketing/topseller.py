@@ -123,7 +123,7 @@ def manage_topseller_inline(
         return HttpResponse(
             json.dumps({
                 "html": [["#topseller-inline", result]],
-            }), mimetype='application/json')
+            }), content_type='application/json')
 
 
 # Actions
@@ -146,7 +146,7 @@ def add_topseller(request):
         "message": _(u"Topseller have been added.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -196,7 +196,7 @@ def update_topseller(request):
             "message": _(u"Topseller have been updated.")
         }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def _update_positions():
