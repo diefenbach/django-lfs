@@ -112,7 +112,7 @@ def products_inline(request, manufacturer_id, as_string=False, template_name="ma
     else:
         return HttpResponse(json.dumps({
             "html": [["#products-inline", result]],
-        }), mimetype='application/json')
+        }), content_type='application/json')
 
 
 # Actions
@@ -174,7 +174,7 @@ def selected_products(request, manufacturer_id, as_string=False, template_name="
     else:
         return HttpResponse(json.dumps({
             "html": [["#selected-products", result]],
-        }), mimetype='application/json')
+        }), content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -204,7 +204,7 @@ def add_products(request, manufacturer_id):
         "message": _(u"Selected products have been assigned to manufacturer.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -231,4 +231,4 @@ def remove_products(request, manufacturer_id):
         "message": _(u"Selected products are no longer assigned to manufacturer.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')

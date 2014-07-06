@@ -455,7 +455,7 @@ def refresh_cart(request):
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def check_voucher(request):
@@ -469,4 +469,4 @@ def check_voucher(request):
         "html": (("#cart-inline", cart_inline(request)),)
     })
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')

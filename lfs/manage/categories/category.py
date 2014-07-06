@@ -137,7 +137,7 @@ def edit_category_data(request, category_id, template_name="manage/category/data
         "html" : html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -219,7 +219,7 @@ def sort_categories(request):
         "message": _(u"The categories have been sorted."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 # Privates

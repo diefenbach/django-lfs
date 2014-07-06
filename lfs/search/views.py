@@ -43,7 +43,7 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
             "state": "success",
             "products": products,
         })
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def search(request, template_name="lfs/search/search_results.html"):

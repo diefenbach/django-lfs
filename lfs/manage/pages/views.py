@@ -130,7 +130,7 @@ def save_data_tab(request, id):
         "message": _(u"Data has been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -191,7 +191,7 @@ def sort_pages(request):
             "message": _(u"The pages have been sorted."),
         }, cls=LazyEncoder)
 
-        return HttpResponse(result, mimetype='application/json')
+        return HttpResponse(result, content_type='application/json')
 
 
 def _update_positions():

@@ -404,7 +404,7 @@ def check_voucher(request):
         "html": (("#cart-inline", cart_inline(request)),)
     })
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def changed_checkout(request):
@@ -421,7 +421,7 @@ def changed_checkout(request):
         "cart": cart_inline(request),
     })
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def changed_invoice_country(request):
@@ -442,7 +442,7 @@ def changed_invoice_country(request):
         "invoice_address": am.render(request, country_iso),
     })
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def changed_shipping_country(request):
@@ -463,7 +463,7 @@ def changed_shipping_country(request):
         "shipping_address": am.render(request, country_iso),
     })
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def _save_country(request, customer):

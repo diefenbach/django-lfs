@@ -146,7 +146,7 @@ def set_vouchers_page(request):
 
     return HttpResponse(
         json.dumps({"html": html}, cls=LazyEncoder),
-        mimetype='application/json')
+        content_type='application/json')
 
 
 @permission_required("core.manage_shop")

@@ -164,7 +164,7 @@ def export_inline(request, export_id, category_id,
     html = (("#sub-categories-%s" % category_id, result),)
 
     return HttpResponse(
-        json.dumps({"html": html}), mimetype='application/json')
+        json.dumps({"html": html}), content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -278,7 +278,7 @@ def category_state(request, export_id, category_id):
         json.dumps({
             "html": html,
             "checkbox": checkbox
-        }), mimetype='application/json'
+        }), content_type='application/json'
     )
 
 
@@ -343,7 +343,7 @@ def update_data(request, export_id):
         "message": msg
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def _get_category_state(export, category):

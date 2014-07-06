@@ -240,7 +240,7 @@ def stock(request, product_id, template_name="manage/product/stock.html"):
             "html": html,
             "message": message,
         }, cls=LazyEncoder)
-        return HttpResponse(result, mimetype='application/json')
+        return HttpResponse(result, content_type='application/json')
     else:
         return result
 
@@ -462,7 +462,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -503,7 +503,7 @@ def reset_filters(request):
     msg = _(u"Product filters have been reset")
     result = json.dumps(
         {"html": html, "message": msg, }, cls=LazyEncoder)
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -579,7 +579,7 @@ def save_products(request):
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -613,7 +613,7 @@ def set_name_filter(request):
         "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -655,7 +655,7 @@ def set_filters(request):
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -684,7 +684,7 @@ def set_products_page(request):
     )
 
     return HttpResponse(
-        json.dumps({"html": html}, cls=LazyEncoder), mimetype='application/json')
+        json.dumps({"html": html}, cls=LazyEncoder), content_type='application/json')
 
 
 @permission_required("core.manage_shop")

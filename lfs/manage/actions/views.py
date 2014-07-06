@@ -108,7 +108,7 @@ def save_action(request, id):
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -168,7 +168,7 @@ def sort_actions(request):
             "message": _(u"The actions have been sorted."),
         }, cls=LazyEncoder)
 
-        return HttpResponse(result, mimetype='application/json')
+        return HttpResponse(result, content_type='application/json')
 
 
 def _update_positions():

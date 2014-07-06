@@ -157,7 +157,7 @@ def save_discount_criteria(request, id):
         "message": _("Changes have been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -215,7 +215,7 @@ def assign_products(request, discount_id):
         "message": _(u"Products have been assigned.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -236,7 +236,7 @@ def remove_products(request, discount_id):
         "message": _(u"Products have been removed.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -339,4 +339,4 @@ def products_inline(request, discount_id, as_string=False,
         return HttpResponse(
             json.dumps({
                 "html": [["#products-inline", result]],
-            }), mimetype='application/json')
+            }), content_type='application/json')

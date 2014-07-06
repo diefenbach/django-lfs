@@ -12,7 +12,7 @@ from lfs.export.models import Export
 def export(request, export):
     """Generic export method.
     """
-    response = HttpResponse(mimetype="text/csv")
+    response = HttpResponse(content_type="text/csv")
     response["Content-Disposition"] = "attachment; filename=%s.csv" % export.name
     writer = csv.writer(response, delimiter=";", quotechar='"', quoting=csv.QUOTE_ALL)
 
