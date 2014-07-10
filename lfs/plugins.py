@@ -155,6 +155,14 @@ class PaymentMethodProcessor(object):
 class PriceCalculator(object):
     """
     This is the base class that pricing calculators must inherit from.
+
+    **Attributes:**
+
+    product
+        The product for which the price is calculated.
+
+    request
+        The current request.
     """
     def __init__(self, request, product, **kwargs):
         self.request = request
