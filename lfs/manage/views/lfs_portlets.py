@@ -86,22 +86,32 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             ct = ContentType.objects.filter(model=portlet_type.lower())[0]
             mc = ct.model_class()
             form = mc().form(prefix="portlet", data=request.POST)
-            portlet = form.save()
+            if form.is_valid():
+                portlet = form.save()
 
-            slot_id = request.POST.get("slot")
-            pa = PortletAssignment.objects.create(
-                slot_id=slot_id, content=obj, portlet=portlet, position=1000)
+                slot_id = request.POST.get("slot")
+                pa = PortletAssignment.objects.create(
+                    slot_id=slot_id, content=obj, portlet=portlet, position=1000)
 
-            update_portlet_positions(pa)
+                update_portlet_positions(pa)
 
-            html = [["#portlets", portlets_inline(request, obj)]]
+                html = [["#portlets", portlets_inline(request, obj)]]
 
-            result = json.dumps({
-                "html": html,
-                "close-dialog": True,
-                "message": _(u"Portlet has been added.")},
-                cls=LazyEncoder
-            )
+                result = json.dumps({
+                    "html": html,
+                    "close-dialog": True,
+                    "message": _(u"Portlet has been added.")},
+                    cls=LazyEncoder
+                )
+            else:
+                html = [["#portlet-form-inline", render_to_string('manage/lfs_form.html', {'form': form})]]
+
+                result = json.dumps({
+                    "html": html,
+                    "close-dialog": False,
+                    "message": _(u"Please correct errors and try again.")},
+                    cls=LazyEncoder
+                )
             return HttpResponse(result, content_type='application/json')
 
         except ContentType.DoesNotExist:
@@ -158,20 +168,30 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
 
     if request.method == "POST":
         form = pa.portlet.form(prefix="portlet", data=request.POST)
-        portlet = form.save()
+        if form.is_valid():
+            portlet = form.save()
 
-        # Save the rest
-        pa.slot_id = request.POST.get("slot")
-        pa.save()
+            # Save the rest
+            pa.slot_id = request.POST.get("slot")
+            pa.save()
 
-        html = [["#portlets", portlets_inline(request, pa.content)]]
+            html = [["#portlets", portlets_inline(request, pa.content)]]
 
-        result = json.dumps({
-            "html": html,
-            "close-dialog": True,
-            "message": _(u"Portlet has been saved.")},
-            cls=LazyEncoder
-        )
+            result = json.dumps({
+                "html": html,
+                "close-dialog": True,
+                "message": _(u"Portlet has been saved.")},
+                cls=LazyEncoder
+            )
+        else:
+            html = [["#portlet-form-inline", render_to_string('manage/lfs_form.html', {'form': form})]]
+
+            result = json.dumps({
+                "html": html,
+                "close-dialog": False,
+                "message": _(u"Please correct errors and try again.")},
+                cls=LazyEncoder
+            )
         return HttpResponse(result, content_type='application/json')
     else:
         slots = []
