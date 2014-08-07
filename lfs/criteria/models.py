@@ -365,11 +365,7 @@ class Criterion(models.Model):
             self.value = value
         elif self.value.__class__.__name__ == "ManyRelatedManager":
             for value_id in value:
-                val = int(float(value_id))
-                if not self.value.filter(id=val).exists():
-                    val = self.value.all()[0] if self.value.all().exists() else None
-                if val:
-                    self.value.add(val)
+                self.value.add(value_id)
         else:
             self.value = value
 

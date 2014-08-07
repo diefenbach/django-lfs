@@ -3,8 +3,12 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+
 from lfs.catalog.models import Category, Product, Property, ProductsPropertiesRelation, PropertyOption, ProductPropertyValue
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, PROPERTY_SELECT_FIELD, VARIANT, PROPERTY_VALUE_TYPE_VARIANT
+from lfs.criteria.models import Criterion, CountryCriterion
+from lfs.shipping.models import ShippingMethod, ShippingMethodPrice
+from lfs.core.models import Country
 
 
 class ManageTestCase(TestCase):
@@ -126,3 +130,23 @@ class ManageTestCase(TestCase):
         self.assertEqual(len(outvariants[0]['properties']), 1)
         self.assertEqual(outvariants[0]['properties'][0]['name'], pproperty.name)
         self.assertEqual(outvariants[0]['properties'][0]['options'][0]['name'], property_option.name)
+
+    def test_manage_add_price_criteria(self):
+        self.client.login(username=self.username, password=self.password)
+        shipping_method = ShippingMethod.objects.create(name='Standard', active=True)
+        smp = ShippingMethodPrice.objects.create(shipping_method=shipping_method, price=10)
+
+        country_id = Country.objects.all()[0].pk
+
+        url = reverse('lfs_manage_save_shipping_price_criteria', kwargs=dict(shipping_price_id=smp.pk))
+        data = {'type-123': 'lfs.criteria.models.CountryCriterion',
+                'operator-123': Criterion.IS_SELECTED,
+                'position-123': '10',
+                'value-123': country_id}
+
+        response = self.client.post(url, data, follow=True)
+
+        self.assertEqual(response.status_code, 200)
+
+        c = CountryCriterion.objects.latest('id')
+        self.assertTrue(country_id in c.value.values_list('id', flat=True))
