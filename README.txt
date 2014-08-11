@@ -27,11 +27,11 @@ A demo shop can be tried here:
 Changes
 =======
 
-0.8.0 alpha 1 (2013-06-19)
+0.8.0 alpha 3 (2013-06-19)
 --------------------------
-* Reverts all changes from 0.8.0a2 (these has been move to 0.9.0 alpha 1)
+* Reverts all changes from 0.8.0a2 (these has been moved to 0.9.0 alpha 1)
 * Adds checkboxes to filters
-* Adds ``For Variants`` checkbox to Property (see help for more)
+* Adds ``For Variants`` checkbox to Property (see docs for more)
 
 HISTORY
 =======
