@@ -243,6 +243,10 @@ def add_to_cart(request, product_id=None):
     except (TypeError, ValueError):
         quantity = 1.0
 
+    # Don't allow negative values
+    if quantity < 0.0:
+        quantity *= -1
+
     # Validate properties (They are added below)
     properties_dict = {}
     if product.is_configurable_product():
@@ -400,6 +404,10 @@ def refresh_cart(request):
             amount = locale.atof(value)
         except (TypeError, ValueError):
             amount = 1.0
+
+        # Don't allow negativ values
+        if amount < 0.0:
+            amount *= -1
 
         if item.product.manage_stock_amount and amount > item.product.stock_amount and not item.product.order_time:
             amount = item.product.stock_amount
