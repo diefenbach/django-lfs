@@ -414,7 +414,7 @@ def change_order_state(request):
     if order.state == lfs.order.settings.SENT:
         lfs.core.signals.order_sent.send(sender=order, request=request)
     if order.state == lfs.order.settings.PAID:
-        lfs.core.signals.order_paid.send({"order": order, "request": request})
+        lfs.core.signals.order_paid.send(sender=order, request=request)
 
     lfs.core.signals.order_state_changed.send(sender=order, order=order, request=request, old_state=old_state)
 
