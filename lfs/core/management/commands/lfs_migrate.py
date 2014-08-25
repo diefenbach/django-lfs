@@ -527,14 +527,14 @@ class Command(BaseCommand):
             ('slideshow', models.fields.BooleanField(default=False)),
         ))
 
-        application.version = "0.8"
+        application.version = "0.9"
         application.save()
 
         # Fake south migrations
         management.call_command('syncdb', interactive=False)
-        management.call_command('migrate', all=True, fake="0001")
-        management.call_command('migrate', 'order', fake="0002")
-        management.call_command('migrate')
+        management.call_command('migrate', interactive=False, all=True, fake="0001")
+        management.call_command('migrate', 'order', interactive=False, fake="0002")
+        management.call_command('migrate', interactive=False)
 
     def migrate_to_08(self, application, version):
         print "Migrating to 0.8"
