@@ -130,41 +130,43 @@
               action="{% url 'lfs_manage_update_variants' product.id %}"
               method="post">
             <table>
-                <th>
-                    <input type="checkbox" class="select-all" value="delete" />
-                </th>
-                <th>
-                    {% trans 'Pos.' %}
-                </th>
-                <th>
-                    <input type="checkbox" class="select-all" value="active" />
-                    {% trans 'Active' %}
-                </th>
-                <th>
-                    {% trans 'URL' %}
-                </th>
-                <th>
-                    <input type="checkbox" class="select-all" value="active_sku" />
-                    {% trans 'SKU' %}
-                </th>
-                <th>
-                    <input type="checkbox" class="select-all" value="active_name" />
-                    {% trans 'Name' %}
-                </th>
-                {% for property in all_properties %}
+                <tr>
                     <th>
-                        {{ property.name }}
+                        <input type="checkbox" class="select-all" value="delete" />
                     </th>
-                {% endfor %}
-                <th colspan="2">
-                    <input type="checkbox"
-                           class="select-all"
-                           value="price" />
-                    {% trans 'Price' %}
-                </th>
-                <th>
-                    {% trans 'Default' %}
-                </th>
+                    <th>
+                        {% trans 'Pos.' %}
+                    </th>
+                    <th>
+                        <input type="checkbox" class="select-all" value="active" />
+                        {% trans 'Active' %}
+                    </th>
+                    <th>
+                        {% trans 'URL' %}
+                    </th>
+                    <th>
+                        <input type="checkbox" class="select-all" value="active_sku" />
+                        {% trans 'SKU' %}
+                    </th>
+                    <th>
+                        <input type="checkbox" class="select-all" value="active_name" />
+                        {% trans 'Name' %}
+                    </th>
+                    {% for property in all_properties %}
+                        <th>
+                            {{ property.name }}
+                        </th>
+                    {% endfor %}
+                    <th colspan="2">
+                        <input type="checkbox"
+                               class="select-all"
+                               value="price" />
+                        {% trans 'Price' %}
+                    </th>
+                    <th>
+                        {% trans 'Default' %}
+                    </th>
+                </tr>
                 {% for variant in variants %}
                     <tr>
                         <td>
