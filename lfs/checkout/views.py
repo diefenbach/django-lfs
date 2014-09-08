@@ -1,5 +1,6 @@
 # python imports
 from copy import deepcopy
+import json
 
 # django imports
 from django.conf import settings
@@ -10,7 +11,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -80,7 +80,7 @@ def login(request, template_name="lfs/checkout/login.html"):
                 username=create_unique_username(email), email=email, password=password)
 
             # Notify
-            lfs.core.signals.customer_added.send(user)
+            lfs.core.signals.customer_added.send(sender=user)
 
             # Log in user
             from django.contrib.auth import authenticate
@@ -215,9 +215,13 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
     if cart is None:
         return HttpResponseRedirect(reverse('lfs_cart'))
 
+    initial_address = {}
     shop = lfs.core.utils.get_default_shop(request)
-    if request.user.is_anonymous() and shop.checkout_type == CHECKOUT_TYPE_AUTH:
-        return HttpResponseRedirect(reverse("lfs_checkout_login"))
+    if request.user.is_anonymous():
+        if shop.checkout_type == CHECKOUT_TYPE_AUTH:
+            return HttpResponseRedirect(reverse("lfs_checkout_login"))
+    else:
+        initial_address['email'] = request.user.email
 
     customer = lfs.customer.utils.get_or_create_customer(request)
 
@@ -228,8 +232,8 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
 
     if request.method == "POST":
         checkout_form = OnePageCheckoutForm(data=request.POST)
-        iam = AddressManagement(customer, invoice_address, "invoice", request.POST)
-        sam = AddressManagement(customer, shipping_address, "shipping", request.POST)
+        iam = AddressManagement(customer, invoice_address, "invoice", request.POST, initial=initial_address)
+        sam = AddressManagement(customer, shipping_address, "shipping", request.POST, initial=initial_address)
         bank_account_form = BankAccountForm(instance=bank_account, data=request.POST)
         credit_card_form = CreditCardForm(instance=credit_card, data=request.POST)
 
@@ -302,8 +306,8 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
 
     else:
         checkout_form = OnePageCheckoutForm()
-        iam = AddressManagement(customer, invoice_address, "invoice")
-        sam = AddressManagement(customer, shipping_address, "shipping")
+        iam = AddressManagement(customer, invoice_address, "invoice", initial=initial_address)
+        sam = AddressManagement(customer, shipping_address, "shipping", initial=initial_address)
         bank_account_form = BankAccountForm(instance=bank_account)
         credit_card_form = CreditCardForm(instance=credit_card)
 
@@ -396,11 +400,11 @@ def check_voucher(request):
     voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
     lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": (("#cart-inline", cart_inline(request)),)
     })
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def changed_checkout(request):
@@ -411,13 +415,13 @@ def changed_checkout(request):
     _save_customer(request, customer)
     _save_country(request, customer)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "shipping": shipping_inline(request),
         "payment": payment_inline(request, form),
         "cart": cart_inline(request),
     })
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def changed_invoice_country(request):
@@ -434,11 +438,11 @@ def changed_invoice_country(request):
         customer.sync_selected_to_default_invoice_address()
 
     am = AddressManagement(customer, address, "invoice")
-    result = simplejson.dumps({
+    result = json.dumps({
         "invoice_address": am.render(request, country_iso),
     })
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def changed_shipping_country(request):
@@ -455,11 +459,11 @@ def changed_shipping_country(request):
         customer.sync_selected_to_default_shipping_address()
 
     am = AddressManagement(customer, address, "shipping")
-    result = simplejson.dumps({
+    result = json.dumps({
         "shipping_address": am.render(request, country_iso),
     })
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def _save_country(request, customer):

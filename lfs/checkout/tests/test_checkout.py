@@ -1,8 +1,5 @@
 # django imports
 from django.contrib.auth.models import User
-from django.contrib.auth.models import AnonymousUser
-from django.contrib.sessions.backends.file import SessionStore
-from django.shortcuts import get_object_or_404
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -12,15 +9,11 @@ from django.core import mail
 from lfs.catalog.models import Product
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
-from lfs.cart.views import add_to_cart
-from lfs.cart import utils as cart_utils
-from lfs.core.models import Shop, Country
+from lfs.core.models import Country
 from lfs.core.utils import get_default_shop
 from lfs.customer.models import Customer
 from lfs.addresses.models import Address
 from lfs.order.models import Order
-from lfs.order.settings import SUBMITTED
-from lfs.order.utils import add_order
 from lfs.payment.models import PaymentMethod
 from lfs.payment.settings import BY_INVOICE
 from lfs.shipping.models import ShippingMethod

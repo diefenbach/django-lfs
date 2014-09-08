@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
@@ -8,7 +10,6 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from django.utils import simplejson
 from django.views.decorators.http import require_POST
 
 # lfs imports
@@ -144,8 +145,8 @@ def set_vouchers_page(request):
     )
 
     return HttpResponse(
-        simplejson.dumps({"html": html}, cls=LazyEncoder),
-        mimetype='application/json')
+        json.dumps({"html": html}, cls=LazyEncoder),
+        content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -260,7 +261,7 @@ def save_voucher_group_data(request, id):
 
     return render_to_ajax_response(
         (("#data_tab", data_tab(request, voucher_group)),
-        ("#navigation", navigation(request, voucher_group)),),
+         ("#navigation", navigation(request, voucher_group)),),
         _(u"Voucher data has been saved."))
 
 

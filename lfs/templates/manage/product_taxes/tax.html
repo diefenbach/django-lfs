@@ -12,7 +12,7 @@
     <div class="navigation-body">
         {% for tax in taxes %}
             <div>
-                <a href="{% url lfs_manage_tax tax.id %}"
+                <a href="{% url 'lfs_manage_tax' tax.id %}"
                    class="selectable {% ifequal tax.id current_id %}selected{% endifequal %}">
                    {{ tax.rate }}%
                 </a>
@@ -24,11 +24,11 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_manage_add_tax %}?came_from={% url lfs_manage_tax tax.id %}">{% trans 'Add Product Tax' %}</a>
+           href="{% url 'lfs_manage_add_tax' %}?came_from={% url 'lfs_manage_tax' tax.id %}">{% trans 'Add Product Tax' %}</a>
 
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this tax?' %}"
-           href="{% url lfs_delete_tax tax.id %}">{% trans 'Delete Product Tax' %}</a>
+           href="{% url 'lfs_delete_tax' tax.id %}">{% trans 'Delete Product Tax' %}</a>
     </div>
     <div id="manage-tabs">
         <ul>
@@ -36,7 +36,7 @@
         </ul>
         <div id="data">
             <h2>{% trans 'Data' %}</h2>
-            <form action="{% url lfs_manage_tax tax.id %}"
+            <form action="{% url 'lfs_manage_tax' tax.id %}"
                   method="post">
                 {% csrf_token %}
                 {% include "manage/lfs_form.html" %}

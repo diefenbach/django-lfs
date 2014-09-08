@@ -5,7 +5,7 @@
         <td width="50%">
             <h2>{% trans 'Properties' %}</h2>
             <form id="add-property-form"
-                  action="{% url lfs_assign_properties property_group.id %}"
+                  action="{% url 'lfs_assign_properties' property_group.id %}"
                   method="post">
                 <div id="properties-left" style="padding-bottom:10px">
                     <table class="lfs-manage-table">
@@ -27,7 +27,7 @@
                                                value="{{ property.id }}" />
                                     </td>
                                     <td>
-                                        {{ property.name }}
+                                        <a href="{% url 'lfs_manage_shop_property' property.id %}">{{ property.name }}</a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -51,7 +51,7 @@
         <td width="50%">
             <h2>{% trans 'Selected Properties' %}</h2>
             <form id="property-group-update-form"
-                  action="{% url lfs_update_properties property_group.id %}"
+                  action="{% url 'lfs_update_properties' property_group.id %}"
                   method="post">
                 <div id="properties-right" style="padding-bottom:10px">
                     <table class="lfs-manage-table">
@@ -85,7 +85,7 @@
                                                value="{{ gp.position }}" />
                                     </td>
                                     <td>
-                                        {{ gp.property.name }}
+                                        <a href="{% url 'lfs_manage_shop_property' gp.property.id %}">{{ gp.property.name }}</a>
                                     </td>
                                 </tr>
                             {% endfor %}

@@ -6,25 +6,25 @@
     <tr>
         <th class="tiny right-padding">
 			<a class="ajax-link"
-			   href='{% url lfs_set_customer_ordering "id" %}'>
+			   href='{% url 'lfs_set_customer_ordering' "id" %}'>
             	{% trans 'ID' %}
            	</a>
         </th>
         <th>
 			<a class="ajax-link"
-			   href='{% url lfs_set_customer_ordering "firstname" %}'>
+			   href='{% url 'lfs_set_customer_ordering' "firstname" %}'>
             	{% trans 'Firstname' %}
 			</a>
         </th>
         <th>
 			<a class="ajax-link"
-			   href='{% url lfs_set_customer_ordering "lastname" %}'>
+			   href='{% url 'lfs_set_customer_ordering' "lastname" %}'>
             	{% trans 'Lastname' %}
 			</a>
         </th>
         <th class="middle">
 			<a class="ajax-link"
-			   href='{% url lfs_set_customer_ordering "email" %}'>
+			   href='{% url 'lfs_set_customer_ordering' "email" %}'>
             	{% trans 'E-Mail' %}
 			</a>
         </th>
@@ -38,7 +38,7 @@
 
     {% for customer in customers %}
         <tr class="clickable"
-            onclick="window.location='{% url lfs_manage_customer customer.customer.id %}'">
+            onclick="window.location='{% url 'lfs_manage_customer' customer.customer.id %}'">
             <td class="tiny right-padding">
                	{{ customer.customer.id }}
             </td>

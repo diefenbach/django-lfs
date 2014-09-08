@@ -5,16 +5,18 @@ from itertools import count
 import locale
 import sys
 import urllib
+import json
+import time
 
 # django imports
 from django.conf import settings
 from django.contrib.redirects.models import Redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
-from django.utils import simplejson
 from django.utils.functional import Promise
 from django.utils.encoding import force_unicode
 from django.shortcuts import render_to_response
+from django.utils.http import cookie_date
 
 
 def l10n_float(string):
@@ -105,9 +107,8 @@ class MessageHttpResponseRedirect(HttpResponseRedirect):
         if msg:
             # We just keep the message two seconds.
             max_age = 2
-            expires = datetime.datetime.strftime(
-                datetime.datetime.utcnow() +
-                datetime.timedelta(seconds=max_age), "%a, %d-%b-%Y %H:%M:%S GMT")
+            expires_time = time.time() + max_age
+            expires = cookie_date(expires_time)
 
             self.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
 
@@ -126,9 +127,8 @@ def set_message_to(response, msg):
     """
     # We just keep the message two seconds.
     max_age = 2
-    expires = datetime.datetime.strftime(
-        datetime.datetime.utcnow() +
-        datetime.timedelta(seconds=max_age), "%a, %d-%b-%Y %H:%M:%S GMT")
+    expires_time = time.time() + max_age
+    expires = cookie_date(expires_time)
     if msg:
         response.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
     return response
@@ -140,9 +140,8 @@ def set_message_cookie(url, msg):
     """
     # We just keep the message two seconds.
     max_age = 2
-    expires = datetime.datetime.strftime(
-        datetime.datetime.utcnow() +
-        datetime.timedelta(seconds=max_age), "%a, %d-%b-%Y %H:%M:%S GMT")
+    expires_time = time.time() + max_age
+    expires = cookie_date(expires_time)
 
     response = HttpResponseRedirect(url)
     response.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
@@ -150,13 +149,15 @@ def set_message_cookie(url, msg):
     return response
 
 
-def render_to_ajax_response(html=[], message=None):
+def render_to_ajax_response(html=None, message=None):
     """Encodes given html and message to JSON and returns a HTTP response.
     """
-    result = simplejson.dumps(
+    if html is None:
+        html = []
+    result = json.dumps(
         {"message": message, "html": html}, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def get_current_categories(request, object):
@@ -269,7 +270,7 @@ def getLOL(objects, objects_per_row=3):
     return result
 
 
-class LazyEncoder(simplejson.JSONEncoder):
+class LazyEncoder(json.JSONEncoder):
     """Encodes django's lazy i18n strings.
     """
     def default(self, obj):

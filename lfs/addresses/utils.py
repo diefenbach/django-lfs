@@ -91,7 +91,7 @@ class AddressManagement(object):
         postal_form.fields["country"].choices = [(c.code.upper(), c.name) for c in countries]
 
         address_form_model = self.get_form_model()
-        address_form = address_form_model(instance=self.address, data=self.data, prefix=self.type)
+        address_form = address_form_model(instance=self.address, data=self.data, prefix=self.type, initial=self.initial)
 
         templates = ["lfs/addresses/address_form.html"]
         templates.insert(0, "lfs/addresses/%s_address_form.html" % self.type)

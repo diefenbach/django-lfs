@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
@@ -8,7 +10,6 @@ from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -163,7 +164,7 @@ def export_inline(request, export_id, category_id,
     html = (("#sub-categories-%s" % category_id, result),)
 
     return HttpResponse(
-        simplejson.dumps({"html": html}), mimetype='application/json')
+        json.dumps({"html": html}), content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -274,10 +275,10 @@ def category_state(request, export_id, category_id):
     checkbox = ("#export-category-input-%s" % category_id, checked)
 
     return HttpResponse(
-        simplejson.dumps({
+        json.dumps({
             "html": html,
             "checkbox": checkbox
-        }), mimetype='application/json'
+        }), content_type='application/json'
     )
 
 
@@ -337,12 +338,12 @@ def update_data(request, export_id):
         ("#selectable-exports-inline", selectable_exports_inline(request, export_id)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def _get_category_state(export, category):

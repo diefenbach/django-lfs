@@ -76,7 +76,8 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     "title": prop.title,
                     "type": prop.type,
                     "options": options,
-                    "display_text_field": prop.type in (PROPERTY_TEXT_FIELD, PROPERTY_NUMBER_FIELD),
+                    "display_number_field": prop.type == PROPERTY_NUMBER_FIELD,
+                    "display_text_field": prop.type == PROPERTY_TEXT_FIELD,
                     "display_select_field": prop.type == PROPERTY_SELECT_FIELD,
                     "value": ppv_value,
                 })
@@ -133,7 +134,8 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     "options": options,
                     "value": value,
                     "display_on_product": prop.display_on_product,
-                    "display_text_field": not display_select_field,
+                    "display_number_field": prop.type == PROPERTY_NUMBER_FIELD,
+                    "display_text_field": prop.type == PROPERTY_TEXT_FIELD,
                     "display_select_field": display_select_field,
                 })
             if properties:
@@ -188,7 +190,8 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                     "options": options,
                     "value": value,
                     "filterable": prop.filterable,
-                    "display_text_field": not display_select_field,
+                    "display_number_field": prop.type == PROPERTY_NUMBER_FIELD,
+                    "display_text_field": prop.type == PROPERTY_TEXT_FIELD,
                     "display_select_field": display_select_field,
                 })
 
@@ -251,7 +254,7 @@ def update_property_groups(request, product_id):
                 property_group.products.add(product_id)
         else:
             property_group.products.remove(product_id)
-            product_removed_property_group.send([property_group, product])
+            product_removed_property_group.send(sender=property_group, product=product)
 
     update_product_cache(product)
 

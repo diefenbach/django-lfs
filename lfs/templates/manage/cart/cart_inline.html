@@ -113,7 +113,7 @@
         </tr>
         {% for item in cart.get_items %}
             <tr class="clickable"
-                onclick="window.location='{% url lfs_manage_product item.product.id %}'">
+                onclick="window.location='{% url 'lfs_manage_product' item.product.id %}'">
                 <td class="small-right">
                 	{{ item.id }}
                 </td>

@@ -12,18 +12,18 @@
 {% block content %}
     <div class="site-actions">
             <a class="add"
-               href="{% url lfs_add_page %}?came_from={% url lfs_manage_page page.id %}">{% trans 'Add Page' %}</a>
+               href="{% url 'lfs_add_page' %}?came_from={% url 'lfs_manage_page' page.id %}">{% trans 'Add Page' %}</a>
 
             {% if page.id != 1 %}
                 <a class="delete delete-link"
                    dialog_message="{% trans 'Do you really want to delete this page?' %}"
-                   href="{% url lfs_delete_page page.id %}">{% trans 'Delete Page' %}</a>
+                   href="{% url 'lfs_delete_page' page.id %}">{% trans 'Delete Page' %}</a>
 
                 <a class="view popup-link"
-                   href="{% url lfs_page_view_by_id page.id %}">{% trans 'View Page' %}</a>
+                   href="{% url 'lfs_page_view_by_id' page.id %}">{% trans 'View Page' %}</a>
 
                 <a class="goto"
-                   href="{% url lfs_page_view_by_id page.id %}">{% trans 'Goto Page' %}</a>
+                   href="{% url 'lfs_page_view_by_id' page.id %}">{% trans 'Goto Page' %}</a>
             {% endif %}
         </div>
         <div id="manage-tabs">

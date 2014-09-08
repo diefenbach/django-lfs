@@ -908,7 +908,8 @@ class Product(models.Model):
             else:
                 return self.active_base_price == CHOICES_YES
         else:
-            return self.active_base_price == CHOICES_YES
+            return self.active_base_price in (1, CHOICES_YES)  # we have to check for 1 as it's value set
+                                                               # by checkbox input
 
     def get_base_packing_price(self, request, with_properties=True):
         """
@@ -1161,7 +1162,7 @@ class Product(models.Model):
         if self.variants_display_type == SELECT:
             # Get all properties (sorted). We need to traverse through all
             # property/options to select the options of the current variant.
-            for property in self.get_property_select_fields():
+            for property in self.get_variants_properties():
                 options = []
                 selected_option_value = ''
                 for property_option in property.options.all():
@@ -1202,7 +1203,7 @@ class Product(models.Model):
                         "options": options
                     })
         else:
-            sel_properties = self.get_property_select_fields()
+            sel_properties = self.get_variants_properties()
             for property in sel_properties:
                 selected_option_name = ''
                 selected_option_value = ''
@@ -1477,14 +1478,14 @@ class Product(models.Model):
 
         return properties
 
-    def get_property_select_fields(self):
+    def get_variants_properties(self):
         """
         Returns all properties which are `select types`.
         """
         # global
         properties = []
         for property_group in self.property_groups.all():
-            properties.extend(property_group.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("groupspropertiesrelation"))
+            properties.extend(property_group.properties.filter(type=PROPERTY_SELECT_FIELD, variants=True).order_by("groupspropertiesrelation"))
 
         # local
         for prop in self.properties.filter(type=PROPERTY_SELECT_FIELD).order_by("productspropertiesrelation"):
@@ -1821,7 +1822,7 @@ class Product(models.Model):
             else:
                 return self.active_packing_unit == CHOICES_YES
         else:
-            return self.active_packing_unit == CHOICES_YES
+            return self.active_packing_unit in (1, CHOICES_YES)
 
     def get_packing_info(self):
         """
@@ -2080,15 +2081,14 @@ class Property(models.Model):
     position:
         The position of the property within the management interface.
 
+    variants
+        if True the property is used to create variants
+
     filterable:
         If True the property is used for filtered navigation.
 
     configurable
         if True the property is used for configurable product.
-
-    display_no_results
-        If True filter ranges with no products will be displayed. Otherwise
-        they will be removed.
 
     display_on_product
         If True the property is displayed as an attribute on the product.
@@ -2137,10 +2137,10 @@ class Property(models.Model):
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), blank=True, null=True, through="ProductsPropertiesRelation", related_name="properties")
     position = models.IntegerField(_(u"Position"), blank=True, null=True)
     unit = models.CharField(_(u"Unit"), blank=True, max_length=15)
-    display_on_product = models.BooleanField(_(u"Display on product"), default=True)
+    display_on_product = models.BooleanField(_(u"Display on product"), default=False)
     local = models.BooleanField(_(u"Local"), default=False)
-    filterable = models.BooleanField(_(u"Filterable"), default=True)
-    display_no_results = models.BooleanField(_(u"Display no results"), default=False)
+    variants = models.BooleanField(_(u"For Variants"), default=False)
+    filterable = models.BooleanField(_(u"Filterable"), default=False)
     configurable = models.BooleanField(_(u"Configurable"), default=False)
     type = models.PositiveSmallIntegerField(_(u"Type"), choices=PROPERTY_FIELD_CHOICES, default=PROPERTY_TEXT_FIELD)
     price = models.FloatField(_(u"Price"), blank=True, null=True)
@@ -2342,8 +2342,8 @@ class ProductPropertyValue(models.Model):
         type the value is either a number, a text or an id of an option.
 
     type
-        The type of the product value, which is on of "filter value",
-        "default value", "display value", "variant value"
+        The type of the product value, which is one of "filter value",
+        "default value", "display value", "variant value".
     """
     product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="property_values")
     parent_id = models.IntegerField(_(u"Parent"), blank=True, null=True)

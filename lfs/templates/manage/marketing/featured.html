@@ -4,7 +4,7 @@
 <h2>{% trans 'Product Selection' %}</h2>
 
 <form id="filter-featured-form"
-      action="{% url lfs_manage_featured_inline %}"
+      action="{% url 'lfs_manage_featured_inline' %}"
       onsubmit="return false">
     <input class="refresh-on-keyup" type="text" name="filter"/>
 

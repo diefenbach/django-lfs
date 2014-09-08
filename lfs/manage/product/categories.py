@@ -1,9 +1,10 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -88,6 +89,6 @@ def change_categories(request, product_id):
     for category in product.categories.all():
         category_changed.send(category)
 
-    return HttpResponse(simplejson.dumps({
+    return HttpResponse(json.dumps({
         "message": _(u"Categories have been saved."),
-    }, cls=LazyEncoder), mimetype='application/json')
+    }, cls=LazyEncoder), content_type='application/json')

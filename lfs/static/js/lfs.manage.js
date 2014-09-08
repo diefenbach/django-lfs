@@ -59,6 +59,7 @@ function setup_datepicker(){
 function send_form_and_refresh(elem) {
     var form = elem.closest("form")
     form.ajaxSubmit({
+        dataType: 'json',
         beforeSend: function(jqXHR, settings){
             var jqx = form.data('jqXHR');
             if (jqx){
@@ -181,6 +182,7 @@ $(function() {
         var action = $(this).attr("name")
         form.ajaxSubmit({
             data : {"action" : action},
+            dataType: 'json',
             success : function(data) {
                 data = safeParseJSON(data);
                 for (var html in data["html"]) {
@@ -313,8 +315,9 @@ $(function() {
 
     $body.on('click', '.portlet-add-button', function() {
         $(this).parents("form:first").ajaxSubmit({
+            dataType: 'json',
             success : function(data) {
-                $("#portlets-dialog").html(data);
+                $("#portlets-dialog").html(data['html']);
                 $("#portlets-dialog").dialog("open");
                 addEditor('#id_portlet-text', true, 300);
         }});
@@ -409,21 +412,6 @@ $(function() {
         var url = $(this).data("url");
         var variants_option = $(this).val();
         $.post(url, { "variants_option" : variants_option });
-    });
-
-    // No results
-    function toggle_no_results(checked) {
-        if (checked) {
-            $("#id_display_no_results").parents(".field").show();
-        }
-        else {
-            $("#id_display_no_results").parents(".field").hide();
-        }
-    }
-
-    toggle_no_results($("#id_filterable").prop("checked"));
-    $("#id_filterable").click(function() {
-        toggle_no_results(this.checked)
     });
 
     // Required

@@ -1,9 +1,7 @@
 # python imports
-from datetime import datetime
-from datetime import timedelta
+import json
 
 # django imports
-from django.contrib.auth.models import User
 from django.db.models import Q
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import EmptyPage
@@ -12,7 +10,6 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -235,25 +232,25 @@ def set_selectable_customers_page(request):
 
     result = selectable_customers_inline(request, customer_id)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": (("#selectable-customers-inline", result),),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
 def set_customers_page(request):
     """Sets the page of the selectable customers sections.
     """
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": (
             ("#customers-inline", customers_inline(request)),
             ("#customers-filters-inline", customers_filters_inline(request)),
         ),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -285,11 +282,11 @@ def set_ordering(request, ordering):
     else:
         html = (("#customers-inline", customers_inline(request)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -317,12 +314,12 @@ def set_customer_filters(request):
 
     msg = _(u"Customer filters have been set")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -344,12 +341,12 @@ def reset_customer_filters(request):
 
     msg = _(u"Customer filters has been reset")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 # Private Methods

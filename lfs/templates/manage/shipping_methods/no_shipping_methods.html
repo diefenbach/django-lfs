@@ -14,7 +14,7 @@
         {% trans "There are no shipping methods yet." %}
     </div>
     <div class="buttons">
-        <form action="{% url lfs_manage_add_shipping_method %}">
+        <form action="{% url 'lfs_manage_add_shipping_method' %}">
             <input type="submit"
                    class="button"
                    value="{% trans 'Add Shipping Method' %}">

@@ -1,6 +1,7 @@
 # python imports
 import locale
 import math
+import json
 
 # django imports
 from django.conf import settings
@@ -13,7 +14,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _, ungettext
 from django.views.decorators.csrf import csrf_exempt
 
@@ -40,7 +40,7 @@ def file_download(request, language=None, file_id=None):
     """Delivers files to the browser.
     """
     download_file = lfs_get_object_or_404(File, pk=file_id)
-    response = HttpResponse(download_file.file, mimetype='application/binary')
+    response = HttpResponse(download_file.file, content_type='application/binary')
     response['Content-Disposition'] = 'attachment; filename=%s' % download_file.title
 
     return response
@@ -54,12 +54,12 @@ def select_variant(request):
     variant = Product.objects.get(pk=variant_id)
     msg = _(u"The product has been changed according to your selection.")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "product": product_inline(request, variant),
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def calculate_packing(request, id, quantity=None, with_properties=False, as_string=False, template_name="lfs/catalog/packing_result.html"):
@@ -102,11 +102,11 @@ def calculate_packing(request, id, quantity=None, with_properties=False, as_stri
     if as_string:
         return html
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def calculate_price(request, id):
@@ -134,7 +134,7 @@ def calculate_price(request, id):
     else:
         packing_result = ""
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "price": lfs_tags.currency(price, request),
         "for-sale-standard-price": lfs_tags.currency(for_sale_standard_price),
         "for-sale-price": lfs_tags.currency(for_sale_price),
@@ -142,7 +142,7 @@ def calculate_price(request, id):
         "message": _("Price has been changed according to your selection."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def select_variant_from_properties(request):
@@ -168,12 +168,30 @@ def select_variant_from_properties(request):
     else:
         msg = _(u"The product has been changed according to your selection.")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "product": product_inline(request, variant),
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
+
+
+def set_number_filter(request):
+    product_filter = request.session.get("product-filter", {})
+    if product_filter.get("number-filter") is None:
+        product_filter["number-filter"] = {}
+
+    pmin = lfs.core.utils.atof(request.POST.get("min", 1))
+    pmax = lfs.core.utils.atof(request.POST.get("max", 1))
+
+    property_id = request.POST.get("property_id")
+    category_slug = request.POST.get("category_slug")
+
+    product_filter["number-filter"][property_id] = (pmin, pmax)
+    request.session["product-filter"] = product_filter
+
+    url = reverse("lfs_category", kwargs={"slug": category_slug})
+    return HttpResponseRedirect(url)
 
 
 def set_filter(request, category_slug, property_id, value=None, min=None, max=None):
@@ -181,11 +199,24 @@ def set_filter(request, category_slug, property_id, value=None, min=None, max=No
     slug.
     """
     product_filter = request.session.get("product-filter", {})
+    if product_filter.get("select-filter") is None:
+        product_filter["select-filter"] = {}
 
-    if value is not None:
-        product_filter[property_id] = value
+    if str(property_id) in product_filter["select-filter"].keys():
+        options = product_filter["select-filter"][property_id].split("|")
+        if value in options:
+            options.remove(value)
+        else:
+            options.append(value)
+        if options:
+            product_filter["select-filter"][property_id] = "|".join(options)
+        else:
+            del product_filter["select-filter"][property_id]
     else:
-        product_filter[property_id] = (min, max)
+        product_filter["select-filter"][property_id] = value
+
+    if not product_filter.get("select-filter"):
+        del product_filter["select-filter"]
 
     request.session["product-filter"] = product_filter
 
@@ -197,8 +228,15 @@ def set_price_filter(request, category_slug):
     """Saves the given price filter to session. Redirects to the category with
     given slug.
     """
-    min_val = request.REQUEST.get("min", "0")
-    max_val = request.REQUEST.get("max", "99999")
+    try:
+        min_val = lfs.core.utils.atof(request.REQUEST.get("min", "0"))
+    except (ValueError):
+        min_val = 0
+
+    try:
+        max_val = lfs.core.utils.atof(request.REQUEST.get("max", "99999"))
+    except:
+        max_val = 0
 
     try:
         float(min_val)
@@ -269,6 +307,25 @@ def reset_manufacturer_filter(request, category_slug, manufacturer_id):
 def reset_all_manufacturer_filter(request, category_slug):
     if "manufacturer-filter" in request.session:
         del request.session["manufacturer-filter"]
+
+    url = reverse("lfs_category", kwargs={"slug": category_slug})
+    return HttpResponseRedirect(url)
+
+
+def reset_number_filter(request, category_slug, property_id):
+    """Resets product filter with given property id. Redirects to the category
+    with given slug.
+    """
+    try:
+        product_filter = request.session.get("product-filter")
+        del product_filter["number-filter"][property_id]
+    except KeyError:
+        pass
+    else:
+        if product_filter["number-filter"] == {}:
+            del product_filter["number-filter"]
+
+    request.session["product-filter"] = product_filter
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
@@ -399,12 +456,11 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     sorting = request.session.get("sorting", default_sorting)
 
     product_filter = request.session.get("product-filter", {})
-    product_filter = product_filter.items()
 
     cache_key = "%s-category-products-2-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
     sub_cache_key = "%s-2-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
 
-    filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter]
+    filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter.items()]
     if filter_key:
         sub_cache_key += "-%s" % "-".join(filter_key)
 
@@ -468,7 +524,7 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
             "slug": product.slug,
             "name": product.get_name(),
             "image": image,
-            "price_unit": product.price_unit,
+            "price_unit": product.get_price_unit(),
             "price_includes_tax": product.price_includes_tax(request),
         })
         if (i + 1) % amount_of_cols == 0:

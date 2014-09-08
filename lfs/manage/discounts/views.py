@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -9,7 +11,6 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -151,12 +152,12 @@ def save_discount_criteria(request, id):
 
     html = [["#criteria", discount_criteria(request, id)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _("Changes have been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -209,12 +210,12 @@ def assign_products(request, discount_id):
             discount.products.add(product)
 
     html = [["#products-inline", products_inline(request, discount_id, as_string=True)]]
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Products have been assigned.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -230,12 +231,12 @@ def remove_products(request, discount_id):
             discount.products.remove(product)
 
     html = [["#products-inline", products_inline(request, discount_id, as_string=True)]]
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Products have been removed.")
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -336,6 +337,6 @@ def products_inline(request, discount_id, as_string=False,
         return result
     else:
         return HttpResponse(
-            simplejson.dumps({
+            json.dumps({
                 "html": [["#products-inline", result]],
-            }), mimetype='application/json')
+            }), content_type='application/json')

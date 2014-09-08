@@ -1,14 +1,14 @@
 {% load i18n %}
 
 <h2>{% trans 'Data' %}</h2>
-<form action="{% url lfs_save_shop_data_tab %}"
+<form action="{% url 'lfs_save_shop_data_tab' %}"
       method="post">
     {% csrf_token %}
     <fieldset>
         <legend>{% trans "General" %}</legend>
         <div class="field">
             <div class="label">
-                {{ form.name.label_tag }}:
+                {{ form.name.label_tag }}
             </div>
 
             {% if form.name.errors %}
@@ -24,7 +24,7 @@
         </div>
         <div class="field">
             <div class="label">
-                {{ form.shop_owner.label_tag }}:
+                {{ form.shop_owner.label_tag }}
             </div>
 
             {% if form.shop_owner.errors %}
@@ -44,7 +44,7 @@
 
         <div class="field">
             <div class="label">
-                {{ form.from_email.label_tag }}:
+                {{ form.from_email.label_tag }}
             </div>
 
             {% if form.from_email.errors %}
@@ -61,7 +61,7 @@
 
         <div class="field">
             <div class="label">
-                {{ form.notification_emails.label_tag }}:
+                {{ form.notification_emails.label_tag }}
             </div>
 
             {% if form.notification_emails.errors %}
@@ -81,7 +81,7 @@
         <legend>{% trans "Google" %}</legend>
         <div class="field">
             <div class="label">
-                {{ form.google_analytics_id.label_tag }}:
+                {{ form.google_analytics_id.label_tag }}
             </div>
             {% if form.google_analytics_id.errors %}
                 <div class="error">
@@ -96,7 +96,7 @@
         </div>
         <div class="field">
             <div class="label">
-                {{ form.ga_site_tracking.label_tag }}:
+                {{ form.ga_site_tracking.label_tag }}
             </div>
             <div>
                 {{ form.ga_site_tracking }}
@@ -104,7 +104,7 @@
         </div>
         <div class="field">
             <div class="label">
-                {{ form.ga_ecommerce_tracking.label_tag }}:
+                {{ form.ga_ecommerce_tracking.label_tag }}
             </div>
             <div>
                 {{ form.ga_ecommerce_tracking }}
@@ -116,7 +116,7 @@
         <legend>{% trans "Checkout" %}</legend>
             <div class="field">
                 <div class="label">
-                    {{ form.checkout_type.label_tag }}:
+                    {{ form.checkout_type.label_tag }}
                 </div>
                 {% if form.checkout_type.errors %}
                     <div class="error">
@@ -131,7 +131,7 @@
             </div>
             <div class="field">
                 <div class="label">
-                    {{ form.confirm_toc.label_tag }}:
+                    {{ form.confirm_toc.label_tag }}
                 </div>
                 <div>
                     {{ form.confirm_toc }}
@@ -143,7 +143,7 @@
         <legend>{% trans "Content" %}</legend>
             <div class="field">
                 <div class="label">
-                    {{ form.description.label_tag }}:
+                    {{ form.description.label_tag }}
                 </div>
                 {% if form.description.errors %}
                     <div class="error">
@@ -158,7 +158,7 @@
             </div>
             <div class="field">
                 <div class="label">
-                    {{ form.image.label_tag }}:
+                    {{ form.image.label_tag }}
                 </div>
                 {% if form.image.errors %}
                     <div class="error">
@@ -173,7 +173,7 @@
             </div>
             <div class="field">
                 <div class="label">
-                    {{ form.static_block.label_tag }}:
+                    {{ form.static_block.label_tag }}
                 </div>
                 {% if form.static_block.errors %}
                     <div class="error">

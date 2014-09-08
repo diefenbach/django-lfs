@@ -17,13 +17,16 @@
                 <h2>{% trans 'Utilities' %}</h2>
                 <ul>
                     <li>
-                        <a href="{% url lfs_clear_cache %}">{% trans 'Clear Cache' %}</a>
+                        <a href="{% url 'lfs_clear_cache' %}">{% trans 'Clear Cache' %}</a>
                     </li>
                     <li>
-                        <a href="{% url lfs_set_category_levels %}">{% trans 'Set category levels' %}</a>
+                        <a href="{% url 'lfs_set_category_levels' %}">{% trans 'Set category levels' %}</a>
                     </li>
                     <li>
-                        <a href="{% url lfs_reindex_topseller %}">{% trans 'Reindex topseller' %}</a>
+                        <a href="{% url 'lfs_reindex_topseller' %}">{% trans 'Reindex topseller' %}</a>
+                    </li>
+                    <li>
+                         <a href="{% url 'lfs_update_effective_price' %}">{% trans 'Update effective prices' %}</a>
                     </li>
                 </ul>
             </div>

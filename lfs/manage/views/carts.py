@@ -1,6 +1,7 @@
 # python imports
 from datetime import datetime
 from datetime import timedelta
+import json
 
 # django imports
 from django.contrib.auth.decorators import permission_required
@@ -9,7 +10,6 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -179,14 +179,14 @@ def selectable_carts_inline(request, cart_id, template_name="manage/cart/selecta
 def set_carts_page(request):
     """Sets the page of the displayed carts.
     """
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": (
             ("#carts-inline", carts_inline(request)),
             ("#carts-filters-inline", carts_filters_inline(request)),
         ),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -195,7 +195,7 @@ def set_cart_page(request):
     """
     cart_id = request.GET.get("cart-id")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": (
             ("#cart-inline", cart_inline(request, cart_id)),
             ("#cart-filters-inline", cart_filters_inline(request, cart_id)),
@@ -203,7 +203,7 @@ def set_cart_page(request):
         ),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -241,12 +241,12 @@ def set_cart_filters(request):
 
     msg = _(u"Cart filters has been set.")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -277,12 +277,12 @@ def set_cart_filters_date(request):
 
     msg = _(u"Cart filters has been set")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -303,12 +303,12 @@ def reset_cart_filters(request):
 
     msg = _(u"Cart filters has been reset")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 # Private methods

@@ -4,9 +4,9 @@
     <div class="navigation-pages-inline">
         {% if page.has_previous %}
             <a class="ajax-link"
-               href="{% url lfs_manage_accessories_inline product.id%}?page=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
+               href="{% url 'lfs_manage_accessories_inline' product.id%}?page=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
             <a class="ajax-link"
-               href="{% url lfs_manage_accessories_inline product.id%}?page={{ page.previous_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
+               href="{% url 'lfs_manage_accessories_inline' product.id%}?page={{ page.previous_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
         {% else %}
             <img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' />
             <img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' />
@@ -18,9 +18,9 @@
 
         {% if page.has_next %}
             <a class="ajax-link"
-               href="{% url lfs_manage_accessories_inline product.id%}?page={{ page.next_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
+               href="{% url 'lfs_manage_accessories_inline' product.id%}?page={{ page.next_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
             <a class="ajax-link"
-               href="{% url lfs_manage_accessories_inline product.id%}?page={{ paginator.num_pages }}"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
+               href="{% url 'lfs_manage_accessories_inline' product.id%}?page={{ paginator.num_pages }}"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
 
         {% else %}
             <span><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></span>
@@ -33,7 +33,7 @@
             <td width="50%">
                 <h2>{% trans "Selectable Products" %}</h2>
                 <form id="add-accessories-form"
-                      action="{% url lfs_manage_add_accessories product.id %}"
+                      action="{% url 'lfs_manage_add_accessories' product.id %}"
                       method="post">
 
                     <div id="accessories-left" style="padding-bottom:10px">
@@ -62,7 +62,7 @@
                                                class="select-accessories" />
                                     </td>
                                     <td>
-                                        <a href="{% url lfs_manage_product product.id %}">
+                                        <a href="{% url 'lfs_manage_product' product.id %}">
                                             {{ product.get_name }}
                                         </a>
                                         <div class="product-properties-info">
@@ -96,7 +96,7 @@
             <td width="50%">
                 <h2>{% trans 'Selected Products' %}</h2>
                 <form id="accessories-update-form"
-                      action="{% url lfs_manage_remove_accessories product.id %}"
+                      action="{% url 'lfs_manage_remove_accessories' product.id %}"
                       method="post">
                     <div id="accessories-right" style="padding-bottom:10px">
                         <table class="lfs-manage-table">
@@ -131,7 +131,7 @@
                                                class="select-selected-accessories"/>
                                     </td>
                                     <td style="padding-right:5px">
-                                        <a href="{% url lfs_manage_product product_accessory.accessory.id %}">
+                                        <a href="{% url 'lfs_manage_product' product_accessory.accessory.id %}">
                                             {{ product_accessory.accessory.get_name }}
                                         </a>
                                         <div class="product-properties-info">

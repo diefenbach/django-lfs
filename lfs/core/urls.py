@@ -1,5 +1,5 @@
 # django imports
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, url, include
 
 # lfs imports
 from lfs.core.sitemap import CategorySitemap
@@ -29,7 +29,7 @@ urlpatterns += patterns('lfs.cart.views',
     url(r'^add-accessory-to-cart/(?P<product_id>\d*)/(?P<quantity>.*)$', "add_accessory_to_cart", name="lfs_add_accessory_to_cart"),
     url(r'^added-to-cart$', "added_to_cart", name="lfs_added_to_cart"),
     url(r'^delete-cart-item/(?P<cart_item_id>\d*)$', "delete_cart_item", name="lfs_delete_cart_item"),
-    url(r'^refresh-cart$', "refresh_cart"),
+    url(r'^refresh-cart$', "refresh_cart", name="lfs_refresh_cart"),
     url(r'^cart$', "cart", name="lfs_cart"),
     url(r'^check-voucher-cart/$', "check_voucher", name="lfs_check_voucher_cart"),
 )
@@ -40,11 +40,12 @@ urlpatterns += patterns('lfs.catalog.views',
     url(r'^product/(?P<slug>[-\w]*)$', "product_view", name="lfs_product"),
     url(r'^product-form-dispatcher', "product_form_dispatcher", name="lfs_product_dispatcher"),
     url(r'^set-sorting', "set_sorting", name="lfs_catalog_set_sorting"),
-    url(r'^set-product-filter/(?P<category_slug>[-\w]+)/(?P<property_id>\d+)/(?P<min>.+)/(?P<max>.+)', "set_filter", name="lfs_set_product_filter"),
+    url(r'^set-product-number-filter', "set_number_filter", name="lfs_set_product_number_filter"),
     url(r'^set-product-filter/(?P<category_slug>[-\w]+)/(?P<property_id>\d+)/(?P<value>.+)', "set_filter", name="lfs_set_product_filter"),
     url(r'^set-price-filter/(?P<category_slug>[-\w]+)/$', "set_price_filter", name="lfs_set_price_filter"),
     url(r'^set-manufacturer-filter/(?P<category_slug>[-\w]+)/(?P<manufacturer_id>\d+)/$', "set_manufacturer_filter", name="lfs_set_manufacturer_filter"),
     url(r'^reset-price-filter/(?P<category_slug>[-\w]+)/$', "reset_price_filter", name="lfs_reset_price_filter"),
+    url(r'^reset-number-filter/(?P<category_slug>[-\w]+)/(?P<property_id>\d+)', "reset_number_filter", name="lfs_reset_number_filter"),
     url(r'^reset-product-filter/(?P<category_slug>[-\w]+)/(?P<property_id>\d+)', "reset_filter", name="lfs_reset_product_filter"),
     url(r'^reset-manufacturer-filter/(?P<category_slug>[-\w]+)/(?P<manufacturer_id>\d+)', "reset_manufacturer_filter", name="lfs_reset_manufacturer_filter"),
     url(r'^reset-all-manufacturer-filter/(?P<category_slug>[-\w]+)', "reset_all_manufacturer_filter", name="lfs_reset_all_manufacturer_filter"),
@@ -96,9 +97,10 @@ urlpatterns += patterns('lfs.page.views',
 # Password reset
 urlpatterns += patterns('django.contrib.auth.views',
     url(r'^password-reset/$', "password_reset", name="lfs_password_reset"),
-    url(r'^password-reset-done/$', "password_reset_done"),
-    url(r'^password-reset-confirm/(?P<uidb36>[-\w]*)/(?P<token>[-\w]*)$', "password_reset_confirm"),
-    url(r'^password-reset-complete/$', "password_reset_complete"),
+    url(r'^password-reset-done/$', "password_reset_done", name="password_reset_done"),
+    url(r'^password-reset-confirm/(?P<uidb64>[-\w]*)/(?P<token>[-\w]*)$', "password_reset_confirm",
+        name="password_reset_confirm"),
+    url(r'^password-reset-complete/$', "password_reset_complete", name="password_reset_complete"),
 )
 
 # Search
@@ -107,14 +109,9 @@ urlpatterns += patterns('lfs.search.views',
     url(r'^livesearch', "livesearch", name="lfs_livesearch"),
 )
 
-# Tagging
-urlpatterns += patterns('',
-    (r'^tagging/', include('lfs.tagging.urls')),
-)
-
+# Contact
 urlpatterns += patterns('',
     (r'', include('lfs_contact.urls')),
 )
-
 
 one_time_setup()

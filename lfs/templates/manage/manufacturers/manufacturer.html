@@ -16,11 +16,11 @@
 {% block content %}
     <div class="site-actions">
         <a class="add"
-           href="{% url lfs_manufacturer_add_manufacturer %}?came_from={% url lfs_manage_manufacturer manufacturer_id %}">
+           href="{% url 'lfs_manufacturer_add_manufacturer' %}?came_from={% url 'lfs_manage_manufacturer' manufacturer_id %}">
            {% trans 'Add Manufacturer' %}</a>
         <a class="delete delete-link"
            dialog_message="{% trans 'Do you really want to delete this manufacturer?' %}"
-           href="{% url lfs_manufacturer_delete_manufacturer manufacturer_id %}">
+           href="{% url 'lfs_manufacturer_delete_manufacturer' manufacturer_id %}">
            {% trans 'Delete Manufacturer' %}</a>
         <a class="preview popup-link"
            href="{{ manufacturer.get_absolute_url }}">
@@ -36,7 +36,7 @@
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#view">{% trans 'View' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#seo">{% trans 'SEO' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="{% url lfs_manufacturer_load_products_tab manufacturer.pk %}">{% trans 'Products' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="{% url 'lfs_manufacturer_load_products_tab' manufacturer.pk %}">{% trans 'Products' %}</a></li>
             <li class="ui-tabs-nav-item"><a href="#products-tree">{% trans 'Products tree' %}</a></li>
         </ul>
         <div id="data">
@@ -54,16 +54,16 @@
 
                 {% for category in categories %}
                     <li class="category {{ category.klass }}"
-                        data="{% url lfs_manufacturer_category_state manufacturer_id category.id %}">
+                        data="{% url 'lfs_manufacturer_category_state' manufacturer_id category.id %}">
                         <input id="factory-category-input-{{ category.id }}"
                                class="export-category-input"
                                type="checkbox"
-                               data-url="{% url lfs_manufacturer_edit_category manufacturer_id category.id %}"
+                               data-url="{% url 'lfs_manufacturer_edit_category' manufacturer_id category.id %}"
                                {% if category.checked %}checked="checked"{% endif %} />
 
                         <a class="category-ajax-link collapsed"
                            id="{{ category.id }}"
-                           href="{% url lfs_manufacturer_inline manufacturer_id category.id %}">
+                           href="{% url 'lfs_manufacturer_inline' manufacturer_id category.id %}">
                             {{ category.name }}
                         </a>
                         <span class="category-state" id="category-state-{{ category.id }}">

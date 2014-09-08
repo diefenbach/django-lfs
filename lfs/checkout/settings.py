@@ -1,5 +1,4 @@
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
 
 CHECKOUT_TYPE_SELECT = 0
 CHECKOUT_TYPE_ANON = 1

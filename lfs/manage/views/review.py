@@ -1,18 +1,14 @@
 # python imports
-from datetime import datetime
-from datetime import timedelta
+import json
 
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
-from django.db.models import Q
 from django.http import HttpResponse
-from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -147,14 +143,14 @@ def selectable_reviews_inline(request, review_id, template_name="manage/reviews/
 def set_reviews_page(request):
     """Sets the page for the reviews overview view.
     """
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": (
             ("#reviews-inline", reviews_inline(request)),
             ("#reviews-filters-inline", reviews_filters_inline(request)),
         ),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -168,11 +164,11 @@ def set_selectable_reviews_page(request):
         ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -198,11 +194,11 @@ def set_ordering(request, ordering):
     else:
         html = (("#reviews-inline", reviews_inline(request)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -239,12 +235,12 @@ def set_review_filters(request):
 
     msg = _(u"Review filters have been set")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -269,12 +265,12 @@ def reset_review_filters(request):
 
     msg = _(u"Review filters have been reset")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -319,12 +315,12 @@ def set_review_state(request, review_id):
 
     msg = _(u"Review state has been set")
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": msg,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 # Private Methods

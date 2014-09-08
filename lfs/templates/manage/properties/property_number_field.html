@@ -2,7 +2,7 @@
 <h2 class="heading-middle">{% trans 'Validators' %}</h2>
 
 <form id="shop-property-step-type-form"
-      action="{% url lfs_save_number_field_validators property.id %}"
+      action="{% url 'lfs_save_number_field_validators' property.id %}"
       method="post">
 
       {% csrf_token %}

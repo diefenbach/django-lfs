@@ -1,5 +1,5 @@
 {% load i18n %}
-<form action="{% url lfs_edit_portlet portletassigment_id %}"
+<form action="{% url 'lfs_edit_portlet' portletassigment_id %}"
       method="post">
     <div class="field">
         <div class="label">
@@ -18,7 +18,9 @@
         </div>
     </div>
 
-    {% include "manage/lfs_form.html" %}
+    <div id="portlet-form-inline">
+        {% include "manage/lfs_form.html" %}
+    </div>
 
     <input class="ajax-save-button button"
            type="submit"

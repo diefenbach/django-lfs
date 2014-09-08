@@ -1,5 +1,5 @@
 # python imports
-import locale
+import json
 
 # django imports
 from django.conf import settings
@@ -11,7 +11,6 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext as _
 
 # lfs imports
@@ -382,6 +381,8 @@ def refresh_cart(request):
     amount of a product or shipping/payment method.
     """
     cart = cart_utils.get_cart(request)
+    if not cart:
+        raise Http404
     customer = customer_utils.get_or_create_customer(request)
 
     # Update country
@@ -449,12 +450,12 @@ def refresh_cart(request):
     # Last but not least we save the customer ...
     customer.save()
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": cart_inline(request),
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def check_voucher(request):
@@ -464,8 +465,8 @@ def check_voucher(request):
     voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
     lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": (("#cart-inline", cart_inline(request)),)
     })
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')

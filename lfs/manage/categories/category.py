@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -9,7 +11,6 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -40,15 +41,10 @@ class CategoryForm(ModelForm):
         super(CategoryForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
 
-        try:
-            context = kwargs["instance"]
-        except KeyError:
-            context = None
-
     class Meta:
         model = Category
-        fields = ("name", "slug", "short_description", "description", "short_description",
-        "exclude_from_navigation", "image", "static_block")
+        fields = ("name", "slug", "short_description", "description",
+                  "exclude_from_navigation", "image", "static_block")
 
 
 @permission_required("core.manage_shop")
@@ -136,12 +132,12 @@ def edit_category_data(request, category_id, template_name="manage/category/data
         ["#categories-portlet", manage_categories_portlet(request, category.id)],
     ]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "message": message,
         "html" : html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -219,11 +215,11 @@ def sort_categories(request):
 
     set_category_levels()
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "message": _(u"The categories have been sorted."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 # Privates

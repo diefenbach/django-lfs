@@ -3,7 +3,7 @@
 
 <div class="site-actions">
     <a class="overview"
-       href="{% url lfs_manage_customers %}">{% trans 'Overview' %}</a>
+       href="{% url 'lfs_manage_customers' %}">{% trans 'Overview' %}</a>
 </div>
 
 <table class="lfs-manage-table">
@@ -86,7 +86,7 @@
 		</tr>
 		{% for order in orders %}
 			<tr class="clickable"
-				onclick="window.location='{% url lfs_manage_order order.id %}'">
+				onclick="window.location='{% url 'lfs_manage_order' order.id %}'">
 				<td>
 					{{ order.id }}
 				</td>
@@ -127,7 +127,7 @@
 	        </th>
 		</tr>
 		<tr style="cursor:pointer"
-			onclick="window.location='{% url lfs_manage_cart cart.id %}'">
+			onclick="window.location='{% url 'lfs_manage_cart' cart.id %}'">
 			<td>
 				{{ cart.id }}
 			</td>

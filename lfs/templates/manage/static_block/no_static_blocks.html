@@ -14,7 +14,7 @@
         {% trans "There are no static blocks yet." %}
     </div>
     <div class="buttons">
-        <form action="{% url lfs_manage_add_static_block %}">
+        <form action="{% url 'lfs_manage_add_static_block' %}">
             <input type="submit"
                    class="button"
                    value="{% trans 'Add Static Block' %}" />

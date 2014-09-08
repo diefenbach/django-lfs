@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -9,7 +11,6 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -178,12 +179,12 @@ def payment_price_criteria(request, payment_price_id, as_string=False, template_
     else:
         html = [["#dialog", dialog]]
 
-        result = simplejson.dumps({
+        result = json.dumps({
             "html": html,
             "open-dialog": True,
         }, cls=LazyEncoder)
 
-        return HttpResponse(result, mimetype='application/json')
+        return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -220,12 +221,12 @@ def save_payment_method_criteria(request, payment_method_id):
 
     html = [["#criteria", payment_method_criteria(request, payment_method_id)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Changes have been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -241,12 +242,12 @@ def save_payment_price_criteria(request, payment_price_id):
         ["#prices", payment_method_prices(request, payment_price.payment_method.id)],
     ]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Changes have been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -267,12 +268,12 @@ def add_payment_price(request, payment_method_id):
 
     html = [["#prices", payment_method_prices(request, payment_method_id)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Price has been added"),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -315,12 +316,12 @@ def update_payment_prices(request, payment_method_id):
     _update_price_positions(payment_method)
     html = [["#prices", payment_method_prices(request, payment_method_id)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -348,12 +349,12 @@ def save_payment_method_data(request, payment_method_id):
         ["#payment-methods", payment_methods(request)],
     ]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -397,11 +398,11 @@ def sort_payment_methods(request):
             pm_obj.save()
             priority = priority + 10
 
-        result = simplejson.dumps({
+        result = json.dumps({
             "message": _(u"The payment methods have been sorted."),
         }, cls=LazyEncoder)
 
-        return HttpResponse(result, mimetype='application/json')
+        return HttpResponse(result, content_type='application/json')
 
 
 def _update_price_positions(payment_method):

@@ -2,6 +2,7 @@
 
 # python imports
 import locale
+import json
 
 # django imports
 from django.contrib.auth.models import User
@@ -9,7 +10,6 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
 from django.http import Http404
 from django.test import TestCase
-from django.utils import simplejson
 
 # lfs imports
 import lfs.cart.utils
@@ -487,7 +487,7 @@ class RefreshCartTestCase(TestCase):
         request.user = self.user
 
         # This results into a message to the customer
-        result = simplejson.loads(refresh_cart(request).content)
+        result = json.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "Sorry, but \'Product 1\' is only one time available.")
 
         # And the amount of the item is still 1.0
@@ -497,7 +497,7 @@ class RefreshCartTestCase(TestCase):
         self.p1.order_time = self.dt
         self.p1.save()
 
-        result = simplejson.loads(refresh_cart(request).content)
+        result = json.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
         self.assertEqual(cart.get_amount_of_items(), 2.0)
 
@@ -506,7 +506,7 @@ class RefreshCartTestCase(TestCase):
         self.p1.manage_stock_amount = False
         self.p1.save()
 
-        result = simplejson.loads(refresh_cart(request).content)
+        result = json.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
         self.assertEqual(cart.get_amount_of_items(), 2.0)
 
@@ -541,7 +541,7 @@ class RefreshCartTestCase(TestCase):
         request.user = self.user
 
         # Refresh to amount of two is possible
-        result = simplejson.loads(refresh_cart(request).content)
+        result = json.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
         self.assertEqual(cart.get_amount_of_items(), 2.0)
 
@@ -551,7 +551,7 @@ class RefreshCartTestCase(TestCase):
         request.session = self.session
         request.user = self.user
 
-        result = simplejson.loads(refresh_cart(request).content)
+        result = json.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "Sorry, but \'Product 1\' is only 2.0 times available.")
 
         # And the amount of the item is still 2.0
@@ -561,7 +561,7 @@ class RefreshCartTestCase(TestCase):
         self.p1.order_time = self.dt
         self.p1.save()
 
-        result = simplejson.loads(refresh_cart(request).content)
+        result = json.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
         self.assertEqual(cart.get_amount_of_items(), 3.0)
 
@@ -570,7 +570,7 @@ class RefreshCartTestCase(TestCase):
         self.p1.manage_stock_amount = False
         self.p1.save()
 
-        result = simplejson.loads(refresh_cart(request).content)
+        result = json.loads(refresh_cart(request).content)
         self.assertEqual(result.get("message"), "")
         self.assertEqual(cart.get_amount_of_items(), 3.0)
 
@@ -612,7 +612,7 @@ class RefreshCartTestCase(TestCase):
         request.user = self.user
 
         # Refresh to amount of two is not possible
-        result = simplejson.loads(refresh_cart(request).content)
+        result = json.loads(refresh_cart(request).content)
         self.assertEqual(cart.get_amount_of_items(), 0.0)
         self.assertTrue('Your Cart is empty' in result.get("html"))
 

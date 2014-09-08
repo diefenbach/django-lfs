@@ -1,3 +1,5 @@
+import json
+
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -6,7 +8,6 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from django.utils import simplejson
 
 # lfs.imports
 import lfs.core.utils
@@ -34,12 +35,12 @@ def manage_images(request, product_id, as_string=False, template_name="manage/pr
     if as_string:
         return result
     else:
-        result = simplejson.dumps({
+        result = json.dumps({
             "images": result,
             "message": _(u"Images has been added."),
         }, cls=LazyEncoder)
 
-        return HttpResponse(result, mimetype='application/json')
+        return HttpResponse(result, content_type='application/json')
 
 
 # Actions
@@ -64,8 +65,8 @@ def add_image(request, product_id):
 
     product_changed.send(product, request=request)
 
-    result = simplejson.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
-    return HttpResponse(result, mimetype='application/json')
+    result = json.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -116,12 +117,12 @@ def update_images(request, product_id):
     product_changed.send(product, request=request)
 
     html = [["#images", manage_images(request, product_id, as_string=True)]]
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -166,11 +167,11 @@ def move_image(request, id):
 
     html = [["#images", manage_images(request, product.id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
          "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")

@@ -1,5 +1,7 @@
-# django imports
+import json
 from copy import deepcopy
+
+# django imports
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
@@ -12,7 +14,6 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
-from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -166,7 +167,7 @@ def manage_variants(request, product_id, as_string=False, variant_simple_form=No
     """
     product = Product.objects.get(pk=product_id)
 
-    all_properties = product.get_property_select_fields()
+    all_properties = product.get_variants_properties()
 
     property_form = PropertyForm()
     property_option_form = PropertyOptionForm()
@@ -186,7 +187,7 @@ def manage_variants(request, product_id, as_string=False, variant_simple_form=No
     if variants is None:
         variants = []
 
-        props = product.get_property_select_fields()
+        props = product.get_variants_properties()
         props_options = {}
         for o in PropertyOption.objects.filter(property__in=props):
             props_options.setdefault(o.property_id, {})
@@ -299,12 +300,12 @@ def add_property(request, product_id):
 
     html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Property has been added."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -324,13 +325,13 @@ def delete_property(request, product_id, property_id):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Property has been deleted."),
         "close-dialog": True,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -359,11 +360,11 @@ def change_property_position(request):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -391,6 +392,9 @@ def add_property_option(request, product_id):
         for i, option in enumerate(PropertyOption.objects.filter(property=property_id)):
             option.position = i
             option.save()
+        message = _(u'Option has been added.')
+    else:
+        message = _(u'Invalid data. Correct it and try again.')
 
     product = Product.objects.get(pk=product_id)
     product_changed.send(product)
@@ -399,12 +403,12 @@ def add_property_option(request, product_id):
 
     html = [["#variants", manage_variants(request, product_id, as_string=True)]]
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
-        "message": _(u"Option has been added."),
+        "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -424,13 +428,13 @@ def delete_property_option(request, product_id, option_id):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Property has been deleted."),
         "close-dialog": True,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -441,7 +445,7 @@ def add_variants(request, product_id):
     cache.delete("%s-variants%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product_id))
 
     product = Product.objects.get(pk=product_id)
-    all_properties = product.get_property_select_fields()
+    all_properties = product.get_variants_properties()
 
     variant_simple_form = ProductVariantSimpleForm(all_properties=all_properties, data=request.POST)
 
@@ -517,12 +521,12 @@ def add_variants(request, product_id):
         ("#variants", manage_variants(request, product_id, as_string=True, variant_simple_form=variant_simple_form)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -672,12 +676,12 @@ def update_variants(request, product_id):
         ("#selectable-products-inline", _selectable_products_inline(request, product)),
     )
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": message,
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -696,12 +700,12 @@ def edit_sub_type(request, product_id):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Sub type has been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -720,12 +724,12 @@ def update_category_variant(request, product_id):
 
     html = (("#variants", manage_variants(request, product_id, as_string=True)),)
 
-    result = simplejson.dumps({
+    result = json.dumps({
         "html": html,
         "message": _(u"Category variant has been saved."),
     }, cls=LazyEncoder)
 
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def _refresh_property_positions(product_id):
