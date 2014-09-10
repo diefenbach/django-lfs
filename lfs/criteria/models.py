@@ -764,15 +764,15 @@ class WidthCriterion(Criterion):
         else:
             max_width = 0
 
-        if self.operator == self.LESS_THAN and (max_width < self.width):
+        if self.operator == self.LESS_THAN and (max_width < self.value):
             return True
-        if self.operator == self.LESS_THAN_EQUAL and (max_width <= self.width):
+        if self.operator == self.LESS_THAN_EQUAL and (max_width <= self.value):
             return True
-        if self.operator == self.GREATER_THAN and (max_width > self.width):
+        if self.operator == self.GREATER_THAN and (max_width > self.value):
             return True
-        if self.operator == self.GREATER_THAN_EQUAL and (max_width >= self.width):
+        if self.operator == self.GREATER_THAN_EQUAL and (max_width >= self.value):
             return True
-        if self.operator == self.EQUAL and (max_width == self.width):
+        if self.operator == self.EQUAL and (max_width == self.value):
             return True
 
         return False
