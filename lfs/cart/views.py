@@ -80,6 +80,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     discounts = lfs.discounts.utils.get_valid_discounts(request)
     for discount in discounts:
         cart_price = cart_price - discount["price_gross"]
+        cart_tax = cart_tax - discount["tax"]
 
     # Voucher
     voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
