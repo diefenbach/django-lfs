@@ -178,6 +178,9 @@ $(function() {
         $.post(url, function(data) {
             $("#cart-items").html(data);
         });
+        $body.trigger({
+              type:"cart-updated"
+            });
         return false;
     });
 
