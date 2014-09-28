@@ -23,7 +23,7 @@ import lfs.discounts.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.signals import cart_changed
 from lfs.core import utils as core_utils
-from lfs.catalog.models import Product
+from lfs.catalog.models import Product, PropertyGroup
 from lfs.catalog.models import Property
 from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
@@ -176,6 +176,7 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
         total += cart_item.get_price_gross(request)
         product = cart_item.product
         quantity = product.get_clean_quantity(cart_item.amount)
+
         cart_items.append({
             "product": product,
             "obj": cart_item,
@@ -250,13 +251,21 @@ def add_to_cart(request, product_id=None):
         for key, value in request.POST.items():
             if key.startswith("property-"):
                 try:
-                    property_id = key.split("-")[1]
+                    property_group_id, property_id = key.split("-")[1:]
                 except IndexError:
                     continue
+
                 try:
                     prop = Property.objects.get(pk=property_id)
                 except Property.DoesNotExist:
                     continue
+
+                property_group = None
+                if property_group_id != '0':
+                    try:
+                        property_group = PropertyGroup.objects.get(pk=property_group_id)
+                    except PropertyGroup.DoesNotExist:
+                        continue
 
                 if prop.is_number_field:
                     try:
@@ -264,7 +273,10 @@ def add_to_cart(request, product_id=None):
                     except ValueError:
                         value = 0.0
 
-                properties_dict[property_id] = unicode(value)
+                key = '{0}_{1}'.format(property_group_id, property_id)
+                properties_dict[key] = {'value': unicode(value),
+                                        'property_group_id': property_group_id,
+                                        'property_id': property_id}
 
                 # validate property's value
                 if prop.is_number_field:

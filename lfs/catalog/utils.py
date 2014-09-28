@@ -253,6 +253,7 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
         "number_fields": number_fields,
     }
 
+
 def _get_property_ids():
     property_ids = lfs.catalog.models.ProductPropertyValue.objects.distinct().values_list('property_id', flat=True)
     return ", ".join(map(str, property_ids))

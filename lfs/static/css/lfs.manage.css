@@ -910,3 +910,24 @@ div.product-properties-info div{
     margin-bottom: 3px;
     margin-top: 3px;
 }
+
+
+span.property-group-label {
+    display: block;
+    font-weight: normal;
+    font-size: 0.8em;
+}
+
+.manage-product div.property-group-label {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.manage-product div.property-group-properties {
+    margin-bottom: 10px;
+}
+
+.manage-product div.property-group-properties.ingroup {
+    padding-left: 10px;
+}

@@ -629,16 +629,19 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
             display_variants_list = False
 
     elif product.is_configurable_product():
-        for property in product.get_configurable_properties():
+        for property_dict in product.get_configurable_properties():
+            property_group = property_dict['property_group']
+            prop = property_dict['property']
             options = []
             try:
-                ppv = ProductPropertyValue.objects.get(product=product, property=property, type=PROPERTY_VALUE_TYPE_DEFAULT)
+                ppv = ProductPropertyValue.objects.get(product=product, property_group=property_group,
+                                                       property=prop, type=PROPERTY_VALUE_TYPE_DEFAULT)
                 ppv_value = ppv.value
             except ProductPropertyValue.DoesNotExist:
                 ppv = None
                 ppv_value = ""
 
-            for property_option in property.options.all():
+            for property_option in prop.options.all():
                 if ppv_value == str(property_option.id):
                     selected = True
                 else:
@@ -651,14 +654,16 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
                     "selected": selected,
                 })
             properties.append({
-                "obj": property,
-                "id": property.id,
-                "name": property.name,
-                "title": property.title,
-                "unit": property.unit,
-                "display_price": property.display_price,
+                "obj": prop,
+                "id": prop.id,
+                "name": prop.name,
+                "title": prop.title,
+                "unit": prop.unit,
+                "display_price": prop.display_price,
                 "options": options,
                 "value": ppv_value,
+                "property_group": property_group,
+                "property_group_id": property_group.id if property_group else 0
             })
 
     if product.get_template_name() is not None:
@@ -728,11 +733,11 @@ def _calculate_property_price(request):
     for key, option_id in request.POST.items():
         if key.startswith("property"):
             try:
-                property_id = int(key.split('-')[1])
-                property = Property.objects.get(pk=property_id)
-                if property.is_select_field:
+                property_group_id, property_id = map(int, key.split('-')[1:])
+                prop = Property.objects.get(pk=property_id)
+                if prop.is_select_field:
                     po = PropertyOption.objects.get(property=property, pk=option_id)
-                    if property.add_price:
+                    if prop.add_price:
                         po_price = float(po.price)
                         property_price += po_price
             except (IndexError, ValueError, TypeError, PropertyOption.DoesNotExist, Property.DoesNotExist):

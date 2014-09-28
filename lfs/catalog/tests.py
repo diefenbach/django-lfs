@@ -132,27 +132,39 @@ class PropertiesTestCase(TestCase):
         self.pg.save()
 
         self.pp1 = Property.objects.create(name="Size", type=PROPERTY_TEXT_FIELD)
-        self.ppv11 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp1, value="S", type=PROPERTY_VALUE_TYPE_FILTER)
-        self.ppv12 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp1, value="M", type=PROPERTY_VALUE_TYPE_FILTER)
-        self.ppv13 = ProductPropertyValue.objects.create(product=self.p3, property=self.pp1, value="S", type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv11 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp1, property_group=self.pg, value="S", type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv12 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp1, property_group=self.pg, value="M", type=PROPERTY_VALUE_TYPE_FILTER)
+
+        # local property for product 3
+        self.pp3_local = Property.objects.create(name="Size", type=PROPERTY_TEXT_FIELD, local=True, filterable=False)
+        self.pp3_local_option = PropertyOption.objects.create(id="3", name='S', property=self.pp3_local, position=1)
+        self.ppvlocal3 = ProductPropertyValue.objects.create(product=self.p3,
+                                                             property=self.pp3_local,
+                                                             property_group=None,
+                                                             value="S", type=PROPERTY_SELECT_FIELD)
+        product_property = ProductsPropertiesRelation(product=self.p3, property=self.pp3_local, position=1)
+        product_property.save()
 
         # A property with options
         self.pp2 = Property.objects.create(name="Color", type=PROPERTY_SELECT_FIELD)
         self.po1 = PropertyOption.objects.create(id="1", property=self.pp2, name="Red", position=1)
         self.po2 = PropertyOption.objects.create(id="2", property=self.pp2, name="Blue", position=2)
-        self.ppv21 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp2, value="1", type=PROPERTY_VALUE_TYPE_FILTER)
-        self.ppv22 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp2, value="2", type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv21 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp2, property_group=self.pg, value="1", type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv22 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp2, property_group=self.pg, value="2", type=PROPERTY_VALUE_TYPE_FILTER)
 
         # A property with floats
         self.pp3 = Property.objects.create(name="Length", type=PROPERTY_NUMBER_FIELD)
-        self.ppv31 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp3, value=10.0, type=PROPERTY_VALUE_TYPE_FILTER)
-        self.ppv32 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp3, value=20.0, type=PROPERTY_VALUE_TYPE_FILTER)
-        self.ppv32 = ProductPropertyValue.objects.create(product=self.p3, property=self.pp3, value=30.0, type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv31 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp3, property_group=self.pg, value=10.0, type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv32 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp3, property_group=self.pg, value=20.0, type=PROPERTY_VALUE_TYPE_FILTER)
+
+        # there is no way to have ProductPropertyValue for the product if product is not bound to any group that property belongs to
+        # unless it is a local property that has no property groups
+        #self.ppv32 = ProductPropertyValue.objects.create(product=self.p3, property=self.pp3, property_group=self.pg, value=30.0, type=PROPERTY_VALUE_TYPE_FILTER)
 
         # Assign groups and properties
         self.gpr1 = GroupsPropertiesRelation.objects.create(group=self.pg, property=self.pp1)
         self.gpr2 = GroupsPropertiesRelation.objects.create(group=self.pg, property=self.pp2)
-        self.gpr3 = GroupsPropertiesRelation.objects.create(group=self.pg, property=self.pp3)
+        #self.gpr3 = GroupsPropertiesRelation.objects.create(group=self.pg, property=self.pp3)
 
     def test_add_product_to_property_group(self):
         """Tests that a product can be added to a property group only one time.
@@ -183,18 +195,21 @@ class PropertiesTestCase(TestCase):
         GroupsPropertiesRelation.objects.create(group=self.pg2, property=self.pp3)
 
         # And some values
-        ProductPropertyValue.objects.create(product=self.p1, property=self.pp3, value="31", type=PROPERTY_VALUE_TYPE_FILTER)
-        ProductPropertyValue.objects.create(product=self.p2, property=self.pp3, value="32", type=PROPERTY_VALUE_TYPE_FILTER)
-        ProductPropertyValue.objects.create(product=self.p3, property=self.pp3, value="33", type=PROPERTY_VALUE_TYPE_FILTER)
+        ProductPropertyValue.objects.create(product=self.p1, property=self.pp3, property_group=self.pg2,
+                                            value="31", type=PROPERTY_VALUE_TYPE_FILTER)
+        ProductPropertyValue.objects.create(product=self.p2, property=self.pp3, property_group=self.pg2,
+                                            value="32", type=PROPERTY_VALUE_TYPE_FILTER)
+        ProductPropertyValue.objects.create(product=self.p3, property=self.pp3, property_group=self.pg2,
+                                            value="33", type=PROPERTY_VALUE_TYPE_FILTER)
 
-        ppvs = ProductPropertyValue.objects.filter(product=self.p1)
-        self.assertEqual(len(ppvs), 4)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p1, property_group=self.pg2)
+        self.assertEqual(len(ppvs), 1)
 
-        ppvs = ProductPropertyValue.objects.filter(product=self.p2)
-        self.assertEqual(len(ppvs), 4)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p2, property_group=self.pg2)
+        self.assertEqual(len(ppvs), 1)
 
-        ppvs = ProductPropertyValue.objects.filter(product=self.p3)
-        self.assertEqual(len(ppvs), 3)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p3, property_group=self.pg2)
+        self.assertEqual(len(ppvs), 1)
 
         # Now we remove product 1 from group 1
         self.pg.products.remove(self.p1)
@@ -202,57 +217,57 @@ class PropertiesTestCase(TestCase):
 
         # All values for the properties of the group and the product are deleted,
         # but the values for the other group are still there
-        ppvs = ProductPropertyValue.objects.filter(product=self.p1)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p1, property_group=self.pg2)
         self.assertEqual(len(ppvs), 1)
         self.assertEqual(ppvs[0].property.id, self.pp3.id)
 
         # The values for the other products are still there
-        ppvs = ProductPropertyValue.objects.filter(product=self.p2)
-        self.assertEqual(len(ppvs), 4)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p2, property_group=self.pg2)
+        self.assertEqual(len(ppvs), 1)
 
-        ppvs = ProductPropertyValue.objects.filter(product=self.p3)
-        self.assertEqual(len(ppvs), 3)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p3, property_group=self.pg2)
+        self.assertEqual(len(ppvs), 1)
 
         # Now we remove product 1 also from group 2
         self.pg2.products.remove(self.p1)
         product_removed_property_group.send(sender=self.pg2, product=self.p1)
 
         # All values for the properties of the group and the product are deleted
-        ppvs = ProductPropertyValue.objects.filter(product=self.p1)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p1, property_group=self.pg2)
         self.assertEqual(len(ppvs), 0)
 
         # The values for the other products are still there
-        ppvs = ProductPropertyValue.objects.filter(product=self.p2)
-        self.assertEqual(len(ppvs), 4)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p2, property_group=self.pg2)
+        self.assertEqual(len(ppvs), 1)
 
-        ppvs = ProductPropertyValue.objects.filter(product=self.p3)
-        self.assertEqual(len(ppvs), 3)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p3, property_group=self.pg2)
+        self.assertEqual(len(ppvs), 1)
 
     def test_delete_property_group(self):
         """Tests the deletion of a whole propery group.
         """
-        ppvs = ProductPropertyValue.objects.filter(product=self.p1)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p1, property_group=self.pg)
         self.assertEqual(len(ppvs), 3)
 
-        ppvs = ProductPropertyValue.objects.filter(product=self.p2)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p2, property_group=self.pg)
         self.assertEqual(len(ppvs), 3)
 
-        ppvs = ProductPropertyValue.objects.filter(product=self.p3)
-        self.assertEqual(len(ppvs), 2)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p3, property_group=None)
+        self.assertEqual(len(ppvs), 1)
 
         self.pg.delete()
 
         # After deletion there are no ProductPropertyValues anymore.
-        ppvs = ProductPropertyValue.objects.filter(product=self.p1)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p1, property_group=self.pg)
         self.assertEqual(len(ppvs), 0)
 
-        ppvs = ProductPropertyValue.objects.filter(product=self.p2)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p2, property_group=self.pg)
         self.assertEqual(len(ppvs), 0)
 
         # As product 3 is not within the group the value for that product still
         # exists.
-        ppvs = ProductPropertyValue.objects.filter(product=self.p3)
-        self.assertEqual(len(ppvs), 2)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p3, property_group=None)
+        self.assertEqual(len(ppvs), 1)
 
     def test_delete_property_option(self):
         """Tests the deletion of a property option.
@@ -260,10 +275,10 @@ class PropertiesTestCase(TestCase):
         NOTE: This has to be done explicitely. See listener.py for more.
         """
         # At the beginning product 1 and 2 have values for property pp2
-        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2, property_group=self.pg)
         self.assertEqual(pv.value, "1")
 
-        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2, property_group=self.pg)
         self.assertEqual(pv.value, "2")
 
         # if we delete an option of pp2 ...
@@ -272,50 +287,47 @@ class PropertiesTestCase(TestCase):
         # All ProductPropertyValues which have selected this option should also
         # be deleted, in this case product p1 and property pp2
         self.assertRaises(ProductPropertyValue.DoesNotExist,
-            ProductPropertyValue.objects.get, product=self.p1, property=self.pp2)
+                          ProductPropertyValue.objects.get, product=self.p1, property=self.pp2, property_group=self.pg)
 
         # But all ProductPropertyValues with other options of the property
         # should still be there
-        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2, property_group=self.pg)
         self.assertEqual(pv, self.ppv22)
 
         # And all ProductPropertyValue of other properties should also still be
         # there
-        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp1)
+        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp1, property_group=self.pg)
         self.assertEqual(pv.value, "S")
 
-        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp1)
+        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp1, property_group=self.pg)
         self.assertEqual(pv.value, "M")
 
-        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2, property_group=self.pg)
         self.assertEqual(pv.value, "2")
 
-        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp1)
+        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp3_local, property_group=None)
         self.assertEqual(pv.value, "S")
 
         # At last we also delete the other option
         self.po2.delete()
         self.assertRaises(ProductPropertyValue.DoesNotExist,
-            ProductPropertyValue.objects.get, product=self.p2, property=self.pp2)
+                          ProductPropertyValue.objects.get, product=self.p2, property=self.pp2, property_group=self.pg)
 
     def test_change_property_type(self):
         """Tests the type changing of a property.
         """
-        # At the beginning product 1,2,3 have values for property pp1 ...
-        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp1)
+        # At the beginning product 1,2 have values for property pp1 ...
+        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp1, property_group=self.pg)
         self.assertEqual(pv.value, "S")
 
-        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp1)
+        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp1, property_group=self.pg)
         self.assertEqual(pv.value, "M")
 
-        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp1)
-        self.assertEqual(pv.value, "S")
-
         # And product 1, 2 have also values for property pp2
-        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2, property_group=self.pg)
         self.assertEqual(pv.value, "1")
 
-        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2, property_group=self.pg)
         self.assertEqual(pv.value, "2")
 
         # Send property changed
@@ -323,45 +335,46 @@ class PropertiesTestCase(TestCase):
 
         # The values for the products should also be deleted
         self.assertRaises(ProductPropertyValue.DoesNotExist,
-            ProductPropertyValue.objects.get, product=self.p1, property=self.pp1)
+            ProductPropertyValue.objects.get, product=self.p1, property=self.pp1, property_group=self.pg)
         self.assertRaises(ProductPropertyValue.DoesNotExist,
-            ProductPropertyValue.objects.get, product=self.p2, property=self.pp1)
-        self.assertRaises(ProductPropertyValue.DoesNotExist,
-            ProductPropertyValue.objects.get, product=self.p3, property=self.pp1)
+            ProductPropertyValue.objects.get, product=self.p2, property=self.pp1, property_group=self.pg)
 
         # But all other values for this product should still be there of course
-        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2, property_group=self.pg)
         self.assertEqual(pv.value, "1")
 
-        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2, property_group=self.pg)
         self.assertEqual(pv.value, "2")
+
+        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp3_local, property_group=None)
+        self.assertEqual(pv.value, "S")
 
         # Send property changed
         property_type_changed.send(self.pp2)
 
         self.assertRaises(ProductPropertyValue.DoesNotExist,
-            ProductPropertyValue.objects.get, product=self.p1, property=self.pp2)
+            ProductPropertyValue.objects.get, product=self.p1, property=self.pp2, property_group=self.pg)
         self.assertRaises(ProductPropertyValue.DoesNotExist,
-            ProductPropertyValue.objects.get, product=self.p2, property=self.pp2)
+            ProductPropertyValue.objects.get, product=self.p2, property=self.pp2, property_group=self.pg)
 
     def test_remove_property(self):
         """Tests the remove of a property from a group.
         """
         # At the beginning product 1,2,3 have values for property pp1 ...
-        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp1)
+        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp1, property_group=self.pg)
         self.assertEqual(pv.value, "S")
 
-        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp1)
+        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp1, property_group=self.pg)
         self.assertEqual(pv.value, "M")
 
-        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp1)
+        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp3_local, property_group=None)
         self.assertEqual(pv.value, "S")
 
         # And product 1, 2 have also values for property pp2
-        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2, property_group=self.pg)
         self.assertEqual(pv.value, "1")
 
-        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2, property_group=self.pg)
         self.assertEqual(pv.value, "2")
 
         # Remove property 1 from property group
@@ -369,13 +382,12 @@ class PropertiesTestCase(TestCase):
 
         # The values for the products 1 and 2 should be deleted
         self.assertRaises(ProductPropertyValue.DoesNotExist,
-            ProductPropertyValue.objects.get, product=self.p1, property=self.pp1)
+            ProductPropertyValue.objects.get, product=self.p1, property=self.pp1, property_group=self.pg)
         self.assertRaises(ProductPropertyValue.DoesNotExist,
-            ProductPropertyValue.objects.get, product=self.p2, property=self.pp1)
+            ProductPropertyValue.objects.get, product=self.p2, property=self.pp1, property_group=self.pg)
 
-        # The value for product 3 is still there as this has not the property
-        # group
-        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp1)
+        # The value for product 3 is still there as this is local property
+        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp3_local, property_group=None)
         self.assertEqual(pv.value, "S")
 
         # But all other values for this product should still be there of course
@@ -394,9 +406,8 @@ class PropertiesTestCase(TestCase):
         self.assertRaises(ProductPropertyValue.DoesNotExist,
             ProductPropertyValue.objects.get, product=self.p2, property=self.pp2)
 
-        # The value for product 3 is still there as this has not the property
-        # group
-        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp1)
+        # The value for product 3 is still there as this is local property
+        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp3_local, property_group=None)
         self.assertEqual(pv.value, "S")
 
     def test_delete_property(self):
@@ -405,15 +416,12 @@ class PropertiesTestCase(TestCase):
         NOTE: This happens via Django's integrity checks, see listener.py for
         more.
         """
-        # At the beginning product 1,2,3 have values for property pp1 ...
+        # At the beginning product 1,2 have values for property pp1 ...
         pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp1)
         self.assertEqual(pv.value, "S")
 
         pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp1)
         self.assertEqual(pv.value, "M")
-
-        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp1)
-        self.assertEqual(pv.value, "S")
 
         # And product 1, 2 have also values for property pp2
         pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2)
@@ -430,8 +438,6 @@ class PropertiesTestCase(TestCase):
             ProductPropertyValue.objects.get, product=self.p1, property=self.pp1)
         self.assertRaises(ProductPropertyValue.DoesNotExist,
             ProductPropertyValue.objects.get, product=self.p2, property=self.pp1)
-        self.assertRaises(ProductPropertyValue.DoesNotExist,
-            ProductPropertyValue.objects.get, product=self.p3, property=self.pp1)
 
         # But all other values for this product should still be there of course
         pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2)
@@ -439,6 +445,9 @@ class PropertiesTestCase(TestCase):
 
         pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2)
         self.assertEqual(pv.value, "2")
+
+        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp3_local)
+        self.assertEqual(pv.value, "S")
 
         # At least we delete the other property, too.
         self.pp2.delete()
@@ -452,7 +461,7 @@ class PropertiesTestCase(TestCase):
         """
         # Properties of groups
         property_ids = [p.id for p in self.pg.properties.order_by("groupspropertiesrelation")]
-        self.assertEqual(property_ids, [self.pp1.id, self.pp2.id, self.pp3.id])
+        self.assertEqual(property_ids, [self.pp1.id, self.pp2.id])
 
         # Groups of property 1
         group_ids = [p.id for p in self.pp1.groups.all()]
@@ -2184,29 +2193,29 @@ class ProductTestCase(TestCase):
         """
         """
         # Variant 1 has color/red and size/m
-        result = self.v1.has_option(self.color, self.red)
+        result = self.v1.has_option(None, self.color, self.red)
         self.assertEqual(result, True)
 
-        result = self.v1.has_option(self.size, self.m)
+        result = self.v1.has_option(None, self.size, self.m)
         self.assertEqual(result, True)
 
-        result = self.v1.has_option(self.color, self.green)
+        result = self.v1.has_option(None, self.color, self.green)
         self.assertEqual(result, False)
 
-        result = self.v1.has_option(self.size, self.l)
+        result = self.v1.has_option(None, self.size, self.l)
         self.assertEqual(result, False)
 
         # Variant 2 has color/green and size/l
-        result = self.v2.has_option(self.color, self.green)
+        result = self.v2.has_option(None, self.color, self.green)
         self.assertEqual(result, True)
 
-        result = self.v2.has_option(self.size, self.l)
+        result = self.v2.has_option(None, self.size, self.l)
         self.assertEqual(result, True)
 
-        result = self.v2.has_option(self.color, self.red)
+        result = self.v2.has_option(None, self.color, self.red)
         self.assertEqual(result, False)
 
-        result = self.v2.has_option(self.size, self.m)
+        result = self.v2.has_option(None, self.size, self.m)
         self.assertEqual(result, False)
 
     def test_get_price(self):
@@ -2581,8 +2590,8 @@ class ProductTestCase(TestCase):
         """
         # Try the first variant (v1 - m, red)
         options = [
-            "%s|%s" % (self.size.id, self.m.id),
-            "%s|%s" % (self.color.id, self.red.id),
+            "0|%s|%s" % (self.size.id, self.m.id),
+            "0|%s|%s" % (self.color.id, self.red.id),
         ]
 
         result = self.p1.has_variant(options)
@@ -2593,8 +2602,8 @@ class ProductTestCase(TestCase):
 
         # The order of passed options doesn't matter.
         options = [
-            "%s|%s" % (self.color.id, self.red.id),
-            "%s|%s" % (self.size.id, self.m.id),
+            "0|%s|%s" % (self.color.id, self.red.id),
+            "0|%s|%s" % (self.size.id, self.m.id),
         ]
 
         result = self.p1.has_variant(options)
@@ -2605,8 +2614,8 @@ class ProductTestCase(TestCase):
 
         # Let's try the other variant (v2 - l, green)
         options = [
-            "%s|%s" % (self.size.id, self.l.id),
-            "%s|%s" % (self.color.id, self.green.id),
+            "0|%s|%s" % (self.size.id, self.l.id),
+            "0|%s|%s" % (self.color.id, self.green.id),
         ]
 
         result = self.p1.has_variant(options)
@@ -2617,8 +2626,8 @@ class ProductTestCase(TestCase):
 
         # The order of passed options doesn't matter.
         options = [
-            "%s|%s" % (self.color.id, self.green.id),
-            "%s|%s" % (self.size.id, self.l.id),
+            "0|%s|%s" % (self.color.id, self.green.id),
+            "0|%s|%s" % (self.size.id, self.l.id),
         ]
 
         result = self.p1.has_variant(options)
@@ -2629,8 +2638,8 @@ class ProductTestCase(TestCase):
 
         # Try to get a variant which doesn't exist
         options = [
-            "%s|%s" % (self.color.id, self.green.id),
-            "%s|%s" % (self.size.id, "xl"),
+            "0|%s|%s" % (self.color.id, self.green.id),
+            "0|%s|%s" % (self.size.id, "xl"),
         ]
 
         result = self.p1.has_variant(options)
@@ -2752,7 +2761,7 @@ class ProductTestCase(TestCase):
             'slug': 'variant-slug',
             'name': 'variant',
             'price': 10.00,
-            'property_%s' % self.size.id: self.m.id,
+            'property_0_%s' % self.size.id: self.m.id,
         }
 
         # set up a user with permission to access the manage interface

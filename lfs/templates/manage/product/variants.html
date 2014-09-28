@@ -107,7 +107,7 @@
             <tr>
                 {% for field in variant_simple_form %}
                     <th>
-                        {{ field.label }}
+                        {{ field.label|safe }}
                     </th>
                 {% endfor %}
                 <th></th>
@@ -130,41 +130,43 @@
               action="{% url 'lfs_manage_update_variants' product.id %}"
               method="post">
             <table>
-                <th>
-                    <input type="checkbox" class="select-all" value="delete" />
-                </th>
-                <th>
-                    {% trans 'Pos.' %}
-                </th>
-                <th>
-                    <input type="checkbox" class="select-all" value="active" />
-                    {% trans 'Active' %}
-                </th>
-                <th>
-                    {% trans 'URL' %}
-                </th>
-                <th>
-                    <input type="checkbox" class="select-all" value="active_sku" />
-                    {% trans 'SKU' %}
-                </th>
-                <th>
-                    <input type="checkbox" class="select-all" value="active_name" />
-                    {% trans 'Name' %}
-                </th>
-                {% for property in all_properties %}
+                <tr>
                     <th>
-                        {{ property.name }}
+                        <input type="checkbox" class="select-all" value="delete" />
                     </th>
-                {% endfor %}
-                <th colspan="2">
-                    <input type="checkbox"
-                           class="select-all"
-                           value="price" />
-                    {% trans 'Price' %}
-                </th>
-                <th>
-                    {% trans 'Default' %}
-                </th>
+                    <th>
+                        {% trans 'Pos.' %}
+                    </th>
+                    <th>
+                        <input type="checkbox" class="select-all" value="active" />
+                        {% trans 'Active' %}
+                    </th>
+                    <th>
+                        {% trans 'URL' %}
+                    </th>
+                    <th>
+                        <input type="checkbox" class="select-all" value="active_sku" />
+                        {% trans 'SKU' %}
+                    </th>
+                    <th>
+                        <input type="checkbox" class="select-all" value="active_name" />
+                        {% trans 'Name' %}
+                    </th>
+                    {% for prop_dict in all_properties %}
+                        <th>
+                            {% if prop_dict.property_group %}[{{ prop_dict.property_group.name }}]{% endif %} {{ prop_dict.property.name }}
+                        </th>
+                    {% endfor %}
+                    <th colspan="2">
+                        <input type="checkbox"
+                               class="select-all"
+                               value="price" />
+                        {% trans 'Price' %}
+                    </th>
+                    <th>
+                        {% trans 'Default' %}
+                    </th>
+                </tr>
                 {% for variant in variants %}
                     <tr>
                         <td>
@@ -191,7 +193,7 @@
 
                         {% for property in variant.properties %}
                             <td>
-                                <select name="property-{{ variant.id }}|{{ property.id }}">
+                                <select name="property-{{ variant.id }}|{{ property.property_group_id }}|{{ property.id }}">
                                     <option value=""></option>
                                     {% for option in property.options %}
                                         <option value="{{ option.id }}"

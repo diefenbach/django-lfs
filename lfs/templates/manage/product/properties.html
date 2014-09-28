@@ -50,7 +50,7 @@
                                         </a>
                                     </div>
                                     <input type="text"
-                                           name="property-{{ property.id }}"
+                                           name="property-{{ property_group.id }}-{{ property.id }}"
                                            value="{{ property.value }}" />
                                 </div>
                             {% endif %}
@@ -59,7 +59,7 @@
                                     <div class="label">
                                         {{ property.title }}:
                                     </div>
-                                    <select name="property-{{ property.id }}">
+                                    <select name="property-{{ property_group.id }}-{{ property.id }}">
                                         <option>-----</option>
                                         {% for option in property.options %}
                                             <option value="{{ option.id }}"
@@ -107,7 +107,7 @@
                                         </a>
                                     </div>
                                     <input type="text"
-                                           name="property-{{ property.id }}"
+                                           name="property-{{ property_group.id }}-{{ property.id }}"
                                            value="{{ property.value }}" />
                                 </div>
                             {% endif %}
@@ -118,7 +118,7 @@
                                             {{ property.title }}:
                                         </a>
                                     </div>
-                                    <select multiple="multiple" name="property-{{ property.id }}">
+                                    <select multiple="multiple" name="property-{{ property_group.id }}-{{ property.id }}">
                                         {% for option in property.options %}
                                             <option value="{{ option.id }}"
                                                     {% if option.selected %}selected="selected"{% endif %}>
@@ -165,7 +165,7 @@
                                         </a>
                                     </div>
                                     <input type="text"
-                                           name="property-{{ property.id }}"
+                                           name="property-{{ property_group.id }}-{{ property.id }}"
                                            value="{{ property.value }}" />
                                 </div>
                             {% endif %}
@@ -174,7 +174,7 @@
                                     <div class="label">
                                         {{ property.title }}:
                                     </div>
-                                    <select multiple="multiple" name="property-{{ property.id }}">
+                                    <select multiple="multiple" name="property-{{ property_group.id }}-{{ property.id }}">
                                         {% for option in property.options %}
                                             <option value="{{ option.id }}"
                                                     {% if option.selected %}selected="selected"{% endif %}>
@@ -203,8 +203,15 @@
 
 {% if product_variant_properties %}
     <h2 class="heading-middle">{% trans "Variant properties" %}</h2>
-    {% for property_option in product_variant_properties %}
-        <div><strong>{{ property_option.property.title }}</strong>: {{ property_option.name }}</div>
+    {% for property_group in product_variant_properties %}
+        {% if property_group.property_group_name %}
+            <div class="property-group-label">[{{ property_group.property_group_name }}]</div>
+        {% endif %}
+        <div class="property-group-properties {% if property_group.property_group_name %}ingroup{% endif %}">
+            {% for property_option in property_group.properties %}
+                <div class="property-group-property"><strong>{{ property_option.property.title }}</strong>: {{ property_option.name }}</div>
+            {% endfor %}
+        </div>
     {% endfor %}
 {% endif %}
 
