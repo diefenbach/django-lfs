@@ -945,3 +945,7 @@ def get_pay_link(order, request=None, force_paid=False):
     if force_paid or order.can_be_paid():
         return order.get_pay_link(request)
     return ''
+
+@register.simple_tag
+def render_address(address, address_type):
+    return mark_safe(address.as_html(address_type))
