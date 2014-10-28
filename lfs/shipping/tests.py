@@ -19,7 +19,7 @@ from lfs.shipping.models import ShippingMethod
 from lfs.shipping.models import ShippingMethodPrice
 from lfs.shipping import utils
 from lfs.criteria.models import CartPriceCriterion, CountryCriterion, Criterion
-from lfs.criteria.models import WeightCriterion
+from lfs.criteria.models import WeightCriterion, WidthCriterion
 from lfs.criteria.settings import GREATER_THAN, LESS_THAN
 from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
@@ -247,6 +247,22 @@ class ShippingMethodTestCase(TestCase):
         c.product = self.p2
         result = c.is_valid()
         self.assertEqual(result, True)
+
+    def test_shipping_methods_criterion_for_empty_cart(self):
+        """Test with a given product.
+        """
+        # Prepare request
+        user = User.objects.get(username="admin")
+        request = DummyRequest(user=user)
+
+        # Create a width criterion and add it to the shipping method price
+        smp = ShippingMethodPrice.objects.create(shipping_method=self.sm1, price=10.0, active=True)
+        c = WidthCriterion.objects.create(content=smp, value=10.0, operator=GREATER_THAN)
+
+        # there is no product in the cart so criterion is not valid
+        cart_utils.create_cart(request)
+        result = smp.is_valid(request)
+        self.assertEqual(result, False)
 
     def test_get_first_valid_shipping_method(self):
         """Test utils.get_first_valid_shipping_method

@@ -759,7 +759,7 @@ class WidthCriterion(Criterion):
         """
         if self.product:
             max_width = self.product.get_width()
-        elif self.cart:
+        elif self.cart and self.cart.get_items():
             max_width = max([item.product.get_width() for item in self.cart.get_items()])
         else:
             max_width = 0
