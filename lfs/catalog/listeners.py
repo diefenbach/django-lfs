@@ -1,14 +1,14 @@
+# python imports
+from sets import Set
+
 # django imports
-from django.db.models.signals import pre_delete, m2m_changed
-from django.conf import settings
-from django.core.cache import cache
+from django.db.models.signals import pre_delete
 
 # lfs imports
 from lfs.catalog.models import PropertyGroup
 from lfs.catalog.models import ProductPropertyValue
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.models import GroupsPropertiesRelation
-from lfs.catalog.models import Category
 from lfs.core.signals import property_type_changed
 from lfs.core.signals import product_removed_property_group
 
@@ -36,8 +36,14 @@ def property_group_deleted_listener(sender, instance, **kwargs):
     products = instance.products.all()
 
     for product in products:
+        properties = Set()
+        for group in product.property_groups.exclude(id=instance.group.id):
+            for property in group.properties.all():
+                properties.add(property.id)
+
         for property in properties:
-            ProductPropertyValue.objects.filter(product=product, property=property).delete()
+            if property.id not in properties:
+                ProductPropertyValue.objects.filter(product=product, property=property).delete()
 pre_delete.connect(property_group_deleted_listener, sender=PropertyGroup)
 
 
@@ -48,12 +54,20 @@ def property_removed_from_property_group_listener(sender, instance, **kwargs):
 
     Deletes all ProductPropertyValue which are assigned to the property and
     the property group from which the property is about to be removed.
+
+    Takes care of the situation, when the product has still a property via
+    another group.
     """
     property = instance.property
     products = instance.group.products.all()
 
     for product in products:
-        ProductPropertyValue.objects.filter(product=product, property=property).delete()
+        properties = Set()
+        for group in product.property_groups.exclude(id=instance.group.id):
+            for property in group.properties.all():
+                properties.add(property.id)
+        if property.id not in properties:
+            ProductPropertyValue.objects.filter(product=product, property=property).delete()
 pre_delete.connect(property_removed_from_property_group_listener, sender=GroupsPropertiesRelation)
 
 
@@ -63,11 +77,20 @@ def product_removed_from_property_group_listener(sender, **kwargs):
 
     Deletes all ProductPropertyValue for this product and the properties which
     are belong to this property group.
+
+    Takes care of the situation, when the product has still a property via
+    another group.
     """
     property_group, product = sender
 
+    properties = Set()
+    for group in product.property_groups.exclude(id=property_group.id):
+        for property in group.properties.all():
+            properties.add(property.id)
+
     for property in property_group.properties.all():
-        ProductPropertyValue.objects.filter(product=product, property=property).delete()
+        if property.id not in properties:
+            ProductPropertyValue.objects.filter(product=product, property=property).delete()
 product_removed_property_group.connect(product_removed_from_property_group_listener)
 
 
