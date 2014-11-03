@@ -240,7 +240,7 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
             "id": property_id,
             "position": prop.position,
             "unit": prop.unit,
-            "show_reset": str(property_id) in set_filters.keys(),
+            "show_reset": str(property_id) in set_filters.get('select-filter', {}).keys(),
             "name": prop.name,
             "title": prop.title,
             "items": items,

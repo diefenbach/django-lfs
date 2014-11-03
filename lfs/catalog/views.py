@@ -285,10 +285,16 @@ def reset_filter(request, category_slug, property_id):
     """Resets product filter with given property id. Redirects to the category
     with given slug.
     """
-    if "product-filter" in request.session:
-        if property_id in request.session["product-filter"]:
-            del request.session["product-filter"][property_id]
-            request.session["product-filter"] = request.session["product-filter"]
+    product_filter = request.session.get("product-filter")
+    try:
+        del product_filter["select-filter"][property_id]
+    except KeyError:
+        pass
+    else:
+        if product_filter["select-filter"] == {}:
+            del product_filter["select-filter"]
+
+    request.session["product-filter"] = product_filter
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
