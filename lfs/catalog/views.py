@@ -185,16 +185,21 @@ def set_number_filter(request):
     pmax = lfs.core.utils.atof(request.POST.get("max", 1))
 
     property_id = request.POST.get("property_id")
+    property_group_id = request.POST.get("property_group_id")
     category_slug = request.POST.get("category_slug")
 
-    product_filter["number-filter"][property_id] = (pmin, pmax)
+    key = '{0}_{1}'.format(property_group_id, property_id)
+
+    product_filter["number-filter"][key] = {'property_id': property_id,
+                                            'property_group_id': property_group_id,
+                                            'value': (pmin, pmax)}
     request.session["product-filter"] = product_filter
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
 
 
-def set_filter(request, category_slug, property_id, value=None, min=None, max=None):
+def set_filter(request, category_slug, property_group_id, property_id, value=None, min=None, max=None):
     """Saves the given filter to session. Redirects to the category with given
     slug.
     """
@@ -202,18 +207,23 @@ def set_filter(request, category_slug, property_id, value=None, min=None, max=No
     if product_filter.get("select-filter") is None:
         product_filter["select-filter"] = {}
 
-    if str(property_id) in product_filter["select-filter"].keys():
-        options = product_filter["select-filter"][property_id].split("|")
+    key = '{0}_{1}'.format(property_group_id, property_id)
+    if key in product_filter["select-filter"].keys():
+        filter_dict = product_filter["select-filter"][key]
+        options = filter_dict['value'].split("|")
         if value in options:
             options.remove(value)
         else:
             options.append(value)
+
         if options:
-            product_filter["select-filter"][property_id] = "|".join(options)
+            product_filter["select-filter"][key]['value'] = "|".join(options)
         else:
-            del product_filter["select-filter"][property_id]
+            del product_filter["select-filter"][key]
     else:
-        product_filter["select-filter"][property_id] = value
+        product_filter["select-filter"][key] = {'value': value,
+                                                'property_id': property_id,
+                                                'property_group_id': property_group_id}
 
     if not product_filter.get("select-filter"):
         del product_filter["select-filter"]
@@ -281,13 +291,15 @@ def reset_price_filter(request, category_slug):
     return HttpResponseRedirect(url)
 
 
-def reset_filter(request, category_slug, property_id):
+def reset_filter(request, category_slug, property_group_id, property_id):
     """Resets product filter with given property id. Redirects to the category
     with given slug.
     """
     if "product-filter" in request.session:
-        if property_id in request.session["product-filter"]:
-            del request.session["product-filter"][property_id]
+        key = '{0}_{1}'.format(property_group_id, property_id)
+        select_filter = request.session["product-filter"].get('select-filter', {})
+        if key in select_filter:
+            del select_filter[key]
             request.session["product-filter"] = request.session["product-filter"]
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
@@ -312,13 +324,14 @@ def reset_all_manufacturer_filter(request, category_slug):
     return HttpResponseRedirect(url)
 
 
-def reset_number_filter(request, category_slug, property_id):
+def reset_number_filter(request, category_slug, property_group_id, property_id):
     """Resets product filter with given property id. Redirects to the category
     with given slug.
     """
+    key = '{0}_{1}'.format(property_group_id, property_id)
     try:
         product_filter = request.session.get("product-filter")
-        del product_filter["number-filter"][property_id]
+        del product_filter["number-filter"][key]
     except KeyError:
         pass
     else:
