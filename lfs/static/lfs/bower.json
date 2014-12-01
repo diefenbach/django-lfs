@@ -1,0 +1,29 @@
+{
+  "name": "LFS",
+  "version": "0.0.1",
+  "description": "Lighitng Fast Shop",
+  "main": "style.css",
+  "authors": [
+    "Jakub Wiśniowski"
+  ],
+  "license": "",
+  "homepage": "http://getlfs.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~1.11.1",
+    "jquery-ui": "~1.11.2",
+    "jquery-form": "~3.46.0",
+    "jquery-cookie": "~1.4.1",
+    "jquery-file-upload": "~9.8.0",
+    "superfish": "~1.7.5",
+    "nestedSortable": "https://github.com/ilikenwf/nestedSortable.git#~1.3.4",
+    "jgrowl": "~1.3.0",
+    "jquery.cookie": "~1.4.1"
+  }
+}
