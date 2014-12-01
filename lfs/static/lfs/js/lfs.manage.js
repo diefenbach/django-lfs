@@ -35,7 +35,7 @@ function show_ajax_loading() {
 function align_buttons(id) {
     var hl  = $(id + "-left").height();
     var hr = $(id  + "-right").height();
-    var h = Math.max(hl, hr)
+    var h = Math.max(hl, hr);
     $(id + "-left").height(h);
     $(id + "-right").height(h);
 }
@@ -57,7 +57,7 @@ function setup_datepicker(){
 }
 
 function send_form_and_refresh(elem) {
-    var form = elem.closest("form")
+    var form = elem.closest("form");
     form.ajaxSubmit({
         dataType: 'json',
         beforeSend: function(jqXHR, settings){
@@ -110,13 +110,13 @@ function _handle_tabs(tabs_id, cookie_name){
     if ($htabs.length > 0){
         $htabs.tabs();
         $htabs.show();
-        $htabs.on('tabsshow', function(event, ui) {
-            $.cookie(cookie_name, ui.index);
+        $htabs.on('tabsactivate', function(event, ui) {
+            $.cookie(cookie_name, ui.newTab.index());
         });
 
         var tab_cookie = $.cookie(cookie_name);
         var index = (tab_cookie != null) ? parseInt(tab_cookie) : 0;
-        $htabs.tabs('select', index);
+        $htabs.tabs("option", "active", index);
     }
 }
 
