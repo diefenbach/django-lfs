@@ -8,7 +8,7 @@
 
 {% block javascript %}
     {% compress js %}
-        <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.manage.product.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}lfs/js/lfs.manage.product.js"></script>
     {% endcompress %}
     <script type="text/javascript">
         var MANUFACTURERS_AJAX_URL = "{% url 'lfs_manufacturers_ajax' %}";

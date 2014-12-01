@@ -40,6 +40,23 @@ def manage_attachments(request, product_id, as_string=False, template_name="mana
         return HttpResponse(result, content_type='application/json')
 
 
+@permission_required("core.manage_shop")
+def list_attachments(request, product_id, as_string=False, template_name="manage/product/attachments-list.html"):
+    """
+    """
+    result = manage_attachments(request, product_id, as_string=True, template_name=template_name)
+    if as_string:
+        return result
+    else:
+        result = json.dumps({
+            "html": result,
+            "message": _(u"Attachments have been added."),
+        }, cls=LazyEncoder)
+
+    return HttpResponse(result, content_type='application/json')
+
+
+
 # Actions
 @permission_required("core.manage_shop")
 def add_attachment(request, product_id):
@@ -47,7 +64,7 @@ def add_attachment(request, product_id):
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
     if request.method == "POST":
-        for file_content in request.FILES.getlist("file"):
+        for file_content in request.FILES.getlist("files[]"):
             attachment = ProductAttachment(product=product, title=file_content.name[:50])
             attachment.file.save(file_content.name, file_content, save=True)
 
@@ -92,7 +109,7 @@ def update_attachments(request, product_id):
 
     product_changed.send(product, request=request)
 
-    html = [["#attachments", manage_attachments(request, product_id, as_string=True)]]
+    html = [["#attachments-list", list_attachments(request, product_id, as_string=True)]]
     result = json.dumps({
         "html": html,
         "message": message,
@@ -139,7 +156,7 @@ def move_attachment(request, id):
         attachment.position = (i + 1) * 10
         attachment.save()
 
-    html = [["#attachments", manage_attachments(request, product.id, as_string=True)]]
+    html = [["#attachments-list", list_attachments(request, product.id, as_string=True)]]
 
     result = json.dumps({
          "html": html,

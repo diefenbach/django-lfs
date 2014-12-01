@@ -26,7 +26,7 @@ logger = logging.getLogger("default")
 
 # views
 @permission_required("core.manage_shop")
-def images(request, template_name="manage/images/images.html"):
+def images(request, as_string=False, template_name="manage/images/images.html"):
     """
     Display images management.
     """
@@ -61,11 +61,29 @@ def images(request, template_name="manage/images/images.html"):
                                               '%(count)d images',
                                               amount_of_images) % {'count': amount_of_images}
 
-    return render(request, template_name, {
+    result = render_to_string(template_name, RequestContext(request, {
         "images": current_page.object_list,
         "pagination": pagination_data,
         "query": query
-    })
+    }))
+
+    if as_string:
+        return result
+    return HttpResponse(result)
+
+
+@permission_required("core.manage_shop")
+def images_list(request, template_name="manage/images/images-list.html"):
+    """
+    Display images list.
+    """
+    result = images(request, as_string=True, template_name=template_name)
+    result = json.dumps({
+        "html": result,
+        "message": _(u"Images have been added."),
+    }, cls=LazyEncoder)
+
+    return HttpResponse(result, content_type='application/json')
 
 
 @permission_required("core.manage_shop")
@@ -84,7 +102,7 @@ def add_images(request):
     Adds a global images.
     """
     if request.method == "POST":
-        for file_content in request.FILES.getlist("file"):
+        for file_content in request.FILES.getlist("files[]"):
             image = Image(title=file_content.name)
             try:
                 image.image.save(file_content.name, file_content, save=True)

@@ -1,5 +1,12 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% load i18n compress %}
+
+{% block javascript %}
+    {% compress js %}
+        <script type="text/javascript" src="{{ STATIC_URL }}lfs/js/lfs.manage.static-blocks.js"></script>
+    {% endcompress %}
+{% endblock %}
+
 
 {% block help_link %}user/management/html/static_block.html{% endblock %}
 {% block left_slot %}
