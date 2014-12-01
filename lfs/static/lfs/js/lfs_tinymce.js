@@ -36,9 +36,11 @@ function addEditor(selector, hide_save, height) {
             ed.addButton('imagebrowser', {
                 // TODO: use gettext
                 title : 'Image browser',
-                image : STATIC_URL + 'icons/tinymce_imagebrowser_icon.gif',
+                image : STATIC_URL + 'lfs/icons/tinymce_imagebrowser_icon.gif',
                 onclick : function(e) {
                     imagebrowser(e, ed);
+                    e.preventDefault();
+                    return false;
                 }
             });
         }
@@ -92,8 +94,7 @@ function imagebrowser(e, ed) {
         width: 800,
         height: 500,
         draggable: false,
-        resizable: false,
-        position: ["center", "center"]
+        resizable: false
     });
 
     $("#dialog").dialog("open");

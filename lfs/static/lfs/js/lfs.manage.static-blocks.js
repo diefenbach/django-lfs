@@ -17,7 +17,7 @@ $(function () {
             });
             files_table.append($(
                 '<tr>' +
-                '<td><div style="font-weight:bold; padding-bottom:10px">' + msg + '<img src="' + STATIC_URL + 'img/ajax-loader.gif" style="padding:8px 0 0 10px" /></div>' + fileNames + '<\/td>' +
+                '<td><div style="font-weight:bold; padding-bottom:10px">' + msg + '<img src="' + STATIC_URL + 'lfs/img/ajax-loader.gif" style="padding:8px 0 0 10px" /></div>' + fileNames + '<\/td>' +
                 '<\/tr>'
             ));
 

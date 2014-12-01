@@ -159,7 +159,7 @@ $(function() {
         height: 680,
         draggable: false,
         resizable: false,
-        position: ["center", 200]
+        position: { my: "center", at: "center"}
     });
 
     // Generic ajax save button
@@ -299,7 +299,7 @@ $(function() {
         height: 680,
         draggable: false,
         resizable: false,
-        position: ["center", 200]
+        position: { my: "center", at: "center"}
     });
 
 
@@ -434,7 +434,7 @@ $(function() {
         modal: true,
         draggable: false,
         resizable: false,
-        position: ["center", 200]
+        position: { my: "center", at: "center"}
     });
 
     $body.on('click', '.delete-link', function() {
