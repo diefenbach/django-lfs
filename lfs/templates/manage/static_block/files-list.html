@@ -1,0 +1,48 @@
+{% load i18n %}
+
+{% if static_block.files.all %}
+    <form id="product-files-update-form"
+          action="{% url 'lfs_manage_update_files_sb' static_block.id %}"
+          method="post">
+
+        <table class="lfs-manage-table">
+            <tr>
+                <th class="tiny">
+                    <input type="checkbox"
+                           class="select-all"
+                           value="delete-files" />
+                </th>
+                <th>
+                    {% trans 'Title' %}
+                </th>
+                <th class="right-padding">
+                    {% trans 'Position' %}
+                </th>
+            </tr>
+            {% for file in static_block.files.all %}
+                <tr>
+                    <td>
+                        <input type="checkbox"
+                               class="select-delete-files"
+                               name="delete-{{ file.id }}"
+                               style="float:left" />
+                    </td>
+                    <td>
+                        <input type="text" name="title-{{ file.id }}" value="{{ file.title }}" />
+                    </td>
+                    <td class="right-padding">
+                        <input type="text" name="position-{{ file.id }}" value="{{ file.position }}" size="3" />
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="buttons">
+            <input class="button ajax-save-button"
+                   type="submit" name="update" value="{% trans 'Update' %}" />
+            <input class="button ajax-save-button"
+                   type="submit" name="delete" value="{% trans 'Delete' %}" />
+        </div>
+    </form>
+{% else %}
+    <span>{% trans 'There are no files' %}</span>
+{% endif %}

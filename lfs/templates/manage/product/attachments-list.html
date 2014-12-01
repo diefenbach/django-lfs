@@ -1,0 +1,72 @@
+{% load i18n %}
+
+{% if product.has_attachments %}
+    <form id="product-attachments-update-form"
+          action="{% url 'lfs_manage_update_attachments' product.id %}"
+          method="post">
+
+        <table class="lfs-manage-table attachments">
+            <tr>
+                <th class="tiny">
+                    <input type="checkbox"
+                           class="select-all"
+                           value="delete-attachments" />
+                </th>
+                <th class="small">
+                    {% trans 'Title' %}
+                </th>
+                <th class="small">
+                    {% trans 'Description' %}
+                </th>
+                <th class="right-padding">
+                    {% trans 'Position' %}
+                </th>
+                <th class="small right-padding">
+                    {% trans 'Manage' %}
+                </th>
+            </tr>
+            {% for attachment in product.attachments.all %}
+                <tr>
+                    <td>
+                        <input type="checkbox"
+                               class="select-delete-attachments"
+                               name="delete-{{ attachment.id }}"
+                               style="float:left" />
+                    </td>
+                    <td>
+                        <input type="text" name="title-{{ attachment.id }}" value="{{ attachment.title }}" style="width:300px" />
+                    </td>
+                    <td>
+                        <textarea name="description-{{ attachment.id }}">{{ attachment.description }}</textarea>
+                    </td>
+                    <td class="right-padding">
+                        <input type="text" name="position-{{ attachment.id }}" value="{{ attachment.position }}" size="3" />
+                    </td>
+                    <td class="right-padding">
+                        {% if not forloop.first %}
+                            <a class="up ajax-link"
+                               href="{% url 'lfs_move_product_attachment' attachment.id %}?direction=0"
+                               title='{% trans "Move Up" %}'></a>
+                        {% endif %}
+                        {% if not forloop.last %}
+                            <a class="down ajax-link"
+                               href="{% url 'lfs_move_product_attachment' attachment.id %}?direction=1"
+                               title='{% trans "Move Down" %}'></a>
+                        {% else %}
+                            <span class="blank"></span>
+                        {% endif %}
+                    </td>
+
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="buttons">
+            <input class="ajax-save-button button"
+                   type="submit" name="update" value="{% trans 'Update attachments' %}" />
+            <input class="ajax-save-button button"
+                   type="submit" name="delete" value="{% trans 'Delete attachments' %}" />
+        </div>
+    </form>
+{% else %}
+    <span>{% trans 'There are no attachments' %}</span>
+{% endif %}
