@@ -26,7 +26,6 @@ var update_checkout = function() {
 
 // TODO: use .data('...') instead of attr('data')
 // TODO: limit number of handlers, preferrably split into separate .js files and use django's staticfiles
-// TODO: use gettext for lightbox translations
 $(function() {
     // Delay plugin taken from ###############################################
     // http://ihatecode.blogspot.com/2008/04/jquery-time-delay-event-binding-plugin.html
@@ -85,19 +84,17 @@ $(function() {
 
     // Product ################################################################
 
-    $("a.product-image").lightBox({
-        "txtImage" : "Image",
-        "txtOf" : " of "
-    });
+    $("a.product-image").fancybox({loop: false});
 
-    // Hack to make the change event on radio buttons for IE working
-    // http://stackoverflow.com/questions/208471/getting-jquery-to-recognise-change-in-ie
-    if ($.browser.msie) {
-        $body.on('click', 'input.variant', function() {
-            this.blur();
-            this.focus();
-        });
-    }
+    // ----- REPORTED TO BE WORKING IN RECENT jQuery VERSIONS WITHOUT THIS HACK ------
+    //    // Hack to make the change event on radio buttons for IE working
+    //    // http://stackoverflow.com/questions/208471/getting-jquery-to-recognise-change-in-ie
+    //    if ($.browser.msie) {
+    //        $body.on('click', 'input.variant', function() {
+    //            this.blur();
+    //            this.focus();
+    //        });
+    //    }
 
     $body.on('change', 'input.variant', function() {
         var url = $(this).parents("table.product-variants").attr("data");
@@ -109,13 +106,10 @@ $(function() {
             success : function(data) {
                 var data = safeParseJSON(data);
                 $("#product-inline").html(data["product"]);
-                $.jGrowl(data["message"]);
+                $.jGrowl(data["message"], {theme: 'lfs'});
 
-                // Re-bind lightbox
-                $("a.product-image").lightBox({
-                    "txtImage" : "Image",
-                    "txtOf" : " of "
-                });
+                // Re-bind fancybox
+                $("a.product-image").fancybox({loop: false});
             }
         });
     });
@@ -126,13 +120,10 @@ $(function() {
             success : function(data) {
                 var data = safeParseJSON(data);
                 $("#product-inline").html(data["product"]);
-                $.jGrowl(data["message"]);
+                $.jGrowl(data["message"], {theme: 'lfs'});
 
-                // Re-bind lightbox
-                $("a.product-image").lightBox({
-                    "txtImage" : "Image",
-                    "txtOf" : " of "
-                });
+                // Re-bind fancybox
+                $("a.product-image").fancybox({loop: false});
             }
         });
     });
@@ -161,13 +152,10 @@ $(function() {
                 $(".for-sale-price-value").html(data["for-sale-price"]);
                 $(".for-sale-standard-price-value").html(data["for-sale-standard-price"]);
                 $(".packing-result").html(data["packing-result"]);
-                $.jGrowl(data["message"]);
+                $.jGrowl(data["message"], {theme: 'lfs'});
 
-                // Re-bind lightbox
-                $("a.product-image").lightBox({
-                    "txtImage" : "Image",
-                    "txtOf" : " of "
-                });
+                // Re-bind fancybox
+                $("a.product-image").fancybox({loop: false});
             }
         });
     });
@@ -433,7 +421,7 @@ $(function() {
             $(data["html"][html][0]).html(data["html"][html][1]);
 
         if (data["message"]) {
-            $.jGrowl(data["message"]);
+            $.jGrowl(data["message"], {theme: 'lfs'});
         }
     };
 

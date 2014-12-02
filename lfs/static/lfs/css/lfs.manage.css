@@ -910,3 +910,8 @@ div.product-properties-info div{
     margin-bottom: 3px;
     margin-top: 3px;
 }
+
+div.jGrowl-notification.lfs {
+    border: 1px solid #cccccc;
+    background: #eeeeee;
+}

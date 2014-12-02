@@ -98,7 +98,7 @@ function sortable() {
                 data: {"objs": serialized},
                 success: function(data) {
                     data = safeParseJSON(data);
-                    $.jGrowl(data["message"])
+                    $.jGrowl(data["message"], {theme: 'lfs'})
                 }
            });
         }
@@ -128,7 +128,7 @@ $(function() {
     var message = $.cookie("message");
 
     if (message != null) {
-        $.jGrowl(message);
+        $.jGrowl(message, {theme: 'lfs'});
         $.removeCookie('message', { path: '/' });
     }
 
@@ -196,7 +196,7 @@ $(function() {
                 }
 
                 if (data["message"]) {
-                    $.jGrowl(data["message"]);
+                    $.jGrowl(data["message"], {theme: 'lfs'});
                 }
 
                 hide_ajax_loading();
@@ -221,7 +221,7 @@ $(function() {
             for (var html in data["html"])
                 $(data["html"][html][0]).html(data["html"][html][1]);
             if (data["message"]) {
-                $.jGrowl(data["message"]);
+                $.jGrowl(data["message"], {theme: 'lfs'});
             }
             if (data["open-dialog"]) {
                 $("#dialog").dialog("open");
@@ -488,7 +488,7 @@ $(function() {
                 data: {"serialized": serialized},
                 success: function(data) {
                     data = safeParseJSON(data);
-                    $.jGrowl(data["message"])
+                    $.jGrowl(data["message"], {theme: 'lfs'})
                 }
            });
         }
@@ -515,7 +515,7 @@ $(function() {
                 data: {"categories": serialized},
                 success: function(data) {
                     data = safeParseJSON(data);
-                    $.jGrowl(data["message"])
+                    $.jGrowl(data["message"], {theme: 'lfs'})
                 }
            });
         }
