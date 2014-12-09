@@ -24,6 +24,14 @@ A demo shop can be tried here:
 
 * http://demo.getlfs.com
 
+Development
+===========
+
+For development environment please visit:
+
+* https://github.com/diefenbach/lfs-buildout-development
+
+
 Changes
 =======
 
