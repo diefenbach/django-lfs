@@ -31,7 +31,7 @@
     </div>
     <script>
         $(function() {
-            $("#id_title").live("keyup", function() {
+            $("#id_title").on("keyup", function() {
                 var slug = $("#id_title").val()
                 slug = URLify(slug, 200)
                 $("#id_slug").val(slug);
