@@ -169,6 +169,12 @@ LFS_EXTRA_ORDER_STATES
         order_state_changed.connect(handle_order_state_changed)
 
 
+LFS_ONE_PAGE_CHECKOUT_FORM
+    The form which is used at checkout page. This setting is optional, the
+    default value is ``lfs.checkout.forms.OnePageCheckoutForm``.
+
+
+
 .. _settings_addresses:
 
 Addresses
