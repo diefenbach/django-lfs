@@ -305,7 +305,7 @@ def _get_property_ids():
 
 
 def _get_product_ids(category):
-    products = category.get_all_products()
+    products = category.get_all_products() if category.show_all_products else category.get_products()
     if not products:
         return ''
 
