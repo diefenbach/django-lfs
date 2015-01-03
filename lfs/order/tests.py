@@ -10,7 +10,7 @@ from django.test import TestCase
 from django.test.client import Client
 
 # test imports
-from lfs.catalog.models import Product
+from lfs.catalog.models import Product, DeliveryTime
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.cart.views import add_to_cart
@@ -47,11 +47,14 @@ class OrderTestCase(TestCase):
 
         tax = Tax.objects.create(rate=19)
 
+        delivery_time = DeliveryTime.objects.create(min=3, max=10)
+
         shipping_method = ShippingMethod.objects.create(
             name="Standard",
             active=True,
             price=1.0,
-            tax=tax
+            tax=tax,
+            delivery_time=delivery_time
         )
 
         payment_method = PaymentMethod.objects.create(
@@ -218,6 +221,10 @@ class OrderTestCase(TestCase):
         # The cart should be deleted after the order has been created
         cart = cart_utils.get_cart(self.request)
         self.assertEqual(cart, None)
+
+        # delivery time should of the selected shipping method should be saved with order
+        self.assertTrue(order.delivery_time is not None)
+
 
     def test_pay_link(self):
         """Tests empty pay link.

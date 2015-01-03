@@ -2,7 +2,7 @@
 from django.contrib import admin
 
 # lfs imports
-from lfs.order.models import Order, OrderItem
+from lfs.order.models import Order, OrderItem, OrderDeliveryTime
 
 
 # Orderitems Inlines
@@ -19,3 +19,4 @@ class OrderAdmin(admin.ModelAdmin):
 
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderItem)
+admin.site.register(OrderDeliveryTime)

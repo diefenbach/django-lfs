@@ -135,6 +135,12 @@ class Order(models.Model):
     def price_net(self):
         return self.price - self.tax
 
+    def get_delivery_time(self):
+        try:
+            return self.delivery_time
+        except OrderDeliveryTime.DoesNotExist:
+            return None
+
 
 class OrderItem(models.Model):
     """An order items holds the sold product, its amount and some other relevant
@@ -227,3 +233,14 @@ class OrderItemPropertyValue(models.Model):
     order_item = models.ForeignKey(OrderItem, verbose_name=_(u"Order item"), related_name="properties")
     property = models.ForeignKey(Property, verbose_name=_(u"Property"))
     value = models.CharField("Value", blank=True, max_length=100)
+
+
+class OrderDeliveryTime(lfs.catalog.models.DeliveryTime):
+    order = models.OneToOneField(Order, verbose_name=_('Order'), related_name='delivery_time')
+
+    def __unicode__(self):
+        return u'[{0}] {1}'.format(self.order.number, self.round().as_string())
+
+    class Meta:
+        verbose_name = _(u'Order delivery time')
+        verbose_name_plural = _(u'Order delivery times')

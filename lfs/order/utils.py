@@ -11,7 +11,7 @@ from lfs.cart import utils as cart_utils
 from lfs.core.signals import order_created
 from lfs.core.utils import import_symbol
 from lfs.customer import utils as customer_utils
-from lfs.order.models import Order
+from lfs.order.models import Order, OrderDeliveryTime
 from lfs.order.models import OrderItem
 from lfs.order.models import OrderItemPropertyValue
 from lfs.payment import utils as payment_utils
@@ -134,6 +134,10 @@ def add_order(request):
 
         message=request.POST.get("message", ""),
     )
+
+    delivery_time = cart.get_delivery_time(request)
+    if delivery_time:
+        OrderDeliveryTime.objects.create(order=order, min=delivery_time.min, max=delivery_time.max)
 
     invoice_address.order = order
     invoice_address.save()
