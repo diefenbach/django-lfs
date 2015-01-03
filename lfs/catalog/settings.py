@@ -147,6 +147,7 @@ THUMBNAIL_SIZES = getattr(settings, 'LFS_THUMBNAIL_SIZES', ((60, 60), (100, 100)
 
 if getattr(settings, 'SOLR_ENABLED', False):
     SORTING_MAP = (
+        {'default': 'best', 'ftx': '', 'title': _('Best')},
         {'default': 'price', 'ftx': 'price asc', 'title': _('Price ascending')},
         {'default': '-price', 'ftx': 'price desc', 'title': _('Price descending')},
         {'default': 'name', 'ftx': 'name asc', 'title': _('Name ascending')},
