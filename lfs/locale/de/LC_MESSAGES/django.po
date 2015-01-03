@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-19 06:29+0200\n"
+"POT-Creation-Date: 2015-01-03 09:44+0100\n"
 "PO-Revision-Date: 2009-02-22 07:20+0100\n"
 "Last-Translator: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
 "Language-Team: Kai Diefenbach <kai.diefenbach@iqpp.de>\n"
@@ -110,12 +110,12 @@ msgstr "Artikel"
 msgid "Property"
 msgstr "Eigenschaften"
 
-#: cart/views.py:272
+#: cart/views.py:276
 #, python-format
 msgid "%(name)s must be between %(min)s and %(max)s %(unit)s."
 msgstr "%(name)s muß zwischen %(min)s und %(max)s %(unit)s liegen."
 
-#: cart/views.py:286
+#: cart/views.py:290
 #, python-format
 msgid ""
 "Your entered value for %(name)s (%(value)s) is not in valid step width, "
@@ -124,17 +124,17 @@ msgstr ""
 "Ihre Eingabe für %(name)s (%(value)s) ist nicht in der gültigen "
 "Schrittweite. Diese ist: %(step)s"
 
-#: cart/views.py:302 cart/views.py:410
+#: cart/views.py:306 cart/views.py:418
 #, python-format
 msgid "Sorry, but '%(product)s' is not available anymore."
 msgstr "Es tut uns leid, '%(product)s' ist nicht mehr im Lager."
 
-#: cart/views.py:304 cart/views.py:412
+#: cart/views.py:308 cart/views.py:420
 #, python-format
 msgid "Sorry, but '%(product)s' is only one time available."
 msgstr "Es tut uns leid, '%(product)s' ist nur noch einmal im Lager."
 
-#: cart/views.py:306 cart/views.py:414
+#: cart/views.py:310 cart/views.py:422
 #, python-format
 msgid "Sorry, but '%(product)s' is only %(amount)s times available."
 msgstr "Es tut uns leid, '%(product)s' ist nur noch %(amount)s Mal im Lager."
@@ -234,7 +234,7 @@ msgstr "Bild"
 #: catalog/models.py:168 catalog/models.py:1842 catalog/models.py:1974
 #: catalog/models.py:2085 catalog/models.py:2113 catalog/models.py:2147
 #: catalog/models.py:2243 catalog/models.py:2323 catalog/models.py:2566
-#: core/models.py:79 core/management/commands/lfs_migrate.py:138
+#: core/models.py:79 core/management/commands/lfs_migrate.py:139
 #: criteria/models/criteria_objects.py:24 marketing/models.py:14
 #: marketing/models.py:34 page/models.py:18
 #: templates/manage/marketing/featured_inline.html:108
@@ -277,20 +277,20 @@ msgid "Category cols"
 msgstr "Kategoriespalten"
 
 #: catalog/models.py:179 catalog/models.py:599 core/models.py:184
-#: core/management/commands/lfs_migrate.py:90
-#: core/management/commands/lfs_migrate.py:114 page/models.py:24
+#: core/management/commands/lfs_migrate.py:91
+#: core/management/commands/lfs_migrate.py:115 page/models.py:24
 msgid "Meta title"
 msgstr "Meta Title"
 
 #: catalog/models.py:180 catalog/models.py:600 core/models.py:185
-#: core/management/commands/lfs_migrate.py:91
-#: core/management/commands/lfs_migrate.py:115 page/models.py:25
+#: core/management/commands/lfs_migrate.py:92
+#: core/management/commands/lfs_migrate.py:116 page/models.py:25
 msgid "Meta keywords"
 msgstr "Meta Keywords"
 
 #: catalog/models.py:181 catalog/models.py:601 core/models.py:186
-#: core/management/commands/lfs_migrate.py:92
-#: core/management/commands/lfs_migrate.py:116 page/models.py:26
+#: core/management/commands/lfs_migrate.py:93
+#: core/management/commands/lfs_migrate.py:117 page/models.py:26
 msgid "Meta description"
 msgstr "Meta Description"
 
@@ -444,7 +444,7 @@ msgstr "Verwaltung des Lagerbestandes"
 msgid "Stock amount"
 msgstr "Lagerbestand"
 
-#: catalog/models.py:625 core/management/commands/lfs_migrate.py:82
+#: catalog/models.py:625 core/management/commands/lfs_migrate.py:83
 msgid "Active packing"
 msgstr "Verpackungseinheit aktivieren"
 
@@ -535,7 +535,7 @@ msgstr "Produktart"
 msgid "Default variant"
 msgstr "Standard Variante"
 
-#: catalog/models.py:644 core/management/commands/lfs_migrate.py:74
+#: catalog/models.py:644 core/management/commands/lfs_migrate.py:75
 #: templates/manage/product/variants.html:252
 msgid "Category variant"
 msgstr "Kategorievariante"
@@ -616,15 +616,15 @@ msgstr "Preisberechnung aktivieren"
 msgid "Price Calculation"
 msgstr "Preisberechnung"
 
-#: catalog/models.py:674 core/management/commands/lfs_migrate.py:75
+#: catalog/models.py:674 core/management/commands/lfs_migrate.py:76
 msgid "Active base price"
 msgstr "Grundpreis aktivieren"
 
-#: catalog/models.py:675 core/management/commands/lfs_migrate.py:76
+#: catalog/models.py:675 core/management/commands/lfs_migrate.py:77
 msgid "Base price unit"
 msgstr "Grundpreiseinheit"
 
-#: catalog/models.py:676 core/management/commands/lfs_migrate.py:77
+#: catalog/models.py:676 core/management/commands/lfs_migrate.py:78
 msgid "Base price amount"
 msgstr "Grundpreis Menge"
 
@@ -636,7 +636,7 @@ msgstr "Artikelnummer Hersteller"
 msgid "Manufacturer"
 msgstr "Hersteller"
 
-#: catalog/models.py:682 core/management/commands/lfs_migrate.py:73
+#: catalog/models.py:682 core/management/commands/lfs_migrate.py:74
 msgid "Type of quantity field"
 msgstr "Art des Anzahlfelds"
 
@@ -936,19 +936,23 @@ msgstr "Kategorie mit Produkten"
 msgid "Category with subcategories"
 msgstr "Kategorie mit Unterkategorien"
 
-#: catalog/settings.py:150 catalog/settings.py:157
+#: catalog/settings.py:150
+msgid "Best"
+msgstr "Beste Ergebnisse"
+
+#: catalog/settings.py:151 catalog/settings.py:158
 msgid "Price ascending"
 msgstr "Preis aufsteigend"
 
-#: catalog/settings.py:151 catalog/settings.py:158
+#: catalog/settings.py:152 catalog/settings.py:159
 msgid "Price descending"
 msgstr "Preis absteigend"
 
-#: catalog/settings.py:152 catalog/settings.py:159
+#: catalog/settings.py:153 catalog/settings.py:160
 msgid "Name ascending"
 msgstr "Name aufsteigend"
 
-#: catalog/settings.py:153 catalog/settings.py:160
+#: catalog/settings.py:154 catalog/settings.py:161
 msgid "Name descending"
 msgstr "Name absteigend"
 
@@ -1141,11 +1145,11 @@ msgstr "Länder Lieferadresse"
 msgid "Default shipping country"
 msgstr "Standard Lieferland"
 
-#: core/models.py:175 core/management/commands/lfs_migrate.py:188
+#: core/models.py:175 core/management/commands/lfs_migrate.py:189
 msgid "Default Shop Locale"
 msgstr "Standard Shop Locale"
 
-#: core/models.py:176 core/management/commands/lfs_migrate.py:190
+#: core/models.py:176 core/management/commands/lfs_migrate.py:191
 msgid "Use international currency codes"
 msgstr "Internationale Währungscodes benutzen"
 
@@ -1169,15 +1173,15 @@ msgstr "Tabs"
 msgid "Footer"
 msgstr "Fußzeile"
 
-#: core/management/commands/lfs_migrate.py:141 customer/models.py:73
+#: core/management/commands/lfs_migrate.py:142 customer/models.py:73
 msgid "Line 1"
 msgstr "Zeile 1"
 
-#: core/management/commands/lfs_migrate.py:142 customer/models.py:74
+#: core/management/commands/lfs_migrate.py:143 customer/models.py:74
 msgid "Line 2"
 msgstr "Zeile 2"
 
-#: core/management/commands/lfs_migrate.py:193
+#: core/management/commands/lfs_migrate.py:194
 msgid "Supplier"
 msgstr "Lieferant"
 
