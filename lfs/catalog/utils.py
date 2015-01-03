@@ -246,7 +246,8 @@ def _get_property_ids():
 
 def _get_product_ids(category):
     all_products = []
-    for product in category.get_all_products():
+    products = category.get_all_products() if category.show_all_products else category.get_products()
+    for product in products:
         all_products.append(product)
         all_products.extend(product.variants.filter(active=True))
     return ", ".join([str(p.id) for p in all_products])
