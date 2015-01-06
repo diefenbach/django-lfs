@@ -132,7 +132,6 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
                       AND product_id IN (%s)
                       AND property_id IN (%s)
                       GROUP BY property_id""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
-
     for row in cursor.fetchall():
         prop = properties_mapping[row[0]]
 
@@ -261,7 +260,7 @@ def _get_property_ids():
 def _get_product_ids(category):
     products = category.get_all_products()
     if not products:
-        return []
+        return ''
 
     all_products = lfs.catalog.models.Product.objects.filter(Q(pk__in=products) | (Q(parent__in=products) & Q(active=True)))
     product_ids = all_products.values_list('id', flat=True)
