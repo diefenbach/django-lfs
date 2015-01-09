@@ -513,7 +513,7 @@ def save_products(request):
     Saves products with passed ids (by request body).
     """
     products = _get_filtered_products(request)
-    paginator = Paginator(products, 25)
+    paginator = Paginator(products, request.session.get("product_filters", {}).get('amount', 25))
     page = paginator.page(request.REQUEST.get("page", 1))
 
     if request.POST.get("action") == "delete":
