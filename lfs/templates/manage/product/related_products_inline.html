@@ -4,12 +4,12 @@
     <div class="navigation-pages-inline">
         {% if page.has_previous %}
             <a class="ajax-link"
-               href="{% url 'lfs_manage_related_products_inline' product.id%}?page=1"><img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' /></a>
+               href="{% url 'lfs_manage_related_products_inline' product.id%}?page=1"><img src="{{ STATIC_URL }}lfs/icons/resultset_first.png" alt='{% trans "First" %}' /></a>
             <a class="ajax-link"
-               href="{% url 'lfs_manage_related_products_inline' product.id%}?page={{ page.previous_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
+               href="{% url 'lfs_manage_related_products_inline' product.id%}?page={{ page.previous_page_number }}"><img src="{{ STATIC_URL }}lfs/icons/resultset_previous.png" alt='{% trans "Previous" %}' /></a>
         {% else %}
-            <img src="{{ STATIC_URL }}icons/resultset_first.png" alt='{% trans "First" %}' />
-            <img src="{{ STATIC_URL }}icons/resultset_previous.png" alt='{% trans "Previous" %}' /></span>
+            <img src="{{ STATIC_URL }}lfs/icons/resultset_first.png" alt='{% trans "First" %}' />
+            <img src="{{ STATIC_URL }}lfs/icons/resultset_previous.png" alt='{% trans "Previous" %}' /></span>
         {% endif %}
 
         <span style="position: relative; top:-4px ">
@@ -18,13 +18,13 @@
 
         {% if page.has_next %}
             <a class="ajax-link"
-               href="{% url 'lfs_manage_related_products_inline' product.id%}?page={{ page.next_page_number }}"><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
+               href="{% url 'lfs_manage_related_products_inline' product.id%}?page={{ page.next_page_number }}"><img src="{{ STATIC_URL }}lfs/icons/resultset_next.png" alt='{% trans "Next" %}' /></a>
             <a class="ajax-link"
-               href="{% url 'lfs_manage_related_products_inline' product.id%}?page={{ paginator.num_pages }}"><img src="{{ STATIC_URL }}icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
+               href="{% url 'lfs_manage_related_products_inline' product.id%}?page={{ paginator.num_pages }}"><img src="{{ STATIC_URL }}lfs/icons/resultset_last.png"  alt='{% trans "Last" %}' /></a>
 
         {% else %}
-            <span><img src="{{ STATIC_URL }}icons/resultset_next.png" alt='{% trans "Next" %}' /></span>
-            <span><img src="{{ STATIC_URL }}icons/resultset_last.png" alt='{% trans "Last" %}' /></span>
+            <span><img src="{{ STATIC_URL }}lfs/icons/resultset_next.png" alt='{% trans "Next" %}' /></span>
+            <span><img src="{{ STATIC_URL }}lfs/icons/resultset_last.png" alt='{% trans "Last" %}' /></span>
         {% endif %}
     </div>
     <table class="lfs-manage-table" style="margin-top:20px">
@@ -70,9 +70,9 @@
                                     </td>
                                     <td class="right-padding">
                                         {% if product.is_active %}
-                                            <img src="{{ STATIC_URL }}icons/tick.png" />
+                                            <img src="{{ STATIC_URL }}lfs/icons/tick.png" />
                                         {% else %}
-                                            <img src="{{ STATIC_URL }}icons/cross.png" />
+                                            <img src="{{ STATIC_URL }}lfs/icons/cross.png" />
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -131,9 +131,9 @@
                                     </td>
                                     <td class="right-padding">
                                         {% if related_product.is_active %}
-                                            <img src="{{ STATIC_URL }}icons/tick.png" />
+                                            <img src="{{ STATIC_URL }}lfs/icons/tick.png" />
                                         {% else %}
-                                            <img src="{{ STATIC_URL }}icons/cross.png" />
+                                            <img src="{{ STATIC_URL }}lfs/icons/cross.png" />
                                         {% endif %}
                                     </td>
                                 </tr>

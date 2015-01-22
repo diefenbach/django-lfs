@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 CHECKOUT_TYPE_SELECT = 0
@@ -10,3 +11,5 @@ CHECKOUT_TYPES = (
 )
 SHIPPING_PREFIX = "shipping"
 INVOICE_PREFIX = "invoice"
+
+ONE_PAGE_CHECKOUT_FORM = getattr(settings, 'LFS_ONE_PAGE_CHECKOUT_FORM', 'lfs.checkout.forms.OnePageCheckoutForm')

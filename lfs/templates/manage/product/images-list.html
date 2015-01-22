@@ -1,0 +1,79 @@
+{% load i18n %}
+
+{% if product.images.all %}
+<form id="product-images-update-form"
+      action="{% url 'lfs_manage_update_images' product.id %}"
+      method="post">
+
+    <table id="images-table" class="lfs-manage-table images">
+      <thead>
+        <tr>
+            <th class="tiny">
+                <input type="checkbox"
+                       class="select-all"
+                       value="delete-images" />
+            </th>
+            <th class="tiny" style="padding: 0 10px">
+                {% trans 'Image' %}
+            </th>
+            <th class="small">
+                {% trans 'Title' %}
+            </th>
+            <th class="right-padding">
+                {% trans 'Position' %}
+            </th>
+            <th class="small right-padding">
+                {% trans 'Manage' %}
+            </th>
+        </tr>
+      </thead>
+      <tbody>
+    {% for image in product.images.all %}
+        <tr>
+            <td>
+                <input type="checkbox"
+                       class="select-delete-images"
+                       name="delete-{{ image.id }}"
+                       style="float:left" />
+            </td>
+            <td style="padding: 3px 10px">
+                <img src="{{ image.image.url_60x60 }}"
+                     alt="{{ image.title }}"
+                     title="{{ image_title }}"
+                     style="float:left"/>
+
+            </td>
+            <td class="small">
+                <input type="text" name="title-{{ image.id }}" value="{{ image.title }}" style="width:300px" />
+            </td>
+            <td class="right-padding">
+                <input type="text" name="position-{{ image.id }}" value="{{ image.position }}" size="3" />
+            </td>
+            <td class="right-padding">
+                {% if not forloop.first %}
+                    <a class="up ajax-link"
+                       href="{% url 'lfs_move_image' image.id %}?direction=0"
+                       title='{% trans "Move Up" %}'></a>
+                {% endif %}
+                {% if not forloop.last %}
+                    <a class="down ajax-link"
+                       href="{% url 'lfs_move_image' image.id %}?direction=1"
+                       title='{% trans "Move Down" %}'></a>
+                {% else %}
+                    <span class="blank"></span>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+          </tbody>
+    </table>
+    <div class="buttons">
+        <input class="ajax-save-button button"
+               type="submit" name="update" value="{% trans 'Update images' %}" />
+        <input class="ajax-save-button button"
+               type="submit" name="delete" value="{% trans 'Delete images' %}" />
+    </div>
+</form>
+{% else %}
+<span>{% trans 'There are no images' %}</span>
+{% endif %}

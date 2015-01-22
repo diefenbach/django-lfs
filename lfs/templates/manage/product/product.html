@@ -8,7 +8,7 @@
 
 {% block javascript %}
     {% compress js %}
-        <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.manage.product.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}lfs/js/lfs.manage.product.js"></script>
     {% endcompress %}
     <script type="text/javascript">
         var MANUFACTURERS_AJAX_URL = "{% url 'lfs_manufacturers_ajax' %}";
@@ -82,7 +82,7 @@
                     <input type="submit"
                            value="{% trans 'Change' %}" />
                 </form>
-                <img class="ajax-loading" src="{{ STATIC_URL }}img/ajax-loader.gif" alt="" style="padding:0; margin:0" />
+                <img class="ajax-loading" src="{{ STATIC_URL }}lfs/img/ajax-loader.gif" alt="" style="padding:0; margin:0" />
             {% endif %}
         </div>
         <div id="product-tabs">

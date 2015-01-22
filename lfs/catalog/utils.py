@@ -312,7 +312,7 @@ def _get_property_ids():
 def _get_product_ids(category):
     products = category.get_all_products()
     if not products:
-        return []
+        return ''
 
     all_products = lfs.catalog.models.Product.objects.filter(Q(pk__in=products) | (Q(parent__in=products) & Q(active=True)))
     product_ids = all_products.values_list('id', flat=True)

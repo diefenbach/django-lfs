@@ -25,9 +25,7 @@ from lfs.addresses.utils import AddressManagement
 from lfs.addresses.settings import CHECKOUT_NOT_REQUIRED_ADDRESS
 from lfs.cart import utils as cart_utils
 from lfs.core.models import Country
-from lfs.checkout.forms import OnePageCheckoutForm
-from lfs.checkout.settings import CHECKOUT_TYPE_ANON
-from lfs.checkout.settings import CHECKOUT_TYPE_AUTH
+from lfs.checkout.settings import CHECKOUT_TYPE_ANON, CHECKOUT_TYPE_AUTH, ONE_PAGE_CHECKOUT_FORM
 from lfs.customer import utils as customer_utils
 from lfs.customer.utils import create_unique_username
 from lfs.customer.forms import CreditCardForm, CustomerAuthenticationForm
@@ -211,6 +209,8 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
     """
     One page checkout form.
     """
+    OnePageCheckoutForm = lfs.core.utils.import_symbol(ONE_PAGE_CHECKOUT_FORM)
+
     cart = lfs.cart.utils.get_cart(request)
     if cart is None:
         return HttpResponseRedirect(reverse('lfs_cart'))
@@ -410,6 +410,7 @@ def check_voucher(request):
 def changed_checkout(request):
     """
     """
+    OnePageCheckoutForm = lfs.core.utils.import_symbol(ONE_PAGE_CHECKOUT_FORM)
     form = OnePageCheckoutForm()
     customer = customer_utils.get_or_create_customer(request)
     _save_customer(request, customer)

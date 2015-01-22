@@ -8,15 +8,14 @@
 
 {% block javascript %}
     {% compress js %}
-        <script type="text/javascript" src="{{ STATIC_URL }}manage/js/images.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}lfs/js/lfs.manage.shop-images.js"></script>
     {% endcompress %}
 {% endblock %}
 
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
-    <div class="site-actions">
-    </div>
+    <div class="site-actions"></div>
 
     <div id="manage-tabs">
         <ul>
@@ -36,39 +35,18 @@
                 </form>
             </div>
 
-            <form action="{% url 'lfs_manage_delete_images' %}" method="POST">
-                {% csrf_token %}
+            <div id="files-list">
+                {% include "manage/images/images-list.html" %}
+            </div>
 
-                {% if images %}
-                    {% for image in images %}
-                        <div class="image-form">
-                            <label for="image-toggle-{{ image.pk }}" class="image-selector">
-                                <input id="image-toggle-{{ image.pk }}" class="toggle-images" type="checkbox" name="images" value="{{ image.id }}" />
-                            </label>
-                            <div class="image">
-                                <img src="{{ image.image.url_100x100 }}" />
-                            </div>
-                            <span class="image-title">{{ image.title }}</span>
-                        </div>
-                    {% endfor %}
-                    <br clear="both" />
-                    <input type="submit" value="{% trans 'Delete images' %}" />
-                    <input type="button"
-                           class="toggle-all"
-                           value="{% trans "Toggle selection" %}"
-                           data="images" />
-                {% else %}
-                    {% trans "There are no images yet." %}
-                {% endif %}
-            </form>
             <h2 class="heading-middle">{% trans 'Add images' %}</h2>
 
             <div id="content">
                 <form id="file_upload" action="{% url 'lfs_manage_add_global_image' %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <input class="button" type="file" name="file" multiple>
+                    <input class="button" type="file" name="files[]" multiple>
                 </form>
-                <table id="files" data="{% url 'lfs_manage_global_images' %}" msg='{% trans "Uploading images:" %}'></table>
+                <table id="files-uploads-table" data="{% url 'lfs_manage_global_images_list' %}" msg='{% trans "Uploading images:" %}'></table>
             </div>
         </div>
     </div>

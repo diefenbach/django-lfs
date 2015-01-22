@@ -1,0 +1,27 @@
+{% load i18n compress %}
+
+<form action="{% url 'lfs_manage_delete_images' %}" method="POST">
+    {% csrf_token %}
+
+    {% if images %}
+        {% for image in images %}
+            <div class="image-form">
+                <label for="image-toggle-{{ image.pk }}" class="image-selector">
+                    <input id="image-toggle-{{ image.pk }}" class="toggle-images" type="checkbox" name="images" value="{{ image.id }}" />
+                </label>
+                <div class="image">
+                    <img src="{{ image.image.url_100x100 }}" />
+                </div>
+                <span class="image-title">{{ image.title }}</span>
+            </div>
+        {% endfor %}
+        <br clear="both" />
+        <input type="submit" class="button" value="{% trans 'Delete images' %}" />
+        <input type="button"
+               class="toggle-all button"
+               value="{% trans "Toggle selection" %}"
+               data="images" />
+    {% else %}
+        {% trans "There are no images yet." %}
+    {% endif %}
+</form>

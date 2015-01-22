@@ -37,7 +37,24 @@ def manage_images(request, product_id, as_string=False, template_name="manage/pr
     else:
         result = json.dumps({
             "images": result,
-            "message": _(u"Images has been added."),
+            "message": _(u"Images have been added."),
+        }, cls=LazyEncoder)
+
+        return HttpResponse(result, content_type='application/json')
+
+
+@permission_required("core.manage_shop")
+def list_images(request, product_id, as_string=False, template_name="manage/product/images-list.html"):
+    """
+    """
+    result = manage_images(request, product_id, as_string=True, template_name=template_name)
+
+    if as_string:
+        return result
+    else:
+        result = json.dumps({
+            "images": result,
+            "message": _(u"Images have been added."),
         }, cls=LazyEncoder)
 
         return HttpResponse(result, content_type='application/json')
@@ -50,7 +67,7 @@ def add_image(request, product_id):
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
     if request.method == "POST":
-        for file_content in request.FILES.getlist("file"):
+        for file_content in request.FILES.getlist("files[]"):
             image = Image(content=product, title=file_content.name)
             try:
                 image.image.save(file_content.name, file_content, save=True)
@@ -116,7 +133,7 @@ def update_images(request, product_id):
 
     product_changed.send(product, request=request)
 
-    html = [["#images", manage_images(request, product_id, as_string=True)]]
+    html = [["#images-list", list_images(request, product_id, as_string=True)]]
     result = json.dumps({
         "html": html,
         "message": message,
@@ -165,7 +182,7 @@ def move_image(request, id):
 
     product_changed.send(product, request=request)
 
-    html = [["#images", manage_images(request, product.id, as_string=True)]]
+    html = [["#images-list", list_images(request, product.id, as_string=True)]]
 
     result = json.dumps({
          "html": html,

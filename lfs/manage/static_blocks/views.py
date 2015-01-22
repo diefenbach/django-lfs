@@ -78,6 +78,11 @@ def files(request, sb, template_name="manage/static_block/files.html"):
         "static_block": sb,
     }))
 
+@permission_required("core.manage_shop")
+def list_files(request, sb, template_name="manage/static_block/files-list.html"):
+    """Displays the files tab of the passed static block.
+    """
+    return files(request, sb, template_name=template_name)
 
 # actions
 @permission_required("core.manage_shop")
@@ -125,7 +130,7 @@ def update_files(request, id):
         file.save()
 
     html = (
-        ("#files", files(request, static_block)),
+        ("#files-list", list_files(request, static_block)),
     )
 
     result = json.dumps({
@@ -141,10 +146,10 @@ def reload_files(request, id):
     """
     """
     static_block = lfs_get_object_or_404(StaticBlock, pk=id)
-    result = files(request, static_block)
+    result = list_files(request, static_block)
 
     result = json.dumps({
-        "files": result,
+        "html": result,
         "message": _(u"Files has been added."),
     }, cls=LazyEncoder)
 
@@ -157,7 +162,7 @@ def add_files(request, id):
     """
     static_block = lfs_get_object_or_404(StaticBlock, pk=id)
     if request.method == "POST":
-        for file_content in request.FILES.getlist("file"):
+        for file_content in request.FILES.getlist("files[]"):
             file = File(content=static_block, title=file_content.name)
             file.file.save(file_content.name, file_content, save=True)
 

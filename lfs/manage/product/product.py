@@ -8,7 +8,6 @@ from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.db.models import Q
 from django.forms.util import ErrorList
-from django.forms.widgets import CheckboxInput
 from django.forms.widgets import Select
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
@@ -30,7 +29,7 @@ from lfs.catalog.settings import CHOICES_YES
 from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TYPE_FORM_CHOICES
 from lfs.catalog.settings import VARIANT
-from lfs.core.utils import LazyEncoder
+from lfs.core.utils import LazyEncoder, atof
 from lfs.manage.product.images import manage_images
 from lfs.manage.product.properties import manage_properties
 from lfs.manage.product.attachments import manage_attachments
@@ -513,7 +512,7 @@ def save_products(request):
     Saves products with passed ids (by request body).
     """
     products = _get_filtered_products(request)
-    paginator = Paginator(products, 25)
+    paginator = Paginator(products, request.session.get("product_filters", {}).get('amount', 25))
     page = paginator.page(request.REQUEST.get("page", 1))
 
     if request.POST.get("action") == "delete":
@@ -528,6 +527,8 @@ def save_products(request):
                 else:
                     product.delete()
         msg = _(u"Products have been deleted.")
+        # switch to the first page because after some products are removed current page might be out of range
+        page = paginator.page(1)
 
     elif request.POST.get("action") == "save":
         for key, value in request.POST.items():
@@ -545,12 +546,13 @@ def save_products(request):
                 product.sub_type = request.POST.get("sub_type-%s" % id, 0)
 
                 try:
-                    product.price = float(request.POST.get("price-%s" % id, 0))
+                    price = request.POST.get("price-%s" % id, '0')
+                    product.price = atof(price)
                 except ValueError:
                     product.price = 0
                 try:
-                    product.for_sale_price = \
-                        float(request.POST.get("for_sale_price-%s" % id, 0))
+                    for_sale_price = request.POST.get("for_sale_price-%s" % id, '0')
+                    product.for_sale_price = atof(for_sale_price)
                 except ValueError:
                     product.for_sale_price = 0
 
@@ -572,7 +574,9 @@ def save_products(request):
 
                 msg = _(u"Products have been saved")
 
-    html = (("#products-inline", products_inline(request, page, paginator)),)
+    html = (("#products-inline", products_inline(request, page, paginator)),
+            ("#pages-inline", pages_inline(request, page, paginator, 0))
+    )
 
     result = json.dumps({
         "html": html,

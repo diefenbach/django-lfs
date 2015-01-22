@@ -17,21 +17,21 @@
             {% if page.has_previous %}
                 <a class="ajax-link"
                    href="{% url 'lfs_set_carts_page' %}?page=1">
-                    <img src="{{ STATIC_URL }}icons/resultset_first.png"
+                    <img src="{{ STATIC_URL }}lfs/icons/resultset_first.png"
                          alt="{% trans 'First' %}"
                          title="{% trans 'First' %}" />
                 </a>
                 <a class="ajax-link"
                    href="{% url 'lfs_set_carts_page' %}?page={{ page.previous_page_number }}">
-                    <img src="{{ STATIC_URL }}icons/resultset_previous.png"
+                    <img src="{{ STATIC_URL }}lfs/icons/resultset_previous.png"
                          alt="{% trans 'Previous' %}"
                          title="{% trans 'Previous' %}" />
                 </a>
             {% else %}
-                <img src="{{ STATIC_URL }}icons/resultset_first.png"
+                <img src="{{ STATIC_URL }}lfs/icons/resultset_first.png"
                      alt="{% trans 'First' %}"
                      title="{% trans 'First' %}" />
-                <img src="{{ STATIC_URL }}icons/resultset_previous.png"
+                <img src="{{ STATIC_URL }}lfs/icons/resultset_previous.png"
                      alt="{% trans 'Previous' %}"
                      title="{% trans 'Previous' %}" />
             {% endif %}
@@ -41,25 +41,25 @@
             {% if page.has_next %}
                 <a class="ajax-link"
                    href="{% url 'lfs_set_carts_page' %}?page={{ page.next_page_number }}">
-                    <img src="{{ STATIC_URL }}icons/resultset_next.png"
+                    <img src="{{ STATIC_URL }}lfs/icons/resultset_next.png"
                          alt="{% trans 'Next' %}"
                          title="{% trans 'Next' %}" />
                 </a>
                 <a class="ajax-link"
                    href="{% url 'lfs_set_carts_page' %}?page={{ paginator.num_pages }}">
-                    <img src="{{ STATIC_URL }}icons/resultset_last.png"
+                    <img src="{{ STATIC_URL }}lfs/icons/resultset_last.png"
                          alt="{% trans 'Last' %}"
                          title="{% trans 'Last' %}" />
                 </a>
 
             {% else %}
                 <span>
-                    <img src="{{ STATIC_URL }}icons/resultset_next.png"
+                    <img src="{{ STATIC_URL }}lfs/icons/resultset_next.png"
                          alt="{% trans 'Next' %}"
                          title="{% trans 'Next' %}" />
                 </span>
                 <span>
-                    <img src="{{ STATIC_URL }}icons/resultset_last.png"
+                    <img src="{{ STATIC_URL }}lfs/icons/resultset_last.png"
                          alt="{% trans 'Last' %}"
                          title="{% trans 'Last' %}" />
                 </span>

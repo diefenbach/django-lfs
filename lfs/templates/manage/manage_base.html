@@ -4,37 +4,41 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <title>{% block title %}{% endblock %}</title>
-        <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" type="image/ico" />
+        <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico" type="image/ico" />
         {% compress css %}
-            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/lfs.manage.css" />
-            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery-ui-1.8.13.custom/css/smoothness/jquery-ui-1.8.13.custom.css" />
-            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery/jquery.jgrowl.css" />
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lfs/css/lfs.manage.css" />
             <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery/superfish/superfish.css" />
-            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/lfs.manage-custom.css" />
+
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lfs/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css" />
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lfs/bower_components/jquery-ui/themes/smoothness/theme.css" />
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lfs/bower_components/jgrowl/jquery.jgrowl.css" />
+
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lfs/css/lfs.manage-custom.css" />
         {% endcompress %}
         <script type="text/javascript">
             var LFS_MANAGE_IMAGEBROWSER_URL = '{% url 'lfs_manage_imagebrowser' %}';
             var STATIC_URL = '{{ STATIC_URL }}';
         </script>
         {% compress js %}
-            <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-1.7.2.min.js"></script>
-            <script type="text/javascript" src="{{ STATIC_URL }}jquery-ui-1.8.13.custom/js/jquery-ui-1.8.13.custom.min.js"></script>
-            <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.ui.nestedSortable.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/bower_components/jquery/dist/jquery.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/bower_components/jquery-ui/jquery-ui.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/bower_components/jquery-cookie/jquery.cookie.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/bower_components/nestedSortable/jquery.ui.nestedSortable.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/bower_components/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/bower_components/jquery-file-upload/js/jquery.iframe-transport.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/bower_components/jquery-file-upload/js/jquery.fileupload.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/bower_components/jquery-file-upload/js/jquery.fileupload-process.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/bower_components/jquery-file-upload/js/jquery.fileupload-ui.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/bower_components/jgrowl/jquery.jgrowl.min.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/bower_components/superfish/dist/js/superfish.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/bower_components/jquery-form/jquery.form.js"></script>
 
             <script type="text/javascript" src="{{ STATIC_URL }}tiny_mce-3.5.8/jquery.tinymce.js"></script>
-            <script type="text/javascript" src="{{ STATIC_URL }}js/lfs_tinymce.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/js/lfs_tinymce.js"></script>
 
-            <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.fileupload-4.2.1/jquery.fileupload-ui.js"></script>
-            <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.fileupload-4.2.1/jquery.fileupload.js"></script>
-
-            <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.form.pack.js"></script>
-            <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.jgrowl_minimized.js"></script>
-            <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery.cookie.js"></script>
-
-            <script type="text/javascript" src="{{ STATIC_URL }}jquery/superfish/superfish.js"></script>
-            <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.manage.js"></script>
-            <script type="text/javascript" src="{{ STATIC_URL }}js/urlify.js"></script>
-            <script type="text/javascript" src="{{ STATIC_URL }}js/lfs.manage-custom.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/js/lfs.manage.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/js/urlify.js"></script>
+            <script type="text/javascript" src="{{ STATIC_URL }}lfs/js/lfs.manage-custom.js"></script>
         {% endcompress %}
         {% block javascript %}{% endblock %}
     </head>
@@ -44,7 +48,7 @@
         <div class="lfs-header">
             <div class="logo">
                 <a href="{% url 'lfs_shop_view' %}">
-                    <img src="{{ STATIC_URL }}img/logo_management.jpg"
+                    <img src="{{ STATIC_URL }}lfs/img/logo_management.jpg"
                          alt="LFS"
                          title="LFS - Lightning Fast Shop"/>
                 </a>

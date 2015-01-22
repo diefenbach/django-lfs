@@ -1072,6 +1072,14 @@ class CategoryTestCase(TestCase):
         # Filters
         # Tested thoroughly within PropertiesTestCase.test_filter_products
 
+    def test_get_product_filters2(self):
+        """ Test empty category. This test is written for issue #163 but strangely it was passing even without
+            fix in place. Possibly because different bahaviour between databases.
+        """
+        self.c12.products.clear()
+        f = lfs.catalog.utils.get_product_filters(self.c12, {}, None, None, None)
+
+
 
 class ViewsTestCase(TestCase):
     """Tests the views of the lfs.catalog.
