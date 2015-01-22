@@ -102,3 +102,11 @@ class Discount(models.Model, Criteria):
                 return product.get_price_gross(request) * (self.value / 100)
 
         return 0.0
+
+    def is_valid(self, request, product=None):
+        if self.products.exists():
+            cart = lfs.cart.utils.get_cart(request)
+            items = cart.get_items()
+            if not items.filter(product__in=self.products.all()).exists():
+                return False
+        return super(Discount, self).is_valid(request, product)
