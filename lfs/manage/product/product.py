@@ -527,6 +527,8 @@ def save_products(request):
                 else:
                     product.delete()
         msg = _(u"Products have been deleted.")
+        # switch to the first page because after some products are removed current page might be out of range
+        page = paginator.page(1)
 
     elif request.POST.get("action") == "save":
         for key, value in request.POST.items():
@@ -572,7 +574,9 @@ def save_products(request):
 
                 msg = _(u"Products have been saved")
 
-    html = (("#products-inline", products_inline(request, page, paginator)),)
+    html = (("#products-inline", products_inline(request, page, paginator)),
+            ("#pages-inline", pages_inline(request, page, paginator, 0))
+    )
 
     result = json.dumps({
         "html": html,
