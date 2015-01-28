@@ -125,83 +125,85 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
 
     ########## Number Fields ###################################################
     number_fields = []
-    cursor = connection.cursor()
-    cursor.execute("""SELECT property_id, min(value_as_float), max(value_as_float)
-                      FROM catalog_productpropertyvalue
-                      WHERE type=%s
-                      AND product_id IN (%s)
-                      AND property_id IN (%s)
-                      GROUP BY property_id""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
-    for row in cursor.fetchall():
-        prop = properties_mapping[row[0]]
+    if property_ids and product_ids:
+        cursor = connection.cursor()
+        cursor.execute("""SELECT property_id, min(value_as_float), max(value_as_float)
+                          FROM catalog_productpropertyvalue
+                          WHERE type=%s
+                          AND product_id IN (%s)
+                          AND property_id IN (%s)
+                          GROUP BY property_id""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
+        for row in cursor.fetchall():
+            prop = properties_mapping[row[0]]
 
-        if prop.is_select_field or prop.is_text_field or not prop.filterable:
-            continue
-        if product_filter.get("number-filter", {}).get(str(prop.id)):
-            pmin, pmax = product_filter.get("number-filter").get(str(prop.id))[0:2]
-            show_reset = True
-        else:
-            pmin, pmax = row[1:3]
-            show_reset = False
+            if prop.is_select_field or prop.is_text_field or not prop.filterable:
+                continue
+            if product_filter.get("number-filter", {}).get(str(prop.id)):
+                pmin, pmax = product_filter.get("number-filter").get(str(prop.id))[0:2]
+                show_reset = True
+            else:
+                pmin, pmax = row[1:3]
+                show_reset = False
 
-        try:
-            pmin = locale.format("%.2f", float(pmin))
-        except TypeError:
-            pmin = 0.0
-        try:
-            pmax = locale.format("%.2f", float(pmax))
-        except TypeError:
-            pmax = 0.0
+            try:
+                pmin = locale.format("%.2f", float(pmin))
+            except TypeError:
+                pmin = 0.0
+            try:
+                pmax = locale.format("%.2f", float(pmax))
+            except TypeError:
+                pmax = 0.0
 
-        number_fields.append({
-            "id": row[0],
-            "position": prop.position,
-            "object": prop,
-            "name": prop.name,
-            "title": prop.title,
-            "unit": prop.unit,
-            "show_reset": show_reset,
-            "show_quantity": True,
-            "items": {"min": pmin, "max": pmax},
-        })
+            number_fields.append({
+                "id": row[0],
+                "position": prop.position,
+                "object": prop,
+                "name": prop.name,
+                "title": prop.title,
+                "unit": prop.unit,
+                "show_reset": show_reset,
+                "show_quantity": True,
+                "items": {"min": pmin, "max": pmax},
+            })
 
     ########## Select Fields & Text Fields #####################################
     result = []
-    cursor = connection.cursor()
-    cursor.execute("""SELECT property_id, value
-                      FROM catalog_productpropertyvalue
-                      WHERE type=%s
-                      AND product_id IN (%s)
-                      AND property_id IN (%s)
-                      GROUP BY property_id, value""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
-
     properties = {}
-    for row in cursor.fetchall():
-        prop = properties_mapping[row[0]]
+    if property_ids and product_ids:
+        cursor = connection.cursor()
+        cursor.execute("""SELECT property_id, value
+                          FROM catalog_productpropertyvalue
+                          WHERE type=%s
+                          AND product_id IN (%s)
+                          AND property_id IN (%s)
+                          GROUP BY property_id, value""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
 
-        if prop.is_number_field or not prop.filterable:
-            continue
+        for row in cursor.fetchall():
+            prop = properties_mapping[row[0]]
 
-        if prop.is_select_field:
-            name = options_mapping[row[1]].name
-            position = options_mapping[row[1]].position
-        else:
-            name = row[1]
-            position = 10
+            if prop.is_number_field or not prop.filterable:
+                continue
 
-        if name == row[1] and name == '':
-            continue
+            if prop.is_select_field:
+                name = options_mapping[row[1]].name
+                position = options_mapping[row[1]].position
+            else:
+                name = row[1]
+                position = 10
 
-        if row[0] not in properties:
-            properties[row[0]] = []
-        properties[row[0]].append({
-            "id": row[0],
-            "value": row[1],
-            "name": name,
-            "title": prop.title,
-            "position": position,
-            "show_quantity": True,
-        })
+            if name == row[1] and name == '':
+                continue
+
+            if row[0] not in properties:
+                properties[row[0]] = []
+            properties[row[0]].append({
+                "id": row[0],
+                "value": row[1],
+                "name": name,
+                "title": prop.title,
+                "position": position,
+                "show_quantity": True,
+            })
 
     # Creates the filters to count the existing products per property option,
     # which is used within the filter portlet
