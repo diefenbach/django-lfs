@@ -1527,6 +1527,16 @@ class Product(models.Model):
         else:
             return self.manufacturer
 
+    def get_sku_manufacturer(self):
+        """
+        Returns the manufacturer sku. Takes care whether the product is a
+        variant.
+        """
+        if self.is_variant()
+            return self.parent.sku_manufacturer
+        else:
+            return self.sku_manufacturer
+
     def has_related_products(self):
         """
         Returns True if the product has related products.
