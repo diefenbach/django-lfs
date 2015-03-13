@@ -225,6 +225,6 @@ def get_paypal_link_for_order(order):
     else:
         url = POSTBACK_ENDPOINT + "?" + parameters
 
-    logger.info("PAYPAL URL: %s" % url)
+    # logger.info("PAYPAL URL: %s" % url)
 
     return url
