@@ -168,6 +168,14 @@ class Command(BaseCommand):
                 customer.selected_shipping_address = new_address
             customer.save()
 
+        try:
+            # fix: django.db.utils.IntegrityError: duplicate key value violates unique constraint "addresses_baseaddress_pkey"
+            # in try because has been tested only in postgres
+            # please check it in your db engine and then remove this try block
+            cursor.execute("SELECT setval('addresses_baseaddress_id_seq', (SELECT MAX(id) FROM addresses_baseaddress)+1)")
+        except:
+            pass
+
         # Migrate addresses of orders
         cursor.execute("SELECT * FROM order_order")
         for order in dictfetchall(cursor):
@@ -285,13 +293,19 @@ class Command(BaseCommand):
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(CartPriceCriterion)
+
+        # alter price column to avoid *** IntegrityError: null value in column "price" violates not-null constraint
+        cursor2.execute("""ALTER TABLE criteria_cartpricecriterion ALTER COLUMN price DROP NOT NULL""")
+
         cursor2.execute("""SELECT id, operator, price FROM criteria_cartpricecriterion""")
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            CartPriceCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                CartPriceCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
-        cursor1.execute("""DELETE FROM criteria_cartpricecriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_cartpricecriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_column("criteria_cartpricecriterion", "price")
@@ -308,9 +322,11 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            CombinedLengthAndGirthCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                CombinedLengthAndGirthCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
-        cursor1.execute("""DELETE FROM criteria_combinedlengthandgirthcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_combinedlengthandgirthcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         # HeightCriterion
@@ -321,13 +337,19 @@ class Command(BaseCommand):
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(HeightCriterion)
+
+        # alter height column to avoid *** IntegrityError: null value in column "height" violates not-null constraint
+        cursor2.execute("""ALTER TABLE criteria_heightcriterion ALTER COLUMN height DROP NOT NULL""")
+
         cursor2.execute("""SELECT id, operator, height FROM criteria_heightcriterion""")
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            HeightCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                HeightCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
-        cursor1.execute("""DELETE FROM criteria_heightcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_heightcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
         db.delete_column("criteria_heightcriterion", "height")
 
@@ -339,13 +361,19 @@ class Command(BaseCommand):
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(LengthCriterion)
+
+        # alter length column to avoid *** IntegrityError: null value in column "length" violates not-null constraint
+        cursor2.execute("""ALTER TABLE criteria_lengthcriterion ALTER COLUMN length DROP NOT NULL""")
+
         cursor2.execute("""SELECT id, operator, length FROM criteria_lengthcriterion""")
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            LengthCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                LengthCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
-        cursor1.execute("""DELETE FROM criteria_lengthcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_lengthcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_column("criteria_lengthcriterion", "length")
@@ -358,13 +386,19 @@ class Command(BaseCommand):
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(WidthCriterion)
+
+        # alter width column to avoid *** IntegrityError: null value in column "width" violates not-null constraint
+        cursor2.execute("""ALTER TABLE criteria_widthcriterion ALTER COLUMN width DROP NOT NULL""")
+
         cursor2.execute("""SELECT id, operator, width FROM criteria_widthcriterion""")
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            WidthCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                WidthCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
-        cursor1.execute("""DELETE FROM criteria_widthcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_widthcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_column("criteria_widthcriterion", "width")
@@ -377,13 +411,19 @@ class Command(BaseCommand):
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(WeightCriterion)
+
+        # alter weight column to avoid *** IntegrityError: null value in column "weight" violates not-null constraint
+        cursor2.execute("""ALTER TABLE criteria_weightcriterion ALTER COLUMN weight DROP NOT NULL""")
+
         cursor2.execute("""SELECT id, operator, weight FROM criteria_weightcriterion""")
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            WeightCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                WeightCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
-        cursor1.execute("""DELETE FROM criteria_weightcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_weightcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_column("criteria_weightcriterion", "weight")
@@ -404,13 +444,15 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            cc = CountryCriterion.objects.create(operator=row[1], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                cc = CountryCriterion.objects.create(operator=row[1], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
             cursor4.execute("""Select country_id FROM criteria_countrycriterion_countries WHERE id=%s""" %  row[0])
             for row_2 in cursor4.fetchall():
                 cc.value.add(row_2[0])
 
-        cursor1.execute("""DELETE FROM criteria_countrycriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_countrycriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_table("criteria_countrycriterion_countries")
@@ -431,13 +473,15 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            pmc = PaymentMethodCriterion.objects.create(operator=row[1], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                pmc = PaymentMethodCriterion.objects.create(operator=row[1], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
             cursor4.execute("""Select paymentmethod_id FROM criteria_paymentmethodcriterion_payment_methods WHERE id=%s""" %  row[0])
             for row_2 in cursor4.fetchall():
                 pmc.value.add(row_2[0])
 
-        cursor1.execute("""DELETE FROM criteria_paymentmethodcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_paymentmethodcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_table("criteria_paymentmethodcriterion_payment_methods")
@@ -457,13 +501,15 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            smc = ShippingMethodCriterion.objects.create(operator=row[1], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                smc = ShippingMethodCriterion.objects.create(operator=row[1], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
             cursor4.execute("""Select shippingmethod_id FROM criteria_shippingmethodcriterion_shipping_methods WHERE id=%s""" %  row[0])
             for row_2 in cursor4.fetchall():
                 smc.value.add(row_2[0])
 
-        cursor1.execute("""DELETE FROM criteria_shippingmethodcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_shippingmethodcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_table("criteria_shippingmethodcriterion_shipping_methods")
