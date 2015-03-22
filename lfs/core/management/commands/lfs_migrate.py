@@ -293,7 +293,6 @@ class Command(BaseCommand):
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(CartPriceCriterion)
-
         cursor2.execute("""SELECT id, operator, price FROM criteria_cartpricecriterion""")
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
@@ -334,7 +333,6 @@ class Command(BaseCommand):
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(HeightCriterion)
-
         cursor2.execute("""SELECT id, operator, height FROM criteria_heightcriterion""")
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
@@ -355,7 +353,6 @@ class Command(BaseCommand):
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(LengthCriterion)
-
         cursor2.execute("""SELECT id, operator, length FROM criteria_lengthcriterion""")
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
@@ -377,7 +374,6 @@ class Command(BaseCommand):
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(WidthCriterion)
-
         cursor2.execute("""SELECT id, operator, width FROM criteria_widthcriterion""")
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
@@ -399,7 +395,6 @@ class Command(BaseCommand):
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(WeightCriterion)
-
         cursor2.execute("""SELECT id, operator, weight FROM criteria_weightcriterion""")
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
