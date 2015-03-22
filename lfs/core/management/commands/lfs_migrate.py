@@ -287,15 +287,12 @@ class Command(BaseCommand):
 
         # CartPriceCriterion
         db.add_column("criteria_cartpricecriterion", "value", models.FloatField(default=0.0))
-        db.alter_column('criteria_cartpricecriterion', 'price', models.FloatField(default=0.0))
+        db.alter_column('criteria_cartpricecriterion', 'price', models.FloatField(default=0.0, null=True))
 
         cursor1.execute("""SELECT id FROM criteria_cartpricecriterion""")
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(CartPriceCriterion)
-
-        # alter price column to avoid *** IntegrityError: null value in column "price" violates not-null constraint
-        cursor2.execute("""ALTER TABLE criteria_cartpricecriterion ALTER COLUMN price DROP NOT NULL""")
 
         cursor2.execute("""SELECT id, operator, price FROM criteria_cartpricecriterion""")
         for row in cursor2.fetchall():
@@ -331,15 +328,12 @@ class Command(BaseCommand):
 
         # HeightCriterion
         db.add_column("criteria_heightcriterion", "value", models.FloatField(default=0.0))
-        db.alter_column('criteria_heightcriterion', 'height', models.FloatField(default=0.0))
+        db.alter_column('criteria_heightcriterion', 'height', models.FloatField(default=0.0, null=True))
 
         cursor1.execute("""SELECT id FROM criteria_heightcriterion""")
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(HeightCriterion)
-
-        # alter height column to avoid *** IntegrityError: null value in column "height" violates not-null constraint
-        cursor2.execute("""ALTER TABLE criteria_heightcriterion ALTER COLUMN height DROP NOT NULL""")
 
         cursor2.execute("""SELECT id, operator, height FROM criteria_heightcriterion""")
         for row in cursor2.fetchall():
@@ -355,15 +349,12 @@ class Command(BaseCommand):
 
         # LengthCriterion
         db.add_column("criteria_lengthcriterion", "value", models.FloatField(default=0.0))
-        db.alter_column('criteria_lengthcriterion', 'length', models.FloatField(default=0.0))
+        db.alter_column('criteria_lengthcriterion', 'length', models.FloatField(default=0.0, null=True))
 
         cursor1.execute("""SELECT id FROM criteria_lengthcriterion""")
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(LengthCriterion)
-
-        # alter length column to avoid *** IntegrityError: null value in column "length" violates not-null constraint
-        cursor2.execute("""ALTER TABLE criteria_lengthcriterion ALTER COLUMN length DROP NOT NULL""")
 
         cursor2.execute("""SELECT id, operator, length FROM criteria_lengthcriterion""")
         for row in cursor2.fetchall():
@@ -380,15 +371,12 @@ class Command(BaseCommand):
 
         # WidthCriterion
         db.add_column("criteria_widthcriterion", "value", models.FloatField(default=0.0))
-        db.alter_column('criteria_widthcriterion', 'width', models.FloatField(default=0.0))
+        db.alter_column('criteria_widthcriterion', 'width', models.FloatField(default=0.0, null=True))
 
         cursor1.execute("""SELECT id FROM criteria_widthcriterion""")
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(WidthCriterion)
-
-        # alter width column to avoid *** IntegrityError: null value in column "width" violates not-null constraint
-        cursor2.execute("""ALTER TABLE criteria_widthcriterion ALTER COLUMN width DROP NOT NULL""")
 
         cursor2.execute("""SELECT id, operator, width FROM criteria_widthcriterion""")
         for row in cursor2.fetchall():
@@ -405,15 +393,12 @@ class Command(BaseCommand):
 
         # WeightCriterion
         db.add_column("criteria_weightcriterion", "value", models.FloatField(default=0.0))
-        db.alter_column('criteria_weightcriterion', 'weight', models.FloatField(default=0.0))
+        db.alter_column('criteria_weightcriterion', 'weight', models.FloatField(default=0.0, null=True))
 
         cursor1.execute("""SELECT id FROM criteria_weightcriterion""")
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
 
         content_type = ContentType.objects.get_for_model(WeightCriterion)
-
-        # alter weight column to avoid *** IntegrityError: null value in column "weight" violates not-null constraint
-        cursor2.execute("""ALTER TABLE criteria_weightcriterion ALTER COLUMN weight DROP NOT NULL""")
 
         cursor2.execute("""SELECT id, operator, weight FROM criteria_weightcriterion""")
         for row in cursor2.fetchall():
