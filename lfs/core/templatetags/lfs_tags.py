@@ -202,7 +202,12 @@ def product_navigation(context, product):
     """Provides previous and next product links.
     """
     request = context.get("request")
-    sorting = request.session.get("sorting", 'effective_price')
+
+    try:
+        default_sorting = settings.LFS_PRODUCTS_SORTING
+    except AttributeError:
+        default_sorting = "effective_price"
+    sorting = request.session.get("sorting", default_sorting)
     if sorting.strip() == '':
         sorting = 'effective_price'
         request.session["sorting"] = sorting

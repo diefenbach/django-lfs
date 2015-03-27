@@ -168,6 +168,14 @@ class Command(BaseCommand):
                 customer.selected_shipping_address = new_address
             customer.save()
 
+        try:
+            # fix: django.db.utils.IntegrityError: duplicate key value violates unique constraint "addresses_baseaddress_pkey"
+            # in try because has been tested only in postgres
+            # please check it in your db engine and then remove this try block
+            cursor.execute("SELECT setval('addresses_baseaddress_id_seq', (SELECT MAX(id) FROM addresses_baseaddress)+1)")
+        except:
+            pass
+
         # Migrate addresses of orders
         cursor.execute("SELECT * FROM order_order")
         for order in dictfetchall(cursor):
@@ -279,7 +287,7 @@ class Command(BaseCommand):
 
         # CartPriceCriterion
         db.add_column("criteria_cartpricecriterion", "value", models.FloatField(default=0.0))
-        db.alter_column('criteria_cartpricecriterion', 'price', models.FloatField(default=0.0))
+        db.alter_column('criteria_cartpricecriterion', 'price', models.FloatField(default=0.0, null=True))
 
         cursor1.execute("""SELECT id FROM criteria_cartpricecriterion""")
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
@@ -289,9 +297,11 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            CartPriceCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                CartPriceCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
-        cursor1.execute("""DELETE FROM criteria_cartpricecriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_cartpricecriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_column("criteria_cartpricecriterion", "price")
@@ -308,14 +318,16 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            CombinedLengthAndGirthCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                CombinedLengthAndGirthCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
-        cursor1.execute("""DELETE FROM criteria_combinedlengthandgirthcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_combinedlengthandgirthcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         # HeightCriterion
         db.add_column("criteria_heightcriterion", "value", models.FloatField(default=0.0))
-        db.alter_column('criteria_heightcriterion', 'height', models.FloatField(default=0.0))
+        db.alter_column('criteria_heightcriterion', 'height', models.FloatField(default=0.0, null=True))
 
         cursor1.execute("""SELECT id FROM criteria_heightcriterion""")
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
@@ -325,15 +337,17 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            HeightCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                HeightCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
-        cursor1.execute("""DELETE FROM criteria_heightcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_heightcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
         db.delete_column("criteria_heightcriterion", "height")
 
         # LengthCriterion
         db.add_column("criteria_lengthcriterion", "value", models.FloatField(default=0.0))
-        db.alter_column('criteria_lengthcriterion', 'length', models.FloatField(default=0.0))
+        db.alter_column('criteria_lengthcriterion', 'length', models.FloatField(default=0.0, null=True))
 
         cursor1.execute("""SELECT id FROM criteria_lengthcriterion""")
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
@@ -343,16 +357,18 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            LengthCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                LengthCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
-        cursor1.execute("""DELETE FROM criteria_lengthcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_lengthcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_column("criteria_lengthcriterion", "length")
 
         # WidthCriterion
         db.add_column("criteria_widthcriterion", "value", models.FloatField(default=0.0))
-        db.alter_column('criteria_widthcriterion', 'width', models.FloatField(default=0.0))
+        db.alter_column('criteria_widthcriterion', 'width', models.FloatField(default=0.0, null=True))
 
         cursor1.execute("""SELECT id FROM criteria_widthcriterion""")
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
@@ -362,16 +378,18 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            WidthCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                WidthCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
-        cursor1.execute("""DELETE FROM criteria_widthcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_widthcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_column("criteria_widthcriterion", "width")
 
         # WeightCriterion
         db.add_column("criteria_weightcriterion", "value", models.FloatField(default=0.0))
-        db.alter_column('criteria_weightcriterion', 'weight', models.FloatField(default=0.0))
+        db.alter_column('criteria_weightcriterion', 'weight', models.FloatField(default=0.0, null=True))
 
         cursor1.execute("""SELECT id FROM criteria_weightcriterion""")
         old_criteria = ", ".join([str(row[0]) for row in cursor1.fetchall()])
@@ -381,9 +399,11 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            WeightCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                WeightCriterion.objects.create(operator=row[1], value=row[2], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
-        cursor1.execute("""DELETE FROM criteria_weightcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_weightcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_column("criteria_weightcriterion", "weight")
@@ -404,13 +424,15 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            cc = CountryCriterion.objects.create(operator=row[1], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                cc = CountryCriterion.objects.create(operator=row[1], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
             cursor4.execute("""Select country_id FROM criteria_countrycriterion_countries WHERE id=%s""" %  row[0])
             for row_2 in cursor4.fetchall():
                 cc.value.add(row_2[0])
 
-        cursor1.execute("""DELETE FROM criteria_countrycriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_countrycriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_table("criteria_countrycriterion_countries")
@@ -431,13 +453,15 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            pmc = PaymentMethodCriterion.objects.create(operator=row[1], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                pmc = PaymentMethodCriterion.objects.create(operator=row[1], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
             cursor4.execute("""Select paymentmethod_id FROM criteria_paymentmethodcriterion_payment_methods WHERE id=%s""" %  row[0])
             for row_2 in cursor4.fetchall():
                 pmc.value.add(row_2[0])
 
-        cursor1.execute("""DELETE FROM criteria_paymentmethodcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_paymentmethodcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_table("criteria_paymentmethodcriterion_payment_methods")
@@ -457,13 +481,15 @@ class Command(BaseCommand):
         for row in cursor2.fetchall():
             cursor3.execute("""Select content_type_id, content_id, position FROM criteria_criteriaobjects WHERE criterion_type_id=%s and criterion_id=%s""" % (content_type.id, row[0]))
             criterion_object = cursor3.fetchone()
-            smc = ShippingMethodCriterion.objects.create(operator=row[1], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
+            if criterion_object:
+                smc = ShippingMethodCriterion.objects.create(operator=row[1], content_type_id=criterion_object[0], content_id=criterion_object[1], position=criterion_object[2])
 
             cursor4.execute("""Select shippingmethod_id FROM criteria_shippingmethodcriterion_shipping_methods WHERE id=%s""" %  row[0])
             for row_2 in cursor4.fetchall():
                 smc.value.add(row_2[0])
 
-        cursor1.execute("""DELETE FROM criteria_shippingmethodcriterion WHERE id in (%s)""" % old_criteria)
+        if old_criteria:
+            cursor1.execute("""DELETE FROM criteria_shippingmethodcriterion WHERE id in (%s)""" % old_criteria)
         transaction.commit_unless_managed()
 
         db.delete_table("criteria_shippingmethodcriterion_shipping_methods")
