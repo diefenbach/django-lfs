@@ -1173,7 +1173,7 @@ class Product(models.Model):
                     # check if option exists in any variant
                     option_used = ProductPropertyValue.objects.filter(parent_id=self.pk,
                                                                       product__active=True,
-                                                                      property=property,
+                                                                      property=prop,
                                                                       property_group=property_group,
                                                                       type=PROPERTY_VALUE_TYPE_VARIANT,
                                                                       value=property_option.pk).exists()
