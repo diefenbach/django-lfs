@@ -10,6 +10,6 @@ def parse_properties(request):
             except IndexError:
                 continue
             else:
-                properties.append("%s|%s" % (property_id, option_id))
-
+                property_group_id, option_id = option_id.split("|")
+                properties.append("%s|%s|%s" % (property_group_id, property_id, option_id))
     return properties
