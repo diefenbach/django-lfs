@@ -1305,7 +1305,8 @@ class ViewsTestCase(TestCase):
         response = self.client.post(url, {"product_id": self.p1.id})
 
         # Select the variant color = red
-        response = self.client.post(url, {"product_id": self.p1.id, "property_1": "1"})
+
+        response = self.client.post(url, {"product_id": self.p1.id, "property_{0}|{1}".format(self.pg.pk, self.p1.pk): "1"})
 
     def test_product_detail_view(self):
         """

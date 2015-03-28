@@ -164,21 +164,21 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
             except TypeError:
                 pmax = 0.0
     
-        property_group_dict = number_fields_dict.setdefault(property_group_id, {'property_group': property_group,
-                                                                                'items': []})
+            property_group_dict = number_fields_dict.setdefault(property_group_id, {'property_group': property_group,
+                                                                                    'items': []})
 
-        property_group_dict['items'].append({
-            "id": property_id,
-            "property_group_id": property_group_id,
-            "position": prop.position,
-            "object": prop,
-            "name": prop.name,
-            "title": prop.title,
-            "unit": prop.unit,
-            "show_reset": show_reset,
-            "show_quantity": True,
-            "items": {"min": pmin, "max": pmax}
-        })
+            property_group_dict['items'].append({
+                "id": property_id,
+                "property_group_id": property_group_id,
+                "position": prop.position,
+                "object": prop,
+                "name": prop.name,
+                "title": prop.title,
+                "unit": prop.unit,
+                "show_reset": show_reset,
+                "show_quantity": True,
+                "items": {"min": pmin, "max": pmax}
+            })
 
     # convert to list ordered by property group name
     number_fields = number_fields_dict.values()
@@ -187,6 +187,7 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
         pg['items'] = sorted(pg['items'], key=lambda a: a['name'])
 
     ########## Select Fields & Text Fields #####################################
+    select_fields_dict = {}
     if property_ids and product_ids:
         cursor = connection.cursor()
         cursor.execute("""SELECT property_group_id, property_id, value
@@ -196,7 +197,6 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
                           AND property_id IN (%s)
                           GROUP BY property_group_id, property_id, value""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
     
-        select_fields_dict = {}
         for row in cursor.fetchall():
             property_group_id = row[0]
             property_id = row[1]
