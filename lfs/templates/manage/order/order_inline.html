@@ -165,7 +165,7 @@
                 {% if item.product.is_configurable_product %}
                     {% for property in item.get_properties %}
                         <div>
-                            {{ property.title }} : {{ property.value }} {{ property.unit|safe }}
+                            {{ property.title }} [{{ property.property_group_name }}] : {{ property.value }} {{ property.unit|safe }}
                             {% if property.display_price %}
                                 ({{ property.price|currency:request }})
                             {% endif %}

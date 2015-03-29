@@ -11,7 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs.catalog.utils
-from lfs.catalog.models import Product
+from lfs.catalog.models import Product, PropertyGroup
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
 
@@ -54,7 +54,7 @@ class Cart(models.Model):
     def __unicode__(self):
         return u"%s, %s" % (self.user, self.session)
 
-    def add(self, product, properties=None, amount=1):
+    def add(self, product, properties_dict=None, amount=1):
         """
         Adds passed product to the cart.
 
@@ -70,20 +70,26 @@ class Cart(models.Model):
         Returns the newly created cart item.
         """
         if product.is_configurable_product():
-            cart_item = self.get_item(product, properties)
+            cart_item = self.get_item(product, properties_dict)
             if cart_item:
                 cart_item.amount += amount
                 cart_item.save()
             else:
                 cart_item = CartItem.objects.create(cart=self, product=product, amount=amount)
-                if properties:
-                    for property_id, value in properties.items():
+                if properties_dict:
+                    for key, item in properties_dict.items():
+                        property_id = item['property_id']
+                        property_group_id = item['property_group_id'] if item['property_group_id'] != '0' else None
+                        value = item['value']
                         try:
                             Property.objects.get(pk=property_id)
                         except Property.DoesNotExist:
                             pass
                         else:
-                            CartItemPropertyValue.objects.create(cart_item=cart_item, property_id=property_id, value=value)
+                            CartItemPropertyValue.objects.create(cart_item=cart_item,
+                                                                 property_group_id=property_group_id,
+                                                                 property_id=property_id,
+                                                                 value=value)
         else:
             try:
                 cart_item = CartItem.objects.get(cart=self, product=product)
@@ -107,17 +113,25 @@ class Cart(models.Model):
             amount += item.amount
         return amount
 
-    def get_item(self, product, properties):
+    def get_item(self, product, properties_dict):
         """
         Returns the item for passed product and properties or None if there
         is none.
         """
+        properties_dict_keys = ['{0}_{1}_{2}'.format(item['property_group_id'],
+                                                     item['property_id'],
+                                                     item['value']) for item in properties_dict.values()]
+        properties_dict_keys = sorted(properties_dict_keys)
+        properties_dict_key = '-'.join(properties_dict_keys)
         for item in CartItem.objects.filter(cart=self, product=product):
-            item_props = {}
+            item_props = []
             for pv in item.properties.all():
-                item_props[unicode(pv.property.id)] = pv.value
-
-            if item_props == properties:
+                property_group_id = pv.property_group_id if pv.property_group_id else '0'
+                key = '{0}_{1}_{2}'.format(property_group_id, pv.property_id, pv.value)
+                item_props.append(key)
+            item_props = sorted(item_props)
+            item_props_key = '-'.join(item_props)
+            if item_props_key == properties_dict_key:
                 return item
 
         return None
@@ -316,15 +330,19 @@ class CartItem(models.Model):
         fields.
         """
         properties = []
-        for property in self.product.get_properties():
+        for prop_dict in self.product.get_properties():
+            prop = prop_dict['property']
+            property_group = prop_dict['property_group']
             price = ""
 
             try:
-                cipv = CartItemPropertyValue.objects.get(cart_item=self, property=property)
+                cipv = CartItemPropertyValue.objects.get(cart_item=self,
+                                                         property=prop,
+                                                         property_group=property_group)
             except CartItemPropertyValue.DoesNotExist:
                 continue
 
-            if property.is_select_field:
+            if prop.is_select_field:
                 try:
                     option = PropertyOption.objects.get(pk=int(float(cipv.value)))
                 except (PropertyOption.DoesNotExist, ValueError):
@@ -334,8 +352,8 @@ class CartItem(models.Model):
                     value = option.name
                     price = option.price
 
-            elif property.is_number_field:
-                format_string = "%%.%sf" % property.decimal_places
+            elif prop.is_number_field:
+                format_string = "%%.%sf" % prop.decimal_places
                 try:
                     value = format_string % float(cipv.value)
                 except ValueError:
@@ -344,15 +362,18 @@ class CartItem(models.Model):
                 value = cipv.value
 
             properties.append({
-                "name": property.name,
-                "title": property.title,
-                "unit": property.unit,
-                "display_price": property.display_price,
+                "name": prop.name,
+                "title": prop.title,
+                "unit": prop.unit,
+                "display_price": prop.display_price,
                 "value": value,
                 "price": price,
-                "obj": property
+                "obj": prop,
+                "property_group": property_group,
+                "property_group_name": property_group.name
             })
 
+        properties = sorted(properties, key=lambda x: '{0}-{1}'.format(x['property_group_name'], x['obj'].position))
         return properties
 
 
@@ -374,4 +395,5 @@ class CartItemPropertyValue(models.Model):
     """
     cart_item = models.ForeignKey(CartItem, verbose_name=_(u"Cart item"), related_name="properties")
     property = models.ForeignKey(Property, verbose_name=_(u"Property"))
+    property_group = models.ForeignKey(PropertyGroup, verbose_name=_(u'Property group'), null=True, blank=True)
     value = models.CharField("Value", blank=True, max_length=100)

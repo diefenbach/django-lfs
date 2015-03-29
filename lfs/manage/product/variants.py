@@ -55,11 +55,18 @@ class ProductVariantSimpleForm(ModelForm):
     def __init__(self, all_properties, *args, **kwargs):
         super(ProductVariantSimpleForm, self).__init__(*args, **kwargs)
         self.fields['slug'].required = False
-        for prop in all_properties:
+        for prop_dict in all_properties:
+            prop = prop_dict['property']
+            property_group = prop_dict['property_group']
+            property_group_id = property_group.pk if property_group else 0
+            property_group_name = property_group.name if property_group else _('Local')
+            field_label = u'<span class="property-group-label">[%s]</span> %s' % (property_group_name, prop.name)
             choices = [('all', _('All')), ('', '---')]
             choices.extend(list(prop.options.values_list('pk', 'name')))
-            self.fields['property_%s' % prop.id] = ChoiceField(label=prop.name, choices=choices, required=False)
-            self.initial['property_%s' % prop.id] = 'all'
+            self.fields['property_%s_%s' % (property_group_id, prop.id)] = ChoiceField(label=field_label,
+                                                                                       choices=choices,
+                                                                                       required=False)
+            self.initial['property_%s_%s' % (property_group_id, prop.id)] = 'all'
 
     class Meta:
         model = Product
@@ -77,7 +84,7 @@ class ProductVariantCreateForm(ModelForm):
 
     def prepare_slug(self, slug):
         for option in self.options:
-            property_id, option_id = option.split("|")
+            property_group_id, property_id, option_id = option.split("|")
             o = PropertyOption.objects.get(pk=option_id)
             if slug:
                 slug += "-"
@@ -187,9 +194,12 @@ def manage_variants(request, product_id, as_string=False, variant_simple_form=No
     if variants is None:
         variants = []
 
-        props = product.get_variants_properties()
+        props_dicts = product.get_variants_properties()
+
+        # for each property prepare list of its options
+        all_props = [prop_dict['property'] for prop_dict in props_dicts]
         props_options = {}
-        for o in PropertyOption.objects.filter(property__in=props):
+        for o in PropertyOption.objects.filter(property__in=all_props):
             props_options.setdefault(o.property_id, {})
             props_options[o.property_id][str(o.pk)] = {
                 "id": o.pk,
@@ -199,17 +209,29 @@ def manage_variants(request, product_id, as_string=False, variant_simple_form=No
 
         product_variants = product.variants.all().order_by("variant_position")
         selected_options = {}
-        for so in ProductPropertyValue.objects.filter(property__in=props,
-                                                      product__in=product_variants, type=PROPERTY_VALUE_TYPE_VARIANT):
-            ppk = so.product_id
-            selected_options.setdefault(ppk, {})[so.property_id] = so.value
+        for prop_dict in props_dicts:
+            prop = prop_dict['property']
+            property_group = prop_dict['property_group']
+            property_group_id = property_group.pk if property_group else 0
+
+            for so in ProductPropertyValue.objects.filter(property=prop,
+                                                          property_group=property_group,
+                                                          product__in=product_variants,
+                                                          type=PROPERTY_VALUE_TYPE_VARIANT):
+                ppk = so.product_id
+                selected_groups = selected_options.setdefault(ppk, {})
+                selected_groups.setdefault(property_group_id, {})[so.property_id] = so.value
 
         for variant in product_variants:
             properties = []
-            for prop in props:
+            for prop_dict in props_dicts:
+                prop = prop_dict['property']
+                property_group = prop_dict['property_group']
+                property_group_id = property_group.pk if property_group else 0
+
                 options = deepcopy(props_options.get(prop.pk, {}))
                 try:
-                    sop = selected_options[variant.pk][prop.pk]
+                    sop = selected_options[variant.pk][property_group_id][prop.pk]
                     options[sop]['selected'] = True
                 except KeyError:
                     pass
@@ -217,7 +239,9 @@ def manage_variants(request, product_id, as_string=False, variant_simple_form=No
                 properties.append({
                     "id": prop.pk,
                     "name": prop.name,
-                    "options": options.values()
+                    "options": options.values(),
+                    "property_group_id": property_group.pk if property_group else 0,
+                    "property_group": property_group
                 })
 
             variants.append({
@@ -462,16 +486,16 @@ def add_variants(request, product_id):
         properties = []
         for key, value in variant_simple_form.cleaned_data.items():
             if key.startswith("property"):
-                property_id = key.split("_")[1]
+                _property, property_group_id, property_id = key.split("_")
                 if value == "all":
                     temp = []
                     for option in PropertyOption.objects.filter(property=property_id):
-                        temp.append("%s|%s" % (property_id, option.id))
+                        temp.append("%s|%s|%s" % (property_group_id, property_id, option.id))
                     properties.append(temp)
                 elif value == '':
                     continue
                 else:
-                    properties.append(["%s|%s" % (property_id, value)])
+                    properties.append(["%s|%s|%s" % (property_group_id, property_id, value)])
 
         # Create a variant for every requested option combination
         for i, options in enumerate(manage_utils.cartesian_product(*properties)):
@@ -499,13 +523,21 @@ def add_variants(request, product_id):
 
                 # Save the value for this product and property.
                 for option in options:
-                    property_id, option_id = option.split("|")
-                    ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id,
+                    property_group_id, property_id, option_id = option.split("|")
+                    # local properties are not bound to property groups
+                    property_group_id = None if property_group_id == '0' else property_group_id
+                    ProductPropertyValue.objects.create(product=variant,
+                                                        property_group_id=property_group_id,
+                                                        property_id=property_id,
+                                                        value=option_id,
                                                         type=PROPERTY_VALUE_TYPE_VARIANT)
                     # By default we create also the filter values as this most of
                     # the users would expect.
                     if Property.objects.get(pk=property_id).filterable:
-                        ProductPropertyValue.objects.create(product=variant, property_id=property_id, value=option_id,
+                        ProductPropertyValue.objects.create(product=variant,
+                                                            property_group_id=property_group_id,
+                                                            property_id=property_id,
+                                                            value=option_id,
                                                             type=PROPERTY_VALUE_TYPE_FILTER)
             else:
                 continue
@@ -616,25 +648,28 @@ def update_variants(request, product_id):
                 variant.save()
 
             elif key.startswith("property"):
-                # properties are marshalled as: property-variant_id|property_id
+                # properties are marshalled as: property-variant_id|property_group_id|property_id
                 temp = key.split("-")[1]
-                variant_id, property_id = temp.split("|")
+                variant_id, property_group_id, property_id = temp.split("|")
+                if property_group_id == '0':  # local properties are not bound to property groups
+                    property_group_id = None
                 try:
                     variant = Product.objects.get(pk=variant_id)
                 except Product.DoesNotExist:
                     continue
                 prop = Property.objects.get(pk=property_id)
                 ppv = None
-                ppv_filterable = None
                 try:
                     ppv = ProductPropertyValue.objects.get(product=variant,
                                                            property_id=property_id,
+                                                           property_group_id=property_group_id,
                                                            type=PROPERTY_VALUE_TYPE_VARIANT)
                 except ProductPropertyValue.DoesNotExist:
                     pass
 
                 if prop.filterable:  # it is possible that multiple values are selected for filter
                     ppv_filterables = ProductPropertyValue.objects.filter(product=variant,
+                                                                          property_group_id=property_group_id,
                                                                           property_id=property_id,
                                                                           type=PROPERTY_VALUE_TYPE_FILTER)
 
@@ -642,6 +677,7 @@ def update_variants(request, product_id):
                     is_changed = True
                     if not ppv:
                         ppv = ProductPropertyValue.objects.create(product=variant,
+                                                                  property_group_id=property_group_id,
                                                                   property_id=property_id,
                                                                   type=PROPERTY_VALUE_TYPE_VARIANT,
                                                                   value=value)
@@ -653,6 +689,7 @@ def update_variants(request, product_id):
                     if prop.filterable and is_changed:
                         ppv_filterables.delete()
                         ProductPropertyValue.objects.create(product=variant,
+                                                            property_group_id=property_group_id,
                                                             property_id=property_id,
                                                             value=value,
                                                             type=PROPERTY_VALUE_TYPE_FILTER)
