@@ -64,6 +64,9 @@
                                         <a href="{% url 'lfs_manage_product' product.id %}">
                                             {{ product.get_name }}
                                         </a>
+                                        <div class="product-properties-info">
+                                            {% include "lfs/catalog/products/_product_properties.html" with product=product %}
+                                        </div>
                                     </td>
                                     <td>
                                         {{ product.get_sku }}
@@ -125,6 +128,9 @@
                                         <a href="{% url 'lfs_manage_product' related_product.id %}">
                                             {{ related_product.get_name }}
                                         </a>
+                                        <div class="product-properties-info">
+                                            {% include "lfs/catalog/products/_product_properties.html" with product=related_product %}
+                                        </div>
                                     </td>
                                     <td>
                                         {{ related_product.get_sku }}
