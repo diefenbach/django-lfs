@@ -14,9 +14,11 @@ class Migration(DataMigration):
 
         # Makes all properties to variant properties as this was the default
         # behaviour before the field exits.
-        for prop in orm.Property.objects.all():
-            prop.variants = True
-            prop.save()
+        #for prop in orm.Property.objects.all():
+        #    prop.variants = True
+        #    prop.save()
+        # just pass as it should already be there - https://github.com/diefenbach/django-lfs/issues/179
+        pass
 
     def backwards(self, orm):
         "Write your backwards methods here."

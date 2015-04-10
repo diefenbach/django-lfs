@@ -10,23 +10,26 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
 
         # Deleting field 'Property.display_no_results'
-        db.delete_column(u'catalog_property', 'display_no_results')
-
-        # Adding field 'Property.variants'
-        db.add_column(u'catalog_property', 'variants',
-                      self.gf('django.db.models.fields.BooleanField')(default=False),
-                      keep_default=False)
+        #db.delete_column(u'catalog_property', 'display_no_results')
+        #
+        ## Adding field 'Property.variants'
+        #db.add_column(u'catalog_property', 'variants',
+        #              self.gf('django.db.models.fields.BooleanField')(default=False),
+        #              keep_default=False)
+        # just pass as it should already be there - https://github.com/diefenbach/django-lfs/issues/179
+        pass
 
 
     def backwards(self, orm):
 
         # Adding field 'Property.display_no_results'
-        db.add_column(u'catalog_property', 'display_no_results',
-                      self.gf('django.db.models.fields.BooleanField')(default=False),
-                      keep_default=False)
-
-        # Deleting field 'Property.variants'
-        db.delete_column(u'catalog_property', 'variants')
+        #db.add_column(u'catalog_property', 'display_no_results',
+        #              self.gf('django.db.models.fields.BooleanField')(default=False),
+        #              keep_default=False)
+        #
+        ## Deleting field 'Property.variants'
+        #db.delete_column(u'catalog_property', 'variants')
+        pass
 
 
     models = {
