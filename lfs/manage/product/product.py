@@ -132,6 +132,10 @@ class VariantDataForm(forms.ModelForm):
         return self.cleaned_data
 
 
+class PaginationDataForm(forms.Form):
+    page = forms.IntegerField(_('Page'), widget=HiddenInput)
+
+
 class ProductStockForm(forms.ModelForm):
     """
     Form to add and edit stock data of a product.
@@ -256,9 +260,13 @@ def product_data_form(request, product_id, template_name="manage/product/data.ht
     else:
         form = ProductDataForm(instance=product)
 
+    page = request.REQUEST.get('page', 1)
+    pagination_form = PaginationDataForm(data={'page': page})
+
     return render_to_string(template_name, RequestContext(request, {
         "product": product,
         "form": form,
+        "pagination_form": pagination_form,
         "redirect_to": lfs.core.utils.get_redirect_for(product.get_absolute_url()),
     }))
 
@@ -443,11 +451,13 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
         message = _(u"Product data has been saved.")
     else:
         message = _(u"Please correct the indicated errors.")
-        print form.errors
+
+    pagination_form = PaginationDataForm(data={'page': page})
 
     form_html = render_to_string(template_name, RequestContext(request, {
         "product": product,
         "form": form,
+        "pagination_form": pagination_form,
         "redirect_to": lfs.core.utils.get_redirect_for(product.get_absolute_url()),
     }))
 
