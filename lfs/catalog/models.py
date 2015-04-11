@@ -588,7 +588,7 @@ class Product(models.Model):
     """
     # All products
     name = models.CharField(_(u"Name"), help_text=_(u"The name of the product."), max_length=80, blank=True)
-    slug = models.SlugField(_(u"Slug"), help_text=_(u"The unique last part of the Product's URL."), unique=True, max_length=80)
+    slug = models.SlugField(_(u"Slug"), help_text=_(u"The unique last part of the Product's URL."), unique=True, max_length=120)
     sku = models.CharField(_(u"SKU"), help_text=_(u"Your unique article number of the product."), blank=True, max_length=30)
     price = models.FloatField(_(u"Price"), default=0.0)
     price_calculator = models.CharField(_(u"Price calculator"), null=True, blank=True,
@@ -2055,6 +2055,7 @@ class PropertyGroup(models.Model):
     name = models.CharField(_(u"Name"), blank=True, max_length=50)
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="property_groups")
     position = models.IntegerField(_(u"Position"), default=1000)
+    uid = models.CharField(max_length=50, editable=False, unique=True, default=get_unique_id_str)
 
     class Meta:
         ordering = ("position", )
