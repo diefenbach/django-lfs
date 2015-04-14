@@ -172,7 +172,7 @@ class Category(models.Model):
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
 
     static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")
-    template = models.PositiveSmallIntegerField(_(u"Category template"), max_length=400, blank=True, null=True, choices=CATEGORY_TEMPLATES)
+    template = models.PositiveSmallIntegerField(_(u"Category template"), blank=True, null=True, choices=CATEGORY_TEMPLATES)
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
 
     product_rows = models.IntegerField(_(u"Product rows"), default=3)
@@ -606,10 +606,10 @@ class Product(models.Model):
     meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
     meta_description = models.TextField(_(u"Meta description"), blank=True)
 
-    related_products = models.ManyToManyField("self", verbose_name=_(u"Related products"), blank=True, null=True,
+    related_products = models.ManyToManyField("self", verbose_name=_(u"Related products"), blank=True,
         symmetrical=False, related_name="reverse_related_products")
 
-    accessories = models.ManyToManyField("Product", verbose_name=_(u"Acessories"), blank=True, null=True,
+    accessories = models.ManyToManyField("Product", verbose_name=_(u"Acessories"), blank=True,
         symmetrical=False, through="ProductAccessories",
         related_name="reverse_accessories")
 
@@ -2152,8 +2152,8 @@ class Property(models.Model):
     """
     name = models.CharField(_(u"Name"), max_length=100)
     title = models.CharField(_(u"Title"), max_length=100)
-    groups = models.ManyToManyField(PropertyGroup, verbose_name=_(u"Group"), blank=True, null=True, through="GroupsPropertiesRelation", related_name="properties")
-    products = models.ManyToManyField(Product, verbose_name=_(u"Products"), blank=True, null=True, through="ProductsPropertiesRelation", related_name="properties")
+    groups = models.ManyToManyField(PropertyGroup, verbose_name=_(u"Group"), blank=True, through="GroupsPropertiesRelation", related_name="properties")
+    products = models.ManyToManyField(Product, verbose_name=_(u"Products"), blank=True, through="ProductsPropertiesRelation", related_name="properties")
     position = models.IntegerField(_(u"Position"), blank=True, null=True)
     unit = models.CharField(_(u"Unit"), blank=True, max_length=15)
     display_on_product = models.BooleanField(_(u"Display on product"), default=False)
