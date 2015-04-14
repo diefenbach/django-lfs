@@ -185,7 +185,7 @@ def move_image(request, id):
     html = [["#images-list", list_images(request, product.id, as_string=True)]]
 
     result = json.dumps({
-         "html": html,
+        "html": html,
     }, cls=LazyEncoder)
 
     return HttpResponse(result, content_type='application/json')

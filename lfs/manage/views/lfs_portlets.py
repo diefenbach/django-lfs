@@ -86,6 +86,7 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             ct = ContentType.objects.filter(model=portlet_type.lower())[0]
             mc = ct.model_class()
             form = mc().form(prefix="portlet", data=request.POST)
+
             if form.is_valid():
                 portlet = form.save()
 
@@ -169,7 +170,7 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
     if request.method == "POST":
         form = pa.portlet.form(prefix="portlet", data=request.POST)
         if form.is_valid():
-            portlet = form.save()
+            form.save()
 
             # Save the rest
             pa.slot_id = request.POST.get("slot")

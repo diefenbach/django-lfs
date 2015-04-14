@@ -3,15 +3,12 @@ import json
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
 # lfs.imports
-import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import ProductAttachment
 from lfs.catalog.models import Product
@@ -54,7 +51,6 @@ def list_attachments(request, product_id, as_string=False, template_name="manage
         }, cls=LazyEncoder)
 
     return HttpResponse(result, content_type='application/json')
-
 
 
 # Actions
@@ -159,7 +155,7 @@ def move_attachment(request, id):
     html = [["#attachments-list", list_attachments(request, product.id, as_string=True)]]
 
     result = json.dumps({
-         "html": html,
+        "html": html,
     }, cls=LazyEncoder)
 
     return HttpResponse(result, content_type='application/json')
