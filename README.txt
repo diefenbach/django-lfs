@@ -27,6 +27,14 @@ A demo shop can be tried here:
 Changes
 =======
 
+0.9.0 (2015-04-14)
+==================
+
+* Replaced deprecated mimetype with content_type (Pigletto)
+* Added lfs_regenerate_thumbs command (Sasha Vincic)
+* Added links from property group property tab to properties
+
+
 0.9.0 alpha 1 (2014-06-19)
 ==========================
 
