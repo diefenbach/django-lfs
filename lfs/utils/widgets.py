@@ -1,12 +1,5 @@
-from itertools import chain
-
 from django.forms.widgets import Select
 from django.forms.util import flatatt
-
-from django.utils.html import escape, conditional_escape
-#from django.utils.safestring import mark_safe
-from django.utils.encoding import StrAndUnicode, force_unicode
-
 from django.template.loader import render_to_string
 
 
@@ -29,13 +22,13 @@ class SelectImage(Select):
                 defaultimage = keys["image"]
 
         # Try to pick first image as default image
-        if defaultimage == None:
+        if defaultimage is None:
             if len(self.choices) > 0:
                 defaultimage = self.choices[0][1]["image"]
-        return render_to_string("manage/widgets/selectimage.html",
-               {"selectimageid": self.image_id,
-                "choices": self.choices,
-                "currentvalue": value,
-                "finalattrs": flatatt(final_attrs),
-                "imageurl": defaultimage,
-               })
+        return render_to_string("manage/widgets/selectimage.html", {
+            "selectimageid": self.image_id,
+            "choices": self.choices,
+            "currentvalue": value,
+            "finalattrs": flatatt(final_attrs),
+            "imageurl": defaultimage,
+        })
