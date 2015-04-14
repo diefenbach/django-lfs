@@ -46,3 +46,4 @@ class PagesForm(forms.ModelForm):
     """
     class Meta:
         model = PagesPortlet
+        exclude = ()

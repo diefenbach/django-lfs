@@ -73,3 +73,4 @@ class LatestForm(forms.ModelForm):
     """
     class Meta:
         model = LatestPortlet
+        exclude = ()

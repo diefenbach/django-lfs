@@ -10,6 +10,7 @@ class TaxForm(ModelForm):
     """
     class Meta:
         model = Tax
+        exclude = ()
 
 
 class TaxAddForm(ModelForm):

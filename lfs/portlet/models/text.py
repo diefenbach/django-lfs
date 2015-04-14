@@ -38,3 +38,4 @@ class TextPortletForm(forms.ModelForm):
     """
     class Meta:
         model = TextPortlet
+        exclude = ()

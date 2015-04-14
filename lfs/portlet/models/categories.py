@@ -70,3 +70,4 @@ class CategoriesPortletForm(forms.ModelForm):
     """
     class Meta:
         model = CategoriesPortlet
+        exclude = ()

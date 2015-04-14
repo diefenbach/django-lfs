@@ -49,3 +49,4 @@ class DeliveryTimeForm(forms.ModelForm):
     """
     class Meta:
         model = DeliveryTimePortlet
+        exclude = ()

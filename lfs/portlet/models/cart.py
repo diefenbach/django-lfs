@@ -53,3 +53,4 @@ class CartPortletForm(forms.ModelForm):
     """
     class Meta:
         model = CartPortlet
+        exclude = ()
