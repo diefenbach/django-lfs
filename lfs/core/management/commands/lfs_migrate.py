@@ -60,6 +60,7 @@ class Command(BaseCommand):
             print "You are up-to-date"
 
     def migrate_to_09(self, application, version):
+        print "Migrating to 0.9"
         from django.contrib.contenttypes import generic
         from django.contrib.contenttypes.models import ContentType
         from lfs.core.models import Country
