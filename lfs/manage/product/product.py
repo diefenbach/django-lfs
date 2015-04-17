@@ -452,7 +452,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
     else:
         message = _(u"Please correct the indicated errors.")
 
-    pagination_form = PaginationDataForm(data={'page': page})
+    pagination_form = PaginationDataForm(data={'page': page.number})
 
     form_html = render_to_string(template_name, RequestContext(request, {
         "product": product,
