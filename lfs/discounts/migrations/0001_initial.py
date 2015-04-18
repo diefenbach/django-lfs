@@ -1,46 +1,30 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+import lfs.criteria.base
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Discount'
-        db.create_table('discounts_discount', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('value', self.gf('django.db.models.fields.FloatField')()),
-            ('type', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=0)),
-            ('tax', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['tax.Tax'], null=True, blank=True)),
-            ('sku', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
-        ))
-        db.send_create_signal('discounts', ['Discount'])
+    dependencies = [
+        ('tax', '__first__'),
+        ('catalog', '0001_initial'),
+    ]
 
-
-    def backwards(self, orm):
-        # Deleting model 'Discount'
-        db.delete_table('discounts_discount')
-
-
-    models = {
-        'discounts.discount': {
-            'Meta': {'object_name': 'Discount'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'sku': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'tax': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tax.Tax']", 'null': 'True', 'blank': 'True'}),
-            'type': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '0'}),
-            'value': ('django.db.models.fields.FloatField', [], {})
-        },
-        'tax.tax': {
-            'Meta': {'object_name': 'Tax'},
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'rate': ('django.db.models.fields.FloatField', [], {'default': '0'})
-        }
-    }
-
-    complete_apps = ['discounts']
+    operations = [
+        migrations.CreateModel(
+            name='Discount',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100, verbose_name='Name')),
+                ('active', models.BooleanField(default=False, verbose_name='Active')),
+                ('value', models.FloatField(verbose_name='Value')),
+                ('type', models.PositiveSmallIntegerField(default=0, verbose_name='Type', choices=[(0, 'Absolute'), (1, 'Percentage')])),
+                ('sku', models.CharField(max_length=50, verbose_name='SKU', blank=True)),
+                ('products', models.ManyToManyField(related_name='discounts', verbose_name='Products', to='catalog.Product')),
+                ('tax', models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True)),
+            ],
+            bases=(models.Model, lfs.criteria.base.Criteria),
+        ),
+    ]

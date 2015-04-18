@@ -1,34 +1,23 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+import lfs.criteria.base
 
 
-class Migration(SchemaMigration):
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'CustomerTax'
-        db.create_table('customer_tax_customertax', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('rate', self.gf('django.db.models.fields.FloatField')(default=0)),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-        ))
-        db.send_create_signal('customer_tax', ['CustomerTax'])
+    dependencies = [
+    ]
 
-
-    def backwards(self, orm):
-        # Deleting model 'CustomerTax'
-        db.delete_table('customer_tax_customertax')
-
-
-    models = {
-        'customer_tax.customertax': {
-            'Meta': {'object_name': 'CustomerTax'},
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'rate': ('django.db.models.fields.FloatField', [], {'default': '0'})
-        }
-    }
-
-    complete_apps = ['customer_tax']
+    operations = [
+        migrations.CreateModel(
+            name='CustomerTax',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('rate', models.FloatField(default=0, verbose_name='Rate')),
+                ('description', models.TextField(verbose_name='Description', blank=True)),
+            ],
+            bases=(models.Model, lfs.criteria.base.Criteria),
+        ),
+    ]

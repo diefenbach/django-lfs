@@ -12,3 +12,4 @@ class CustomerTaxForm(forms.ModelForm):
     """
     class Meta:
         model = CustomerTax
+        exclude = ()

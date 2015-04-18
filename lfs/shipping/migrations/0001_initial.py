@@ -1,88 +1,50 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+import lfs.criteria.base
 
 
-class Migration(SchemaMigration):
-    depends_on = (
-        ("catalog", "0001_initial"),
-    )
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'ShippingMethod'
-        db.create_table('shipping_shippingmethod', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('active', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('priority', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('note', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('image', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True, blank=True)),
-            ('tax', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['tax.Tax'], null=True, blank=True)),
-            ('price', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('delivery_time', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalog.DeliveryTime'], null=True, blank=True)),
-            ('price_calculator', self.gf('django.db.models.fields.CharField')(default='lfs.shipping.GrossShippingMethodPriceCalculator', max_length=200)),
-        ))
-        db.send_create_signal('shipping', ['ShippingMethod'])
+    dependencies = [
+        ('tax', '__first__'),
+        ('catalog', '0001_initial'),
+    ]
 
-        # Adding model 'ShippingMethodPrice'
-        db.create_table('shipping_shippingmethodprice', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('shipping_method', self.gf('django.db.models.fields.related.ForeignKey')(related_name='prices', to=orm['shipping.ShippingMethod'])),
-            ('price', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('priority', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('active', self.gf('django.db.models.fields.BooleanField')(default=True)),
-        ))
-        db.send_create_signal('shipping', ['ShippingMethodPrice'])
-
-
-    def backwards(self, orm):
-        # Deleting model 'ShippingMethod'
-        db.delete_table('shipping_shippingmethod')
-
-        # Deleting model 'ShippingMethodPrice'
-        db.delete_table('shipping_shippingmethodprice')
-
-
-    models = {
-        'catalog.deliverytime': {
-            'Meta': {'ordering': "('min',)", 'object_name': 'DeliveryTime'},
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'max': ('django.db.models.fields.FloatField', [], {}),
-            'min': ('django.db.models.fields.FloatField', [], {}),
-            'unit': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '2'})
-        },
-        'shipping.shippingmethod': {
-            'Meta': {'ordering': "('priority',)", 'object_name': 'ShippingMethod'},
-            'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'delivery_time': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalog.DeliveryTime']", 'null': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'note': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'price': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
-            'price_calculator': ('django.db.models.fields.CharField', [], {'default': "'lfs.shipping.GrossShippingMethodPriceCalculator'", 'max_length': '200'}),
-            'priority': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'tax': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tax.Tax']", 'null': 'True', 'blank': 'True'})
-        },
-        'shipping.shippingmethodprice': {
-            'Meta': {'ordering': "('priority',)", 'object_name': 'ShippingMethodPrice'},
-            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'price': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
-            'priority': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'shipping_method': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'prices'", 'to': "orm['shipping.ShippingMethod']"})
-        },
-        'tax.tax': {
-            'Meta': {'object_name': 'Tax'},
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'rate': ('django.db.models.fields.FloatField', [], {'default': '0'})
-        }
-    }
-
-    complete_apps = ['shipping']
+    operations = [
+        migrations.CreateModel(
+            name='ShippingMethod',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('active', models.BooleanField(default=False, verbose_name='Active')),
+                ('priority', models.IntegerField(default=0, verbose_name='Priority')),
+                ('name', models.CharField(max_length=50, verbose_name='Name')),
+                ('description', models.TextField(verbose_name='Description', blank=True)),
+                ('note', models.TextField(verbose_name='Note', blank=True)),
+                ('image', models.ImageField(upload_to=b'images', null=True, verbose_name='Image', blank=True)),
+                ('price', models.FloatField(default=0.0, verbose_name='Price')),
+                ('price_calculator', models.CharField(default=b'lfs.shipping.GrossShippingMethodPriceCalculator', max_length=200, verbose_name='Price Calculator', choices=[[b'lfs.shipping.GrossShippingMethodPriceCalculator', 'Price includes tax'], [b'lfs.shipping.NetShippingMethodPriceCalculator', 'Price excludes tax']])),
+                ('delivery_time', models.ForeignKey(verbose_name='Delivery time', blank=True, to='catalog.DeliveryTime', null=True)),
+                ('tax', models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True)),
+            ],
+            options={
+                'ordering': ('priority',),
+            },
+            bases=(models.Model, lfs.criteria.base.Criteria),
+        ),
+        migrations.CreateModel(
+            name='ShippingMethodPrice',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('price', models.FloatField(default=0.0, verbose_name='Price')),
+                ('priority', models.IntegerField(default=0, verbose_name='Priority')),
+                ('active', models.BooleanField(default=True, verbose_name='Active')),
+                ('shipping_method', models.ForeignKey(related_name='prices', verbose_name='shipping_method', to='shipping.ShippingMethod')),
+            ],
+            options={
+                'ordering': ('priority',),
+            },
+            bases=(models.Model, lfs.criteria.base.Criteria),
+        ),
+    ]

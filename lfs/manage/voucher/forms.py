@@ -15,7 +15,7 @@ class VoucherOptionsForm(forms.ModelForm):
     """
     class Meta:
         model = VoucherOptions
-
+        exclude = ()
 
 class VoucherGroupAddForm(forms.ModelForm):
     """Form to add a VoucherGroup.

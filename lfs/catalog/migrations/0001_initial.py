@@ -1,650 +1,412 @@
 # -*- coding: utf-8 -*-
-import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+import django.db.models.deletion
+import lfs.core.fields.thumbs
+import lfs.catalog.models
 
 
-class Migration(SchemaMigration):
-    depends_on = (
-        ("supplier", "0001_initial"),
-        ("tax", "0001_initial"),
-        ("manufacturer", "0001_initial"),
-    )
+class Migration(migrations.Migration):
 
-    def forwards(self, orm):
-        # Adding model 'Category'
-        db.create_table('catalog_category', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50)),
-            ('parent', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalog.Category'], null=True, blank=True)),
-            ('show_all_products', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('short_description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('image', self.gf('lfs.core.fields.thumbs.ImageWithThumbsField')(blank=True, max_length=100, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400)))),
-            ('position', self.gf('django.db.models.fields.IntegerField')(default=1000)),
-            ('exclude_from_navigation', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('static_block', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='categories', null=True, to=orm['catalog.StaticBlock'])),
-            ('template', self.gf('django.db.models.fields.PositiveSmallIntegerField')(max_length=400, null=True, blank=True)),
-            ('active_formats', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('product_rows', self.gf('django.db.models.fields.IntegerField')(default=3)),
-            ('product_cols', self.gf('django.db.models.fields.IntegerField')(default=3)),
-            ('category_cols', self.gf('django.db.models.fields.IntegerField')(default=3)),
-            ('meta_title', self.gf('django.db.models.fields.CharField')(default='<name>', max_length=100)),
-            ('meta_keywords', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('meta_description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('level', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=1)),
-            ('uid', self.gf('django.db.models.fields.CharField')(default='b870c3fb-0cf0-480b-ae58-670316ce281b', unique=True, max_length=50)),
-        ))
-        db.send_create_signal('catalog', ['Category'])
+    dependencies = [
+        ('tax', '__first__'),
+        ('contenttypes', '0002_remove_content_type_name'),
+        ('supplier', '__first__'),
+        ('manufacturer', '__first__'),
+    ]
 
-        # Adding M2M table for field products on 'Category'
-        db.create_table('catalog_category_products', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('category', models.ForeignKey(orm['catalog.category'], null=False)),
-            ('product', models.ForeignKey(orm['catalog.product'], null=False))
-        ))
-        db.create_unique('catalog_category_products', ['category_id', 'product_id'])
-
-        # Adding model 'Product'
-        db.create_table('catalog_product', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=80, blank=True)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=80)),
-            ('sku', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
-            ('price', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('price_calculator', self.gf('django.db.models.fields.CharField')(max_length=255, null=True, blank=True)),
-            ('effective_price', self.gf('django.db.models.fields.FloatField')(blank=True)),
-            ('price_unit', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
-            ('unit', self.gf('django.db.models.fields.CharField')(max_length=20, blank=True)),
-            ('short_description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('meta_title', self.gf('django.db.models.fields.CharField')(default='<name>', max_length=80, blank=True)),
-            ('meta_keywords', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('meta_description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('for_sale', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('for_sale_price', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('active', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('creation_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('supplier', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['supplier.Supplier'], null=True, blank=True)),
-            ('deliverable', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('manual_delivery_time', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('delivery_time', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='products_delivery_time', null=True, to=orm['catalog.DeliveryTime'])),
-            ('order_time', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='products_order_time', null=True, to=orm['catalog.DeliveryTime'])),
-            ('ordered_at', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
-            ('manage_stock_amount', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('stock_amount', self.gf('django.db.models.fields.FloatField')(default=0)),
-            ('active_packing_unit', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=0)),
-            ('packing_unit', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('packing_unit_unit', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
-            ('static_block', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='products', null=True, to=orm['catalog.StaticBlock'])),
-            ('weight', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('height', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('length', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('width', self.gf('django.db.models.fields.FloatField')(default=0.0)),
-            ('tax', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['tax.Tax'], null=True, blank=True)),
-            ('sub_type', self.gf('django.db.models.fields.CharField')(default='0', max_length=10)),
-            ('default_variant', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalog.Product'], null=True, blank=True)),
-            ('category_variant', self.gf('django.db.models.fields.SmallIntegerField')(null=True, blank=True)),
-            ('variants_display_type', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('variant_position', self.gf('django.db.models.fields.IntegerField')(default=999)),
-            ('parent', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='variants', null=True, to=orm['catalog.Product'])),
-            ('active_name', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_sku', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_short_description', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_static_block', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_description', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_price', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_for_sale', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=0)),
-            ('active_for_sale_price', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_images', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_related_products', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_accessories', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_meta_title', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_meta_description', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_meta_keywords', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('active_dimensions', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('template', self.gf('django.db.models.fields.PositiveSmallIntegerField')(null=True, blank=True)),
-            ('active_price_calculation', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('price_calculation', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('active_base_price', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=0)),
-            ('base_price_unit', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
-            ('base_price_amount', self.gf('django.db.models.fields.FloatField')(default=0.0, null=True, blank=True)),
-            ('sku_manufacturer', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('manufacturer', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='products', null=True, to=orm['manufacturer.Manufacturer'])),
-            ('type_of_quantity_field', self.gf('django.db.models.fields.PositiveSmallIntegerField')(null=True, blank=True)),
-            ('uid', self.gf('django.db.models.fields.CharField')(default='cf3cfe03-8587-42b7-b539-373b820046e4', unique=True, max_length=50)),
-        ))
-        db.send_create_signal('catalog', ['Product'])
-
-        # Adding M2M table for field related_products on 'Product'
-        db.create_table('catalog_product_related_products', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('from_product', models.ForeignKey(orm['catalog.product'], null=False)),
-            ('to_product', models.ForeignKey(orm['catalog.product'], null=False))
-        ))
-        db.create_unique('catalog_product_related_products', ['from_product_id', 'to_product_id'])
-
-        # Adding model 'ProductAccessories'
-        db.create_table('catalog_productaccessories', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('product', self.gf('django.db.models.fields.related.ForeignKey')(related_name='productaccessories_product', to=orm['catalog.Product'])),
-            ('accessory', self.gf('django.db.models.fields.related.ForeignKey')(related_name='productaccessories_accessory', to=orm['catalog.Product'])),
-            ('position', self.gf('django.db.models.fields.IntegerField')(default=999)),
-            ('quantity', self.gf('django.db.models.fields.FloatField')(default=1)),
-        ))
-        db.send_create_signal('catalog', ['ProductAccessories'])
-
-        # Adding model 'PropertyGroup'
-        db.create_table('catalog_propertygroup', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50, blank=True)),
-        ))
-        db.send_create_signal('catalog', ['PropertyGroup'])
-
-        # Adding M2M table for field products on 'PropertyGroup'
-        db.create_table('catalog_propertygroup_products', (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('propertygroup', models.ForeignKey(orm['catalog.propertygroup'], null=False)),
-            ('product', models.ForeignKey(orm['catalog.product'], null=False))
-        ))
-        db.create_unique('catalog_propertygroup_products', ['propertygroup_id', 'product_id'])
-
-        # Adding model 'Property'
-        db.create_table('catalog_property', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('position', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('unit', self.gf('django.db.models.fields.CharField')(max_length=15, blank=True)),
-            ('display_on_product', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('local', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('filterable', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('display_no_results', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('configurable', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('type', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=2)),
-            ('price', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('display_price', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('add_price', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('unit_min', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('unit_max', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('unit_step', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('decimal_places', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=0)),
-            ('required', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('step_type', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=1)),
-            ('step', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('uid', self.gf('django.db.models.fields.CharField')(default='78ef0456-a083-40d9-8a36-cc16ba6360a5', unique=True, max_length=50)),
-        ))
-        db.send_create_signal('catalog', ['Property'])
-
-        # Adding model 'FilterStep'
-        db.create_table('catalog_filterstep', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('property', self.gf('django.db.models.fields.related.ForeignKey')(related_name='steps', to=orm['catalog.Property'])),
-            ('start', self.gf('django.db.models.fields.FloatField')()),
-        ))
-        db.send_create_signal('catalog', ['FilterStep'])
-
-        # Adding model 'GroupsPropertiesRelation'
-        db.create_table('catalog_groupspropertiesrelation', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('group', self.gf('django.db.models.fields.related.ForeignKey')(related_name='groupproperties', to=orm['catalog.PropertyGroup'])),
-            ('property', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalog.Property'])),
-            ('position', self.gf('django.db.models.fields.IntegerField')(default=999)),
-        ))
-        db.send_create_signal('catalog', ['GroupsPropertiesRelation'])
-
-        # Adding unique constraint on 'GroupsPropertiesRelation', fields ['group', 'property']
-        db.create_unique('catalog_groupspropertiesrelation', ['group_id', 'property_id'])
-
-        # Adding model 'ProductsPropertiesRelation'
-        db.create_table('catalog_productspropertiesrelation', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('product', self.gf('django.db.models.fields.related.ForeignKey')(related_name='productsproperties', to=orm['catalog.Product'])),
-            ('property', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalog.Property'])),
-            ('position', self.gf('django.db.models.fields.IntegerField')(default=999)),
-        ))
-        db.send_create_signal('catalog', ['ProductsPropertiesRelation'])
-
-        # Adding unique constraint on 'ProductsPropertiesRelation', fields ['product', 'property']
-        db.create_unique('catalog_productspropertiesrelation', ['product_id', 'property_id'])
-
-        # Adding model 'PropertyOption'
-        db.create_table('catalog_propertyoption', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('property', self.gf('django.db.models.fields.related.ForeignKey')(related_name='options', to=orm['catalog.Property'])),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('price', self.gf('django.db.models.fields.FloatField')(default=0.0, null=True, blank=True)),
-            ('position', self.gf('django.db.models.fields.IntegerField')(default=99)),
-            ('uid', self.gf('django.db.models.fields.CharField')(default='04c97a37-e155-4740-9934-74d6b1907eb5', unique=True, max_length=50)),
-        ))
-        db.send_create_signal('catalog', ['PropertyOption'])
-
-        # Adding model 'ProductPropertyValue'
-        db.create_table('catalog_productpropertyvalue', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('product', self.gf('django.db.models.fields.related.ForeignKey')(related_name='property_values', to=orm['catalog.Product'])),
-            ('parent_id', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
-            ('property', self.gf('django.db.models.fields.related.ForeignKey')(related_name='property_values', to=orm['catalog.Property'])),
-            ('value', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('value_as_float', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
-            ('type', self.gf('django.db.models.fields.PositiveSmallIntegerField')()),
-        ))
-        db.send_create_signal('catalog', ['ProductPropertyValue'])
-
-        # Adding unique constraint on 'ProductPropertyValue', fields ['product', 'property', 'value', 'type']
-        db.create_unique('catalog_productpropertyvalue', ['product_id', 'property_id', 'value', 'type'])
-
-        # Adding model 'Image'
-        db.create_table('catalog_image', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='image', null=True, to=orm['contenttypes.ContentType'])),
-            ('content_id', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('image', self.gf('lfs.core.fields.thumbs.ImageWithThumbsField')(blank=True, max_length=100, null=True, sizes=((60, 60), (100, 100), (200, 200), (300, 300), (400, 400)))),
-            ('position', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=999)),
-        ))
-        db.send_create_signal('catalog', ['Image'])
-
-        # Adding model 'File'
-        db.create_table('catalog_file', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=50)),
-            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='files', null=True, to=orm['contenttypes.ContentType'])),
-            ('content_id', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
-            ('position', self.gf('django.db.models.fields.SmallIntegerField')(default=999)),
-            ('description', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
-            ('file', self.gf('django.db.models.fields.files.FileField')(max_length=100)),
-        ))
-        db.send_create_signal('catalog', ['File'])
-
-        # Adding model 'StaticBlock'
-        db.create_table('catalog_staticblock', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('display_files', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('html', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('position', self.gf('django.db.models.fields.SmallIntegerField')(default=1000)),
-        ))
-        db.send_create_signal('catalog', ['StaticBlock'])
-
-        # Adding model 'DeliveryTime'
-        db.create_table('catalog_deliverytime', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('min', self.gf('django.db.models.fields.FloatField')()),
-            ('max', self.gf('django.db.models.fields.FloatField')()),
-            ('unit', self.gf('django.db.models.fields.PositiveSmallIntegerField')(default=2)),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-        ))
-        db.send_create_signal('catalog', ['DeliveryTime'])
-
-        # Adding model 'ProductAttachment'
-        db.create_table('catalog_productattachment', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('file', self.gf('django.db.models.fields.files.FileField')(max_length=100)),
-            ('product', self.gf('django.db.models.fields.related.ForeignKey')(related_name='attachments', to=orm['catalog.Product'])),
-            ('position', self.gf('django.db.models.fields.IntegerField')(default=1)),
-        ))
-        db.send_create_signal('catalog', ['ProductAttachment'])
-
-
-    def backwards(self, orm):
-        # Removing unique constraint on 'ProductPropertyValue', fields ['product', 'property', 'value', 'type']
-        db.delete_unique('catalog_productpropertyvalue', ['product_id', 'property_id', 'value', 'type'])
-
-        # Removing unique constraint on 'ProductsPropertiesRelation', fields ['product', 'property']
-        db.delete_unique('catalog_productspropertiesrelation', ['product_id', 'property_id'])
-
-        # Removing unique constraint on 'GroupsPropertiesRelation', fields ['group', 'property']
-        db.delete_unique('catalog_groupspropertiesrelation', ['group_id', 'property_id'])
-
-        # Deleting model 'Category'
-        db.delete_table('catalog_category')
-
-        # Removing M2M table for field products on 'Category'
-        db.delete_table('catalog_category_products')
-
-        # Deleting model 'Product'
-        db.delete_table('catalog_product')
-
-        # Removing M2M table for field related_products on 'Product'
-        db.delete_table('catalog_product_related_products')
-
-        # Deleting model 'ProductAccessories'
-        db.delete_table('catalog_productaccessories')
-
-        # Deleting model 'PropertyGroup'
-        db.delete_table('catalog_propertygroup')
-
-        # Removing M2M table for field products on 'PropertyGroup'
-        db.delete_table('catalog_propertygroup_products')
-
-        # Deleting model 'Property'
-        db.delete_table('catalog_property')
-
-        # Deleting model 'FilterStep'
-        db.delete_table('catalog_filterstep')
-
-        # Deleting model 'GroupsPropertiesRelation'
-        db.delete_table('catalog_groupspropertiesrelation')
-
-        # Deleting model 'ProductsPropertiesRelation'
-        db.delete_table('catalog_productspropertiesrelation')
-
-        # Deleting model 'PropertyOption'
-        db.delete_table('catalog_propertyoption')
-
-        # Deleting model 'ProductPropertyValue'
-        db.delete_table('catalog_productpropertyvalue')
-
-        # Deleting model 'Image'
-        db.delete_table('catalog_image')
-
-        # Deleting model 'File'
-        db.delete_table('catalog_file')
-
-        # Deleting model 'StaticBlock'
-        db.delete_table('catalog_staticblock')
-
-        # Deleting model 'DeliveryTime'
-        db.delete_table('catalog_deliverytime')
-
-        # Deleting model 'ProductAttachment'
-        db.delete_table('catalog_productattachment')
-
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'catalog.category': {
-            'Meta': {'ordering': "('position',)", 'object_name': 'Category'},
-            'active_formats': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'category_cols': ('django.db.models.fields.IntegerField', [], {'default': '3'}),
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'exclude_from_navigation': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('lfs.core.fields.thumbs.ImageWithThumbsField', [], {'blank': 'True', 'max_length': '100', 'null': 'True', 'sizes': '((60, 60), (100, 100), (200, 200), (400, 400))'}),
-            'level': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '1'}),
-            'meta_description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'meta_keywords': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'meta_title': ('django.db.models.fields.CharField', [], {'default': "'<name>'", 'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'parent': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalog.Category']", 'null': 'True', 'blank': 'True'}),
-            'position': ('django.db.models.fields.IntegerField', [], {'default': '1000'}),
-            'product_cols': ('django.db.models.fields.IntegerField', [], {'default': '3'}),
-            'product_rows': ('django.db.models.fields.IntegerField', [], {'default': '3'}),
-            'products': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'categories'", 'blank': 'True', 'to': "orm['catalog.Product']"}),
-            'short_description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'show_all_products': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'}),
-            'static_block': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'categories'", 'null': 'True', 'to': "orm['catalog.StaticBlock']"}),
-            'template': ('django.db.models.fields.PositiveSmallIntegerField', [], {'max_length': '400', 'null': 'True', 'blank': 'True'}),
-            'uid': ('django.db.models.fields.CharField', [], {'default': "'0efb7bd1-afaf-4a05-8aa1-f0660388a53f'", 'unique': 'True', 'max_length': '50'})
-        },
-        'catalog.deliverytime': {
-            'Meta': {'ordering': "('min',)", 'object_name': 'DeliveryTime'},
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'max': ('django.db.models.fields.FloatField', [], {}),
-            'min': ('django.db.models.fields.FloatField', [], {}),
-            'unit': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '2'})
-        },
-        'catalog.file': {
-            'Meta': {'ordering': "('position',)", 'object_name': 'File'},
-            'content_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'files'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"}),
-            'description': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'file': ('django.db.models.fields.files.FileField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'position': ('django.db.models.fields.SmallIntegerField', [], {'default': '999'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'})
-        },
-        'catalog.filterstep': {
-            'Meta': {'ordering': "['start']", 'object_name': 'FilterStep'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'property': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'steps'", 'to': "orm['catalog.Property']"}),
-            'start': ('django.db.models.fields.FloatField', [], {})
-        },
-        'catalog.groupspropertiesrelation': {
-            'Meta': {'ordering': "('position',)", 'unique_together': "(('group', 'property'),)", 'object_name': 'GroupsPropertiesRelation'},
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'groupproperties'", 'to': "orm['catalog.PropertyGroup']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'position': ('django.db.models.fields.IntegerField', [], {'default': '999'}),
-            'property': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalog.Property']"})
-        },
-        'catalog.image': {
-            'Meta': {'ordering': "('position',)", 'object_name': 'Image'},
-            'content_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'image'", 'null': 'True', 'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('lfs.core.fields.thumbs.ImageWithThumbsField', [], {'blank': 'True', 'max_length': '100', 'null': 'True', 'sizes': '((60, 60), (100, 100), (200, 200), (300, 300), (400, 400))'}),
-            'position': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '999'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'})
-        },
-        'catalog.product': {
-            'Meta': {'ordering': "('name',)", 'object_name': 'Product'},
-            'accessories': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'reverse_accessories'", 'to': "orm['catalog.Product']", 'through': "orm['catalog.ProductAccessories']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
-            'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_accessories': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_base_price': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '0'}),
-            'active_description': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_dimensions': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_for_sale': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '0'}),
-            'active_for_sale_price': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_images': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_meta_description': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_meta_keywords': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_meta_title': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_name': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_packing_unit': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '0'}),
-            'active_price': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_price_calculation': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_related_products': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_short_description': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_sku': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'active_static_block': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'base_price_amount': ('django.db.models.fields.FloatField', [], {'default': '0.0', 'null': 'True', 'blank': 'True'}),
-            'base_price_unit': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'category_variant': ('django.db.models.fields.SmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'creation_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'default_variant': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalog.Product']", 'null': 'True', 'blank': 'True'}),
-            'deliverable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'delivery_time': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'products_delivery_time'", 'null': 'True', 'to': "orm['catalog.DeliveryTime']"}),
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'effective_price': ('django.db.models.fields.FloatField', [], {'blank': 'True'}),
-            'for_sale': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'for_sale_price': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
-            'height': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'length': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
-            'manage_stock_amount': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'manual_delivery_time': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'manufacturer': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'products'", 'null': 'True', 'to': "orm['manufacturer.Manufacturer']"}),
-            'meta_description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'meta_keywords': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'meta_title': ('django.db.models.fields.CharField', [], {'default': "'<name>'", 'max_length': '80', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '80', 'blank': 'True'}),
-            'order_time': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'products_order_time'", 'null': 'True', 'to': "orm['catalog.DeliveryTime']"}),
-            'ordered_at': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'packing_unit': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'packing_unit_unit': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'parent': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'variants'", 'null': 'True', 'to': "orm['catalog.Product']"}),
-            'price': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
-            'price_calculation': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'price_calculator': ('django.db.models.fields.CharField', [], {'max_length': '255', 'null': 'True', 'blank': 'True'}),
-            'price_unit': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'related_products': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'reverse_related_products'", 'null': 'True', 'symmetrical': 'False', 'to': "orm['catalog.Product']"}),
-            'short_description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'sku': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'sku_manufacturer': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '80'}),
-            'static_block': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'products'", 'null': 'True', 'to': "orm['catalog.StaticBlock']"}),
-            'stock_amount': ('django.db.models.fields.FloatField', [], {'default': '0'}),
-            'sub_type': ('django.db.models.fields.CharField', [], {'default': "'0'", 'max_length': '10'}),
-            'supplier': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['supplier.Supplier']", 'null': 'True', 'blank': 'True'}),
-            'tax': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['tax.Tax']", 'null': 'True', 'blank': 'True'}),
-            'template': ('django.db.models.fields.PositiveSmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'type_of_quantity_field': ('django.db.models.fields.PositiveSmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'uid': ('django.db.models.fields.CharField', [], {'default': "'c3c4f61d-7698-4881-b253-8886ea142650'", 'unique': 'True', 'max_length': '50'}),
-            'unit': ('django.db.models.fields.CharField', [], {'max_length': '20', 'blank': 'True'}),
-            'variant_position': ('django.db.models.fields.IntegerField', [], {'default': '999'}),
-            'variants_display_type': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'weight': ('django.db.models.fields.FloatField', [], {'default': '0.0'}),
-            'width': ('django.db.models.fields.FloatField', [], {'default': '0.0'})
-        },
-        'catalog.productaccessories': {
-            'Meta': {'ordering': "('position',)", 'object_name': 'ProductAccessories'},
-            'accessory': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'productaccessories_accessory'", 'to': "orm['catalog.Product']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'position': ('django.db.models.fields.IntegerField', [], {'default': '999'}),
-            'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'productaccessories_product'", 'to': "orm['catalog.Product']"}),
-            'quantity': ('django.db.models.fields.FloatField', [], {'default': '1'})
-        },
-        'catalog.productattachment': {
-            'Meta': {'ordering': "('position',)", 'object_name': 'ProductAttachment'},
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'file': ('django.db.models.fields.files.FileField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'position': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
-            'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'attachments'", 'to': "orm['catalog.Product']"}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'catalog.productpropertyvalue': {
-            'Meta': {'unique_together': "(('product', 'property', 'value', 'type'),)", 'object_name': 'ProductPropertyValue'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'parent_id': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'property_values'", 'to': "orm['catalog.Product']"}),
-            'property': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'property_values'", 'to': "orm['catalog.Property']"}),
-            'type': ('django.db.models.fields.PositiveSmallIntegerField', [], {}),
-            'value': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
-            'value_as_float': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'})
-        },
-        'catalog.productspropertiesrelation': {
-            'Meta': {'ordering': "('position',)", 'unique_together': "(('product', 'property'),)", 'object_name': 'ProductsPropertiesRelation'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'position': ('django.db.models.fields.IntegerField', [], {'default': '999'}),
-            'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'productsproperties'", 'to': "orm['catalog.Product']"}),
-            'property': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalog.Property']"})
-        },
-        'catalog.property': {
-            'Meta': {'ordering': "['position']", 'object_name': 'Property'},
-            'add_price': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'configurable': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'decimal_places': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '0'}),
-            'display_no_results': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'display_on_product': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'display_price': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'filterable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'properties'", 'to': "orm['catalog.PropertyGroup']", 'through': "orm['catalog.GroupsPropertiesRelation']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'local': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'position': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'price': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'products': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'properties'", 'to': "orm['catalog.Product']", 'through': "orm['catalog.ProductsPropertiesRelation']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
-            'required': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'step': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'blank': 'True'}),
-            'step_type': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '1'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'type': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '2'}),
-            'uid': ('django.db.models.fields.CharField', [], {'default': "'7f8d5f20-eccf-47e7-80a0-3b316bcea88b'", 'unique': 'True', 'max_length': '50'}),
-            'unit': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'}),
-            'unit_max': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'unit_min': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'unit_step': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'})
-        },
-        'catalog.propertygroup': {
-            'Meta': {'ordering': "('name',)", 'object_name': 'PropertyGroup'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
-            'products': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'property_groups'", 'symmetrical': 'False', 'to': "orm['catalog.Product']"})
-        },
-        'catalog.propertyoption': {
-            'Meta': {'ordering': "['position']", 'object_name': 'PropertyOption'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'position': ('django.db.models.fields.IntegerField', [], {'default': '99'}),
-            'price': ('django.db.models.fields.FloatField', [], {'default': '0.0', 'null': 'True', 'blank': 'True'}),
-            'property': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'options'", 'to': "orm['catalog.Property']"}),
-            'uid': ('django.db.models.fields.CharField', [], {'default': "'e4f4854e-4b74-49e0-a4b1-2d230e1ce28f'", 'unique': 'True', 'max_length': '50'})
-        },
-        'catalog.staticblock': {
-            'Meta': {'ordering': "('position',)", 'object_name': 'StaticBlock'},
-            'display_files': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'html': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
-            'position': ('django.db.models.fields.SmallIntegerField', [], {'default': '1000'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'manufacturer.manufacturer': {
-            'Meta': {'ordering': "('name',)", 'object_name': 'Manufacturer'},
-            'active_formats': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'image': ('lfs.core.fields.thumbs.ImageWithThumbsField', [], {'blank': 'True', 'max_length': '100', 'null': 'True', 'sizes': '((60, 60), (100, 100), (200, 200), (400, 400))'}),
-            'meta_description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'meta_keywords': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'meta_title': ('django.db.models.fields.CharField', [], {'default': "'<name>'", 'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
-            'position': ('django.db.models.fields.IntegerField', [], {'default': '1000'}),
-            'product_cols': ('django.db.models.fields.IntegerField', [], {'default': '3'}),
-            'product_rows': ('django.db.models.fields.IntegerField', [], {'default': '3'}),
-            'short_description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
-        },
-        'supplier.supplier': {
-            'Meta': {'object_name': 'Supplier'},
-            'active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '80'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
-        },
-        'tax.tax': {
-            'Meta': {'object_name': 'Tax'},
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'rate': ('django.db.models.fields.FloatField', [], {'default': '0'})
-        }
-    }
-
-    complete_apps = ['catalog']
+    operations = [
+        migrations.CreateModel(
+            name='Category',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=50, verbose_name='Name')),
+                ('slug', models.SlugField(unique=True, verbose_name='Slug')),
+                ('show_all_products', models.BooleanField(default=True, verbose_name='Show all products')),
+                ('short_description', models.TextField(verbose_name='Short description', blank=True)),
+                ('description', models.TextField(verbose_name='Description', blank=True)),
+                ('image', lfs.core.fields.thumbs.ImageWithThumbsField(upload_to=b'images', null=True, verbose_name='Image', blank=True)),
+                ('position', models.IntegerField(default=1000, verbose_name='Position')),
+                ('exclude_from_navigation', models.BooleanField(default=False, verbose_name='Exclude from navigation')),
+                ('template', models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Category template', choices=[(0, {b'image': b'/media/lfs/icons/product_default.png', b'name': 'Category with products', b'file': b'lfs/catalog/categories/product/default.html'}), (1, {b'image': b'/media/lfs/icons/category_square.png', b'name': 'Category with subcategories', b'file': b'lfs/catalog/categories/category/default.html'})])),
+                ('active_formats', models.BooleanField(default=False, verbose_name='Active formats')),
+                ('product_rows', models.IntegerField(default=3, verbose_name='Product rows')),
+                ('product_cols', models.IntegerField(default=3, verbose_name='Product cols')),
+                ('category_cols', models.IntegerField(default=3, verbose_name='Category cols')),
+                ('meta_title', models.CharField(default=b'<name>', max_length=100, verbose_name='Meta title')),
+                ('meta_keywords', models.TextField(verbose_name='Meta keywords', blank=True)),
+                ('meta_description', models.TextField(verbose_name='Meta description', blank=True)),
+                ('level', models.PositiveSmallIntegerField(default=1)),
+                ('uid', models.CharField(default=lfs.catalog.models.get_unique_id_str, unique=True, max_length=50, editable=False)),
+                ('parent', models.ForeignKey(verbose_name='Parent', blank=True, to='catalog.Category', null=True)),
+            ],
+            options={
+                'ordering': ('position',),
+                'verbose_name': 'Category',
+                'verbose_name_plural': 'Categories',
+            },
+        ),
+        migrations.CreateModel(
+            name='DeliveryTime',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('min', models.FloatField(verbose_name='Min')),
+                ('max', models.FloatField(verbose_name='Max')),
+                ('unit', models.PositiveSmallIntegerField(default=2, verbose_name='Unit', choices=[(1, 'hours'), (2, 'days'), (3, 'weeks'), (4, 'months')])),
+                ('description', models.TextField(verbose_name='Description', blank=True)),
+            ],
+            options={
+                'ordering': ('min',),
+            },
+        ),
+        migrations.CreateModel(
+            name='File',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(max_length=100, blank=True)),
+                ('slug', models.SlugField()),
+                ('content_id', models.PositiveIntegerField(null=True, verbose_name='Content id', blank=True)),
+                ('position', models.SmallIntegerField(default=999)),
+                ('description', models.CharField(max_length=100, blank=True)),
+                ('file', models.FileField(upload_to=b'files')),
+                ('content_type', models.ForeignKey(related_name='files', verbose_name='Content type', blank=True, to='contenttypes.ContentType', null=True)),
+            ],
+            options={
+                'ordering': ('position',),
+            },
+        ),
+        migrations.CreateModel(
+            name='FilterStep',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('start', models.FloatField()),
+            ],
+            options={
+                'ordering': ['start'],
+            },
+        ),
+        migrations.CreateModel(
+            name='GroupsPropertiesRelation',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('position', models.IntegerField(default=999, verbose_name='Position')),
+            ],
+            options={
+                'ordering': ('position',),
+            },
+        ),
+        migrations.CreateModel(
+            name='Image',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('content_id', models.PositiveIntegerField(null=True, verbose_name='Content id', blank=True)),
+                ('title', models.CharField(max_length=100, verbose_name='Title', blank=True)),
+                ('image', lfs.core.fields.thumbs.ImageWithThumbsField(upload_to=b'images', null=True, verbose_name='Image', blank=True)),
+                ('position', models.PositiveSmallIntegerField(default=999, verbose_name='Position')),
+                ('content_type', models.ForeignKey(related_name='image', verbose_name='Content type', blank=True, to='contenttypes.ContentType', null=True)),
+            ],
+            options={
+                'ordering': ('position',),
+            },
+        ),
+        migrations.CreateModel(
+            name='Product',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(help_text='The name of the product.', max_length=80, verbose_name='Name', blank=True)),
+                ('slug', models.SlugField(help_text="The unique last part of the Product's URL.", unique=True, max_length=120, verbose_name='Slug')),
+                ('sku', models.CharField(help_text='Your unique article number of the product.', max_length=30, verbose_name='SKU', blank=True)),
+                ('price', models.FloatField(default=0.0, verbose_name='Price')),
+                ('price_calculator', models.CharField(blank=True, max_length=255, null=True, verbose_name='Price calculator', choices=[[b'lfs.gross_price.GrossPriceCalculator', 'Price includes tax'], [b'lfs.net_price.NetPriceCalculator', 'Price excludes tax']])),
+                ('effective_price', models.FloatField(verbose_name='Price', blank=True)),
+                ('price_unit', models.CharField(blank=True, max_length=20, verbose_name='Price unit', choices=[['l', 'l'], ['m', 'm'], ['qm', 'qm'], ['cm', 'cm'], ['lfm', 'lfm'], ['Package', 'Package'], ['Piece', 'Piece']])),
+                ('unit', models.CharField(blank=True, max_length=20, verbose_name='Quantity field unit', choices=[['l', 'l'], ['m', 'm'], ['qm', 'qm'], ['cm', 'cm'], ['lfm', 'lfm'], ['Package', 'Package'], ['Piece', 'Piece']])),
+                ('short_description', models.TextField(verbose_name='Short description', blank=True)),
+                ('description', models.TextField(verbose_name='Description', blank=True)),
+                ('meta_title', models.CharField(default=b'<name>', max_length=80, verbose_name='Meta title', blank=True)),
+                ('meta_keywords', models.TextField(verbose_name='Meta keywords', blank=True)),
+                ('meta_description', models.TextField(verbose_name='Meta description', blank=True)),
+                ('for_sale', models.BooleanField(default=False, verbose_name='For sale')),
+                ('for_sale_price', models.FloatField(default=0.0, verbose_name='For sale price')),
+                ('active', models.BooleanField(default=False, verbose_name='Active')),
+                ('creation_date', models.DateTimeField(auto_now_add=True, verbose_name='Creation date')),
+                ('deliverable', models.BooleanField(default=True, verbose_name='Deliverable')),
+                ('manual_delivery_time', models.BooleanField(default=False, verbose_name='Manual delivery time')),
+                ('ordered_at', models.DateField(null=True, verbose_name='Ordered at', blank=True)),
+                ('manage_stock_amount', models.BooleanField(default=False, verbose_name='Manage stock amount')),
+                ('stock_amount', models.FloatField(default=0, verbose_name='Stock amount')),
+                ('active_packing_unit', models.PositiveSmallIntegerField(default=0, verbose_name='Active packing')),
+                ('packing_unit', models.FloatField(null=True, verbose_name='Amount per packing', blank=True)),
+                ('packing_unit_unit', models.CharField(blank=True, max_length=30, verbose_name='Packing unit', choices=[['l', 'l'], ['m', 'm'], ['qm', 'qm'], ['cm', 'cm'], ['lfm', 'lfm'], ['Package', 'Package'], ['Piece', 'Piece']])),
+                ('weight', models.FloatField(default=0.0, verbose_name='Weight')),
+                ('height', models.FloatField(default=0.0, verbose_name='Height')),
+                ('length', models.FloatField(default=0.0, verbose_name='Length')),
+                ('width', models.FloatField(default=0.0, verbose_name='Width')),
+                ('sub_type', models.CharField(default=b'0', max_length=10, verbose_name='Subtype', choices=[(b'0', 'Standard'), (b'1', 'Product with variants'), (b'2', 'Variant'), (b'3', 'Configurable product')])),
+                ('category_variant', models.SmallIntegerField(null=True, verbose_name='Category variant', blank=True)),
+                ('variants_display_type', models.IntegerField(default=0, verbose_name='Variants display type', choices=[(0, 'List'), (1, 'Select')])),
+                ('variant_position', models.IntegerField(default=999)),
+                ('active_name', models.BooleanField(default=False, verbose_name='Active name')),
+                ('active_sku', models.BooleanField(default=False, verbose_name='Active SKU')),
+                ('active_short_description', models.BooleanField(default=False, verbose_name='Active short description')),
+                ('active_static_block', models.BooleanField(default=False, verbose_name='Active static bock')),
+                ('active_description', models.BooleanField(default=False, verbose_name='Active description')),
+                ('active_price', models.BooleanField(default=False, verbose_name='Active price')),
+                ('active_for_sale', models.PositiveSmallIntegerField(default=0, verbose_name='Active for sale', choices=[(0, 'Standard'), (2, 'Yes'), (3, 'No')])),
+                ('active_for_sale_price', models.BooleanField(default=False, verbose_name='Active for sale price')),
+                ('active_images', models.BooleanField(default=False, verbose_name='Active Images')),
+                ('active_related_products', models.BooleanField(default=False, verbose_name='Active related products')),
+                ('active_accessories', models.BooleanField(default=False, verbose_name='Active accessories')),
+                ('active_meta_title', models.BooleanField(default=False, verbose_name='Active meta title')),
+                ('active_meta_description', models.BooleanField(default=False, verbose_name='Active meta description')),
+                ('active_meta_keywords', models.BooleanField(default=False, verbose_name='Active meta keywords')),
+                ('active_dimensions', models.BooleanField(default=False, verbose_name='Active dimensions')),
+                ('template', models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Product template', choices=[(0, {b'image': b'/media/lfs/icons/product_default.png', b'name': 'Default', b'file': b'lfs/catalog/products/product_inline.html'})])),
+                ('active_price_calculation', models.BooleanField(default=False, verbose_name='Active price calculation')),
+                ('price_calculation', models.CharField(max_length=100, verbose_name='Price Calculation', blank=True)),
+                ('active_base_price', models.PositiveSmallIntegerField(default=0, verbose_name='Active base price')),
+                ('base_price_unit', models.CharField(blank=True, max_length=30, verbose_name='Base price unit', choices=[['l', 'l'], ['m', 'm'], ['qm', 'qm'], ['cm', 'cm'], ['lfm', 'lfm'], ['Package', 'Package'], ['Piece', 'Piece']])),
+                ('base_price_amount', models.FloatField(default=0.0, null=True, verbose_name='Base price amount', blank=True)),
+                ('sku_manufacturer', models.CharField(max_length=100, verbose_name='SKU Manufacturer', blank=True)),
+                ('type_of_quantity_field', models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Type of quantity field', choices=[(0, 'Integer'), (1, 'Decimal 0.1'), (2, 'Decimal 0.01')])),
+                ('uid', models.CharField(default=lfs.catalog.models.get_unique_id_str, unique=True, max_length=50, editable=False)),
+            ],
+            options={
+                'ordering': ('name',),
+            },
+        ),
+        migrations.CreateModel(
+            name='ProductAccessories',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('position', models.IntegerField(default=999, verbose_name='Position')),
+                ('quantity', models.FloatField(default=1, verbose_name='Quantity')),
+                ('accessory', models.ForeignKey(related_name='productaccessories_accessory', verbose_name='Accessory', to='catalog.Product')),
+                ('product', models.ForeignKey(related_name='productaccessories_product', verbose_name='Product', to='catalog.Product')),
+            ],
+            options={
+                'ordering': ('position',),
+                'verbose_name_plural': 'Product accessories',
+            },
+        ),
+        migrations.CreateModel(
+            name='ProductAttachment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('title', models.CharField(max_length=50, verbose_name='Title')),
+                ('description', models.TextField(verbose_name='Description', blank=True)),
+                ('file', models.FileField(max_length=500, upload_to=b'files')),
+                ('position', models.IntegerField(default=1, verbose_name='Position')),
+                ('product', models.ForeignKey(related_name='attachments', verbose_name='Product', to='catalog.Product')),
+            ],
+            options={
+                'ordering': ('position',),
+            },
+        ),
+        migrations.CreateModel(
+            name='ProductPropertyValue',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('parent_id', models.IntegerField(null=True, verbose_name='Parent', blank=True)),
+                ('value', models.CharField(max_length=100, verbose_name='Value', blank=True)),
+                ('value_as_float', models.FloatField(null=True, verbose_name='Value as float', blank=True)),
+                ('type', models.PositiveSmallIntegerField(verbose_name='Type')),
+                ('product', models.ForeignKey(related_name='property_values', verbose_name='Product', to='catalog.Product')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='ProductsPropertiesRelation',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('position', models.IntegerField(default=999, verbose_name='Position')),
+                ('product', models.ForeignKey(related_name='productsproperties', verbose_name='Product', to='catalog.Product')),
+            ],
+            options={
+                'ordering': ('position',),
+            },
+        ),
+        migrations.CreateModel(
+            name='Property',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100, verbose_name='Name')),
+                ('title', models.CharField(max_length=100, verbose_name='Title')),
+                ('position', models.IntegerField(null=True, verbose_name='Position', blank=True)),
+                ('unit', models.CharField(max_length=15, verbose_name='Unit', blank=True)),
+                ('display_on_product', models.BooleanField(default=False, verbose_name='Display on product')),
+                ('local', models.BooleanField(default=False, verbose_name='Local')),
+                ('variants', models.BooleanField(default=False, verbose_name='For Variants')),
+                ('filterable', models.BooleanField(default=False, verbose_name='Filterable')),
+                ('configurable', models.BooleanField(default=False, verbose_name='Configurable')),
+                ('type', models.PositiveSmallIntegerField(default=2, verbose_name='Type', choices=[(1, 'Float field'), (2, 'Text field'), (3, 'Select field')])),
+                ('price', models.FloatField(null=True, verbose_name='Price', blank=True)),
+                ('display_price', models.BooleanField(default=True, verbose_name='Display price')),
+                ('add_price', models.BooleanField(default=True, verbose_name='Add price')),
+                ('unit_min', models.FloatField(null=True, verbose_name='Min', blank=True)),
+                ('unit_max', models.FloatField(null=True, verbose_name='Max', blank=True)),
+                ('unit_step', models.FloatField(null=True, verbose_name='Step', blank=True)),
+                ('decimal_places', models.PositiveSmallIntegerField(default=0, verbose_name='Decimal places')),
+                ('required', models.BooleanField(default=False, verbose_name='Required')),
+                ('step_type', models.PositiveSmallIntegerField(default=1, verbose_name='Step type', choices=[(1, 'Automatic'), (2, 'Fixed step'), (3, 'Manual steps')])),
+                ('step', models.IntegerField(null=True, verbose_name='Step', blank=True)),
+                ('uid', models.CharField(default=lfs.catalog.models.get_unique_id_str, unique=True, max_length=50, editable=False)),
+            ],
+            options={
+                'ordering': ['position'],
+                'verbose_name_plural': 'Properties',
+            },
+        ),
+        migrations.CreateModel(
+            name='PropertyGroup',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=50, verbose_name='Name', blank=True)),
+                ('position', models.IntegerField(default=1000, verbose_name='Position')),
+                ('uid', models.CharField(default=lfs.catalog.models.get_unique_id_str, unique=True, max_length=50, editable=False)),
+                ('products', models.ManyToManyField(related_name='property_groups', verbose_name='Products', to='catalog.Product')),
+            ],
+            options={
+                'ordering': ('position',),
+            },
+        ),
+        migrations.CreateModel(
+            name='PropertyOption',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=100, verbose_name='Name')),
+                ('price', models.FloatField(default=0.0, null=True, verbose_name='Price', blank=True)),
+                ('position', models.IntegerField(default=99, verbose_name='Position')),
+                ('uid', models.CharField(default=lfs.catalog.models.get_unique_id_str, unique=True, max_length=50, editable=False)),
+                ('property', models.ForeignKey(related_name='options', verbose_name='Property', to='catalog.Property')),
+            ],
+            options={
+                'ordering': ['position'],
+            },
+        ),
+        migrations.CreateModel(
+            name='StaticBlock',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=30, verbose_name='Name')),
+                ('display_files', models.BooleanField(default=True, verbose_name='Display files')),
+                ('html', models.TextField(verbose_name='HTML', blank=True)),
+                ('position', models.SmallIntegerField(default=1000, verbose_name='Position')),
+            ],
+            options={
+                'ordering': ('position',),
+            },
+        ),
+        migrations.AddField(
+            model_name='property',
+            name='groups',
+            field=models.ManyToManyField(related_name='properties', verbose_name='Group', to='catalog.PropertyGroup', through='catalog.GroupsPropertiesRelation', blank=True),
+        ),
+        migrations.AddField(
+            model_name='property',
+            name='products',
+            field=models.ManyToManyField(related_name='properties', verbose_name='Products', to='catalog.Product', through='catalog.ProductsPropertiesRelation', blank=True),
+        ),
+        migrations.AddField(
+            model_name='productspropertiesrelation',
+            name='property',
+            field=models.ForeignKey(verbose_name='Property', to='catalog.Property'),
+        ),
+        migrations.AddField(
+            model_name='productpropertyvalue',
+            name='property',
+            field=models.ForeignKey(related_name='property_values', verbose_name='Property', to='catalog.Property'),
+        ),
+        migrations.AddField(
+            model_name='productpropertyvalue',
+            name='property_group',
+            field=models.ForeignKey(related_name='property_values', verbose_name='Property group', blank=True, to='catalog.PropertyGroup', null=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='accessories',
+            field=models.ManyToManyField(related_name='reverse_accessories', verbose_name='Acessories', to='catalog.Product', through='catalog.ProductAccessories', blank=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='default_variant',
+            field=models.ForeignKey(verbose_name='Default variant', blank=True, to='catalog.Product', null=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='delivery_time',
+            field=models.ForeignKey(related_name='products_delivery_time', verbose_name='Delivery time', blank=True, to='catalog.DeliveryTime', null=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='manufacturer',
+            field=models.ForeignKey(related_name='products', on_delete=django.db.models.deletion.SET_NULL, verbose_name='Manufacturer', blank=True, to='manufacturer.Manufacturer', null=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='order_time',
+            field=models.ForeignKey(related_name='products_order_time', verbose_name='Order time', blank=True, to='catalog.DeliveryTime', null=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='parent',
+            field=models.ForeignKey(related_name='variants', verbose_name='Parent', blank=True, to='catalog.Product', null=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='related_products',
+            field=models.ManyToManyField(related_name='reverse_related_products', verbose_name='Related products', to='catalog.Product', blank=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='static_block',
+            field=models.ForeignKey(related_name='products', verbose_name='Static block', blank=True, to='catalog.StaticBlock', null=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='supplier',
+            field=models.ForeignKey(related_name='product_set', blank=True, to='supplier.Supplier', null=True),
+        ),
+        migrations.AddField(
+            model_name='product',
+            name='tax',
+            field=models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True),
+        ),
+        migrations.AddField(
+            model_name='groupspropertiesrelation',
+            name='group',
+            field=models.ForeignKey(related_name='groupproperties', verbose_name='Group', to='catalog.PropertyGroup'),
+        ),
+        migrations.AddField(
+            model_name='groupspropertiesrelation',
+            name='property',
+            field=models.ForeignKey(verbose_name='Property', to='catalog.Property'),
+        ),
+        migrations.AddField(
+            model_name='filterstep',
+            name='property',
+            field=models.ForeignKey(related_name='steps', verbose_name='Property', to='catalog.Property'),
+        ),
+        migrations.AddField(
+            model_name='category',
+            name='products',
+            field=models.ManyToManyField(related_name='categories', verbose_name='Products', to='catalog.Product', blank=True),
+        ),
+        migrations.AddField(
+            model_name='category',
+            name='static_block',
+            field=models.ForeignKey(related_name='categories', verbose_name='Static block', blank=True, to='catalog.StaticBlock', null=True),
+        ),
+        migrations.AlterUniqueTogether(
+            name='productspropertiesrelation',
+            unique_together=set([('product', 'property')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='productpropertyvalue',
+            unique_together=set([('product', 'property', 'property_group', 'value', 'type')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='groupspropertiesrelation',
+            unique_together=set([('group', 'property')]),
+        ),
+    ]
