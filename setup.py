@@ -43,6 +43,5 @@ setup(name='django-lfs',
           'lfs-paypal == 1.2',
           'lfs-theme == 0.9.0a1',
           'Pillow == 2.4.0',
-          'South == 0.8.4',
       ],
       )
