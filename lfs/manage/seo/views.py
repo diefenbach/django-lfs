@@ -24,25 +24,26 @@ class SEOView(View):
     form_klass = None  # SEO Form class (by default it's model form with fields: meta_[title|keywords|description])
     template_name = None  # template used to render SEO form
 
+    @staticmethod
+    def get_unique_klass_name(model_klass):
+        klass_name = u'{0}_{1}'.format(model_klass.__module__, model_klass.__name__.lower())
+        klass_name = klass_name.replace('.', '_')
+        return klass_name
+
     @classmethod
     def get_seo_urlpattern(cls, model_klass, form_klass=None, template_name='manage/seo/seo.html'):
-        """Prepare urlpattern for seo tab and give it a name based on content type of the model
+        """Prepare urlpattern for seo tab and give it a name based on the model name to be unique
         """
-        try:
-            ct = ContentType.objects.get_for_model(model_klass).pk
-            view_obj = cls.as_view(form_klass=form_klass,
-                                   model_klass=model_klass,
-                                   template_name=template_name)
+        klass_name = cls.get_unique_klass_name(model_klass)
+        view_obj = cls.as_view(form_klass=form_klass,
+                               model_klass=model_klass,
+                               template_name=template_name)
 
-            return patterns('lfs.manage.seo.views',
-                            url(r'^manage-seo/%s/(?P<id>\d*)/$' % ct,
-                                permission_required("core.manage_shop")(view_obj),
-                                name='lfs_manage_%s_seo' % ct),
-                    )
-        # starting from django 1.4.10 (or slightly less) seems that urlpatterns are loaded during syncdb
-        # so we have to handle DatabaseError when ContentType table doesn't exist yet
-        except DatabaseError as e:
-            return []
+        return patterns('lfs.manage.seo.views',
+                        url(r'^manage-seo/%s/(?P<id>\d*)/$' % klass_name,
+                            permission_required("core.manage_shop")(view_obj),
+                            name='lfs_manage_%s_seo' % klass_name),
+                )
 
     def __init__(self, model_klass, form_klass=None, template_name='manage/seo/seo.html', *args, **kwargs):
         super(SEOView, self).__init__(*args, **kwargs)
@@ -57,8 +58,8 @@ class SEOView(View):
 
         # each Model that defines seo fields has different url for seo management
         # By default this url differs by content type id
-        ct = ContentType.objects.get_for_model(self.model_klass).pk
-        self.urlname = 'lfs_manage_%s_seo' % ct
+        klass_name = self.get_unique_klass_name(model_klass)
+        self.urlname = 'lfs_manage_%s_seo' % klass_name
 
     def render(self, request, obj, form=None):
         """ Renders seo tab. Returns rendered HTML
