@@ -28,7 +28,7 @@ def create_customer(request):
     if request.session.session_key is None:
         request.session.save()
 
-    customer = Customer(session=request.session.session_key)
+    customer = Customer.objects.create(session=request.session.session_key)
     if request.user.is_authenticated():
         customer.user = request.user
     shop = lfs.core.utils.get_default_shop(request)

@@ -36,17 +36,18 @@ class Customer(models.Model):
     selected_bank_account = models.ForeignKey("BankAccount", verbose_name=_(u"Bank account"), blank=True, null=True, related_name="selected_bank_account")
     selected_credit_card = models.ForeignKey("CreditCard", verbose_name=_(u"Credit card"), blank=True, null=True, related_name="selected_credit_card")
 
-    sa_content_type = models.ForeignKey(ContentType, related_name="sa_content_type")
-    sa_object_id = models.PositiveIntegerField()
+    sa_content_type = models.ForeignKey(ContentType, related_name="sa_content_type", null=True)
+    sa_object_id = models.PositiveIntegerField(null=True)
     selected_shipping_address = generic.GenericForeignKey('sa_content_type', 'sa_object_id')
-    dsa_object_id = models.PositiveIntegerField()
+
+    dsa_object_id = models.PositiveIntegerField(null=True)
     default_shipping_address = generic.GenericForeignKey('sa_content_type', 'dsa_object_id')
 
-    ia_content_type = models.ForeignKey(ContentType, related_name="ia_content_type")
-    ia_object_id = models.PositiveIntegerField()
+    ia_content_type = models.ForeignKey(ContentType, related_name="ia_content_type", null=True)
+    ia_object_id = models.PositiveIntegerField(null=True)
     selected_invoice_address = generic.GenericForeignKey('ia_content_type', 'ia_object_id')
 
-    dia_object_id = models.PositiveIntegerField()
+    dia_object_id = models.PositiveIntegerField(null=True)
     default_invoice_address = generic.GenericForeignKey('ia_content_type', 'dia_object_id')
 
     selected_country = models.ForeignKey(Country, verbose_name=_(u"Selected country"), blank=True, null=True)
