@@ -2381,7 +2381,7 @@ class ProductPropertyValue(models.Model):
 
     def __unicode__(self):
         property_group_name = self.property_group.name if self.property_group_id else ''
-        return u"%s/%s/%s: %s" % (self.product.name, property_group_name, self.property.name, self.value)
+        return u"%s/%s/%s: %s" % (self.product.get_name(), property_group_name, self.property.name, self.value)
 
     def save(self, *args, **kwargs):
         """
