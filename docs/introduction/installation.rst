@@ -30,8 +30,6 @@ execute following steps:
 
 #. Enter your database settings to lfs_project/settings.py
 
-#. $ bin/django syncdb
-
 #. $ bin/django migrate
 
 #. $ bin/django lfs_init
@@ -62,15 +60,33 @@ execute following steps:
     templates/lfs/shop/robots.txt and place it in settings.INSTALLED_APPS before(!) 'lfs_theme'. Also note, that in
     production environment it is good to serve robots.txt directly from HTTP server like nginx or Apache.
 
+Migration from version 0.9 to version 0.10
+==========================================
+
+Migration starting from 0.10 is based on Django’s default migrations, see:
+https://docs.djangoproject.com/en/1.8/topics/migrations/
+
+#. Install the new LFS version
+
+#. Backup your existing database
+
+#. Enter your existing database to lfs_project/settings.py
+
+#. $ bin/django migrate
+
+Migration from versions 0.5 - 0.8 to version 0.10
+=================================================
+
+Migrations from 0.5 - 0.8 to version 0.10 needs an intermediate step through
+version 0.9.
+
 Migration from versions 0.5 - 0.8 to version 0.9
-================================================
+------------------------------------------------
 
 Migration from versions 0.5 - 0.8 to version 0.9 can be done with a migration command (``lfs_migrate``)
 which migrates existing databases up to version 0.9.
 
-To migrate an existing database please proceed the following steps:
-
-#. Install the new version (see above)
+#. Install the 0.9
 
 #. Backup your existing database
 
@@ -80,12 +96,10 @@ To migrate an existing database please proceed the following steps:
 
 #. $ bin/django lfs_migrate
 
-After that your database should be ready to run with the latest release.
+Migration from version 0.9 to version 0.10
+------------------------------------------
 
-Migration from version 0.9.0 to higher one
-==========================================
-
-#. Install the new LFS version
+#. Install the 0.10 LFS version
 
 #. Backup your existing database
 
@@ -93,22 +107,7 @@ Migration from version 0.9.0 to higher one
 
 #. $ bin/django migrate
 
-Migration from 0.9.0 without South to 0.9.0 using South
-=======================================================
-
-This might be useful if you have github version of LFS that has no migrations yet, and you've updated to the version
-that does use South migrations
-
-#. Install the new LFS version
-
-#. Backup your existing database
-
-#. $ bin/django migrate --all --fake 0001
-
-#. $ bin/django migrate order --fake 0002
-
-#. $ bin/django migrate
-
 What's next?
 ============
+
 Move on to :doc:`getting_started`.
