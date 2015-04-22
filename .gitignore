@@ -13,3 +13,4 @@ lfs.db
 *media/
 .idea/
 *dist/
+*docs/_build/
