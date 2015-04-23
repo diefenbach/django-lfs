@@ -34,6 +34,13 @@ For development environment please visit:
 Changes
 =======
 
+0.10.1 (2015-04-23)
+===================
+
+* Fixes MANIFEST.in
+* Fixes adding and display of reviews when L10N is turned on
+
+
 0.10.0 (2015-04-22)
 ===================
 
