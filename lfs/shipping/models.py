@@ -20,7 +20,7 @@ class ActiveShippingMethodManager(models.Manager):
     A manager which return just active shipping methods.
     """
     def active(self):
-        return super(ActiveShippingMethodManager, self).get_query_set().filter(active=True)
+        return super(ActiveShippingMethodManager, self).get_queryset().filter(active=True)
 
 
 class ShippingMethod(models.Model, Criteria):
