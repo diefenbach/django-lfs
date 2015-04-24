@@ -29,16 +29,13 @@ except ImportError:
     pass
 
 # django imports
-from django.contrib.auth.models import User
 from django.contrib.sessions.backends.file import SessionStore
-from django.core.urlresolvers import reverse
-from django.template.loader import get_template_from_string
+from django.template import Template
 from django.template import Context
 from django.test import TestCase
 
 # lfs imports
 import lfs.core.utils
-from lfs.core.models import Country
 from lfs.core.models import Shop
 from lfs.core.templatetags.lfs_tags import currency
 from lfs.order.models import Order
@@ -198,9 +195,7 @@ class TagsTestCase(TestCase):
         shop.ga_ecommerce_tracking = False
         shop.save()
 
-        template = get_template_from_string(
-            """{% load lfs_tags %}{% google_analytics_tracking %}""")
-
+        template = Template("""{% load lfs_tags %}{% google_analytics_tracking %}""")
         content = template.render(Context())
         self.failIf(content.find("pageTracker") != -1)
 
@@ -235,9 +230,7 @@ class TagsTestCase(TestCase):
         request = rf.get('/')
         request.session = session
 
-        template = get_template_from_string(
-            """{% load lfs_tags %}{% google_analytics_ecommerce %}""")
-
+        template = Template("""{% load lfs_tags %}{% google_analytics_ecommerce %}""")
         content = template.render(Context({"request": request}))
         self.failIf(content.find("pageTracker") != -1)
 
