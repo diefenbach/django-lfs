@@ -12,7 +12,7 @@ from lfs.tax.models import Tax
 
 # Load logger
 import logging
-logger = logging.getLogger("default")
+logger = logging.getLogger(__name__)
 
 
 class ActiveShippingMethodManager(models.Manager):

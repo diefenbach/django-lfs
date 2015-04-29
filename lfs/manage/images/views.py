@@ -22,7 +22,7 @@ from lfs.core.utils import LazyEncoder, lfs_pagination
 
 # Load logger
 import logging
-logger = logging.getLogger("default")
+logger = logging.getLogger(__name__)
 
 # views
 @permission_required("core.manage_shop")

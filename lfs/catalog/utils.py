@@ -18,7 +18,7 @@ from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 import logging
 from lfs.manufacturer.models import Manufacturer
 
-logger = logging.getLogger("default")
+logger = logging.getLogger(__name__)
 
 
 # TODO: Add unit test
@@ -138,15 +138,15 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
         for row in cursor.fetchall():
             property_group_id = row[0]
             property_id = row[1]
-    
+
             prop = properties_mapping[property_id]
 
             if prop.is_select_field or prop.is_text_field or not prop.filterable:
                 continue
-    
+
             # cache property groups for later use
             property_group = mapping_manager.get(lfs.catalog.models.PropertyGroup, property_group_id)
-    
+
             key = '{0}_{1}'.format(property_group_id, property_id)
             if key in product_filter.get("number-filter", {}):
                 pmin, pmax = product_filter.get("number-filter").get(key)['value'][0:2]
@@ -154,7 +154,7 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
             else:
                 pmin, pmax = row[2:4]
                 show_reset = False
-    
+
             try:
                 pmin = locale.format("%.2f", float(pmin))
             except TypeError:
@@ -163,7 +163,7 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
                 pmax = locale.format("%.2f", float(pmax))
             except TypeError:
                 pmax = 0.0
-    
+
             property_group_dict = number_fields_dict.setdefault(property_group_id, {'property_group': property_group,
                                                                                     'items': []})
 
@@ -196,37 +196,37 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
                           AND product_id IN (%s)
                           AND property_id IN (%s)
                           GROUP BY property_group_id, property_id, value""" % (PROPERTY_VALUE_TYPE_FILTER, product_ids, property_ids))
-    
+
         for row in cursor.fetchall():
             property_group_id = row[0]
             property_id = row[1]
             value = row[2]
-            
+
             prop = properties_mapping[property_id]
 
             if prop.is_number_field or not prop.filterable:
                 continue
-    
+
             # use property group cache
             property_group = mapping_manager.get(lfs.catalog.models.PropertyGroup, property_group_id)
             property_group_dict = select_fields_dict.setdefault(property_group_id, {'property_group': property_group,
                                                                                     'properties': {}})
-    
+
             properties = property_group_dict['properties']
-    
+
             if prop.is_select_field:
                 name = options_mapping[value].name
                 position = options_mapping[value].position
             else:
                 name = value
                 position = 10
-    
+
             if name == value and name == '':
                 continue
-    
+
             # initialize list of property values
             properties.setdefault(property_id, [])
-    
+
             properties[property_id].append({
                 "id": property_id,
                 "property_group_id": property_group_id,

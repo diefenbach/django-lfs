@@ -25,7 +25,7 @@ from lfs.manage.manufacturers.forms import ViewForm
 from lfs.manage.seo.views import SEOView
 
 import logging
-logger = logging.getLogger(__file__)
+logger = logging.getLogger(__name__)
 
 
 @permission_required("core.manage_shop")

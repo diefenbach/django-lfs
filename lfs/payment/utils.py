@@ -11,7 +11,7 @@ from lfs.payment.settings import PM_ORDER_ACCEPTED
 
 # Load logger
 import logging
-logger = logging.getLogger("default")
+logger = logging.getLogger(__name__)
 
 
 def update_to_valid_payment_method(request, customer, save=False):

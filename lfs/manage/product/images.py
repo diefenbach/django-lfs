@@ -19,7 +19,7 @@ from lfs.core.utils import LazyEncoder
 
 # Load logger
 import logging
-logger = logging.getLogger("default")
+logger = logging.getLogger(__name__)
 
 
 @permission_required("core.manage_shop")

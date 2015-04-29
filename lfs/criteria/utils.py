@@ -7,7 +7,7 @@ from lfs.criteria.models import Criterion
 
 # Load logger
 import logging
-logger = logging.getLogger("default")
+logger = logging.getLogger(__name__)
 
 
 # DEPRECATED 0.8

@@ -17,7 +17,7 @@ from lfs.catalog.models import PropertyOption
 
 # Load logger
 import logging
-logger = logging.getLogger("default")
+logger = logging.getLogger(__name__)
 
 
 class Cart(models.Model):

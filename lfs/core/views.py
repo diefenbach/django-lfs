@@ -18,7 +18,7 @@ from lfs.core.models import Shop
 
 # Load logger
 import logging
-logger = logging.getLogger("default")
+logger = logging.getLogger(__name__)
 
 
 def shop_view(request, template_name="lfs/shop/shop.html"):
