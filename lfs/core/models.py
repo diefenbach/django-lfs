@@ -24,6 +24,7 @@ class Country(models.Model):
     class Meta:
         verbose_name_plural = 'Countries'
         ordering = ("name", )
+        app_label = 'core'
 
 
 class ActionGroup(models.Model):
@@ -39,6 +40,7 @@ class ActionGroup(models.Model):
 
     class Meta:
         ordering = ("name", )
+        app_label = 'core'
 
     def __unicode__(self):
         return self.name
@@ -84,6 +86,7 @@ class Action(models.Model):
 
     class Meta:
         ordering = ("position", )
+        app_label = 'core'
 
 
 class Shop(models.Model):
@@ -194,6 +197,7 @@ class Shop(models.Model):
 
     class Meta:
         permissions = (("manage_shop", "Manage shop"),)
+        app_label = 'core'
 
     def __unicode__(self):
         return self.name
@@ -251,6 +255,9 @@ class Shop(models.Model):
 
 class Application(models.Model):
     version = models.CharField(_("Version"), blank=True, max_length=10)
+
+    class Meta:
+        app_label = 'core'
 
 
 from monkeys import *

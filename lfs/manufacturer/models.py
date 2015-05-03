@@ -33,6 +33,7 @@ class Manufacturer(models.Model):
 
     class Meta:
         ordering = ("name", )
+        app_label = 'manufacturer'
 
     def __unicode__(self):
         return self.name

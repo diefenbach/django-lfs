@@ -29,6 +29,7 @@ class Page(models.Model):
 
     class Meta:
         ordering = ("position", )
+        app_label = 'page'
 
     def __unicode__(self):
         return self.title

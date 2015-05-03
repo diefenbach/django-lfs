@@ -19,3 +19,6 @@ class Tax(models.Model):
 
     def __unicode__(self):
         return u"%s%%" % self.rate
+
+    class Meta:
+        app_label = 'tax'

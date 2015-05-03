@@ -1,4 +1,6 @@
 # django imports
+import hashlib
+
 from django.db import models
 from django.db.models.query import QuerySet
 from django.conf import settings
@@ -45,6 +47,7 @@ def lfs_get_object(klass, *args, **kwargs):
     object is found.
     """
     cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, klass.__name__.lower(), kwargs.values()[0])
+    cache_key = hashlib.md5(cache_key).hexdigest()
     object = cache.get(cache_key)
     if object is not None:
         return object
@@ -72,6 +75,7 @@ def lfs_get_object_or_404(klass, *args, **kwargs):
     object is found.
     """
     cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, klass.__name__.lower(), kwargs.values()[0])
+    cache_key = hashlib.md5(cache_key).hexdigest()
     object = cache.get(cache_key)
     if object is not None:
         return object

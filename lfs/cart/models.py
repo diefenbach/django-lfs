@@ -208,6 +208,9 @@ class Cart(models.Model):
             cache_key = "%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
             cache.delete(cache_key)
 
+    class Meta:
+        app_label = 'cart'
+
 
 class CartItem(models.Model):
     """
@@ -239,6 +242,7 @@ class CartItem(models.Model):
 
     class Meta:
         ordering = ['id']
+        app_label = 'cart'
 
     def __unicode__(self):
         return u"Product: %(product)s, Quantity: %(amount)f, Cart: %(cart)s" % {'product': self.product,
@@ -397,3 +401,6 @@ class CartItemPropertyValue(models.Model):
     property = models.ForeignKey(Property, verbose_name=_(u"Property"))
     property_group = models.ForeignKey(PropertyGroup, verbose_name=_(u'Property group'), null=True, blank=True)
     value = models.CharField("Value", blank=True, max_length=100)
+
+    class Meta:
+        app_label = 'cart'

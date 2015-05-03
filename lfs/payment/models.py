@@ -78,6 +78,7 @@ class PaymentMethod(models.Model, Criteria):
 
     class Meta:
         ordering = ("priority", )
+        app_label = 'payment'
 
     def __unicode__(self):
         return self.name
@@ -108,6 +109,7 @@ class PaymentMethodPrice(models.Model, Criteria):
 
     class Meta:
         ordering = ("priority", )
+        app_label = 'payment'
 
     payment_method = models.ForeignKey(PaymentMethod, verbose_name=_(u"Payment method"), related_name="prices")
     price = models.FloatField(_(u"Price"), default=0.0)

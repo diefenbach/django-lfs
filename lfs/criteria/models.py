@@ -109,6 +109,7 @@ class Criterion(models.Model):
 
     class Meta:
         ordering = ("position", )
+        app_label = 'criteria'
 
     EQUAL = 0
     LESS_THAN = 1
@@ -409,6 +410,9 @@ class CartPriceCriterion(Criterion):
         else:
             return False
 
+    class Meta:
+        app_label = 'criteria'
+
 
 class CombinedLengthAndGirthCriterion(Criterion):
     """
@@ -460,6 +464,9 @@ class CombinedLengthAndGirthCriterion(Criterion):
         else:
             return False
 
+    class Meta:
+        app_label = 'criteria'
+
 
 class CountryCriterion(Criterion):
     """
@@ -500,6 +507,9 @@ class CountryCriterion(Criterion):
         else:
             return country not in self.value.all()
 
+    class Meta:
+        app_label = 'criteria'
+
 
 class HeightCriterion(Criterion):
     """
@@ -538,6 +548,9 @@ class HeightCriterion(Criterion):
         else:
             return False
 
+    class Meta:
+        app_label = 'criteria'
+
 
 class LengthCriterion(Criterion):
     """
@@ -575,6 +588,9 @@ class LengthCriterion(Criterion):
             return True
         else:
             return False
+
+    class Meta:
+        app_label = 'criteria'
 
 
 class PaymentMethodCriterion(Criterion):
@@ -635,6 +651,9 @@ class PaymentMethodCriterion(Criterion):
             return True
         else:
             return False
+
+    class Meta:
+        app_label = 'criteria'
 
 
 class ShippingMethodCriterion(Criterion):
@@ -701,6 +720,9 @@ class ShippingMethodCriterion(Criterion):
         else:
             return False
 
+    class Meta:
+        app_label = 'criteria'
+
 
 class WeightCriterion(Criterion):
     """
@@ -739,6 +761,9 @@ class WeightCriterion(Criterion):
         else:
             return False
 
+    class Meta:
+        app_label = 'criteria'
+
 
 class WidthCriterion(Criterion):
     """
@@ -776,3 +801,6 @@ class WidthCriterion(Criterion):
             return True
 
         return False
+
+    class Meta:
+        app_label = 'criteria'

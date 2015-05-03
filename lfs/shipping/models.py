@@ -83,6 +83,7 @@ class ShippingMethod(models.Model, Criteria):
 
     class Meta:
         ordering = ("priority", )
+        app_label = 'shipping'
 
     def __unicode__(self):
         return self.name
@@ -155,6 +156,7 @@ class ShippingMethodPrice(models.Model, Criteria):
 
     class Meta:
         ordering = ("priority", )
+        app_label = 'shipping'
 
     def __unicode__(self):
         return u"%s" % self.price

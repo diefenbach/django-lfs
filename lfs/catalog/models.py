@@ -190,6 +190,7 @@ class Category(models.Model):
         ordering = ("position", )
         verbose_name = _('Category')
         verbose_name_plural = _('Categories')
+        app_label = 'catalog'
 
     def __unicode__(self):
         return u"%s (%s)" % (self.name, self.slug)
@@ -693,6 +694,7 @@ class Product(models.Model):
 
     class Meta:
         ordering = ("name", )
+        app_label = 'catalog'
 
     def __unicode__(self):
         return u"%s (%s)" % (self.name, self.slug)
@@ -2026,6 +2028,7 @@ class ProductAccessories(models.Model):
     class Meta:
         ordering = ("position", )
         verbose_name_plural = "Product accessories"
+        app_label = 'catalog'
 
     def __unicode__(self):
         return u"%s -> %s" % (self.product.name, self.accessory.name)
@@ -2059,6 +2062,7 @@ class PropertyGroup(models.Model):
 
     class Meta:
         ordering = ("position", )
+        app_label = 'catalog'
 
     def __unicode__(self):
         return self.name
@@ -2182,6 +2186,7 @@ class Property(models.Model):
     class Meta:
         verbose_name_plural = _(u"Properties")
         ordering = ["position"]
+        app_label = 'catalog'
 
     def __unicode__(self):
         return self.name
@@ -2240,6 +2245,7 @@ class FilterStep(models.Model):
 
     class Meta:
         ordering = ["start"]
+        app_label = 'catalog'
 
     def __unicode__(self):
         return u"%s %s" % (self.property.name, self.start)
@@ -2270,6 +2276,7 @@ class GroupsPropertiesRelation(models.Model):
     class Meta:
         ordering = ("position", )
         unique_together = ("group", "property")
+        app_label = 'catalog'
 
 
 class ProductsPropertiesRelation(models.Model):
@@ -2298,6 +2305,7 @@ class ProductsPropertiesRelation(models.Model):
     class Meta:
         ordering = ("position", )
         unique_together = ("product", "property")
+        app_label = 'catalog'
 
 
 class PropertyOption(models.Model):
@@ -2333,6 +2341,7 @@ class PropertyOption(models.Model):
 
     class Meta:
         ordering = ["position"]
+        app_label = 'catalog'
 
     def __unicode__(self):
         return self.name
@@ -2378,6 +2387,7 @@ class ProductPropertyValue(models.Model):
 
     class Meta:
         unique_together = ("product", "property", "property_group", "value", "type")
+        app_label = 'catalog'
 
     def __unicode__(self):
         property_group_name = self.property_group.name if self.property_group_id else ''
@@ -2433,6 +2443,7 @@ class Image(models.Model):
 
     class Meta:
         ordering = ("position", )
+        app_label = 'catalog'
 
     def __unicode__(self):
         return self.title
@@ -2476,6 +2487,7 @@ class File(models.Model):
 
     class Meta:
         ordering = ("position", )
+        app_label = 'catalog'
 
     def __unicode__(self):
         return self.title
@@ -2513,6 +2525,7 @@ class StaticBlock(models.Model):
 
     class Meta:
         ordering = ("position", )
+        app_label = 'catalog'
 
     def __unicode__(self):
         return self.name
@@ -2544,6 +2557,7 @@ class DeliveryTime(models.Model):
 
     class Meta:
         ordering = ("min", )
+        app_label = 'catalog'
 
     def __unicode__(self):
         return self.round().as_string()
@@ -2756,6 +2770,7 @@ class ProductAttachment(models.Model):
 
     class Meta:
         ordering = ("position", )
+        app_label = 'catalog'
 
     def get_url(self):
         if self.file.url:

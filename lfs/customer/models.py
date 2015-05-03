@@ -133,6 +133,9 @@ class Customer(models.Model):
         self.sync_selected_to_default_invoice_address(force)
         self.sync_selected_to_default_shipping_address(force)
 
+    class Meta:
+        app_label = 'customer'
+
 
 class BankAccount(models.Model):
     """
@@ -160,6 +163,9 @@ class BankAccount(models.Model):
 
     def __unicode__(self):
         return u"%s / %s" % (self.account_number, self.bank_name)
+
+    class Meta:
+        app_label = 'customer'
 
 
 class CreditCard(models.Model):
@@ -193,3 +199,6 @@ class CreditCard(models.Model):
 
     def __unicode__(self):
         return u"%s / %s" % (self.type, self.owner)
+
+    class Meta:
+        app_label = 'customer'

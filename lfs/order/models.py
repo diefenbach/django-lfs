@@ -103,6 +103,7 @@ class Order(models.Model):
 
     class Meta:
         ordering = ("-created", )
+        app_label = 'order'
 
     def __unicode__(self):
         return u"%s (%s %s)" % (self.created.strftime("%x %X"), self.customer_firstname, self.customer_lastname)
@@ -214,6 +215,9 @@ class OrderItem(models.Model):
 
         return properties
 
+    class Meta:
+        app_label = 'order'
+
 
 class OrderItemPropertyValue(models.Model):
     """Stores a value for a property and order item.
@@ -234,6 +238,9 @@ class OrderItemPropertyValue(models.Model):
     property = models.ForeignKey(Property, verbose_name=_(u"Property"))
     value = models.CharField("Value", blank=True, max_length=100)
 
+    class Meta:
+        app_label = 'order'
+
 
 class OrderDeliveryTime(lfs.catalog.models.DeliveryTime):
     order = models.OneToOneField(Order, verbose_name=_('Order'), related_name='delivery_time')
@@ -244,3 +251,4 @@ class OrderDeliveryTime(lfs.catalog.models.DeliveryTime):
     class Meta:
         verbose_name = _(u'Order delivery time')
         verbose_name_plural = _(u'Order delivery times')
+        app_label = 'order'

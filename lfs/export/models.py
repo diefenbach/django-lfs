@@ -22,6 +22,7 @@ class Export(models.Model):
 
     class Meta:
         ordering = ("position", "name")
+        app_label = 'export'
 
     def __unicode__(self):
         return u"%s.%s" % (self.module, self.method)
@@ -62,6 +63,7 @@ class Script(models.Model):
     class Meta:
         ordering = ("name", )
         unique_together = ("module", "method")
+        app_label = 'export'
 
 
 class CategoryOption(models.Model):
@@ -70,3 +72,6 @@ class CategoryOption(models.Model):
     category = models.ForeignKey(Category, verbose_name=_(u"Category"))
     export = models.ForeignKey(Export, verbose_name=_(u"Export"))
     variants_option = models.PositiveSmallIntegerField(_(u"Variant"), choices=CATEGORY_VARIANTS_CHOICES)
+
+    class Meta:
+        app_label = 'export'

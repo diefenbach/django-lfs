@@ -15,6 +15,7 @@ class Topseller(models.Model):
 
     class Meta:
         ordering = ["position"]
+        app_label = 'marketing'
 
     def __unicode__(self):
         return u"%s (%s)" % (self.product.name, self.position)
@@ -26,6 +27,9 @@ class ProductSales(models.Model):
     product = models.ForeignKey(Product, verbose_name=_(u"Product"))
     sales = models.IntegerField(_(u"sales"), default=0)
 
+    class Meta:
+        app_label = 'marketing'
+
 
 class FeaturedProduct(models.Model):
     """Featured products are manually selected by the shop owner
@@ -36,6 +40,7 @@ class FeaturedProduct(models.Model):
 
     class Meta:
         ordering = ["position"]
+        app_label = 'marketing'
 
     def __unicode__(self):
         return u"%s (%s)" % (self.product.name, self.position)
@@ -49,3 +54,6 @@ class OrderRatingMail(models.Model):
 
     def __unicode__(self):
         return u"%s (%s)" % (self.order.id, self.send_date.strftime(ugettext('DATE_FORMAT')))
+
+    class Meta:
+        app_label = 'marketing'
