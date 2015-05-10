@@ -3,7 +3,7 @@ import datetime
 
 # django imports
 from django.conf import settings
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.encoding import force_unicode
@@ -101,7 +101,7 @@ class Criterion(models.Model):
     """
     content_type = models.ForeignKey(ContentType, verbose_name=_(u"Content type"), related_name="content_type")
     content_id = models.PositiveIntegerField(_(u"Content id"))
-    content = generic.GenericForeignKey(ct_field="content_type", fk_field="content_id")
+    content = GenericForeignKey(ct_field="content_type", fk_field="content_id")
     sub_type = models.CharField(_(u"Sub type"), max_length=100, blank=True)
 
     position = models.PositiveIntegerField(_(u"Position"), default=999)

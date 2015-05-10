@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -38,17 +38,17 @@ class Customer(models.Model):
 
     sa_content_type = models.ForeignKey(ContentType, related_name="sa_content_type", null=True)
     sa_object_id = models.PositiveIntegerField(null=True)
-    selected_shipping_address = generic.GenericForeignKey('sa_content_type', 'sa_object_id')
+    selected_shipping_address = GenericForeignKey('sa_content_type', 'sa_object_id')
 
     dsa_object_id = models.PositiveIntegerField(null=True)
-    default_shipping_address = generic.GenericForeignKey('sa_content_type', 'dsa_object_id')
+    default_shipping_address = GenericForeignKey('sa_content_type', 'dsa_object_id')
 
     ia_content_type = models.ForeignKey(ContentType, related_name="ia_content_type", null=True)
     ia_object_id = models.PositiveIntegerField(null=True)
-    selected_invoice_address = generic.GenericForeignKey('ia_content_type', 'ia_object_id')
+    selected_invoice_address = GenericForeignKey('ia_content_type', 'ia_object_id')
 
     dia_object_id = models.PositiveIntegerField(null=True)
-    default_invoice_address = generic.GenericForeignKey('ia_content_type', 'dia_object_id')
+    default_invoice_address = GenericForeignKey('ia_content_type', 'dia_object_id')
 
     selected_country = models.ForeignKey(Country, verbose_name=_(u"Selected country"), blank=True, null=True)
 

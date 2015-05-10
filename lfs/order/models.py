@@ -5,7 +5,7 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -72,11 +72,11 @@ class Order(models.Model):
 
     sa_content_type = models.ForeignKey(ContentType, related_name="order_shipping_address")
     sa_object_id = models.PositiveIntegerField()
-    shipping_address = generic.GenericForeignKey('sa_content_type', 'sa_object_id')
+    shipping_address = GenericForeignKey('sa_content_type', 'sa_object_id')
 
     ia_content_type = models.ForeignKey(ContentType, related_name="order_invoice_address")
     ia_object_id = models.PositiveIntegerField()
-    invoice_address = generic.GenericForeignKey('ia_content_type', 'ia_object_id')
+    invoice_address = GenericForeignKey('ia_content_type', 'ia_object_id')
 
     shipping_method = models.ForeignKey(ShippingMethod, verbose_name=_(u"Shipping Method"), blank=True, null=True)
     shipping_price = models.FloatField(_(u"Shipping Price"), default=0.0)

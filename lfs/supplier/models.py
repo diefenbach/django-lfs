@@ -16,3 +16,6 @@ class Supplier(models.Model):
 
     def __unicode__(self):
         return u"%s" % (self.name)
+
+    class Meta:
+        app_label = 'supplier'
