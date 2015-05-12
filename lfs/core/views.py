@@ -6,7 +6,7 @@ import traceback
 # django imports
 from django.conf import settings
 from django.core.mail import EmailMessage
-from django.http import HttpResponse, HttpResponseServerError
+from django.http import HttpResponseServerError
 from django.shortcuts import render_to_response
 from django.template import loader
 from django.template import RequestContext

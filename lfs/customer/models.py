@@ -81,8 +81,8 @@ class Customer(models.Model):
         """Returns the selected shipping address.
         """
         return self.selected_shipping_address or \
-               self.selected_invoice_address or \
-               None
+            self.selected_invoice_address or \
+            None
 
     def sync_default_to_selected_addresses(self, force=False):
         # Synchronize selected addresses with default addresses
