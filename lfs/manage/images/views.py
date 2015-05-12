@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
@@ -23,6 +22,7 @@ from lfs.core.utils import LazyEncoder, lfs_pagination
 # Load logger
 import logging
 logger = logging.getLogger(__name__)
+
 
 # views
 @permission_required("core.manage_shop")
@@ -42,9 +42,9 @@ def images(request, as_string=False, template_name="manage/images/images.html"):
 
     # prepare paginator
     if query:
-        images_qs = Image.objects.filter(title__istartswith=query)
+        images_qs = Image.objects.filter(content_id=None, title__istartswith=query)
     else:
-        images_qs = Image.objects.all()
+        images_qs = Image.objects.filter(content_id=None)
     paginator = Paginator(images_qs, 50)
 
     try:
@@ -136,8 +136,6 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
                 selected_image = Image.objects.get(image=temp_url)
                 selected_size = result.groups()[2]
             else:
-                value = None
-                title = None
                 selected_size = None
 
         except (IndexError, Image.DoesNotExist):
@@ -173,9 +171,9 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
 
     # prepare paginator
     if query:
-        images_qs = Image.objects.filter(title__istartswith=query)
+        images_qs = Image.objects.filter(content_id=None, title__istartswith=query)
     else:
-        images_qs = Image.objects.all()
+        images_qs = Image.objects.filter(content_id=None)
 
     paginator = Paginator(images_qs, 25)
 
