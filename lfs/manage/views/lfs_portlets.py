@@ -30,6 +30,7 @@ def portlets_inline(request, obj, template_name="manage/portlets/portlets_inline
     parent_for_portlets = obj.get_parent_for_portlets()
     if parent_for_portlets:
         parent_slots = portlets.utils.get_slots(parent_for_portlets)
+
     else:
         parent_slots = None
 

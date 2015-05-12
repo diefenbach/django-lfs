@@ -935,3 +935,42 @@ span.property-group-label {
 .manage-product div.property-group-properties.ingroup {
     padding-left: 10px;
 }
+
+
+/* SUPERFISH OVERRIDES */
+table.top-menu {
+    padding: 0 20px;
+    clear: both;
+}
+
+table.top-menu td {
+    background: url('../img/menu_bg.jpg') repeat-x;
+}
+
+.sf-menu li {
+    background:     transparent;
+}
+
+.sf-menu a, .sf-menu a:visited  { /* visited pseudo selector so IE6 applies text colour*/
+    color: #58585a;
+    font-weight: bold;
+    border-left: 0 solid blue;
+    border-top: 0 solid blue;
+}
+
+.sf-menu li li {
+    background: url('../img/menu_bg.jpg') repeat-x;
+}
+.sf-menu li li li {
+    background: url('../img/menu_bg.jpg') repeat-x;
+}
+.sf-menu li:hover, .sf-menu li.sfHover,
+.sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active {
+    background: url("../img/menu_hover_bg.jpg") repeat-x;
+    outline:        0;
+    color: white;
+}
+
+.sf-arrows .sf-with-ul:after {
+    border-top-color: rgba(136, 135, 136, 1);
+}

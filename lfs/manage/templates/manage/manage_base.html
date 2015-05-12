@@ -6,13 +6,13 @@
         <title>{% block title %}{% endblock %}</title>
         <link rel="shortcut icon" href="{{ STATIC_URL }}favicon.ico" type="image/ico" />
         {% compress css %}
-            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lfs/css/lfs.manage.css" />
-            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery/superfish/superfish.css" />
+{#            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}jquery/superfish/superfish.css" />#}
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lfs/bower_components/superfish/dist/css/superfish.css" />
 
             <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lfs/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css" />
             <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lfs/bower_components/jquery-ui/themes/smoothness/theme.css" />
             <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lfs/bower_components/jgrowl/jquery.jgrowl.css" />
-
+            <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lfs/css/lfs.manage.css" />
             <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}lfs/css/lfs.manage-custom.css" />
         {% endcompress %}
         <script type="text/javascript">
