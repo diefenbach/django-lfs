@@ -79,7 +79,8 @@ def add_tax(request, template_name="manage/product_taxes/add_tax.html"):
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "taxes": Tax.objects.all(),
-        "next": request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
+        "next": (request.POST if request.method == 'POST' else request.GET).get("next",
+                                                                                request.META.get("HTTP_REFERER")),
     }))
 
 

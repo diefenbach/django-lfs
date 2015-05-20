@@ -53,12 +53,13 @@ def products_inline(request, manufacturer_id, as_string=False, template_name="ma
     whole manage manufacturer view and is subsequently called via ajax requests to
     update this part independent of others.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
 
-    if request.REQUEST.get("keep-session"):
-        page = request.REQUEST.get("manufacturer_page", request.session.get("manufacturer_page", 1))
-        filter_ = request.REQUEST.get("manufacturer_filter", request.session.get("manufacturer_filter", ""))
-        category_filter = request.REQUEST.get("manufacturer_category_filter", request.session.get("manufacturer_category_filter", ""))
+    if req.get("keep-session"):
+        page = req.get("manufacturer_page", request.session.get("manufacturer_page", 1))
+        filter_ = req.get("manufacturer_filter", request.session.get("manufacturer_filter", ""))
+        category_filter = req.get("manufacturer_category_filter", request.session.get("manufacturer_category_filter", ""))
     else:
         page = 1
         filter_ = ""
@@ -70,7 +71,7 @@ def products_inline(request, manufacturer_id, as_string=False, template_name="ma
     s["manufacturer_category_filter"] = category_filter
 
     try:
-        s["manufacturer-products-amount"] = int(request.REQUEST.get("manufacturer-products-amount",
+        s["manufacturer-products-amount"] = int(req.get("manufacturer-products-amount",
                                                                     s.get("manufacturer-products-amount")))
     except TypeError:
         s["manufacturer-products-amount"] = 25
@@ -132,11 +133,12 @@ def selected_products(request, manufacturer_id, as_string=False, template_name="
     whole manage category view and is later called via ajax requests to update
     this part independent of others.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
 
-    if request.REQUEST.get("keep-session"):
-        page_2 = request.REQUEST.get("manufacturer_page_2", request.session.get("manufacturer_page_2", 2))
-        filter_2 = request.REQUEST.get("manufacturer_filter_2", request.session.get("manufacturer_filter_2", ""))
+    if req.get("keep-session"):
+        page_2 = req.get("manufacturer_page_2", request.session.get("manufacturer_page_2", 2))
+        filter_2 = req.get("manufacturer_filter_2", request.session.get("manufacturer_filter_2", ""))
     else:
         page_2 = 1
         filter_2 = ""
@@ -145,7 +147,7 @@ def selected_products(request, manufacturer_id, as_string=False, template_name="
     request.session["manufacturer_filter_2"] = filter_2
 
     try:
-        request.session["manufacturer-products-amount"] = int(request.REQUEST.get("manufacturer-products-amount", request.session.get("manufacturer-products-amount")))
+        request.session["manufacturer-products-amount"] = int(req.get("manufacturer-products-amount", request.session.get("manufacturer-products-amount")))
     except TypeError:
         request.session["manufacturer-products-amount"] = 25
 

@@ -12,7 +12,7 @@ def get_current_page(request, objs, obj, amount):
     """Returns the current page of obj within objs.
     """
     try:
-        page = int(request.REQUEST.get("page"))
+        page = int((request.POST if request.method == 'POST' else request.GET).get("page"))
     except TypeError:
         try:
             idx = tuple(objs).index(obj)

@@ -49,7 +49,7 @@ def manage_topseller_inline(
     topseller = Topseller.objects.all()
     topseller_ids = [t.product.id for t in topseller]
 
-    r = request.REQUEST
+    r = request.POST if request.method == 'POST' else request.GET
     s = request.session
 
     # If we get the parameter ``keep-filters`` or ``page`` we take the

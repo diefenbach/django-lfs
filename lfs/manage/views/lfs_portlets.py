@@ -80,7 +80,7 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
     obj = object_ct.get_object_for_this_type(pk=object_id)
 
     # Get the portlet type
-    portlet_type = request.REQUEST.get("portlet_type", "")
+    portlet_type = (request.POST if request.method == 'POST' else request.GET).get("portlet_type", "")
 
     if request.method == "POST":
         try:

@@ -188,7 +188,8 @@ def add_manufacturer(request, template_name="manage/manufacturers/add_manufactur
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "selectable_manufacturers_inline": selectable_manufacturers_inline(request, 0),
-        "came_from": request.REQUEST.get("came_from", reverse("lfs_manufacturer_dispatcher")),
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
+                                                                                     reverse("lfs_manufacturer_dispatcher")),
     }))
 
 

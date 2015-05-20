@@ -81,7 +81,8 @@ def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "delivery_times": DeliveryTime.objects.all(),
-        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_delivery_times")),
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
+                                                                                     reverse("lfs_manage_delivery_times")),
     }))
 
 

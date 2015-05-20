@@ -51,7 +51,7 @@ def manage_related_products_inline(
     related_products = product.related_products.all()
     related_products_ids = [p.id for p in related_products]
 
-    r = request.REQUEST
+    r = request.POST if request.method == 'POST' else request.GET
     s = request.session
 
     # If we get the parameter ``keep-filters`` or ``page`` we take the

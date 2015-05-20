@@ -115,7 +115,8 @@ def add_property_group(request, template_name="manage/property_groups/add_proper
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "property_groups": PropertyGroup.objects.all(),
-        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_property_groups")),
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
+                                                                                     reverse("lfs_manage_property_groups")),
     }))
 
 
@@ -207,7 +208,7 @@ def products_inline(request, product_group_id, as_string=False,
     property_group = PropertyGroup.objects.get(pk=product_group_id)
     group_products = property_group.products.all().select_related('parent')
 
-    r = request.REQUEST
+    r = request.POST if request.method == 'POST' else request.GET
     s = request.session
 
     # If we get the parameter ``keep-filters`` or ``page`` we take the

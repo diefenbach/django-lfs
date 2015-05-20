@@ -86,7 +86,7 @@ def vouchers_tab(request, voucher_group, deleted=False, template_name="manage/vo
     """
     vouchers = voucher_group.vouchers.all()
     paginator = Paginator(vouchers, 20)
-    page = paginator.page(request.REQUEST.get("page", 1))
+    page = paginator.page((request.POST if request.method == 'POST' else request.GET).get("page", 1))
 
     taxes = Tax.objects.all()
 
@@ -134,11 +134,12 @@ def vouchers_inline(request, voucher_group, vouchers, paginator, page, template_
 def set_vouchers_page(request):
     """Sets the displayed voucher page.
     """
-    group_id = request.REQUEST.get("group")
+    req = request.POST if request.method == 'POST' else request.GET
+    group_id = req.get("group")
     voucher_group = VoucherGroup.objects.get(pk=group_id)
     vouchers = voucher_group.vouchers.all()
     paginator = Paginator(vouchers, 20)
-    page = paginator.page(request.REQUEST.get("page", 1))
+    page = paginator.page(req.get("page", 1))
 
     html = (
         ("#vouchers-inline", vouchers_inline(request, voucher_group, vouchers, paginator, page)),
@@ -243,7 +244,8 @@ def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.h
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "voucher_groups": VoucherGroup.objects.all(),
-        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_vouchers")),
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
+                                                                                     reverse("lfs_manage_vouchers")),
     }))
 
 

@@ -235,7 +235,7 @@ def add_to_cart(request, product_id=None):
     string.
     """
     if product_id is None:
-        product_id = request.REQUEST.get("product_id")
+        product_id = (request.POST if request.method == 'POST' else request.GET).get("product_id")
 
     product = lfs_get_object_or_404(Product, pk=product_id)
 

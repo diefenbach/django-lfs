@@ -30,7 +30,8 @@ def images(request, as_string=False, template_name="manage/images/images.html"):
     """
     Display images management.
     """
-    start = request.REQUEST.get('start')
+    req = request.POST if request.method == 'POST' else request.GET
+    start = req.get('start')
     # Calculates parameters for display.
     try:
         start = int(start)
@@ -38,7 +39,7 @@ def images(request, as_string=False, template_name="manage/images/images.html"):
         start = 1
 
     # filter
-    query = request.REQUEST.get('q', '')
+    query = req.get('q', '')
 
     # prepare paginator
     if query:
@@ -167,7 +168,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
         start = 1
 
     # filter
-    query = request.REQUEST.get('q', '')
+    query = (request.POST if request.method == 'POST' else request.GET).get('q', '')
 
     # prepare paginator
     if query:

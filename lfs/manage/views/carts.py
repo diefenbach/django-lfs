@@ -64,7 +64,7 @@ def carts_filters_inline(request, template_name="manage/cart/carts_filters_inlin
 
     paginator = Paginator(temp, 30)
 
-    page = request.REQUEST.get("page", 1)
+    page = (request.POST if request.method == 'POST' else request.GET).get("page", 1)
     page = paginator.page(page)
 
     return render_to_string(template_name, RequestContext(request, {
@@ -84,7 +84,7 @@ def carts_inline(request, template_name="manage/cart/carts_inline.html"):
 
     paginator = Paginator(temp, 30)
 
-    page = request.REQUEST.get("page", 1)
+    page = (request.POST if request.method == 'POST' else request.GET).get("page", 1)
     page = paginator.page(page)
 
     carts = []
@@ -162,7 +162,7 @@ def selectable_carts_inline(request, cart_id, template_name="manage/cart/selecta
     paginator = Paginator(carts, 30)
 
     try:
-        page = int(request.REQUEST.get("page", 1))
+        page = int((request.POST if request.method == 'POST' else request.GET).get("page", 1))
     except TypeError:
         page = 1
     page = paginator.page(page)
@@ -226,8 +226,8 @@ def set_cart_filters(request):
 
     request.session["cart-filters"] = cart_filters
 
-    if request.REQUEST.get("came-from") == "cart":
-        cart_id = request.REQUEST.get("cart-id")
+    if (request.POST if request.method == 'POST' else request.GET).get("came-from") == "cart":
+        cart_id = (request.POST if request.method == 'POST' else request.GET).get("cart-id")
         html = (
             ("#selectable-carts-inline", selectable_carts_inline(request, cart_id)),
             ("#cart-filters-inline", cart_filters_inline(request, cart_id)),
@@ -253,17 +253,18 @@ def set_cart_filters(request):
 def set_cart_filters_date(request):
     """Sets the date filter by given short cut link
     """
+    req = request.POST if request.method == 'POST' else request.GET
     cart_filters = request.session.get("cart-filters", {})
 
-    start = datetime.now() - timedelta(int(request.REQUEST.get("start")))
-    end = datetime.now() - timedelta(int(request.REQUEST.get("end")))
+    start = datetime.now() - timedelta(int(req.get("start")))
+    end = datetime.now() - timedelta(int(req.get("end")))
 
     cart_filters["start"] = start.strftime("%Y-%m-%d")
     cart_filters["end"] = end.strftime("%Y-%m-%d")
     request.session["cart-filters"] = cart_filters
 
-    if request.REQUEST.get("came-from") == "cart":
-        cart_id = request.REQUEST.get("cart-id")
+    if req.get("came-from") == "cart":
+        cart_id = req.get("cart-id")
         html = (
             ("#selectable-carts-inline", selectable_carts_inline(request, cart_id)),
             ("#cart-filters-inline", cart_filters_inline(request, cart_id)),
@@ -289,11 +290,12 @@ def set_cart_filters_date(request):
 def reset_cart_filters(request):
     """Resets all cart filters.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     if "cart-filters" in request.session:
         del request.session["cart-filters"]
 
-    if request.REQUEST.get("came-from") == "cart":
-        cart_id = request.REQUEST.get("cart-id")
+    if req.get("came-from") == "cart":
+        cart_id = req.get("cart-id")
         html = (
             ("#selectable-carts-inline", selectable_carts_inline(request, cart_id)),
             ("#cart-inline", cart_inline(request, cart_id)),

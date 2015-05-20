@@ -54,11 +54,12 @@ def products_inline(request, category_id, as_string=False, template_name="manage
     category = Category.objects.get(pk=category_id)
 
     product_ids = Product.objects.filter(categories=category).values_list('pk', flat=True)
+    req = request.POST if request.method == 'POST' else request.GET
 
-    if request.REQUEST.get("keep-session"):
-        page = request.REQUEST.get("page", request.session.get("page", 1))
-        filter_ = request.REQUEST.get("filter", request.session.get("filter", ""))
-        category_filter = request.REQUEST.get("category_filter", request.session.get("category_filter", ""))
+    if req.get("keep-session"):
+        page = req.get("page", request.session.get("page", 1))
+        filter_ = req.get("filter", request.session.get("filter", ""))
+        category_filter = req.get("category_filter", request.session.get("category_filter", ""))
     else:
         page = 1
         filter_ = ""
@@ -70,7 +71,7 @@ def products_inline(request, category_id, as_string=False, template_name="manage
     s["category_filter"] = category_filter
 
     try:
-        s["category-products-amount"] = int(request.REQUEST.get("category-products-amount",
+        s["category-products-amount"] = int(req.get("category-products-amount",
                                       s.get("category-products-amount")))
     except TypeError:
         s["category-products-amount"] = 25
@@ -133,10 +134,12 @@ def selected_products(request, category_id, as_string=False, template_name="mana
     """
     category = Category.objects.get(pk=category_id)
 
-    if request.REQUEST.get("keep-session"):
-        page_2 = request.REQUEST.get("page_2", request.session.get("page_2", 2))
-        filter_2 = request.REQUEST.get("filter_2", request.session.get("filter_2", ""))
-        category_filter_2 = request.REQUEST.get("category_filter_2", request.session.get("category_filter_2", ""))
+    req = request.POST if request.method == 'POST' else request.GET
+
+    if req.get("keep-session"):
+        page_2 = req.get("page_2", request.session.get("page_2", 2))
+        filter_2 = req.get("filter_2", request.session.get("filter_2", ""))
+        category_filter_2 = req.get("category_filter_2", request.session.get("category_filter_2", ""))
     else:
         page_2 = 1
         filter_2 = ""
@@ -146,7 +149,7 @@ def selected_products(request, category_id, as_string=False, template_name="mana
     request.session["filter_2"] = filter_2
 
     try:
-        request.session["category-products-amount"] = int(request.REQUEST.get("category-products-amount", request.session.get("category-products-amount")))
+        request.session["category-products-amount"] = int(req.get("category-products-amount", request.session.get("category-products-amount")))
     except TypeError:
         request.session["category-products-amount"] = 25
 

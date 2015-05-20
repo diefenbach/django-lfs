@@ -138,7 +138,8 @@ def add_discount(request, template_name="manage/discounts/add_discount.html"):
     return render_to_response(template_name, RequestContext(request, {
         "navigation": navigation(request),
         "form": form,
-        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_discounts")),
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
+                                                                                     reverse("lfs_manage_discounts")),
     }))
 
 
@@ -260,7 +261,7 @@ def products_inline(request, discount_id, as_string=False,
     discount = Discount.objects.get(pk=discount_id)
     discount_products = discount.products.all().select_related('parent')
 
-    r = request.REQUEST
+    r = request.POST if request.method == 'POST' else request.GET
     s = request.session
 
     # If we get the parameter ``keep-filters`` or ``page`` we take the

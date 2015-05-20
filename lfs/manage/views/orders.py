@@ -89,7 +89,7 @@ def orders_inline(request, template_name="manage/order/orders_inline.html"):
     order_filters = request.session.get("order-filters", {})
     orders = _get_filtered_orders(order_filters)
 
-    page = request.REQUEST.get("page", 1)
+    page = (request.POST if request.method == 'POST' else request.GET).get("page", 1)
     paginator = Paginator(orders, 20)
     page = paginator.page(page)
 
@@ -157,7 +157,7 @@ def orders_filters_inline(request, template_name="manage/order/orders_filters_in
     order_filters = request.session.get("order-filters", {})
     orders = _get_filtered_orders(order_filters)
 
-    page = request.REQUEST.get("page", 1)
+    page = (request.POST if request.method == 'POST' else request.GET).get("page", 1)
     paginator = Paginator(orders, 20)
     page = paginator.page(page)
 
@@ -195,7 +195,7 @@ def selectable_orders_inline(request, order_id, template_name="manage/order/sele
     paginator = Paginator(orders, 20)
 
     try:
-        page = int(request.REQUEST.get("page", 1))
+        page = int((request.POST if request.method == 'POST' else request.GET).get("page", 1))
     except TypeError:
         page = 1
     page = paginator.page(page)
@@ -213,6 +213,7 @@ def selectable_orders_inline(request, order_id, template_name="manage/order/sele
 def set_order_filters(request):
     """Sets order filters given by passed request.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     order_filters = request.session.get("order-filters", {})
 
     if request.POST.get("name", "") != "":
@@ -241,8 +242,8 @@ def set_order_filters(request):
 
     request.session["order-filters"] = order_filters
 
-    if request.REQUEST.get("came-from") == "order":
-        order_id = request.REQUEST.get("order-id")
+    if req.get("came-from") == "order":
+        order_id = req.get("order-id")
         html = (
             ("#selectable-orders", selectable_orders_inline(request, order_id)),
             ("#order-inline", order_inline(request, order_id=order_id)),
@@ -266,17 +267,18 @@ def set_order_filters(request):
 def set_order_filters_date(request):
     """Sets the date filter by given short cut link
     """
+    req = request.POST if request.method == 'POST' else request.GET
     order_filters = request.session.get("order-filters", {})
 
-    start = datetime.now() - timedelta(int(request.REQUEST.get("start")))
-    end = datetime.now() - timedelta(int(request.REQUEST.get("end")))
+    start = datetime.now() - timedelta(int(req.get("start")))
+    end = datetime.now() - timedelta(int(req.get("end")))
 
     order_filters["start"] = start.strftime("%Y-%m-%d")
     order_filters["end"] = end.strftime("%Y-%m-%d")
     request.session["order-filters"] = order_filters
 
-    if request.REQUEST.get("came-from") == "order":
-        order_id = request.REQUEST.get("order-id")
+    if req.get("came-from") == "order":
+        order_id = req.get("order-id")
         html = (
             ("#selectable-orders", selectable_orders_inline(request, order_id)),
             ("#order-inline", order_inline(request, order_id)),
@@ -302,11 +304,12 @@ def set_order_filters_date(request):
 def reset_order_filters(request):
     """resets order filter.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     if "order-filters" in request.session:
         del request.session["order-filters"]
 
-    if request.REQUEST.get("came-from") == "order":
-        order_id = request.REQUEST.get("order-id")
+    if req.get("came-from") == "order":
+        order_id = req.get("order-id")
         html = (
             ("#selectable-orders", selectable_orders_inline(request, order_id)),
             ("#order-inline", order_inline(request, order_id=order_id)),

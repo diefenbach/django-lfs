@@ -19,7 +19,7 @@ def manufacturers(request,
     """ Display list of all manufacturers
     """
     try:
-        start = int(request.REQUEST.get("start", 1))
+        start = int((request.POST if request.method == 'POST' else request.GET).get("start", 1))
     except (ValueError, TypeError):
         start = 1
 
@@ -52,7 +52,7 @@ def manufacturer_view(request, slug,
                       template_name="lfs/manufacturers/manufacturer.html"):
     """ Display manufacturer details and products
     """
-    start = request.REQUEST.get("start", 1)
+    start = (request.POST if request.method == 'POST' else request.GET).get("start", 1)
     manufacturer = lfs_get_object_or_404(Manufacturer, slug=slug)
     inline = manufacturer_products(request, slug, start)
 

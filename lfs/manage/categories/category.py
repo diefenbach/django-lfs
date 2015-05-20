@@ -172,7 +172,7 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
     return render_to_response(template_name, RequestContext(request, {
         "category": parent,
         "form": form,
-        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_categories")),
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from", reverse("lfs_manage_categories")),
     }))
 
 

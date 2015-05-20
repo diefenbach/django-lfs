@@ -68,7 +68,7 @@ def customers_filters_inline(request, template_name="manage/customer/customers_f
 
     paginator = Paginator(temp, 30)
 
-    page = request.REQUEST.get("page", 1)
+    page = (request.POST if request.method == 'POST' else request.GET).get("page", 1)
     page = paginator.page(page)
 
     customers = []
@@ -162,7 +162,7 @@ def customers_inline(request, template_name="manage/customer/customers_inline.ht
 
     paginator = Paginator(temp, 30)
 
-    page = request.REQUEST.get("page", 1)
+    page = (request.POST if request.method == 'POST' else request.GET).get("page", 1)
     page = paginator.page(page)
 
     customers = []
@@ -257,6 +257,7 @@ def set_customers_page(request):
 def set_ordering(request, ordering):
     """Sets customer ordering given by passed request.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     if ordering == "lastname":
         ordering = "addresses__lastname"
     elif ordering == "firstname":
@@ -273,8 +274,8 @@ def set_ordering(request, ordering):
         request.session["customer-ordering-order"] = ""
 
     request.session["customer-ordering"] = ordering
-    if request.REQUEST.get("came-from") == "customer":
-        customer_id = request.REQUEST.get("customer-id")
+    if req.get("came-from") == "customer":
+        customer_id = req.get("customer-id")
         html = (
             ("#selectable-customers-inline", selectable_customers_inline(request, customer_id)),
             ("#customer-inline", customer_inline(request, customer_id=customer_id)),
@@ -293,6 +294,7 @@ def set_ordering(request, ordering):
 def set_customer_filters(request):
     """Sets customer filters given by passed request.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     customer_filters = request.session.get("customer-filters", {})
 
     if request.POST.get("name", "") != "":
@@ -303,8 +305,8 @@ def set_customer_filters(request):
 
     request.session["customer-filters"] = customer_filters
 
-    if request.REQUEST.get("came-from") == "customer":
-        customer_id = request.REQUEST.get("customer-id")
+    if req.get("came-from") == "customer":
+        customer_id = req.get("customer-id")
         html = (
             ("#selectable-customers-inline", selectable_customers_inline(request, customer_id)),
             ("#customer-inline", customer_inline(request, customer_id=customer_id)),
@@ -326,11 +328,12 @@ def set_customer_filters(request):
 def reset_customer_filters(request):
     """Resets all customer filters.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     if "customer-filters" in request.session:
         del request.session["customer-filters"]
 
-    if request.REQUEST.get("came-from") == "customer":
-        customer_id = request.REQUEST.get("customer-id")
+    if req.get("came-from") == "customer":
+        customer_id = req.get("customer-id")
         html = (
             ("#selectable-customers-inline", selectable_customers_inline(request, customer_id)),
             ("#customer-inline", customer_inline(request, customer_id=customer_id)),

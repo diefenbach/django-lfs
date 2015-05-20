@@ -238,13 +238,14 @@ def set_price_filter(request, category_slug):
     """Saves the given price filter to session. Redirects to the category with
     given slug.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     try:
-        min_val = lfs.core.utils.atof(request.REQUEST.get("min", "0"))
+        min_val = lfs.core.utils.atof(req.get("min", "0"))
     except (ValueError):
         min_val = 0
 
     try:
-        max_val = lfs.core.utils.atof(request.REQUEST.get("max", "99999"))
+        max_val = lfs.core.utils.atof(req.get("max", "99999"))
     except:
         max_val = 0
 
@@ -377,7 +378,7 @@ def set_sorting(request):
 def category_view(request, slug, template_name="lfs/catalog/category_base.html"):
     """
     """
-    start = request.REQUEST.get("start", 1)
+    start = (request.POST if request.method == 'POST' else request.GET).get("start", 1)
     category = lfs_get_object_or_404(Category, slug=slug)
     if category.get_content() == CONTENT_PRODUCTS:
         inline_dict = category_products(request, slug, start)
@@ -399,7 +400,7 @@ def category_view(request, slug, template_name="lfs/catalog/category_base.html")
         "category": category,
         "category_inline": inline,
         "top_category": lfs.catalog.utils.get_current_top_category(request, category),
-        "pagination": request.REQUEST.get("start", 0),
+        "pagination": (request.POST if request.method == 'POST' else request.GET).get("start", 0),
         'pagination_data': pagination_data
     }))
 
@@ -718,7 +719,7 @@ def product_form_dispatcher(request):
          variants of of the product are displayed as select box. This may change
          in future, when the switch may made with an ajax request.)
     """
-    if request.REQUEST.get("add-to-cart") is not None:
+    if (request.POST if request.method == 'POST' else request.GET).get("add-to-cart") is not None:
         return add_to_cart(request)
     else:
         product_id = request.POST.get("product_id")

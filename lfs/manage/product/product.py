@@ -260,7 +260,7 @@ def product_data_form(request, product_id, template_name="manage/product/data.ht
     else:
         form = ProductDataForm(instance=product)
 
-    page = request.REQUEST.get('page', 1)
+    page = (request.POST if request.method == 'POST' else request.GET).get('page', 1)
     pagination_form = PaginationDataForm(data={'page': page})
 
     return render_to_string(template_name, RequestContext(request, {
@@ -279,7 +279,7 @@ def products(request, template_name="manage/product/products.html"):
     products = _get_filtered_products(request)
     amount = _get_stored_amount(request)
     paginator = Paginator(products, amount)
-    page = paginator.page(request.REQUEST.get("page", 1))
+    page = paginator.page((request.POST if request.method == 'POST' else request.GET).get("page", 1))
 
     return render_to_response(template_name, RequestContext(request, {
         "products_inline": products_inline(request, page, paginator),
@@ -385,7 +385,8 @@ def add_product(request, template_name="manage/product/add_product.html"):
 
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
-        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_product_dispatcher")),
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
+                                                                                     reverse("lfs_manage_product_dispatcher")),
     }))
 
 
@@ -426,7 +427,7 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
     product = lfs_get_object_or_404(Product, pk=product_id)
     products = _get_filtered_products_for_product_view(request)
     paginator = Paginator(products, 25)
-    page = paginator.page(request.REQUEST.get("page", 1))
+    page = paginator.page((request.POST if request.method == 'POST' else request.GET).get("page", 1))
 
     # Transform empty field / "on" from checkbox to integer
     data = dict(request.POST.items())
@@ -494,14 +495,15 @@ def reset_filters(request):
     """
     Resets all product filters.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     if "product_filters" in request.session:
         del request.session["product_filters"]
 
     products = _get_filtered_products(request)
     paginator = Paginator(products, 25)
-    page = paginator.page(request.REQUEST.get("page", 1))
+    page = paginator.page(req.get("page", 1))
 
-    product_id = request.REQUEST.get("product-id", 0)
+    product_id = req.get("product-id", 0)
     html = (
         ("#product-filters", product_filters_inline(request, page, paginator, product_id)),
         ("#products-inline", products_inline(request, page, paginator)),
@@ -523,7 +525,7 @@ def save_products(request):
     """
     products = _get_filtered_products(request)
     paginator = Paginator(products, request.session.get("product_filters", {}).get('amount', 25))
-    page = paginator.page(request.REQUEST.get("page", 1))
+    page = paginator.page((request.POST if request.method == 'POST' else request.GET).get("page", 1))
 
     if request.POST.get("action") == "delete":
         for key, value in request.POST.items():
@@ -601,6 +603,7 @@ def set_name_filter(request):
     """
     Sets product filters given by passed request.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     product_filters = request.session.get("product_filters", {})
 
     if request.POST.get("name", "") != "":
@@ -613,9 +616,9 @@ def set_name_filter(request):
 
     products = _get_filtered_products_for_product_view(request)
     paginator = Paginator(products, 25)
-    page = paginator.page(request.REQUEST.get("page", 1))
+    page = paginator.page(req.get("page", 1))
 
-    product_id = request.REQUEST.get("product-id", 0)
+    product_id = req.get("product-id", 0)
 
     html = (
         ("#products-inline", products_inline(request, page, paginator)),
@@ -635,6 +638,7 @@ def set_filters(request):
     """
     Sets product filters given by passed request.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     product_filters = request.session.get("product_filters", {})
     for name in ("name", "active", "price", "category", "manufacturer", "for_sale", "sub_type", "amount"):
         if request.POST.get(name, "") != "":
@@ -652,9 +656,9 @@ def set_filters(request):
 
     products = _get_filtered_products(request)
     paginator = Paginator(products, amount)
-    page = paginator.page(request.REQUEST.get("page", 1))
+    page = paginator.page(req.get("page", 1))
 
-    product_id = request.REQUEST.get("product-id", 0)
+    product_id = req.get("product-id", 0)
     html = (
         ("#product-filters", product_filters_inline(request, page, paginator, product_id)),
         ("#products-inline", products_inline(request, page, paginator)),
@@ -689,7 +693,7 @@ def set_products_page(request):
         amount = 25
 
     paginator = Paginator(products, amount)
-    page = paginator.page(request.REQUEST.get("page", 1))
+    page = paginator.page((request.POST if request.method == 'POST' else request.GET).get("page", 1))
 
     html = (
         ("#products-inline", products_inline(request, page, paginator)),

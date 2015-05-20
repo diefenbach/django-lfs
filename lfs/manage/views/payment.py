@@ -206,7 +206,7 @@ def add_payment_method(request,
     return render_to_response(template_name, RequestContext(request, {
         "payment_methods": payment_methods(request),
         "form": form,
-        "next": request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
+        "next": (request.POST if request.method == 'POST' else request.GET).get("next", request.META.get("HTTP_REFERER")),
     }))
 
 

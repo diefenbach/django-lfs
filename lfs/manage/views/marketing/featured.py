@@ -49,7 +49,7 @@ def manage_featured_inline(
     featured = FeaturedProduct.objects.all()
     featured_ids = [f.product.id for f in featured]
 
-    r = request.REQUEST
+    r = request.POST if request.method == 'POST' else request.GET
     s = request.session
 
     # If we get the parameter ``keep-filters`` or ``page`` we take the

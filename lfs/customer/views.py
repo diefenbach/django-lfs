@@ -91,7 +91,7 @@ def login(request, template_name="lfs/customer/login.html"):
                 redirect_to, msg=_(u"You have been registered and logged in."))
 
     # Get next_url
-    next_url = request.REQUEST.get("next")
+    next_url = (request.POST if request.method == 'POST' else request.GET).get("next")
     if next_url is None:
         next_url = request.META.get("HTTP_REFERER")
     if next_url is None:

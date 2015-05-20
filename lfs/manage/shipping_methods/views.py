@@ -192,7 +192,8 @@ def add_shipping_method(request,
 
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
-        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_shipping")),
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
+                                                                                     reverse("lfs_manage_shipping")),
     }))
 
 

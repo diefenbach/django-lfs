@@ -164,6 +164,7 @@ def set_name_filter(request):
     """
     Sets property filters given by passed request.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     property_filters = request.session.get("property_filters", {})
 
     if request.POST.get("name", "") != "":
@@ -176,9 +177,9 @@ def set_name_filter(request):
 
     properties = _get_filtered_properties_for_property_view(request)
     paginator = Paginator(properties, 25)
-    page = paginator.page(request.REQUEST.get("page", 1))
+    page = paginator.page(req.get("page", 1))
 
-    property_id = request.REQUEST.get("property-id", 0)
+    property_id = req.get("property-id", 0)
 
     html = (
         ("#selectable-properties-inline", selectable_properties_inline(request, page, paginator, property_id)),
@@ -204,7 +205,7 @@ def set_properties_page(request):
     amount = 25
 
     paginator = Paginator(properties, amount)
-    page = paginator.page(request.REQUEST.get("page", 1))
+    page = paginator.page((request.POST if request.method == 'POST' else request.GET).get("page", 1))
 
     html = (
         ("#pages-inline", pages_inline(request, page, paginator, property_id)),
@@ -447,7 +448,8 @@ def add_property(request, template_name="manage/properties/add_property.html"):
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "properties": Property.objects.filter(local=False),
-        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_shop_properties")),
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
+                                                                                     reverse("lfs_manage_shop_properties")),
     }))
 
 

@@ -195,7 +195,8 @@ def add_static_block(request, template_name="manage/static_block/add_static_bloc
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "static_blocks": StaticBlock.objects.all(),
-        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_static_blocks")),
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
+                                                                                     reverse("lfs_manage_static_blocks")),
     }))
 
 

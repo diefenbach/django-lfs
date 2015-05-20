@@ -50,7 +50,7 @@ def manage_accessories_inline(request, product_id, as_string=False, template_nam
     product_accessories = ProductAccessories.objects.filter(product=product_id)
     accessory_ids = [p.accessory.id for p in product_accessories]
 
-    r = request.REQUEST
+    r = request.POST if request.method == 'POST' else request.GET
     s = request.session
 
     # If we get the parameter ``keep-filters`` or ``page`` we take the

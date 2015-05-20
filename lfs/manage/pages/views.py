@@ -153,7 +153,8 @@ def add_page(request, template_name="manage/pages/add_page.html"):
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "pages": Page.objects.all(),
-        "came_from": request.REQUEST.get("came_from", reverse("lfs_manage_pages")),
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
+                                                                                     reverse("lfs_manage_pages")),
     }))
 
 

@@ -88,7 +88,7 @@ def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "delivery_times": DeliveryTime.objects.all(),
-        "next": request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
+        "next": (request.POST if request.method == 'POST' else request.GET).get("next", request.META.get("HTTP_REFERER")),
     }))
 
 

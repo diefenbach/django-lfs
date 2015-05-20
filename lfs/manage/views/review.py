@@ -68,7 +68,7 @@ def reviews_inline(request, template_name="manage/reviews/reviews_inline.html"):
 
     paginator = Paginator(reviews, 30)
 
-    page = request.REQUEST.get("page", 1)
+    page = (request.POST if request.method == 'POST' else request.GET).get("page", 1)
     page = paginator.page(page)
 
     return render_to_string(template_name, RequestContext(request, {
@@ -104,7 +104,7 @@ def reviews_filters_inline(request, template_name="manage/reviews/reviews_filter
 
     paginator = Paginator(reviews, 30)
 
-    page = request.REQUEST.get("page", 1)
+    page = (request.POST if request.method == 'POST' else request.GET).get("page", 1)
     page = paginator.page(page)
 
     return render_to_string(template_name, RequestContext(request, {
@@ -126,7 +126,7 @@ def selectable_reviews_inline(request, review_id, template_name="manage/reviews/
     paginator = Paginator(reviews, 30)
 
     try:
-        page = int(request.REQUEST.get("page", 1))
+        page = int((request.POST if request.method == 'POST' else request.GET).get("page", 1))
     except TypeError:
         page = 1
     page = paginator.page(page)
@@ -175,6 +175,7 @@ def set_selectable_reviews_page(request):
 def set_ordering(request, ordering):
     """Sets review ordering given by passed request.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     request.session["review-ordering"] = ordering
 
     if ordering == request.session.get("review-ordering"):
@@ -185,8 +186,8 @@ def set_ordering(request, ordering):
     else:
         request.session["review-ordering-order"] = ""
 
-    if request.REQUEST.get("came-from") == "review":
-        review_id = request.REQUEST.get("review-id")
+    if req.get("came-from") == "review":
+        review_id = req.get("review-id")
         html = (
             ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
             ("#review-inline", review_inline(request, review_id)),
@@ -205,6 +206,7 @@ def set_ordering(request, ordering):
 def set_review_filters(request):
     """Sets review filters given by passed request.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     review_filters = request.session.get("review-filters", {})
 
     if request.POST.get("name", "") != "":
@@ -221,8 +223,8 @@ def set_review_filters(request):
 
     request.session["review-filters"] = review_filters
 
-    if request.REQUEST.get("came-from") == "review":
-        review_id = request.REQUEST.get("review-id")
+    if req.get("came-from") == "review":
+        review_id = req.get("review-id")
         html = (
             ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
             ("#review-inline", review_inline(request, review_id)),
@@ -247,11 +249,12 @@ def set_review_filters(request):
 def reset_review_filters(request):
     """Resets all review filters.
     """
+    req = request.POST if request.method == 'POST' else request.GET
     if "review-filters" in request.session:
         del request.session["review-filters"]
 
-    if request.REQUEST.get("came-from") == "review":
-        review_id = request.REQUEST.get("review-id")
+    if req.get("came-from") == "review":
+        review_id = req.get("review-id")
         html = (
             ("#selectable-reviews-inline", selectable_reviews_inline(request, review_id)),
             ("#review-inline", review_inline(request, review_id)),

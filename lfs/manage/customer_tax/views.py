@@ -114,7 +114,7 @@ def add_customer_tax(request, template_name="manage/customer_tax/add_customer_ta
     return render_to_response(template_name, RequestContext(request, {
         "form": form,
         "customer_taxes": CustomerTax.objects.all(),
-        "next": request.REQUEST.get("next", request.META.get("HTTP_REFERER")),
+        "next": (request.POST if request.method == 'POST' else request.GET).get("next", request.META.get("HTTP_REFERER")),
     }))
 
 
