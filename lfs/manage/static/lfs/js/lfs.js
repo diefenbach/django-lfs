@@ -251,7 +251,7 @@ $(function() {
                 $("#livesearch-result").hide();
             }
             else {
-                var q = $("#search-input").attr("value");
+                var q = $("#search-input").val();
                 var url = $("#search-input").data("url");
                 $.get(url, {"q" : q}, function(data) {
                     data = safeParseJSON(data);
