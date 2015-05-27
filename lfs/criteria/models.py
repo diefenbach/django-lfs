@@ -627,7 +627,7 @@ class PaymentMethodCriterion(Criterion):
 
     def is_valid(self):
         # see ShippingMethodCriterion for what's going on here
-        import lfs.shipping.utils
+        import lfs.payment.utils
         if isinstance(self.content, PaymentMethod):
             is_payment_method = True
         else:
@@ -641,12 +641,12 @@ class PaymentMethodCriterion(Criterion):
             return payment_method not in self.value.all()
         elif self.operator == self.IS_VALID:
             for pm in self.value.all():
-                if not lfs.criteria.utils.is_valid(self.request, pm, self.product):
+                if not pm.is_valid(self.request, self.product):
                     return False
             return True
         elif self.operator == self.IS_NOT_VALID:
             for pm in self.value.all():
-                if lfs.criteria.utils.is_valid(self.request, pm, self.product):
+                if pm.is_valid(self.request, self.product):
                     return False
             return True
         else:
@@ -709,12 +709,12 @@ class ShippingMethodCriterion(Criterion):
             return shipping_method not in self.value.all()
         elif self.operator == self.IS_VALID:
             for sm in self.value.all():
-                if not lfs.criteria.utils.is_valid(self.request, sm, self.product):
+                if not sm.is_valid(self.request, self.product):
                     return False
             return True
         elif self.operator == self.IS_NOT_VALID:
             for sm in self.value.all():
-                if lfs.criteria.utils.is_valid(self.request, sm, self.product):
+                if sm.is_valid(self.request, self.product):
                     return False
             return True
         else:
