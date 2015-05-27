@@ -202,13 +202,8 @@ def get_shipping_costs(request, shipping_method):
 def get_delivery_time(request, product):
     """Returns delivery time for given product.
     """
-    if product.is_deliverable():
-        return {
-            "deliverable": False,
-            "delivery_time": get_product_delivery_time(request, product)
-        }
-    else:
-        return {
-            "deliverable": True,
-            "delivery_time": get_product_delivery_time(request, product)
-        }
+    
+    return {
+        "deliverable": product.is_deliverable(),
+        "delivery_time": get_product_delivery_time(request, product)
+    }
