@@ -627,7 +627,7 @@ class PaymentMethodCriterion(Criterion):
 
     def is_valid(self):
         # see ShippingMethodCriterion for what's going on here
-        import lfs.shipping.utils
+        import lfs.payment.utils
         if isinstance(self.content, PaymentMethod):
             is_payment_method = True
         else:
