@@ -693,7 +693,7 @@ def set_products_page(request):
         amount = 25
 
     paginator = Paginator(products, amount)
-    page = paginator.page((request.POST if request.method == 'POST' else request.GET).get("page", 1))
+    page = paginator.page(request.GET.get("page", 1))
 
     html = (
         ("#products-inline", products_inline(request, page, paginator)),
