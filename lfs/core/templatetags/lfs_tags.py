@@ -686,7 +686,11 @@ def packages(cart_item):
     """
     packing_unit, packing_unit_unit = cart_item.product.get_packing_info()
     if packing_unit:
-        return int(math.ceil(float(cart_item.amount) / packing_unit))
+        try:
+            amount = float(cart_item.amount)
+        except ValueError:
+            amount = locale.atof(cart_item.amount)
+        return int(math.ceil(amount / packing_unit))
     return 0
 
 
