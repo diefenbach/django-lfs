@@ -308,7 +308,7 @@ class Criterion(models.Model):
 
             operators.append({
                 "id": operator[0],
-                "name": operator[1],
+                "name": operator[1].encode("utf-8"),
                 "selected": selected,
             })
 
@@ -321,8 +321,8 @@ class Criterion(models.Model):
                 selected = False
 
             criteria.append({
-                "module": criterion[0],
-                "name": criterion[1],
+                "module": criterion[0].encode("utf-8"),
+                "name": criterion[1].encode("utf-8"),
                 "selected": selected,
             })
 
