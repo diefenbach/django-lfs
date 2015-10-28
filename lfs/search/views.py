@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson
+import json
 
 # lfs imports
 from lfs.catalog.models import Category
@@ -20,13 +20,13 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
     q = request.GET.get("q", "")
 
     if q == "":
-        result = simplejson.dumps({
+        result = json.dumps({
             "state": "failure",
         })
     else:
         # Products
         query = Q(active=True) & get_query(q, ['name', 'description'])
-	    temp = Product.objects.filter(query)
+	temp = Product.objects.filter(query)
         if not temp:
 	        # Creates a SearchNotFound for the current session and/or user.
             if request.session.session_key is None:
@@ -46,11 +46,11 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
             "total": total,
         }))
 
-        result = simplejson.dumps({
+        result = json.dumps({
             "state": "success",
             "products": products,
         })
-    return HttpResponse(result, mimetype='application/json')
+    return HttpResponse(result, content_type='application/json')
 
 
 def search(request, template_name="lfs/search/search_results.html"):
