@@ -244,8 +244,6 @@ class OrderItemPropertyValue(models.Model):
 
 
 class OrderDeliveryTime(DeliveryTimeBase):
-    id = models.AutoField(primary_key=True, unique=False, default=1)
-    deliverytime_ptr = models.IntegerField(null=True)
     order = models.OneToOneField(Order, verbose_name=_('Order'), related_name='delivery_time')
 
     def _get_instance(self, min, max, unit):
