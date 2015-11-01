@@ -248,6 +248,9 @@ class OrderDeliveryTime(DeliveryTimeBase):
     deliverytime_ptr = models.IntegerField(null=True)
     order = models.OneToOneField(Order, verbose_name=_('Order'), related_name='delivery_time')
 
+    def _get_instance(self, min, max, unit):
+        return self.__class__(min=min, max=max, unit=unit, order=self.order)
+
     def as_string(self):
         out = super(OrderDeliveryTime, self).as_string()
         return '[{0}] {1}'.format(self.order.number, out)
