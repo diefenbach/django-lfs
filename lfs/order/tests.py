@@ -225,7 +225,6 @@ class OrderTestCase(TestCase):
         # delivery time should of the selected shipping method should be saved with order
         self.assertTrue(order.delivery_time is not None)
 
-
     def test_pay_link(self):
         """Tests empty pay link.
         """

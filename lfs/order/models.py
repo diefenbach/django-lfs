@@ -15,6 +15,7 @@ import lfs.catalog.models
 from lfs.catalog.models import Product
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
+from lfs.catalog.models import DeliveryTimeBase
 from lfs.order.settings import ORDER_STATES, SUBMITTED, PAYMENT_FAILED, PAYMENT_FLAGGED
 from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
@@ -242,8 +243,14 @@ class OrderItemPropertyValue(models.Model):
         app_label = 'order'
 
 
-class OrderDeliveryTime(lfs.catalog.models.DeliveryTime):
+class OrderDeliveryTime(DeliveryTimeBase):
+    id = models.AutoField(primary_key=True, unique=False, default=1)
+    deliverytime_ptr = models.IntegerField(null=True)
     order = models.OneToOneField(Order, verbose_name=_('Order'), related_name='delivery_time')
+
+    def as_string(self):
+        out = super(OrderDeliveryTime, self).as_string()
+        return '[{0}] {1}'.format(self.order.number, out)
 
     def __unicode__(self):
         return u'[{0}] {1}'.format(self.order.number, self.round().as_string())

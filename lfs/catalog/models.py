@@ -2532,7 +2532,7 @@ class StaticBlock(models.Model):
         return self.name
 
 
-class DeliveryTime(models.Model):
+class DeliveryTimeBase(models.Model):
     """
     Selectable delivery times.
 
@@ -2558,10 +2558,13 @@ class DeliveryTime(models.Model):
 
     class Meta:
         ordering = ("min", )
-        app_label = 'catalog'
+        abstract = True
 
     def __unicode__(self):
         return self.round().as_string()
+
+    def _get_instance(self, min, max, unit):
+        return self.__class__(min=min, max=max, unit=unit)
 
     def __gt__(self, other):
         if self.max > other.max:
@@ -2587,7 +2590,7 @@ class DeliveryTime(models.Model):
         max_new = a.max + b.max
         unit_new = a.unit
 
-        return DeliveryTime(min=min_new, max=max_new, unit=unit_new)
+        return self._get_instance(min=min_new, max=max_new, unit=unit_new)
 
     @property
     def name(self):
@@ -2619,7 +2622,7 @@ class DeliveryTime(models.Model):
         if max_new < 0:
             max_new = 0
 
-        return DeliveryTime(min=min_new, max=max_new, unit=self.unit)
+        return self._get_instance(min=min_new, max=max_new, unit=self.unit)
 
     def as_hours(self):
         """
@@ -2638,7 +2641,7 @@ class DeliveryTime(models.Model):
             max = self.max * 24 * 30
             min = self.min * 24 * 30
 
-        return DeliveryTime(min=min, max=max, unit=DELIVERY_TIME_UNIT_HOURS)
+        return self._get_instance(min=min, max=max, unit=DELIVERY_TIME_UNIT_HOURS)
 
     def as_days(self):
         """
@@ -2657,7 +2660,7 @@ class DeliveryTime(models.Model):
             max = self.max * 30
             min = self.min * 30
 
-        return DeliveryTime(min=min, max=max, unit=DELIVERY_TIME_UNIT_DAYS)
+        return self._get_instance(min=min, max=max, unit=DELIVERY_TIME_UNIT_DAYS)
 
     def as_weeks(self):
         """
@@ -2676,7 +2679,7 @@ class DeliveryTime(models.Model):
             max = self.max * 4
             min = self.min * 4
 
-        return DeliveryTime(min=min, max=max, unit=DELIVERY_TIME_UNIT_WEEKS)
+        return self._get_instance(min=min, max=max, unit=DELIVERY_TIME_UNIT_WEEKS)
 
     def as_months(self):
         """
@@ -2695,7 +2698,7 @@ class DeliveryTime(models.Model):
             max = self.max
             min = self.min
 
-        return DeliveryTime(min=min, max=max, unit=DELIVERY_TIME_UNIT_MONTHS)
+        return self._get_instance(min=min, max=max, unit=DELIVERY_TIME_UNIT_MONTHS)
 
     def as_reasonable_unit(self):
         """
@@ -2739,7 +2742,13 @@ class DeliveryTime(models.Model):
         min = int("%.0f" % (self.min + 0.001))
         max = int("%.0f" % (self.max + 0.001))
 
-        return DeliveryTime(min=min, max=max, unit=self.unit)
+        return self._get_instance(min=min, max=max, unit=self.unit)
+
+
+class DeliveryTime(DeliveryTimeBase):
+    class Meta:
+        ordering = ("min", )
+        app_label = 'catalog'
 
 
 class ProductAttachment(models.Model):
