@@ -571,7 +571,7 @@ class LengthCriterion(Criterion):
         """
         if self.product:
             max_length = self.product.get_length()
-        elif self.cart:
+        elif self.cart and self.cart.get_items():
             max_length = max([item.product.get_length() for item in self.cart.get_items()])
         else:
             max_length = 0
