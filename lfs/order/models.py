@@ -249,10 +249,6 @@ class OrderDeliveryTime(DeliveryTimeBase):
     def _get_instance(self, min, max, unit):
         return self.__class__(min=min, max=max, unit=unit, order=self.order)
 
-    def as_string(self):
-        out = super(OrderDeliveryTime, self).as_string()
-        return '[{0}] {1}'.format(self.order.number, out)
-
     def __unicode__(self):
         return u'[{0}] {1}'.format(self.order.number, self.round().as_string())
 
