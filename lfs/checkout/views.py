@@ -235,7 +235,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
         iam = AddressManagement(customer, invoice_address, "invoice", request.POST, initial=initial_address)
         sam = AddressManagement(customer, shipping_address, "shipping", request.POST, initial=initial_address)
         bank_account_form = BankAccountForm(instance=bank_account, data=request.POST)
-        credit_card_form = CreditCardForm(instance=credit_card, data=request.POST)
+        credit_card_form = CreditCardForm(instance=credit_card, data=request.POST, prefix="credit_card")
 
         if shop.confirm_toc and ("confirm_toc" not in request.POST):
             toc = False
@@ -309,7 +309,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
         iam = AddressManagement(customer, invoice_address, "invoice", initial=initial_address)
         sam = AddressManagement(customer, shipping_address, "shipping", initial=initial_address)
         bank_account_form = BankAccountForm(instance=bank_account)
-        credit_card_form = CreditCardForm(instance=credit_card)
+        credit_card_form = CreditCardForm(instance=credit_card, prefix="credit_card")
 
     # Payment
     try:
