@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import django
 
 from django.db import models, migrations
 
 
 def separate_order_delivery_times(apps, schema_editor):
-    OrderDeliveryTimeOld = apps.get_model("order", "OrderDeliveryTimeOld")
     OrderDeliveryTime = apps.get_model("order", "OrderDeliveryTime")
+    DeliveryTimeOrder = apps.get_model("order", "DeliveryTimeOrder")
 
-    for old_odt in OrderDeliveryTimeOld.objects.all():
+    for old_odt in OrderDeliveryTime.objects.all():
         delivery = old_odt.deliverytime_ptr
         order = old_odt.order
-        OrderDeliveryTime.objects.get_or_create(order=order,
+        DeliveryTimeOrder.objects.get_or_create(order=order,
                                                 defaults=dict(min=delivery.min,
                                                               max=delivery.max,
                                                               unit=delivery.unit,
@@ -20,31 +21,30 @@ def separate_order_delivery_times(apps, schema_editor):
 
 
 def concat_order_delivery_times(apps, schema_editor):
-    OrderDeliveryTimeOld = apps.get_model("order", "OrderDeliveryTimeOld")
     OrderDeliveryTime = apps.get_model("order", "OrderDeliveryTime")
+    DeliveryTimeOrder = apps.get_model("order", "DeliveryTimeOrder")
 
-    for new_odt in OrderDeliveryTime.objects.all():
-        OrderDeliveryTimeOld.objects.get_or_create(order=new_odt.order,
-                                                   defaults=dict(min=new_odt.min,
-                                                                 max=new_odt.max,
-                                                                 unit=new_odt.unit,
-                                                                 description=new_odt.description))
+    for new_odt in DeliveryTimeOrder.objects.all():
+        OrderDeliveryTime.objects.get_or_create(order=new_odt.order,
+                                                defaults=dict(min=new_odt.min,
+                                                              max=new_odt.max,
+                                                              unit=new_odt.unit,
+                                                              description=new_odt.description))
         new_odt.delete()
 
 
 class Migration(migrations.Migration):
-    """ The point of this migration (and subsequent one) is to replace existing OrderDeliveryTime model with new one
-        that doesn't use table inheritance as it causes all OrderDeliveryTime objects to be shown in management
-        panel Delivery Times
-    """
+
     dependencies = [
+        ('shipping', '0001_initial'),
+        ('core', '0002_auto_20150428_2039'),
+        ('catalog', '0002_auto_20150427_2206'),
         ('order', '0001_initial'),
     ]
 
     operations = [
-        migrations.RenameModel('OrderDeliveryTime', 'OrderDeliveryTimeOld'),
         migrations.CreateModel(
-            name='OrderDeliveryTime',
+            name='DeliveryTimeOrder',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('min', models.FloatField(verbose_name='Min')),
@@ -54,8 +54,20 @@ class Migration(migrations.Migration):
                 ('order', models.OneToOneField(related_name='delivery_time', verbose_name='Order', to='order.Order')),
             ],
             options={
-                'ordering': ('min',),
+                'verbose_name': 'Order delivery time',
+                'verbose_name_plural': 'Order delivery times',
             },
         ),
         migrations.RunPython(separate_order_delivery_times, concat_order_delivery_times),
+        migrations.RemoveField(
+            model_name='orderdeliverytime',
+            name='deliverytime_ptr',
+        ),
+        migrations.RemoveField(
+            model_name='orderdeliverytime',
+            name='order',
+        ),
+        migrations.DeleteModel(
+            name='OrderDeliveryTime',
+        ),
     ]
