@@ -245,7 +245,6 @@ class OrderItemPropertyValue(models.Model):
 
 class OrderDeliveryTime(DeliveryTimeBase):
     order = models.OneToOneField(Order, verbose_name=_('Order'), related_name='delivery_time')
-    order2 = models.OneToOneField(Order, verbose_name=_('Order'), related_name='delivery_time2')
 
     def _get_instance(self, min, max, unit):
         return self.__class__(min=min, max=max, unit=unit, order=self.order)
