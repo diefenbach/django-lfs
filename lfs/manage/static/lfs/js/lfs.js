@@ -98,7 +98,7 @@ $(function() {
 
     $body.on('change', 'input.variant', function() {
         var url = $(this).parents("table.product-variants").attr("data");
-        var variant_id = $(this).attr("value");
+        var variant_id = $(this).val();
 
         $("#product-form").ajaxSubmit({
             url : url,
@@ -427,7 +427,7 @@ $(function() {
 
     $body.on('change', '#voucher', function() {
         var url = $(this).attr("data");
-        var voucher = $(this).attr("value");
+        var voucher = $(this).val();
         $.post(url, { "voucher" : voucher }, function(data) {
             update_html(data);
         });
