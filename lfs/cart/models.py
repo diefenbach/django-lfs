@@ -267,15 +267,15 @@ class CartItem(models.Model):
         Returns the product item price. Based on selected properties, etc.
         """
         if not self.product.is_configurable_product():
-            price = self.product.get_price_gross(request)
+            price = self.product.get_price_gross(request, amount=self.amount)
         else:
             if self.product.active_price_calculation:
                 try:
                     price = self.get_calculated_price(request)
                 except:
-                    price = self.product.get_price_gross(request)
+                    price = self.product.get_price_gross(request, amount=self.amount)
             else:
-                price = self.product.get_price_gross(request, with_properties=False)
+                price = self.product.get_price_gross(request, with_properties=False, amount=self.amount)
                 for property in self.properties.all():
                     if property.property.is_select_field:
                         try:

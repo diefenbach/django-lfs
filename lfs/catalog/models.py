@@ -914,21 +914,21 @@ class Product(models.Model):
             return self.active_base_price in (1, CHOICES_YES)  # we have to check for 1 as it's value set
                                                                # by checkbox input
 
-    def get_base_packing_price(self, request, with_properties=True):
+    def get_base_packing_price(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
         return pc.get_base_packing_price(with_properties)
 
-    def get_base_packing_price_net(self, request, with_properties=True):
+    def get_base_packing_price_net(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
         return pc.get_base_packing_price_net(with_properties)
 
-    def get_base_packing_price_gross(self, request, with_properties=True):
+    def get_base_packing_price_gross(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
@@ -1330,89 +1330,89 @@ class Product(models.Model):
         price_calculator_class = lfs.core.utils.import_symbol(price_calculator)
         return price_calculator_class(request, self)
 
-    def get_price(self, request, with_properties=True):
+    def get_price(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_price(with_properties)
+        return pc.get_price(with_properties, amount)
 
-    def get_price_net(self, request, with_properties=True):
+    def get_price_net(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_price_net(with_properties)
+        return pc.get_price_net(with_properties, amount)
 
-    def get_price_gross(self, request, with_properties=True):
+    def get_price_gross(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_price_gross(with_properties)
+        return pc.get_price_gross(with_properties, amount)
 
-    def get_standard_price(self, request, with_properties=True):
+    def get_standard_price(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_standard_price(with_properties)
+        return pc.get_standard_price(with_properties, amount)
 
-    def get_standard_price_net(self, request, with_properties=True):
+    def get_standard_price_net(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_standard_price_net(with_properties)
+        return pc.get_standard_price_net(with_properties, amount)
 
-    def get_standard_price_gross(self, request, with_properties=True):
+    def get_standard_price_gross(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_standard_price_gross(with_properties)
+        return pc.get_standard_price_gross(with_properties, amount)
 
-    def get_for_sale_price(self, request, with_properties=True):
+    def get_for_sale_price(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_for_sale_price(with_properties)
+        return pc.get_for_sale_price(with_properties, amount)
 
-    def get_for_sale_price_net(self, request, with_properties=True):
+    def get_for_sale_price_net(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_for_sale_price_net(with_properties)
+        return pc.get_for_sale_price_net(with_properties, amount)
 
-    def get_for_sale_price_gross(self, request, with_properties=True):
+    def get_for_sale_price_gross(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_for_sale_price_gross(with_properties)
+        return pc.get_for_sale_price_gross(with_properties, amount)
 
-    def get_base_price(self, request, with_properties=True):
+    def get_base_price(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_base_price(with_properties)
+        return pc.get_base_price(with_properties, amount)
 
-    def get_base_price_net(self, request, with_properties=True):
+    def get_base_price_net(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_base_price_net(with_properties)
+        return pc.get_base_price_net(with_properties, amount)
 
-    def get_base_price_gross(self, request, with_properties=True):
+    def get_base_price_gross(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_base_price_gross(with_properties)
+        return pc.get_base_price_gross(with_properties, amount)
 
     def get_product_tax_rate(self, request=None):
         """
@@ -1425,6 +1425,7 @@ class Product(models.Model):
         """
         See lfs.plugins.PriceCalculator
         """
+        # TODO: Do we need this method at all?
         pc = self.get_price_calculator(request)
         return pc.get_product_tax()
 
