@@ -206,16 +206,15 @@
                 </div>
             {% endif %}
 
-            {% if not product.is_variant %}
-                <div class="field">
-                    <div class="label">
-                        {{ form.price_calculator.label_tag }}
-                    </div>
-                    <div>
-                        {{ form.price_calculator }}
-                    </div>
+            <div class="field">
+                <div class="label">
+                    {{ form.price_calculator.label_tag }}
                 </div>
-            {% endif %}
+                <div>
+                    {{ form.price_calculator }}
+                </div>
+            </div>
+
             {% if product.is_variant %}
                 <div class="field">
                     <div class="label">
