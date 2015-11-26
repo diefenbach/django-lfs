@@ -960,3 +960,8 @@ def get_pay_link(order, request=None, force_paid=False):
 def render_address(context, address, address_type):
     request = context.get('request')
     return mark_safe(address.as_html(request, type=address_type))
+
+
+@register.filter
+def clean_amount(amount, product):
+    return product.get_clean_quantity(amount)
