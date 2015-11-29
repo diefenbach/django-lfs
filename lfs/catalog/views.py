@@ -83,7 +83,7 @@ def calculate_packing(request, id, quantity=None, with_properties=False, as_stri
     try:
         packs = math.ceil(quantity / packing_amount)
         real_quantity = packs * packing_amount
-        price = product.get_price_gross(request, with_properties=with_properties)
+        price = product.get_price_gross(request, with_properties=with_properties, amount=quantity)
         price += _calculate_property_price(request)
         price *= real_quantity
     except TypeError:
