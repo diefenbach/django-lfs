@@ -551,6 +551,16 @@ $(function() {
     });
 
     $body.on('keypress', '.disable-enter-key', disable_enter_key);
+
+    $body.on('submit', '#imagebrowser-filter', function(){
+        $(this).ajaxSubmit({success: function(data) {
+                                         data = safeParseJSON(data);
+                                         $("#dialog").html(data["html"]);
+                                     }
+                           });
+
+        return false;
+    });
 });
 
 $(document).ajaxComplete(function() {

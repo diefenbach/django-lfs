@@ -119,15 +119,4 @@ $(function() {
       })
     .prop('disabled', !$.support.fileInput)
     .parent().addClass($.support.fileInput ? undefined : 'disabled');
-
-
-    $body.on('submit', '#imagebrowser-filter', function(){
-        $(this).ajaxSubmit({success: function(data) {
-                                         data = safeParseJSON(data);
-                                         $("#dialog").html(data["html"]);
-                                     }
-                           });
-
-        return false;
-    });
 });
