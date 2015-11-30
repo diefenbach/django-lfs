@@ -1,7 +1,9 @@
 # Python imports
 import locale
 import math
+import sys
 import uuid
+
 
 # django imports
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -911,29 +913,28 @@ class Product(models.Model):
             else:
                 return self.active_base_price == CHOICES_YES
         else:
-            return self.active_base_price in (1, CHOICES_YES)  # we have to check for 1 as it's value set
-                                                               # by checkbox input
+            return self.active_base_price in (1, CHOICES_YES)  # we have to check for 1 as it's value set by checkbox input
 
     def get_base_packing_price(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_base_packing_price(with_properties)
+        return pc.get_base_packing_price(with_properties, amount)
 
     def get_base_packing_price_net(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_base_packing_price_net(with_properties)
+        return pc.get_base_packing_price_net(with_properties, amount)
 
     def get_base_packing_price_gross(self, request, with_properties=True, amount=1):
         """
         See lfs.plugins.PriceCalculator
         """
         pc = self.get_price_calculator(request)
-        return pc.get_base_packing_price_gross(with_properties)
+        return pc.get_base_packing_price_gross(with_properties, amount)
 
     # TODO: Check whether there is a test case for that and write one if not.
     def get_for_sale(self):
@@ -1648,7 +1649,7 @@ class Product(models.Model):
         cheapest_variant = None
         min_price = None
         for variant in Product.objects.filter(parent=self):
-            price = variant.get_base_price_gross(request)
+            price = variant.get_base_price_gross(request, amount=sys.maxint)
             if price == 0:
                 continue
             if (min_price is None) or (price < min_price):
@@ -1665,14 +1666,14 @@ class Product(models.Model):
 
         prices = []
         for variant in Product.objects.filter(parent=product, active=True):
-            price = variant.get_for_sale_price_gross(request)
+            price = variant.get_for_sale_price_gross(request, amount=sys.maxint)
             if price not in prices:
                 prices.append(price)
 
             return {
-            "price": min(prices),
-            "starting_from": len(prices) > 1,
-        }
+                "price": min(prices),
+                "starting_from": len(prices) > 1,
+            }
 
     def get_cheapest_standard_price_gross(self, request):
         """
@@ -1680,7 +1681,7 @@ class Product(models.Model):
         """
         prices = []
         for variant in Product.objects.filter(parent=self, active=True):
-            price = variant.get_standard_price_gross(request)
+            price = variant.get_standard_price_gross(request, amount=sys.maxint)
             if price not in prices:
                 prices.append(price)
 
@@ -1695,7 +1696,7 @@ class Product(models.Model):
         """
         prices = []
         for variant in Product.objects.filter(parent=self, active=True):
-            price = variant.get_price_gross(request)
+            price = variant.get_price_gross(request, amount=sys.maxint)
             if price not in prices:
                 prices.append(price)
 
@@ -1710,7 +1711,7 @@ class Product(models.Model):
         """
         prices = []
         for variant in Product.objects.filter(parent=self, active=True):
-            price = float("%.2f" % variant.get_base_price_gross(request))
+            price = float("%.2f" % variant.get_base_price_gross(request, amount=sys.maxint))
             if price not in prices:
                 prices.append(price)
 
@@ -1768,7 +1769,7 @@ class Product(models.Model):
         parsed_options = []
         # remove option with empty option_id (this means that variant doesn't have such property)
         for option in options:
-            if option.find('|') == len(option) -1:
+            if option.find('|') == len(option) - 1:
                 continue
             parsed_options.append(option)
         options = "".join(parsed_options)
