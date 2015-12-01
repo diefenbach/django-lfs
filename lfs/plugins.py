@@ -430,7 +430,7 @@ class PriceCalculator(object):
         amount
             The amount of products for which the price is calculated.
         """
-        return self.get_price(with_properties) * self._calc_packing_amount()
+        return self.get_price(with_properties, amount) * self._calc_packing_amount()
 
     def get_base_packing_price_net(self, with_properties=True, amount=1):
         """
