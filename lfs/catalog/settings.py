@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import pgettext_lazy as __
+from django.utils.translation import pgettext_lazy
 
 QUANTITY_FIELD_INTEGER = 0
 QUANTITY_FIELD_DECIMAL_1 = 1
@@ -78,17 +78,17 @@ DELIVERY_TIME_UNIT_WEEKS = 3
 DELIVERY_TIME_UNIT_MONTHS = 4
 
 DELIVERY_TIME_UNIT_CHOICES = (
-    (DELIVERY_TIME_UNIT_HOURS, __(u"Delivery time", u"hours")),
-    (DELIVERY_TIME_UNIT_DAYS, __(u"Delivery time", u"days")),
-    (DELIVERY_TIME_UNIT_WEEKS, __(u"Delivery time", u"weeks")),
-    (DELIVERY_TIME_UNIT_MONTHS, __(u"Delivery time", u"months")),
+    (DELIVERY_TIME_UNIT_HOURS, pgettext_lazy(u"Delivery time", u"hours")),
+    (DELIVERY_TIME_UNIT_DAYS, pgettext_lazy(u"Delivery time", u"days")),
+    (DELIVERY_TIME_UNIT_WEEKS, pgettext_lazy(u"Delivery time", u"weeks")),
+    (DELIVERY_TIME_UNIT_MONTHS, pgettext_lazy(u"Delivery time", u"months")),
 )
 
 DELIVERY_TIME_UNIT_SINGULAR = {
-    DELIVERY_TIME_UNIT_HOURS: __(u"Delivery time", u"hour"),
-    DELIVERY_TIME_UNIT_DAYS: __(u"Delivery time", u"day"),
-    DELIVERY_TIME_UNIT_WEEKS: __(u"Delivery time", u"week"),
-    DELIVERY_TIME_UNIT_MONTHS: __(u"Delivery time", u"month"),
+    DELIVERY_TIME_UNIT_HOURS: pgettext_lazy(u"Delivery time", u"hour"),
+    DELIVERY_TIME_UNIT_DAYS: pgettext_lazy(u"Delivery time", u"day"),
+    DELIVERY_TIME_UNIT_WEEKS: pgettext_lazy(u"Delivery time", u"week"),
+    DELIVERY_TIME_UNIT_MONTHS: pgettext_lazy(u"Delivery time", u"month"),
 }
 
 PROPERTY_VALUE_TYPE_FILTER = 0
