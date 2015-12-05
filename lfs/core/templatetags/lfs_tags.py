@@ -1,14 +1,14 @@
 # python imports
 import math
+from django.forms.forms import BoundField
 import locale
-import sys
 
 # django imports
 from django import template
 from django.conf import settings
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
-from django.forms.forms import BoundField
 from django.template import Node, TemplateSyntaxError
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -860,78 +860,78 @@ register.tag('category_product_prices', do_category_product_prices)
 
 
 @register.filter(name='get_price')
-def get_price(product, request, amount=sys.maxint):
-    return product.get_price(request, amount=amount)
+def get_price(product, request):
+    return product.get_price(request)
 
 
 @register.filter(name='get_price_net')
-def get_price_net(product, request, amount=sys.maxint):
-    return product.get_price_net(request, amount=amount)
+def get_price_net(product, request):
+    return product.get_price_net(request)
 
 
 @register.filter(name='get_price_gross')
-def get_price_gross(product, request, amount=sys.maxint):
-    return product.get_price_gross(request, amount=amount)
+def get_price_gross(product, request):
+    return product.get_price_gross(request)
 
 
 @register.filter(name='get_standard_price')
-def get_standard_price(product, request, amount=sys.maxint):
-    return product.get_standard_price(request, amount=amount)
+def get_standard_price(product, request):
+    return product.get_standard_price(request)
 
 
 @register.filter(name='get_standard_price_net')
-def get_standard_price_net(product, request, amount=sys.maxint):
-    return product.get_standard_price_net(request, amount=amount)
+def get_standard_price_net(product, request):
+    return product.get_standard_price_net(request)
 
 
 @register.filter(name='get_standard_price_gross')
-def get_standard_price_gross(product, request, amount=sys.maxint):
-    return product.get_standard_price_gross(request, amount=amount)
+def get_standard_price_gross(product, request):
+    return product.get_standard_price_gross(request)
 
 
 @register.filter(name='get_for_sale_price')
-def get_for_sale_price(product, request, amount=sys.maxint):
-    return product.get_for_sale_price(request, amount=amount)
+def get_for_sale_price(product, request):
+    return product.get_for_sale_price(request)
 
 
 @register.filter(name='get_for_sale_price_net')
-def get_for_sale_price_net(product, request, amount=sys.maxint):
-    return product.get_for_sale_price_net(request, amount=amount)
+def get_for_sale_price_net(product, request):
+    return product.get_for_sale_price_net(request)
 
 
 @register.filter(name='get_for_sale_price_gross')
-def get_for_sale_price_gross(product, request, amount=sys.maxint):
-    return product.get_for_sale_price_gross(request, amount=amount)
+def get_for_sale_price_gross(product, request):
+    return product.get_for_sale_price_gross(request)
 
 
 @register.filter(name='get_base_price')
-def get_base_price(product, request, amount=sys.maxint):
-    return product.get_base_price(request, amount=amount)
+def get_base_price(product, request):
+    return product.get_base_price(request)
 
 
 @register.filter(name='get_base_price_net')
-def get_base_price_net(product, request, amount=sys.maxint):
-    return product.get_base_price_net(request, amount=amount)
+def get_base_price_net(product, request):
+    return product.get_base_price_net(request)
 
 
 @register.filter(name='get_base_price_gross')
-def get_base_price_gross(product, request, amount=sys.maxint):
-    return product.get_base_price_gross(request, amount=amount)
+def get_base_price_gross(product, request):
+    return product.get_base_price_gross(request)
 
 
 @register.filter(name='get_base_packing_price')
-def get_base_packing_price(product, request, amount=sys.maxint):
-    return product.get_base_packing_price(request, amount=amount)
+def get_base_packing_price(product, request):
+    return product.get_base_packing_price(request)
 
 
 @register.filter(name='get_base_packing_price_net')
-def get_base_packing_price_net(product, request, amount=sys.maxint):
-    return product.get_base_packing_price_net(request, amount=amount)
+def get_base_packing_price_net(product, request):
+    return product.get_base_packing_price_net(request)
 
 
 @register.filter(name='get_base_packing_price_gross')
-def get_base_packing_price_gross(product, request, amount=sys.maxint):
-    return product.get_base_packing_price_gross(request, amount=amount)
+def get_base_packing_price_gross(product, request):
+    return product.get_base_packing_price_gross(request)
 
 
 @register.inclusion_tag('lfs/shop/lfs_form.html', takes_context=True)
