@@ -216,7 +216,7 @@ $(function() {
     // Generic ajax link
     $body.on('click', ".ajax-link", function() {
         var url = $(this).attr("href");
-        $.post(url, function(data) {
+        $.get(url, function(data) {
             data = safeParseJSON(data);
             for (var html in data["html"])
                 $(data["html"][html][0]).html(data["html"][html][1]);
