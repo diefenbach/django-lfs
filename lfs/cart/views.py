@@ -194,7 +194,7 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
 
 
 # Actions
-def add_accessory_to_cart(request, product_id, quantity=1):
+def add_accessory_to_cart(request, product_id):
     """
     Adds the product with passed product_id as an accessory to the cart and
     updates the added-to-cart view.
@@ -208,7 +208,7 @@ def add_accessory_to_cart(request, product_id, quantity=1):
         else:
             return HttpResponse(added_to_cart_items(request))
 
-    quantity = product.get_clean_quantity_value(quantity)
+    quantity = product.get_clean_quantity_value(request.POST.get("quantity", 1))
 
     session_cart_items = request.session.get("cart_items", [])
     cart = cart_utils.get_cart(request)

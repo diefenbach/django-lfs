@@ -163,7 +163,9 @@ $(function() {
     // Cart ###################################################################
     $body.on('click', '.add-accessory-link', function() {
         var url = $(this).attr("href");
-        $.post(url, function(data) {
+        var add_id = $(this).attr("id").split("-")[1];
+        var quantity = $("#quantity-" + add_id).val();
+        $.post(url, {"quantity": quantity}, function(data) {
             $("#cart-items").html(data);
         });
         $body.trigger({
