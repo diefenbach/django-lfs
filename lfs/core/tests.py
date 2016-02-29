@@ -3,6 +3,7 @@ import locale
 
 # Import tests from other packages
 from lfs.cart.tests import *
+from lfs.caching.tests import *
 from lfs.catalog.tests import *
 from lfs.customer_tax.tests import *
 from lfs.marketing.tests import *
