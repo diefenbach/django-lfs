@@ -40,12 +40,11 @@ class Export(models.Model):
         products = []
 
         for product in self.products.all():
+            products.append(product)
             if product.is_product_with_variants():
                 variants = lfs.export.utils.get_variants(product, self)
                 if variants:
                     products.extend(variants)
-            else:
-                products.append(product)
 
         return products
 
