@@ -10,13 +10,6 @@ from django.utils.translation import ugettext_lazy as _
 
 
 def send_order_sent_mail(order):
-    try:
-        _send_order_sent_mail.delay(order)
-    except AttributeError:
-        _send_order_sent_mail(order)
-
-
-def _send_order_sent_mail(order):
     """Sends an order has been sent mail to the shop customer
     """
     import lfs.core.utils
@@ -46,13 +39,6 @@ def _send_order_sent_mail(order):
 
 
 def send_order_paid_mail(order):
-    try:
-        _send_order_paid_mail.delay(order)
-    except AttributeError:
-        _send_order_paid_mail(order)
-
-
-def _send_order_paid_mail(order):
     """Sends an order has been paid mail to the shop customer.
     """
     import lfs.core.utils
@@ -82,13 +68,6 @@ def _send_order_paid_mail(order):
 
 
 def send_order_received_mail(request, order):
-    try:
-        _send_order_received_mail.delay(request, order)
-    except AttributeError:
-        _send_order_received_mail(request, order)
-
-
-def _send_order_received_mail(request, order):
     """Sends an order received mail to the shop customer.
 
     Customer information is taken from the provided order.
@@ -120,13 +99,6 @@ def _send_order_received_mail(request, order):
 
 
 def send_customer_added(user):
-    try:
-        _send_customer_added.delay(user)
-    except AttributeError:
-        _send_customer_added(user)
-
-
-def _send_customer_added(user):
     """Sends a mail to a newly registered user.
     """
     import lfs.core.utils
@@ -157,13 +129,6 @@ def _send_customer_added(user):
 
 
 def send_review_added(review):
-    try:
-        _send_review_added.delay(review)
-    except AttributeError:
-        _send_review_added(review)
-
-
-def _send_review_added(review):
     """Sends a mail to shop admins that a new review has been added
     """
     import lfs.core.utils
@@ -195,15 +160,3 @@ def _send_review_added(review):
     mail.attach_alternative(html, "text/html")
     mail.send(fail_silently=True)
 
-
-# celery
-try:
-    from celery.task import task
-except ImportError:
-    pass
-else:
-    _send_customer_added = task(_send_customer_added)
-    _send_order_paid_mail = task(_send_order_paid_mail)
-    _send_order_received_mail = task(_send_order_received_mail)
-    _send_order_sent_mail = task(_send_order_sent_mail)
-    _send_review_added = task(_send_review_added)
