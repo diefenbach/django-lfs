@@ -137,7 +137,7 @@ def add_order(request):
 
     delivery_time = cart.get_delivery_time(request)
     if delivery_time:
-        OrderDeliveryTime.objects.create(order=order, min=delivery_time.min, max=delivery_time.max)
+        OrderDeliveryTime.objects.create(order=order, min=delivery_time.min, max=delivery_time.max, unit=delivery_time.unit)
 
     invoice_address.order = order
     invoice_address.save()
