@@ -948,7 +948,14 @@ def lfs_form(context, form):
 
 
 @register.filter(name='get_pay_link', is_safe=True)
-def get_pay_link(order, request=None, force_paid=False):
+def get_pay_link(order, request):
+    """Returns pay link for given order.
+    """
+    return order.get_pay_link(request)
+
+
+@register.filter(name='get_pay_link', is_safe=True)
+def get_forced_pay_link(order, request=None, force_paid=False):
     """ Only return pay link for not paid orders unless force_paid=True
     """
     if force_paid or order.can_be_paid():
