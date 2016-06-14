@@ -489,15 +489,20 @@ class PriceCalculator(object):
         Returns the stored tax rate of the product. If the product is a variant
         it returns the parent's tax rate.
         """
+        from django.core.cache import cache
         if self.product.is_variant():
             obj = self.product.parent
         else:
             obj = self.product
 
-        try:
-            return obj.tax.rate
-        except AttributeError:
-            return 0.0
+        if obj.tax_id:
+            cache_key = u'tax_rate_{}'.format(obj.tax_id)
+            tax_rate = cache.get(cache_key)
+            if tax_rate is None:
+                tax_rate = obj.tax.rate
+                cache.set(cache_key, tax_rate)
+            return tax_rate
+        return 0.0
 
     def get_product_tax(self, with_properties=True):
         """
@@ -550,13 +555,21 @@ class ShippingMethodPriceCalculator(object):
     def get_tax_rate(self):
         from lfs.criteria.utils import get_first_valid
         from lfs.customer_tax.models import CustomerTax
+        from django.core.cache import cache
 
         customer_tax = get_first_valid(self.request, CustomerTax.objects.all(), self.shipping_method)
         if customer_tax:
             return customer_tax.rate
-        if self.shipping_method.tax is None:
-            return 0
-        return self.shipping_method.tax.rate
+
+        cache_key = 'shipping_method_tax_{}'.format(self.shipping_method.pk)
+        tax_rate = cache.get(cache_key)
+        if tax_rate is None:
+            if self.shipping_method.tax_id is None:
+                tax_rate = 0
+            else:
+                tax_rate = self.shipping_method.tax.rate
+            cache.set(cache_key, tax_rate, 60)
+        return tax_rate
 
     def get_price(self):
         """

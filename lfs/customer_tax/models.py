@@ -20,3 +20,6 @@ class CustomerTax(models.Model, Criteria):
     """
     rate = models.FloatField(_(u"Rate"), default=0)
     description = models.TextField(_(u"Description"), blank=True)
+
+    class Meta:
+        app_label = 'customer_tax'

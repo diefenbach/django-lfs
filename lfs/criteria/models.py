@@ -5,6 +5,7 @@ import datetime
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 from django.db import models
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _, ugettext
@@ -502,10 +503,15 @@ class CountryCriterion(Criterion):
 
     def is_valid(self):
         country = shipping.utils.get_selected_shipping_country(self.request)
+        cache_key = u'country_values_{}'.format(self.pk)
+        countries = cache.get(cache_key)
+        if countries is None:
+            countries = list(self.value.values_list('id', flat=True))
+            cache.set(cache_key, countries)
+
         if self.operator == self.IS_SELECTED:
-            return country in self.value.all()
-        else:
-            return country not in self.value.all()
+            return country.pk in countries
+        return country.pk not in countries
 
     class Meta:
         app_label = 'criteria'

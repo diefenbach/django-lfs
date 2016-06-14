@@ -124,7 +124,14 @@ def get_valid_shipping_methods(request, product=None):
     """Returns a list of all valid shipping methods for the passed request.
     """
     result = []
-    for sm in ShippingMethod.objects.filter(active=True):
+
+    cache_key = 'all_active_shipping_methods'
+    shipping_methods = cache.get(cache_key)
+    if shipping_methods is None:
+        shipping_methods = ShippingMethod.objects.filter(active=True)
+        cache.set(cache_key, shipping_methods)
+
+    for sm in shipping_methods:
         if sm.is_valid(request, product):
             result.append(sm)
     return result

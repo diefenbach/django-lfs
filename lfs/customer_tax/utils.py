@@ -1,4 +1,5 @@
 # lfs imports
+from django.core.cache import cache
 from lfs.criteria.utils import get_first_valid
 from lfs.customer_tax.models import CustomerTax
 
@@ -6,10 +7,18 @@ from lfs.customer_tax.models import CustomerTax
 def get_customer_tax_rate(request, product):
     """Returns the specfic customer tax for the current customer and product.
     """
+    from lfs.customer_tax.models import CustomerTax
     cache_key = 'cached_customer_tax_rate_%s' % product.pk
     if request and hasattr(request, cache_key):
         return getattr(request, cache_key)
-    customer_tax = get_first_valid(request, CustomerTax.objects.all(), product)
+
+    all_cache_key = u'all_customer_taxes'
+    customer_taxes = cache.get(all_cache_key)
+    if customer_taxes is None:
+        customer_taxes = CustomerTax.objects.all()
+        cache.set(all_cache_key, customer_taxes)
+
+    customer_tax = get_first_valid(request, customer_taxes, product)
     if customer_tax:
         taxrate = customer_tax.rate
     else:

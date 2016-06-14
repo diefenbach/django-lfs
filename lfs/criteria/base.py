@@ -2,6 +2,7 @@
 from django.contrib.contenttypes.models import ContentType
 
 # lfs imports
+from django.core.cache import cache
 from lfs.core.utils import import_symbol
 
 
@@ -25,11 +26,14 @@ class Criteria(object):
         Returns all criteria of the object.
         """
         content_type = ContentType.objects.get_for_model(self)
-
-        criteria = []
-        from lfs.criteria.models import Criterion
-        for criterion in Criterion.objects.filter(content_id=self.id, content_type=content_type):
-            criteria.append(criterion.get_content_object())
+        cache_key = u'criteria_for_model_{}_{}'.format(self.pk, content_type.pk)
+        criteria = cache.get(cache_key, None)
+        if criteria is None:
+            criteria = []
+            from lfs.criteria.models import Criterion
+            for criterion in Criterion.objects.filter(content_id=self.pk, content_type=content_type):
+                criteria.append(criterion.get_content_object())
+            cache.set(cache_key, criteria)
         return criteria
 
     def save_criteria(self, request):
@@ -61,3 +65,7 @@ class Criteria(object):
                     value = request.POST.get("value-%s" % id)
 
                 criterion.update(value)
+
+        content_type = ContentType.objects.get_for_model(self)
+        cache_key = u'criteria_for_model_{}_{}'.format(self.pk, content_type.pk)
+        cache.delete(cache_key)

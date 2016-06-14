@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
-from django.db.models.signals import post_save, m2m_changed
+from django.db.models.signals import post_save, m2m_changed, post_delete
 from django.db.models.signals import pre_save
 from django.db.models.signals import pre_delete
 
@@ -19,10 +19,13 @@ from lfs.core.signals import category_changed
 from lfs.core.signals import shop_changed
 from lfs.core.signals import topseller_changed
 from lfs.core.signals import manufacturer_changed
+from lfs.criteria.models import CountryCriterion
+from lfs.customer_tax.models import CustomerTax
 from lfs.marketing.models import Topseller
 from lfs.order.models import OrderItem
 from lfs.page.models import Page
 from lfs.shipping.models import ShippingMethod
+from lfs.tax.models import Tax
 
 # reviews imports
 from reviews.signals import review_added
@@ -132,7 +135,13 @@ post_save.connect(product_saved_listener, sender=Product)
 def shipping_method_saved_listener(sender, instance, **kwargs):
     cache.delete("%s-shipping-delivery-time" % settings.CACHE_MIDDLEWARE_KEY_PREFIX)
     cache.delete("%s-shipping-delivery-time-cart" % settings.CACHE_MIDDLEWARE_KEY_PREFIX)
+    cache.delete("all_active_shipping_methods")
 post_save.connect(shipping_method_saved_listener, sender=ShippingMethod)
+
+
+def shipping_method_deleted_listener(sender, instance, **kwargs):
+    cache.delete("all_active_shipping_methods")
+post_delete.connect(shipping_method_deleted_listener, sender=ShippingMethod)
 
 
 # Shop
@@ -164,6 +173,39 @@ def review_added_listener(sender, **kwargs):
 
     update_product_cache(product)
 review_added.connect(review_added_listener)
+
+
+def criterion_countries_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
+    if action in ('post_add', 'post_remove', 'post_clear'):
+        if not reverse:
+            cache_key = u'country_values_{}'.format(instance.pk)
+            cache.delete(cache_key)
+        else:
+            for pk in pk_set:
+                cache_key = u'country_values_{}'.format(pk)
+                cache.delete(cache_key)
+m2m_changed.connect(criterion_countries_changed, sender=CountryCriterion.value.through)
+
+
+def customer_tax_created_listener(sender, instance, created, **kwargs):
+    if created:
+        cache.delete(u'all_customer_taxes')
+post_save.connect(customer_tax_created_listener, sender=CustomerTax)
+
+
+def customer_tax_deleted_listener(sender, instance, **kwargs):
+    cache.delete(u'all_customer_taxes')
+post_delete.connect(customer_tax_deleted_listener, sender=CustomerTax)
+
+
+def tax_rate_created_listener(sender, instance, created, **kwargs):
+    cache.delete(u'tax_rate_{}'.format(instance.pk))
+post_save.connect(tax_rate_created_listener, sender=Tax)
+
+
+def tax_rate_deleted_listener(sender, instance, **kwargs):
+    cache.delete(u'tax_rate_{}'.format(instance.pk))
+post_delete.connect(tax_rate_deleted_listener, sender=Tax)
 
 
 #####

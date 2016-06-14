@@ -1124,7 +1124,7 @@ class Product(models.Model):
         cache_key = "%s-variant-properties-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_id, self.id)
 
         properties = cache.get(cache_key)
-        if properties:
+        if properties is not None:
             return properties
 
         properties = []
