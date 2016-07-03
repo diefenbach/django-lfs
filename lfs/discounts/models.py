@@ -21,6 +21,9 @@ class Discount(models.Model, Criteria):
     name
         The name of the discount. This can be displayed to the customer.
 
+    active
+        Activate/Deactivate discount
+
     value
         The value of the discount, can be absolute or percentage dependend on
         the type of the discount.
@@ -34,6 +37,9 @@ class Discount(models.Model, Criteria):
     sku
         The SKU of the discount.
 
+    sums_up
+        Whether discount can be summed up with other discounts/vouchers
+
     products
         Products that discount applies to
 
@@ -44,7 +50,7 @@ class Discount(models.Model, Criteria):
     type = models.PositiveSmallIntegerField(_(u"Type"), choices=DISCOUNT_TYPE_CHOICES, default=DISCOUNT_TYPE_ABSOLUTE)
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
     sku = models.CharField(_(u"SKU"), blank=True, max_length=50)
-    sums_up = models.BooleanField(_(u"Sums up"), default=True, help_text=_(u'Sums up with other discounts'))
+    sums_up = models.BooleanField(_(u"Sums up"), default=True, help_text=_(u'Sums up with other discounts/vouchers'))
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="discounts")
 
     def __unicode__(self):

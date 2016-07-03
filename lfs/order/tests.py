@@ -1,5 +1,6 @@
 # python imports
 import locale
+import datetime
 
 # django imports
 from django.contrib.auth.models import User
@@ -18,6 +19,7 @@ from lfs.cart import utils as cart_utils
 from lfs.core.models import Country
 from lfs.addresses.models import Address
 from lfs.customer.models import Customer
+from lfs.discounts.settings import DISCOUNT_TYPE_ABSOLUTE
 from lfs.order.models import Order
 from lfs.order.models import OrderItem
 from lfs.order.utils import add_order
@@ -27,12 +29,12 @@ from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.tests.utils import DummySession
 from lfs.tests.utils import RequestFactory
-
+from lfs.discounts.models import Discount
 
 class OrderTestCase(TestCase):
     """
     """
-    fixtures = ['lfs_shop.xml']
+    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
 
     def setUp(self):
         """
@@ -261,3 +263,157 @@ class OrderTestCase(TestCase):
         order_item_1 = OrderItem.objects.create(order=order, product=self.p1)
         self.p1.delete()
         OrderItem.objects.get(pk=order_item_1.id)
+
+    def test_summed_up_order_discounts(self):
+        """Tests the price of the discount within an order.
+        """
+        self.tax = Tax.objects.create(rate=19)
+
+        discount = Discount.objects.create(name="Summer",
+                                           active=True,
+                                           value=10.0,
+                                           type=DISCOUNT_TYPE_ABSOLUTE,
+                                           tax=self.tax,
+                                           sums_up=True)
+
+        discount_value = 11.0
+        discount = Discount.objects.create(name="Special offer 1",
+                                           active=True,
+                                           value=discount_value,
+                                           type=DISCOUNT_TYPE_ABSOLUTE,
+                                           tax=self.tax,
+                                           sums_up=False)
+
+        order = add_order(self.request)
+        tax_value = discount_value * (self.tax.rate / (100.0 + self.tax.rate))
+
+        all_product_names = list(order.items.values_list('product_name', flat=True))
+        self.assertTrue("Summer" not in all_product_names)
+        self.assertTrue("Special offer 1" in all_product_names)
+        for order_item in order.items.all():
+            if order_item.product_name == "Special offer 1":
+                self.assertEqual("%.2f" % order_item.price_net, "%.2f" % (-discount_value + tax_value))
+                self.assertEqual("%.2f" % order_item.product_price_net, "%.2f" % (-discount_value + tax_value))
+
+    def test_summed_up_order_discounts_and_vouchers(self):
+        """Tests the price of the discount/voucher within an order.
+           We have 2 discounts ('Summer' is able to sum up) and 1 voucher (able to sum up)
+           We expect 'Summer' discount to be applied as well as voucher as these can sum up and their total value
+           is bigger than 'Special offer 1' discount's
+
+        """
+        tax = Tax.objects.create(rate=19)
+
+        discount = Discount.objects.create(name="Summer",
+                                           active=True,
+                                           value=10.0,
+                                           type=DISCOUNT_TYPE_ABSOLUTE,
+                                           tax=tax,
+                                           sums_up=True)
+
+        discount_value = 11.0
+        discount = Discount.objects.create(name="Special offer 1",
+                                           active=True,
+                                           value=discount_value,
+                                           type=DISCOUNT_TYPE_ABSOLUTE,
+                                           tax=tax,
+                                           sums_up=False)
+
+        # vouchers
+        from lfs.voucher.models import VoucherGroup, Voucher
+        from lfs.voucher.settings import ABSOLUTE
+
+        user = User.objects.get(username="admin")
+
+        self.vg = VoucherGroup.objects.create(
+            name="xmas",
+            creator=user
+        )
+        voucher_value = 12.0
+
+        self.v1 = Voucher.objects.create(
+            number="AAAA",
+            group=self.vg,
+            creator=user,
+            start_date=datetime.date.today() + datetime.timedelta(days=-10),
+            end_date=datetime.date.today() + datetime.timedelta(days=10),
+            effective_from=0,
+            kind_of=ABSOLUTE,
+            value=voucher_value,
+            sums_up=True,
+            limit=2,
+            tax=tax
+        )
+
+        self.request.session['voucher'] = 'AAAA'
+
+        order = add_order(self.request)
+        tax_value = voucher_value * (tax.rate / (100.0 + tax.rate))
+
+        all_product_names = list(order.items.values_list('product_name', flat=True))
+        # voucher value is biggest one
+        self.assertTrue("Summer" in all_product_names)
+        self.assertTrue("Special offer 1" not in all_product_names)
+        self.assertEqual(order.voucher_price, voucher_value)
+
+    def test_summed_up_order_discounts_and_vouchers2(self):
+        """Tests the price of the discount/voucher within an order.
+           We have 2 discounts ('Summer' is able to sum up) and 1 voucher (able to sum up)
+           We expect 'Special offer 1' discount to be applied as it's value is bigger than value of summed up
+           'Summer' discount and Voucher
+
+        """
+        tax = Tax.objects.create(rate=19)
+
+        discount = Discount.objects.create(name="Summer",
+                                           active=True,
+                                           value=10.0,
+                                           type=DISCOUNT_TYPE_ABSOLUTE,
+                                           tax=tax,
+                                           sums_up=True)
+
+        discount_value = 25.0
+        discount = Discount.objects.create(name="Special offer 1",
+                                           active=True,
+                                           value=discount_value,
+                                           type=DISCOUNT_TYPE_ABSOLUTE,
+                                           tax=tax,
+                                           sums_up=False)
+
+        # vouchers
+        from lfs.voucher.models import VoucherGroup, Voucher
+        from lfs.voucher.settings import ABSOLUTE
+
+        user = User.objects.get(username="admin")
+
+        self.vg = VoucherGroup.objects.create(
+            name="xmas",
+            creator=user
+        )
+        voucher_value = 12.0
+
+        self.v1 = Voucher.objects.create(
+            number="AAAA",
+            group=self.vg,
+            creator=user,
+            start_date=datetime.date.today() + datetime.timedelta(days=-10),
+            end_date=datetime.date.today() + datetime.timedelta(days=10),
+            effective_from=0,
+            kind_of=ABSOLUTE,
+            value=voucher_value,
+            sums_up=True,
+            limit=2,
+            tax=tax
+        )
+
+        self.request.session['voucher'] = 'AAAA'
+
+        order = add_order(self.request)
+        tax_value = voucher_value * (tax.rate / (100.0 + tax.rate))
+
+        all_product_names = list(order.items.values_list('product_name', flat=True))
+        # voucher value is biggest one
+        self.assertTrue("Summer" not in all_product_names)
+        self.assertTrue("Special offer 1" in all_product_names)
+        self.assertEqual(order.voucher_price, 0)
+

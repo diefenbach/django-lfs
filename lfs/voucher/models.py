@@ -80,6 +80,9 @@ class Voucher(models.Model):
         - active
             Only active vouchers can be redeemed.
 
+        - sums_up
+            Whether this voucher can be summed up with other discounts/vouchers
+
         - used
             Indicates whether a voucher has already be used. Every voucher can
             only used one time.
@@ -104,6 +107,7 @@ class Voucher(models.Model):
     used_amount = models.PositiveSmallIntegerField(default=0)
     last_used_date = models.DateTimeField(blank=True, null=True)
     limit = models.PositiveSmallIntegerField(blank=True, null=True, default=1)
+    sums_up = models.BooleanField(_(u"Sums up"), default=True, help_text=_(u'Sums up with other discounts/vouchers'))
 
     class Meta:
         ordering = ("creation_date", "number")

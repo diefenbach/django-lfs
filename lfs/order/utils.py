@@ -16,7 +16,7 @@ from lfs.order.models import OrderItem
 from lfs.order.models import OrderItemPropertyValue
 from lfs.payment import utils as payment_utils
 from lfs.shipping import utils as shipping_utils
-from lfs.voucher.models import Voucher
+from lfs.voucher.utils import get_voucher_data
 
 
 def add_order(request):
@@ -71,30 +71,37 @@ def add_order(request):
     price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
     tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
-    # Discounts
-    discounts = lfs.discounts.utils.get_valid_discounts(request)
-    for discount in discounts:
-        price = price - discount["price_gross"]
-        tax = tax - discount["tax"]
+    # get voucher data (if voucher exists)
+    voucher_data = get_voucher_data(request, cart)
 
-    # Add voucher if one exists
-    is_voucher_effective = False
-    try:
-        voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
-        voucher = Voucher.objects.get(number=voucher_number)
-    except Voucher.DoesNotExist:
-        voucher = None
-    else:
-        is_voucher_effective, voucher_message = voucher.is_effective(request, cart)
-        if is_voucher_effective:
-            voucher_number = voucher.number
-            voucher_price = voucher.get_price_gross(request, cart)
-            voucher_tax = voucher.get_tax(request, cart)
+    # get discounts data
+    discounts_data = lfs.discounts.utils.get_discounts_data(request)
 
-            price -= voucher_price
-            tax -= voucher_tax
+    # calculate total value of discounts and voucher that sum up
+    summed_up_value = discounts_data['summed_up_value']
+    if voucher_data['sums_up']:
+        summed_up_value += voucher_data['voucher_value']
+
+    # initialize discounts with summed up discounts
+    use_voucher = voucher_data['voucher'] is not None
+    discounts = discounts_data['summed_up_discounts']
+    if voucher_data['voucher_value'] > summed_up_value or discounts_data['max_value'] > summed_up_value:
+        # use not summed up value
+        if voucher_data['voucher_value'] > discounts_data['max_value']:
+            # use voucher only
+            discounts = []
         else:
-            voucher = None
+            # use discount only
+            discounts = discounts_data['max_discounts']
+            use_voucher = False
+
+    for discount in discounts:
+        price -= discount["price_gross"]
+        tax -= discount["tax"]
+
+    if use_voucher:
+        price -= voucher_data['voucher_value']
+        tax -= voucher_data['voucher_tax']
 
     if price < 0:
         price = 0
@@ -150,11 +157,11 @@ def add_order(request):
         order.requested_delivery_date = requested_delivery_date
         order.save()
 
-    if is_voucher_effective:
-        voucher.mark_as_used()
-        order.voucher_number = voucher_number
-        order.voucher_price = voucher_price
-        order.voucher_tax = voucher_tax
+    if use_voucher:
+        voucher_data['voucher'].mark_as_used()
+        order.voucher_number = voucher_data['voucher_number']
+        order.voucher_price = voucher_data['voucher_value']
+        order.voucher_tax = voucher_data['voucher_tax']
         order.save()
 
     # Copy bank account if one exists

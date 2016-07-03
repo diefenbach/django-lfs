@@ -7,11 +7,13 @@
         {% if field.errors %}
             <div class="error">
                 {{ field }}
+                <span class="help-text">{{ field.help_text }}</span>
                 {{ field.errors }}
             </div>
         {% else %}
             <div>
                 {{ field }}
+                <span class="help-text">{{ field.help_text }}</span>
             </div>
         {% endif %}
     </div>

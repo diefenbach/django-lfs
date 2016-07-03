@@ -200,7 +200,8 @@ def add_vouchers(request, group_id):
                 end_date=request.POST.get("end_date"),
                 effective_from=request.POST.get("effective_from"),
                 tax_id=request.POST.get("tax"),
-                limit=request.POST.get("limit")
+                limit=request.POST.get("limit"),
+                sums_up=request.POST.get("sums_up")
             )
 
             msg = _(u"Vouchers have been created.")

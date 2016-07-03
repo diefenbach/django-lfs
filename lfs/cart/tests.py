@@ -3,11 +3,13 @@
 # python imports
 import locale
 import json
+import datetime
 
 # django imports
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
+from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.test import TestCase
 
@@ -109,7 +111,8 @@ class LoginTestCase(TestCase):
         rf = RequestFactory()
         session = SessionStore()
 
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1, "property-%s" % self.pp1.id: "A"})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1, "property-%s-%s" % (self.pg.pk,
+                                                                                             self.pp1.id) : "A"})
         request.session = session
         request.user = AnonymousUser()
 
@@ -121,7 +124,8 @@ class LoginTestCase(TestCase):
         cart = get_cart(request)
         self.assertEqual(int(cart.get_items()[0].amount), 1)
 
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 10, "property-%s" % self.pp1.id: "B"})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 10, "property-%s-%s" % (self.pg.pk,
+                                                                                              self.pp1.id) : "B"})
         request.session = session
         request.user = AnonymousUser()
         add_to_cart(request)
@@ -147,7 +151,8 @@ class LoginTestCase(TestCase):
         # logout
         session = SessionStore()
 
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2, "property-%s" % self.pp1.id: "A"})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2, "property-%s-%s" % (self.pg.pk,
+                                                                                             self.pp1.id) : "A"})
         request.session = session
         request.user = AnonymousUser()
 
@@ -159,7 +164,8 @@ class LoginTestCase(TestCase):
         cart = get_cart(request)
         self.assertEqual(int(cart.get_items()[0].amount), 2)
 
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 20, "property-%s" % self.pp1.id: "B"})
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 20, "property-%s-%s" % (self.pg.pk,
+                                                                                              self.pp1.id) : "B"})
         request.session = session
         request.user = AnonymousUser()
         add_to_cart(request)
@@ -625,13 +631,77 @@ class AddedToCartTestCase(TestCase):
     def setUp(self):
         """
         """
+        from lfs.customer.models import Customer
+        from lfs.addresses.models import Address
+        from lfs.shipping.models import ShippingMethod
+        from lfs.payment.models import PaymentMethod
+        from lfs.core.models import Country
+
         self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=10.0, active=True, manage_stock_amount=False)
         from django.contrib.auth.models import User
 
         self.dt = DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
-        self.user = User.objects.create(username="doe")
         self.session = SessionStore()
         self.session.save()
+
+        self.username = 'doe'
+        self.password = 'bloggs'
+
+        self.user = User.objects.create(username=self.username)
+
+        self.user.set_password(self.password)
+        self.user.save()
+
+        tax = Tax.objects.create(rate=19)
+        de = Country.objects.get(code="de")
+
+        shipping_method = ShippingMethod.objects.create(
+            name="Standard",
+            active=True,
+            price=1.0,
+            tax=tax
+        )
+
+        payment_method = PaymentMethod.objects.create(
+            name="Direct Debit",
+            active=True,
+            tax=tax,
+        )
+
+        self.address1 = Address.objects.create(
+            firstname="John",
+            lastname="Doe",
+            company_name="Doe Ltd.",
+            line1="Street 42",
+            city="Gotham City",
+            zip_code="23422",
+            country=de,
+            phone="555-111111",
+            email="john@doe.com",
+        )
+
+        address_1_id = self.address1.pk
+
+        self.address1.pk = None
+        self.address2 = self.address1.save()
+
+        self.address1.pk = None
+        self.address3 = self.address1.save()
+
+        self.address1.pk = None
+        self.address4 = self.address1.save()
+
+        self.address1 = Address.objects.get(pk=address_1_id)
+
+        self.customer = Customer.objects.create(
+            user=self.user,
+            selected_shipping_method=shipping_method,
+            selected_payment_method=payment_method,
+            selected_shipping_address=self.address1,
+            selected_invoice_address=self.address2,
+            default_shipping_address=self.address3,
+            default_invoice_address=self.address4,
+        )
 
     def test_totals_1(self):
         """Add a product without quantity to cart (implicit 1)
@@ -674,3 +744,71 @@ class AddedToCartTestCase(TestCase):
         add_to_cart(request)
         response = added_to_cart_items(request)
         self.failIf(response.find(u'Total: <span class="money">$40.00</span>') == -1)
+
+    def test_discounts(self):
+        """Add a product with explicit quantity to cart and use discounts/voucher
+           Discount 'Summer' and Voucher are able to sum up while discount 'Special offer 1' cannot be summed up.
+           Value of summed up 'Summer' and Voucher is bigger than 'Special offer 1' so these two should be used
+        """
+        from lfs.discounts.models import Discount
+        from lfs.discounts.settings import DISCOUNT_TYPE_ABSOLUTE
+
+        tax = Tax.objects.create(rate=19)
+
+        discount = Discount.objects.create(name="Summer",
+                                           active=True,
+                                           value=3.0,
+                                           type=DISCOUNT_TYPE_ABSOLUTE,
+                                           tax=tax,
+                                           sums_up=True)
+
+        discount_value = 2.0
+        discount = Discount.objects.create(name="Special offer 1",
+                                           active=True,
+                                           value=discount_value,
+                                           type=DISCOUNT_TYPE_ABSOLUTE,
+                                           tax=tax,
+                                           sums_up=False)
+
+        # vouchers
+        from lfs.voucher.models import VoucherGroup, Voucher
+        from lfs.voucher.settings import ABSOLUTE
+
+        user = User.objects.get(username=self.username)
+
+        self.vg = VoucherGroup.objects.create(
+            name="xmas",
+            creator=user
+        )
+        voucher_value = 1.0
+
+        self.v1 = Voucher.objects.create(
+            number="AAAA",
+            group=self.vg,
+            creator=user,
+            start_date=datetime.date.today() + datetime.timedelta(days=-10),
+            end_date=datetime.date.today() + datetime.timedelta(days=10),
+            effective_from=0,
+            kind_of=ABSOLUTE,
+            value=voucher_value,
+            sums_up=True,
+            limit=2,
+            tax=tax
+        )
+
+        rf = RequestFactory()
+        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2})
+        request.session = self.session
+        request.user = self.user
+
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+
+        add_to_cart(request)
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.post(reverse('lfs_cart'), data={'voucher': self.v1.number})
+
+        self.assertNotContains(response, 'Special offer 1')
+        self.assertContains(response, 'Summer')
+        self.assertContains(response, 'Voucher')
+        self.assertContains(response, 'The voucher is valid')
+

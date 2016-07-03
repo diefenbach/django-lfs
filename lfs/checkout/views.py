@@ -32,8 +32,6 @@ from lfs.customer.forms import CreditCardForm, CustomerAuthenticationForm
 from lfs.customer.forms import BankAccountForm
 from lfs.customer.forms import RegisterForm
 from lfs.payment.models import PaymentMethod
-from lfs.voucher.models import Voucher
-from lfs.voucher.settings import MESSAGES
 
 
 def login(request, template_name="lfs/checkout/login.html"):
@@ -137,36 +135,37 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
         cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
         cart_tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
-    discounts = lfs.discounts.utils.get_valid_discounts(request)
-    for discount in discounts:
-        cart_price = cart_price - discount["price_gross"]
-        cart_tax = cart_tax - discount["tax"]
+    # get voucher data (if voucher exists)
+    voucher_data = lfs.voucher.utils.get_voucher_data(request, cart)
 
-    # Voucher
-    voucher_number = ''
-    display_voucher = False
-    voucher_value = 0
-    voucher_tax = 0
-    voucher_message = MESSAGES[6]
-    if cart is not None:
-        try:
-            voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
-            voucher = Voucher.objects.get(number=voucher_number)
-        except Voucher.DoesNotExist:
-            pass
+    # get discounts data
+    discounts_data = lfs.discounts.utils.get_discounts_data(request)
+
+    # calculate total value of discounts and voucher that sum up
+    summed_up_value = discounts_data['summed_up_value']
+    if voucher_data['sums_up']:
+        summed_up_value += voucher_data['voucher_value']
+
+    # initialize discounts with summed up discounts
+    use_voucher = voucher_data['voucher'] is not None
+    discounts = discounts_data['summed_up_discounts']
+    if voucher_data['voucher_value'] > summed_up_value or discounts_data['max_value'] > summed_up_value:
+        # use not summed up value
+        if voucher_data['voucher_value'] > discounts_data['max_value']:
+            # use voucher only
+            discounts = []
         else:
-            lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
-            is_voucher_effective, voucher_message = voucher.is_effective(request, cart)
-            if is_voucher_effective:
-                display_voucher = True
-                voucher_value = voucher.get_price_gross(request, cart)
-                cart_price = cart_price - voucher_value
-                voucher_tax = voucher.get_tax(request, cart)
-                cart_tax = cart_tax - voucher_tax
-            else:
-                display_voucher = False
-                voucher_value = 0
-                voucher_tax = 0
+            # use discount only
+            discounts = discounts_data['max_discounts']
+            use_voucher = False
+
+    for discount in discounts:
+        cart_price -= discount["price_gross"]
+        cart_tax -= discount["tax"]
+
+    if use_voucher:
+        cart_price -= voucher_data['voucher_value']
+        cart_tax -= voucher_data['voucher_tax']
 
     if cart_price < 0:
         cart_price = 0
@@ -192,16 +191,16 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
         "cart_items": cart_items,
         "cart_price": cart_price,
         "cart_tax": cart_tax,
-        "display_voucher": display_voucher,
+        "display_voucher": use_voucher,
         "discounts": discounts,
-        "voucher_value": voucher_value,
-        "voucher_tax": voucher_tax,
+        "voucher_value": voucher_data['voucher_value'],
+        "voucher_tax": voucher_data['voucher_tax'],
         "shipping_costs": shipping_costs,
         "payment_price": payment_costs["price"],
         "selected_shipping_method": selected_shipping_method,
         "selected_payment_method": selected_payment_method,
-        "voucher_number": voucher_number,
-        "voucher_message": voucher_message,
+        "voucher_number": voucher_data['voucher_number'],
+        "voucher_message": voucher_data['voucher_message']
     }))
 
 

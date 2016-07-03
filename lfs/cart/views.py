@@ -32,8 +32,6 @@ from lfs.core.utils import LazyEncoder
 from lfs.shipping import utils as shipping_utils
 from lfs.payment import utils as payment_utils
 from lfs.customer import utils as customer_utils
-from lfs.voucher.models import Voucher
-from lfs.voucher.settings import MESSAGES
 
 
 def cart(request, template_name="lfs/cart/cart.html"):
@@ -76,34 +74,37 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
     cart_tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
-    # Discounts
-    discounts = lfs.discounts.utils.get_valid_discounts(request)
-    for discount in discounts:
-        cart_price = cart_price - discount["price_gross"]
-        cart_tax = cart_tax - discount["tax"]
+    # get voucher data (if voucher exists)
+    voucher_data = lfs.voucher.utils.get_voucher_data(request, cart)
 
-    # Voucher
-    voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
-    try:
-        voucher = Voucher.objects.get(number=voucher_number)
-    except Voucher.DoesNotExist:
-        display_voucher = False
-        voucher_value = 0
-        voucher_tax = 0
-        voucher_message = MESSAGES[6]
-    else:
-        lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
-        is_voucher_effective, voucher_message = voucher.is_effective(request, cart)
-        if is_voucher_effective:
-            display_voucher = True
-            voucher_value = voucher.get_price_gross(request, cart)
-            cart_price = cart_price - voucher_value
-            voucher_tax = voucher.get_tax(request, cart)
-            cart_tax = cart_tax - voucher_tax
+    # get discounts data
+    discounts_data = lfs.discounts.utils.get_discounts_data(request)
+
+    # calculate total value of discounts and voucher that sum up
+    summed_up_value = discounts_data['summed_up_value']
+    if voucher_data['sums_up']:
+        summed_up_value += voucher_data['voucher_value']
+
+    # initialize discounts with summed up discounts
+    use_voucher = voucher_data['voucher'] is not None
+    discounts = discounts_data['summed_up_discounts']
+    if voucher_data['voucher_value'] > summed_up_value or discounts_data['max_value'] > summed_up_value:
+        # use not summed up value
+        if voucher_data['voucher_value'] > discounts_data['max_value']:
+            # use voucher only
+            discounts = []
         else:
-            display_voucher = False
-            voucher_value = 0
-            voucher_tax = 0
+            # use discount only
+            discounts = discounts_data['max_discounts']
+            use_voucher = False
+
+    for discount in discounts:
+        cart_price -= discount["price_gross"]
+        cart_tax -= discount["tax"]
+
+    if use_voucher:
+        cart_price -= voucher_data['voucher_value']
+        cart_tax -= voucher_data['voucher_tax']
 
     # Calc delivery time for cart (which is the maximum of all cart items)
     max_delivery_time = cart.get_delivery_time(request)
@@ -137,11 +138,11 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         "max_delivery_time": max_delivery_time,
         "shopping_url": shopping_url,
         "discounts": discounts,
-        "display_voucher": display_voucher,
-        "voucher_number": voucher_number,
-        "voucher_value": voucher_value,
-        "voucher_tax": voucher_tax,
-        "voucher_message": voucher_message,
+        "display_voucher": use_voucher,
+        "voucher_number": voucher_data['voucher_number'],
+        "voucher_value": voucher_data['voucher_value'],
+        "voucher_tax": voucher_data['voucher_tax'],
+        "voucher_message": voucher_data['voucher_message'],
     }))
 
 

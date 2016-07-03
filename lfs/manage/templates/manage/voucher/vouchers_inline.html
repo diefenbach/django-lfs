@@ -84,6 +84,9 @@
                 <th class="small number">
                     {% trans "Effective from" %}
                 </th>
+                <th class="small number">
+                    {% trans "Sums up" %}
+                </th>
                 <th class="tiny right">
                     {% trans "Active" %}
                 </th>
@@ -139,6 +142,9 @@
                     </td>
                     <td class="number">
                         {{ voucher.effective_from }}
+                    </td>
+                    <td class="number">
+                        {{ voucher.sums_up|yesno }}
                     </td>
                     <td class="right">
                         {{ voucher.active }}

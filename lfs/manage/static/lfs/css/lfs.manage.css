@@ -472,6 +472,12 @@ a.edit {
     padding-bottom: 8px;
 }
 
+span.help-text {
+    display: block;
+    font-size: 0.8em;
+    color: #888888;
+}
+
 /* Accessories */
 .selectable-products {
     min-height: 200px;

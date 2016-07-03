@@ -110,10 +110,16 @@ def update_cart_after_login(request):
             session_cart.save()
         else:
             for session_cart_item in session_cart.get_items():
-                properties = {}
+                properties_dict = {}
                 for pv in session_cart_item.properties.all():
-                    properties[unicode(pv.property.id)] = pv.value
-                user_cart.add(session_cart_item.product, properties_dict=properties, amount=session_cart_item.amount)
+                    key = '{0}_{1}'.format(pv.property_group_id, pv.property_id)
+                    properties_dict[key] = {'value': unicode(pv.value),
+                                            'property_group_id': pv.property_group_id,
+                                            'property_id': pv.property_id}
+
+                user_cart.add(session_cart_item.product,
+                              properties_dict=properties_dict,
+                              amount=session_cart_item.amount)
             session_cart.delete()
     except ObjectDoesNotExist:
         pass

@@ -50,7 +50,7 @@ Kind of:
     The type of the voucher. Either absolute or percentage.
 
 Effective from:
-    The minimum cart price from which the voucher are valid. This is only the
+    The minimum cart price from which the vouchers are valid. This is only the
     total cart item prices without shipping and payment costs.
 
 Tax
@@ -58,6 +58,13 @@ Tax
 
 Limit
     Determines how often the vouchers can be used.
+
+Sums up
+    Determine if Voucher can be summed up with discounts.
+    To calculate final discount on order:
+         * value of discounts/voucher able to sum up is calculated
+         * value of highest discount/voucher that cannot be summed up is calculated
+         * higher of two above values is used
 
 Add Vouchers
 ^^^^^^^^^^^^

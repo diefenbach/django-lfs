@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LFS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-02 21:14+0000\n"
-"PO-Revision-Date: 2016-06-09 23:35+0100\n"
+"POT-Creation-Date: 2016-07-03 20:56+0000\n"
+"PO-Revision-Date: 2016-07-03 22:57+0100\n"
 "Last-Translator: Maciej Wiśniowski <maciej.wisniowski@natcam.pl>\n"
 "Language-Team: natcam.pl <hello@natcam.pl>\n"
 "Language: pl_PL\n"
@@ -88,7 +88,7 @@ msgstr "Nazwa firmy"
 msgid "Phone"
 msgstr "Telefon"
 
-#: addresses/models.py:119 checkout/views.py:62 customer/views.py:42
+#: addresses/models.py:119 checkout/views.py:60 customer/views.py:42
 #: customer/views.py:47
 #: manage/templates/manage/customer/customers_inline.html:28
 #: manage/templates/manage/marketing/rating_mails.html:51
@@ -160,12 +160,12 @@ msgstr "Cecha"
 msgid "Property group"
 msgstr "Grupy cech"
 
-#: cart/views.py:286
+#: cart/views.py:287
 #, python-format
 msgid "%(name)s must be between %(min)s and %(max)s %(unit)s."
 msgstr "%(name)s musi się zawierać pomiędzy %(min)s a %(max)s %(unit)s."
 
-#: cart/views.py:300
+#: cart/views.py:301
 #, python-format
 msgid ""
 "Your entered value for %(name)s (%(value)s) is not in valid step width, "
@@ -174,17 +174,17 @@ msgstr ""
 "Wartość którą wprowadziłeś dla %(name)s (%(value)s) nie jest prawidłowa - "
 "musi być wielokrotnością %(step)s."
 
-#: cart/views.py:316 cart/views.py:431
+#: cart/views.py:317 cart/views.py:432
 #, python-format
 msgid "Sorry, but '%(product)s' is not available anymore."
 msgstr "Przepraszamy, ale '%(product)s' nie jest już dostępny."
 
-#: cart/views.py:318 cart/views.py:433
+#: cart/views.py:319 cart/views.py:434
 #, python-format
 msgid "Sorry, but '%(product)s' is only one time available."
 msgstr "Przepraszamy, ale '%(product)s' jest jednorazową ofertą."
 
-#: cart/views.py:320 cart/views.py:435
+#: cart/views.py:321 cart/views.py:436
 #, python-format
 msgid "Sorry, but '%(product)s' is only %(amount)s times available."
 msgstr ""
@@ -193,7 +193,7 @@ msgstr ""
 #: catalog/models.py:162 catalog/models.py:594 catalog/models.py:2065
 #: catalog/models.py:2164 catalog/models.py:2343 catalog/models.py:2527
 #: core/models.py:19 core/models.py:39 core/models.py:164
-#: discounts/models.py:41 export/models.py:16
+#: discounts/models.py:47 export/models.py:16
 #: manage/templates/manage/category/products_inline.html:47
 #: manage/templates/manage/category/selected_products.html:42
 #: manage/templates/manage/customer/customer_filters_inline.html:12
@@ -247,7 +247,7 @@ msgid "Show all products"
 msgstr "Pokaż wszystkie produkty"
 
 #: catalog/models.py:170 catalog/models.py:2066 catalog/models.py:2167
-#: catalog/settings.py:71 discounts/models.py:47 export/models.py:18
+#: catalog/settings.py:71 discounts/models.py:54 export/models.py:18
 #: manage/templates/manage/cart/carts_inline.html:25
 #: manage/templates/manage/category/manage_category.html:44
 #: manage/templates/manage/discounts/discount.html:33
@@ -291,7 +291,7 @@ msgstr "Grafika"
 #: catalog/models.py:174 catalog/models.py:2032 catalog/models.py:2067
 #: catalog/models.py:2168 catalog/models.py:2281 catalog/models.py:2310
 #: catalog/models.py:2345 catalog/models.py:2449 catalog/models.py:2531
-#: catalog/models.py:2785 core/models.py:81 criteria/models.py:107
+#: catalog/models.py:2785 core/models.py:81 criteria/models.py:108
 #: manage/templates/manage/marketing/featured_inline.html:108
 #: manage/templates/manage/marketing/topseller_inline.html:109
 #: manage/templates/manage/product/accessories_inline.html:116
@@ -371,7 +371,7 @@ msgstr "Nazwa produktu."
 msgid "The unique last part of the Product's URL."
 msgstr "Unikalna, ostatnia część adresu URL produktu."
 
-#: catalog/models.py:596 discounts/models.py:46
+#: catalog/models.py:596 discounts/models.py:52
 #: manage/templates/manage/category/products_inline.html:50
 #: manage/templates/manage/category/selected_products.html:45
 #: manage/templates/manage/discounts/products_inline.html:48
@@ -397,7 +397,7 @@ msgid "Your unique article number of the product."
 msgstr "Twój unikalny numer produktu."
 
 #: catalog/models.py:597 catalog/models.py:601 catalog/models.py:2176
-#: catalog/models.py:2344 criteria/models.py:380
+#: catalog/models.py:2344 criteria/models.py:381
 #: manage/templates/manage/cart/cart_inline.html:105
 #: manage/templates/manage/customer/customer_inline.html:81
 #: manage/templates/manage/customer/customer_inline.html:126
@@ -450,7 +450,7 @@ msgstr "Wyprzedaż"
 msgid "For sale price"
 msgstr "Cena wyprzedażowa"
 
-#: catalog/models.py:622 core/models.py:77 discounts/models.py:42
+#: catalog/models.py:622 core/models.py:77 discounts/models.py:48
 #: manage/templates/manage/category/products_inline.html:53
 #: manage/templates/manage/category/selected_products.html:48
 #: manage/templates/manage/discounts/products_inline.html:51
@@ -475,7 +475,7 @@ msgstr "Cena wyprzedażowa"
 #: manage/templates/manage/reviews/review_inline.html:21
 #: manage/templates/manage/reviews/reviews_filters_inline.html:10
 #: manage/templates/manage/reviews/reviews_inline.html:51
-#: manage/templates/manage/voucher/vouchers_inline.html:88
+#: manage/templates/manage/voucher/vouchers_inline.html:91
 #: marketing/models.py:39 page/models.py:15 payment/models.py:66
 #: payment/models.py:117 shipping/models.py:68 shipping/models.py:154
 msgid "Active"
@@ -521,26 +521,26 @@ msgstr "Ilość na paczkę"
 msgid "Packing unit"
 msgstr "Jednostka pakowania"
 
-#: catalog/models.py:642 criteria/models.py:731
+#: catalog/models.py:642 criteria/models.py:737
 msgid "Weight"
 msgstr "Waga"
 
-#: catalog/models.py:643 criteria/models.py:518
+#: catalog/models.py:643 criteria/models.py:524
 msgid "Height"
 msgstr "Wysokość"
 
-#: catalog/models.py:644 criteria/models.py:559
+#: catalog/models.py:644 criteria/models.py:565
 msgid "Length"
 msgstr "Długość"
 
-#: catalog/models.py:645 criteria/models.py:772
+#: catalog/models.py:645 criteria/models.py:778
 msgid "Width"
 msgstr "Szerokość"
 
-#: catalog/models.py:648 discounts/models.py:45
+#: catalog/models.py:648 discounts/models.py:51
 #: manage/templates/manage/voucher/vouchers_inline.html:76
-#: manage/voucher/forms.py:45 order/models.py:68 order/models.py:155
-#: payment/models.py:72 shipping/models.py:74 voucher/models.py:102
+#: manage/voucher/forms.py:46 order/models.py:68 order/models.py:155
+#: payment/models.py:72 shipping/models.py:74 voucher/models.py:105
 msgid "Tax"
 msgstr "Stawka podatku"
 
@@ -702,7 +702,7 @@ msgid "Configurable"
 msgstr "Konfigurowalny"
 
 #: catalog/models.py:2175 catalog/models.py:2393 customer/models.py:194
-#: discounts/models.py:44
+#: discounts/models.py:50
 #: manage/templates/manage/portlets/portlets_inline.html:38
 #: manage/templates/manage/voucher/vouchers_inline.html:70
 #: payment/models.py:76
@@ -753,7 +753,7 @@ msgstr "Rodzaj kroku"
 msgid "Properties"
 msgstr "Cechy"
 
-#: catalog/models.py:2391 discounts/models.py:43
+#: catalog/models.py:2391 discounts/models.py:49
 #: manage/templates/manage/voucher/vouchers_inline.html:73
 #: manage/voucher/forms.py:40
 msgid "Value"
@@ -763,11 +763,11 @@ msgstr "Wartość"
 msgid "Value as float"
 msgstr "Wartość jako liczba zmiennoprzecinkowa"
 
-#: catalog/models.py:2443 catalog/models.py:2487 criteria/models.py:102
+#: catalog/models.py:2443 catalog/models.py:2487 criteria/models.py:103
 msgid "Content type"
 msgstr "Typ treści"
 
-#: catalog/models.py:2444 catalog/models.py:2488 criteria/models.py:103
+#: catalog/models.py:2444 catalog/models.py:2488 criteria/models.py:104
 msgid "Content id"
 msgstr "Id treści"
 
@@ -885,49 +885,41 @@ msgid "Select"
 msgstr "Lista rozwijana"
 
 #: catalog/settings.py:81
-#| msgid "hours"
 msgctxt "Delivery time"
 msgid "hours"
 msgstr "godziny"
 
 #: catalog/settings.py:82
-#| msgid "days"
 msgctxt "Delivery time"
 msgid "days"
 msgstr "dni"
 
 #: catalog/settings.py:83
-#| msgid "weeks"
 msgctxt "Delivery time"
 msgid "weeks"
 msgstr "tygodnie"
 
 #: catalog/settings.py:84
-#| msgid "months"
 msgctxt "Delivery time"
 msgid "months"
 msgstr "miesiące"
 
 #: catalog/settings.py:88
-#| msgid "hour"
 msgctxt "Delivery time"
 msgid "hour"
 msgstr "godzina"
 
 #: catalog/settings.py:89
-#| msgid "day"
 msgctxt "Delivery time"
 msgid "day"
 msgstr "dzień"
 
 #: catalog/settings.py:90
-#| msgid "week"
 msgctxt "Delivery time"
 msgid "week"
 msgstr "tydzień"
 
 #: catalog/settings.py:91
-#| msgid "month"
 msgctxt "Delivery time"
 msgid "month"
 msgstr "miesiąc"
@@ -1028,15 +1020,15 @@ msgstr "Tylko Anonimowi"
 msgid "Authenticated only"
 msgstr "Tylko Zalogowani"
 
-#: checkout/views.py:68 customer/views.py:59
+#: checkout/views.py:66 customer/views.py:59
 msgid "You have been logged in."
 msgstr "Zostałeś zalogowany"
 
-#: checkout/views.py:91 customer/views.py:91
+#: checkout/views.py:89 customer/views.py:91
 msgid "You have been registered and logged in."
 msgstr "Zostałeś zarejestrowany i zalogowany."
 
-#: checkout/views.py:244
+#: checkout/views.py:243
 msgid "Please confirm our terms and conditions"
 msgstr "Zapoznałem się z regulaminem"
 
@@ -1143,77 +1135,77 @@ msgstr "Usuń plik"
 msgid "Delete image"
 msgstr "Usuń obraz"
 
-#: criteria/models.py:105
+#: criteria/models.py:106
 #: manage/templates/manage/product/product_filters_inline.html:19
 #: manage/templates/manage/product/products_inline.html:31
 msgid "Sub type"
 msgstr "Podtyp"
 
-#: criteria/models.py:108
+#: criteria/models.py:109
 msgid "Operator"
 msgstr "Operator"
 
-#: criteria/models.py:130 criteria/models.py:148 criteria/settings.py:16
+#: criteria/models.py:131 criteria/models.py:149 criteria/settings.py:16
 #: criteria/settings.py:24
 msgid "Equal to"
 msgstr "Równe"
 
-#: criteria/models.py:131 criteria/settings.py:17
+#: criteria/models.py:132 criteria/settings.py:17
 msgid "Less than"
 msgstr "Mniejsze niż"
 
-#: criteria/models.py:132
+#: criteria/models.py:133
 msgid "Less than equal to"
 msgstr "Mniejsze lub równe"
 
-#: criteria/models.py:133 criteria/settings.py:19
+#: criteria/models.py:134 criteria/settings.py:19
 msgid "Greater than"
 msgstr "Większe niż"
 
-#: criteria/models.py:134
+#: criteria/models.py:135
 msgid "Greater than equal to"
 msgstr "Większe lub równe"
 
-#: criteria/models.py:138
+#: criteria/models.py:139
 msgid "Is selected"
 msgstr "Wybrany"
 
-#: criteria/models.py:139
+#: criteria/models.py:140
 msgid "Is not selected"
 msgstr "Nie jest zaznaczony"
 
-#: criteria/models.py:143 criteria/settings.py:31
+#: criteria/models.py:144 criteria/settings.py:31
 msgid "Is valid"
 msgstr "Jest poprawne"
 
-#: criteria/models.py:144 criteria/settings.py:32
+#: criteria/models.py:145 criteria/settings.py:32
 msgid "Is not valid"
 msgstr "Nie jest poprawne"
 
-#: criteria/models.py:149
+#: criteria/models.py:150
 msgid "Contains"
 msgstr "Zawiera"
 
-#: criteria/models.py:159
+#: criteria/models.py:160
 #, python-format
 msgid "%(name)s: %(operator)s %(value)s"
 msgstr "%(name)s: %(operator)s %(value)s"
 
-#: criteria/models.py:421
+#: criteria/models.py:422
 msgid "CLAG"
 msgstr ""
 
-#: criteria/models.py:475
+#: criteria/models.py:476
 #: manage/templates/manage/shop/default_values_tab.html:99
 msgid "Countries"
 msgstr "Kraje"
 
-#: criteria/models.py:600
+#: criteria/models.py:606
 #: manage/templates/manage/payment/payment_methods.html:3
 msgid "Payment methods"
 msgstr "Sposoby płatności"
 
-#: criteria/models.py:663
+#: criteria/models.py:669
 #: manage/templates/manage/shipping_methods/shipping_methods.html:4
 msgid "Shipping methods"
 msgstr "Metody wysyłki"
@@ -1344,6 +1336,16 @@ msgstr "Twoje hasło zostało zmienione"
 #: customer_tax/models.py:21 tax/models.py:17
 msgid "Rate"
 msgstr "Stawka"
+
+#: discounts/models.py:53
+#: manage/templates/manage/voucher/vouchers_inline.html:88
+#: manage/voucher/forms.py:49 voucher/models.py:110
+msgid "Sums up"
+msgstr "Sumuje się"
+
+#: discounts/models.py:53 voucher/models.py:110
+msgid "Sums up with other discounts/vouchers"
+msgstr "Sumuje się z innymi rabatami/kodami rabatowymi"
 
 #: discounts/settings.py:7 voucher/settings.py:7
 msgid "Absolute"
@@ -2516,7 +2518,7 @@ msgid "Registriert"
 msgstr "Rejestracja"
 
 #: manage/templates/manage/customer/customer_inline.html:30
-#: manage/templates/manage/voucher/vouchers_inline.html:157
+#: manage/templates/manage/voucher/vouchers_inline.html:163
 #: marketing/models.py:56
 msgid "DATE_FORMAT"
 msgstr "Y-m-d"
@@ -4060,25 +4062,25 @@ msgstr "Data końcowa"
 msgid "Effective from"
 msgstr "Obowiązuje od"
 
-#: manage/templates/manage/voucher/vouchers_inline.html:91
+#: manage/templates/manage/voucher/vouchers_inline.html:94
 msgid "Used"
 msgstr "Użyty"
 
-#: manage/templates/manage/voucher/vouchers_inline.html:94
-#: manage/voucher/forms.py:46 portlet/models/featured.py:24
+#: manage/templates/manage/voucher/vouchers_inline.html:97
+#: manage/voucher/forms.py:47 portlet/models/featured.py:24
 #: portlet/models/forsale.py:27 portlet/models/latest.py:24
 msgid "Limit"
 msgstr "Limit"
 
-#: manage/templates/manage/voucher/vouchers_inline.html:97
+#: manage/templates/manage/voucher/vouchers_inline.html:100
 msgid "Last used date"
 msgstr "Data ostatniego użycia"
 
-#: manage/templates/manage/voucher/vouchers_inline.html:164
+#: manage/templates/manage/voucher/vouchers_inline.html:170
 msgid "Delete vouchers"
 msgstr "Usuń kupony"
 
-#: manage/templates/manage/voucher/vouchers_inline.html:167
+#: manage/templates/manage/voucher/vouchers_inline.html:173
 msgid "There are no vouchers for this group yet."
 msgstr "Nie ma żadnych kuponów w tej grupie."
 
@@ -4230,31 +4232,47 @@ msgstr "Poziomy Kategorii zostały utworzone"
 msgid "Effective prices have been set."
 msgstr "Obowiązujące ceny zostały ustawione."
 
+#: manage/voucher/forms.py:39
+msgid "Number of vouchers to create"
+msgstr "Ilość kodów rabatowych do utworzenia"
+
 #: manage/voucher/forms.py:43
 msgid "Kind of"
 msgstr "Rodzaj"
+
+#: manage/voucher/forms.py:45
+msgid "Minimum cart price from which the vouchers are valid"
+msgstr "Minimalna wartość koszyka od której kody rabatowe działają"
+
+#: manage/voucher/forms.py:48
+msgid "How many times voucher can be used"
+msgstr "Ile razy kod rabatowy może zostać użyty"
+
+#: manage/voucher/forms.py:50
+msgid "Determines if voucher can be summed up with other discounts"
+msgstr "Określa czy kod rabatowy może być sumowany z innymi rabatami"
 
 #: manage/voucher/views.py:190
 msgid "Unable to create unique Vouchers for the options specified."
 msgstr "Nie udało się utworzyć unikalnego Voucher'a dla wybranych opcji."
 
-#: manage/voucher/views.py:206
+#: manage/voucher/views.py:207
 msgid "Vouchers have been created."
 msgstr "Kupony zostały utworzone."
 
-#: manage/voucher/views.py:226
+#: manage/voucher/views.py:227
 msgid "Vouchers have been deleted."
 msgstr "Kupony zostały usunięte."
 
-#: manage/voucher/views.py:267
+#: manage/voucher/views.py:268
 msgid "Voucher data has been saved."
 msgstr "Dane Kuponu zostały zapisane."
 
-#: manage/voucher/views.py:283
+#: manage/voucher/views.py:284
 msgid "Voucher group and assigned vouchers have been deleted."
 msgstr "Grupa Kuponów oraz przypisane Kupony zostały usunięte."
 
-#: manage/voucher/views.py:302
+#: manage/voucher/views.py:303
 msgid "Voucher options has been saved."
 msgstr "Opcje Kuponu zostały zapisane."
 
