@@ -106,6 +106,9 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         cart_price -= voucher_data['voucher_value']
         cart_tax -= voucher_data['voucher_tax']
 
+    cart_price = max(0, cart_price)
+    cart_tax = max(0, cart_tax)
+
     # Calc delivery time for cart (which is the maximum of all cart items)
     max_delivery_time = cart.get_delivery_time(request)
 
