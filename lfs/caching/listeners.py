@@ -135,21 +135,23 @@ post_save.connect(product_saved_listener, sender=Product)
 
 def product_pre_saved_listener(sender, instance, **kwargs):
     """ If product slug was changed we should have cleared slug based product cache"""
-    if instance.is_variant():
-        parent = instance.parent
-    else:
-        parent = instance
+    # check if product already exists in database
+    if instance.pk:
+        if instance.is_variant():
+            parent = instance.parent
+        else:
+            parent = instance
 
-    cache_key = "%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id)
-    cache.delete(cache_key)
-    cache_key_hash = hashlib.md5(cache_key).hexdigest()
-    cache.delete(cache_key_hash)
+        cache_key = "%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id)
+        cache.delete(cache_key)
+        cache_key_hash = hashlib.md5(cache_key).hexdigest()
+        cache.delete(cache_key_hash)
 
-    old_product = Product.objects.get(pk=parent.pk)
-    cache_key = "%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, old_product.slug)
-    cache.delete(cache_key)
-    cache_key_hash = hashlib.md5(cache_key).hexdigest()
-    cache.delete(cache_key_hash)
+        old_product = Product.objects.get(pk=parent.pk)
+        cache_key = "%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, old_product.slug)
+        cache.delete(cache_key)
+        cache_key_hash = hashlib.md5(cache_key).hexdigest()
+        cache.delete(cache_key_hash)
 
 pre_save.connect(product_pre_saved_listener, sender=Product)
 
