@@ -147,11 +147,15 @@ def product_pre_saved_listener(sender, instance, **kwargs):
         cache_key_hash = hashlib.md5(cache_key).hexdigest()
         cache.delete(cache_key_hash)
 
-        old_product = Product.objects.get(pk=parent.pk)
-        cache_key = "%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, old_product.slug)
-        cache.delete(cache_key)
-        cache_key_hash = hashlib.md5(cache_key).hexdigest()
-        cache.delete(cache_key_hash)
+        try:
+            old_product = Product.objects.get(pk=parent.pk)
+        except Product.DoesNotExist:
+            pass
+        else:
+            cache_key = "%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, old_product.slug)
+            cache.delete(cache_key)
+            cache_key_hash = hashlib.md5(cache_key).hexdigest()
+            cache.delete(cache_key_hash)
 
 pre_save.connect(product_pre_saved_listener, sender=Product)
 
