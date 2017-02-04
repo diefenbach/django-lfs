@@ -9,7 +9,6 @@ from django.core.cache import cache
 from django.db import models
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _, ugettext
-from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # lfs imports
@@ -322,8 +321,8 @@ class Criterion(models.Model):
                 selected = False
 
             criteria.append({
-                "module": criterion[0].encode("utf-8"),
-                "name": criterion[1].encode("utf-8"),
+                "module": criterion[0],
+                "name": criterion[1],
                 "selected": selected,
             })
 
@@ -332,7 +331,7 @@ class Criterion(models.Model):
         else:
             id = datetime.datetime.now().microsecond
 
-        return render_to_string(self.get_template(request), RequestContext(request, {
+        return render_to_string(self.get_template(request), request=request, context={
             "id": id,
             "operator": self.operator,
             "value": self.get_value(),
@@ -342,7 +341,7 @@ class Criterion(models.Model):
             "selectable_values": self.get_selectable_values(request),
             "value_type": self.get_value_type(),
             "criterion": self,
-        }))
+        })
 
     def update(self, value):
         """

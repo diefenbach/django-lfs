@@ -4,8 +4,7 @@ import json
 from django.contrib.auth.decorators import permission_required
 from django.forms import ModelForm
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -48,10 +47,10 @@ def category_view(request, category_id, template_name="manage/category/view.html
     else:
         form = ViewForm(instance=category)
 
-    view_html = render_to_string(template_name, RequestContext(request, {
+    view_html = render_to_string(template_name, request=request, context={
         "category": category,
         "form": form,
-    }))
+    })
 
     if request.is_ajax():
         html = [["#view", view_html]]
@@ -67,5 +66,4 @@ def category_view(request, category_id, template_name="manage/category/view.html
 def no_categories(request, template_name="manage/category/no_categories.html"):
     """Displays that there are no categories.
     """
-    return render_to_response(template_name, RequestContext(request, {}))
-
+    return render(request, template_name, {})

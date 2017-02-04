@@ -1,5 +1,5 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n compress %}
+{% load compress  i18n static %}
 
 {% block help_link %}user/management/shop/images.html{% endblock %}
 
@@ -8,7 +8,7 @@
 
 {% block javascript %}
     {% compress js %}
-        <script type="text/javascript" src="{{ STATIC_URL }}lfs/js/lfs.manage.shop-images.js"></script>
+        <script type="text/javascript" src="{% static 'lfs/js/lfs.manage.shop-images.js' %}"></script>
     {% endcompress %}
 {% endblock %}
 

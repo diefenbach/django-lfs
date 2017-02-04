@@ -1,7 +1,6 @@
 # django imports
 from django import forms
 from django.db import models
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -53,11 +52,11 @@ class LatestPortlet(Portlet):
             else:
                 latest_products.append(product)
 
-        return render_to_string("lfs/portlets/latest.html", RequestContext(request, {
+        return render_to_string("lfs/portlets/latest.html", request=request, context={
             "title": self.rendered_title,
             "slideshow": self.slideshow,
             "products": latest_products
-        }))
+        })
 
     def form(self, **kwargs):
         """

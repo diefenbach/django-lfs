@@ -1,2 +1,1 @@
-"""Listeners, utils and templates for lfs mailing"""
-from listeners import *
+default_app_config = 'lfs.mail.apps.LfsMailAppConfig'

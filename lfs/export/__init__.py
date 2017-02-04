@@ -1,1 +1,1 @@
-from generic import *
+default_app_config = 'lfs.export.apps.LfsExportAppConfig'

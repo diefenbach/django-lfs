@@ -2,7 +2,6 @@
 from django import forms
 from django.conf import settings
 from django.core.cache import cache
-from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # portlets imports
@@ -32,10 +31,10 @@ class PagesPortlet(Portlet):
             pages = Page.objects.filter(active=True, exclude_from_navigation=False)
             cache.set(cache_key, pages)
 
-        return render_to_string("lfs/portlets/pages.html", RequestContext(request, {
+        return render_to_string("lfs/portlets/pages.html", request=request, context={
             "title": self.title,
             "pages": pages,
-        }))
+        })
 
     def form(self, **kwargs):
         return PagesForm(instance=self, **kwargs)

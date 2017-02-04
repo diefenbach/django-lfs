@@ -4,7 +4,6 @@ import json
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -36,10 +35,10 @@ def manage_categories(request, product_id, template_name="manage/product/categor
             "children": children,
         })
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result = render_to_string(template_name, request=request, context={
         "product": product,
         "categories": categories
-    }))
+    })
 
     return HttpResponse(result)
 
@@ -63,9 +62,9 @@ def children_categories(request, category, product_category_ids,
             "children": children,
         })
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result = render_to_string(template_name, request=request, context={
         "categories": categories
-    }))
+    })
 
     return result
 

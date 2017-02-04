@@ -33,7 +33,6 @@ from lfs.tax.models import Tax
 # reviews imports
 from reviews.signals import review_added
 
-
 # Shop
 def shop_changed_listener(sender, **kwargs):
     clear_cache()
@@ -305,7 +304,7 @@ def update_cart_cache(instance):
     """
     if instance.user:
         delete_cache("%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.user.pk))
-    
+
     delete_cache("%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.session))
     delete_cache("%s-cart-items-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
     delete_cache("%s-cart-costs-True-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))

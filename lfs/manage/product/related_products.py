@@ -6,7 +6,6 @@ from django.core.paginator import EmptyPage
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -35,11 +34,11 @@ def manage_related_products(
             "selected": value == request.session.get("related-products-amount")
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "product": product,
         "related_products_inline": inline,
         "amount_options": amount_options,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -110,14 +109,14 @@ def manage_related_products_inline(
     except EmptyPage:
         page = 0
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "product": product,
         "related_products": related_products,
         "total": total,
         "page": page,
         "paginator": paginator,
         "filter": filter_
-    }))
+    })
 
     if as_string:
         return result

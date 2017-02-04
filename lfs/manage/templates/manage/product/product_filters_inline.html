@@ -1,5 +1,4 @@
-{% load i18n %}
-{% load lfs_manage_tags %}
+{% load i18n lfs_manage_tags static %}
 
 <form action="{% url 'lfs_set_product_filters' %}"
       method="POST">{% csrf_token %}
@@ -70,7 +69,7 @@
                    class="ajax-link reset">&nbsp;</a>
             </td>
             <td>
-                <img class="ajax-loading" src="{{ STATIC_URL }}lfs/img/ajax-loader.gif" alt="" style="padding:0; margin:0" />
+                <img class="ajax-loading" src="{% static 'lfs/img/ajax-loader.gif' %}" alt="" style="padding:0; margin:0" />
             </td>
         </tr>
     </table>

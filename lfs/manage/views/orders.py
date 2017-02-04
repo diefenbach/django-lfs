@@ -8,15 +8,13 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Q
 from django.contrib.auth.decorators import permission_required
-from django.core.paginator import EmptyPage
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -48,10 +46,10 @@ def manage_orders(request, template_name="manage/order/manage_orders.html"):
 def orders_view(request, template_name="manage/order/orders.html"):
     """Main view to display the order overview view.
     """
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "orders_inline": orders_inline(request),
         "orders_filters_inline": orders_filters_inline(request),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -71,13 +69,13 @@ def order_view(request, order_id, template_name="manage/order/order.html"):
             "selected_order": order.state == state[0],
         })
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "order_inline": order_inline(request, order_id),
         "order_filters_inline": order_filters_inline(request, order_id),
         "selectable_orders": selectable_orders_inline(request, order_id),
         "current_order": order,
         "states": states,
-    }))
+    })
 
 
 # Parts
@@ -93,9 +91,9 @@ def orders_inline(request, template_name="manage/order/orders_inline.html"):
     paginator = Paginator(orders, 20)
     page = paginator.page(page)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "page": page,
-    }))
+    })
 
 
 def order_inline(request, order_id, template_name="manage/order/order_inline.html"):
@@ -114,7 +112,7 @@ def order_inline(request, order_id, template_name="manage/order/order_inline.htm
             "selected_order": order.state == state[0],
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "current_order": order,
         "start": order_filters.get("start", ""),
         "end": order_filters.get("end", ""),
@@ -122,7 +120,7 @@ def order_inline(request, order_id, template_name="manage/order/order_inline.htm
         "states": states,
         "invoice_address": order.invoice_address.as_html(request, "invoice"),
         "shipping_address": order.shipping_address.as_html(request, "shipping"),
-    }))
+    })
 
 
 def order_filters_inline(request, order_id, template_name="manage/order/order_filters_inline.html"):
@@ -141,14 +139,14 @@ def order_filters_inline(request, order_id, template_name="manage/order/order_fi
             "selected_order": order.state == state[0],
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "current_order": order,
         "start": order_filters.get("start", ""),
         "end": order_filters.get("end", ""),
         "name": order_filters.get("name", ""),
         "states": states,
         "state_id": state_id
-    }))
+    })
 
 
 def orders_filters_inline(request, template_name="manage/order/orders_filters_inline.html"):
@@ -170,7 +168,7 @@ def orders_filters_inline(request, template_name="manage/order/orders_filters_in
             "selected": state_id == str(state[0]),
         })
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "paginator": paginator,
         "page": page,
         "state_id": state_id,
@@ -178,7 +176,7 @@ def orders_filters_inline(request, template_name="manage/order/orders_filters_in
         "start": order_filters.get("start", ""),
         "end": order_filters.get("end", ""),
         "name": order_filters.get("name", ""),
-    }))
+    })
 
     return result
 
@@ -200,12 +198,12 @@ def selectable_orders_inline(request, order_id, template_name="manage/order/sele
         page = 1
     page = paginator.page(page)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "current_order": order,
         "orders": orders,
         "paginator": paginator,
         "page": page,
-    }))
+    })
 
 
 # Actions

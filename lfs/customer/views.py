@@ -8,8 +8,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -106,12 +105,12 @@ def login(request, template_name="lfs/customer/login.html"):
     except KeyError:
         login_form_errors = None
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "login_form": login_form,
         "login_form_errors": login_form_errors,
         "register_form": register_form,
         "next_url": next_url,
-    }))
+    })
 
 
 def logout(request):
@@ -161,12 +160,12 @@ def orders(request, template_name="lfs/customer/orders.html"):
             "selected": selected,
         })
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "orders": orders,
         "options": options,
         "date_filter": date_filter,
         "current": "orders"
-    }))
+    })
 
 
 @login_required
@@ -176,11 +175,11 @@ def order(request, id, template_name="lfs/customer/order.html"):
     orders = Order.objects.filter(user=request.user)
     order = get_object_or_404(Order, pk=id, user=request.user)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "current_order": order,
         "orders": orders,
         "current": "orders"
-    }))
+    })
 
 
 @login_required
@@ -189,10 +188,10 @@ def account(request, template_name="lfs/customer/account.html"):
     """
     user = request.user
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "user": user,
         "current": "welcome"
-    }))
+    })
 
 
 @login_required
@@ -224,11 +223,12 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
         sam = AddressManagement(customer, customer.default_shipping_address, "shipping")
 
     return lfs.core.utils.render_to_message_response(
-        template_name, RequestContext(request, {
+        request,
+        template_name, {
             "shipping_address_inline": sam.render(request),
             "invoice_address_inline": iam.render(request),
             "current": "addresses"
-        }),
+        },
         msg=msg,
     )
 
@@ -248,10 +248,10 @@ def email(request, template_name="lfs/customer/email.html"):
     else:
         email_form = EmailForm(initial={"email": request.user.email})
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "email_form": email_form,
         "current": "email"
-    }))
+    })
 
 
 @login_required
@@ -267,7 +267,7 @@ def password(request, template_name="lfs/customer/password.html"):
     else:
         form = PasswordChangeForm(request.user)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "form": form,
         "current": "password"
-    }))
+    })

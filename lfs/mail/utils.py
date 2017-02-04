@@ -3,8 +3,7 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.mail import EmailMultiAlternatives
-from django.template import RequestContext
-from django.template.base import TemplateDoesNotExist
+from django.template import TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -16,7 +15,10 @@ def send_order_sent_mail(order):
     shop = lfs.core.utils.get_default_shop()
 
     try:
-        subject = render_to_string("lfs/mail/order_sent_subject.txt", {"order": order})
+        subject = render_to_string(
+            "lfs/mail/order_sent_subject.txt",
+            context={"order": order}
+        )
     except TemplateDoesNotExist:
         subject = _(u"Your order has been sent")
 
@@ -25,14 +27,18 @@ def send_order_sent_mail(order):
     bcc = shop.get_notification_emails()
 
     # text
-    text = render_to_string("lfs/mail/order_sent_mail.txt", {"order": order})
+    text = render_to_string(
+        "lfs/mail/order_sent_mail.txt",
+        context={"order": order}
+    )
     mail = EmailMultiAlternatives(
         subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
 
     # html
-    html = render_to_string("lfs/mail/order_sent_mail.html", {
-        "order": order
-    })
+    html = render_to_string(
+        "lfs/mail/order_sent_mail.html",
+        context={"order": order},
+    )
 
     mail.attach_alternative(html, "text/html")
     mail.send(fail_silently=True)
@@ -45,7 +51,10 @@ def send_order_paid_mail(order):
     shop = lfs.core.utils.get_default_shop()
 
     try:
-        subject = render_to_string("lfs/mail/order_paid_subject.txt", {"order": order})
+        subject = render_to_string(
+            "lfs/mail/order_paid_subject.txt",
+            context={"order": order},
+        )
     except TemplateDoesNotExist:
         subject = _(u"Your order has been paid")
 
@@ -54,14 +63,18 @@ def send_order_paid_mail(order):
     bcc = shop.get_notification_emails()
 
     # text
-    text = render_to_string("lfs/mail/order_paid_mail.txt", {"order": order})
+    text = render_to_string(
+        "lfs/mail/order_paid_mail.txt",
+        context={"order": order},
+    )
     mail = EmailMultiAlternatives(
         subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
 
     # html
-    html = render_to_string("lfs/mail/order_paid_mail.html", {
-        "order": order
-    })
+    html = render_to_string(
+        "lfs/mail/order_paid_mail.html",
+        context={"order": order},
+    )
 
     mail.attach_alternative(html, "text/html")
     mail.send(fail_silently=True)
@@ -76,7 +89,10 @@ def send_order_received_mail(request, order):
     shop = lfs.core.utils.get_default_shop()
 
     try:
-        subject = render_to_string("lfs/mail/order_received_subject.txt", {"order": order})
+        subject = render_to_string(
+            "lfs/mail/order_received_subject.txt",
+            context={"order": order},
+        )
     except TemplateDoesNotExist:
         subject = _(u"Your order has been received")
 
@@ -85,14 +101,20 @@ def send_order_received_mail(request, order):
     bcc = shop.get_notification_emails()
 
     # text
-    text = render_to_string("lfs/mail/order_received_mail.txt", RequestContext(request, {"order": order}))
+    text = render_to_string(
+        "lfs/mail/order_received_mail.txt",
+        request=request,
+        context={"order": order}
+    )
     mail = EmailMultiAlternatives(
         subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
 
     # html
-    html = render_to_string("lfs/mail/order_received_mail.html", RequestContext(request, {
-        "order": order
-    }))
+    html = render_to_string(
+        "lfs/mail/order_received_mail.html",
+        request=request,
+        context={"order": order},
+    )
 
     mail.attach_alternative(html, "text/html")
     mail.send(fail_silently=True)
@@ -109,12 +131,16 @@ def send_customer_added(user):
     bcc = shop.get_notification_emails()
 
     # text
-    text = render_to_string("lfs/mail/new_user_mail.txt", {
-        "user": user, "shop": shop})
+    text = render_to_string(
+        "lfs/mail/new_user_mail.txt",
+        context={"user": user, "shop": shop},
+    )
 
     # subject
-    subject = render_to_string("lfs/mail/new_user_mail_subject.txt", {
-        "user": user, "shop": shop})
+    subject = render_to_string(
+        "lfs/mail/new_user_mail_subject.txt",
+        context={"user": user, "shop": shop},
+    )
 
     mail = EmailMultiAlternatives(
         subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
@@ -142,10 +168,10 @@ def send_review_added(review):
     product = ctype.get_object_for_this_type(pk=review.content_id)
 
     # text
-    text = render_to_string("lfs/mail/review_added_mail.txt", {
-        "review": review,
-        "product": product,
-    })
+    text = render_to_string(
+        "lfs/mail/review_added_mail.txt",
+        context={"review": review, "product": product},
+    )
 
     mail = EmailMultiAlternatives(
         subject=subject, body=text, from_email=from_email, to=to)
@@ -159,4 +185,3 @@ def send_review_added(review):
 
     mail.attach_alternative(html, "text/html")
     mail.send(fail_silently=True)
-

@@ -1,5 +1,5 @@
 from django.forms.widgets import Select
-from django.forms.util import flatatt
+from django.forms.utils import flatatt
 from django.template.loader import render_to_string
 
 
@@ -25,7 +25,7 @@ class SelectImage(Select):
         if defaultimage is None:
             if len(self.choices) > 0:
                 defaultimage = self.choices[0][1]["image"]
-        return render_to_string("manage/widgets/selectimage.html", {
+        return render_to_string("manage/widgets/selectimage.html", context={
             "selectimageid": self.image_id,
             "choices": self.choices,
             "currentvalue": value,

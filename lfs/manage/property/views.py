@@ -7,15 +7,14 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
 # lfs imports
-from lfs.caching import invalidate_cache_group_id
+from lfs.caching.listeners import invalidate_cache_group_id
 import lfs.core.utils
 from lfs.core.utils import LazyEncoder
 from lfs.core.signals import property_type_changed
@@ -53,11 +52,11 @@ def pages_inline(request, page, paginator, property_id, template_name="manage/pr
     """
     Displays the page navigation.
     """
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "page": page,
         "paginator": paginator,
         "property_id": property_id,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -80,19 +79,6 @@ def manage_property(request, id, template_name="manage/properties/property.html"
 
     display_step_form = prop.is_number_field and prop.filterable
 
-    # return render_to_response(template_name, RequestContext(request, {
-    #     "property": prop,
-    #     "properties": Property.objects.filter(local=False),
-    #     "form": form,
-    #     "type_form": PropertyTypeForm(instance=prop),
-    #     "current_id": int(id),
-    #     "options": options_inline(request, id),
-    #     "steps": steps_inline(request, id),
-    #     "number_field": number_field(request, prop),
-    #     "select_field": select_field(request, prop),
-    #     "display_step_form": display_step_form,
-    #   }))
-
     properties = _get_filtered_properties_for_property_view(request)
     paginator = Paginator(properties, 25)
     page = get_current_page(request, properties, prop, 25)
@@ -102,7 +88,7 @@ def manage_property(request, id, template_name="manage/properties/property.html"
     except EmptyPage:
         page = paginator.page(1)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "property": prop,
         "form": form,
         "type_form": PropertyTypeForm(instance=prop),
@@ -118,7 +104,7 @@ def manage_property(request, id, template_name="manage/properties/property.html"
         "properties": properties,
         "pages_inline": pages_inline(request, page, paginator, id),
         "name_filter_value": request.session.get("property_filters", {}).get("property_name", ""),
-    }))
+    })
 
 
 # Private Methods
@@ -152,11 +138,11 @@ def selectable_properties_inline(request, page, paginator, property_id,
     except Property.DoesNotExist:
         return ""
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "paginator": paginator,
         "page": page,
         "current_property": prop
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -220,7 +206,7 @@ def set_properties_page(request):
 def no_properties(request, template_name="manage/properties/no_properties.html"):
     """Displays that no properties exist.
     """
-    return render_to_response(template_name, RequestContext(request, {}))
+    return render(request, template_name, {})
 
 
 # Actions
@@ -256,10 +242,10 @@ def select_field(request, property, template_name="manage/properties/property_se
     """
     form = SelectFieldForm(instance=property)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "property": property,
         "form": form,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -284,10 +270,10 @@ def number_field(request, property, template_name="manage/properties/property_nu
     """
     number_field_form = NumberFieldForm(instance=property)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "property": property,
         "number_field_form": number_field_form,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -316,11 +302,11 @@ def steps_inline(request, property_id, template_name="manage/properties/step_inl
     step_form = StepRangeForm(instance=property)
     step_type_form = StepTypeForm(instance=property)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "property": property,
         "step_form": step_form,
         "step_type_form": step_type_form,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -421,9 +407,9 @@ def options_inline(request, property_id, template_name="manage/properties/option
     """Display the options of a propety. Factored out for Ajax requests.
     """
     property = get_object_or_404(Property, pk=property_id)
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "property": property,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -445,12 +431,12 @@ def add_property(request, template_name="manage/properties/add_property.html"):
     else:
         form = PropertyAddForm()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "form": form,
         "properties": Property.objects.filter(local=False),
         "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
                                                                                      reverse("lfs_manage_shop_properties")),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")

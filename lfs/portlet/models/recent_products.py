@@ -2,7 +2,6 @@
 from django import forms
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # portlets imports
@@ -45,10 +44,10 @@ class RecentProductsPortlet(Portlet):
                 product = product.get_default_variant()
             products.append(product)
 
-        return render_to_string("lfs/portlets/recent_products.html", RequestContext(request, {
+        return render_to_string("lfs/portlets/recent_products.html", request=request, context={
             "title": self.title,
             "products": products,
-        }))
+        })
 
     def form(self, **kwargs):
         return RecentProductsForm(instance=self, **kwargs)

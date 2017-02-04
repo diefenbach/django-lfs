@@ -5,7 +5,6 @@ from django.shortcuts import render
 from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.template.loader import render_to_string
-from django.template import RequestContext
 
 # lfs imports
 from django.utils.translation import ungettext
@@ -176,13 +175,13 @@ def manufacturer_products(request, slug, start=1,
                                               '%(count)d products',
                                               amount_of_products) % {'count': amount_of_products}
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result = render_to_string(template_name, request=request, context={
         "manufacturer": manufacturer,
         "products": products,
         "amount_of_products": amount_of_products,
         "pagination": pagination_data,
         "all_products": all_products,
-    }))
+    })
 
     temp[sub_cache_key] = result
     cache.set(cache_key, temp)

@@ -1,6 +1,5 @@
 # django imports
 from django import template
-from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # lfs imports
@@ -50,9 +49,9 @@ def category_filter_children(request, category, name="category_filter", level=1)
             "selected": str(category.id) == request.session.get("product_filters", {}).get("category")
         })
 
-    result = render_to_string("manage/category/category_filter_children.html", RequestContext(request, {
+    result = render_to_string("manage/category/category_filter_children.html", request=request, context={
         "categories": categories
-    }))
+    })
 
     return result
 

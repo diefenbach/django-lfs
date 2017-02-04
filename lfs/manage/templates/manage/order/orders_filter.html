@@ -1,4 +1,4 @@
-{% load i18n lfs_tags %}
+{% load i18n lfs_tags static %}
 <form action="{% url 'lfs_set_order_filter' %}"
       method="POST">
 
@@ -17,21 +17,21 @@
                     {% if page.has_previous %}
                         <a class="ajax-link"
                            href="{% url 'lfs_orders_inline' %}?page=1">
-                            <img src="{{ STATIC_URL }}lfs/icons/resultset_first.png"
+                            <img src="{% static 'lfs/icons/resultset_first.png' %}"
                                  alt="{% trans 'First' %}"
                                  title="{% trans 'First' %}" />
                         </a>
                         <a class="ajax-link"
                            href="{% url 'lfs_orders_inline' %}?page={{ page.previous_page_number }}">
-                            <img src="{{ STATIC_URL }}lfs/icons/resultset_previous.png"
+                            <img src="{% static 'lfs/icons/resultset_previous.png' %}"
                                  alt="{% trans 'Previous' %}"
                                  title="{% trans 'Previous' %}" />
                         </a>
                     {% else %}
-                        <img src="{{ STATIC_URL }}lfs/icons/resultset_first.png"
+                        <img src="{% static 'lfs/icons/resultset_first.png' %}"
                              alt="{% trans 'First' %}"
                              title="{% trans 'First' %}" />
-                        <img src="{{ STATIC_URL }}lfs/icons/resultset_previous.png"
+                        <img src="{% static 'lfs/icons/resultset_previous.png' %}"
                              alt="{% trans 'Previous' %}"
                              title="{% trans 'Previous' %}" />
                     {% endif %}
@@ -41,25 +41,25 @@
                     {% if page.has_next %}
                         <a class="ajax-link"
                            href="{% url 'lfs_orders_inline' %}?page={{ page.next_page_number }}">
-                            <img src="{{ STATIC_URL }}lfs/icons/resultset_next.png"
+                            <img src="{% static 'lfs/icons/resultset_next.png' %}"
                                  alt="{% trans 'Next' %}"
                                  title="{% trans 'Next' %}" />
                         </a>
                         <a class="ajax-link"
                            href="{% url 'lfs_orders_inline' %}?page={{ paginator.num_pages }}">
-                            <img src="{{ STATIC_URL }}lfs/icons/resultset_last.png"
+                            <img src="{% static 'lfs/icons/resultset_last.png' %}"
                                  alt="{% trans 'Last' %}"
                                  title="{% trans 'Last' %}" />
                         </a>
 
                     {% else %}
                         <span>
-                            <img src="{{ STATIC_URL }}lfs/icons/resultset_next.png"
+                            <img src="{% static 'lfs/icons/resultset_next.png' %}"
                                  alt="{% trans 'Next' %}"
                                  title="{% trans 'Next' %}" />
                         </span>
                         <span>
-                            <img src="{{ STATIC_URL }}lfs/icons/resultset_last.png"
+                            <img src="{% static 'lfs/icons/resultset_last.png' %}"
                                  alt="{% trans 'Last' %}"
                                  title="{% trans 'Last' %}" />
                         </span>

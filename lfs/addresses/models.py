@@ -1,7 +1,6 @@
 # django imports
 from django.db import models
 from django.db.models import SET_NULL
-from django.template import RequestContext
 from django.template.base import Context
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
@@ -76,13 +75,13 @@ class BaseAddress(models.Model):
             templates.insert(0, "lfs/addresses/%s_address_view.html" % type)
 
         if request:
-            return render_to_string(templates, RequestContext(request, {
+            return render_to_string(templates, request=request, context={
                 "address": self,
-            }))
+            })
         else:
-            return render_to_string(templates, Context({
+            return render_to_string(templates, request=request, context={
                 "address": self,
-            }))
+            })
 
     def _get_values(self, attributes):
         if getattr(self, attributes) is None:

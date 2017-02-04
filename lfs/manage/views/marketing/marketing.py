@@ -1,7 +1,6 @@
 # django imports
 from django.contrib.auth.decorators import permission_required
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 
 # lfs imports
 from lfs.manage.views.marketing.topseller import manage_topseller
@@ -14,9 +13,9 @@ def manage_marketing(request, template_name="manage/marketing/marketing.html"):
     """
     topseller = manage_topseller(request)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "topseller": topseller,
-    }))
+    })
 
 
 @permission_required("manage_shop")
@@ -25,6 +24,6 @@ def manage_featured_page(request, template_name="manage/marketing/marketing_feat
     """
     featured = manage_featured(request)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "featured": featured,
-    }))
+    })

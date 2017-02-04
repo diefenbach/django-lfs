@@ -3,12 +3,10 @@ import locale
 
 # django imports
 from django import forms
-from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # portlets imports
 from portlets.models import Portlet
-from portlets.utils import register_portlet
 
 
 class CartPortlet(Portlet):
@@ -37,12 +35,12 @@ class CartPortlet(Portlet):
             amount_of_items_int = int(cart_amount_of_items)
             price = cart.get_price_gross(request, total=True)
 
-        return render_to_string("lfs/portlets/cart.html", RequestContext(request, {
+        return render_to_string("lfs/portlets/cart.html", request=request, context={
             "title": self.title,
             "amount_of_items_locale": amount_of_items_locale,
             "amount_of_items_int": amount_of_items_int,
             "price": price,
-        }))
+        })
 
     def form(self, **kwargs):
         return CartPortletForm(instance=self, **kwargs)

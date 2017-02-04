@@ -6,9 +6,8 @@ from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
@@ -72,13 +71,13 @@ def manage_export(request, export_id, template_name="manage/export/export.html")
         })
 
     data_form = ExportDataForm(instance=export)
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "categories": categories,
         "export_id": export_id,
         "slug": export.slug,
         "selectable_exports_inline": selectable_exports_inline(request, export_id),
         "export_data_inline": export_data_inline(request, export_id, data_form),
-    }))
+    })
 
 
 # Parts
@@ -86,20 +85,20 @@ def export_data_inline(request, export_id, form,
     template_name="manage/export/export_data_inline.html"):
     """Displays the data form of the current export.
     """
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "export_id": export_id,
         "form": form,
-    }))
+    })
 
 
 def selectable_exports_inline(request, export_id,
     template_name="manage/export/selectable_exports_inline.html"):
     """Displays all selectable exports.
     """
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "exports": Export.objects.all(),
         "export_id": int(export_id),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -155,11 +154,11 @@ def export_inline(request, export_id, category_id,
             "options": options,
         })
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "categories": categories,
         "products": products,
         "export_id": export_id,
-    }))
+    })
 
     html = (("#sub-categories-%s" % category_id, result),)
 
@@ -181,10 +180,10 @@ def add_export(request, template_name="manage/export/add_export.html"):
     else:
         form = ExportDataForm()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "form": form,
         "selectable_exports_inline": selectable_exports_inline(request, 0),
-    }))
+    })
 
 
 # Actions

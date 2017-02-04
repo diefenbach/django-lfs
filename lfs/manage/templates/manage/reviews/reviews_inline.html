@@ -1,5 +1,4 @@
-{% load i18n %}
-{% load lfs_tags %}
+{% load i18n lfs_tags static %}
 
 {% if not page.object_list %}
     <div>
@@ -85,19 +84,19 @@
                 </td>
                 <td>
                     {% if review.comment %}
-                        <img src="{{ STATIC_URL }}lfs/icons/tick.png"
+                        <img src="{% static 'lfs/icons/tick.png' %}"
                              alt="{% trans 'Yes' %}">
                     {% else %}
-                        <img src="{{ STATIC_URL }}lfs/icons/cross.png"
+                        <img src="{% static 'lfs/icons/cross.png' %}"
                              alt="{% trans 'No' %}">
                     {% endif %}
                 </td>
                 <td>
                     {% if review.active %}
-                        <img src="{{ STATIC_URL }}lfs/icons/tick.png"
+                        <img src="{% static 'lfs/icons/tick.png' %}"
                              alt="{% trans 'Yes' %}">
                     {% else %}
-                        <img src="{{ STATIC_URL }}lfs/icons/cross.png"
+                        <img src="{% static 'lfs/icons/cross.png' %}"
                              alt="{% trans 'No' %}">
                     {% endif %}
                 </td>

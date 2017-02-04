@@ -1,5 +1,5 @@
 # django imports
-from django.db.models.signals import post_syncdb
+from django.db.models.signals import post_migrate
 
 # lfs imports
 from lfs.export.utils import register
@@ -12,4 +12,4 @@ def register_lfs_scripts(sender, **kwargs):
     # don't register our scripts until the table has been created by syncdb
     if sender == lfs.export.models:
         register(export_script, "Generic")
-post_syncdb.connect(register_lfs_scripts)
+post_migrate.connect(register_lfs_scripts)

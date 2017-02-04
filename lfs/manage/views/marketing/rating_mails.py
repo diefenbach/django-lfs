@@ -4,9 +4,8 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.mail import EmailMultiAlternatives
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -20,7 +19,7 @@ from lfs.marketing.models import OrderRatingMail
 def manage_rating_mails(request, orders_sent=[], template_name="manage/marketing/rating_mails.html"):
     """Displays the manage view for rating mails
     """
-    return render_to_response(template_name, RequestContext(request, {}))
+    return render(request, template_name, {})
 
 
 @permission_required("core.manage_shop")
@@ -61,7 +60,7 @@ def send_rating_mails(request):
                 OrderRatingMail.objects.create(order=order)
 
             # text
-            text = render_to_string("lfs/reviews/rating_mail.txt", {
+            text = render_to_string("lfs/reviews/rating_mail.txt", request=request, context={
                 "order": order,
                 "content_type_id": ctype.id,
                 "site": site,
@@ -82,7 +81,7 @@ def send_rating_mails(request):
                 })
 
             # html
-            html = render_to_string("lfs/reviews/rating_mail.html", {
+            html = render_to_string("lfs/reviews/rating_mail.html", request=request, context={
                 "order": order,
                 "order_items": order_items,
                 "content_type_id": ctype.id,
@@ -92,7 +91,7 @@ def send_rating_mails(request):
             mail.attach_alternative(html, "text/html")
             mail.send()
 
-        return render_to_response("manage/marketing/rating_mails.html", RequestContext(request, {
+        return render(request, template_name, {
             "display_orders_sent": True,
             "orders_sent": orders_sent
-        }))
+        })

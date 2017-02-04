@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 <h2 class="navigation-title">{% trans "Categories" %}</h2>
 <div class="navigation-body manage-categories-portlet">
     <ol class="manage-categories-tree sortable"
@@ -8,12 +8,11 @@
                 <div>
                     <a class="selectable {% if category.is_current %}selected{% endif %}"
                        href="{% url 'lfs_manage_category' category.id %}">
-                        <img class="handle" src="{{ STATIC_URL }}lfs/img/handle.png" alt="Handle" />
+                        <img class="handle" src="{% static 'lfs/img/handle.png' %}" alt="Handle" />
                         <span class="sortable-item-name">{{ category.name }}</span>
                     </a>
                  </div>
                  {{ category.children }}
-
             </li>
         {% endfor %}
     </ol>

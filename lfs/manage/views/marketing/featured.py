@@ -6,7 +6,6 @@ from django.core.paginator import EmptyPage
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -35,10 +34,10 @@ def manage_featured(
             "selected": value == request.session.get("featured-amount")
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "featured_inline": inline,
         "amount_options": amount_options,
-    }))
+    })
 
 
 @permission_required("manage_shop")
@@ -108,13 +107,13 @@ def manage_featured_inline(
     except EmptyPage:
         page = 0
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result = render_to_string(template_name, request=request, context={
         "featured": featured,
         "total": total,
         "page": page,
         "paginator": paginator,
         "filter": filter_
-    }))
+    })
 
     if as_string:
         return result

@@ -1,7 +1,6 @@
 # django imports
 from django import forms
 from django.db import models
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -33,7 +32,7 @@ class FilterPortlet(Portlet):
 
         category = context.get("category")
         if category is None:
-            return render_to_string("lfs/portlets/filter.html", {
+            return render_to_string("lfs/portlets/filter.html", request=request, context={
                 "show": False,
             })
 
@@ -63,7 +62,7 @@ class FilterPortlet(Portlet):
                                                                               set_price_filters,
                                                                               set_manufacturer_filters)
 
-        return render_to_string("lfs/portlets/filter.html", RequestContext(request, {
+        return render_to_string("lfs/portlets/filter.html", request=request, context={
             "show": True,
             "title": self.title,
             "category": category,
@@ -74,7 +73,7 @@ class FilterPortlet(Portlet):
             "set_price_filters": set_price_filters,
             "show_price_filters": self.show_price_filters,
             "price_filters": price_filters,
-        }))
+        })
 
     def form(self, **kwargs):
         return FilterPortletForm(instance=self, **kwargs)

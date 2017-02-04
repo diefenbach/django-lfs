@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 <tr class="criterion" id="criterion-{{ id }}">
     <td>
         <input type="text" size="2" class="position" name="position-{{ id }}" value="{{ position }}" />
@@ -56,12 +56,12 @@
     <td>
         <a class="criterion-add-button"
            href="{% url 'lfs_add_criterion' %}">
-            <img src="{{ STATIC_URL }}lfs/icons/add.png"
+            <img src="{% static 'lfs/icons/add.png' %}"
                  alt="Add" />
         </a>
         <a class="criterion-delete-button"
            style="cursor:pointer">
-            <img src="{{ STATIC_URL }}lfs/icons/delete.png"
+            <img src="{% static 'lfs/icons/delete.png' %}"
                  alt="Delete" />
         </a>
     </td>

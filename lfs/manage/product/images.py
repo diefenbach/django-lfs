@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -28,9 +27,9 @@ def manage_images(request, product_id, as_string=False, template_name="manage/pr
     """
     product = lfs_get_object_or_404(Product, pk=product_id)
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result = render_to_string(template_name, request=request, context={
         "product": product,
-    }))
+    })
 
     if as_string:
         return result

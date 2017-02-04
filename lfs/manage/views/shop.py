@@ -5,8 +5,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.forms import ModelForm
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
@@ -69,42 +68,42 @@ def manage_shop(request, template_name="manage/shop/shop.html"):
         order_number = ong.objects.create(id="order_number")
     order_numbers_form = order_number.get_form(instance=order_number)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "shop": shop,
         "data": data_tab(request, shop, data_form),
         "default_values": default_values_tab(request, shop, default_values_form),
         "order_numbers": order_numbers_tab(request, shop, order_numbers_form),
         "seo": ShopSEOView(Shop).render(request, shop),
         "portlets": portlets_inline(request, shop),
-    }))
+    })
 
 
 # Parts
 def data_tab(request, shop, form, template_name="manage/shop/data_tab.html"):
     """Renders the data tab of the shop.
     """
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "shop": shop,
         "form": form,
-    }))
+    })
 
 
 def order_numbers_tab(request, shop, form, template_name="manage/order_numbers/order_numbers_tab.html"):
     """Renders the ordern number tab of the shop.
     """
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "shop": shop,
         "form": form,
-    }))
+    })
 
 
 def default_values_tab(request, shop, form, template_name="manage/shop/default_values_tab.html"):
     """Renders the default value tab of the shop.
     """
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "shop": shop,
         "form": form,
-    }))
+    })
 
 
 # Actions

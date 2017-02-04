@@ -6,10 +6,9 @@ from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseForbidden
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -57,13 +56,13 @@ def manage_page(request, id, template_name="manage/pages/page.html"):
     """
     page = get_object_or_404(Page, pk=id)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "page": page,
         "navigation": navigation(request, page),
         "seo_tab": PageSEOView(Page).render(request, page),
         "data_tab": data_tab(request, page),
         "portlets": portlets_inline(request, page),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -94,20 +93,20 @@ def data_tab(request, page, template_name="manage/pages/data_tab.html"):
     else:
         form = PageForm(instance=page)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "form": form,
         "page": page,
-    }))
+    })
 
 
 def navigation(request, page, template_name="manage/pages/navigation.html"):
     """Renders the navigation for passed page.
     """
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "root": Page.objects.get(pk=1),
         "page": page,
         "pages": Page.objects.exclude(pk=1),
-    }))
+    })
 
 
 # Actions
@@ -150,12 +149,12 @@ def add_page(request, template_name="manage/pages/add_page.html"):
     else:
         form = PageAddForm()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "form": form,
         "pages": Page.objects.all(),
         "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
                                                                                      reverse("lfs_manage_pages")),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")

@@ -7,9 +7,8 @@ import json
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -25,21 +24,21 @@ from lfs.customer.models import Customer
 def carts_view(request, template_name="manage/cart/carts.html"):
     """Displays the carts overview.
     """
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "carts_filters_inline": carts_filters_inline(request),
         "carts_inline": carts_inline(request),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
 def cart_view(request, cart_id, template_name="manage/cart/cart.html"):
     """Displays the cart with the passed cart id.
     """
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "cart_filters_inline": cart_filters_inline(request, cart_id),
         "selectable_carts_inline": selectable_carts_inline(request, cart_id),
         "cart_inline": cart_inline(request, cart_id),
-    }))
+    })
 
 
 # Parts
@@ -49,11 +48,11 @@ def cart_filters_inline(request, cart_id, template_name="manage/cart/cart_filter
     cart = lfs_get_object_or_404(Cart, pk=cart_id)
     cart_filters = request.session.get("cart-filters", {})
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "cart": cart,
         "start": cart_filters.get("start", ""),
         "end": cart_filters.get("end", ""),
-    }))
+    })
 
 
 def carts_filters_inline(request, template_name="manage/cart/carts_filters_inline.html"):
@@ -67,12 +66,12 @@ def carts_filters_inline(request, template_name="manage/cart/carts_filters_inlin
     page = (request.POST if request.method == 'POST' else request.GET).get("page", 1)
     page = paginator.page(page)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "page": page,
         "paginator": paginator,
         "start": cart_filters.get("start", ""),
         "end": cart_filters.get("end", ""),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -115,13 +114,13 @@ def carts_inline(request, template_name="manage/cart/carts_inline.html"):
             "customer": customer,
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "carts": carts,
         "page": page,
         "paginator": paginator,
         "start": cart_filters.get("start", ""),
         "end": cart_filters.get("end", ""),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -143,13 +142,13 @@ def cart_inline(request, cart_id, template_name="manage/cart/cart_inline.html"):
         customer = None
 
     cart_filters = request.session.get("cart-filters", {})
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "cart": cart,
         "customer": customer,
         "total": total,
         "start": cart_filters.get("start", ""),
         "end": cart_filters.get("end", ""),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -167,11 +166,11 @@ def selectable_carts_inline(request, cart_id, template_name="manage/cart/selecta
         page = 1
     page = paginator.page(page)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "paginator": paginator,
         "page": page,
         "cart_id": int(cart_id),
-    }))
+    })
 
 
 # Actions

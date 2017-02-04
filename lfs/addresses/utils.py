@@ -1,5 +1,4 @@
 # django imports
-from django.conf import settings
 from django.template.loader import select_template
 from django.template import RequestContext
 

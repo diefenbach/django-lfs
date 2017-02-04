@@ -4,8 +4,7 @@ import json
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
@@ -34,14 +33,14 @@ def portlets_inline(request, obj, template_name="manage/portlets/portlets_inline
     else:
         parent_slots = None
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "slots": portlets.utils.get_slots(obj),
         "parent_slots": parent_slots,
         "parent_for_portlets": parent_for_portlets,
         "portlet_types": PortletRegistration.objects.filter(active=True),
         "object": obj,
         "object_type_id": ct.id,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -106,7 +105,7 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
                     cls=LazyEncoder
                 )
             else:
-                html = [["#portlet-form-inline", render_to_string('manage/lfs_form.html', {'form': form})]]
+                html = [["#portlet-form-inline", render_to_string('manage/lfs_form.html', request=request, context={'form': form})]]
 
                 result = json.dumps({
                     "html": html,
@@ -123,13 +122,13 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             portlet_ct = ContentType.objects.filter(model=portlet_type.lower())[0]
             mc = portlet_ct.model_class()
             form = mc().form(prefix="portlet")
-            result = render_to_string(template_name, {
+            result = render_to_string(template_name, request=request, context={
                 "form": form,
                 "object_id": object_id,
                 "object_type_id": object_ct.id,
                 "portlet_type": portlet_type,
                 "slots": Slot.objects.all(),
-            }, RequestContext(request))
+            })
 
             return HttpResponse(json.dumps({'html': result}),
                                 content_type='application/json')
@@ -186,7 +185,7 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
                 cls=LazyEncoder
             )
         else:
-            html = [["#portlet-form-inline", render_to_string('manage/lfs_form.html', {'form': form})]]
+            html = [["#portlet-form-inline", render_to_string('manage/lfs_form.html', request=request, context={'form': form})]]
 
             result = json.dumps({
                 "html": html,
@@ -205,11 +204,11 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
             })
 
         form = pa.portlet.form(prefix="portlet")
-        return render_to_response(template_name, RequestContext(request, {
+        return render(request, template_name, {
             "form": form,
             "portletassigment_id": pa.id,
             "slots": slots,
-        }))
+        })
 
 
 @permission_required("core.manage_shop")

@@ -7,9 +7,8 @@ from django.contrib.auth.decorators import permission_required
 from django.core.paginator import EmptyPage
 from django.core.paginator import Paginator
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -28,21 +27,21 @@ from lfs.order.models import Order
 def customer(request, customer_id, template_name="manage/customer/customer.html"):
     """Base view to display the customer with passed customer id.
     """
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "customer_inline": customer_inline(request, customer_id),
         "selectable_customers_inline": selectable_customers_inline(request, customer_id),
         "customer_filters_inline": customer_filters_inline(request, customer_id)
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
 def customers(request, template_name="manage/customer/customers.html"):
     """Base view to display the customers overview.
     """
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "customers_inline": customers_inline(request),
         "customers_filters_inline": customers_filters_inline(request),
-    }))
+    })
 
 
 # Parts
@@ -52,10 +51,10 @@ def customer_filters_inline(request, customer_id, template_name="manage/customer
     customer_filters = request.session.get("customer-filters", {})
     customer = lfs_get_object_or_404(Customer, pk=customer_id)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "customer": customer,
         "name": customer_filters.get("name", ""),
-    }))
+    })
 
 
 def customers_filters_inline(request, template_name="manage/customer/customers_filters_inline.html"):
@@ -92,14 +91,14 @@ def customers_filters_inline(request, template_name="manage/customer/customers_f
             "cart_price": cart_price,
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "customers": customers,
         "page": page,
         "paginator": paginator,
         "start": customer_filters.get("start", ""),
         "end": customer_filters.get("end", ""),
         "ordering": ordering,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -141,14 +140,14 @@ def customer_inline(request, customer_id, template_name="manage/customer/custome
     else:
         invoice_address = None
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "customer": customer,
         "orders": orders,
         "cart": cart,
         "cart_price": cart_price,
         "shipping_address": shipping_address,
         "invoice_address": invoice_address,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -189,14 +188,14 @@ def customers_inline(request, template_name="manage/customer/customers_inline.ht
             "cart_price": cart_price,
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "customers": customers,
         "page": page,
         "paginator": paginator,
         "start": customer_filters.get("start", ""),
         "end": customer_filters.get("end", ""),
         "ordering": ordering,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -216,11 +215,11 @@ def selectable_customers_inline(request, customer_id, template_name="manage/cust
     except EmptyPage:
         page = paginator.page(1)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "paginator": paginator,
         "page": page,
         "customer_id": int(customer_id),
-    }))
+    })
 
 
 # Actions

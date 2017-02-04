@@ -31,7 +31,7 @@ setup(name='django-lfs',
       dependency_links=["http://pypi.iqpp.de/"],
       install_requires=[
           'setuptools',
-          'django-compressor == 1.4',
+          'django-compressor == 2.1.1',
           'django-localflavor == 1.1',
           'django-paypal == 0.1.2.lfs-2',
           'django-pagination == 1.0.7',

@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.utils.functional import Promise
 from django.utils.encoding import force_unicode
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.utils.http import cookie_date
 
 
@@ -119,7 +119,7 @@ def render_to_message_response(*args, **kwargs):
     """
     msg = kwargs.get("msg")
     del kwargs["msg"]
-    return set_message_to(render_to_response(*args, **kwargs), msg)
+    return set_message_to(render(*args, **kwargs), msg)
 
 
 def set_message_to(response, msg):
@@ -185,8 +185,7 @@ def get_redirect_for(path):
     """Returns redirect path for the passed path.
     """
     try:
-        redirect = Redirect.objects.get(
-            site=settings.SITE_ID, old_path=path)
+        redirect = Redirect.objects.get(old_path=path)
     except Redirect.DoesNotExist:
         return ""
     else:
@@ -209,7 +208,7 @@ def remove_redirect_for(path):
     """Removes the redirect path for given path.
     """
     try:
-        redirect = Redirect.objects.get(site=settings.SITE_ID, old_path=path)
+        redirect = Redirect.objects.get(old_path=path)
     except Redirect.DoesNotExist:
         return False
     else:

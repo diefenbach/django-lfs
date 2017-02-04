@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.db.models import Q
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -35,11 +34,11 @@ def manage_products(request, category_id, template_name="manage/category/product
             "selected": value == request.session.get("category-products-amount")
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "category": category,
         "products_inline": inline,
         "amount_options": amount_options,
-    }))
+    })
 
 
 # Parts
@@ -100,12 +99,12 @@ def products_inline(request, category_id, as_string=False, template_name="manage
     except (EmptyPage, InvalidPage):
         page = paginator.page(1)
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "category": category,
         "paginator": paginator,
         "page": page,
         "selected_products": selected_products(request, category_id, as_string=True),
-    }))
+    })
 
     if as_string:
         return result
@@ -165,13 +164,13 @@ def selected_products(request, category_id, as_string=False, template_name="mana
     except (EmptyPage, InvalidPage):
         page_2 = paginator_2.page(1)
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "category": category,
         "products": products,
         "paginator_2": paginator_2,
         "page_2": page_2,
         "filter_2": filter_2,
-    }))
+    })
 
     if as_string:
         return result

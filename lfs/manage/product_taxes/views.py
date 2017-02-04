@@ -2,9 +2,8 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -45,19 +44,19 @@ def manage_tax(request, id, template_name="manage/product_taxes/tax.html"):
     else:
         form = TaxForm(instance=tax)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "tax": tax,
         "taxes": Tax.objects.all(),
         "form": form,
         "current_id": int(id),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
 def no_taxes(request, template_name="manage/product_taxes/no_taxes.html"):
     """Displays that there are no taxes.
     """
-    return render_to_response(template_name, RequestContext(request, {}))
+    return render(request, template_name, {})
 
 
 @permission_required("core.manage_shop")
@@ -76,12 +75,12 @@ def add_tax(request, template_name="manage/product_taxes/add_tax.html"):
     else:
         form = TaxAddForm()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "form": form,
         "taxes": Tax.objects.all(),
         "next": (request.POST if request.method == 'POST' else request.GET).get("next",
                                                                                 request.META.get("HTTP_REFERER")),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")

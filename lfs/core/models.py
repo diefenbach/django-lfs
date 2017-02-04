@@ -258,6 +258,3 @@ class Application(models.Model):
 
     class Meta:
         app_label = 'core'
-
-
-from monkeys import *

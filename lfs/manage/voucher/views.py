@@ -6,8 +6,7 @@ from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
@@ -32,7 +31,7 @@ def no_vouchers(request, template_name="manage/voucher/no_vouchers.html"):
     """Displays that no vouchers exist.
     """
     if len(VoucherGroup.objects.all()) == 0:
-        return render_to_response(template_name, RequestContext(request, {}))
+        return render(request, template_name, {})
     else:
         return manage_vouchers(request)
 
@@ -46,23 +45,23 @@ def voucher_group(request, id, template_name="manage/voucher/voucher_group.html"
     except VoucherGroup.DoesNotExist:
         return manage_vouchers(request)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "voucher_group": voucher_group,
         "data_tab": data_tab(request, voucher_group),
         "vouchers_tab": vouchers_tab(request, voucher_group),
         "options_tab": options_tab(request),
         "navigation": navigation(request, voucher_group),
-    }))
+    })
 
 
 # Parts
 def navigation(request, voucher_group, template_name="manage/voucher/navigation.html"):
     """Displays the navigation.
     """
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "voucher_group": voucher_group,
         "voucher_groups": VoucherGroup.objects.all(),
-    }))
+    })
 
 
 def data_tab(request, voucher_group, template_name="manage/voucher/data.html"):
@@ -75,10 +74,10 @@ def data_tab(request, voucher_group, template_name="manage/voucher/data.html"):
     else:
         form = VoucherGroupForm(instance=voucher_group)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "voucher_group": voucher_group,
         "form": form,
-    }))
+    })
 
 
 def vouchers_tab(request, voucher_group, deleted=False, template_name="manage/voucher/vouchers.html"):
@@ -95,12 +94,12 @@ def vouchers_tab(request, voucher_group, deleted=False, template_name="manage/vo
     else:
         voucher_form = VoucherForm()
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "voucher_group": voucher_group,
         "taxes": taxes,
         "form": voucher_form,
         "vouchers_inline": vouchers_inline(request, voucher_group, vouchers, paginator, page),
-    }))
+    })
 
 
 def options_tab(request, template_name="manage/voucher/options.html"):
@@ -113,20 +112,20 @@ def options_tab(request, template_name="manage/voucher/options.html"):
 
     form = VoucherOptionsForm(instance=voucher_options)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "form": form,
-    }))
+    })
 
 
 def vouchers_inline(request, voucher_group, vouchers, paginator, page, template_name="manage/voucher/vouchers_inline.html"):
     """Displays the pages of the vouchers
     """
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "paginator": paginator,
         "page": page,
         "vouchers": vouchers,
         "voucher_group": voucher_group,
-    }))
+    })
 
 
 # Actions
@@ -242,12 +241,12 @@ def add_voucher_group(request, template_name="manage/voucher/add_voucher_group.h
     else:
         form = VoucherGroupAddForm()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "form": form,
         "voucher_groups": VoucherGroup.objects.all(),
         "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
                                                                                      reverse("lfs_manage_vouchers")),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")

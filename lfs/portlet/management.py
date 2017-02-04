@@ -1,29 +1,24 @@
-# django imports
-from django.db.models.signals import post_syncdb
+from django.db.models.signals import post_migrate
 
-# lfs imports
-from .models import AverageRatingPortlet
-from .models import CartPortlet
-from .models import CategoriesPortlet
-from .models import DeliveryTimePortlet
-from .models import FilterPortlet
-from .models import PagesPortlet
-from .models import RecentProductsPortlet
-from .models import RelatedProductsPortlet
-from .models import TextPortlet
-from .models import TopsellerPortlet
-from .models import ForsalePortlet
-from .models import FeaturedPortlet
-from .models import LatestPortlet
+from . models import AverageRatingPortlet
+from . models import CartPortlet
+from . models import CategoriesPortlet
+from . models import DeliveryTimePortlet
+from . models import FilterPortlet
+from . models import PagesPortlet
+from . models import RecentProductsPortlet
+from . models import RelatedProductsPortlet
+from . models import TextPortlet
+from . models import TopsellerPortlet
+from . models import ForsalePortlet
+from . models import FeaturedPortlet
+from . models import LatestPortlet
 
-# 3rd party imports
-import portlets
 from portlets.utils import register_portlet
 
 
 def register_lfs_portlets(sender, **kwargs):
-    # don't register our portlets until the table has been created by syncdb
-    if sender == portlets.models:
+    if sender.name == "portlets":
         register_portlet(AverageRatingPortlet, "Average Rating")
         register_portlet(CartPortlet, "Cart")
         register_portlet(CategoriesPortlet, "Categories")
@@ -38,4 +33,4 @@ def register_lfs_portlets(sender, **kwargs):
         register_portlet(FeaturedPortlet, "Featured Products")
         register_portlet(LatestPortlet, "Latest Products")
 
-post_syncdb.connect(register_lfs_portlets)
+post_migrate.connect(register_lfs_portlets)

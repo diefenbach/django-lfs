@@ -8,9 +8,9 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext as _
 
 # lfs imports
@@ -38,10 +38,10 @@ def cart(request, template_name="lfs/cart/cart.html"):
     """
     The main view of the cart.
     """
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "voucher_number": lfs.voucher.utils.get_current_voucher_number(request),
         "cart_inline": cart_inline(request),
-    }))
+    })
 
 
 def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
@@ -53,9 +53,9 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     cart = cart_utils.get_cart(request)
     shopping_url = lfs.cart.utils.get_go_on_shopping_url(request)
     if cart is None:
-        return render_to_string(template_name, RequestContext(request, {
+        return render_to_string(template_name, request=request, context={
             "shopping_url": shopping_url,
-        }))
+        })
 
     shop = core_utils.get_default_shop(request)
     countries = shop.shipping_countries.all()
@@ -125,7 +125,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
             "product_tax": cart_item.get_tax(request),
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "cart": cart,
         "cart_items": cart_items,
         "cart_price": cart_price,
@@ -146,7 +146,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         "voucher_value": voucher_data['voucher_value'],
         "voucher_tax": voucher_data['voucher_tax'],
         "voucher_message": voucher_data['voucher_message'],
-    }))
+    })
 
 
 def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
@@ -161,14 +161,14 @@ def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
         accessories = []
 
     cart_items_count = len(cart_items)
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "plural": cart_items_count > 1,
         "cart_items_count": cart_items_count,
         "shopping_url": request.META.get("HTTP_REFERER", "/"),
         "product_accessories": accessories,
         "product": cart_items[0].product if cart_items else None,
         "cart_items": added_to_cart_items(request),
-    }))
+    })
 
 
 def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.html"):
@@ -191,10 +191,10 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
             "product_tax": cart_item.get_tax(request),
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "total": total,
         "cart_items": cart_items,
-    }))
+    })
 
 
 # Actions

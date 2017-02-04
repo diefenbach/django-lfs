@@ -1,7 +1,6 @@
 # django imports
 from django import forms
 from django.db import models
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -24,10 +23,10 @@ class TextPortlet(Portlet):
         """Renders the portlet as html.
         """
         request = context.get("request")
-        return render_to_string("lfs/portlets/text_portlet.html", RequestContext(request, {
+        return render_to_string("lfs/portlets/text_portlet.html", request=request, context={
             "title": self.title,
             "text": self.text
-        }))
+        })
 
     def form(self, **kwargs):
         return TextPortletForm(instance=self, **kwargs)

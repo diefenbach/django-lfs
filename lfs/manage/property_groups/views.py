@@ -8,9 +8,8 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
@@ -57,21 +56,21 @@ def manage_property_group(request, id, template_name="manage/property_groups/pro
     else:
         form = PropertyGroupForm(instance=property_group)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "property_group": property_group,
         "property_groups": PropertyGroup.objects.all(),
         "properties": properties_inline(request, id),
         "products": products_tab(request, id),
         "form": form,
         "current_id": int(id),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
 def no_property_groups(request, template_name="manage/property_groups/no_property_groups.html"):
     """Displays that there are no property groups.
     """
-    return render_to_response(template_name, RequestContext(request, {}))
+    return render(request, template_name, {})
 
 
 @permission_required("core.manage_shop")
@@ -90,11 +89,11 @@ def properties_inline(request, id, template_name="manage/property_groups/propert
     assignable_properties = Property.objects.exclude(local=True).exclude(groupspropertiesrelation__in=gps)
     assignable_properties = assignable_properties.order_by('name')
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "property_group": property_group,
         "properties": assignable_properties,
         "gps": gps,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -112,12 +111,12 @@ def add_property_group(request, template_name="manage/property_groups/add_proper
     else:
         form = PropertyGroupForm()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "form": form,
         "property_groups": PropertyGroup.objects.all(),
         "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
                                                                                      reverse("lfs_manage_property_groups")),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -194,10 +193,10 @@ def products_tab(request, product_group_id, template_name="manage/property_group
     property_group = PropertyGroup.objects.get(pk=product_group_id)
     inline = products_inline(request, product_group_id, as_string=True)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "property_group": property_group,
         "products_inline": inline,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -258,13 +257,13 @@ def products_inline(request, product_group_id, as_string=False,
     except EmptyPage:
         page = 0
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result = render_to_string(template_name, request=request, context={
         "property_group": property_group,
         "group_products": group_products,
         "page": page,
         "paginator": paginator,
         "filter": filter_
-    }))
+    })
 
     if as_string:
         return result

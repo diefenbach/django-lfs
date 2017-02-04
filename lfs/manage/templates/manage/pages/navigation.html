@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 <h2 class="navigation-title">
     {% trans "Pages" %}
 </h2>
@@ -16,7 +16,7 @@
                 <div>
                     <a href="{% url 'lfs_manage_page' p.id %}"
                        class="selectable {% if p.id == page.id %}selected{% endif %}">
-                       <img class="handle" src="{{ STATIC_URL }}lfs/img/handle.png" alt="Handle" />
+                       <img class="handle" src="{% static 'lfs/img/handle.png' %}" alt="Handle" />
                        <span class="sortable-item-name">{{ p.title }}</span>
                     </a>
                 </div>

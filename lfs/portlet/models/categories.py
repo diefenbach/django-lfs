@@ -3,7 +3,6 @@ from django.conf import settings
 from django import forms
 from django.core.cache import cache
 from django.db import models
-from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # portlets
@@ -51,12 +50,12 @@ class CategoriesPortlet(Portlet):
             current_categories, self.start_level, self.expand_level)
         category_tree = ct.get_category_tree()
 
-        result = render_to_string("lfs/portlets/categories.html", RequestContext(request, {
+        result = render_to_string("lfs/portlets/categories.html", request=request, context={
             "title": self.title,
             "categories": category_tree,
             "product": product,
             "category": category,
-        }))
+        })
 
         cache.set(cache_key, result)
         return result

@@ -1,6 +1,5 @@
 # django imports
 from django import forms
-from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # portlets imports
@@ -26,19 +25,19 @@ class DeliveryTimePortlet(Portlet):
         product = context.get("product")
 
         if product is None:
-            d = {
+            context = {
                 "display": False,
             }
         else:
             info = lfs.shipping.utils.get_delivery_time(request, product)
-            d = {
+            context = {
                 "display": True,
                 "title": self.title,
                 "deliverable": info["deliverable"],
                 "delivery_time": info["delivery_time"],
             }
 
-        return render_to_string("lfs/portlets/delivery_time.html", RequestContext(request, d))
+        return render_to_string("lfs/portlets/delivery_time.html", request=request, context=context)
 
     def form(self, **kwargs):
         return DeliveryTimeForm(instance=self, **kwargs)

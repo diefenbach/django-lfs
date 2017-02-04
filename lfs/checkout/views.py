@@ -8,9 +8,8 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -88,11 +87,11 @@ def login(request, template_name="lfs/checkout/login.html"):
             return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"),
                 msg=_(u"You have been registered and logged in."))
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "login_form": login_form,
         "register_form": register_form,
         "anonymous_checkout": shop.checkout_type != CHECKOUT_TYPE_AUTH,
-    }))
+    })
 
 
 def checkout_dispatcher(request):
@@ -186,7 +185,7 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
                 "product_tax": cart_item.get_tax(request),
             })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "cart": cart,
         "cart_items": cart_items,
         "cart_price": cart_price,
@@ -201,7 +200,7 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
         "selected_payment_method": selected_payment_method,
         "voucher_number": voucher_data['voucher_number'],
         "voucher_message": voucher_data['voucher_message']
-    }))
+    })
 
 
 def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.html"):
@@ -321,7 +320,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
     display_bank_account = any([pm.type == lfs.payment.settings.PM_BANK for pm in valid_payment_methods])
     display_credit_card = any([pm.type == lfs.payment.settings.PM_CREDIT_CARD for pm in valid_payment_methods])
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "checkout_form": checkout_form,
         "bank_account_form": bank_account_form,
         "credit_card_form": credit_card_form,
@@ -335,15 +334,15 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
         "voucher_number": lfs.voucher.utils.get_current_voucher_number(request),
         "cart_inline": cart_inline(request),
         "settings": settings,
-    }))
+    })
 
 
 def empty_page_checkout(request, template_name="lfs/checkout/empty_page_checkout.html"):
     """
     """
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "shopping_url": reverse("lfs_shop_view"),
-    }))
+    })
 
 
 def thank_you(request, template_name="lfs/checkout/thank_you_page.html"):
@@ -351,10 +350,10 @@ def thank_you(request, template_name="lfs/checkout/thank_you_page.html"):
     """
     order = request.session.get("order")
     pay_link = order.get_pay_link(request) if order else None
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "order": order,
         "pay_link": pay_link,
-    }))
+    })
 
 
 def payment_inline(request, form, template_name="lfs/checkout/payment_inline.html"):
@@ -370,11 +369,11 @@ def payment_inline(request, form, template_name="lfs/checkout/payment_inline.htm
     selected_payment_method = lfs.payment.utils.get_selected_payment_method(request)
     valid_payment_methods = lfs.payment.utils.get_valid_payment_methods(request)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "payment_methods": valid_payment_methods,
         "selected_payment_method": selected_payment_method,
         "form": form,
-    }))
+    })
 
 
 def shipping_inline(request, template_name="lfs/checkout/shipping_inline.html"):
@@ -387,10 +386,10 @@ def shipping_inline(request, template_name="lfs/checkout/shipping_inline.html"):
     selected_shipping_method = lfs.shipping.utils.get_selected_shipping_method(request)
     shipping_methods = lfs.shipping.utils.get_valid_shipping_methods(request)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "shipping_methods": shipping_methods,
         "selected_shipping_method": selected_shipping_method,
-    }))
+    })
 
 
 def check_voucher(request):

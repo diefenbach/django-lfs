@@ -2,9 +2,8 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -46,19 +45,19 @@ def manage_delivery_time(request, id, template_name="manage/delivery_times/base.
     else:
         form = DeliveryTimeForm(instance=delivery_time)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "delivery_time": delivery_time,
         "delivery_times": DeliveryTime.objects.all(),
         "form": form,
         "current_id": int(id),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
 def no_delivery_times(request, template_name="manage/delivery_times/no_delivery_times.html"):
     """Displays that there are no delivery times.
     """
-    return render_to_response(template_name, RequestContext(request, {}))
+    return render(request, template_name, {})
 
 
 @permission_required("core.manage_shop")
@@ -78,12 +77,12 @@ def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
     else:
         form = DeliveryTimeAddForm()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "form": form,
         "delivery_times": DeliveryTime.objects.all(),
         "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
                                                                                      reverse("lfs_manage_delivery_times")),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")

@@ -1,7 +1,6 @@
 # django imports
 from django import forms
 from django.db import models
-from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # portlets imports
@@ -39,10 +38,10 @@ class TopsellerPortlet(Portlet):
             topseller = lfs.marketing.utils.get_topseller_for_category(
                 object, self.limit)
 
-        return render_to_string("lfs/portlets/topseller.html", RequestContext(request, {
+        return render_to_string("lfs/portlets/topseller.html", request=request, context={
             "title": self.title,
             "topseller": topseller,
-        }))
+        })
 
     def form(self, **kwargs):
         return TopsellerForm(instance=self, **kwargs)

@@ -7,13 +7,12 @@ from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.db.models import Q
-from django.forms.util import ErrorList
+from django.forms.utils import ErrorList
 from django.forms.widgets import Select
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from django.views.decorators.http import require_POST
 from django.forms.widgets import HiddenInput
@@ -180,7 +179,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
     except EmptyPage:
         page = paginator.page(1)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "product": product,
         "product_filters": product_filters_inline(request, page, paginator, product_id),
         "pages_inline": pages_inline(request, page, paginator, product_id),
@@ -194,14 +193,14 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
         "properties": manage_properties(request, product_id),
         "form": ProductSubTypeForm(instance=product),
         "name_filter_value": request.session.get("product_filters", {}).get("product_name", ""),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
 def no_products(request, template_name="manage/product/no_products.html"):
     """Displays that there are no products
     """
-    return render_to_response(template_name, RequestContext(request, {}))
+    return render(request, template_name)
 
 
 # Tabs
@@ -231,10 +230,10 @@ def stock(request, product_id, template_name="manage/product/stock.html"):
     else:
         form = ProductStockForm(prefix="stock", instance=product)
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result = render_to_string(template_name, request=request, context={
         "product": product,
         "form": form
-    }))
+    })
 
     html = [["#stock", result]]
 
@@ -263,12 +262,12 @@ def product_data_form(request, product_id, template_name="manage/product/data.ht
     page = (request.POST if request.method == 'POST' else request.GET).get('page', 1)
     pagination_form = PaginationDataForm(data={'page': page})
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "product": product,
         "form": form,
         "pagination_form": pagination_form,
         "redirect_to": lfs.core.utils.get_redirect_for(product.get_absolute_url()),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -281,11 +280,11 @@ def products(request, template_name="manage/product/products.html"):
     paginator = Paginator(products, amount)
     page = paginator.page((request.POST if request.method == 'POST' else request.GET).get("page", 1))
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "products_inline": products_inline(request, page, paginator),
         "product_filters": product_filters_inline(request, page=page, paginator=paginator),
         "pages_inline": pages_inline(request, page, paginator, 0),
-    }))
+    })
 
 
 # Parts
@@ -294,10 +293,10 @@ def products_inline(request, page, paginator, template_name="manage/product/prod
     """
     Displays the list of products.
     """
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "page": page,
         "paginator": paginator,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -321,7 +320,7 @@ def product_filters_inline(request, page, paginator, product_id=0, template_name
             "selected": value == amount
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "amount_options": amount_options,
         "name": product_filters.get("name", ""),
         "price": product_filters.get("price", ""),
@@ -331,7 +330,7 @@ def product_filters_inline(request, page, paginator, product_id=0, template_name
         "page": page,
         "paginator": paginator,
         "product_id": product_id,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -339,11 +338,11 @@ def pages_inline(request, page, paginator, product_id, template_name="manage/pro
     """
     Displays the page navigation.
     """
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "page": page,
         "paginator": paginator,
         "product_id": product_id,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -361,12 +360,12 @@ def selectable_products_inline(request, page, paginator, product_id, template_na
     else:
         base_product = product
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "paginator": paginator,
         "page": page,
         "current_product": product,
         "base_product": base_product,
-    }))
+    })
 
 
 # Actions
@@ -383,11 +382,11 @@ def add_product(request, template_name="manage/product/add_product.html"):
     else:
         form = ProductAddForm()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "form": form,
         "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
                                                                                      reverse("lfs_manage_product_dispatcher")),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -455,12 +454,12 @@ def edit_product_data(request, product_id, template_name="manage/product/data.ht
 
     pagination_form = PaginationDataForm(data={'page': page.number})
 
-    form_html = render_to_string(template_name, RequestContext(request, {
+    form_html = render_to_string(template_name, request=request, context={
         "product": product,
         "form": form,
         "pagination_form": pagination_form,
         "redirect_to": lfs.core.utils.get_redirect_for(product.get_absolute_url()),
-    }))
+    })
 
     html = [
         ["#selectable-products-inline", selectable_products_inline(request, page, paginator, product_id)],

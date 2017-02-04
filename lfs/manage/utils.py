@@ -1,8 +1,3 @@
-# django imports
-from django.core.exceptions import ObjectDoesNotExist
-from django.template import RequestContext
-from django.template.loader import render_to_string
-
 # lfs imports
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product

@@ -6,9 +6,8 @@ from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -28,22 +27,22 @@ def review(request, review_id, template_name="manage/reviews/review.html"):
     """
     review = lfs_get_object_or_404(Review, pk=review_id)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "review_inline": review_inline(request, review_id),
         "review_filters_inline": review_filters_inline(request, review_id),
         "selectable_reviews_inline": selectable_reviews_inline(request, review_id),
         "review": review,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
 def reviews(request, template_name="manage/reviews/reviews.html"):
     """Base view to display reviews overview.
     """
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "reviews_inline": reviews_inline(request),
         "reviews_filters_inline": reviews_filters_inline(request),
-    }))
+    })
 
 
 # Parts
@@ -53,11 +52,11 @@ def review_inline(request, review_id, template_name="manage/reviews/review_inlin
     review_filters = request.session.get("review-filters", {})
     review = lfs_get_object_or_404(Review, pk=review_id)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "review": review,
         "name": review_filters.get("name", ""),
         "active": review_filters.get("active", ""),
-    }))
+    })
 
 
 def reviews_inline(request, template_name="manage/reviews/reviews_inline.html"):
@@ -71,7 +70,7 @@ def reviews_inline(request, template_name="manage/reviews/reviews_inline.html"):
     page = (request.POST if request.method == 'POST' else request.GET).get("page", 1)
     page = paginator.page(page)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "reviews": reviews,
         "page": page,
         "paginator": paginator,
@@ -80,7 +79,7 @@ def reviews_inline(request, template_name="manage/reviews/reviews_inline.html"):
         "active": review_filters.get("active", ""),
         "name": review_filters.get("name", ""),
         "ordering": request.session.get("review-ordering", "id"),
-    }))
+    })
 
 
 def review_filters_inline(request, review_id, template_name="manage/reviews/review_filters_inline.html"):
@@ -89,11 +88,11 @@ def review_filters_inline(request, review_id, template_name="manage/reviews/revi
     review_filters = request.session.get("review-filters", {})
     review = lfs_get_object_or_404(Review, pk=review_id)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "review": review,
         "name": review_filters.get("name", ""),
         "active": review_filters.get("active", ""),
-    }))
+    })
 
 
 def reviews_filters_inline(request, template_name="manage/reviews/reviews_filters_inline.html"):
@@ -107,14 +106,14 @@ def reviews_filters_inline(request, template_name="manage/reviews/reviews_filter
     page = (request.POST if request.method == 'POST' else request.GET).get("page", 1)
     page = paginator.page(page)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "page": page,
         "paginator": paginator,
         "start": review_filters.get("start", ""),
         "end": review_filters.get("end", ""),
         "active": review_filters.get("active", ""),
         "name": review_filters.get("name", ""),
-    }))
+    })
 
 
 def selectable_reviews_inline(request, review_id, template_name="manage/reviews/selectable_reviews_inline.html"):
@@ -131,11 +130,11 @@ def selectable_reviews_inline(request, review_id, template_name="manage/reviews/
         page = 1
     page = paginator.page(page)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "paginator": paginator,
         "page": page,
         "review_id": int(review_id),
-    }))
+    })
 
 
 # Actions

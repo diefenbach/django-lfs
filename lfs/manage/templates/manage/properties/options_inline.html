@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 
 <h2 class="heading-middle">{% trans 'Select field options' %}</h2>
 <form id="shop-property-options-form"
@@ -67,7 +67,7 @@
                     <a class="delete-link"
                        dialog_message="{% trans 'Do you really want to delete this option?' %}"
                        href="{% url 'lfs_delete_shop_property_option' option.id %}">
-                        <img src="{{ STATIC_URL }}lfs/icons/cross.png"
+                        <img src="{% static 'lfs/icons/cross.png' %}"
                              alt="{% trans 'Delete' %}"
                              title="{% trans 'Delete option' %}" />
                     </a>

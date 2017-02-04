@@ -8,9 +8,8 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -52,20 +51,20 @@ def manage_discount(request, id, template_name="manage/discounts/discount.html")
     except Discount.DoesNotExist:
         return HttpResponseRedirect(reverse("lfs_manage_discounts"))
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "discount": discount,
         "navigation": navigation(request),
         "data": discount_data(request, id),
         "products": products_tab(request, id),
         "criteria": discount_criteria(request, id),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
 def no_discounts(request, template_name="manage/discounts/no_discounts.html"):
     """Displays no discounts view
     """
-    return render_to_response(template_name, RequestContext(request, {}))
+    return render(request, template_name, {})
 
 
 # Parts of the manage discount view.
@@ -78,10 +77,10 @@ def navigation(request, template_name="manage/discounts/navigation.html"):
     except ValueError:
         current_id = ""
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "current_id": current_id,
         "discounts": Discount.objects.all(),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -92,10 +91,10 @@ def discount_data(request, id, template_name="manage/discounts/data.html"):
     """
     discount = Discount.objects.get(pk=id)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "form": DiscountForm(instance=discount),
         "discount": discount,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -113,10 +112,10 @@ def discount_criteria(request, id, template_name="manage/discounts/criteria.html
         criterion_html = criterion_object.get_content_object().render(request, position)
         criteria.append(criterion_html)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "discount": discount,
         "criteria": criteria,
-    }))
+    })
 
 
 # Actions
@@ -135,12 +134,11 @@ def add_discount(request, template_name="manage/discounts/add_discount.html"):
     else:
         form = DiscountForm()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render_to_response(request, template_name, {
         "navigation": navigation(request),
         "form": form,
-        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
-                                                                                     reverse("lfs_manage_discounts")),
-    }))
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from", reverse("lfs_manage_discounts")),
+    })
 
 
 @permission_required("core.manage_shop")
@@ -247,10 +245,10 @@ def products_tab(request, discount_id, template_name="manage/discounts/products.
     discount = Discount.objects.get(pk=discount_id)
     inline = products_inline(request, discount_id, as_string=True)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "discount": discount,
         "products_inline": inline,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -326,13 +324,13 @@ def products_inline(request, discount_id, as_string=False,
     except EmptyPage:
         page = 0
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "discount": discount,
         "discount_products": discount_products,
         "page": page,
         "paginator": paginator,
         "filter": filter_
-    }))
+    })
 
     if as_string:
         return result

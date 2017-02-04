@@ -11,8 +11,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _, ungettext
 from django.views.decorators.csrf import csrf_exempt
@@ -91,13 +90,13 @@ def calculate_packing(request, id, quantity=None, with_properties=False, as_stri
         real_quantity = 0.0
         price = 0.0
 
-    html = render_to_string(template_name, RequestContext(request, {
+    html = render_to_string(template_name, request=request, context={
         "price": price,
         "product": product,
         "packs": int(packs),
         "real_quantity": real_quantity,
         "unit": packing_unit,
-    }))
+    })
 
     if as_string:
         return html
@@ -396,13 +395,13 @@ def category_view(request, slug, template_name="lfs/catalog/category_base.html")
     # TODO: Factor top_category out to a inclusion tag, so that people can
     # omit if they don't need it.
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "category": category,
         "category_inline": inline,
         "top_category": lfs.catalog.utils.get_current_top_category(request, category),
         "pagination": (request.POST if request.method == 'POST' else request.GET).get("start", 0),
         'pagination_data': pagination_data
-    }))
+    })
 
 
 def category_categories(request, slug, start=0, template_name="lfs/catalog/categories/category/default.html"):
@@ -436,10 +435,10 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
     if render_template != None:
         template_name = render_template
 
-    result_html = render_to_string(template_name, RequestContext(request, {
+    result_html = render_to_string(template_name, request=request, context={
         "category": category,
         "categories": categories,
-    }))
+    })
 
     result = {'pagination_data': {'current_page': 1, 'total_pages': 1, 'getparam': 'start'}, 'html': result_html}
 
@@ -567,7 +566,8 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
         "amount_of_products": amount_of_products,
         "pagination": pagination_data
     }
-    result_html = render_to_string(template_name, RequestContext(request, template_data))
+
+    result_html = render_to_string(template_name, request=request, context=template_data)
 
     result = {'pagination_data': pagination_data, 'html': result_html}
 
@@ -599,11 +599,11 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
     else:
         variant_canonical = product
 
-    result = render_to_response(template_name, RequestContext(request, {
+    result = render(request, template_name, {
         "product_inline": product_inline(request, product),
         "variant_canonical": variant_canonical,
         "product": product,
-    }))
+    })
 
     return result
 
@@ -691,7 +691,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
     # attachments
     attachments = product.get_attachments()
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result = render_to_string(template_name, request=request, context={
         "product": product,
         "variants": variants,
         "product_accessories": product.get_accessories(),
@@ -704,7 +704,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
         "unit": product.get_unit(),
         "display_variants_list": display_variants_list,
         "for_sale": product.get_for_sale(),
-    }))
+    })
 
     cache.set(cache_key, result)
     return result

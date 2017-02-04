@@ -7,9 +7,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -17,7 +16,6 @@ from django.views.decorators.http import require_POST
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
-from lfs.core.widgets.image import LFSImageInput
 from lfs.customer.models import Customer
 from lfs.manage.shipping_methods.forms import ShippingMethodAddForm
 from lfs.manage.shipping_methods.forms import ShippingMethodForm
@@ -52,20 +50,20 @@ def manage_shipping_method(request, shipping_method_id,
     """
     shipping_method = ShippingMethod.objects.get(pk=shipping_method_id)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "shipping_method": shipping_method,
         "shipping_methods": shipping_methods(request),
         "data": shipping_method_data(request, shipping_method_id),
         "method_criteria": shipping_method_criteria(request, shipping_method_id),
         "method_prices": shipping_method_prices(request, shipping_method_id),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
 def no_shipping_methods(request, template_name="manage/shipping_methods/no_shipping_methods.html"):
     """Displays that there are no shipping methods.
     """
-    return render_to_response(template_name, RequestContext(request, {}))
+    return render(request, template_name, {})
 
 
 # Parts of the manage shipping view.
@@ -80,10 +78,10 @@ def shipping_methods(request, template_name="manage/shipping_methods/shipping_me
     except ValueError:
         current_id = ""
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "current_id": current_id,
         "shipping_methods": ShippingMethod.objects.all(),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -96,10 +94,10 @@ def shipping_method_data(request, shipping_id, form=None, template_name="manage/
     if form is None:
         form = ShippingMethodForm(instance=shipping_method)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "form": form,
         "shipping_method": shipping_method,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -118,10 +116,10 @@ def shipping_method_criteria(request, shipping_method_id,
         criterion_html = criterion.render(request, position)
         criteria.append(criterion_html)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "shipping_method": shipping_method,
         "criteria": criteria,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -133,10 +131,10 @@ def shipping_method_prices(request, shipping_method_id,
     """
     shipping_method = get_object_or_404(ShippingMethod, pk=shipping_method_id)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "shipping_method": shipping_method,
         "prices": shipping_method.prices.all(),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -155,10 +153,10 @@ def shipping_price_criteria(request, shipping_price_id, as_string=False,
         criterion_html = criterion.render(request, position)
         criteria.append(criterion_html)
 
-    dialog = render_to_string(template_name, RequestContext(request, {
+    dialog = render_to_string(template_name, request=request, context={
         "shipping_price": shipping_price,
         "criteria": criteria,
-    }))
+    })
 
     if as_string:
         return dialog
@@ -190,11 +188,11 @@ def add_shipping_method(request,
     else:
         form = ShippingMethodAddForm()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "form": form,
         "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
                                                                                      reverse("lfs_manage_shipping")),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")

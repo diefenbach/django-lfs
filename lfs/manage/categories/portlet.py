@@ -1,7 +1,6 @@
 # django imports
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.core.cache import cache
 
@@ -10,8 +9,7 @@ from lfs.catalog.models import Category
 
 
 @permission_required("core.manage_shop")
-def manage_categories_portlet(request, category_id,
-    template_name="manage/category/manage_categories_portlet.html"):
+def manage_categories_portlet(request, category_id, template_name="manage/category/manage_categories_portlet.html"):
     """Returns a management portlet of all categories.
     """
     cache_key = "%s-%s-manage-category-portlet" % (category_id, settings.CACHE_MIDDLEWARE_KEY_PREFIX)
@@ -31,10 +29,10 @@ def manage_categories_portlet(request, category_id,
             "is_current": _is_current_category(request, category),
         })
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "categories": categories,
         "category_id": category_id,
-    }))
+    })
 
     cache.set(cache_key, result)
     return result
@@ -56,10 +54,10 @@ def categories_portlet_children(request, category):
             "is_current": _is_current_category(request, child_category),
         })
 
-    result = render_to_string("manage/category/manage_categories_portlet_children.html", RequestContext(request, {
+    result = render_to_string("manage/category/manage_categories_portlet_children.html", request=request, context={
         "category": category,
         "categories": categories
-    }))
+    })
 
     return result
 

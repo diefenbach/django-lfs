@@ -5,8 +5,7 @@ from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
@@ -47,7 +46,7 @@ def manage_manufacturer(request, manufacturer_id, template_name="manage/manufact
             "klass": klass,
         })
 
-    return render_to_response(template_name, RequestContext(request, {
+    render(request, template_name, {
         "categories": categories,
         "manufacturer": manufacturer,
         "manufacturer_id": manufacturer_id,
@@ -55,14 +54,14 @@ def manage_manufacturer(request, manufacturer_id, template_name="manage/manufact
         "manufacturer_data_inline": manufacturer_data_inline(request, manufacturer_id),
         "seo": SEOView(Manufacturer).render(request, manufacturer),
         "view": manufacturer_view(request, manufacturer_id),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
 def no_manufacturers(request, template_name="manage/manufacturers/no_manufacturers.html"):
     """Displays that there are no manufacturers.
     """
-    return render_to_response(template_name, RequestContext(request, {}))
+    return render(request, template_name, {})
 
 
 # Parts
@@ -75,10 +74,10 @@ def manufacturer_data_inline(request, manufacturer_id,
         form = ManufacturerDataForm(instance=manufacturer, data=request.POST)
     else:
         form = ManufacturerDataForm(instance=manufacturer)
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "manufacturer": manufacturer,
         "form": form,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -99,10 +98,10 @@ def manufacturer_view(request, manufacturer_id, template_name="manage/manufactur
     else:
         form = ViewForm(instance=manufacturer)
 
-    view_html = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "manufacturer": manufacturer,
         "form": form,
-    }))
+    })
 
     if request.is_ajax():
         html = [["#view", view_html]]
@@ -118,10 +117,10 @@ def selectable_manufacturers_inline(request, manufacturer_id,
     template_name="manage/manufacturers/selectable_manufacturers_inline.html"):
     """Displays all selectable manufacturers.
     """
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "manufacturers": Manufacturer.objects.all(),
         "manufacturer_id": int(manufacturer_id),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -159,11 +158,11 @@ def manufacturer_inline(request, manufacturer_id, category_id,
             "klass": klass,
         })
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result = render_to_string(template_name, request=request, context={
         "categories": categories,
         "products": products,
         "manufacturer_id": manufacturer_id,
-    }))
+    })
 
     html = (("#sub-categories-%s" % category_id, result),)
 
@@ -185,12 +184,12 @@ def add_manufacturer(request, template_name="manage/manufacturers/add_manufactur
     else:
         form = ManufacturerAddForm()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "form": form,
         "selectable_manufacturers_inline": selectable_manufacturers_inline(request, 0),
         "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
                                                                                      reverse("lfs_manufacturer_dispatcher")),
-    }))
+    })
 
 
 # Actions

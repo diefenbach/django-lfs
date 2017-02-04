@@ -532,7 +532,10 @@ class PriceCalculator(object):
 
     def _calc_packing_amount(self):
         packing_amount, packing_unit = self.product.get_packing_info()
+        if not packing_amount:
+            return 1
         packs = math.ceil(1 / packing_amount)
+
         return packs * packing_amount
 
 

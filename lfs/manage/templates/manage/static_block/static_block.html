@@ -1,9 +1,9 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n compress %}
+{% load compress i18n static %}
 
 {% block javascript %}
     {% compress js %}
-        <script type="text/javascript" src="{{ STATIC_URL }}lfs/js/lfs.manage.static-blocks.js"></script>
+        <script type="text/javascript" src="{% static 'lfs/js/lfs.manage.static-blocks.js' %}"></script>
     {% endcompress %}
 {% endblock %}
 
@@ -21,7 +21,7 @@
                     <div>
                         <a href="{% url 'lfs_manage_static_block' static_block.id %}"
                            class="selectable {% ifequal static_block.id current_id %}selected{% endifequal %}">
-                            <img class="handle" src="{{ STATIC_URL }}lfs/img/handle.png" alt="Handle" />
+                            <img class="handle" src="{% static 'lfs/img/handle.png' %}" alt="Handle" />
                             <span class="sortable-item-name">{{ static_block.name }}</span>
                         </a>
                     </div>

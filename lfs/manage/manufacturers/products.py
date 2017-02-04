@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.db.models import Q
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -37,11 +36,11 @@ def manage_products(request, manufacturer_id, template_name="manage/manufacturer
             "selected": value == request.session.get("manufacturer-products-amount")
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "manufacturer": manufacturer,
         "products_inline": inline,
         "amount_options": amount_options,
-    }))
+    })
 
 
 # Parts
@@ -71,8 +70,7 @@ def products_inline(request, manufacturer_id, as_string=False, template_name="ma
     s["manufacturer_category_filter"] = category_filter
 
     try:
-        s["manufacturer-products-amount"] = int(req.get("manufacturer-products-amount",
-                                                                    s.get("manufacturer-products-amount")))
+        s["manufacturer-products-amount"] = int(req.get("manufacturer-products-amount", s.get("manufacturer-products-amount")))
     except TypeError:
         s["manufacturer-products-amount"] = 25
 
@@ -91,9 +89,7 @@ def products_inline(request, manufacturer_id, as_string=False, template_name="ma
 
             filters &= Q(categories__in=categories_temp)
 
-
-    selectable_products = Product.objects.filter(
-        filters).exclude(sub_type=VARIANT).exclude(manufacturer=manufacturer).distinct()
+    selectable_products = Product.objects.filter(filters).exclude(sub_type=VARIANT).exclude(manufacturer=manufacturer).distinct()
 
     paginator = Paginator(selectable_products, s["manufacturer-products-amount"])
     try:
@@ -101,12 +97,12 @@ def products_inline(request, manufacturer_id, as_string=False, template_name="ma
     except (EmptyPage, InvalidPage):
         page = paginator.page(1)
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result = render_to_string(template_name, request=request, context={
         "manufacturer": manufacturer,
         "paginator": paginator,
         "page": page,
         "selected_products": selected_products(request, manufacturer_id, as_string=True),
-    }))
+    })
 
     if as_string:
         return result
@@ -163,13 +159,13 @@ def selected_products(request, manufacturer_id, as_string=False, template_name="
     except (EmptyPage, InvalidPage):
         page_2 = paginator_2.page(1)
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result = render_to_string(template_name, request=request, context={
         "manufacturer": manufacturer,
         "products": products,
         "paginator_2": paginator_2,
         "page_2": page_2,
         "filter_2": filter_2,
-    }))
+    })
 
     if as_string:
         return result

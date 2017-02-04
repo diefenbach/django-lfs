@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 
 <h2 class="navigation-title">
     {% trans "Shipping methods" %}
@@ -12,7 +12,7 @@
                 <div>
                     <a class="selectable {% ifequal current_id shipping_method.id %}selected{% endifequal %}"
                        href="{% url 'lfs_manage_shipping_method' shipping_method.id %}">
-                        <img class="handle" src="{{ STATIC_URL }}lfs/img/handle.png" alt="Handle" />
+                        <img class="handle" src="{% static 'lfs/img/handle.png' %}" alt="Handle" />
                         <span class="sortable-item-name">{{ shipping_method.name }}</span>
                     </a>
                 </div>

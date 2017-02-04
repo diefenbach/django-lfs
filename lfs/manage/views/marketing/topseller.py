@@ -6,7 +6,6 @@ from django.core.paginator import EmptyPage
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -21,8 +20,7 @@ from lfs.marketing.models import Topseller
 
 
 @permission_required("core.manage_shop")
-def manage_topseller(
-    request, template_name="manage/marketing/topseller.html"):
+def manage_topseller(request, template_name="manage/marketing/topseller.html"):
     """
     """
     inline = manage_topseller_inline(request, as_string=True)
@@ -35,15 +33,14 @@ def manage_topseller(
             "selected": value == request.session.get("topseller-amount")
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "topseller_inline": inline,
         "amount_options": amount_options,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
-def manage_topseller_inline(
-    request, as_string=False, template_name="manage/marketing/topseller_inline.html"):
+def manage_topseller_inline(request, as_string=False, template_name="manage/marketing/topseller_inline.html"):
     """
     """
     topseller = Topseller.objects.all()
@@ -109,13 +106,13 @@ def manage_topseller_inline(
     except EmptyPage:
         page = 0
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "topseller": topseller,
         "total": total,
         "page": page,
         "paginator": paginator,
         "filter": filter_
-    }))
+    })
 
     if as_string:
         return result

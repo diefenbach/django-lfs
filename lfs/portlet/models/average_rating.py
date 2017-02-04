@@ -1,6 +1,5 @@
 # django imports
 from django import forms
-from django.template import RequestContext
 from django.template.loader import render_to_string
 
 # portlets imports
@@ -31,11 +30,11 @@ class AverageRatingPortlet(Portlet):
         else:
             average, amount = reviews.utils.get_average_for_instance(product)
 
-        return render_to_string("lfs/portlets/average_rating.html", RequestContext(request, {
+        return render_to_string(template_name, request=request, context={
             "title": self.title,
             "average": average,
             "amount": amount,
-        }))
+        })
 
     def form(self, **kwargs):
         return AverageRatingForm(instance=self, **kwargs)

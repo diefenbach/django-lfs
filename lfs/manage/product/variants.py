@@ -11,7 +11,6 @@ from django.db import IntegrityError
 from django.forms import ModelForm, ChoiceField
 from django.forms.widgets import Select
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
@@ -271,7 +270,7 @@ def manage_variants(request, product_id, as_string=False, variant_simple_form=No
             "selected": property_group.id in product_property_group_ids,
         })
 
-    result = render_to_string(template_name, RequestContext(request, {
+    result = render_to_string(template_name, request=request, context={
         "product": product,
         "variants": variants,
         "shop_property_groups": shop_property_groups,
@@ -283,7 +282,7 @@ def manage_variants(request, product_id, as_string=False, variant_simple_form=No
         "display_type_form": display_type_form,
         "default_variant_form": default_variant_form,
         "category_variant_form": category_variant_form,
-    }))
+    })
 
     if as_string:
         return result

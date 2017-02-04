@@ -1,7 +1,6 @@
 # django imports
 from django import forms
 from django.db import models
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
@@ -47,12 +46,12 @@ class FeaturedPortlet(Portlet):
         else:
             products = [x.product for x in FeaturedProduct.objects.all()[:self.limit]]
 
-        return render_to_string("lfs/portlets/featured.html", RequestContext(request, {
+        return render_to_string("lfs/portlets/featured.html", request=request, context={
             "title": self.rendered_title,
             "slideshow": self.slideshow,
             "products": products,
             "MEDIA_URL": context.get("MEDIA_URL"),
-        }))
+        })
 
     def form(self, **kwargs):
         """

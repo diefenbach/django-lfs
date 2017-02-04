@@ -8,9 +8,8 @@ from django.forms import ModelForm
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -19,7 +18,6 @@ import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
 from lfs.core.widgets.image import LFSImageInput
-from lfs.criteria import utils as criteria_utils
 from lfs.customer.models import Customer
 from lfs.payment.models import PaymentMethod
 from lfs.payment.models import PaymentMethodPrice
@@ -63,8 +61,7 @@ def manage_payment(request):
 
 
 @permission_required("core.manage_shop")
-def manage_payment_method(request, payment_method_id,
-    template_name="manage/payment/manage_payment.html"):
+def manage_payment_method(request, payment_method_id, template_name="manage/payment/manage_payment.html"):
     """The main view to manage the payment method with given id.
 
     This view collects the various parts of the payment form (data, criteria,
@@ -72,13 +69,13 @@ def manage_payment_method(request, payment_method_id,
     """
     payment_method = PaymentMethod.objects.get(pk=payment_method_id)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "payment_method": payment_method,
         "payment_methods": payment_methods(request),
         "data": payment_method_data(request, payment_method_id),
         "method_criteria": payment_method_criteria(request, payment_method_id),
         "method_prices": payment_method_prices(request, payment_method_id),
-    }))
+    })
 
 
 # Parts of the manage payment view.
@@ -93,10 +90,10 @@ def payment_methods(request, template_name="manage/payment/payment_methods.html"
     except ValueError:
         current_id = ""
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "current_id": current_id,
         "payment_methods": PaymentMethod.objects.all(),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -111,10 +108,10 @@ def payment_method_data(request, payment_id, form=None, template_name="manage/pa
     if form is None:
         form = PaymentMethodForm(instance=payment_method)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "form": form,
         "payment_method": payment_method,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -133,10 +130,10 @@ def payment_method_criteria(request, payment_method_id,
         criterion_html = criterion.render(request, position)
         criteria.append(criterion_html)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "payment_method": payment_method,
         "criteria": criteria,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -148,10 +145,10 @@ def payment_method_prices(request, payment_method_id,
     """
     payment_method = get_object_or_404(PaymentMethod, pk=payment_method_id)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "payment_method": payment_method,
         "prices": payment_method.prices.all(),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -169,10 +166,10 @@ def payment_price_criteria(request, payment_price_id, as_string=False, template_
         criterion_html = criterion.render(request, position)
         criteria.append(criterion_html)
 
-    dialog = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "payment_price": payment_price,
         "criteria": criteria,
-    }))
+    })
 
     if as_string:
         return dialog
@@ -203,11 +200,11 @@ def add_payment_method(request,
     else:
         form = PaymentMethodAddForm()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "payment_methods": payment_methods(request),
         "form": form,
         "next": (request.POST if request.method == 'POST' else request.GET).get("next", request.META.get("HTTP_REFERER")),
-    }))
+    })
 
 
 # Actions

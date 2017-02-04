@@ -1,28 +1,28 @@
-{% load i18n %}
+{% load i18n static %}
 {% if vouchers %}
 
     <div class="navigation-pages">
         {% if page.has_previous %}
             <a class="ajax-link"
                href="{% url 'lfs_set_vouchers_page' %}?group={{ voucher_group.id }}&amp;page=1">
-                <img src="{{ STATIC_URL }}lfs/icons/resultset_first.png"
+                <img src="{% static 'lfs/icons/resultset_first.png' %}"
                      alt="{% trans 'First' %}"
                      title="{% trans 'First' %}" />
             </a>
             <a class="ajax-link"
                href="{% url 'lfs_set_vouchers_page' %}?group={{ voucher_group.id }}&amp;page={{ page.previous_page_number }}">
-                <img src="{{ STATIC_URL }}lfs/icons/resultset_previous.png"
+                <img src="{% static 'lfs/icons/resultset_previous.png' %}"
                      alt="{% trans 'Previous' %}"
                      title="{% trans 'Previous' %}" />
             </a>
         {% else %}
             <span>
-                <img src="{{ STATIC_URL }}lfs/icons/resultset_first.png"
+                <img src="{% static 'lfs/icons/resultset_first.png' %}"
                      alt="{% trans 'First' %}"
                      title="{% trans 'First' %}" />
             </span>
             <span>
-                <img src="{{ STATIC_URL }}lfs/icons/resultset_previous.png"
+                <img src="{% static 'lfs/icons/resultset_previous.png' %}"
                      alt="{% trans 'Previous' %}"
                      title="{% trans 'Previous' %}" />
             </span>
@@ -33,21 +33,21 @@
         {% if page.has_next %}
             <a class="ajax-link"
                href="{% url 'lfs_set_vouchers_page' %}?group={{ voucher_group.id }}&amp;page={{ page.next_page_number }}">
-                <img src="{{ STATIC_URL }}lfs/icons/resultset_next.png"
+                <img src="{% static 'lfs/icons/resultset_next.png' %}"
                      alt="{% trans 'Next' %}"
                      title="{% trans 'Next' %}" />
             </a>
             <a class="ajax-link"
                href="{% url 'lfs_set_vouchers_page' %}?group={{ voucher_group.id }}&amp;page={{ paginator.num_pages }}">
-                <img src="{{ STATIC_URL }}lfs/icons/resultset_last.png"
+                <img src="{% static 'lfs/icons/resultset_last.png' %}"
                      alt="{% trans 'Last' %}"
                      title="{% trans 'Last' %}" />
             </a>
         {% else %}
-            <img src="{{ STATIC_URL }}lfs/icons/resultset_next.png"
+            <img src="{% static 'lfs/icons/resultset_next.png' %}"
                  alt="{% trans 'Next' %}"
                  title="{% trans 'Next' %}" />
-            <img src="{{ STATIC_URL }}lfs/icons/resultset_last.png"
+            <img src="{% static 'lfs/icons/resultset_last.png' %}"
                  alt="{% trans 'Last' %}"
                  title="{% trans 'Last' %}" />
         {% endif %}

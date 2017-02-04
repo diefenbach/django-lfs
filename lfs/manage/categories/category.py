@@ -7,8 +7,7 @@ from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext_lazy as _
@@ -68,7 +67,7 @@ def manage_category(request, category_id, template_name="manage/category/manage_
     """
     category = Category.objects.get(pk=category_id)
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "categories_portlet": manage_categories_portlet(request, category_id),
         "category": category,
         "data": category_data(request, category_id),
@@ -76,7 +75,7 @@ def manage_category(request, category_id, template_name="manage/category/manage_
         "view": category_view(request, category_id),
         "portlets": portlets_inline(request, category),
         "dialog_message": _("Do you really want to delete the category <b>'%(name)s'</b> and all its sub categories?") % {"name": category.name},
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -92,10 +91,10 @@ def category_data(request, category_id, form=None, template_name="manage/categor
     else:
         form = CategoryForm(instance=category)
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "category": category,
         "form": form,
-    }))
+    })
 
 
 @permission_required("core.manage_shop")
@@ -169,11 +168,11 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
     else:
         form = CategoryAddForm(initial={"parent": category_id})
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "category": parent,
         "form": form,
         "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from", reverse("lfs_manage_categories")),
-    }))
+    })
 
 
 @permission_required("core.manage_shop")

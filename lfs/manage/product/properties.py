@@ -4,12 +4,11 @@ from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 
 # lfs imports
-from lfs.caching import update_product_cache
+from lfs.caching.listeners import update_product_cache
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue, PropertyOption
 from lfs.catalog.models import Property
@@ -238,7 +237,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
             "selected": property_group.id in product_property_group_ids,
         })
 
-    return render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "product": product,
         "filterables": filterables,
         "display_filterables": display_filterables,
@@ -249,7 +248,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
         "product_property_groups": product.property_groups.all(),
         "shop_property_groups": shop_property_groups,
         "product_variant_properties": product_variant_properties
-    }))
+    })
 
 
 @permission_required("core.manage_shop")

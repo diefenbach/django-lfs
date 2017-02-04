@@ -3,13 +3,11 @@ import json
 # django imports
 from django.db.models import Q
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.template.loader import render_to_string
 
 # lfs imports
 from lfs.catalog.models import Product
-from lfs.catalog.settings import STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT
 
 
 def livesearch(request, template_name="lfs/search/livesearch_results.html"):
@@ -23,22 +21,21 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
         })
     else:
         # Products
-        query = Q(active=True) & \
-                 (Q(name__icontains=q) |
-                  Q(manufacturer__name__icontains=q) |
-                  Q(sku_manufacturer__icontains=q)
-                 ) # & \
-                 # Q(sub_type__in=(STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
+        query = Q(active=True) & (
+            Q(name__icontains=q) |
+            Q(manufacturer__name__icontains=q) |
+            Q(sku_manufacturer__icontains=q)
+        )
 
         temp = Product.objects.filter(query)
         total = temp.count()
         products = temp[0:5]
 
-        products = render_to_string(template_name, RequestContext(request, {
+        products = render_to_string(template_name, request=request, context={
             "products": products,
             "q": q,
             "total": total,
-        }))
+        })
 
         result = json.dumps({
             "state": "success",
@@ -54,12 +51,11 @@ def search(request, template_name="lfs/search/search_results.html"):
     q = request.GET.get("q", "")
 
     # Products
-    query = Q(active=True) & \
-            (Q(name__icontains=q) |
-             Q(manufacturer__name__icontains=q) |
-             Q(sku_manufacturer__icontains=q)
-            )  # & \
-            # Q(sub_type__in=(STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS, VARIANT))
+    query = Q(active=True) & (
+        Q(name__icontains=q) |
+        Q(manufacturer__name__icontains=q) |
+        Q(sku_manufacturer__icontains=q)
+    )
 
     products = Product.objects.filter(query)
 
@@ -70,8 +66,8 @@ def search(request, template_name="lfs/search/search_results.html"):
 
     total = products.count()
 
-    return render_to_response(template_name, RequestContext(request, {
+    return render(request, template_name, {
         "products": products,
         "q": q,
         "total": total,
-    }))
+    })

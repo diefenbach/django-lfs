@@ -8,7 +8,6 @@ from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext as _, ungettext
@@ -62,11 +61,11 @@ def images(request, as_string=False, template_name="manage/images/images.html"):
                                               '%(count)d images',
                                               amount_of_images) % {'count': amount_of_images}
 
-    result = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "images": current_page.object_list,
         "pagination": pagination_data,
         "query": query
-    }))
+    })
 
     if as_string:
         return result
@@ -201,13 +200,13 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
             "url": image.image.url_100x100,
         })
 
-    html = render_to_string(template_name, RequestContext(request, {
+    return render_to_string(template_name, request=request, context={
         "sizes": sizes,
         "classes": classes,
         "images": images,
         "query": query,
         "pagination": pagination_data
-    }))
+    })
 
     result = json.dumps({
         "html": html,
