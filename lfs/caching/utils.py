@@ -113,6 +113,11 @@ def clear_cache():
     except AttributeError:
         pass
 
+    try:
+        cache.clear()
+    except AttributeError:
+        pass
+
 
 def get_cache_group_id(group_code):
     """ Get id for group_code that is stored in cache. This id is supposed to be included in cache key for all items
