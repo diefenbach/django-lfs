@@ -14,7 +14,7 @@ class ProductSitemap(Sitemap):
     priority = 0.5
 
     def items(self):
-        return Product.objects.filter(active=True).exclude(sub_type=2, parent__active=False)
+        return Product.objects.filter(active=True).exclude(sub_type=2)
 
     def lastmod(self, obj):
         return obj.creation_date
