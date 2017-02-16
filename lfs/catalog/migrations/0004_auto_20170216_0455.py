@@ -19,7 +19,7 @@ def update_price_calculator(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('catalog', '0005_auto_20170214_1643'),
+        ('catalog', '0003_auto_20170214_1643'),
     ]
 
     operations = [
