@@ -2433,6 +2433,9 @@ class Image(models.Model):
     title
         The title of the image.
 
+    alt
+        The alt tag of the image
+
     image
         The image file.
 
@@ -2445,6 +2448,7 @@ class Image(models.Model):
     content = GenericForeignKey(ct_field="content_type", fk_field="content_id")
 
     title = models.CharField(_(u"Title"), blank=True, max_length=100)
+    alt = models.CharField(_(u"Alt"), blank=True, max_length=255)
     image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=THUMBNAIL_SIZES)
     position = models.PositiveSmallIntegerField(_(u"Position"), default=999)
 
@@ -2455,6 +2459,10 @@ class Image(models.Model):
     def __unicode__(self):
         return self.title
 
+    def get_alt(self):
+        if self.alt:
+            return self.alt
+        return self.title
 
 class File(models.Model):
     """

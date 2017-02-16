@@ -115,6 +115,16 @@ def update_images(request, product_id):
                     image.title = value
                     image.save()
 
+            elif key.startswith("alt-"):
+                id = key.split("-")[1]
+                try:
+                    image = Image.objects.get(pk=id)
+                except ObjectDoesNotExist:
+                    pass
+                else:
+                    image.alt = value
+                    image.save()
+
             elif key.startswith("position-"):
                 try:
                     id = key.split("-")[1]

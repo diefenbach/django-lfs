@@ -19,6 +19,9 @@
             <th class="small">
                 {% trans 'Title' %}
             </th>
+            <th class="small">
+                {% trans 'Alt' %}
+            </th>
             <th class="right-padding">
                 {% trans 'Position' %}
             </th>
@@ -45,6 +48,9 @@
             </td>
             <td class="small">
                 <input type="text" name="title-{{ image.id }}" value="{{ image.title }}" style="width:300px" />
+            </td>
+            <td class="small">
+                <input type="text" name="alt-{{ image.id }}" value="{{ image.alt }}" style="width:300px" />
             </td>
             <td class="right-padding">
                 <input type="text" name="position-{{ image.id }}" value="{{ image.position }}" size="3" />
