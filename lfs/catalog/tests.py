@@ -1103,7 +1103,7 @@ class ViewsTestCase(TestCase):
         self.pg.save()
 
         # Add a variant with color = red
-        self.v1 = Product.objects.create(name="Variant 1", slug="variant-1", sub_type=VARIANT, parent=self.p1, active=True)
+        self.v1 = Product.objects.create(pk=2, name="Variant 1", slug="variant-1", sub_type=VARIANT, parent=self.p1, active=True)
         ProductPropertyValue.objects.create(product=self.v1, property=color, property_group=self.pg,
                                             value=str(red.id), type=PROPERTY_VALUE_TYPE_FILTER)
 
@@ -2515,7 +2515,7 @@ class ProductTestCase(TestCase):
         self.assertEqual("%.2f" % self.p1.get_base_price_net(self.request), "1.68")
         self.assertEqual(self.p1.get_base_price_gross(self.request), 2)
 
-        self.p1.price_calculator = "lfs.net_price.NetPriceCalculator"
+        self.p1.price_calculator = "lfs.net_price.calculator.NetPriceCalculator"
         self.p1.save()
 
         self.assertEqual(self.p1.get_base_price(self.request), 2)
@@ -2552,7 +2552,7 @@ class ProductTestCase(TestCase):
         self.assertEqual("%.2f" % self.v1.get_base_price_net(self.request), "3.36")
         self.assertEqual(self.v1.get_base_price_gross(self.request), 4)
 
-        self.p1.price_calculator = "lfs.net_price.NetPriceCalculator"
+        self.p1.price_calculator = "lfs.net_price.calculator.NetPriceCalculator"
         self.p1.save()
 
         self.assertEqual(self.v1.get_base_price(self.request), 4)

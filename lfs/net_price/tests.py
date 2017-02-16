@@ -28,7 +28,7 @@ class NetPriceTestCase(TestCase):
         """
         """
         shop = lfs.core.utils.get_default_shop()
-        shop.price_calculator = "lfs.net_price.NetPriceCalculator"
+        shop.price_calculator = "lfs.net_price.calculator.NetPriceCalculator"
         shop.save()
 
         self.request = RequestFactory().get("/")

@@ -71,6 +71,7 @@ def login(request, template_name="lfs/customer/login.html"):
             # Create customer
             customer = customer_utils.get_or_create_customer(request)
             customer.user = user
+            customer.save()
 
             # Notify
             lfs.core.signals.customer_added.send(sender=user)

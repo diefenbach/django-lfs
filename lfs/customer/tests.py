@@ -222,7 +222,7 @@ class AddressTestCase(TestCase):
 
         registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
+        self.assertEquals(registration_response._headers['location'], ('Location', '/'))
 
         # Test that one message has been sent.
         self.assertEquals(len(mail.outbox), 1)
@@ -246,7 +246,7 @@ class AddressTestCase(TestCase):
         # register a new user
         registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
+        self.assertEquals(registration_response._headers['location'], ('Location', '/'))
 
         self.assertEquals(Address.objects.count(), 8)
 
@@ -451,7 +451,7 @@ class NoAutoUpdateAddressTestCase(TestCase):
 
         registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
+        self.assertEquals(registration_response._headers['location'], ('Location', '/'))
 
         # Test that one message has been sent.
         self.assertEquals(len(mail.outbox), 1)
@@ -476,7 +476,7 @@ class NoAutoUpdateAddressTestCase(TestCase):
         # register a new user
         registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
+        self.assertEquals(registration_response._headers['location'], ('Location', '/'))
 
         self.assertEquals(Address.objects.count(), 8)
 

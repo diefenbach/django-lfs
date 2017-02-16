@@ -47,7 +47,7 @@ def lfs_get_object(klass, *args, **kwargs):
     Note: Like with get(), an MultipleObjectsReturned will be raised if more than one
     object is found.
     """
-    cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, klass.__name__.lower(),
+    cache_key = "%s-%s-%s" % (force_str(settings.CACHE_MIDDLEWARE_KEY_PREFIX), klass.__name__.lower(),
                               force_str(kwargs.values()[0]))
     cache_key = hashlib.md5(cache_key).hexdigest()
     object = cache.get(cache_key)
@@ -76,7 +76,7 @@ def lfs_get_object_or_404(klass, *args, **kwargs):
     Note: Like with get(), an MultipleObjectsReturned will be raised if more than one
     object is found.
     """
-    cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, klass.__name__.lower(),
+    cache_key = "%s-%s-%s" % (force_str(settings.CACHE_MIDDLEWARE_KEY_PREFIX), klass.__name__.lower(),
                               force_str(kwargs.values()[0]))
     cache_key = hashlib.md5(cache_key).hexdigest()
     object = cache.get(cache_key)

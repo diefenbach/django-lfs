@@ -149,7 +149,7 @@ class ShippingMethodTestCase(TestCase):
         customer.save()
 
         # ... the shipping method for p1 is sm2 and hence the delivery time is
-        # dt1
+        # dt2
         dt = utils.get_product_delivery_time(request, self.p1, for_cart=True)
         self.assertEqual(dt.min, self.dt2.min)
         self.assertEqual(dt.max, self.dt2.max)

@@ -1894,7 +1894,7 @@
         <field type="SlugField" name="slug">apple</field>
         <field type="CharField" name="sku">7</field>
         <field type="FloatField" name="price">80.0</field>
-        <field type="CharField" name="price_calculator">lfs.net_price.NetPriceCalculator</field>
+        <field type="CharField" name="price_calculator">lfs.net_price.calculator.NetPriceCalculator</field>
         <field type="FloatField" name="effective_price">80.0</field>
         <field type="CharField" name="price_unit"></field>
         <field type="CharField" name="unit"></field>
@@ -1980,7 +1980,7 @@
         <field type="SlugField" name="slug">car</field>
         <field type="CharField" name="sku">4</field>
         <field type="FloatField" name="price">50.0</field>
-        <field type="CharField" name="price_calculator">lfs.net_price.NetPriceCalculator</field>
+        <field type="CharField" name="price_calculator">lfs.net_price.calculator.NetPriceCalculator</field>
         <field type="FloatField" name="effective_price">50.0</field>
         <field type="CharField" name="price_unit"></field>
         <field type="CharField" name="unit"></field>
@@ -2065,7 +2065,7 @@
         <field type="SlugField" name="slug">cat</field>
         <field type="CharField" name="sku">0</field>
         <field type="FloatField" name="price">10.0</field>
-        <field type="CharField" name="price_calculator">lfs.gross_price.GrossPriceCalculator</field>
+        <field type="CharField" name="price_calculator">lfs.gross_price.calculator.GrossPriceCalculator</field>
         <field type="FloatField" name="effective_price">10.0</field>
         <field type="CharField" name="price_unit"></field>
         <field type="CharField" name="unit"></field>
@@ -2155,7 +2155,7 @@
         <field type="SlugField" name="slug">chocolate</field>
         <field type="CharField" name="sku">6</field>
         <field type="FloatField" name="price">70.0</field>
-        <field type="CharField" name="price_calculator">lfs.gross_price.GrossPriceCalculator</field>
+        <field type="CharField" name="price_calculator">lfs.gross_price.calculator.GrossPriceCalculator</field>
         <field type="FloatField" name="effective_price">70.0</field>
         <field type="CharField" name="price_unit"></field>
         <field type="CharField" name="unit"></field>
@@ -2242,7 +2242,7 @@
         <field type="SlugField" name="slug">dog</field>
         <field type="CharField" name="sku">1</field>
         <field type="FloatField" name="price">20.0</field>
-        <field type="CharField" name="price_calculator">lfs.net_price.NetPriceCalculator</field>
+        <field type="CharField" name="price_calculator">lfs.net_price.calculator.NetPriceCalculator</field>
         <field type="FloatField" name="effective_price">20.0</field>
         <field type="CharField" name="price_unit"></field>
         <field type="CharField" name="unit"></field>
@@ -2330,7 +2330,7 @@
         <field type="SlugField" name="slug">mouse</field>
         <field type="CharField" name="sku">2</field>
         <field type="FloatField" name="price">30.0</field>
-        <field type="CharField" name="price_calculator">lfs.net_price.NetPriceCalculator</field>
+        <field type="CharField" name="price_calculator">lfs.net_price.calculator.NetPriceCalculator</field>
         <field type="FloatField" name="effective_price">30.0</field>
         <field type="CharField" name="price_unit"></field>
         <field type="CharField" name="unit"></field>
@@ -2420,7 +2420,7 @@
         <field type="SlugField" name="slug">orange</field>
         <field type="CharField" name="sku">8</field>
         <field type="FloatField" name="price">90.0</field>
-        <field type="CharField" name="price_calculator">lfs.net_price.NetPriceCalculator</field>
+        <field type="CharField" name="price_calculator">lfs.net_price.calculator.NetPriceCalculator</field>
         <field type="FloatField" name="effective_price">90.0</field>
         <field type="CharField" name="price_unit"></field>
         <field type="CharField" name="unit"></field>
@@ -2507,7 +2507,7 @@
         <field type="SlugField" name="slug">ship</field>
         <field type="CharField" name="sku">5</field>
         <field type="FloatField" name="price">60.0</field>
-        <field type="CharField" name="price_calculator">lfs.net_price.NetPriceCalculator</field>
+        <field type="CharField" name="price_calculator">lfs.net_price.calculator.NetPriceCalculator</field>
         <field type="FloatField" name="effective_price">60.0</field>
         <field type="CharField" name="price_unit"></field>
         <field type="CharField" name="unit"></field>
@@ -2597,7 +2597,7 @@
         <field type="SlugField" name="slug">surfboard</field>
         <field type="CharField" name="sku">3</field>
         <field type="FloatField" name="price">40.0</field>
-        <field type="CharField" name="price_calculator">lfs.gross_price.GrossPriceCalculator</field>
+        <field type="CharField" name="price_calculator">lfs.gross_price.calculator.GrossPriceCalculator</field>
         <field type="FloatField" name="effective_price">40.0</field>
         <field type="CharField" name="price_unit"></field>
         <field type="CharField" name="unit"></field>

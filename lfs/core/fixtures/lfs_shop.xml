@@ -32,7 +32,7 @@
     <object pk="1" model="core.shop">
         <field type="CharField" name="name">LFS</field>
         <field type="CharField" name="shop_owner">John Doe</field>
-        <field type="CharField" name="price_calculator">lfs.gross_price.GrossPriceCalculator</field>
+        <field type="CharField" name="price_calculator">lfs.gross_price.calculator.GrossPriceCalculator</field>
         <field type="TextField" name="description"></field>
         <field type="FileField" name="image"></field>
         <field to="core.country" name="default_country" rel="ManyToOneRel">1</field>
@@ -88,7 +88,7 @@
         <field type="BooleanField" name="active">1</field>
         <field type="BooleanField" name="deletable">0</field>
         <field type="FloatField" name="price">0.0</field>
-        <field type="Textfield" name="module">lfs_paypal.PayPalProcessor</field>
+        <field type="Textfield" name="module">lfs_paypal.processor.PayPalProcessor</field>
     </object>
     <object pk="4" model="payment.paymentmethod">
         <field type="CharField" name="name">Prepayment</field>

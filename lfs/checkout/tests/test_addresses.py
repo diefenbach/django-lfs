@@ -186,7 +186,7 @@ class CheckoutAddressesTestCase(TestCase):
         # register a new user
         registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
+        self.assertEquals(registration_response._headers['location'], ('Location', '/'))
 
         # get our new customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -437,7 +437,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         # register a new user
         registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers['location'], ('Location', 'http://testserver/'))
+        self.assertEquals(registration_response._headers['location'], ('Location', '/'))
 
         # get our new customer
         our_customer = Customer.objects.get(user__email="test@test.com")

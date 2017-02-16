@@ -5,7 +5,7 @@
         <field type="CharField" name="first_name"></field>
         <field type="CharField" name="last_name"></field>
         <field type="CharField" name="email">kai.diefenbach@iqpp.de</field>
-        <field type="CharField" name="password">sha1$7f4cf$138dbcc39595fd88b68fe7a6ad61b727a8de956a</field>
+        <field type="CharField" name="password">pbkdf2_sha256$30000$C7Q5T5hvpcQd$HBTX0lMj8EKILvOB7kEySKKPKrVOzeWyRvdGZN8DxIk=</field>
         <field type="BooleanField" name="is_staff">1</field>
         <field type="BooleanField" name="is_active">1</field>
         <field type="BooleanField" name="is_superuser">1</field>
