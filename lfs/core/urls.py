@@ -39,5 +39,3 @@ urlpatterns = [
     # Sitemaps
     url(r'^sitemap.xml$', sitemap_views.sitemap, {'sitemaps': {"products": ProductSitemap, "categories": CategorySitemap, "pages": PageSitemap, "shop": ShopSitemap}}),
 ]
-
-views.one_time_setup()

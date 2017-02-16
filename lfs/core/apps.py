@@ -6,3 +6,5 @@ class LfsCoreAppConfig(AppConfig):
 
     def ready(self):
         import listeners
+        from . import views
+        views.one_time_setup()
