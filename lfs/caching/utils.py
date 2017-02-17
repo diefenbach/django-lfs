@@ -119,6 +119,11 @@ def clear_cache():
         pass
 
 
+def delete_cache(cache_key):
+    cache.delete(cache_key)
+    cache.delete(hashlib.md5(cache_key).hexdigest())
+
+
 def get_cache_group_id(group_code):
     """ Get id for group_code that is stored in cache. This id is supposed to be included in cache key for all items
         from specific group.

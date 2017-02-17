@@ -213,7 +213,7 @@ class CheckoutTestCase(TestCase):
 
         # change the country in the cart
         de = Country.objects.get(code="de")
-        cart_response = self.client.post('/refresh-cart', {'country': de.code.lower(), "amount-cart-item_%s" % self.item1.id: 1, "amount-cart-item_%s" % self.item2.id: 1})
+        cart_response = self.client.post(reverse('lfs_refresh_cart'), {'country': de.code.lower(), "amount-cart-item_%s" % self.item1.id: 1, "amount-cart-item_%s" % self.item2.id: 1})
 
         customer = Customer.objects.get(user=user)
         self.assertEquals(customer.selected_shipping_address.country.code.lower(), "de")

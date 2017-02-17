@@ -914,7 +914,7 @@ class CategoryTestCase(TestCase):
     def test_get_absolute_url(self):
         """
         """
-        self.assertEqual(self.c1.get_absolute_url(), "/category-%s" % self.c1.slug)
+        self.assertEqual(self.c1.get_absolute_url(), "/category-%s/" % self.c1.slug)
 
     def test_unicode(self):
         """
