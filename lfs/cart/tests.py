@@ -1,11 +1,9 @@
 # coding: utf-8
 
-# python imports
 import locale
 import json
 import datetime
 
-# django imports
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
@@ -13,7 +11,6 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.test import TestCase
 
-# lfs imports
 import lfs.cart.utils
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
@@ -112,7 +109,7 @@ class LoginTestCase(TestCase):
         session = SessionStore()
 
         request = rf.post("/", {"product_id": self.p1.id, "quantity": 1, "property-%s-%s" % (self.pg.pk,
-                                                                                             self.pp1.id) : "A"})
+                                                                                             self.pp1.id): "A"})
         request.session = session
         request.user = AnonymousUser()
 
@@ -125,7 +122,7 @@ class LoginTestCase(TestCase):
         self.assertEqual(int(cart.get_items()[0].amount), 1)
 
         request = rf.post("/", {"product_id": self.p1.id, "quantity": 10, "property-%s-%s" % (self.pg.pk,
-                                                                                              self.pp1.id) : "B"})
+                                                                                              self.pp1.id): "B"})
         request.session = session
         request.user = AnonymousUser()
         add_to_cart(request)

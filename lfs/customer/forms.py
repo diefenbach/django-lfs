@@ -1,15 +1,11 @@
-# payment imports
-import datetime
-
-# django imports
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.forms.utils import ErrorList
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-# lfs imports
 import lfs.payment.settings
 from lfs.customer.models import BankAccount
 from lfs.customer.models import CreditCard
@@ -61,7 +57,7 @@ class CreditCardForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CreditCardForm, self).__init__(*args, **kwargs)
 
-        year = datetime.datetime.now().year
+        year = timezone.now().year
         self.fields["type"].widget = forms.Select(choices=lfs.payment.settings.CREDIT_CARD_TYPE_CHOICES)
         self.fields["expiration_date_month"].widget = forms.Select(choices=[(i, i) for i in range(1, 13)])
         self.fields["expiration_date_year"].widget = forms.Select(choices=[(i, i) for i in range(year, year + 10)])

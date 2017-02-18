@@ -1,13 +1,8 @@
-import datetime
-# django imports
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
-from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-# test imports
-from lfs.tests.utils import create_request
 from lfs.tests.utils import DummyRequest
 
 # lfs imports
@@ -15,21 +10,18 @@ import lfs.cart.utils
 from lfs.addresses.models import Address
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
-from lfs.cart.views import add_to_cart
-from lfs.cart import utils as cart_utils
 from lfs.catalog.models import Product
 from lfs.core.models import Country
 from lfs.customer.models import Customer
-from lfs.order.models import Order
-from lfs.order.models import OrderItem
 from lfs.order.utils import add_order
 from lfs.criteria.models import WeightCriterion
-from lfs.criteria.settings import GREATER_THAN, LESS_THAN
+from lfs.criteria.settings import GREATER_THAN
 from lfs.discounts.models import Discount
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.tests.utils import RequestFactory
+
 
 class DiscountsTestCase1(TestCase):
     """Unit tests for lfs.discounts

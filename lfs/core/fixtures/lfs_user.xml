@@ -9,8 +9,8 @@
         <field type="BooleanField" name="is_staff">1</field>
         <field type="BooleanField" name="is_active">1</field>
         <field type="BooleanField" name="is_superuser">1</field>
-        <field type="DateTimeField" name="last_login">2009-03-12 16:25:25</field>
-        <field type="DateTimeField" name="date_joined">2009-03-12 16:25:25</field>
+        <field type="DateTimeField" name="last_login">2009-03-12 16:25:25+00:00</field>
+        <field type="DateTimeField" name="date_joined">2009-03-12 16:25:25+00:00</field>
         <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
         <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
     </object>

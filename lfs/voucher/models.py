@@ -1,12 +1,10 @@
-# python imports
 import datetime
 
-# django imports
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-# lfs imports
 from lfs.tax.models import Tax
 from lfs.voucher.settings import KIND_OF_CHOICES
 from lfs.voucher.settings import ABSOLUTE
@@ -146,13 +144,13 @@ class Voucher(models.Model):
         """Mark voucher as used.
         """
         self.used_amount += 1
-        self.last_used_date = datetime.datetime.now()
+        self.last_used_date = timezone.now()
         self.save()
 
     def is_effective(self, request, cart):
         """Returns True if the voucher is effective.
         """
-        if self.active == False:
+        if self.active is False:
             return (False, MESSAGES[1])
         if (self.limit > 0) and (self.used_amount >= self.limit):
             return (False, MESSAGES[2])

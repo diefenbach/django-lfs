@@ -1,11 +1,8 @@
-# python imports
 from datetime import datetime
 
-# django imports
 from django.conf import settings
 from django.core.cache import cache
 
-# lfs imports
 import lfs.core.utils
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
@@ -209,7 +206,7 @@ def get_shipping_costs(request, shipping_method):
 def get_delivery_time(request, product):
     """Returns delivery time for given product.
     """
-    
+
     return {
         "deliverable": product.is_deliverable(),
         "delivery_time": get_product_delivery_time(request, product)

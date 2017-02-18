@@ -1,7 +1,6 @@
-# python imports
-from datetime import datetime
-
 from django.contrib.sitemaps import Sitemap
+from django.utils import timezone
+
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
 from lfs.core.models import Shop
@@ -31,7 +30,7 @@ class CategorySitemap(Sitemap):
         return Category.objects.all()
 
     def lastmod(self, obj):
-        return datetime.now()
+        return timezone.now()
 
 
 class PageSitemap(Sitemap):
@@ -44,7 +43,7 @@ class PageSitemap(Sitemap):
         return Page.objects.filter(active=True)
 
     def lastmod(self, obj):
-        return datetime.now()
+        return timezone.now()
 
 
 class ShopSitemap(Sitemap):
@@ -57,7 +56,7 @@ class ShopSitemap(Sitemap):
         return Shop.objects.all()
 
     def lastmod(self, obj):
-        return datetime.now()
+        return timezone.now()
 
     def location(self, obj):
         return "/"

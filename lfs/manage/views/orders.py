@@ -1,4 +1,3 @@
-# python imports
 from datetime import datetime
 from datetime import timedelta
 import json
@@ -15,6 +14,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
@@ -268,8 +268,8 @@ def set_order_filters_date(request):
     req = request.POST if request.method == 'POST' else request.GET
     order_filters = request.session.get("order-filters", {})
 
-    start = datetime.now() - timedelta(int(req.get("start")))
-    end = datetime.now() - timedelta(int(req.get("end")))
+    start = timezone.now() - timedelta(int(req.get("start")))
+    end = timezone.now() - timedelta(int(req.get("end")))
 
     order_filters["start"] = start.strftime("%Y-%m-%d")
     order_filters["end"] = end.strftime("%Y-%m-%d")
@@ -409,7 +409,7 @@ def change_order_state(request):
     except ValueError:
         pass
     else:
-        order.state_modified = datetime.now()
+        order.state_modified = timezone.now()
         order.save()
 
     if order.state == lfs.order.settings.SENT:

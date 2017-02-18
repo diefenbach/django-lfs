@@ -1,17 +1,13 @@
-# python imports
-import datetime
-
-# django imports
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.db import models
+from django.utils import timezone
 from django.utils.encoding import force_unicode
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.loader import render_to_string
 
-# lfs imports
 import lfs.cart.utils
 import lfs.core.utils
 from lfs import shipping
@@ -329,7 +325,7 @@ class Criterion(models.Model):
         if self.id:
             id = "ex%s" % self.id
         else:
-            id = datetime.datetime.now().microsecond
+            id = timezone.now().microsecond
 
         return render_to_string(self.get_template(request), request=request, context={
             "id": id,

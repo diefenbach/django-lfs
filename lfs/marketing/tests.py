@@ -1,12 +1,8 @@
-# python imports
-from datetime import datetime
 from datetime import timedelta
 
-# django imports
-from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.utils import timezone
 
-# lfs import
 from lfs.addresses.models import Address
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
@@ -54,7 +50,7 @@ class RatingMailTestCase(TestCase):
         self.assertEqual(len(orders), 0)
 
         # Set the state modified date before the limit
-        self.o.state_modified = datetime.now() - timedelta(days=15)
+        self.o.state_modified = timezone.now() - timedelta(days=15)
         self.o.save()
 
         # Now there is a order for which there should a rating mail be sent

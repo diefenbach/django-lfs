@@ -1,12 +1,10 @@
-# python imports
 import datetime
 
-# django imports
 from django.contrib.auth.models import User
 from django.contrib.sessions.backends.file import SessionStore
 from django.test import TestCase
+from django.utils import timezone
 
-# lfs imports
 import lfs.voucher.utils
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
@@ -199,7 +197,7 @@ class VoucherTestCase(TestCase):
     def test_is_effective(self):
         """
         """
-        current_year = datetime.datetime.now().year
+        current_year = timezone.now().year
 
         # True
         self.v1.start_date = datetime.date(2000, 1, 1)

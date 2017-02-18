@@ -1,13 +1,9 @@
-# python imports
-from datetime import datetime
 from datetime import timedelta
 
-# django imports
 from django.conf import settings
 from django.core.cache import cache
-from django.db.models import Q
+from django.utils import timezone
 
-# lfs imports
 from lfs.catalog.models import Product
 from lfs.marketing.models import Topseller
 from lfs.marketing.models import ProductSales
@@ -44,7 +40,7 @@ def calculate_product_sales():
 def get_orders(days=14):
     """Returns closed orders which are closed for given amount of days.
     """
-    limit = datetime.now() - timedelta(days=days)
+    limit = timezone.now() - timedelta(days=days)
 
     orders = Order.objects.filter(state=CLOSED, state_modified__lte=limit)
     return orders
