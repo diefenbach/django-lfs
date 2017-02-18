@@ -1569,9 +1569,9 @@ class Product(models.Model):
 
         if related_products is None:
             if self.is_variant() and not self.active_related_products:
-                related_products = self.parent.related_products.all()
+                related_products = self.parent.related_products.filter(active=True)
             else:
-                related_products = self.related_products.all()
+                related_products = self.related_products.filter(active=True)
 
             cache.set(cache_key, related_products)
 
