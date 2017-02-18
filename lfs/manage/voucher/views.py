@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.core.urlresolvers import reverse
@@ -11,7 +10,6 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
-# lfs imports
 import lfs.voucher.utils
 from lfs.core.utils import LazyEncoder
 from lfs.core.utils import render_to_ajax_response
@@ -25,7 +23,6 @@ from lfs.manage.voucher.forms import VoucherGroupForm
 from lfs.manage.voucher.forms import VoucherOptionsForm
 
 
-# Views
 @permission_required("core.manage_shop")
 def no_vouchers(request, template_name="manage/voucher/no_vouchers.html"):
     """Displays that no vouchers exist.
@@ -89,7 +86,7 @@ def vouchers_tab(request, voucher_group, deleted=False, template_name="manage/vo
 
     taxes = Tax.objects.all()
 
-    if request.method == "POST" and deleted == False:
+    if (request.method == "POST") and (deleted is False):
         voucher_form = VoucherForm(data=request.POST)
     else:
         voucher_form = VoucherForm()

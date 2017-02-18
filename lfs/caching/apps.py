@@ -5,4 +5,4 @@ class LfsCachingAppConfig(AppConfig):
     name = 'lfs.caching'
 
     def ready(self):
-        import listeners
+        import listeners  # NOQA

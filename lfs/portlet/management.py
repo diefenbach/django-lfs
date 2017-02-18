@@ -1,4 +1,7 @@
 from django.db.models.signals import post_migrate
+from django.dispatch import receiver
+
+from portlets.utils import register_portlet
 
 from . models import AverageRatingPortlet
 from . models import CartPortlet
@@ -14,9 +17,8 @@ from . models import ForsalePortlet
 from . models import FeaturedPortlet
 from . models import LatestPortlet
 
-from portlets.utils import register_portlet
 
-
+@receiver(post_migrate)
 def register_lfs_portlets(sender, **kwargs):
     if sender.name == "portlets":
         register_portlet(AverageRatingPortlet, "Average Rating")
@@ -32,5 +34,3 @@ def register_lfs_portlets(sender, **kwargs):
         register_portlet(ForsalePortlet, "For sale")
         register_portlet(FeaturedPortlet, "Featured Products")
         register_portlet(LatestPortlet, "Latest Products")
-
-post_migrate.connect(register_lfs_portlets)

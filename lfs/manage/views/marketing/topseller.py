@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import EmptyPage
 from django.core.paginator import Paginator
@@ -9,7 +8,6 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-# lfs.imports
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
@@ -60,8 +58,7 @@ def manage_topseller_inline(request, as_string=False, template_name="manage/mark
     if r.get("keep-filters") or r.get("page"):
         page = r.get("page", s.get("topseller_products_page", 1))
         filter_ = r.get("filter", s.get("filter"))
-        category_filter = r.get("topseller_category_filter",
-                          s.get("topseller_category_filter"))
+        category_filter = r.get("topseller_category_filter", s.get("topseller_category_filter"))
     else:
         page = r.get("page", 1)
         filter_ = r.get("filter")
@@ -73,8 +70,7 @@ def manage_topseller_inline(request, as_string=False, template_name="manage/mark
     s["topseller_category_filter"] = category_filter
 
     try:
-        s["topseller-amount"] = int(r.get("topseller-amount",
-                                      s.get("topseller-amount")))
+        s["topseller-amount"] = int(r.get("topseller-amount", s.get("topseller-amount")))
     except TypeError:
         s["topseller-amount"] = 25
 
@@ -106,7 +102,7 @@ def manage_topseller_inline(request, as_string=False, template_name="manage/mark
     except EmptyPage:
         page = 0
 
-    return render_to_string(template_name, request=request, context={
+    result = render_to_string(template_name, request=request, context={
         "topseller": topseller,
         "total": total,
         "page": page,
@@ -130,7 +126,7 @@ def add_topseller(request):
     """
     for temp_id in request.POST.keys():
 
-        if temp_id.startswith("product") == False:
+        if temp_id.startswith("product") is False:
             continue
 
         temp_id = temp_id.split("-")[1]
@@ -153,7 +149,7 @@ def update_topseller(request):
     if request.POST.get("action") == "remove":
         for temp_id in request.POST.keys():
 
-            if temp_id.startswith("product") == False:
+            if temp_id.startswith("product") is False:
                 continue
 
             temp_id = temp_id.split("-")[1]
@@ -175,7 +171,7 @@ def update_topseller(request):
     else:
         for temp_id in request.POST.keys():
 
-            if temp_id.startswith("position") == False:
+            if temp_id.startswith("position") is False:
                 continue
 
             temp_id = temp_id.split("-")[1]

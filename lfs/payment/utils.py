@@ -1,7 +1,5 @@
-# django imports
 from django.core.urlresolvers import reverse
 
-# lfs imports
 from lfs.core.signals import order_submitted
 from lfs.criteria import utils as criteria_utils
 from lfs.customer import utils as customer_utils
@@ -9,7 +7,6 @@ from lfs.payment.models import PaymentMethod
 from lfs.payment.settings import PM_ORDER_IMMEDIATELY
 from lfs.payment.settings import PM_ORDER_ACCEPTED
 
-# Load logger
 import logging
 logger = logging.getLogger(__name__)
 
@@ -75,8 +72,7 @@ def get_payment_costs(request, payment_method):
     except AttributeError:
         tax_rate = 0.0
 
-    price = criteria_utils.get_first_valid(request,
-        payment_method.prices.all())
+    price = criteria_utils.get_first_valid(request, payment_method.prices.all())
     # TODO: this assumes that payment price is given as gross price, we have to add payment processor here
     if price is None:
         price = payment_method.price

@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.forms import ModelForm
@@ -10,7 +9,6 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
-# lfs imports
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.models import Shop
@@ -39,8 +37,8 @@ class ShopDataForm(ModelForm):
     class Meta:
         model = Shop
         fields = ("name", "shop_owner", "from_email", "notification_emails",
-            "description", "image", "static_block", "checkout_type", "confirm_toc",
-            "google_analytics_id", "ga_site_tracking", "ga_ecommerce_tracking")
+                  "description", "image", "static_block", "checkout_type", "confirm_toc",
+                  "google_analytics_id", "ga_site_tracking", "ga_ecommerce_tracking")
 
 
 class ShopDefaultValuesForm(ModelForm):
@@ -49,7 +47,8 @@ class ShopDefaultValuesForm(ModelForm):
     class Meta:
         model = Shop
         fields = ("price_calculator", "product_cols", "product_rows", "category_cols",
-            "default_country", "invoice_countries", "shipping_countries", "use_international_currency_code", "delivery_time")
+                  "default_country", "invoice_countries", "shipping_countries",
+                  "use_international_currency_code", "delivery_time")
 
 
 @permission_required("core.manage_shop")

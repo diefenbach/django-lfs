@@ -1,1 +1,1 @@
-from wmtests import *
+from wmtests import *  # NOQA

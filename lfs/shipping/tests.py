@@ -1,16 +1,13 @@
-# django imports
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AnonymousUser
 from django.conf import settings
 
-# test imports
 from lfs.core.models import Country
 from lfs.customer.utils import get_or_create_customer
 from lfs.customer_tax.models import CustomerTax
 from lfs.tests.utils import DummyRequest
 
-# lfs imports
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import Product
@@ -73,10 +70,10 @@ class ShippingMethodTestCase(TestCase):
         customer.save()
 
         # Create a weigth criterion and add it to the shipping method 1.
-        c = WeightCriterion.objects.create(content=self.sm1, value=10.0, operator=GREATER_THAN)
+        WeightCriterion.objects.create(content=self.sm1, value=10.0, operator=GREATER_THAN)
 
         # Create a weigth criterion and add it to the shipping method 2.
-        c = WeightCriterion.objects.create(content=self.sm2, value=10.0, operator=LESS_THAN)
+        WeightCriterion.objects.create(content=self.sm2, value=10.0, operator=LESS_THAN)
 
         # Now we ask for the delivery time for product 1. As sm1 is not valid
         # (p1 has an weight of 6.0) we should get the delivery time from sm2,
@@ -142,7 +139,7 @@ class ShippingMethodTestCase(TestCase):
 
         # Create a weigth criterion and add it to the shipping method 1. That
         # means sm1 is not valid anymore for p1.
-        c = WeightCriterion.objects.create(content=self.sm1, value=10.0, operator=GREATER_THAN)
+        WeightCriterion.objects.create(content=self.sm1, value=10.0, operator=GREATER_THAN)
 
         # And even if the customer select sm1 explicitely ...
         customer.selected_shipping_method = self.sm1
@@ -204,7 +201,7 @@ class ShippingMethodTestCase(TestCase):
         request = DummyRequest(user=user)
 
         # Create a cart price criterion and add it to the shipping method 1
-        c = CartPriceCriterion.objects.create(content=self.sm1, value=10.0, operator=GREATER_THAN)
+        CartPriceCriterion.objects.create(content=self.sm1, value=10.0, operator=GREATER_THAN)
 
         # Cart price is 0.0 sms1 is not valid
         sms = utils.get_valid_shipping_methods(request)
@@ -257,7 +254,7 @@ class ShippingMethodTestCase(TestCase):
 
         # Create a width criterion and add it to the shipping method price
         smp = ShippingMethodPrice.objects.create(shipping_method=self.sm1, price=10.0, active=True)
-        c = WidthCriterion.objects.create(content=smp, value=10.0, operator=GREATER_THAN)
+        WidthCriterion.objects.create(content=smp, value=10.0, operator=GREATER_THAN)
 
         # there is no product in the cart so criterion is not valid
         cart_utils.create_cart(request)
@@ -272,10 +269,10 @@ class ShippingMethodTestCase(TestCase):
         request = DummyRequest(user=user)
 
         # Create a weigth criterion and add it to the shipping method 1.
-        c = WeightCriterion.objects.create(content=self.sm1, value=10.0, operator=LESS_THAN)
+        WeightCriterion.objects.create(content=self.sm1, value=10.0, operator=LESS_THAN)
 
         # Create a weigth criterion and add it to the shipping method 2.
-        c = WeightCriterion.objects.create(content=self.sm2, value=10.0, operator=GREATER_THAN)
+        WeightCriterion.objects.create(content=self.sm2, value=10.0, operator=GREATER_THAN)
 
         # For product 1 (weight: 6.0) the sm1 is the first valid (weight: 5.0 - 10.0)
         result = utils.get_first_valid_shipping_method(request, product=self.p1)
@@ -297,7 +294,7 @@ class ShippingMethodTestCase(TestCase):
         """Tests an additional shipping method price.
         """
         # Add a shipping method price
-        smp = ShippingMethodPrice.objects.create(shipping_method=self.sm1, price=5)
+        ShippingMethodPrice.objects.create(shipping_method=self.sm1, price=5)
 
         # As this has no criteria it is valid by default
         costs = utils.get_shipping_costs(self.request, self.sm1)
@@ -310,7 +307,7 @@ class ShippingMethodTestCase(TestCase):
         smp = ShippingMethodPrice.objects.create(shipping_method=self.sm1, price=5)
 
         # Add a criterion the to the price
-        c = CartPriceCriterion.objects.create(content=smp, value=10.0, operator=GREATER_THAN)
+        CartPriceCriterion.objects.create(content=smp, value=10.0, operator=GREATER_THAN)
 
         # The cart price is less than 10, hence the price is not valid and the
         # shipping price is the default price of the shipping method , which is

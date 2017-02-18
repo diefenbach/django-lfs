@@ -1,11 +1,9 @@
-# Python imports
 import os
 
-# django imports
 from django.db.models.signals import post_delete, post_save
 from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
-# lfs imports
 from lfs.catalog.models import File, Property
 from lfs.catalog.models import Image
 from lfs.catalog.models import ProductAttachment
@@ -20,6 +18,7 @@ from lfs.core.signals import property_type_changed
 from lfs.core.signals import product_removed_property_group
 
 
+@receiver(pre_delete, sender=PropertyOption)
 def property_option_deleted_listener(sender, instance, **kwargs):
     """
     This is called before a PropertyOption is deleted.
@@ -29,9 +28,9 @@ def property_option_deleted_listener(sender, instance, **kwargs):
     """
     prop = instance.property
     ProductPropertyValue.objects.filter(property=prop, value=str(instance.id)).delete()
-pre_delete.connect(property_option_deleted_listener, sender=PropertyOption)
 
 
+@receiver(pre_delete, sender=PropertyGroup)
 def property_group_deleted_listener(sender, instance, **kwargs):
     """
     This is called before a PropertyGroup is deleted.
@@ -40,9 +39,9 @@ def property_group_deleted_listener(sender, instance, **kwargs):
     properties of the PropertyGroup which is about to be deleted.
     """
     ProductPropertyValue.objects.filter(property_group=instance).delete()
-pre_delete.connect(property_group_deleted_listener, sender=PropertyGroup)
 
 
+@receiver(pre_delete, sender=GroupsPropertiesRelation)
 def property_removed_from_property_group_listener(sender, instance, **kwargs):
     """
     This is called before a GroupsPropertiesRelation is deleted, in other
@@ -52,9 +51,9 @@ def property_removed_from_property_group_listener(sender, instance, **kwargs):
     the property group from which the property is about to be removed.
     """
     ProductPropertyValue.objects.filter(property_group=instance.group, property=instance.property).delete()
-pre_delete.connect(property_removed_from_property_group_listener, sender=GroupsPropertiesRelation)
 
 
+@receiver(product_removed_property_group)
 def product_removed_from_property_group_listener(sender, **kwargs):
     """
     This is called when a product is removed from a property group.
@@ -66,9 +65,9 @@ def product_removed_from_property_group_listener(sender, **kwargs):
     product = kwargs.get("product")
 
     ProductPropertyValue.objects.filter(product=product, property_group=property_group).delete()
-product_removed_property_group.connect(product_removed_from_property_group_listener)
 
 
+@receiver(post_save, sender=Property)
 def property_changed_to_not_filterable_listener(sender, instance, created, **kwargs):
     """
     This is called when a property that was filterable is set to not filterable
@@ -77,9 +76,9 @@ def property_changed_to_not_filterable_listener(sender, instance, created, **kwa
     """
     if not instance.filterable:
         ProductPropertyValue.objects.filter(property=instance, type=PROPERTY_VALUE_TYPE_FILTER).delete()
-post_save.connect(property_changed_to_not_filterable_listener, sender=Property)
 
 
+@receiver(property_type_changed)
 def property_type_changed_listener(sender, **kwargs):
     """
     This is called after the type of a property has been changed.
@@ -87,9 +86,9 @@ def property_type_changed_listener(sender, **kwargs):
     Deletes all ProductPropertyValue which are assigned to the property.
     """
     ProductPropertyValue.objects.filter(property=sender).delete()
-property_type_changed.connect(property_type_changed_listener)
 
 
+@receiver(post_delete, sender=Image)
 def delete_image_files(sender, **kwargs):
     """
     Deletes Image files on file system after an Image object has been deleted.
@@ -111,9 +110,10 @@ def delete_image_files(sender, **kwargs):
                     os.remove("%s.%sx%s%s" % (base, width, height, ext))
                 except OSError:
                     continue
-post_delete.connect(delete_image_files, sender=Image)
 
 
+@receiver(post_delete, sender=ProductAttachment)
+@receiver(post_delete, sender=File)
 def delete_file_files(sender, **kwargs):
     """
     Deletes File files on file system after an File object has been deleted.
@@ -129,5 +129,3 @@ def delete_file_files(sender, **kwargs):
                 os.remove(path)
             except OSError:
                 pass
-post_delete.connect(delete_file_files, sender=ProductAttachment)
-post_delete.connect(delete_file_files, sender=File)

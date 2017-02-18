@@ -1,11 +1,7 @@
-from StringIO import StringIO
-
 try:
-    import ImageFile
     import Image
 except ImportError:
     from PIL import Image
-    from PIL import ImageFile
 
 
 def scale_to_min_size(image, min_width, min_height):
@@ -93,6 +89,6 @@ def scale_to_height(image, target_height):
     prop_height = float(target_height) / height
     new_width = int(prop_height * width)
 
-    image = image.resize((new_height, target_height), Image.ANTIALIAS)
+    image = image.resize((new_width, target_height), Image.ANTIALIAS)
 
     return image

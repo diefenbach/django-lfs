@@ -1,21 +1,15 @@
 import locale
+import logging
 
-# django imports
-from django.conf import settings
-from django.core.cache import cache
 from django.db import connection
 from django.core.exceptions import FieldError
 from django.db.models import Q, Count, Min, Max
 
-# import lfs
 import lfs.catalog.models
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT
-from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
-
-# Load logger
-import logging
+from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.manufacturer.models import Manufacturer
 
 logger = logging.getLogger(__name__)
@@ -125,7 +119,7 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
     product_ids = _get_product_ids(category)
     set_filters = dict(product_filter)
 
-    ########## Number Fields ###################################################
+    # Number Fields
     number_fields_dict = {}
     if property_ids and product_ids:
         cursor = connection.cursor()
@@ -186,7 +180,7 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
     for pg in number_fields:
         pg['items'] = sorted(pg['items'], key=lambda a: a['name'])
 
-    ########## Select Fields & Text Fields #####################################
+    # Select Fields & Text Fields
     select_fields_dict = {}
     if property_ids and product_ids:
         cursor = connection.cursor()

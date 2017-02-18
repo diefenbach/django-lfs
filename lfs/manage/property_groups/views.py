@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import EmptyPage
 from django.core.paginator import Paginator
@@ -14,7 +13,6 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
-# lfs imports
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
@@ -82,8 +80,8 @@ def properties_inline(request, id, template_name="manage/property_groups/propert
     gps = GroupsPropertiesRelation.objects.filter(group=id).select_related('property')
 
     # Calculate assignable properties
-    #assigned_property_ids = [p.property.id for p in gps]
-    #assignable_properties = Property.objects.exclude(
+    # assigned_property_ids = [p.property.id for p in gps]
+    # assignable_properties = Property.objects.exclude(
     #    pk__in=assigned_property_ids).exclude(local=True)
 
     assignable_properties = Property.objects.exclude(local=True).exclude(groupspropertiesrelation__in=gps)
@@ -221,8 +219,7 @@ def products_inline(request, product_group_id, as_string=False,
     if r.get("keep-filters") or r.get("page"):
         page = r.get("page", s.get("property_group_page", 1))
         filter_ = r.get("filter", s.get("filter"))
-        category_filter = r.get("products_category_filter",
-                          s.get("products_category_filter"))
+        category_filter = r.get("products_category_filter", s.get("products_category_filter"))
     else:
         page = r.get("page", 1)
         filter_ = r.get("filter")

@@ -1,13 +1,13 @@
-from .average_rating import *
-from .cart import *
-from .categories import *
-from .delivery_time import *
-from .pages import *
-from .recent_products import *
-from .related_products import *
-from .text import *
-from .topseller import *
-from .filter import *
-from .forsale import *
-from .featured import *
-from .latest import *
+from . average_rating import AverageRatingPortlet  # NOQA
+from . cart import CartPortlet  # NOQA
+from . categories import CategoriesPortlet  # NOQA
+from . delivery_time import DeliveryTimePortlet  # NOQA
+from . pages import PagesPortlet  # NOQA
+from . recent_products import RecentProductsPortlet  # NOQA
+from . related_products import RelatedProductsPortlet  # NOQA
+from . text import TextPortlet  # NOQA
+from . topseller import TopsellerPortlet  # NOQA
+from . filter import FilterPortlet  # NOQA
+from . forsale import ForsalePortlet  # NOQA
+from . featured import FeaturedPortlet  # NOQA
+from . latest import LatestPortlet  # NOQA

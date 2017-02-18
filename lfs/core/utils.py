@@ -1,4 +1,3 @@
-# python imports
 from collections import deque
 import datetime
 from itertools import count
@@ -8,7 +7,6 @@ import urllib
 import json
 import time
 
-# django imports
 from django.conf import settings
 from django.contrib.redirects.models import Redirect
 from django.http import HttpResponseRedirect
@@ -63,7 +61,7 @@ def get_default_shop(request=None):
 
     try:
         shop = Shop.objects.get(pk=1)
-    except Shop.DoesNotExist, e:  # No guarantee that our shop will have pk=1 in postgres
+    except Shop.DoesNotExist:  # No guarantee that our shop will have pk=1 in postgres
         shop = Shop.objects.all()[0]
 
     if request:
@@ -438,8 +436,7 @@ def lfs_pagination(request, current_page, url='', getparam='start'):
                  'getparam': getparam,
                  'first_page': first,
                  'last_page': last,
-                 'getvars': ''
-                }
+                 'getvars': ''}
 
     getvars = request.GET.copy()
     if getparam in getvars:
@@ -447,4 +444,3 @@ def lfs_pagination(request, current_page, url='', getparam='start'):
     if len(getvars.keys()) > 0:
         to_return['getvars'] = "&%s" % getvars.urlencode()
     return to_return
-

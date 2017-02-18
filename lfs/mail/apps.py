@@ -5,4 +5,4 @@ class LfsMailAppConfig(AppConfig):
     name = 'lfs.mail'
 
     def ready(self):
-        import listeners
+        import listeners  # NOQA

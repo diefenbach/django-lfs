@@ -135,7 +135,7 @@ class ManufacturersManageTestCase(TestCase):
     def test_delete_manufacturer(self):
         url = reverse("lfs_manufacturer_delete_manufacturer", kwargs={'manufacturer_id': self.m1.pk})
         manufacturers_count = Manufacturer.objects.count()
-        response = self.client.post(url)
+        self.client.post(url)
         new_manufacturers_count = Manufacturer.objects.count()
         self.assertEqual(manufacturers_count - 1, new_manufacturers_count)
 

@@ -1,10 +1,16 @@
-# python imports
 import os
-import sys
 
-# django imports
 from django.core.files.base import ContentFile
 from django.http import HttpResponseRedirect
+
+import lfs.core.utils
+from lfs.catalog.models import Category
+from lfs.catalog.models import Image
+from lfs.catalog.models import Product
+from lfs.catalog.models import Property
+from lfs.catalog.models import PropertyOption
+from lfs.criteria.models import CartPriceCriterion
+from lfs.shipping.models import ShippingMethod
 
 
 def generate_shipping(request):
@@ -12,7 +18,7 @@ def generate_shipping(request):
     """
     ShippingMethod.objects.all().delete()
     sm1 = ShippingMethod.objects.create(name="Standard", active=True)
-    sm2 = ShippingMethod.objects.create(name="Express", active=True)
+    ShippingMethod.objects.create(name="Express", active=True)
 
     pc = CartPriceCriterion.objects.create()
     sm1.criteria_objects.create(criterion=pc)
@@ -41,18 +47,6 @@ def generate_categories(request):
 def products(amount=20):
     """
     """
-    import lfs.core.utils
-    from lfs.catalog.models import Category
-    from lfs.catalog.models import Image
-    from lfs.catalog.models import Product
-    from lfs.core.models import Shop
-
-    from lfs.catalog.models import Property
-    from lfs.catalog.models import PropertyOption
-
-    from lfs.shipping.models import ShippingMethod
-    from lfs.criteria.models import CartPriceCriterion
-
     Image.objects.all().delete()
     Product.objects.all().delete()
     Category.objects.all().delete()

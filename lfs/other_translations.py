@@ -1,12 +1,14 @@
-_ = lambda: 1
+def _():
+    return 1
 
-_('Price excludes tax')
-_('Price includes tax')
-_('Street')
-_('Left')
-_('Right')
-_('Average Rating')
-_('Zip Code')
+
+_(u'Price excludes tax')
+_(u'Price includes tax')
+_(u'Street')
+_(u'Left')
+_(u'Right')
+_(u'Average Rating')
+_(u'Zip Code')
 _(u'Last Order Number')
 _(u'Format')
 _(u"Cart Price")

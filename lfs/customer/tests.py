@@ -1,11 +1,9 @@
-# django imports
 from django.http import HttpRequest
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core import mail
 
-# lfs imports
 from django.test.utils import override_settings
 from lfs.addresses.models import Address
 from lfs.addresses.utils import AddressManagement
@@ -52,8 +50,7 @@ class CustomerTestCase(TestCase):
         us = Country.objects.get(code="us")
         fr = Country.objects.get(code="fr")
 
-        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
-                                          default_country=de)
+        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe", default_country=de)
         shop.save()
         shop.invoice_countries.add(ie)
         shop.invoice_countries.add(gb)
@@ -69,14 +66,14 @@ class CustomerTestCase(TestCase):
 
         tax = Tax.objects.create(rate=19)
 
-        shipping_method = ShippingMethod.objects.create(
+        ShippingMethod.objects.create(
             name="Standard",
             active=True,
             price=1.0,
             tax=tax
         )
 
-        payment_method = PaymentMethod.objects.create(
+        PaymentMethod.objects.create(
             name="Direct Debit",
             active=True,
             tax=tax,
@@ -107,8 +104,7 @@ class AddressTestCase(TestCase):
         us = Country.objects.get(code="us")
         fr = Country.objects.get(code="fr")
 
-        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
-                                          default_country=de)
+        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe", default_country=de)
         shop.save()
         shop.invoice_countries.add(ie)
         shop.invoice_countries.add(gb)
@@ -206,12 +202,12 @@ class AddressTestCase(TestCase):
         """
         Tests that we can see a shipping and an invoice address
         """
-         # login as our customer
+        # login as our customer
         logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         address_response = self.client.get(reverse('lfs_my_addresses'))
-        #self.dump_response(address_response)
+        # self.dump_response(address_response)
         self.assertContains(address_response, 'Smallville', status_code=200)
         self.assertContains(address_response, 'Gotham City', status_code=200)
 
@@ -272,7 +268,7 @@ class AddressTestCase(TestCase):
             'shipping-phone': '+49 4712 4712', 'invoice-email': 'joe.bloggs@acme.com',
         }
 
-        address_response = self.client.post(reverse('lfs_my_addresses'), address_data)
+        self.client.post(reverse('lfs_my_addresses'), address_data)
 
         self.assertEquals(Address.objects.count(), 8)
 
@@ -287,7 +283,7 @@ class AddressTestCase(TestCase):
         """
         Tests that we can see a shipping and an invoice address
         """
-         # login as our customer
+        # login as our customer
         logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
@@ -334,8 +330,7 @@ class NoAutoUpdateAddressTestCase(TestCase):
         us = Country.objects.get(code="us")
         fr = Country.objects.get(code="fr")
 
-        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe",
-                                          default_country=de)
+        shop, created = Shop.objects.get_or_create(name="lfs test", shop_owner="John Doe", default_country=de)
         shop.save()
         shop.invoice_countries.add(ie)
         shop.invoice_countries.add(gb)
@@ -434,12 +429,12 @@ class NoAutoUpdateAddressTestCase(TestCase):
         """
         Tests that we can see a shipping and an invoice address
         """
-         # login as our customer
+        # login as our customer
         logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
         address_response = self.client.get(reverse('lfs_my_addresses'))
-        #self.dump_response(address_response)
+        # self.dump_response(address_response)
         self.assertContains(address_response, 'Smallville', status_code=200)
         self.assertContains(address_response, 'Gotham City', status_code=200)
 
@@ -502,7 +497,7 @@ class NoAutoUpdateAddressTestCase(TestCase):
             'shipping-phone': '+49 4712 4712', 'invoice-email': 'joe.bloggs@acme.com',
         }
 
-        address_response = self.client.post(reverse('lfs_my_addresses'), address_data)
+        self.client.post(reverse('lfs_my_addresses'), address_data)
 
         self.assertEquals(Address.objects.count(), 8)
 
@@ -518,7 +513,7 @@ class NoAutoUpdateAddressTestCase(TestCase):
         """
         Tests that we can see a shipping and an invoice address
         """
-         # login as our customer
+        # login as our customer
         logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
@@ -599,4 +594,3 @@ class LoginTestCase(TestCase):
                                 'action': 'email'})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(User.objects.filter(email='testverylongemailaddressthatislongerthanusername@example.com').exists())
-

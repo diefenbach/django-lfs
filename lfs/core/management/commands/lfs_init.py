@@ -1,4 +1,3 @@
-# django imports
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
@@ -58,8 +57,8 @@ class Command(BaseCommand):
 
         # Shop
         shop = Shop.objects.create(name="LFS", shop_owner="John Doe",
-                from_email="john@doe.com", notification_emails="john@doe.com",
-                description=SHOP_DESCRIPTION, default_country=usa, delivery_time=delivery_time)
+                                   from_email="john@doe.com", notification_emails="john@doe.com",
+                                   description=SHOP_DESCRIPTION, default_country=usa, delivery_time=delivery_time)
         shop.invoice_countries.add(usa)
         shop.shipping_countries.add(usa)
 
@@ -85,24 +84,31 @@ class Command(BaseCommand):
 
         # Payment methods
         pm = PaymentMethod.objects.create(name="Direct debit", priority=1, active=1, deletable=0, type=PM_BANK)
-        pm.id=1; pm.save()
+        pm.id = 1
+        pm.save()
         pm = PaymentMethod.objects.create(name="Cash on delivery", priority=2, active=1, deletable=0)
-        pm.id=2; pm.save()
+        pm.id = 2
+        pm.save()
         pm = PaymentMethod.objects.create(name="PayPal", priority=3, active=1, deletable=0, module="lfs_paypal.PayPalProcessor")
-        pm.id=3; pm.save()
+        pm.id = 3
+        pm.save()
         pm = PaymentMethod.objects.create(name="Prepayment", priority=4, active=1, deletable=0)
-        pm.id=4; pm.save()
+        pm.id = 4
+        pm.save()
 
         # Shipping methods
         ShippingMethod.objects.create(name="Standard", priority=1, active=1)
 
         # Pages
         p = Page.objects.create(title="Root", slug="", active=1, exclude_from_navigation=1)
-        p.id = 1; p.save()
+        p.id = 1
+        p.save()
         p = Page.objects.create(title="Terms and Conditions", slug="terms-and-conditions", active=1, body="Enter your terms and conditions here.")
-        p.id = 2; p.save()
+        p.id = 2
+        p.save()
         p = Page.objects.create(title="Imprint", slug="imprint", active=1, body="Enter your imprint here.")
-        p.id = 3; p.save()
+        p.id = 3
+        p.save()
 
         # Order Numbers
         ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)

@@ -1,8 +1,6 @@
-# python imports
 from copy import deepcopy
 import json
 
-# django imports
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -12,7 +10,6 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-# lfs imports
 import lfs.core.utils
 import lfs.discounts.utils
 import lfs.order.utils
@@ -62,7 +59,7 @@ def login(request, template_name="lfs/checkout/login.html"):
             login(request, login_form.get_user())
 
             return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"),
-                msg=_(u"You have been logged in."))
+                                                     msg=_(u"You have been logged in."))
 
     elif request.POST.get("action") == "register":
         register_form = RegisterForm(data=request.POST)
@@ -85,7 +82,7 @@ def login(request, template_name="lfs/checkout/login.html"):
             login(request, user)
 
             return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"),
-                msg=_(u"You have been registered and logged in."))
+                                                     msg=_(u"You have been registered and logged in."))
 
     return render(request, template_name, {
         "login_form": login_form,
@@ -498,6 +495,7 @@ def _save_country(request, customer):
                     customer.selected_invoice_address.country = country
                     customer.selected_invoice_address.save()
             customer.sync_selected_to_default_invoice_address()
+
 
 def _save_customer(request, customer):
     """

@@ -1,11 +1,5 @@
-# django imports
 from django.test import TestCase
-from django.contrib.auth.models import User
 
-# test imports
-from lfs.tests.utils import DummyRequest
-
-# lfs imports
 from lfs.catalog.models import Product
 from lfs.catalog.models import Category
 

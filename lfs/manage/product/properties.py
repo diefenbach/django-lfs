@@ -1,4 +1,3 @@
-# django imports
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
@@ -7,7 +6,6 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 
-# lfs imports
 from lfs.caching.listeners import update_product_cache
 from lfs.catalog.models import Product
 from lfs.catalog.models import ProductPropertyValue, PropertyOption
@@ -51,10 +49,8 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                                                            product=product,
                                                            type=PROPERTY_VALUE_TYPE_DEFAULT)
                 except ProductPropertyValue.DoesNotExist:
-                    ppv_id = None
                     ppv_value = ""
                 else:
-                    ppv_id = ppv.id
                     ppv_value = ppv.value
 
                 # Mark selected options
@@ -102,7 +98,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                                                            property_group=property_group,
                                                            product=product,
                                                            type=PROPERTY_VALUE_TYPE_FILTER)
-                value_ids = [ppv.value for ppv in ppvs]
+                value_ids = [p.value for p in ppvs]
 
                 # Mark selected options
                 options = []
@@ -160,7 +156,7 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                                                            property_group=property_group,
                                                            product=product,
                                                            type=PROPERTY_VALUE_TYPE_DISPLAY)
-                value_ids = [ppv.value for ppv in ppvs]
+                value_ids = [p.value for p in ppvs]
 
                 # Mark selected options
                 options = []
@@ -215,8 +211,8 @@ def manage_properties(request, product_id, template_name="manage/product/propert
                 property_option = PropertyOption.objects.get(property_id=ppv.property_id, pk=ppv.value)
                 property_group_name = ppv.property_group.name if ppv.property_group_id else ''
                 group_dict = product_variant_properties_dict.setdefault(ppv.property_group_id or 0,
-                                                                       {'property_group_name': property_group_name,
-                                                                        'properties': []})
+                                                                        {'property_group_name': property_group_name,
+                                                                         'properties': []})
                 group_dict['properties'].append(property_option)
             except (ProductPropertyValue.DoesNotExist, PropertyOption.DoesNotExist):
                 continue

@@ -1,15 +1,10 @@
-# django imports
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.test import TestCase
-from django.test.client import Client
 
-# test imports
-from lfs.tests.utils import DummyRequest
-
-# lfs imports
 from lfs.page.models import Page
+from lfs.tests.utils import DummyRequest
 
 
 class PageTestCase(TestCase):

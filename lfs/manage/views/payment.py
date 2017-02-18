@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -13,7 +12,6 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
-# lfs imports
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
@@ -55,8 +53,7 @@ def manage_payment(request):
     except IndexError:
         url = reverse("lfs_add_payment_method")
     else:
-        url = reverse("lfs_manage_payment_method",
-            kwargs={"payment_method_id": payment_method.id})
+        url = reverse("lfs_manage_payment_method", kwargs={"payment_method_id": payment_method.id})
     return HttpResponseRedirect(url)
 
 
@@ -115,8 +112,7 @@ def payment_method_data(request, payment_id, form=None, template_name="manage/pa
 
 
 @permission_required("core.manage_shop")
-def payment_method_criteria(request, payment_method_id,
-    template_name="manage/payment/payment_method_criteria.html"):
+def payment_method_criteria(request, payment_method_id, template_name="manage/payment/payment_method_criteria.html"):
     """Returns the criteria of the payment method with passed id as HTML.
 
     This view is used as a part within the manage payment view.
@@ -137,8 +133,7 @@ def payment_method_criteria(request, payment_method_id,
 
 
 @permission_required("core.manage_shop")
-def payment_method_prices(request, payment_method_id,
-    template_name="manage/payment/payment_method_prices.html"):
+def payment_method_prices(request, payment_method_id, template_name="manage/payment/payment_method_prices.html"):
     """Returns the payment method prices for the payment method with given id.
 
     This view is used as a part within the manage payment view.
@@ -166,7 +161,7 @@ def payment_price_criteria(request, payment_price_id, as_string=False, template_
         criterion_html = criterion.render(request, position)
         criteria.append(criterion_html)
 
-    return render_to_string(template_name, request=request, context={
+    dialog = render_to_string(template_name, request=request, context={
         "payment_price": payment_price,
         "criteria": criteria,
     })
@@ -185,8 +180,7 @@ def payment_price_criteria(request, payment_price_id, as_string=False, template_
 
 
 @permission_required("core.manage_shop")
-def add_payment_method(request,
-    template_name="manage/payment/add_payment_method.html"):
+def add_payment_method(request, template_name="manage/payment/add_payment_method.html"):
     """Provides an add form and saves a new payment method.
     """
     if request.method == "POST":

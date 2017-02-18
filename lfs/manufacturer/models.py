@@ -1,4 +1,3 @@
-# django imports
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -7,7 +6,6 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db import connection
 
-# lfs imports
 from lfs.core.fields.thumbs import ImageWithThumbsField
 
 
@@ -46,7 +44,7 @@ class Manufacturer(models.Model):
     def get_format_info(self):
         """Returns format information.
         """
-        if self.active_formats == True:
+        if self.active_formats is True:
             return {
                 "product_cols": self.product_cols,
                 "product_rows": self.product_rows

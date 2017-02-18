@@ -1,14 +1,12 @@
-# django imports
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from lfs.catalog.models import Category, Product, Property, ProductsPropertiesRelation, PropertyOption, ProductPropertyValue
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, PROPERTY_SELECT_FIELD, VARIANT, PROPERTY_VALUE_TYPE_VARIANT
+from lfs.core.models import Country
 from lfs.criteria.models import Criterion, CountryCriterion
 from lfs.shipping.models import ShippingMethod, ShippingMethodPrice
-from lfs.core.models import Country
 
 
 class ManageTestCase(TestCase):
@@ -70,7 +68,7 @@ class ManageTestCase(TestCase):
     #     self.assertEqual(cat3.parent, cat2)
 
     def test_add_product(self):
-        logged_in = self.client.login(username=self.username, password=self.password)
+        self.client.login(username=self.username, password=self.password)
         products_count = Product.objects.count()
         url = reverse('lfs_manage_add_product')
         response = self.client.post(url, {'name': 'Product name', 'slug': 'productslug'}, follow=True)
@@ -80,7 +78,7 @@ class ManageTestCase(TestCase):
     def test_change_product_subtype(self):
         p = Product.objects.create(name='Product1', slug='product1')
 
-        logged_in = self.client.login(username=self.username, password=self.password)
+        self.client.login(username=self.username, password=self.password)
         url = reverse('lfs_change_product_subtype', kwargs={'product_id': p.pk})
         response = self.client.post(url, {'sub_type': PRODUCT_WITH_VARIANTS}, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -89,7 +87,7 @@ class ManageTestCase(TestCase):
 
     def test_manage_add_property(self):
         p = Product.objects.create(name='Product1', slug='product1', sub_type=PRODUCT_WITH_VARIANTS)
-        logged_in = self.client.login(username=self.username, password=self.password)
+        self.client.login(username=self.username, password=self.password)
         url = reverse('lfs_manage_add_property', kwargs={'product_id': p.pk})
         response = self.client.post(url, {'name': 'testproperty'}, follow=True)
         self.assertEqual(response.status_code, 200)
@@ -101,7 +99,7 @@ class ManageTestCase(TestCase):
     def test_manage_add_property_option(self):
         product = Product.objects.create(name='Product1', slug='product1', sub_type=PRODUCT_WITH_VARIANTS)
         pproperty = Property.objects.create(name='property 1', type=PROPERTY_SELECT_FIELD, local=True, filterable=False)
-        product_property = ProductsPropertiesRelation.objects.create(product=product, property=pproperty, position=10)
+        ProductsPropertiesRelation.objects.create(product=product, property=pproperty, position=10)
 
         self.client.login(username=self.username, password=self.password)
         url = reverse('lfs_manage_add_property_option', kwargs={'product_id': product.pk})
@@ -113,13 +111,13 @@ class ManageTestCase(TestCase):
     def test_manage_variants(self):
         product = Product.objects.create(name='Product1', slug='product1', sub_type=PRODUCT_WITH_VARIANTS)
         pproperty = Property.objects.create(name='property1', type=PROPERTY_SELECT_FIELD, local=True, filterable=False)
-        product_property = ProductsPropertiesRelation.objects.create(product=product, property=pproperty, position=10)
+        ProductsPropertiesRelation.objects.create(product=product, property=pproperty, position=10)
         property_option = PropertyOption.objects.create(name='property option 1', property=pproperty, position=10)
 
         variant = Product.objects.create(name='variant', slug='vslug', parent=product, variant_position=10,
                                          sub_type=VARIANT)
-        ppv = ProductPropertyValue.objects.create(product=variant, property_id=pproperty.pk,
-                                                  value=property_option.pk, type=PROPERTY_VALUE_TYPE_VARIANT)
+        ProductPropertyValue.objects.create(product=variant, property_id=pproperty.pk,
+                                            value=property_option.pk, type=PROPERTY_VALUE_TYPE_VARIANT)
 
         self.client.login(username=self.username, password=self.password)
         url = reverse('lfs_manage_variants', kwargs={'product_id': product.pk})

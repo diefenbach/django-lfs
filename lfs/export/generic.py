@@ -1,12 +1,5 @@
-# python imports
 import csv
-
-# django imports
 from django.http import HttpResponse
-
-# lfs imports
-from lfs.export.utils import register
-from lfs.export.models import Export
 
 
 def export(request, export):

@@ -1,17 +1,12 @@
-# django imports
 from django import forms
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-# portlets imports
 from portlets.models import Portlet
 
-# lfs imports
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
-from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
-from lfs.caching.utils import lfs_get_object
 
 
 class ForsalePortlet(Portlet):

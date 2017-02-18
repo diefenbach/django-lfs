@@ -1,9 +1,7 @@
-# python imports
 import locale
 import math
 import json
 
-# django imports
 from django.conf import settings
 from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
@@ -16,9 +14,9 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _, ungettext
 from django.views.decorators.csrf import csrf_exempt
 
-# lfs imports
 import lfs.catalog.utils
 import lfs.core.utils
+import lfs.utils.misc
 from lfs.caching.utils import lfs_get_object_or_404, get_cache_group_id
 from lfs.cart.views import add_to_cart
 from lfs.catalog.models import Category, Property
@@ -32,7 +30,6 @@ from lfs.catalog.settings import SELECT
 from lfs.core.utils import LazyEncoder, lfs_pagination
 from lfs.core.templatetags import lfs_tags
 from lfs.manufacturer.models import Manufacturer
-from lfs.utils import misc as lfs_utils
 
 
 def file_download(request, language=None, file_id=None):
@@ -158,7 +155,7 @@ def select_variant_from_properties(request):
     else:
         product = variant.parent
 
-    options = lfs_utils.parse_properties(request)
+    options = lfs.utils.misc.parse_properties(request)
     variant = product.get_variant(options)
 
     if variant is None:
@@ -274,7 +271,7 @@ def set_manufacturer_filter(request, category_slug, manufacturer_id):
             if manufacturer_id not in mf:
                 mf.append(manufacturer_id)
             request.session["manufacturer-filter"] = mf
-    except (ValueError, TypeError) as e:
+    except (ValueError, TypeError):
         pass
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
@@ -432,7 +429,7 @@ def category_categories(request, slug, start=0, template_name="lfs/catalog/categ
         categories.append(row)
     render_template = category.get_template_name()
 
-    if render_template != None:
+    if render_template is not None:
         template_name = render_template
 
     result_html = render_to_string(template_name, request=request, context={
@@ -582,7 +579,7 @@ def product_view(request, slug, template_name="lfs/catalog/product_base.html"):
     """
     product = lfs_get_object_or_404(Product, slug=slug)
 
-    if (request.user.is_superuser or product.is_active()) == False:
+    if (request.user.is_superuser or product.is_active()) is False:
         raise Http404()
 
     # Store recent products for later use
@@ -725,7 +722,7 @@ def product_form_dispatcher(request):
         product_id = request.POST.get("product_id")
         product = lfs_get_object_or_404(Product, pk=product_id)
 
-        options = lfs_utils.parse_properties(request)
+        options = lfs.utils.misc.parse_properties(request)
         variant = product.get_variant(options)
 
         if variant is None:

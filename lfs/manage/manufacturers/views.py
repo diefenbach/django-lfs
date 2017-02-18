@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
@@ -11,7 +10,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
 
-# lfs imports
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
@@ -98,7 +96,7 @@ def manufacturer_view(request, manufacturer_id, template_name="manage/manufactur
     else:
         form = ViewForm(instance=manufacturer)
 
-    return render_to_string(template_name, request=request, context={
+    view_html = render_to_string(template_name, request=request, context={
         "manufacturer": manufacturer,
         "form": form,
     })
@@ -114,7 +112,7 @@ def manufacturer_view(request, manufacturer_id, template_name="manage/manufactur
 
 
 def selectable_manufacturers_inline(request, manufacturer_id,
-    template_name="manage/manufacturers/selectable_manufacturers_inline.html"):
+                                    template_name="manage/manufacturers/selectable_manufacturers_inline.html"):
     """Displays all selectable manufacturers.
     """
     return render_to_string(template_name, request=request, context={
@@ -125,7 +123,7 @@ def selectable_manufacturers_inline(request, manufacturer_id,
 
 @permission_required("core.manage_shop")
 def manufacturer_inline(request, manufacturer_id, category_id,
-    template_name="manage/manufacturers/manufacturer_inline.html"):
+                        template_name="manage/manufacturers/manufacturer_inline.html"):
     """Returns categories and products for given manufacturer id and category id.
     """
     manufacturer = Manufacturer.objects.get(pk=manufacturer_id)

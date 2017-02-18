@@ -1,12 +1,8 @@
-# django imports
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
-from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-# lfs imports
 import lfs.catalog.utils
-import lfs.core.settings as lfs_settings
 from lfs.catalog.settings import CHOICES_YES
 from lfs.catalog.settings import CHOICES_STANDARD
 from lfs.catalog.settings import CHOICES_NO

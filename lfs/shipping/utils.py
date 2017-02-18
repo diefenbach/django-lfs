@@ -78,7 +78,7 @@ def get_product_delivery_time(request, product, for_cart=False):
 
     if delivery_time is None:
         delivery_time = lfs.core.utils.get_default_shop(request).delivery_time or \
-                        DeliveryTime(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
+            DeliveryTime(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
 
     # Calculate the total delivery time if the product is not on stock.
     if (product.stock_amount <= 0) and (product.order_time):

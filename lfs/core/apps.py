@@ -5,6 +5,6 @@ class LfsCoreAppConfig(AppConfig):
     name = 'lfs.core'
 
     def ready(self):
-        import listeners
+        import listeners  # NOQA
         from . import views
         views.one_time_setup()

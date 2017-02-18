@@ -1,11 +1,8 @@
-# django imports
 from django.contrib.contenttypes.models import ContentType
 
-# lfs imports
 from lfs.core.utils import import_symbol
 from lfs.criteria.models import Criterion
 
-# Load logger
 import logging
 logger = logging.getLogger(__name__)
 
@@ -23,7 +20,7 @@ def is_valid(request, object, product=None):
     for criterion_object in get_criteria(object):
         criterion_object.request = request
         criterion_object.product = product
-        if criterion_object.is_valid() == False:
+        if criterion_object.is_valid() is False:
             return False
     return True
 

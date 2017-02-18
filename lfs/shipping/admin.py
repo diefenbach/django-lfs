@@ -1,18 +1,16 @@
-# django imports
 from django.contrib import admin
 
-# lfs imports
 from lfs.shipping.models import ShippingMethod
 from lfs.shipping.models import ShippingMethodPrice
 
 
 class ShippingMethodAdmin(admin.ModelAdmin):
-    """
-    """
-admin.site.register(ShippingMethod, ShippingMethodAdmin)
+    pass
 
 
 class ShippingMethodPriceAdmin(admin.ModelAdmin):
-    """
-    """
+    pass
+
+
 admin.site.register(ShippingMethodPrice, ShippingMethodPriceAdmin)
+admin.site.register(ShippingMethod, ShippingMethodAdmin)

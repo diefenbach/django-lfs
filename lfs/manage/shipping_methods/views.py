@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -12,7 +11,6 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
-# lfs imports
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
@@ -35,14 +33,13 @@ def manage_shipping(request):
     except IndexError:
         url = reverse("lfs_manage_no_shipping_methods")
     else:
-        url = reverse("lfs_manage_shipping_method",
-            kwargs={"shipping_method_id": shipping_method.id})
+        url = reverse("lfs_manage_shipping_method", kwargs={"shipping_method_id": shipping_method.id})
     return HttpResponseRedirect(url)
 
 
 @permission_required("core.manage_shop")
 def manage_shipping_method(request, shipping_method_id,
-    template_name="manage/shipping_methods/manage_shipping.html"):
+                           template_name="manage/shipping_methods/manage_shipping.html"):
     """The main view to manage the shipping method with given id.
 
     This view collects the various parts of the shipping form (data, criteria,
@@ -85,7 +82,8 @@ def shipping_methods(request, template_name="manage/shipping_methods/shipping_me
 
 
 @permission_required("core.manage_shop")
-def shipping_method_data(request, shipping_id, form=None, template_name="manage/shipping_methods/shipping_method_data.html"):
+def shipping_method_data(request, shipping_id, form=None,
+                         template_name="manage/shipping_methods/shipping_method_data.html"):
     """Returns the shipping data as html.
 
     This view is used as a part within the manage shipping view.
@@ -102,7 +100,7 @@ def shipping_method_data(request, shipping_id, form=None, template_name="manage/
 
 @permission_required("core.manage_shop")
 def shipping_method_criteria(request, shipping_method_id,
-    template_name="manage/shipping_methods/shipping_method_criteria.html"):
+                             template_name="manage/shipping_methods/shipping_method_criteria.html"):
     """Returns the criteria of the shipping method with passed id as HTML.
 
     This view is used as a part within the manage shipping view.
@@ -124,7 +122,7 @@ def shipping_method_criteria(request, shipping_method_id,
 
 @permission_required("core.manage_shop")
 def shipping_method_prices(request, shipping_method_id,
-    template_name="manage/shipping_methods/shipping_method_prices.html"):
+                           template_name="manage/shipping_methods/shipping_method_prices.html"):
     """Returns the shipping method prices for the shipping method with given id.
 
     This view is used as a part within the manage shipping view.
@@ -139,7 +137,7 @@ def shipping_method_prices(request, shipping_method_id,
 
 @permission_required("core.manage_shop")
 def shipping_price_criteria(request, shipping_price_id, as_string=False,
-    template_name="manage/shipping_methods/shipping_price_criteria.html"):
+                            template_name="manage/shipping_methods/shipping_price_criteria.html"):
     """Returns the criteria of the shipping price with passed id.
 
     This view is used as a part within the manage shipping view.
@@ -174,7 +172,7 @@ def shipping_price_criteria(request, shipping_price_id, as_string=False,
 # Actions
 @permission_required("core.manage_shop")
 def add_shipping_method(request,
-    template_name="manage/shipping_methods/add_shipping_method.html"):
+                        template_name="manage/shipping_methods/add_shipping_method.html"):
     """Provides an add form and saves a new shipping method.
     """
     if request.method == "POST":

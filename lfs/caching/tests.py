@@ -1,4 +1,5 @@
 # coding: utf-8
+
 from django.http import Http404
 from django.test import TestCase
 from lfs.caching.utils import lfs_get_object, lfs_get_object_or_404

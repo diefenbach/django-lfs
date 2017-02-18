@@ -1,4 +1,3 @@
-# django imports
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
@@ -6,7 +5,6 @@ from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.template.loader import render_to_string
 
-# lfs imports
 from django.utils.translation import ungettext
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.manufacturer.models import Manufacturer
@@ -87,12 +85,8 @@ def manufacturer_products(request, slug, start=1,
     product_filter = request.session.get("product-filter", {})
     product_filter = product_filter.items()
 
-    cache_key = "%s-manufacturer-products-%s" % (
-                            settings.CACHE_MIDDLEWARE_KEY_PREFIX,
-                            slug)
-    sub_cache_key = "%s-start-%s-sorting-%s" % (
-                            settings.CACHE_MIDDLEWARE_KEY_PREFIX,
-                            start, sorting)
+    cache_key = "%s-manufacturer-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slug)
+    sub_cache_key = "%s-start-%s-sorting-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, start, sorting)
 
     filter_key = ["%s-%s" % (i[0], i[1]) for i in product_filter]
     if filter_key:

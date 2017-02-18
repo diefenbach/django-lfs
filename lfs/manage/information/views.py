@@ -1,15 +1,10 @@
-import json
-
-# django imports
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render
 
-# lfs imports
+from lfs import __version__ as lfs_version
 from lfs.core.utils import import_symbol
 
-# versions
-from lfs import __version__ as lfs_version
 from lfs_theme import __version__ as lfs_theme_version
 
 

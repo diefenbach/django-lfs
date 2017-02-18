@@ -1,6 +1,4 @@
-# lfs imports
 from lfs.catalog.models import Category
-from lfs.catalog.models import Product
 
 
 def get_current_page(request, objs, obj, amount):
@@ -33,10 +31,6 @@ def cartesian_product(*seqin):
             yield comb
 
     return rloop(seqin, [])
-
-if __name__ == "__main__":
-    for x in cartesian_product([u'5|11', u'7|15', u'6|12']):
-        print x
 
 
 def update_category_positions(category):

@@ -176,7 +176,7 @@ class TopsellerUtilsTestCase(TestCase):
         self.assertEqual(ts[1], self.p3)
 
         # Explicit topseller P4, which is already a topseller
-        t = Topseller.objects.create(product=self.p4, position=1)
+        Topseller.objects.create(product=self.p4, position=1)
 
         # P4 should only displayed once
         ts = lfs.marketing.utils.get_topseller(2)
@@ -274,7 +274,7 @@ class TopsellerUtilsTestCase(TestCase):
         self.assertEqual(ts[1], self.p3)
 
         # Explicit topseller P4 for c1, which is already a topseller
-        t = Topseller.objects.create(product=self.p4, position=1)
+        Topseller.objects.create(product=self.p4, position=1)
 
         # Tests the top level category
         ts = lfs.marketing.utils.get_topseller_for_category(self.c1, limit=2)

@@ -1,4 +1,3 @@
-# lfs imports
 from lfs.plugins import ShippingMethodPriceCalculator
 
 
@@ -38,4 +37,3 @@ class NetShippingMethodPriceCalculator(ShippingMethodPriceCalculator):
         price = self.get_price()
         tax_rate = self.get_tax_rate()
         return price * ((100 + tax_rate) / 100)
-

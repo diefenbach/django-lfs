@@ -61,7 +61,7 @@ def images(request, as_string=False, template_name="manage/images/images.html"):
                                               '%(count)d images',
                                               amount_of_images) % {'count': amount_of_images}
 
-    return render_to_string(template_name, request=request, context={
+    result = render_to_string(template_name, request=request, context={
         "images": current_page.object_list,
         "pagination": pagination_data,
         "query": query
@@ -200,7 +200,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
             "url": image.image.url_100x100,
         })
 
-    return render_to_string(template_name, request=request, context={
+    html = render_to_string(template_name, request=request, context={
         "sizes": sizes,
         "classes": classes,
         "images": images,

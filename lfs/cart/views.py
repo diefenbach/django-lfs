@@ -265,10 +265,9 @@ def add_to_cart(request, product_id=None):
                 except Property.DoesNotExist:
                     continue
 
-                property_group = None
                 if property_group_id != '0':
                     try:
-                        property_group = PropertyGroup.objects.get(pk=property_group_id)
+                        PropertyGroup.objects.get(pk=property_group_id)
                     except PropertyGroup.DoesNotExist:
                         continue
 

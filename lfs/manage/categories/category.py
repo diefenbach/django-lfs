@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -12,7 +11,6 @@ from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext_lazy as _
 
-# lfs imports
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
 from lfs.core.utils import LazyEncoder
@@ -133,7 +131,7 @@ def edit_category_data(request, category_id, template_name="manage/category/data
 
     result = json.dumps({
         "message": message,
-        "html" : html,
+        "html": html,
     }, cls=LazyEncoder)
 
     return HttpResponse(result, content_type='application/json')

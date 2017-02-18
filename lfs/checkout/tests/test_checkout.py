@@ -1,11 +1,9 @@
-# django imports
 from django.contrib.auth.models import User
-from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.core import mail
+from django.test import TestCase
 
-# test imports
 from lfs.catalog.models import Product
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
@@ -19,8 +17,8 @@ from lfs.payment.settings import BY_INVOICE
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 
-# 3rd party imports
 from postal.library import form_factory
+
 
 class CheckoutTestCase(TestCase):
     """
@@ -165,18 +163,18 @@ class CheckoutTestCase(TestCase):
         """Tests the login view.
         """
         email = 'testverylongemailaddressthatislongerthanusername1@example.com'
-        response = self.client.post(reverse('lfs_checkout_login'), {'email': email,
-                                                                    'action': 'register',
-                                                                    'password_1': 'test',
-                                                                    'password_2': 'test'})
+        self.client.post(reverse('lfs_checkout_login'), {'email': email,
+                                                         'action': 'register',
+                                                         'password_1': 'test',
+                                                         'password_2': 'test'})
         self.assertEqual(User.objects.filter(email=email).count(), 1)
         self.client.logout()
 
         email2 = 'testverylongemailaddressthatislongerthanusername2@example.com'
-        response = self.client.post(reverse('lfs_checkout_login'), {'email': email2,
-                                                                    'action': 'register',
-                                                                    'password_1': 'test',
-                                                                    'password_2': 'test'})
+        self.client.post(reverse('lfs_checkout_login'), {'email': email2,
+                                                         'action': 'register',
+                                                         'password_1': 'test',
+                                                         'password_2': 'test'})
         self.assertEqual(User.objects.filter(email=email2).count(), 1)
 
     def dump_response(self, http_response):
@@ -208,7 +206,7 @@ class CheckoutTestCase(TestCase):
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
         user = User.objects.get(username=self.username)
         customer = Customer.objects.get(user=user)
-        fr = Country.objects.get(code="fr")
+        Country.objects.get(code="fr")
         self.assertEquals(customer.selected_invoice_address.country.code, "fr")
 
         # change the country in the cart

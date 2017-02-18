@@ -134,7 +134,7 @@ def add_discount(request, template_name="manage/discounts/add_discount.html"):
     else:
         form = DiscountForm()
 
-    return render_to_response(request, template_name, {
+    return render(request, template_name, {
         "navigation": navigation(request),
         "form": form,
         "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from", reverse("lfs_manage_discounts")),
@@ -324,7 +324,7 @@ def products_inline(request, discount_id, as_string=False,
     except EmptyPage:
         page = 0
 
-    return render_to_string(template_name, request=request, context={
+    result = render_to_string(template_name, request=request, context={
         "discount": discount,
         "discount_products": discount_products,
         "page": page,

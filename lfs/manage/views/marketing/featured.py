@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import EmptyPage
 from django.core.paginator import Paginator
@@ -9,7 +8,6 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-# lfs.imports
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
@@ -20,8 +18,7 @@ from lfs.marketing.models import FeaturedProduct
 
 
 @permission_required("manage_shop")
-def manage_featured(
-    request, template_name="manage/marketing/featured.html"):
+def manage_featured(request, template_name="manage/marketing/featured.html"):
     """
     """
     inline = manage_featured_inline(request, as_string=True)
@@ -41,8 +38,7 @@ def manage_featured(
 
 
 @permission_required("manage_shop")
-def manage_featured_inline(
-    request, as_string=False, template_name="manage/marketing/featured_inline.html"):
+def manage_featured_inline(request, as_string=False, template_name="manage/marketing/featured_inline.html"):
     """
     """
     featured = FeaturedProduct.objects.all()
@@ -62,8 +58,7 @@ def manage_featured_inline(
     if r.get("keep-filters") or r.get("page"):
         page = r.get("page", s.get("featured_products_page", 1))
         filter_ = r.get("filter", s.get("filter"))
-        category_filter = r.get("featured_category_filter",
-                          s.get("featured_category_filter"))
+        category_filter = r.get("featured_category_filter", s.get("featured_category_filter"))
     else:
         page = r.get("page", 1)
         filter_ = r.get("filter")
@@ -131,7 +126,7 @@ def add_featured(request):
     """
     for temp_id in request.POST.keys():
 
-        if temp_id.startswith("product") == False:
+        if temp_id.startswith("product") is False:
             continue
 
         temp_id = temp_id.split("-")[1]
@@ -177,7 +172,7 @@ def update_featured(request):
     else:
         for temp_id in request.POST.keys():
 
-            if temp_id.startswith("position") == False:
+            if temp_id.startswith("position") is False:
                 continue
 
             temp_id = temp_id.split("-")[1]

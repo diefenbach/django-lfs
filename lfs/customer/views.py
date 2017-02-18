@@ -124,7 +124,7 @@ def logout(request):
     logout(request)
 
     return lfs.core.utils.set_message_cookie(reverse("lfs_shop_view"),
-        msg=_(u"You have been logged out."))
+                                             msg=_(u"You have been logged out."))
 
 
 @login_required

@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm
@@ -12,7 +11,6 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
-# lfs imports
 import lfs.core.utils
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
@@ -81,8 +79,7 @@ def manage_export(request, export_id, template_name="manage/export/export.html")
 
 
 # Parts
-def export_data_inline(request, export_id, form,
-    template_name="manage/export/export_data_inline.html"):
+def export_data_inline(request, export_id, form, template_name="manage/export/export_data_inline.html"):
     """Displays the data form of the current export.
     """
     return render_to_string(template_name, request=request, context={
@@ -91,8 +88,7 @@ def export_data_inline(request, export_id, form,
     })
 
 
-def selectable_exports_inline(request, export_id,
-    template_name="manage/export/selectable_exports_inline.html"):
+def selectable_exports_inline(request, export_id, template_name="manage/export/selectable_exports_inline.html"):
     """Displays all selectable exports.
     """
     return render_to_string(template_name, request=request, context={
@@ -102,8 +98,7 @@ def selectable_exports_inline(request, export_id,
 
 
 @permission_required("core.manage_shop")
-def export_inline(request, export_id, category_id,
-    template_name="manage/export/export_inline.html"):
+def export_inline(request, export_id, category_id, template_name="manage/export/export_inline.html"):
     """Returns categories and products for given export id and category id.
     """
     export = Export.objects.get(pk=export_id)
@@ -154,7 +149,7 @@ def export_inline(request, export_id, category_id,
             "options": options,
         })
 
-    return render_to_string(template_name, request=request, context={
+    result = render_to_string(template_name, request=request, context={
         "categories": categories,
         "products": products,
         "export_id": export_id,

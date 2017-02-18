@@ -1,10 +1,7 @@
-# lfs imports
-import lfs.catalog.utils
 from lfs.export.models import CategoryOption
-from lfs.export.models import Export
 from lfs.export.models import Script
-from lfs.export.settings import CATEGORY_VARIANTS_DEFAULT
 from lfs.export.settings import CATEGORY_VARIANTS_CHEAPEST
+from lfs.export.settings import CATEGORY_VARIANTS_DEFAULT
 from lfs.export.settings import CATEGORY_VARIANTS_ALL
 
 

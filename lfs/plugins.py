@@ -7,11 +7,11 @@ from django.db import models
 
 # lfs imports
 import lfs
-from lfs.payment.settings import PM_ORDER_IMMEDIATELY
-from lfs.payment.settings import PM_ORDER_ACCEPTED
-from lfs.payment.settings import PM_MSG_TOP
-from lfs.payment.settings import PM_MSG_FORM
-from lfs.order.settings import PAID
+from lfs.payment.settings import PM_ORDER_IMMEDIATELY  # NOQA
+from lfs.payment.settings import PM_ORDER_ACCEPTED  # NOQA
+from lfs.payment.settings import PM_MSG_TOP  # NOQA
+from lfs.payment.settings import PM_MSG_FORM  # NOQA
+from lfs.order.settings import PAID  # NOQA
 
 
 class OrderNumberGenerator(models.Model):

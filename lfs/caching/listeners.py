@@ -1,14 +1,11 @@
-# django imports
-import hashlib
-
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.db.models.signals import post_save, m2m_changed, post_delete
 from django.db.models.signals import pre_save
 from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
-# lfs imports
 from lfs.caching.utils import clear_cache, delete_cache, invalidate_cache_group_id
 from lfs.cart.models import Cart
 from lfs.catalog.models import Category
@@ -21,7 +18,7 @@ from lfs.core.signals import category_changed
 from lfs.core.signals import shop_changed
 from lfs.core.signals import topseller_changed
 from lfs.core.signals import manufacturer_changed
-from lfs.criteria.models import CountryCriterion, Criterion, WeightCriterion, WidthCriterion, ShippingMethodCriterion, \
+from lfs.criteria.models import CountryCriterion, WeightCriterion, WidthCriterion, ShippingMethodCriterion, \
     PaymentMethodCriterion, LengthCriterion, HeightCriterion, CombinedLengthAndGirthCriterion, CartPriceCriterion
 from lfs.customer_tax.models import CustomerTax
 from lfs.marketing.models import Topseller
@@ -30,42 +27,43 @@ from lfs.page.models import Page
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 
-# reviews imports
 from reviews.signals import review_added
 
+
 # Shop
+@receiver(shop_changed)
 def shop_changed_listener(sender, **kwargs):
     clear_cache()
-shop_changed.connect(shop_changed_listener)
 
 
 # Cart
+@receiver(cart_changed)
 def cart_changed_listener(sender, **kwargs):
     update_cart_cache(sender)
-cart_changed.connect(cart_changed_listener)
 
 
+@receiver(pre_delete, sender=Cart)
 def cart_deleted_listener(sender, instance, **kwargs):
     update_cart_cache(instance)
-pre_delete.connect(cart_deleted_listener, sender=Cart)
 
 
 # Category
+@receiver(pre_delete, sender=Category)
 def category_deleted_listener(sender, instance, **kwargs):
     update_category_cache(instance)
-pre_delete.connect(category_deleted_listener, sender=Category)
 
 
+@receiver(pre_save, sender=Category)
 def category_saved_listener(sender, instance, **kwargs):
     update_category_cache(instance)
-pre_save.connect(category_saved_listener, sender=Category)
 
 
+@receiver(category_changed)
 def category_changed_listener(sender, **kwargs):
     update_category_cache(sender)
-category_changed.connect(category_changed_listener)
 
 
+@receiver(m2m_changed, sender=Category.products.through)
 def product_categories_changed_listener(sender, **kwargs):
     instance = kwargs['instance']
     reverse = kwargs['reverse']
@@ -80,10 +78,10 @@ def product_categories_changed_listener(sender, **kwargs):
             for product in Product.objects.filter(pk__in=pk_set):
                 delete_cache("%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product.id, True))
                 delete_cache("%s-product-categories-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, product.id, False))
-m2m_changed.connect(product_categories_changed_listener, sender=Category.products.through)
 
 
 # Manufacturer
+@receiver(manufacturer_changed)
 def manufacturer_changed_listener(sender, **kwargs):
     # filtered lists of products assigned to manufacturer used at manufacturer page
     delete_cache("%s-manufacturer-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, sender.slug))
@@ -91,10 +89,11 @@ def manufacturer_changed_listener(sender, **kwargs):
     delete_cache("%s-manufacturer-all-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, sender.pk))
     # if manufacturer assignment was changed then product navigation might be different too
     invalidate_cache_group_id('product_navigation')
-manufacturer_changed.connect(manufacturer_changed_listener)
 
 
 # OrderItem
+@receiver(pre_delete, sender=OrderItem)
+@receiver(post_save, sender=OrderItem)
 def order_item_listener(sender, instance, **kwargs):
     """Deletes topseller after an OrderItem has been updated. Topseller are
     calculated automatically on base of OrderItems, hence we have to take of
@@ -106,29 +105,28 @@ def order_item_listener(sender, instance, **kwargs):
             delete_cache("%s-topseller-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.id))
     except:
         pass  # fail silently
-pre_delete.connect(order_item_listener, sender=OrderItem)
-post_save.connect(order_item_listener, sender=OrderItem)
 
 
 # Page
+@receiver(post_save, sender=Page)
 def page_saved_listener(sender, instance, **kwargs):
     delete_cache("%s-page-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.slug))
     delete_cache("%s-pages" % settings.CACHE_MIDDLEWARE_KEY_PREFIX)
-post_save.connect(page_saved_listener, sender=Page)
 
 
 # Product
+@receiver(product_changed)
 def product_changed_listener(sender, **kwargs):
     update_product_cache(sender)
-product_changed.connect(product_changed_listener)
 
 
+@receiver(post_save, sender=Product)
 def product_saved_listener(sender, instance, **kwargs):
     # update_product_cache(instance)
     update_category_cache(instance)
-post_save.connect(product_saved_listener, sender=Product)
 
 
+@receiver(post_save, sender=Product)
 def product_pre_saved_listener(sender, instance, **kwargs):
     """ If product slug was changed we should have cleared slug based product cache"""
     # check if product already exists in database
@@ -147,53 +145,51 @@ def product_pre_saved_listener(sender, instance, **kwargs):
         else:
             delete_cache("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, old_product.slug))
 
-pre_save.connect(product_pre_saved_listener, sender=Product)
-
 
 # Shipping Method
+@receiver(post_save, sender=ShippingMethod)
 def shipping_method_saved_listener(sender, instance, **kwargs):
     delete_cache("%s-shipping-delivery-time" % settings.CACHE_MIDDLEWARE_KEY_PREFIX)
     delete_cache("%s-shipping-delivery-time-cart" % settings.CACHE_MIDDLEWARE_KEY_PREFIX)
     delete_cache("all_active_shipping_methods")
-post_save.connect(shipping_method_saved_listener, sender=ShippingMethod)
 
 
+@receiver(post_delete, sender=ShippingMethod)
 def shipping_method_deleted_listener(sender, instance, **kwargs):
     delete_cache("all_active_shipping_methods")
-post_delete.connect(shipping_method_deleted_listener, sender=ShippingMethod)
 
 
 # Shop
+@receiver(post_save, sender=Shop)
 def shop_saved_listener(sender, instance, **kwargs):
     delete_cache("%s-shop-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
-post_save.connect(shop_saved_listener, sender=Shop)
 
 
 # Static blocks
+@receiver(post_save, sender=StaticBlock)
 def static_blocks_saved_listener(sender, instance, **kwargs):
     update_static_block_cache(instance)
-post_save.connect(static_blocks_saved_listener, sender=StaticBlock)
 
 
 # Topseller
+@receiver(topseller_changed)
 def topseller_changed_listener(sender, **kwargs):
     update_topseller_cache(sender)
-topseller_changed.connect(topseller_changed_listener)
 
 
+@receiver(post_save, sender=Topseller)
 def topseller_saved_listener(sender, instance, **kwargs):
     update_topseller_cache(instance)
-post_save.connect(topseller_saved_listener, sender=Topseller)
 
 
+@receiver(review_added)
 def review_added_listener(sender, **kwargs):
     ctype = ContentType.objects.get_for_id(sender.content_type_id)
     product = ctype.get_object_for_this_type(pk=sender.content_id)
-
     update_product_cache(product)
-review_added.connect(review_added_listener)
 
 
+@receiver(m2m_changed, sender=CountryCriterion.value.through)
 def criterion_countries_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
     if action in ('post_add', 'post_remove', 'post_clear'):
         if not reverse:
@@ -201,28 +197,27 @@ def criterion_countries_changed(sender, instance, action, reverse, model, pk_set
         else:
             for pk in pk_set:
                 delete_cache(u'country_values_{}'.format(pk))
-m2m_changed.connect(criterion_countries_changed, sender=CountryCriterion.value.through)
 
 
+@receiver(post_save, sender=CustomerTax)
 def customer_tax_created_listener(sender, instance, created, **kwargs):
     if created:
         delete_cache(u'all_customer_taxes')
-post_save.connect(customer_tax_created_listener, sender=CustomerTax)
 
 
+@receiver(post_delete, sender=CustomerTax)
 def customer_tax_deleted_listener(sender, instance, **kwargs):
     delete_cache(u'all_customer_taxes')
-post_delete.connect(customer_tax_deleted_listener, sender=CustomerTax)
 
 
+@receiver(post_save, sender=Tax)
 def tax_rate_created_listener(sender, instance, created, **kwargs):
     delete_cache(u'tax_rate_{}'.format(instance.pk))
-post_save.connect(tax_rate_created_listener, sender=Tax)
 
 
+@receiver(post_delete, sender=Tax)
 def tax_rate_deleted_listener(sender, instance, **kwargs):
     delete_cache(u'tax_rate_{}'.format(instance.pk))
-post_delete.connect(tax_rate_deleted_listener, sender=Tax)
 
 
 #####
@@ -331,25 +326,24 @@ def update_topseller_cache(topseller):
         delete_cache("%s-topseller-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.id))
 
 
+@receiver(post_save, sender=WeightCriterion)
+@receiver(post_save, sender=CartPriceCriterion)
+@receiver(post_save, sender=CombinedLengthAndGirthCriterion)
+@receiver(post_save, sender=CountryCriterion)
+@receiver(post_save, sender=HeightCriterion)
+@receiver(post_save, sender=LengthCriterion)
+@receiver(post_save, sender=PaymentMethodCriterion)
+@receiver(post_save, sender=ShippingMethodCriterion)
+@receiver(post_save, sender=WidthCriterion)
+@receiver(pre_delete, sender=WeightCriterion)
+@receiver(pre_delete, sender=CartPriceCriterion)
+@receiver(pre_delete, sender=CombinedLengthAndGirthCriterion)
+@receiver(pre_delete, sender=CountryCriterion)
+@receiver(pre_delete, sender=HeightCriterion)
+@receiver(pre_delete, sender=LengthCriterion)
+@receiver(pre_delete, sender=PaymentMethodCriterion)
+@receiver(pre_delete, sender=ShippingMethodCriterion)
+@receiver(pre_delete, sender=WidthCriterion)
 def clear_criterion_cache(sender, instance, created, **kwargs):
     cache_key = u'criteria_for_model_{}_{}'.format(instance.content_id, instance.content_type.pk)
     cache.delete(cache_key)
-post_save.connect(clear_criterion_cache, sender=WeightCriterion)
-post_save.connect(clear_criterion_cache, sender=CartPriceCriterion)
-post_save.connect(clear_criterion_cache, sender=CombinedLengthAndGirthCriterion)
-post_save.connect(clear_criterion_cache, sender=CountryCriterion)
-post_save.connect(clear_criterion_cache, sender=HeightCriterion)
-post_save.connect(clear_criterion_cache, sender=LengthCriterion)
-post_save.connect(clear_criterion_cache, sender=PaymentMethodCriterion)
-post_save.connect(clear_criterion_cache, sender=ShippingMethodCriterion)
-post_save.connect(clear_criterion_cache, sender=WidthCriterion)
-
-pre_delete.connect(clear_criterion_cache, sender=WeightCriterion)
-pre_delete.connect(clear_criterion_cache, sender=CartPriceCriterion)
-pre_delete.connect(clear_criterion_cache, sender=CombinedLengthAndGirthCriterion)
-pre_delete.connect(clear_criterion_cache, sender=CountryCriterion)
-pre_delete.connect(clear_criterion_cache, sender=HeightCriterion)
-pre_delete.connect(clear_criterion_cache, sender=LengthCriterion)
-pre_delete.connect(clear_criterion_cache, sender=PaymentMethodCriterion)
-pre_delete.connect(clear_criterion_cache, sender=ShippingMethodCriterion)
-pre_delete.connect(clear_criterion_cache, sender=WidthCriterion)

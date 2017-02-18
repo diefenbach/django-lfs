@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from windmill.authoring import  WindmillTestClient
+from windmill.authoring import WindmillTestClient
 
 
 def setup_module(module):

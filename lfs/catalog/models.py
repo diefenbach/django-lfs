@@ -1,11 +1,8 @@
-# Python imports
 import locale
 import math
 import sys
 import uuid
 
-
-# django imports
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -17,7 +14,6 @@ from django.template.defaultfilters import striptags
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
-# lfs imports
 import lfs.catalog.utils
 from lfs.core.fields.thumbs import ImageWithThumbsField
 from lfs.core import utils as core_utils
@@ -70,6 +66,7 @@ from lfs.manufacturer.models import Manufacturer
 
 def get_unique_id_str():
     return str(uuid.uuid4())
+
 
 LFS_UNITS = []
 for u in settings.LFS_UNITS:
@@ -253,7 +250,7 @@ class Category(models.Model):
         """
         Returns format information.
         """
-        if self.active_formats == True:
+        if self.active_formats is True:
             return {
                 "product_cols": self.product_cols,
                 "product_rows": self.product_rows,
@@ -603,17 +600,20 @@ class Product(models.Model):
     unit = models.CharField(_(u"Quantity field unit"), blank=True, max_length=20, choices=LFS_UNITS)
     short_description = models.TextField(_(u"Short description"), blank=True)
     description = models.TextField(_(u"Description"), blank=True)
-    images = GenericRelation("Image", verbose_name=_(u"Images"),
+    images = GenericRelation(
+        "Image", verbose_name=_(u"Images"),
         object_id_field="content_id", content_type_field="content_type")
 
     meta_title = models.CharField(_(u"Meta title"), blank=True, default="<name>", max_length=80)
     meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
     meta_description = models.TextField(_(u"Meta description"), blank=True)
 
-    related_products = models.ManyToManyField("self", verbose_name=_(u"Related products"), blank=True,
+    related_products = models.ManyToManyField(
+        "self", verbose_name=_(u"Related products"), blank=True,
         symmetrical=False, related_name="reverse_related_products")
 
-    accessories = models.ManyToManyField("Product", verbose_name=_(u"Acessories"), blank=True,
+    accessories = models.ManyToManyField(
+        "Product", verbose_name=_(u"Acessories"), blank=True,
         symmetrical=False, through="ProductAccessories",
         related_name="reverse_accessories")
 
@@ -646,15 +646,15 @@ class Product(models.Model):
 
     # Standard Products
     tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
-    sub_type = models.CharField(_(u"Subtype"),
-        max_length=10, choices=PRODUCT_TYPE_CHOICES, default=STANDARD_PRODUCT)
+    sub_type = models.CharField(
+        _(u"Subtype"), max_length=10, choices=PRODUCT_TYPE_CHOICES, default=STANDARD_PRODUCT)
 
     # Varianted Products
     default_variant = models.ForeignKey("self", verbose_name=_(u"Default variant"), blank=True, null=True)
     category_variant = models.SmallIntegerField(_(u"Category variant"), blank=True, null=True,)
 
-    variants_display_type = models.IntegerField(_(u"Variants display type"),
-        choices=VARIANTS_DISPLAY_TYPE_CHOICES, default=LIST)
+    variants_display_type = models.IntegerField(
+        _(u"Variants display type"), choices=VARIANTS_DISPLAY_TYPE_CHOICES, default=LIST)
 
     # Product Variants
     variant_position = models.IntegerField(default=999)
@@ -1230,16 +1230,15 @@ class Product(models.Model):
                         selected_option_name = prop.options.get(pk=ppv.value).name
                     except (ProductPropertyValue.DoesNotExist, PropertyOption.DoesNotExist):
                         pass
-                properties.append({
-                                    "id": prop.id,
-                                    "name": prop.name,
-                                    "title": prop.title,
-                                    "unit": prop.unit,
-                                    "selected_option_name": selected_option_name,
-                                    "selected_option_value": selected_option_value,
-                                    "property_group": property_group,
-                                    "property_group_id": property_group.id if property_group else 0
-                                 })
+                properties.append({"id": prop.id,
+                                   "name": prop.name,
+                                   "title": prop.title,
+                                   "unit": prop.unit,
+                                   "selected_option_name": selected_option_name,
+                                   "selected_option_value": selected_option_value,
+                                   "property_group": property_group,
+                                   "property_group_id": property_group.id if property_group else 0
+                                   })
         return properties
 
     def get_variant_properties_for_parent(self):
@@ -1997,7 +1996,7 @@ class Product(models.Model):
         """
         Method to return the path of the product template
         """
-        if self.template != None:
+        if self.template is not None:
             id = int(self.template)
             return PRODUCT_TEMPLATES[id][1]["file"]
         return None
@@ -2463,6 +2462,7 @@ class Image(models.Model):
         if self.alt:
             return self.alt
         return self.title
+
 
 class File(models.Model):
     """

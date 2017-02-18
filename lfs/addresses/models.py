@@ -1,7 +1,6 @@
 # django imports
 from django.db import models
 from django.db.models import SET_NULL
-from django.template.base import Context
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 

@@ -168,7 +168,7 @@ def orders_filters_inline(request, template_name="manage/order/orders_filters_in
             "selected": state_id == str(state[0]),
         })
 
-    return render_to_string(template_name, request=request, context={
+    result = render_to_string(template_name, request=request, context={
         "paginator": paginator,
         "page": page,
         "state_id": state_id,
@@ -349,8 +349,6 @@ def set_selectable_orders_page(request):
 def set_orders_page(request):
     """Sets the page of selectable orders.
     """
-    order_id = request.GET.get("order-id", 1)
-
     html = (
         ("#orders-inline", orders_inline(request)),
         ("#orders-filters-inline", orders_filters_inline(request)),

@@ -1,25 +1,20 @@
-# python imports
 import math
-from django.forms.forms import BoundField
 import locale
+import logging
 
-# django imports
 from django import template
 from django.conf import settings
 from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
+from django.forms.forms import BoundField
 from django.template import Node, TemplateSyntaxError
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
-# lfs imports
 import lfs.catalog.utils
 import lfs.core.utils
 import lfs.core.views
 import lfs.utils.misc
-import logging
-
 from lfs.caching.utils import get_cache_group_id
 from lfs.catalog.models import Category
 from lfs.catalog.settings import VARIANT
@@ -29,9 +24,9 @@ from lfs.catalog.models import Product
 from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import PRODUCT_TYPE_LOOKUP
 from lfs.core.models import Action
+from lfs.manufacturer.models import Manufacturer
 from lfs.page.models import Page
 from lfs.shipping import utils as shipping_utils
-from lfs.manufacturer.models import Manufacturer
 
 logger = logging.getLogger(__name__)
 register = template.Library()
@@ -84,7 +79,7 @@ def google_analytics_ecommerce(context, clear_session=True):
 
 def _get_shipping(context, product):
     request = context.get("request")
-    if product.is_deliverable() == False:
+    if product.is_deliverable() is False:
         return {
             "deliverable": False,
             "delivery_time": shipping_utils.get_product_delivery_time(request, product)
@@ -300,11 +295,11 @@ class ActionsNode(Node):
         self.group_name = group_name
 
     def render(self, context):
-        request = context.get("request")
         context["actions"] = Action.objects.filter(active=True, group__name=self.group_name)
         return ''
 
 
+@register.tag('actions')
 def do_actions(parser, token):
     """
     Returns the actions for the group with the given id.
@@ -314,7 +309,6 @@ def do_actions(parser, token):
     if len_bits != 2:
         raise TemplateSyntaxError(_('%s tag needs group id as argument') % bits[0])
     return ActionsNode(bits[1])
-register.tag('actions', do_actions)
 
 
 class CheapestVariantNode(Node):
@@ -341,6 +335,7 @@ class CheapestVariantNode(Node):
         return ""
 
 
+@register.tag('cheapest_variant')
 def do_cheapest_variant(parser, token):
     """
     Returns the cheapest variant for the product with given id.
@@ -350,7 +345,6 @@ def do_cheapest_variant(parser, token):
     if len_bits != 2:
         raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
     return CheapestVariantNode(bits[1])
-register.tag('cheapest_variant', do_cheapest_variant)
 
 
 @register.inclusion_tag('lfs/shop/tabs.html', takes_context=True)
@@ -421,6 +415,7 @@ class TopLevelCategory(Node):
         return ''
 
 
+@register.tag('top_level_category')
 def do_top_level_category(parser, token):
     """Calculates the current top level category.
     """
@@ -430,7 +425,6 @@ def do_top_level_category(parser, token):
         raise TemplateSyntaxError(_('%s tag needs no argument') % bits[0])
 
     return TopLevelCategory()
-register.tag('top_level_category', do_top_level_category)
 
 
 class CartInformationNode(Node):
@@ -451,6 +445,7 @@ class CartInformationNode(Node):
         return ''
 
 
+@register.tag('cart_information')
 def do_cart_information(parser, token):
     """Calculates cart informations.
     """
@@ -460,7 +455,6 @@ def do_cart_information(parser, token):
         raise TemplateSyntaxError(_('%s tag needs no argument') % bits[0])
 
     return CartInformationNode()
-register.tag('cart_information', do_cart_information)
 
 
 class CurrentCategoryNode(Node):
@@ -475,6 +469,7 @@ class CurrentCategoryNode(Node):
         return ''
 
 
+@register.tag('current_category')
 def do_current_category(parser, token):
     """Calculates current category.
     """
@@ -484,7 +479,6 @@ def do_current_category(parser, token):
         raise TemplateSyntaxError(_('%s tag needs product as argument') % bits[0])
 
     return CurrentCategoryNode()
-register.tag('current_category', do_current_category)
 
 
 class ComeFromPageNode(Node):
@@ -499,6 +493,7 @@ class ComeFromPageNode(Node):
         return ''
 
 
+@register.tag('come_from_page')
 def do_come_from_page(parser, token):
     """Calculates current manufacturer or category.
     """
@@ -508,7 +503,6 @@ def do_come_from_page(parser, token):
         raise TemplateSyntaxError(_('%s tag needs product as argument') % bits[0])
 
     return ComeFromPageNode()
-register.tag('come_from_page', do_come_from_page)
 
 
 # TODO: Move this to shop utils or similar
@@ -737,6 +731,7 @@ class CategoryProductPricesGrossNode(Node):
         return ""
 
 
+@register.tag('category_product_prices_gross')
 def do_category_product_prices_gross(parser, token):
     """
     Injects all needed gross prices for the default category products view into
@@ -746,7 +741,6 @@ def do_category_product_prices_gross(parser, token):
     if len(bits) != 2:
         raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
     return CategoryProductPricesGrossNode(bits[1])
-register.tag('category_product_prices_gross', do_category_product_prices_gross)
 
 
 class CategoryProductPricesNetNode(Node):
@@ -792,6 +786,7 @@ class CategoryProductPricesNetNode(Node):
         return ""
 
 
+@register.tag('category_product_prices_net')
 def do_category_product_prices_net(parser, token):
     """
     Injects all needed net prices for the default category products view into
@@ -801,7 +796,6 @@ def do_category_product_prices_net(parser, token):
     if len(bits) != 2:
         raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
     return CategoryProductPricesNetNode(bits[1])
-register.tag('category_product_prices_net', do_category_product_prices_net)
 
 
 class CategoryProductPricesNode(Node):
@@ -847,6 +841,7 @@ class CategoryProductPricesNode(Node):
         return ""
 
 
+@register.tag('category_product_prices')
 def do_category_product_prices(parser, token):
     """
     Injects all needed stored prices for the default category products view into
@@ -856,7 +851,6 @@ def do_category_product_prices(parser, token):
     if len(bits) != 2:
         raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
     return CategoryProductPricesNode(bits[1])
-register.tag('category_product_prices', do_category_product_prices)
 
 
 @register.filter(name='get_price')

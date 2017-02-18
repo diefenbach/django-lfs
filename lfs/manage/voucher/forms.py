@@ -1,8 +1,6 @@
-# django imports
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-# lfs imports
 from lfs.tax.models import Tax
 from lfs.voucher.models import VoucherGroup
 from lfs.voucher.models import VoucherOptions
@@ -16,6 +14,7 @@ class VoucherOptionsForm(forms.ModelForm):
     class Meta:
         model = VoucherOptions
         exclude = ()
+
 
 class VoucherGroupAddForm(forms.ModelForm):
     """Form to add a VoucherGroup.

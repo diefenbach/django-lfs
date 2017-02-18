@@ -142,5 +142,5 @@ def invalidate_cache_group_id(group_code):
     cache_group_key = '%s-%s-GROUP' % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, group_code)
     try:
         cache.incr(cache_group_key)
-    except ValueError, e:
+    except ValueError:
         pass

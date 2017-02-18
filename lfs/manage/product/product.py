@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django import forms
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator, EmptyPage
@@ -18,7 +17,6 @@ from django.views.decorators.http import require_POST
 from django.forms.widgets import HiddenInput
 from django.conf import settings
 
-# lfs imports
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
@@ -71,7 +69,7 @@ class ProductDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductDataForm, self).__init__(*args, **kwargs)
         self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
-        self.fields["active_base_price"].widget = LFSCheckboxInput(check_test=lambda v: v!=0)
+        self.fields["active_base_price"].widget = LFSCheckboxInput(check_test=lambda v: v != 0)
         man_count = Manufacturer.objects.count()
         if man_count > getattr(settings, 'LFS_SELECT_LIMIT', 20):
             self.fields["manufacturer"].widget = HiddenInput()
@@ -79,9 +77,9 @@ class ProductDataForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ("active", "name", "slug", "manufacturer", "sku", "sku_manufacturer", "price", "tax", "price_calculator",
-            "short_description", "description", "for_sale", "for_sale_price", "static_block", "template",
-            "active_price_calculation", "price_calculation", "price_unit", "unit", "type_of_quantity_field",
-            "active_base_price", "base_price_unit", "base_price_amount")
+                  "short_description", "description", "for_sale", "for_sale_price", "static_block", "template",
+                  "active_price_calculation", "price_calculation", "price_unit", "unit", "type_of_quantity_field",
+                  "active_base_price", "base_price_unit", "base_price_amount")
 
     def clean(self):
         super(ProductDataForm, self).clean()
@@ -106,10 +104,10 @@ class VariantDataForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ("active", "active_name", "name", "slug", "manufacturer", "active_sku", "sku", "sku_manufacturer",
-            "active_price", "price", "price_calculator", "active_short_description", "short_description", "active_description",
-            "description", "for_sale", "for_sale_price", "active_for_sale", "active_for_sale_price",
-            "active_related_products", "active_static_block", "static_block", "template",
-            "active_base_price", "base_price_unit", "base_price_amount")
+                  "active_price", "price", "price_calculator", "active_short_description", "short_description", "active_description",
+                  "description", "for_sale", "for_sale_price", "active_for_sale", "active_for_sale_price",
+                  "active_related_products", "active_static_block", "static_block", "template",
+                  "active_base_price", "base_price_unit", "base_price_amount")
 
     def __init__(self, *args, **kwargs):
         super(VariantDataForm, self).__init__(*args, **kwargs)
@@ -586,8 +584,7 @@ def save_products(request):
                 msg = _(u"Products have been saved")
 
     html = (("#products-inline", products_inline(request, page, paginator)),
-            ("#pages-inline", pages_inline(request, page, paginator, 0))
-    )
+            ("#pages-inline", pages_inline(request, page, paginator, 0)))
 
     result = json.dumps({
         "html": html,

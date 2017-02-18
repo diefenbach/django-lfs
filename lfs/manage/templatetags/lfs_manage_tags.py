@@ -1,8 +1,6 @@
-# django imports
 from django import template
 from django.template.loader import render_to_string
 
-# lfs imports
 from lfs.catalog.models import Category
 from lfs.manufacturer.models import Manufacturer
 
@@ -54,7 +52,6 @@ def category_filter_children(request, category, name="category_filter", level=1)
     })
 
     return result
-
 
 
 @register.inclusion_tag('manage/manufacturers/manufacturer_filter.html', takes_context=True)

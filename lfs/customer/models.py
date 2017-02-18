@@ -1,18 +1,15 @@
-# django imports
 from copy import deepcopy
 
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-# lfs imports
-from lfs.core.models import Country
-from lfs.shipping.models import ShippingMethod
-from lfs.payment.models import PaymentMethod
 from lfs.addresses import settings
+from lfs.core.models import Country
+from lfs.payment.models import PaymentMethod
+from lfs.shipping.models import ShippingMethod
 
 
 class Customer(models.Model):

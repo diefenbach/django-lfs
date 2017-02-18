@@ -1,46 +1,43 @@
-# python imports
 import locale
 
-# Import tests from other packages
-from lfs.cart.tests import *
-from lfs.caching.tests import *
-from lfs.catalog.tests import *
-from lfs.customer_tax.tests import *
-from lfs.marketing.tests import *
-from lfs.order.tests import *
-from lfs.page.tests import *
-from lfs.search.tests import *
-from lfs.shipping.tests import *
-from lfs.voucher.tests import *
-from lfs.customer.tests import *
-from lfs.checkout.tests import *
-from lfs.manage.tests import *
-from lfs.gross_price.tests import *
-from lfs.net_price.tests import *
-# from lfs.core.wmtests import *
-
-try:
-    from lfs_order_numbers.tests import *
-except ImportError:
-    pass
-
-try:
-    from lfs_paypal.tests import *
-except ImportError:
-    pass
-
-# django imports
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
 from django.template import Template
 from django.template import Context
 from django.test import TestCase
 
-# lfs imports
 import lfs.core.utils
 from lfs.core.models import Shop
 from lfs.core.templatetags.lfs_tags import currency
 from lfs.order.models import Order
 from lfs.tests.utils import RequestFactory
+
+from lfs.cart.tests import *  # NOQA
+from lfs.caching.tests import *  # NOQA
+from lfs.catalog.tests import *  # NOQA
+from lfs.customer_tax.tests import *  # NOQA
+from lfs.marketing.tests import *  # NOQA
+from lfs.order.tests import *  # NOQA
+from lfs.page.tests import *  # NOQA
+from lfs.search.tests import *  # NOQA
+from lfs.shipping.tests import *  # NOQA
+from lfs.voucher.tests import *  # NOQA
+from lfs.customer.tests import *  # NOQA
+from lfs.checkout.tests import *  # NOQA
+from lfs.manage.tests import *  # NOQA
+from lfs.gross_price.tests import *  # NOQA
+from lfs.net_price.tests import *  # NOQA
+# from lfs.core.wmtests import *
+
+try:
+    from lfs_order_numbers.tests import *  # NOQA
+except ImportError:
+    pass
+
+try:
+    from lfs_paypal.tests import *  # NOQA
+except ImportError:
+    pass
 
 
 class ShopTestCase(TestCase):

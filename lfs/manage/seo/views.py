@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse
 from django.forms.models import modelform_factory
@@ -10,7 +9,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf.urls import url
 from django.views.generic.base import View
 
-# lfs.imports
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
 
@@ -71,9 +69,8 @@ class SEOView(View):
         """Prepare the output
         """
         seo_html = self.render(self.request, form.instance, form)
-        return HttpResponse(json.dumps({"seo": seo_html,
-                                              "message": message
-                                             }, cls=LazyEncoder), content_type='application/json')
+        return HttpResponse(json.dumps({"seo": seo_html, "message": message},
+                            cls=LazyEncoder), content_type='application/json')
 
     def form_valid(self, form):
         """Handle successfull validation

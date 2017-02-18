@@ -149,7 +149,7 @@ class LoginTestCase(TestCase):
         session = SessionStore()
 
         request = rf.post("/", {"product_id": self.p1.id, "quantity": 2, "property-%s-%s" % (self.pg.pk,
-                                                                                             self.pp1.id) : "A"})
+                                                                                             self.pp1.id): "A"})
         request.session = session
         request.user = AnonymousUser()
 
@@ -162,7 +162,7 @@ class LoginTestCase(TestCase):
         self.assertEqual(int(cart.get_items()[0].amount), 2)
 
         request = rf.post("/", {"product_id": self.p1.id, "quantity": 20, "property-%s-%s" % (self.pg.pk,
-                                                                                              self.pp1.id) : "B"})
+                                                                                              self.pp1.id): "B"})
         request.session = session
         request.user = AnonymousUser()
         add_to_cart(request)
@@ -752,20 +752,20 @@ class AddedToCartTestCase(TestCase):
 
         tax = Tax.objects.create(rate=19)
 
-        discount = Discount.objects.create(name="Summer",
-                                           active=True,
-                                           value=3.0,
-                                           type=DISCOUNT_TYPE_ABSOLUTE,
-                                           tax=tax,
-                                           sums_up=True)
+        Discount.objects.create(name="Summer",
+                                active=True,
+                                value=3.0,
+                                type=DISCOUNT_TYPE_ABSOLUTE,
+                                tax=tax,
+                                sums_up=True)
 
         discount_value = 2.0
-        discount = Discount.objects.create(name="Special offer 1",
-                                           active=True,
-                                           value=discount_value,
-                                           type=DISCOUNT_TYPE_ABSOLUTE,
-                                           tax=tax,
-                                           sums_up=False)
+        Discount.objects.create(name="Special offer 1",
+                                active=True,
+                                value=discount_value,
+                                type=DISCOUNT_TYPE_ABSOLUTE,
+                                tax=tax,
+                                sums_up=False)
 
         # vouchers
         from lfs.voucher.models import VoucherGroup, Voucher
@@ -808,4 +808,3 @@ class AddedToCartTestCase(TestCase):
         self.assertContains(response, 'Summer')
         self.assertContains(response, 'Voucher')
         self.assertContains(response, 'The voucher is valid')
-

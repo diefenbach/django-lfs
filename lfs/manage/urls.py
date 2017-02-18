@@ -1,26 +1,11 @@
-# General imports
 from django.conf.urls import url
-
-# LFS imports
-from lfs.core.models import Shop
-from lfs.manage.product.seo import SEOForm as ProductSEOForm
-from lfs.manage.pages.views import PageSEOView
-from lfs.manage.views.shop import ShopSEOView
-from lfs.catalog.models import Product, Category
-from lfs.page.models import Page
-from lfs.manufacturer.models import Manufacturer
-from lfs.manage.seo.views import SEOView
-
-from lfs.manage.delivery_times import views as delivery_times_views
-from lfs.manage.manufacturers import views as manufacturers_views
-from lfs.manage.manufacturers import products as manufacturers_products_views
-from lfs.manage.voucher import views as voucher_views
-from lfs.manage.views import lfs_portlets
-from lfs.manage.product import product
 
 import lfs.manage
 import lfs.manage.actions.views
-import lfs.manage.categories
+import lfs.manage.categories.category
+import lfs.manage.categories.portlet
+import lfs.manage.categories.products
+import lfs.manage.categories.view
 import lfs.manage.customer_tax.views
 import lfs.manage.discounts.views
 import lfs.manage.images.views
@@ -35,20 +20,38 @@ import lfs.manage.property.views
 import lfs.manage.property_groups.views
 import lfs.manage.shipping_methods.views
 import lfs.manage.static_blocks.views
+import lfs.manage.views.carts
 import lfs.manage.views.customer
 import lfs.manage.views.criteria
+import lfs.manage.views.dashboard
 import lfs.manage.views.export
 import lfs.manage.views.marketing.marketing
 import lfs.manage.views.marketing.featured
 import lfs.manage.views.marketing.rating_mails
 import lfs.manage.views.marketing.topseller
+import lfs.manage.views.orders
 import lfs.manage.views.payment
 import lfs.manage.views.review
 import lfs.manage.views.utils
+from lfs.catalog.models import Product
+from lfs.catalog.models import Category
+from lfs.core.models import Shop
+from lfs.manage.product.seo import SEOForm as ProductSEOForm
+from lfs.manage.pages.views import PageSEOView
+from lfs.manage.views.shop import ShopSEOView
+from lfs.manage.seo.views import SEOView
+from lfs.manage.delivery_times import views as delivery_times_views
+from lfs.manage.manufacturers import views as manufacturers_views
+from lfs.manage.manufacturers import products as manufacturers_products_views
+from lfs.manage.voucher import views as voucher_views
+from lfs.manage.views import lfs_portlets
+from lfs.manage.product import product
+from lfs.manufacturer.models import Manufacturer
+from lfs.page.models import Page
 
 
 urlpatterns = [
-    url(r'^$', lfs.manage.views.dashboard, name="lfs_manage_dashboard"),
+    url(r'^$', lfs.manage.views.dashboard.dashboard, name="lfs_manage_dashboard"),
 
     # Delivery Times
     url(r'^delivery_times$', delivery_times_views.manage_delivery_times, name="lfs_manage_delivery_times"),
@@ -231,21 +234,21 @@ urlpatterns = [
     url(r'^set-cart-page$', lfs.manage.views.carts.set_cart_page, name="lfs_set_cart_page"),
 
     # Categories
-    url(r'^categories$', lfs.manage.categories.manage_categories, name="lfs_manage_categories"),
-    url(r'^category/(?P<category_id>\d*)$', lfs.manage.categories.manage_category, name="lfs_manage_category"),
-    url(r'^category-by-id/(?P<category_id>\d*)$', lfs.manage.categories.category_by_id, name="lfs_category_by_id"),
-    url(r'^add-products/(?P<category_id>\d*)$', lfs.manage.categories.add_products, name="lfs_manage_category_add_products"),
-    url(r'^remove-products/(?P<category_id>\d*)$', lfs.manage.categories.remove_products, name="lfs_manage_category_remove_products"),
-    url(r'^add-top-category$', lfs.manage.categories.add_category, name="lfs_manage_add_top_category"),
-    url(r'^add-category/(?P<category_id>\d*)$', lfs.manage.categories.add_category, name="lfs_manage_add_category"),
-    url(r'^delete-category/(?P<id>[-\w]*)$', lfs.manage.categories.delete_category, name="lfs_delete_category"),
-    url(r'^products-inline/(?P<category_id>\d*)$', lfs.manage.categories.products_inline, name="lfs_manage_category_products_inline"),
-    url(r'^edit-category-data/(?P<category_id>\d*)$', lfs.manage.categories.edit_category_data, name="lfs_manage_category_edit_data"),
-    url(r'^edit-category-view/(?P<category_id>\d*)$', lfs.manage.categories.category_view, name="lfs_manage_category_view"),
-    url(r'^selected-products/(?P<category_id>\d*)$', lfs.manage.categories.selected_products, name="lfs_selected_products"),
-    url(r'^load-products-tab/(?P<category_id>\d*)$', lfs.manage.categories.products_tab, name="lfs_load_products_tab"),
-    url(r'^sort-categories$', lfs.manage.categories.sort_categories, name="lfs_sort_categories"),
-    url(r'^no-categories$', lfs.manage.categories.no_categories, name="lfs_manage_no_categories"),
+    url(r'^categories$', lfs.manage.categories.category.manage_categories, name="lfs_manage_categories"),
+    url(r'^category/(?P<category_id>\d*)$', lfs.manage.categories.category.manage_category, name="lfs_manage_category"),
+    url(r'^category-by-id/(?P<category_id>\d*)$', lfs.manage.categories.category.category_by_id, name="lfs_category_by_id"),
+    url(r'^add-products/(?P<category_id>\d*)$', lfs.manage.categories.products.add_products, name="lfs_manage_category_add_products"),
+    url(r'^remove-products/(?P<category_id>\d*)$', lfs.manage.categories.products.remove_products, name="lfs_manage_category_remove_products"),
+    url(r'^add-top-category$', lfs.manage.categories.category.add_category, name="lfs_manage_add_top_category"),
+    url(r'^add-category/(?P<category_id>\d*)$', lfs.manage.categories.category.add_category, name="lfs_manage_add_category"),
+    url(r'^delete-category/(?P<id>[-\w]*)$', lfs.manage.categories.category.delete_category, name="lfs_delete_category"),
+    url(r'^products-inline/(?P<category_id>\d*)$', lfs.manage.categories.products.products_inline, name="lfs_manage_category_products_inline"),
+    url(r'^edit-category-data/(?P<category_id>\d*)$', lfs.manage.categories.category.edit_category_data, name="lfs_manage_category_edit_data"),
+    url(r'^edit-category-view/(?P<category_id>\d*)$', lfs.manage.categories.category.category_view, name="lfs_manage_category_view"),
+    url(r'^selected-products/(?P<category_id>\d*)$', lfs.manage.categories.products.selected_products, name="lfs_selected_products"),
+    url(r'^load-products-tab/(?P<category_id>\d*)$', lfs.manage.categories.products.products_tab, name="lfs_load_products_tab"),
+    url(r'^sort-categories$', lfs.manage.categories.category.sort_categories, name="lfs_sort_categories"),
+    url(r'^no-categories$', lfs.manage.categories.view.no_categories, name="lfs_manage_no_categories"),
 
     # Customers
     url(r'^customers$', lfs.manage.views.customer.customers, name="lfs_manage_customers"),
@@ -308,7 +311,6 @@ urlpatterns = [
     url(r'^page-by-id/(?P<id>\d*)$', lfs.manage.pages.views.page_view_by_id, name="lfs_page_view_by_id"),
     url(r'^sort-pages$', lfs.manage.pages.views.sort_pages, name="lfs_sort_pages"),
     url(r'^save-page-data-tab/(?P<id>\d*)$', lfs.manage.pages.views.save_data_tab, name="lfs_save_page_data_tab"),
-
 
     # Payment
     url(r'^payment$', lfs.manage.views.payment.manage_payment, name="lfs_manage_payment"),

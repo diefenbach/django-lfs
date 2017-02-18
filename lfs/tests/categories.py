@@ -1,14 +1,5 @@
-# django imports
 from django.test import TestCase
-from django.test.client import Client
-from django.contrib.auth.models import User
-
-# test imports
-from lfs.tests.utils import DummyRequest
-
-# lfs imports
 from lfs.catalog.models import Category
-from lfs.views import get_category_nodes
 
 
 class CategoriesTestCase(TestCase):

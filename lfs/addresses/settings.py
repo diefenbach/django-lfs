@@ -1,4 +1,3 @@
-# django imports
 from django.conf import settings
 
 ADDRESS_MODEL = getattr(settings, "LFS_ADDRESS_MODEL", "lfs.addresses.models.Address")

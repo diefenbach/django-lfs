@@ -91,7 +91,8 @@ def send_rating_mails(request):
             mail.attach_alternative(html, "text/html")
             mail.send()
 
-        return render(request, template_name, {
-            "display_orders_sent": True,
-            "orders_sent": orders_sent
-        })
+        # TODO: What is template_name?
+        # return render(request, template_name, {
+        #     "display_orders_sent": True,
+        #     "orders_sent": orders_sent
+        # })

@@ -51,7 +51,7 @@ def manage_delivery_time(request, id, template_name="manage/delivery_times/base.
     if request.method == "POST":
         form = DeliveryTimeForm(instance=delivery_time, data=request.POST, files=request.FILES)
         if form.is_valid():
-            new_delivery_time = form.save()
+            form.save()
             return lfs.core.utils.set_message_cookie(
                 url=reverse("lfs_manage_delivery_time", kwargs={"id": id}),
                 msg=_(u"Delivery time has been saved."),

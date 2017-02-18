@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.db.models import Q
@@ -8,7 +7,6 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-# lfs imports
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.signals import product_changed
 from lfs.core.signals import category_changed
@@ -70,8 +68,7 @@ def products_inline(request, category_id, as_string=False, template_name="manage
     s["category_filter"] = category_filter
 
     try:
-        s["category-products-amount"] = int(req.get("category-products-amount",
-                                      s.get("category-products-amount")))
+        s["category-products-amount"] = int(req.get("category-products-amount", s.get("category-products-amount")))
     except TypeError:
         s["category-products-amount"] = 25
 
@@ -99,7 +96,7 @@ def products_inline(request, category_id, as_string=False, template_name="manage
     except (EmptyPage, InvalidPage):
         page = paginator.page(1)
 
-    return render_to_string(template_name, request=request, context={
+    result = render_to_string(template_name, request=request, context={
         "category": category,
         "paginator": paginator,
         "page": page,
@@ -138,11 +135,9 @@ def selected_products(request, category_id, as_string=False, template_name="mana
     if req.get("keep-session"):
         page_2 = req.get("page_2", request.session.get("page_2", 2))
         filter_2 = req.get("filter_2", request.session.get("filter_2", ""))
-        category_filter_2 = req.get("category_filter_2", request.session.get("category_filter_2", ""))
     else:
         page_2 = 1
         filter_2 = ""
-        category_filter_2 = ""
 
     request.session["page_2"] = page_2
     request.session["filter_2"] = filter_2
@@ -164,7 +159,7 @@ def selected_products(request, category_id, as_string=False, template_name="mana
     except (EmptyPage, InvalidPage):
         page_2 = paginator_2.page(1)
 
-    return render_to_string(template_name, request=request, context={
+    result = render_to_string(template_name, request=request, context={
         "category": category,
         "products": products,
         "paginator_2": paginator_2,

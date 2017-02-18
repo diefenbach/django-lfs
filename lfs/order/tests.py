@@ -1,20 +1,14 @@
-# python imports
 import locale
 import datetime
 
-# django imports
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
-from django.shortcuts import get_object_or_404
 from django.test import TestCase
-from django.test.client import Client
 
-# test imports
 from lfs.catalog.models import Product, DeliveryTime
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
-from lfs.cart.views import add_to_cart
 from lfs.cart import utils as cart_utils
 from lfs.core.models import Country
 from lfs.addresses.models import Address
@@ -27,9 +21,9 @@ from lfs.order.settings import SUBMITTED
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
-from lfs.tests.utils import DummySession
 from lfs.tests.utils import RequestFactory
 from lfs.discounts.models import Discount
+
 
 class OrderTestCase(TestCase):
     """
@@ -92,7 +86,7 @@ class OrderTestCase(TestCase):
             email="jane@doe.com",
         )
 
-        address3 = Address.objects.create(
+        Address.objects.create(
             firstname="John",
             lastname="Doe",
             company_name="Doe Ltd.",
@@ -104,7 +98,7 @@ class OrderTestCase(TestCase):
             email="john@doe.com",
         )
 
-        address4 = Address.objects.create(
+        Address.objects.create(
             firstname="Jane",
             lastname="Doe",
             company_name="Doe Ltd.",
@@ -148,13 +142,13 @@ class OrderTestCase(TestCase):
             session=session.session_key
         )
 
-        item = CartItem.objects.create(
+        CartItem.objects.create(
             cart=cart,
             product=self.p1,
             amount=2,
         )
 
-        item = CartItem.objects.create(
+        CartItem.objects.create(
             cart=cart,
             product=self.p2,
             amount=3,
@@ -232,7 +226,7 @@ class OrderTestCase(TestCase):
         """
         locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
         from lfs.payment.utils import process_payment
-        result = process_payment(self.request)
+        process_payment(self.request)
 
         order = Order.objects.filter()[0]
         self.assertEqual(order.get_pay_link(self.request), "")
@@ -250,7 +244,7 @@ class OrderTestCase(TestCase):
         self.customer.save()
 
         from lfs.payment.utils import process_payment
-        result = process_payment(self.request)
+        process_payment(self.request)
 
         order = Order.objects.filter()[0]
         self.failIf(order.get_pay_link(self.request).find("paypal") == -1)
@@ -269,20 +263,20 @@ class OrderTestCase(TestCase):
         """
         self.tax = Tax.objects.create(rate=19)
 
-        discount = Discount.objects.create(name="Summer",
-                                           active=True,
-                                           value=10.0,
-                                           type=DISCOUNT_TYPE_ABSOLUTE,
-                                           tax=self.tax,
-                                           sums_up=True)
+        Discount.objects.create(name="Summer",
+                                active=True,
+                                value=10.0,
+                                type=DISCOUNT_TYPE_ABSOLUTE,
+                                tax=self.tax,
+                                sums_up=True)
 
         discount_value = 11.0
-        discount = Discount.objects.create(name="Special offer 1",
-                                           active=True,
-                                           value=discount_value,
-                                           type=DISCOUNT_TYPE_ABSOLUTE,
-                                           tax=self.tax,
-                                           sums_up=False)
+        Discount.objects.create(name="Special offer 1",
+                                active=True,
+                                value=discount_value,
+                                type=DISCOUNT_TYPE_ABSOLUTE,
+                                tax=self.tax,
+                                sums_up=False)
 
         order = add_order(self.request)
         tax_value = discount_value * (self.tax.rate / (100.0 + self.tax.rate))
@@ -304,20 +298,20 @@ class OrderTestCase(TestCase):
         """
         tax = Tax.objects.create(rate=19)
 
-        discount = Discount.objects.create(name="Summer",
-                                           active=True,
-                                           value=10.0,
-                                           type=DISCOUNT_TYPE_ABSOLUTE,
-                                           tax=tax,
-                                           sums_up=True)
+        Discount.objects.create(name="Summer",
+                                active=True,
+                                value=10.0,
+                                type=DISCOUNT_TYPE_ABSOLUTE,
+                                tax=tax,
+                                sums_up=True)
 
         discount_value = 11.0
-        discount = Discount.objects.create(name="Special offer 1",
-                                           active=True,
-                                           value=discount_value,
-                                           type=DISCOUNT_TYPE_ABSOLUTE,
-                                           tax=tax,
-                                           sums_up=False)
+        Discount.objects.create(name="Special offer 1",
+                                active=True,
+                                value=discount_value,
+                                type=DISCOUNT_TYPE_ABSOLUTE,
+                                tax=tax,
+                                sums_up=False)
 
         # vouchers
         from lfs.voucher.models import VoucherGroup, Voucher
@@ -348,7 +342,7 @@ class OrderTestCase(TestCase):
         self.request.session['voucher'] = 'AAAA'
 
         order = add_order(self.request)
-        tax_value = voucher_value * (tax.rate / (100.0 + tax.rate))
+        voucher_value * (tax.rate / (100.0 + tax.rate))
 
         all_product_names = list(order.items.values_list('product_name', flat=True))
         # voucher value is biggest one
@@ -365,20 +359,20 @@ class OrderTestCase(TestCase):
         """
         tax = Tax.objects.create(rate=19)
 
-        discount = Discount.objects.create(name="Summer",
-                                           active=True,
-                                           value=10.0,
-                                           type=DISCOUNT_TYPE_ABSOLUTE,
-                                           tax=tax,
-                                           sums_up=True)
+        Discount.objects.create(name="Summer",
+                                active=True,
+                                value=10.0,
+                                type=DISCOUNT_TYPE_ABSOLUTE,
+                                tax=tax,
+                                sums_up=True)
 
         discount_value = 25.0
-        discount = Discount.objects.create(name="Special offer 1",
-                                           active=True,
-                                           value=discount_value,
-                                           type=DISCOUNT_TYPE_ABSOLUTE,
-                                           tax=tax,
-                                           sums_up=False)
+        Discount.objects.create(name="Special offer 1",
+                                active=True,
+                                value=discount_value,
+                                type=DISCOUNT_TYPE_ABSOLUTE,
+                                tax=tax,
+                                sums_up=False)
 
         # vouchers
         from lfs.voucher.models import VoucherGroup, Voucher
@@ -409,11 +403,10 @@ class OrderTestCase(TestCase):
         self.request.session['voucher'] = 'AAAA'
 
         order = add_order(self.request)
-        tax_value = voucher_value * (tax.rate / (100.0 + tax.rate))
+        voucher_value * (tax.rate / (100.0 + tax.rate))
 
         all_product_names = list(order.items.values_list('product_name', flat=True))
         # voucher value is biggest one
         self.assertTrue("Summer" not in all_product_names)
         self.assertTrue("Special offer 1" in all_product_names)
         self.assertEqual(order.voucher_price, 0)
-

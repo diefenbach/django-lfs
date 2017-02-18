@@ -1,5 +1,4 @@
 import os
-import datetime
 
 from django.conf import settings
 from windmill.authoring import djangotest

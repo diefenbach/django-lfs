@@ -3,9 +3,6 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
 from django.test import TestCase
 
-from lfs.tests.utils import DummyRequest
-
-# lfs imports
 import lfs.cart.utils
 from lfs.addresses.models import Address
 from lfs.cart.models import Cart
@@ -20,6 +17,7 @@ from lfs.discounts.models import Discount
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
+from lfs.tests.utils import DummyRequest
 from lfs.tests.utils import RequestFactory
 
 
@@ -54,7 +52,7 @@ class DiscountsTestCase1(TestCase):
     def test_criteria(self):
         """
         """
-        c = WeightCriterion.objects.create(value=10.0, operator=GREATER_THAN, content=self.d)
+        WeightCriterion.objects.create(value=10.0, operator=GREATER_THAN, content=self.d)
 
         self.assertEqual(self.d.is_valid(self.request), False)
         self.assertEqual(self.d.is_valid(self.request, self.p), True)
@@ -78,7 +76,7 @@ class DiscountTestCase2(TestCase):
 
         tax = Tax.objects.create(rate=19)
 
-        discount = Discount.objects.create(name="Summer", value=10.0, type=0, tax=tax)
+        Discount.objects.create(name="Summer", value=10.0, type=0, tax=tax)
 
         shipping_method = ShippingMethod.objects.create(
             name="Standard",
@@ -106,7 +104,6 @@ class DiscountTestCase2(TestCase):
             phone="555-111111",
             email="john@doe.com",
         )
-
 
         address2 = Address.objects.create(
             firstname="John",
@@ -152,13 +149,13 @@ class DiscountTestCase2(TestCase):
             session=session.session_key
         )
 
-        item = CartItem.objects.create(
+        CartItem.objects.create(
             cart=cart,
             product=self.p1,
             amount=2,
         )
 
-        item = CartItem.objects.create(
+        CartItem.objects.create(
             cart=cart,
             product=self.p2,
             amount=3,

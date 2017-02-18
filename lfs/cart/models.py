@@ -1,22 +1,18 @@
-# python imports
-import locale
 import re
+import locale
+import logging
 
-# django imports
 from django.conf import settings
-from django.core.cache import cache
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-# lfs imports
-import lfs.catalog.utils
 from lfs.catalog.models import Product, PropertyGroup
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
 
-# Load logger
-import logging
+
 logger = logging.getLogger(__name__)
 
 

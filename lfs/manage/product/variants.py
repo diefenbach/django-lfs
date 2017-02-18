@@ -1,7 +1,6 @@
 import json
 from copy import deepcopy
 
-# django imports
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.core.cache import cache
@@ -15,7 +14,6 @@ from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-# lfs imports
 from lfs.caching.utils import lfs_get_object_or_404, get_cache_group_id, invalidate_cache_group_id
 from lfs.core.signals import product_changed
 from lfs.catalog.models import Product
@@ -799,4 +797,3 @@ def _selectable_products_inline(request, product):
         page = paginator.page(1)
 
     return selectable_products_inline(request, page, paginator, product.id)
-

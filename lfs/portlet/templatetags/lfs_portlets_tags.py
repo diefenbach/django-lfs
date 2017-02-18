@@ -1,20 +1,17 @@
-# django imports
 from django import template
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.translation import ugettext_lazy as _
 
-# portlets imports
 from portlets.models import Slot
 
-# lfs import
 import lfs.core.utils
-from lfs.portlet.models import CartPortlet
-from lfs.portlet.models import CategoriesPortlet
-from lfs.portlet.models import PagesPortlet
-from lfs.portlet.models import RecentProductsPortlet
-from lfs.portlet.models import RelatedProductsPortlet
-from lfs.portlet.models import TopsellerPortlet
+from lfs.portlet.models.cart import CartPortlet
+from lfs.portlet.models.categories import CategoriesPortlet
+from lfs.portlet.models.pages import PagesPortlet
+from lfs.portlet.models.recent_products import RecentProductsPortlet
+from lfs.portlet.models.related_products import RelatedProductsPortlet
+from lfs.portlet.models.topseller import TopsellerPortlet
 
 register = template.Library()
 

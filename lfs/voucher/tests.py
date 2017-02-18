@@ -40,7 +40,7 @@ class VoucherUtilsTestCase(TestCase):
             number_suffix="XM",
             number_length=4,
             number_letters="abcdefghijklmnopqrstuvwxyz",
-            )
+        )
 
         number = lfs.voucher.utils.create_voucher_number()
         self.failUnless(len(number) == 8)

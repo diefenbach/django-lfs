@@ -1,2 +1,2 @@
-from test_checkout import *
-from test_addresses import *
+from test_checkout import *  # NOQA
+from test_addresses import *  # NOQA

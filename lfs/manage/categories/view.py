@@ -1,6 +1,5 @@
 import json
 
-# django imports
 from django.contrib.auth.decorators import permission_required
 from django.forms import ModelForm
 from django.http import HttpResponse
@@ -8,7 +7,6 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 
-# lfs.imports
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.core.utils import LazyEncoder
 from lfs.catalog.models import Category
@@ -26,7 +24,7 @@ class ViewForm(ModelForm):
     class Meta:
         model = Category
         fields = ("template", "show_all_products", "active_formats",
-            "product_cols", "product_rows", "category_cols", )
+                  "product_cols", "product_rows", "category_cols", )
 
 
 @permission_required("core.manage_shop")
