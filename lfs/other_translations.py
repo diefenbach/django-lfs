@@ -4,7 +4,7 @@ def _():
 
 _(u'Price excludes tax')
 _(u'Price includes tax')
-_(u'Street')
+_(u'Street / No')
 _(u'Left')
 _(u'Right')
 _(u'Average Rating')
