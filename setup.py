@@ -40,7 +40,7 @@ setup(name='django-lfs',
           'lfs-contact == 1.3',
           'lfs-order-numbers == 1.2',
           'lfs-paypal == 1.4',
-          'lfs-theme == 0.10.1',
+          'lfs-theme == 0.11',
           'Pillow == 4.0',
       ],
       )
