@@ -578,6 +578,8 @@ def currency(value, request=None, grouping=True):
         result = str(value)
         logger.error("currency filter: %s" % e)
 
+    result = decimal_l10n(result)
+
     # add css class if value is negative
     negative = False
     if value < 0:
