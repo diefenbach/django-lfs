@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
+from django.db.models import F
 from django.db import models
 from django.template.defaultfilters import striptags
 from django.utils.translation import ugettext_lazy as _
@@ -740,7 +741,7 @@ class Product(models.Model):
         given amount.
         """
         if self.manage_stock_amount:
-            self.stock_amount -= amount
+            self.stock_amount = F('stock_amount') - amount
         self.save()
 
     def get_accessories(self):
