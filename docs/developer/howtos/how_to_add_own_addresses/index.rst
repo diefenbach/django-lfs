@@ -126,7 +126,7 @@ Good to Know
 
 * By default LFS automatically updates default addresses to the values from
   last order. It is possible to change this behavior by setting
-   ``LFS_AUTO_UPDATE_DEFAULT_ADDRESSES`` to False.
+  ``LFS_AUTO_UPDATE_DEFAULT_ADDRESSES`` to False.
 
 See Also
 ========
