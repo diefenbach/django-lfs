@@ -28,6 +28,7 @@ from lfs.customer.forms import CreditCardForm, CustomerAuthenticationForm
 from lfs.customer.forms import BankAccountForm
 from lfs.customer.forms import RegisterForm
 from lfs.payment.models import PaymentMethod
+from lfs.voucher.models import Voucher
 
 
 def login(request, template_name="lfs/checkout/login.html"):
@@ -240,7 +241,19 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
         else:
             toc = True
 
-        if checkout_form.is_valid() and bank_account_form.is_valid() and iam.is_valid() and sam.is_valid() and toc:
+        # Prevent checkout if voucher is not valid (any more)
+        voucher_number = request.POST.get("voucher")
+        if voucher_number:
+            try:
+                voucher = Voucher.objects.get(number=voucher_number)
+            except Voucher.DoesNotExist:
+                is_valid_voucher = False
+            else:
+                is_valid_voucher = voucher.is_effective(request, cart)[0]
+        else:
+            is_valid_voucher = True
+
+        if is_valid_voucher and checkout_form.is_valid() and bank_account_form.is_valid() and iam.is_valid() and sam.is_valid() and toc:
             if CHECKOUT_NOT_REQUIRED_ADDRESS == 'shipping':
                 iam.save()
                 if request.POST.get("no_shipping", "") == "":
