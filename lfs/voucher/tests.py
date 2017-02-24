@@ -190,6 +190,7 @@ class VoucherTestCase(TestCase):
         self.assertEqual(self.v1.last_used_date, None)
 
         self.v1.mark_as_used()
+        self.v1.refresh_from_db()
 
         self.assertEqual(self.v1.used_amount, 1)
         self.failIf(self.v1.last_used_date is None)

@@ -1811,6 +1811,7 @@ class ProductTestCase(TestCase):
 
         # We try to decrease the stock amount ...
         self.p1.decrease_stock_amount(1)
+        self.p1.refresh_from_db()
 
         # ... but as the stock amount is not managed by LFS any more we have
         # still 1 in the stock.

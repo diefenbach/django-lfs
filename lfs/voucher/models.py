@@ -2,6 +2,7 @@ import datetime
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models import F
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -143,7 +144,7 @@ class Voucher(models.Model):
     def mark_as_used(self):
         """Mark voucher as used.
         """
-        self.used_amount += 1
+        self.used_amount = F('used_amount') + 1
         self.last_used_date = timezone.now()
         self.save()
 
