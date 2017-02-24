@@ -144,10 +144,18 @@
                         {{ voucher.effective_from }}
                     </td>
                     <td class="number">
-                        {{ voucher.sums_up|yesno }}
+                        {% if voucher.sums_up %}
+                            <img src="{% static 'lfs/icons/tick.png' %}" />
+                        {% else %}
+                            <img src="{% static 'lfs/icons/cross.png' %}" />
+                        {% endif %}
                     </td>
                     <td class="right">
-                        {{ voucher.active }}
+                        {% if voucher.active %}
+                            <img src="{% static 'lfs/icons/tick.png' %}" />
+                        {% else %}
+                            <img src="{% static 'lfs/icons/cross.png' %}" />
+                        {% endif %}
                     </td>
                     <td class="right">
                         {{ voucher.used_amount }}
