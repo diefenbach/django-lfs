@@ -11,6 +11,7 @@ Make sure you have installed:
 
 * Python 2.6.x or 2.7.x
 * A RDBMS of your choice (PostgreSQL, MySQL, SQLite or Oracle)
+* libjpeg8-dev zlib1g-dev (for Image handling via Pillow)
 
 Installation
 ============
