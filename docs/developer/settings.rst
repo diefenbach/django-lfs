@@ -52,8 +52,8 @@ LFS_PRICE_CALCULATORS
     the product. LFS is shipped with following entries::
 
         LFS_PRICE_CALCULATORS = [
-            ["lfs.gross_price.GrossPriceCalculator", _(u"Price includes tax")],
-            ["lfs.net_price.NetPriceCalculator", _(u"Price excludes tax")],
+            ["lfs.gross_price.calculator.GrossPriceCalculator", _(u"Price includes tax")],
+            ["lfs.net_price.calculator.NetPriceCalculator", _(u"Price excludes tax")],
         ]
 
     .. seealso::
