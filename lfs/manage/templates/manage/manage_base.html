@@ -15,7 +15,7 @@
         {% endcompress %}
         <script type="text/javascript">
             var LFS_MANAGE_IMAGEBROWSER_URL = '{% url 'lfs_manage_imagebrowser' %}';
-            var STATIC_URL = {% static '' %};
+            var STATIC_URL = '{% static '' %}';
         </script>
         {% compress js %}
             <script type="text/javascript" src="{% static 'lfs/bower_components/jquery/dist/jquery.min.js' %}"></script>
