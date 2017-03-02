@@ -940,8 +940,8 @@ msgstr "Die gewählte Kombination von Eigenschaften ist nicht lieferbar"
 #: catalog/views.py:556 manufacturer/views.py:175
 msgid "%(count)d product"
 msgid_plural "%(count)d products"
-msgstr[0] "Anzahl Produkt"
-msgstr[1] "Anzahl Produkte"
+msgstr[0] "%(count)d Produkt"
+msgstr[1] "%(count)d Produkte"
 
 #: checkout/forms.py:9
 msgid "Requested Delivery Date"

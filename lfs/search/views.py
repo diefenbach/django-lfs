@@ -1,13 +1,16 @@
 import json
 
-# django imports
+from django.core.paginator import EmptyPage
+from django.core.paginator import InvalidPage
+from django.core.paginator import Paginator
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 
-# lfs imports
 from lfs.catalog.models import Product
+from lfs.core.utils import lfs_pagination
 
 
 def livesearch(request, template_name="lfs/search/livesearch_results.html"):
@@ -49,6 +52,7 @@ def search(request, template_name="lfs/search/search_results.html"):
     ordered by the globally set sorting.
     """
     q = request.GET.get("q", "")
+    start = request.GET.get("start", 1)
 
     # Products
     query = Q(active=True) & (
@@ -64,10 +68,20 @@ def search(request, template_name="lfs/search/search_results.html"):
     if sorting:
         products = products.order_by(sorting)
 
-    total = products.count()
+    # prepare paginator
+    paginator = Paginator(products, 10)
+
+    try:
+        current_page = paginator.page(start)
+    except (EmptyPage, InvalidPage):
+        current_page = paginator.page(paginator.num_pages)
+
+    # Calculate urls
+    pagination_data = lfs_pagination(request, current_page, url=reverse('lfs_search'))
 
     return render(request, template_name, {
-        "products": products,
+        "products": current_page,
+        "pagination": pagination_data,
         "q": q,
-        "total": total,
+        "total": products.count(),
     })
