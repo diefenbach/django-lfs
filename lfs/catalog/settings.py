@@ -144,7 +144,7 @@ PRODUCT_TEMPLATES = (
 )
 PRODUCT_TEMPLATES = getattr(settings, 'PRODUCT_TEMPLATES', PRODUCT_TEMPLATES)
 
-THUMBNAIL_SIZES = getattr(settings, 'LFS_THUMBNAIL_SIZES', ((60, 60), (100, 100), (200, 200), (300, 300), (400, 400)))
+THUMBNAIL_SIZES = getattr(settings, 'LFS_THUMBNAIL_SIZES', ((60, 60), (100, 100), (200, 200), (300, 300), (400, 400), (600, 600)))
 DELETE_FILES = getattr(settings, "LFS_DELETE_FILES", True)
 DELETE_IMAGES = getattr(settings, "LFS_DELETE_IMAGES", True)
 if getattr(settings, 'SOLR_ENABLED', False):
