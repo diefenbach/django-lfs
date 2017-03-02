@@ -76,13 +76,13 @@ Steps
 
    .. code-block:: html
 
-     <script type="text/javascript" src="{{ STATIC_URL }}tiny_mce-3.4.2/jquery.tinymce.js"></script>
+     <script type="text/javascript" src="{% static 'tiny_mce-3.4.2/jquery.tinymce.js' %}"></script>
 
    with (use path to TinyMCE folder that you created in step 2):
 
    .. code-block:: html
 
-     <script type="text/javascript" src="{{ STATIC_URL }}manage/tiny_mce_x_x/jquery.tinymce.js"></script>
+     <script type="text/javascript" src="{% static 'manage/tiny_mce_x_x/jquery.tinymce.js' %}"></script>
 
    Add following code to <head> section:
 

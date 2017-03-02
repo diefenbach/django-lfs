@@ -94,6 +94,6 @@ To use own CSS several steps are necessary.
 
 5. Include your CSS file to the header::
 
-    <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}mytheme/mytheme.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'mytheme/mytheme.css' %}">
 
 6. Optionally delete the link to main.css (if you just want to use your own CSS).
