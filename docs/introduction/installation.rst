@@ -149,7 +149,6 @@ execute following steps:
         ["lfs.criteria.models.WeightCriterion", _(u"Weight")],
         ["lfs.criteria.models.ShippingMethodCriterion", _(u"Shipping Method")],
         ["lfs.criteria.models.PaymentMethodCriterion", _(u"Payment Method")],
-        ["lfs_criterion_us_states.models.USStatesCriterion", _(u"US State")],
     ]
 
     LFS_ORDER_NUMBER_GENERATOR = "lfs_order_numbers.models.OrderNumberGenerator"
