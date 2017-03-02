@@ -128,7 +128,6 @@ def breadcrumbs(context, obj, current_page=''):
 
         result = {
             "objects": objects,
-            "STATIC_URL": context.get("STATIC_URL"),
         }
         cache.set(cache_key, result)
     elif isinstance(obj, Product):
@@ -159,7 +158,6 @@ def breadcrumbs(context, obj, current_page=''):
 
         result = {
             "objects": objects,
-            "STATIC_URL": context.get("STATIC_URL"),
         }
     elif isinstance(obj, Page):
         objects = []
@@ -170,7 +168,6 @@ def breadcrumbs(context, obj, current_page=''):
 
         result = {
             "objects": objects,
-            "STATIC_URL": context.get("STATIC_URL"),
         }
     elif isinstance(obj, Manufacturer):
         objects = []
@@ -181,12 +178,10 @@ def breadcrumbs(context, obj, current_page=''):
 
         result = {
             "objects": objects,
-            "STATIC_URL": context.get("STATIC_URL"),
         }
     else:
         result = {
             "objects": ({"name": obj},),
-            "STATIC_URL": context.get("STATIC_URL"),
         }
 
     return result
@@ -279,7 +274,6 @@ def product_navigation(context, product):
         "next": next_product,
         "current": product_index + 1,
         "total": total,
-        "STATIC_URL": context.get("STATIC_URL"),
     }
 
     cache.set(cache_key, {'sorting': result})
@@ -371,7 +365,6 @@ def tabs(context, obj=None):
 
     return {
         "tabs": tabs,
-        "STATIC_URL": context.get("STATIC_URL"),
     }
 
 
