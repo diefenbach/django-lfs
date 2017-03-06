@@ -27,6 +27,7 @@ from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
 from lfs.catalog.settings import VARIANT, PROPERTY_SELECT_FIELD
 from lfs.core.utils import LazyEncoder
+from lfs.core.utils import atof
 from lfs.manage import utils as manage_utils
 
 
@@ -596,7 +597,10 @@ def update_variants(request, product_id):
                         value = request.POST.get("%s-%s" % (name, prop_id))
                         if value != "":
                             if name == 'price':
-                                value = float(value)
+                                try:
+                                    value = abs(atof(str(value)))
+                                except (TypeError, ValueError):
+                                    value = 0.0
                             setattr(variant, name, value)
 
                     # handle slug - ensure it is unique

@@ -17,6 +17,7 @@ from django.views.decorators.http import require_POST
 from lfs.caching.listeners import invalidate_cache_group_id
 import lfs.core.utils
 from lfs.core.utils import LazyEncoder
+from lfs.core.utils import atof
 from lfs.core.signals import property_type_changed
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyOption
@@ -469,8 +470,8 @@ def add_option(request, property_id):
         name = request.POST.get("name", "")
         price = request.POST.get("price", "")
         try:
-            price = float(price)
-        except ValueError:
+            price = abs(atof(str(price)))
+        except (TypeError, ValueError):
             price = 0.0
 
         if name != "":
@@ -479,17 +480,15 @@ def add_option(request, property_id):
         else:
             message = _(u"Option could not be added.")
     else:
-
         for option_id in request.POST.getlist("option"):
-
             try:
                 option = PropertyOption.objects.get(pk=option_id)
             except PropertyOption.DoesNotExist:
                 pass
             else:
                 try:
-                    price = float(request.POST.get("price-%s" % option_id, ""))
-                except ValueError:
+                    price = abs(atof(str(request.POST.get("price-%s" % option_id, ""))))
+                except (TypeError, ValueError):
                     price = 0.0
 
                 try:
