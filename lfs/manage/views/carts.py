@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -325,7 +326,7 @@ def _get_filtered_carts(cart_filters):
         s = lfs.core.utils.get_start_day(start)
 
     if not s:
-        s = datetime.min
+        s = timezone.datetime(1970, 1, 1)
 
     # end
     end = cart_filters.get("end", "")
@@ -334,7 +335,7 @@ def _get_filtered_carts(cart_filters):
         e = lfs.core.utils.get_end_day(end)
 
     if not e:
-        e = datetime.max
+        e = timezone.datetime.now()
 
     carts = carts.filter(modification_date__range=(s, e))
 
