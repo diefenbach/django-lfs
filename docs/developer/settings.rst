@@ -272,6 +272,65 @@ LFS_SEND_ORDER_MAIL_ON_PAYMENT
     If true, an e-mail is send to the customer after the customer successfully
     pays for an order
 
+
+.. _settings_sitemaps:
+
+Sitemaps
+========
+
+LFS_SITEMAPS
+    A dictionary which defines several settings for sitemaps. There are four
+    sitemaps: ``category``, ``page``, ``product`` and ``shop``. Each of them can
+    have four different settings: ``sitemap``, ``changefreq``, ``priority`` and
+    ``protocol``. All sitemaps and settings are optional. If not given the
+    default settings are used, which are::
+
+     LFS_SITEMAPS = {
+         "product": {
+             "sitemap": "lfs.core.sitemaps.ProductSitemap",
+             "changefreq": "weekly",
+             "priority": 0.5,
+             "protocol": "http",
+         },
+         "category": {
+             "sitemap": "lfs.core.sitemaps.CategorySitemap",
+             "changefreq": "weekly",
+             "priority": 0.5,
+             "protocol": "http",
+         },
+         "page": {
+             "sitemap": "lfs.core.sitemaps.PageSitemap",
+             "changefreq": "weekly",
+             "priority": 0.5,
+             "protocol": "http",
+         },
+         "shop": {
+             "sitemap": "lfs.core.sitemaps.ShopSitemap",
+             "changefreq": "weekly",
+             "priority": 0.5,
+             "protocol": "http",
+         },
+     }
+
+    The following example means, you implement your own ``ProductSitemap``
+    within ``myapp.sitemap`` and set the protocol for the default ones to
+    ``https``::
+
+     LFS_SITEMAPS = {
+         "product": {
+             "sitemap": "myapp.sitemap.ProductSitemap",
+         },
+         "category": {
+             "protocol": "https",
+         },
+         "page": {
+             "protocol": "https",
+         },
+         "shop": {
+             "protocol": "https",
+         },
+     }
+
 .. _settings_reviews:
 
 Reviews
