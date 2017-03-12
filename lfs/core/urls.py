@@ -38,25 +38,25 @@ urlpatterns = [
 try:
     product_sitemap = import_symbol(settings.LFS_SITEMAPS["product"]["sitemap"])
 except (AttributeError, KeyError, ImportError):
-    from . sitemap import ProductSitemap
+    from . sitemaps import ProductSitemap
     product_sitemap = ProductSitemap
 
 try:
     category_sitemap = import_symbol(settings.LFS_SITEMAPS["category"]["sitemap"])
 except (AttributeError, KeyError, ImportError):
-    from . sitemap import CategorySitemap
+    from . sitemaps import CategorySitemap
     category_sitemap = CategorySitemap
 
 try:
     page_sitemap = import_symbol(settings.LFS_SITEMAPS["page"]["sitemap"])
 except (AttributeError, KeyError, ImportError):
-    from . sitemap import PageSitemap
+    from . sitemaps import PageSitemap
     page_sitemap = PageSitemap
 
 try:
     shop_sitemap = import_symbol(settings.LFS_SITEMAPS["shop"]["sitemap"])
 except (AttributeError, KeyError, ImportError):
-    from . sitemap import ShopSitemap
+    from . sitemaps import ShopSitemap
     shop_sitemap = ShopSitemap
 
 urlpatterns += [
