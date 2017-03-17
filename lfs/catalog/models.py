@@ -1670,10 +1670,15 @@ class Product(models.Model):
             if price not in prices:
                 prices.append(price)
 
-            return {
-                "price": min(prices),
-                "starting_from": len(prices) > 1,
-            }
+        try:
+            price = min(prices)
+        except ValueError:
+            price = 0
+
+        return {
+            "price": price,
+            "starting_from": len(prices) > 1,
+        }
 
     def get_cheapest_standard_price_gross(self, request):
         """
@@ -1685,8 +1690,13 @@ class Product(models.Model):
             if price not in prices:
                 prices.append(price)
 
+        try:
+            price = min(prices)
+        except ValueError:
+            price = 0
+
         return {
-            "price": min(prices),
+            "price": price,
             "starting_from": len(prices) > 1,
         }
 
@@ -1700,8 +1710,13 @@ class Product(models.Model):
             if price not in prices:
                 prices.append(price)
 
+        try:
+            price = min(prices)
+        except ValueError:
+            price = 0
+
         return {
-            "price": min(prices),
+            "price": price,
             "starting_from": len(prices) > 1,
         }
 
@@ -1714,9 +1729,13 @@ class Product(models.Model):
             price = float("%.2f" % variant.get_base_price_gross(request, amount=sys.maxint))
             if price not in prices:
                 prices.append(price)
+        try:
+            price = min(prices)
+        except ValueError:
+            price = 0
 
         return {
-            "price": min(prices),
+            "price": price,
             "starting_from": len(prices) > 1,
         }
 
