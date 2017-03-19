@@ -42,19 +42,19 @@ except (AttributeError, KeyError, ImportError):
     product_sitemap = ProductSitemap
 
 try:
-    category_sitemap = import_symbol(settings.LFS_CATEGORY_SITEMAP["categoy"]["sitemap"])
+    category_sitemap = import_symbol(settings.LFS_SITEMAPS["categoy"]["sitemap"])
 except (AttributeError, KeyError, ImportError):
     from . sitemaps import CategorySitemap
     category_sitemap = CategorySitemap
 
 try:
-    page_sitemap = import_symbol(settings.LFS_PAGE_SITEMAP["page"]["sitemap"])
+    page_sitemap = import_symbol(settings.LFS_SITEMAPS["page"]["sitemap"])
 except (AttributeError, KeyError, ImportError):
     from . sitemaps import PageSitemap
     page_sitemap = PageSitemap
 
 try:
-    shop_sitemap = import_symbol(settings.LFS_SHOP_SITEMAP["shop"]["sitemap"])
+    shop_sitemap = import_symbol(settings.LFS_SITEMAPS["shop"]["sitemap"])
 except (AttributeError, KeyError, ImportError):
     from . sitemaps import ShopSitemap
     shop_sitemap = ShopSitemap
