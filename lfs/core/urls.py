@@ -42,7 +42,7 @@ except (AttributeError, KeyError, ImportError):
     product_sitemap = ProductSitemap
 
 try:
-    category_sitemap = import_symbol(settings.LFS_SITEMAPS["categoy"]["sitemap"])
+    category_sitemap = import_symbol(settings.LFS_SITEMAPS["category"]["sitemap"])
 except (AttributeError, KeyError, ImportError):
     from . sitemaps import CategorySitemap
     category_sitemap = CategorySitemap
