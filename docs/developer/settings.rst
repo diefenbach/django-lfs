@@ -287,25 +287,25 @@ LFS_SITEMAPS
 
      LFS_SITEMAPS = {
          "product": {
-             "sitemap": "lfs.core.sitemap.ProductSitemap",
+             "sitemap": "lfs.core.sitemaps.ProductSitemap",
              "changefreq": "weekly",
              "priority": 0.5,
              "protocol": "http",
          },
          "category": {
-             "sitemap": "lfs.core.sitemap.CategorySitemap",
+             "sitemap": "lfs.core.sitemaps.CategorySitemap",
              "changefreq": "weekly",
              "priority": 0.5,
              "protocol": "http",
          },
          "page": {
-             "sitemap": "lfs.core.sitemap.PagetSitemap",
+             "sitemap": "lfs.core.sitemaps.PageSitemap",
              "changefreq": "weekly",
              "priority": 0.5,
              "protocol": "http",
          },
          "shop": {
-             "sitemap": "lfs.core.sitemap.ShopSitemap",
+             "sitemap": "lfs.core.sitemaps.ShopSitemap",
              "changefreq": "weekly",
              "priority": 0.5,
              "protocol": "http",
