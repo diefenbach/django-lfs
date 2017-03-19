@@ -353,11 +353,14 @@ class SiteMapsTestCase(TestCase):
         }
 
         with self.settings(LFS_SITEMAPS=my_sitemaps):
+            if "lfs.core.sitemaps" in sys.modules:
+                del sys.modules["lfs.core.sitemaps"]
 
             from lfs.core.sitemaps import CategorySitemap
             from lfs.core.sitemaps import ShopSitemap
             from lfs.core.sitemaps import PageSitemap
             from lfs.core.sitemaps import ProductSitemap
+
             self.assertEqual(CategorySitemap.priority, 0.1)
             self.assertEqual(CategorySitemap.changefreq, "category-daily")
             self.assertEqual(CategorySitemap.protocol, "category-https")
