@@ -1,8 +1,6 @@
-from datetime import datetime
 from datetime import timedelta
 import json
 
-# django imports
 from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Q
@@ -18,7 +16,6 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.http import require_POST
 
-# lfs imports
 import lfs.core.utils
 import lfs.core.signals
 import lfs.order.settings
@@ -459,7 +456,7 @@ def _get_filtered_orders(order_filters):
         s = lfs.core.utils.get_start_day(start)
 
     if not s:
-        s = datetime.min
+        s = timezone.datetime(1970, 1, 1)
 
     # end
     end = order_filters.get("end", "")
@@ -468,7 +465,7 @@ def _get_filtered_orders(order_filters):
         e = lfs.core.utils.get_end_day(end)
 
     if not e:
-        e = datetime.max
+        e = timezone.datetime.now()
 
     orders = orders.filter(created__range=(s, e))
 
