@@ -307,10 +307,10 @@ class SiteMapsTestCase(TestCase):
         self.assertContains(result, "http://")
 
     def test_sitemaps_default_2(self):
-        from lfs.core.sitemap import CategorySitemap
-        from lfs.core.sitemap import ShopSitemap
-        from lfs.core.sitemap import PageSitemap
-        from lfs.core.sitemap import ProductSitemap
+        from lfs.core.sitemaps import CategorySitemap
+        from lfs.core.sitemaps import ShopSitemap
+        from lfs.core.sitemaps import PageSitemap
+        from lfs.core.sitemaps import ProductSitemap
 
         self.assertEqual(CategorySitemap.priority, 0.5)
         self.assertEqual(CategorySitemap.changefreq, "weekly")
@@ -353,12 +353,11 @@ class SiteMapsTestCase(TestCase):
         }
 
         with self.settings(LFS_SITEMAPS=my_sitemaps):
-            del sys.modules["lfs.core.sitemap"]
-            from lfs.core.sitemap import CategorySitemap
-            from lfs.core.sitemap import ShopSitemap
-            from lfs.core.sitemap import PageSitemap
-            from lfs.core.sitemap import ProductSitemap
 
+            from lfs.core.sitemaps import CategorySitemap
+            from lfs.core.sitemaps import ShopSitemap
+            from lfs.core.sitemaps import PageSitemap
+            from lfs.core.sitemaps import ProductSitemap
             self.assertEqual(CategorySitemap.priority, 0.1)
             self.assertEqual(CategorySitemap.changefreq, "category-daily")
             self.assertEqual(CategorySitemap.protocol, "category-https")
