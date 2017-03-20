@@ -1,4 +1,5 @@
 import locale
+import sys
 
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
@@ -294,3 +295,84 @@ class ManageURLsTestCase(TestCase):
         for url in urlpatterns:
             result = url.callback(request)
             self.failUnless(result["Location"].startswith("/login/?next=/"))
+
+
+class SiteMapsTestCase(TestCase):
+    fixtures = ['lfs_shop.xml']
+
+    def test_sitemaps_default_1(self):
+        result = self.client.get("/sitemap.xml")
+        self.assertContains(result, "<priority>0.5</priority>")
+        self.assertContains(result, "<changefreq>weekly</changefreq>")
+        self.assertContains(result, "http://")
+
+    def test_sitemaps_default_2(self):
+        from lfs.core.sitemaps import CategorySitemap
+        from lfs.core.sitemaps import ShopSitemap
+        from lfs.core.sitemaps import PageSitemap
+        from lfs.core.sitemaps import ProductSitemap
+
+        self.assertEqual(CategorySitemap.priority, 0.5)
+        self.assertEqual(CategorySitemap.changefreq, "weekly")
+        self.assertEqual(CategorySitemap.protocol, "http")
+
+        self.assertEqual(PageSitemap.priority, 0.5)
+        self.assertEqual(PageSitemap.changefreq, "weekly")
+        self.assertEqual(PageSitemap.protocol, "http")
+
+        self.assertEqual(ProductSitemap.priority, 0.5)
+        self.assertEqual(ProductSitemap.changefreq, "weekly")
+        self.assertEqual(ProductSitemap.protocol, "http")
+
+        self.assertEqual(ShopSitemap.priority, 0.5)
+        self.assertEqual(ShopSitemap.changefreq, "weekly")
+        self.assertEqual(ShopSitemap.protocol, "http")
+
+    def test_sitemaps_settings(self):
+        my_sitemaps = {
+            "category": {
+                "priority": 0.1,
+                "changefreq": "category-daily",
+                "protocol": "category-https",
+            },
+            "page": {
+                "priority": 0.2,
+                "changefreq": "page-daily",
+                "protocol": "page-https",
+            },
+            "product": {
+                "priority": 0.3,
+                "changefreq": "product-daily",
+                "protocol": "product-https",
+            },
+            "shop": {
+                "priority": 0.4,
+                "changefreq": "shop-daily",
+                "protocol": "shop-https",
+            },
+        }
+
+        with self.settings(LFS_SITEMAPS=my_sitemaps):
+            if "lfs.core.sitemaps" in sys.modules:
+                del sys.modules["lfs.core.sitemaps"]
+
+            from lfs.core.sitemaps import CategorySitemap
+            from lfs.core.sitemaps import ShopSitemap
+            from lfs.core.sitemaps import PageSitemap
+            from lfs.core.sitemaps import ProductSitemap
+
+            self.assertEqual(CategorySitemap.priority, 0.1)
+            self.assertEqual(CategorySitemap.changefreq, "category-daily")
+            self.assertEqual(CategorySitemap.protocol, "category-https")
+
+            self.assertEqual(PageSitemap.priority, 0.2)
+            self.assertEqual(PageSitemap.changefreq, "page-daily")
+            self.assertEqual(PageSitemap.protocol, "page-https")
+
+            self.assertEqual(ProductSitemap.priority, 0.3)
+            self.assertEqual(ProductSitemap.changefreq, "product-daily")
+            self.assertEqual(ProductSitemap.protocol, "product-https")
+
+            self.assertEqual(ShopSitemap.priority, 0.4)
+            self.assertEqual(ShopSitemap.changefreq, "shop-daily")
+            self.assertEqual(ShopSitemap.protocol, "shop-https")

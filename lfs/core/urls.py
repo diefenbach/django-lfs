@@ -1,15 +1,12 @@
-# django imports
+
+from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps import views as sitemap_views
 
 from . import views
-from lfs.core.sitemap import CategorySitemap
-from lfs.core.sitemap import PageSitemap
-from lfs.core.sitemap import ProductSitemap
-from lfs.core.sitemap import ShopSitemap
-
+from . utils import import_symbol
 
 urlpatterns = [
     # Auth
@@ -35,7 +32,38 @@ urlpatterns = [
 
     # Robots
     url(r'^robots.txt$', views.TextTemplateView.as_view(template_name='lfs/shop/robots.txt')),
+]
 
-    # Sitemaps
-    url(r'^sitemap.xml$', sitemap_views.sitemap, {'sitemaps': {"products": ProductSitemap, "categories": CategorySitemap, "pages": PageSitemap, "shop": ShopSitemap}}),
+# Sitemap urls
+try:
+    product_sitemap = import_symbol(settings.LFS_SITEMAPS["product"]["sitemap"])
+except (AttributeError, KeyError, ImportError):
+    from . sitemaps import ProductSitemap
+    product_sitemap = ProductSitemap
+
+try:
+    category_sitemap = import_symbol(settings.LFS_SITEMAPS["category"]["sitemap"])
+except (AttributeError, KeyError, ImportError):
+    from . sitemaps import CategorySitemap
+    category_sitemap = CategorySitemap
+
+try:
+    page_sitemap = import_symbol(settings.LFS_SITEMAPS["page"]["sitemap"])
+except (AttributeError, KeyError, ImportError):
+    from . sitemaps import PageSitemap
+    page_sitemap = PageSitemap
+
+try:
+    shop_sitemap = import_symbol(settings.LFS_SITEMAPS["shop"]["sitemap"])
+except (AttributeError, KeyError, ImportError):
+    from . sitemaps import ShopSitemap
+    shop_sitemap = ShopSitemap
+
+urlpatterns += [
+    url(r'^sitemap.xml$', sitemap_views.sitemap, {'sitemaps': {
+        "products": product_sitemap,
+        "categories": category_sitemap,
+        "pages": page_sitemap,
+        "shop": shop_sitemap,
+    }}),
 ]
