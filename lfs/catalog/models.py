@@ -972,20 +972,26 @@ class Product(models.Model):
         except IndexError:
             return None
 
-    def get_images(self):
+     def get_images(self):
         """
         Returns all images of the product, including the main image.
+	Variants inherit images from parent
         """
         cache_key = "%s-product-images-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         images = cache.get(cache_key)
 
         if images is None:
-            if self.is_variant() and not self.active_images:
-                obj = self.parent
+            images = []
+            if self.is_variant() and self.active_images:
+                object = self 
+                object2 = self.parent
+                if object2.images.all():
+                   images = object2.images.all()
+                else:
+                   images = (object.images.all() or object2.images.all())
             else:
-                obj = self
-
-            images = obj.images.all()
+                object = self
+                images = object.images.all()        
             cache.set(cache_key, images)
 
         return images
@@ -994,7 +1000,13 @@ class Product(models.Model):
         """
         Returns all images of the product, except the main image.
         """
-        return self.get_images()[1:]
+        if self.is_variant() and self.active_images:
+            if self.images.all() and self.parent.images.all():
+               return self.images.all()
+            else: 
+               return self.get_images()[1:]    
+        else:
+            return self.get_images()[1:]
 
     def get_meta_title(self):
         """
