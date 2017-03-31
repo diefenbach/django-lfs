@@ -747,7 +747,7 @@ def _calculate_property_price(request):
                 property_group_id, property_id = map(int, key.split('-')[1:])
                 prop = Property.objects.get(pk=property_id)
                 if prop.is_select_field:
-                    po = PropertyOption.objects.get(property=property, pk=option_id)
+                    po = PropertyOption.objects.get(property=prop, pk=option_id)
                     if prop.add_price:
                         po_price = float(po.price)
                         property_price += po_price
