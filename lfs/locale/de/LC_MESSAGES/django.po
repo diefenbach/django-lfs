@@ -4356,7 +4356,7 @@ msgstr "Preis netto"
 
 #: other_translations.py:5
 msgid "Street"
-msgstr "Straße/Nr."
+msgstr "Straße/Haus-Nr."
 
 #: other_translations.py:6
 msgid "Left"
