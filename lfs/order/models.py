@@ -166,6 +166,10 @@ class OrderItem(models.Model):
     product_price_gross = models.FloatField(_(u"Product price gross"), default=0.0)
     product_tax = models.FloatField(_(u"Product tax"), default=0.0)
 
+    class Meta:
+        app_label = 'order'
+        ordering = ['id']
+
     def __unicode__(self):
         return u"%s" % self.product_name
 
@@ -215,9 +219,6 @@ class OrderItem(models.Model):
             })
 
         return properties
-
-    class Meta:
-        app_label = 'order'
 
 
 class OrderItemPropertyValue(models.Model):
