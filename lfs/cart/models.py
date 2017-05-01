@@ -373,7 +373,7 @@ class CartItem(models.Model):
                 "property_group_name": property_group.name
             })
 
-        properties = sorted(properties, key=lambda x: '{0}-{1}'.format(x['property_group_name'], x['obj'].position))
+        properties = sorted(properties, key=lambda x: u'{0}-{1}'.format(x['property_group_name'], x['obj'].position))
         return properties
 
 
