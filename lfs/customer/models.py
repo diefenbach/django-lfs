@@ -83,6 +83,7 @@ class Customer(models.Model):
             None
 
     def sync_default_to_selected_addresses(self, force=False):
+        return
         # Synchronize selected addresses with default addresses
         auto_update = settings.AUTO_UPDATE_DEFAULT_ADDRESSES
         if force or not auto_update:
@@ -109,6 +110,7 @@ class Customer(models.Model):
                 self.save()
 
     def sync_selected_to_default_invoice_address(self, force=False):
+        return
         # Synchronize default invoice address with selected address
         auto_update = settings.AUTO_UPDATE_DEFAULT_ADDRESSES
         if force or auto_update:
@@ -118,6 +120,7 @@ class Customer(models.Model):
             address.save()
 
     def sync_selected_to_default_shipping_address(self, force=False):
+        return
         # Synchronize default shipping address with selected address
         auto_update = settings.AUTO_UPDATE_DEFAULT_ADDRESSES
         if force or auto_update:
@@ -127,6 +130,7 @@ class Customer(models.Model):
             address.save()
 
     def sync_selected_to_default_addresses(self, force=False):
+        return
         # Synchronize default addresses with selected addresses
         self.sync_selected_to_default_invoice_address(force)
         self.sync_selected_to_default_shipping_address(force)
