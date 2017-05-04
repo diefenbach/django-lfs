@@ -203,8 +203,8 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
     customer = lfs.customer.utils.get_or_create_customer(request)
 
     if request.method == "POST":
-        iam = AddressManagement(customer, customer.default_invoice_address, "invoice", request.POST)
-        sam = AddressManagement(customer, customer.default_shipping_address, "shipping", request.POST)
+        iam = AddressManagement(customer, customer.selected_invoice_address, "invoice", request.POST)
+        sam = AddressManagement(customer, customer.selected_shipping_address, "shipping", request.POST)
 
         if iam.is_valid() and sam.is_valid():
             iam.save()
@@ -220,8 +220,8 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
             msg = _(u"An error has occured.")
     else:
         msg = None
-        iam = AddressManagement(customer, customer.default_invoice_address, "invoice")
-        sam = AddressManagement(customer, customer.default_shipping_address, "shipping")
+        iam = AddressManagement(customer, customer.selected_invoice_address, "invoice")
+        sam = AddressManagement(customer, customer.selected_shipping_address, "shipping")
 
     return lfs.core.utils.render_to_message_response(
         request,
