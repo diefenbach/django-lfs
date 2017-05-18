@@ -214,7 +214,7 @@ Optionally you might add::
         'compressor.filters.css_default.CssAbsoluteFilter',
         'compressor.filters.cssmin.CSSCompressorFilter',
     ]
-    COMPRESS_ENALBED = True
+    COMPRESS_ENABLED = True
     COMPRESS_OFFLINE = True
 
 #. $ python manage.py migrate
