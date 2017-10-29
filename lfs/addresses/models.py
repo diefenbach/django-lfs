@@ -44,7 +44,7 @@ class BaseAddress(models.Model):
     lastname = models.CharField(_("Lastname"), max_length=50)
     line1 = models.CharField(_("Line 1"), max_length=100, blank=True, null=True)
     line2 = models.CharField(_("Line 2"), max_length=100, blank=True, null=True)
-    zip_code = models.CharField(_("Zip code"), max_length=10, default=u"")
+    zip_code = models.CharField(_("Zip code"), max_length=10, blank=True, null=True, default=u"")
     city = models.CharField(_("City"), max_length=50)
     state = models.CharField(_("State"), max_length=50, blank=True, null=True)
     country = models.ForeignKey(Country, verbose_name=_("Country"), blank=True, null=True)
