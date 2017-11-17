@@ -13,7 +13,7 @@ class ProductSitemap(Sitemap):
     """
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("priority", 0.5)
-    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("protocol", "http")
+    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("protocol", None)
 
     def items(self):
         return Product.objects.all()[:1]
