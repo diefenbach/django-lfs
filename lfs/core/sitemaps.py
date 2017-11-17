@@ -16,8 +16,7 @@ class ProductSitemap(Sitemap):
     protocol = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("protocol", "http")
 
     def items(self):
-        return Product.objects.all()[:1]
-        return Product.objects.filter(active=True).exclude(sub_type=2)[:10]
+        return Product.objects.filter(active=True).exclude(sub_type=2)
 
     def lastmod(self, obj):
         return obj.creation_date
