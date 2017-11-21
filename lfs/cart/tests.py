@@ -5,17 +5,16 @@ import json
 import datetime
 
 from django.contrib.auth.models import User
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.backends.file import SessionStore
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.test import TestCase
+from django.test import Client
 
 import lfs.cart.utils
 from lfs.cart.models import Cart
 from lfs.cart.models import CartItem
 from lfs.cart.utils import get_cart
-from lfs.cart.utils import update_cart_after_login
 from lfs.cart.views import add_to_cart
 from lfs.cart.views import added_to_cart_items
 from lfs.cart.views import refresh_cart
@@ -47,142 +46,206 @@ class LoginTestCase(TestCase):
         self.pg.save()
 
         self.admin = User.objects.get(username="admin")
+        self.admin.set_password('dummy')
+        self.admin.save()
 
     def test_standard_product(self):
-        session = SessionStore()
-        rf = RequestFactory()
+        client = Client()
+        self.assertEqual(Cart.objects.count(), 0)
 
-        request = rf.post("/", {"product_id": self.p0.id, "quantity": 1})
-        request.session = session
-        request.user = AnonymousUser()
+        # add item to cart as anonymous user
+        response = client.post(
+            reverse('lfs_add_to_cart'),
+            {
+                'product_id': self.p0.id,
+                'quantity': 1
+            },
+            follow=True
+        )
 
-        cart = get_cart(request)
-        self.assertEqual(cart, None)
-
-        add_to_cart(request)
-
-        cart = get_cart(request)
-        self.assertEqual(int(cart.get_items()[0].amount), 1)
-
-        # 1l login admin
-        request = rf.get("/")
-        request.session = session
-        request.user = self.admin
+        self.assertEqual(Cart.objects.count(), 1)
+        request = response.context['request']
 
         cart = get_cart(request)
-        self.assertEqual(cart, None)
+        self.assertFalse(cart is None)
 
-        update_cart_after_login(request)
+        # 1. login admin
+        # log in not using client.login as this will fail due to use of
+        # HttpRequest without middlewares applied (no request.user)
+        client.post(
+            reverse('lfs_login'),
+            dict(
+                username='admin',
+                password='dummy',
+                action='login'
+            ),
+            follow=True
+            )
 
+        # verify if cart items for logged in user were copied from anonymous cart
+        response = client.get(
+            reverse('lfs_cart')
+        )
+        request = response.context['request']
         cart = get_cart(request)
+        self.assertFalse(cart is None)
         self.assertEqual(int(cart.get_items()[0].amount), 1)
 
         # logout
-        session = SessionStore()
-        request = rf.post("/", {"product_id": self.p0.id, "quantity": 2})
-        request.session = session
-        request.user = AnonymousUser()
+        client.logout()
 
+        # add items to the cart again - as anonymous
+        response = client.post(
+            reverse('lfs_add_to_cart'),
+            {
+                'product_id': self.p0.id,
+                'quantity': 2
+            },
+            follow=True
+        )
+        request = response.context['request']
         cart = get_cart(request)
-        self.assertEqual(cart, None)
-
-        add_to_cart(request)
-
-        cart = get_cart(request)
+        self.assertFalse(cart is None)
         self.assertEqual(int(cart.get_items()[0].amount), 2)
 
         # 2. login admin
-        request = rf.get("/")
-        request.session = session
-        request.user = self.admin
+        client.post(
+            reverse('lfs_login'),
+            dict(
+                username='admin',
+                password='dummy',
+                action='login'
+            ),
+        )
 
-        cart = get_cart(request)
-        self.assertEqual(int(cart.get_items()[0].amount), 1)
+        # verify cart - items should be summed up
+        response = client.get(
+            reverse('lfs_cart')
+        )
 
-        update_cart_after_login(request)
-
+        request = response.context['request']
         cart = get_cart(request)
         self.assertEqual(int(cart.get_items()[0].amount), 3)
 
     def test_configurable_product(self):
-        rf = RequestFactory()
-        session = SessionStore()
+        client = Client()
 
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 1, "property-%s-%s" % (self.pg.pk,
-                                                                                             self.pp1.id): "A"})
-        request.session = session
-        request.user = AnonymousUser()
+        self.assertEqual(Cart.objects.count(), 0)
+
+        # add item to cart as anonymous user
+        response = client.post(
+            reverse('lfs_add_to_cart'),
+            {
+                'product_id': self.p1.id,
+                'quantity': 1,
+                "property-%s-%s" % (self.pg.pk,
+                                    self.pp1.id): "A"
+            },
+            follow=True
+        )
+
+        self.assertEqual(Cart.objects.count(), 1)
+        request = response.context['request']
 
         cart = get_cart(request)
-        self.assertEqual(cart, None)
-
-        add_to_cart(request)
-
-        cart = get_cart(request)
+        self.assertFalse(cart is None)
         self.assertEqual(int(cart.get_items()[0].amount), 1)
 
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 10, "property-%s-%s" % (self.pg.pk,
-                                                                                              self.pp1.id): "B"})
-        request.session = session
-        request.user = AnonymousUser()
-        add_to_cart(request)
+        # add 10 more items - different variant
+        response = client.post(
+            reverse('lfs_add_to_cart'),
+            {
+                'product_id': self.p1.id,
+                'quantity': 10,
+                "property-%s-%s" % (self.pg.pk,
+                                    self.pp1.id): "B"
+            },
+            follow=True
+        )
+        self.assertEqual(Cart.objects.count(), 1)
+        request = response.context['request']
 
         cart = get_cart(request)
         self.assertEqual(int(cart.get_items()[0].amount), 1)
         self.assertEqual(int(cart.get_items()[1].amount), 10)
 
         # 1. login admin
-        request = rf.get("/")
-        request.session = session
-        request.user = self.admin
+        # log in not using client.login as this will fail due to use of
+        # HttpRequest without middlewares applied (no request.user)
+        client.post(
+            reverse('lfs_login'),
+            dict(
+                username='admin',
+                password='dummy',
+                action='login'
+            ),
+            follow=True
+        )
+        # verify if cart items for logged in user were copied from anonymous cart
+        response = client.get(
+            reverse('lfs_cart')
+        )
+        request = response.context['request']
 
         cart = get_cart(request)
-        self.assertEqual(cart, None)
-
-        update_cart_after_login(request)
-
-        cart = get_cart(request)
+        self.assertFalse(cart is None)
         self.assertEqual(int(cart.get_items()[0].amount), 1)
         self.assertEqual(int(cart.get_items()[1].amount), 10)
 
         # logout
-        session = SessionStore()
+        client.logout()
 
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 2, "property-%s-%s" % (self.pg.pk,
-                                                                                             self.pp1.id): "A"})
-        request.session = session
-        request.user = AnonymousUser()
+        # add more items as Anonymous
+        response = client.post(
+            reverse('lfs_add_to_cart'),
+            {
+                'product_id': self.p1.id,
+                'quantity': 2,
+                "property-%s-%s" % (self.pg.pk,
+                                    self.pp1.id): "A"
+            },
+            follow=True
+        )
+        request = response.context['request']
 
         cart = get_cart(request)
-        self.assertEqual(cart, None)
-
-        add_to_cart(request)
-
-        cart = get_cart(request)
+        self.assertFalse(cart is None)
         self.assertEqual(int(cart.get_items()[0].amount), 2)
 
-        request = rf.post("/", {"product_id": self.p1.id, "quantity": 20, "property-%s-%s" % (self.pg.pk,
-                                                                                              self.pp1.id): "B"})
-        request.session = session
-        request.user = AnonymousUser()
-        add_to_cart(request)
-
+        # add more items of the second variant
+        response = client.post(
+            reverse('lfs_add_to_cart'),
+            {
+                'product_id': self.p1.id,
+                'quantity': 20,
+                "property-%s-%s" % (self.pg.pk,
+                                    self.pp1.id): "B"
+            },
+            follow=True
+        )
+        request = response.context['request']
         cart = get_cart(request)
         self.assertEqual(int(cart.get_items()[0].amount), 2)
         self.assertEqual(int(cart.get_items()[1].amount), 20)
 
         # 2. login admin
-        request = rf.get("/")
-        request.session = session
-        request.user = self.admin
+        client.post(
+            reverse('lfs_login'),
+            dict(
+                username='admin',
+                password='dummy',
+                action='login'
+            ),
+            follow=True
+        )
+        # verify if cart items for logged in user were copied from anonymous cart
+        response = client.get(
+            reverse('lfs_cart')
+        )
+        request = response.context['request']
 
         cart = get_cart(request)
-        self.assertEqual(int(cart.get_items()[0].amount), 1)
-        self.assertEqual(int(cart.get_items()[1].amount), 10)
 
-        update_cart_after_login(request)
-
-        cart = get_cart(request)
         self.assertEqual(int(cart.get_items()[0].amount), 3)
         self.assertEqual(int(cart.get_items()[1].amount), 30)
 

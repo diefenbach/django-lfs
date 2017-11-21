@@ -18,6 +18,16 @@ def get_or_create_customer(request):
     return customer
 
 
+def get_customer_session_key(request):
+    """ Store customer  key in session as it is retained during login """
+    session_key = request.session.get('customer_session_key')
+    if not session_key:
+        session_key = request.session.session_key
+        if session_key:
+            request.session['customer_session_key'] = session_key
+    return session_key
+
+
 def create_customer(request):
     """Creates a customer for the given request (which means for the current
     logged in user/or the session user).
@@ -28,7 +38,7 @@ def create_customer(request):
     if request.session.session_key is None:
         request.session.save()
 
-    customer = Customer.objects.create(session=request.session.session_key)
+    customer = Customer.objects.create(session=get_customer_session_key(request))
     if request.user.is_authenticated():
         customer.user = request.user
     shop = lfs.core.utils.get_default_shop(request)
@@ -72,7 +82,7 @@ def _get_customer(request):
         except ObjectDoesNotExist:
             return None
     else:
-        session_key = request.session.session_key
+        session_key = get_customer_session_key(request)
         try:
             return Customer.objects.get(session=session_key)
         except ObjectDoesNotExist:
@@ -94,7 +104,7 @@ def update_customer_after_login(request):
        customer information to the user customer and delete the session customer
     """
     try:
-        session_customer = Customer.objects.get(session=request.session.session_key)
+        session_customer = Customer.objects.get(session=get_customer_session_key(request))
         try:
             user_customer = Customer.objects.get(user=request.user)
         except ObjectDoesNotExist:
