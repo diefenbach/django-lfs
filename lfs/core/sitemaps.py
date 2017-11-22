@@ -45,7 +45,7 @@ class PageSitemap(Sitemap):
     protocol = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("protocol", "http")
 
     def items(self):
-        return Page.objects.filter(active=True)
+        return Page.objects.filter(active=True).exclude(slug="")
 
     def lastmod(self, obj):
         return timezone.now()
