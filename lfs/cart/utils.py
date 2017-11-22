@@ -31,7 +31,7 @@ def create_cart(request):
     if request.session.session_key is None:
         request.session.save()
 
-    cart = Cart(session=request.session.session_key)
+    cart = Cart(session=get_cart_session_key(request))
     if request.user.is_authenticated():
         cart.user = request.user
 
@@ -39,12 +39,23 @@ def create_cart(request):
     return cart
 
 
+def get_cart_session_key(request):
+    """ Store cart key in session as it is retained during login """
+    session_key = request.session.get('cart_session_key')
+    if not session_key:
+        session_key = request.session.session_key
+        if session_key:
+            request.session['cart_session_key'] = session_key
+    return session_key
+
+
 def get_cart(request):
     """
     Returns the cart of the current shop customer. if the customer has no cart
     yet it returns None.
     """
-    session_key = request.session.session_key
+    session_key = get_cart_session_key(request)
+
     user = request.user
 
     if user.is_authenticated():
@@ -102,7 +113,7 @@ def update_cart_after_login(request):
        to the user cart.
     """
     try:
-        session_cart = Cart.objects.get(session=request.session.session_key)
+        session_cart = Cart.objects.get(session=get_cart_session_key(request))
         try:
             user_cart = Cart.objects.get(user=request.user)
         except ObjectDoesNotExist:
