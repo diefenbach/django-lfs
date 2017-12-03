@@ -637,7 +637,8 @@ class Product(models.Model):
     packing_unit = models.FloatField(_(u"Amount per packing"), blank=True, null=True)
     packing_unit_unit = models.CharField(_(u"Packing unit"), blank=True, max_length=30, choices=LFS_PACKING_UNITS)
 
-    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="products")
+    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True,
+                                     on_delete=models.SET_NULL, related_name="products")
 
     # Dimension
     weight = models.FloatField(_(u"Weight"), default=0.0)

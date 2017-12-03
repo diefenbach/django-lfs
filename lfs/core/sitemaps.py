@@ -13,11 +13,10 @@ class ProductSitemap(Sitemap):
     """
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("priority", 0.5)
-    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("protocol", "http")
+    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("protocol", None)
 
     def items(self):
-        return Product.objects.all()[:1]
-        return Product.objects.filter(active=True).exclude(sub_type=2)[:10]
+        return Product.objects.filter(active=True).exclude(sub_type=2)
 
     def lastmod(self, obj):
         return obj.creation_date
@@ -45,7 +44,7 @@ class PageSitemap(Sitemap):
     protocol = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("protocol", "http")
 
     def items(self):
-        return Page.objects.filter(active=True)
+        return Page.objects.filter(active=True).exclude(slug="")
 
     def lastmod(self, obj):
         return timezone.now()
