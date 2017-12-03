@@ -1017,6 +1017,21 @@ class CategoryTestCase(TestCase):
         result = self.c11.get_static_block()
         self.assertEqual(result, sb2)
 
+    def test_delete_static_block(self):
+        """
+        """
+        result = self.c1.get_static_block()
+        self.assertEqual(result, None)
+
+        # Add static_block to c1
+        sb1 = StaticBlock.objects.create(name="SB1")
+        self.p1.static_block = sb1
+        self.p1.save()
+
+        # remove static block
+        sb1.delete()
+        self.assertTrue(Product.objects.filter(pk=self.c1.pk).exists())
+
     def test_get_filtered_products(self):
         """
         """
