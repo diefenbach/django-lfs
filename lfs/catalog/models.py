@@ -172,7 +172,8 @@ class Category(models.Model):
     position = models.IntegerField(_(u"Position"), default=1000)
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
 
-    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")
+    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True,
+                                     on_delete=models.SET_NULL, related_name="categories")
     template = models.PositiveSmallIntegerField(_(u"Category template"), blank=True, null=True, choices=CATEGORY_TEMPLATES)
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
 
