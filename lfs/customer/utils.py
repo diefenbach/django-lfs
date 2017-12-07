@@ -111,9 +111,10 @@ def update_customer_after_login(request):
             session_customer.user = request.user
             session_customer.save()
         else:
-            user_customer.selected_shipping_method = session_customer.selected_shipping_method
-            user_customer.save()
-            session_customer.delete()
+            if user_customer.pk != session_customer.pk:
+                user_customer.selected_shipping_method = session_customer.selected_shipping_method
+                user_customer.save()
+                session_customer.delete()
     except ObjectDoesNotExist:
         pass
 
