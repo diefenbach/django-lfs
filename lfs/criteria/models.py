@@ -152,11 +152,11 @@ class Criterion(models.Model):
                translation.activate('pl')
                u'test: %s' % _('Payment method')
         """
-        return ugettext("%(name)s: %(operator)s %(value)s") % {
+        return ugettext("%(name)s: %(operator)s %(value)s" % {
             'name': force_unicode(self.get_name()),
             'operator': force_unicode(self.get_current_operator_as_string()),
             'value': force_unicode(self.get_value_as_string())
-        }
+        })
 
     def save(self, *args, **kwargs):
         if self.sub_type == "":
