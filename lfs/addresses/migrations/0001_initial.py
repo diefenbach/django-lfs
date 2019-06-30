@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Address',
             fields=[
-                ('baseaddress_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='addresses.BaseAddress')),
+                ('baseaddress_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='addresses.BaseAddress', on_delete=models.CASCADE)),
                 ('company_name', models.CharField(max_length=50, null=True, verbose_name='Company name', blank=True)),
                 ('phone', models.CharField(max_length=20, null=True, verbose_name='Phone', blank=True)),
                 ('email', models.EmailField(max_length=254, null=True, verbose_name='E-Mail', blank=True)),
@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='baseaddress',
             name='country',
-            field=models.ForeignKey(verbose_name='Country', blank=True, to='core.Country', null=True),
+            field=models.ForeignKey(verbose_name='Country', blank=True, to='core.Country', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='baseaddress',
@@ -52,6 +52,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='baseaddress',
             name='order',
-            field=models.ForeignKey(related_name='addresses', verbose_name='Order', blank=True, to='order.Order', null=True),
+            field=models.ForeignKey(related_name='addresses', verbose_name='Order', blank=True, to='order.Order', null=True, on_delete=models.SET_NULL),
         ),
     ]

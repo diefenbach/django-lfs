@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('session', models.CharField(max_length=100, verbose_name='Session', blank=True)),
                 ('creation_date', models.DateTimeField(auto_now_add=True, verbose_name='Creation date')),
                 ('modification_date', models.DateTimeField(auto_now=True, verbose_name='Modification date')),
-                ('user', models.ForeignKey(verbose_name='User', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('user', models.ForeignKey(verbose_name='User', blank=True, to=settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)),
             ],
         ),
         migrations.CreateModel(
@@ -30,8 +30,8 @@ class Migration(migrations.Migration):
                 ('amount', models.FloatField(null=True, verbose_name='Quantity', blank=True)),
                 ('creation_date', models.DateTimeField(auto_now_add=True, verbose_name='Creation date')),
                 ('modification_date', models.DateTimeField(auto_now=True, verbose_name='Modification date')),
-                ('cart', models.ForeignKey(verbose_name='Cart', to='cart.Cart')),
-                ('product', models.ForeignKey(verbose_name='Product', to='catalog.Product')),
+                ('cart', models.ForeignKey(verbose_name='Cart', to='cart.Cart', on_delete=models.CASCADE)),
+                ('product', models.ForeignKey(verbose_name='Product', to='catalog.Product', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['id'],
@@ -42,9 +42,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('value', models.CharField(max_length=100, verbose_name=b'Value', blank=True)),
-                ('cart_item', models.ForeignKey(related_name='properties', verbose_name='Cart item', to='cart.CartItem')),
-                ('property', models.ForeignKey(verbose_name='Property', to='catalog.Property')),
-                ('property_group', models.ForeignKey(verbose_name='Property group', blank=True, to='catalog.PropertyGroup', null=True)),
+                ('cart_item', models.ForeignKey(related_name='properties', verbose_name='Cart item', to='cart.CartItem', on_delete=models.CASCADE)),
+                ('property', models.ForeignKey(verbose_name='Property', to='catalog.Property', on_delete=models.CASCADE)),
+                ('property_group', models.ForeignKey(verbose_name='Property group', blank=True, to='catalog.PropertyGroup', null=True, on_delete=models.SET_NULL)),
             ],
         ),
     ]

@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 # lfs imports
 from lfs.cart.models import Cart
@@ -32,7 +32,7 @@ def create_cart(request):
         request.session.save()
 
     cart = Cart(session=request.session.session_key)
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         cart.user = request.user
 
     cart.save()
@@ -47,7 +47,7 @@ def get_cart(request):
     session_key = request.session.session_key
     user = request.user
 
-    if user.is_authenticated():
+    if user.is_authenticated:
         try:
             cache_key = "%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, user.pk)
             cart = cache.get(cache_key)

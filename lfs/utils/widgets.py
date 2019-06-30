@@ -11,11 +11,11 @@ class SelectImage(Select):
         # more than once.
         self.choices = list(choices)
 
-    def render(self, name, value, attrs=None, choices=()):
+    def render(self, name, value, attrs=None, choices=(), renderer=None):
         if value is None:
             value = ""
         self.image_id = "image_%s" % attrs["id"]
-        final_attrs = self.build_attrs(attrs, name=name)
+        final_attrs = self.build_attrs(self.attrs, attrs)
         defaultimage = None
         for id, keys in self.choices:
             if str(id) == str(value):

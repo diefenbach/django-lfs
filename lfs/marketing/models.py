@@ -10,7 +10,7 @@ from lfs.order.models import Order
 class Topseller(models.Model):
     """Selected products are in any case among topsellers.
     """
-    product = models.ForeignKey(Product, verbose_name=_(u"Product"))
+    product = models.ForeignKey(Product, models.CASCADE, verbose_name=_(u"Product"))
     position = models.PositiveSmallIntegerField(_(u"Position"), default=1)
 
     class Meta:
@@ -24,7 +24,7 @@ class Topseller(models.Model):
 class ProductSales(models.Model):
     """Stores totals sales per product.
     """
-    product = models.ForeignKey(Product, verbose_name=_(u"Product"))
+    product = models.ForeignKey(Product, models.CASCADE, verbose_name=_(u"Product"))
     sales = models.IntegerField(_(u"sales"), default=0)
 
     class Meta:
@@ -34,7 +34,7 @@ class ProductSales(models.Model):
 class FeaturedProduct(models.Model):
     """Featured products are manually selected by the shop owner
     """
-    product = models.ForeignKey(Product, verbose_name=_(u"Product"))
+    product = models.ForeignKey(Product, models.CASCADE, verbose_name=_(u"Product"))
     position = models.PositiveSmallIntegerField(_(u"Position"), default=1)
     active = models.BooleanField(_(u"Active"), default=True)
 
@@ -49,7 +49,7 @@ class FeaturedProduct(models.Model):
 class OrderRatingMail(models.Model):
     """Saves whether and when a rating mail has been send for an order.
     """
-    order = models.ForeignKey(Order, verbose_name=_(u"Order"))
+    order = models.ForeignKey(Order, models.CASCADE, verbose_name=_(u"Order"))
     send_date = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):

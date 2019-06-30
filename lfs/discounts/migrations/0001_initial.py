@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('type', models.PositiveSmallIntegerField(default=0, verbose_name='Type', choices=[(0, 'Absolute'), (1, 'Percentage')])),
                 ('sku', models.CharField(max_length=50, verbose_name='SKU', blank=True)),
                 ('products', models.ManyToManyField(related_name='discounts', verbose_name='Products', to='catalog.Product')),
-                ('tax', models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True)),
+                ('tax', models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True, on_delete=models.SET_NULL)),
             ],
             bases=(models.Model, lfs.criteria.base.Criteria),
         ),

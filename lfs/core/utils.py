@@ -12,7 +12,7 @@ from django.contrib.redirects.models import Redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.utils.functional import Promise
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.shortcuts import render
 from django.utils.http import cookie_date
 
@@ -74,7 +74,7 @@ def lfs_quote(string, encoding="utf-8"):
     """Encodes passed string to passed encoding before quoting with
     urllib.quote().
     """
-    return urllib.quote(string.encode(encoding))
+    return urllib.parse.quote(string.encode(encoding))
 
 
 def import_module(module):
@@ -272,7 +272,7 @@ class LazyEncoder(json.JSONEncoder):
     """
     def default(self, obj):
         if isinstance(obj, Promise):
-            return force_unicode(obj)
+            return force_text(obj)
         return obj
 
 

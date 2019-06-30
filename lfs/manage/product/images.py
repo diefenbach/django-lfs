@@ -3,7 +3,7 @@ import json
 # django imports
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
@@ -70,7 +70,7 @@ def add_image(request, product_id):
             image = Image(content=product, title=file_content.name)
             try:
                 image.image.save(file_content.name, file_content, save=True)
-            except Exception, e:
+            except Exception as e:
                 logger.info("Upload image: %s %s" % (file_content.name, e))
                 continue
 

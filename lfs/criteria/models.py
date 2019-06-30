@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.db import models
 from django.utils import timezone
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.template.loader import render_to_string
 
@@ -95,7 +95,7 @@ class Criterion(models.Model):
                 [CONTAINS, _(u"Contains")],
             ]
     """
-    content_type = models.ForeignKey(ContentType, verbose_name=_(u"Content type"), related_name="content_type")
+    content_type = models.ForeignKey(ContentType, models.CASCADE, verbose_name=_(u"Content type"), related_name="content_type")
     content_id = models.PositiveIntegerField(_(u"Content id"))
     content = GenericForeignKey(ct_field="content_type", fk_field="content_id")
     sub_type = models.CharField(_(u"Sub type"), max_length=100, blank=True)
@@ -153,9 +153,9 @@ class Criterion(models.Model):
                u'test: %s' % _('Payment method')
         """
         return ugettext("%(name)s: %(operator)s %(value)s" % {
-            'name': force_unicode(self.get_name()),
-            'operator': force_unicode(self.get_current_operator_as_string()),
-            'value': force_unicode(self.get_value_as_string())
+            'name': force_text(self.get_name()),
+            'operator': force_text(self.get_current_operator_as_string()),
+            'value': force_text(self.get_value_as_string())
         })
 
     def save(self, *args, **kwargs):

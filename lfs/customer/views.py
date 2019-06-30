@@ -1,12 +1,12 @@
 # python imports
 import datetime
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 # django imports
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.utils.translation import ugettext_lazy as _

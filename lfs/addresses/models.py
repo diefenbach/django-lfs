@@ -36,9 +36,8 @@ class BaseAddress(models.Model):
     values_before_postal = None
     values_after_postal = None
 
-    customer = models.ForeignKey(Customer, verbose_name=_(u"Customer"), blank=True, null=True, related_name="addresses",
-                                 on_delete=SET_NULL)
-    order = models.ForeignKey(Order, verbose_name=_(u"Order"), blank=True, null=True, related_name="addresses")
+    customer = models.ForeignKey(Customer, models.SET_NULL, verbose_name=_(u"Customer"), blank=True, null=True, related_name="addresses")
+    order = models.ForeignKey(Order, models.SET_NULL, verbose_name=_(u"Order"), blank=True, null=True, related_name="addresses")
 
     firstname = models.CharField(_("Firstname"), max_length=50)
     lastname = models.CharField(_("Lastname"), max_length=50)
@@ -47,7 +46,7 @@ class BaseAddress(models.Model):
     zip_code = models.CharField(_("Zip code"), max_length=10, default=u"")
     city = models.CharField(_("City"), max_length=50)
     state = models.CharField(_("State"), max_length=50, blank=True, null=True)
-    country = models.ForeignKey(Country, verbose_name=_("Country"), blank=True, null=True)
+    country = models.ForeignKey(Country, models.SET_NULL, verbose_name=_("Country"), blank=True, null=True)
     created = models.DateTimeField(_(u"Created"), auto_now_add=True)
     modified = models.DateTimeField(_(u"Modified"), auto_now=True)
 

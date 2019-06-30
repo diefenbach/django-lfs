@@ -1,4 +1,4 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from lfs.core.signals import order_submitted
 from lfs.criteria import utils as criteria_utils

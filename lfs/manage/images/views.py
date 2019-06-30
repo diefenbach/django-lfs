@@ -1,11 +1,11 @@
 # python imports
 import re
-import urlparse
+from urllib import parse
 import json
 
 # django imports
 from django.contrib.auth.decorators import permission_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
@@ -106,7 +106,7 @@ def add_images(request):
             image = Image(title=file_content.name)
             try:
                 image.image.save(file_content.name, file_content, save=True)
-            except Exception, e:
+            except Exception as e:
                 image.delete()
                 logger.info("Upload of image failed: %s %s" % (file_content.name, e))
                 continue
@@ -127,7 +127,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
     start = request.GET.get('start', 1)
 
     if url:
-        parsed_url = urlparse.urlparse(url)
+        parsed_url = parse(url)
         try:
             temp_url = "/".join(parsed_url.path.split("/")[2:])
             result = re.search("(.*)(\.)(\d+x\d+)(.*)", temp_url)

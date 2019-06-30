@@ -56,7 +56,10 @@ class Order(models.Model):
 
     """
     number = models.CharField(max_length=30)
-    user = models.ForeignKey(User, verbose_name=_(u"User"), blank=True, null=True)
+    # TODO: Keep order for now, when the user is deleted for reporting or similar,
+    # can be deleted later by a maintenance script or something else.
+
+    user = models.ForeignKey(User, models.SET_NULL, verbose_name=_(u"User"), blank=True, null=True)
     session = models.CharField(_(u"Session"), blank=True, max_length=100)
 
     created = models.DateTimeField(_(u"Created"), auto_now_add=True)
@@ -71,19 +74,19 @@ class Order(models.Model):
     customer_lastname = models.CharField(_(u"lastname"), max_length=50)
     customer_email = models.CharField(_(u"email"), max_length=75)
 
-    sa_content_type = models.ForeignKey(ContentType, related_name="order_shipping_address")
+    sa_content_type = models.ForeignKey(ContentType, models.CASCADE, related_name="order_shipping_address")
     sa_object_id = models.PositiveIntegerField()
     shipping_address = GenericForeignKey('sa_content_type', 'sa_object_id')
 
-    ia_content_type = models.ForeignKey(ContentType, related_name="order_invoice_address")
+    ia_content_type = models.ForeignKey(ContentType, models.CASCADE, related_name="order_invoice_address")
     ia_object_id = models.PositiveIntegerField()
     invoice_address = GenericForeignKey('ia_content_type', 'ia_object_id')
 
-    shipping_method = models.ForeignKey(ShippingMethod, verbose_name=_(u"Shipping Method"), blank=True, null=True)
+    shipping_method = models.ForeignKey(ShippingMethod, models.SET_NULL, verbose_name=_(u"Shipping Method"), blank=True, null=True)
     shipping_price = models.FloatField(_(u"Shipping Price"), default=0.0)
     shipping_tax = models.FloatField(_(u"Shipping Tax"), default=0.0)
 
-    payment_method = models.ForeignKey(PaymentMethod, verbose_name=_(u"Payment Method"), blank=True, null=True)
+    payment_method = models.ForeignKey(PaymentMethod, models.SET_NULL, verbose_name=_(u"Payment Method"), blank=True, null=True)
     payment_price = models.FloatField(_(u"Payment Price"), default=0.0)
     payment_tax = models.FloatField(_(u"Payment Tax"), default=0.0)
 
@@ -148,7 +151,7 @@ class OrderItem(models.Model):
     """An order items holds the sold product, its amount and some other relevant
     product values like the price at the time the product has been sold.
     """
-    order = models.ForeignKey(Order, related_name="items")
+    order = models.ForeignKey(Order, models.CASCADE, related_name="items")
 
     price_net = models.FloatField(_(u"Price net"), default=0.0)
     price_gross = models.FloatField(_(u"Price gross"), default=0.0)
@@ -156,7 +159,7 @@ class OrderItem(models.Model):
 
     # A optional reference to the origin product. This is optional in case the
     # product has been deleted. TODO: Decide: Are products able to be delete?
-    product = models.ForeignKey(Product, blank=True, null=True, on_delete=models.SET_NULL)
+    product = models.ForeignKey(Product, models.SET_NULL, blank=True, null=True)
 
     # Values of the product at the time the orders has been created
     product_amount = models.FloatField(_(u"Product quantity"), blank=True, null=True)
@@ -236,8 +239,8 @@ class OrderItemPropertyValue(models.Model):
     value
         The value which is stored.
     """
-    order_item = models.ForeignKey(OrderItem, verbose_name=_(u"Order item"), related_name="properties")
-    property = models.ForeignKey(Property, verbose_name=_(u"Property"))
+    order_item = models.ForeignKey(OrderItem, models.CASCADE, verbose_name=_(u"Order item"), related_name="properties")
+    property = models.ForeignKey(Property, models.CASCADE, verbose_name=_(u"Property"))
     value = models.CharField("Value", blank=True, max_length=100)
 
     class Meta:
@@ -245,7 +248,7 @@ class OrderItemPropertyValue(models.Model):
 
 
 class OrderDeliveryTime(DeliveryTimeBase):
-    order = models.OneToOneField(Order, verbose_name=_('Order'), related_name='delivery_time')
+    order = models.OneToOneField(Order, models.CASCADE, verbose_name=_('Order'), related_name='delivery_time')
 
     def _get_instance(self, min, max, unit):
         return self.__class__(min=min, max=max, unit=unit, order=self.order)

@@ -5,7 +5,7 @@ import json
 from django.conf import settings
 from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect

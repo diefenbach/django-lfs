@@ -5,7 +5,7 @@ import logging
 from django import template
 from django.conf import settings
 from django.core.cache import cache
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.forms.forms import BoundField
 from django.template import Node, TemplateSyntaxError
 from django.utils.safestring import mark_safe
@@ -534,7 +534,7 @@ def currency_text(value, request=None, grouping=True):
     shop = lfs.core.utils.get_default_shop(request)
     try:
         result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
-    except ValueError, e:
+    except ValueError as e:
         result = value
         logger.error("currency filter: %s" % e)
 
@@ -567,7 +567,7 @@ def currency(value, request=None, grouping=True):
     shop = lfs.core.utils.get_default_shop(request)
     try:
         result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
-    except ValueError, e:
+    except ValueError as e:
         result = str(value)
         logger.error("currency filter: %s" % e)
 

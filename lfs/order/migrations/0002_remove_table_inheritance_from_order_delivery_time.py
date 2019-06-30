@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
                 ('max', models.FloatField(verbose_name='Max')),
                 ('unit', models.PositiveSmallIntegerField(default=2, verbose_name='Unit', choices=[(1, 'hours'), (2, 'days'), (3, 'weeks'), (4, 'months')])),
                 ('description', models.TextField(verbose_name='Description', blank=True)),
-                ('order', models.OneToOneField(related_name='delivery_time', verbose_name='Order', to='order.Order')),
+                ('order', models.OneToOneField(related_name='delivery_time', verbose_name='Order', to='order.Order', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Order delivery time',

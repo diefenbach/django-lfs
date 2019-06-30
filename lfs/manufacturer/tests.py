@@ -1,6 +1,6 @@
 # coding: utf-8
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 from lfs.catalog.models import Product, Category
 from lfs.manufacturer.models import Manufacturer

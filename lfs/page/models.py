@@ -1,5 +1,6 @@
 # django imports
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
@@ -41,8 +42,7 @@ class Page(models.Model):
         return shop.image
 
     def get_absolute_url(self):
-        return ("lfs_page_view", (), {"slug": self.slug})
-    get_absolute_url = models.permalink(get_absolute_url)
+        return reverse("lfs_page_view", kwargs={"slug": self.slug})
 
     def get_parent_for_portlets(self):
         """Returns the parent for parents.

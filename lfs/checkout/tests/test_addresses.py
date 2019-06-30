@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test.utils import override_settings
 
 from lfs.catalog.models import Product

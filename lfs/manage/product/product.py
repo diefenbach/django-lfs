@@ -3,7 +3,7 @@ import json
 from django import forms
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator, EmptyPage
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import IntegrityError
 from django.db.models import Q
 from django.forms.utils import ErrorList
@@ -130,7 +130,7 @@ class VariantDataForm(forms.ModelForm):
 
 
 class PaginationDataForm(forms.Form):
-    page = forms.IntegerField(_('Page'), widget=HiddenInput)
+    page = forms.IntegerField(label=_('Page'), widget=HiddenInput)
 
 
 class ProductStockForm(forms.ModelForm):

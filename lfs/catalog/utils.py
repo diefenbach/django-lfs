@@ -250,7 +250,7 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
 
                 # All checked options of all other properties is also used
                 for f0, f1 in product_filter.get("select-filter", {}).items():
-                    print f0, f1, key
+                    print(f0, f1, key)
                     if f0 != key:
                         new_product_filter["select-filter"][f0] = f1
 

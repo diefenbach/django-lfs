@@ -9,7 +9,6 @@ from django.core.mail import EmailMessage
 from django.http import HttpResponseServerError
 from django.shortcuts import render
 from django.template import loader
-from django.template import RequestContext
 
 # lfs imports
 from django.views.generic import TemplateView
@@ -33,7 +32,7 @@ def shop_view(request, template_name="lfs/shop/shop.html"):
 
 
 def server_error(request):
-    """Own view in order to pass RequestContext and send an error message.
+    """Own view in order to send an error message.
     """
     exc_type, exc_info, tb = sys.exc_info()
     response = "%s\n" % exc_type.__name__
@@ -58,7 +57,7 @@ def server_error(request):
         mail.send(fail_silently=True)
 
     t = loader.get_template('500.html')
-    return HttpResponseServerError(t.render(RequestContext(request)))
+    return HttpResponseServerError(t.render(request=request))
 
 
 def one_time_setup():
