@@ -1497,7 +1497,7 @@ class Product(models.Model):
         properties = self.get_global_properties()
         properties.extend(self.get_local_properties())
 
-        properties.sort(lambda a, b: cmp(a['property'].position, b['property'].position))
+        properties.sort(key=lambda a: a['property'].position)
 
         return properties
 
@@ -2730,7 +2730,7 @@ class DeliveryTimeBase(models.Model):
             max = self.max
             min = self.min
 
-        return self._get_instance(min=min, max=max, unit=DELIVERY_TIME_UNIT_MONTHS)
+        return self._get_instance(min=int(min), max=int(max), unit=DELIVERY_TIME_UNIT_MONTHS)
 
     def as_reasonable_unit(self):
         """

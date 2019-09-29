@@ -1,4 +1,4 @@
-from StringIO import StringIO
+from io import StringIO
 
 from django.contrib.sessions.backends.file import SessionStore
 from django.core.handlers.wsgi import WSGIRequest

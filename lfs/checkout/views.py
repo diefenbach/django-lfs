@@ -213,7 +213,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
 
     initial_address = {}
     shop = lfs.core.utils.get_default_shop(request)
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         if shop.checkout_type == CHECKOUT_TYPE_AUTH:
             return HttpResponseRedirect(reverse("lfs_checkout_login"))
     else:

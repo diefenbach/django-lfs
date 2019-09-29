@@ -44,8 +44,6 @@ def atof(value):
         except ValueError:
             pass
 
-    if isinstance(value, unicode):
-        value = value.encode("utf-8")
     return locale.atof(value)
 
 

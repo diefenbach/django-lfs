@@ -67,10 +67,6 @@ def calculate_packing(request, id, quantity=None, with_properties=False, as_stri
     if quantity is None:
         try:
             quantity = request.POST.get("quantity")
-            if isinstance(quantity, unicode):
-                # atof() on unicode string fails in some environments, like Czech
-                quantity = quantity.encode("utf-8")
-            quantity = locale.atof(quantity)
         except (AttributeError, TypeError, ValueError):
             quantity = 1
 

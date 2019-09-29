@@ -147,6 +147,7 @@ class Voucher(models.Model):
         self.used_amount = F('used_amount') + 1
         self.last_used_date = timezone.now()
         self.save()
+        self.refresh_from_db()
 
     def is_effective(self, request, cart):
         """Returns True if the voucher is effective.
