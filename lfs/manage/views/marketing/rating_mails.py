@@ -72,6 +72,8 @@ def send_rating_mails(request):
             order_items = []
             for order_item in order.items.all():
                 product = order_item.product
+                if not product:
+                     continue
                 if product.is_variant():
                     product = product.parent
 
@@ -91,8 +93,8 @@ def send_rating_mails(request):
             mail.attach_alternative(html, "text/html")
             mail.send()
 
-        # TODO: What is template_name?
-        # return render(request, template_name, {
-        #     "display_orders_sent": True,
-        #     "orders_sent": orders_sent
-        # })
+        template_name="./manage/marketing/rating_mails.html"   
+        return render(request, template_name, {
+            "display_orders_sent": True,
+            "orders_sent": orders_sent
+        })
