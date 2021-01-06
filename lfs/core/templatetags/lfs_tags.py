@@ -6,7 +6,7 @@ from django import template
 from django.conf import settings
 from django.core.cache import cache
 from django.urls import reverse
-from django.forms.forms import BoundField
+from django.forms import BoundField
 from django.template import Node, TemplateSyntaxError
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
