@@ -26,8 +26,8 @@
         });
 
         function update_form() {
-            var template_name = $("#id_template").selected().attr("value");
-            if (template_name == "0") {
+            const template_name = document.getElementById("id_template").value;
+            if (template_name === "0") {
                 $("#id_category_cols").parents(".field").hide();
                 $("#id_show_all_products").parents(".field").show();
                 if ($("#id_active_formats:checked").val() == null) {
