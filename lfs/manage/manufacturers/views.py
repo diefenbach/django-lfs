@@ -44,7 +44,7 @@ def manage_manufacturer(request, manufacturer_id, template_name="manage/manufact
             "klass": klass,
         })
 
-    render(request, template_name, {
+    return render(request, template_name, {
         "categories": categories,
         "manufacturer": manufacturer,
         "manufacturer_id": manufacturer_id,
