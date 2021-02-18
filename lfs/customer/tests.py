@@ -1,7 +1,7 @@
 from django.http import HttpRequest
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core import mail
 
 from django.test.utils import override_settings

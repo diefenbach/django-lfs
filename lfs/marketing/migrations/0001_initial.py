@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('position', models.PositiveSmallIntegerField(default=1, verbose_name='Position')),
                 ('active', models.BooleanField(default=True, verbose_name='Active')),
-                ('product', models.ForeignKey(verbose_name='Product', to='catalog.Product')),
+                ('product', models.ForeignKey(verbose_name='Product', to='catalog.Product', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['position'],
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('send_date', models.DateTimeField(auto_now=True)),
-                ('order', models.ForeignKey(verbose_name='Order', to='order.Order')),
+                ('order', models.ForeignKey(verbose_name='Order', to='order.Order', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('sales', models.IntegerField(default=0, verbose_name='sales')),
-                ('product', models.ForeignKey(verbose_name='Product', to='catalog.Product')),
+                ('product', models.ForeignKey(verbose_name='Product', to='catalog.Product', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('position', models.PositiveSmallIntegerField(default=1, verbose_name='Position')),
-                ('product', models.ForeignKey(verbose_name='Product', to='catalog.Product')),
+                ('product', models.ForeignKey(verbose_name='Product', to='catalog.Product', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['position'],

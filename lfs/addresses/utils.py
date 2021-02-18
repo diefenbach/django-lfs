@@ -1,6 +1,5 @@
 # django imports
 from django.template.loader import select_template
-from django.template import RequestContext
 
 # lfs imports
 import lfs.core.utils
@@ -95,10 +94,11 @@ class AddressManagement(object):
         templates = ["lfs/addresses/address_form.html"]
         templates.insert(0, "lfs/addresses/%s_address_form.html" % self.type)
         template = select_template(templates)
-        return template.render(RequestContext(request, {
+
+        return template.render({
             "postal_form": postal_form,
             "address_form": address_form,
-        }))
+        }, request)
 
     def is_valid(self):
         """

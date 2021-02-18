@@ -5,4 +5,4 @@ class LfsCatalogAppConfig(AppConfig):
     name = 'lfs.catalog'
 
     def ready(self):
-        import listeners  # NOQA
+        from . import listeners  # NOQA

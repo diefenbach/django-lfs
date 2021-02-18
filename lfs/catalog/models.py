@@ -8,7 +8,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.cache import cache
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import F
 from django.db import models
 from django.template.defaultfilters import striptags
@@ -163,7 +163,7 @@ class Category(models.Model):
     """
     name = models.CharField(_(u"Name"), max_length=50)
     slug = models.SlugField(_(u"Slug"), unique=True)
-    parent = models.ForeignKey("self", verbose_name=_(u"Parent"), blank=True, null=True)
+    parent = models.ForeignKey("self", models.SET_NULL, verbose_name=_(u"Parent"), blank=True, null=True)
 
     # If selected it shows products of the sub categories within the product
     # view. If not it shows only direct products of the category.
@@ -203,8 +203,7 @@ class Category(models.Model):
         """
         Returns the absolute_url.
         """
-        return ("lfs_category", (), {"slug": self.slug})
-    get_absolute_url = models.permalink(get_absolute_url)
+        return reverse("lfs_category", kwargs={"slug": self.slug})
 
     @property
     def content_type(self):
@@ -627,11 +626,11 @@ class Product(models.Model):
     creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
 
     # Stocks
-    supplier = models.ForeignKey(Supplier, related_name='product_set', null=True, blank=True)
+    supplier = models.ForeignKey(Supplier, models.SET_NULL, related_name='product_set', null=True, blank=True)
     deliverable = models.BooleanField(_(u"Deliverable"), default=True)
     manual_delivery_time = models.BooleanField(_(u"Manual delivery time"), default=False)
-    delivery_time = models.ForeignKey("DeliveryTime", verbose_name=_(u"Delivery time"), blank=True, null=True, related_name="products_delivery_time")
-    order_time = models.ForeignKey("DeliveryTime", verbose_name=_(u"Order time"), blank=True, null=True, related_name="products_order_time")
+    delivery_time = models.ForeignKey("DeliveryTime", models.SET_NULL, verbose_name=_(u"Delivery time"), blank=True, null=True, related_name="products_delivery_time")
+    order_time = models.ForeignKey("DeliveryTime", models.SET_NULL, verbose_name=_(u"Order time"), blank=True, null=True, related_name="products_order_time")
     ordered_at = models.DateField(_(u"Ordered at"), blank=True, null=True)
     manage_stock_amount = models.BooleanField(_(u"Manage stock amount"), default=False)
     stock_amount = models.FloatField(_(u"Stock amount"), default=0)
@@ -640,7 +639,7 @@ class Product(models.Model):
     packing_unit = models.FloatField(_(u"Amount per packing"), blank=True, null=True)
     packing_unit_unit = models.CharField(_(u"Packing unit"), blank=True, max_length=30, choices=LFS_PACKING_UNITS)
 
-    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="products")
+    static_block = models.ForeignKey("StaticBlock", models.SET_NULL, verbose_name=_(u"Static block"), blank=True, null=True, related_name="products")
 
     # Dimension
     weight = models.FloatField(_(u"Weight"), default=0.0)
@@ -649,12 +648,12 @@ class Product(models.Model):
     width = models.FloatField(_(u"Width"), default=0.0)
 
     # Standard Products
-    tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
+    tax = models.ForeignKey(Tax, models.SET_NULL, verbose_name=_(u"Tax"), blank=True, null=True)
     sub_type = models.CharField(
         _(u"Subtype"), max_length=10, choices=PRODUCT_TYPE_CHOICES, default=STANDARD_PRODUCT)
 
     # Varianted Products
-    default_variant = models.ForeignKey("self", verbose_name=_(u"Default variant"), blank=True, null=True)
+    default_variant = models.ForeignKey("self", models.SET_NULL, verbose_name=_(u"Default variant"), blank=True, null=True)
     category_variant = models.SmallIntegerField(_(u"Category variant"), blank=True, null=True,)
 
     variants_display_type = models.IntegerField(
@@ -662,7 +661,7 @@ class Product(models.Model):
 
     # Product Variants
     variant_position = models.IntegerField(default=999)
-    parent = models.ForeignKey("self", blank=True, null=True, verbose_name=_(u"Parent"), related_name="variants")
+    parent = models.ForeignKey("self", models.SET_NULL, blank=True, null=True, verbose_name=_(u"Parent"), related_name="variants")
     active_name = models.BooleanField(_(u"Active name"), default=False)
     active_sku = models.BooleanField(_(u"Active SKU"), default=False)
     active_short_description = models.BooleanField(_(u"Active short description"), default=False)
@@ -728,8 +727,7 @@ class Product(models.Model):
         """
         Returns the absolute url of the product.
         """
-        return ("lfs_product", (), {"slug": self.slug})
-    get_absolute_url = models.permalink(get_absolute_url)
+        return reverse("lfs_product", kwargs={"slug": self.slug})
 
     @property
     def content_type(self):
@@ -1502,7 +1500,7 @@ class Product(models.Model):
         properties = self.get_global_properties()
         properties.extend(self.get_local_properties())
 
-        properties.sort(lambda a, b: cmp(a['property'].position, b['property'].position))
+        properties.sort(key=lambda a: a['property'].position)
 
         return properties
 
@@ -2049,8 +2047,8 @@ class ProductAccessories(models.Model):
     quantity
         The proposed amount of accessories for the product.
     """
-    product = models.ForeignKey("Product", verbose_name=_(u"Product"), related_name="productaccessories_product")
-    accessory = models.ForeignKey("Product", verbose_name=_(u"Accessory"), related_name="productaccessories_accessory")
+    product = models.ForeignKey("Product", models.CASCADE, verbose_name=_(u"Product"), related_name="productaccessories_product")
+    accessory = models.ForeignKey("Product", models.CASCADE, verbose_name=_(u"Accessory"), related_name="productaccessories_accessory")
     position = models.IntegerField(_(u"Position"), default=999)
     quantity = models.FloatField(_(u"Quantity"), default=1)
 
@@ -2269,7 +2267,7 @@ class FilterStep(models.Model):
         The start of the range. The end will be calculated from the start of the
         next step
     """
-    property = models.ForeignKey(Property, verbose_name=_(u"Property"), related_name="steps")
+    property = models.ForeignKey(Property, models.CASCADE, verbose_name=_(u"Property"), related_name="steps")
     start = models.FloatField()
 
     class Meta:
@@ -2298,8 +2296,8 @@ class GroupsPropertiesRelation(models.Model):
     position
         The position of the property within the group.
     """
-    group = models.ForeignKey(PropertyGroup, verbose_name=_(u"Group"), related_name="groupproperties")
-    property = models.ForeignKey(Property, verbose_name=_(u"Property"))
+    group = models.ForeignKey(PropertyGroup, models.CASCADE, verbose_name=_(u"Group"), related_name="groupproperties")
+    property = models.ForeignKey(Property, models.CASCADE, verbose_name=_(u"Property"))
     position = models.IntegerField(_(u"Position"), default=999)
 
     class Meta:
@@ -2327,8 +2325,8 @@ class ProductsPropertiesRelation(models.Model):
         The position of the property within the product.
 
     """
-    product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="productsproperties")
-    property = models.ForeignKey(Property, verbose_name=_(u"Property"))
+    product = models.ForeignKey(Product, models.CASCADE, verbose_name=_(u"Product"), related_name="productsproperties")
+    property = models.ForeignKey(Property, models.CASCADE, verbose_name=_(u"Property"))
     position = models.IntegerField(_(u"Position"), default=999)
 
     class Meta:
@@ -2360,7 +2358,7 @@ class PropertyOption(models.Model):
         The position of the option within the property
 
     """
-    property = models.ForeignKey(Property, verbose_name=_(u"Property"), related_name="options")
+    property = models.ForeignKey(Property, models.CASCADE, verbose_name=_(u"Property"), related_name="options")
 
     name = models.CharField(_(u"Name"), max_length=100)
     price = models.FloatField(_(u"Price"), blank=True, null=True, default=0.0)
@@ -2405,10 +2403,10 @@ class ProductPropertyValue(models.Model):
         The type of the product value, which is one of "filter value",
         "default value", "display value", "variant value".
     """
-    product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="property_values")
+    product = models.ForeignKey(Product, models.CASCADE, verbose_name=_(u"Product"), related_name="property_values")
     parent_id = models.IntegerField(_(u"Parent"), blank=True, null=True)
-    property = models.ForeignKey("Property", verbose_name=_(u"Property"), related_name="property_values")
-    property_group = models.ForeignKey("PropertyGroup", verbose_name=_(u"Property group"), blank=True, null=True,
+    property = models.ForeignKey("Property", models.CASCADE, verbose_name=_(u"Property"), related_name="property_values")
+    property_group = models.ForeignKey("PropertyGroup", models.SET_NULL, verbose_name=_(u"Property group"), blank=True, null=True,
                                        related_name="property_values")
     value = models.CharField(_(u"Value"), blank=True, max_length=100)
     value_as_float = models.FloatField(_(u"Value as float"), blank=True, null=True)
@@ -2465,7 +2463,7 @@ class Image(models.Model):
         The position of the image within the content object it belongs to.
 
     """
-    content_type = models.ForeignKey(ContentType, verbose_name=_(u"Content type"), related_name="image", blank=True, null=True)
+    content_type = models.ForeignKey(ContentType, models.CASCADE, verbose_name=_(u"Content type"), related_name="image", blank=True, null=True)
     content_id = models.PositiveIntegerField(_(u"Content id"), blank=True, null=True)
     content = GenericForeignKey(ct_field="content_type", fk_field="content_id")
 
@@ -2515,7 +2513,7 @@ class File(models.Model):
     title = models.CharField(blank=True, max_length=100)
     slug = models.SlugField()
 
-    content_type = models.ForeignKey(ContentType, verbose_name=_(u"Content type"), related_name="files", blank=True, null=True)
+    content_type = models.ForeignKey(ContentType, models.SET_NULL, verbose_name=_(u"Content type"), related_name="files", blank=True, null=True)
     content_id = models.PositiveIntegerField(_(u"Content id"), blank=True, null=True)
     content = GenericForeignKey(ct_field="content_type", fk_field="content_id")
 
@@ -2735,7 +2733,7 @@ class DeliveryTimeBase(models.Model):
             max = self.max
             min = self.min
 
-        return self._get_instance(min=min, max=max, unit=DELIVERY_TIME_UNIT_MONTHS)
+        return self._get_instance(min=int(min), max=int(max), unit=DELIVERY_TIME_UNIT_MONTHS)
 
     def as_reasonable_unit(self):
         """
@@ -2812,7 +2810,7 @@ class ProductAttachment(models.Model):
     title = models.CharField(_(u"Title"), max_length=50)
     description = models.TextField(_(u"Description"), blank=True)
     file = models.FileField(upload_to="files", max_length=500)
-    product = models.ForeignKey(Product, verbose_name=_(u"Product"), related_name="attachments")
+    product = models.ForeignKey(Product, models.SET_NULL, verbose_name=_(u"Product"), related_name="attachments", null=True, blank=True)
     position = models.IntegerField(_(u"Position"), default=1)
 
     class Meta:

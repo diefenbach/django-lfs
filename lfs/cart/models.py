@@ -42,7 +42,9 @@ class Cart(models.Model):
     A cart is only created if it needs to, i.e. when the shop user adds
     something to the cart.
     """
-    user = models.ForeignKey(User, verbose_name=_(u"User"), blank=True, null=True)
+    # TODO: Keep cart for now, when the user is deleted for reporting or similar,
+    # can be deleted later by a maintenance script or something else.
+    user = models.ForeignKey(User, models.SET_NULL, verbose_name=_(u"User"), blank=True, null=True)
     session = models.CharField(_(u"Session"), blank=True, max_length=100)
     creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
     modification_date = models.DateTimeField(_(u"Modification date"), auto_now=True)
@@ -230,8 +232,8 @@ class CartItem(models.Model):
     modification_date
         The modification date of the cart item.
     """
-    cart = models.ForeignKey(Cart, verbose_name=_(u"Cart"))
-    product = models.ForeignKey(Product, verbose_name=_(u"Product"))
+    cart = models.ForeignKey(Cart, models.CASCADE, verbose_name=_(u"Cart"))
+    product = models.ForeignKey(Product, models.CASCADE, verbose_name=_(u"Product"))
     amount = models.FloatField(_(u"Quantity"), blank=True, null=True)
     creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
     modification_date = models.DateTimeField(_(u"Modification date"), auto_now=True)
@@ -393,9 +395,9 @@ class CartItemPropertyValue(models.Model):
     value
         The value which is stored.
     """
-    cart_item = models.ForeignKey(CartItem, verbose_name=_(u"Cart item"), related_name="properties")
-    property = models.ForeignKey(Property, verbose_name=_(u"Property"))
-    property_group = models.ForeignKey(PropertyGroup, verbose_name=_(u'Property group'), null=True, blank=True)
+    cart_item = models.ForeignKey(CartItem, models.CASCADE, verbose_name=_(u"Cart item"), related_name="properties")
+    property = models.ForeignKey(Property, models.CASCADE, verbose_name=_(u"Property"))
+    property_group = models.ForeignKey(PropertyGroup, models.SET_NULL, verbose_name=_(u'Property group'), null=True, blank=True)
     value = models.CharField("Value", blank=True, max_length=100)
 
     class Meta:

@@ -2,7 +2,7 @@ import json
 
 # django imports
 from django.contrib.auth.decorators import permission_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import Http404, HttpResponseForbidden
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect

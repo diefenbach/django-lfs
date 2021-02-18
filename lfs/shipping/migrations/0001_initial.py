@@ -25,8 +25,8 @@ class Migration(migrations.Migration):
                 ('image', models.ImageField(upload_to=b'images', null=True, verbose_name='Image', blank=True)),
                 ('price', models.FloatField(default=0.0, verbose_name='Price')),
                 ('price_calculator', models.CharField(default=b'lfs.shipping.GrossShippingMethodPriceCalculator', max_length=200, verbose_name='Price Calculator', choices=[[b'lfs.shipping.GrossShippingMethodPriceCalculator', 'Price includes tax'], [b'lfs.shipping.NetShippingMethodPriceCalculator', 'Price excludes tax']])),
-                ('delivery_time', models.ForeignKey(verbose_name='Delivery time', blank=True, to='catalog.DeliveryTime', null=True)),
-                ('tax', models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True)),
+                ('delivery_time', models.ForeignKey(verbose_name='Delivery time', blank=True, to='catalog.DeliveryTime', null=True, on_delete=models.SET_NULL)),
+                ('tax', models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True, on_delete=models.SET_NULL)),
             ],
             options={
                 'ordering': ('priority',),
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
                 ('price', models.FloatField(default=0.0, verbose_name='Price')),
                 ('priority', models.IntegerField(default=0, verbose_name='Priority')),
                 ('active', models.BooleanField(default=True, verbose_name='Active')),
-                ('shipping_method', models.ForeignKey(related_name='prices', verbose_name='shipping_method', to='shipping.ShippingMethod')),
+                ('shipping_method', models.ForeignKey(related_name='prices', verbose_name='shipping_method', to='shipping.ShippingMethod', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ('priority',),

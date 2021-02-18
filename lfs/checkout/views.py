@@ -3,7 +3,7 @@ import json
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -39,7 +39,7 @@ def login(request, template_name="lfs/checkout/login.html"):
     happens - see there for more.
     """
     # If the user is already authenticate we don't want to show this view at all
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return HttpResponseRedirect(reverse("lfs_checkout"))
 
     shop = lfs.core.utils.get_default_shop(request)
@@ -101,7 +101,7 @@ def checkout_dispatcher(request):
     if cart is None or not cart.get_items():
         return empty_page_checkout(request)
 
-    if request.user.is_authenticated() or \
+    if request.user.is_authenticated or \
        shop.checkout_type == CHECKOUT_TYPE_ANON:
         return HttpResponseRedirect(reverse("lfs_checkout"))
     else:
@@ -213,7 +213,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
 
     initial_address = {}
     shop = lfs.core.utils.get_default_shop(request)
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         if shop.checkout_type == CHECKOUT_TYPE_AUTH:
             return HttpResponseRedirect(reverse("lfs_checkout_login"))
     else:

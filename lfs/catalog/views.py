@@ -5,7 +5,7 @@ import json
 from django.conf import settings
 from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
@@ -67,10 +67,6 @@ def calculate_packing(request, id, quantity=None, with_properties=False, as_stri
     if quantity is None:
         try:
             quantity = request.POST.get("quantity")
-            if isinstance(quantity, unicode):
-                # atof() on unicode string fails in some environments, like Czech
-                quantity = quantity.encode("utf-8")
-            quantity = locale.atof(quantity)
         except (AttributeError, TypeError, ValueError):
             quantity = 1
 

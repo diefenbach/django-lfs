@@ -5,12 +5,12 @@ import os
 
 from django.contrib.sessions.backends.file import SessionStore
 from django.contrib.auth.models import AnonymousUser
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 import lfs.catalog.utils
 from lfs.core.signals import property_type_changed
 from lfs.catalog.settings import CHOICES_YES
@@ -67,7 +67,7 @@ class PriceFilterTestCase(TestCase):
         self.p3 = Product.objects.create(slug="product-3", price=1, active=True)
 
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
-        self.c1.products = [self.p1, self.p2, self.p3]
+        self.c1.products.set([self.p1, self.p2, self.p3])
         self.c1.save()
 
     def test_get_price_filter_1(self):
@@ -96,7 +96,7 @@ class ManufacturerFilterTestCase(TestCase):
         self.p3 = Product.objects.create(slug="product-3", price=1, active=True, manufacturer=self.m2)
 
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
-        self.c1.products = [self.p1, self.p2, self.p3]
+        self.c1.products.set([self.p1, self.p2, self.p3])
         self.c1.save()
 
     def test_get_manufacturer_filter_1(self):
@@ -121,11 +121,11 @@ class PropertiesTestCase(TestCase):
         self.p3 = Product.objects.create(name="Product 3", slug="product-3", price=1, active=True)
 
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
-        self.c1.products = [self.p1, self.p2, self.p3]
+        self.c1.products.set([self.p1, self.p2, self.p3])
         self.c1.save()
 
         self.pg = PropertyGroup.objects.create(name="T-Shirts")
-        self.pg.products = [self.p1, self.p2]
+        self.pg.products.set([self.p1, self.p2])
         self.pg.save()
 
         self.pp1 = Property.objects.create(name="Size", type=PROPERTY_TEXT_FIELD)
@@ -185,7 +185,7 @@ class PropertiesTestCase(TestCase):
         self.pg2 = PropertyGroup.objects.create(name="Clothes")
 
         # Assign all products
-        self.pg2.products = [self.p1, self.p2, self.p3]
+        self.pg2.products.set([self.p1, self.p2, self.p3])
         self.pg2.save()
 
         # And add a simple property
@@ -665,7 +665,7 @@ class PropertiesTestCaseWithoutProperties(TestCase):
         self.p3 = Product.objects.create(name="Product 3", slug="product-3", price=1)
 
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
-        self.c1.products = [self.p1, self.p2, self.p3]
+        self.c1.products.set([self.p1, self.p2, self.p3])
         self.c1.save()
 
     def test_get_product_filters(self):
@@ -698,10 +698,10 @@ class CategoryTestCase(TestCase):
         self.c12 = Category.objects.create(name="Category 12", slug="category-12", parent=self.c1, position=20)
 
         # Add products to categories
-        self.c111.products = [self.p1, self.p2]
+        self.c111.products.set([self.p1, self.p2])
         self.c111.save()
 
-        self.c12.products = [self.p2, self.p3]
+        self.c12.products.set([self.p2, self.p3])
         self.c12.save()
 
     def test_meta_title(self):
@@ -1095,7 +1095,7 @@ class ViewsTestCase(TestCase):
 
         # add property group
         self.pg = PropertyGroup.objects.create(name="T-Shirts")
-        self.pg.products = [self.p1]
+        self.pg.products.set([self.p1])
         self.pg.save()
 
         # Add a variant with color = red
@@ -1104,7 +1104,7 @@ class ViewsTestCase(TestCase):
                                             value=str(red.id), type=PROPERTY_VALUE_TYPE_FILTER)
 
         # Create a test file
-        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"))
+        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"), 'rb')
         cf_1 = ContentFile(fh.read())
 
         self.file = File.objects.create(pk=1, title="Test File", slug="test-file", file=None)
@@ -1132,7 +1132,7 @@ class ViewsTestCase(TestCase):
 
         result = select_variant(request)
         self.assertEqual(result.status_code, 200)
-        self.failIf(result.content.find("The product has been changed according to your selection.") == -1)
+        self.failIf(result.content.find(b"The product has been changed according to your selection.") == -1)
 
     def test_set_price_filter(self):
         from lfs.catalog.views import set_price_filter
@@ -1184,12 +1184,6 @@ class ViewsTestCase(TestCase):
         result = calculate_packing(request, id=1)
         self.assertEqual(result.status_code, 200)
 
-        request = RequestFactory().post("/", {"quantity": "3"})
-        request.session = SessionStore()
-        request.user = AnonymousUser()
-        result = calculate_packing(request, id=1, as_string=True)
-        self.failUnless(isinstance(result, unicode))
-
     def test_calculate_price(self):
         from lfs.catalog.views import calculate_price
         request = RequestFactory().post("/", {"property_1": "1", "property_dont_exist": "99"})
@@ -1218,7 +1212,7 @@ class ViewsTestCase(TestCase):
 
         result = select_variant_from_properties(request)
         self.assertEqual(result.status_code, 200)
-        self.assertEqual(result.content, "")
+        self.assertEqual(result.content, b"")
 
     def test_set_filter(self):
         from lfs.catalog.views import set_filter
@@ -1367,12 +1361,12 @@ class DeliveryTimeTestCase(TestCase):
     def test_as_month(self):
         """
         """
-        self.assertEqual(self.dm1.as_months().min, 1.0 / (24 * 30))
-        self.assertEqual(self.dm1.as_months().max, 3.0 / (24 * 30))
-        self.assertEqual(self.dm2.as_months().min, 1.0 / 30)
-        self.assertEqual(self.dm2.as_months().max, 3.0 / 30)
-        self.assertEqual(self.dm3.as_months().min, 1.0 / 4)
-        self.assertEqual(self.dm3.as_months().max, 3.0 / 4)
+        self.assertEqual(self.dm1.as_months().min, 0)
+        self.assertEqual(self.dm1.as_months().max, 0)
+        self.assertEqual(self.dm2.as_months().min, 0)
+        self.assertEqual(self.dm2.as_months().max, 0)
+        self.assertEqual(self.dm3.as_months().min, 0)
+        self.assertEqual(self.dm3.as_months().max, 0)
         self.assertEqual(self.dm4.as_months().min, 1)
         self.assertEqual(self.dm4.as_months().max, 3)
 
@@ -1718,8 +1712,8 @@ class ProductTestCase(TestCase):
         self.c2 = Category.objects.create(name="Category 2", slug="category-2")
 
         # Assign products to categories. Note: p2 has two top level categories
-        self.c111.products = (self.p1, self.p2)
-        self.c2.products = (self.p2, )
+        self.c111.products.set([self.p1, self.p2])
+        self.c2.products.set([self.p2])
 
         # Create some dummy images
         self.i1 = Image.objects.create(title="Image 1", position=1)
@@ -2853,7 +2847,7 @@ class ProductTestCase(TestCase):
                 if response.context is not None:
                     variant_form = response.context['form']
                     if variant_form.errors:
-                        print variant_form.errors
+                        print(variant_form.errors)
                     self.assertEqual(len(variant_form.errors), 0)
         except KeyError:
             pass
@@ -2889,25 +2883,25 @@ class ProductTestCase(TestCase):
 
     def test_get_attachments(self):
         # retrieve attachments
-        match_titles = [force_unicode(self.attachment_P1_1_data['title']),
-                        force_unicode(self.attachment_P1_2_data['title'])]
+        match_titles = [force_text(self.attachment_P1_1_data['title']),
+                        force_text(self.attachment_P1_2_data['title'])]
         attachments = self.p1.get_attachments()
-        attachments_titles = [force_unicode(x.title) for x in attachments]
+        attachments_titles = [force_text(x.title) for x in attachments]
         self.assertEqual(set(match_titles), set(attachments_titles))
 
         # check data
         first = attachments[0]
         for k, v in self.attachment_P1_1_data.items():
-            self.assertEqual(force_unicode(getattr(first, k)), force_unicode(v))
+            self.assertEqual(force_text(getattr(first, k)), force_text(v))
 
         second = attachments[1]
         for k, v in self.attachment_P1_2_data.items():
-            self.assertEqual(force_unicode(getattr(second, k)), force_unicode(v))
+            self.assertEqual(force_text(getattr(second, k)), force_text(v))
 
         # retrieve variant attachment
         attachments = self.v1.get_attachments()
-        attachments_titles = [force_unicode(x.title) for x in attachments]
-        match_titles = [force_unicode(self.attachment_V1_data['title'])]
+        attachments_titles = [force_text(x.title) for x in attachments]
+        match_titles = [force_text(self.attachment_V1_data['title'])]
         self.assertEqual(attachments_titles, match_titles)
 
         # delete variant attachment: we should get parent attachments
@@ -3079,29 +3073,29 @@ class MiscTestCase(TestCase):
         Tests whether files on the file system are deleted properly when a File
         object has been deleted.
         """
-        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"))
+        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"), 'rb')
         cf_1 = ContentFile(fh.read())
 
         file = File.objects.create(pk=1, title="Test File", slug="test-file", file=None)
         file.file.save("Laminat01.jpg", cf_1)
 
-        self.failUnless(os.path.exists(file.file._get_path()))
+        self.failUnless(os.path.exists(file.file.path))
         file.delete()
-        self.failIf(os.path.exists(file.file._get_path()))
+        self.failIf(os.path.exists(file.file.path))
 
     def test_delete_image(self):
         """
         Tests whether images on the file system are deleted properly when a
         Image object has been deleted.
         """
-        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"))
+        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"), 'rb')
         cf_1 = ContentFile(fh.read())
 
         image = Image(title="Image 1")
         image.image.save("Laminat01.jpg", cf_1)
         image.save()
 
-        path = image.image._get_path()
+        path = image.image.path
         base, ext = os.path.splitext(path)
         for width, height in THUMBNAIL_SIZES:
             self.failUnless(os.path.exists("%s.%sx%s%s" % (base, width, height, ext)))

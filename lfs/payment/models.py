@@ -69,7 +69,7 @@ class PaymentMethod(models.Model, Criteria):
     description = models.TextField(_(u"Description"), blank=True)
     note = models.TextField(_(u"note"), blank=True)
     image = models.ImageField(_(u"Image"), upload_to="images", blank=True, null=True)
-    tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
+    tax = models.ForeignKey(Tax, models.SET_NULL, verbose_name=_(u"Tax"), blank=True, null=True)
     price = models.FloatField(_(u"Price"), default=0.0)
     deletable = models.BooleanField(default=True)
     module = models.CharField(_(u'Module'), blank=True, max_length=100, choices=getattr(settings, "LFS_PAYMENT_METHOD_PROCESSORS", []))
@@ -111,7 +111,7 @@ class PaymentMethodPrice(models.Model, Criteria):
         ordering = ("priority", )
         app_label = 'payment'
 
-    payment_method = models.ForeignKey(PaymentMethod, verbose_name=_(u"Payment method"), related_name="prices")
+    payment_method = models.ForeignKey(PaymentMethod, models.CASCADE, verbose_name=_(u"Payment method"), related_name="prices")
     price = models.FloatField(_(u"Price"), default=0.0)
     priority = models.IntegerField(_(u"Priority"), default=0)
     active = models.BooleanField(_(u"Active"), default=False)

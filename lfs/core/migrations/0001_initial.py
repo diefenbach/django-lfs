@@ -77,11 +77,11 @@ class Migration(migrations.Migration):
                 ('meta_title', models.CharField(default=b'<name>', max_length=80, verbose_name='Meta title', blank=True)),
                 ('meta_keywords', models.TextField(verbose_name='Meta keywords', blank=True)),
                 ('meta_description', models.TextField(verbose_name='Meta description', blank=True)),
-                ('default_country', models.ForeignKey(verbose_name='Default shipping country', to='core.Country')),
-                ('delivery_time', models.ForeignKey(verbose_name='Delivery time', blank=True, to='catalog.DeliveryTime', null=True)),
+                ('default_country', models.ForeignKey(verbose_name='Default shipping country', to='core.Country', blank=True, null=True, on_delete=models.SET_NULL)),
+                ('delivery_time', models.ForeignKey(verbose_name='Delivery time', blank=True, to='catalog.DeliveryTime', null=True, on_delete=models.SET_NULL)),
                 ('invoice_countries', models.ManyToManyField(related_name='invoice', verbose_name='Invoice countries', to='core.Country')),
                 ('shipping_countries', models.ManyToManyField(related_name='shipping', verbose_name='Shipping countries', to='core.Country')),
-                ('static_block', models.ForeignKey(related_name='shops', verbose_name='Static block', blank=True, to='catalog.StaticBlock', null=True)),
+                ('static_block', models.ForeignKey(related_name='shops', verbose_name='Static block', blank=True, to='catalog.StaticBlock', null=True, on_delete=models.SET_NULL)),
             ],
             options={
                 'permissions': (('manage_shop', 'Manage shop'),),
@@ -90,11 +90,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='action',
             name='group',
-            field=models.ForeignKey(related_name='actions', verbose_name='Group', to='core.ActionGroup'),
+            field=models.ForeignKey(related_name='actions', verbose_name='Group', to='core.ActionGroup', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='action',
             name='parent',
-            field=models.ForeignKey(verbose_name='Parent', blank=True, to='core.Action', null=True),
+            field=models.ForeignKey(verbose_name='Parent', blank=True, to='core.Action', null=True, on_delete=models.SET_NULL),
         ),
     ]

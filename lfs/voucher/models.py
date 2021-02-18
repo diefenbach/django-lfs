@@ -26,7 +26,7 @@ class VoucherGroup(models.Model):
     """Groups vouchers together.
     """
     name = models.CharField(max_length=100)
-    creator = models.ForeignKey(User)
+    creator = models.ForeignKey(User, models.SET_NULL, blank=True, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     position = models.PositiveSmallIntegerField(default=10)
 
@@ -93,15 +93,15 @@ class Voucher(models.Model):
           the voucher can be used unlimited.
     """
     number = models.CharField(max_length=100, unique=True)
-    group = models.ForeignKey(VoucherGroup, related_name="vouchers")
-    creator = models.ForeignKey(User)
+    group = models.ForeignKey(VoucherGroup, models.SET_NULL, related_name="vouchers", blank=True, null=True)
+    creator = models.ForeignKey(User, models.SET_NULL, blank=True, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     start_date = models.DateField(blank=True, null=True)
     effective_from = models.FloatField(default=0.0)
     end_date = models.DateField(blank=True, null=True)
     kind_of = models.PositiveSmallIntegerField(choices=KIND_OF_CHOICES)
     value = models.FloatField(default=0.0)
-    tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
+    tax = models.ForeignKey(Tax, models.SET_NULL, verbose_name=_(u"Tax"), blank=True, null=True)
     active = models.BooleanField(default=True)
     used_amount = models.PositiveSmallIntegerField(default=0)
     last_used_date = models.DateTimeField(blank=True, null=True)
@@ -147,6 +147,7 @@ class Voucher(models.Model):
         self.used_amount = F('used_amount') + 1
         self.last_used_date = timezone.now()
         self.save()
+        self.refresh_from_db()
 
     def is_effective(self, request, cart):
         """Returns True if the voucher is effective.

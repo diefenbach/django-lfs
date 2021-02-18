@@ -12,13 +12,13 @@ from django.contrib.redirects.models import Redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.utils.functional import Promise
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.shortcuts import render
-from django.utils.http import cookie_date
+from django.utils.http import http_date
 
 
 def l10n_float(string):
-    """Takes a country specfic decimal value as string and returns a float.
+    """Takes a country specific decimal value as string and returns a float.
     """
 
     # TODO: Implement a proper transformation with babel or similar
@@ -44,8 +44,6 @@ def atof(value):
         except ValueError:
             pass
 
-    if isinstance(value, unicode):
-        value = value.encode("utf-8")
     return locale.atof(value)
 
 
@@ -74,7 +72,7 @@ def lfs_quote(string, encoding="utf-8"):
     """Encodes passed string to passed encoding before quoting with
     urllib.quote().
     """
-    return urllib.quote(string.encode(encoding))
+    return urllib.parse.quote(string.encode(encoding))
 
 
 def import_module(module):
@@ -106,7 +104,7 @@ class MessageHttpResponseRedirect(HttpResponseRedirect):
             # We just keep the message two seconds.
             max_age = 2
             expires_time = time.time() + max_age
-            expires = cookie_date(expires_time)
+            expires = http_date(expires_time)
 
             self.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
 
@@ -126,7 +124,7 @@ def set_message_to(response, msg):
     # We just keep the message two seconds.
     max_age = 2
     expires_time = time.time() + max_age
-    expires = cookie_date(expires_time)
+    expires = http_date(expires_time)
     if msg:
         response.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
     return response
@@ -139,7 +137,7 @@ def set_message_cookie(url, msg):
     # We just keep the message two seconds.
     max_age = 2
     expires_time = time.time() + max_age
-    expires = cookie_date(expires_time)
+    expires = http_date(expires_time)
 
     response = HttpResponseRedirect(url)
     response.set_cookie("message", lfs_quote(msg), max_age=max_age, expires=expires)
@@ -272,7 +270,7 @@ class LazyEncoder(json.JSONEncoder):
     """
     def default(self, obj):
         if isinstance(obj, Promise):
-            return force_unicode(obj)
+            return force_text(obj)
         return obj
 
 

@@ -96,7 +96,7 @@ def delete_image_files(sender, **kwargs):
     if DELETE_IMAGES:
         image = kwargs.get("instance")
         try:
-            path = image.image._get_path()
+            path = image.image.path
         except ValueError:
             pass
         else:
@@ -121,7 +121,7 @@ def delete_file_files(sender, **kwargs):
     if DELETE_FILES:
         file = kwargs.get("instance")
         try:
-            path = file.file._get_path()
+            path = file.file.path
         except ValueError:
             pass
         else:

@@ -185,7 +185,7 @@ Further hints
   in the session. This means you can redirect to an own view and set the order
   state to PAID, for instance::
 
-        from django.core.urlresolvers import reverse
+        from django.urls import reverse
         from django.http import HttpResponseRedirect
         from lfs.plugins import PAID
 

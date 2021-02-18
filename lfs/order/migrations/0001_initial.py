@@ -49,11 +49,11 @@ class Migration(migrations.Migration):
                 ('pay_link', models.TextField(verbose_name='pay_link', blank=True)),
                 ('uuid', models.CharField(default=lfs.order.models.get_unique_id_str, unique=True, max_length=50, editable=False)),
                 ('requested_delivery_date', models.DateTimeField(null=True, verbose_name='Delivery Date', blank=True)),
-                ('ia_content_type', models.ForeignKey(related_name='order_invoice_address', to='contenttypes.ContentType')),
-                ('payment_method', models.ForeignKey(verbose_name='Payment Method', blank=True, to='payment.PaymentMethod', null=True)),
-                ('sa_content_type', models.ForeignKey(related_name='order_shipping_address', to='contenttypes.ContentType')),
-                ('shipping_method', models.ForeignKey(verbose_name='Shipping Method', blank=True, to='shipping.ShippingMethod', null=True)),
-                ('user', models.ForeignKey(verbose_name='User', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('ia_content_type', models.ForeignKey(related_name='order_invoice_address', to='contenttypes.ContentType', on_delete=models.CASCADE)),
+                ('payment_method', models.ForeignKey(verbose_name='Payment Method', blank=True, to='payment.PaymentMethod', null=True, on_delete=models.SET_NULL)),
+                ('sa_content_type', models.ForeignKey(related_name='order_shipping_address', to='contenttypes.ContentType', on_delete=models.CASCADE)),
+                ('shipping_method', models.ForeignKey(verbose_name='Shipping Method', blank=True, to='shipping.ShippingMethod', null=True, on_delete=models.SET_NULL)),
+                ('user', models.ForeignKey(verbose_name='User', blank=True, to=settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)),
             ],
             options={
                 'ordering': ('-created',),
@@ -62,8 +62,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='OrderDeliveryTime',
             fields=[
-                ('deliverytime_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='catalog.DeliveryTime')),
-                ('order', models.OneToOneField(related_name='delivery_time', verbose_name='Order', to='order.Order')),
+                ('deliverytime_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='catalog.DeliveryTime', on_delete=models.CASCADE)),
+                ('order', models.OneToOneField(related_name='delivery_time', verbose_name='Order', to='order.Order', null=True, blank=True, on_delete=models.SET_NULL)),
             ],
             options={
                 'verbose_name': 'Order delivery time',
@@ -84,7 +84,7 @@ class Migration(migrations.Migration):
                 ('product_price_net', models.FloatField(default=0.0, verbose_name='Product price net')),
                 ('product_price_gross', models.FloatField(default=0.0, verbose_name='Product price gross')),
                 ('product_tax', models.FloatField(default=0.0, verbose_name='Product tax')),
-                ('order', models.ForeignKey(related_name='items', to='order.Order')),
+                ('order', models.ForeignKey(related_name='items', to='order.Order', on_delete=models.CASCADE)),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to='catalog.Product', null=True)),
             ],
         ),
@@ -93,8 +93,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('value', models.CharField(max_length=100, verbose_name=b'Value', blank=True)),
-                ('order_item', models.ForeignKey(related_name='properties', verbose_name='Order item', to='order.OrderItem')),
-                ('property', models.ForeignKey(verbose_name='Property', to='catalog.Property')),
+                ('order_item', models.ForeignKey(related_name='properties', verbose_name='Order item', to='order.OrderItem', on_delete=models.CASCADE)),
+                ('property', models.ForeignKey(verbose_name='Property', to='catalog.Property', on_delete=models.CASCADE)),
             ],
         ),
     ]
