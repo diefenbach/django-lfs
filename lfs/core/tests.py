@@ -322,7 +322,7 @@ class SiteMapsTestCase(TestCase):
 
         self.assertEqual(ProductSitemap.priority, 0.5)
         self.assertEqual(ProductSitemap.changefreq, "weekly")
-        self.assertEqual(ProductSitemap.protocol, "http")
+        self.assertEqual(ProductSitemap.protocol, None)
 
         self.assertEqual(ShopSitemap.priority, 0.5)
         self.assertEqual(ShopSitemap.changefreq, "weekly")
