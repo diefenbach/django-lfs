@@ -48,8 +48,9 @@ def lfs_get_object(klass, *args, **kwargs):
     object is found.
     """
     cache_key = "%s-%s-%s" % (force_str(settings.CACHE_MIDDLEWARE_KEY_PREFIX), klass.__name__.lower(),
-                              force_str(kwargs.values()[0]))
-    cache_key = hashlib.md5(cache_key).hexdigest()
+                              force_str(list(kwargs.values())[0]))
+
+    cache_key = hashlib.md5(cache_key.encode('utf-8')).hexdigest()
     object = cache.get(cache_key)
     if object is not None:
         return object

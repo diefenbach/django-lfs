@@ -20,7 +20,7 @@ class TopsellerPortlet(Portlet):
     class Meta:
         app_label = 'portlet'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s" % self.id
 
     def render(self, context):

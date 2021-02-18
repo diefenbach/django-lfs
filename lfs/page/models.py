@@ -31,7 +31,7 @@ class Page(models.Model):
         ordering = ("position", )
         app_label = 'page'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def get_image(self):

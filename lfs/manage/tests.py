@@ -179,7 +179,7 @@ class ManageTestCase(TestCase):
         self.assertEqual(len(outvariants), 1)
         self.assertEqual(len(outvariants[0]['properties']), 1)
         self.assertEqual(outvariants[0]['properties'][0]['name'], pproperty.name)
-        self.assertEqual(outvariants[0]['properties'][0]['options'][0]['name'], property_option.name)
+        self.assertEqual(list(outvariants[0]['properties'][0]['options'])[0]['name'], property_option.name)
 
     def test_manage_update_variants(self):
         product = Product.objects.create(name='Product1', slug='product1', sub_type=PRODUCT_WITH_VARIANTS)

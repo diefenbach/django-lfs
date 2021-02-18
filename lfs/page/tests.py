@@ -50,8 +50,8 @@ class PageTestCase(TestCase):
         """
         url = reverse("lfs_page_view", kwargs={"slug": self.page.slug})
         response = self.client.get(url)
-        self.failIf(response.content.find("Page Title") == -1)
-        self.failIf(response.content.find("<p>This is a body</p>") == -1)
+        self.failIf(response.content.find(b"Page Title") == -1)
+        self.failIf(response.content.find(b"<p>This is a body</p>") == -1)
 
     def test_page_view_2(self):
         """Tests page view as anonymous.
@@ -61,14 +61,14 @@ class PageTestCase(TestCase):
         url = reverse("lfs_page_view", kwargs={"slug": self.page.slug})
         response = self.client.get(url)
 
-        self.failIf(response.content.find("We are sorry") == -1)
+        self.failIf(response.content.find(b"We are sorry") == -1)
 
         self.page.active = True
         self.page.save()
 
         response = self.client.get(url)
-        self.failIf(response.content.find("Page Title") == -1)
-        self.failIf(response.content.find("<p>This is a body</p>") == -1)
+        self.failIf(response.content.find(b"Page Title") == -1)
+        self.failIf(response.content.find(b"<p>This is a body</p>") == -1)
 
     def test_active_pages(self):
         """Tests the ActiveManager for pages.

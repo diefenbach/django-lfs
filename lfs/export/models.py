@@ -24,7 +24,7 @@ class Export(models.Model):
         ordering = ("position", "name")
         app_label = 'export'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s.%s" % (self.module, self.method)
 
     def get_absolute_url(self):
@@ -56,7 +56,7 @@ class Script(models.Model):
     method = models.CharField(max_length=100, default="export")
     name = models.CharField(max_length=100, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:

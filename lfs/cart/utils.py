@@ -113,7 +113,7 @@ def update_cart_after_login(request):
                 properties_dict = {}
                 for pv in session_cart_item.properties.all():
                     key = '{0}_{1}'.format(pv.property_group_id, pv.property_id)
-                    properties_dict[key] = {'value': unicode(pv.value),
+                    properties_dict[key] = {'value': pv.value,
                                             'property_group_id': pv.property_group_id,
                                             'property_id': pv.property_id}
 

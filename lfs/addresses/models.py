@@ -116,5 +116,5 @@ class Address(BaseAddress):
     phone = models.CharField(_("Phone"), blank=True, null=True, max_length=20)
     email = models.EmailField(_("E-Mail"), blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s %s (%s)' % (self.firstname, self.lastname, self.company_name)

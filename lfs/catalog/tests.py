@@ -916,7 +916,7 @@ class CategoryTestCase(TestCase):
     def test_unicode(self):
         """
         """
-        self.assertEqual(self.c1.__unicode__(), "%s (%s)" % (self.c1.name, self.c1.slug))
+        self.assertEqual(self.c1.__str__(), "%s (%s)" % (self.c1.name, self.c1.slug))
 
     def test_get_content_type(self):
         """

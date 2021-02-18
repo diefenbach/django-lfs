@@ -65,6 +65,10 @@ from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
 
 
+PRODUCT_TEMPLATES_CHOICES = [(pt[0], pt[1]['name']) for pt in PRODUCT_TEMPLATES]
+CATEGORY_TEMPLATES_CHOICES = [(pt[0], pt[1]['name']) for pt in CATEGORY_TEMPLATES]
+
+
 def get_unique_id_str():
     return str(uuid.uuid4())
 
@@ -171,9 +175,8 @@ class Category(models.Model):
     image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=THUMBNAIL_SIZES)
     position = models.IntegerField(_(u"Position"), default=1000)
     exclude_from_navigation = models.BooleanField(_(u"Exclude from navigation"), default=False)
-
-    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories")
-    template = models.PositiveSmallIntegerField(_(u"Category template"), blank=True, null=True, choices=CATEGORY_TEMPLATES)
+    static_block = models.ForeignKey("StaticBlock", verbose_name=_(u"Static block"), blank=True, null=True, related_name="categories", on_delete=models.SET_NULL)
+    template = models.PositiveSmallIntegerField(_(u"Category template"), blank=True, null=True, choices=CATEGORY_TEMPLATES_CHOICES)
     active_formats = models.BooleanField(_(u"Active formats"), default=False)
 
     product_rows = models.IntegerField(_(u"Product rows"), default=3)
@@ -193,7 +196,7 @@ class Category(models.Model):
         verbose_name_plural = _('Categories')
         app_label = 'catalog'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s (%s)" % (self.name, self.slug)
 
     def get_absolute_url(self):
@@ -675,7 +678,7 @@ class Product(models.Model):
     active_meta_description = models.BooleanField(_(u"Active meta description"), default=False)
     active_meta_keywords = models.BooleanField(_(u"Active meta keywords"), default=False)
     active_dimensions = models.BooleanField(_(u"Active dimensions"), default=False)
-    template = models.PositiveSmallIntegerField(_(u"Product template"), blank=True, null=True, choices=PRODUCT_TEMPLATES)
+    template = models.PositiveSmallIntegerField(_(u"Product template"), blank=True, null=True, choices=PRODUCT_TEMPLATES_CHOICES)
 
     # Price calculation
     active_price_calculation = models.BooleanField(_(u"Active price calculation"), default=False)
@@ -700,7 +703,7 @@ class Product(models.Model):
         ordering = ("name", )
         app_label = 'catalog'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s (%s)" % (self.name, self.slug)
 
     def save(self, *args, **kwargs):
@@ -2056,7 +2059,7 @@ class ProductAccessories(models.Model):
         verbose_name_plural = "Product accessories"
         app_label = 'catalog'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s -> %s" % (self.product.name, self.accessory.name)
 
     def get_price(self, request):
@@ -2090,7 +2093,7 @@ class PropertyGroup(models.Model):
         ordering = ("position", )
         app_label = 'catalog'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_configurable_properties(self):
@@ -2214,7 +2217,7 @@ class Property(models.Model):
         ordering = ["position"]
         app_label = 'catalog'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     @property
@@ -2273,7 +2276,7 @@ class FilterStep(models.Model):
         ordering = ["start"]
         app_label = 'catalog'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s %s" % (self.property.name, self.start)
 
 
@@ -2369,7 +2372,7 @@ class PropertyOption(models.Model):
         ordering = ["position"]
         app_label = 'catalog'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -2415,7 +2418,7 @@ class ProductPropertyValue(models.Model):
         unique_together = ("product", "property", "property_group", "value", "type")
         app_label = 'catalog'
 
-    def __unicode__(self):
+    def __str__(self):
         property_group_name = self.property_group.name if self.property_group_id else ''
         return u"%s/%s/%s: %s" % (self.product.get_name(), property_group_name, self.property.name, self.value)
 
@@ -2475,7 +2478,7 @@ class Image(models.Model):
         ordering = ("position", )
         app_label = 'catalog'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def get_alt(self):
@@ -2524,7 +2527,7 @@ class File(models.Model):
         ordering = ("position", )
         app_label = 'catalog'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def get_absolute_url(self):
@@ -2562,7 +2565,7 @@ class StaticBlock(models.Model):
         ordering = ("position", )
         app_label = 'catalog'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -2594,7 +2597,7 @@ class DeliveryTimeBase(models.Model):
         ordering = ("min", )
         abstract = True
 
-    def __unicode__(self):
+    def __str__(self):
         return self.round().as_string()
 
     def _get_instance(self, min, max, unit):

@@ -56,7 +56,7 @@ class ForsalePortlet(Portlet):
         """
         return ForsaleForm(instance=self, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s" % self.id
 
 

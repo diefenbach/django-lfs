@@ -43,7 +43,7 @@ class LoginTestCase(TestCase):
         self.gpr1 = GroupsPropertiesRelation.objects.create(group=self.pg, property=self.pp1)
 
         self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=5, active=True, sub_type=CONFIGURABLE_PRODUCT)
-        self.pg.products = [self.p1]
+        self.pg.products.set([self.p1])
         self.pg.save()
 
         self.admin = User.objects.get(username="admin")

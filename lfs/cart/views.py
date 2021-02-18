@@ -278,7 +278,7 @@ def add_to_cart(request, product_id=None):
                         value = 0.0
 
                 key = '{0}_{1}'.format(property_group_id, property_id)
-                properties_dict[key] = {'value': unicode(value),
+                properties_dict[key] = {'value': value,
                                         'property_group_id': property_group_id,
                                         'property_id': property_id}
 

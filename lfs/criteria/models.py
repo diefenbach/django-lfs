@@ -145,7 +145,7 @@ class Criterion(models.Model):
         [CONTAINS, _(u"Contains")],
     ]
 
-    def __unicode__(self):
+    def __str__(self):
         """ We're using force unicode as this basically fails:
                from django.utils import translation
                from django.utils.translation import ugettext_lazy as _

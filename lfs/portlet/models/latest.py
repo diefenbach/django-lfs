@@ -63,7 +63,7 @@ class LatestPortlet(Portlet):
         """
         return LatestForm(instance=self, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s" % self.id
 
 

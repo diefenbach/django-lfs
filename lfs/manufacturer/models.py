@@ -33,7 +33,7 @@ class Manufacturer(models.Model):
         ordering = ("name", )
         app_label = 'manufacturer'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):

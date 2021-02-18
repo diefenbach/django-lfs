@@ -17,7 +17,7 @@ class Topseller(models.Model):
         ordering = ["position"]
         app_label = 'marketing'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s (%s)" % (self.product.name, self.position)
 
 
@@ -42,7 +42,7 @@ class FeaturedProduct(models.Model):
         ordering = ["position"]
         app_label = 'marketing'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s (%s)" % (self.product.name, self.position)
 
 
@@ -52,7 +52,7 @@ class OrderRatingMail(models.Model):
     order = models.ForeignKey(Order, verbose_name=_(u"Order"))
     send_date = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s (%s)" % (self.order.id, self.send_date.strftime(ugettext('DATE_FORMAT')))
 
     class Meta:

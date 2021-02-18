@@ -53,7 +53,7 @@ class Discount(models.Model, Criteria):
     sums_up = models.BooleanField(_(u"Sums up"), default=True, help_text=_(u'Sums up with other discounts/vouchers'))
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="discounts")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_tax(self, request, product=None):

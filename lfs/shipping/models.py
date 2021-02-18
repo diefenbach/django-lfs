@@ -84,7 +84,7 @@ class ShippingMethod(models.Model, Criteria):
         ordering = ("priority", )
         app_label = 'shipping'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_price(self, request):
@@ -157,5 +157,5 @@ class ShippingMethodPrice(models.Model, Criteria):
         ordering = ("priority", )
         app_label = 'shipping'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s" % self.price

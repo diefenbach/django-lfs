@@ -18,7 +18,7 @@ class Country(models.Model):
     code = models.CharField(_(u"Country code"), max_length=2)
     name = models.CharField(_(u"Name"), max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -42,7 +42,7 @@ class ActionGroup(models.Model):
         ordering = ("name", )
         app_label = 'core'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_actions(self):
@@ -81,7 +81,7 @@ class Action(models.Model):
     position = models.IntegerField(_(u"Position"), default=999)
     parent = models.ForeignKey("self", verbose_name=_(u"Parent"), blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
@@ -199,7 +199,7 @@ class Shop(models.Model):
         permissions = (("manage_shop", "Manage shop"),)
         app_label = 'core'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_format_info(self):

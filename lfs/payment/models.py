@@ -80,7 +80,7 @@ class PaymentMethod(models.Model, Criteria):
         ordering = ("priority", )
         app_label = 'payment'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -104,7 +104,7 @@ class PaymentMethodPrice(models.Model, Criteria):
         The order in which all prices of the belonging payment method are tested
         for validity. Less comes first.
     """
-    def __unicode__(self):
+    def __str__(self):
         return u"%s" % self.price
 
     class Meta:

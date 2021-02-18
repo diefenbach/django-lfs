@@ -47,7 +47,7 @@ class Cart(models.Model):
     creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
     modification_date = models.DateTimeField(_(u"Modification date"), auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s, %s" % (self.user, self.session)
 
     def add(self, product, properties_dict=None, amount=1):
@@ -240,7 +240,7 @@ class CartItem(models.Model):
         ordering = ['id']
         app_label = 'cart'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"Product: %(product)s, Quantity: %(amount)f, Cart: %(cart)s" % {'product': self.product,
                                                                                 'amount': self.amount,
                                                                                 'cart': self.cart}

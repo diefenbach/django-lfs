@@ -111,7 +111,7 @@ class Voucher(models.Model):
     class Meta:
         ordering = ("creation_date", "number")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.number
 
     def get_price_net(self, request, cart=None):

@@ -50,7 +50,7 @@ class Customer(models.Model):
 
     selected_country = models.ForeignKey(Country, verbose_name=_(u"Selected country"), blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s/%s" % (self.user, self.session)
 
     def get_email_address(self):
@@ -159,7 +159,7 @@ class BankAccount(models.Model):
     bank_name = models.CharField(_(u"Bank name"), blank=True, max_length=100)
     depositor = models.CharField(_(u"Depositor"), blank=True, max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s / %s" % (self.account_number, self.bank_name)
 
     class Meta:
@@ -195,7 +195,7 @@ class CreditCard(models.Model):
     expiration_date_month = models.IntegerField(_(u"Expiration date month"), blank=True, null=True)
     expiration_date_year = models.IntegerField(_(u"Expiration date year"), blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s / %s" % (self.type, self.owner)
 
     class Meta:

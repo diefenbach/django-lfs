@@ -57,7 +57,7 @@ def login(request, template_name="lfs/checkout/login.html"):
         login_form.fields["username"].label = _(u"E-Mail")
         if login_form.is_valid():
             from django.contrib.auth import login
-            login(request, login_form.get_user())
+            login(request, login_form.get_user(), backend='lfs.customer.auth.EmailBackend')
 
             return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"),
                                                      msg=_(u"You have been logged in."))
@@ -80,7 +80,7 @@ def login(request, template_name="lfs/checkout/login.html"):
             user = authenticate(username=email, password=password)
 
             from django.contrib.auth import login
-            login(request, user)
+            login(request, user, backend='lfs.customer.auth.EmailBackend')
 
             return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"),
                                                      msg=_(u"You have been registered and logged in."))

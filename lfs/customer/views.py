@@ -81,7 +81,7 @@ def login(request, template_name="lfs/customer/login.html"):
             user = authenticate(username=email, password=password)
 
             from django.contrib.auth import login
-            login(request, user)
+            login(request, user, backend='lfs.customer.auth.EmailBackend')
 
             redirect_to = request.POST.get("next")
             if not redirect_to or '//' in redirect_to or ' ' in redirect_to:

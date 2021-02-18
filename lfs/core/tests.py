@@ -314,11 +314,11 @@ class SiteMapsTestCase(TestCase):
 
         self.assertEqual(CategorySitemap.priority, 0.5)
         self.assertEqual(CategorySitemap.changefreq, "weekly")
-        self.assertEqual(CategorySitemap.protocol, "http")
+        self.assertEqual(CategorySitemap.protocol, "https")
 
         self.assertEqual(PageSitemap.priority, 0.5)
         self.assertEqual(PageSitemap.changefreq, "weekly")
-        self.assertEqual(PageSitemap.protocol, "http")
+        self.assertEqual(PageSitemap.protocol, "https")
 
         self.assertEqual(ProductSitemap.priority, 0.5)
         self.assertEqual(ProductSitemap.changefreq, "weekly")
@@ -326,7 +326,7 @@ class SiteMapsTestCase(TestCase):
 
         self.assertEqual(ShopSitemap.priority, 0.5)
         self.assertEqual(ShopSitemap.changefreq, "weekly")
-        self.assertEqual(ShopSitemap.protocol, "http")
+        self.assertEqual(ShopSitemap.protocol, "https")
 
     def test_sitemaps_settings(self):
         my_sitemaps = {

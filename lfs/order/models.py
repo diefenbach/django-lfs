@@ -106,7 +106,7 @@ class Order(models.Model):
         ordering = ("-created", )
         app_label = 'order'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s (%s %s)" % (self.created.strftime("%x %X"), self.customer_firstname, self.customer_lastname)
 
     def get_pay_link(self, request=None):
@@ -170,7 +170,7 @@ class OrderItem(models.Model):
         app_label = 'order'
         ordering = ['id']
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s" % self.product_name
 
     @property
@@ -250,7 +250,7 @@ class OrderDeliveryTime(DeliveryTimeBase):
     def _get_instance(self, min, max, unit):
         return self.__class__(min=min, max=max, unit=unit, order=self.order)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'[{0}] {1}'.format(self.order.number, self.round().as_string())
 
     class Meta:
