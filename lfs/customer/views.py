@@ -13,10 +13,11 @@ from django.utils.translation import ugettext_lazy as _
 
 # lfs imports
 import lfs
+import lfs.core.utils
 from lfs.addresses.utils import AddressManagement
 from lfs.customer import utils as customer_utils
 from lfs.customer.forms import EmailForm, CustomerAuthenticationForm
-from lfs.customer.forms import RegisterForm
+from lfs.customer.settings import REGISTER_FORM
 from lfs.customer.utils import create_unique_username
 from lfs.order.models import Order
 
@@ -39,6 +40,8 @@ def login(request, template_name="lfs/customer/login.html"):
 
     login_form = CustomerAuthenticationForm()
     login_form.fields["username"].label = _(u"E-Mail")
+
+    RegisterForm = lfs.core.utils.import_symbol(REGISTER_FORM)
     register_form = RegisterForm()
 
     if request.POST.get("action") == "login":

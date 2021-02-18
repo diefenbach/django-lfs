@@ -11,7 +11,8 @@ from lfs.core.models import Country
 from lfs.core.models import Shop
 from lfs.customer.models import CreditCard
 from lfs.customer.models import Customer
-from lfs.customer.utils import create_unique_username, create_customer
+from lfs.customer.utils import create_unique_username
+from lfs.customer.utils import create_customer
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
 from lfs.payment.models import PaymentMethod

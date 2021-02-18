@@ -27,7 +27,7 @@ class CategorySitemap(Sitemap):
     """
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("category", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("category", {}).get("priority", 0.5)
-    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("category", {}).get("protocol", "http")
+    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("category", {}).get("protocol", None)
 
     def items(self):
         return Category.objects.all()
@@ -41,7 +41,7 @@ class PageSitemap(Sitemap):
     """
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("priority", 0.5)
-    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("protocol", "http")
+    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("protocol", None)
 
     def items(self):
         return Page.objects.filter(active=True).exclude(slug="")
@@ -55,7 +55,7 @@ class ShopSitemap(Sitemap):
     """
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("shop", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("shop", {}).get("priority", 0.5)
-    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("shop", {}).get("protocol", "http")
+    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("shop", {}).get("protocol", None)
 
     def items(self):
         return Shop.objects.all()

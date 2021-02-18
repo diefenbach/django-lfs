@@ -26,7 +26,7 @@ from lfs.customer import utils as customer_utils
 from lfs.customer.utils import create_unique_username
 from lfs.customer.forms import CreditCardForm, CustomerAuthenticationForm
 from lfs.customer.forms import BankAccountForm
-from lfs.customer.forms import RegisterForm
+from lfs.customer.settings import REGISTER_FORM
 from lfs.payment.models import PaymentMethod
 from lfs.voucher.models import Voucher
 
@@ -50,6 +50,7 @@ def login(request, template_name="lfs/checkout/login.html"):
 
     # Using Djangos default AuthenticationForm
     login_form = CustomerAuthenticationForm()
+    RegisterForm = lfs.core.utils.import_symbol(REGISTER_FORM)
     register_form = RegisterForm()
 
     if request.POST.get("action") == "login":

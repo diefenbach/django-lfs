@@ -343,3 +343,71 @@ class CheckoutTestCase(TestCase):
         self.assertEqual(our_customer.selected_invoice_address.email, "a@a.com")
         self.assertEqual(our_customer.selected_shipping_address.phone, '7654321')
         self.assertEqual(our_customer.selected_shipping_address.email, "b@b.com")
+
+    def test_checkout_for_ireland(self):
+        """ Ireland doesn't have zip_code """
+
+        ie = Country.objects.get(code="ie")
+        shop = get_default_shop()
+        shop.shipping_countries.add(ie)
+        shop.save()
+
+        # login as our customer
+        logged_in = self.client.login(username=self.username, password=self.password)
+        self.assertEqual(logged_in, True)
+
+        # test that our Netherlands form has only 4 address line fields
+        ie_form_class = form_factory("IE")
+        ie_form = ie_form_class()
+
+        self.assertEqual('zip_code' in ie_form.fields, False)
+        self.assertEqual('city' in ie_form.fields, True)
+
+        # check initial database quantities
+        self.assertEquals(Address.objects.count(), 2)
+        self.assertEquals(Customer.objects.count(), 1)
+        self.assertEquals(Order.objects.count(), 0)
+
+        # check we have no invoice or shipping phone or email prior to checkout
+        our_customer = Customer.objects.all()[0]
+        self.assertEqual(our_customer.selected_invoice_address.phone, None)
+        self.assertEqual(our_customer.selected_invoice_address.email, None)
+        self.assertEqual(our_customer.selected_shipping_address.phone, None)
+        self.assertEqual(our_customer.selected_shipping_address.email, None)
+
+        checkout_data = {'invoice-firstname': 'bob',
+                         'invoice-lastname': 'builder',
+                         'invoice-line1': 'ie street',
+                         'invoice-line2': 'ie area',
+                         'invoice-city': 'ie city',
+                         'invoice-state': 'carlow',
+                         'invoice-country': "IE",
+                         'invoice-email': 'a@a.com',
+                         'invoice-phone': '1234567',
+                         'shipping-firstname': 'hans',
+                         'shipping-lastname': 'schmidt',
+                         'shipping-line1': 'orianenberger strasse',
+                         'shipping-line2': 'ie area',
+                         'shipping-city': 'ie city',
+                         'shipping-state': 'carlow',
+                         'shipping-country': "IE",
+                         'shipping-email': 'b@b.com',
+                         'shipping-phone': '7654321',
+                         'payment_method': self.by_invoice.id,
+                         }
+
+        checkout_post_response = self.client.post(reverse('lfs_checkout'), checkout_data)
+        self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302,
+                             target_status_code=200, )
+
+        # check database quantities post-checkout
+        self.assertEquals(Address.objects.count(), 4)
+        self.assertEquals(Customer.objects.count(), 1)
+        self.assertEquals(Order.objects.count(), 1)
+
+        # check our customer details post checkout
+        our_customer = Customer.objects.all()[0]
+        self.assertEqual(our_customer.selected_invoice_address.phone, "1234567")
+        self.assertEqual(our_customer.selected_invoice_address.email, "a@a.com")
+        self.assertEqual(our_customer.selected_shipping_address.phone, '7654321')
+        self.assertEqual(our_customer.selected_shipping_address.email, "b@b.com")
