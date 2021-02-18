@@ -241,12 +241,6 @@ def delete_static_block(request, id):
     """Deletes static block with passed id.
     """
     sb = get_object_or_404(StaticBlock, pk=id)
-
-    # First we delete all referencing categories. Otherwise they would be
-    # deleted
-    for category in sb.categories.all():
-        category.static_block = None
-        category.save()
     sb.delete()
 
     return lfs.core.utils.set_message_cookie(
