@@ -29,7 +29,7 @@ def environment(request, template_name="manage/information/environment.html"):
             "version": version,
         })
 
-    apps.sort(lambda a, b: cmp(a["name"], b["name"]))
+    apps.sort(key=lambda k: k["name"])
 
     return render(request, template_name, {
         "lfs_version": lfs_version,

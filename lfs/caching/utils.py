@@ -81,7 +81,7 @@ def lfs_get_object_or_404(klass, *args, **kwargs):
 
     cache_key = hashlib.md5(cache_key.encode('utf-8')).hexdigest()
     object = cache.get(cache_key)
-    object = None
+
     if object is not None:
         return object
 

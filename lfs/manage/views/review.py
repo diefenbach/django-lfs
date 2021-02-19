@@ -346,9 +346,9 @@ def _get_filtered_reviews(request, review_filters):
     if review_ordering == "product":
         reviews = list(reviews)
         if review_ordering_order == "-":
-            reviews.sort(lambda b, a: cmp(a.content.get_name(), b.content.get_name()))
+            reviews.sort(key=lambda k: k.content.get_name(), reverse=True)
         else:
-            reviews.sort(lambda a, b: cmp(a.content.get_name(), b.content.get_name()))
+            reviews.sort(key=lambda k: k.content.get_name())
 
     else:
         reviews = reviews.order_by("%s%s" % (review_ordering_order, review_ordering))

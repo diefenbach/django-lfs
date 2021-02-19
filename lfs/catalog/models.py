@@ -1650,7 +1650,7 @@ class Product(models.Model):
         cheapest_variant = None
         min_price = None
         for variant in Product.objects.filter(parent=self):
-            price = variant.get_base_price_gross(request, amount=sys.maxint)
+            price = variant.get_base_price_gross(request, amount=sys.maxsize)
             if price == 0:
                 continue
             if (min_price is None) or (price < min_price):
@@ -1667,7 +1667,7 @@ class Product(models.Model):
 
         prices = []
         for variant in Product.objects.filter(parent=product, active=True):
-            price = variant.get_for_sale_price_gross(request, amount=sys.maxint)
+            price = variant.get_for_sale_price_gross(request, amount=sys.maxsize)
             if price not in prices:
                 prices.append(price)
 
@@ -1687,7 +1687,7 @@ class Product(models.Model):
         """
         prices = []
         for variant in Product.objects.filter(parent=self, active=True):
-            price = variant.get_standard_price_gross(request, amount=sys.maxint)
+            price = variant.get_standard_price_gross(request, amount=sys.maxsize)
             if price not in prices:
                 prices.append(price)
 
@@ -1707,7 +1707,7 @@ class Product(models.Model):
         """
         prices = []
         for variant in Product.objects.filter(parent=self, active=True):
-            price = variant.get_price_gross(request, amount=sys.maxint)
+            price = variant.get_price_gross(request, amount=sys.maxsize)
             if price not in prices:
                 prices.append(price)
 
@@ -1727,7 +1727,7 @@ class Product(models.Model):
         """
         prices = []
         for variant in Product.objects.filter(parent=self, active=True):
-            price = float("%.2f" % variant.get_base_price_gross(request, amount=sys.maxint))
+            price = float("%.2f" % variant.get_base_price_gross(request, amount=sys.maxsize))
             if price not in prices:
                 prices.append(price)
         try:
