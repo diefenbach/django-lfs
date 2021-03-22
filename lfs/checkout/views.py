@@ -262,10 +262,10 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
                 else:
                     # If the shipping address is not given, the invoice address is copied.
                     if customer.selected_invoice_address:
-                        if customer.selected_shipping_address:
+                        # if customer.selected_shipping_address:
                             # it might be possible that shipping and invoice addresses are same object
-                            if customer.selected_shipping_address.pk != customer.selected_invoice_address.pk:
-                                customer.selected_shipping_address.delete()
+                            # if customer.selected_shipping_address.pk != customer.selected_invoice_address.pk:
+                            #     customer.selected_shipping_address.delete()
                         shipping_address = deepcopy(customer.selected_invoice_address)
                         shipping_address.id = None
                         shipping_address.pk = None
