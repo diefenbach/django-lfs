@@ -1,0 +1,18 @@
+{% load i18n %}
+
+<h2>{% trans 'Products' %}</h2>
+
+<form id="filter-products-form"
+      action="{% url 'lfs_dt_products_inline' delivery_time_id %}"
+      onsubmit="return false">
+    <input class="refresh-on-keyup" type="text" name="filter"/>
+    <input type="hidden"
+           name="keep-session"
+           value="1"/>
+
+</form>
+
+
+<div id="products-inline">
+    {{ products_inline }}
+</div>

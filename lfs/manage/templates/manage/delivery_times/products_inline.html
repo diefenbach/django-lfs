@@ -1,0 +1,64 @@
+{% load i18n static %}
+<div class="navigation-pages-inline">
+    {% if page.has_previous %}
+        <a class="ajax-link"
+           href="{% url 'lfs_dt_products_inline' delivery_time_id %}?page=1&amp;keep-session=1"><img
+                src="{% static 'lfs/icons/resultset_first.png' %}" alt='{% trans "First" %}'/></a>
+        <a class="ajax-link"
+           href="{% url 'lfs_dt_products_inline' delivery_time_id %}?page={{ page.previous_page_number }}&amp;keep-session=1"><img
+                src="{% static 'lfs/icons/resultset_previous.png' %}" alt='{% trans "Previous" %}'/></a>
+    {% else %}
+        <span><img src="{% static 'lfs/icons/resultset_first.png' %}" alt='{% trans "First" %}'/></span>
+        <span><img src="{% static 'lfs/icons/resultset_previous.png' %}" alt='{% trans "Previous" %}'/></span>
+    {% endif %}
+
+    <span style="position: relative; top:-4px">
+        {{ page.number }} {% trans "of" %} {{ paginator.num_pages }}
+    </span>
+
+    {% if page.has_next %}
+        <a class="ajax-link"
+           href="{% url 'lfs_dt_products_inline' delivery_time_id %}?page={{ page.next_page_number }}&amp;keep-session=1"><img
+                src="{% static 'lfs/icons/resultset_next.png' %}" alt='{% trans "Next" %}'/></a>
+        <a class="ajax-link"
+           href="{% url 'lfs_dt_products_inline' delivery_time_id %}?page={{ paginator.num_pages }}&amp;keep-session=1"><img
+                src="{% static 'lfs/icons/resultset_last.png' %}" alt='{% trans "Last" %}'/></a>
+
+    {% else %}
+        <span><img src="{% static 'lfs/icons/resultset_next.png' %}" alt='{% trans "Next" %}'/></span>
+        <span><img src="{% static 'lfs/icons/resultset_last.png' %}" alt='{% trans "Last" %}'/></span>
+    {% endif %}
+</div>
+
+<table class="lfs-manage-table" style="margin-top:20px">
+    <tr>
+        <th>
+            {% trans 'Name' %}
+        </th>
+        <th class="middle">
+            {% trans 'SKU' %}
+        </th>
+        <th class="tiny right-padding">
+            {% trans 'Active' %}
+        </th>
+    </tr>
+    {% for product in page.object_list %}
+        <tr class="{% cycle 'even' 'odd' %}">
+            <td>
+                <a href="{% url 'lfs_manage_product' product.id %}">
+                    {{ product.get_name }}
+                </a>
+            </td>
+            <td>
+                {{ product.get_sku }}
+            </td>
+            <td class="right-padding">
+                {% if product.is_active %}
+                    <img src="{% static 'lfs/icons/tick.png' %}"/>
+                {% else %}
+                    <img src="{% static 'lfs/icons/cross.png' %}"/>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>

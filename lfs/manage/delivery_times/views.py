@@ -1,14 +1,18 @@
-# django imports
-from django.contrib.auth.decorators import permission_required
-from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
-from django.views.decorators.http import require_POST
+import json
 
 # lfs imports
 import lfs.core.utils
+from django.db.models import Q
+from django.contrib.auth.decorators import permission_required
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.utils.translation import ugettext_lazy as _
+from django.views.decorators.http import require_POST
 from lfs.catalog.models import DeliveryTime
 from lfs.catalog.models import Product
 from lfs.manage.delivery_times.forms import DeliveryTimeAddForm
@@ -50,6 +54,7 @@ def manage_delivery_time(request, id, template_name="manage/delivery_times/base.
         "delivery_times": DeliveryTime.objects.all(),
         "form": form,
         "current_id": int(id),
+        "products": products_tab(request, delivery_time.id),
     })
 
 
@@ -80,8 +85,8 @@ def add_delivery_time(request, template_name="manage/delivery_times/add.html"):
     return render(request, template_name, {
         "form": form,
         "delivery_times": DeliveryTime.objects.all(),
-        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
-                                                                                     reverse("lfs_manage_delivery_times")),
+        "came_from": (request.POST if request.method == 'POST' else request.GET).get(
+            "came_from", reverse("lfs_manage_delivery_times")),
     })
 
 
@@ -112,3 +117,56 @@ def delete_delivery_time(request, id):
         url=reverse("lfs_manage_delivery_times"),
         msg=_(u"Delivery time has been deleted."),
     )
+
+
+@permission_required("core.manage_shop")
+def products_tab(request, delivery_time_id, template_name="manage/delivery_times/products.html"):
+
+    return render_to_string(template_name, request=request, context={
+        'products_inline': products_inline(request, delivery_time_id, as_string=True),
+        'delivery_time_id': delivery_time_id,
+    })
+
+
+def products_inline(request, delivery_time_id, as_string=False, template_name="manage/delivery_times/products_inline.html"):
+    delivery_time = DeliveryTime.objects.get(pk=delivery_time_id)
+
+    filter_ = request.GET.get('filter', '')
+    query = (Q(active_name=False) & Q(parent__name__icontains=filter_)) | Q(name__icontains=filter_)
+
+    if request.GET.get("keep-session"):
+        page = request.GET.get("page", request.session.get("page", 1))
+        filter_ = request.GET.get("filter", request.session.get("filter", ""))
+    else:
+        page = 1
+        filter_ = ''
+
+    s = request.session
+    s["page"] = page
+    s["filter"] = filter_
+
+    if filter_:
+        products = delivery_time.products_delivery_time.filter(query)
+    else:
+        products = delivery_time.products_delivery_time.all()
+
+    paginator = Paginator(products, 25)
+    try:
+        page = paginator.page(int(request.GET.get('page', 1)))
+    except (EmptyPage, InvalidPage):
+        page = paginator.page(1)
+
+    result = render_to_string(template_name, request=request, context={
+        'delivery_time_id': delivery_time_id,
+        'products': products,
+        'paginator': paginator,
+        'page': page,
+    })
+
+    if as_string:
+        return result
+    else:
+        return HttpResponse(
+            json.dumps({
+                "html": [["#products-inline", result]],
+            }), content_type='application/json')

@@ -10,7 +10,7 @@ class DeliveryTimeAddForm(ModelForm):
     """
     class Meta:
         model = DeliveryTime
-        fields = ("min", "max", "unit")
+        fields = ("min", "max", "unit", "description_internal")
 
 
 class DeliveryTimeForm(ModelForm):
@@ -18,4 +18,4 @@ class DeliveryTimeForm(ModelForm):
     """
     class Meta:
         model = DeliveryTime
-        exclude = ()
+        fields = ("min", "max", "unit", "description_internal", "description")

@@ -59,6 +59,7 @@ urlpatterns = [
     url(r'^add-delivery-time$', delivery_times_views.add_delivery_time, name="lfs_manage_add_delivery_time"),
     url(r'^delete-delivery-time/(?P<id>\d*)$', delivery_times_views.delete_delivery_time, name="lfs_delete_delivery_time"),
     url(r'^no-times$', delivery_times_views.no_delivery_times, name="lfs_no_delivery_times"),
+    url(r'^delivery-time-products-inline/(?P<delivery_time_id>\d*)$', delivery_times_views.products_inline, name="lfs_dt_products_inline"),
 
     # Manufacturer
     url(r'^manufacturer-dispatcher$', manufacturers_views.manufacturer_dispatcher, name="lfs_manufacturer_dispatcher"),

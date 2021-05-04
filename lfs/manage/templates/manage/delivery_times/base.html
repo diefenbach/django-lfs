@@ -32,6 +32,7 @@
     <div id="manage-tabs">
         <ul>
             <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Delivery Time' %}</a></li>
+            <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Products' %}</a></li>
         </ul>
 
         <div id="data">
@@ -47,6 +48,9 @@
                            value="{% trans 'Save Delivery Time' %}">
                 </div>
             </form>
+        </div>
+        <div id="products">
+            {{ products }}
         </div>
     </div>
 {% endblock %}

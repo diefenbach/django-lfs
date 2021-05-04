@@ -116,7 +116,7 @@ def process_payment(request):
             if result.get("order_state"):
                 order.state = result.get("order_state")
                 order.save()
-            order_submitted.send(sender=order, request=request)
+            order_submitted.send(sender=order, request=request, result=result)
         else:
             cart = get_cart(request)
             payment_instance.cart = cart
@@ -128,7 +128,7 @@ def process_payment(request):
                 if result.get("order_state"):
                     order.state = result.get("order_state")
                     order.save()
-                order_submitted.send(sender=order, request=request)
+                order_submitted.send(sender=order, request=request, result=result)
         return result
     else:
         order = add_order(request)

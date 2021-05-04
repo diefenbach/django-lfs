@@ -2780,6 +2780,8 @@ class DeliveryTimeBase(models.Model):
 
 
 class DeliveryTime(DeliveryTimeBase):
+    description_internal = models.TextField(_(u"Description Internal"), blank=True)
+
     class Meta:
         ordering = ("min", )
         app_label = 'catalog'
