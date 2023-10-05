@@ -42,6 +42,6 @@ setup(name='django-lfs',
           'lfs-order-numbers >= 1.2, < 1.3',
           'lfs-paypal >= 1.4, < 1.5',
           'lfs-theme >= 0.11, < 0.12',
-          'Pillow == 4.0',
+          'Pillow == 10.0.1',
       ],
       )
