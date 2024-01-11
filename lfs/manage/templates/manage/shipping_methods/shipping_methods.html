@@ -10,7 +10,7 @@
         {% for shipping_method in shipping_methods %}
             <li id="shipping_method_{{ shipping_method.id }}">
                 <div>
-                    <a class="selectable {% ifequal current_id shipping_method.id %}selected{% endifequal %}"
+                    <a class="selectable {% if current_id == shipping_method.id %}selected{% endif %}"
                        href="{% url 'lfs_manage_shipping_method' shipping_method.id %}">
                         <img class="handle" src="{% static 'lfs/img/handle.png' %}" alt="Handle" />
                         <span class="sortable-item-name">{{ shipping_method.name }}</span>

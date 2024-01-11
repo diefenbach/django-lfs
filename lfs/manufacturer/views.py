@@ -5,7 +5,7 @@ from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.template.loader import render_to_string
 
-from django.utils.translation import ungettext
+from django.utils.translation import gettext
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.manufacturer.models import Manufacturer
 from lfs.core.utils import lfs_pagination
@@ -34,7 +34,7 @@ def manufacturers(request,
 
     count = manufacturers.count()
 
-    pagination_data['total_text'] = ungettext('%(count)d manufacturer',
+    pagination_data['total_text'] = gettext('%(count)d manufacturer',
                                               '%(count)d manufacturers',
                                               count) % {'count': count}
 

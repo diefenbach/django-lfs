@@ -13,7 +13,7 @@
         {% for tax in taxes %}
             <div>
                 <a href="{% url 'lfs_manage_tax' tax.id %}"
-                   class="selectable {% ifequal tax.id current_id %}selected{% endifequal %}">
+                   class="selectable {% if tax.id == current_id %}selected{% endif %}">
                    {{ tax.rate }}%
                 </a>
             </div>

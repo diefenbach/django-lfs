@@ -1,5 +1,5 @@
 # django imports
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 DIRECT_DEBIT = 1
 CASH_ON_DELIVERY = 2

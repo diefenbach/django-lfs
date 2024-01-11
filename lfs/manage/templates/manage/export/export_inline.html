@@ -15,7 +15,7 @@
 			</a>
 
 			<span class="category-state" id="category-state-{{ category.id }}">
-				{% ifequal category.klass "half" %}(1/2){% endifequal %}
+				{% if category.klass == "half" %}(1/2){% endif %}
 			</span>
 			<select class="category-variants-options"
 				    data-url="{% url 'lfs_export_update_category_variants_option' export_id category.id %}"

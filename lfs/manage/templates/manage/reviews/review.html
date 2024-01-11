@@ -29,8 +29,8 @@
             <label>{% trans "Active" %}:</label>
 
             <select name="active">
-                <option {% ifequal review.active 1 %}selected="selected"{% endifequal %}value="1">{% trans "Yes" %}</option>
-                <option {% ifequal review.active 0 %}selected="selected"{% endifequal %}value="0">{% trans "No" %}</option>
+                <option {% if review.active == 1 %}selected="selected"{% endif %}value="1">{% trans "Yes" %}</option>
+                <option {% if review.active == 0 %}selected="selected"{% endif %}value="0">{% trans "No" %}</option>
             </select>
 
             <input class="ajax-save-button"

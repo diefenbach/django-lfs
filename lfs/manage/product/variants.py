@@ -12,7 +12,7 @@ from django.forms.widgets import Select
 from django.http import HttpResponse
 from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from lfs.caching.utils import lfs_get_object_or_404, get_cache_group_id, invalidate_cache_group_id
 from lfs.core.signals import product_changed

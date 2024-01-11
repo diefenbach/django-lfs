@@ -12,10 +12,14 @@ from django.contrib.redirects.models import Redirect
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.utils.functional import Promise
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.shortcuts import render
 from django.utils.http import http_date
 
+def is_ajax(request):
+    """Returns True if request is an ajax request.
+    """
+    return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 
 def l10n_float(string):
     """Takes a country specific decimal value as string and returns a float.
@@ -270,7 +274,7 @@ class LazyEncoder(json.JSONEncoder):
     """
     def default(self, obj):
         if isinstance(obj, Promise):
-            return force_text(obj)
+            return force_str(obj)
         return obj
 
 

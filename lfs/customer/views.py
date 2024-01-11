@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # lfs imports
 import lfs

@@ -56,7 +56,7 @@
 {% for c in page.object_list %}
     <div class="navigation-body">
         <a href="{% url 'lfs_manage_cart' c.id %}"
-           class="selectable {% ifequal cart_id c.id %}selected{% endifequal %}">
+           class="selectable {% if cart_id == c.id %}selected{% endif %}">
             {{ c.creation_date|date:_("DATETIME_FORMAT") }}
         </a>
     </div>

@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category

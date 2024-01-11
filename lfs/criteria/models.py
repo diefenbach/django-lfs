@@ -4,8 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.db import models
 from django.utils import timezone
-from django.utils.encoding import force_text
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.encoding import force_str
+from django.utils.translation import gettext_lazy as _, gettext
 from django.template.loader import render_to_string
 
 import lfs.cart.utils
@@ -148,14 +148,14 @@ class Criterion(models.Model):
     def __str__(self):
         """ We're using force unicode as this basically fails:
                from django.utils import translation
-               from django.utils.translation import ugettext_lazy as _
+               from django.utils.translation import gettext_lazy as _
                translation.activate('pl')
                u'test: %s' % _('Payment method')
         """
-        return ugettext("%(name)s: %(operator)s %(value)s" % {
-            'name': force_text(self.get_name()),
-            'operator': force_text(self.get_current_operator_as_string()),
-            'value': force_text(self.get_value_as_string())
+        return gettext("%(name)s: %(operator)s %(value)s" % {
+            'name': force_str(self.get_name()),
+            'operator': force_str(self.get_current_operator_as_string()),
+            'value': force_str(self.get_value_as_string())
         })
 
     def save(self, *args, **kwargs):

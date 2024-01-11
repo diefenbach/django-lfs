@@ -56,7 +56,7 @@
 {% for c in page.object_list %}
     <div class="navigation-body">
         <a href="{% url 'lfs_manage_customer' c.id %}?page={{ page.number }}"
-           class="selectable {% ifequal customer_id c.id %}selected{% endifequal %}">
+           class="selectable {% if customer_id == c.id %}selected{% endif %}">
             {% with c.selected_invoice_address as ia %}
                 {% if ia %}
                     {% if ia.firstname or ia.lastname %}

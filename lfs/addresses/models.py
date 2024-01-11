@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import SET_NULL
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # lfs imports
 from lfs.core.models import Country

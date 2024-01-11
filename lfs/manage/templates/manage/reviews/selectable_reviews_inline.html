@@ -55,7 +55,7 @@
 {% for review in page.object_list %}
     <div class="navigation-body">
         <a href="{% url 'lfs_manage_review' review.id %}"
-           class="selectable {% ifequal review_id review.id %}selected{% endifequal %}">
+           class="selectable {% if review_id == review.id %}selected{% endif %}">
 			{{ review.creation_date|date:"d.m.Y - H:i" }}
         </a>
     </div>

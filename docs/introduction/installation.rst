@@ -50,7 +50,7 @@ execute following steps:
 #. Add the following settings to your project's ``settings.py`` file::
 
     # Django
-    from django.utils.translation import ugettext_lazy as _
+    from django.utils.translation import gettext_lazy as _
 
     INSTALLED_APPS = [
         'lfs_theme',

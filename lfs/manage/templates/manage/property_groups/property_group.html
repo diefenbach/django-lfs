@@ -13,7 +13,7 @@
                 <li id="property_group_{{ property_group.pk }}">
                     <div>
                         <a href="{% url 'lfs_manage_property_group' property_group.id %}"
-                           class="selectable {% ifequal property_group.id current_id %}selected{% endifequal %}">
+                           class="selectable {% if property_group.id == current_id %}selected{% endif %}">
                             <img class="handle" src="{% static 'lfs/img/handle.png' %}" alt="Handle" />
                             <span class="sortable-item-name">{{ property_group.name }}</span>
                         </a>

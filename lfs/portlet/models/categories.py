@@ -58,6 +58,7 @@ class CategoriesPortlet(Portlet):
         })
 
         cache.set(cache_key, result)
+
         return result
 
     def form(self, **kwargs):

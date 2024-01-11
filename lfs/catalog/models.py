@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.db.models import F
 from django.db import models
 from django.template.defaultfilters import striptags
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
 import lfs.catalog.utils
@@ -864,7 +864,7 @@ class Product(models.Model):
                     category = product_categories[0]
             except IndexError:
                 category = None
-        request.session["last_category"] = category
+        request.session["last_category"] = category.id
         return category
 
     def get_come_from_page(self, request):

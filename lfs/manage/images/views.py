@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
-from django.utils.translation import ugettext as _, ungettext
+from django.utils.translation import gettext as _, ngettext
 
 # lfs imports
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
@@ -57,9 +57,9 @@ def images(request, as_string=False, template_name="manage/images/images.html"):
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=request.path)
 
-    pagination_data['total_text'] = ungettext('%(count)d image',
-                                              '%(count)d images',
-                                              amount_of_images) % {'count': amount_of_images}
+    pagination_data['total_text'] = ngettext('%(count)d image',
+                                             '%(count)d images',
+                                             amount_of_images) % {'count': amount_of_images}
 
     result = render_to_string(template_name, request=request, context={
         "images": current_page.object_list,

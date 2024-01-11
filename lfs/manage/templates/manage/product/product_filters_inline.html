@@ -42,24 +42,24 @@
             <td>
                 <select name="active">
                     <option value="">---</option>
-                    <option {% ifequal active "1" %}selected="selected"{% endifequal %}value="1">{% trans "Yes" %}</option>
-                    <option {% ifequal active "0" %}selected="selected"{% endifequal %}value="0">{% trans "No" %}</option>
+                    <option {% if active == "1" %}selected="selected"{% endif %}value="1">{% trans "Yes" %}</option>
+                    <option {% if active == "0" %}selected="selected"{% endif %}value="0">{% trans "No" %}</option>
                 </select>
             </td>
             <td>
                 <select name="for_sale">
                     <option value="">---</option>
-                    <option {% ifequal for_sale "1" %}selected="selected"{% endifequal %}value="1">{% trans "Yes" %}</option>
-                    <option {% ifequal for_sale "0" %}selected="selected"{% endifequal %}value="0">{% trans "No" %}</option>
+                    <option {% if for_sale == "1" %}selected="selected"{% endif %}value="1">{% trans "Yes" %}</option>
+                    <option {% if for_sale == "0" %}selected="selected"{% endif %}value="0">{% trans "No" %}</option>
                 </select>
             </td>
             <td>
                 <select name="sub_type">
                     <option value="">---</option>
-                    <option {% ifequal sub_type "0" %}selected="selected"{% endifequal %}value="0">{% trans "Standard" %}</option>
-                    <option {% ifequal sub_type "1" %}selected="selected"{% endifequal %}value="1">{% trans "Product with variants" %}</option>
-                    <option {% ifequal sub_type "2" %}selected="selected"{% endifequal %}value="2">{% trans "Variant" %}</option>
-                    <option {% ifequal sub_type "3" %}selected="selected"{% endifequal %}value="3">{% trans "Configurable product" %}</option>
+                    <option {% if sub_type == "0" %}selected="selected"{% endif %}value="0">{% trans "Standard" %}</option>
+                    <option {% if sub_type == "1" %}selected="selected"{% endif %}value="1">{% trans "Product with variants" %}</option>
+                    <option {% if sub_type == "2" %}selected="selected"{% endif %}value="2">{% trans "Variant" %}</option>
+                    <option {% if sub_type == "3" %}selected="selected"{% endif %}value="3">{% trans "Configurable product" %}</option>
                 </select>
             </td>
             <td>

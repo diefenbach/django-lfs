@@ -25,10 +25,10 @@ def scale_to_min_size(image, min_width, min_height):
 
     if prop_x > prop_y:
         height = int(prop_x * height)
-        image = image.resize((min_width, height), Image.ANTIALIAS)
+        image = image.resize((min_width, height), Image.LANCZOS)
     else:
         width = int(prop_y * width)
-        image = image.resize((width, min_height), Image.ANTIALIAS)
+        image = image.resize((width, min_height), Image.LANCZOS)
 
     return image
 
@@ -58,10 +58,10 @@ def scale_to_max_size(image, max_width, max_height):
 
     if prop_height < prop_width:
         width = int(prop_height * width)
-        image = image.resize((width, max_height), Image.ANTIALIAS)
+        image = image.resize((width, max_height), Image.LANCZOS)
     else:
         height = int(prop_width * height)
-        image = image.resize((max_width, height), Image.ANTIALIAS)
+        image = image.resize((max_width, height), Image.LANCZOS)
 
     return image
 
@@ -75,7 +75,7 @@ def scale_to_width(image, target_width):
     prop_width = float(target_width) / width
     new_height = int(prop_width * height)
 
-    image = image.resize((target_width, new_height), Image.ANTIALIAS)
+    image = image.resize((target_width, new_height), Image.LANCZOS)
 
     return image
 
@@ -89,6 +89,6 @@ def scale_to_height(image, target_height):
     prop_height = float(target_height) / height
     new_width = int(prop_height * width)
 
-    image = image.resize((new_width, target_height), Image.ANTIALIAS)
+    image = image.resize((new_width, target_height), Image.LANCZOS)
 
     return image

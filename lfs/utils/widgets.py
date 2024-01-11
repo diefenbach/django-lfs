@@ -24,11 +24,14 @@ class SelectImage(Select):
         # Try to pick first image as default image
         if defaultimage is None:
             if len(self.choices) > 0:
-                defaultimage = self.choices[0][1]["image"]
-        return render_to_string("manage/widgets/selectimage.html", context={
-            "selectimageid": self.image_id,
-            "choices": self.choices,
-            "currentvalue": value,
-            "finalattrs": flatatt(final_attrs),
-            "imageurl": defaultimage,
-        })
+                defaultimage = self.choices[0][1][1][1]
+        return render_to_string(
+            "manage/widgets/selectimage.html",
+            context={
+                "selectimageid": self.image_id,
+                "choices": self.choices,
+                "currentvalue": value,
+                "finalattrs": flatatt(final_attrs),
+                "imageurl": defaultimage,
+            },
+        )

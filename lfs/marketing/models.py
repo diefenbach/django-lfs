@@ -1,6 +1,6 @@
 # django imports
 from django.db import models
-from django.utils.translation import ugettext_lazy as _, ugettext
+from django.utils.translation import gettext_lazy as _, gettext
 
 # lfs imports
 from lfs.catalog.models import Product
@@ -53,7 +53,7 @@ class OrderRatingMail(models.Model):
     send_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return u"%s (%s)" % (self.order.id, self.send_date.strftime(ugettext('DATE_FORMAT')))
+        return u"%s (%s)" % (self.order.id, self.send_date.strftime(gettext('DATE_FORMAT')))
 
     class Meta:
         app_label = 'marketing'

@@ -5,10 +5,10 @@ from django.forms import ModelForm
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from lfs.caching.utils import lfs_get_object_or_404
-from lfs.core.utils import LazyEncoder
+from lfs.core.utils import LazyEncoder, is_ajax
 from lfs.catalog.models import Category
 from lfs.catalog.settings import CATEGORY_TEMPLATES
 from lfs.utils.widgets import SelectImage
@@ -50,7 +50,7 @@ def category_view(request, category_id, template_name="manage/category/view.html
         "form": form,
     })
 
-    if request.is_ajax():
+    if is_ajax(request):
         html = [["#view", view_html]]
         return HttpResponse(json.dumps({
             "html": html,

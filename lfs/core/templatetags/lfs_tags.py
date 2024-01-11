@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.forms import BoundField
 from django.template import Node, TemplateSyntaxError
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 import lfs.catalog.utils
 import lfs.core.utils

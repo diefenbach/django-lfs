@@ -10,7 +10,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 import lfs.catalog.utils
 from lfs.core.signals import property_type_changed
 from lfs.catalog.settings import CHOICES_YES
@@ -2883,25 +2883,25 @@ class ProductTestCase(TestCase):
 
     def test_get_attachments(self):
         # retrieve attachments
-        match_titles = [force_text(self.attachment_P1_1_data['title']),
-                        force_text(self.attachment_P1_2_data['title'])]
+        match_titles = [force_str(self.attachment_P1_1_data['title']),
+                        force_str(self.attachment_P1_2_data['title'])]
         attachments = self.p1.get_attachments()
-        attachments_titles = [force_text(x.title) for x in attachments]
+        attachments_titles = [force_str(x.title) for x in attachments]
         self.assertEqual(set(match_titles), set(attachments_titles))
 
         # check data
         first = attachments[0]
         for k, v in self.attachment_P1_1_data.items():
-            self.assertEqual(force_text(getattr(first, k)), force_text(v))
+            self.assertEqual(force_str(getattr(first, k)), force_str(v))
 
         second = attachments[1]
         for k, v in self.attachment_P1_2_data.items():
-            self.assertEqual(force_text(getattr(second, k)), force_text(v))
+            self.assertEqual(force_str(getattr(second, k)), force_str(v))
 
         # retrieve variant attachment
         attachments = self.v1.get_attachments()
-        attachments_titles = [force_text(x.title) for x in attachments]
-        match_titles = [force_text(self.attachment_V1_data['title'])]
+        attachments_titles = [force_str(x.title) for x in attachments]
+        match_titles = [force_str(self.attachment_V1_data['title'])]
         self.assertEqual(attachments_titles, match_titles)
 
         # delete variant attachment: we should get parent attachments
