@@ -6,7 +6,7 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.db.models import Q
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # lfs imports
 from lfs.caching.utils import lfs_get_object_or_404

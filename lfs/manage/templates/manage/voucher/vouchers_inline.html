@@ -161,11 +161,11 @@
                         {{ voucher.used_amount }}
                     </td>
                     <td class="right">
-                        {% ifequal voucher.limit 0 %}
+                        {% if voucher.limit == 0 %}
                             ---
                         {% else %}
                             {{ voucher.limit }}
-                        {% endifequal %}
+                        {% endif %}
                     </td>
                     <td class="right">
                         {{ voucher.last_used_date|date:_("DATE_FORMAT") }}

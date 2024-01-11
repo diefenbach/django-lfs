@@ -10,13 +10,10 @@ from lfs_theme import __version__ as lfs_theme_version
 
 @permission_required("core.manage_shop")
 def environment(request, template_name="manage/information/environment.html"):
-    """Displays miscellaneous information about the evnironment.
-    """
+    """Displays miscellaneous information about the evnironment."""
     apps = []
     for app in settings.INSTALLED_APPS:
-        if app in ["lfs"] or \
-           app.startswith("lfs.") or \
-           app.startswith("django."):
+        if app in ["lfs"] or app.startswith("lfs.") or app.startswith("django."):
             continue
 
         try:
@@ -24,15 +21,21 @@ def environment(request, template_name="manage/information/environment.html"):
         except AttributeError:
             version = "N/A"
 
-        apps.append({
-            "name": app,
-            "version": version,
-        })
+        apps.append(
+            {
+                "name": app,
+                "version": version,
+            }
+        )
 
-    apps.sort(lambda a, b: cmp(a["name"], b["name"]))
+    apps.sort(key=lambda k: k["name"])
 
-    return render(request, template_name, {
-        "lfs_version": lfs_version,
-        "lfs_theme_version": lfs_theme_version,
-        "apps": apps,
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "lfs_version": lfs_version,
+            "lfs_theme_version": lfs_theme_version,
+            "apps": apps,
+        },
+    )

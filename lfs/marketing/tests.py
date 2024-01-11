@@ -26,7 +26,7 @@ class RatingMailTestCase(TestCase):
 
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
         self.c1.save()
-        self.c1.products = (self.p1, )
+        self.c1.products.set([self.p1])
         self.c1.save()
 
         address = Address.objects.create()
@@ -92,11 +92,11 @@ class TopsellerUtilsTestCase(TestCase):
         self.c1.save()
 
         self.c11 = Category.objects.create(name="Category 11", slug="category-11", parent=self.c1)
-        self.c11.products = (self.p1, self.p2)
+        self.c11.products.set([self.p1, self.p2])
         self.c11.save()
 
         self.c12 = Category.objects.create(name="Category 12", slug="category-12", parent=self.c1)
-        self.c12.products = (self.p3, self.p4)
+        self.c12.products.set([self.p3, self.p4])
         self.c12.save()
 
         address = Address.objects.create()
@@ -212,7 +212,7 @@ class TopsellerUtilsTestCase(TestCase):
         self.p5 = Product.objects.create(name="Product 5", slug="product-5", active=True)
         t5 = Topseller.objects.create(product=self.p5, position=1)
 
-        self.c11.products = (self.p1, self.p2, self.p5)
+        self.c11.products.set([self.p1, self.p2, self.p5])
 
         # Tests the top level category
         ts = lfs.marketing.utils.get_topseller_for_category(self.c1, limit=2)
@@ -235,7 +235,7 @@ class TopsellerUtilsTestCase(TestCase):
         self.assertEqual(ts[1], self.p3)
 
         # Now we add Product 5 also to c12
-        self.c12.products = (self.p3, self.p4, self.p5)
+        self.c12.products.set([self.p3, self.p4, self.p5])
         self.c12.save()
 
         # Now Product 5 is among the topseller

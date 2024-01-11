@@ -20,7 +20,7 @@
                 <li id="static_block_{{ static_block.id}}">
                     <div>
                         <a href="{% url 'lfs_manage_static_block' static_block.id %}"
-                           class="selectable {% ifequal static_block.id current_id %}selected{% endifequal %}">
+                           class="selectable {% if static_block.id == current_id %}selected{% endif %}">
                             <img class="handle" src="{% static 'lfs/img/handle.png' %}" alt="Handle" />
                             <span class="sortable-item-name">{{ static_block.name }}</span>
                         </a>

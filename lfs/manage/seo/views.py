@@ -1,12 +1,12 @@
 import json
 
 from django.contrib.auth.decorators import permission_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.forms.models import modelform_factory
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
-from django.conf.urls import url
+from django.utils.translation import gettext_lazy as _
+from django.urls import re_path
 from django.views.generic.base import View
 
 from lfs.caching.utils import lfs_get_object_or_404
@@ -34,7 +34,7 @@ class SEOView(View):
                                model_klass=model_klass,
                                template_name=template_name)
         # lfs.manage.seo.views
-        return url(r'^manage-seo/%s/(?P<id>\d*)/$' % klass_name, permission_required("core.manage_shop")(view_obj), name='lfs_manage_%s_seo' % klass_name),
+        return re_path(r'^manage-seo/%s/(?P<id>\d*)/$' % klass_name, permission_required("core.manage_shop")(view_obj), name='lfs_manage_%s_seo' % klass_name),
 
     def __init__(self, model_klass, form_klass=None, template_name='manage/seo/seo.html', *args, **kwargs):
         super(SEOView, self).__init__(*args, **kwargs)

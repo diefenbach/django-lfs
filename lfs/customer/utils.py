@@ -29,7 +29,7 @@ def create_customer(request):
         request.session.save()
 
     customer = Customer.objects.create(session=request.session.session_key)
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         customer.user = request.user
     shop = lfs.core.utils.get_default_shop(request)
 
@@ -66,7 +66,7 @@ def get_customer(request):
 
 def _get_customer(request):
     user = request.user
-    if user.is_authenticated():
+    if user.is_authenticated:
         try:
             return Customer.objects.get(user=user)
         except ObjectDoesNotExist:

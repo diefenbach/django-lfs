@@ -1,6 +1,6 @@
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.core.cache import cache
@@ -33,7 +33,7 @@ class Manufacturer(models.Model):
         ordering = ("name", )
         app_label = 'manufacturer'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):

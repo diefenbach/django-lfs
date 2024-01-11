@@ -81,10 +81,10 @@
     				</td>
                     <td>
                         <select name="sub_type-{{ product.id }}">
-                            <option {% ifequal product.sub_type "0" %}selected="selected"{% endifequal %}value="0">{% trans "Standard" %}</option>
-                            <option {% ifequal product.sub_type "1" %}selected="selected"{% endifequal %}value="1">{% trans "Product with variants" %}</option>
-                            <option {% ifequal product.sub_type "2" %}selected="selected"{% endifequal %}value="2">{% trans "Variant" %}</option>
-                            <option {% ifequal product.sub_type "3" %}selected="selected"{% endifequal %}value="3">{% trans "Configurable product" %}</option>
+                            <option {% if product.sub_type == "0" %}selected="selected"{% endif %}value="0">{% trans "Standard" %}</option>
+                            <option {% if product.sub_type == "1" %}selected="selected"{% endif %}value="1">{% trans "Product with variants" %}</option>
+                            <option {% if product.sub_type == "2" %}selected="selected"{% endif %}value="2">{% trans "Variant" %}</option>
+                            <option {% if product.sub_type == "3" %}selected="selected"{% endif %}value="3">{% trans "Configurable product" %}</option>
                         </select>
                     </td>
                     <td class="right-padding">

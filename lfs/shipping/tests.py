@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AnonymousUser
 from django.conf import settings
+from django.urls import reverse
 
 from lfs.core.models import Country
 from lfs.customer.utils import get_or_create_customer
@@ -15,11 +16,15 @@ from lfs.customer import utils as customer_utils
 from lfs.shipping.models import ShippingMethod
 from lfs.shipping.models import ShippingMethodPrice
 from lfs.shipping import utils
-from lfs.criteria.models import CartPriceCriterion, CountryCriterion, Criterion
-from lfs.criteria.models import WeightCriterion, WidthCriterion
+from lfs.criteria.models import CartPriceCriterion
+from lfs.criteria.models import CountryCriterion
+from lfs.criteria.models import Criterion
+from lfs.criteria.models import WeightCriterion
+from lfs.criteria.models import WidthCriterion
 from lfs.criteria.settings import GREATER_THAN, LESS_THAN
 from lfs.cart import utils as cart_utils
 from lfs.cart.models import CartItem
+from lfs.cart.models import Cart
 from lfs.caching.listeners import update_cart_cache
 from lfs.tests.utils import create_request
 
@@ -48,10 +53,11 @@ class ShippingMethodTestCase(TestCase):
         self.p1 = Product.objects.create(name="Product 1", slug="p1", price=9, weight=6.0, active=True)
         self.p2 = Product.objects.create(name="Product 2", slug="p2", price=11, weight=12.0, active=True)
 
-        # Delete the cart for every test method.
-        cart = cart_utils.get_cart(self.request)
-        if cart:
-            cart.delete()
+        # # Delete the cart for every test method.
+        # cart = cart_utils.get_cart(self.request)
+        # if cart:
+        #     cart.delete()
+        Cart.objects.all().delete()
 
     def test_get_product_delivery_time_1(self):
         """Tests the product delivery time for the *product view*.
@@ -197,8 +203,20 @@ class ShippingMethodTestCase(TestCase):
     def test_valid_shipping_methods_2(self):
         """Tests valid shipping methods. Test with a cart price criterion.
         """
-        user = User.objects.get(username="admin")
-        request = DummyRequest(user=user)
+        self.client.post(
+            reverse('lfs_login'),
+            dict(
+                username='admin',
+                password='admin',
+                action='login'
+            ),
+            follow=True
+        )
+
+        response = self.client.get(
+            reverse('lfs_cart')
+        )
+        request = response.context['request']
 
         # Create a cart price criterion and add it to the shipping method 1
         CartPriceCriterion.objects.create(content=self.sm1, value=10.0, operator=GREATER_THAN)
@@ -250,13 +268,28 @@ class ShippingMethodTestCase(TestCase):
         """
         # Prepare request
         user = User.objects.get(username="admin")
-        request = DummyRequest(user=user)
 
         # Create a width criterion and add it to the shipping method price
         smp = ShippingMethodPrice.objects.create(shipping_method=self.sm1, price=10.0, active=True)
         WidthCriterion.objects.create(content=smp, value=10.0, operator=GREATER_THAN)
 
         # there is no product in the cart so criterion is not valid
+        self.client.post(
+            reverse('lfs_login'),
+            dict(
+                username='admin',
+                password='admin',
+                action='login'
+            ),
+            follow=True
+        )
+
+        response = self.client.get(
+            reverse('lfs_cart')
+        )
+
+        request = response.context['request']
+
         cart_utils.create_cart(request)
         result = smp.is_valid(request)
         self.assertEqual(result, False)
@@ -312,17 +345,22 @@ class ShippingMethodTestCase(TestCase):
         # The cart price is less than 10, hence the price is not valid and the
         # shipping price is the default price of the shipping method , which is
         # 1, see above.
-        costs = utils.get_shipping_costs(self.request, self.sm1)
+        response = self.client.get(
+            reverse('lfs_cart')
+        )
+        request = response.context['request']
+
+        costs = utils.get_shipping_costs(request, self.sm1)
         self.assertEqual(costs["price_gross"], 1)
 
         # No we add some items to the cart
-        cart = cart_utils.get_or_create_cart(self.request)
+        cart = cart_utils.get_or_create_cart(request)
         CartItem.objects.create(cart=cart, product=self.p1, amount=2)
         update_cart_cache(cart)
 
         # The cart price is now greater than 10, hence the price valid and the
         # shipping price is the price of the yet valid additional price.
-        costs = utils.get_shipping_costs(self.request, self.sm1)
+        costs = utils.get_shipping_costs(request, self.sm1)
         self.assertEqual(costs["price_gross"], 5)
 
     def test_shipping_price_4(self):

@@ -4,13 +4,13 @@ import json
 from django.contrib.auth.decorators import permission_required
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 
 # lfs imports
@@ -241,12 +241,6 @@ def delete_static_block(request, id):
     """Deletes static block with passed id.
     """
     sb = get_object_or_404(StaticBlock, pk=id)
-
-    # First we delete all referencing categories. Otherwise they would be
-    # deleted
-    for category in sb.categories.all():
-        category.static_block = None
-        category.save()
     sb.delete()
 
     return lfs.core.utils.set_message_cookie(

@@ -174,6 +174,15 @@ LFS_ONE_PAGE_CHECKOUT_FORM
     default value is ``lfs.checkout.forms.OnePageCheckoutForm``.
 
 
+.. _settings_registration:
+
+Registration
+============
+
+LFS_REGISTER_FORM
+    The form that is used during user registration. This setting is optional.
+    The default value is ``lfs.customer.forms.RegisterForm``
+
 
 .. _settings_addresses:
 

@@ -1,6 +1,6 @@
 # django imports
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # lfs imports
 from lfs.catalog.models import Product
@@ -48,12 +48,12 @@ class Discount(models.Model, Criteria):
     active = models.BooleanField(_("Active"), default=False)
     value = models.FloatField(_(u"Value"))
     type = models.PositiveSmallIntegerField(_(u"Type"), choices=DISCOUNT_TYPE_CHOICES, default=DISCOUNT_TYPE_ABSOLUTE)
-    tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
+    tax = models.ForeignKey(Tax, models.SET_NULL, verbose_name=_(u"Tax"), blank=True, null=True)
     sku = models.CharField(_(u"SKU"), blank=True, max_length=50)
     sums_up = models.BooleanField(_(u"Sums up"), default=True, help_text=_(u'Sums up with other discounts/vouchers'))
     products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="discounts")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_tax(self, request, product=None):

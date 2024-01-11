@@ -60,7 +60,7 @@ def add_order(request):
     # Note: After this has been processed the order's customer email has an
     # email in any case. That means you can use it to send emails to the
     # customer.
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         user = request.user
         customer_email = user.email
     else:

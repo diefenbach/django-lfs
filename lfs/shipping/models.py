@@ -1,7 +1,7 @@
 # django imports
 from django.conf import settings
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # lfs imports
 from lfs.criteria.base import Criteria
@@ -71,9 +71,9 @@ class ShippingMethod(models.Model, Criteria):
     description = models.TextField(_(u"Description"), blank=True)
     note = models.TextField(_(u"Note"), blank=True)
     image = models.ImageField(_(u"Image"), upload_to="images", blank=True, null=True)
-    tax = models.ForeignKey(Tax, verbose_name=_(u"Tax"), blank=True, null=True)
+    tax = models.ForeignKey(Tax, models.SET_NULL, verbose_name=_(u"Tax"), blank=True, null=True)
     price = models.FloatField(_(u"Price"), default=0.0)
-    delivery_time = models.ForeignKey(DeliveryTime, verbose_name=_(u"Delivery time"), blank=True, null=True)
+    delivery_time = models.ForeignKey(DeliveryTime, models.SET_NULL, verbose_name=_(u"Delivery time"), blank=True, null=True)
     price_calculator = models.CharField(_(u"Price Calculator"), max_length=200,
                                         choices=settings.LFS_SHIPPING_METHOD_PRICE_CALCULATORS,
                                         default=settings.LFS_SHIPPING_METHOD_PRICE_CALCULATORS[0][0])
@@ -84,7 +84,7 @@ class ShippingMethod(models.Model, Criteria):
         ordering = ("priority", )
         app_label = 'shipping'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_price(self, request):
@@ -148,7 +148,7 @@ class ShippingMethodPrice(models.Model, Criteria):
         and hence not considered with the calculation of the price. Not used at
         the moment within the GUI. Every price is active immediately.
     """
-    shipping_method = models.ForeignKey(ShippingMethod, verbose_name=_(u"shipping_method"), related_name="prices")
+    shipping_method = models.ForeignKey(ShippingMethod, models.CASCADE, verbose_name=_(u"shipping_method"), related_name="prices")
     price = models.FloatField(_(u"Price"), default=0.0)
     priority = models.IntegerField(_(u"Priority"), default=0)
     active = models.BooleanField(_(u"Active"), default=True)
@@ -157,5 +157,5 @@ class ShippingMethodPrice(models.Model, Criteria):
         ordering = ("priority", )
         app_label = 'shipping'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s" % self.price

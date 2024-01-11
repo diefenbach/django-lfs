@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from lfs.addresses import settings
 from lfs.core.models import Country
@@ -26,31 +26,31 @@ class Customer(models.Model):
 
        * The customer browses to the check out page.
     """
-    user = models.ForeignKey(User, blank=True, null=True)
+    user = models.ForeignKey(User, models.SET_NULL, blank=True, null=True)
     session = models.CharField(blank=True, max_length=100)
 
-    selected_shipping_method = models.ForeignKey(ShippingMethod, verbose_name=_(u"Selected shipping method"), blank=True, null=True, related_name="selected_shipping_method")
-    selected_payment_method = models.ForeignKey(PaymentMethod, verbose_name=_(u"Selected payment method"), blank=True, null=True, related_name="selected_payment_method")
-    selected_bank_account = models.ForeignKey("BankAccount", verbose_name=_(u"Bank account"), blank=True, null=True, related_name="selected_bank_account")
-    selected_credit_card = models.ForeignKey("CreditCard", verbose_name=_(u"Credit card"), blank=True, null=True, related_name="selected_credit_card")
+    selected_shipping_method = models.ForeignKey(ShippingMethod, models.SET_NULL, verbose_name=_(u"Selected shipping method"), blank=True, null=True, related_name="selected_shipping_method")
+    selected_payment_method = models.ForeignKey(PaymentMethod, models.SET_NULL, verbose_name=_(u"Selected payment method"), blank=True, null=True, related_name="selected_payment_method")
+    selected_bank_account = models.ForeignKey("BankAccount", models.SET_NULL, verbose_name=_(u"Bank account"), blank=True, null=True, related_name="selected_bank_account")
+    selected_credit_card = models.ForeignKey("CreditCard", models.SET_NULL, verbose_name=_(u"Credit card"), blank=True, null=True, related_name="selected_credit_card")
 
-    sa_content_type = models.ForeignKey(ContentType, related_name="sa_content_type", null=True)
+    sa_content_type = models.ForeignKey(ContentType, models.CASCADE, related_name="sa_content_type", null=True)
     sa_object_id = models.PositiveIntegerField(null=True)
     selected_shipping_address = GenericForeignKey('sa_content_type', 'sa_object_id')
 
     dsa_object_id = models.PositiveIntegerField(null=True)
     default_shipping_address = GenericForeignKey('sa_content_type', 'dsa_object_id')
 
-    ia_content_type = models.ForeignKey(ContentType, related_name="ia_content_type", null=True)
+    ia_content_type = models.ForeignKey(ContentType, models.CASCADE, related_name="ia_content_type", null=True)
     ia_object_id = models.PositiveIntegerField(null=True)
     selected_invoice_address = GenericForeignKey('ia_content_type', 'ia_object_id')
 
     dia_object_id = models.PositiveIntegerField(null=True)
     default_invoice_address = GenericForeignKey('ia_content_type', 'dia_object_id')
 
-    selected_country = models.ForeignKey(Country, verbose_name=_(u"Selected country"), blank=True, null=True)
+    selected_country = models.ForeignKey(Country, models.SET_NULL, verbose_name=_(u"Selected country"), blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s/%s" % (self.user, self.session)
 
     def get_email_address(self):
@@ -157,13 +157,13 @@ class BankAccount(models.Model):
     depositor
         The depositor of the bank account.
     """
-    customer = models.ForeignKey(Customer, verbose_name=_(u"Customer"), blank=True, null=True, related_name="bank_accounts")
+    customer = models.ForeignKey(Customer, models.CASCADE, verbose_name=_(u"Customer"), blank=True, null=True, related_name="bank_accounts")
     account_number = models.CharField(_(u"Account number"), blank=True, max_length=30)
     bank_identification_code = models.CharField(_(u"Bank identification code"), blank=True, max_length=30)
     bank_name = models.CharField(_(u"Bank name"), blank=True, max_length=100)
     depositor = models.CharField(_(u"Depositor"), blank=True, max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s / %s" % (self.account_number, self.bank_name)
 
     class Meta:
@@ -191,7 +191,7 @@ class CreditCard(models.Model):
     expiration_date_year
         The year of the expiration date of the credit card.
     """
-    customer = models.ForeignKey(Customer, verbose_name=_(u"Customer"), blank=True, null=True, related_name="credit_cards")
+    customer = models.ForeignKey(Customer, models.CASCADE, verbose_name=_(u"Customer"), blank=True, null=True, related_name="credit_cards")
 
     type = models.CharField(_(u"Type"), blank=True, max_length=30)
     owner = models.CharField(_(u"Owner"), blank=True, max_length=100)
@@ -199,7 +199,7 @@ class CreditCard(models.Model):
     expiration_date_month = models.IntegerField(_(u"Expiration date month"), blank=True, null=True)
     expiration_date_year = models.IntegerField(_(u"Expiration date year"), blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s / %s" % (self.type, self.owner)
 
     class Meta:

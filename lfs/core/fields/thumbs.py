@@ -2,12 +2,12 @@
 # Based on django-thumbs by Antonio Melé
 
 # python imports
+import io
+
 try:
     import Image
 except ImportError:
     from PIL import Image
-
-import cStringIO
 
 # django imports
 from django.core.files.base import ContentFile
@@ -40,14 +40,14 @@ def generate_thumb(img, thumb_size, format):
 
     new_image = scale_to_max_size(image, *thumb_size)
 
-    io = cStringIO.StringIO()
+    data = io.BytesIO()
 
     # PNG and GIF are the same, JPG is JPEG
     if format.upper() == 'JPG':
         format = 'JPEG'
 
-    new_image.save(io, format)
-    return ContentFile(io.getvalue())
+    new_image.save(data, format)
+    return ContentFile(data.getvalue())
 
 
 class ImageWithThumbsFieldFile(ImageFieldFile):

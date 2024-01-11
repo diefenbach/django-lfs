@@ -13,11 +13,10 @@ class ProductSitemap(Sitemap):
     """
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("priority", 0.5)
-    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("protocol", "http")
+    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("protocol", None)
 
     def items(self):
-        return Product.objects.all()[:1]
-        return Product.objects.filter(active=True).exclude(sub_type=2)[:10]
+        return Product.objects.filter(active=True).exclude(sub_type=2)
 
     def lastmod(self, obj):
         return obj.creation_date
@@ -28,7 +27,7 @@ class CategorySitemap(Sitemap):
     """
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("category", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("category", {}).get("priority", 0.5)
-    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("category", {}).get("protocol", "http")
+    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("category", {}).get("protocol", None)
 
     def items(self):
         return Category.objects.all()
@@ -42,10 +41,10 @@ class PageSitemap(Sitemap):
     """
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("priority", 0.5)
-    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("protocol", "http")
+    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("protocol", None)
 
     def items(self):
-        return Page.objects.filter(active=True)
+        return Page.objects.filter(active=True).exclude(slug="")
 
     def lastmod(self, obj):
         return timezone.now()
@@ -56,7 +55,7 @@ class ShopSitemap(Sitemap):
     """
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("shop", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("shop", {}).get("priority", 0.5)
-    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("shop", {}).get("protocol", "http")
+    protocol = getattr(settings, "LFS_SITEMAPS", {}).get("shop", {}).get("protocol", None)
 
     def items(self):
         return Shop.objects.all()

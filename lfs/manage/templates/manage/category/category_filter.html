@@ -3,7 +3,7 @@
 <select class="{{ css_class }} categories"
         name="{{ name }}">
     <option value="All">{% trans 'All' %}</option>
-    <option value="None" {% ifequal selected "None" %}selected="selected"{% endifequal %}>{% trans 'None' %}</option>
+    <option value="None" {% if selected == "None" %}selected="selected"{% endif %}>{% trans 'None' %}</option>
     {% for category in categories %}
         <option value="{{ category.id }}" {% if category.selected %}selected="selected"{% endif %}>
             {{ category.name }}

@@ -1,6 +1,6 @@
 # coding: utf-8
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 from lfs.catalog.models import Product, Category
 from lfs.manufacturer.models import Manufacturer
@@ -17,7 +17,7 @@ class ManufacturersTestCase(TestCase):
         self.p3 = Product.objects.create(slug="product-3", price=1, active=True)
 
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
-        self.c1.products = [self.p1, self.p2, self.p3]
+        self.c1.products.set([self.p1, self.p2, self.p3])
         self.c1.save()
         self.m1 = Manufacturer.objects.create(name='LFS C.O.', slug='lfs-co', short_description='sd',
                                               description='desc', position=1)
@@ -86,7 +86,7 @@ class ManufacturersManageTestCase(TestCase):
         self.p3 = Product.objects.create(name="Product 3", slug="product-3", price=1, active=True)
 
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
-        self.c1.products = [self.p1, self.p2, self.p3]
+        self.c1.products.set([self.p1, self.p2, self.p3])
         self.c1.save()
         self.m1 = Manufacturer.objects.create(name='LFS C.O', slug='lfs-co', short_description='sd',
                                               description='desc', position=1)

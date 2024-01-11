@@ -67,7 +67,7 @@
                             {{ category.name }}
                         </a>
                         <span class="category-state" id="category-state-{{ category.id }}">
-                            {% ifequal category.klass "half" %}(1/2){% endifequal %}
+                            {% if category.klass == "half" %}(1/2){% endif %}
                         </span>
                         <div id="sub-categories-{{ category.id }}"></div>
                     </li>

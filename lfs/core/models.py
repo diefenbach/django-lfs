@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.core.cache import cache
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # lfs imports
 from lfs.checkout.settings import CHECKOUT_TYPES
@@ -18,7 +18,7 @@ class Country(models.Model):
     code = models.CharField(_(u"Country code"), max_length=2)
     name = models.CharField(_(u"Name"), max_length=100)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -42,7 +42,7 @@ class ActionGroup(models.Model):
         ordering = ("name", )
         app_label = 'core'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_actions(self):
@@ -77,11 +77,11 @@ class Action(models.Model):
     active = models.BooleanField(_(u"Active"), default=False)
     title = models.CharField(_(u"Title"), max_length=40)
     link = models.CharField(_(u"Link"), blank=True, max_length=100)
-    group = models.ForeignKey(ActionGroup, verbose_name=_(u"Group"), related_name="actions")
+    group = models.ForeignKey(ActionGroup, models.CASCADE, verbose_name=_(u"Group"), related_name="actions")
     position = models.IntegerField(_(u"Position"), default=999)
-    parent = models.ForeignKey("self", verbose_name=_(u"Parent"), blank=True, null=True)
+    parent = models.ForeignKey("self", models.SET_NULL, verbose_name=_(u"Parent"), blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     class Meta:
@@ -168,12 +168,12 @@ class Shop(models.Model):
 
     description = models.TextField(_(u"Description"), blank=True)
     image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400)))
-    static_block = models.ForeignKey(StaticBlock, verbose_name=_(u"Static block"), blank=True, null=True, related_name="shops")
+    static_block = models.ForeignKey(StaticBlock, models.SET_NULL, verbose_name=_(u"Static block"), blank=True, null=True, related_name="shops")
 
     product_cols = models.IntegerField(_(u"Product cols"), default=1)
     product_rows = models.IntegerField(_(u"Product rows"), default=10)
     category_cols = models.IntegerField(_(u"Category cols"), default=1)
-    delivery_time = models.ForeignKey(DeliveryTime, verbose_name=_(u"Delivery time"), blank=True, null=True)
+    delivery_time = models.ForeignKey(DeliveryTime, models.SET_NULL, verbose_name=_(u"Delivery time"), blank=True, null=True)
 
     google_analytics_id = models.CharField(_(u"Google Analytics ID"), blank=True, max_length=20)
     ga_site_tracking = models.BooleanField(_(u"Google Analytics Site Tracking"), default=False)
@@ -181,7 +181,7 @@ class Shop(models.Model):
 
     invoice_countries = models.ManyToManyField(Country, verbose_name=_(u"Invoice countries"), related_name="invoice")
     shipping_countries = models.ManyToManyField(Country, verbose_name=_(u"Shipping countries"), related_name="shipping")
-    default_country = models.ForeignKey(Country, verbose_name=_(u"Default shipping country"))
+    default_country = models.ForeignKey(Country, models.SET_NULL, verbose_name=_(u"Default shipping country"), blank=True, null=True)
 
     use_international_currency_code = models.BooleanField(_(u"Use international currency codes"), default=False)
     price_calculator = models.CharField(choices=settings.LFS_PRICE_CALCULATORS, max_length=255,
@@ -199,7 +199,7 @@ class Shop(models.Model):
         permissions = (("manage_shop", "Manage shop"),)
         app_label = 'core'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_format_info(self):

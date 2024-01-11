@@ -20,8 +20,8 @@
             <td>
                 <select name="active">
                     <option value="">---</option>
-                    <option {% ifequal active "1" %}selected="selected"{% endifequal %}value="1">{% trans "Yes" %}</option>
-                    <option {% ifequal active "0" %}selected="selected"{% endifequal %}value="0">{% trans "No" %}</option>
+                    <option {% if active == "1" %}selected="selected"{% endif %}value="1">{% trans "Yes" %}</option>
+                    <option {% if active == "0" %}selected="selected"{% endif %}value="0">{% trans "No" %}</option>
                 </select>
             </td>
             <td>

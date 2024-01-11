@@ -1,18 +1,18 @@
-from optparse import make_option
 import datetime
 from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    args = 'days'
     help = 'Clean carts older than 7 days'
-    option_list = BaseCommand.option_list + (
-        make_option('--days',
-                    action='store',
-                    dest='days',
-                    default=7,
-                    help='Remove carts modified before specified number of days'),
-    )
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--days',
+            action='store',
+            dest='days',
+            default=7,
+            help="Remove carts modified before specified number of days",
+        )
 
     def handle(self, *args, **options):
         """

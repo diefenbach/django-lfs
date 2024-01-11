@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 ('meta_description', models.TextField(verbose_name='Meta description', blank=True)),
                 ('level', models.PositiveSmallIntegerField(default=1)),
                 ('uid', models.CharField(default=lfs.catalog.models.get_unique_id_str, unique=True, max_length=50, editable=False)),
-                ('parent', models.ForeignKey(verbose_name='Parent', blank=True, to='catalog.Category', null=True)),
+                ('parent', models.ForeignKey(verbose_name='Parent', blank=True, to='catalog.Category', null=True, on_delete=models.SET_NULL)),
             ],
             options={
                 'ordering': ('position',),
@@ -70,7 +70,7 @@ class Migration(migrations.Migration):
                 ('position', models.SmallIntegerField(default=999)),
                 ('description', models.CharField(max_length=100, blank=True)),
                 ('file', models.FileField(upload_to=b'files')),
-                ('content_type', models.ForeignKey(related_name='files', verbose_name='Content type', blank=True, to='contenttypes.ContentType', null=True)),
+                ('content_type', models.ForeignKey(related_name='files', verbose_name='Content type', blank=True, to='contenttypes.ContentType', null=True, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ('position',),
@@ -104,7 +104,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=100, verbose_name='Title', blank=True)),
                 ('image', lfs.core.fields.thumbs.ImageWithThumbsField(upload_to=b'images', null=True, verbose_name='Image', blank=True)),
                 ('position', models.PositiveSmallIntegerField(default=999, verbose_name='Position')),
-                ('content_type', models.ForeignKey(related_name='image', verbose_name='Content type', blank=True, to='contenttypes.ContentType', null=True)),
+                ('content_type', models.ForeignKey(related_name='image', verbose_name='Content type', blank=True, to='contenttypes.ContentType', null=True, on_delete=models.SET_NULL)),
             ],
             options={
                 'ordering': ('position',),
@@ -182,8 +182,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('position', models.IntegerField(default=999, verbose_name='Position')),
                 ('quantity', models.FloatField(default=1, verbose_name='Quantity')),
-                ('accessory', models.ForeignKey(related_name='productaccessories_accessory', verbose_name='Accessory', to='catalog.Product')),
-                ('product', models.ForeignKey(related_name='productaccessories_product', verbose_name='Product', to='catalog.Product')),
+                ('accessory', models.ForeignKey(related_name='productaccessories_accessory', verbose_name='Accessory', to='catalog.Product', on_delete=models.CASCADE)),
+                ('product', models.ForeignKey(related_name='productaccessories_product', verbose_name='Product', to='catalog.Product', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ('position',),
@@ -198,7 +198,7 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(verbose_name='Description', blank=True)),
                 ('file', models.FileField(max_length=500, upload_to=b'files')),
                 ('position', models.IntegerField(default=1, verbose_name='Position')),
-                ('product', models.ForeignKey(related_name='attachments', verbose_name='Product', to='catalog.Product')),
+                ('product', models.ForeignKey(related_name='attachments', verbose_name='Product', to='catalog.Product', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ('position',),
@@ -212,7 +212,7 @@ class Migration(migrations.Migration):
                 ('value', models.CharField(max_length=100, verbose_name='Value', blank=True)),
                 ('value_as_float', models.FloatField(null=True, verbose_name='Value as float', blank=True)),
                 ('type', models.PositiveSmallIntegerField(verbose_name='Type')),
-                ('product', models.ForeignKey(related_name='property_values', verbose_name='Product', to='catalog.Product')),
+                ('product', models.ForeignKey(related_name='property_values', verbose_name='Product', to='catalog.Product', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -220,7 +220,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('position', models.IntegerField(default=999, verbose_name='Position')),
-                ('product', models.ForeignKey(related_name='productsproperties', verbose_name='Product', to='catalog.Product')),
+                ('product', models.ForeignKey(related_name='productsproperties', verbose_name='Product', to='catalog.Product', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ('position',),
@@ -278,7 +278,7 @@ class Migration(migrations.Migration):
                 ('price', models.FloatField(default=0.0, null=True, verbose_name='Price', blank=True)),
                 ('position', models.IntegerField(default=99, verbose_name='Position')),
                 ('uid', models.CharField(default=lfs.catalog.models.get_unique_id_str, unique=True, max_length=50, editable=False)),
-                ('property', models.ForeignKey(related_name='options', verbose_name='Property', to='catalog.Property')),
+                ('property', models.ForeignKey(related_name='options', verbose_name='Property', to='catalog.Property', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['position'],
@@ -310,17 +310,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='productspropertiesrelation',
             name='property',
-            field=models.ForeignKey(verbose_name='Property', to='catalog.Property'),
+            field=models.ForeignKey(verbose_name='Property', to='catalog.Property', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='productpropertyvalue',
             name='property',
-            field=models.ForeignKey(related_name='property_values', verbose_name='Property', to='catalog.Property'),
+            field=models.ForeignKey(related_name='property_values', verbose_name='Property', to='catalog.Property', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='productpropertyvalue',
             name='property_group',
-            field=models.ForeignKey(related_name='property_values', verbose_name='Property group', blank=True, to='catalog.PropertyGroup', null=True),
+            field=models.ForeignKey(related_name='property_values', verbose_name='Property group', blank=True, to='catalog.PropertyGroup', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='product',
@@ -330,12 +330,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='product',
             name='default_variant',
-            field=models.ForeignKey(verbose_name='Default variant', blank=True, to='catalog.Product', null=True),
+            field=models.ForeignKey(verbose_name='Default variant', blank=True, to='catalog.Product', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='product',
             name='delivery_time',
-            field=models.ForeignKey(related_name='products_delivery_time', verbose_name='Delivery time', blank=True, to='catalog.DeliveryTime', null=True),
+            field=models.ForeignKey(related_name='products_delivery_time', verbose_name='Delivery time', blank=True, to='catalog.DeliveryTime', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='product',
@@ -345,12 +345,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='product',
             name='order_time',
-            field=models.ForeignKey(related_name='products_order_time', verbose_name='Order time', blank=True, to='catalog.DeliveryTime', null=True),
+            field=models.ForeignKey(related_name='products_order_time', verbose_name='Order time', blank=True, to='catalog.DeliveryTime', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='product',
             name='parent',
-            field=models.ForeignKey(related_name='variants', verbose_name='Parent', blank=True, to='catalog.Product', null=True),
+            field=models.ForeignKey(related_name='variants', verbose_name='Parent', blank=True, to='catalog.Product', null=True, on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='product',
@@ -360,32 +360,32 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='product',
             name='static_block',
-            field=models.ForeignKey(related_name='products', verbose_name='Static block', blank=True, to='catalog.StaticBlock', null=True),
+            field=models.ForeignKey(related_name='products', verbose_name='Static block', blank=True, to='catalog.StaticBlock', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='product',
             name='supplier',
-            field=models.ForeignKey(related_name='product_set', blank=True, to='supplier.Supplier', null=True),
+            field=models.ForeignKey(related_name='product_set', blank=True, to='supplier.Supplier', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='product',
             name='tax',
-            field=models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True),
+            field=models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='groupspropertiesrelation',
             name='group',
-            field=models.ForeignKey(related_name='groupproperties', verbose_name='Group', to='catalog.PropertyGroup'),
+            field=models.ForeignKey(related_name='groupproperties', verbose_name='Group', to='catalog.PropertyGroup', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='groupspropertiesrelation',
             name='property',
-            field=models.ForeignKey(verbose_name='Property', to='catalog.Property'),
+            field=models.ForeignKey(verbose_name='Property', to='catalog.Property', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='filterstep',
             name='property',
-            field=models.ForeignKey(related_name='steps', verbose_name='Property', to='catalog.Property'),
+            field=models.ForeignKey(related_name='steps', verbose_name='Property', to='catalog.Property', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='category',
@@ -395,7 +395,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='category',
             name='static_block',
-            field=models.ForeignKey(related_name='categories', verbose_name='Static block', blank=True, to='catalog.StaticBlock', null=True),
+            field=models.ForeignKey(related_name='categories', verbose_name='Static block', blank=True, to='catalog.StaticBlock', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AlterUniqueTogether(
             name='productspropertiesrelation',

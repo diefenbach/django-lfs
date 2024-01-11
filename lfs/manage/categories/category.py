@@ -2,14 +2,14 @@ import json
 
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.forms import ModelForm
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category

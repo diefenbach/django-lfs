@@ -250,7 +250,7 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
 
                 # All checked options of all other properties is also used
                 for f0, f1 in product_filter.get("select-filter", {}).items():
-                    print f0, f1, key
+                    print(f0, f1, key)
                     if f0 != key:
                         new_product_filter["select-filter"][f0] = f1
 
@@ -271,7 +271,7 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
         # Transform the group properties into a list of dicts
         for property_id, items in properties.items():
             prop = properties_mapping[property_id]
-            items.sort(lambda a, b: cmp(a["position"], b["position"]))
+            items.sort(key=lambda k: k["position"])
 
             # Move items with zero quantity to the end of the list
             for x in range(0, len(items)):

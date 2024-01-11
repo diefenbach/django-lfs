@@ -3,12 +3,12 @@ import json
 from django.core.paginator import EmptyPage
 from django.core.paginator import InvalidPage
 from django.core.paginator import Paginator
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.utils.translation import ungettext
+from django.utils.translation import gettext
 
 from lfs.catalog.models import Product
 from lfs.core.utils import lfs_pagination
@@ -80,9 +80,9 @@ def search(request, template_name="lfs/search/search_results.html"):
 
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=reverse('lfs_search'))
-    pagination_data['total_text'] = ungettext('%(count)d product',
-                                              '%(count)d products',
-                                              amount_of_products) % {'count': amount_of_products}
+    pagination_data['total_text'] = gettext('%(count)d product',
+                                            '%(count)d products',
+                                            amount_of_products) % {'count': amount_of_products}
 
     return render(request, template_name, {
         "products": current_page,

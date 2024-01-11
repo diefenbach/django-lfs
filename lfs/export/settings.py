@@ -1,5 +1,5 @@
 # django imports
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 CATEGORY_VARIANTS_NONE = 0
 CATEGORY_VARIANTS_DEFAULT = 1

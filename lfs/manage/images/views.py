@@ -1,16 +1,16 @@
 # python imports
 import re
-import urlparse
+from urllib import parse
 import json
 
 # django imports
 from django.contrib.auth.decorators import permission_required
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_POST
-from django.utils.translation import ugettext as _, ungettext
+from django.utils.translation import gettext as _, ngettext
 
 # lfs imports
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
@@ -57,9 +57,9 @@ def images(request, as_string=False, template_name="manage/images/images.html"):
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=request.path)
 
-    pagination_data['total_text'] = ungettext('%(count)d image',
-                                              '%(count)d images',
-                                              amount_of_images) % {'count': amount_of_images}
+    pagination_data['total_text'] = ngettext('%(count)d image',
+                                             '%(count)d images',
+                                             amount_of_images) % {'count': amount_of_images}
 
     result = render_to_string(template_name, request=request, context={
         "images": current_page.object_list,
@@ -106,7 +106,7 @@ def add_images(request):
             image = Image(title=file_content.name)
             try:
                 image.image.save(file_content.name, file_content, save=True)
-            except Exception, e:
+            except Exception as e:
                 image.delete()
                 logger.info("Upload of image failed: %s %s" % (file_content.name, e))
                 continue
@@ -127,7 +127,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
     start = request.GET.get('start', 1)
 
     if url:
-        parsed_url = urlparse.urlparse(url)
+        parsed_url = parse(url)
         try:
             temp_url = "/".join(parsed_url.path.split("/")[2:])
             result = re.search("(.*)(\.)(\d+x\d+)(.*)", temp_url)

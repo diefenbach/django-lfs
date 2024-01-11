@@ -2,7 +2,7 @@
 from django import forms
 from django.db import models
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # portlets imports
 from portlets.models import Portlet
@@ -16,7 +16,7 @@ class TextPortlet(Portlet):
     class Meta:
         app_label = 'portlet'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s" % self.id
 
     def render(self, context):

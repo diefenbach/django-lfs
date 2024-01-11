@@ -2,7 +2,7 @@
 from django.db import models
 from django.db.models import SET_NULL
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # lfs imports
 from lfs.core.models import Country
@@ -36,18 +36,17 @@ class BaseAddress(models.Model):
     values_before_postal = None
     values_after_postal = None
 
-    customer = models.ForeignKey(Customer, verbose_name=_(u"Customer"), blank=True, null=True, related_name="addresses",
-                                 on_delete=SET_NULL)
-    order = models.ForeignKey(Order, verbose_name=_(u"Order"), blank=True, null=True, related_name="addresses")
+    customer = models.ForeignKey(Customer, models.SET_NULL, verbose_name=_(u"Customer"), blank=True, null=True, related_name="addresses")
+    order = models.ForeignKey(Order, models.SET_NULL, verbose_name=_(u"Order"), blank=True, null=True, related_name="addresses")
 
     firstname = models.CharField(_("Firstname"), max_length=50)
     lastname = models.CharField(_("Lastname"), max_length=50)
     line1 = models.CharField(_("Line 1"), max_length=100, blank=True, null=True)
     line2 = models.CharField(_("Line 2"), max_length=100, blank=True, null=True)
-    zip_code = models.CharField(_("Zip code"), max_length=10, default=u"")
+    zip_code = models.CharField(_("Zip code"), max_length=10, blank=True, null=True, default=u"")
     city = models.CharField(_("City"), max_length=50)
     state = models.CharField(_("State"), max_length=50, blank=True, null=True)
-    country = models.ForeignKey(Country, verbose_name=_("Country"), blank=True, null=True)
+    country = models.ForeignKey(Country, models.SET_NULL, verbose_name=_("Country"), blank=True, null=True)
     created = models.DateTimeField(_(u"Created"), auto_now_add=True)
     modified = models.DateTimeField(_(u"Modified"), auto_now=True)
 
@@ -116,5 +115,5 @@ class Address(BaseAddress):
     phone = models.CharField(_("Phone"), blank=True, null=True, max_length=20)
     email = models.EmailField(_("E-Mail"), blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s %s (%s)' % (self.firstname, self.lastname, self.company_name)

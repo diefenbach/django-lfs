@@ -21,7 +21,7 @@ class CategoriesPortlet(Portlet):
     class Meta:
         app_label = 'portlet'
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s" % self.id
 
     def render(self, context):
@@ -58,6 +58,7 @@ class CategoriesPortlet(Portlet):
         })
 
         cache.set(cache_key, result)
+
         return result
 
     def form(self, **kwargs):

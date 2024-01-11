@@ -4,14 +4,14 @@ import json
 # django imports
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 # lfs imports
 import lfs.cart.utils
@@ -278,7 +278,7 @@ def add_to_cart(request, product_id=None):
                         value = 0.0
 
                 key = '{0}_{1}'.format(property_group_id, property_id)
-                properties_dict[key] = {'value': unicode(value),
+                properties_dict[key] = {'value': value,
                                         'property_group_id': property_group_id,
                                         'property_id': property_id}
 

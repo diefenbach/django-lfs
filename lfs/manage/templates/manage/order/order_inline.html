@@ -81,7 +81,7 @@
         </td>
         <td class="top">
             {{ current_order.payment_method.name }}
-            {% ifequal current_order.payment_method.id 1 %}
+            {% if current_order.payment_method.id == 1 %}
                 <div>
                     {{ current_order.account_number }}
                 </div>
@@ -94,7 +94,7 @@
                 <div>
                     {{ current_order.depositor }}
                 </div>
-            {% endifequal %}
+            {% endif %}
         </td>
     </tr>
 </table>

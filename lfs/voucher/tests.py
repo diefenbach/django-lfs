@@ -230,9 +230,12 @@ class VoucherTestCase(TestCase):
         self.v1.active = True
         self.v1.used_amount = 1
         self.v1.effective_from = 0
+        self.v1.save()
+
         self.assertEqual(self.v1.is_effective(self.request, self.cart)[0], True)
 
         self.v1.mark_as_used()
+        self.v1.is_effective(self.request, self.cart)[0]
         self.assertEqual(self.v1.is_effective(self.request, self.cart)[0], False)
 
         # unlimited amount

@@ -1,22 +1,23 @@
 # python imports
 import datetime
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 # django imports
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # lfs imports
 import lfs
+import lfs.core.utils
 from lfs.addresses.utils import AddressManagement
 from lfs.customer import utils as customer_utils
 from lfs.customer.forms import EmailForm, CustomerAuthenticationForm
-from lfs.customer.forms import RegisterForm
+from lfs.customer.settings import REGISTER_FORM
 from lfs.customer.utils import create_unique_username
 from lfs.order.models import Order
 
@@ -39,6 +40,8 @@ def login(request, template_name="lfs/customer/login.html"):
 
     login_form = CustomerAuthenticationForm()
     login_form.fields["username"].label = _(u"E-Mail")
+
+    RegisterForm = lfs.core.utils.import_symbol(REGISTER_FORM)
     register_form = RegisterForm()
 
     if request.POST.get("action") == "login":
@@ -81,7 +84,7 @@ def login(request, template_name="lfs/customer/login.html"):
             user = authenticate(username=email, password=password)
 
             from django.contrib.auth import login
-            login(request, user)
+            login(request, user, backend='lfs.customer.auth.EmailBackend')
 
             redirect_to = request.POST.get("next")
             if not redirect_to or '//' in redirect_to or ' ' in redirect_to:

@@ -2,7 +2,7 @@
 from django import forms
 from django.db import models
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 # portlets imports
 from lfs.catalog.settings import VARIANT
@@ -63,7 +63,7 @@ class LatestPortlet(Portlet):
         """
         return LatestForm(instance=self, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s" % self.id
 
 

@@ -1,6 +1,6 @@
 # django imports
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class Tax(models.Model):
@@ -17,7 +17,7 @@ class Tax(models.Model):
     rate = models.FloatField(_(u"Rate"), default=0)
     description = models.TextField(_(u"Description"), blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s%%" % self.rate
 
     class Meta:

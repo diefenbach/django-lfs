@@ -1,7 +1,7 @@
 from django import template
 from django.conf import settings
 from django.core.cache import cache
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from portlets.models import Slot
 

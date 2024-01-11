@@ -9,7 +9,6 @@ from django.http import Http404
 from django.shortcuts import _get_queryset
 from django.utils.encoding import force_str
 
-
 def key_from_instance(instance):
     opts = instance._meta
     return '%s.%s:%s' % (opts.app_label, opts.module_name, instance.pk)
@@ -48,8 +47,9 @@ def lfs_get_object(klass, *args, **kwargs):
     object is found.
     """
     cache_key = "%s-%s-%s" % (force_str(settings.CACHE_MIDDLEWARE_KEY_PREFIX), klass.__name__.lower(),
-                              force_str(kwargs.values()[0]))
-    cache_key = hashlib.md5(cache_key).hexdigest()
+                              force_str(list(kwargs.values())[0]))
+
+    cache_key = hashlib.md5(cache_key.encode('utf-8')).hexdigest()
     object = cache.get(cache_key)
     if object is not None:
         return object
@@ -77,9 +77,11 @@ def lfs_get_object_or_404(klass, *args, **kwargs):
     object is found.
     """
     cache_key = "%s-%s-%s" % (force_str(settings.CACHE_MIDDLEWARE_KEY_PREFIX), klass.__name__.lower(),
-                              force_str(kwargs.values()[0]))
-    cache_key = hashlib.md5(cache_key).hexdigest()
+                              force_str(list(kwargs.values())[0]))
+
+    cache_key = hashlib.md5(cache_key.encode('utf-8')).hexdigest()
     object = cache.get(cache_key)
+
     if object is not None:
         return object
 
@@ -121,7 +123,7 @@ def clear_cache():
 
 def delete_cache(cache_key):
     cache.delete(cache_key)
-    cache.delete(hashlib.md5(cache_key).hexdigest())
+    cache.delete(hashlib.md5(cache_key.encode('utf-8')).hexdigest())
 
 
 def get_cache_group_id(group_code):

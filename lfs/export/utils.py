@@ -58,7 +58,7 @@ def get_variants(product, export):
         return product.get_variants()
     elif variants_option == CATEGORY_VARIANTS_CHEAPEST:
         variants = list(product.get_variants())
-        variants.sort(lambda a, b: cmp(a.get_price(), b.get_price()))
+        variants.sort(key=lambda k: k.get_price())
         try:
             return [variants[0]]
         except IndexError:

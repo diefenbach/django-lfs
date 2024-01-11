@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('used_amount', models.PositiveSmallIntegerField(default=0)),
                 ('last_used_date', models.DateTimeField(null=True, blank=True)),
                 ('limit', models.PositiveSmallIntegerField(default=1, null=True, blank=True)),
-                ('creator', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('creator', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)),
             ],
             options={
                 'ordering': ('creation_date', 'number'),
@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100)),
                 ('creation_date', models.DateTimeField(auto_now_add=True)),
                 ('position', models.PositiveSmallIntegerField(default=10)),
-                ('creator', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('creator', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)),
             ],
             options={
                 'ordering': ('position',),
@@ -60,11 +60,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='voucher',
             name='group',
-            field=models.ForeignKey(related_name='vouchers', to='voucher.VoucherGroup'),
+            field=models.ForeignKey(related_name='vouchers', to='voucher.VoucherGroup', null=True, blank=True, on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='voucher',
             name='tax',
-            field=models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True),
+            field=models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True, on_delete=models.SET_NULL),
         ),
     ]

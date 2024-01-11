@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='customer',
             name='ia_content_type',
-            field=models.ForeignKey(related_name='ia_content_type', to='contenttypes.ContentType', null=True),
+            field=models.ForeignKey(related_name='ia_content_type', to='contenttypes.ContentType', null=True, on_delete=models.CASCADE),
         ),
         migrations.AlterField(
             model_name='customer',
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='customer',
             name='sa_content_type',
-            field=models.ForeignKey(related_name='sa_content_type', to='contenttypes.ContentType', null=True),
+            field=models.ForeignKey(related_name='sa_content_type', to='contenttypes.ContentType', null=True, on_delete=models.CASCADE),
         ),
         migrations.AlterField(
             model_name='customer',

@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('deletable', models.BooleanField(default=True)),
                 ('module', models.CharField(blank=True, max_length=100, verbose_name='Module', choices=[[b'lfs_paypal.PayPalProcessor', 'PayPal']])),
                 ('type', models.PositiveSmallIntegerField(default=0, verbose_name='Type', choices=[(0, 'Plain'), (1, 'Bank'), (2, 'Credit Card')])),
-                ('tax', models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True)),
+                ('tax', models.ForeignKey(verbose_name='Tax', blank=True, to='tax.Tax', null=True, on_delete=models.SET_NULL)),
             ],
             options={
                 'ordering': ('priority',),
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
                 ('price', models.FloatField(default=0.0, verbose_name='Price')),
                 ('priority', models.IntegerField(default=0, verbose_name='Priority')),
                 ('active', models.BooleanField(default=False, verbose_name='Active')),
-                ('payment_method', models.ForeignKey(related_name='prices', verbose_name='Payment method', to='payment.PaymentMethod')),
+                ('payment_method', models.ForeignKey(related_name='prices', verbose_name='Payment method', to='payment.PaymentMethod', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ('priority',),

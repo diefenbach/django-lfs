@@ -13,7 +13,7 @@
         {% for delivery_time in delivery_times %}
             <div>
                 <a href="{% url 'lfs_manage_delivery_time' delivery_time.id %}"
-                   class="selectable {% ifequal delivery_time.id current_id %}selected{% endifequal %}">
+                   class="selectable {% if delivery_time.id == current_id %}selected{% endif %}">
                     {{ delivery_time.name }}
                 </a>
             </div>

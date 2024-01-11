@@ -3,12 +3,12 @@ import json
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 import lfs.core.utils
 import lfs.discounts.utils
@@ -26,7 +26,7 @@ from lfs.customer import utils as customer_utils
 from lfs.customer.utils import create_unique_username
 from lfs.customer.forms import CreditCardForm, CustomerAuthenticationForm
 from lfs.customer.forms import BankAccountForm
-from lfs.customer.forms import RegisterForm
+from lfs.customer.settings import REGISTER_FORM
 from lfs.payment.models import PaymentMethod
 from lfs.voucher.models import Voucher
 
@@ -39,7 +39,7 @@ def login(request, template_name="lfs/checkout/login.html"):
     happens - see there for more.
     """
     # If the user is already authenticate we don't want to show this view at all
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return HttpResponseRedirect(reverse("lfs_checkout"))
 
     shop = lfs.core.utils.get_default_shop(request)
@@ -50,6 +50,7 @@ def login(request, template_name="lfs/checkout/login.html"):
 
     # Using Djangos default AuthenticationForm
     login_form = CustomerAuthenticationForm()
+    RegisterForm = lfs.core.utils.import_symbol(REGISTER_FORM)
     register_form = RegisterForm()
 
     if request.POST.get("action") == "login":
@@ -57,7 +58,7 @@ def login(request, template_name="lfs/checkout/login.html"):
         login_form.fields["username"].label = _(u"E-Mail")
         if login_form.is_valid():
             from django.contrib.auth import login
-            login(request, login_form.get_user())
+            login(request, login_form.get_user(), backend='lfs.customer.auth.EmailBackend')
 
             return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"),
                                                      msg=_(u"You have been logged in."))
@@ -80,7 +81,7 @@ def login(request, template_name="lfs/checkout/login.html"):
             user = authenticate(username=email, password=password)
 
             from django.contrib.auth import login
-            login(request, user)
+            login(request, user, backend='lfs.customer.auth.EmailBackend')
 
             return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"),
                                                      msg=_(u"You have been registered and logged in."))
@@ -101,7 +102,7 @@ def checkout_dispatcher(request):
     if cart is None or not cart.get_items():
         return empty_page_checkout(request)
 
-    if request.user.is_authenticated() or \
+    if request.user.is_authenticated or \
        shop.checkout_type == CHECKOUT_TYPE_ANON:
         return HttpResponseRedirect(reverse("lfs_checkout"))
     else:
@@ -213,7 +214,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
 
     initial_address = {}
     shop = lfs.core.utils.get_default_shop(request)
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         if shop.checkout_type == CHECKOUT_TYPE_AUTH:
             return HttpResponseRedirect(reverse("lfs_checkout_login"))
     else:

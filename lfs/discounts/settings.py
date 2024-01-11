@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 DISCOUNT_TYPE_ABSOLUTE = 0
 DISCOUNT_TYPE_PERCENTAGE = 1

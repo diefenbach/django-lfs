@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('variants_option', models.PositiveSmallIntegerField(verbose_name='Variant', choices=[(0, '---'), (1, 'Default'), (2, 'Cheapest'), (3, 'All')])),
-                ('category', models.ForeignKey(verbose_name='Category', to='catalog.Category')),
+                ('category', models.ForeignKey(verbose_name='Category', to='catalog.Category', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -52,11 +52,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='export',
             name='script',
-            field=models.ForeignKey(verbose_name='Script', to='export.Script'),
+            field=models.ForeignKey(verbose_name='Script', to='export.Script', on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='categoryoption',
             name='export',
-            field=models.ForeignKey(verbose_name='Export', to='export.Export'),
+            field=models.ForeignKey(verbose_name='Export', to='export.Export', on_delete=models.CASCADE),
         ),
     ]
