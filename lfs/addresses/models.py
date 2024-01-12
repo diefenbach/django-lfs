@@ -1,6 +1,5 @@
 # django imports
 from django.db import models
-from django.db.models import SET_NULL
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 
@@ -21,7 +20,7 @@ class BaseAddress(models.Model):
         form values. If the attribute ends with a ``+`` there will be no <div>
         around the value.
 
-    values_before_postal
+    values_after_postal
         List of attributes which are supposed to be displayed after the postal
         form values. If the attribute ends with a ``+`` there will be no <div>
         around the value.
@@ -44,14 +43,14 @@ class BaseAddress(models.Model):
         Order, models.SET_NULL, verbose_name=_("Order"), blank=True, null=True, related_name="addresses"
     )
 
-    firstname = models.CharField(_("Firstname"), max_length=50)
-    lastname = models.CharField(_("Lastname"), max_length=50)
+    firstname = models.CharField(_("Firstname"), max_length=100)
+    lastname = models.CharField(_("Lastname"), max_length=100)
     line1 = models.CharField(_("Line 1"), max_length=100, blank=True, null=True)
     line2 = models.CharField(_("Line 2"), max_length=100, blank=True, null=True)
-    zip_code = models.CharField(_("Zip code"), max_length=10, blank=True, null=True, default="")
-    city = models.CharField(_("City"), max_length=50)
-    state = models.CharField(_("State"), max_length=50, blank=True, null=True)
-    country = models.ForeignKey(Country, models.SET_NULL, verbose_name=_("Country"), blank=True, null=True)
+    zip_code = models.CharField(_("Zip code"), max_length=20, blank=True, null=True, default="")
+    city = models.CharField(_("City"), max_length=100)
+    state = models.CharField(_("State"), max_length=100, blank=True, null=True)
+    country = models.ForeignKey(Country, verbose_name=_("Country"), blank=True, null=True, on_delete=models.SET_NULL)
     created = models.DateTimeField(_("Created"), auto_now_add=True)
     modified = models.DateTimeField(_("Modified"), auto_now=True)
 
