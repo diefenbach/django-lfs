@@ -9,8 +9,8 @@ from lfs.page.models import Page
 
 
 class ProductSitemap(Sitemap):
-    """Google's XML sitemap for products.
-    """
+    """Google's XML sitemap for products."""
+
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("priority", 0.5)
     protocol = getattr(settings, "LFS_SITEMAPS", {}).get("product", {}).get("protocol", None)
@@ -23,8 +23,8 @@ class ProductSitemap(Sitemap):
 
 
 class CategorySitemap(Sitemap):
-    """Google's XML sitemap for products.
-    """
+    """Google's XML sitemap for products."""
+
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("category", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("category", {}).get("priority", 0.5)
     protocol = getattr(settings, "LFS_SITEMAPS", {}).get("category", {}).get("protocol", None)
@@ -37,8 +37,8 @@ class CategorySitemap(Sitemap):
 
 
 class PageSitemap(Sitemap):
-    """Google's XML sitemap for pages.
-    """
+    """Google's XML sitemap for pages."""
+
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("priority", 0.5)
     protocol = getattr(settings, "LFS_SITEMAPS", {}).get("page", {}).get("protocol", None)
@@ -51,8 +51,8 @@ class PageSitemap(Sitemap):
 
 
 class ShopSitemap(Sitemap):
-    """Google's XML sitemap for the shop.
-    """
+    """Google's XML sitemap for the shop."""
+
     changefreq = getattr(settings, "LFS_SITEMAPS", {}).get("shop", {}).get("changefreq", "weekly")
     priority = getattr(settings, "LFS_SITEMAPS", {}).get("shop", {}).get("priority", 0.5)
     protocol = getattr(settings, "LFS_SITEMAPS", {}).get("shop", {}).get("protocol", None)

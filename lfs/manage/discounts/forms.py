@@ -9,6 +9,7 @@ class DiscountForm(ModelForm):
     """
     Form to manage discount data.
     """
+
     class Meta:
         model = Discount
-        fields = ('name', 'active', 'value', 'type', 'tax', 'sku', 'sums_up')
+        fields = ("name", "active", "value", "type", "tax", "sku", "sums_up")

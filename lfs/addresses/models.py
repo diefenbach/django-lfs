@@ -33,22 +33,27 @@ class BaseAddress(models.Model):
         The order the address belongs to.
 
     """
+
     values_before_postal = None
     values_after_postal = None
 
-    customer = models.ForeignKey(Customer, models.SET_NULL, verbose_name=_(u"Customer"), blank=True, null=True, related_name="addresses")
-    order = models.ForeignKey(Order, models.SET_NULL, verbose_name=_(u"Order"), blank=True, null=True, related_name="addresses")
+    customer = models.ForeignKey(
+        Customer, models.SET_NULL, verbose_name=_("Customer"), blank=True, null=True, related_name="addresses"
+    )
+    order = models.ForeignKey(
+        Order, models.SET_NULL, verbose_name=_("Order"), blank=True, null=True, related_name="addresses"
+    )
 
     firstname = models.CharField(_("Firstname"), max_length=50)
     lastname = models.CharField(_("Lastname"), max_length=50)
     line1 = models.CharField(_("Line 1"), max_length=100, blank=True, null=True)
     line2 = models.CharField(_("Line 2"), max_length=100, blank=True, null=True)
-    zip_code = models.CharField(_("Zip code"), max_length=10, blank=True, null=True, default=u"")
+    zip_code = models.CharField(_("Zip code"), max_length=10, blank=True, null=True, default="")
     city = models.CharField(_("City"), max_length=50)
     state = models.CharField(_("State"), max_length=50, blank=True, null=True)
     country = models.ForeignKey(Country, models.SET_NULL, verbose_name=_("Country"), blank=True, null=True)
-    created = models.DateTimeField(_(u"Created"), auto_now_add=True)
-    modified = models.DateTimeField(_(u"Modified"), auto_now=True)
+    created = models.DateTimeField(_("Created"), auto_now_add=True)
+    modified = models.DateTimeField(_("Modified"), auto_now=True)
 
     def get_values_before_postal(self, attributes="values_before_postal"):
         """
@@ -73,13 +78,21 @@ class BaseAddress(models.Model):
             templates.insert(0, "lfs/addresses/%s_address_view.html" % type)
 
         if request:
-            return render_to_string(templates, request=request, context={
-                "address": self,
-            })
+            return render_to_string(
+                templates,
+                request=request,
+                context={
+                    "address": self,
+                },
+            )
         else:
-            return render_to_string(templates, request=request, context={
-                "address": self,
-            })
+            return render_to_string(
+                templates,
+                request=request,
+                context={
+                    "address": self,
+                },
+            )
 
     def _get_values(self, attributes):
         if getattr(self, attributes) is None:
@@ -94,11 +107,7 @@ class BaseAddress(models.Model):
                 div = True
             value = getattr(self, attribute)
             if value:
-                values.append({
-                    "value": value,
-                    "div": div,
-                    "attribute": attribute
-                })
+                values.append({"value": value, "div": div, "attribute": attribute})
         return values
 
 
@@ -108,6 +117,7 @@ class Address(BaseAddress):
 
     This can be replaced by an own model.
     """
+
     values_before_postal = ("firstname+", "lastname+", "company_name")
     values_after_postal = ("phone", "email")
 
@@ -116,4 +126,4 @@ class Address(BaseAddress):
     email = models.EmailField(_("E-Mail"), blank=True, null=True)
 
     def __str__(self):
-        return u'%s %s (%s)' % (self.firstname, self.lastname, self.company_name)
+        return "%s %s (%s)" % (self.firstname, self.lastname, self.company_name)

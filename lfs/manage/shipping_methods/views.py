@@ -38,8 +38,7 @@ def manage_shipping(request):
 
 
 @permission_required("core.manage_shop")
-def manage_shipping_method(request, shipping_method_id,
-                           template_name="manage/shipping_methods/manage_shipping.html"):
+def manage_shipping_method(request, shipping_method_id, template_name="manage/shipping_methods/manage_shipping.html"):
     """The main view to manage the shipping method with given id.
 
     This view collects the various parts of the shipping form (data, criteria,
@@ -47,19 +46,22 @@ def manage_shipping_method(request, shipping_method_id,
     """
     shipping_method = ShippingMethod.objects.get(pk=shipping_method_id)
 
-    return render(request, template_name, {
-        "shipping_method": shipping_method,
-        "shipping_methods": shipping_methods(request),
-        "data": shipping_method_data(request, shipping_method_id),
-        "method_criteria": shipping_method_criteria(request, shipping_method_id),
-        "method_prices": shipping_method_prices(request, shipping_method_id),
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "shipping_method": shipping_method,
+            "shipping_methods": shipping_methods(request),
+            "data": shipping_method_data(request, shipping_method_id),
+            "method_criteria": shipping_method_criteria(request, shipping_method_id),
+            "method_prices": shipping_method_prices(request, shipping_method_id),
+        },
+    )
 
 
 @permission_required("core.manage_shop")
 def no_shipping_methods(request, template_name="manage/shipping_methods/no_shipping_methods.html"):
-    """Displays that there are no shipping methods.
-    """
+    """Displays that there are no shipping methods."""
     return render(request, template_name, {})
 
 
@@ -75,15 +77,20 @@ def shipping_methods(request, template_name="manage/shipping_methods/shipping_me
     except ValueError:
         current_id = ""
 
-    return render_to_string(template_name, request=request, context={
-        "current_id": current_id,
-        "shipping_methods": ShippingMethod.objects.all(),
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "current_id": current_id,
+            "shipping_methods": ShippingMethod.objects.all(),
+        },
+    )
 
 
 @permission_required("core.manage_shop")
-def shipping_method_data(request, shipping_id, form=None,
-                         template_name="manage/shipping_methods/shipping_method_data.html"):
+def shipping_method_data(
+    request, shipping_id, form=None, template_name="manage/shipping_methods/shipping_method_data.html"
+):
     """Returns the shipping data as html.
 
     This view is used as a part within the manage shipping view.
@@ -92,15 +99,20 @@ def shipping_method_data(request, shipping_id, form=None,
     if form is None:
         form = ShippingMethodForm(instance=shipping_method)
 
-    return render_to_string(template_name, request=request, context={
-        "form": form,
-        "shipping_method": shipping_method,
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "form": form,
+            "shipping_method": shipping_method,
+        },
+    )
 
 
 @permission_required("core.manage_shop")
-def shipping_method_criteria(request, shipping_method_id,
-                             template_name="manage/shipping_methods/shipping_method_criteria.html"):
+def shipping_method_criteria(
+    request, shipping_method_id, template_name="manage/shipping_methods/shipping_method_criteria.html"
+):
     """Returns the criteria of the shipping method with passed id as HTML.
 
     This view is used as a part within the manage shipping view.
@@ -114,30 +126,40 @@ def shipping_method_criteria(request, shipping_method_id,
         criterion_html = criterion.render(request, position)
         criteria.append(criterion_html)
 
-    return render_to_string(template_name, request=request, context={
-        "shipping_method": shipping_method,
-        "criteria": criteria,
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "shipping_method": shipping_method,
+            "criteria": criteria,
+        },
+    )
 
 
 @permission_required("core.manage_shop")
-def shipping_method_prices(request, shipping_method_id,
-                           template_name="manage/shipping_methods/shipping_method_prices.html"):
+def shipping_method_prices(
+    request, shipping_method_id, template_name="manage/shipping_methods/shipping_method_prices.html"
+):
     """Returns the shipping method prices for the shipping method with given id.
 
     This view is used as a part within the manage shipping view.
     """
     shipping_method = get_object_or_404(ShippingMethod, pk=shipping_method_id)
 
-    return render_to_string(template_name, request=request, context={
-        "shipping_method": shipping_method,
-        "prices": shipping_method.prices.all(),
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "shipping_method": shipping_method,
+            "prices": shipping_method.prices.all(),
+        },
+    )
 
 
 @permission_required("core.manage_shop")
-def shipping_price_criteria(request, shipping_price_id, as_string=False,
-                            template_name="manage/shipping_methods/shipping_price_criteria.html"):
+def shipping_price_criteria(
+    request, shipping_price_id, as_string=False, template_name="manage/shipping_methods/shipping_price_criteria.html"
+):
     """Returns the criteria of the shipping price with passed id.
 
     This view is used as a part within the manage shipping view.
@@ -151,46 +173,56 @@ def shipping_price_criteria(request, shipping_price_id, as_string=False,
         criterion_html = criterion.render(request, position)
         criteria.append(criterion_html)
 
-    dialog = render_to_string(template_name, request=request, context={
-        "shipping_price": shipping_price,
-        "criteria": criteria,
-    })
+    dialog = render_to_string(
+        template_name,
+        request=request,
+        context={
+            "shipping_price": shipping_price,
+            "criteria": criteria,
+        },
+    )
 
     if as_string:
         return dialog
     else:
         html = [["#dialog", dialog]]
 
-        result = json.dumps({
-            "html": html,
-            "open-dialog": True,
-        }, cls=LazyEncoder)
+        result = json.dumps(
+            {
+                "html": html,
+                "open-dialog": True,
+            },
+            cls=LazyEncoder,
+        )
 
-        return HttpResponse(result, content_type='application/json')
+        return HttpResponse(result, content_type="application/json")
 
 
 # Actions
 @permission_required("core.manage_shop")
-def add_shipping_method(request,
-                        template_name="manage/shipping_methods/add_shipping_method.html"):
-    """Provides an add form and saves a new shipping method.
-    """
+def add_shipping_method(request, template_name="manage/shipping_methods/add_shipping_method.html"):
+    """Provides an add form and saves a new shipping method."""
     if request.method == "POST":
         form = ShippingMethodAddForm(data=request.POST)
         if form.is_valid():
             new_shipping_method = form.save()
             return lfs.core.utils.set_message_cookie(
                 url=reverse("lfs_manage_shipping_method", kwargs={"shipping_method_id": new_shipping_method.id}),
-                msg=_(u"Shipping method has been added."),
+                msg=_("Shipping method has been added."),
             )
     else:
         form = ShippingMethodAddForm()
 
-    return render(request, template_name, {
-        "form": form,
-        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from",
-                                                                                     reverse("lfs_manage_shipping")),
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "form": form,
+            "came_from": (request.POST if request.method == "POST" else request.GET).get(
+                "came_from", reverse("lfs_manage_shipping")
+            ),
+        },
+    )
 
 
 @permission_required("core.manage_shop")
@@ -203,12 +235,15 @@ def save_shipping_method_criteria(request, shipping_method_id):
 
     html = [["#criteria", shipping_method_criteria(request, shipping_method_id)]]
 
-    result = json.dumps({
-        "html": html,
-        "message": _(u"Changes have been saved."),
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": html,
+            "message": _("Changes have been saved."),
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
@@ -224,13 +259,16 @@ def save_shipping_price_criteria(request, shipping_price_id):
         ["#prices", shipping_method_prices(request, shipping_price.shipping_method.id)],
     ]
 
-    result = json.dumps({
-        "html": html,
-        "close-dialog": True,
-        "message": _(u"Modifications have been saved."),
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": html,
+            "close-dialog": True,
+            "message": _("Modifications have been saved."),
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
@@ -249,15 +287,18 @@ def add_shipping_price(request, shipping_method_id):
     shipping_method.prices.create(price=price)
     _update_price_positions(shipping_method)
 
-    message = _(u"Price has been added")
+    message = _("Price has been added")
     html = [["#prices", shipping_method_prices(request, shipping_method_id)]]
 
-    result = json.dumps({
-        "html": html,
-        "message": message,
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": html,
+            "message": message,
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
@@ -269,7 +310,7 @@ def update_shipping_prices(request, shipping_method_id):
 
     action = request.POST.get("action")
     if action == "delete":
-        message = _(u"Prices have been deleted")
+        message = _("Prices have been deleted")
         for key in request.POST.keys():
             if key.startswith("delete-"):
                 try:
@@ -281,7 +322,7 @@ def update_shipping_prices(request, shipping_method_id):
                     price.delete()
 
     elif action == "update":
-        message = _(u"Prices have been updated")
+        message = _("Prices have been updated")
         for key, value in request.POST.items():
             if key.startswith("price-"):
                 try:
@@ -301,12 +342,15 @@ def update_shipping_prices(request, shipping_method_id):
     _update_price_positions(shipping_method)
 
     html = [["#prices", shipping_method_prices(request, shipping_method_id)]]
-    result = json.dumps({
-        "html": html,
-        "message": message,
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": html,
+            "message": message,
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
@@ -325,21 +369,24 @@ def save_shipping_method_data(request, shipping_method_id):
         shipping_form = ShippingMethodForm(instance=shipping_method)
         if request.POST.get("delete_image"):
             shipping_method.image.delete()
-        message = _(u"Shipping method has been saved.")
+        message = _("Shipping method has been saved.")
     else:
-        message = _(u"Please correct the indicated errors.")
+        message = _("Please correct the indicated errors.")
 
     html = [
         ["#data", shipping_method_data(request, shipping_method.id, shipping_form)],
         ["#shipping-methods", shipping_methods(request)],
     ]
 
-    result = json.dumps({
-        "html": html,
-        "message": message,
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": html,
+            "message": message,
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
@@ -363,31 +410,33 @@ def delete_shipping_method(request, shipping_method_id):
 
     return lfs.core.utils.set_message_cookie(
         url=reverse("lfs_manage_shipping"),
-        msg=_(u"Shipping method has been deleted."),
+        msg=_("Shipping method has been deleted."),
     )
 
 
 @permission_required("core.manage_shop")
 @require_POST
 def sort_shipping_methods(request):
-    """Sorts shipping methods after drag 'n drop.
-    """
-    shipping_methods = request.POST.get("objs", "").split('&')
-    assert (isinstance(shipping_methods, list))
+    """Sorts shipping methods after drag 'n drop."""
+    shipping_methods = request.POST.get("objs", "").split("&")
+    assert isinstance(shipping_methods, list)
     if len(shipping_methods) > 0:
         priority = 10
         for sm_str in shipping_methods:
-            sm_id = sm_str.split('=')[1]
+            sm_id = sm_str.split("=")[1]
             sm_obj = ShippingMethod.objects.get(pk=sm_id)
             sm_obj.priority = priority
             sm_obj.save()
             priority = priority + 10
 
-        result = json.dumps({
-            "message": _(u"The shipping methods have been sorted."),
-        }, cls=LazyEncoder)
+        result = json.dumps(
+            {
+                "message": _("The shipping methods have been sorted."),
+            },
+            cls=LazyEncoder,
+        )
 
-        return HttpResponse(result, content_type='application/json')
+        return HttpResponse(result, content_type="application/json")
 
 
 def _update_price_positions(shipping_method):

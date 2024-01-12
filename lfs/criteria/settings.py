@@ -13,21 +13,21 @@ IS_VALID = 12
 IS_NOT_VALID = 13
 
 NUMBER_OPERATORS = (
-    (EQUAL, _(u"Equal to")),
-    (LESS_THAN, _(u"Less than")),
-    (LESS_THAN_EQUAL, _(u"Less than or equal to")),
-    (GREATER_THAN, _(u"Greater than")),
-    (GREATER_THAN_EQUAL, _(u"Greater than or equal to")),
+    (EQUAL, _("Equal to")),
+    (LESS_THAN, _("Less than")),
+    (LESS_THAN_EQUAL, _("Less than or equal to")),
+    (GREATER_THAN, _("Greater than")),
+    (GREATER_THAN_EQUAL, _("Greater than or equal to")),
 )
 
 STRING_OPERATORS = (
-    (EQUAL, _(u"Equal to")),
-    (CONTAIN, _(u"Contain")),
+    (EQUAL, _("Equal to")),
+    (CONTAIN, _("Contain")),
 )
 
 SELECT_OPERATORS = (
-    (IS, _(u"Is")),
-    (IS_NOT, _(u"Is not")),
-    (IS_VALID, _(u"Is valid")),
-    (IS_NOT_VALID, _(u"Is not valid")),
+    (IS, _("Is")),
+    (IS_NOT, _("Is not")),
+    (IS_VALID, _("Is valid")),
+    (IS_NOT_VALID, _("Is not valid")),
 )

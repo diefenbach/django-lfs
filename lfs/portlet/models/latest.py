@@ -13,24 +13,23 @@ from lfs.catalog.models import Category, Product
 
 
 class LatestPortlet(Portlet):
-    """A portlet for displaying featured products.
-    """
+    """A portlet for displaying featured products."""
+
     class Meta:
-        app_label = 'portlet'
+        app_label = "portlet"
 
     name = _("Latest products")
 
-    limit = models.IntegerField(_(u"Limit"), default=5)
-    current_category = models.BooleanField(_(u"Use current category"), default=False)
-    slideshow = models.BooleanField(_(u"Slideshow"), default=False)
+    limit = models.IntegerField(_("Limit"), default=5)
+    current_category = models.BooleanField(_("Use current category"), default=False)
+    slideshow = models.BooleanField(_("Slideshow"), default=False)
 
     @property
     def rendered_title(self):
         return self.title or self.name
 
     def render(self, context):
-        """Renders the portlet as html.
-        """
+        """Renders the portlet as html."""
         request = context.get("request")
 
         latest_products = []
@@ -42,9 +41,9 @@ class LatestPortlet(Portlet):
                 categories = [category]
                 categories.extend(category.get_all_children())
                 filters = {"product__categories__in": categories}
-                products = products.filter(**filters).order_by('-creation_date')[:self.limit]
+                products = products.filter(**filters).order_by("-creation_date")[: self.limit]
         else:
-            products = products.order_by('-creation_date')[:self.limit]
+            products = products.order_by("-creation_date")[: self.limit]
 
         for product in products:
             if product.is_product_with_variants() and product.has_variants():
@@ -52,24 +51,23 @@ class LatestPortlet(Portlet):
             else:
                 latest_products.append(product)
 
-        return render_to_string("lfs/portlets/latest.html", request=request, context={
-            "title": self.rendered_title,
-            "slideshow": self.slideshow,
-            "products": latest_products
-        })
+        return render_to_string(
+            "lfs/portlets/latest.html",
+            request=request,
+            context={"title": self.rendered_title, "slideshow": self.slideshow, "products": latest_products},
+        )
 
     def form(self, **kwargs):
-        """
-        """
+        """ """
         return LatestForm(instance=self, **kwargs)
 
     def __str__(self):
-        return u"%s" % self.id
+        return "%s" % self.id
 
 
 class LatestForm(forms.ModelForm):
-    """
-    """
+    """ """
+
     class Meta:
         model = LatestPortlet
         exclude = ()

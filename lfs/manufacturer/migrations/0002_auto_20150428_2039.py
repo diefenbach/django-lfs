@@ -7,15 +7,20 @@ import lfs.core.fields.thumbs
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('manufacturer', '0001_initial'),
+        ("manufacturer", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='manufacturer',
-            name='image',
-            field=lfs.core.fields.thumbs.ImageWithThumbsField(upload_to=b'images', null=True, verbose_name='Image', sizes=((60, 60), (100, 100), (200, 200), (400, 400)), blank=True),
+            model_name="manufacturer",
+            name="image",
+            field=lfs.core.fields.thumbs.ImageWithThumbsField(
+                upload_to=b"images",
+                null=True,
+                verbose_name="Image",
+                sizes=((60, 60), (100, 100), (200, 200), (400, 400)),
+                blank=True,
+            ),
         ),
     ]

@@ -6,20 +6,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('catalog', '0002_auto_20150427_2206'),
+        ("catalog", "0002_auto_20150427_2206"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='image',
-            name='alt',
-            field=models.CharField(blank=True, max_length=255, verbose_name='Alt'),
+            model_name="image",
+            name="alt",
+            field=models.CharField(blank=True, max_length=255, verbose_name="Alt"),
         ),
         migrations.AlterField(
-            model_name='image',
-            name='title',
-            field=models.CharField(blank=True, max_length=100, verbose_name='Title'),
+            model_name="image",
+            name="title",
+            field=models.CharField(blank=True, max_length=100, verbose_name="Title"),
         ),
     ]

@@ -28,6 +28,7 @@ from lfs.checkout.tests import *  # NOQA
 from lfs.manage.tests import *  # NOQA
 from lfs.gross_price.tests import *  # NOQA
 from lfs.net_price.tests import *  # NOQA
+
 # from lfs.core.wmtests import *
 
 try:
@@ -42,13 +43,12 @@ except ImportError:
 
 
 class ShopTestCase(TestCase):
-    """Tests the views of the lfs.catalog.
-    """
-    fixtures = ['lfs_shop.xml']
+    """Tests the views of the lfs.catalog."""
+
+    fixtures = ["lfs_shop.xml"]
 
     def test_shop_defaults(self):
-        """Tests the shop values right after creation of an instance
-        """
+        """Tests the shop values right after creation of an instance"""
         shop = Shop.objects.get(pk=1)
 
         self.assertEqual(shop.name, "LFS")
@@ -59,58 +59,46 @@ class ShopTestCase(TestCase):
         self.assertEqual(shop.google_analytics_id, "")
         self.assertEqual(shop.ga_site_tracking, False)
         self.assertEqual(shop.ga_ecommerce_tracking, False)
-        self.assertEqual(shop.default_country.name, u"Deutschland")
-        self.assertEqual(shop.get_default_country().name, u"Deutschland")
-        self.assertEqual(shop.meta_title, u"<name>")
-        self.assertEqual(shop.meta_keywords, u"")
-        self.assertEqual(shop.meta_description, u"")
+        self.assertEqual(shop.default_country.name, "Deutschland")
+        self.assertEqual(shop.get_default_country().name, "Deutschland")
+        self.assertEqual(shop.meta_title, "<name>")
+        self.assertEqual(shop.meta_keywords, "")
+        self.assertEqual(shop.meta_description, "")
 
     def test_unsupported_locale(self):
-        """
-        """
+        """ """
         from django.conf import settings
+
         settings.LFS_LOCALE = "unsupported"
 
         self.client.get("/")
 
     def test_from_email(self):
-        """
-        """
+        """ """
         shop = lfs.core.utils.get_default_shop()
 
         shop.from_email = "john@doe.com"
         self.assertEqual(shop.from_email, "john@doe.com")
 
     def test_get_notification_emails(self):
-        """
-        """
+        """ """
         shop = lfs.core.utils.get_default_shop()
 
         shop.notification_emails = "john@doe.com, jane@doe.com, baby@doe.com"
 
-        self.assertEqual(
-            shop.get_notification_emails(),
-            ["john@doe.com", "jane@doe.com", "baby@doe.com"])
+        self.assertEqual(shop.get_notification_emails(), ["john@doe.com", "jane@doe.com", "baby@doe.com"])
 
         shop.notification_emails = "john@doe.com\njane@doe.com\nbaby@doe.com"
-        self.assertEqual(
-            shop.get_notification_emails(),
-            ["john@doe.com", "jane@doe.com", "baby@doe.com"])
+        self.assertEqual(shop.get_notification_emails(), ["john@doe.com", "jane@doe.com", "baby@doe.com"])
 
         shop.notification_emails = "john@doe.com\r\njane@doe.com\r\nbaby@doe.com"
-        self.assertEqual(
-            shop.get_notification_emails(),
-            ["john@doe.com", "jane@doe.com", "baby@doe.com"])
+        self.assertEqual(shop.get_notification_emails(), ["john@doe.com", "jane@doe.com", "baby@doe.com"])
 
         shop.notification_emails = "john@doe.com\n\rjane@doe.com\n\rbaby@doe.com"
-        self.assertEqual(
-            shop.get_notification_emails(),
-            ["john@doe.com", "jane@doe.com", "baby@doe.com"])
+        self.assertEqual(shop.get_notification_emails(), ["john@doe.com", "jane@doe.com", "baby@doe.com"])
 
         shop.notification_emails = "john@doe.com,,,,\n\n\n\njane@doe.com"
-        self.assertEqual(
-            shop.get_notification_emails(),
-            ["john@doe.com", "jane@doe.com"])
+        self.assertEqual(shop.get_notification_emails(), ["john@doe.com", "jane@doe.com"])
 
     def test_get_meta_title(self):
         shop = lfs.core.utils.get_default_shop()
@@ -181,13 +169,12 @@ class ShopTestCase(TestCase):
 
 
 class TagsTestCase(TestCase):
-    """
-    """
-    fixtures = ['lfs_shop.xml']
+    """ """
+
+    fixtures = ["lfs_shop.xml"]
 
     def test_ga_site_tracking(self):
-        """
-        """
+        """ """
         shop = Shop.objects.get(pk=1)
         shop.google_analytics_id = ""
         shop.ga_site_tracking = False
@@ -215,8 +202,7 @@ class TagsTestCase(TestCase):
         self.failIf(content.find("pageTracker") == -1)
 
     def test_ga_ecommerce_tracking(self):
-        """
-        """
+        """ """
         shop = lfs.core.utils.get_default_shop()
         shop.google_analytics_id = ""
         shop.ga_site_tracking = False
@@ -226,7 +212,7 @@ class TagsTestCase(TestCase):
         session = SessionStore()
 
         rf = RequestFactory()
-        request = rf.get('/')
+        request = rf.get("/")
         request.session = session
 
         template = Template("""{% load lfs_tags %}{% google_analytics_ecommerce %}""")
@@ -239,7 +225,7 @@ class TagsTestCase(TestCase):
 
         # Simulating a new request
         rf = RequestFactory()
-        request = rf.get('/')
+        request = rf.get("/")
         request.session = session
 
         # But this is not enough
@@ -252,7 +238,7 @@ class TagsTestCase(TestCase):
 
         # Simulating a new request
         rf = RequestFactory()
-        request = rf.get('/')
+        request = rf.get("/")
         request.session = session
 
         # But this is still not enough
@@ -267,9 +253,8 @@ class TagsTestCase(TestCase):
         self.failIf(content.find("_trackPageview") == -1)
 
     def test_currency(self):
-        """
-        """
-        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+        """ """
+        locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
         self.assertEqual(currency(0.0), '<span class="money">$0.00</span>')
         self.assertEqual(currency(1.0), '<span class="money">$1.00</span>')
 
@@ -285,20 +270,20 @@ class TagsTestCase(TestCase):
 
 class ManageURLsTestCase(TestCase):
     def test_manage_urls_anonymous(self):
-        """Tests that all manage urls cannot accessed by anonymous user.
-        """
+        """Tests that all manage urls cannot accessed by anonymous user."""
         rf = RequestFactory()
         request = rf.get("/")
         request.user = AnonymousUser()
 
         from lfs.manage.urls import urlpatterns
+
         for url in urlpatterns:
             result = url.callback(request)
             self.failUnless(result["Location"].startswith("/login/?next=/"))
 
 
 class SiteMapsTestCase(TestCase):
-    fixtures = ['lfs_shop.xml']
+    fixtures = ["lfs_shop.xml"]
 
     def test_sitemaps_default_1(self):
         result = self.client.get("/sitemap.xml")

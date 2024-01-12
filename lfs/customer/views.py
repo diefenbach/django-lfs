@@ -39,37 +39,35 @@ def login(request, template_name="lfs/customer/login.html"):
     #     raise Http404()
 
     login_form = CustomerAuthenticationForm()
-    login_form.fields["username"].label = _(u"E-Mail")
+    login_form.fields["username"].label = _("E-Mail")
 
     RegisterForm = lfs.core.utils.import_symbol(REGISTER_FORM)
     register_form = RegisterForm()
 
     if request.POST.get("action") == "login":
         login_form = CustomerAuthenticationForm(data=request.POST)
-        login_form.fields["username"].label = _(u"E-Mail")
+        login_form.fields["username"].label = _("E-Mail")
 
         if login_form.is_valid():
             redirect_to = request.POST.get("next")
             # Light security check -- make sure redirect_to isn't garbage.
-            if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
+            if not redirect_to or "//" in redirect_to or " " in redirect_to:
                 redirect_to = reverse("lfs_shop_view")
 
             from django.contrib.auth import login
+
             login(request, login_form.get_user())
 
-            return lfs.core.utils.set_message_cookie(
-                redirect_to, msg=_(u"You have been logged in."))
+            return lfs.core.utils.set_message_cookie(redirect_to, msg=_("You have been logged in."))
 
     elif request.POST.get("action") == "register":
         register_form = RegisterForm(data=request.POST)
         if register_form.is_valid():
-
             email = register_form.data.get("email")
             password = register_form.data.get("password_1")
 
             # Create user
-            user = User.objects.create_user(
-                username=create_unique_username(email), email=email, password=password)
+            user = User.objects.create_user(username=create_unique_username(email), email=email, password=password)
 
             # Create customer
             customer = customer_utils.get_or_create_customer(request)
@@ -81,20 +79,21 @@ def login(request, template_name="lfs/customer/login.html"):
 
             # Log in user
             from django.contrib.auth import authenticate
+
             user = authenticate(username=email, password=password)
 
             from django.contrib.auth import login
-            login(request, user, backend='lfs.customer.auth.EmailBackend')
+
+            login(request, user, backend="lfs.customer.auth.EmailBackend")
 
             redirect_to = request.POST.get("next")
-            if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
+            if not redirect_to or "//" in redirect_to or " " in redirect_to:
                 redirect_to = reverse("lfs_shop_view")
 
-            return lfs.core.utils.set_message_cookie(
-                redirect_to, msg=_(u"You have been registered and logged in."))
+            return lfs.core.utils.set_message_cookie(redirect_to, msg=_("You have been registered and logged in."))
 
     # Get next_url
-    next_url = (request.POST if request.method == 'POST' else request.GET).get("next")
+    next_url = (request.POST if request.method == "POST" else request.GET).get("next")
     if next_url is None:
         next_url = request.META.get("HTTP_REFERER")
     if next_url is None:
@@ -109,12 +108,16 @@ def login(request, template_name="lfs/customer/login.html"):
     except KeyError:
         login_form_errors = None
 
-    return render(request, template_name, {
-        "login_form": login_form,
-        "login_form_errors": login_form_errors,
-        "register_form": register_form,
-        "next_url": next_url,
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "login_form": login_form,
+            "login_form_errors": login_form_errors,
+            "register_form": register_form,
+            "next_url": next_url,
+        },
+    )
 
 
 def logout(request):
@@ -124,16 +127,15 @@ def logout(request):
     logoutmethod on one place.
     """
     from django.contrib.auth import logout
+
     logout(request)
 
-    return lfs.core.utils.set_message_cookie(reverse("lfs_shop_view"),
-                                             msg=_(u"You have been logged out."))
+    return lfs.core.utils.set_message_cookie(reverse("lfs_shop_view"), msg=_("You have been logged out."))
 
 
 @login_required
 def orders(request, template_name="lfs/customer/orders.html"):
-    """Displays the orders of the current user
-    """
+    """Displays the orders of the current user"""
     orders = Order.objects.filter(user=request.user)
 
     if request.method == "GET":
@@ -159,43 +161,33 @@ def orders(request, template_name="lfs/customer/orders.html"):
     options = []
     for value in [1, 3, 6, 12]:
         selected = True if value == date_filter else False
-        options.append({
-            "value": value,
-            "selected": selected,
-        })
+        options.append(
+            {
+                "value": value,
+                "selected": selected,
+            }
+        )
 
-    return render(request, template_name, {
-        "orders": orders,
-        "options": options,
-        "date_filter": date_filter,
-        "current": "orders"
-    })
+    return render(
+        request, template_name, {"orders": orders, "options": options, "date_filter": date_filter, "current": "orders"}
+    )
 
 
 @login_required
 def order(request, id, template_name="lfs/customer/order.html"):
-    """
-    """
+    """ """
     orders = Order.objects.filter(user=request.user)
     order = get_object_or_404(Order, pk=id, user=request.user)
 
-    return render(request, template_name, {
-        "current_order": order,
-        "orders": orders,
-        "current": "orders"
-    })
+    return render(request, template_name, {"current_order": order, "orders": orders, "current": "orders"})
 
 
 @login_required
 def account(request, template_name="lfs/customer/account.html"):
-    """Displays the main screen of the current user's account.
-    """
+    """Displays the main screen of the current user's account."""
     user = request.user
 
-    return render(request, template_name, {
-        "user": user,
-        "current": "welcome"
-    })
+    return render(request, template_name, {"user": user, "current": "welcome"})
 
 
 @login_required
@@ -217,10 +209,10 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
 
             return lfs.core.utils.MessageHttpResponseRedirect(
                 redirect_to=reverse("lfs_my_addresses"),
-                msg=_(u"Your addresses have been saved."),
+                msg=_("Your addresses have been saved."),
             )
         else:
-            msg = _(u"An error has occured.")
+            msg = _("An error has occured.")
     else:
         msg = None
         iam = AddressManagement(customer, customer.selected_invoice_address, "invoice")
@@ -228,10 +220,11 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
 
     return lfs.core.utils.render_to_message_response(
         request,
-        template_name, {
+        template_name,
+        {
             "shipping_address_inline": sam.render(request),
             "invoice_address_inline": iam.render(request),
-            "current": "addresses"
+            "current": "addresses",
         },
         msg=msg,
     )
@@ -239,39 +232,31 @@ def addresses(request, template_name="lfs/customer/addresses.html"):
 
 @login_required
 def email(request, template_name="lfs/customer/email.html"):
-    """Saves the email address from the data form.
-    """
+    """Saves the email address from the data form."""
     if request.method == "POST":
         email_form = EmailForm(initial={"email": request.user.email}, data=request.POST)
         if email_form.is_valid():
             request.user.username = email_form.cleaned_data.get("email")[:30]
             request.user.email = email_form.cleaned_data.get("email")
             request.user.save()
-            return lfs.core.utils.set_message_cookie(reverse("lfs_my_email"),
-                                                     msg=_(u"Your e-mail has been changed."))
+            return lfs.core.utils.set_message_cookie(reverse("lfs_my_email"), msg=_("Your e-mail has been changed."))
     else:
         email_form = EmailForm(initial={"email": request.user.email})
 
-    return render(request, template_name, {
-        "email_form": email_form,
-        "current": "email"
-    })
+    return render(request, template_name, {"email_form": email_form, "current": "email"})
 
 
 @login_required
 def password(request, template_name="lfs/customer/password.html"):
-    """Changes the password of current user.
-    """
+    """Changes the password of current user."""
     if request.method == "POST":
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             form.save()
-            return lfs.core.utils.set_message_cookie(reverse("lfs_my_password"),
-                                                     msg=_(u"Your password has been changed."))
+            return lfs.core.utils.set_message_cookie(
+                reverse("lfs_my_password"), msg=_("Your password has been changed.")
+            )
     else:
         form = PasswordChangeForm(request.user)
 
-    return render(request, template_name, {
-        "form": form,
-        "current": "password"
-    })
+    return render(request, template_name, {"form": form, "current": "password"})

@@ -20,6 +20,7 @@ from lfs.core.utils import LazyEncoder, lfs_pagination
 
 # Load logger
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -29,8 +30,8 @@ def images(request, as_string=False, template_name="manage/images/images.html"):
     """
     Display images management.
     """
-    req = request.POST if request.method == 'POST' else request.GET
-    start = req.get('start')
+    req = request.POST if request.method == "POST" else request.GET
+    start = req.get("start")
     # Calculates parameters for display.
     try:
         start = int(start)
@@ -38,7 +39,7 @@ def images(request, as_string=False, template_name="manage/images/images.html"):
         start = 1
 
     # filter
-    query = req.get('q', '')
+    query = req.get("q", "")
 
     # prepare paginator
     if query:
@@ -57,15 +58,15 @@ def images(request, as_string=False, template_name="manage/images/images.html"):
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=request.path)
 
-    pagination_data['total_text'] = ngettext('%(count)d image',
-                                             '%(count)d images',
-                                             amount_of_images) % {'count': amount_of_images}
+    pagination_data["total_text"] = ngettext("%(count)d image", "%(count)d images", amount_of_images) % {
+        "count": amount_of_images
+    }
 
-    result = render_to_string(template_name, request=request, context={
-        "images": current_page.object_list,
-        "pagination": pagination_data,
-        "query": query
-    })
+    result = render_to_string(
+        template_name,
+        request=request,
+        context={"images": current_page.object_list, "pagination": pagination_data, "query": query},
+    )
 
     if as_string:
         return result
@@ -78,12 +79,15 @@ def images_list(request, template_name="manage/images/images-list.html"):
     Display images list.
     """
     result = images(request, as_string=True, template_name=template_name)
-    result = json.dumps({
-        "html": result,
-        "message": _(u"Images have been added."),
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": result,
+            "message": _("Images have been added."),
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
@@ -112,7 +116,7 @@ def add_images(request):
                 continue
 
     result = json.dumps({"name": file_content.name, "type": "image/jpeg", "size": "123456789"})
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
@@ -124,7 +128,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
     selected_image = None
     selected_class = request.GET.get("class")
     url = request.GET.get("url")
-    start = request.GET.get('start', 1)
+    start = request.GET.get("start", 1)
 
     if url:
         parsed_url = parse(url)
@@ -144,21 +148,19 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
     sizes = []
     for size in THUMBNAIL_SIZES:
         size = "%sx%s" % (size[0], size[1])
-        sizes.append({
-            "value": size,
-            "title": size,
-            "selected": size == selected_size,
-        })
+        sizes.append(
+            {
+                "value": size,
+                "title": size,
+                "selected": size == selected_size,
+            }
+        )
 
-    classes = [{"value": 'inline',
-                "title": _(u'inline'),
-                "selected": 'inline' == selected_class},
-               {"value": 'left',
-                "title": _(u'left'),
-                "selected": 'left' == selected_class},
-               {"value": 'right',
-                "title": _(u'right'),
-                "selected": 'right' == selected_class}]
+    classes = [
+        {"value": "inline", "title": _("inline"), "selected": "inline" == selected_class},
+        {"value": "left", "title": _("left"), "selected": "left" == selected_class},
+        {"value": "right", "title": _("right"), "selected": "right" == selected_class},
+    ]
 
     # Calculates parameters for display.
     try:
@@ -167,7 +169,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
         start = 1
 
     # filter
-    query = (request.POST if request.method == 'POST' else request.GET).get('q', '')
+    query = (request.POST if request.method == "POST" else request.GET).get("q", "")
 
     # prepare paginator
     if query:
@@ -187,30 +189,33 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=request.path)
 
-    pagination_data['total_text'] = ungettext('%(count)d image',
-                                              '%(count)d images',
-                                              amount_of_images) % {'count': amount_of_images}
+    pagination_data["total_text"] = ungettext("%(count)d image", "%(count)d images", amount_of_images) % {
+        "count": amount_of_images
+    }
 
     images = []
     for i, image in enumerate(current_page.object_list):
-        images.append({
-            "id": image.id,
-            "title": image.title,
-            "checked": image == selected_image,
-            "url": image.image.url_100x100,
-        })
+        images.append(
+            {
+                "id": image.id,
+                "title": image.title,
+                "checked": image == selected_image,
+                "url": image.image.url_100x100,
+            }
+        )
 
-    html = render_to_string(template_name, request=request, context={
-        "sizes": sizes,
-        "classes": classes,
-        "images": images,
-        "query": query,
-        "pagination": pagination_data
-    })
+    html = render_to_string(
+        template_name,
+        request=request,
+        context={"sizes": sizes, "classes": classes, "images": images, "query": query, "pagination": pagination_data},
+    )
 
-    result = json.dumps({
-        "html": html,
-        "message": "msg",
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": html,
+            "message": "msg",
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")

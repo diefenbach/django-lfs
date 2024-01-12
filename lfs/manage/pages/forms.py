@@ -7,8 +7,8 @@ from lfs.page.models import Page
 
 
 class PageForm(ModelForm):
-    """Form to edit a page.
-    """
+    """Form to edit a page."""
+
     def __init__(self, *args, **kwargs):
         super(PageForm, self).__init__(*args, **kwargs)
         self.fields["file"].widget = LFSFileInput()
@@ -19,8 +19,8 @@ class PageForm(ModelForm):
 
 
 class PageAddForm(ModelForm):
-    """Form to add a page.
-    """
+    """Form to add a page."""
+
     class Meta:
         model = Page
         fields = ("title", "slug")

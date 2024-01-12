@@ -7,16 +7,16 @@ from lfs.manufacturer.models import Manufacturer
 
 
 class ManufacturerAddForm(ModelForm):
-    """Process form to add a manufacturer.
-    """
+    """Process form to add a manufacturer."""
+
     class Meta:
         model = Manufacturer
         fields = ("name", "slug")
 
 
 class ManufacturerDataForm(ModelForm):
-    """Form to manage selection data.
-    """
+    """Form to manage selection data."""
+
     def __init__(self, *args, **kwargs):
         super(ManufacturerDataForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
@@ -27,8 +27,12 @@ class ManufacturerDataForm(ModelForm):
 
 
 class ViewForm(ModelForm):
-    """Form to add/edit category.
-    """
+    """Form to add/edit category."""
+
     class Meta:
         model = Manufacturer
-        fields = ("active_formats", "product_cols", "product_rows", )
+        fields = (
+            "active_formats",
+            "product_cols",
+            "product_rows",
+        )

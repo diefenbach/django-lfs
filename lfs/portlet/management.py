@@ -3,19 +3,19 @@ from django.dispatch import receiver
 
 from portlets.utils import register_portlet
 
-from . models import AverageRatingPortlet
-from . models import CartPortlet
-from . models import CategoriesPortlet
-from . models import DeliveryTimePortlet
-from . models import FilterPortlet
-from . models import PagesPortlet
-from . models import RecentProductsPortlet
-from . models import RelatedProductsPortlet
-from . models import TextPortlet
-from . models import TopsellerPortlet
-from . models import ForsalePortlet
-from . models import FeaturedPortlet
-from . models import LatestPortlet
+from .models import AverageRatingPortlet
+from .models import CartPortlet
+from .models import CategoriesPortlet
+from .models import DeliveryTimePortlet
+from .models import FilterPortlet
+from .models import PagesPortlet
+from .models import RecentProductsPortlet
+from .models import RelatedProductsPortlet
+from .models import TextPortlet
+from .models import TopsellerPortlet
+from .models import ForsalePortlet
+from .models import FeaturedPortlet
+from .models import LatestPortlet
 
 
 @receiver(post_migrate)

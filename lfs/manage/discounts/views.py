@@ -51,36 +51,42 @@ def manage_discount(request, id, template_name="manage/discounts/discount.html")
     except Discount.DoesNotExist:
         return HttpResponseRedirect(reverse("lfs_manage_discounts"))
 
-    return render(request, template_name, {
-        "discount": discount,
-        "navigation": navigation(request),
-        "data": discount_data(request, id),
-        "products": products_tab(request, id),
-        "criteria": discount_criteria(request, id),
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "discount": discount,
+            "navigation": navigation(request),
+            "data": discount_data(request, id),
+            "products": products_tab(request, id),
+            "criteria": discount_criteria(request, id),
+        },
+    )
 
 
 @permission_required("core.manage_shop")
 def no_discounts(request, template_name="manage/discounts/no_discounts.html"):
-    """Displays no discounts view
-    """
+    """Displays no discounts view"""
     return render(request, template_name, {})
 
 
 # Parts of the manage discount view.
 @permission_required("core.manage_shop")
 def navigation(request, template_name="manage/discounts/navigation.html"):
-    """Returns the navigation for the discount view.
-    """
+    """Returns the navigation for the discount view."""
     try:
         current_id = int(request.path.split("/")[-1])
     except ValueError:
         current_id = ""
 
-    return render_to_string(template_name, request=request, context={
-        "current_id": current_id,
-        "discounts": Discount.objects.all(),
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "current_id": current_id,
+            "discounts": Discount.objects.all(),
+        },
+    )
 
 
 @permission_required("core.manage_shop")
@@ -91,10 +97,14 @@ def discount_data(request, id, template_name="manage/discounts/data.html"):
     """
     discount = Discount.objects.get(pk=id)
 
-    return render_to_string(template_name, request=request, context={
-        "form": DiscountForm(instance=discount),
-        "discount": discount,
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "form": DiscountForm(instance=discount),
+            "discount": discount,
+        },
+    )
 
 
 @permission_required("core.manage_shop")
@@ -112,33 +122,42 @@ def discount_criteria(request, id, template_name="manage/discounts/criteria.html
         criterion_html = criterion_object.get_content_object().render(request, position)
         criteria.append(criterion_html)
 
-    return render_to_string(template_name, request=request, context={
-        "discount": discount,
-        "criteria": criteria,
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "discount": discount,
+            "criteria": criteria,
+        },
+    )
 
 
 # Actions
 @permission_required("core.manage_shop")
 def add_discount(request, template_name="manage/discounts/add_discount.html"):
-    """Provides an add form and saves a new discount method.
-    """
+    """Provides an add form and saves a new discount method."""
     if request.method == "POST":
         form = DiscountForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             new_discount = form.save()
             return lfs.core.utils.set_message_cookie(
                 url=reverse("lfs_manage_discount", kwargs={"id": new_discount.id}),
-                msg=_(u"Discount method has been added."),
+                msg=_("Discount method has been added."),
             )
     else:
         form = DiscountForm()
 
-    return render(request, template_name, {
-        "navigation": navigation(request),
-        "form": form,
-        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from", reverse("lfs_manage_discounts")),
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "navigation": navigation(request),
+            "form": form,
+            "came_from": (request.POST if request.method == "POST" else request.GET).get(
+                "came_from", reverse("lfs_manage_discounts")
+            ),
+        },
+    )
 
 
 @permission_required("core.manage_shop")
@@ -151,12 +170,15 @@ def save_discount_criteria(request, id):
 
     html = [["#criteria", discount_criteria(request, id)]]
 
-    result = json.dumps({
-        "html": html,
-        "message": _("Changes have been saved."),
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": html,
+            "message": _("Changes have been saved."),
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
@@ -174,15 +196,14 @@ def save_discount_data(request, id):
 
     return lfs.core.utils.set_message_cookie(
         url=reverse("lfs_manage_discount", kwargs={"id": id}),
-        msg=_(u"Discount data has been saved."),
+        msg=_("Discount data has been saved."),
     )
 
 
 @permission_required("core.manage_shop")
 @require_POST
 def delete_discount(request, id):
-    """Deletes discount with passed id.
-    """
+    """Deletes discount with passed id."""
     try:
         discount = Discount.objects.get(pk=id)
     except ObjectDoesNotExist:
@@ -192,14 +213,13 @@ def delete_discount(request, id):
 
     return lfs.core.utils.set_message_cookie(
         url=reverse("lfs_manage_discounts"),
-        msg=_(u"Discount has been deleted."),
+        msg=_("Discount has been deleted."),
     )
 
 
 @permission_required("core.manage_shop")
 def assign_products(request, discount_id):
-    """Assign products to given property group with given property_group_id.
-    """
+    """Assign products to given property group with given property_group_id."""
     discount = lfs_get_object_or_404(Discount, pk=discount_id)
 
     for temp_id in request.POST.keys():
@@ -209,18 +229,14 @@ def assign_products(request, discount_id):
             discount.products.add(product)
 
     html = [["#products-inline", products_inline(request, discount_id, as_string=True)]]
-    result = json.dumps({
-        "html": html,
-        "message": _(u"Products have been assigned.")
-    }, cls=LazyEncoder)
+    result = json.dumps({"html": html, "message": _("Products have been assigned.")}, cls=LazyEncoder)
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
 def remove_products(request, discount_id):
-    """Remove products from given property group with given property_group_id.
-    """
+    """Remove products from given property group with given property_group_id."""
     discount = lfs_get_object_or_404(Discount, pk=discount_id)
 
     for temp_id in request.POST.keys():
@@ -230,36 +246,34 @@ def remove_products(request, discount_id):
             discount.products.remove(product)
 
     html = [["#products-inline", products_inline(request, discount_id, as_string=True)]]
-    result = json.dumps({
-        "html": html,
-        "message": _(u"Products have been removed.")
-    }, cls=LazyEncoder)
+    result = json.dumps({"html": html, "message": _("Products have been removed.")}, cls=LazyEncoder)
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
 def products_tab(request, discount_id, template_name="manage/discounts/products.html"):
-    """Renders the products tab of the property groups management views.
-    """
+    """Renders the products tab of the property groups management views."""
     discount = Discount.objects.get(pk=discount_id)
     inline = products_inline(request, discount_id, as_string=True)
 
-    return render_to_string(template_name, request=request, context={
-        "discount": discount,
-        "products_inline": inline,
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "discount": discount,
+            "products_inline": inline,
+        },
+    )
 
 
 @permission_required("core.manage_shop")
-def products_inline(request, discount_id, as_string=False,
-                    template_name="manage/discounts/products_inline.html"):
-    """Renders the products tab of the property groups management views.
-    """
+def products_inline(request, discount_id, as_string=False, template_name="manage/discounts/products_inline.html"):
+    """Renders the products tab of the property groups management views."""
     discount = Discount.objects.get(pk=discount_id)
-    discount_products = discount.products.all().select_related('parent')
+    discount_products = discount.products.all().select_related("parent")
 
-    r = request.POST if request.method == 'POST' else request.GET
+    r = request.POST if request.method == "POST" else request.GET
     s = request.session
 
     # If we get the parameter ``keep-filters`` or ``page`` we take the
@@ -273,10 +287,8 @@ def products_inline(request, discount_id, as_string=False,
     if r.get("keep-filters") or r.get("page"):
         page = r.get("page", s.get("discount_page", 1))
         filter_ = r.get("filter", s.get("filter"))
-        category_filter = r.get("products_category_filter",
-                                s.get("products_category_filter"))
-        manufacturer_filter = r.get("products_manufacturer_filter",
-                                    s.get("products_manufacturer_filter"))
+        category_filter = r.get("products_category_filter", s.get("products_category_filter"))
+        manufacturer_filter = r.get("products_manufacturer_filter", s.get("products_manufacturer_filter"))
     else:
         page = r.get("page", 1)
         filter_ = r.get("filter")
@@ -316,7 +328,7 @@ def products_inline(request, discount_id, as_string=False,
             manufacturer = lfs_get_object_or_404(Manufacturer, pk=manufacturer_filter)
             filters &= Q(manufacturer=manufacturer)
 
-    products = Product.objects.select_related('parent').filter(filters)
+    products = Product.objects.select_related("parent").filter(filters)
     paginator = Paginator(products.exclude(pk__in=discount_products), 25)
 
     try:
@@ -324,18 +336,26 @@ def products_inline(request, discount_id, as_string=False,
     except EmptyPage:
         page = 0
 
-    result = render_to_string(template_name, request=request, context={
-        "discount": discount,
-        "discount_products": discount_products,
-        "page": page,
-        "paginator": paginator,
-        "filter": filter_
-    })
+    result = render_to_string(
+        template_name,
+        request=request,
+        context={
+            "discount": discount,
+            "discount_products": discount_products,
+            "page": page,
+            "paginator": paginator,
+            "filter": filter_,
+        },
+    )
 
     if as_string:
         return result
     else:
         return HttpResponse(
-            json.dumps({
-                "html": [["#products-inline", result]],
-            }), content_type='application/json')
+            json.dumps(
+                {
+                    "html": [["#products-inline", result]],
+                }
+            ),
+            content_type="application/json",
+        )

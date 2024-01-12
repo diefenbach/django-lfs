@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class LfsExportAppConfig(AppConfig):
-    name = 'lfs.export'
+    name = "lfs.export"

@@ -5,6 +5,5 @@ from django.shortcuts import render
 
 @permission_required("core.manage_shop")
 def dashboard(request, template_name="manage/dashboard.html"):
-    """
-    """
+    """ """
     return render(request, template_name, {})

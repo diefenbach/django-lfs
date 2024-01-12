@@ -15,13 +15,12 @@ from lfs.order.settings import CLOSED
 
 
 class RatingMailTestCase(TestCase):
-    """
-    """
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    """ """
+
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         self.p1 = Product.objects.create(name="Product 1", slug="product-1", active=True)
 
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
@@ -34,8 +33,7 @@ class RatingMailTestCase(TestCase):
         self.oi1 = OrderItem.objects.create(order=self.o, product_amount=1, product=self.p1)
 
     def test_get_orders(self):
-        """
-        """
+        """ """
         # First there is no closed order
         orders = lfs.marketing.utils.get_orders()
         self.assertEqual(len(orders), 0)
@@ -59,30 +57,27 @@ class RatingMailTestCase(TestCase):
 
 
 class TopsellerTestCase(TestCase):
-    """Tests the Topseller model
-    """
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    """Tests the Topseller model"""
+
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         self.p1 = Product.objects.create(name="Product 1", slug="product-1", active=True)
         self.t1 = Topseller.objects.create(product=self.p1)
 
     def test_defaults(self):
-        """
-        """
+        """ """
         self.assertEqual(self.t1.position, 1)
 
 
 class TopsellerUtilsTestCase(TestCase):
-    """Tests the utils of the lfs.marketing
-    """
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    """Tests the utils of the lfs.marketing"""
+
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         self.p1 = Product.objects.create(name="Product 1", slug="product-1", active=True)
         self.p2 = Product.objects.create(name="Product 2", slug="product-2", active=True)
         self.p3 = Product.objects.create(name="Product 3", slug="product-3", active=True)
@@ -118,8 +113,7 @@ class TopsellerUtilsTestCase(TestCase):
         calculate_product_sales()
 
     def test_topseller_1(self):
-        """Tests general topsellers.
-        """
+        """Tests general topsellers."""
         ts = lfs.marketing.utils.get_topseller(2)
 
         self.assertEqual(len(ts), 2)
@@ -128,8 +122,7 @@ class TopsellerUtilsTestCase(TestCase):
         self.assertEqual(ts[1], self.p3)
 
     def test_topseller_2(self):
-        """Tests general topseller with explicitly selected products.
-        """
+        """Tests general topseller with explicitly selected products."""
         # Explicit topseller
         self.p5 = Product.objects.create(name="Product 5", slug="product-5", active=True)
         t5 = Topseller.objects.create(product=self.p5, position=1)
@@ -184,8 +177,7 @@ class TopsellerUtilsTestCase(TestCase):
         self.assertEqual(ts[1], self.p3)
 
     def test_topseller_for_category_1(self):
-        """Tests topseller for specific categories.
-        """
+        """Tests topseller for specific categories."""
         # Tests the top level category
         ts = lfs.marketing.utils.get_topseller_for_category(self.c1, limit=2)
         self.assertEqual(len(ts), 2)

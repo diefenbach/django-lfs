@@ -16,38 +16,37 @@ from lfs.core.utils import LazyEncoder
 
 
 @permission_required("core.manage_shop")
-def manage_related_products(request, product_id,
-                            template_name="manage/product/related_products.html"):
-    """
-    """
+def manage_related_products(request, product_id, template_name="manage/product/related_products.html"):
+    """ """
     product = Product.objects.get(pk=product_id)
     inline = manage_related_products_inline(request, product_id, as_string=True)
 
     # amount options
     amount_options = []
     for value in (10, 25, 50, 100):
-        amount_options.append({
-            "value": value,
-            "selected": value == request.session.get("related-products-amount")
-        })
+        amount_options.append({"value": value, "selected": value == request.session.get("related-products-amount")})
 
-    return render_to_string(template_name, request=request, context={
-        "product": product,
-        "related_products_inline": inline,
-        "amount_options": amount_options,
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "product": product,
+            "related_products_inline": inline,
+            "amount_options": amount_options,
+        },
+    )
 
 
 @permission_required("core.manage_shop")
-def manage_related_products_inline(request, product_id, as_string=False,
-                                   template_name="manage/product/related_products_inline.html"):
-    """View which shows all related products for the product with the passed id.
-    """
+def manage_related_products_inline(
+    request, product_id, as_string=False, template_name="manage/product/related_products_inline.html"
+):
+    """View which shows all related products for the product with the passed id."""
     product = Product.objects.get(pk=product_id)
     related_products = product.related_products.all()
     related_products_ids = [p.id for p in related_products]
 
-    r = request.POST if request.method == 'POST' else request.GET
+    r = request.POST if request.method == "POST" else request.GET
     s = request.session
 
     # If we get the parameter ``keep-filters`` or ``page`` we take the
@@ -73,16 +72,15 @@ def manage_related_products_inline(request, product_id, as_string=False,
     s["related_products_category_filter"] = category_filter
 
     try:
-        s["related-products-amount"] = int(r.get("related-products-amount",
-                                           s.get("related-products-amount")))
+        s["related-products-amount"] = int(r.get("related-products-amount", s.get("related-products-amount")))
     except TypeError:
         s["related-products-amount"] = 25
 
     filters = Q()
     if filter_:
-        filters &= (Q(name__icontains=filter_) | Q(sku__icontains=filter_))
-        filters |= (Q(sub_type=VARIANT) & Q(active_sku=False) & Q(parent__sku__icontains=filter_))
-        filters |= (Q(sub_type=VARIANT) & Q(active_name=False) & Q(parent__name__icontains=filter_))
+        filters &= Q(name__icontains=filter_) | Q(sku__icontains=filter_)
+        filters |= Q(sub_type=VARIANT) & Q(active_sku=False) & Q(parent__sku__icontains=filter_)
+        filters |= Q(sub_type=VARIANT) & Q(active_name=False) & Q(parent__name__icontains=filter_)
 
     if category_filter:
         if category_filter == "None":
@@ -105,41 +103,46 @@ def manage_related_products_inline(request, product_id, as_string=False,
     except EmptyPage:
         page = 0
 
-    result = render_to_string(template_name, request=request, context={
-        "product": product,
-        "related_products": related_products,
-        "total": total,
-        "page": page,
-        "paginator": paginator,
-        "filter": filter_
-    })
+    result = render_to_string(
+        template_name,
+        request=request,
+        context={
+            "product": product,
+            "related_products": related_products,
+            "total": total,
+            "page": page,
+            "paginator": paginator,
+            "filter": filter_,
+        },
+    )
 
     if as_string:
         return result
     else:
         return HttpResponse(
-            json.dumps({
-                "html": [["#related-products-inline", result]],
-            }), content_type='application/json')
+            json.dumps(
+                {
+                    "html": [["#related-products-inline", result]],
+                }
+            ),
+            content_type="application/json",
+        )
 
 
 # Actions
 @permission_required("core.manage_shop")
 def load_tab(request, product_id):
-    """
-    """
+    """ """
     related_products = manage_related_products(request, product_id)
     return HttpResponse(related_products)
 
 
 @permission_required("core.manage_shop")
 def add_related_products(request, product_id):
-    """Adds passed related products (by request body) to product with passed id.
-    """
+    """Adds passed related products (by request body) to product with passed id."""
     parent_product = Product.objects.get(pk=product_id)
 
     for temp_id in request.POST.keys():
-
         if temp_id.startswith("product") is False:
             continue
 
@@ -152,22 +155,17 @@ def add_related_products(request, product_id):
 
     html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
 
-    result = json.dumps({
-        "html": html,
-        "message": _(u"Related products have been added.")
-    }, cls=LazyEncoder)
+    result = json.dumps({"html": html, "message": _("Related products have been added.")}, cls=LazyEncoder)
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
 def remove_related_products(request, product_id):
-    """Removes passed related products from product with passed id.
-    """
+    """Removes passed related products from product with passed id."""
     parent_product = Product.objects.get(pk=product_id)
 
     for temp_id in request.POST.keys():
-
         if temp_id.startswith("product") is False:
             continue
 
@@ -180,18 +178,14 @@ def remove_related_products(request, product_id):
 
     html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
 
-    result = json.dumps({
-        "html": html,
-        "message": _(u"Related products have been removed.")
-    }, cls=LazyEncoder)
+    result = json.dumps({"html": html, "message": _("Related products have been removed.")}, cls=LazyEncoder)
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
 def update_related_products(request, product_id):
-    """Updates related products.
-    """
+    """Updates related products."""
     product = Product.objects.get(pk=product_id)
     if request.POST.get("active_related_products"):
         product.active_related_products = True
@@ -201,9 +195,6 @@ def update_related_products(request, product_id):
 
     html = [["#related-products-inline", manage_related_products_inline(request, product_id, as_string=True)]]
 
-    result = json.dumps({
-        "html": html,
-        "message": _(u"Related products have been updated.")
-    }, cls=LazyEncoder)
+    result = json.dumps({"html": html, "message": _("Related products have been updated.")}, cls=LazyEncoder)
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")

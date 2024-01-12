@@ -55,13 +55,12 @@ from lfs.tests.utils import RequestFactory
 
 
 class PriceFilterTestCase(TestCase):
-    """
-    """
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    """ """
+
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         self.p1 = Product.objects.create(slug="product-1", price=5, active=True)
         self.p2 = Product.objects.create(slug="product-2", price=3, active=True)
         self.p3 = Product.objects.create(slug="product-3", price=1, active=True)
@@ -71,8 +70,7 @@ class PriceFilterTestCase(TestCase):
         self.c1.save()
 
     def test_get_price_filter_1(self):
-        """
-        """
+        """ """
         result = lfs.catalog.utils.get_price_filters(self.c1, [], None, [])
         self.assertEqual(result["disabled"], False)
         self.assertEqual(result["show_reset"], False)
@@ -81,15 +79,14 @@ class PriceFilterTestCase(TestCase):
 
 
 class ManufacturerFilterTestCase(TestCase):
-    """
-    """
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    """ """
+
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
-        """
-        """
-        self.m1 = Manufacturer.objects.create(name='M1', slug='m1')
-        self.m2 = Manufacturer.objects.create(name='M2', slug='m2')
+        """ """
+        self.m1 = Manufacturer.objects.create(name="M1", slug="m1")
+        self.m2 = Manufacturer.objects.create(name="M2", slug="m2")
 
         self.p1 = Product.objects.create(slug="product-1", price=5, active=True, manufacturer=self.m1)
         self.p2 = Product.objects.create(slug="product-2", price=3, active=True, manufacturer=self.m2)
@@ -100,22 +97,20 @@ class ManufacturerFilterTestCase(TestCase):
         self.c1.save()
 
     def test_get_manufacturer_filter_1(self):
-        """
-        """
+        """ """
         result = lfs.catalog.utils.get_manufacturer_filters(self.c1, [], None, [])
         self.assertEqual(result["show_reset"], False)
-        self.assertFalse(result["items"][0]['selected'])
+        self.assertFalse(result["items"][0]["selected"])
         self.assertEqual(len(result["items"]), 2)
 
 
 class PropertiesTestCase(TestCase):
-    """
-    """
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    """ """
+
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=5, active=True)
         self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=3, active=True)
         self.p3 = Product.objects.create(name="Product 3", slug="product-3", price=1, active=True)
@@ -129,17 +124,19 @@ class PropertiesTestCase(TestCase):
         self.pg.save()
 
         self.pp1 = Property.objects.create(name="Size", type=PROPERTY_TEXT_FIELD)
-        self.ppv11 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp1, property_group=self.pg, value="S", type=PROPERTY_VALUE_TYPE_FILTER)
-        self.ppv12 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp1, property_group=self.pg, value="M", type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv11 = ProductPropertyValue.objects.create(
+            product=self.p1, property=self.pp1, property_group=self.pg, value="S", type=PROPERTY_VALUE_TYPE_FILTER
+        )
+        self.ppv12 = ProductPropertyValue.objects.create(
+            product=self.p2, property=self.pp1, property_group=self.pg, value="M", type=PROPERTY_VALUE_TYPE_FILTER
+        )
 
         # local property for product 3
         self.pp3_local = Property.objects.create(name="Size", type=PROPERTY_TEXT_FIELD, local=True, filterable=False)
-        self.pp3_local_option = PropertyOption.objects.create(id="3", name='S', property=self.pp3_local, position=1)
-        self.ppvlocal3 = ProductPropertyValue.objects.create(product=self.p3,
-                                                             property=self.pp3_local,
-                                                             property_group=None,
-                                                             value="S",
-                                                             type=PROPERTY_SELECT_FIELD)
+        self.pp3_local_option = PropertyOption.objects.create(id="3", name="S", property=self.pp3_local, position=1)
+        self.ppvlocal3 = ProductPropertyValue.objects.create(
+            product=self.p3, property=self.pp3_local, property_group=None, value="S", type=PROPERTY_SELECT_FIELD
+        )
         product_property = ProductsPropertiesRelation(product=self.p3, property=self.pp3_local, position=1)
         product_property.save()
 
@@ -147,13 +144,21 @@ class PropertiesTestCase(TestCase):
         self.pp2 = Property.objects.create(name="Color", type=PROPERTY_SELECT_FIELD)
         self.po1 = PropertyOption.objects.create(id="1", property=self.pp2, name="Red", position=1)
         self.po2 = PropertyOption.objects.create(id="2", property=self.pp2, name="Blue", position=2)
-        self.ppv21 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp2, property_group=self.pg, value="1", type=PROPERTY_VALUE_TYPE_FILTER)
-        self.ppv22 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp2, property_group=self.pg, value="2", type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv21 = ProductPropertyValue.objects.create(
+            product=self.p1, property=self.pp2, property_group=self.pg, value="1", type=PROPERTY_VALUE_TYPE_FILTER
+        )
+        self.ppv22 = ProductPropertyValue.objects.create(
+            product=self.p2, property=self.pp2, property_group=self.pg, value="2", type=PROPERTY_VALUE_TYPE_FILTER
+        )
 
         # A property with floats
         self.pp3 = Property.objects.create(name="Length", type=PROPERTY_NUMBER_FIELD)
-        self.ppv31 = ProductPropertyValue.objects.create(product=self.p1, property=self.pp3, property_group=self.pg, value=10.0, type=PROPERTY_VALUE_TYPE_FILTER)
-        self.ppv32 = ProductPropertyValue.objects.create(product=self.p2, property=self.pp3, property_group=self.pg, value=20.0, type=PROPERTY_VALUE_TYPE_FILTER)
+        self.ppv31 = ProductPropertyValue.objects.create(
+            product=self.p1, property=self.pp3, property_group=self.pg, value=10.0, type=PROPERTY_VALUE_TYPE_FILTER
+        )
+        self.ppv32 = ProductPropertyValue.objects.create(
+            product=self.p2, property=self.pp3, property_group=self.pg, value=20.0, type=PROPERTY_VALUE_TYPE_FILTER
+        )
 
         # there is no way to have ProductPropertyValue for the product if product is not bound to any group that property belongs to
         # unless it is a local property that has no property groups
@@ -165,8 +170,7 @@ class PropertiesTestCase(TestCase):
         # self.gpr3 = GroupsPropertiesRelation.objects.create(group=self.pg, property=self.pp3)
 
     def test_add_product_to_property_group(self):
-        """Tests that a product can be added to a property group only one time.
-        """
+        """Tests that a product can be added to a property group only one time."""
         # Note p1 is already within group pg (see setUp)
         pids = [p.id for p in self.pg.products.all()]
         self.assertEqual(pids, [self.p1.id, self.p2.id])
@@ -179,8 +183,7 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(pids, [self.p1.id, self.p2.id])
 
     def test_remove_product_from_group(self):
-        """Tests the remove of a product from a property group.
-        """
+        """Tests the remove of a product from a property group."""
         # First we add another PropertyGroup
         self.pg2 = PropertyGroup.objects.create(name="Clothes")
 
@@ -193,12 +196,15 @@ class PropertiesTestCase(TestCase):
         GroupsPropertiesRelation.objects.create(group=self.pg2, property=self.pp3)
 
         # And some values
-        ProductPropertyValue.objects.create(product=self.p1, property=self.pp3, property_group=self.pg2,
-                                            value="31", type=PROPERTY_VALUE_TYPE_FILTER)
-        ProductPropertyValue.objects.create(product=self.p2, property=self.pp3, property_group=self.pg2,
-                                            value="32", type=PROPERTY_VALUE_TYPE_FILTER)
-        ProductPropertyValue.objects.create(product=self.p3, property=self.pp3, property_group=self.pg2,
-                                            value="33", type=PROPERTY_VALUE_TYPE_FILTER)
+        ProductPropertyValue.objects.create(
+            product=self.p1, property=self.pp3, property_group=self.pg2, value="31", type=PROPERTY_VALUE_TYPE_FILTER
+        )
+        ProductPropertyValue.objects.create(
+            product=self.p2, property=self.pp3, property_group=self.pg2, value="32", type=PROPERTY_VALUE_TYPE_FILTER
+        )
+        ProductPropertyValue.objects.create(
+            product=self.p3, property=self.pp3, property_group=self.pg2, value="33", type=PROPERTY_VALUE_TYPE_FILTER
+        )
 
         ppvs = ProductPropertyValue.objects.filter(product=self.p1, property_group=self.pg2)
         self.assertEqual(len(ppvs), 1)
@@ -242,8 +248,7 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(len(ppvs), 1)
 
     def test_delete_property_group(self):
-        """Tests the deletion of a whole propery group.
-        """
+        """Tests the deletion of a whole propery group."""
         ppvs = ProductPropertyValue.objects.filter(product=self.p1, property_group=self.pg)
         self.assertEqual(len(ppvs), 3)
 
@@ -284,8 +289,13 @@ class PropertiesTestCase(TestCase):
 
         # All ProductPropertyValues which have selected this option should also
         # be deleted, in this case product p1 and property pp2
-        self.assertRaises(ProductPropertyValue.DoesNotExist,
-                          ProductPropertyValue.objects.get, product=self.p1, property=self.pp2, property_group=self.pg)
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist,
+            ProductPropertyValue.objects.get,
+            product=self.p1,
+            property=self.pp2,
+            property_group=self.pg,
+        )
 
         # But all ProductPropertyValues with other options of the property
         # should still be there
@@ -308,12 +318,16 @@ class PropertiesTestCase(TestCase):
 
         # At last we also delete the other option
         self.po2.delete()
-        self.assertRaises(ProductPropertyValue.DoesNotExist,
-                          ProductPropertyValue.objects.get, product=self.p2, property=self.pp2, property_group=self.pg)
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist,
+            ProductPropertyValue.objects.get,
+            product=self.p2,
+            property=self.pp2,
+            property_group=self.pg,
+        )
 
     def test_change_property_type(self):
-        """Tests the type changing of a property.
-        """
+        """Tests the type changing of a property."""
         # At the beginning product 1,2 have values for property pp1 ...
         pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp1, property_group=self.pg)
         self.assertEqual(pv.value, "S")
@@ -332,10 +346,20 @@ class PropertiesTestCase(TestCase):
         property_type_changed.send(self.pp1)
 
         # The values for the products should also be deleted
-        self.assertRaises(ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get,
-                          product=self.p1, property=self.pp1, property_group=self.pg)
-        self.assertRaises(ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get,
-                          product=self.p2, property=self.pp1, property_group=self.pg)
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist,
+            ProductPropertyValue.objects.get,
+            product=self.p1,
+            property=self.pp1,
+            property_group=self.pg,
+        )
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist,
+            ProductPropertyValue.objects.get,
+            product=self.p2,
+            property=self.pp1,
+            property_group=self.pg,
+        )
 
         # But all other values for this product should still be there of course
         pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2, property_group=self.pg)
@@ -350,14 +374,23 @@ class PropertiesTestCase(TestCase):
         # Send property changed
         property_type_changed.send(self.pp2)
 
-        self.assertRaises(ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get,
-                          product=self.p1, property=self.pp2, property_group=self.pg)
-        self.assertRaises(ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get,
-                          product=self.p2, property=self.pp2, property_group=self.pg)
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist,
+            ProductPropertyValue.objects.get,
+            product=self.p1,
+            property=self.pp2,
+            property_group=self.pg,
+        )
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist,
+            ProductPropertyValue.objects.get,
+            product=self.p2,
+            property=self.pp2,
+            property_group=self.pg,
+        )
 
     def test_remove_property(self):
-        """Tests the remove of a property from a group.
-        """
+        """Tests the remove of a property from a group."""
         # At the beginning product 1,2,3 have values for property pp1 ...
         pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp1, property_group=self.pg)
         self.assertEqual(pv.value, "S")
@@ -379,10 +412,20 @@ class PropertiesTestCase(TestCase):
         self.gpr1.delete()
 
         # The values for the products 1 and 2 should be deleted
-        self.assertRaises(ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get,
-                          product=self.p1, property=self.pp1, property_group=self.pg)
-        self.assertRaises(ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get,
-                          product=self.p2, property=self.pp1, property_group=self.pg)
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist,
+            ProductPropertyValue.objects.get,
+            product=self.p1,
+            property=self.pp1,
+            property_group=self.pg,
+        )
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist,
+            ProductPropertyValue.objects.get,
+            product=self.p2,
+            property=self.pp1,
+            property_group=self.pg,
+        )
 
         # The value for product 3 is still there as this is local property
         pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp3_local, property_group=None)
@@ -399,10 +442,12 @@ class PropertiesTestCase(TestCase):
         self.gpr2.delete()
 
         # The values for the products 1 and 2 should be deleted
-        self.assertRaises(ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get,
-                          product=self.p1, property=self.pp2)
-        self.assertRaises(ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get,
-                          product=self.p2, property=self.pp2)
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get, product=self.p1, property=self.pp2
+        )
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get, product=self.p2, property=self.pp2
+        )
 
         # The value for product 3 is still there as this is local property
         pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp3_local, property_group=None)
@@ -432,10 +477,12 @@ class PropertiesTestCase(TestCase):
         self.pp1.delete()
 
         # The values for the products should also be deleted
-        self.assertRaises(ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get,
-                          product=self.p1, property=self.pp1)
-        self.assertRaises(ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get,
-                          product=self.p2, property=self.pp1)
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get, product=self.p1, property=self.pp1
+        )
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get, product=self.p2, property=self.pp1
+        )
 
         # But all other values for this product should still be there of course
         pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2)
@@ -449,14 +496,15 @@ class PropertiesTestCase(TestCase):
 
         # At least we delete the other property, too.
         self.pp2.delete()
-        self.assertRaises(ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get,
-                          product=self.p1, property=self.pp2)
-        self.assertRaises(ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get,
-                          product=self.p2, property=self.pp2)
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get, product=self.p1, property=self.pp2
+        )
+        self.assertRaises(
+            ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get, product=self.p2, property=self.pp2
+        )
 
     def test_groupproperties(self):
-        """Tests the relationship between properties and groups.
-        """
+        """Tests the relationship between properties and groups."""
         # Properties of groups
         property_ids = [p.id for p in self.pg.properties.order_by("groupspropertiesrelation")]
         self.assertEqual(property_ids, [self.pp1.id, self.pp2.id])
@@ -470,57 +518,62 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(group_ids, [self.pg.id])
 
     def test_get_properties_groups(self):
-        """
-        """
+        """ """
         pgs = self.c1.get_property_groups()
         pg_ids = [pg.id for pg in pgs]
         self.assertEqual(pg_ids, [self.pg.id])
 
     def test_set_filter_1(self):
-        """Tests the setting of a filter via request/view
-        """
-        url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug,
-                                                        "property_group_id": self.pg.pk,
-                                                        "property_id": 1,
-                                                        "value": "Red"})
+        """Tests the setting of a filter via request/view"""
+        url = reverse(
+            "lfs_set_product_filter",
+            kwargs={"category_slug": self.c1.slug, "property_group_id": self.pg.pk, "property_id": 1, "value": "Red"},
+        )
         self.client.get(url)
 
-        key = '{0}_{1}'.format(self.pg.pk, 1)
+        key = "{0}_{1}".format(self.pg.pk, 1)
         pf = self.client.session.get("product-filter", {}).get("select-filter")
-        self.assertEqual(pf[key]['value'], "Red")
+        self.assertEqual(pf[key]["value"], "Red")
 
-        url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug,
-                                                        "property_group_id": self.pg.pk,
-                                                        "property_id": 2,
-                                                        "value": "M"})
+        url = reverse(
+            "lfs_set_product_filter",
+            kwargs={"category_slug": self.c1.slug, "property_group_id": self.pg.pk, "property_id": 2, "value": "M"},
+        )
         self.client.get(url)
-        key_2 = '{0}_{1}'.format(self.pg.pk, 2)
+        key_2 = "{0}_{1}".format(self.pg.pk, 2)
         pf = self.client.session.get("product-filter", {}).get("select-filter")
-        self.assertEqual(pf[key]['value'], "Red")
-        self.assertEqual(pf[key_2]['value'], "M")
+        self.assertEqual(pf[key]["value"], "Red")
+        self.assertEqual(pf[key_2]["value"], "M")
 
     def test_set_filter_2(self):
-        """Tests the setting of a filter with min/max via request/view
-        """
+        """Tests the setting of a filter with min/max via request/view"""
         url = reverse("lfs_set_product_number_filter")
-        self.client.post(url, {"category_slug": self.c1.slug, "property_group_id": self.pg.pk,
-                               "property_id": 1, "min": "10", "max": "20"})
+        self.client.post(
+            url,
+            {
+                "category_slug": self.c1.slug,
+                "property_group_id": self.pg.pk,
+                "property_id": 1,
+                "min": "10",
+                "max": "20",
+            },
+        )
 
-        key = '{0}_{1}'.format(self.pg.pk, 1)
+        key = "{0}_{1}".format(self.pg.pk, 1)
         pf = self.client.session.get("product-filter", {}).get("number-filter")
-        self.assertEqual(pf[key]['value'], (10.0, 20.0))
+        self.assertEqual(pf[key]["value"], (10.0, 20.0))
 
-        url = reverse("lfs_set_product_filter", kwargs={"category_slug": self.c1.slug,
-                                                        "property_group_id": self.pg.pk,
-                                                        "property_id": 2,
-                                                        "value": "M"})
+        url = reverse(
+            "lfs_set_product_filter",
+            kwargs={"category_slug": self.c1.slug, "property_group_id": self.pg.pk, "property_id": 2, "value": "M"},
+        )
         self.client.get(url)
 
-        key_2 = '{0}_{1}'.format(self.pg.pk, 2)
+        key_2 = "{0}_{1}".format(self.pg.pk, 2)
         nf = self.client.session.get("product-filter", {}).get("number-filter")
         sf = self.client.session.get("product-filter", {}).get("select-filter")
-        self.assertEqual(nf[key]['value'], (10.0, 20.0))
-        self.assertEqual(sf[key_2]['value'], "M")
+        self.assertEqual(nf[key]["value"], (10.0, 20.0))
+        self.assertEqual(sf[key_2]["value"], "M")
 
     # TODO implement this test case
     # def test_get_filter(self):
@@ -533,14 +586,11 @@ class PropertiesTestCase(TestCase):
     #     self.assertEqual(1, 0)
 
     def test_filter_products(self):
-        """Tests various scenarious of filtering products.
-        """
+        """Tests various scenarious of filtering products."""
         sorting = "price"
 
-        key = '{0}_{1}'.format(self.pg.pk, self.pp1.pk)
-        value_dict = {'value': "S",
-                      'property_id': self.pp1.pk,
-                      'property_group_id': self.pg.pk}
+        key = "{0}_{1}".format(self.pg.pk, self.pp1.pk)
+        value_dict = {"value": "S", "property_id": self.pp1.pk, "property_group_id": self.pg.pk}
 
         filters = {"select-filter": {key: value_dict}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
@@ -548,18 +598,16 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(products[0].id, self.p1.id)
 
         # test local property bound to product p3 - local properties are not filterable so there should be no results
-        value_dict['property_group_id'] = None
+        value_dict["property_group_id"] = None
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(len(products), 0)
 
         # add new property value to product p2 to test sorting by price
-        ppv21 = ProductPropertyValue.objects.create(product=self.p2,
-                                                    property=self.pp1,
-                                                    property_group=self.pg,
-                                                    value="S",
-                                                    type=PROPERTY_VALUE_TYPE_FILTER)
+        ppv21 = ProductPropertyValue.objects.create(
+            product=self.p2, property=self.pp1, property_group=self.pg, value="S", type=PROPERTY_VALUE_TYPE_FILTER
+        )
 
-        value_dict['property_group_id'] = self.pg.pk
+        value_dict["property_group_id"] = self.pg.pk
         sorting = "-price"
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(len(products), 2)
@@ -570,20 +618,18 @@ class PropertiesTestCase(TestCase):
         ppv21.delete()
 
         # filter for product of size "M" should get product p2
-        value_dict['value'] = "M"
+        value_dict["value"] = "M"
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p2.id)
 
-        key = '{0}_{1}'.format(self.pg.pk, self.pp2.pk)
-        value_dict = {'value': "1",
-                      'property_id': self.pp2.pk,
-                      'property_group_id': self.pg.pk}
+        key = "{0}_{1}".format(self.pg.pk, self.pp2.pk)
+        value_dict = {"value": "1", "property_id": self.pp2.pk, "property_group_id": self.pg.pk}
 
         filters = {"select-filter": {key: value_dict}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p1.id)
 
-        value_dict['value'] = "2"
+        value_dict["value"] = "2"
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p2.id)
 
@@ -596,15 +642,11 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(products[2].id, self.p1.id)
 
         # Combinations
-        key1 = '{0}_{1}'.format(self.pg.pk, self.pp1.pk)
-        key2 = '{0}_{1}'.format(self.pg.pk, self.pp2.pk)
-        value_dict_1 = {'value': "S",
-                        'property_id': self.pp1.pk,
-                        'property_group_id': self.pg.pk}
+        key1 = "{0}_{1}".format(self.pg.pk, self.pp1.pk)
+        key2 = "{0}_{1}".format(self.pg.pk, self.pp2.pk)
+        value_dict_1 = {"value": "S", "property_id": self.pp1.pk, "property_group_id": self.pg.pk}
 
-        value_dict_2 = {'value': "1",
-                        'property_id': self.pp2.pk,
-                        'property_group_id': self.pg.pk}
+        value_dict_2 = {"value": "1", "property_id": self.pp2.pk, "property_group_id": self.pg.pk}
 
         filters = {"select-filter": {key1: value_dict_1, key2: value_dict_2}}
 
@@ -615,51 +657,48 @@ class PropertiesTestCase(TestCase):
         self.assertEqual(len(products), 1)
         self.assertEqual(products[0].id, self.p1.id)
 
-        value_dict_1['value'] = "M"
-        value_dict_2['value'] = "2"
+        value_dict_1["value"] = "M"
+        value_dict_2["value"] = "2"
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(products[0].id, self.p2.id)
 
         # Doesn't exist
-        value_dict_2['value'] = "1"
+        value_dict_2["value"] = "1"
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.failIf(len(products) != 0)
 
-        value_dict_1['value'] = "S"
-        value_dict_2['value'] = "2"
+        value_dict_1["value"] = "S"
+        value_dict_2["value"] = "2"
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.failIf(len(products) != 0)
 
         # Min / Max
         sorting = "price"
-        key = '{0}_{1}'.format(self.pg.pk, self.pp1.pk)
-        value_dict = {'property_id': self.pp3.pk,
-                      'property_group_id': self.pg.pk,
-                      'value': [0, 9]}
+        key = "{0}_{1}".format(self.pg.pk, self.pp1.pk)
+        value_dict = {"property_id": self.pp3.pk, "property_group_id": self.pg.pk, "value": [0, 9]}
         filters = {"number-filter": {key: value_dict}}
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(len(products), 0)
 
-        value_dict['value'] = [10, 20]
+        value_dict["value"] = [10, 20]
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(len(products), 2)
         self.assertEqual(products[0].id, self.p2.id)
         self.assertEqual(products[1].id, self.p1.id)
 
-        value_dict['value'] = [21, 30]
+        value_dict["value"] = [21, 30]
         sorting = "price"
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
         self.assertEqual(len(products), 0)
 
 
 class PropertiesTestCaseWithoutProperties(TestCase):
-    """Test the filter methods without added properties.
-    """
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    """Test the filter methods without added properties."""
+
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=5)
         self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=3)
         self.p3 = Product.objects.create(name="Product 3", slug="product-3", price=1)
@@ -669,30 +708,28 @@ class PropertiesTestCaseWithoutProperties(TestCase):
         self.c1.save()
 
     def test_get_product_filters(self):
-        """
-        """
+        """ """
         # This tests the according SQL within get_product_filters
         f = lfs.catalog.utils.get_product_filters(self.c1, {}, None, None, None)
         self.assertEqual(f, {"select_fields": [], "number_fields": []})
 
 
 class CategoryTestCase(TestCase):
-    """Tests the Category of the lfs.catalog.
-    """
+    """Tests the Category of the lfs.catalog."""
 
-    fixtures = ['lfs_shop.xml']
+    fixtures = ["lfs_shop.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         # Create some products
         self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=5, active=True)
         self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=3, active=True)
         self.p3 = Product.objects.create(name="Product 3", slug="product-3", price=1, active=True)
 
         # Create a category hierachy
-        self.c1 = Category.objects.create(name="Category 1", slug="category-1",
-                                          short_description="Short description category 1")
+        self.c1 = Category.objects.create(
+            name="Category 1", slug="category-1", short_description="Short description category 1"
+        )
         self.c11 = Category.objects.create(name="Category 11", slug="category-11", parent=self.c1, position=10)
         self.c111 = Category.objects.create(name="Category 111", slug="category-111", parent=self.c11)
         self.c12 = Category.objects.create(name="Category 12", slug="category-12", parent=self.c1, position=20)
@@ -705,8 +742,7 @@ class CategoryTestCase(TestCase):
         self.c12.save()
 
     def test_meta_title(self):
-        """
-        """
+        """ """
         self.assertEqual(self.c1.meta_title, "<name>")
 
         self.c1.meta_title = "T1 T2 T3"
@@ -728,8 +764,7 @@ class CategoryTestCase(TestCase):
         self.assertEqual(self.c1.get_meta_title(), "Category 1")
 
     def test_meta_keywords(self):
-        """
-        """
+        """ """
         self.c1.meta_keywords = "KW1 KW2 KW3"
         self.c1.save()
         self.assertEqual(self.c1.get_meta_keywords(), "KW1 KW2 KW3")
@@ -767,8 +802,7 @@ class CategoryTestCase(TestCase):
         self.assertEqual(self.c1.get_meta_keywords(), "Short description category 1")
 
     def test_meta_description(self):
-        """
-        """
+        """ """
         self.c1.meta_description = "Meta description category 1"
         self.c1.save()
         self.assertEqual(self.c1.get_meta_description(), "Meta description category 1")
@@ -798,8 +832,7 @@ class CategoryTestCase(TestCase):
         self.assertEqual(self.c1.get_meta_description(), "Short description category 1")
 
     def test_get_products(self):
-        """
-        """
+        """ """
         product_ids = [p.id for p in self.c1.get_products()]
         self.assertEqual(len(product_ids), 0)
 
@@ -815,8 +848,7 @@ class CategoryTestCase(TestCase):
         self.assertEqual(product_ids, [self.p2.id, self.p3.id])
 
     def test_get_all_products(self):
-        """
-        """
+        """ """
         product_ids = [p.id for p in self.c1.get_all_products()]
         self.assertEqual(product_ids, [self.p1.id, self.p2.id, self.p3.id])
 
@@ -833,13 +865,12 @@ class CategoryTestCase(TestCase):
         self.assertEqual(product_ids, [self.p2.id, self.p3.id])
 
     def test_get_all_children(self):
-        """
-        """
+        """ """
         children_names = [c.name for c in self.c1.get_all_children()]
-        self.assertEqual(children_names, [u"Category 11", u"Category 111", u"Category 12"])
+        self.assertEqual(children_names, ["Category 11", "Category 111", "Category 12"])
 
         children_names = [c.name for c in self.c11.get_all_children()]
-        self.assertEqual(children_names, [u"Category 111"])
+        self.assertEqual(children_names, ["Category 111"])
 
         children_names = [c.name for c in self.c111.get_children()]
         self.assertEqual(children_names, [])
@@ -848,13 +879,12 @@ class CategoryTestCase(TestCase):
         self.assertEqual(children_names, [])
 
     def test_get_children(self):
-        """
-        """
+        """ """
         children_names = [c.name for c in self.c1.get_children()]
-        self.assertEqual(children_names, [u"Category 11", u"Category 12"])
+        self.assertEqual(children_names, ["Category 11", "Category 12"])
 
         children_names = [c.name for c in self.c11.get_children()]
-        self.assertEqual(children_names, [u"Category 111"])
+        self.assertEqual(children_names, ["Category 111"])
 
         children_names = [c.name for c in self.c111.get_children()]
         self.assertEqual(children_names, [])
@@ -863,11 +893,10 @@ class CategoryTestCase(TestCase):
         self.assertEqual(children_names, [])
 
     def test_get_format_info(self):
-        """
-        """
+        """ """
         # format informations are inherited from shop default values
         self.assertEqual(self.c1.active_formats, False)
-        self.assertEqual({'category_cols': 1, 'product_cols': 1, 'product_rows': 10}, self.c1.get_format_info())
+        self.assertEqual({"category_cols": 1, "product_cols": 1, "product_rows": 10}, self.c1.get_format_info())
 
         # Add new format informations to c1
         self.c1.category_cols = 11
@@ -876,7 +905,7 @@ class CategoryTestCase(TestCase):
         self.c1.save()
 
         # But c1 still inherits from shop as active_formats is False by default
-        self.assertEqual({'category_cols': 1, 'product_cols': 1, 'product_rows': 10}, self.c1.get_format_info())
+        self.assertEqual({"category_cols": 1, "product_cols": 1, "product_rows": 10}, self.c1.get_format_info())
 
         # Set active_formats to True
         self.c1.active_formats = True
@@ -884,11 +913,11 @@ class CategoryTestCase(TestCase):
 
         # c1 has it own formats now
         self.assertEqual(self.c1.active_formats, True)
-        self.assertEqual({'category_cols': 11, 'product_cols': 22, 'product_rows': 33}, self.c1.get_format_info())
+        self.assertEqual({"category_cols": 11, "product_cols": 22, "product_rows": 33}, self.c1.get_format_info())
 
         # c11 inherits from c1
         self.assertEqual(self.c11.active_formats, False)
-        self.assertEqual({'category_cols': 11, 'product_cols': 22, 'product_rows': 33}, self.c11.get_format_info())
+        self.assertEqual({"category_cols": 11, "product_cols": 22, "product_rows": 33}, self.c11.get_format_info())
 
         # Add new format informations
         self.c11.category_cols = 111
@@ -898,7 +927,7 @@ class CategoryTestCase(TestCase):
 
         # But c11 still inherits from c1 as active_formats is False by default
         self.assertEqual(self.c11.active_formats, False)
-        self.assertEqual({'category_cols': 11, 'product_cols': 22, 'product_rows': 33}, self.c11.get_format_info())
+        self.assertEqual({"category_cols": 11, "product_cols": 22, "product_rows": 33}, self.c11.get_format_info())
 
         # Set active_formats to True
         self.c11.active_formats = True
@@ -906,26 +935,22 @@ class CategoryTestCase(TestCase):
 
         # c11 has it own formats now
         self.assertEqual(self.c11.active_formats, True)
-        self.assertEqual({'category_cols': 111, 'product_cols': 222, 'product_rows': 333}, self.c11.get_format_info())
+        self.assertEqual({"category_cols": 111, "product_cols": 222, "product_rows": 333}, self.c11.get_format_info())
 
     def test_get_absolute_url(self):
-        """
-        """
+        """ """
         self.assertEqual(self.c1.get_absolute_url(), "/category-%s/" % self.c1.slug)
 
     def test_unicode(self):
-        """
-        """
+        """ """
         self.assertEqual(self.c1.__str__(), "%s (%s)" % (self.c1.name, self.c1.slug))
 
     def test_get_content_type(self):
-        """
-        """
-        self.assertEqual(self.c1.content_type, u"category")
+        """ """
+        self.assertEqual(self.c1.content_type, "category")
 
     def test_get_image(self):
-        """
-        """
+        """ """
         self.assertEqual(self.c1.get_image(), None)
         self.assertEqual(self.c11.get_image(), None)
         self.assertEqual(self.c12.get_image(), None)
@@ -975,8 +1000,7 @@ class CategoryTestCase(TestCase):
         self.assertEqual(self.c111.get_image().title, "Image 3")
 
     def test_get_parents(self):
-        """
-        """
+        """ """
         self.assertEqual(self.c1.get_parents(), [])
 
         parent_names = [c.name for c in self.c11.get_parents()]
@@ -989,8 +1013,7 @@ class CategoryTestCase(TestCase):
         self.assertEqual(parent_names, ["Category 11", "Category 1"])
 
     def test_get_static_block(self):
-        """
-        """
+        """ """
         result = self.c1.get_static_block()
         self.assertEqual(result, None)
 
@@ -1018,8 +1041,7 @@ class CategoryTestCase(TestCase):
         self.assertEqual(result, sb2)
 
     def test_get_filtered_products(self):
-        """
-        """
+        """ """
         # Sorting
         result = self.c1.get_filtered_products(filters=None, price_filter=None, sorting="name")
         product_names = [p.name for p in result]
@@ -1070,23 +1092,24 @@ class CategoryTestCase(TestCase):
         # Tested thoroughly within PropertiesTestCase.test_filter_products
 
     def test_get_product_filters2(self):
-        """ Test empty category. This test is written for issue #163 but strangely it was passing even without
-            fix in place. Possibly because different bahaviour between databases.
+        """Test empty category. This test is written for issue #163 but strangely it was passing even without
+        fix in place. Possibly because different bahaviour between databases.
         """
         self.c12.products.clear()
         lfs.catalog.utils.get_product_filters(self.c12, {}, None, None, None)
 
 
 class ViewsTestCase(TestCase):
-    """Tests the views of the lfs.catalog.
-    """
-    fixtures = ['lfs_shop.xml']
+    """Tests the views of the lfs.catalog."""
+
+    fixtures = ["lfs_shop.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         self.c1 = Category.objects.create(name="Category 1", slug="category-1")
-        self.p1 = Product.objects.create(pk=1, name="Product 1", slug="product-1", sub_type=PRODUCT_WITH_VARIANTS, active=True)
+        self.p1 = Product.objects.create(
+            pk=1, name="Product 1", slug="product-1", sub_type=PRODUCT_WITH_VARIANTS, active=True
+        )
 
         # Create a property with two options
         color = Property.objects.create(pk=1, name="Color", add_price=True, price=10.0)
@@ -1099,23 +1122,27 @@ class ViewsTestCase(TestCase):
         self.pg.save()
 
         # Add a variant with color = red
-        self.v1 = Product.objects.create(pk=2, name="Variant 1", slug="variant-1", sub_type=VARIANT, parent=self.p1, active=True)
-        ProductPropertyValue.objects.create(product=self.v1, property=color, property_group=self.pg,
-                                            value=str(red.id), type=PROPERTY_VALUE_TYPE_FILTER)
+        self.v1 = Product.objects.create(
+            pk=2, name="Variant 1", slug="variant-1", sub_type=VARIANT, parent=self.p1, active=True
+        )
+        ProductPropertyValue.objects.create(
+            product=self.v1, property=color, property_group=self.pg, value=str(red.id), type=PROPERTY_VALUE_TYPE_FILTER
+        )
 
         # Create a test file
-        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"), 'rb')
+        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"), "rb")
         cf_1 = ContentFile(fh.read())
 
         self.file = File.objects.create(pk=1, title="Test File", slug="test-file", file=None)
         self.file.file.save("Laminat01.jpg", cf_1)
 
-        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+        locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
 
     def test_file(self):
         request = RequestFactory().get("/")
 
         from lfs.catalog.views import file_download
+
         result = file_download(request, file_id=1)
 
         self.assertEqual(result.status_code, 200)
@@ -1168,6 +1195,7 @@ class ViewsTestCase(TestCase):
 
     def test_calculate_packing(self):
         from lfs.catalog.views import calculate_packing
+
         request = RequestFactory().post("/")
         request.session = SessionStore()
         request.user = AnonymousUser()
@@ -1186,6 +1214,7 @@ class ViewsTestCase(TestCase):
 
     def test_calculate_price(self):
         from lfs.catalog.views import calculate_price
+
         request = RequestFactory().post("/", {"property_1": "1", "property_dont_exist": "99"})
 
         result = calculate_price(request, id=1)
@@ -1223,38 +1252,49 @@ class ViewsTestCase(TestCase):
 
         result = set_filter(request, "category-1", property_group_id=self.pg.pk, property_id=1, value="value-1")
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(request.session["product-filter"]["select-filter"]['{0}_1'.format(self.pg.pk)]['value'], "value-1")
+        self.assertEqual(
+            request.session["product-filter"]["select-filter"]["{0}_1".format(self.pg.pk)]["value"], "value-1"
+        )
 
-        request = RequestFactory().post("/", {"product_id": "1", "min": 0, "max": 999, "property_id": 1,
-                                              "property_group_id": self.pg.pk,
-                                              "category_slug": "category-1"})
+        request = RequestFactory().post(
+            "/",
+            {
+                "product_id": "1",
+                "min": 0,
+                "max": 999,
+                "property_id": 1,
+                "property_group_id": self.pg.pk,
+                "category_slug": "category-1",
+            },
+        )
         request.session = SessionStore()
 
         result = set_number_filter(request)
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(request.session["product-filter"]["number-filter"]["{0}_1".format(self.pg.pk)]['value'], (0.0, 999.0))
+        self.assertEqual(
+            request.session["product-filter"]["number-filter"]["{0}_1".format(self.pg.pk)]["value"], (0.0, 999.0)
+        )
 
     def test_set_sorting(self):
-        """Tests setting and deleting of the sorting session.
-        """
+        """Tests setting and deleting of the sorting session."""
         url = reverse("lfs_catalog_set_sorting")
 
         # At the beginning there is no sorting stored
         self.failIf("sorting" in self.client.session)
 
         # Empty string shouldn't raise an error
-        self.client.post(url, {'sorting': ''})
+        self.client.post(url, {"sorting": ""})
 
         # Post a sorting
-        self.client.post(url, {'sorting': '-name'})
+        self.client.post(url, {"sorting": "-name"})
         self.assertEqual(self.client.session.get("sorting"), "-name")
 
         # Post another sorting
-        self.client.post(url, {'sorting': '+price'})
+        self.client.post(url, {"sorting": "+price"})
         self.assertEqual(self.client.session.get("sorting"), "+price")
 
         # Empty string should delete session sorting key
-        self.client.post(url, {'sorting': ''})
+        self.client.post(url, {"sorting": ""})
         self.failIf("sorting" in self.client.session)
 
     def test_category_view(self):
@@ -1262,7 +1302,7 @@ class ViewsTestCase(TestCase):
         category view of a category.
         """
         url = reverse("lfs_category", kwargs={"slug": "category-1"})
-        response = self.client.get(url, {'sorting': ''})
+        response = self.client.get(url, {"sorting": ""})
 
         templates = [t.name for t in response.templates]
 
@@ -1274,7 +1314,7 @@ class ViewsTestCase(TestCase):
         self.c1.template = 1
         self.c1.save()
 
-        response = self.client.get(url, {'sorting': ''})
+        response = self.client.get(url, {"sorting": ""})
         templates = [t.name for t in response.templates]
 
         # Now the categories template should be used
@@ -1312,19 +1352,17 @@ class ViewsTestCase(TestCase):
 
 
 class DeliveryTimeTestCase(TestCase):
-    """Tests attributes and methods of DeliveryTime objects.
-    """
+    """Tests attributes and methods of DeliveryTime objects."""
+
     def setUp(self):
-        """
-        """
+        """ """
         self.dm1 = DeliveryTime.objects.create(min=1.0, max=3.0, unit=DELIVERY_TIME_UNIT_HOURS)
         self.dm2 = DeliveryTime.objects.create(min=1.0, max=3.0, unit=DELIVERY_TIME_UNIT_DAYS)
         self.dm3 = DeliveryTime.objects.create(min=1.0, max=3.0, unit=DELIVERY_TIME_UNIT_WEEKS)
         self.dm4 = DeliveryTime.objects.create(min=1.0, max=3.0, unit=DELIVERY_TIME_UNIT_MONTHS)
 
     def test_as_hours(self):
-        """
-        """
+        """ """
         self.assertEqual(self.dm1.as_hours().min, 1)
         self.assertEqual(self.dm1.as_hours().max, 3)
         self.assertEqual(self.dm2.as_hours().min, 24)
@@ -1335,8 +1373,7 @@ class DeliveryTimeTestCase(TestCase):
         self.assertEqual(self.dm4.as_hours().max, 2160)
 
     def test_as_days(self):
-        """
-        """
+        """ """
         self.assertEqual(self.dm1.as_days().min, 1.0 / 24)
         self.assertEqual(self.dm1.as_days().max, 3.0 / 24)
         self.assertEqual(self.dm2.as_days().min, 1)
@@ -1347,8 +1384,7 @@ class DeliveryTimeTestCase(TestCase):
         self.assertEqual(self.dm4.as_days().max, 90)
 
     def test_as_weeks(self):
-        """
-        """
+        """ """
         self.assertEqual(self.dm1.as_weeks().min, 1.0 / (24 * 7))
         self.assertEqual(self.dm1.as_weeks().max, 3.0 / (24 * 7))
         self.assertEqual(self.dm2.as_weeks().min, 1.0 / 7)
@@ -1359,8 +1395,7 @@ class DeliveryTimeTestCase(TestCase):
         self.assertEqual(self.dm4.as_weeks().max, 12)
 
     def test_as_month(self):
-        """
-        """
+        """ """
         self.assertEqual(self.dm1.as_months().min, 0)
         self.assertEqual(self.dm1.as_months().max, 0)
         self.assertEqual(self.dm2.as_months().min, 0)
@@ -1371,8 +1406,7 @@ class DeliveryTimeTestCase(TestCase):
         self.assertEqual(self.dm4.as_months().max, 3)
 
     def test_as_reasonable_unit(self):
-        """
-        """
+        """ """
         d = DeliveryTime(min=24, max=48, unit=DELIVERY_TIME_UNIT_HOURS)
         d = d.as_reasonable_unit()
         self.assertEqual(d.min, 24)
@@ -1398,8 +1432,7 @@ class DeliveryTimeTestCase(TestCase):
         self.assertEqual(d.unit, DELIVERY_TIME_UNIT_MONTHS)
 
     def test_as_string(self):
-        """
-        """
+        """ """
         # Hour
         d = DeliveryTime(min=0, max=1, unit=DELIVERY_TIME_UNIT_HOURS)
         self.assertEqual(d.as_string(), "1 hour")
@@ -1453,8 +1486,7 @@ class DeliveryTimeTestCase(TestCase):
         self.assertEqual(d.as_string(), "2-3 months")
 
     def test_add(self):
-        """Tests the adding of delivery times.
-        """
+        """Tests the adding of delivery times."""
         # ### hours
 
         # hours + hours
@@ -1560,8 +1592,7 @@ class DeliveryTimeTestCase(TestCase):
         self.assertEqual(result.unit, DELIVERY_TIME_UNIT_MONTHS)
 
     def test_round(self):
-        """
-        """
+        """ """
         # round down
         d = DeliveryTime(min=1.1, max=2.1, unit=DELIVERY_TIME_UNIT_HOURS)
         d = d.round()
@@ -1584,8 +1615,7 @@ class DeliveryTimeTestCase(TestCase):
         self.assertEqual(d.unit, DELIVERY_TIME_UNIT_HOURS)
 
     def test_subtract_days(self):
-        """
-        """
+        """ """
         d = DeliveryTime(min=48, max=72, unit=DELIVERY_TIME_UNIT_HOURS)
         d = d.subtract_days(1)
         self.assertEqual(d.min, 24)
@@ -1612,13 +1642,12 @@ class DeliveryTimeTestCase(TestCase):
 
 
 class ProductTestCase(TestCase):
-    """Tests attributes and methods of Products
-    """
-    fixtures = ['lfs_shop.xml']
+    """Tests attributes and methods of Products"""
+
+    fixtures = ["lfs_shop.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         self.request = RequestFactory().get("/")
         self.request.session = SessionStore()
         self.request.user = AnonymousUser()
@@ -1628,13 +1657,13 @@ class ProductTestCase(TestCase):
 
         # A product with properties and variants
         self.p1 = Product.objects.create(
-            name=u"Product 1",
-            slug=u"product-1",
-            sku=u"SKU P1",
-            description=u"Description",
-            short_description=u"Short description product 1",
-            meta_description=u"Meta description product 1",
-            meta_keywords=u"Meta keywords product 1",
+            name="Product 1",
+            slug="product-1",
+            sku="SKU P1",
+            description="Description",
+            short_description="Short description product 1",
+            meta_description="Meta description product 1",
+            meta_keywords="Meta keywords product 1",
             sub_type=PRODUCT_WITH_VARIANTS,
             tax=self.t1,
             price=1.0,
@@ -1644,11 +1673,12 @@ class ProductTestCase(TestCase):
             height=2.0,
             length=3.0,
             weight=4.0,
-            active=True)
+            active=True,
+        )
 
         # Products without properties and variants
-        self.p2 = Product.objects.create(name=u"Product 2", slug=u"product-2", active=True)
-        self.p3 = Product.objects.create(name=u"Product 3", slug=u"product-3", active=True)
+        self.p2 = Product.objects.create(name="Product 2", slug="product-2", active=True)
+        self.p3 = Product.objects.create(name="Product 3", slug="product-3", active=True)
 
         # Create a size property with two options
         self.size = size = Property.objects.create(name="Size", type=PROPERTY_SELECT_FIELD, position=10)
@@ -1666,12 +1696,12 @@ class ProductTestCase(TestCase):
 
         # Add a variant with color = red, size = m
         self.v1 = Product.objects.create(
-            name=u"Variant 1",
-            slug=u"variant-1",
-            sku=u"SKU V1",
-            description=u"This is the description of variant 1",
-            meta_description=u"Meta description of variant 1",
-            meta_keywords=u"Meta keywords variant 1",
+            name="Variant 1",
+            slug="variant-1",
+            sku="SKU V1",
+            description="This is the description of variant 1",
+            meta_description="Meta description of variant 1",
+            meta_keywords="Meta keywords variant 1",
             sub_type=VARIANT,
             price=2.0,
             for_sale_price=1.5,
@@ -1683,13 +1713,23 @@ class ProductTestCase(TestCase):
             active=True,
         )
 
-        self.ppv_color_red = ProductPropertyValue.objects.create(product=self.v1, property=self.color, value=self.red.id, type=PROPERTY_VALUE_TYPE_VARIANT)
-        self.ppv_size_m = ProductPropertyValue.objects.create(product=self.v1, property=self.size, value=self.m.id, type=PROPERTY_VALUE_TYPE_VARIANT)
+        self.ppv_color_red = ProductPropertyValue.objects.create(
+            product=self.v1, property=self.color, value=self.red.id, type=PROPERTY_VALUE_TYPE_VARIANT
+        )
+        self.ppv_size_m = ProductPropertyValue.objects.create(
+            product=self.v1, property=self.size, value=self.m.id, type=PROPERTY_VALUE_TYPE_VARIANT
+        )
 
         # Add a variant with color = green, size = l
-        self.v2 = Product.objects.create(name="Variant 2", slug="variant-2", sub_type=VARIANT, parent=self.p1, active=True)
-        self.ppv_color_green = ProductPropertyValue.objects.create(product=self.v2, property=color, value=self.green.id, type=PROPERTY_VALUE_TYPE_VARIANT)
-        self.ppv_size_l = ProductPropertyValue.objects.create(product=self.v2, property=size, value=self.l.id, type=PROPERTY_VALUE_TYPE_VARIANT)
+        self.v2 = Product.objects.create(
+            name="Variant 2", slug="variant-2", sub_type=VARIANT, parent=self.p1, active=True
+        )
+        self.ppv_color_green = ProductPropertyValue.objects.create(
+            product=self.v2, property=color, value=self.green.id, type=PROPERTY_VALUE_TYPE_VARIANT
+        )
+        self.ppv_size_l = ProductPropertyValue.objects.create(
+            product=self.v2, property=size, value=self.l.id, type=PROPERTY_VALUE_TYPE_VARIANT
+        )
 
         # Add related products to p1
         self.p1.related_products.add(self.p2, self.p3)
@@ -1732,10 +1772,8 @@ class ProductTestCase(TestCase):
         self.setupAttachments()
 
     def test_defaults(self):
-        """Tests the default value after a product has been created
-        """
-        p = Product.objects.create(
-            name="Product", slug="product", sku="4711", price=42.0)
+        """Tests the default value after a product has been created"""
+        p = Product.objects.create(name="Product", slug="product", sku="4711", price=42.0)
 
         self.assertEqual(p.name, "Product")
         self.assertEqual(p.slug, "product")
@@ -1789,11 +1827,10 @@ class ProductTestCase(TestCase):
         self.assertEqual(p.active_meta_keywords, False)
 
     def test_content_type(self):
-        self.assertEqual(self.p1.content_type, u"product")
+        self.assertEqual(self.p1.content_type, "product")
 
     def test_decrease_stock_amount(self):
-        """Tests the decreasing of the stock amount
-        """
+        """Tests the decreasing of the stock amount"""
         # By default the stock amount is not managed by LFS and the stock
         # amount is not decrease when a product has been sold.
         self.p1.decrease_stock_amount(1)
@@ -1877,8 +1914,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(names, ["Product 1", "Product 2"])
 
     def test_get_category(self):
-        """
-        """
+        """ """
         # Note: p1 has category c111; p2 has c111 and c2 (s. above)
         self.assertEqual(self.p1.get_category(), self.c111)
         self.assertEqual(self.p2.get_category(), self.c111)
@@ -1893,8 +1929,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.p2.get_category(), None)
 
     def test_get_categories(self):
-        """
-        """
+        """ """
         # Get categories without parents (implicit)
         names = [c.name for c in self.p1.get_categories()]
         self.assertEqual(names, ["Category 111"])
@@ -1921,25 +1956,23 @@ class ProductTestCase(TestCase):
         self.assertEqual(names, ["Category 111", "Category 11", "Category 1", "Category 2"])
 
     def test_get_description(self):
-        """
-        """
+        """ """
         # Test product
-        self.assertEqual(self.p1.get_description(), u"Description")
+        self.assertEqual(self.p1.get_description(), "Description")
 
         # Test variant. By default the description of a variant is inherited
         # from parent product.
-        self.assertEqual(self.v1.get_description(), u"Description")
+        self.assertEqual(self.v1.get_description(), "Description")
 
         # Now we switch to active description.
         self.v1.active_description = True
         self.v1.save()
 
         # Now we get the description of the variant
-        self.assertEqual(self.v1.get_description(), u"This is the description of variant 1")
+        self.assertEqual(self.v1.get_description(), "This is the description of variant 1")
 
     def test_get_image(self):
-        """
-        """
+        """ """
         image = self.p1.get_image()
         self.assertEqual(image.title, "Image 1")
 
@@ -1967,8 +2000,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(image.title, "Image 4")
 
     def test_get_images(self):
-        """
-        """
+        """ """
         titles = [i.title for i in self.p1.get_images()]
         self.assertEqual(titles, ["Image 1", "Image 2", "Image 3"])
 
@@ -1996,8 +2028,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(titles, ["Image 4", "Image 5"])
 
     def test_get_sub_images(self):
-        """
-        """
+        """ """
         titles = [i.title for i in self.p1.get_sub_images()]
         self.assertEqual(titles, ["Image 2", "Image 3"])
 
@@ -2041,8 +2072,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.p1.get_meta_title(), "T1 T2 Product 1")
 
     def test_get_meta_title_2(self):
-        """Same as 1 for variants.
-        """
+        """Same as 1 for variants."""
         self.v1.meta_title = "<name> V1 V2"
         self.p1.meta_title = "<name> T1 T2"
         self.assertEqual(self.v1.get_meta_title(), "Product 1 T1 T2")
@@ -2102,21 +2132,20 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.p1.get_meta_keywords(), "Short description product 1")
 
     def test_get_meta_keywords_2(self):
-        """
-        """
+        """ """
         # Test product
-        self.assertEqual(self.p1.get_meta_keywords(), u"Meta keywords product 1")
+        self.assertEqual(self.p1.get_meta_keywords(), "Meta keywords product 1")
 
         # Test variant. By default the meta keywords of a variant is inherited
         # from parent product.
-        self.assertEqual(self.v1.get_meta_keywords(), u"Meta keywords product 1")
+        self.assertEqual(self.v1.get_meta_keywords(), "Meta keywords product 1")
 
         # Now we switch to active meta keywords.
         self.v1.active_meta_keywords = True
         self.v1.save()
 
         # Now we get the meta keywords of the variant
-        self.assertEqual(self.v1.get_meta_keywords(), u"Meta keywords variant 1")
+        self.assertEqual(self.v1.get_meta_keywords(), "Meta keywords variant 1")
 
     def test_get_meta_description_1(self):
         """Tests the correct return of meta description, foremost the replacement
@@ -2161,41 +2190,38 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.p1.get_meta_description(), "Short description product 1")
 
     def test_get_meta_description_2(self):
-        """
-        """
+        """ """
         # Test product
-        self.assertEqual(self.p1.get_meta_description(), u"Meta description product 1")
+        self.assertEqual(self.p1.get_meta_description(), "Meta description product 1")
 
         # Test variant. By default the meta description of a variant is
         # inherited from parent product.
-        self.assertEqual(self.v1.get_meta_description(), u"Meta description product 1")
+        self.assertEqual(self.v1.get_meta_description(), "Meta description product 1")
 
         # Now we switch to active meta description.
         self.v1.active_meta_description = True
         self.v1.save()
 
         # Now we get the meta description of the variant
-        self.assertEqual(self.v1.get_meta_description(), u"Meta description of variant 1")
+        self.assertEqual(self.v1.get_meta_description(), "Meta description of variant 1")
 
     def test_get_name(self):
-        """
-        """
+        """ """
         # Test product
-        self.assertEqual(self.p1.get_name(), u"Product 1")
+        self.assertEqual(self.p1.get_name(), "Product 1")
 
         # Test variant. By default the name of a variant is inherited
-        self.assertEqual(self.v1.get_name(), u"Product 1")
+        self.assertEqual(self.v1.get_name(), "Product 1")
 
         # Now we switch to active name.
         self.v1.active_name = True
         self.v1.save()
 
         # Now we get the description of the parent product
-        self.assertEqual(self.v1.get_name(), u"Variant 1")
+        self.assertEqual(self.v1.get_name(), "Variant 1")
 
     def test_get_option(self):
-        """
-        """
+        """ """
         # Test variant 1
         option = self.v1.get_option(property_id=self.color.id)
         self.assertEqual(option, str(self.red.id))
@@ -2215,8 +2241,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(option, None)
 
     def test_get_variant_properties(self):
-        """
-        """
+        """ """
         self.color.type = PROPERTY_TEXT_FIELD
         self.color.save()
 
@@ -2232,8 +2257,7 @@ class ProductTestCase(TestCase):
         self.failIf(str(self.ppv_size_l.value) not in options)
 
     def test_get_displayed_properties(self):
-        """
-        """
+        """ """
         self.color.type = PROPERTY_TEXT_FIELD
         self.color.display_on_product = True
         self.color.save()
@@ -2243,10 +2267,18 @@ class ProductTestCase(TestCase):
         self.size.save()
 
         # First add some variant property values
-        ppv_color_red = ProductPropertyValue.objects.create(product=self.p1, property=self.color, value=self.red.id, type=PROPERTY_VALUE_TYPE_DISPLAY)
-        ppv_size_m = ProductPropertyValue.objects.create(product=self.p1, property=self.size, value=self.m.id, type=PROPERTY_VALUE_TYPE_DISPLAY)
-        ppv_color_green = ProductPropertyValue.objects.create(product=self.p2, property=self.color, value=self.green.id, type=PROPERTY_VALUE_TYPE_DISPLAY)
-        ppv_size_l = ProductPropertyValue.objects.create(product=self.p2, property=self.size, value=self.l.id, type=PROPERTY_VALUE_TYPE_DISPLAY)
+        ppv_color_red = ProductPropertyValue.objects.create(
+            product=self.p1, property=self.color, value=self.red.id, type=PROPERTY_VALUE_TYPE_DISPLAY
+        )
+        ppv_size_m = ProductPropertyValue.objects.create(
+            product=self.p1, property=self.size, value=self.m.id, type=PROPERTY_VALUE_TYPE_DISPLAY
+        )
+        ppv_color_green = ProductPropertyValue.objects.create(
+            product=self.p2, property=self.color, value=self.green.id, type=PROPERTY_VALUE_TYPE_DISPLAY
+        )
+        ppv_size_l = ProductPropertyValue.objects.create(
+            product=self.p2, property=self.size, value=self.l.id, type=PROPERTY_VALUE_TYPE_DISPLAY
+        )
 
         options = [p["value"] for p in self.p1.get_displayed_properties()]
         self.failIf(str(ppv_color_red.value) not in options)
@@ -2257,8 +2289,7 @@ class ProductTestCase(TestCase):
         self.failIf(str(ppv_size_l.value) not in options)
 
     def test_has_option(self):
-        """
-        """
+        """ """
         # Variant 1 has color/red and size/m
         result = self.v1.has_option(None, self.color, self.red)
         self.assertEqual(result, True)
@@ -2286,8 +2317,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(result, False)
 
     def test_get_price(self):
-        """
-        """
+        """ """
         # Test product
         self.assertEqual(self.p1.get_price(self.request), 1.0)
 
@@ -2337,8 +2367,7 @@ class ProductTestCase(TestCase):
         self.assertEqual("%.2f" % self.v1.get_price_net(self.request), "1.68")
 
     def test_get_standard_price_1(self):
-        """Test the price vs. standard price for a product.
-        """
+        """Test the price vs. standard price for a product."""
         # By default get_standard_price returns then normal price of the product
         standard_price = self.p1.get_standard_price(self.request)
         self.assertEqual(standard_price, 1.0)
@@ -2356,8 +2385,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(standard_price, 1.0)
 
     def test_get_standard_price_2(self):
-        """Test the price vs. standard price for a variant.
-        """
+        """Test the price vs. standard price for a variant."""
         #
         self.p1.for_sale = False
         self.p1.save()
@@ -2493,8 +2521,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_for_sale(), False)
 
     def test_get_base_price(self):
-        """Tests the base price of a product.
-        """
+        """Tests the base price of a product."""
         self.request.user = AnonymousUser()
         self.assertEqual(self.p1.get_base_price(self.request), 0.0)
         self.assertEqual(self.p1.get_base_price_net(self.request), 0.0)
@@ -2515,8 +2542,7 @@ class ProductTestCase(TestCase):
         self.assertEqual("%.2f" % self.p1.get_base_price_gross(self.request), "2.38")
 
     def test_get_base_price_for_variant(self):
-        """Tests the base price of a product.
-        """
+        """Tests the base price of a product."""
         self.request.user = AnonymousUser()
         self.assertEqual(self.v1.get_base_price(self.request), 0.0)
         self.assertEqual(self.v1.get_base_price_net(self.request), 0.0)
@@ -2560,10 +2586,9 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_base_price_gross(self.request), 0)
 
     def test_get_sku(self):
-        """
-        """
+        """ """
         # Test product
-        self.assertEqual(self.p1.get_sku(), u"SKU P1")
+        self.assertEqual(self.p1.get_sku(), "SKU P1")
 
         # Test variant. By default the sku of a variant is *not* inherited
         self.assertEqual(self.v1.get_sku(), "SKU P1")
@@ -2576,8 +2601,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_sku(), "SKU V1")
 
     def test_get_tax_rate(self):
-        """
-        """
+        """ """
         tax_rate = self.p1.get_tax_rate(self.request)
         self.assertEqual(tax_rate, 19.0)
 
@@ -2590,8 +2614,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(tax_rate, 0.0)
 
     def test_get_tax(self):
-        """
-        """
+        """ """
         tax = self.p1.get_tax(self.request)
         self.assertEqual("%.2f" % tax, "0.16")
 
@@ -2610,8 +2633,7 @@ class ProductTestCase(TestCase):
         self.assertEqual("%.2f" % tax, "0.00")
 
     def test_get_related_products(self):
-        """
-        """
+        """ """
         names = [p.name for p in self.p1.get_related_products()]
         self.assertEqual(names, ["Product 2", "Product 3"])
 
@@ -2622,8 +2644,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(names, [])
 
     def test_has_related_products(self):
-        """
-        """
+        """ """
         result = self.p1.has_related_products()
         self.assertEqual(result, True)
 
@@ -2634,8 +2655,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(result, False)
 
     def test_has_variants(self):
-        """
-        """
+        """ """
         result = self.p1.has_variants()
         self.assertEqual(result, True)
 
@@ -2643,8 +2663,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(result, False)
 
     def test_get_variants(self):
-        """
-        """
+        """ """
         variants = self.p1.get_variants()
 
         self.assertEqual(len(variants), 2)
@@ -2739,8 +2758,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(default_variant, None)
 
     def test_sub_type(self):
-        """Tests the sub type of products.
-        """
+        """Tests the sub type of products."""
         self.assertEqual(self.p1.is_standard(), False)
         self.assertEqual(self.p1.is_product_with_variants(), True)
         self.assertEqual(self.p1.is_variant(), False)
@@ -2754,8 +2772,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.is_variant(), True)
 
     def test_get_width(self):
-        """Tests the width of product and variant.
-        """
+        """Tests the width of product and variant."""
         # Test product
         self.assertEqual(self.p1.get_width(), 1.0)
 
@@ -2770,8 +2787,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_width(), 11.0)
 
     def test_get_height(self):
-        """Tests the height of product and variant.
-        """
+        """Tests the height of product and variant."""
         # Test product
         self.assertEqual(self.p1.get_height(), 2.0)
 
@@ -2786,8 +2802,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_height(), 12.0)
 
     def test_get_length(self):
-        """Tests the length of product and variant.
-        """
+        """Tests the length of product and variant."""
         # Test product
         self.assertEqual(self.p1.get_length(), 3.0)
 
@@ -2802,8 +2817,7 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_length(), 13.0)
 
     def test_get_weight(self):
-        """Tests the weight of product and variant.
-        """
+        """Tests the weight of product and variant."""
         # Test product
         self.assertEqual(self.p1.get_weight(), 4.0)
 
@@ -2818,34 +2832,33 @@ class ProductTestCase(TestCase):
         self.assertEqual(self.v1.get_weight(), 14.0)
 
     def test_add_product_variants(self):
-        """Test the add variant form in the Manage interface
-        """
+        """Test the add variant form in the Manage interface"""
         self.assertEqual(len(Product.objects.all()), 5)
 
         product = Product.objects.get(slug="product-1")
 
         variant_data = {
-            'slug': 'variant-slug',
-            'name': 'variant',
-            'price': 10.00,
-            'property_0_%s' % self.size.id: self.m.id,
+            "slug": "variant-slug",
+            "name": "variant",
+            "price": 10.00,
+            "property_0_%s" % self.size.id: self.m.id,
         }
 
         # set up a user with permission to access the manage interface
-        self.user, created = User.objects.get_or_create(username='manager', is_superuser=True)
-        self.password = 'pass'
+        self.user, created = User.objects.get_or_create(username="manager", is_superuser=True)
+        self.password = "pass"
         self.user.set_password(self.password)
         self.user.save()
 
         # login the manager account so we can access the add variant function
-        self.client.login(username='manager', password='pass')
+        self.client.login(username="manager", password="pass")
 
-        response = self.client.post(reverse('lfs_manage_add_variants', args=(product.id,)), variant_data)
+        response = self.client.post(reverse("lfs_manage_add_variants", args=(product.id,)), variant_data)
         # following code in try loop will only be relevant if there are errors in the form
         try:
-            if hasattr(response, 'context'):
+            if hasattr(response, "context"):
                 if response.context is not None:
-                    variant_form = response.context['form']
+                    variant_form = response.context["form"]
                     if variant_form.errors:
                         print(variant_form.errors)
                     self.assertEqual(len(variant_form.errors), 0)
@@ -2855,36 +2868,27 @@ class ProductTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(Product.objects.all()), 6)
         variant = Product.objects.get(slug="product-1-variant-slug-m")
-        self.assertEqual(variant.name, 'variant')
+        self.assertEqual(variant.name, "variant")
         self.assertEqual(variant.price, 10.00)
         self.assertEqual(variant.parent, product)
 
     def setupAttachments(self):
         # Assign attachments to products
-        self.attachment_P1_1_data = dict(
-            title='Attachment P1-1',
-            product=self.p1,
-            position=10
-        )
+        self.attachment_P1_1_data = dict(title="Attachment P1-1", product=self.p1, position=10)
         self.attachment_P1_1 = ProductAttachment.objects.create(**self.attachment_P1_1_data)
 
-        self.attachment_P1_2_data = dict(
-            title='Attachment P1-2',
-            product=self.p1,
-            position=20
-        )
+        self.attachment_P1_2_data = dict(title="Attachment P1-2", product=self.p1, position=20)
         self.attachment_P1_2 = ProductAttachment.objects.create(**self.attachment_P1_2_data)
 
         self.attachment_V1_data = dict(
-            title='Attachment V1',
+            title="Attachment V1",
             product=self.v1,
         )
         self.attachment_V1 = ProductAttachment.objects.create(**self.attachment_V1_data)
 
     def test_get_attachments(self):
         # retrieve attachments
-        match_titles = [force_str(self.attachment_P1_1_data['title']),
-                        force_str(self.attachment_P1_2_data['title'])]
+        match_titles = [force_str(self.attachment_P1_1_data["title"]), force_str(self.attachment_P1_2_data["title"])]
         attachments = self.p1.get_attachments()
         attachments_titles = [force_str(x.title) for x in attachments]
         self.assertEqual(set(match_titles), set(attachments_titles))
@@ -2901,7 +2905,7 @@ class ProductTestCase(TestCase):
         # retrieve variant attachment
         attachments = self.v1.get_attachments()
         attachments_titles = [force_str(x.title) for x in attachments]
-        match_titles = [force_str(self.attachment_V1_data['title'])]
+        match_titles = [force_str(self.attachment_V1_data["title"])]
         self.assertEqual(attachments_titles, match_titles)
 
         # delete variant attachment: we should get parent attachments
@@ -2916,8 +2920,7 @@ class ProductTestCase(TestCase):
         self.attachment_P1_2.position = 10
         self.attachment_P1_2.save()
         attachments_titles = [x.title for x in self.p1.get_attachments()]
-        match_titles = [self.attachment_P1_2_data['title'],
-                        self.attachment_P1_1_data['title']]
+        match_titles = [self.attachment_P1_2_data["title"], self.attachment_P1_1_data["title"]]
         self.assertEqual(match_titles, attachments_titles)
 
     def test_get_type_of_quantity_field(self):
@@ -3027,30 +3030,27 @@ class ProductTestCase(TestCase):
 
 
 class ProductAccessoriesTestCase(TestCase):
-    """Tests ProductAccessories (surprise, surprise).
-    """
-    fixtures = ['lfs_shop.xml']
+    """Tests ProductAccessories (surprise, surprise)."""
+
+    fixtures = ["lfs_shop.xml"]
 
     def setUp(self):
-        """
-        """
-        self.p1 = Product.objects.create(name=u"Product 1", slug=u"product-1", price=1.0, active=True)
-        self.p2 = Product.objects.create(name=u"Product 2", slug=u"product-2", price=2.0, active=True)
-        self.p3 = Product.objects.create(name=u"Product 3", slug=u"product-3", price=3.0, active=True)
+        """ """
+        self.p1 = Product.objects.create(name="Product 1", slug="product-1", price=1.0, active=True)
+        self.p2 = Product.objects.create(name="Product 2", slug="product-2", price=2.0, active=True)
+        self.p3 = Product.objects.create(name="Product 3", slug="product-3", price=3.0, active=True)
 
         self.request = RequestFactory().get("/")
         self.request.session = SessionStore()
 
     def test_defaults(self):
-        """Tests default values after creation.
-        """
+        """Tests default values after creation."""
         pa = ProductAccessories.objects.create(product=self.p1, accessory=self.p2)
         self.assertEqual(pa.position, 999)
         self.assertEqual(pa.quantity, 1)
 
     def test_get_price(self):
-        """Tests the calculation of the total price of a product accessory.
-        """
+        """Tests the calculation of the total price of a product accessory."""
         # Product 1 gets two accessories
         pa1 = ProductAccessories.objects.create(product=self.p1, accessory=self.p2, position=1, quantity=1)
         pa2 = ProductAccessories.objects.create(product=self.p1, accessory=self.p3, position=2, quantity=2)
@@ -3060,10 +3060,11 @@ class ProductAccessoriesTestCase(TestCase):
 
 
 class MiscTestCase(TestCase):
-    """
-    """
+    """ """
+
     def test_get_unique_id_str(self):
         from lfs.catalog.models import get_unique_id_str
+
         id = get_unique_id_str()
         self.failUnless(isinstance(id, str))
         self.assertEqual(len(id), len("dad27436-3468-4d27-97e4-5fd761db85da"))
@@ -3073,7 +3074,7 @@ class MiscTestCase(TestCase):
         Tests whether files on the file system are deleted properly when a File
         object has been deleted.
         """
-        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"), 'rb')
+        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"), "rb")
         cf_1 = ContentFile(fh.read())
 
         file = File.objects.create(pk=1, title="Test File", slug="test-file", file=None)
@@ -3088,7 +3089,7 @@ class MiscTestCase(TestCase):
         Tests whether images on the file system are deleted properly when a
         Image object has been deleted.
         """
-        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"), 'rb')
+        fh = open(os.path.join(os.path.dirname(__file__), "..", "utils", "data", "image1.jpg"), "rb")
         cf_1 = ContentFile(fh.read())
 
         image = Image(title="Image 1")

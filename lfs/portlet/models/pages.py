@@ -12,17 +12,16 @@ from lfs.page.models import Page
 
 
 class PagesPortlet(Portlet):
-    """Portlet to display pages.
-    """
+    """Portlet to display pages."""
+
     class Meta:
-        app_label = 'portlet'
+        app_label = "portlet"
 
     def __str__(self):
-        return u"%s" % self.id
+        return "%s" % self.id
 
     def render(self, context):
-        """Renders the portlet as html.
-        """
+        """Renders the portlet as html."""
         request = context.get("request")
 
         cache_key = "%s-pages" % settings.CACHE_MIDDLEWARE_KEY_PREFIX
@@ -31,18 +30,22 @@ class PagesPortlet(Portlet):
             pages = Page.objects.filter(active=True, exclude_from_navigation=False)
             cache.set(cache_key, pages)
 
-        return render_to_string("lfs/portlets/pages.html", request=request, context={
-            "title": self.title,
-            "pages": pages,
-        })
+        return render_to_string(
+            "lfs/portlets/pages.html",
+            request=request,
+            context={
+                "title": self.title,
+                "pages": pages,
+            },
+        )
 
     def form(self, **kwargs):
         return PagesForm(instance=self, **kwargs)
 
 
 class PagesForm(forms.ModelForm):
-    """Form for the PagesPortlet.
-    """
+    """Form for the PagesPortlet."""
+
     class Meta:
         model = PagesPortlet
         exclude = ()

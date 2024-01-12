@@ -9,6 +9,7 @@ class StaticBlockForm(ModelForm):
     """
     Form to add and edit a static block.
     """
+
     class Meta:
         model = StaticBlock
-        exclude = ("position", )
+        exclude = ("position",)

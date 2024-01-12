@@ -17,28 +17,25 @@ from lfs.marketing.models import OrderRatingMail
 
 @permission_required("core.manage_shop")
 def manage_rating_mails(request, orders_sent=[], template_name="manage/marketing/rating_mails.html"):
-    """Displays the manage view for rating mails
-    """
+    """Displays the manage view for rating mails"""
     return render(request, template_name, {})
 
 
 @permission_required("core.manage_shop")
 def send_rating_mails(request):
-    """Send rating mails for given orders.
-    """
+    """Send rating mails for given orders."""
     if request.method == "POST":
         ctype = ContentType.objects.get_for_model(Product)
         site = "http://%s" % Site.objects.get(id=settings.SITE_ID)
 
         shop = lfs.core.utils.get_default_shop()
-        subject = _(u"Please rate your products on ")
+        subject = _("Please rate your products on ")
         subject += shop.name
         from_email = shop.from_email
 
         orders_sent = []
 
         for order in lfs.marketing.utils.get_orders():
-
             try:
                 OrderRatingMail.objects.get(order=order)
             except OrderRatingMail.DoesNotExist:
@@ -60,41 +57,47 @@ def send_rating_mails(request):
                 OrderRatingMail.objects.create(order=order)
 
             # text
-            text = render_to_string("lfs/reviews/rating_mail.txt", request=request, context={
-                "order": order,
-                "content_type_id": ctype.id,
-                "site": site,
-            })
+            text = render_to_string(
+                "lfs/reviews/rating_mail.txt",
+                request=request,
+                context={
+                    "order": order,
+                    "content_type_id": ctype.id,
+                    "site": site,
+                },
+            )
 
-            mail = EmailMultiAlternatives(
-                subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
+            mail = EmailMultiAlternatives(subject=subject, body=text, from_email=from_email, to=to, bcc=bcc)
 
             order_items = []
             for order_item in order.items.all():
                 product = order_item.product
                 if not product:
-                     continue
+                    continue
                 if product.is_variant():
                     product = product.parent
 
-                order_items.append({
-                    "product_id": product.id,
-                    "product_name": product.name,
-                })
+                order_items.append(
+                    {
+                        "product_id": product.id,
+                        "product_name": product.name,
+                    }
+                )
 
             # html
-            html = render_to_string("lfs/reviews/rating_mail.html", request=request, context={
-                "order": order,
-                "order_items": order_items,
-                "content_type_id": ctype.id,
-                "site": site,
-            })
+            html = render_to_string(
+                "lfs/reviews/rating_mail.html",
+                request=request,
+                context={
+                    "order": order,
+                    "order_items": order_items,
+                    "content_type_id": ctype.id,
+                    "site": site,
+                },
+            )
 
             mail.attach_alternative(html, "text/html")
             mail.send()
 
-        template_name="./manage/marketing/rating_mails.html"   
-        return render(request, template_name, {
-            "display_orders_sent": True,
-            "orders_sent": orders_sent
-        })
+        template_name = "./manage/marketing/rating_mails.html"
+        return render(request, template_name, {"display_orders_sent": True, "orders_sent": orders_sent})

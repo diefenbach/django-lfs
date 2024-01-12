@@ -24,24 +24,31 @@ from lfs.manage.views.lfs_portlets import portlets_inline
 
 
 class CategoryAddForm(ModelForm):
-    """Process form to add a category.
-    """
+    """Process form to add a category."""
+
     class Meta:
         model = Category
         fields = ("name", "slug")
 
 
 class CategoryForm(ModelForm):
-    """Process form to edit a category.
-    """
+    """Process form to edit a category."""
+
     def __init__(self, *args, **kwargs):
         super(CategoryForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
 
     class Meta:
         model = Category
-        fields = ("name", "slug", "short_description", "description",
-                  "exclude_from_navigation", "image", "static_block")
+        fields = (
+            "name",
+            "slug",
+            "short_description",
+            "description",
+            "exclude_from_navigation",
+            "image",
+            "static_block",
+        )
 
 
 @permission_required("core.manage_shop")
@@ -61,19 +68,25 @@ def manage_categories(request):
 
 @permission_required("core.manage_shop")
 def manage_category(request, category_id, template_name="manage/category/manage_category.html"):
-    """Displays the form to manage the category with given category id.
-    """
+    """Displays the form to manage the category with given category id."""
     category = Category.objects.get(pk=category_id)
 
-    return render(request, template_name, {
-        "categories_portlet": manage_categories_portlet(request, category_id),
-        "category": category,
-        "data": category_data(request, category_id),
-        "seo": SEOView(Category).render(request, category),
-        "view": category_view(request, category_id),
-        "portlets": portlets_inline(request, category),
-        "dialog_message": _("Do you really want to delete the category <b>'%(name)s'</b> and all its sub categories?") % {"name": category.name},
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "categories_portlet": manage_categories_portlet(request, category_id),
+            "category": category,
+            "data": category_data(request, category_id),
+            "seo": SEOView(Category).render(request, category),
+            "view": category_view(request, category_id),
+            "portlets": portlets_inline(request, category),
+            "dialog_message": _(
+                "Do you really want to delete the category <b>'%(name)s'</b> and all its sub categories?"
+            )
+            % {"name": category.name},
+        },
+    )
 
 
 @permission_required("core.manage_shop")
@@ -89,10 +102,14 @@ def category_data(request, category_id, form=None, template_name="manage/categor
     else:
         form = CategoryForm(instance=category)
 
-    return render_to_string(template_name, request=request, context={
-        "category": category,
-        "form": form,
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "category": category,
+            "form": form,
+        },
+    )
 
 
 @permission_required("core.manage_shop")
@@ -109,16 +126,15 @@ def category_by_id(request, category_id):
 # Actions
 @permission_required("core.manage_shop")
 def edit_category_data(request, category_id, template_name="manage/category/data.html"):
-    """Updates the category data.
-    """
+    """Updates the category data."""
     category = Category.objects.get(pk=category_id)
 
     form = CategoryForm(instance=category, data=request.POST, files=request.FILES)
     if form.is_valid():
         form.save()
-        message = _(u"Category data have been saved.")
+        message = _("Category data have been saved.")
     else:
-        message = _(u"Please correct the indicated errors.")
+        message = _("Please correct the indicated errors.")
 
     # Delete image
     if request.POST.get("delete_image"):
@@ -129,18 +145,20 @@ def edit_category_data(request, category_id, template_name="manage/category/data
         ["#categories-portlet", manage_categories_portlet(request, category.id)],
     ]
 
-    result = json.dumps({
-        "message": message,
-        "html": html,
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "message": message,
+            "html": html,
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
 def add_category(request, category_id="", template_name="manage/category/add_category.html"):
-    """Provides an add form and adds a new category to category with given id.
-    """
+    """Provides an add form and adds a new category to category with given id."""
     if category_id == "":
         parent = None
     else:
@@ -166,18 +184,23 @@ def add_category(request, category_id="", template_name="manage/category/add_cat
     else:
         form = CategoryAddForm(initial={"parent": category_id})
 
-    return render(request, template_name, {
-        "category": parent,
-        "form": form,
-        "came_from": (request.POST if request.method == 'POST' else request.GET).get("came_from", reverse("lfs_manage_categories")),
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "category": parent,
+            "form": form,
+            "came_from": (request.POST if request.method == "POST" else request.GET).get(
+                "came_from", reverse("lfs_manage_categories")
+            ),
+        },
+    )
 
 
 @permission_required("core.manage_shop")
 @require_POST
 def delete_category(request, id):
-    """Deletes category with given id.
-    """
+    """Deletes category with given id."""
     category = lfs_get_object_or_404(Category, pk=id)
     parent = category.parent
     category.delete()
@@ -189,19 +212,18 @@ def delete_category(request, id):
 
 @permission_required("core.manage_shop")
 def sort_categories(request):
-    """Sort categories
-    """
-    category_list = request.POST.get("categories", "").split('&')
-    assert (isinstance(category_list, list))
+    """Sort categories"""
+    category_list = request.POST.get("categories", "").split("&")
+    assert isinstance(category_list, list)
     if len(category_list) > 0:
         pos = 10
         for cat_str in category_list:
-            child, parent_id = cat_str.split('=')
+            child, parent_id = cat_str.split("=")
             child_id = child[9:-1]  # category[2]
             child_obj = Category.objects.get(pk=child_id)
 
             parent_obj = None
-            if parent_id != 'root':
+            if parent_id != "root":
                 parent_obj = Category.objects.get(pk=parent_id)
 
             child_obj.parent = parent_obj
@@ -212,11 +234,14 @@ def sort_categories(request):
 
     set_category_levels()
 
-    result = json.dumps({
-        "message": _(u"The categories have been sorted."),
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "message": _("The categories have been sorted."),
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 # Privates

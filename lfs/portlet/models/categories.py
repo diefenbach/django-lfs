@@ -13,20 +13,19 @@ import lfs.core.utils
 
 
 class CategoriesPortlet(Portlet):
-    """Portlet to display categories.
-    """
+    """Portlet to display categories."""
+
     start_level = models.PositiveSmallIntegerField(default=1)
     expand_level = models.PositiveSmallIntegerField(default=1)
 
     class Meta:
-        app_label = 'portlet'
+        app_label = "portlet"
 
     def __str__(self):
-        return u"%s" % self.id
+        return "%s" % self.id
 
     def render(self, context):
-        """Renders the portlet as html.
-        """
+        """Renders the portlet as html."""
         # Calculate current categories
         request = context.get("request")
 
@@ -39,23 +38,30 @@ class CategoriesPortlet(Portlet):
         else:
             object_id = object.id
 
-        cache_key = "%s-categories-portlet-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, object.__class__.__name__, object_id)
+        cache_key = "%s-categories-portlet-%s-%s" % (
+            settings.CACHE_MIDDLEWARE_KEY_PREFIX,
+            object.__class__.__name__,
+            object_id,
+        )
         result = cache.get(cache_key)
         if result is not None:
             return result
 
         current_categories = lfs.core.utils.get_current_categories(request, object)
 
-        ct = lfs.core.utils.CategoryTree(
-            current_categories, self.start_level, self.expand_level)
+        ct = lfs.core.utils.CategoryTree(current_categories, self.start_level, self.expand_level)
         category_tree = ct.get_category_tree()
 
-        result = render_to_string("lfs/portlets/categories.html", request=request, context={
-            "title": self.title,
-            "categories": category_tree,
-            "product": product,
-            "category": category,
-        })
+        result = render_to_string(
+            "lfs/portlets/categories.html",
+            request=request,
+            context={
+                "title": self.title,
+                "categories": category_tree,
+                "product": product,
+                "category": category,
+            },
+        )
 
         cache.set(cache_key, result)
 
@@ -66,8 +72,8 @@ class CategoriesPortlet(Portlet):
 
 
 class CategoriesPortletForm(forms.ModelForm):
-    """Form for CategoriesPortlet.
-    """
+    """Form for CategoriesPortlet."""
+
     class Meta:
         model = CategoriesPortlet
         exclude = ()

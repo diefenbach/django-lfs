@@ -9,6 +9,7 @@ class PropertyGroupForm(ModelForm):
     """
     Form to add/edit a property group.
     """
+
     class Meta:
         model = PropertyGroup
         fields = ["name"]

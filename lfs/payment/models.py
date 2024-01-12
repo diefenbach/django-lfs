@@ -13,6 +13,7 @@ class ActivePaymentMethodManager(models.Manager):
     """
     A manager which return just valid shipping methods.
     """
+
     def active(self):
         return super(ActivePaymentMethodManager, self).get_query_set().filter(active=True)
 
@@ -63,22 +64,27 @@ class PaymentMethod(models.Model, Criteria):
         This module will be called to process the payment. If it is empty the
         LFS' default one will be used.
     """
-    active = models.BooleanField(_(u"Active"), default=False)
-    priority = models.IntegerField(_(u"Priority"), default=0)
-    name = models.CharField(_(u"Name"), max_length=50)
-    description = models.TextField(_(u"Description"), blank=True)
-    note = models.TextField(_(u"note"), blank=True)
-    image = models.ImageField(_(u"Image"), upload_to="images", blank=True, null=True)
-    tax = models.ForeignKey(Tax, models.SET_NULL, verbose_name=_(u"Tax"), blank=True, null=True)
-    price = models.FloatField(_(u"Price"), default=0.0)
+
+    active = models.BooleanField(_("Active"), default=False)
+    priority = models.IntegerField(_("Priority"), default=0)
+    name = models.CharField(_("Name"), max_length=50)
+    description = models.TextField(_("Description"), blank=True)
+    note = models.TextField(_("note"), blank=True)
+    image = models.ImageField(_("Image"), upload_to="images", blank=True, null=True)
+    tax = models.ForeignKey(Tax, models.SET_NULL, verbose_name=_("Tax"), blank=True, null=True)
+    price = models.FloatField(_("Price"), default=0.0)
     deletable = models.BooleanField(default=True)
-    module = models.CharField(_(u'Module'), blank=True, max_length=100, choices=getattr(settings, "LFS_PAYMENT_METHOD_PROCESSORS", []))
-    type = models.PositiveSmallIntegerField(_(u'Type'), choices=lfs.payment.settings.PAYMENT_METHOD_TYPES_CHOICES, default=lfs.payment.settings.PM_PLAIN)
+    module = models.CharField(
+        _("Module"), blank=True, max_length=100, choices=getattr(settings, "LFS_PAYMENT_METHOD_PROCESSORS", [])
+    )
+    type = models.PositiveSmallIntegerField(
+        _("Type"), choices=lfs.payment.settings.PAYMENT_METHOD_TYPES_CHOICES, default=lfs.payment.settings.PM_PLAIN
+    )
     objects = ActivePaymentMethodManager()
 
     class Meta:
-        ordering = ("priority", )
-        app_label = 'payment'
+        ordering = ("priority",)
+        app_label = "payment"
 
     def __str__(self):
         return self.name
@@ -104,14 +110,17 @@ class PaymentMethodPrice(models.Model, Criteria):
         The order in which all prices of the belonging payment method are tested
         for validity. Less comes first.
     """
+
     def __str__(self):
-        return u"%s" % self.price
+        return "%s" % self.price
 
     class Meta:
-        ordering = ("priority", )
-        app_label = 'payment'
+        ordering = ("priority",)
+        app_label = "payment"
 
-    payment_method = models.ForeignKey(PaymentMethod, models.CASCADE, verbose_name=_(u"Payment method"), related_name="prices")
-    price = models.FloatField(_(u"Price"), default=0.0)
-    priority = models.IntegerField(_(u"Priority"), default=0)
-    active = models.BooleanField(_(u"Active"), default=False)
+    payment_method = models.ForeignKey(
+        PaymentMethod, models.CASCADE, verbose_name=_("Payment method"), related_name="prices"
+    )
+    price = models.FloatField(_("Price"), default=0.0)
+    priority = models.IntegerField(_("Priority"), default=0)
+    active = models.BooleanField(_("Active"), default=False)

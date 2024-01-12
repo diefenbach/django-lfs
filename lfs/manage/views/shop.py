@@ -28,33 +28,51 @@ class ShopSEOView(SEOView):
 
 
 class ShopDataForm(ModelForm):
-    """Form to edit shop data.
-    """
+    """Form to edit shop data."""
+
     def __init__(self, *args, **kwargs):
         super(ShopDataForm, self).__init__(*args, **kwargs)
         self.fields["image"].widget = LFSImageInput()
 
     class Meta:
         model = Shop
-        fields = ("name", "shop_owner", "from_email", "notification_emails",
-                  "description", "image", "static_block", "checkout_type", "confirm_toc",
-                  "google_analytics_id", "ga_site_tracking", "ga_ecommerce_tracking")
+        fields = (
+            "name",
+            "shop_owner",
+            "from_email",
+            "notification_emails",
+            "description",
+            "image",
+            "static_block",
+            "checkout_type",
+            "confirm_toc",
+            "google_analytics_id",
+            "ga_site_tracking",
+            "ga_ecommerce_tracking",
+        )
 
 
 class ShopDefaultValuesForm(ModelForm):
-    """Form to edit shop default values.
-    """
+    """Form to edit shop default values."""
+
     class Meta:
         model = Shop
-        fields = ("price_calculator", "product_cols", "product_rows", "category_cols",
-                  "default_country", "invoice_countries", "shipping_countries",
-                  "use_international_currency_code", "delivery_time")
+        fields = (
+            "price_calculator",
+            "product_cols",
+            "product_rows",
+            "category_cols",
+            "default_country",
+            "invoice_countries",
+            "shipping_countries",
+            "use_international_currency_code",
+            "delivery_time",
+        )
 
 
 @permission_required("core.manage_shop")
 def manage_shop(request, template_name="manage/shop/shop.html"):
-    """Displays the form to manage shop data.
-    """
+    """Displays the form to manage shop data."""
     shop = lfs.core.utils.get_default_shop()
     data_form = ShopDataForm(instance=shop)
     default_values_form = ShopDefaultValuesForm(instance=shop)
@@ -67,50 +85,62 @@ def manage_shop(request, template_name="manage/shop/shop.html"):
         order_number = ong.objects.create(id="order_number")
     order_numbers_form = order_number.get_form(instance=order_number)
 
-    return render(request, template_name, {
-        "shop": shop,
-        "data": data_tab(request, shop, data_form),
-        "default_values": default_values_tab(request, shop, default_values_form),
-        "order_numbers": order_numbers_tab(request, shop, order_numbers_form),
-        "seo": ShopSEOView(Shop).render(request, shop),
-        "portlets": portlets_inline(request, shop),
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "shop": shop,
+            "data": data_tab(request, shop, data_form),
+            "default_values": default_values_tab(request, shop, default_values_form),
+            "order_numbers": order_numbers_tab(request, shop, order_numbers_form),
+            "seo": ShopSEOView(Shop).render(request, shop),
+            "portlets": portlets_inline(request, shop),
+        },
+    )
 
 
 # Parts
 def data_tab(request, shop, form, template_name="manage/shop/data_tab.html"):
-    """Renders the data tab of the shop.
-    """
-    return render_to_string(template_name, request=request, context={
-        "shop": shop,
-        "form": form,
-    })
+    """Renders the data tab of the shop."""
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "shop": shop,
+            "form": form,
+        },
+    )
 
 
 def order_numbers_tab(request, shop, form, template_name="manage/order_numbers/order_numbers_tab.html"):
-    """Renders the ordern number tab of the shop.
-    """
-    return render_to_string(template_name, request=request, context={
-        "shop": shop,
-        "form": form,
-    })
+    """Renders the ordern number tab of the shop."""
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "shop": shop,
+            "form": form,
+        },
+    )
 
 
 def default_values_tab(request, shop, form, template_name="manage/shop/default_values_tab.html"):
-    """Renders the default value tab of the shop.
-    """
-    return render_to_string(template_name, request=request, context={
-        "shop": shop,
-        "form": form,
-    })
+    """Renders the default value tab of the shop."""
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "shop": shop,
+            "form": form,
+        },
+    )
 
 
 # Actions
 @permission_required("core.manage_shop")
 @require_POST
 def save_data_tab(request):
-    """Saves the data tab of the default shop.
-    """
+    """Saves the data tab of the default shop."""
     shop = lfs.core.utils.get_default_shop()
 
     form = ShopDataForm(instance=shop, data=request.POST, files=request.FILES)
@@ -124,46 +154,46 @@ def save_data_tab(request):
         # reinitialize form in order to properly display uploaded image
         form = ShopDataForm(instance=shop)
         shop_changed.send(shop)
-        message = _(u"Shop data has been saved.")
+        message = _("Shop data has been saved.")
     else:
-        message = _(u"Please correct the indicated errors.")
+        message = _("Please correct the indicated errors.")
 
-    result = json.dumps({
-        "html": [["#data", data_tab(request, shop, form)]],
-        "message": message,
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": [["#data", data_tab(request, shop, form)]],
+            "message": message,
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
 @require_POST
 def save_default_values_tab(request):
-    """Saves the default value part
-    """
+    """Saves the default value part"""
     shop = lfs_get_object_or_404(Shop, pk=1)
     form = ShopDefaultValuesForm(instance=shop, data=request.POST)
 
     if form.is_valid():
         shop = form.save()
         shop_changed.send(shop)
-        message = _(u"Shop default values have been saved.")
+        message = _("Shop default values have been saved.")
     else:
-        message = _(u"Please correct the indicated errors.")
+        message = _("Please correct the indicated errors.")
 
-    result = json.dumps({
-        "html": [["#default_values", default_values_tab(request, shop, form)]],
-        "message": message
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {"html": [["#default_values", default_values_tab(request, shop, form)]], "message": message}, cls=LazyEncoder
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
 @require_POST
 def save_order_numbers_tab(request):
-    """Saves the order number tab of the default shop.
-    """
+    """Saves the order number tab of the default shop."""
     shop = lfs.core.utils.get_default_shop()
 
     ong = import_symbol(settings.LFS_ORDER_NUMBER_GENERATOR)
@@ -173,13 +203,16 @@ def save_order_numbers_tab(request):
     if form.is_valid():
         form.save()
         shop_changed.send(shop)
-        message = _(u"Order numbers has been saved.")
+        message = _("Order numbers has been saved.")
     else:
-        message = _(u"Please correct the indicated errors.")
+        message = _("Please correct the indicated errors.")
 
-    result = json.dumps({
-        "html": [["#order_numbers", order_numbers_tab(request, shop, form)]],
-        "message": message,
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": [["#order_numbers", order_numbers_tab(request, shop, form)]],
+            "message": message,
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")

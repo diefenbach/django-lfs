@@ -6,15 +6,12 @@ from lfs.export.settings import CATEGORY_VARIANTS_ALL
 
 
 def register(method, name):
-    """Registers a new export logic.
-    """
+    """Registers a new export logic."""
     try:
-        Script.objects.get(
-            module=method.__module__, method=method.__name__)
+        Script.objects.get(module=method.__module__, method=method.__name__)
     except Script.DoesNotExist:
         try:
-            Script.objects.create(
-                module=method.__module__, method=method.__name__, name=name)
+            Script.objects.create(module=method.__module__, method=method.__name__, name=name)
         except:
             # Fail silently
             pass
@@ -24,8 +21,7 @@ def register(method, name):
 
 
 def get_variants_option(export, product):
-    """Returns the variants option for given category or None.
-    """
+    """Returns the variants option for given category or None."""
     try:
         category = product.get_categories()[0]
     except IndexError:
@@ -33,8 +29,7 @@ def get_variants_option(export, product):
 
     while category:
         try:
-            category_option = CategoryOption.objects.get(
-                export=export, category=category)
+            category_option = CategoryOption.objects.get(export=export, category=category)
         except:
             category = category.parent
         else:
@@ -43,8 +38,7 @@ def get_variants_option(export, product):
 
 
 def get_variants(product, export):
-    """Returns the variants for given product and export.
-    """
+    """Returns the variants for given product and export."""
     variants_option = get_variants_option(export, product)
     if variants_option is None:
         variants_option = export.variants_option

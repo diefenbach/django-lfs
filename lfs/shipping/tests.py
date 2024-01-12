@@ -30,13 +30,12 @@ from lfs.tests.utils import create_request
 
 
 class ShippingMethodTestCase(TestCase):
-    """Unit tests for lfs.shipping
-    """
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    """Unit tests for lfs.shipping"""
+
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         self.client.login(username="admin", password="admin")
 
         self.user = User.objects.get(username="admin")
@@ -47,7 +46,9 @@ class ShippingMethodTestCase(TestCase):
         self.dt2 = DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
         self.dt3 = DeliveryTime.objects.create(min=5, max=6, unit=DELIVERY_TIME_UNIT_DAYS)
 
-        self.sm1 = ShippingMethod.objects.create(name="Standard", active=True, price=1, delivery_time=self.dt1, priority=1)
+        self.sm1 = ShippingMethod.objects.create(
+            name="Standard", active=True, price=1, delivery_time=self.dt1, priority=1
+        )
         self.sm2 = ShippingMethod.objects.create(name="Express", active=True, delivery_time=self.dt2, priority=2)
 
         self.p1 = Product.objects.create(name="Product 1", slug="p1", price=9, weight=6.0, active=True)
@@ -60,8 +61,7 @@ class ShippingMethodTestCase(TestCase):
         Cart.objects.all().delete()
 
     def test_get_product_delivery_time_1(self):
-        """Tests the product delivery time for the *product view*.
-        """
+        """Tests the product delivery time for the *product view*."""
         request = create_request()
         request.user = AnonymousUser()
 
@@ -107,8 +107,7 @@ class ShippingMethodTestCase(TestCase):
         self.assertEqual(dt.unit, self.dt3.unit)
 
     def test_get_product_delivery_time_2(self):
-        """Tests the product delivery time for the *cart view*.
-        """
+        """Tests the product delivery time for the *cart view*."""
         request = create_request()
         request.user = AnonymousUser()
 
@@ -159,8 +158,7 @@ class ShippingMethodTestCase(TestCase):
         self.assertEqual(dt.unit, self.dt2.unit)
 
     def test_active_shipping_methods_1(self):
-        """Tests active shipping methods.
-        """
+        """Tests active shipping methods."""
         # At start we have two active shipping methods, see above.
         sm = ShippingMethod.objects.active()
         self.assertEqual(len(sm), 2)
@@ -178,8 +176,7 @@ class ShippingMethodTestCase(TestCase):
         self.assertEqual(len(sm), 0)
 
     def test_valid_shipping_methods_1(self):
-        """Tests valid shipping methods.
-        """
+        """Tests valid shipping methods."""
         # And its still valid.
         sms = utils.get_valid_shipping_methods(self.request)
         self.assertEqual(len(sms), 2)
@@ -201,22 +198,11 @@ class ShippingMethodTestCase(TestCase):
         self.failUnless("Express" in sm_names)
 
     def test_valid_shipping_methods_2(self):
-        """Tests valid shipping methods. Test with a cart price criterion.
-        """
-        self.client.post(
-            reverse('lfs_login'),
-            dict(
-                username='admin',
-                password='admin',
-                action='login'
-            ),
-            follow=True
-        )
+        """Tests valid shipping methods. Test with a cart price criterion."""
+        self.client.post(reverse("lfs_login"), dict(username="admin", password="admin", action="login"), follow=True)
 
-        response = self.client.get(
-            reverse('lfs_cart')
-        )
-        request = response.context['request']
+        response = self.client.get(reverse("lfs_cart"))
+        request = response.context["request"]
 
         # Create a cart price criterion and add it to the shipping method 1
         CartPriceCriterion.objects.create(content=self.sm1, value=10.0, operator=GREATER_THAN)
@@ -243,8 +229,7 @@ class ShippingMethodTestCase(TestCase):
         self.assertEqual(len(sms), 2)
 
     def test_valid_shipping_methods_3(self):
-        """Test with a given product.
-        """
+        """Test with a given product."""
         # Prepare request
         user = User.objects.get(username="admin")
         request = DummyRequest(user=user)
@@ -264,8 +249,7 @@ class ShippingMethodTestCase(TestCase):
         self.assertEqual(result, True)
 
     def test_shipping_methods_criterion_for_empty_cart(self):
-        """Test with a given product.
-        """
+        """Test with a given product."""
         # Prepare request
         user = User.objects.get(username="admin")
 
@@ -274,29 +258,18 @@ class ShippingMethodTestCase(TestCase):
         WidthCriterion.objects.create(content=smp, value=10.0, operator=GREATER_THAN)
 
         # there is no product in the cart so criterion is not valid
-        self.client.post(
-            reverse('lfs_login'),
-            dict(
-                username='admin',
-                password='admin',
-                action='login'
-            ),
-            follow=True
-        )
+        self.client.post(reverse("lfs_login"), dict(username="admin", password="admin", action="login"), follow=True)
 
-        response = self.client.get(
-            reverse('lfs_cart')
-        )
+        response = self.client.get(reverse("lfs_cart"))
 
-        request = response.context['request']
+        request = response.context["request"]
 
         cart_utils.create_cart(request)
         result = smp.is_valid(request)
         self.assertEqual(result, False)
 
     def test_get_first_valid_shipping_method(self):
-        """Test utils.get_first_valid_shipping_method
-        """
+        """Test utils.get_first_valid_shipping_method"""
         # Prepare request
         user = User.objects.get(username="admin")
         request = DummyRequest(user=user)
@@ -316,16 +289,14 @@ class ShippingMethodTestCase(TestCase):
         self.assertEqual(result, self.sm2)
 
     def test_shipping_price_1(self):
-        """Tests the default shipping price of the shipping method.
-        """
+        """Tests the default shipping price of the shipping method."""
         # There are no shipping prices, hence the default shipping price is
         # returned, which is 1, see above.
         costs = utils.get_shipping_costs(self.request, self.sm1)
         self.assertEqual(costs.get("price_gross"), 1)
 
     def test_shipping_price_2(self):
-        """Tests an additional shipping method price.
-        """
+        """Tests an additional shipping method price."""
         # Add a shipping method price
         ShippingMethodPrice.objects.create(shipping_method=self.sm1, price=5)
 
@@ -334,8 +305,7 @@ class ShippingMethodTestCase(TestCase):
         self.assertEqual(costs["price_gross"], 5)
 
     def test_shipping_price_3(self):
-        """Tests an additional shipping method price with a criterion.
-        """
+        """Tests an additional shipping method price with a criterion."""
         # Add a shipping method price
         smp = ShippingMethodPrice.objects.create(shipping_method=self.sm1, price=5)
 
@@ -345,10 +315,8 @@ class ShippingMethodTestCase(TestCase):
         # The cart price is less than 10, hence the price is not valid and the
         # shipping price is the default price of the shipping method , which is
         # 1, see above.
-        response = self.client.get(
-            reverse('lfs_cart')
-        )
-        request = response.context['request']
+        response = self.client.get(reverse("lfs_cart"))
+        request = response.context["request"]
 
         costs = utils.get_shipping_costs(request, self.sm1)
         self.assertEqual(costs["price_gross"], 1)
@@ -364,8 +332,7 @@ class ShippingMethodTestCase(TestCase):
         self.assertEqual(costs["price_gross"], 5)
 
     def test_shipping_price_4(self):
-        """Tests an additional shipping method price with a criterion and customer price
-        """
+        """Tests an additional shipping method price with a criterion and customer price"""
         # create country dependent tax
         self.us = Country.objects.create(code="us", name="USA")
         self.ch = Country.objects.create(code="ch", name="Switzerland")

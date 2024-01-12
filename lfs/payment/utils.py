@@ -8,6 +8,7 @@ from lfs.payment.settings import PM_ORDER_IMMEDIATELY
 from lfs.payment.settings import PM_ORDER_ACCEPTED
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -62,10 +63,7 @@ def get_payment_costs(request, payment_method):
     Returns the payment price and tax for the given request.
     """
     if payment_method is None:
-        return {
-            "price": 0.0,
-            "tax": 0.0
-        }
+        return {"price": 0.0, "tax": 0.0}
 
     try:
         tax_rate = payment_method.tax.rate
@@ -78,17 +76,11 @@ def get_payment_costs(request, payment_method):
         price = payment_method.price
         tax = (tax_rate / (tax_rate + 100)) * price
 
-        return {
-            "price": price,
-            "tax": tax
-        }
+        return {"price": price, "tax": tax}
     else:
         tax = (tax_rate / (tax_rate + 100)) * price.price
 
-        return {
-            "price": price.price,
-            "tax": tax
-        }
+        return {"price": price.price, "tax": tax}
 
 
 def process_payment(request):
@@ -100,6 +92,7 @@ def process_payment(request):
     from lfs.core.utils import import_symbol
     from lfs.order.utils import add_order
     from lfs.cart.utils import get_cart
+
     payment_method = get_selected_payment_method(request)
 
     if payment_method.module:
@@ -110,7 +103,7 @@ def process_payment(request):
         if create_order_time == PM_ORDER_IMMEDIATELY:
             order = add_order(request)
             if order is None:
-                return {'accepted': True, 'next_url': reverse("lfs_shop_view")}
+                return {"accepted": True, "next_url": reverse("lfs_shop_view")}
             payment_instance.order = order
             result = payment_instance.process()
             if result.get("order_state"):
@@ -148,7 +141,10 @@ def get_pay_link(request, payment_method, order):
     thank you page after a customer has payed.
     """
     from lfs.core.utils import import_symbol
-    logger.info("Decprecated: lfs.payment.utils.get_pay_link: this function is deprecated. Please use Order.get_pay_link instead.")
+
+    logger.info(
+        "Decprecated: lfs.payment.utils.get_pay_link: this function is deprecated. Please use Order.get_pay_link instead."
+    )
 
     if payment_method.module:
         payment_class = import_symbol(payment_method.module)

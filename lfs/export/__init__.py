@@ -1,1 +1,1 @@
-default_app_config = 'lfs.export.apps.LfsExportAppConfig'
+default_app_config = "lfs.export.apps.LfsExportAppConfig"

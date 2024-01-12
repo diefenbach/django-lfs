@@ -6,16 +6,16 @@ from lfs.tax.models import Tax
 
 
 class TaxForm(ModelForm):
-    """Form to edit a tax.
-    """
+    """Form to edit a tax."""
+
     class Meta:
         model = Tax
         exclude = ()
 
 
 class TaxAddForm(ModelForm):
-    """Form to add a tax.
-    """
+    """Form to add a tax."""
+
     class Meta:
         model = Tax
-        fields = ("rate", )
+        fields = ("rate",)

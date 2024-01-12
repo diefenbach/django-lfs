@@ -4,6 +4,7 @@ from lfs.core.utils import import_symbol
 from lfs.criteria.models import Criterion
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -16,7 +17,9 @@ def is_valid(request, object, product=None):
     Passed object is an object which can have criteria. At the moment these are
     discounts, shipping/payment methods and shipping/payment prices.
     """
-    logger.info("Decprecated: lfs.criteria.utils.is_valid: this function is deprecated. Please use the Criteria class instead.")
+    logger.info(
+        "Decprecated: lfs.criteria.utils.is_valid: this function is deprecated. Please use the Criteria class instead."
+    )
     for criterion_object in get_criteria(object):
         criterion_object.request = request
         criterion_object.product = product
@@ -30,7 +33,9 @@ def get_criteria(object):
     """
     Returns all criteria for given object.
     """
-    logger.info("Decprecated: lfs.criteria.utils.get_criteria: this function is deprecated. Please use the Criteria class instead.")
+    logger.info(
+        "Decprecated: lfs.criteria.utils.get_criteria: this function is deprecated. Please use the Criteria class instead."
+    )
     content_type = ContentType.objects.get_for_model(object)
 
     criteria = []
@@ -58,7 +63,9 @@ def save_criteria(request, object):
     Saves the criteria for the given object. The criteria are passed via
     request body.
     """
-    logger.info("Decprecated: lfs.criteria.utils.save_criteria: this function is deprecated. Please use the Criteria class instead.")
+    logger.info(
+        "Decprecated: lfs.criteria.utils.save_criteria: this function is deprecated. Please use the Criteria class instead."
+    )
     # First we delete all existing criteria objects for the given object.
     for co in get_criteria(object):
         co.delete()

@@ -15,16 +15,22 @@ from lfs.utils.widgets import SelectImage
 
 
 class ViewForm(ModelForm):
-    """Form to add/edit category.
-    """
+    """Form to add/edit category."""
+
     def __init__(self, *args, **kwargs):
         super(ViewForm, self).__init__(*args, **kwargs)
         self.fields["template"].widget = SelectImage(choices=CATEGORY_TEMPLATES)
 
     class Meta:
         model = Category
-        fields = ("template", "show_all_products", "active_formats",
-                  "product_cols", "product_rows", "category_cols", )
+        fields = (
+            "template",
+            "show_all_products",
+            "active_formats",
+            "product_cols",
+            "product_rows",
+            "category_cols",
+        )
 
 
 @permission_required("core.manage_shop")
@@ -39,29 +45,38 @@ def category_view(request, category_id, template_name="manage/category/view.html
         form = ViewForm(instance=category, data=request.POST)
         if form.is_valid():
             form.save()
-            message = _(u"View data has been saved.")
+            message = _("View data has been saved.")
         else:
-            message = _(u"Please correct the indicated errors.")
+            message = _("Please correct the indicated errors.")
     else:
         form = ViewForm(instance=category)
 
-    view_html = render_to_string(template_name, request=request, context={
-        "category": category,
-        "form": form,
-    })
+    view_html = render_to_string(
+        template_name,
+        request=request,
+        context={
+            "category": category,
+            "form": form,
+        },
+    )
 
     if is_ajax(request):
         html = [["#view", view_html]]
-        return HttpResponse(json.dumps({
-            "html": html,
-            "message": message,
-        }, cls=LazyEncoder), content_type='application/json')
+        return HttpResponse(
+            json.dumps(
+                {
+                    "html": html,
+                    "message": message,
+                },
+                cls=LazyEncoder,
+            ),
+            content_type="application/json",
+        )
     else:
         return view_html
 
 
 @permission_required("core.manage_shop")
 def no_categories(request, template_name="manage/category/no_categories.html"):
-    """Displays that there are no categories.
-    """
+    """Displays that there are no categories."""
     return render(request, template_name, {})

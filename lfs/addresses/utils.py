@@ -32,6 +32,7 @@ class AddressManagement(object):
         Based on that different forms can be rendered.
 
     """
+
     def __init__(self, customer, address, type, data=None, initial=None):
         self.customer = customer
         self.address = address
@@ -95,10 +96,13 @@ class AddressManagement(object):
         templates.insert(0, "lfs/addresses/%s_address_form.html" % self.type)
         template = select_template(templates)
 
-        return template.render({
-            "postal_form": postal_form,
-            "address_form": address_form,
-        }, request)
+        return template.render(
+            {
+                "postal_form": postal_form,
+                "address_form": address_form,
+            },
+            request,
+        )
 
     def is_valid(self):
         """
@@ -141,6 +145,7 @@ class AddressManagement(object):
             self.address.save()
 
             address_form_model = self.get_form_model()
-            address_form = address_form_model(data=self.data, instance=self.address, initial=self.initial,
-                                              prefix=self.type)
+            address_form = address_form_model(
+                data=self.data, instance=self.address, initial=self.initial, prefix=self.type
+            )
             address_form.save()

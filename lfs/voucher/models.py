@@ -14,8 +14,8 @@ from lfs.voucher.settings import MESSAGES
 
 
 class VoucherOptions(models.Model):
-    """Stores misc voucher options
-    """
+    """Stores misc voucher options"""
+
     number_prefix = models.CharField(max_length=20, blank=True, default="")
     number_suffix = models.CharField(max_length=20, blank=True, default="")
     number_length = models.IntegerField(blank=True, null=True, default=5)
@@ -23,15 +23,15 @@ class VoucherOptions(models.Model):
 
 
 class VoucherGroup(models.Model):
-    """Groups vouchers together.
-    """
+    """Groups vouchers together."""
+
     name = models.CharField(max_length=100)
     creator = models.ForeignKey(User, models.SET_NULL, blank=True, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     position = models.PositiveSmallIntegerField(default=10)
 
     class Meta:
-        ordering = ("position", )
+        ordering = ("position",)
 
 
 class Voucher(models.Model):
@@ -92,6 +92,7 @@ class Voucher(models.Model):
         - The quantity of how often the voucher can be used. Let it empty
           the voucher can be used unlimited.
     """
+
     number = models.CharField(max_length=100, unique=True)
     group = models.ForeignKey(VoucherGroup, models.SET_NULL, related_name="vouchers", blank=True, null=True)
     creator = models.ForeignKey(User, models.SET_NULL, blank=True, null=True)
@@ -101,12 +102,12 @@ class Voucher(models.Model):
     end_date = models.DateField(blank=True, null=True)
     kind_of = models.PositiveSmallIntegerField(choices=KIND_OF_CHOICES)
     value = models.FloatField(default=0.0)
-    tax = models.ForeignKey(Tax, models.SET_NULL, verbose_name=_(u"Tax"), blank=True, null=True)
+    tax = models.ForeignKey(Tax, models.SET_NULL, verbose_name=_("Tax"), blank=True, null=True)
     active = models.BooleanField(default=True)
     used_amount = models.PositiveSmallIntegerField(default=0)
     last_used_date = models.DateTimeField(blank=True, null=True)
     limit = models.PositiveSmallIntegerField(blank=True, null=True, default=1)
-    sums_up = models.BooleanField(_(u"Sums up"), default=True, help_text=_(u'Sums up with other discounts/vouchers'))
+    sums_up = models.BooleanField(_("Sums up"), default=True, help_text=_("Sums up with other discounts/vouchers"))
 
     class Meta:
         ordering = ("creation_date", "number")
@@ -115,24 +116,21 @@ class Voucher(models.Model):
         return self.number
 
     def get_price_net(self, request, cart=None):
-        """Returns the net price of the voucher.
-        """
+        """Returns the net price of the voucher."""
         if self.kind_of == ABSOLUTE:
             return self.value - self.get_tax(request)
         else:
             return cart.get_price_net(request) * (self.value / 100)
 
     def get_price_gross(self, request, cart=None):
-        """Returns the gross price of the voucher.
-        """
+        """Returns the gross price of the voucher."""
         if self.kind_of == ABSOLUTE:
             return self.value
         else:
             return cart.get_price_gross(request) * (self.value / 100)
 
     def get_tax(self, request, cart=None):
-        """Returns the absolute tax of the voucher
-        """
+        """Returns the absolute tax of the voucher"""
         if self.kind_of == ABSOLUTE:
             if self.tax:
                 return (self.tax.rate / (100 + self.tax.rate)) * self.value
@@ -142,16 +140,14 @@ class Voucher(models.Model):
             return cart.get_tax(request) * (self.value / 100)
 
     def mark_as_used(self):
-        """Mark voucher as used.
-        """
-        self.used_amount = F('used_amount') + 1
+        """Mark voucher as used."""
+        self.used_amount = F("used_amount") + 1
         self.last_used_date = timezone.now()
         self.save()
         self.refresh_from_db()
 
     def is_effective(self, request, cart):
-        """Returns True if the voucher is effective.
-        """
+        """Returns True if the voucher is effective."""
         if self.active is False:
             return (False, MESSAGES[1])
         if (self.limit > 0) and (self.used_amount >= self.limit):
@@ -166,11 +162,9 @@ class Voucher(models.Model):
         return (True, MESSAGES[0])
 
     def is_absolute(self):
-        """Returns True if voucher is absolute.
-        """
+        """Returns True if voucher is absolute."""
         return self.kind_of == ABSOLUTE
 
     def is_percentage(self):
-        """Returns True if voucher is percentage.
-        """
+        """Returns True if voucher is percentage."""
         return self.kind_of == PERCENTAGE

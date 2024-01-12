@@ -42,15 +42,16 @@ class Cart(models.Model):
     A cart is only created if it needs to, i.e. when the shop user adds
     something to the cart.
     """
+
     # TODO: Keep cart for now, when the user is deleted for reporting or similar,
     # can be deleted later by a maintenance script or something else.
-    user = models.ForeignKey(User, models.SET_NULL, verbose_name=_(u"User"), blank=True, null=True)
-    session = models.CharField(_(u"Session"), blank=True, max_length=100)
-    creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
-    modification_date = models.DateTimeField(_(u"Modification date"), auto_now=True)
+    user = models.ForeignKey(User, models.SET_NULL, verbose_name=_("User"), blank=True, null=True)
+    session = models.CharField(_("Session"), blank=True, max_length=100)
+    creation_date = models.DateTimeField(_("Creation date"), auto_now_add=True)
+    modification_date = models.DateTimeField(_("Modification date"), auto_now=True)
 
     def __str__(self):
-        return u"%s, %s" % (self.user, self.session)
+        return "%s, %s" % (self.user, self.session)
 
     def add(self, product, properties_dict=None, amount=1):
         """
@@ -76,18 +77,20 @@ class Cart(models.Model):
                 cart_item = CartItem.objects.create(cart=self, product=product, amount=amount)
                 if properties_dict:
                     for key, item in properties_dict.items():
-                        property_id = item['property_id']
-                        property_group_id = item['property_group_id'] if item['property_group_id'] != '0' else None
-                        value = item['value']
+                        property_id = item["property_id"]
+                        property_group_id = item["property_group_id"] if item["property_group_id"] != "0" else None
+                        value = item["value"]
                         try:
                             Property.objects.get(pk=property_id)
                         except Property.DoesNotExist:
                             pass
                         else:
-                            CartItemPropertyValue.objects.create(cart_item=cart_item,
-                                                                 property_group_id=property_group_id,
-                                                                 property_id=property_id,
-                                                                 value=value)
+                            CartItemPropertyValue.objects.create(
+                                cart_item=cart_item,
+                                property_group_id=property_group_id,
+                                property_id=property_id,
+                                value=value,
+                            )
         else:
             try:
                 cart_item = CartItem.objects.get(cart=self, product=product)
@@ -116,19 +119,20 @@ class Cart(models.Model):
         Returns the item for passed product and properties or None if there
         is none.
         """
-        properties_dict_keys = ['{0}_{1}_{2}'.format(item['property_group_id'],
-                                                     item['property_id'],
-                                                     item['value']) for item in properties_dict.values()]
+        properties_dict_keys = [
+            "{0}_{1}_{2}".format(item["property_group_id"], item["property_id"], item["value"])
+            for item in properties_dict.values()
+        ]
         properties_dict_keys = sorted(properties_dict_keys)
-        properties_dict_key = '-'.join(properties_dict_keys)
+        properties_dict_key = "-".join(properties_dict_keys)
         for item in CartItem.objects.filter(cart=self, product=product):
             item_props = []
             for pv in item.properties.all():
-                property_group_id = pv.property_group_id if pv.property_group_id else '0'
-                key = '{0}_{1}_{2}'.format(property_group_id, pv.property_id, pv.value)
+                property_group_id = pv.property_group_id if pv.property_group_id else "0"
+                key = "{0}_{1}_{2}".format(property_group_id, pv.property_id, pv.value)
                 item_props.append(key)
             item_props = sorted(item_props)
-            item_props_key = '-'.join(item_props)
+            item_props_key = "-".join(item_props)
             if item_props_key == properties_dict_key:
                 return item
 
@@ -153,6 +157,7 @@ class Cart(models.Model):
         products within the cart. Takes the selected shipping method into account.
         """
         import lfs.shipping.utils
+
         max_delivery_time = None
         for item in self.get_items():
             delivery_time = lfs.shipping.utils.get_product_delivery_time(request, item.product, for_cart=True)
@@ -190,9 +195,9 @@ class Cart(models.Model):
         return tax
 
     def _update_product_amounts(self):
-        items = CartItem.objects.select_related('product').filter(cart=self,
-                                                                  product__active=True,
-                                                                  product__manage_stock_amount=True)
+        items = CartItem.objects.select_related("product").filter(
+            cart=self, product__active=True, product__manage_stock_amount=True
+        )
         updated = False
         for item in items:
             if item.amount > item.product.stock_amount and not item.product.order_time:
@@ -207,7 +212,7 @@ class Cart(models.Model):
             cache.delete(cache_key)
 
     class Meta:
-        app_label = 'cart'
+        app_label = "cart"
 
 
 class CartItem(models.Model):
@@ -232,20 +237,23 @@ class CartItem(models.Model):
     modification_date
         The modification date of the cart item.
     """
-    cart = models.ForeignKey(Cart, models.CASCADE, verbose_name=_(u"Cart"))
-    product = models.ForeignKey(Product, models.CASCADE, verbose_name=_(u"Product"))
-    amount = models.FloatField(_(u"Quantity"), blank=True, null=True)
-    creation_date = models.DateTimeField(_(u"Creation date"), auto_now_add=True)
-    modification_date = models.DateTimeField(_(u"Modification date"), auto_now=True)
+
+    cart = models.ForeignKey(Cart, models.CASCADE, verbose_name=_("Cart"))
+    product = models.ForeignKey(Product, models.CASCADE, verbose_name=_("Product"))
+    amount = models.FloatField(_("Quantity"), blank=True, null=True)
+    creation_date = models.DateTimeField(_("Creation date"), auto_now_add=True)
+    modification_date = models.DateTimeField(_("Modification date"), auto_now=True)
 
     class Meta:
-        ordering = ['id']
-        app_label = 'cart'
+        ordering = ["id"]
+        app_label = "cart"
 
     def __str__(self):
-        return u"Product: %(product)s, Quantity: %(amount)f, Cart: %(cart)s" % {'product': self.product,
-                                                                                'amount': self.amount,
-                                                                                'cart': self.cart}
+        return "Product: %(product)s, Quantity: %(amount)f, Cart: %(cart)s" % {
+            "product": self.product,
+            "amount": self.amount,
+            "cart": self.cart,
+        }
 
     def get_price_net(self, request):
         """
@@ -333,14 +341,12 @@ class CartItem(models.Model):
         """
         properties = []
         for prop_dict in self.product.get_properties():
-            prop = prop_dict['property']
-            property_group = prop_dict['property_group']
+            prop = prop_dict["property"]
+            property_group = prop_dict["property_group"]
             price = ""
 
             try:
-                cipv = CartItemPropertyValue.objects.get(cart_item=self,
-                                                         property=prop,
-                                                         property_group=property_group)
+                cipv = CartItemPropertyValue.objects.get(cart_item=self, property=prop, property_group=property_group)
             except CartItemPropertyValue.DoesNotExist:
                 continue
 
@@ -363,19 +369,21 @@ class CartItem(models.Model):
             else:
                 value = cipv.value
 
-            properties.append({
-                "name": prop.name,
-                "title": prop.title,
-                "unit": prop.unit,
-                "display_price": prop.display_price,
-                "value": value,
-                "price": price,
-                "obj": prop,
-                "property_group": property_group,
-                "property_group_name": property_group.name
-            })
+            properties.append(
+                {
+                    "name": prop.name,
+                    "title": prop.title,
+                    "unit": prop.unit,
+                    "display_price": prop.display_price,
+                    "value": value,
+                    "price": price,
+                    "obj": prop,
+                    "property_group": property_group,
+                    "property_group_name": property_group.name,
+                }
+            )
 
-        properties = sorted(properties, key=lambda x: u'{0}-{1}'.format(x['property_group_name'], x['obj'].position))
+        properties = sorted(properties, key=lambda x: "{0}-{1}".format(x["property_group_name"], x["obj"].position))
         return properties
 
 
@@ -395,10 +403,13 @@ class CartItemPropertyValue(models.Model):
     value
         The value which is stored.
     """
-    cart_item = models.ForeignKey(CartItem, models.CASCADE, verbose_name=_(u"Cart item"), related_name="properties")
-    property = models.ForeignKey(Property, models.CASCADE, verbose_name=_(u"Property"))
-    property_group = models.ForeignKey(PropertyGroup, models.SET_NULL, verbose_name=_(u'Property group'), null=True, blank=True)
+
+    cart_item = models.ForeignKey(CartItem, models.CASCADE, verbose_name=_("Cart item"), related_name="properties")
+    property = models.ForeignKey(Property, models.CASCADE, verbose_name=_("Property"))
+    property_group = models.ForeignKey(
+        PropertyGroup, models.SET_NULL, verbose_name=_("Property group"), null=True, blank=True
+    )
     value = models.CharField("Value", blank=True, max_length=100)
 
     class Meta:
-        app_label = 'cart'
+        app_label = "cart"

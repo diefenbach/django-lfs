@@ -13,18 +13,18 @@ from lfs.catalog.models import StaticBlock
 
 
 class Country(models.Model):
-    """Holds country relevant data for the shop.
-    """
-    code = models.CharField(_(u"Country code"), max_length=2)
-    name = models.CharField(_(u"Name"), max_length=100)
+    """Holds country relevant data for the shop."""
+
+    code = models.CharField(_("Country code"), max_length=2)
+    name = models.CharField(_("Name"), max_length=100)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'Countries'
-        ordering = ("name", )
-        app_label = 'core'
+        verbose_name_plural = "Countries"
+        ordering = ("name",)
+        app_label = "core"
 
 
 class ActionGroup(models.Model):
@@ -36,18 +36,18 @@ class ActionGroup(models.Model):
     name
         The name of the group.
     """
-    name = models.CharField(_(u"Name"), blank=True, max_length=100, unique=True)
+
+    name = models.CharField(_("Name"), blank=True, max_length=100, unique=True)
 
     class Meta:
-        ordering = ("name", )
-        app_label = 'core'
+        ordering = ("name",)
+        app_label = "core"
 
     def __str__(self):
         return self.name
 
     def get_actions(self):
-        """Returns the actions of this group.
-        """
+        """Returns the actions of this group."""
         return self.actions.filter(active=True)
 
 
@@ -74,19 +74,20 @@ class Action(models.Model):
     parent
         Parent tab to create a tree.
     """
-    active = models.BooleanField(_(u"Active"), default=False)
-    title = models.CharField(_(u"Title"), max_length=40)
-    link = models.CharField(_(u"Link"), blank=True, max_length=100)
-    group = models.ForeignKey(ActionGroup, models.CASCADE, verbose_name=_(u"Group"), related_name="actions")
-    position = models.IntegerField(_(u"Position"), default=999)
-    parent = models.ForeignKey("self", models.SET_NULL, verbose_name=_(u"Parent"), blank=True, null=True)
+
+    active = models.BooleanField(_("Active"), default=False)
+    title = models.CharField(_("Title"), max_length=40)
+    link = models.CharField(_("Link"), blank=True, max_length=100)
+    group = models.ForeignKey(ActionGroup, models.CASCADE, verbose_name=_("Group"), related_name="actions")
+    position = models.IntegerField(_("Position"), default=999)
+    parent = models.ForeignKey("self", models.SET_NULL, verbose_name=_("Parent"), blank=True, null=True)
 
     def __str__(self):
         return self.title
 
     class Meta:
-        ordering = ("position", )
-        app_label = 'core'
+        ordering = ("position",)
+        app_label = "core"
 
 
 class Shop(models.Model):
@@ -161,50 +162,63 @@ class Shop(models.Model):
     meta*
         This information is used within HTML meta tags of the shop view.
     """
-    name = models.CharField(_(u"Name"), max_length=30)
-    shop_owner = models.CharField(_(u"Shop owner"), max_length=100, blank=True)
-    from_email = models.EmailField(_(u"From e-mail address"))
-    notification_emails = models.TextField(_(u"Notification email addresses"))
 
-    description = models.TextField(_(u"Description"), blank=True)
-    image = ImageWithThumbsField(_(u"Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400)))
-    static_block = models.ForeignKey(StaticBlock, models.SET_NULL, verbose_name=_(u"Static block"), blank=True, null=True, related_name="shops")
+    name = models.CharField(_("Name"), max_length=30)
+    shop_owner = models.CharField(_("Shop owner"), max_length=100, blank=True)
+    from_email = models.EmailField(_("From e-mail address"))
+    notification_emails = models.TextField(_("Notification email addresses"))
 
-    product_cols = models.IntegerField(_(u"Product cols"), default=1)
-    product_rows = models.IntegerField(_(u"Product rows"), default=10)
-    category_cols = models.IntegerField(_(u"Category cols"), default=1)
-    delivery_time = models.ForeignKey(DeliveryTime, models.SET_NULL, verbose_name=_(u"Delivery time"), blank=True, null=True)
+    description = models.TextField(_("Description"), blank=True)
+    image = ImageWithThumbsField(
+        _("Image"), upload_to="images", blank=True, null=True, sizes=((60, 60), (100, 100), (200, 200), (400, 400))
+    )
+    static_block = models.ForeignKey(
+        StaticBlock, models.SET_NULL, verbose_name=_("Static block"), blank=True, null=True, related_name="shops"
+    )
 
-    google_analytics_id = models.CharField(_(u"Google Analytics ID"), blank=True, max_length=20)
-    ga_site_tracking = models.BooleanField(_(u"Google Analytics Site Tracking"), default=False)
-    ga_ecommerce_tracking = models.BooleanField(_(u"Google Analytics E-Commerce Tracking"), default=False)
+    product_cols = models.IntegerField(_("Product cols"), default=1)
+    product_rows = models.IntegerField(_("Product rows"), default=10)
+    category_cols = models.IntegerField(_("Category cols"), default=1)
+    delivery_time = models.ForeignKey(
+        DeliveryTime, models.SET_NULL, verbose_name=_("Delivery time"), blank=True, null=True
+    )
 
-    invoice_countries = models.ManyToManyField(Country, verbose_name=_(u"Invoice countries"), related_name="invoice")
-    shipping_countries = models.ManyToManyField(Country, verbose_name=_(u"Shipping countries"), related_name="shipping")
-    default_country = models.ForeignKey(Country, models.SET_NULL, verbose_name=_(u"Default shipping country"), blank=True, null=True)
+    google_analytics_id = models.CharField(_("Google Analytics ID"), blank=True, max_length=20)
+    ga_site_tracking = models.BooleanField(_("Google Analytics Site Tracking"), default=False)
+    ga_ecommerce_tracking = models.BooleanField(_("Google Analytics E-Commerce Tracking"), default=False)
 
-    use_international_currency_code = models.BooleanField(_(u"Use international currency codes"), default=False)
-    price_calculator = models.CharField(choices=settings.LFS_PRICE_CALCULATORS, max_length=255,
-                                        default=settings.LFS_PRICE_CALCULATORS[0][0],
-                                        verbose_name=_(u"Price calculator"))
+    invoice_countries = models.ManyToManyField(Country, verbose_name=_("Invoice countries"), related_name="invoice")
+    shipping_countries = models.ManyToManyField(Country, verbose_name=_("Shipping countries"), related_name="shipping")
+    default_country = models.ForeignKey(
+        Country, models.SET_NULL, verbose_name=_("Default shipping country"), blank=True, null=True
+    )
 
-    checkout_type = models.PositiveSmallIntegerField(_(u"Checkout type"), choices=CHECKOUT_TYPES, default=CHECKOUT_TYPE_SELECT)
-    confirm_toc = models.BooleanField(_(u"Confirm TOC"), default=False)
+    use_international_currency_code = models.BooleanField(_("Use international currency codes"), default=False)
+    price_calculator = models.CharField(
+        choices=settings.LFS_PRICE_CALCULATORS,
+        max_length=255,
+        default=settings.LFS_PRICE_CALCULATORS[0][0],
+        verbose_name=_("Price calculator"),
+    )
 
-    meta_title = models.CharField(_(u"Meta title"), blank=True, default="<name>", max_length=80)
-    meta_keywords = models.TextField(_(u"Meta keywords"), blank=True)
-    meta_description = models.TextField(_(u"Meta description"), blank=True)
+    checkout_type = models.PositiveSmallIntegerField(
+        _("Checkout type"), choices=CHECKOUT_TYPES, default=CHECKOUT_TYPE_SELECT
+    )
+    confirm_toc = models.BooleanField(_("Confirm TOC"), default=False)
+
+    meta_title = models.CharField(_("Meta title"), blank=True, default="<name>", max_length=80)
+    meta_keywords = models.TextField(_("Meta keywords"), blank=True)
+    meta_description = models.TextField(_("Meta description"), blank=True)
 
     class Meta:
         permissions = (("manage_shop", "Manage shop"),)
-        app_label = 'core'
+        app_label = "core"
 
     def __str__(self):
         return self.name
 
     def get_format_info(self):
-        """Returns the global format info.
-        """
+        """Returns the global format info."""
         return {
             "product_cols": self.product_cols,
             "product_rows": self.product_rows,
@@ -212,8 +226,7 @@ class Shop(models.Model):
         }
 
     def get_default_country(self):
-        """Returns the default country of the shop.
-        """
+        """Returns the default country of the shop."""
         cache_key = "%s-default-country-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, self.id)
         default_country = cache.get(cache_key)
         if default_country:
@@ -225,9 +238,9 @@ class Shop(models.Model):
         return default_country
 
     def get_notification_emails(self):
-        """Returns the notification e-mail addresses as list
-        """
+        """Returns the notification e-mail addresses as list"""
         import re
+
         adresses = re.split("[\s,]+", self.notification_emails)
         return adresses
 
@@ -238,18 +251,15 @@ class Shop(models.Model):
         return None
 
     def get_meta_title(self):
-        """Returns the meta title of the shop.
-        """
+        """Returns the meta title of the shop."""
         return self.meta_title.replace("<name>", self.name)
 
     def get_meta_keywords(self):
-        """Returns the meta keywords of the shop.
-        """
+        """Returns the meta keywords of the shop."""
         return self.meta_keywords.replace("<name>", self.name)
 
     def get_meta_description(self):
-        """Returns the meta description of the shop.
-        """
+        """Returns the meta description of the shop."""
         return self.meta_description.replace("<name>", self.name)
 
 
@@ -257,4 +267,4 @@ class Application(models.Model):
     version = models.CharField(_("Version"), blank=True, max_length=10)
 
     class Meta:
-        app_label = 'core'
+        app_label = "core"

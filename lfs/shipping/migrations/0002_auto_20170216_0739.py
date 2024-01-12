@@ -7,19 +7,22 @@ from django.db import migrations
 
 def update_price_calculator(apps, schema_editor):
     ShippingMethod = apps.get_model("shipping", "ShippingMethod")
-    for shipping_method in ShippingMethod.objects.filter(price_calculator="lfs.shipping.NetShippingMethodPriceCalculator"):
+    for shipping_method in ShippingMethod.objects.filter(
+        price_calculator="lfs.shipping.NetShippingMethodPriceCalculator"
+    ):
         shipping_method.price_calculator = "lfs.shipping.calculator.NetShippingMethodPriceCalculator"
         shipping_method.save()
 
-    for shipping_method in ShippingMethod.objects.filter(price_calculator="lfs.shipping.GrossShippingMethodPriceCalculator"):
+    for shipping_method in ShippingMethod.objects.filter(
+        price_calculator="lfs.shipping.GrossShippingMethodPriceCalculator"
+    ):
         shipping_method.price_calculator = "lfs.shipping.calculator.GrossShippingMethodPriceCalculator"
         shipping_method.save()
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('shipping', '0001_initial'),
+        ("shipping", "0001_initial"),
     ]
 
     operations = [

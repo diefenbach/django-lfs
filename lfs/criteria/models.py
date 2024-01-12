@@ -95,17 +95,20 @@ class Criterion(models.Model):
                 [CONTAINS, _(u"Contains")],
             ]
     """
-    content_type = models.ForeignKey(ContentType, models.CASCADE, verbose_name=_(u"Content type"), related_name="content_type")
-    content_id = models.PositiveIntegerField(_(u"Content id"))
-    content = GenericForeignKey(ct_field="content_type", fk_field="content_id")
-    sub_type = models.CharField(_(u"Sub type"), max_length=100, blank=True)
 
-    position = models.PositiveIntegerField(_(u"Position"), default=999)
-    operator = models.PositiveIntegerField(_(u"Operator"), blank=True, null=True)
+    content_type = models.ForeignKey(
+        ContentType, models.CASCADE, verbose_name=_("Content type"), related_name="content_type"
+    )
+    content_id = models.PositiveIntegerField(_("Content id"))
+    content = GenericForeignKey(ct_field="content_type", fk_field="content_id")
+    sub_type = models.CharField(_("Sub type"), max_length=100, blank=True)
+
+    position = models.PositiveIntegerField(_("Position"), default=999)
+    operator = models.PositiveIntegerField(_("Operator"), blank=True, null=True)
 
     class Meta:
-        ordering = ("position", )
-        app_label = 'criteria'
+        ordering = ("position",)
+        app_label = "criteria"
 
     EQUAL = 0
     LESS_THAN = 1
@@ -123,40 +126,43 @@ class Criterion(models.Model):
     MULTIPLE_SELECT = 2
 
     NUMBER_OPERATORS = [
-        [EQUAL, _(u"Equal to")],
-        [LESS_THAN, _(u"Less than")],
-        [LESS_THAN_EQUAL, _(u"Less than equal to")],
-        [GREATER_THAN, _(u"Greater than")],
-        [GREATER_THAN_EQUAL, _(u"Greater than equal to")],
+        [EQUAL, _("Equal to")],
+        [LESS_THAN, _("Less than")],
+        [LESS_THAN_EQUAL, _("Less than equal to")],
+        [GREATER_THAN, _("Greater than")],
+        [GREATER_THAN_EQUAL, _("Greater than equal to")],
     ]
 
     SELECTION_OPERATORS = [
-        [IS_SELECTED, _(u"Is selected")],
-        [IS_NOT_SELECTED, _(u"Is not selected")],
+        [IS_SELECTED, _("Is selected")],
+        [IS_NOT_SELECTED, _("Is not selected")],
     ]
 
     VALID_OPERATORS = [
-        [IS_VALID, _(u"Is valid")],
-        [IS_NOT_VALID, _(u"Is not valid")],
+        [IS_VALID, _("Is valid")],
+        [IS_NOT_VALID, _("Is not valid")],
     ]
 
     STRING_OPERATORS = [
-        [EQUAL, _(u"Equal to")],
-        [CONTAINS, _(u"Contains")],
+        [EQUAL, _("Equal to")],
+        [CONTAINS, _("Contains")],
     ]
 
     def __str__(self):
-        """ We're using force unicode as this basically fails:
-               from django.utils import translation
-               from django.utils.translation import gettext_lazy as _
-               translation.activate('pl')
-               u'test: %s' % _('Payment method')
+        """We're using force unicode as this basically fails:
+        from django.utils import translation
+        from django.utils.translation import gettext_lazy as _
+        translation.activate('pl')
+        u'test: %s' % _('Payment method')
         """
-        return gettext("%(name)s: %(operator)s %(value)s" % {
-            'name': force_str(self.get_name()),
-            'operator': force_str(self.get_current_operator_as_string()),
-            'value': force_str(self.get_value_as_string())
-        })
+        return gettext(
+            "%(name)s: %(operator)s %(value)s"
+            % {
+                "name": force_str(self.get_name()),
+                "operator": force_str(self.get_current_operator_as_string()),
+                "value": force_str(self.get_value_as_string()),
+            }
+        )
 
     def save(self, *args, **kwargs):
         if self.sub_type == "":
@@ -302,11 +308,13 @@ class Criterion(models.Model):
             else:
                 selected = False
 
-            operators.append({
-                "id": operator[0],
-                "name": operator[1].encode("utf-8"),
-                "selected": selected,
-            })
+            operators.append(
+                {
+                    "id": operator[0],
+                    "name": operator[1].encode("utf-8"),
+                    "selected": selected,
+                }
+            )
 
         criteria = []
         for criterion in settings.LFS_CRITERIA:
@@ -316,28 +324,34 @@ class Criterion(models.Model):
             else:
                 selected = False
 
-            criteria.append({
-                "module": criterion[0],
-                "name": criterion[1],
-                "selected": selected,
-            })
+            criteria.append(
+                {
+                    "module": criterion[0],
+                    "name": criterion[1],
+                    "selected": selected,
+                }
+            )
 
         if self.id:
             id = "ex%s" % self.id
         else:
             id = timezone.now().microsecond
 
-        return render_to_string(self.get_template(request), request=request, context={
-            "id": id,
-            "operator": self.operator,
-            "value": self.get_value(),
-            "position": position,
-            "operators": operators,
-            "criteria": criteria,
-            "selectable_values": self.get_selectable_values(request),
-            "value_type": self.get_value_type(),
-            "criterion": self,
-        })
+        return render_to_string(
+            self.get_template(request),
+            request=request,
+            context={
+                "id": id,
+                "operator": self.operator,
+                "value": self.get_value(),
+                "position": position,
+                "operators": operators,
+                "criteria": criteria,
+                "selectable_values": self.get_selectable_values(request),
+                "value_type": self.get_value_type(),
+                "criterion": self,
+            },
+        )
 
     def update(self, value):
         """
@@ -373,7 +387,8 @@ class CartPriceCriterion(Criterion):
     """
     Criterion to check against cart/product price.
     """
-    value = models.FloatField(_(u"Price"), default=0.0)
+
+    value = models.FloatField(_("Price"), default=0.0)
 
     def get_operators(self):
         """
@@ -407,14 +422,15 @@ class CartPriceCriterion(Criterion):
             return False
 
     class Meta:
-        app_label = 'criteria'
+        app_label = "criteria"
 
 
 class CombinedLengthAndGirthCriterion(Criterion):
     """
     Criterion to check against combined length and girth.
     """
-    value = models.FloatField(_(u"CLAG"), default=0.0)
+
+    value = models.FloatField(_("CLAG"), default=0.0)
 
     def get_operators(self):
         """
@@ -461,14 +477,15 @@ class CombinedLengthAndGirthCriterion(Criterion):
             return False
 
     class Meta:
-        app_label = 'criteria'
+        app_label = "criteria"
 
 
 class CountryCriterion(Criterion):
     """
     Criterion to check against shipping country.
     """
-    value = models.ManyToManyField(Country, verbose_name=_(u"Countries"))
+
+    value = models.ManyToManyField(Country, verbose_name=_("Countries"))
 
     def get_operators(self):
         """
@@ -485,11 +502,13 @@ class CountryCriterion(Criterion):
             else:
                 selected = False
 
-            countries.append({
-                "id": country.id,
-                "name": country.name,
-                "selected": selected,
-            })
+            countries.append(
+                {
+                    "id": country.id,
+                    "name": country.name,
+                    "selected": selected,
+                }
+            )
 
         return countries
 
@@ -498,10 +517,10 @@ class CountryCriterion(Criterion):
 
     def is_valid(self):
         country = shipping.utils.get_selected_shipping_country(self.request)
-        cache_key = u'country_values_{}'.format(self.pk)
+        cache_key = "country_values_{}".format(self.pk)
         countries = cache.get(cache_key)
         if countries is None:
-            countries = list(self.value.values_list('id', flat=True))
+            countries = list(self.value.values_list("id", flat=True))
             cache.set(cache_key, countries)
 
         if self.operator == self.IS_SELECTED:
@@ -509,14 +528,15 @@ class CountryCriterion(Criterion):
         return country.pk not in countries
 
     class Meta:
-        app_label = 'criteria'
+        app_label = "criteria"
 
 
 class HeightCriterion(Criterion):
     """
     Criterion to check against product's height / cart's total height.
     """
-    value = models.FloatField(_(u"Height"), default=0.0)
+
+    value = models.FloatField(_("Height"), default=0.0)
 
     def get_operators(self):
         """
@@ -550,14 +570,15 @@ class HeightCriterion(Criterion):
             return False
 
     class Meta:
-        app_label = 'criteria'
+        app_label = "criteria"
 
 
 class LengthCriterion(Criterion):
     """
     Criterion to check against product's length / cart's max length.
     """
-    value = models.FloatField(_(u"Length"), default=0.0)
+
+    value = models.FloatField(_("Length"), default=0.0)
 
     def get_operators(self):
         """
@@ -591,14 +612,15 @@ class LengthCriterion(Criterion):
             return False
 
     class Meta:
-        app_label = 'criteria'
+        app_label = "criteria"
 
 
 class PaymentMethodCriterion(Criterion):
     """
     Criterion to check against payment methods.
     """
-    value = models.ManyToManyField(PaymentMethod, verbose_name=_(u"Payment methods"))
+
+    value = models.ManyToManyField(PaymentMethod, verbose_name=_("Payment methods"))
 
     def get_operators(self):
         """
@@ -615,11 +637,13 @@ class PaymentMethodCriterion(Criterion):
             else:
                 selected = False
 
-            payment_methods.append({
-                "id": pm.id,
-                "name": pm.name,
-                "selected": selected,
-            })
+            payment_methods.append(
+                {
+                    "id": pm.id,
+                    "name": pm.name,
+                    "selected": selected,
+                }
+            )
 
         return payment_methods
 
@@ -629,6 +653,7 @@ class PaymentMethodCriterion(Criterion):
     def is_valid(self):
         # see ShippingMethodCriterion for what's going on here
         import lfs.payment.utils
+
         if isinstance(self.content, PaymentMethod):
             is_payment_method = True
         else:
@@ -654,14 +679,15 @@ class PaymentMethodCriterion(Criterion):
             return False
 
     class Meta:
-        app_label = 'criteria'
+        app_label = "criteria"
 
 
 class ShippingMethodCriterion(Criterion):
     """
     Criterion to check against shipping methods.
     """
-    value = models.ManyToManyField(ShippingMethod, verbose_name=_(u"Shipping methods"))
+
+    value = models.ManyToManyField(ShippingMethod, verbose_name=_("Shipping methods"))
 
     def get_operators(self):
         """
@@ -678,11 +704,13 @@ class ShippingMethodCriterion(Criterion):
             else:
                 selected = False
 
-            shipping_methods.append({
-                "id": sm.id,
-                "name": sm.name,
-                "selected": selected,
-            })
+            shipping_methods.append(
+                {
+                    "id": sm.id,
+                    "name": sm.name,
+                    "selected": selected,
+                }
+            )
 
         return shipping_methods
 
@@ -697,6 +725,7 @@ class ShippingMethodCriterion(Criterion):
         # we get an infinte recursion.
 
         import lfs.shipping.utils
+
         if isinstance(self.content, ShippingMethod):
             is_shipping_method = True
         else:
@@ -722,14 +751,15 @@ class ShippingMethodCriterion(Criterion):
             return False
 
     class Meta:
-        app_label = 'criteria'
+        app_label = "criteria"
 
 
 class WeightCriterion(Criterion):
     """
     Criterion to check against product's weight / cart's total weight.
     """
-    value = models.FloatField(_(u"Weight"), default=0.0)
+
+    value = models.FloatField(_("Weight"), default=0.0)
 
     def get_operators(self):
         """
@@ -763,14 +793,15 @@ class WeightCriterion(Criterion):
             return False
 
     class Meta:
-        app_label = 'criteria'
+        app_label = "criteria"
 
 
 class WidthCriterion(Criterion):
     """
     Criterion to check against product's width / cart's max width.
     """
-    value = models.FloatField(_(u"Width"), default=0.0)
+
+    value = models.FloatField(_("Width"), default=0.0)
 
     def get_operators(self):
         """
@@ -804,4 +835,4 @@ class WidthCriterion(Criterion):
         return False
 
     class Meta:
-        app_label = 'criteria'
+        app_label = "criteria"

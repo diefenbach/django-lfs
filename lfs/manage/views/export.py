@@ -24,22 +24,20 @@ from lfs.export.settings import CATEGORY_VARIANTS_NONE
 
 
 class ExportDataForm(ModelForm):
-    """Form to manage selection data.
-    """
+    """Form to manage selection data."""
+
     class Meta:
         model = Export
-        exclude = ("products", )
+        exclude = ("products",)
 
 
 @permission_required("core.manage_shop")
 def manage_export(request, export_id, template_name="manage/export/export.html"):
-    """The main view to display exports.
-    """
+    """The main view to display exports."""
     export = Export.objects.get(pk=export_id)
 
     categories = []
     for category in Category.objects.filter(parent=None):
-
         # Options
         options = []
 
@@ -51,77 +49,92 @@ def manage_export(request, export_id, template_name="manage/export/export.html")
             variants_option = category_option.variants_option
 
         for option in CATEGORY_VARIANTS_CHOICES:
-            options.append({
-                "name": option[1],
-                "value": option[0],
-                "selected": option[0] == variants_option,
-            })
+            options.append(
+                {
+                    "name": option[1],
+                    "value": option[0],
+                    "selected": option[0] == variants_option,
+                }
+            )
 
         # Checking state
         checked, klass = _get_category_state(export, category)
 
-        categories.append({
-            "id": category.id,
-            "name": category.name,
-            "checked": checked,
-            "klass": klass,
-            "options": options,
-        })
+        categories.append(
+            {
+                "id": category.id,
+                "name": category.name,
+                "checked": checked,
+                "klass": klass,
+                "options": options,
+            }
+        )
 
     data_form = ExportDataForm(instance=export)
-    return render(request, template_name, {
-        "categories": categories,
-        "export_id": export_id,
-        "slug": export.slug,
-        "selectable_exports_inline": selectable_exports_inline(request, export_id),
-        "export_data_inline": export_data_inline(request, export_id, data_form),
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "categories": categories,
+            "export_id": export_id,
+            "slug": export.slug,
+            "selectable_exports_inline": selectable_exports_inline(request, export_id),
+            "export_data_inline": export_data_inline(request, export_id, data_form),
+        },
+    )
 
 
 # Parts
 def export_data_inline(request, export_id, form, template_name="manage/export/export_data_inline.html"):
-    """Displays the data form of the current export.
-    """
-    return render_to_string(template_name, request=request, context={
-        "export_id": export_id,
-        "form": form,
-    })
+    """Displays the data form of the current export."""
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "export_id": export_id,
+            "form": form,
+        },
+    )
 
 
 def selectable_exports_inline(request, export_id, template_name="manage/export/selectable_exports_inline.html"):
-    """Displays all selectable exports.
-    """
-    return render_to_string(template_name, request=request, context={
-        "exports": Export.objects.all(),
-        "export_id": int(export_id),
-    })
+    """Displays all selectable exports."""
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "exports": Export.objects.all(),
+            "export_id": int(export_id),
+        },
+    )
 
 
 @permission_required("core.manage_shop")
 def export_inline(request, export_id, category_id, template_name="manage/export/export_inline.html"):
-    """Returns categories and products for given export id and category id.
-    """
+    """Returns categories and products for given export id and category id."""
     export = Export.objects.get(pk=export_id)
     selected_products = export.products.all()
 
     products = []
-    for product in Product.objects.filter(sub_type__in=[STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS], categories__in=[category_id], active=True):
-
+    for product in Product.objects.filter(
+        sub_type__in=[STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS], categories__in=[category_id], active=True
+    ):
         if product.is_standard():
             type = "P"
         else:
             type = "V"
 
-        products.append({
-            "id": product.id,
-            "name": product.get_name(),
-            "checked": product in selected_products,
-            "type": type,
-        })
+        products.append(
+            {
+                "id": product.id,
+                "name": product.get_name(),
+                "checked": product in selected_products,
+                "type": type,
+            }
+        )
 
     categories = []
     for category in Category.objects.filter(parent=category_id):
-
         # Options
         options = []
 
@@ -133,73 +146,79 @@ def export_inline(request, export_id, category_id, template_name="manage/export/
             variants_option = category_option.variants_option
 
         for option in CATEGORY_VARIANTS_CHOICES:
-            options.append({
-                "name": option[1],
-                "value": option[0],
-                "selected": option[0] == variants_option,
-            })
+            options.append(
+                {
+                    "name": option[1],
+                    "value": option[0],
+                    "selected": option[0] == variants_option,
+                }
+            )
 
         checked, klass = _get_category_state(export, category)
 
-        categories.append({
-            "id": category.id,
-            "name": category.name,
-            "checked": checked,
-            "klass": klass,
-            "options": options,
-        })
+        categories.append(
+            {
+                "id": category.id,
+                "name": category.name,
+                "checked": checked,
+                "klass": klass,
+                "options": options,
+            }
+        )
 
-    result = render_to_string(template_name, request=request, context={
-        "categories": categories,
-        "products": products,
-        "export_id": export_id,
-    })
+    result = render_to_string(
+        template_name,
+        request=request,
+        context={
+            "categories": categories,
+            "products": products,
+            "export_id": export_id,
+        },
+    )
 
     html = (("#sub-categories-%s" % category_id, result),)
 
-    return HttpResponse(
-        json.dumps({"html": html}), content_type='application/json')
+    return HttpResponse(json.dumps({"html": html}), content_type="application/json")
 
 
 @permission_required("core.manage_shop")
 def add_export(request, template_name="manage/export/add_export.html"):
-    """Form and logic to add a export.
-    """
+    """Form and logic to add a export."""
     if request.method == "POST":
         form = ExportDataForm(data=request.POST)
         if form.is_valid():
             new_export = form.save()
-            return HttpResponseRedirect(
-                reverse("lfs_export", kwargs={"export_id": new_export.id}))
+            return HttpResponseRedirect(reverse("lfs_export", kwargs={"export_id": new_export.id}))
 
     else:
         form = ExportDataForm()
 
-    return render(request, template_name, {
-        "form": form,
-        "selectable_exports_inline": selectable_exports_inline(request, 0),
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "form": form,
+            "selectable_exports_inline": selectable_exports_inline(request, 0),
+        },
+    )
 
 
 # Actions
 @permission_required("core.manage_shop")
 def export_dispatcher(request):
-    """Dispatches to the first export or to the add form.
-    """
+    """Dispatches to the first export or to the add form."""
     try:
         export = Export.objects.all()[0]
     except IndexError:
         return HttpResponseRedirect(reverse("lfs_export_add_export"))
     else:
-        return HttpResponseRedirect(
-            reverse("lfs_export", kwargs={"export_id": export.id}))
+        return HttpResponseRedirect(reverse("lfs_export", kwargs={"export_id": export.id}))
 
 
 @permission_required("core.manage_shop")
 @require_POST
 def delete_export(request, export_id):
-    """Deletes export with passed export id.
-    """
+    """Deletes export with passed export id."""
     try:
         export = Export.objects.get(pk=export_id)
     except Export.DoesNotExist:
@@ -212,8 +231,7 @@ def delete_export(request, export_id):
 
 @permission_required("core.manage_shop")
 def edit_category(request, export_id, category_id):
-    """Adds/Removes products of given category to given export.
-    """
+    """Adds/Removes products of given category to given export."""
     export = Export.objects.get(pk=export_id)
     category = Category.objects.get(pk=category_id)
 
@@ -229,8 +247,7 @@ def edit_category(request, export_id, category_id):
 
 @permission_required("core.manage_shop")
 def edit_product(request, export_id, product_id):
-    """Adds/Removes given product to given export.
-    """
+    """Adds/Removes given product to given export."""
     export = Export.objects.get(pk=export_id)
     product = Product.objects.get(pk=product_id)
 
@@ -244,8 +261,7 @@ def edit_product(request, export_id, product_id):
 
 @permission_required("core.manage_shop")
 def export(request, slug):
-    """Exports the export with passed export id.
-    """
+    """Exports the export with passed export id."""
     export = get_object_or_404(Export, slug=slug)
     module = lfs.core.utils.import_module(export.script.module)
     return getattr(module, export.script.method)(request, export)
@@ -268,12 +284,7 @@ def category_state(request, export_id, category_id):
     html = ("#category-state-%s" % category_id, result)
     checkbox = ("#export-category-input-%s" % category_id, checked)
 
-    return HttpResponse(
-        json.dumps({
-            "html": html,
-            "checkbox": checkbox
-        }), content_type='application/json'
-    )
+    return HttpResponse(json.dumps({"html": html, "checkbox": checkbox}), content_type="application/json")
 
 
 @permission_required("core.manage_shop")
@@ -306,8 +317,7 @@ def update_category_variants_option(request, export_id, category_id):
             category_option.delete()
     else:
         if category_option is None:
-            CategoryOption.objects.create(
-                export=export, category=category, variants_option=variants_option)
+            CategoryOption.objects.create(export=export, category=category, variants_option=variants_option)
         else:
             category_option.variants_option = variants_option
             category_option.save()
@@ -317,32 +327,27 @@ def update_category_variants_option(request, export_id, category_id):
 
 @permission_required("core.manage_shop")
 def update_data(request, export_id):
-    """Updates data of export with given export id.
-    """
+    """Updates data of export with given export id."""
     export = Export.objects.get(pk=export_id)
     form = ExportDataForm(instance=export, data=request.POST)
 
     if form.is_valid():
         form.save()
 
-    msg = _(u"Export data has been saved.")
+    msg = _("Export data has been saved.")
 
     html = (
         ("#data", export_data_inline(request, export_id, form)),
         ("#selectable-exports-inline", selectable_exports_inline(request, export_id)),
     )
 
-    result = json.dumps({
-        "html": html,
-        "message": msg
-    }, cls=LazyEncoder)
+    result = json.dumps({"html": html, "message": msg}, cls=LazyEncoder)
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 def _get_category_state(export, category):
-    """Calculates the state for given category for given export.
-    """
+    """Calculates the state for given category for given export."""
     selected_products = export.products.all()
 
     found = False

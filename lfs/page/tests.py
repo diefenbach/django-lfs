@@ -8,13 +8,12 @@ from lfs.tests.utils import DummyRequest
 
 
 class PageTestCase(TestCase):
-    """Unit tests for lfs.page
-    """
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    """Unit tests for lfs.page"""
+
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         self.client.login(username="admin", password="admin")
 
         self.user = User.objects.get(username="admin")
@@ -28,16 +27,11 @@ class PageTestCase(TestCase):
         )
 
         self.page = Page.objects.create(
-            id=2,
-            title="Page Title",
-            slug="page-title",
-            body="<p>This is a body</p>",
-            short_text="This is a short text"
+            id=2, title="Page Title", slug="page-title", body="<p>This is a body</p>", short_text="This is a short text"
         )
 
     def test_add_page(self):
-        """Tests to add a page.
-        """
+        """Tests to add a page."""
         self.assertEqual(self.page.id, 2)
         self.assertEqual(self.page.title, "Page Title")
         self.assertEqual(self.page.slug, "page-title")
@@ -46,16 +40,14 @@ class PageTestCase(TestCase):
         self.assertEqual(self.page.position, 999)
 
     def test_page_view_1(self):
-        """Tests page view as superuser.
-        """
+        """Tests page view as superuser."""
         url = reverse("lfs_page_view", kwargs={"slug": self.page.slug})
         response = self.client.get(url)
         self.failIf(response.content.find(b"Page Title") == -1)
         self.failIf(response.content.find(b"<p>This is a body</p>") == -1)
 
     def test_page_view_2(self):
-        """Tests page view as anonymous.
-        """
+        """Tests page view as anonymous."""
         self.client.logout()
 
         url = reverse("lfs_page_view", kwargs={"slug": self.page.slug})
@@ -71,8 +63,7 @@ class PageTestCase(TestCase):
         self.failIf(response.content.find(b"<p>This is a body</p>") == -1)
 
     def test_active_pages(self):
-        """Tests the ActiveManager for pages.
-        """
+        """Tests the ActiveManager for pages."""
         pages = Page.objects.active()
         self.assertEqual(len(pages), 0)
 

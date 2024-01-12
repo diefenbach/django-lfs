@@ -10,6 +10,7 @@ class Criteria(object):
     """
     Base class for objects which have criteria.
     """
+
     def is_valid(self, request, product=None):
         """
         Returns ``True`` if the object is valid, otherwise ``False``.
@@ -26,11 +27,12 @@ class Criteria(object):
         Returns all criteria of the object.
         """
         content_type = ContentType.objects.get_for_model(self)
-        cache_key = u'criteria_for_model_{}_{}'.format(self.pk, content_type.pk)
+        cache_key = "criteria_for_model_{}_{}".format(self.pk, content_type.pk)
         criteria = cache.get(cache_key, None)
         if criteria is None:
             criteria = []
             from lfs.criteria.models import Criterion
+
             for criterion in Criterion.objects.filter(content_id=self.pk, content_type=content_type):
                 criteria.append(criterion.get_content_object())
             cache.set(cache_key, criteria)
@@ -67,5 +69,5 @@ class Criteria(object):
                 criterion.update(value)
 
         content_type = ContentType.objects.get_for_model(self)
-        cache_key = u'criteria_for_model_{}_{}'.format(self.pk, content_type.pk)
+        cache_key = "criteria_for_model_{}_{}".format(self.pk, content_type.pk)
         cache.delete(cache_key)

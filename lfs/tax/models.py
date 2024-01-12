@@ -14,11 +14,12 @@ class Tax(models.Model):
     description
         The description of the tax rate.
     """
-    rate = models.FloatField(_(u"Rate"), default=0)
-    description = models.TextField(_(u"Description"), blank=True)
+
+    rate = models.FloatField(_("Rate"), default=0)
+    description = models.TextField(_("Description"), blank=True)
 
     def __str__(self):
-        return u"%s%%" % self.rate
+        return "%s%%" % self.rate
 
     class Meta:
-        app_label = 'tax'
+        app_label = "tax"

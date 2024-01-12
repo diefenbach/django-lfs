@@ -44,21 +44,21 @@ class Discount(models.Model, Criteria):
         Products that discount applies to
 
     """
-    name = models.CharField(_(u"Name"), max_length=100)
+
+    name = models.CharField(_("Name"), max_length=100)
     active = models.BooleanField(_("Active"), default=False)
-    value = models.FloatField(_(u"Value"))
-    type = models.PositiveSmallIntegerField(_(u"Type"), choices=DISCOUNT_TYPE_CHOICES, default=DISCOUNT_TYPE_ABSOLUTE)
-    tax = models.ForeignKey(Tax, models.SET_NULL, verbose_name=_(u"Tax"), blank=True, null=True)
-    sku = models.CharField(_(u"SKU"), blank=True, max_length=50)
-    sums_up = models.BooleanField(_(u"Sums up"), default=True, help_text=_(u'Sums up with other discounts/vouchers'))
-    products = models.ManyToManyField(Product, verbose_name=_(u"Products"), related_name="discounts")
+    value = models.FloatField(_("Value"))
+    type = models.PositiveSmallIntegerField(_("Type"), choices=DISCOUNT_TYPE_CHOICES, default=DISCOUNT_TYPE_ABSOLUTE)
+    tax = models.ForeignKey(Tax, models.SET_NULL, verbose_name=_("Tax"), blank=True, null=True)
+    sku = models.CharField(_("SKU"), blank=True, max_length=50)
+    sums_up = models.BooleanField(_("Sums up"), default=True, help_text=_("Sums up with other discounts/vouchers"))
+    products = models.ManyToManyField(Product, verbose_name=_("Products"), related_name="discounts")
 
     def __str__(self):
         return self.name
 
     def get_tax(self, request, product=None):
-        """Returns the absolute tax of the voucher.
-        """
+        """Returns the absolute tax of the voucher."""
         price_gross = self.get_price_gross(request, product)
         if self.tax:
             return price_gross * (self.tax.rate / (100 + self.tax.rate))
@@ -70,13 +70,11 @@ class Discount(models.Model, Criteria):
                 return cart.get_tax(request) * (self.value / 100)
 
     def get_price_net(self, request, product=None):
-        """Returns the net price of the discount.
-        """
+        """Returns the net price of the discount."""
         return self.get_price_gross(request, product) - self.get_tax(request, product)
 
     def get_price_gross(self, request, product=None):
-        """Returns the gross price of the discount.
-        """
+        """Returns the gross price of the discount."""
         # if products exists then discount is applied per product
         if self.products.exists():
             cart = lfs.cart.utils.get_cart(request)

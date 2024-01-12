@@ -1,13 +1,13 @@
-from . average_rating import AverageRatingPortlet  # NOQA
-from . cart import CartPortlet  # NOQA
-from . categories import CategoriesPortlet  # NOQA
-from . delivery_time import DeliveryTimePortlet  # NOQA
-from . pages import PagesPortlet  # NOQA
-from . recent_products import RecentProductsPortlet  # NOQA
-from . related_products import RelatedProductsPortlet  # NOQA
-from . text import TextPortlet  # NOQA
-from . topseller import TopsellerPortlet  # NOQA
-from . filter import FilterPortlet  # NOQA
-from . forsale import ForsalePortlet  # NOQA
-from . featured import FeaturedPortlet  # NOQA
-from . latest import LatestPortlet  # NOQA
+from .average_rating import AverageRatingPortlet  # NOQA
+from .cart import CartPortlet  # NOQA
+from .categories import CategoriesPortlet  # NOQA
+from .delivery_time import DeliveryTimePortlet  # NOQA
+from .pages import PagesPortlet  # NOQA
+from .recent_products import RecentProductsPortlet  # NOQA
+from .related_products import RelatedProductsPortlet  # NOQA
+from .text import TextPortlet  # NOQA
+from .topseller import TopsellerPortlet  # NOQA
+from .filter import FilterPortlet  # NOQA
+from .forsale import ForsalePortlet  # NOQA
+from .featured import FeaturedPortlet  # NOQA
+from .latest import LatestPortlet  # NOQA

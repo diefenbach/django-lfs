@@ -28,11 +28,11 @@ def add_order(request):
     customer = customer_utils.get_customer(request)
     order = None
 
-    not_required_address = getattr(settings, 'LFS_CHECKOUT_NOT_REQUIRED_ADDRESS', 'shipping')
+    not_required_address = getattr(settings, "LFS_CHECKOUT_NOT_REQUIRED_ADDRESS", "shipping")
 
     invoice_address = customer.selected_invoice_address
     shipping_address = customer.selected_shipping_address
-    if not_required_address == 'shipping':
+    if not_required_address == "shipping":
         if request.POST.get("no_shipping"):
             shipping_address = customer.selected_invoice_address
         else:
@@ -78,21 +78,21 @@ def add_order(request):
     discounts_data = lfs.discounts.utils.get_discounts_data(request)
 
     # calculate total value of discounts and voucher that sum up
-    summed_up_value = discounts_data['summed_up_value']
-    if voucher_data['sums_up']:
-        summed_up_value += voucher_data['voucher_value']
+    summed_up_value = discounts_data["summed_up_value"]
+    if voucher_data["sums_up"]:
+        summed_up_value += voucher_data["voucher_value"]
 
     # initialize discounts with summed up discounts
-    use_voucher = voucher_data['voucher'] is not None
-    discounts = discounts_data['summed_up_discounts']
-    if voucher_data['voucher_value'] > summed_up_value or discounts_data['max_value'] > summed_up_value:
+    use_voucher = voucher_data["voucher"] is not None
+    discounts = discounts_data["summed_up_discounts"]
+    if voucher_data["voucher_value"] > summed_up_value or discounts_data["max_value"] > summed_up_value:
         # use not summed up value
-        if voucher_data['voucher_value'] > discounts_data['max_value']:
+        if voucher_data["voucher_value"] > discounts_data["max_value"]:
             # use voucher only
             discounts = []
         else:
             # use discount only
-            discounts = discounts_data['max_discounts']
+            discounts = discounts_data["max_discounts"]
             use_voucher = False
 
     for discount in discounts:
@@ -100,8 +100,8 @@ def add_order(request):
         tax -= discount["tax"]
 
     if use_voucher:
-        price -= voucher_data['voucher_value']
-        tax -= voucher_data['voucher_tax']
+        price -= voucher_data["voucher_value"]
+        tax -= voucher_data["voucher_tax"]
 
     if price < 0:
         price = 0
@@ -124,27 +124,25 @@ def add_order(request):
         session=request.session.session_key,
         price=price,
         tax=tax,
-
         customer_firstname=customer.selected_invoice_address.firstname,
         customer_lastname=customer.selected_invoice_address.lastname,
         customer_email=customer_email,
-
         shipping_method=shipping_method,
         shipping_price=shipping_costs["price_gross"],
         shipping_tax=shipping_costs["tax"],
         payment_method=payment_method,
         payment_price=payment_costs["price"],
         payment_tax=payment_costs["tax"],
-
         invoice_address=invoice_address,
         shipping_address=shipping_address,
-
         message=request.POST.get("message", ""),
     )
 
     delivery_time = cart.get_delivery_time(request)
     if delivery_time:
-        OrderDeliveryTime.objects.create(order=order, min=delivery_time.min, max=delivery_time.max, unit=delivery_time.unit)
+        OrderDeliveryTime.objects.create(
+            order=order, min=delivery_time.min, max=delivery_time.max, unit=delivery_time.unit
+        )
 
     invoice_address.order = order
     invoice_address.save()
@@ -158,10 +156,10 @@ def add_order(request):
         order.save()
 
     if use_voucher:
-        voucher_data['voucher'].mark_as_used()
-        order.voucher_number = voucher_data['voucher_number']
-        order.voucher_price = voucher_data['voucher_value']
-        order.voucher_tax = voucher_data['voucher_tax']
+        voucher_data["voucher"].mark_as_used()
+        order.voucher_number = voucher_data["voucher_number"]
+        order.voucher_price = voucher_data["voucher_value"]
+        order.voucher_tax = voucher_data["voucher_tax"]
         order.save()
 
     # Copy bank account if one exists
@@ -180,11 +178,9 @@ def add_order(request):
             continue
         order_item = OrderItem.objects.create(
             order=order,
-
             price_net=cart_item.get_price_net(request),
             price_gross=cart_item.get_price_gross(request),
             tax=cart_item.get_tax(request),
-
             product=cart_item.product,
             product_sku=cart_item.product.sku,
             product_name=cart_item.product.get_name(),
@@ -199,8 +195,7 @@ def add_order(request):
         # Copy properties to order
         if cart_item.product.is_configurable_product():
             for cpv in cart_item.properties.all():
-                OrderItemPropertyValue.objects.create(
-                    order_item=order_item, property=cpv.property, value=cpv.value)
+                OrderItemPropertyValue.objects.create(order_item=order_item, property=cpv.property, value=cpv.value)
 
     for discount in discounts:
         OrderItem.objects.create(

@@ -13,43 +13,44 @@ import lfs.marketing.utils
 
 
 class TopsellerPortlet(Portlet):
-    """Portlet to display recent visited products.
-    """
+    """Portlet to display recent visited products."""
+
     limit = models.IntegerField(default=5)
 
     class Meta:
-        app_label = 'portlet'
+        app_label = "portlet"
 
     def __str__(self):
-        return u"%s" % self.id
+        return "%s" % self.id
 
     def render(self, context):
-        """Renders the portlet as html.
-        """
+        """Renders the portlet as html."""
         request = context.get("request")
         object = context.get("category") or context.get("product")
         if object is None:
             topseller = lfs.marketing.utils.get_topseller(self.limit)
         elif isinstance(object, lfs.catalog.models.Product):
             category = object.get_current_category(context.get("request"))
-            topseller = lfs.marketing.utils.get_topseller_for_category(
-                category, self.limit)
+            topseller = lfs.marketing.utils.get_topseller_for_category(category, self.limit)
         else:
-            topseller = lfs.marketing.utils.get_topseller_for_category(
-                object, self.limit)
+            topseller = lfs.marketing.utils.get_topseller_for_category(object, self.limit)
 
-        return render_to_string("lfs/portlets/topseller.html", request=request, context={
-            "title": self.title,
-            "topseller": topseller,
-        })
+        return render_to_string(
+            "lfs/portlets/topseller.html",
+            request=request,
+            context={
+                "title": self.title,
+                "topseller": topseller,
+            },
+        )
 
     def form(self, **kwargs):
         return TopsellerForm(instance=self, **kwargs)
 
 
 class TopsellerForm(forms.ModelForm):
-    """Form for the TopsellerPortlet.
-    """
+    """Form for the TopsellerPortlet."""
+
     class Meta:
         model = TopsellerPortlet
         exclude = ()

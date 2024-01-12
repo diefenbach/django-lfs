@@ -77,12 +77,12 @@ def get_product_delivery_time(request, product, for_cart=False):
                 delivery_time = None
 
     if delivery_time is None:
-        delivery_time = lfs.core.utils.get_default_shop(request).delivery_time or \
-            DeliveryTime(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
+        delivery_time = lfs.core.utils.get_default_shop(request).delivery_time or DeliveryTime(
+            min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS
+        )
 
     # Calculate the total delivery time if the product is not on stock.
     if (product.stock_amount <= 0) and (product.order_time):
-
         # Calculate how much days are left until the product is going to be
         # delivered.
         if product.ordered_at:
@@ -118,11 +118,10 @@ def update_to_valid_shipping_method(request, customer, save=False):
 
 
 def get_valid_shipping_methods(request, product=None):
-    """Returns a list of all valid shipping methods for the passed request.
-    """
+    """Returns a list of all valid shipping methods for the passed request."""
     result = []
 
-    cache_key = 'all_active_shipping_methods'
+    cache_key = "all_active_shipping_methods"
     shipping_methods = cache.get(cache_key)
     if shipping_methods is None:
         shipping_methods = ShippingMethod.objects.filter(active=True)
@@ -135,8 +134,7 @@ def get_valid_shipping_methods(request, product=None):
 
 
 def get_first_valid_shipping_method(request, product=None):
-    """Returns the valid shipping method with the highest priority.
-    """
+    """Returns the valid shipping method with the highest priority."""
     active_shipping_methods = ShippingMethod.objects.filter(active=True)
     return criteria_utils.get_first_valid(request, active_shipping_methods, product)
 
@@ -187,27 +185,15 @@ def get_shipping_costs(request, shipping_method):
     The format of the dictionary is: {"price" : 0.0, "tax" : 0.0}
     """
     if shipping_method is None:
-        return {
-            "price_net": 0.0,
-            "price_gross": 0.0,
-            "tax": 0.0
-        }
+        return {"price_net": 0.0, "price_gross": 0.0, "tax": 0.0}
     price_gross = shipping_method.get_price_gross(request)
     price_net = shipping_method.get_price_net(request)
     tax = shipping_method.get_tax(request)
 
-    return {
-        "price_net": price_net,
-        "price_gross": price_gross,
-        "tax": tax
-    }
+    return {"price_net": price_net, "price_gross": price_gross, "tax": tax}
 
 
 def get_delivery_time(request, product):
-    """Returns delivery time for given product.
-    """
+    """Returns delivery time for given product."""
 
-    return {
-        "deliverable": product.is_deliverable(),
-        "delivery_time": get_product_delivery_time(request, product)
-    }
+    return {"deliverable": product.is_deliverable(), "delivery_time": get_product_delivery_time(request, product)}

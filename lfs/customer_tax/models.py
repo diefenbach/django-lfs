@@ -18,8 +18,9 @@ class CustomerTax(models.Model, Criteria):
     description
         The description of the tax rate.
     """
-    rate = models.FloatField(_(u"Rate"), default=0)
-    description = models.TextField(_(u"Description"), blank=True)
+
+    rate = models.FloatField(_("Rate"), default=0)
+    description = models.TextField(_("Description"), blank=True)
 
     class Meta:
-        app_label = 'customer_tax'
+        app_label = "customer_tax"

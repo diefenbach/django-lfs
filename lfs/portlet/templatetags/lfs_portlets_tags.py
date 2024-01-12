@@ -17,7 +17,7 @@ register = template.Library()
 
 
 # TODO: Make a better reuse of django-portlets portlet slot
-@register.inclusion_tag('portlets/portlet_slot.html', takes_context=True)
+@register.inclusion_tag("portlets/portlet_slot.html", takes_context=True)
 def lfs_portlet_slot(context, slot_name):
     """Returns the portlets for given slot and instance. If the instance
     implements the ``get_parent_for_portlets`` method the portlets of the
@@ -25,13 +25,19 @@ def lfs_portlet_slot(context, slot_name):
     """
     request = context.get("request")
 
-    instance = \
-        context.get("category") or \
-        context.get("product") or \
-        context.get("page") or \
-        lfs.core.utils.get_default_shop(request)
+    instance = (
+        context.get("category")
+        or context.get("product")
+        or context.get("page")
+        or lfs.core.utils.get_default_shop(request)
+    )
 
-    cache_key = "%s-lfs-portlet-slot-%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, slot_name, instance.__class__.__name__, instance.id)
+    cache_key = "%s-lfs-portlet-slot-%s-%s-%s" % (
+        settings.CACHE_MIDDLEWARE_KEY_PREFIX,
+        slot_name,
+        instance.__class__.__name__,
+        instance.id,
+    )
     temp = cache.get(cache_key)
 
     if temp is None:
@@ -81,95 +87,76 @@ def lfs_portlet_slot(context, slot_name):
 
 # Inclusion tags to render portlets. This can be used if one wants to display
 # portlets without the possibility to manage them via the UI.
-@register.inclusion_tag('lfs/portlets/portlet.html', takes_context=True)
+@register.inclusion_tag("lfs/portlets/portlet.html", takes_context=True)
 def lfs_cart_portlet(context, title=None):
-    """Tag to render the cart portlet.
-    """
+    """Tag to render the cart portlet."""
     if title is None:
-        title = _(u"Cart")
+        title = _("Cart")
 
     portlet = CartPortlet()
     portlet.title = title
 
-    return {
-        "html": portlet.render(context)
-    }
+    return {"html": portlet.render(context)}
 
 
-@register.inclusion_tag('lfs/portlets/portlet.html', takes_context=True)
-def lfs_categories_portlet(context, title=None,
-                           start_level=1, expand_level=1):
-    """Tag to render the related products portlet.
-    """
+@register.inclusion_tag("lfs/portlets/portlet.html", takes_context=True)
+def lfs_categories_portlet(context, title=None, start_level=1, expand_level=1):
+    """Tag to render the related products portlet."""
     if title is None:
-        title = _(u"Categories")
+        title = _("Categories")
 
     portlet = CategoriesPortlet()
     portlet.title = title
     portlet.start_level = start_level
     portlet.expand_level = expand_level
 
-    return {
-        "html": portlet.render(context)
-    }
+    return {"html": portlet.render(context)}
 
 
-@register.inclusion_tag('lfs/portlets/portlet.html', takes_context=True)
+@register.inclusion_tag("lfs/portlets/portlet.html", takes_context=True)
 def lfs_pages_portlet(context, title=None):
-    """Tag to render the pages portlet.
-    """
+    """Tag to render the pages portlet."""
     if title is None:
-        title = _(u"Information")
+        title = _("Information")
 
     portlet = PagesPortlet()
     portlet.title = title
 
-    return {
-        "html": portlet.render(context)
-    }
+    return {"html": portlet.render(context)}
 
 
-@register.inclusion_tag('lfs/portlets/portlet.html', takes_context=True)
+@register.inclusion_tag("lfs/portlets/portlet.html", takes_context=True)
 def lfs_recent_products_portlet(context, title=None):
-    """Tag to render the recent products portlet.
-    """
+    """Tag to render the recent products portlet."""
     if title is None:
-        title = _(u"Recent Products")
+        title = _("Recent Products")
 
     portlet = RecentProductsPortlet()
     portlet.title = title
 
-    return {
-        "html": portlet.render(context)
-    }
+    return {"html": portlet.render(context)}
 
 
-@register.inclusion_tag('lfs/portlets/portlet.html', takes_context=True)
+@register.inclusion_tag("lfs/portlets/portlet.html", takes_context=True)
 def lfs_related_products_portlet(context, title=None):
-    """Tag to render the related products portlet.
-    """
+    """Tag to render the related products portlet."""
     if title is None:
-        title = _(u"Related Products")
+        title = _("Related Products")
 
     portlet = RelatedProductsPortlet()
     portlet.title = title
 
-    return {
-        "html": portlet.render(context)
-    }
+    return {"html": portlet.render(context)}
 
 
-@register.inclusion_tag('lfs/portlets/portlet.html', takes_context=True)
+@register.inclusion_tag("lfs/portlets/portlet.html", takes_context=True)
 def lfs_topseller_portlet(context, title=None, limit=5):
-    """Tag to render the related products portlet.
-    """
+    """Tag to render the related products portlet."""
     if title is None:
-        title = _(u"Topseller")
+        title = _("Topseller")
 
     portlet = TopsellerPortlet()
     portlet.title = title
     portlet.limit = limit
 
-    return {
-        "html": portlet.render(context)
-    }
+    return {"html": portlet.render(context)}

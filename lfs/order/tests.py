@@ -26,18 +26,17 @@ from lfs.discounts.models import Discount
 
 
 class OrderTestCase(TestCase):
-    """
-    """
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    """ """
+
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         session = SessionStore()
         session.save()
 
         rf = RequestFactory()
-        self.request = rf.get('/')
+        self.request = rf.get("/")
         self.request.session = session
         self.request.user = AnonymousUser()
 
@@ -46,11 +45,7 @@ class OrderTestCase(TestCase):
         delivery_time = DeliveryTime.objects.create(min=3, max=10)
 
         shipping_method = ShippingMethod.objects.create(
-            name="Standard",
-            active=True,
-            price=1.0,
-            tax=tax,
-            delivery_time=delivery_time
+            name="Standard", active=True, price=1.0, tax=tax, delivery_time=delivery_time
         )
 
         payment_method = PaymentMethod.objects.create(
@@ -138,9 +133,7 @@ class OrderTestCase(TestCase):
             active=True,
         )
 
-        cart = Cart.objects.create(
-            session=session.session_key
-        )
+        cart = Cart.objects.create(session=session.session_key)
 
         CartItem.objects.create(
             cart=cart,
@@ -155,8 +148,7 @@ class OrderTestCase(TestCase):
         )
 
     def test_add_order(self):
-        """Tests the general adding of an order via the add_order method
-        """
+        """Tests the general adding of an order via the add_order method"""
         # check we have 2 addresses before the order
         self.assertEqual(4, Address.objects.count())
 
@@ -198,7 +190,7 @@ class OrderTestCase(TestCase):
         # Items
         self.assertEqual(len(order.items.all()), 2)
 
-        item = order.items.all().order_by('id')[0]
+        item = order.items.all().order_by("id")[0]
         self.assertEqual(item.product_amount, 2)
         self.assertEqual(item.product_sku, "sku-1")
         self.assertEqual(item.product_name, "Product 1")
@@ -206,7 +198,7 @@ class OrderTestCase(TestCase):
         self.assertEqual("%.2f" % item.product_price_net, "0.92")
         self.assertEqual("%.2f" % item.product_tax, "0.18")
 
-        item = order.items.all().order_by('id')[1]
+        item = order.items.all().order_by("id")[1]
         self.assertEqual(item.product_amount, 3)
         self.assertEqual(item.product_sku, "sku-2")
         self.assertEqual(item.product_name, "Product 2")
@@ -222,18 +214,17 @@ class OrderTestCase(TestCase):
         self.assertTrue(order.delivery_time is not None)
 
     def test_pay_link(self):
-        """Tests empty pay link.
-        """
-        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+        """Tests empty pay link."""
+        locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
         from lfs.payment.utils import process_payment
+
         process_payment(self.request)
 
         order = Order.objects.filter()[0]
         self.assertEqual(order.get_pay_link(self.request), "")
 
     def test_paypal_link(self):
-        """Tests created paypal link.
-        """
+        """Tests created paypal link."""
         payment_method, created = PaymentMethod.objects.get_or_create(
             id=3,
             name="PayPal",
@@ -244,14 +235,14 @@ class OrderTestCase(TestCase):
         self.customer.save()
 
         from lfs.payment.utils import process_payment
+
         process_payment(self.request)
 
         order = Order.objects.filter()[0]
         self.failIf(order.get_pay_link(self.request).find("paypal") == -1)
 
     def test_delete_product(self):
-        """Tests that OrderItems are not deleted when a product is deleted.
-        """
+        """Tests that OrderItems are not deleted when a product is deleted."""
         address = Address.objects.create()
         order = Order.objects.create(invoice_address=address, shipping_address=address)
         order_item_1 = OrderItem.objects.create(order=order, product=self.p1)
@@ -259,29 +250,27 @@ class OrderTestCase(TestCase):
         OrderItem.objects.get(pk=order_item_1.id)
 
     def test_summed_up_order_discounts(self):
-        """Tests the price of the discount within an order.
-        """
+        """Tests the price of the discount within an order."""
         self.tax = Tax.objects.create(rate=19)
 
-        Discount.objects.create(name="Summer",
-                                active=True,
-                                value=10.0,
-                                type=DISCOUNT_TYPE_ABSOLUTE,
-                                tax=self.tax,
-                                sums_up=True)
+        Discount.objects.create(
+            name="Summer", active=True, value=10.0, type=DISCOUNT_TYPE_ABSOLUTE, tax=self.tax, sums_up=True
+        )
 
         discount_value = 11.0
-        Discount.objects.create(name="Special offer 1",
-                                active=True,
-                                value=discount_value,
-                                type=DISCOUNT_TYPE_ABSOLUTE,
-                                tax=self.tax,
-                                sums_up=False)
+        Discount.objects.create(
+            name="Special offer 1",
+            active=True,
+            value=discount_value,
+            type=DISCOUNT_TYPE_ABSOLUTE,
+            tax=self.tax,
+            sums_up=False,
+        )
 
         order = add_order(self.request)
         tax_value = discount_value * (self.tax.rate / (100.0 + self.tax.rate))
 
-        all_product_names = list(order.items.values_list('product_name', flat=True))
+        all_product_names = list(order.items.values_list("product_name", flat=True))
         self.assertTrue("Summer" not in all_product_names)
         self.assertTrue("Special offer 1" in all_product_names)
         for order_item in order.items.all():
@@ -291,27 +280,26 @@ class OrderTestCase(TestCase):
 
     def test_summed_up_order_discounts_and_vouchers(self):
         """Tests the price of the discount/voucher within an order.
-           We have 2 discounts ('Summer' is able to sum up) and 1 voucher (able to sum up)
-           We expect 'Summer' discount to be applied as well as voucher as these can sum up and their total value
-           is bigger than 'Special offer 1' discount's
+        We have 2 discounts ('Summer' is able to sum up) and 1 voucher (able to sum up)
+        We expect 'Summer' discount to be applied as well as voucher as these can sum up and their total value
+        is bigger than 'Special offer 1' discount's
 
         """
         tax = Tax.objects.create(rate=19)
 
-        Discount.objects.create(name="Summer",
-                                active=True,
-                                value=10.0,
-                                type=DISCOUNT_TYPE_ABSOLUTE,
-                                tax=tax,
-                                sums_up=True)
+        Discount.objects.create(
+            name="Summer", active=True, value=10.0, type=DISCOUNT_TYPE_ABSOLUTE, tax=tax, sums_up=True
+        )
 
         discount_value = 11.0
-        Discount.objects.create(name="Special offer 1",
-                                active=True,
-                                value=discount_value,
-                                type=DISCOUNT_TYPE_ABSOLUTE,
-                                tax=tax,
-                                sums_up=False)
+        Discount.objects.create(
+            name="Special offer 1",
+            active=True,
+            value=discount_value,
+            type=DISCOUNT_TYPE_ABSOLUTE,
+            tax=tax,
+            sums_up=False,
+        )
 
         # vouchers
         from lfs.voucher.models import VoucherGroup, Voucher
@@ -319,10 +307,7 @@ class OrderTestCase(TestCase):
 
         user = User.objects.get(username="admin")
 
-        self.vg = VoucherGroup.objects.create(
-            name="xmas",
-            creator=user
-        )
+        self.vg = VoucherGroup.objects.create(name="xmas", creator=user)
         voucher_value = 12.0
 
         self.v1 = Voucher.objects.create(
@@ -336,15 +321,15 @@ class OrderTestCase(TestCase):
             value=voucher_value,
             sums_up=True,
             limit=2,
-            tax=tax
+            tax=tax,
         )
 
-        self.request.session['voucher'] = 'AAAA'
+        self.request.session["voucher"] = "AAAA"
 
         order = add_order(self.request)
         voucher_value * (tax.rate / (100.0 + tax.rate))
 
-        all_product_names = list(order.items.values_list('product_name', flat=True))
+        all_product_names = list(order.items.values_list("product_name", flat=True))
         # voucher value is biggest one
         self.assertTrue("Summer" in all_product_names)
         self.assertTrue("Special offer 1" not in all_product_names)
@@ -352,27 +337,26 @@ class OrderTestCase(TestCase):
 
     def test_summed_up_order_discounts_and_vouchers2(self):
         """Tests the price of the discount/voucher within an order.
-           We have 2 discounts ('Summer' is able to sum up) and 1 voucher (able to sum up)
-           We expect 'Special offer 1' discount to be applied as it's value is bigger than value of summed up
-           'Summer' discount and Voucher
+        We have 2 discounts ('Summer' is able to sum up) and 1 voucher (able to sum up)
+        We expect 'Special offer 1' discount to be applied as it's value is bigger than value of summed up
+        'Summer' discount and Voucher
 
         """
         tax = Tax.objects.create(rate=19)
 
-        Discount.objects.create(name="Summer",
-                                active=True,
-                                value=10.0,
-                                type=DISCOUNT_TYPE_ABSOLUTE,
-                                tax=tax,
-                                sums_up=True)
+        Discount.objects.create(
+            name="Summer", active=True, value=10.0, type=DISCOUNT_TYPE_ABSOLUTE, tax=tax, sums_up=True
+        )
 
         discount_value = 25.0
-        Discount.objects.create(name="Special offer 1",
-                                active=True,
-                                value=discount_value,
-                                type=DISCOUNT_TYPE_ABSOLUTE,
-                                tax=tax,
-                                sums_up=False)
+        Discount.objects.create(
+            name="Special offer 1",
+            active=True,
+            value=discount_value,
+            type=DISCOUNT_TYPE_ABSOLUTE,
+            tax=tax,
+            sums_up=False,
+        )
 
         # vouchers
         from lfs.voucher.models import VoucherGroup, Voucher
@@ -380,10 +364,7 @@ class OrderTestCase(TestCase):
 
         user = User.objects.get(username="admin")
 
-        self.vg = VoucherGroup.objects.create(
-            name="xmas",
-            creator=user
-        )
+        self.vg = VoucherGroup.objects.create(name="xmas", creator=user)
         voucher_value = 12.0
 
         self.v1 = Voucher.objects.create(
@@ -397,15 +378,15 @@ class OrderTestCase(TestCase):
             value=voucher_value,
             sums_up=True,
             limit=2,
-            tax=tax
+            tax=tax,
         )
 
-        self.request.session['voucher'] = 'AAAA'
+        self.request.session["voucher"] = "AAAA"
 
         order = add_order(self.request)
         voucher_value * (tax.rate / (100.0 + tax.rate))
 
-        all_product_names = list(order.items.values_list('product_name', flat=True))
+        all_product_names = list(order.items.values_list("product_name", flat=True))
         # voucher value is biggest one
         self.assertTrue("Summer" not in all_product_names)
         self.assertTrue("Special offer 1" in all_product_names)

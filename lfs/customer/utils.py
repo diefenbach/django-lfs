@@ -9,8 +9,7 @@ import lfs.core.utils
 
 
 def get_or_create_customer(request):
-    """Get or creates the customer object.
-    """
+    """Get or creates the customer object."""
     customer = get_customer(request)
     if customer is None:
         customer = request.customer = create_customer(request)
@@ -113,5 +112,5 @@ def create_unique_username(email):
     cnt = 0
     while User.objects.filter(username=new_email).exists():
         cnt += 1
-        new_email = '%s%.2d' % (new_email[:28], cnt)
+        new_email = "%s%.2d" % (new_email[:28], cnt)
     return new_email

@@ -17,23 +17,26 @@ from lfs.core.models import Shop
 
 # Load logger
 import logging
+
 logger = logging.getLogger(__name__)
 
 
 def shop_view(request, template_name="lfs/shop/shop.html"):
-    """Displays the shop.
-    """
+    """Displays the shop."""
     # TODO: this is not necessary here as we have context processor that sets 'SHOP' variable
     #       this should be removed at some point but is here for backward compatibility
     shop = lfs_get_object_or_404(Shop, pk=1)
-    return render(request, template_name, context={
-        "shop": shop,
-    })
+    return render(
+        request,
+        template_name,
+        context={
+            "shop": shop,
+        },
+    )
 
 
 def server_error(request):
-    """Own view in order to send an error message.
-    """
+    """Own view in order to send an error message."""
     exc_type, exc_info, tb = sys.exc_info()
     response = "%s\n" % exc_type.__name__
     response += "%s\n" % exc_info
@@ -52,11 +55,10 @@ def server_error(request):
     except IndexError:
         pass
     else:
-        mail = EmailMessage(
-            subject="Error LFS", body=response, from_email=from_email, to=to_emails)
+        mail = EmailMessage(subject="Error LFS", body=response, from_email=from_email, to=to_emails)
         mail.send(fail_silently=True)
 
-    t = loader.get_template('500.html')
+    t = loader.get_template("500.html")
     return HttpResponseServerError(t.render(request=request))
 
 
@@ -71,5 +73,4 @@ def one_time_setup():
 
 class TextTemplateView(TemplateView):
     def render_to_response(self, context, **kwargs):
-        return super(TextTemplateView, self).render_to_response(
-            context, content_type='text/plain', **kwargs)
+        return super(TextTemplateView, self).render_to_response(context, content_type="text/plain", **kwargs)

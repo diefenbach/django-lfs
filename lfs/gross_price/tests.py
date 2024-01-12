@@ -17,13 +17,12 @@ from lfs.tests.utils import RequestFactory
 
 
 class GrossPriceTestCase(TestCase):
-    """Tests attributes and methods of Products
-    """
-    fixtures = ['lfs_shop.xml']
+    """Tests attributes and methods of Products"""
+
+    fixtures = ["lfs_shop.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         self.request = RequestFactory().get("/")
         self.request.session = SessionStore()
         self.request.user = AnonymousUser()
@@ -33,13 +32,13 @@ class GrossPriceTestCase(TestCase):
 
         # A product with properties and variants
         self.p1 = Product.objects.create(
-            name=u"Product 1",
-            slug=u"product-1",
-            sku=u"SKU P1",
-            description=u"Description",
-            short_description=u"Short description product 1",
-            meta_description=u"Meta description product 1",
-            meta_keywords=u"Meta keywords product 1",
+            name="Product 1",
+            slug="product-1",
+            sku="SKU P1",
+            description="Description",
+            short_description="Short description product 1",
+            meta_description="Meta description product 1",
+            meta_keywords="Meta keywords product 1",
             sub_type=PRODUCT_WITH_VARIANTS,
             tax=self.t1,
             price=1.0,
@@ -49,19 +48,20 @@ class GrossPriceTestCase(TestCase):
             height=2.0,
             length=3.0,
             weight=4.0,
-            active=True)
+            active=True,
+        )
 
         # Products without properties and variants
-        self.p2 = Product.objects.create(name=u"Product 2", slug=u"product-2", active=True)
+        self.p2 = Product.objects.create(name="Product 2", slug="product-2", active=True)
 
         # Add a variant with color = red, size = m
         self.v1 = Product.objects.create(
-            name=u"Variant 1",
-            slug=u"variant-1",
-            sku=u"SKU V1",
-            description=u"This is the description of variant 1",
-            meta_description=u"Meta description of variant 1",
-            meta_keywords=u"Meta keywords variant 1",
+            name="Variant 1",
+            slug="variant-1",
+            sku="SKU V1",
+            description="This is the description of variant 1",
+            meta_description="Meta description of variant 1",
+            meta_keywords="Meta keywords variant 1",
             sub_type=VARIANT,
             price=2.0,
             for_sale_price=1.5,
@@ -74,10 +74,8 @@ class GrossPriceTestCase(TestCase):
         )
 
     def test_defaults(self):
-        """Tests the default value after a product has been created
-        """
-        p = Product.objects.create(
-            name="Product", slug="product", sku="4711", price=42.0)
+        """Tests the default value after a product has been created"""
+        p = Product.objects.create(name="Product", slug="product", sku="4711", price=42.0)
 
         self.assertEqual(p.name, "Product")
         self.assertEqual(p.slug, "product")
@@ -131,8 +129,7 @@ class GrossPriceTestCase(TestCase):
         self.assertEqual(p.active_meta_keywords, False)
 
     def test_get_price(self):
-        """
-        """
+        """ """
         # Test product
         self.assertEqual(self.p1.get_price(self.request), 1.0)
 
@@ -182,8 +179,7 @@ class GrossPriceTestCase(TestCase):
         self.assertEqual("%.2f" % self.v1.get_price_net(self.request), "1.68")
 
     def test_get_standard_price_1(self):
-        """Test the price vs. standard price for a product.
-        """
+        """Test the price vs. standard price for a product."""
         # By default get_standard_price returns then normal price of the product
         standard_price = self.p1.get_standard_price(self.request)
         self.assertEqual(standard_price, 1.0)
@@ -201,8 +197,7 @@ class GrossPriceTestCase(TestCase):
         self.assertEqual(standard_price, 1.0)
 
     def test_get_standard_price_2(self):
-        """Test the price vs. standard price for a variant.
-        """
+        """Test the price vs. standard price for a variant."""
         #
         self.p1.for_sale = False
         self.p1.save()
@@ -338,8 +333,7 @@ class GrossPriceTestCase(TestCase):
         self.assertEqual(self.v1.get_for_sale(), False)
 
     def test_get_tax_rate(self):
-        """
-        """
+        """ """
         tax_rate = self.p1.get_tax_rate(self.request)
         self.assertEqual(tax_rate, 19.0)
 
@@ -352,8 +346,7 @@ class GrossPriceTestCase(TestCase):
         self.assertEqual(tax_rate, 0.0)
 
     def test_get_tax(self):
-        """
-        """
+        """ """
         tax = self.p1.get_tax(self.request)
         self.assertEqual("%.2f" % tax, "0.16")
 

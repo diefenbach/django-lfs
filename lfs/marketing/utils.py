@@ -14,8 +14,7 @@ from django.db import connection
 
 
 def calculate_product_sales():
-    """Calculates and saves total product sales.
-    """
+    """Calculates and saves total product sales."""
     ProductSales.objects.all().delete()
 
     products = {}
@@ -38,8 +37,7 @@ def calculate_product_sales():
 
 
 def get_orders(days=14):
-    """Returns closed orders which are closed for given amount of days.
-    """
+    """Returns closed orders which are closed for given amount of days."""
     limit = timezone.now() - timedelta(days=days)
 
     orders = Order.objects.filter(state=CLOSED, state_modified__lte=limit)
@@ -47,8 +45,7 @@ def get_orders(days=14):
 
 
 def get_topseller(limit=5):
-    """Returns products with the most sales. Limited by given limit.
-    """
+    """Returns products with the most sales. Limited by given limit."""
     cache_key = "%s-topseller" % settings.CACHE_MIDDLEWARE_KEY_PREFIX
     topseller = cache.get(cache_key)
     if topseller is not None:
@@ -56,11 +53,14 @@ def get_topseller(limit=5):
 
     # TODO: Check Django 1.1's aggregation
     cursor = connection.cursor()
-    cursor.execute("""SELECT product_id, sum(product_amount) as sum
+    cursor.execute(
+        """SELECT product_id, sum(product_amount) as sum
                       FROM order_orderitem
                       where product_id is not null
                       GROUP BY product_id
-                      ORDER BY sum DESC limit %s""" % (limit * 2))
+                      ORDER BY sum DESC limit %s"""
+        % (limit * 2)
+    )
 
     products = []
     for topseller in cursor.fetchall():
@@ -72,7 +72,6 @@ def get_topseller(limit=5):
                 pass
 
     for explicit_ts in Topseller.objects.all():
-
         if explicit_ts.product.is_active():
             # Remove explicit_ts if it's already in the object list
             if explicit_ts.product in products:
@@ -110,7 +109,6 @@ def get_topseller_for_category(category, limit=5):
 
     objects = [ps.product for ps in pss]
     for explicit_ts in Topseller.objects.filter(product__categories__in=category_ids):
-
         if explicit_ts.product.is_active():
             # Remove explicit_ts if it's already in the object list
             if explicit_ts.product in objects:

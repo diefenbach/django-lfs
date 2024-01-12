@@ -19,11 +19,11 @@ class DbInfoNode(Node):
             return ""
         secs = 0.0
         for s in db.connection.queries:
-            secs += float(s['time'])
+            secs += float(s["time"])
         return str("%d queries, %f seconds" % (len(db.connection.queries), secs))
 
 
-@register.tag('dbinfo')
+@register.tag("dbinfo")
 def do_dbinfo(parser, token):
     return DbInfoNode()
 
@@ -44,6 +44,6 @@ class DbQueryListNode(Node):
         return s
 
 
-@register.tag('dbquerylist')
+@register.tag("dbquerylist")
 def do_dbquerylist(parser, token):
     return DbQueryListNode()

@@ -16,9 +16,8 @@ def update_price_calculator(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('core', '0002_auto_20150428_2039'),
+        ("core", "0002_auto_20150428_2039"),
     ]
 
     operations = [

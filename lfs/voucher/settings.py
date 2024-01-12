@@ -4,16 +4,16 @@ ABSOLUTE = 0
 PERCENTAGE = 1
 
 KIND_OF_CHOICES = (
-    (ABSOLUTE, _(u"Absolute")),
-    (PERCENTAGE, _(u"Percentage")),
+    (ABSOLUTE, _("Absolute")),
+    (PERCENTAGE, _("Percentage")),
 )
 
 MESSAGES = (
-    _(u"The voucher is valid."),
-    _(u"The voucher is not active."),
-    _(u"The voucher has been already used."),
-    _(u"The voucher is not active yet."),
-    _(u"The voucher is not active any more."),
-    _(u"The voucher is not valid for this cart price."),
-    _(u"The voucher doesn't exist."),
+    _("The voucher is valid."),
+    _("The voucher is not active."),
+    _("The voucher has been already used."),
+    _("The voucher is not active yet."),
+    _("The voucher is not active any more."),
+    _("The voucher is not valid for this cart price."),
+    _("The voucher doesn't exist."),
 )

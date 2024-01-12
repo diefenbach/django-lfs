@@ -9,6 +9,7 @@ class NetPriceCalculator(PriceCalculator):
 
     See lfs.plugins.PriceCalculator for more information.
     """
+
     def get_price_net(self, with_properties=True, amount=1):
         return self.get_price(with_properties, amount)
 

@@ -19,24 +19,24 @@ from lfs.catalog.models import Product
 # Views
 @permission_required("core.manage_shop")
 def manage_products(request, category_id, template_name="manage/category/products.html"):
-    """
-    """
+    """ """
     category = Category.objects.get(pk=category_id)
     inline = products_inline(request, category_id, True)
 
     # amount options
     amount_options = []
     for value in (10, 25, 50, 100):
-        amount_options.append({
-            "value": value,
-            "selected": value == request.session.get("category-products-amount")
-        })
+        amount_options.append({"value": value, "selected": value == request.session.get("category-products-amount")})
 
-    return render_to_string(template_name, request=request, context={
-        "category": category,
-        "products_inline": inline,
-        "amount_options": amount_options,
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "category": category,
+            "products_inline": inline,
+            "amount_options": amount_options,
+        },
+    )
 
 
 # Parts
@@ -50,8 +50,8 @@ def products_inline(request, category_id, as_string=False, template_name="manage
     """
     category = Category.objects.get(pk=category_id)
 
-    product_ids = Product.objects.filter(categories=category).values_list('pk', flat=True)
-    req = request.POST if request.method == 'POST' else request.GET
+    product_ids = Product.objects.filter(categories=category).values_list("pk", flat=True)
+    req = request.POST if request.method == "POST" else request.GET
 
     if req.get("keep-session"):
         page = req.get("page", request.session.get("page", 1))
@@ -74,7 +74,7 @@ def products_inline(request, category_id, as_string=False, template_name="manage
 
     filters = Q()
     if filter_:
-        filters &= (Q(name__icontains=filter_) | Q(sku__icontains=filter_))
+        filters &= Q(name__icontains=filter_) | Q(sku__icontains=filter_)
     if category_filter:
         if category_filter == "None":
             filters &= Q(categories=None)
@@ -87,8 +87,7 @@ def products_inline(request, category_id, as_string=False, template_name="manage
 
             filters &= Q(categories__in=categories_temp)
 
-    selectable_products = Product.objects.filter(
-        filters).exclude(sub_type=VARIANT).distinct()
+    selectable_products = Product.objects.filter(filters).exclude(sub_type=VARIANT).distinct()
 
     paginator = Paginator(selectable_products.exclude(pk__in=product_ids), s["category-products-amount"])
     try:
@@ -96,26 +95,34 @@ def products_inline(request, category_id, as_string=False, template_name="manage
     except (EmptyPage, InvalidPage):
         page = paginator.page(1)
 
-    result = render_to_string(template_name, request=request, context={
-        "category": category,
-        "paginator": paginator,
-        "page": page,
-        "selected_products": selected_products(request, category_id, as_string=True),
-    })
+    result = render_to_string(
+        template_name,
+        request=request,
+        context={
+            "category": category,
+            "paginator": paginator,
+            "page": page,
+            "selected_products": selected_products(request, category_id, as_string=True),
+        },
+    )
 
     if as_string:
         return result
     else:
-        return HttpResponse(json.dumps({
-            "html": [["#products-inline", result]],
-        }), content_type='application/json')
+        return HttpResponse(
+            json.dumps(
+                {
+                    "html": [["#products-inline", result]],
+                }
+            ),
+            content_type="application/json",
+        )
 
 
 # Actions
 @permission_required("core.manage_shop")
 def products_tab(request, category_id):
-    """Returns the products tab for given category id.
-    """
+    """Returns the products tab for given category id."""
     result = manage_products(request, category_id)
     return HttpResponse(result)
 
@@ -130,7 +137,7 @@ def selected_products(request, category_id, as_string=False, template_name="mana
     """
     category = Category.objects.get(pk=category_id)
 
-    req = request.POST if request.method == 'POST' else request.GET
+    req = request.POST if request.method == "POST" else request.GET
 
     if req.get("keep-session"):
         page_2 = req.get("page_2", request.session.get("page_2", 2))
@@ -143,13 +150,15 @@ def selected_products(request, category_id, as_string=False, template_name="mana
     request.session["filter_2"] = filter_2
 
     try:
-        request.session["category-products-amount"] = int(req.get("category-products-amount", request.session.get("category-products-amount")))
+        request.session["category-products-amount"] = int(
+            req.get("category-products-amount", request.session.get("category-products-amount"))
+        )
     except TypeError:
         request.session["category-products-amount"] = 25
 
     filters = Q(categories=category)
     if filter_2:
-        filters &= (Q(name__icontains=filter_2) | Q(sku__icontains=filter_2))
+        filters &= Q(name__icontains=filter_2) | Q(sku__icontains=filter_2)
 
     products = Product.objects.filter(filters).exclude(sub_type=VARIANT).distinct()
 
@@ -159,31 +168,43 @@ def selected_products(request, category_id, as_string=False, template_name="mana
     except (EmptyPage, InvalidPage):
         page_2 = paginator_2.page(1)
 
-    result = render_to_string(template_name, request=request, context={
-        "category": category,
-        "products": products,
-        "paginator_2": paginator_2,
-        "page_2": page_2,
-        "filter_2": filter_2,
-    })
+    result = render_to_string(
+        template_name,
+        request=request,
+        context={
+            "category": category,
+            "products": products,
+            "paginator_2": paginator_2,
+            "page_2": page_2,
+            "filter_2": filter_2,
+        },
+    )
 
     if as_string:
         return result
     else:
-        return HttpResponse(json.dumps({
-            "html": [["#selected-products", result]],
-        }), content_type='application/json')
+        return HttpResponse(
+            json.dumps(
+                {
+                    "html": [["#selected-products", result]],
+                }
+            ),
+            content_type="application/json",
+        )
 
 
 @permission_required("core.manage_shop")
 def add_products(request, category_id):
-    """Adds products (passed via request body) to category with passed id.
-    """
+    """Adds products (passed via request body) to category with passed id."""
     category = Category.objects.get(pk=category_id)
 
     for product_id in request.POST.keys():
-        if product_id.startswith("page") or product_id.startswith("filter") or \
-           product_id.startswith("keep-session") or product_id.startswith("action"):
+        if (
+            product_id.startswith("page")
+            or product_id.startswith("filter")
+            or product_id.startswith("keep-session")
+            or product_id.startswith("action")
+        ):
             continue
         product = Product.objects.get(pk=product_id)
         category.products.add(product)
@@ -193,24 +214,23 @@ def add_products(request, category_id):
 
     html = [["#products-inline", products_inline(request, category_id, as_string=True)]]
 
-    result = json.dumps({
-        "html": html,
-        "message": _(u"Selected products have been added to category.")
-    }, cls=LazyEncoder)
+    result = json.dumps({"html": html, "message": _("Selected products have been added to category.")}, cls=LazyEncoder)
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
 def remove_products(request, category_id):
-    """Removes product (passed via request body) from category with passed id.
-    """
+    """Removes product (passed via request body) from category with passed id."""
     category = Category.objects.get(pk=category_id)
 
     for product_id in request.POST.keys():
-
-        if product_id.startswith("page") or product_id.startswith("filter") or \
-           product_id.startswith("keep-session") or product_id.startswith("action"):
+        if (
+            product_id.startswith("page")
+            or product_id.startswith("filter")
+            or product_id.startswith("keep-session")
+            or product_id.startswith("action")
+        ):
             continue
 
         product = Product.objects.get(pk=product_id)
@@ -222,9 +242,8 @@ def remove_products(request, category_id):
 
     html = [["#products-inline", products_inline(request, category_id, as_string=True)]]
 
-    result = json.dumps({
-        "html": html,
-        "message": _(u"Selected products have been removed from category.")
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {"html": html, "message": _("Selected products have been removed from category.")}, cls=LazyEncoder
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")

@@ -5,8 +5,7 @@ from django.conf import settings
 
 
 def main(request):
-    """context processor for lfs
-    """
+    """context processor for lfs"""
     shop = get_default_shop(request)
 
     return {

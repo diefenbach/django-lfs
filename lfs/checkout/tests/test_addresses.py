@@ -17,13 +17,12 @@ from lfs.tax.models import Tax
 
 
 class CheckoutAddressesTestCase(TestCase):
-    """Test localization of addresses on OnePageCheckoutForm.
-    """
-    fixtures = ['lfs_shop.xml']
+    """Test localization of addresses on OnePageCheckoutForm."""
+
+    fixtures = ["lfs_shop.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         ie = Country.objects.get(code="ie")
         us = Country.objects.get(code="us")
 
@@ -34,12 +33,7 @@ class CheckoutAddressesTestCase(TestCase):
 
         tax = Tax.objects.create(rate=19)
 
-        shipping_method = ShippingMethod.objects.create(
-            name="Standard",
-            active=True,
-            price=1.0,
-            tax=tax
-        )
+        shipping_method = ShippingMethod.objects.create(name="Standard", active=True, price=1.0, tax=tax)
 
         self.by_invoice = PaymentMethod.objects.get(pk=BY_INVOICE)
 
@@ -63,8 +57,8 @@ class CheckoutAddressesTestCase(TestCase):
             country=us,
         )
 
-        self.username = 'joe'
-        self.password = 'bloggs'
+        self.username = "joe"
+        self.password = "bloggs"
 
         new_user = User(username=self.username)
         new_user.set_password(self.password)
@@ -77,7 +71,7 @@ class CheckoutAddressesTestCase(TestCase):
             selected_shipping_address=address1,
             selected_invoice_address=address2,
             default_shipping_address=address1,
-            default_invoice_address=address2
+            default_invoice_address=address2,
         )
 
         self.PRODUCT1_NAME = "Surfboard"
@@ -99,9 +93,7 @@ class CheckoutAddressesTestCase(TestCase):
             active=True,
         )
 
-        cart = Cart.objects.create(
-            user=new_user
-        )
+        cart = Cart.objects.create(user=new_user)
 
         CartItem.objects.create(
             cart=cart,
@@ -116,27 +108,26 @@ class CheckoutAddressesTestCase(TestCase):
         )
 
     def dump_response(self, http_response):
-        fo = open('tests_checkout_addresses.html', 'w')
+        fo = open("tests_checkout_addresses.html", "w")
         fo.write(str(http_response))
         fo.close()
 
     def test_checkout_page_ie(self):
-        """Tests that checkout page gets populated with correct details
-        """
+        """Tests that checkout page gets populated with correct details"""
         # login as our customer
         logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
-        cart_response = self.client.get(reverse('lfs_cart'))
+        cart_response = self.client.get(reverse("lfs_cart"))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
-        checkout_response = self.client.get(reverse('lfs_checkout'))
+        checkout_response = self.client.get(reverse("lfs_checkout"))
 
         # we expect a list of irish counties in the response as we have an Irish shipping address
-        self.assertContains(checkout_response, 'Offaly', status_code=200)
+        self.assertContains(checkout_response, "Offaly", status_code=200)
 
         # we expect a list of american states in the response as we have an Irish shipping address
-        self.assertContains(checkout_response, 'Washington', status_code=200)
+        self.assertContains(checkout_response, "Washington", status_code=200)
 
     def test_address_changed_on_checkout(self):
         # login as our customer
@@ -144,36 +135,42 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertEqual(logged_in, True)
 
         self.assertEquals(Address.objects.count(), 2)
-        cart_response = self.client.get(reverse('lfs_cart'))
+        cart_response = self.client.get(reverse("lfs_cart"))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
-        self.client.get(reverse('lfs_checkout'))
-        checkout_data = {'invoice-firstname': 'bob',
-                         'invoice-lastname': 'builder',
-                         'invoice-line1': 'de company',
-                         'invoice-line2': 'de street',
-                         'invoice-city': 'de area',
-                         'invoice-state': 'de town',
-                         'invoice-code': '12345',
-                         'invoice-country': "DE",
-                         'invoice-email': 'a@a.com',
-                         'invoice-phone': '1234567',
-                         'shipping-firstname': 'hans',
-                         'shipping-lastname': 'schmidt',
-                         'shipping-line1': 'orianenberger strasse',
-                         'shipping-line2': 'de town',
-                         'shipping-city': 'stuff',
-                         'shipping-state': 'BE',
-                         'shipping-code': '12345',
-                         'shipping-country': "DE",
-                         'shipping-email': 'b@b.com',
-                         'shipping-phone': '7654321',
-                         'payment_method': self.by_invoice.id,
-                         }
+        self.client.get(reverse("lfs_checkout"))
+        checkout_data = {
+            "invoice-firstname": "bob",
+            "invoice-lastname": "builder",
+            "invoice-line1": "de company",
+            "invoice-line2": "de street",
+            "invoice-city": "de area",
+            "invoice-state": "de town",
+            "invoice-code": "12345",
+            "invoice-country": "DE",
+            "invoice-email": "a@a.com",
+            "invoice-phone": "1234567",
+            "shipping-firstname": "hans",
+            "shipping-lastname": "schmidt",
+            "shipping-line1": "orianenberger strasse",
+            "shipping-line2": "de town",
+            "shipping-city": "stuff",
+            "shipping-state": "BE",
+            "shipping-code": "12345",
+            "shipping-country": "DE",
+            "shipping-email": "b@b.com",
+            "shipping-phone": "7654321",
+            "payment_method": self.by_invoice.id,
+        }
 
-        checkout_post_response = self.client.post(reverse('lfs_checkout'), checkout_data)
+        checkout_post_response = self.client.post(reverse("lfs_checkout"), checkout_data)
         # self.dump_response(checkout_post_response)
-        self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
+        self.assertRedirects(
+            checkout_post_response,
+            reverse("lfs_thank_you"),
+            status_code=302,
+            target_status_code=200,
+        )
 
         # test we have same amount of address objects at end of checkout
         self.assertEquals(Address.objects.count(), 4)
@@ -182,9 +179,12 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertEquals(Address.objects.count(), 2)
 
         # register a new user
-        registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
+        registration_response = self.client.post(
+            reverse("lfs_login"),
+            {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
+        )
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers['location'], ('Location', '/'))
+        self.assertEquals(registration_response._headers["location"], ("Location", "/"))
 
         # get our new customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -198,8 +198,8 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertEquals(Address.objects.count(), 6)
 
         # test that an ajax request creates a new customer address
-        form_data = {'invoice-country': 'ie'}
-        self.client.post(reverse('lfs_changed_invoice_country'), form_data)
+        form_data = {"invoice-country": "ie"}
+        self.client.post(reverse("lfs_changed_invoice_country"), form_data)
         self.assertEquals(Address.objects.count(), 6)
 
         # refetch our customer
@@ -208,22 +208,23 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertNotEqual(our_customer.selected_shipping_address, None)
 
         # test that we still have the same number of Addresses after another invoice post
-        form_data = {'invoice-line1': 'my house',
-                     'invoice-line2': 'a street',
-                     'invoice-city': 'a city',
-                     'invoice-code': 'a code',
-                     'invoice-state': 'a state',
-                     'invoice-country': 'ie',
-                     }
-        self.client.post(reverse('lfs_changed_invoice_country'), form_data)
+        form_data = {
+            "invoice-line1": "my house",
+            "invoice-line2": "a street",
+            "invoice-city": "a city",
+            "invoice-code": "a code",
+            "invoice-state": "a state",
+            "invoice-country": "ie",
+        }
+        self.client.post(reverse("lfs_changed_invoice_country"), form_data)
         self.assertEquals(Address.objects.count(), 6)
 
         # post some shipping address info
         form_data = {
-            'shipping-line1': 'de missusesss house',
-            'shipping-country': 'ie',
+            "shipping-line1": "de missusesss house",
+            "shipping-country": "ie",
         }
-        self.client.post(reverse('lfs_changed_shipping_country'), form_data)
+        self.client.post(reverse("lfs_changed_shipping_country"), form_data)
         self.assertEquals(Address.objects.count(), 6)
 
         # refetch our customer
@@ -233,14 +234,14 @@ class CheckoutAddressesTestCase(TestCase):
 
         # test that adding more info to shipping address doesn't create a brand new one
         form_data = {
-            'shipping-firstname': 'charlize',
-            'shipping-line2': 'a street',
-            'shipping-city': 'a city',
-            'shipping-code': 'a code',
-            'shipping-state': 'a state',
-            'shipping-country': 'ie',
+            "shipping-firstname": "charlize",
+            "shipping-line2": "a street",
+            "shipping-city": "a city",
+            "shipping-code": "a code",
+            "shipping-state": "a state",
+            "shipping-country": "ie",
         }
-        self.client.post(reverse('lfs_changed_shipping_country'), form_data)
+        self.client.post(reverse("lfs_changed_shipping_country"), form_data)
         self.assertEquals(Address.objects.count(), 6)
 
 
@@ -248,11 +249,11 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
     """Test localization of addresses on OnePageCheckoutForm while
     autoupdate of default addresses is disabled.
     """
-    fixtures = ['lfs_shop.xml']
+
+    fixtures = ["lfs_shop.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         ie = Country.objects.get(code="ie")
         us = Country.objects.get(code="us")
 
@@ -263,12 +264,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
 
         tax = Tax.objects.create(rate=19)
 
-        shipping_method = ShippingMethod.objects.create(
-            name="Standard",
-            active=True,
-            price=1.0,
-            tax=tax
-        )
+        shipping_method = ShippingMethod.objects.create(name="Standard", active=True, price=1.0, tax=tax)
 
         self.by_invoice = PaymentMethod.objects.get(pk=BY_INVOICE)
 
@@ -312,8 +308,8 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
             country=us,
         )
 
-        self.username = 'joe'
-        self.password = 'bloggs'
+        self.username = "joe"
+        self.password = "bloggs"
 
         new_user = User(username=self.username)
         new_user.set_password(self.password)
@@ -326,7 +322,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
             selected_shipping_address=address1,
             selected_invoice_address=address2,
             default_shipping_address=address3,
-            default_invoice_address=address4
+            default_invoice_address=address4,
         )
 
         self.PRODUCT1_NAME = "Surfboard"
@@ -348,9 +344,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
             active=True,
         )
 
-        cart = Cart.objects.create(
-            user=new_user
-        )
+        cart = Cart.objects.create(user=new_user)
 
         CartItem.objects.create(
             cart=cart,
@@ -365,28 +359,27 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         )
 
     def dump_response(self, http_response):
-        fo = open('tests_checkout_addresses.html', 'w')
+        fo = open("tests_checkout_addresses.html", "w")
         fo.write(str(http_response))
         fo.close()
 
     @override_settings(LFS_AUTO_UPDATE_DEFAULT_ADDRESSES=False)
     def test_checkout_page_ie(self):
-        """Tests that checkout page gets populated with correct details
-        """
+        """Tests that checkout page gets populated with correct details"""
         # login as our customer
         logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
-        cart_response = self.client.get(reverse('lfs_cart'))
+        cart_response = self.client.get(reverse("lfs_cart"))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
-        checkout_response = self.client.get(reverse('lfs_checkout'))
+        checkout_response = self.client.get(reverse("lfs_checkout"))
 
         # we expect a list of irish counties in the response as we have an Irish shipping address
-        self.assertContains(checkout_response, 'Offaly', status_code=200)
+        self.assertContains(checkout_response, "Offaly", status_code=200)
 
         # we expect a list of american states in the response as we have an Irish shipping address
-        self.assertContains(checkout_response, 'Washington', status_code=200)
+        self.assertContains(checkout_response, "Washington", status_code=200)
 
     @override_settings(LFS_AUTO_UPDATE_DEFAULT_ADDRESSES=False)
     def test_address_changed_on_checkout(self):
@@ -395,36 +388,42 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         self.assertEqual(logged_in, True)
 
         self.assertEquals(Address.objects.count(), 4)
-        cart_response = self.client.get(reverse('lfs_cart'))
+        cart_response = self.client.get(reverse("lfs_cart"))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
-        self.client.get(reverse('lfs_checkout'))
-        checkout_data = {'invoice-firstname': 'bob',
-                         'invoice-lastname': 'builder',
-                         'invoice-line1': 'de company',
-                         'invoice-line2': 'de street',
-                         'invoice-city': 'de area',
-                         'invoice-state': 'de town',
-                         'invoice-code': '12345',
-                         'invoice-country': "DE",
-                         'invoice-email': 'a@a.com',
-                         'invoice-phone': '1234567',
-                         'shipping-firstname': 'hans',
-                         'shipping-lastname': 'schmidt',
-                         'shipping-line1': 'orianenberger strasse',
-                         'shipping-line2': 'de town',
-                         'shipping-city': 'stuff',
-                         'shipping-state': 'BE',
-                         'shipping-code': '12345',
-                         'shipping-country': "DE",
-                         'shipping-email': 'b@b.com',
-                         'shipping-phone': '7654321',
-                         'payment_method': self.by_invoice.id,
-                         }
+        self.client.get(reverse("lfs_checkout"))
+        checkout_data = {
+            "invoice-firstname": "bob",
+            "invoice-lastname": "builder",
+            "invoice-line1": "de company",
+            "invoice-line2": "de street",
+            "invoice-city": "de area",
+            "invoice-state": "de town",
+            "invoice-code": "12345",
+            "invoice-country": "DE",
+            "invoice-email": "a@a.com",
+            "invoice-phone": "1234567",
+            "shipping-firstname": "hans",
+            "shipping-lastname": "schmidt",
+            "shipping-line1": "orianenberger strasse",
+            "shipping-line2": "de town",
+            "shipping-city": "stuff",
+            "shipping-state": "BE",
+            "shipping-code": "12345",
+            "shipping-country": "DE",
+            "shipping-email": "b@b.com",
+            "shipping-phone": "7654321",
+            "payment_method": self.by_invoice.id,
+        }
 
-        checkout_post_response = self.client.post(reverse('lfs_checkout'), checkout_data)
+        checkout_post_response = self.client.post(reverse("lfs_checkout"), checkout_data)
         # self.dump_response(checkout_post_response)
-        self.assertRedirects(checkout_post_response, reverse('lfs_thank_you'), status_code=302, target_status_code=200,)
+        self.assertRedirects(
+            checkout_post_response,
+            reverse("lfs_thank_you"),
+            status_code=302,
+            target_status_code=200,
+        )
 
         # test we have same amount of address objects at end of checkout
         self.assertEquals(Address.objects.count(), 6)
@@ -434,9 +433,12 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         self.assertEquals(Address.objects.count(), 4)
 
         # register a new user
-        registration_response = self.client.post(reverse('lfs_login'), {'action': 'register', 'email': 'test@test.com', 'password_1': 'password', 'password_2': 'password'})
+        registration_response = self.client.post(
+            reverse("lfs_login"),
+            {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
+        )
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers['location'], ('Location', '/'))
+        self.assertEquals(registration_response._headers["location"], ("Location", "/"))
 
         # get our new customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -450,8 +452,8 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         self.assertEquals(Address.objects.count(), 8)
 
         # test that an ajax request creates a new customer address
-        form_data = {'invoice-country': 'ie'}
-        self.client.post(reverse('lfs_changed_invoice_country'), form_data)
+        form_data = {"invoice-country": "ie"}
+        self.client.post(reverse("lfs_changed_invoice_country"), form_data)
         self.assertEquals(Address.objects.count(), 8)
 
         # refetch our customer
@@ -460,22 +462,23 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         self.assertNotEqual(our_customer.selected_shipping_address, None)
 
         # test that we still have the same number of Addresses after another invoice post
-        form_data = {'invoice-line1': 'my house',
-                     'invoice-line2': 'a street',
-                     'invoice-city': 'a city',
-                     'invoice-code': 'a code',
-                     'invoice-state': 'a state',
-                     'invoice-country': 'ie',
-                     }
-        self.client.post(reverse('lfs_changed_invoice_country'), form_data)
+        form_data = {
+            "invoice-line1": "my house",
+            "invoice-line2": "a street",
+            "invoice-city": "a city",
+            "invoice-code": "a code",
+            "invoice-state": "a state",
+            "invoice-country": "ie",
+        }
+        self.client.post(reverse("lfs_changed_invoice_country"), form_data)
         self.assertEquals(Address.objects.count(), 8)
 
         # post some shipping address info
         form_data = {
-            'shipping-line1': 'de missusesss house',
-            'shipping-country': 'ie',
+            "shipping-line1": "de missusesss house",
+            "shipping-country": "ie",
         }
-        self.client.post(reverse('lfs_changed_shipping_country'), form_data)
+        self.client.post(reverse("lfs_changed_shipping_country"), form_data)
         self.assertEquals(Address.objects.count(), 8)
 
         # refetch our customer
@@ -485,12 +488,12 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
 
         # test that adding more info to shipping address doesn't create a brand new one
         form_data = {
-            'shipping-firstname': 'charlize',
-            'shipping-line2': 'a street',
-            'shipping-city': 'a city',
-            'shipping-code': 'a code',
-            'shipping-state': 'a state',
-            'shipping-country': 'ie',
+            "shipping-firstname": "charlize",
+            "shipping-line2": "a street",
+            "shipping-city": "a city",
+            "shipping-code": "a code",
+            "shipping-state": "a state",
+            "shipping-country": "ie",
         }
-        self.client.post(reverse('lfs_changed_shipping_country'), form_data)
+        self.client.post(reverse("lfs_changed_shipping_country"), form_data)
         self.assertEquals(Address.objects.count(), 8)

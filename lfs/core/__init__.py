@@ -1,1 +1,1 @@
-default_app_config = 'lfs.core.apps.LfsCoreAppConfig'
+default_app_config = "lfs.core.apps.LfsCoreAppConfig"

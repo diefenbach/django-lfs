@@ -5,8 +5,8 @@ from lfs.utils import generator
 
 
 class Command(BaseCommand):
-    args = ''
-    help = 'Generates mock products for LFS'
+    args = ""
+    help = "Generates mock products for LFS"
 
     def handle(self, *args, **options):
         generator.products(20)

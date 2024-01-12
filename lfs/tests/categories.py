@@ -3,11 +3,10 @@ from lfs.catalog.models import Category
 
 
 class CategoriesTestCase(TestCase):
-    """
-    """
+    """ """
+
     def setUp(self):
-        """
-        """
+        """ """
         self.client.login(username="admin", password="admin")
 
         # Create a simple category structure
@@ -24,6 +23,5 @@ class CategoriesTestCase(TestCase):
         category_1_1_1.save()
 
     def test_category_creation(self):
-        """Has the above categories been created properly.
-        """
+        """Has the above categories been created properly."""
         self.assertEqual(len(Category.objects.all()), 4)

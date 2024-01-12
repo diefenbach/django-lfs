@@ -10,17 +10,16 @@ import reviews.utils
 
 
 class AverageRatingPortlet(Portlet):
-    """Portlet to display the average rating for a product.
-    """
+    """Portlet to display the average rating for a product."""
+
     class Meta:
-        app_label = 'portlet'
+        app_label = "portlet"
 
     def __str__(self):
-        return u"%s" % self.id
+        return "%s" % self.id
 
     def render(self, context):
-        """Renders the portlet as html.
-        """
+        """Renders the portlet as html."""
         product = context.get("product")
         request = context.get("request")
 
@@ -30,19 +29,23 @@ class AverageRatingPortlet(Portlet):
         else:
             average, amount = reviews.utils.get_average_for_instance(product)
 
-        return render_to_string("lfs/portlets/average_rating.html", request=request, context={
-            "title": self.title,
-            "average": average,
-            "amount": amount,
-        })
+        return render_to_string(
+            "lfs/portlets/average_rating.html",
+            request=request,
+            context={
+                "title": self.title,
+                "average": average,
+                "amount": amount,
+            },
+        )
 
     def form(self, **kwargs):
         return AverageRatingForm(instance=self, **kwargs)
 
 
 class AverageRatingForm(forms.ModelForm):
-    """Form for the AverageRatingPortlet.
-    """
+    """Form for the AverageRatingPortlet."""
+
     class Meta:
         model = AverageRatingPortlet
         exclude = ()

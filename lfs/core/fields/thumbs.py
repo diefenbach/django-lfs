@@ -35,16 +35,16 @@ def generate_thumb(img, thumb_size, format):
     image = Image.open(img)
 
     # Convert to RGB if necessary
-    if image.mode not in ('L', 'RGB', 'RGBA'):
-        image = image.convert('RGB')
+    if image.mode not in ("L", "RGB", "RGBA"):
+        image = image.convert("RGB")
 
     new_image = scale_to_max_size(image, *thumb_size)
 
     data = io.BytesIO()
 
     # PNG and GIF are the same, JPG is JPEG
-    if format.upper() == 'JPG':
-        format = 'JPEG'
+    if format.upper() == "JPG":
+        format = "JPEG"
 
     new_image.save(data, format)
     return ContentFile(data.getvalue())
@@ -54,30 +54,32 @@ class ImageWithThumbsFieldFile(ImageFieldFile):
     """
     See ImageWithThumbsField for usage example
     """
+
     def __init__(self, *args, **kwargs):
         super(ImageWithThumbsFieldFile, self).__init__(*args, **kwargs)
         self.sizes = self.field.sizes
 
         if self.sizes:
+
             def get_size(self, size):
                 if not self:
-                    return ''
+                    return ""
                 else:
-                    split = self.url.rsplit('.', 1)
-                    thumb_url = '%s.%sx%s.%s' % (split[0], w, h, split[1])
+                    split = self.url.rsplit(".", 1)
+                    thumb_url = "%s.%sx%s.%s" % (split[0], w, h, split[1])
                     return thumb_url
 
             for size in self.sizes:
                 (w, h) = size
-                setattr(self, 'url_%sx%s' % (w, h), get_size(self, size))
+                setattr(self, "url_%sx%s" % (w, h), get_size(self, size))
 
     def save(self, name, content, save=True):
         super(ImageWithThumbsFieldFile, self).save(name, content, save)
         if self.sizes:
             for size in self.sizes:
                 (w, h) = size
-                split = self.name.rsplit('.', 1)
-                thumb_name = '%s.%sx%s.%s' % (split[0], w, h, split[1])
+                split = self.name.rsplit(".", 1)
+                thumb_name = "%s.%sx%s.%s" % (split[0], w, h, split[1])
 
                 # you can use another thumbnailing function if you like
                 thumb_content = generate_thumb(self.file, size, split[1])
@@ -85,7 +87,7 @@ class ImageWithThumbsFieldFile(ImageFieldFile):
                 thumb_name_ = self.storage.save(thumb_name, thumb_content)
 
                 if not thumb_name == thumb_name_:
-                    raise ValueError('There is already a file named %s' % thumb_name)
+                    raise ValueError("There is already a file named %s" % thumb_name)
 
     def delete(self, save=True):
         name = self.name
@@ -93,8 +95,8 @@ class ImageWithThumbsFieldFile(ImageFieldFile):
         if self.sizes:
             for size in self.sizes:
                 (w, h) = size
-                split = name.rsplit('.', 1)
-                thumb_name = '%s.%sx%s.%s' % (split[0], w, h, split[1])
+                split = name.rsplit(".", 1)
+                thumb_name = "%s.%sx%s.%s" % (split[0], w, h, split[1])
                 try:
                     self.storage.delete(thumb_name)
                 except:
@@ -145,16 +147,15 @@ class ImageWithThumbsField(ImageField):
     Add method to regenerate thubmnails
 
     """
+
     def __init__(self, verbose_name=None, name=None, width_field=None, height_field=None, sizes=None, **kwargs):
-        super(ImageWithThumbsField, self).__init__(verbose_name=verbose_name,
-                                                   name=name,
-                                                   width_field=width_field,
-                                                   height_field=height_field,
-                                                   **kwargs)
+        super(ImageWithThumbsField, self).__init__(
+            verbose_name=verbose_name, name=name, width_field=width_field, height_field=height_field, **kwargs
+        )
         self.sizes = sizes
 
     def deconstruct(self):
         name, path, args, kwargs = super(ImageWithThumbsField, self).deconstruct()
         if self.sizes is not None:
-            kwargs['sizes'] = self.sizes
+            kwargs["sizes"] = self.sizes
         return name, path, args, kwargs

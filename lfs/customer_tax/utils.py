@@ -5,13 +5,12 @@ from lfs.customer_tax.models import CustomerTax
 
 
 def get_customer_tax_rate(request, product):
-    """Returns the specfic customer tax for the current customer and product.
-    """
-    cache_key = 'cached_customer_tax_rate_%s' % product.pk
+    """Returns the specfic customer tax for the current customer and product."""
+    cache_key = "cached_customer_tax_rate_%s" % product.pk
     if request and hasattr(request, cache_key):
         return getattr(request, cache_key)
 
-    all_cache_key = u'all_customer_taxes'
+    all_cache_key = "all_customer_taxes"
     customer_taxes = cache.get(all_cache_key)
     if customer_taxes is None:
         customer_taxes = CustomerTax.objects.all()

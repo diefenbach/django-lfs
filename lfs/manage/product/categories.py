@@ -16,55 +16,51 @@ from lfs.catalog.models import Category
 
 @permission_required("core.manage_shop")
 def manage_categories(request, product_id, template_name="manage/product/categories.html"):
-    """Displays the manage category view.
-    """
+    """Displays the manage category view."""
     product = lfs_get_object_or_404(Product, pk=product_id)
     product_category_ids = [p.id for p in product.get_categories()]
 
     categories = []
     for category in Category.objects.filter(parent=None):
-
         children = children_categories(request, category, product_category_ids)
 
-        categories.append({
-            "id": category.id,
-            "slug": category.slug,
-            "name": category.name,
-            "url": category.get_absolute_url(),
-            "checked": category.id in product_category_ids,
-            "children": children,
-        })
+        categories.append(
+            {
+                "id": category.id,
+                "slug": category.slug,
+                "name": category.name,
+                "url": category.get_absolute_url(),
+                "checked": category.id in product_category_ids,
+                "children": children,
+            }
+        )
 
-    result = render_to_string(template_name, request=request, context={
-        "product": product,
-        "categories": categories
-    })
+    result = render_to_string(template_name, request=request, context={"product": product, "categories": categories})
 
     return HttpResponse(result)
 
 
 @permission_required("core.manage_shop")
-def children_categories(request, category, product_category_ids,
-                        template_name="manage/product/categories_children.html"):
-    """Renders the children categories of given category as HTML.
-    """
+def children_categories(
+    request, category, product_category_ids, template_name="manage/product/categories_children.html"
+):
+    """Renders the children categories of given category as HTML."""
     categories = []
     for category in category.category_set.all():
-
         children = children_categories(request, category, product_category_ids)
 
-        categories.append({
-            "id": category.id,
-            "slug": category.slug,
-            "name": category.name,
-            "url": category.get_absolute_url(),
-            "checked": category.id in product_category_ids,
-            "children": children,
-        })
+        categories.append(
+            {
+                "id": category.id,
+                "slug": category.slug,
+                "name": category.name,
+                "url": category.get_absolute_url(),
+                "checked": category.id in product_category_ids,
+                "children": children,
+            }
+        )
 
-    result = render_to_string(template_name, request=request, context={
-        "categories": categories
-    })
+    result = render_to_string(template_name, request=request, context={"categories": categories})
 
     return result
 
@@ -72,8 +68,7 @@ def children_categories(request, category, product_category_ids,
 # Actions
 @permission_required("core.manage_shop")
 def change_categories(request, product_id):
-    """Changes categories by passed request body.
-    """
+    """Changes categories by passed request body."""
     product = lfs_get_object_or_404(Product, pk=product_id)
 
     # Signal that the old categories of the product have been changed.
@@ -88,6 +83,12 @@ def change_categories(request, product_id):
     for category in product.categories.all():
         category_changed.send(category)
 
-    return HttpResponse(json.dumps({
-        "message": _(u"Categories have been saved."),
-    }, cls=LazyEncoder), content_type='application/json')
+    return HttpResponse(
+        json.dumps(
+            {
+                "message": _("Categories have been saved."),
+            },
+            cls=LazyEncoder,
+        ),
+        content_type="application/json",
+    )

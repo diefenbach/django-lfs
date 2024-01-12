@@ -6,15 +6,16 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('discounts', '0002_add_sums_up_to_discount'),
+        ("discounts", "0002_add_sums_up_to_discount"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='discount',
-            name='sums_up',
-            field=models.BooleanField(default=True, help_text='Sums up with other discounts/vouchers', verbose_name='Sums up'),
+            model_name="discount",
+            name="sums_up",
+            field=models.BooleanField(
+                default=True, help_text="Sums up with other discounts/vouchers", verbose_name="Sums up"
+            ),
         ),
     ]

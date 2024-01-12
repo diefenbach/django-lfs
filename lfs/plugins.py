@@ -23,6 +23,7 @@ class OrderNumberGenerator(models.Model):
     id
         The unique id of the order number generator.
     """
+
     id = models.CharField(primary_key=True, max_length=20)
 
     class Meta:
@@ -58,7 +59,7 @@ class OrderNumberGenerator(models.Model):
         Returns a list of fields, which are excluded from the model form, see
         also ``get_form``.
         """
-        return ("id", )
+        return ("id",)
 
     def get_form(self, **kwargs):
         """
@@ -67,6 +68,7 @@ class OrderNumberGenerator(models.Model):
 
         All parameters are passed to the form.
         """
+
         class OrderNumberGeneratorForm(forms.ModelForm):
             class Meta:
                 model = self
@@ -91,6 +93,7 @@ class PaymentMethodProcessor(object):
         The current order. This is only set, when create order time is
         IMMEDIATELY.
     """
+
     def __init__(self, request, cart=None, order=None):
         self.request = request
         self.cart = cart
@@ -164,12 +167,13 @@ class PriceCalculator(object):
     request
         The current request.
     """
+
     def __init__(self, request, product, **kwargs):
         self.request = request
         self.product = product
 
     def get_effective_price(self, amount=1):
-        """ Effective price is used for sorting and filtering.
+        """Effective price is used for sorting and filtering.
             Usually it is same as value from get_price but in some cases it might differ (eg. if we add eco tax to
             product price)
 
@@ -467,6 +471,7 @@ class PriceCalculator(object):
         Returns the tax rate for the current customer and product.
         """
         from lfs.customer_tax.utils import get_customer_tax_rate
+
         return get_customer_tax_rate(self.request, self.product)
 
     def get_customer_tax(self, with_properties=True, amount=1):
@@ -490,13 +495,14 @@ class PriceCalculator(object):
         it returns the parent's tax rate.
         """
         from django.core.cache import cache
+
         if self.product.is_variant():
             obj = self.product.parent
         else:
             obj = self.product
 
         if obj.tax_id:
-            cache_key = u'tax_rate_{}'.format(obj.tax_id)
+            cache_key = "tax_rate_{}".format(obj.tax_id)
             tax_rate = cache.get(cache_key)
             if tax_rate is None:
                 tax_rate = obj.tax.rate
@@ -522,7 +528,7 @@ class PriceCalculator(object):
         Returns the default tax rate for the product.
         """
         tax_rate = self.get_product_tax_rate()
-        return ((tax_rate + 100.0) / 100.0)
+        return (tax_rate + 100.0) / 100.0
 
     def _calc_customer_tax_rate(self):
         """
@@ -551,6 +557,7 @@ class ShippingMethodPriceCalculator(object):
     shipping_method
         The shipping method for which the price is calculated.
     """
+
     def __init__(self, request, shipping_method):
         self.shipping_method = shipping_method
         self.request = request
@@ -564,7 +571,7 @@ class ShippingMethodPriceCalculator(object):
         if customer_tax:
             return customer_tax.rate
 
-        cache_key = 'shipping_method_tax_{}'.format(self.shipping_method.pk)
+        cache_key = "shipping_method_tax_{}".format(self.shipping_method.pk)
         tax_rate = cache.get(cache_key)
         if tax_rate is None:
             if self.shipping_method.tax_id is None:
@@ -579,8 +586,8 @@ class ShippingMethodPriceCalculator(object):
         Returns the stored price without any calculations.
         """
         from lfs.criteria import utils as criteria_utils
-        price = criteria_utils.get_first_valid(self.request,
-                                               self.shipping_method.prices.all())
+
+        price = criteria_utils.get_first_valid(self.request, self.shipping_method.prices.all())
         if price:
             return price.price
         return self.shipping_method.price

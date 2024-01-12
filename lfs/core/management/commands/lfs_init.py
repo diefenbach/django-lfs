@@ -25,8 +25,8 @@ SHOP_DESCRIPTION = """
 
 
 class Command(BaseCommand):
-    args = ''
-    help = 'Initializes LFS'
+    args = ""
+    help = "Initializes LFS"
 
     def handle(self, *args, **options):
         from lfs.catalog.models import DeliveryTime
@@ -56,9 +56,15 @@ class Command(BaseCommand):
         delivery_time = DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
 
         # Shop
-        shop = Shop.objects.create(name="LFS", shop_owner="John Doe",
-                                   from_email="john@doe.com", notification_emails="john@doe.com",
-                                   description=SHOP_DESCRIPTION, default_country=usa, delivery_time=delivery_time)
+        shop = Shop.objects.create(
+            name="LFS",
+            shop_owner="John Doe",
+            from_email="john@doe.com",
+            notification_emails="john@doe.com",
+            description=SHOP_DESCRIPTION,
+            default_country=usa,
+            delivery_time=delivery_time,
+        )
         shop.invoice_countries.add(usa)
         shop.shipping_countries.add(usa)
 
@@ -66,7 +72,9 @@ class Command(BaseCommand):
         tabs = ActionGroup.objects.create(name="Tabs")
         footer = ActionGroup.objects.create(name="Footer")
         Action.objects.create(group=tabs, title="Contact", link="/contact", active=True, position=1)
-        Action.objects.create(group=footer, title="Terms and Conditions", link="/page/terms-and-conditions", active=True, position=1)
+        Action.objects.create(
+            group=footer, title="Terms and Conditions", link="/page/terms-and-conditions", active=True, position=1
+        )
         Action.objects.create(group=footer, title="Imprint", link="/page/imprint", active=True, position=2)
 
         # Portlets
@@ -89,7 +97,9 @@ class Command(BaseCommand):
         pm = PaymentMethod.objects.create(name="Cash on delivery", priority=2, active=1, deletable=0)
         pm.id = 2
         pm.save()
-        pm = PaymentMethod.objects.create(name="PayPal", priority=3, active=1, deletable=0, module="lfs_paypal.PayPalProcessor")
+        pm = PaymentMethod.objects.create(
+            name="PayPal", priority=3, active=1, deletable=0, module="lfs_paypal.PayPalProcessor"
+        )
         pm.id = 3
         pm.save()
         pm = PaymentMethod.objects.create(name="Prepayment", priority=4, active=1, deletable=0)
@@ -103,7 +113,12 @@ class Command(BaseCommand):
         p = Page.objects.create(title="Root", slug="", active=1, exclude_from_navigation=1)
         p.id = 1
         p.save()
-        p = Page.objects.create(title="Terms and Conditions", slug="terms-and-conditions", active=1, body="Enter your terms and conditions here.")
+        p = Page.objects.create(
+            title="Terms and Conditions",
+            slug="terms-and-conditions",
+            active=1,
+            body="Enter your terms and conditions here.",
+        )
         p.id = 2
         p.save()
         p = Page.objects.create(title="Imprint", slug="imprint", active=1, body="Enter your imprint here.")

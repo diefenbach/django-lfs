@@ -22,13 +22,12 @@ from lfs.tests.utils import RequestFactory
 
 
 class DiscountsTestCase1(TestCase):
-    """Unit tests for lfs.discounts
-    """
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    """Unit tests for lfs.discounts"""
+
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         self.user = User.objects.get(username="admin")
         self.request = DummyRequest(user=self.user)
 
@@ -41,8 +40,7 @@ class DiscountsTestCase1(TestCase):
             cart.delete()
 
     def test_model(self):
-        """
-        """
+        """ """
         self.assertEqual(self.d.name, "Summer")
         self.assertEqual(self.d.value, 10.0)
         self.assertEqual(self.d.type, 0)
@@ -50,8 +48,7 @@ class DiscountsTestCase1(TestCase):
         self.assertEqual(self.d.is_valid(self.request), True)
 
     def test_criteria(self):
-        """
-        """
+        """ """
         WeightCriterion.objects.create(value=10.0, operator=GREATER_THAN, content=self.d)
 
         self.assertEqual(self.d.is_valid(self.request), False)
@@ -59,18 +56,17 @@ class DiscountsTestCase1(TestCase):
 
 
 class DiscountTestCase2(TestCase):
-    """
-    """
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    """ """
+
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
-        """
-        """
+        """ """
         session = SessionStore()
         session.save()
 
         rf = RequestFactory()
-        self.request = rf.get('/')
+        self.request = rf.get("/")
         self.request.session = session
         self.request.user = AnonymousUser()
 
@@ -78,12 +74,7 @@ class DiscountTestCase2(TestCase):
 
         Discount.objects.create(name="Summer", value=10.0, type=0, tax=tax)
 
-        shipping_method = ShippingMethod.objects.create(
-            name="Standard",
-            active=True,
-            price=1.0,
-            tax=tax
-        )
+        shipping_method = ShippingMethod.objects.create(name="Standard", active=True, price=1.0, tax=tax)
 
         payment_method = PaymentMethod.objects.create(
             name="Direct Debit",
@@ -145,9 +136,7 @@ class DiscountTestCase2(TestCase):
             active=True,
         )
 
-        cart = Cart.objects.create(
-            session=session.session_key
-        )
+        cart = Cart.objects.create(session=session.session_key)
 
         CartItem.objects.create(
             cart=cart,
@@ -162,8 +151,7 @@ class DiscountTestCase2(TestCase):
         )
 
     def test_order_discount_price(self):
-        """Tests the price of the discount within an order.
-        """
+        """Tests the price of the discount within an order."""
         order = add_order(self.request)
 
         for order_item in order.items.all():

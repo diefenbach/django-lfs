@@ -7,10 +7,10 @@ from lfs.catalog.models import Product
 
 
 class CachingTestCase(TestCase):
-    fixtures = ['lfs_shop.xml', "lfs_user.xml"]
+    fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def test_lfs_get_object(self):
-        self.assertTrue(lfs_get_object(Product, slug=u'zażółćgęśląjaźń') is None)
+        self.assertTrue(lfs_get_object(Product, slug="zażółćgęśląjaźń") is None)
 
     def test_lfs_get_object_or_404(self):
-        self.assertRaises(Http404, lfs_get_object_or_404, Product, slug=u'zażółćgęśląjaźń')
+        self.assertRaises(Http404, lfs_get_object_or_404, Product, slug="zażółćgęśląjaźń")

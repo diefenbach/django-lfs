@@ -18,8 +18,17 @@ from lfs.core.signals import category_changed
 from lfs.core.signals import shop_changed
 from lfs.core.signals import topseller_changed
 from lfs.core.signals import manufacturer_changed
-from lfs.criteria.models import CountryCriterion, WeightCriterion, WidthCriterion, ShippingMethodCriterion, \
-    PaymentMethodCriterion, LengthCriterion, HeightCriterion, CombinedLengthAndGirthCriterion, CartPriceCriterion
+from lfs.criteria.models import (
+    CountryCriterion,
+    WeightCriterion,
+    WidthCriterion,
+    ShippingMethodCriterion,
+    PaymentMethodCriterion,
+    LengthCriterion,
+    HeightCriterion,
+    CombinedLengthAndGirthCriterion,
+    CartPriceCriterion,
+)
 from lfs.customer_tax.models import CustomerTax
 from lfs.marketing.models import Topseller
 from lfs.order.models import OrderItem
@@ -65,9 +74,9 @@ def category_changed_listener(sender, **kwargs):
 
 @receiver(m2m_changed, sender=Category.products.through)
 def product_categories_changed_listener(sender, **kwargs):
-    instance = kwargs['instance']
-    reverse = kwargs['reverse']
-    pk_set = kwargs['pk_set']
+    instance = kwargs["instance"]
+    reverse = kwargs["reverse"]
+    pk_set = kwargs["pk_set"]
 
     if reverse:
         product = instance
@@ -88,7 +97,7 @@ def manufacturer_changed_listener(sender, **kwargs):
     # list of all manufacturer products
     delete_cache("%s-manufacturer-all-products-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, sender.pk))
     # if manufacturer assignment was changed then product navigation might be different too
-    invalidate_cache_group_id('product_navigation')
+    invalidate_cache_group_id("product_navigation")
 
 
 # OrderItem
@@ -128,7 +137,7 @@ def product_saved_listener(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Product)
 def product_pre_saved_listener(sender, instance, **kwargs):
-    """ If product slug was changed we should have cleared slug based product cache"""
+    """If product slug was changed we should have cleared slug based product cache"""
     # check if product already exists in database
     if instance.pk:
         if instance.is_variant():
@@ -191,38 +200,37 @@ def review_added_listener(sender, **kwargs):
 
 @receiver(m2m_changed, sender=CountryCriterion.value.through)
 def criterion_countries_changed(sender, instance, action, reverse, model, pk_set, **kwargs):
-    if action in ('post_add', 'post_remove', 'post_clear'):
+    if action in ("post_add", "post_remove", "post_clear"):
         if not reverse:
-            delete_cache(u'country_values_{}'.format(instance.pk))
+            delete_cache("country_values_{}".format(instance.pk))
         else:
             for pk in pk_set:
-                delete_cache(u'country_values_{}'.format(pk))
+                delete_cache("country_values_{}".format(pk))
 
 
 @receiver(post_save, sender=CustomerTax)
 def customer_tax_created_listener(sender, instance, created, **kwargs):
     if created:
-        delete_cache(u'all_customer_taxes')
+        delete_cache("all_customer_taxes")
 
 
 @receiver(post_delete, sender=CustomerTax)
 def customer_tax_deleted_listener(sender, instance, **kwargs):
-    delete_cache(u'all_customer_taxes')
+    delete_cache("all_customer_taxes")
 
 
 @receiver(post_save, sender=Tax)
 def tax_rate_created_listener(sender, instance, created, **kwargs):
-    delete_cache(u'tax_rate_{}'.format(instance.pk))
+    delete_cache("tax_rate_{}".format(instance.pk))
 
 
 @receiver(post_delete, sender=Tax)
 def tax_rate_deleted_listener(sender, instance, **kwargs):
-    delete_cache(u'tax_rate_{}'.format(instance.pk))
+    delete_cache("tax_rate_{}".format(instance.pk))
 
 
 #####
 def update_category_cache(instance):
-
     # NOTE: ATM, we clear the whole cache if a category has been changed.
     # Otherwise is lasts to long when the a category has a lot of products
     # (1000s) and the shop admin changes a category.
@@ -264,8 +272,8 @@ def update_product_cache(instance):
         parent = instance
 
     # if product was changed then we have to clear all product_navigation caches
-    invalidate_cache_group_id('product_navigation')
-    invalidate_cache_group_id('properties-%s' % parent.id)
+    invalidate_cache_group_id("product_navigation")
+    invalidate_cache_group_id("properties-%s" % parent.id)
     delete_cache("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
     delete_cache("%s-product-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.slug))
     delete_cache("%s-product-images-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, parent.id))
@@ -295,8 +303,7 @@ def update_product_cache(instance):
 
 
 def update_cart_cache(instance):
-    """Deletes all cart relevant caches.
-    """
+    """Deletes all cart relevant caches."""
     if instance.user:
         delete_cache("%s-cart-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.user.pk))
 
@@ -309,8 +316,7 @@ def update_cart_cache(instance):
 
 
 def update_static_block_cache(instance):
-    """Deletes all static block relevant caches.
-    """
+    """Deletes all static block relevant caches."""
     delete_cache("%s-static-block-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
 
     for category in instance.categories.all():
@@ -318,8 +324,7 @@ def update_static_block_cache(instance):
 
 
 def update_topseller_cache(topseller):
-    """Deletes all topseller relevant caches.
-    """
+    """Deletes all topseller relevant caches."""
     delete_cache("%s-topseller" % settings.CACHE_MIDDLEWARE_KEY_PREFIX)
     product = topseller.product
     for category in product.get_categories(with_parents=True):
@@ -345,5 +350,5 @@ def update_topseller_cache(topseller):
 @receiver(pre_delete, sender=ShippingMethodCriterion)
 @receiver(pre_delete, sender=WidthCriterion)
 def clear_criterion_cache(sender, instance, **kwargs):
-    cache_key = u'criteria_for_model_{}_{}'.format(instance.content_id, instance.content_type.pk)
+    cache_key = "criteria_for_model_{}_{}".format(instance.content_id, instance.content_type.pk)
     cache.delete(cache_key)

@@ -6,6 +6,7 @@ class CustomerTaxForm(forms.ModelForm):
     """
     Form to add and edit a customer tax.
     """
+
     class Meta:
         model = CustomerTax
         exclude = ()

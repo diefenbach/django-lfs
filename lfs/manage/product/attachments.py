@@ -17,46 +17,53 @@ from lfs.core.utils import LazyEncoder
 
 @permission_required("core.manage_shop")
 def manage_attachments(request, product_id, as_string=False, template_name="manage/product/attachments.html"):
-    """
-    """
+    """ """
     product = lfs_get_object_or_404(Product, pk=product_id)
 
-    result = render_to_string(template_name, request=request, context={
-        "product": product,
-    })
+    result = render_to_string(
+        template_name,
+        request=request,
+        context={
+            "product": product,
+        },
+    )
 
     if as_string:
         return result
     else:
-        result = json.dumps({
-            "attachments": result,
-            "message": _(u"Attachments have been added."),
-        }, cls=LazyEncoder)
+        result = json.dumps(
+            {
+                "attachments": result,
+                "message": _("Attachments have been added."),
+            },
+            cls=LazyEncoder,
+        )
 
-        return HttpResponse(result, content_type='application/json')
+        return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
 def list_attachments(request, product_id, as_string=False, template_name="manage/product/attachments-list.html"):
-    """
-    """
+    """ """
     result = manage_attachments(request, product_id, as_string=True, template_name=template_name)
     if as_string:
         return result
     else:
-        result = json.dumps({
-            "html": result,
-            "message": _(u"Attachments have been added."),
-        }, cls=LazyEncoder)
+        result = json.dumps(
+            {
+                "html": result,
+                "message": _("Attachments have been added."),
+            },
+            cls=LazyEncoder,
+        )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 # Actions
 @permission_required("core.manage_shop")
 def add_attachment(request, product_id):
-    """Adds an attachment to product with passed product_id.
-    """
+    """Adds an attachment to product with passed product_id."""
     product = lfs_get_object_or_404(Product, pk=product_id)
     if request.method == "POST":
         for file_content in request.FILES.getlist("files[]"):
@@ -74,14 +81,13 @@ def add_attachment(request, product_id):
 
 @permission_required("core.manage_shop")
 def update_attachments(request, product_id):
-    """Saves/deletes attachments with given ids (passed by request body).
-    """
+    """Saves/deletes attachments with given ids (passed by request body)."""
     product = lfs_get_object_or_404(Product, pk=product_id)
     action = request.POST.get("action")
-    message = _(u"Attachment has been updated.")
+    message = _("Attachment has been updated.")
 
     if action == "delete":
-        message = _(u"Attachment has been deleted.")
+        message = _("Attachment has been deleted.")
         for key in request.POST.keys():
             if key.startswith("delete-"):
                 try:
@@ -90,7 +96,7 @@ def update_attachments(request, product_id):
                 except (IndexError, ObjectDoesNotExist):
                     pass
     elif action == "update":
-        message = _(u"Attachment has been updated.")
+        message = _("Attachment has been updated.")
         for attachment in product.attachments.all():
             attachment.title = request.POST.get("title-%s" % attachment.id)[:50]
             attachment.position = request.POST.get("position-%s" % attachment.id)
@@ -105,12 +111,15 @@ def update_attachments(request, product_id):
     product_changed.send(product, request=request)
 
     html = [["#attachments-list", list_attachments(request, product_id, as_string=True)]]
-    result = json.dumps({
-        "html": html,
-        "message": message,
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": html,
+            "message": message,
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 @permission_required("core.manage_shop")
@@ -153,8 +162,11 @@ def move_attachment(request, id):
 
     html = [["#attachments-list", list_attachments(request, product.id, as_string=True)]]
 
-    result = json.dumps({
-        "html": html,
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": html,
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")

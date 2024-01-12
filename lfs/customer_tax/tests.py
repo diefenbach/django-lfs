@@ -16,9 +16,9 @@ from lfs.customer.utils import get_or_create_customer
 
 
 class CustomerTaxTestCase(TestCase):
-    """Unit tests for lfs.customer_tax
-    """
-    fixtures = ['lfs_shop.xml']
+    """Unit tests for lfs.customer_tax"""
+
+    fixtures = ["lfs_shop.xml"]
 
     def setUp(self):
         self.us = Country.objects.create(code="us", name="USA")
@@ -52,21 +52,21 @@ class CustomerTaxTestCase(TestCase):
         self.assertEqual(result, 20.0)
 
         # clear request cache
-        delattr(self.request, 'cached_customer_tax_rate_%s' % self.product.pk)
+        delattr(self.request, "cached_customer_tax_rate_%s" % self.product.pk)
         self.customer.selected_shipping_address.country = self.ch
         self.customer.selected_shipping_address.save()
         result = get_customer_tax_rate(self.request, self.product)
         self.assertEqual(result, 20.0)
 
         # clear request cache
-        delattr(self.request, 'cached_customer_tax_rate_%s' % self.product.pk)
+        delattr(self.request, "cached_customer_tax_rate_%s" % self.product.pk)
         self.customer.selected_shipping_address.country = self.ie
         self.customer.selected_shipping_address.save()
         result = get_customer_tax_rate(self.request, self.product)
         self.assertEqual(result, 10.0)
 
         # clear request cache
-        delattr(self.request, 'cached_customer_tax_rate_%s' % self.product.pk)
+        delattr(self.request, "cached_customer_tax_rate_%s" % self.product.pk)
         self.customer.selected_shipping_address.country = self.de
         self.customer.selected_shipping_address.save()
         result = get_customer_tax_rate(self.request, self.product)

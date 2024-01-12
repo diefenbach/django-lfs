@@ -21,17 +21,18 @@ class ProfileMiddleware(object):
     but you really shouldn't add this middleware to any production configuration.
     * Only tested on Linux
     """
+
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        if 'prof' in request.GET:
+        if "prof" in request.GET:
             self.tmpfile = tempfile.NamedTemporaryFile()
             self.prof = hotshot.Profile(self.tmpfile.name)
 
         response = self.get_response(request)
 
-        if 'prof' in request.GET:
+        if "prof" in request.GET:
             self.prof.close()
 
             out = StringIO()
@@ -40,7 +41,9 @@ class ProfileMiddleware(object):
 
             stats = hotshot.stats.load(self.tmpfile.name)
             # stats.strip_dirs()
-            stats.sort_stats('cumulative', )
+            stats.sort_stats(
+                "cumulative",
+            )
             # stats.sort_stats('time', )
             stats.print_stats()
 
@@ -53,7 +56,7 @@ class ProfileMiddleware(object):
         return response
 
     def process_view(self, request, callback, callback_args, callback_kwargs):
-        if 'prof' in request.GET:
+        if "prof" in request.GET:
             return self.prof.runcall(callback, request, *callback_args, **callback_kwargs)
 
 
@@ -70,6 +73,7 @@ class AJAXSimpleExceptionResponse(object):
             if request.is_ajax():
                 import sys
                 import traceback
+
                 (exc_type, exc_info, tb) = sys.exc_info()
                 response = "%s\n" % exc_type.__name__
                 response += "%s\n\n" % exc_info

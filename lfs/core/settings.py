@@ -7,7 +7,7 @@ ACTION_PLACE_TABS = 1
 ACTION_PLACE_FOOTER = 2
 
 ACTION_PLACE_CHOICES = [
-    (ACTION_PLACE_TABS, _(u"Tabs")),
-    (ACTION_PLACE_FOOTER, _(u"Footer")),
+    (ACTION_PLACE_TABS, _("Tabs")),
+    (ACTION_PLACE_FOOTER, _("Footer")),
 ]
-POSTAL_ADDRESS_L10N = getattr(settings, 'POSTAL_ADDRESS_L10N', True)
+POSTAL_ADDRESS_L10N = getattr(settings, "POSTAL_ADDRESS_L10N", True)

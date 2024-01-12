@@ -38,10 +38,14 @@ def cart(request, template_name="lfs/cart/cart.html"):
     """
     The main view of the cart.
     """
-    return render(request, template_name, {
-        "voucher_number": lfs.voucher.utils.get_current_voucher_number(request),
-        "cart_inline": cart_inline(request),
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "voucher_number": lfs.voucher.utils.get_current_voucher_number(request),
+            "cart_inline": cart_inline(request),
+        },
+    )
 
 
 def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
@@ -53,9 +57,13 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     cart = cart_utils.get_cart(request)
     shopping_url = lfs.cart.utils.get_go_on_shopping_url(request)
     if cart is None:
-        return render_to_string(template_name, request=request, context={
-            "shopping_url": shopping_url,
-        })
+        return render_to_string(
+            template_name,
+            request=request,
+            context={
+                "shopping_url": shopping_url,
+            },
+        )
 
     shop = core_utils.get_default_shop(request)
     countries = shop.shipping_countries.all()
@@ -81,21 +89,21 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     discounts_data = lfs.discounts.utils.get_discounts_data(request)
 
     # calculate total value of discounts and voucher that sum up
-    summed_up_value = discounts_data['summed_up_value']
-    if voucher_data['sums_up']:
-        summed_up_value += voucher_data['voucher_value']
+    summed_up_value = discounts_data["summed_up_value"]
+    if voucher_data["sums_up"]:
+        summed_up_value += voucher_data["voucher_value"]
 
     # initialize discounts with summed up discounts
-    use_voucher = voucher_data['voucher'] is not None
-    discounts = discounts_data['summed_up_discounts']
-    if voucher_data['voucher_value'] > summed_up_value or discounts_data['max_value'] > summed_up_value:
+    use_voucher = voucher_data["voucher"] is not None
+    discounts = discounts_data["summed_up_discounts"]
+    if voucher_data["voucher_value"] > summed_up_value or discounts_data["max_value"] > summed_up_value:
         # use not summed up value
-        if voucher_data['voucher_value'] > discounts_data['max_value']:
+        if voucher_data["voucher_value"] > discounts_data["max_value"]:
             # use voucher only
             discounts = []
         else:
             # use discount only
-            discounts = discounts_data['max_discounts']
+            discounts = discounts_data["max_discounts"]
             use_voucher = False
 
     for discount in discounts:
@@ -103,8 +111,8 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         cart_tax -= discount["tax"]
 
     if use_voucher:
-        cart_price -= voucher_data['voucher_value']
-        cart_tax -= voucher_data['voucher_tax']
+        cart_price -= voucher_data["voucher_value"]
+        cart_tax -= voucher_data["voucher_tax"]
 
     cart_price = max(0, cart_price)
     cart_tax = max(0, cart_tax)
@@ -116,37 +124,43 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     for cart_item in cart.get_items():
         product = cart_item.product
         quantity = product.get_clean_quantity(cart_item.amount)
-        cart_items.append({
-            "obj": cart_item,
-            "quantity": quantity,
-            "product": product,
-            "product_price_net": cart_item.get_price_net(request),
-            "product_price_gross": cart_item.get_price_gross(request),
-            "product_tax": cart_item.get_tax(request),
-        })
+        cart_items.append(
+            {
+                "obj": cart_item,
+                "quantity": quantity,
+                "product": product,
+                "product_price_net": cart_item.get_price_net(request),
+                "product_price_gross": cart_item.get_price_gross(request),
+                "product_tax": cart_item.get_tax(request),
+            }
+        )
 
-    return render_to_string(template_name, request=request, context={
-        "cart": cart,
-        "cart_items": cart_items,
-        "cart_price": cart_price,
-        "cart_tax": cart_tax,
-        "shipping_methods": shipping_utils.get_valid_shipping_methods(request),
-        "selected_shipping_method": selected_shipping_method,
-        "shipping_costs": shipping_costs,
-        "payment_methods": payment_utils.get_valid_payment_methods(request),
-        "selected_payment_method": selected_payment_method,
-        "payment_price": payment_costs["price"],
-        "countries": countries,
-        "selected_country": selected_country,
-        "max_delivery_time": max_delivery_time,
-        "shopping_url": shopping_url,
-        "discounts": discounts,
-        "display_voucher": use_voucher,
-        "voucher_number": voucher_data['voucher_number'],
-        "voucher_value": voucher_data['voucher_value'],
-        "voucher_tax": voucher_data['voucher_tax'],
-        "voucher_message": voucher_data['voucher_message'],
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "cart": cart,
+            "cart_items": cart_items,
+            "cart_price": cart_price,
+            "cart_tax": cart_tax,
+            "shipping_methods": shipping_utils.get_valid_shipping_methods(request),
+            "selected_shipping_method": selected_shipping_method,
+            "shipping_costs": shipping_costs,
+            "payment_methods": payment_utils.get_valid_payment_methods(request),
+            "selected_payment_method": selected_payment_method,
+            "payment_price": payment_costs["price"],
+            "countries": countries,
+            "selected_country": selected_country,
+            "max_delivery_time": max_delivery_time,
+            "shopping_url": shopping_url,
+            "discounts": discounts,
+            "display_voucher": use_voucher,
+            "voucher_number": voucher_data["voucher_number"],
+            "voucher_value": voucher_data["voucher_value"],
+            "voucher_tax": voucher_data["voucher_tax"],
+            "voucher_message": voucher_data["voucher_message"],
+        },
+    )
 
 
 def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
@@ -161,14 +175,18 @@ def added_to_cart(request, template_name="lfs/cart/added_to_cart.html"):
         accessories = []
 
     cart_items_count = len(cart_items)
-    return render(request, template_name, {
-        "plural": cart_items_count > 1,
-        "cart_items_count": cart_items_count,
-        "shopping_url": request.META.get("HTTP_REFERER", "/"),
-        "product_accessories": accessories,
-        "product": cart_items[0].product if cart_items else None,
-        "cart_items": added_to_cart_items(request),
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "plural": cart_items_count > 1,
+            "cart_items_count": cart_items_count,
+            "shopping_url": request.META.get("HTTP_REFERER", "/"),
+            "product_accessories": accessories,
+            "product": cart_items[0].product if cart_items else None,
+            "cart_items": added_to_cart_items(request),
+        },
+    )
 
 
 def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.html"):
@@ -182,19 +200,25 @@ def added_to_cart_items(request, template_name="lfs/cart/added_to_cart_items.htm
         product = cart_item.product
         quantity = product.get_clean_quantity(cart_item.amount)
 
-        cart_items.append({
-            "product": product,
-            "obj": cart_item,
-            "quantity": quantity,
-            "product_price_net": cart_item.get_price_net(request),
-            "product_price_gross": cart_item.get_price_gross(request),
-            "product_tax": cart_item.get_tax(request),
-        })
+        cart_items.append(
+            {
+                "product": product,
+                "obj": cart_item,
+                "quantity": quantity,
+                "product_price_net": cart_item.get_price_net(request),
+                "product_price_gross": cart_item.get_price_gross(request),
+                "product_tax": cart_item.get_tax(request),
+            }
+        )
 
-    return render_to_string(template_name, request=request, context={
-        "total": total,
-        "cart_items": cart_items,
-    })
+    return render_to_string(
+        template_name,
+        request=request,
+        context={
+            "total": total,
+            "cart_items": cart_items,
+        },
+    )
 
 
 # Actions
@@ -239,7 +263,7 @@ def add_to_cart(request, product_id=None):
     string.
     """
     if product_id is None:
-        product_id = (request.POST if request.method == 'POST' else request.GET).get("product_id")
+        product_id = (request.POST if request.method == "POST" else request.GET).get("product_id")
 
     product = lfs_get_object_or_404(Product, pk=product_id)
 
@@ -265,7 +289,7 @@ def add_to_cart(request, product_id=None):
                 except Property.DoesNotExist:
                     continue
 
-                if property_group_id != '0':
+                if property_group_id != "0":
                     try:
                         PropertyGroup.objects.get(pk=property_group_id)
                     except PropertyGroup.DoesNotExist:
@@ -277,18 +301,23 @@ def add_to_cart(request, product_id=None):
                     except ValueError:
                         value = 0.0
 
-                key = '{0}_{1}'.format(property_group_id, property_id)
-                properties_dict[key] = {'value': value,
-                                        'property_group_id': property_group_id,
-                                        'property_id': property_id}
+                key = "{0}_{1}".format(property_group_id, property_id)
+                properties_dict[key] = {
+                    "value": value,
+                    "property_group_id": property_group_id,
+                    "property_id": property_id,
+                }
 
                 # validate property's value
                 if prop.is_number_field:
-
                     if (value < prop.unit_min) or (value > prop.unit_max):
-                        msg = _(u"%(name)s must be between %(min)s and %(max)s %(unit)s.") % {"name": prop.title, "min": prop.unit_min, "max": prop.unit_max, "unit": prop.unit}
-                        return lfs.core.utils.set_message_cookie(
-                            product.get_absolute_url(), msg)
+                        msg = _("%(name)s must be between %(min)s and %(max)s %(unit)s.") % {
+                            "name": prop.title,
+                            "min": prop.unit_min,
+                            "max": prop.unit_max,
+                            "unit": prop.unit,
+                        }
+                        return lfs.core.utils.set_message_cookie(product.get_absolute_url(), msg)
 
                     # calculate valid steps
                     steps = []
@@ -300,9 +329,10 @@ def add_to_cart(request, product_id=None):
 
                     value = "%.2f" % value
                     if value not in steps:
-                        msg = _(u"Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s.") % {"name": prop.title, "value": value, "step": prop.unit_step}
-                        return lfs.core.utils.set_message_cookie(
-                            product.get_absolute_url(), msg)
+                        msg = _(
+                            "Your entered value for %(name)s (%(value)s) is not in valid step width, which is %(step)s."
+                        ) % {"name": prop.title, "value": value, "step": prop.unit_step}
+                        return lfs.core.utils.set_message_cookie(product.get_absolute_url(), msg)
 
     if product.get_active_packing_unit():
         quantity = product.get_amount_by_packages(quantity)
@@ -316,11 +346,14 @@ def add_to_cart(request, product_id=None):
     message = ""
     if product.manage_stock_amount and cart_item.amount > product.stock_amount and not product.order_time:
         if product.stock_amount == 0:
-            message = _(u"Sorry, but '%(product)s' is not available anymore.") % {"product": product.name}
+            message = _("Sorry, but '%(product)s' is not available anymore.") % {"product": product.name}
         elif product.stock_amount == 1:
-            message = _(u"Sorry, but '%(product)s' is only one time available.") % {"product": product.name}
+            message = _("Sorry, but '%(product)s' is only one time available.") % {"product": product.name}
         else:
-            message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": product.name, "amount": product.stock_amount}
+            message = _("Sorry, but '%(product)s' is only %(amount)s times available.") % {
+                "product": product.name,
+                "amount": product.stock_amount,
+            }
         cart_item.amount = product.stock_amount
         cart_item.save()
 
@@ -431,11 +464,14 @@ def refresh_cart(request):
                 amount = 0
 
             if amount == 0:
-                message = _(u"Sorry, but '%(product)s' is not available anymore." % {"product": item.product.name})
+                message = _("Sorry, but '%(product)s' is not available anymore." % {"product": item.product.name})
             elif amount == 1:
-                message = _(u"Sorry, but '%(product)s' is only one time available." % {"product": item.product.name})
+                message = _("Sorry, but '%(product)s' is only one time available." % {"product": item.product.name})
             else:
-                message = _(u"Sorry, but '%(product)s' is only %(amount)s times available.") % {"product": item.product.name, "amount": amount}
+                message = _("Sorry, but '%(product)s' is only %(amount)s times available.") % {
+                    "product": item.product.name,
+                    "amount": amount,
+                }
 
         if item.product.get_active_packing_unit():
             item.amount = item.product.get_amount_by_packages(float(amount))
@@ -466,12 +502,15 @@ def refresh_cart(request):
     # Last but not least we save the customer ...
     customer.save()
 
-    result = json.dumps({
-        "html": cart_inline(request),
-        "message": message,
-    }, cls=LazyEncoder)
+    result = json.dumps(
+        {
+            "html": cart_inline(request),
+            "message": message,
+        },
+        cls=LazyEncoder,
+    )
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 def check_voucher(request):
@@ -481,8 +520,6 @@ def check_voucher(request):
     voucher_number = lfs.voucher.utils.get_current_voucher_number(request)
     lfs.voucher.utils.set_current_voucher_number(request, voucher_number)
 
-    result = json.dumps({
-        "html": (("#cart-inline", cart_inline(request)),)
-    })
+    result = json.dumps({"html": (("#cart-inline", cart_inline(request)),)})
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")

@@ -26,32 +26,63 @@ class Customer(models.Model):
 
        * The customer browses to the check out page.
     """
+
     user = models.ForeignKey(User, models.SET_NULL, blank=True, null=True)
     session = models.CharField(blank=True, max_length=100)
 
-    selected_shipping_method = models.ForeignKey(ShippingMethod, models.SET_NULL, verbose_name=_(u"Selected shipping method"), blank=True, null=True, related_name="selected_shipping_method")
-    selected_payment_method = models.ForeignKey(PaymentMethod, models.SET_NULL, verbose_name=_(u"Selected payment method"), blank=True, null=True, related_name="selected_payment_method")
-    selected_bank_account = models.ForeignKey("BankAccount", models.SET_NULL, verbose_name=_(u"Bank account"), blank=True, null=True, related_name="selected_bank_account")
-    selected_credit_card = models.ForeignKey("CreditCard", models.SET_NULL, verbose_name=_(u"Credit card"), blank=True, null=True, related_name="selected_credit_card")
+    selected_shipping_method = models.ForeignKey(
+        ShippingMethod,
+        models.SET_NULL,
+        verbose_name=_("Selected shipping method"),
+        blank=True,
+        null=True,
+        related_name="selected_shipping_method",
+    )
+    selected_payment_method = models.ForeignKey(
+        PaymentMethod,
+        models.SET_NULL,
+        verbose_name=_("Selected payment method"),
+        blank=True,
+        null=True,
+        related_name="selected_payment_method",
+    )
+    selected_bank_account = models.ForeignKey(
+        "BankAccount",
+        models.SET_NULL,
+        verbose_name=_("Bank account"),
+        blank=True,
+        null=True,
+        related_name="selected_bank_account",
+    )
+    selected_credit_card = models.ForeignKey(
+        "CreditCard",
+        models.SET_NULL,
+        verbose_name=_("Credit card"),
+        blank=True,
+        null=True,
+        related_name="selected_credit_card",
+    )
 
     sa_content_type = models.ForeignKey(ContentType, models.CASCADE, related_name="sa_content_type", null=True)
     sa_object_id = models.PositiveIntegerField(null=True)
-    selected_shipping_address = GenericForeignKey('sa_content_type', 'sa_object_id')
+    selected_shipping_address = GenericForeignKey("sa_content_type", "sa_object_id")
 
     dsa_object_id = models.PositiveIntegerField(null=True)
-    default_shipping_address = GenericForeignKey('sa_content_type', 'dsa_object_id')
+    default_shipping_address = GenericForeignKey("sa_content_type", "dsa_object_id")
 
     ia_content_type = models.ForeignKey(ContentType, models.CASCADE, related_name="ia_content_type", null=True)
     ia_object_id = models.PositiveIntegerField(null=True)
-    selected_invoice_address = GenericForeignKey('ia_content_type', 'ia_object_id')
+    selected_invoice_address = GenericForeignKey("ia_content_type", "ia_object_id")
 
     dia_object_id = models.PositiveIntegerField(null=True)
-    default_invoice_address = GenericForeignKey('ia_content_type', 'dia_object_id')
+    default_invoice_address = GenericForeignKey("ia_content_type", "dia_object_id")
 
-    selected_country = models.ForeignKey(Country, models.SET_NULL, verbose_name=_(u"Selected country"), blank=True, null=True)
+    selected_country = models.ForeignKey(
+        Country, models.SET_NULL, verbose_name=_("Selected country"), blank=True, null=True
+    )
 
     def __str__(self):
-        return u"%s/%s" % (self.user, self.session)
+        return "%s/%s" % (self.user, self.session)
 
     def get_email_address(self):
         """Returns the email address of the customer dependend on the user is
@@ -76,11 +107,8 @@ class Customer(models.Model):
             self.selected_invoice_address.save()
 
     def get_selected_shipping_address(self):
-        """Returns the selected shipping address.
-        """
-        return self.selected_shipping_address or \
-            self.selected_invoice_address or \
-            None
+        """Returns the selected shipping address."""
+        return self.selected_shipping_address or self.selected_invoice_address or None
 
     def sync_default_to_selected_addresses(self, force=False):
         return
@@ -136,7 +164,7 @@ class Customer(models.Model):
         self.sync_selected_to_default_shipping_address(force)
 
     class Meta:
-        app_label = 'customer'
+        app_label = "customer"
 
 
 class BankAccount(models.Model):
@@ -157,17 +185,20 @@ class BankAccount(models.Model):
     depositor
         The depositor of the bank account.
     """
-    customer = models.ForeignKey(Customer, models.CASCADE, verbose_name=_(u"Customer"), blank=True, null=True, related_name="bank_accounts")
-    account_number = models.CharField(_(u"Account number"), blank=True, max_length=30)
-    bank_identification_code = models.CharField(_(u"Bank identification code"), blank=True, max_length=30)
-    bank_name = models.CharField(_(u"Bank name"), blank=True, max_length=100)
-    depositor = models.CharField(_(u"Depositor"), blank=True, max_length=100)
+
+    customer = models.ForeignKey(
+        Customer, models.CASCADE, verbose_name=_("Customer"), blank=True, null=True, related_name="bank_accounts"
+    )
+    account_number = models.CharField(_("Account number"), blank=True, max_length=30)
+    bank_identification_code = models.CharField(_("Bank identification code"), blank=True, max_length=30)
+    bank_name = models.CharField(_("Bank name"), blank=True, max_length=100)
+    depositor = models.CharField(_("Depositor"), blank=True, max_length=100)
 
     def __str__(self):
-        return u"%s / %s" % (self.account_number, self.bank_name)
+        return "%s / %s" % (self.account_number, self.bank_name)
 
     class Meta:
-        app_label = 'customer'
+        app_label = "customer"
 
 
 class CreditCard(models.Model):
@@ -191,16 +222,19 @@ class CreditCard(models.Model):
     expiration_date_year
         The year of the expiration date of the credit card.
     """
-    customer = models.ForeignKey(Customer, models.CASCADE, verbose_name=_(u"Customer"), blank=True, null=True, related_name="credit_cards")
 
-    type = models.CharField(_(u"Type"), blank=True, max_length=30)
-    owner = models.CharField(_(u"Owner"), blank=True, max_length=100)
-    number = models.CharField(_(u"Number"), blank=True, max_length=30)
-    expiration_date_month = models.IntegerField(_(u"Expiration date month"), blank=True, null=True)
-    expiration_date_year = models.IntegerField(_(u"Expiration date year"), blank=True, null=True)
+    customer = models.ForeignKey(
+        Customer, models.CASCADE, verbose_name=_("Customer"), blank=True, null=True, related_name="credit_cards"
+    )
+
+    type = models.CharField(_("Type"), blank=True, max_length=30)
+    owner = models.CharField(_("Owner"), blank=True, max_length=100)
+    number = models.CharField(_("Number"), blank=True, max_length=30)
+    expiration_date_month = models.IntegerField(_("Expiration date month"), blank=True, null=True)
+    expiration_date_year = models.IntegerField(_("Expiration date year"), blank=True, null=True)
 
     def __str__(self):
-        return u"%s / %s" % (self.type, self.owner)
+        return "%s / %s" % (self.type, self.owner)
 
     class Meta:
-        app_label = 'customer'
+        app_label = "customer"

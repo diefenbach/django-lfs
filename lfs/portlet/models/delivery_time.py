@@ -10,17 +10,16 @@ import lfs.shipping.utils
 
 
 class DeliveryTimePortlet(Portlet):
-    """Portlet to display delivery time.
-    """
+    """Portlet to display delivery time."""
+
     class Meta:
-        app_label = 'portlet'
+        app_label = "portlet"
 
     def __str__(self):
-        return u"%s" % self.id
+        return "%s" % self.id
 
     def render(self, context):
-        """Renders the portlet as html.
-        """
+        """Renders the portlet as html."""
         request = context.get("request")
         product = context.get("product")
 
@@ -44,8 +43,8 @@ class DeliveryTimePortlet(Portlet):
 
 
 class DeliveryTimeForm(forms.ModelForm):
-    """
-    """
+    """ """
+
     class Meta:
         model = DeliveryTimePortlet
         exclude = ()

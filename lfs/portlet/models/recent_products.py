@@ -13,23 +13,22 @@ from lfs.caching.utils import lfs_get_object
 
 
 class RecentProductsPortlet(Portlet):
-    """Portlet to display recent visited products.
-    """
+    """Portlet to display recent visited products."""
+
     class Meta:
-        app_label = 'portlet'
+        app_label = "portlet"
 
     def __str__(self):
-        return u"%s" % self.id
+        return "%s" % self.id
 
     def render(self, context):
-        """Renders the portlet as html.
-        """
+        """Renders the portlet as html."""
         object = context.get("product")
         slug_not_to_display = ""
         limit = settings.LFS_RECENT_PRODUCTS_LIMIT
         if object:
             ctype = ContentType.objects.get_for_model(object)
-            if ctype.name == u"product":
+            if ctype.name == "product":
                 slug_not_to_display = object.slug
                 limit = settings.LFS_RECENT_PRODUCTS_LIMIT + 1
 
@@ -44,18 +43,22 @@ class RecentProductsPortlet(Portlet):
                 product = product.get_default_variant()
             products.append(product)
 
-        return render_to_string("lfs/portlets/recent_products.html", request=request, context={
-            "title": self.title,
-            "products": products,
-        })
+        return render_to_string(
+            "lfs/portlets/recent_products.html",
+            request=request,
+            context={
+                "title": self.title,
+                "products": products,
+            },
+        )
 
     def form(self, **kwargs):
         return RecentProductsForm(instance=self, **kwargs)
 
 
 class RecentProductsForm(forms.ModelForm):
-    """Form for the RecentProductsPortlet.
-    """
+    """Form for the RecentProductsPortlet."""
+
     class Meta:
         model = RecentProductsPortlet
         exclude = ()

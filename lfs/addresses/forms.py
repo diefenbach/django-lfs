@@ -20,6 +20,7 @@ class AddressBaseForm(forms.ModelForm):
         List of field names which are supposed to be displayed after the postal
         form fields.
     """
+
     fields_before_postal = None
     fields_after_postal = None
 
@@ -48,7 +49,7 @@ class AddressBaseForm(forms.ModelForm):
         form fields.
         """
         fields = []
-        for field in (self.fields_after_postal or self.fields):
+        for field in self.fields_after_postal or self.fields:
             try:
                 fields.append(self[field])
             except KeyError:
@@ -60,6 +61,7 @@ class InvoiceAddressForm(AddressBaseForm):
     """
     Default form for LFS' invoice addresses.
     """
+
     fields_before_postal = ("firstname", "lastname", "company_name")
     fields_after_postal = ("phone", "email")
 
@@ -77,6 +79,7 @@ class ShippingAddressForm(InvoiceAddressForm):
     """
     Default form for LFS' shipping addresses.
     """
+
     def __init__(self, *args, **kwargs):
         super(ShippingAddressForm, self).__init__(*args, **kwargs)
         self.fields["company_name"].required = settings.SHIPPING_COMPANY_NAME_REQUIRED

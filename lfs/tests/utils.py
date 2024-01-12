@@ -6,17 +6,16 @@ from django.test import Client
 
 
 class DummySession(object):
-    """
-    """
+    """ """
+
     session_key = "42"
 
 
 class DummyRequest(object):
-    """
-    """
+    """ """
+
     def __init__(self, method="POST", user=None):
-        """
-        """
+        """ """
         self.user = user
         self.method = method
         self.session = DummySession()
@@ -40,21 +39,22 @@ class RequestFactory(Client):
     just as if that view had been hooked up using a URLconf.
 
     """
+
     def request(self, **request):
         """
         Similar to parent class, but returns the request object as soon as it
         has created it.
         """
         environ = {
-            'HTTP_COOKIE': self.cookies,
-            'PATH_INFO': '/',
-            'QUERY_STRING': '',
-            'REQUEST_METHOD': 'GET',
-            'SCRIPT_NAME': '',
-            'SERVER_NAME': 'testserver',
-            'SERVER_PORT': 80,
-            'SERVER_PROTOCOL': 'HTTP/1.1',
-            'wsgi.input': StringIO(""),
+            "HTTP_COOKIE": self.cookies,
+            "PATH_INFO": "/",
+            "QUERY_STRING": "",
+            "REQUEST_METHOD": "GET",
+            "SCRIPT_NAME": "",
+            "SERVER_NAME": "testserver",
+            "SERVER_PORT": 80,
+            "SERVER_PROTOCOL": "HTTP/1.1",
+            "wsgi.input": StringIO(""),
         }
         environ.update(self.defaults)
         environ.update(request)
@@ -62,10 +62,9 @@ class RequestFactory(Client):
 
 
 def create_request():
-    """
-    """
+    """ """
     rf = RequestFactory()
-    request = rf.get('/')
+    request = rf.get("/")
     request.session = SessionStore()
 
     return request

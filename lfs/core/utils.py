@@ -16,14 +16,14 @@ from django.utils.encoding import force_str
 from django.shortcuts import render
 from django.utils.http import http_date
 
+
 def is_ajax(request):
-    """Returns True if request is an ajax request.
-    """
+    """Returns True if request is an ajax request."""
     return request.META.get("HTTP_X_REQUESTED_WITH") == "XMLHttpRequest"
 
+
 def l10n_float(string):
-    """Takes a country specific decimal value as string and returns a float.
-    """
+    """Takes a country specific decimal value as string and returns a float."""
 
     # TODO: Implement a proper transformation with babel or similar
     if settings.LANGUAGE_CODE == "de":
@@ -44,7 +44,7 @@ def atof(value):
         return float(val)
     except ValueError:
         try:
-            return float(val.replace(',', '.'))
+            return float(val.replace(",", "."))
         except ValueError:
             pass
 
@@ -52,9 +52,9 @@ def atof(value):
 
 
 def get_default_shop(request=None):
-    """Returns the default shop.
-    """
+    """Returns the default shop."""
     from lfs.core.models import Shop
+
     if request:
         try:
             return request.shop
@@ -80,8 +80,7 @@ def lfs_quote(string, encoding="utf-8"):
 
 
 def import_module(module):
-    """Imports module with given dotted name.
-    """
+    """Imports module with given dotted name."""
     try:
         module = sys.modules[module]
     except KeyError:
@@ -91,9 +90,8 @@ def import_module(module):
 
 
 def import_symbol(symbol):
-    """Imports symbol with given dotted name.
-    """
-    module_str, symbol_str = symbol.rsplit('.', 1)
+    """Imports symbol with given dotted name."""
+    module_str, symbol_str = symbol.rsplit(".", 1)
     module = import_module(module_str)
     return getattr(module, symbol_str)
 
@@ -102,6 +100,7 @@ class MessageHttpResponseRedirect(HttpResponseRedirect):
     """
     Django's HttpResponseRedirect with a LFS message
     """
+
     def __init__(self, redirect_to, msg):
         HttpResponseRedirect.__init__(self, redirect_to)
         if msg:
@@ -123,8 +122,7 @@ def render_to_message_response(*args, **kwargs):
 
 
 def set_message_to(response, msg):
-    """Sets message cookie with passed message to passed response.
-    """
+    """Sets message cookie with passed message to passed response."""
     # We just keep the message two seconds.
     max_age = 2
     expires_time = time.time() + max_age
@@ -150,14 +148,12 @@ def set_message_cookie(url, msg):
 
 
 def render_to_ajax_response(html=None, message=None):
-    """Encodes given html and message to JSON and returns a HTTP response.
-    """
+    """Encodes given html and message to JSON and returns a HTTP response."""
     if html is None:
         html = []
-    result = json.dumps(
-        {"message": message, "html": html}, cls=LazyEncoder)
+    result = json.dumps({"message": message, "html": html}, cls=LazyEncoder)
 
-    return HttpResponse(result, content_type='application/json')
+    return HttpResponse(result, content_type="application/json")
 
 
 def get_current_categories(request, object):
@@ -182,8 +178,7 @@ def get_current_categories(request, object):
 
 
 def get_redirect_for(path):
-    """Returns redirect path for the passed path.
-    """
+    """Returns redirect path for the passed path."""
     try:
         redirect = Redirect.objects.get(old_path=path)
     except Redirect.DoesNotExist:
@@ -193,20 +188,17 @@ def get_redirect_for(path):
 
 
 def set_redirect_for(old_path, new_path):
-    """Sets redirect path for the passed path.
-    """
+    """Sets redirect path for the passed path."""
     try:
         redirect = Redirect.objects.get(site=settings.SITE_ID, old_path=old_path)
         redirect.new_path = new_path
         redirect.save()
     except Redirect.DoesNotExist:
-        redirect = Redirect.objects.create(
-            site_id=settings.SITE_ID, old_path=old_path, new_path=new_path)
+        redirect = Redirect.objects.create(site_id=settings.SITE_ID, old_path=old_path, new_path=new_path)
 
 
 def remove_redirect_for(path):
-    """Removes the redirect path for given path.
-    """
+    """Removes the redirect path for given path."""
     try:
         redirect = Redirect.objects.get(old_path=path)
     except Redirect.DoesNotExist:
@@ -217,9 +209,9 @@ def remove_redirect_for(path):
 
 
 def set_category_levels():
-    """Sets the category levels based on the position in hierarchy.
-    """
+    """Sets the category levels based on the position in hierarchy."""
     from lfs.catalog.models import Category
+
     for category in Category.objects.all():
         category.level = len(category.get_parents()) + 1
         category.save()
@@ -270,8 +262,8 @@ def getLOL(objects, objects_per_row=3):
 
 
 class LazyEncoder(json.JSONEncoder):
-    """Encodes django's lazy i18n strings.
-    """
+    """Encodes django's lazy i18n strings."""
+
     def default(self, obj):
         if isinstance(obj, Promise):
             return force_str(obj)
@@ -279,17 +271,17 @@ class LazyEncoder(json.JSONEncoder):
 
 
 class CategoryTree(object):
-    """Represents a category tree.
-    """
+    """Represents a category tree."""
+
     def __init__(self, currents, start_level, expand_level):
         self.currents = currents
         self.start_level = start_level
         self.expand_level = expand_level
 
     def get_category_tree(self):
-        """Returns a category tree
-        """
+        """Returns a category tree"""
         from lfs.catalog.models import Category
+
         # NOTE: We don't use the level attribute of the category but calculate
         # actual position of a category based on the current tree. In this way
         # the category tree always start with level 1 (even if we start with
@@ -297,7 +289,6 @@ class CategoryTree(object):
         level = 0
         categories = []
         for category in Category.objects.filter(level=self.start_level):
-
             if category.exclude_from_navigation:
                 continue
 
@@ -313,27 +304,31 @@ class CategoryTree(object):
 
             if self.start_level > 1:
                 if category.parent in self.currents:
-                    categories.append({
+                    categories.append(
+                        {
+                            "category": category,
+                            "children": children,
+                            "level": level,
+                            "is_current": is_current,
+                        }
+                    )
+            else:
+                categories.append(
+                    {
                         "category": category,
                         "children": children,
                         "level": level,
                         "is_current": is_current,
-                    })
-            else:
-                categories.append({
-                    "category": category,
-                    "children": children,
-                    "level": level,
-                    "is_current": is_current,
-                })
+                    }
+                )
 
         return categories
 
     def _get_sub_tree(self, category, level):
         from lfs.catalog.models import Category
+
         categories = []
         for category in Category.objects.filter(parent=category):
-
             if category.exclude_from_navigation:
                 continue
 
@@ -347,38 +342,40 @@ class CategoryTree(object):
                 children = []
                 is_current = False
 
-            categories.append({
-                "category": category,
-                "children": children,
-                "level": level,
-                "is_current": is_current,
-            })
+            categories.append(
+                {
+                    "category": category,
+                    "children": children,
+                    "level": level,
+                    "is_current": is_current,
+                }
+            )
 
         return categories
 
 
 def define_page_range(current_page, total_pages, window=6):
-    """ Returns range of pages that contains current page and few pages before and after it.
+    """Returns range of pages that contains current page and few pages before and after it.
 
-        @current_page - starts from 1
-        @tota_pages - total number of pages
-        @window - maximum number of pages shown with current page - should be even
+    @current_page - starts from 1
+    @tota_pages - total number of pages
+    @window - maximum number of pages shown with current page - should be even
 
-        Examples (cucumber style):
-             Given window = 6
-             When current_page is 8
-             and total_pages = 20
-             Then I should see: 5 6 7 [8] 9 10 11
+    Examples (cucumber style):
+         Given window = 6
+         When current_page is 8
+         and total_pages = 20
+         Then I should see: 5 6 7 [8] 9 10 11
 
-             Given window = 6
-             When current_page is 8
-             and total_pages = 9
-             Then I should see: 3 4 5 6 7 [8] 9
+         Given window = 6
+         When current_page is 8
+         and total_pages = 9
+         Then I should see: 3 4 5 6 7 [8] 9
 
-             Given window = 6
-             When current_page is 1
-             and total_pages = 9
-             Then I should see: [1] 2 3 4 5 6 7
+         Given window = 6
+         When current_page is 1
+         and total_pages = 9
+         Then I should see: [1] 2 3 4 5 6 7
     """
     # maximum length of page range is window + 1
     maxlen = window + 1
@@ -404,11 +401,11 @@ def define_page_range(current_page, total_pages, window=6):
     return list(page_range)
 
 
-def lfs_pagination(request, current_page, url='', getparam='start'):
+def lfs_pagination(request, current_page, url="", getparam="start"):
     """Prepare data for pagination
 
-       @page - number of current page (starting from 1)
-       @paginator - paginator object, eg. Paginator(contact_list, 25)
+    @page - number of current page (starting from 1)
+    @paginator - paginator object, eg. Paginator(contact_list, 25)
     """
     paginator = current_page.paginator
     current_page_no = current_page.number
@@ -427,22 +424,24 @@ def lfs_pagination(request, current_page, url='', getparam='start'):
     if last in page_range:
         last = None
 
-    to_return = {'page_range': page_range,
-                 'current_page': current_page_no,
-                 'total_pages': paginator.num_pages,
-                 'has_next': has_next,
-                 'has_prev': has_prev,
-                 'next': current_page_no + 1,
-                 'prev': current_page_no - 1,
-                 'url': url,
-                 'getparam': getparam,
-                 'first_page': first,
-                 'last_page': last,
-                 'getvars': ''}
+    to_return = {
+        "page_range": page_range,
+        "current_page": current_page_no,
+        "total_pages": paginator.num_pages,
+        "has_next": has_next,
+        "has_prev": has_prev,
+        "next": current_page_no + 1,
+        "prev": current_page_no - 1,
+        "url": url,
+        "getparam": getparam,
+        "first_page": first,
+        "last_page": last,
+        "getvars": "",
+    }
 
     getvars = request.GET.copy()
     if getparam in getvars:
         del getvars[getparam]
     if len(getvars.keys()) > 0:
-        to_return['getvars'] = "&%s" % getvars.urlencode()
+        to_return["getvars"] = "&%s" % getvars.urlencode()
     return to_return

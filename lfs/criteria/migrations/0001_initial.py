@@ -5,103 +5,197 @@ from django.db import models, migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('payment', '__first__'),
-        ('shipping', '__first__'),
-        ('core', '0001_initial'),
+        ("contenttypes", "0002_remove_content_type_name"),
+        ("payment", "__first__"),
+        ("shipping", "__first__"),
+        ("core", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Criterion',
+            name="Criterion",
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('content_id', models.PositiveIntegerField(verbose_name='Content id')),
-                ('sub_type', models.CharField(max_length=100, verbose_name='Sub type', blank=True)),
-                ('position', models.PositiveIntegerField(default=999, verbose_name='Position')),
-                ('operator', models.PositiveIntegerField(null=True, verbose_name='Operator', blank=True)),
+                ("id", models.AutoField(verbose_name="ID", serialize=False, auto_created=True, primary_key=True)),
+                ("content_id", models.PositiveIntegerField(verbose_name="Content id")),
+                ("sub_type", models.CharField(max_length=100, verbose_name="Sub type", blank=True)),
+                ("position", models.PositiveIntegerField(default=999, verbose_name="Position")),
+                ("operator", models.PositiveIntegerField(null=True, verbose_name="Operator", blank=True)),
             ],
             options={
-                'ordering': ('position',),
+                "ordering": ("position",),
             },
         ),
         migrations.CreateModel(
-            name='CartPriceCriterion',
+            name="CartPriceCriterion",
             fields=[
-                ('criterion_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='criteria.Criterion', on_delete=models.CASCADE)),
-                ('value', models.FloatField(default=0.0, verbose_name='Price')),
+                (
+                    "criterion_ptr",
+                    models.OneToOneField(
+                        parent_link=True,
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="criteria.Criterion",
+                        on_delete=models.CASCADE,
+                    ),
+                ),
+                ("value", models.FloatField(default=0.0, verbose_name="Price")),
             ],
-            bases=('criteria.criterion',),
+            bases=("criteria.criterion",),
         ),
         migrations.CreateModel(
-            name='CombinedLengthAndGirthCriterion',
+            name="CombinedLengthAndGirthCriterion",
             fields=[
-                ('criterion_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='criteria.Criterion', on_delete=models.CASCADE)),
-                ('value', models.FloatField(default=0.0, verbose_name='CLAG')),
+                (
+                    "criterion_ptr",
+                    models.OneToOneField(
+                        parent_link=True,
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="criteria.Criterion",
+                        on_delete=models.CASCADE,
+                    ),
+                ),
+                ("value", models.FloatField(default=0.0, verbose_name="CLAG")),
             ],
-            bases=('criteria.criterion',),
+            bases=("criteria.criterion",),
         ),
         migrations.CreateModel(
-            name='CountryCriterion',
+            name="CountryCriterion",
             fields=[
-                ('criterion_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='criteria.Criterion', on_delete=models.CASCADE)),
-                ('value', models.ManyToManyField(to='core.Country', verbose_name='Countries')),
+                (
+                    "criterion_ptr",
+                    models.OneToOneField(
+                        parent_link=True,
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="criteria.Criterion",
+                        on_delete=models.CASCADE,
+                    ),
+                ),
+                ("value", models.ManyToManyField(to="core.Country", verbose_name="Countries")),
             ],
-            bases=('criteria.criterion',),
+            bases=("criteria.criterion",),
         ),
         migrations.CreateModel(
-            name='HeightCriterion',
+            name="HeightCriterion",
             fields=[
-                ('criterion_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='criteria.Criterion', on_delete=models.CASCADE)),
-                ('value', models.FloatField(default=0.0, verbose_name='Height')),
+                (
+                    "criterion_ptr",
+                    models.OneToOneField(
+                        parent_link=True,
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="criteria.Criterion",
+                        on_delete=models.CASCADE,
+                    ),
+                ),
+                ("value", models.FloatField(default=0.0, verbose_name="Height")),
             ],
-            bases=('criteria.criterion',),
+            bases=("criteria.criterion",),
         ),
         migrations.CreateModel(
-            name='LengthCriterion',
+            name="LengthCriterion",
             fields=[
-                ('criterion_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='criteria.Criterion', on_delete=models.CASCADE)),
-                ('value', models.FloatField(default=0.0, verbose_name='Length')),
+                (
+                    "criterion_ptr",
+                    models.OneToOneField(
+                        parent_link=True,
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="criteria.Criterion",
+                        on_delete=models.CASCADE,
+                    ),
+                ),
+                ("value", models.FloatField(default=0.0, verbose_name="Length")),
             ],
-            bases=('criteria.criterion',),
+            bases=("criteria.criterion",),
         ),
         migrations.CreateModel(
-            name='PaymentMethodCriterion',
+            name="PaymentMethodCriterion",
             fields=[
-                ('criterion_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='criteria.Criterion', on_delete=models.CASCADE)),
-                ('value', models.ManyToManyField(to='payment.PaymentMethod', verbose_name='Payment methods')),
+                (
+                    "criterion_ptr",
+                    models.OneToOneField(
+                        parent_link=True,
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="criteria.Criterion",
+                        on_delete=models.CASCADE,
+                    ),
+                ),
+                ("value", models.ManyToManyField(to="payment.PaymentMethod", verbose_name="Payment methods")),
             ],
-            bases=('criteria.criterion',),
+            bases=("criteria.criterion",),
         ),
         migrations.CreateModel(
-            name='ShippingMethodCriterion',
+            name="ShippingMethodCriterion",
             fields=[
-                ('criterion_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='criteria.Criterion', on_delete=models.CASCADE)),
-                ('value', models.ManyToManyField(to='shipping.ShippingMethod', verbose_name='Shipping methods')),
+                (
+                    "criterion_ptr",
+                    models.OneToOneField(
+                        parent_link=True,
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="criteria.Criterion",
+                        on_delete=models.CASCADE,
+                    ),
+                ),
+                ("value", models.ManyToManyField(to="shipping.ShippingMethod", verbose_name="Shipping methods")),
             ],
-            bases=('criteria.criterion',),
+            bases=("criteria.criterion",),
         ),
         migrations.CreateModel(
-            name='WeightCriterion',
+            name="WeightCriterion",
             fields=[
-                ('criterion_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='criteria.Criterion', on_delete=models.CASCADE)),
-                ('value', models.FloatField(default=0.0, verbose_name='Weight')),
+                (
+                    "criterion_ptr",
+                    models.OneToOneField(
+                        parent_link=True,
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="criteria.Criterion",
+                        on_delete=models.CASCADE,
+                    ),
+                ),
+                ("value", models.FloatField(default=0.0, verbose_name="Weight")),
             ],
-            bases=('criteria.criterion',),
+            bases=("criteria.criterion",),
         ),
         migrations.CreateModel(
-            name='WidthCriterion',
+            name="WidthCriterion",
             fields=[
-                ('criterion_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='criteria.Criterion', on_delete=models.CASCADE)),
-                ('value', models.FloatField(default=0.0, verbose_name='Width')),
+                (
+                    "criterion_ptr",
+                    models.OneToOneField(
+                        parent_link=True,
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="criteria.Criterion",
+                        on_delete=models.CASCADE,
+                    ),
+                ),
+                ("value", models.FloatField(default=0.0, verbose_name="Width")),
             ],
-            bases=('criteria.criterion',),
+            bases=("criteria.criterion",),
         ),
         migrations.AddField(
-            model_name='criterion',
-            name='content_type',
-            field=models.ForeignKey(related_name='content_type', verbose_name='Content type', to='contenttypes.ContentType', on_delete=models.CASCADE),
+            model_name="criterion",
+            name="content_type",
+            field=models.ForeignKey(
+                related_name="content_type",
+                verbose_name="Content type",
+                to="contenttypes.ContentType",
+                on_delete=models.CASCADE,
+            ),
         ),
     ]
