@@ -32,14 +32,13 @@ logger = logging.getLogger(__name__)
 register = template.Library()
 
 
-@register.inclusion_tag('lfs/portlets/category_children.html', takes_context=True)
+@register.inclusion_tag("lfs/portlets/category_children.html", takes_context=True)
 def category_children(context, categories):
-    """
-    """
+    """ """
     return {"categories": categories}
 
 
-@register.inclusion_tag('lfs/shop/google_analytics_tracking.html', takes_context=True)
+@register.inclusion_tag("lfs/shop/google_analytics_tracking.html", takes_context=True)
 def google_analytics_tracking(context):
     """Returns google analytics tracking code which has been entered to the
     shop.
@@ -51,7 +50,7 @@ def google_analytics_tracking(context):
     }
 
 
-@register.inclusion_tag('lfs/shop/google_analytics_ecommerce.html', takes_context=True)
+@register.inclusion_tag("lfs/shop/google_analytics_ecommerce.html", takes_context=True)
 def google_analytics_ecommerce(context, clear_session=True):
     """Returns google analytics e-commerce tracking code. This should be
     displayed on the thank-you page.
@@ -80,26 +79,19 @@ def google_analytics_ecommerce(context, clear_session=True):
 def _get_shipping(context, product):
     request = context.get("request")
     if product.is_deliverable() is False:
-        return {
-            "deliverable": False,
-            "delivery_time": shipping_utils.get_product_delivery_time(request, product)
-        }
+        return {"deliverable": False, "delivery_time": shipping_utils.get_product_delivery_time(request, product)}
     else:
-        return {
-            "deliverable": True,
-            "delivery_time": shipping_utils.get_product_delivery_time(request, product)
-        }
+        return {"deliverable": True, "delivery_time": shipping_utils.get_product_delivery_time(request, product)}
 
 
-@register.inclusion_tag('lfs/shipping/shipping_tag.html', takes_context=True)
+@register.inclusion_tag("lfs/shipping/shipping_tag.html", takes_context=True)
 def shipping(context, variant):
     return _get_shipping(context, variant)
 
 
-@register.inclusion_tag('lfs/catalog/sorting.html', takes_context=True)
+@register.inclusion_tag("lfs/catalog/sorting.html", takes_context=True)
 def sorting(context):
-    """
-    """
+    """ """
     request = context.get("request")
     sorting = request.session.get("sorting")
     # prepare list of available sort options, sorted by SORTING_MAP_ORDER
@@ -109,10 +101,9 @@ def sorting(context):
     return {"current": sorting, "sort_options": sort_options}
 
 
-@register.inclusion_tag('lfs/catalog/breadcrumbs.html', takes_context=True)
-def breadcrumbs(context, obj, current_page=''):
-    """
-    """
+@register.inclusion_tag("lfs/catalog/breadcrumbs.html", takes_context=True)
+def breadcrumbs(context, obj, current_page=""):
+    """ """
     if isinstance(obj, Category):
         cache_key = "%s-category-breadcrumbs-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, obj.slug)
         objects = cache.get(cache_key)
@@ -120,10 +111,13 @@ def breadcrumbs(context, obj, current_page=''):
             return objects
         objects = [current_page] if current_page else []
         while obj is not None:
-            objects.insert(0, {
-                "name": obj.name,
-                "url": obj.get_absolute_url(),
-            })
+            objects.insert(
+                0,
+                {
+                    "name": obj.name,
+                    "url": obj.get_absolute_url(),
+                },
+            )
             obj = obj.parent
 
         result = {
@@ -132,28 +126,36 @@ def breadcrumbs(context, obj, current_page=''):
         cache.set(cache_key, result)
     elif isinstance(obj, Product):
         request = context.get("request")
-        objects = [{
-            "name": obj.get_name(),
-            "url": obj.get_absolute_url(),
-        }]
+        objects = [
+            {
+                "name": obj.get_name(),
+                "url": obj.get_absolute_url(),
+            }
+        ]
         # product page may be visited from manufacturer or category
-        lm = request.session.get('last_manufacturer')
+        lm_id = request.session.get("last_manufacturer")
+        lm = Manufacturer.objects.filter(id=lm_id).first()
+
         if lm and obj.manufacturer == lm:
-            objects.insert(0, {
-                "name": lm.name,
-                "url": lm.get_absolute_url(),
-            })
-            objects.insert(0, {
-                "name": _(u"Manufacturers"),
-                "url": reverse("lfs_manufacturers")})
+            objects.insert(
+                0,
+                {
+                    "name": lm.name,
+                    "url": lm.get_absolute_url(),
+                },
+            )
+            objects.insert(0, {"name": _("Manufacturers"), "url": reverse("lfs_manufacturers")})
         else:
             category = obj.get_current_category(request)
             if category:
                 while category is not None:
-                    objects.insert(0, {
-                        "name": category.name,
-                        "url": category.get_absolute_url(),
-                    })
+                    objects.insert(
+                        0,
+                        {
+                            "name": category.name,
+                            "url": category.get_absolute_url(),
+                        },
+                    )
                     category = category.parent
 
         result = {
@@ -161,9 +163,7 @@ def breadcrumbs(context, obj, current_page=''):
         }
     elif isinstance(obj, Page):
         objects = []
-        objects.append({
-            "name": _(u"Information"),
-            "url": reverse("lfs_pages")})
+        objects.append({"name": _("Information"), "url": reverse("lfs_pages")})
         objects.append({"name": obj.title})
 
         result = {
@@ -171,9 +171,7 @@ def breadcrumbs(context, obj, current_page=''):
         }
     elif isinstance(obj, Manufacturer):
         objects = []
-        objects.append({
-            "name": _(u"Manufacturers"),
-            "url": reverse("lfs_manufacturers")})
+        objects.append({"name": _("Manufacturers"), "url": reverse("lfs_manufacturers")})
         objects.append({"name": obj.name})
 
         result = {
@@ -187,10 +185,9 @@ def breadcrumbs(context, obj, current_page=''):
     return result
 
 
-@register.inclusion_tag('lfs/catalog/product_navigation.html', takes_context=True)
+@register.inclusion_tag("lfs/catalog/product_navigation.html", takes_context=True)
 def product_navigation(context, product):
-    """Provides previous and next product links.
-    """
+    """Provides previous and next product links."""
     request = context.get("request")
 
     try:
@@ -198,8 +195,8 @@ def product_navigation(context, product):
     except AttributeError:
         default_sorting = "effective_price"
     sorting = request.session.get("sorting", default_sorting)
-    if sorting.strip() == '':
-        sorting = 'effective_price'
+    if sorting.strip() == "":
+        sorting = "effective_price"
         request.session["sorting"] = sorting
 
     slug = product.slug
@@ -213,15 +210,17 @@ def product_navigation(context, product):
 
     # prepare cache key for product_navigation group
     # used to invalidate cache for all product_navigations at once
-    pn_cache_key = get_cache_group_id('product_navigation')
+    pn_cache_key = get_cache_group_id("product_navigation")
 
     # if there is last_manufacturer then product was visited from manufacturer view
     # as category view removes last_manufacturer from the session
-    lm = request.session.get('last_manufacturer')
+    lm = request.session.get("last_manufacturer")
     if lm and product.manufacturer == lm:
-        cache_key = "%s-%s-product-navigation-manufacturer-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
-                                                                  pn_cache_key,
-                                                                  slug)
+        cache_key = "%s-%s-product-navigation-manufacturer-%s" % (
+            settings.CACHE_MIDDLEWARE_KEY_PREFIX,
+            pn_cache_key,
+            slug,
+        )
         res = cache.get(cache_key)
         if res and sorting in res:
             return res[sorting]
@@ -232,9 +231,7 @@ def product_navigation(context, product):
         if category is None:
             return {"display": False}
         else:
-            cache_key = "%s-%s-product-navigation-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX,
-                                                         pn_cache_key,
-                                                         slug)
+            cache_key = "%s-%s-product-navigation-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, pn_cache_key, slug)
             res = cache.get(cache_key)
             if res and sorting in res:
                 return res[sorting]
@@ -254,7 +251,7 @@ def product_navigation(context, product):
         products = products.filter(active=True)
     products = products.exclude(sub_type=VARIANT).distinct().order_by(sorting)
 
-    product_slugs = list(products.values_list('slug', flat=True))
+    product_slugs = list(products.values_list("slug", flat=True))
     product_index = product_slugs.index(slug)
 
     if product_index > 0:
@@ -276,7 +273,7 @@ def product_navigation(context, product):
         "total": total,
     }
 
-    cache.set(cache_key, {'sorting': result})
+    cache.set(cache_key, {"sorting": result})
 
     return result
 
@@ -285,15 +282,16 @@ class ActionsNode(Node):
     """
     Node for do_actions.
     """
+
     def __init__(self, group_name):
         self.group_name = group_name
 
     def render(self, context):
         context["actions"] = Action.objects.filter(active=True, group__name=self.group_name)
-        return ''
+        return ""
 
 
-@register.tag('actions')
+@register.tag("actions")
 def do_actions(parser, token):
     """
     Returns the actions for the group with the given id.
@@ -301,7 +299,7 @@ def do_actions(parser, token):
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 2:
-        raise TemplateSyntaxError(_('%s tag needs group id as argument') % bits[0])
+        raise TemplateSyntaxError(_("%s tag needs group id as argument") % bits[0])
     return ActionsNode(bits[1])
 
 
@@ -309,6 +307,7 @@ class CheapestVariantNode(Node):
     """
     Node for do_cheapest_variant.
     """
+
     def __init__(self, product_id):
         self.product_id = template.Variable(product_id)
 
@@ -329,7 +328,7 @@ class CheapestVariantNode(Node):
         return ""
 
 
-@register.tag('cheapest_variant')
+@register.tag("cheapest_variant")
 def do_cheapest_variant(parser, token):
     """
     Returns the cheapest variant for the product with given id.
@@ -337,14 +336,13 @@ def do_cheapest_variant(parser, token):
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 2:
-        raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
+        raise TemplateSyntaxError("%s tag needs product id as argument" % bits[0])
     return CheapestVariantNode(bits[1])
 
 
-@register.inclusion_tag('lfs/shop/tabs.html', takes_context=True)
+@register.inclusion_tag("lfs/shop/tabs.html", takes_context=True)
 def tabs(context, obj=None):
-    """
-    """
+    """ """
     if obj is None:
         obj = context.get("product") or context.get("category")
 
@@ -368,10 +366,9 @@ def tabs(context, obj=None):
     }
 
 
-@register.inclusion_tag('lfs/catalog/top_level_categories.html', takes_context=True)
+@register.inclusion_tag("lfs/catalog/top_level_categories.html", takes_context=True)
 def top_level_categories(context):
-    """Displays the top level categories.
-    """
+    """Displays the top level categories."""
     request = context.get("request")
     obj = context.get("product") or context.get("category")
 
@@ -379,17 +376,18 @@ def top_level_categories(context):
     top_category = lfs.catalog.utils.get_current_top_category(request, obj)
 
     for category in Category.objects.filter(parent=None)[:4]:
-
         if top_category:
             current = top_category.id == category.id
         else:
             current = False
 
-        categories.append({
-            "url": category.get_absolute_url(),
-            "name": category.name,
-            "current": current,
-        })
+        categories.append(
+            {
+                "url": category.get_absolute_url(),
+                "name": category.name,
+                "current": current,
+            }
+        )
 
     return {
         "categories": categories,
@@ -397,32 +395,31 @@ def top_level_categories(context):
 
 
 class TopLevelCategory(Node):
-    """Calculates the current top level category.
-    """
+    """Calculates the current top level category."""
+
     def render(self, context):
         request = context.get("request")
         obj = context.get("product") or context.get("category")
 
         top_level_category = lfs.catalog.utils.get_current_top_category(request, obj)
         context["top_level_category"] = top_level_category.name
-        return ''
+        return ""
 
 
-@register.tag('top_level_category')
+@register.tag("top_level_category")
 def do_top_level_category(parser, token):
-    """Calculates the current top level category.
-    """
+    """Calculates the current top level category."""
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 1:
-        raise TemplateSyntaxError(_('%s tag needs no argument') % bits[0])
+        raise TemplateSyntaxError(_("%s tag needs no argument") % bits[0])
 
     return TopLevelCategory()
 
 
 class CartInformationNode(Node):
-    """
-    """
+    """ """
+
     def render(self, context):
         request = context.get("request")
         cart = lfs.cart.utils.get_cart(request)
@@ -435,73 +432,67 @@ class CartInformationNode(Node):
 
         context["cart_amount_of_items"] = amount_of_items
         context["cart_price"] = price
-        return ''
+        return ""
 
 
-@register.tag('cart_information')
+@register.tag("cart_information")
 def do_cart_information(parser, token):
-    """Calculates cart informations.
-    """
+    """Calculates cart informations."""
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 1:
-        raise TemplateSyntaxError(_('%s tag needs no argument') % bits[0])
+        raise TemplateSyntaxError(_("%s tag needs no argument") % bits[0])
 
     return CartInformationNode()
 
 
 class CurrentCategoryNode(Node):
-    """
-    """
+    """ """
+
     def render(self, context):
         request = context.get("request")
         product = context.get("product")
 
-        context["current_category"] = \
-            product.get_current_category(request)
-        return ''
+        context["current_category"] = product.get_current_category(request)
+        return ""
 
 
-@register.tag('current_category')
+@register.tag("current_category")
 def do_current_category(parser, token):
-    """Calculates current category.
-    """
+    """Calculates current category."""
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 2:
-        raise TemplateSyntaxError(_('%s tag needs product as argument') % bits[0])
+        raise TemplateSyntaxError(_("%s tag needs product as argument") % bits[0])
 
     return CurrentCategoryNode()
 
 
 class ComeFromPageNode(Node):
-    """
-    """
+    """ """
+
     def render(self, context):
         request = context.get("request")
         product = context.get("product")
 
-        context["come_from_page"] = \
-            product.get_come_from_page(request)
-        return ''
+        context["come_from_page"] = product.get_come_from_page(request)
+        return ""
 
 
-@register.tag('come_from_page')
+@register.tag("come_from_page")
 def do_come_from_page(parser, token):
-    """Calculates current manufacturer or category.
-    """
+    """Calculates current manufacturer or category."""
     bits = token.contents.split()
     len_bits = len(bits)
     if len_bits != 2:
-        raise TemplateSyntaxError(_('%s tag needs product as argument') % bits[0])
+        raise TemplateSyntaxError(_("%s tag needs product as argument") % bits[0])
 
     return ComeFromPageNode()
 
 
 # TODO: Move this to shop utils or similar
 def get_slug_from_request(request):
-    """Returns the slug of the currently displayed category.
-    """
+    """Returns the slug of the currently displayed category."""
     slug = request.path.split("/")[-1]
     try:
         int(slug)
@@ -540,9 +531,9 @@ def currency_text(value, request=None, grouping=True):
 
     if value < 0:
         # replace the minus symbol if needed
-        if result[-1] == '-':
+        if result[-1] == "-":
             length = len(locale.nl_langinfo(locale.CRNCYSTR))
-            result = '%s-%s' % (result[0:length], result[length:-1])
+            result = "%s-%s" % (result[0:length], result[length:-1])
     return result
 
 
@@ -578,20 +569,22 @@ def currency(value, request=None, grouping=True):
     if value < 0:
         negative = True
         # replace the minus symbol if needed
-        if result[-1] == '-':
+        if result[-1] == "-":
             length = len(locale.nl_langinfo(locale.CRNCYSTR))
-            result = '%s-%s' % (result[0:length], result[length:-1])
+            result = "%s-%s" % (result[0:length], result[length:-1])
 
-    return mark_safe('<span class="money%(negative)s">%(result)s</span>' % {
-        'result': result.strip(),
-        'negative': ' negative' if negative else '',
-    })
+    return mark_safe(
+        '<span class="money%(negative)s">%(result)s</span>'
+        % {
+            "result": result.strip(),
+            "negative": " negative" if negative else "",
+        }
+    )
 
 
 @register.filter
 def decimal_l10n(value, digits=2):
-    """Returns the decimal value of value based on current locale.
-    """
+    """Returns the decimal value of value based on current locale."""
     try:
         value = float(value)
     except ValueError:
@@ -615,8 +608,7 @@ def quantity(quantity):
 
 @register.filter
 def sub_type_name(sub_type, arg=None):
-    """Returns the sub type name for the sub type with passed sub_type id.
-    """
+    """Returns the sub type name for the sub type with passed sub_type id."""
     try:
         return PRODUCT_TYPE_LOOKUP[sub_type]
     except KeyError:
@@ -625,15 +617,13 @@ def sub_type_name(sub_type, arg=None):
 
 @register.filter
 def multiply(score, pixel):
-    """Returns the result of score * pixel
-    """
+    """Returns the result of score * pixel"""
     return score * pixel
 
 
 @register.filter
 def option_name(option_id):
-    """Returns the option name for option with passed id.
-    """
+    """Returns the option name for option with passed id."""
     try:
         option_id = int(float(option_id))
     except ValueError:
@@ -649,8 +639,7 @@ def option_name(option_id):
 
 @register.filter
 def option_name_for_property_value(property_value):
-    """Returns the value or the option name for passed property_value
-    """
+    """Returns the value or the option name for passed property_value"""
     if property_value.property.is_select_field:
         try:
             option_id = int(float(property_value.value))
@@ -726,7 +715,7 @@ class CategoryProductPricesGrossNode(Node):
         return ""
 
 
-@register.tag('category_product_prices_gross')
+@register.tag("category_product_prices_gross")
 def do_category_product_prices_gross(parser, token):
     """
     Injects all needed gross prices for the default category products view into
@@ -734,7 +723,7 @@ def do_category_product_prices_gross(parser, token):
     """
     bits = token.contents.split()
     if len(bits) != 2:
-        raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
+        raise TemplateSyntaxError("%s tag needs product id as argument" % bits[0])
     return CategoryProductPricesGrossNode(bits[1])
 
 
@@ -781,7 +770,7 @@ class CategoryProductPricesNetNode(Node):
         return ""
 
 
-@register.tag('category_product_prices_net')
+@register.tag("category_product_prices_net")
 def do_category_product_prices_net(parser, token):
     """
     Injects all needed net prices for the default category products view into
@@ -789,7 +778,7 @@ def do_category_product_prices_net(parser, token):
     """
     bits = token.contents.split()
     if len(bits) != 2:
-        raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
+        raise TemplateSyntaxError("%s tag needs product id as argument" % bits[0])
     return CategoryProductPricesNetNode(bits[1])
 
 
@@ -836,7 +825,7 @@ class CategoryProductPricesNode(Node):
         return ""
 
 
-@register.tag('category_product_prices')
+@register.tag("category_product_prices")
 def do_category_product_prices(parser, token):
     """
     Injects all needed stored prices for the default category products view into
@@ -844,117 +833,115 @@ def do_category_product_prices(parser, token):
     """
     bits = token.contents.split()
     if len(bits) != 2:
-        raise TemplateSyntaxError('%s tag needs product id as argument' % bits[0])
+        raise TemplateSyntaxError("%s tag needs product id as argument" % bits[0])
     return CategoryProductPricesNode(bits[1])
 
 
-@register.filter(name='get_price')
+@register.filter(name="get_price")
 def get_price(product, request):
     return product.get_price(request)
 
 
-@register.filter(name='get_price_net')
+@register.filter(name="get_price_net")
 def get_price_net(product, request):
     return product.get_price_net(request)
 
 
-@register.filter(name='get_price_gross')
+@register.filter(name="get_price_gross")
 def get_price_gross(product, request):
     return product.get_price_gross(request)
 
 
-@register.filter(name='get_standard_price')
+@register.filter(name="get_standard_price")
 def get_standard_price(product, request):
     return product.get_standard_price(request)
 
 
-@register.filter(name='get_standard_price_net')
+@register.filter(name="get_standard_price_net")
 def get_standard_price_net(product, request):
     return product.get_standard_price_net(request)
 
 
-@register.filter(name='get_standard_price_gross')
+@register.filter(name="get_standard_price_gross")
 def get_standard_price_gross(product, request):
     return product.get_standard_price_gross(request)
 
 
-@register.filter(name='get_for_sale_price')
+@register.filter(name="get_for_sale_price")
 def get_for_sale_price(product, request):
     return product.get_for_sale_price(request)
 
 
-@register.filter(name='get_for_sale_price_net')
+@register.filter(name="get_for_sale_price_net")
 def get_for_sale_price_net(product, request):
     return product.get_for_sale_price_net(request)
 
 
-@register.filter(name='get_for_sale_price_gross')
+@register.filter(name="get_for_sale_price_gross")
 def get_for_sale_price_gross(product, request):
     return product.get_for_sale_price_gross(request)
 
 
-@register.filter(name='get_base_price')
+@register.filter(name="get_base_price")
 def get_base_price(product, request):
     return product.get_base_price(request)
 
 
-@register.filter(name='get_base_price_net')
+@register.filter(name="get_base_price_net")
 def get_base_price_net(product, request):
     return product.get_base_price_net(request)
 
 
-@register.filter(name='get_base_price_gross')
+@register.filter(name="get_base_price_gross")
 def get_base_price_gross(product, request):
     return product.get_base_price_gross(request)
 
 
-@register.filter(name='get_base_packing_price')
+@register.filter(name="get_base_packing_price")
 def get_base_packing_price(product, request):
     return product.get_base_packing_price(request)
 
 
-@register.filter(name='get_base_packing_price_net')
+@register.filter(name="get_base_packing_price_net")
 def get_base_packing_price_net(product, request):
     return product.get_base_packing_price_net(request)
 
 
-@register.filter(name='get_base_packing_price_gross')
+@register.filter(name="get_base_packing_price_gross")
 def get_base_packing_price_gross(product, request):
     return product.get_base_packing_price_gross(request)
 
 
-@register.inclusion_tag('lfs/shop/lfs_form.html', takes_context=True)
+@register.inclusion_tag("lfs/shop/lfs_form.html", takes_context=True)
 def lfs_form(context, form):
-    """ Render form using common form template.
-        It is also possible to pass list of fields
-        or single field to this tag.
+    """Render form using common form template.
+    It is also possible to pass list of fields
+    or single field to this tag.
     """
     if isinstance(form, BoundField):
         form = [form]
-    context['lfs_form'] = form
-    context['lfs_form_is_form'] = hasattr(form, 'non_field_errors')
+    context["lfs_form"] = form
+    context["lfs_form_is_form"] = hasattr(form, "non_field_errors")
     return context
 
 
-@register.filter(name='get_pay_link', is_safe=True)
+@register.filter(name="get_pay_link", is_safe=True)
 def get_pay_link(order, request):
-    """Returns pay link for given order.
-    """
+    """Returns pay link for given order."""
     return order.get_pay_link(request)
 
 
-@register.filter(name='get_pay_link', is_safe=True)
+@register.filter(name="get_pay_link", is_safe=True)
 def get_forced_pay_link(order, request=None, force_paid=False):
-    """ Only return pay link for not paid orders unless force_paid=True
-    """
+    """Only return pay link for not paid orders unless force_paid=True"""
     if force_paid or order.can_be_paid():
         return order.get_pay_link(request)
-    return ''
+    return ""
 
 
 @register.simple_tag(takes_context=True)
 def render_address(context, address, address_type):
-    request = context.get('request')
+    request = context.get("request")
     return mark_safe(address.as_html(request, type=address_type))
 
 

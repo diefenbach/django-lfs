@@ -9,6 +9,9 @@ from lfs.cart.models import Cart
 
 # Load logger
 import logging
+from lfs.catalog.models import Category
+from lfs.manufacturer.models import Manufacturer
+
 logger = logging.getLogger(__name__)
 
 
@@ -84,9 +87,15 @@ def get_go_on_shopping_url(request):
     Calculates the go on shopping url based on the last visited category or last visited manufacturer
     """
     # visiting category clears last_manufacturer so manufacturer has higher priority
-    lc = request.session.get("last_manufacturer", request.session.get("last_category"))
-    if lc:
-        return lc.get_absolute_url()
+    lm_id = request.session.get("last_manufacturer")
+    if lm_id:
+        obj = Manufacturer.objects.filter(id=lm_id).first()
+    else:
+        lc_id = request.session.get("last_category")
+        obj = Category.objects.filter(id=lc_id).first()
+
+    if obj:
+        return obj.get_absolute_url()
     else:
         return reverse("lfs_shop_view")
 
@@ -112,14 +121,16 @@ def update_cart_after_login(request):
             for session_cart_item in session_cart.get_items():
                 properties_dict = {}
                 for pv in session_cart_item.properties.all():
-                    key = '{0}_{1}'.format(pv.property_group_id, pv.property_id)
-                    properties_dict[key] = {'value': pv.value,
-                                            'property_group_id': pv.property_group_id,
-                                            'property_id': pv.property_id}
+                    key = "{0}_{1}".format(pv.property_group_id, pv.property_id)
+                    properties_dict[key] = {
+                        "value": pv.value,
+                        "property_group_id": pv.property_group_id,
+                        "property_id": pv.property_id,
+                    }
 
-                user_cart.add(session_cart_item.product,
-                              properties_dict=properties_dict,
-                              amount=session_cart_item.amount)
+                user_cart.add(
+                    session_cart_item.product, properties_dict=properties_dict, amount=session_cart_item.amount
+                )
             session_cart.delete()
     except ObjectDoesNotExist:
         pass

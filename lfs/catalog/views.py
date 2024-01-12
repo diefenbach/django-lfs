@@ -470,7 +470,11 @@ def category_products(request, slug, start=1, template_name="lfs/catalog/categor
     # Resets the product filters if the user navigates to another category.
     # TODO: Is this what a customer would expect?
     last_category_id = request.session.get("last_category")
-    last_category = lfs_get_object_or_404(Category, pk=last_category_id)
+    try:
+        last_category = Category.objects.get(pk=last_category_id)
+    except Category.DoesNotExist:
+        last_category = None
+
     if (last_category is None) or (last_category.slug != slug):
         if "product-filter" in request.session:
             del request.session["product-filter"]

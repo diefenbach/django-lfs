@@ -11,12 +11,10 @@ from lfs.manufacturer.models import Manufacturer
 from lfs.core.utils import lfs_pagination
 
 
-def manufacturers(request,
-                  template_name='lfs/manufacturers/manufacturers.html'):
-    """ Display list of all manufacturers
-    """
+def manufacturers(request, template_name="lfs/manufacturers/manufacturers.html"):
+    """Display list of all manufacturers"""
     try:
-        start = int((request.POST if request.method == 'POST' else request.GET).get("start", 1))
+        start = int((request.POST if request.method == "POST" else request.GET).get("start", 1))
     except (ValueError, TypeError):
         start = 1
 
@@ -30,46 +28,45 @@ def manufacturers(request,
     except (EmptyPage, InvalidPage):
         current_page = paginator.page(paginator.num_pages)
 
-    pagination_data = lfs_pagination(request, current_page, url=reverse('lfs_manufacturers'))
+    pagination_data = lfs_pagination(request, current_page, url=reverse("lfs_manufacturers"))
 
     count = manufacturers.count()
 
-    pagination_data['total_text'] = gettext('%(count)d manufacturer',
-                                              '%(count)d manufacturers',
-                                              count) % {'count': count}
+    pagination_data["total_text"] = gettext("%(count)d manufacturer", "%(count)d manufacturers", count) % {
+        "count": count
+    }
 
-    return render(request, template_name, {
-        "pagination": pagination_data,
-        "manufacturers": current_page.object_list,
-        "all_manufacturers": manufacturers  # pass it if someone doesn't want pagination
-    })
+    return render(
+        request,
+        template_name,
+        {
+            "pagination": pagination_data,
+            "manufacturers": current_page.object_list,
+            "all_manufacturers": manufacturers,  # pass it if someone doesn't want pagination
+        },
+    )
 
 
-def manufacturer_view(request, slug,
-                      template_name="lfs/manufacturers/manufacturer.html"):
-    """ Display manufacturer details and products
-    """
-    start = (request.POST if request.method == 'POST' else request.GET).get("start", 1)
+def manufacturer_view(request, slug, template_name="lfs/manufacturers/manufacturer.html"):
+    """Display manufacturer details and products"""
+    start = (request.POST if request.method == "POST" else request.GET).get("start", 1)
     manufacturer = lfs_get_object_or_404(Manufacturer, slug=slug)
     inline = manufacturer_products(request, slug, start)
 
     # Set last visited manufacturer for later use, e.g. Display breadcrumbs,
     # selected menu points, etc.
-    request.session["last_manufacturer"] = manufacturer
+    request.session["last_manufacturer"] = manufacturer.id
 
-    return render(request, template_name, {
-        "manufacturer": manufacturer,
-        "manufacturer_inline": inline
-    })
+    return render(request, template_name, {"manufacturer": manufacturer, "manufacturer_inline": inline})
 
 
-def manufacturer_products(request, slug, start=1,
-                          template_name="lfs/manufacturers/products.html"):
-    """Displays the products of the manufacturer with passed slug.
-    """
+def manufacturer_products(request, slug, start=1, template_name="lfs/manufacturers/products.html"):
+    """Displays the products of the manufacturer with passed slug."""
     # Resets the product filters if the user navigates to another manufacturer.
     # TODO: Is this what a customer would expect?
-    last_manufacturer = request.session.get("last_manufacturer")
+    last_manufacturer_id = request.session.get("last_manufacturer")
+    last_manufacturer = Manufacturer.objects.filter(id=last_manufacturer_id).first()
+
     if (last_manufacturer is None) or (last_manufacturer.slug != slug):
         if "product-filter" in request.session:
             del request.session["product-filter"]
@@ -118,9 +115,7 @@ def manufacturer_products(request, slug, start=1,
     amount_of_cols = format_info["product_cols"]
     amount = amount_of_rows * amount_of_cols
 
-    all_products = manufacturer.get_filtered_products(product_filter,
-                                                      price_filter,
-                                                      sorting)
+    all_products = manufacturer.get_filtered_products(product_filter, price_filter, sorting)
 
     # prepare paginator
     paginator = Paginator(all_products, amount)
@@ -143,14 +138,16 @@ def manufacturer_products(request, slug, start=1,
         product_image = product.get_image()
         if product_image:
             image = product_image.image
-        row.append({
-            "obj": product,
-            "slug": product.slug,
-            "name": product.get_name(),
-            "image": image,
-            "price_unit": product.price_unit,
-            "price_includes_tax": product.price_includes_tax(request),
-        })
+        row.append(
+            {
+                "obj": product,
+                "slug": product.slug,
+                "name": product.get_name(),
+                "image": image,
+                "price_unit": product.price_unit,
+                "price_includes_tax": product.price_includes_tax(request),
+            }
+        )
         if (i + 1) % amount_of_cols == 0:
             products.append(row)
             row = []
@@ -161,21 +158,23 @@ def manufacturer_products(request, slug, start=1,
     amount_of_products = all_products.count()
 
     # Calculate urls
-    pagination_data = lfs_pagination(request,
-                                     current_page,
-                                     url=manufacturer.get_absolute_url())
+    pagination_data = lfs_pagination(request, current_page, url=manufacturer.get_absolute_url())
 
-    pagination_data['total_text'] = ungettext('%(count)d product',
-                                              '%(count)d products',
-                                              amount_of_products) % {'count': amount_of_products}
+    pagination_data["total_text"] = ungettext("%(count)d product", "%(count)d products", amount_of_products) % {
+        "count": amount_of_products
+    }
 
-    result = render_to_string(template_name, request=request, context={
-        "manufacturer": manufacturer,
-        "products": products,
-        "amount_of_products": amount_of_products,
-        "pagination": pagination_data,
-        "all_products": all_products,
-    })
+    result = render_to_string(
+        template_name,
+        request=request,
+        context={
+            "manufacturer": manufacturer,
+            "products": products,
+            "amount_of_products": amount_of_products,
+            "pagination": pagination_data,
+            "all_products": all_products,
+        },
+    )
 
     temp[sub_cache_key] = result
     cache.set(cache_key, temp)
