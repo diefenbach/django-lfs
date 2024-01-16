@@ -123,24 +123,19 @@ PRODUCT_PATH = "lfs/catalog/products"  # product templates
 IMAGES_PATH = "/media/lfs/icons"  # Path to template preview images
 
 # Template configuration for category display
-CATEGORY_TEMPLATES = (
-    (
-        0,
-        {
-            "file": "%s/%s" % (CAT_PRODUCT_PATH, "default.html"),
-            "image": IMAGES_PATH + "/product_default.png",
-            "name": _("Category with products"),
-        },
-    ),
-    (
-        1,
-        {
-            "file": "%s/%s" % (CAT_CATEGORY_PATH, "default.html"),
-            "image": IMAGES_PATH + "/category_square.png",
-            "name": _("Category with subcategories"),
-        },
-    ),
-)
+CATEGORY_TEMPLATES = [
+    {
+        "file": "%s/%s" % (CAT_PRODUCT_PATH, "default.html"),
+        "image": IMAGES_PATH + "/product_default.png",
+        "name": _("Category with products"),
+    },
+    {
+        "file": "%s/%s" % (CAT_CATEGORY_PATH, "default.html"),
+        "image": IMAGES_PATH + "/category_square.png",
+        "name": _("Category with subcategories"),
+    },
+]
+
 CATEGORY_TEMPLATES = getattr(settings, "CATEGORY_TEMPLATES", CATEGORY_TEMPLATES)
 
 # Template configuration for product display

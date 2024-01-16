@@ -19,7 +19,9 @@ class ViewForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ViewForm, self).__init__(*args, **kwargs)
-        self.fields["template"].widget = SelectImage(choices=CATEGORY_TEMPLATES)
+        choices = [(ord, d["name"]) for (ord, d) in enumerate(CATEGORY_TEMPLATES)]
+        breakpoint()
+        self.fields["template"].widget = SelectImage(choices=choices)
 
     class Meta:
         model = Category

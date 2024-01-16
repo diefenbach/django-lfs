@@ -66,7 +66,7 @@ from lfs.manufacturer.models import Manufacturer
 
 
 PRODUCT_TEMPLATES_CHOICES = [(pt[0], pt[1]["name"]) for pt in PRODUCT_TEMPLATES]
-CATEGORY_TEMPLATES_CHOICES = [(pt[0], pt[1]["name"]) for pt in CATEGORY_TEMPLATES]
+CATEGORY_TEMPLATES_CHOICES = [(ord, d["name"]) for (ord, d) in enumerate(CATEGORY_TEMPLATES)]
 
 
 def get_unique_id_str():
@@ -441,7 +441,7 @@ class Category(models.Model):
         Returns the path of the category template.
         """
         if self.template is not None:
-            return CATEGORY_TEMPLATES[int(self.template)][1]["file"]
+            return CATEGORY_TEMPLATES[int(self.template)]["file"]
 
         return None
 
