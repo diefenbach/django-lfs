@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
-from django.utils.translation import gettext
+from django.utils.translation import ngettext
 
 from lfs.catalog.models import Product
 from lfs.core.utils import lfs_pagination
@@ -83,7 +83,7 @@ def search(request, template_name="lfs/search/search_results.html"):
 
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=reverse("lfs_search"))
-    pagination_data["total_text"] = gettext("%(count)d product", "%(count)d products", amount_of_products) % {
+    pagination_data["total_text"] = ngettext("%(count)d product", "%(count)d products", amount_of_products) % {
         "count": amount_of_products
     }
 

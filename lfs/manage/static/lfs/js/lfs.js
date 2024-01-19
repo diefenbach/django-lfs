@@ -187,7 +187,7 @@ $(function() {
     });
 
     // TODO: Optimize
-    $body.on('change', '.cart-amount', function() {
+    $body.on('change', '.lfs-cart-amount', function() {
         $("#cart-form").ajaxSubmit({
             "type" : "post",
             "success" : function(data) {

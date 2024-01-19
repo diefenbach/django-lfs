@@ -71,8 +71,12 @@ class ProductDataForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ProductDataForm, self).__init__(*args, **kwargs)
-        self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
+
+        choices = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
+        self.fields["template"].widget = SelectImage(choices=choices)
+
         self.fields["active_base_price"].widget = LFSCheckboxInput(check_test=lambda v: v != 0)
+
         man_count = Manufacturer.objects.count()
         if man_count > getattr(settings, "LFS_SELECT_LIMIT", 20):
             self.fields["manufacturer"].widget = HiddenInput()
@@ -159,7 +163,8 @@ class VariantDataForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(VariantDataForm, self).__init__(*args, **kwargs)
-        self.fields["template"].widget = SelectImage(choices=PRODUCT_TEMPLATES)
+        choices = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
+        self.fields["template"].widget = SelectImage(choices=choices)
         self.fields["active_base_price"].widget = Select(choices=CHOICES)
 
     def clean(self):

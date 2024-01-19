@@ -20,7 +20,6 @@ class ViewForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(ViewForm, self).__init__(*args, **kwargs)
         choices = [(ord, d["name"]) for (ord, d) in enumerate(CATEGORY_TEMPLATES)]
-        breakpoint()
         self.fields["template"].widget = SelectImage(choices=choices)
 
     class Meta:

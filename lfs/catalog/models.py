@@ -65,7 +65,7 @@ from lfs.supplier.models import Supplier
 from lfs.manufacturer.models import Manufacturer
 
 
-PRODUCT_TEMPLATES_CHOICES = [(pt[0], pt[1]["name"]) for pt in PRODUCT_TEMPLATES]
+PRODUCT_TEMPLATES_CHOICES = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
 CATEGORY_TEMPLATES_CHOICES = [(ord, d["name"]) for (ord, d) in enumerate(CATEGORY_TEMPLATES)]
 
 
@@ -2125,7 +2125,7 @@ class Product(models.Model):
         """
         if self.template is not None:
             id = int(self.template)
-            return PRODUCT_TEMPLATES[id][1]["file"]
+            return PRODUCT_TEMPLATES[id]["file"]
         return None
 
 

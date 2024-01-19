@@ -139,16 +139,14 @@ CATEGORY_TEMPLATES = [
 CATEGORY_TEMPLATES = getattr(settings, "CATEGORY_TEMPLATES", CATEGORY_TEMPLATES)
 
 # Template configuration for product display
-PRODUCT_TEMPLATES = (
-    (
-        0,
-        {
-            "file": "%s/%s" % (PRODUCT_PATH, "product_inline.html"),
-            "image": IMAGES_PATH + "/product_default.png",
-            "name": _("Default"),
-        },
-    ),
-)
+PRODUCT_TEMPLATES = [
+    {
+        "file": "%s/%s" % (PRODUCT_PATH, "product_inline.html"),
+        "image": IMAGES_PATH + "/product_default.png",
+        "name": _("Default"),
+    },
+]
+
 PRODUCT_TEMPLATES = getattr(settings, "PRODUCT_TEMPLATES", PRODUCT_TEMPLATES)
 
 THUMBNAIL_SIZES = getattr(
