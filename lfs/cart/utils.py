@@ -111,7 +111,7 @@ def update_cart_after_login(request):
        to the user cart.
     """
     try:
-        session_cart = Cart.objects.get(session=request.session.session_key)
+        session_cart = Cart.objects.get(session=request.META["anonymous_session_key"])
         try:
             user_cart = Cart.objects.get(user=request.user)
         except ObjectDoesNotExist:

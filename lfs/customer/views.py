@@ -56,6 +56,9 @@ def login(request, template_name="lfs/customer/login.html"):
 
             from django.contrib.auth import login
 
+            # Store the "old" session to be able to merge the carts after login
+            request.META["anonymous_session_key"] = request.session.session_key
+
             login(request, login_form.get_user())
 
             return lfs.core.utils.set_message_cookie(redirect_to, msg=_("You have been logged in."))
