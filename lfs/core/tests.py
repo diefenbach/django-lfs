@@ -199,7 +199,7 @@ class TagsTestCase(TestCase):
 
         # Now it works and "pageTracker" is found
         content = template.render(Context())
-        self.failIf(content.find("pageTracker") == -1)
+        self.failIf(content.find("Google tag") == -1)
 
     def test_ga_ecommerce_tracking(self):
         """ """
