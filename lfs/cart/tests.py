@@ -18,7 +18,7 @@ from lfs.cart.utils import get_cart
 from lfs.cart.views import add_to_cart
 from lfs.cart.views import added_to_cart_items
 from lfs.cart.views import refresh_cart
-from lfs.catalog.models import DeliveryTime
+from lfs.catalog.models import Category, DeliveryTime
 from lfs.catalog.models import Product
 from lfs.catalog.models import GroupsPropertiesRelation
 from lfs.catalog.models import Property
@@ -27,6 +27,7 @@ from lfs.catalog.settings import CONFIGURABLE_PRODUCT
 from lfs.catalog.settings import STANDARD_PRODUCT
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.catalog.settings import PROPERTY_TEXT_FIELD
+from lfs.customer.models import Customer
 from lfs.tests.utils import RequestFactory
 from lfs.tax.models import Tax
 
@@ -35,10 +36,12 @@ class LoginTestCase(TestCase):
     fixtures = ["lfs_shop.xml", "lfs_user.xml"]
 
     def setUp(self):
+        # Standard product
         self.p0 = Product.objects.create(
             name="Product 0", slug="product-0", price=5, active=True, sub_type=STANDARD_PRODUCT
         )
 
+        # Configurable product
         self.pg = PropertyGroup.objects.create(name="T-Shirts")
         self.pp1 = Property.objects.create(name="Length", type=PROPERTY_TEXT_FIELD)
         self.gpr1 = GroupsPropertiesRelation.objects.create(group=self.pg, property=self.pp1)
@@ -49,9 +52,16 @@ class LoginTestCase(TestCase):
         self.pg.products.set([self.p1])
         self.pg.save()
 
+        # Add a category to the product
+        self.c0 = Category.objects.create(name="Category 0", slug="category-0")
+        self.c0.products.add(self.p1)
+
         self.admin = User.objects.get(username="admin")
         self.admin.set_password("dummy")
         self.admin.save()
+
+        # Create fake customer (the custoemer is normally created during the registration)
+        Customer.objects.create(user=self.admin)
 
     def test_standard_product(self):
         client = Client()
@@ -133,10 +143,9 @@ class LoginTestCase(TestCase):
         self.assertEqual(int(cart.get_items()[0].amount), 1)
         self.assertEqual(int(cart.get_items()[1].amount), 10)
 
-        # 1. login admin
-        # log in not using client.login as this will fail due to use of
-        # HttpRequest without middlewares applied (no request.user)
+        # 1st login admin
         client.post(reverse("lfs_login"), dict(username="admin", password="dummy", action="login"), follow=True)
+
         # verify if cart items for logged in user were copied from anonymous cart
         response = client.get(reverse("lfs_cart"))
         request = response.context["request"]
@@ -172,7 +181,7 @@ class LoginTestCase(TestCase):
         self.assertEqual(int(cart.get_items()[0].amount), 2)
         self.assertEqual(int(cart.get_items()[1].amount), 20)
 
-        # 2. login admin
+        # 2nd login admin
         client.post(reverse("lfs_login"), dict(username="admin", password="dummy", action="login"), follow=True)
         # verify if cart items for logged in user were copied from anonymous cart
         response = client.get(reverse("lfs_cart"))
