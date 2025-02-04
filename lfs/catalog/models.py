@@ -899,7 +899,7 @@ class Product(models.Model):
         Returns product category based on actual categories of the given product
         and the last visited category.
 
-        This is needed if the category has more than one category to display
+        This is needed if the product has more than one category to display
         breadcrumbs, selected menu points, etc. appropriately.
         """
         last_category = None
@@ -912,7 +912,10 @@ class Product(models.Model):
                     return category
                 else:
                     last_category_id = request.session.get("last_category")
-                    last_category = Category.objects.get(pk=last_category_id)
+                    try:
+                        last_category = Category.objects.get(pk=last_category_id)
+                    except Category.DoesNotExist:
+                        last_category = None
 
                 if last_category is None:
                     return product_categories[0]
@@ -928,9 +931,11 @@ class Product(models.Model):
                             break
                 if category is None:
                     category = product_categories[0]
+
+                request.session["last_category"] = category.id
             except IndexError:
                 category = None
-        request.session["last_category"] = category.id
+
         return category
 
     def get_come_from_page(self, request):
