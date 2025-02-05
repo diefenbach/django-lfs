@@ -160,6 +160,7 @@ class CheckoutAddressesTestCase(TestCase):
             "shipping-country": "DE",
             "shipping-email": "b@b.com",
             "shipping-phone": "7654321",
+            "valid_customer": "1",
             "payment_method": self.by_invoice.id,
         }
 
@@ -183,8 +184,9 @@ class CheckoutAddressesTestCase(TestCase):
             reverse("lfs_login"),
             {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
         )
+
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers["location"], ("Location", "/"))
+        self.assertEquals(registration_response.headers["location"], "/")
 
         # get our new customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -413,6 +415,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
             "shipping-country": "DE",
             "shipping-email": "b@b.com",
             "shipping-phone": "7654321",
+            "valid_customer": "1",
             "payment_method": self.by_invoice.id,
         }
 
@@ -438,7 +441,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
             {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
         )
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers["location"], ("Location", "/"))
+        self.assertEquals(registration_response.headers["location"], "/")
 
         # get our new customer
         our_customer = Customer.objects.get(user__email="test@test.com")

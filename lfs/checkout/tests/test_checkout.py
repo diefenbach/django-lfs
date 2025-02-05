@@ -153,7 +153,7 @@ class CheckoutTestCase(TestCase):
         self.assertEqual(result.status_code, 302)
 
     def test_register(self):
-        """Tests the login view."""
+        """Tests the regiser view."""
         email = "testverylongemailaddressthatislongerthanusername1@example.com"
         self.client.post(
             reverse("lfs_checkout_login"),
@@ -258,6 +258,7 @@ class CheckoutTestCase(TestCase):
             "shipping-country": "DE",
             "shipping-email": "b@b.com",
             "shipping-phone": "7654321",
+            "valid_customer": "1",
             "payment_method": self.by_invoice.id,
         }
 
@@ -405,6 +406,7 @@ class CheckoutTestCase(TestCase):
             "shipping-country": "IE",
             "shipping-email": "b@b.com",
             "shipping-phone": "7654321",
+            "valid_customer": "1",
             "payment_method": self.by_invoice.id,
         }
 
