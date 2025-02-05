@@ -71,9 +71,12 @@ class CustomerTestCase(TestCase):
         )
 
     def test_create_customer(self):
+        def dummy_get_response(request):
+            return None
+
         request = HttpRequest()
         request.user = self.user
-        middleware = SessionMiddleware()
+        middleware = SessionMiddleware(dummy_get_response)
         middleware.process_request(request)
         request.session.save()
 
@@ -205,7 +208,7 @@ class AddressTestCase(TestCase):
             {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
         )
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers["location"], ("Location", "/"))
+        self.assertEquals(registration_response.headers["location"], "/")
 
         # Test that one message has been sent.
         self.assertEquals(len(mail.outbox), 1)
@@ -232,7 +235,7 @@ class AddressTestCase(TestCase):
             {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
         )
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers["location"], ("Location", "/"))
+        self.assertEquals(registration_response.headers["location"], "/")
 
         self.assertEquals(Address.objects.count(), 8)
 
@@ -442,7 +445,7 @@ class NoAutoUpdateAddressTestCase(TestCase):
             {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
         )
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers["location"], ("Location", "/"))
+        self.assertEquals(registration_response.headers["location"], "/")
 
         # Test that one message has been sent.
         self.assertEquals(len(mail.outbox), 1)
@@ -470,7 +473,7 @@ class NoAutoUpdateAddressTestCase(TestCase):
             {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
         )
         self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response._headers["location"], ("Location", "/"))
+        self.assertEquals(registration_response.headers["location"], "/")
 
         self.assertEquals(Address.objects.count(), 8)
 
