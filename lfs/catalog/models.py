@@ -1,4 +1,3 @@
-import locale
 import math
 import sys
 import uuid
@@ -12,6 +11,7 @@ from django.urls import reverse
 from django.db.models import F
 from django.db import models
 from django.template.defaultfilters import striptags
+from django.utils import formats
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
@@ -2089,9 +2089,9 @@ class Product(models.Model):
         if type_of_quantity_field == QUANTITY_FIELD_INTEGER:
             quantity = int(quantity)
         elif type_of_quantity_field == QUANTITY_FIELD_DECIMAL_1:
-            quantity = locale.format("%.1f", quantity)
+            quantity = formats.localize(float("%.1f" % quantity))
         else:
-            quantity = locale.format("%.2f", quantity)
+            quantity = formats.localize(float("%.2f" % quantity))
 
         return quantity
 

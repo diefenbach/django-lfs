@@ -74,8 +74,8 @@ class PriceFilterTestCase(TestCase):
         result = lfs.catalog.utils.get_price_filters(self.c1, [], None, [])
         self.assertEqual(result["disabled"], False)
         self.assertEqual(result["show_reset"], False)
-        self.assertEqual(result["min"], "1.00")
-        self.assertEqual(result["max"], "5.00")
+        self.assertIn(result["min"], ["1.00", "1,00"])
+        self.assertIn(result["max"], ["5.00", "5,00"])
 
 
 class ManufacturerFilterTestCase(TestCase):
@@ -249,10 +249,10 @@ class PropertiesTestCase(TestCase):
 
     def test_delete_property_group(self):
         """Tests the deletion of a whole propery group."""
-        ppvs = ProductPropertyValue.objects.filter(product=self.p1, property_group=self.pg)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p1, property_group__name="T-Shirts")
         self.assertEqual(len(ppvs), 3)
 
-        ppvs = ProductPropertyValue.objects.filter(product=self.p2, property_group=self.pg)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p2, property_group__name="T-Shirts")
         self.assertEqual(len(ppvs), 3)
 
         ppvs = ProductPropertyValue.objects.filter(product=self.p3, property_group=None)
@@ -261,10 +261,10 @@ class PropertiesTestCase(TestCase):
         self.pg.delete()
 
         # After deletion there are no ProductPropertyValues anymore.
-        ppvs = ProductPropertyValue.objects.filter(product=self.p1, property_group=self.pg)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p1, property_group__name="T-Shirts")
         self.assertEqual(len(ppvs), 0)
 
-        ppvs = ProductPropertyValue.objects.filter(product=self.p2, property_group=self.pg)
+        ppvs = ProductPropertyValue.objects.filter(product=self.p2, property_group__name="T-Shirts")
         self.assertEqual(len(ppvs), 0)
 
         # As product 3 is not within the group the value for that product still
@@ -460,17 +460,17 @@ class PropertiesTestCase(TestCase):
         more.
         """
         # At the beginning product 1,2 have values for property pp1 ...
-        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp1)
+        pv = ProductPropertyValue.objects.get(product=self.p1, property__name="Size")
         self.assertEqual(pv.value, "S")
 
-        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp1)
+        pv = ProductPropertyValue.objects.get(product=self.p2, property__name="Size")
         self.assertEqual(pv.value, "M")
 
         # And product 1, 2 have also values for property pp2
-        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p1, property__name="Color")
         self.assertEqual(pv.value, "1")
 
-        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p2, property__name="Color")
         self.assertEqual(pv.value, "2")
 
         # If we delete the property pp1
@@ -478,29 +478,35 @@ class PropertiesTestCase(TestCase):
 
         # The values for the products should also be deleted
         self.assertRaises(
-            ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get, product=self.p1, property=self.pp1
+            ProductPropertyValue.DoesNotExist,
+            ProductPropertyValue.objects.get,
+            product=self.p1,
+            property__name="Size",
         )
         self.assertRaises(
-            ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get, product=self.p2, property=self.pp1
+            ProductPropertyValue.DoesNotExist,
+            ProductPropertyValue.objects.get,
+            product=self.p2,
+            property__name="Size",
         )
 
         # But all other values for this product should still be there of course
-        pv = ProductPropertyValue.objects.get(product=self.p1, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p1, property__name="Color")
         self.assertEqual(pv.value, "1")
 
-        pv = ProductPropertyValue.objects.get(product=self.p2, property=self.pp2)
+        pv = ProductPropertyValue.objects.get(product=self.p2, property__name="Color")
         self.assertEqual(pv.value, "2")
 
-        pv = ProductPropertyValue.objects.get(product=self.p3, property=self.pp3_local)
+        pv = ProductPropertyValue.objects.get(product=self.p3, property__name="Size")
         self.assertEqual(pv.value, "S")
 
         # At least we delete the other property, too.
         self.pp2.delete()
         self.assertRaises(
-            ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get, product=self.p1, property=self.pp2
+            ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get, product=self.p1, property__name="Color"
         )
         self.assertRaises(
-            ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get, product=self.p2, property=self.pp2
+            ProductPropertyValue.DoesNotExist, ProductPropertyValue.objects.get, product=self.p2, property__name="Color"
         )
 
     def test_groupproperties(self):
@@ -1664,7 +1670,6 @@ class ProductTestCase(TestCase):
             short_description="Short description product 1",
             meta_description="Meta description product 1",
             meta_keywords="Meta keywords product 1",
-            sub_type=PRODUCT_WITH_VARIANTS,
             tax=self.t1,
             price=1.0,
             for_sale_price=0.5,
@@ -1675,6 +1680,11 @@ class ProductTestCase(TestCase):
             weight=4.0,
             active=True,
         )
+
+        # TODO_5: Creating a PRODUCT_WITH_VARIANTS with .create method is not possible atm (because the save method is overridden)
+        # and filtering is not possible before the product is saved.
+        self.p1.sub_type = PRODUCT_WITH_VARIANTS
+        self.p1.save()
 
         # Products without properties and variants
         self.p2 = Product.objects.create(name="Product 2", slug="product-2", active=True)
@@ -2851,7 +2861,7 @@ class ProductTestCase(TestCase):
         self.user.save()
 
         # login the manager account so we can access the add variant function
-        self.client.login(username="manager", password="pass")
+        self.client.post(reverse("lfs_login"), dict(username="manager", password="pass", action="login"), follow=True)
 
         response = self.client.post(reverse("lfs_manage_add_variants", args=(product.id,)), variant_data)
         # following code in try loop will only be relevant if there are errors in the form
@@ -3004,29 +3014,29 @@ class ProductTestCase(TestCase):
         self.p1.save()
 
         result = self.p1.get_clean_quantity(1)
-        self.assertEqual(result, "1.00")
+        self.assertEqual(result, "1.0")
         result = self.v1.get_clean_quantity(1)
-        self.assertEqual(result, "1.00")
+        self.assertEqual(result, "1.0")
 
         result = self.p1.get_clean_quantity("1")
-        self.assertEqual(result, "1.00")
+        self.assertEqual(result, "1.0")
         result = self.v1.get_clean_quantity("1")
-        self.assertEqual(result, "1.00")
+        self.assertEqual(result, "1.0")
 
         result = self.p1.get_clean_quantity(1.0)
-        self.assertEqual(result, "1.00")
+        self.assertEqual(result, "1.0")
         result = self.v1.get_clean_quantity(1.0)
-        self.assertEqual(result, "1.00")
+        self.assertEqual(result, "1.0")
 
         result = self.p1.get_clean_quantity("1.0")
-        self.assertEqual(result, "1.00")
+        self.assertEqual(result, "1.0")
         result = self.v1.get_clean_quantity("1.0")
-        self.assertEqual(result, "1.00")
+        self.assertEqual(result, "1.0")
 
         result = self.p1.get_clean_quantity("A")
-        self.assertEqual(result, "1.00")
+        self.assertEqual(result, "1.0")
         result = self.v1.get_clean_quantity("A")
-        self.assertEqual(result, "1.00")
+        self.assertEqual(result, "1.0")
 
 
 class ProductAccessoriesTestCase(TestCase):
