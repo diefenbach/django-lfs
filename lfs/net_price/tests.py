@@ -42,7 +42,6 @@ class NetPriceTestCase(TestCase):
             short_description="Short description product 1",
             meta_description="Meta description product 1",
             meta_keywords="Meta keywords product 1",
-            sub_type=PRODUCT_WITH_VARIANTS,
             tax=self.t1,
             price=1.0,
             for_sale_price=0.5,
@@ -53,6 +52,9 @@ class NetPriceTestCase(TestCase):
             weight=4.0,
             active=True,
         )
+
+        self.p1.sub_type = PRODUCT_WITH_VARIANTS
+        self.p1.save()
 
         # Products without properties and variants
         self.p2 = Product.objects.create(name="Product 2", slug="product-2", active=True)
