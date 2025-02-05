@@ -197,7 +197,7 @@ class CheckoutTestCase(TestCase):
         user = User.objects.get(username=self.username)
         customer = Customer.objects.get(user=user)
         Country.objects.get(code="fr")
-        self.assertEquals(customer.selected_invoice_address.country.code, "fr")
+        self.assertEqual(customer.selected_invoice_address.country.code, "fr")
 
         # change the country in the cart
         de = Country.objects.get(code="de")
@@ -211,8 +211,8 @@ class CheckoutTestCase(TestCase):
         )
 
         customer = Customer.objects.get(user=user)
-        self.assertEquals(customer.selected_shipping_address.country.code.lower(), "de")
-        self.assertEquals(customer.selected_invoice_address.country.code.lower(), "de")
+        self.assertEqual(customer.selected_shipping_address.country.code.lower(), "de")
+        self.assertEqual(customer.selected_invoice_address.country.code.lower(), "de")
 
         cart_response = self.client.get(reverse("lfs_cart"))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
@@ -226,9 +226,9 @@ class CheckoutTestCase(TestCase):
         self.assertEqual(logged_in, True)
 
         # check initial database quantities
-        self.assertEquals(Address.objects.count(), 2)
-        self.assertEquals(Customer.objects.count(), 1)
-        self.assertEquals(Order.objects.count(), 0)
+        self.assertEqual(Address.objects.count(), 2)
+        self.assertEqual(Customer.objects.count(), 1)
+        self.assertEqual(Order.objects.count(), 0)
 
         # check we have no invoice or shipping phone or email prior to checkout
         our_customer = Customer.objects.all()[0]
@@ -276,9 +276,9 @@ class CheckoutTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 1)
 
         # check database quantities post-checkout
-        self.assertEquals(Address.objects.count(), 4)
-        self.assertEquals(Customer.objects.count(), 1)
-        self.assertEquals(Order.objects.count(), 1)
+        self.assertEqual(Address.objects.count(), 4)
+        self.assertEqual(Customer.objects.count(), 1)
+        self.assertEqual(Order.objects.count(), 1)
 
         # check our customer details post checkout
         our_customer = Customer.objects.all()[0]
@@ -299,9 +299,9 @@ class CheckoutTestCase(TestCase):
         self.assertEqual("code" in nl_form.fields, True)
 
         # check initial database quantities
-        self.assertEquals(Address.objects.count(), 2)
-        self.assertEquals(Customer.objects.count(), 1)
-        self.assertEquals(Order.objects.count(), 0)
+        self.assertEqual(Address.objects.count(), 2)
+        self.assertEqual(Customer.objects.count(), 1)
+        self.assertEqual(Order.objects.count(), 0)
 
         # check we have no invoice or shipping phone or email prior to checkout
         our_customer = Customer.objects.all()[0]
@@ -345,9 +345,9 @@ class CheckoutTestCase(TestCase):
         )
 
         # check database quantities post-checkout
-        self.assertEquals(Address.objects.count(), 4)
-        self.assertEquals(Customer.objects.count(), 1)
-        self.assertEquals(Order.objects.count(), 1)
+        self.assertEqual(Address.objects.count(), 4)
+        self.assertEqual(Customer.objects.count(), 1)
+        self.assertEqual(Order.objects.count(), 1)
 
         # check our customer details post checkout
         our_customer = Customer.objects.all()[0]
@@ -376,9 +376,9 @@ class CheckoutTestCase(TestCase):
         self.assertEqual("city" in ie_form.fields, True)
 
         # check initial database quantities
-        self.assertEquals(Address.objects.count(), 2)
-        self.assertEquals(Customer.objects.count(), 1)
-        self.assertEquals(Order.objects.count(), 0)
+        self.assertEqual(Address.objects.count(), 2)
+        self.assertEqual(Customer.objects.count(), 1)
+        self.assertEqual(Order.objects.count(), 0)
 
         # check we have no invoice or shipping phone or email prior to checkout
         our_customer = Customer.objects.all()[0]
@@ -419,9 +419,9 @@ class CheckoutTestCase(TestCase):
         )
 
         # check database quantities post-checkout
-        self.assertEquals(Address.objects.count(), 4)
-        self.assertEquals(Customer.objects.count(), 1)
-        self.assertEquals(Order.objects.count(), 1)
+        self.assertEqual(Address.objects.count(), 4)
+        self.assertEqual(Customer.objects.count(), 1)
+        self.assertEqual(Order.objects.count(), 1)
 
         # check our customer details post checkout
         our_customer = Customer.objects.all()[0]

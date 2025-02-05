@@ -157,9 +157,9 @@ class ManufacturersManageTestCase(TestCase):
         response = self.client.post(url, {self.p1.pk: "on", self.p2.pk: "on"})
         self.assertEqual(response.status_code, 200)
 
-        self.assertEquals(Product.objects.get(pk=self.p1.pk).manufacturer.pk, self.m1.pk)
-        self.assertEquals(Product.objects.get(pk=self.p2.pk).manufacturer.pk, self.m1.pk)
-        self.assertEquals(Product.objects.get(pk=self.p3.pk).manufacturer, None)
+        self.assertEqual(Product.objects.get(pk=self.p1.pk).manufacturer.pk, self.m1.pk)
+        self.assertEqual(Product.objects.get(pk=self.p2.pk).manufacturer.pk, self.m1.pk)
+        self.assertEqual(Product.objects.get(pk=self.p3.pk).manufacturer, None)
 
     def test_manage_manufacturer_remove_products(self):
         self.p1.manufacturer = self.m1
@@ -171,9 +171,9 @@ class ManufacturersManageTestCase(TestCase):
         response = self.client.post(url, {self.p2.pk: "on"})
         self.assertEqual(response.status_code, 200)
 
-        self.assertEquals(Product.objects.get(pk=self.p1.pk).manufacturer.pk, self.m1.pk)
-        self.assertEquals(Product.objects.get(pk=self.p2.pk).manufacturer, None)
-        self.assertEquals(Product.objects.get(pk=self.p3.pk).manufacturer, None)
+        self.assertEqual(Product.objects.get(pk=self.p1.pk).manufacturer.pk, self.m1.pk)
+        self.assertEqual(Product.objects.get(pk=self.p2.pk).manufacturer, None)
+        self.assertEqual(Product.objects.get(pk=self.p3.pk).manufacturer, None)
 
     def test_manage_manufacturer_selected_products(self):
         self.p1.manufacturer = self.m1

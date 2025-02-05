@@ -671,12 +671,12 @@ class PropertiesTestCase(TestCase):
         # Doesn't exist
         value_dict_2["value"] = "1"
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
-        self.failIf(len(products) != 0)
+        self.assertFalse(len(products) != 0)
 
         value_dict_1["value"] = "S"
         value_dict_2["value"] = "2"
         products = lfs.catalog.utils.get_filtered_products_for_category(self.c1, filters, None, sorting)
-        self.failIf(len(products) != 0)
+        self.assertFalse(len(products) != 0)
 
         # Min / Max
         sorting = "price"
@@ -1165,7 +1165,7 @@ class ViewsTestCase(TestCase):
 
         result = select_variant(request)
         self.assertEqual(result.status_code, 200)
-        self.failIf(result.content.find(b"The product has been changed according to your selection.") == -1)
+        self.assertFalse(result.content.find(b"The product has been changed according to your selection.") == -1)
 
     def test_set_price_filter(self):
         from lfs.catalog.views import set_price_filter
@@ -1197,7 +1197,7 @@ class ViewsTestCase(TestCase):
 
         result = reset_price_filter(request, "test")
         self.assertEqual(result.status_code, 302)
-        self.failIf("price-filter" in request.session.keys())
+        self.assertFalse("price-filter" in request.session.keys())
 
     def test_calculate_packing(self):
         from lfs.catalog.views import calculate_packing
@@ -1286,7 +1286,7 @@ class ViewsTestCase(TestCase):
         url = reverse("lfs_catalog_set_sorting")
 
         # At the beginning there is no sorting stored
-        self.failIf("sorting" in self.client.session)
+        self.assertFalse("sorting" in self.client.session)
 
         # Empty string shouldn't raise an error
         self.client.post(url, {"sorting": ""})
@@ -1301,7 +1301,7 @@ class ViewsTestCase(TestCase):
 
         # Empty string should delete session sorting key
         self.client.post(url, {"sorting": ""})
-        self.failIf("sorting" in self.client.session)
+        self.assertFalse("sorting" in self.client.session)
 
     def test_category_view(self):
         """Tests whether the right template is used for products and sub
@@ -1313,8 +1313,8 @@ class ViewsTestCase(TestCase):
         templates = [t.name for t in response.templates]
 
         # By default the products of a category should be displayed
-        self.failIf("lfs/catalog/categories/product/default.html" not in templates)
-        self.failIf("lfs/catalog/categories/category/default.html" in templates)
+        self.assertFalse("lfs/catalog/categories/product/default.html" not in templates)
+        self.assertFalse("lfs/catalog/categories/category/default.html" in templates)
 
         # Switch to categories within a category
         self.c1.template = 1
@@ -1324,8 +1324,8 @@ class ViewsTestCase(TestCase):
         templates = [t.name for t in response.templates]
 
         # Now the categories template should be used
-        self.failIf("lfs/catalog/categories/product/default.html" in templates)
-        self.failIf("lfs/catalog/categories/category/default.html" not in templates)
+        self.assertFalse("lfs/catalog/categories/product/default.html" in templates)
+        self.assertFalse("lfs/catalog/categories/category/default.html" not in templates)
 
     def test_product_form_dispatcher(self):
         """Tests the product dispatcher. The product dispatcher decides where to
@@ -2259,12 +2259,12 @@ class ProductTestCase(TestCase):
         self.size.save()
 
         options = [p["value"] for p in self.v1.get_variant_properties()]
-        self.failIf(str(self.ppv_color_red.value) not in options)
-        self.failIf(str(self.ppv_size_m.value) not in options)
+        self.assertFalse(str(self.ppv_color_red.value) not in options)
+        self.assertFalse(str(self.ppv_size_m.value) not in options)
 
         options = [p["value"] for p in self.v2.get_variant_properties()]
-        self.failIf(str(self.ppv_color_green.value) not in options)
-        self.failIf(str(self.ppv_size_l.value) not in options)
+        self.assertFalse(str(self.ppv_color_green.value) not in options)
+        self.assertFalse(str(self.ppv_size_l.value) not in options)
 
     def test_get_displayed_properties(self):
         """ """
@@ -2291,12 +2291,12 @@ class ProductTestCase(TestCase):
         )
 
         options = [p["value"] for p in self.p1.get_displayed_properties()]
-        self.failIf(str(ppv_color_red.value) not in options)
-        self.failIf(str(ppv_size_m.value) not in options)
+        self.assertFalse(str(ppv_color_red.value) not in options)
+        self.assertFalse(str(ppv_size_m.value) not in options)
 
         options = [p["value"] for p in self.p2.get_displayed_properties()]
-        self.failIf(str(ppv_color_green.value) not in options)
-        self.failIf(str(ppv_size_l.value) not in options)
+        self.assertFalse(str(ppv_color_green.value) not in options)
+        self.assertFalse(str(ppv_size_l.value) not in options)
 
     def test_has_option(self):
         """ """
@@ -2677,8 +2677,8 @@ class ProductTestCase(TestCase):
         variants = self.p1.get_variants()
 
         self.assertEqual(len(variants), 2)
-        self.failIf(self.v1 not in variants)
-        self.failIf(self.v2 not in variants)
+        self.assertFalse(self.v1 not in variants)
+        self.assertFalse(self.v2 not in variants)
 
     def test_get_variant_has_variant(self):
         """Tests the order of passed options doesn't matter and the correct
@@ -2739,10 +2739,10 @@ class ProductTestCase(TestCase):
         ]
 
         result = self.p1.has_variant(options)
-        self.failIf(result)
+        self.assertFalse(result)
 
         variant = self.p1.get_variant(options)
-        self.failIf(variant is not None)
+        self.assertFalse(variant is not None)
 
     def test_get_default_variant(self):
         """Tests the default default_variant (which is the first one) and
@@ -3092,7 +3092,7 @@ class MiscTestCase(TestCase):
 
         self.failUnless(os.path.exists(file.file.path))
         file.delete()
-        self.failIf(os.path.exists(file.file.path))
+        self.assertFalse(os.path.exists(file.file.path))
 
     def test_delete_image(self):
         """
@@ -3114,4 +3114,4 @@ class MiscTestCase(TestCase):
         image.delete()
 
         for width, height in THUMBNAIL_SIZES:
-            self.failIf(os.path.exists("%s.%sx%s%s" % (base, width, height, ext)))
+            self.assertFalse(os.path.exists("%s.%sx%s%s" % (base, width, height, ext)))

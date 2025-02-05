@@ -338,7 +338,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         result = add_to_cart(request)
-        self.failIf("message" in result.cookies)
+        self.assertFalse("message" in result.cookies)
 
         # ... or LFS doesn't manage stock amount
         self.p1.manage_stock_amount = False
@@ -346,7 +346,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         result = add_to_cart(request)
-        self.failIf("message" in result.cookies)
+        self.assertFalse("message" in result.cookies)
 
     def test_add_to_cart_stock_1(self):
         """Try to add product two times to cart if only one is in stock."""
@@ -363,7 +363,7 @@ class AddToCartTestCase(TestCase):
 
         # This need to result in a message to the customer
         result = add_to_cart(request)
-        self.failIf(
+        self.assertFalse(
             result.cookies.get("message")
             .__str__()
             .find("Sorry%2C%20but%20%27Product%201%27%20is%20only%20one%20time%20available.")
@@ -375,7 +375,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         result = add_to_cart(request)
-        self.failIf("message" in result.cookies)
+        self.assertFalse("message" in result.cookies)
 
         # ... or LFS doesn't manage stock amount
         self.p1.manage_stock_amount = False
@@ -383,7 +383,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         result = add_to_cart(request)
-        self.failIf("message" in result.cookies)
+        self.assertFalse("message" in result.cookies)
 
     def test_add_to_cart_stock_2(self):
         """Try to add product three times to cart if only two is in stock."""
@@ -400,7 +400,7 @@ class AddToCartTestCase(TestCase):
 
         # This need to result in a message to the customer
         result = add_to_cart(request)
-        self.failIf(
+        self.assertFalse(
             result.cookies.get("message")
             .__str__()
             .find("Sorry%2C%20but%20%27Product%201%27%20is%20only%202.0%20times%20available.")
@@ -412,7 +412,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         result = add_to_cart(request)
-        self.failIf("message" in result.cookies)
+        self.assertFalse("message" in result.cookies)
 
         # ... or LFS doesn't manage stock amount
         self.p1.manage_stock_amount = False
@@ -420,7 +420,7 @@ class AddToCartTestCase(TestCase):
         self.p1.save()
 
         result = add_to_cart(request)
-        self.failIf("message" in result.cookies)
+        self.assertFalse("message" in result.cookies)
 
 
 class RefreshCartTestCase(TestCase):
@@ -750,12 +750,12 @@ class AddedToCartTestCase(TestCase):
         response = added_to_cart_items(request)
 
         # need to test for two versions of currency output (Mac and Ubuntu differ)
-        self.failIf(response.find('Total: <span class="money">$10.00</span>') == -1)
+        self.assertFalse(response.find('Total: <span class="money">$10.00</span>') == -1)
 
         # Added product_1 to cart again
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find('Total: <span class="money">$20.00</span>') == -1)
+        self.assertFalse(response.find('Total: <span class="money">$20.00</span>') == -1)
 
     def test_totals_2(self):
         """Add a product with explicit quantity to cart"""
@@ -769,12 +769,12 @@ class AddedToCartTestCase(TestCase):
         # Added product_1 two times to cart
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find('Total: <span class="money">$20.00</span>') == -1)
+        self.assertFalse(response.find('Total: <span class="money">$20.00</span>') == -1)
 
         # Added product_1 two times to cart again
         add_to_cart(request)
         response = added_to_cart_items(request)
-        self.failIf(response.find('Total: <span class="money">$40.00</span>') == -1)
+        self.assertFalse(response.find('Total: <span class="money">$40.00</span>') == -1)
 
     def test_discounts(self):
         """Add a product with explicit quantity to cart and use discounts/voucher

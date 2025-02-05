@@ -183,7 +183,7 @@ class TagsTestCase(TestCase):
 
         template = Template("""{% load lfs_tags %}{% google_analytics_tracking %}""")
         content = template.render(Context())
-        self.failIf(content.find("pageTracker") != -1)
+        self.assertFalse(content.find("pageTracker") != -1)
 
         # Enter a google_analytics_id
         shop.google_analytics_id = "UA-XXXXXXXXXX"
@@ -191,7 +191,7 @@ class TagsTestCase(TestCase):
 
         # But this is not enough
         content = template.render(Context())
-        self.failIf(content.find("pageTracker") != -1)
+        self.assertFalse(content.find("pageTracker") != -1)
 
         # It has to be activated first
         shop.ga_site_tracking = True
@@ -199,7 +199,7 @@ class TagsTestCase(TestCase):
 
         # Now it works and "pageTracker" is found
         content = template.render(Context())
-        self.failIf(content.find("Google tag") == -1)
+        self.assertFalse(content.find("Google tag") == -1)
 
     def test_ga_ecommerce_tracking(self):
         """ """
@@ -217,7 +217,7 @@ class TagsTestCase(TestCase):
 
         template = Template("""{% load lfs_tags %}{% google_analytics_ecommerce %}""")
         content = template.render(Context({"request": request}))
-        self.failIf(content.find("pageTracker") != -1)
+        self.assertFalse(content.find("pageTracker") != -1)
 
         # Enter a google_analytics_id
         shop.google_analytics_id = "UA-XXXXXXXXXX"
@@ -230,7 +230,7 @@ class TagsTestCase(TestCase):
 
         # But this is not enough
         content = template.render(Context({"request": request}))
-        self.failIf(content.find("pageTracker") != -1)
+        self.assertFalse(content.find("pageTracker") != -1)
 
         # It has to be activated first
         shop.ga_ecommerce_tracking = True
@@ -243,14 +243,14 @@ class TagsTestCase(TestCase):
 
         # But this is still not enough
         content = template.render(Context({"request": request}))
-        self.failIf(content.find("pageTracker") != -1)
+        self.assertFalse(content.find("pageTracker") != -1)
 
         # There has to be an order within the session
         session["order"] = Order()
 
         # Now it works and "pageTracker" is found
         content = template.render(Context({"request": request}))
-        self.failIf(content.find("_trackPageview") == -1)
+        self.assertFalse(content.find("_trackPageview") == -1)
 
     def test_currency(self):
         """ """

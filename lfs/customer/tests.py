@@ -26,7 +26,7 @@ class CreditCardTestCase(TestCase):
         )
 
     def test_unicode(self):
-        self.assertEquals(self.cc.__str__(), "%s / %s" % (self.cc.type, self.cc.owner))
+        self.assertEqual(self.cc.__str__(), "%s / %s" % (self.cc.type, self.cc.owner))
 
 
 class CustomerTestCase(TestCase):
@@ -80,9 +80,9 @@ class CustomerTestCase(TestCase):
         middleware.process_request(request)
         request.session.save()
 
-        self.assertEquals(Address.objects.count(), 0)
+        self.assertEqual(Address.objects.count(), 0)
         create_customer(request)
-        self.assertEquals(Address.objects.count(), 4)
+        self.assertEqual(Address.objects.count(), 4)
 
 
 class AddressTestCase(TestCase):
@@ -207,11 +207,11 @@ class AddressTestCase(TestCase):
             reverse("lfs_login"),
             {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
         )
-        self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response.headers["location"], "/")
+        self.assertEqual(registration_response.status_code, 302)
+        self.assertEqual(registration_response.headers["location"], "/")
 
         # Test that one message has been sent.
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         # see if we can view the address page
         address_response = self.client.get(reverse("lfs_my_addresses"))
@@ -227,25 +227,25 @@ class AddressTestCase(TestCase):
 
     def test_create_new_address(self):
         # test that we have only 4 addresses registered (from setUp)
-        self.assertEquals(Address.objects.count(), 4)
+        self.assertEqual(Address.objects.count(), 4)
 
         # register a new user
         registration_response = self.client.post(
             reverse("lfs_login"),
             {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
         )
-        self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response.headers["location"], "/")
+        self.assertEqual(registration_response.status_code, 302)
+        self.assertEqual(registration_response.headers["location"], "/")
 
-        self.assertEquals(Address.objects.count(), 8)
+        self.assertEqual(Address.objects.count(), 8)
 
         # Test that one message has been sent.
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         our_user = User.objects.get(email="test@test.com")
         our_customer = Customer.objects.get(user=our_user)
-        self.assertNotEquals(our_customer.selected_invoice_address, None)
-        self.assertNotEquals(our_customer.selected_shipping_address, None)
+        self.assertNotEqual(our_customer.selected_invoice_address, None)
+        self.assertNotEqual(our_customer.selected_shipping_address, None)
 
         # see if we can view the addresss page
         address_data = {
@@ -273,14 +273,14 @@ class AddressTestCase(TestCase):
 
         self.client.post(reverse("lfs_my_addresses"), address_data)
 
-        self.assertEquals(Address.objects.count(), 8)
+        self.assertEqual(Address.objects.count(), 8)
 
         # refetch our user from the database
         our_customer = Customer.objects.get(user=our_user)
-        self.assertNotEquals(our_customer.selected_invoice_address, None)
-        self.assertNotEquals(our_customer.selected_shipping_address, None)
-        self.assertEquals(our_customer.selected_invoice_address.firstname, "Joe")
-        self.assertEquals(our_customer.selected_invoice_address.lastname, "Bloggs")
+        self.assertNotEqual(our_customer.selected_invoice_address, None)
+        self.assertNotEqual(our_customer.selected_shipping_address, None)
+        self.assertEqual(our_customer.selected_invoice_address.firstname, "Joe")
+        self.assertEqual(our_customer.selected_invoice_address.lastname, "Bloggs")
 
     def _test_change_address_page(self):
         """
@@ -444,11 +444,11 @@ class NoAutoUpdateAddressTestCase(TestCase):
             reverse("lfs_login"),
             {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
         )
-        self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response.headers["location"], "/")
+        self.assertEqual(registration_response.status_code, 302)
+        self.assertEqual(registration_response.headers["location"], "/")
 
         # Test that one message has been sent.
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         # see if we can view the address page
         address_response = self.client.get(reverse("lfs_my_addresses"))
@@ -465,25 +465,25 @@ class NoAutoUpdateAddressTestCase(TestCase):
     @override_settings(LFS_AUTO_UPDATE_DEFAULT_ADDRESSES=False)
     def test_create_new_address(self):
         # test that we have only 4 addresses registered (from setUp)
-        self.assertEquals(Address.objects.count(), 4)
+        self.assertEqual(Address.objects.count(), 4)
 
         # register a new user
         registration_response = self.client.post(
             reverse("lfs_login"),
             {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
         )
-        self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response.headers["location"], "/")
+        self.assertEqual(registration_response.status_code, 302)
+        self.assertEqual(registration_response.headers["location"], "/")
 
-        self.assertEquals(Address.objects.count(), 8)
+        self.assertEqual(Address.objects.count(), 8)
 
         # Test that one message has been sent.
-        self.assertEquals(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 1)
 
         our_user = User.objects.get(email="test@test.com")
         our_customer = Customer.objects.get(user=our_user)
-        self.assertNotEquals(our_customer.selected_invoice_address, None)
-        self.assertNotEquals(our_customer.selected_shipping_address, None)
+        self.assertNotEqual(our_customer.selected_invoice_address, None)
+        self.assertNotEqual(our_customer.selected_shipping_address, None)
 
         # see if we can view the addresss page
         address_data = {
@@ -511,14 +511,14 @@ class NoAutoUpdateAddressTestCase(TestCase):
 
         self.client.post(reverse("lfs_my_addresses"), address_data)
 
-        self.assertEquals(Address.objects.count(), 8)
+        self.assertEqual(Address.objects.count(), 8)
 
         # refetch our user from the database
         our_customer = Customer.objects.get(user=our_user)
-        self.assertNotEquals(our_customer.selected_invoice_address, None)
-        self.assertNotEquals(our_customer.selected_shipping_address, None)
-        self.assertEquals(our_customer.selected_invoice_address.firstname, "Joe")
-        self.assertEquals(our_customer.selected_invoice_address.lastname, "Bloggs")
+        self.assertNotEqual(our_customer.selected_invoice_address, None)
+        self.assertNotEqual(our_customer.selected_shipping_address, None)
+        self.assertEqual(our_customer.selected_invoice_address.firstname, "Joe")
+        self.assertEqual(our_customer.selected_invoice_address.lastname, "Bloggs")
 
     @override_settings(LFS_AUTO_UPDATE_DEFAULT_ADDRESSES=False)
     def _test_change_address_page(self):

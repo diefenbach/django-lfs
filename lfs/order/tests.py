@@ -239,7 +239,7 @@ class OrderTestCase(TestCase):
         process_payment(self.request)
 
         order = Order.objects.filter()[0]
-        self.failIf(order.get_pay_link(self.request).find("paypal") == -1)
+        self.assertFalse(order.get_pay_link(self.request).find("paypal") == -1)
 
     def test_delete_product(self):
         """Tests that OrderItems are not deleted when a product is deleted."""

@@ -29,7 +29,7 @@ class VoucherUtilsTestCase(TestCase):
         letters = "ABCDEFGHIJKLMNOPQRSTUVXYZ"
 
         for letter in number:
-            self.failIf(letter not in letters)
+            self.assertFalse(letter not in letters)
 
     def test_create_vouchers_2(self):
         """Tests the custom options."""
@@ -46,7 +46,7 @@ class VoucherUtilsTestCase(TestCase):
         letters = "abcdefghijklmnopqrstuvwxyz"
 
         for letter in number[2:-2]:
-            self.failIf(letter not in letters)
+            self.assertFalse(letter not in letters)
 
 
 class VoucherTestCase(TestCase):
@@ -191,7 +191,7 @@ class VoucherTestCase(TestCase):
         self.v1.refresh_from_db()
 
         self.assertEqual(self.v1.used_amount, 1)
-        self.failIf(self.v1.last_used_date is None)
+        self.assertFalse(self.v1.last_used_date is None)
 
     def test_is_effective(self):
         """ """

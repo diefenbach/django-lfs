@@ -134,7 +134,7 @@ class CheckoutAddressesTestCase(TestCase):
         logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
-        self.assertEquals(Address.objects.count(), 2)
+        self.assertEqual(Address.objects.count(), 2)
         cart_response = self.client.get(reverse("lfs_cart"))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
@@ -174,10 +174,10 @@ class CheckoutAddressesTestCase(TestCase):
         )
 
         # test we have same amount of address objects at end of checkout
-        self.assertEquals(Address.objects.count(), 4)
+        self.assertEqual(Address.objects.count(), 4)
 
     def test_ajax_saves_address(self):
-        self.assertEquals(Address.objects.count(), 2)
+        self.assertEqual(Address.objects.count(), 2)
 
         # register a new user
         registration_response = self.client.post(
@@ -185,8 +185,8 @@ class CheckoutAddressesTestCase(TestCase):
             {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
         )
 
-        self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response.headers["location"], "/")
+        self.assertEqual(registration_response.status_code, 302)
+        self.assertEqual(registration_response.headers["location"], "/")
 
         # get our new customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -197,12 +197,12 @@ class CheckoutAddressesTestCase(TestCase):
         self.assertNotEqual(our_customer.default_invoice_address, None)
         self.assertNotEqual(our_customer.default_shipping_address, None)
 
-        self.assertEquals(Address.objects.count(), 6)
+        self.assertEqual(Address.objects.count(), 6)
 
         # test that an ajax request creates a new customer address
         form_data = {"invoice-country": "ie"}
         self.client.post(reverse("lfs_changed_invoice_country"), form_data)
-        self.assertEquals(Address.objects.count(), 6)
+        self.assertEqual(Address.objects.count(), 6)
 
         # refetch our customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -219,7 +219,7 @@ class CheckoutAddressesTestCase(TestCase):
             "invoice-country": "ie",
         }
         self.client.post(reverse("lfs_changed_invoice_country"), form_data)
-        self.assertEquals(Address.objects.count(), 6)
+        self.assertEqual(Address.objects.count(), 6)
 
         # post some shipping address info
         form_data = {
@@ -227,7 +227,7 @@ class CheckoutAddressesTestCase(TestCase):
             "shipping-country": "ie",
         }
         self.client.post(reverse("lfs_changed_shipping_country"), form_data)
-        self.assertEquals(Address.objects.count(), 6)
+        self.assertEqual(Address.objects.count(), 6)
 
         # refetch our customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -244,7 +244,7 @@ class CheckoutAddressesTestCase(TestCase):
             "shipping-country": "ie",
         }
         self.client.post(reverse("lfs_changed_shipping_country"), form_data)
-        self.assertEquals(Address.objects.count(), 6)
+        self.assertEqual(Address.objects.count(), 6)
 
 
 class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
@@ -389,7 +389,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         logged_in = self.client.login(username=self.username, password=self.password)
         self.assertEqual(logged_in, True)
 
-        self.assertEquals(Address.objects.count(), 4)
+        self.assertEqual(Address.objects.count(), 4)
         cart_response = self.client.get(reverse("lfs_cart"))
         self.assertContains(cart_response, self.PRODUCT1_NAME, status_code=200)
 
@@ -429,19 +429,19 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         )
 
         # test we have same amount of address objects at end of checkout
-        self.assertEquals(Address.objects.count(), 6)
+        self.assertEqual(Address.objects.count(), 6)
 
     @override_settings(LFS_AUTO_UPDATE_DEFAULT_ADDRESSES=False)
     def test_ajax_saves_address(self):
-        self.assertEquals(Address.objects.count(), 4)
+        self.assertEqual(Address.objects.count(), 4)
 
         # register a new user
         registration_response = self.client.post(
             reverse("lfs_login"),
             {"action": "register", "email": "test@test.com", "password_1": "password", "password_2": "password"},
         )
-        self.assertEquals(registration_response.status_code, 302)
-        self.assertEquals(registration_response.headers["location"], "/")
+        self.assertEqual(registration_response.status_code, 302)
+        self.assertEqual(registration_response.headers["location"], "/")
 
         # get our new customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -452,12 +452,12 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
         self.assertNotEqual(our_customer.default_invoice_address, None)
         self.assertNotEqual(our_customer.default_shipping_address, None)
 
-        self.assertEquals(Address.objects.count(), 8)
+        self.assertEqual(Address.objects.count(), 8)
 
         # test that an ajax request creates a new customer address
         form_data = {"invoice-country": "ie"}
         self.client.post(reverse("lfs_changed_invoice_country"), form_data)
-        self.assertEquals(Address.objects.count(), 8)
+        self.assertEqual(Address.objects.count(), 8)
 
         # refetch our customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -474,7 +474,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
             "invoice-country": "ie",
         }
         self.client.post(reverse("lfs_changed_invoice_country"), form_data)
-        self.assertEquals(Address.objects.count(), 8)
+        self.assertEqual(Address.objects.count(), 8)
 
         # post some shipping address info
         form_data = {
@@ -482,7 +482,7 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
             "shipping-country": "ie",
         }
         self.client.post(reverse("lfs_changed_shipping_country"), form_data)
-        self.assertEquals(Address.objects.count(), 8)
+        self.assertEqual(Address.objects.count(), 8)
 
         # refetch our customer
         our_customer = Customer.objects.get(user__email="test@test.com")
@@ -499,4 +499,4 @@ class CheckoutAddressesNoAutoUpdateTestCase(TestCase):
             "shipping-country": "ie",
         }
         self.client.post(reverse("lfs_changed_shipping_country"), form_data)
-        self.assertEquals(Address.objects.count(), 8)
+        self.assertEqual(Address.objects.count(), 8)

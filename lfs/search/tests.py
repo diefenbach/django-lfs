@@ -23,11 +23,11 @@ class SearchTestCase(TestCase):
 
         # Must be found
         response = self.client.get(url, {"q": "Product"})
-        self.failIf(response.content.find(b"Product 1") == -1)
+        self.assertFalse(response.content.find(b"Product 1") == -1)
 
         # Must not be found
         response = self.client.get(url, {"q": "Hurz"})
-        self.failIf(response.content.find(b"Product 1") != -1)
+        self.assertFalse(response.content.find(b"Product 1") != -1)
 
     def test_inactive_search(self):
         """ """
@@ -35,4 +35,4 @@ class SearchTestCase(TestCase):
 
         # Must not be found
         response = self.client.get(url, {"q": "Product"})
-        self.failIf(response.content.find(b"Product 3") != -1)
+        self.assertFalse(response.content.find(b"Product 3") != -1)
