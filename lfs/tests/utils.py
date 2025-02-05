@@ -46,7 +46,6 @@ class RequestFactory(Client):
         has created it.
         """
         environ = {
-            "HTTP_COOKIE": self.cookies,
             "PATH_INFO": "/",
             "QUERY_STRING": "",
             "REQUEST_METHOD": "GET",
