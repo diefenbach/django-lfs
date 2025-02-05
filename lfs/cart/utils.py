@@ -110,27 +110,33 @@ def update_cart_after_login(request):
     3. if there is a session cart and a user cart we add the session cart items
        to the user cart.
     """
-    try:
-        session_cart = Cart.objects.get(session=request.META["anonymous_session_key"])
-        try:
-            user_cart = Cart.objects.get(user=request.user)
-        except ObjectDoesNotExist:
-            session_cart.user = request.user
-            session_cart.save()
-        else:
-            for session_cart_item in session_cart.get_items():
-                properties_dict = {}
-                for pv in session_cart_item.properties.all():
-                    key = "{0}_{1}".format(pv.property_group_id, pv.property_id)
-                    properties_dict[key] = {
-                        "value": pv.value,
-                        "property_group_id": pv.property_group_id,
-                        "property_id": pv.property_id,
-                    }
+    anonymous_session_key = request.META.get("anonymous_session_key")
+    # 1.
+    if not anonymous_session_key:
+        return
 
-                user_cart.add(
-                    session_cart_item.product, properties_dict=properties_dict, amount=session_cart_item.amount
-                )
-            session_cart.delete()
+    try:
+        session_cart = Cart.objects.get(session=anonymous_session_key)
+    except Cart.DoesNotExist:
+        return
+
+    try:
+        user_cart = Cart.objects.get(user=request.user)
     except ObjectDoesNotExist:
-        pass
+        # 2.
+        session_cart.user = request.user
+        session_cart.save()
+    else:
+        # 3.
+        for session_cart_item in session_cart.get_items():
+            properties_dict = {}
+            for pv in session_cart_item.properties.all():
+                key = "{0}_{1}".format(pv.property_group_id, pv.property_id)
+                properties_dict[key] = {
+                    "value": pv.value,
+                    "property_group_id": pv.property_group_id,
+                    "property_id": pv.property_id,
+                }
+
+            user_cart.add(session_cart_item.product, properties_dict=properties_dict, amount=session_cart_item.amount)
+        session_cart.delete()
