@@ -7,11 +7,16 @@ from django.db import models
 
 # lfs imports
 import lfs
-from lfs.payment.settings import PM_ORDER_IMMEDIATELY  # NOQA
-from lfs.payment.settings import PM_ORDER_ACCEPTED  # NOQA
-from lfs.payment.settings import PM_MSG_TOP  # NOQA
-from lfs.payment.settings import PM_MSG_FORM  # NOQA
-from lfs.order.settings import PAID  # NOQA
+
+from lfs.payment.settings import PM_ORDER_IMMEDIATELY, PM_ORDER_ACCEPTED, PM_MSG_TOP, PM_MSG_FORM
+from lfs.order.settings import PAID
+
+# Prevent deleting from vsc:organizeImports=true
+_1 = PM_ORDER_IMMEDIATELY
+_2 = PM_ORDER_ACCEPTED
+_3 = PM_MSG_TOP
+_4 = PM_MSG_FORM
+_5 = PAID
 
 
 class OrderNumberGenerator(models.Model):
