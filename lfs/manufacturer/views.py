@@ -5,7 +5,7 @@ from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.template.loader import render_to_string
 
-from django.utils.translation import gettext
+from django.utils.translation import ngettext
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.manufacturer.models import Manufacturer
 from lfs.core.utils import lfs_pagination
@@ -32,7 +32,7 @@ def manufacturers(request, template_name="lfs/manufacturers/manufacturers.html")
 
     count = manufacturers.count()
 
-    pagination_data["total_text"] = gettext("%(count)d manufacturer", "%(count)d manufacturers", count) % {
+    pagination_data["total_text"] = ngettext("%(count)d manufacturer", "%(count)d manufacturers", count) % {
         "count": count
     }
 
@@ -160,7 +160,7 @@ def manufacturer_products(request, slug, start=1, template_name="lfs/manufacture
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=manufacturer.get_absolute_url())
 
-    pagination_data["total_text"] = ungettext("%(count)d product", "%(count)d products", amount_of_products) % {
+    pagination_data["total_text"] = ngettext("%(count)d product", "%(count)d products", amount_of_products) % {
         "count": amount_of_products
     }
 

@@ -113,7 +113,7 @@ def manufacturer_view(request, manufacturer_id, template_name="manage/manufactur
         },
     )
 
-    if request.is_ajax():
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
         html = [["#view", view_html]]
         return HttpResponse(
             json.dumps(
