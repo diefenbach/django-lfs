@@ -97,7 +97,10 @@ class ManageTestCase(TestCase):
         self.assertEqual(p.sub_type, PRODUCT_WITH_VARIANTS)
 
     def test_manage_add_property(self):
-        p = Product.objects.create(name="Product1", slug="product1", sub_type=PRODUCT_WITH_VARIANTS)
+        p = Product.objects.create(name="Product1", slug="product1")
+        p.sub_type = PRODUCT_WITH_VARIANTS
+        p.save()
+
         self.client.login(username=self.username, password=self.password)
         url = reverse("lfs_manage_add_property", kwargs={"product_id": p.pk})
         response = self.client.post(url, {"name": "testproperty"}, follow=True)
@@ -108,7 +111,10 @@ class ManageTestCase(TestCase):
         self.assertTrue(ProductsPropertiesRelation.objects.filter(product=p, property=new_property).exists())
 
     def test_manage_add_property_option(self):
-        product = Product.objects.create(name="Product1", slug="product1", sub_type=PRODUCT_WITH_VARIANTS)
+        product = Product.objects.create(name="Product1", slug="product1")
+        product.sub_type = PRODUCT_WITH_VARIANTS
+        product.save()
+
         pproperty = Property.objects.create(name="property 1", type=PROPERTY_SELECT_FIELD, local=True, filterable=False)
         ProductsPropertiesRelation.objects.create(product=product, property=pproperty, position=10)
 
@@ -165,7 +171,10 @@ class ManageTestCase(TestCase):
         self.assertEqual(new_property_option2.price, 0.9)
 
     def test_manage_variants(self):
-        product = Product.objects.create(name="Product1", slug="product1", sub_type=PRODUCT_WITH_VARIANTS)
+        product = Product.objects.create(name="Product1", slug="product1")
+        product.sub_type = PRODUCT_WITH_VARIANTS
+        product.save()
+
         pproperty = Property.objects.create(name="property1", type=PROPERTY_SELECT_FIELD, local=True, filterable=False)
         ProductsPropertiesRelation.objects.create(product=product, property=pproperty, position=10)
         property_option = PropertyOption.objects.create(name="property option 1", property=pproperty, position=10)
@@ -188,7 +197,10 @@ class ManageTestCase(TestCase):
         self.assertEqual(list(outvariants[0]["properties"][0]["options"])[0]["name"], property_option.name)
 
     def test_manage_update_variants(self):
-        product = Product.objects.create(name="Product1", slug="product1", sub_type=PRODUCT_WITH_VARIANTS)
+        product = Product.objects.create(name="Product1", slug="product1")
+        product.sub_type = PRODUCT_WITH_VARIANTS
+        product.save()
+
         pproperty = Property.objects.create(name="property1", type=PROPERTY_SELECT_FIELD, local=True, filterable=False)
         ProductsPropertiesRelation.objects.create(product=product, property=pproperty, position=10)
         property_option = PropertyOption.objects.create(name="property option 1", property=pproperty, position=10)
