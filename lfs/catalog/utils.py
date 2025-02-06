@@ -4,6 +4,7 @@ import logging
 from django.db import connection
 from django.core.exceptions import FieldError
 from django.db.models import Q, Count, Min, Max
+from django.utils import formats
 
 import lfs.catalog.models
 from lfs.catalog.settings import CONFIGURABLE_PRODUCT
@@ -62,13 +63,14 @@ def get_price_filters(category, product_filter, price_filter, manufacturer_filte
     disabled = (pmin and pmax) is None
 
     try:
-        pmin = locale.format("%.2f", pmin)
+        pmin = formats.localize(float("%.2f" % pmin))
     except TypeError:
-        pmin = 0.0
+        pmin = 0
+
     try:
-        pmax = locale.format("%.2f", pmax)
+        pmax = formats.localize(float("%.2f" % pmax))
     except TypeError:
-        pmax = 0.0
+        pmin = 0
 
     return {
         "show_reset": False,
