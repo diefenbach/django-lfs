@@ -183,8 +183,8 @@ class ShippingMethodTestCase(TestCase):
 
         # Tests that the correct shipping methods are returned
         sm_names = [sm.name for sm in sms]
-        self.failUnless("Standard" in sm_names)
-        self.failUnless("Express" in sm_names)
+        self.assertIn("Standard", sm_names)
+        self.assertIn("Express", sm_names)
 
         # We now ``logout``
         self.request.user = None
@@ -195,7 +195,7 @@ class ShippingMethodTestCase(TestCase):
 
         # Tests that the correct shipping methods are returned
         sm_names = [sm.name for sm in sms]
-        self.failUnless("Express" in sm_names)
+        self.assertIn("Express", sm_names)
 
     def test_valid_shipping_methods_2(self):
         """Tests valid shipping methods. Test with a cart price criterion."""
