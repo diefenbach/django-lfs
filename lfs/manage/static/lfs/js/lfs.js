@@ -110,6 +110,10 @@ $(function() {
 
                 // Re-bind fancybox
                 $("a.product-image").fancybox({loop: false});
+
+                // Re-bind product tabs
+                $('#product-tabs').tabs({ cookie: { expires: 30 } });
+
             }
         });
     });
@@ -124,6 +128,9 @@ $(function() {
 
                 // Re-bind fancybox
                 $("a.product-image").fancybox({loop: false});
+
+                // Re-bind product tabs
+                $('#product-tabs').tabs({ cookie: { expires: 30 } });
             }
         });
     });
