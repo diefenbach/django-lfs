@@ -24,7 +24,7 @@ class VoucherUtilsTestCase(TestCase):
     def test_create_vouchers_1(self):
         """Tests the default voucher options"""
         number = lfs.voucher.utils.create_voucher_number()
-        self.failUnless(len(number) == 5)
+        self.assertEqual(len(number), 5)
 
         letters = "ABCDEFGHIJKLMNOPQRSTUVXYZ"
 
@@ -41,7 +41,7 @@ class VoucherUtilsTestCase(TestCase):
         )
 
         number = lfs.voucher.utils.create_voucher_number()
-        self.failUnless(len(number) == 8)
+        self.assertEqual(len(number), 8)
 
         letters = "abcdefghijklmnopqrstuvwxyz"
 
