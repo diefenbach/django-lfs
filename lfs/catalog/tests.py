@@ -74,8 +74,8 @@ class PriceFilterTestCase(TestCase):
         result = lfs.catalog.utils.get_price_filters(self.c1, [], None, [])
         self.assertEqual(result["disabled"], False)
         self.assertEqual(result["show_reset"], False)
-        self.assertIn(result["min"], ["1.00", "1,00"])
-        self.assertIn(result["max"], ["5.00", "5,00"])
+        self.assertEqual(result["min"], "1.0")
+        self.assertEqual(result["max"], "5.0")
 
 
 class ManufacturerFilterTestCase(TestCase):
@@ -2691,7 +2691,7 @@ class ProductTestCase(TestCase):
         ]
 
         result = self.p1.has_variant(options)
-        self.failUnless(result)
+        self.assertTrue(result)
 
         variant = self.p1.get_variant(options)
         self.assertEqual(variant.id, self.v1.id)
@@ -2703,7 +2703,7 @@ class ProductTestCase(TestCase):
         ]
 
         result = self.p1.has_variant(options)
-        self.failUnless(result)
+        self.assertTrue(result)
 
         variant = self.p1.get_variant(options)
         self.assertEqual(variant.id, self.v1.id)
@@ -2715,7 +2715,7 @@ class ProductTestCase(TestCase):
         ]
 
         result = self.p1.has_variant(options)
-        self.failUnless(result)
+        self.assertTrue(result)
 
         variant = self.p1.get_variant(options)
         self.assertEqual(variant.id, self.v2.id)
@@ -2727,7 +2727,7 @@ class ProductTestCase(TestCase):
         ]
 
         result = self.p1.has_variant(options)
-        self.failUnless(result)
+        self.assertTrue(result)
 
         variant = self.p1.get_variant(options)
         self.assertEqual(variant.id, self.v2.id)
@@ -3076,7 +3076,7 @@ class MiscTestCase(TestCase):
         from lfs.catalog.models import get_unique_id_str
 
         id = get_unique_id_str()
-        self.failUnless(isinstance(id, str))
+        self.assertTrue(isinstance(id, str))
         self.assertEqual(len(id), len("dad27436-3468-4d27-97e4-5fd761db85da"))
 
     def test_delete_file(self):
@@ -3090,7 +3090,7 @@ class MiscTestCase(TestCase):
         file = File.objects.create(pk=1, title="Test File", slug="test-file", file=None)
         file.file.save("Laminat01.jpg", cf_1)
 
-        self.failUnless(os.path.exists(file.file.path))
+        self.assertTrue(os.path.exists(file.file.path))
         file.delete()
         self.assertFalse(os.path.exists(file.file.path))
 
@@ -3109,7 +3109,7 @@ class MiscTestCase(TestCase):
         path = image.image.path
         base, ext = os.path.splitext(path)
         for width, height in THUMBNAIL_SIZES:
-            self.failUnless(os.path.exists("%s.%sx%s%s" % (base, width, height, ext)))
+            self.assertTrue(os.path.exists("%s.%sx%s%s" % (base, width, height, ext)))
 
         image.delete()
 
