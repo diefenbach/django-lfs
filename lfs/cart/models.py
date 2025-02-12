@@ -309,7 +309,7 @@ class CartItem(models.Model):
 
         for token in tokens:
             if token.startswith("property"):
-                mo = re.match("property\((\d+)\)", token)
+                mo = re.match(r"property\((\d+)\)", token)
                 ppv = self.properties.filter(property__id=mo.groups()[0])[0]
                 if ppv.property.is_select_field:
                     po = PropertyOption.objects.get(pk=ppv.value)
@@ -318,10 +318,10 @@ class CartItem(models.Model):
                     value = float(ppv.value)
                 pc = pc.replace(token, str(value))
             elif token.startswith("number"):
-                mo = re.match("number\((\d+)\)", token)
+                mo = re.match(r"number\((\d+)\)", token)
                 pc = pc.replace(token, mo.groups()[0])
             elif token.startswith("product"):
-                mo = re.match("product\((.+)\)", token)
+                mo = re.match(r"product\((.+)\)", token)
                 value = getattr(self.product, mo.groups()[0])
                 pc = pc.replace(token, str(value))
 

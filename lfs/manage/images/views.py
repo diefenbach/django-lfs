@@ -134,7 +134,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
         parsed_url = parse(url)
         try:
             temp_url = "/".join(parsed_url.path.split("/")[2:])
-            result = re.search("(.*)(\.)(\d+x\d+)(.*)", temp_url)
+            result = re.search(r"(.*)(\.)(\d+x\d+)(.*)", temp_url)
             if result:
                 temp_url = result.groups()[0] + result.groups()[3]
                 selected_image = Image.objects.get(image=temp_url)
