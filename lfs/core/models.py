@@ -241,7 +241,7 @@ class Shop(models.Model):
         """Returns the notification e-mail addresses as list"""
         import re
 
-        adresses = re.split("[\s,]+", self.notification_emails)
+        adresses = re.split(r"[\s,]+", self.notification_emails)
         return adresses
 
     def get_parent_for_portlets(self):
