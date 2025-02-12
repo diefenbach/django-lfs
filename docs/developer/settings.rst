@@ -91,6 +91,9 @@ LFS_AFTER_ADD_TO_CART
 
 .. _settings_lfs_criteria:
 
+LFS_CURRENCY
+    The currency which is used within the shop. The default value is ``EUR``.
+    
 LFS_CRITERIA
     List of list of available criteria, whereas the first entry is the dotted
     name to a criterion and the second entry is the name of the criterion, which
@@ -129,17 +132,6 @@ LFS_DOCS
     Base URL to the LFS docs. This is used for the context aware help link
     within the management interface. Defaults to
     http://docs.getlfs.com/en/latest/.
-
-LFS_LOCALE
-    Sets the locale for the shop, which is the base for number formatting and
-    the displayed currency. If you don't set it, the current locale of your
-    Python is not touched at all. Example::
-
-        LFS_LOCALE = "en_US.UTF-8"
-
-    .. seealso::
-
-        http://en.wikipedia.org/wiki/Locale, http://docs.python.org/library/locale.html
 
 LFS_LOG_FILE
     Absolute path to LFS' log file.

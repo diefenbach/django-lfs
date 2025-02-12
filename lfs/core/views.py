@@ -1,5 +1,4 @@
 # python imports
-import locale
 import sys
 import traceback
 
@@ -60,15 +59,6 @@ def server_error(request):
 
     t = loader.get_template("500.html")
     return HttpResponseServerError(t.render(request=request))
-
-
-def one_time_setup():
-    lfs_locale = getattr(settings, "LFS_LOCALE", None)
-    if lfs_locale:
-        try:
-            locale.setlocale(locale.LC_ALL, lfs_locale)
-        except locale.Error:
-            logger.error("Unsupported locale in settings.LFS_LOCALE: '%s'." % lfs_locale)
 
 
 class TextTemplateView(TemplateView):

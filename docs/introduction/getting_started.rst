@@ -147,33 +147,14 @@ Add Products
 
 #. Click on ``Goto Product`` to visit the new product.
 
-Set Default Locale and Currency
-===============================
+Set Currency
+============
 
-Go to ``lfs_project/settings.py`` and change ``LFS_LOCALE`` to your needs (the
-default one is ``en_US.utf8``). This will activate the correct currency and
-number formats at the same time.
+In Django's settings set the currency you want with
 
-Usually there are several locale installed on your computer. In order to check
-which ones, please open a terminal and type::
+    LFS_CURRENCY = "USD"
 
-    locale -a
-
-To install an english locale (on Debian/Ubuntu) please enter::
-
-    sudo apt-get install language-support-en
-
-.. note::
-
-   After you have changed the locale you need to restart your instance to make
-   it active.
-
-.. seealso::
-
-        * http://en.wikipedia.org/wiki/Locale
-
-        * http://docs.python.org/library/locale.html
-
+The default value is "EUR".
 
 What's Next?
 ============

@@ -1,4 +1,3 @@
-import locale
 import sys
 
 from django.contrib.auth.models import AnonymousUser
@@ -75,14 +74,6 @@ class ShopTestCase(TestCase):
         self.assertEqual(shop.meta_title, "<name>")
         self.assertEqual(shop.meta_keywords, "")
         self.assertEqual(shop.meta_description, "")
-
-    def test_unsupported_locale(self):
-        """ """
-        from django.conf import settings
-
-        settings.LFS_LOCALE = "unsupported"
-
-        self.client.get("/")
 
     def test_from_email(self):
         """ """
@@ -266,18 +257,9 @@ class TagsTestCase(TestCase):
 
     def test_currency(self):
         """ """
-        locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
-        self.assertEqual(currency(0.0), '<span class="money">$0.00</span>')
-        self.assertEqual(currency(1.0), '<span class="money">$1.00</span>')
-
-        shop = lfs.core.utils.get_default_shop()
-        shop.use_international_currency_code = True
-        shop.save()
-
-        self.assertEqual(currency(0.0, None, False), '<span class="money">USD 0.00</span>')
-        self.assertEqual(currency(1.0, None, False), '<span class="money">USD 1.00</span>')
-
-        self.assertEqual(currency(-1.0, None, False), '<span class="money negative">-USD 1.00</span>')
+        self.assertEqual(currency(0.0), "$ 0.00")
+        self.assertEqual(currency(1.0), "$ 1.00")
+        self.assertEqual(currency(-1.0), "$ -1.00")
 
 
 class ManageURLsTestCase(TestCase):

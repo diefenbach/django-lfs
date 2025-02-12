@@ -2,10 +2,14 @@ import math
 import locale
 import logging
 
+from decimal import Decimal, ROUND_HALF_UP
+
+
 from django import template
 from django.conf import settings
 from django.core.cache import cache
 from django.urls import reverse
+from django.utils import formats
 from django.forms import BoundField
 from django.template import Node, TemplateSyntaxError
 from django.utils.safestring import mark_safe
@@ -519,81 +523,28 @@ def get_slug_from_request(request):
 
 
 @register.filter
-def currency_text(value, request=None, grouping=True):
-    """
-    Returns the currency based on the given locale within settings.LFS_LOCALE
-
-    e.g.
-
-    import locale
-    locale.setlocale(locale.LC_ALL, 'de_CH.UTF-8')
-    currency(123456.789)  # Fr. 123'456.79
-    currency(-123456.789) # Fr. -123'456.79
-    """
-    if locale.getlocale(locale.LC_ALL)[0] is None:
-        lfs.core.views.one_time_setup()
-
-    if not value:
-        value = 0.0
-
-    shop = lfs.core.utils.get_default_shop(request)
-    try:
-        result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
-    except ValueError as e:
-        result = value
-        logger.error("currency filter: %s" % e)
-
-    if value < 0:
-        # replace the minus symbol if needed
-        if result[-1] == "-":
-            length = len(locale.nl_langinfo(locale.CRNCYSTR))
-            result = "%s-%s" % (result[0:length], result[length:-1])
-    return result
-
-
-@register.filter
 def currency(value, request=None, grouping=True):
     """
-    Returns the currency based on the given locale within settings.LFS_LOCALE
+    Returns the formatted currency string based on LFS settings.
 
-    e.g.
+    Args:
+        value (float): The numeric value to be formatted as currency.
+        request (HttpRequest, optional): The HTTP request object. Defaults to None.
+        grouping (bool, optional): Whether to use grouping for thousands. Defaults to True.
 
-    import locale
-    locale.setlocale(locale.LC_ALL, 'de_CH.UTF-8')
-    currency(123456.789)  # <span class="money">Fr. 123'456.79</span>
-    currency(-123456.789) # <span class="money negative">Fr. -123'456.79</span>
+    Returns:
+        str: The formatted currency string with the currency symbol and value.
     """
-    if locale.getlocale(locale.LC_ALL)[0] is None:
-        lfs.core.views.one_time_setup()
-
-    if not value:
-        value = 0.0
-
-    shop = lfs.core.utils.get_default_shop(request)
     try:
-        result = locale.currency(value, grouping=grouping, international=shop.use_international_currency_code)
-    except ValueError as e:
-        result = str(value)
-        logger.error("currency filter: %s" % e)
+        num = Decimal(value)
+        rounded_num = num.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    except:
+        rounded_num = 0
 
-    result = decimal_l10n(result)
+    currency = getattr(settings, "LFS_CURRENCY", "EUR")
+    price = formats.localize(rounded_num)
 
-    # add css class if value is negative
-    negative = False
-    if value < 0:
-        negative = True
-        # replace the minus symbol if needed
-        if result[-1] == "-":
-            length = len(locale.nl_langinfo(locale.CRNCYSTR))
-            result = "%s-%s" % (result[0:length], result[length:-1])
-
-    return mark_safe(
-        '<span class="money%(negative)s">%(result)s</span>'
-        % {
-            "result": result.strip(),
-            "negative": " negative" if negative else "",
-        }
-    )
+    return f"{currency} {price}"
 
 
 @register.filter

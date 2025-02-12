@@ -7,5 +7,3 @@ class LfsCoreAppConfig(AppConfig):
     def ready(self):
         from . import listeners  # NOQA
         from . import views
-
-        views.one_time_setup()
