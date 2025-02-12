@@ -32,6 +32,20 @@ logger = logging.getLogger(__name__)
 register = template.Library()
 
 
+@register.inclusion_tag("lfs/catalog/category_tree.html", takes_context=True)
+def category_tree(context):
+    ct = lfs.core.utils.CategoryTree(currents=[], start_level=1, expand_level=100)
+    return {"category_tree": ct.get_category_tree()}
+
+
+@register.inclusion_tag("lfs/catalog/category_tree_children.html", takes_context=True)
+def category_tree_children(context, category):
+    return {
+        "category": category["category"],
+        "categories": category["children"],
+    }
+
+
 @register.inclusion_tag("lfs/portlets/category_children.html", takes_context=True)
 def category_children(context, categories):
     """ """
