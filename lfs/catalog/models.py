@@ -2959,7 +2959,7 @@ class ProductAttachment(models.Model):
         The position of the attachment within a product.
     """
 
-    title = models.CharField(_("Title"), max_length=50)
+    title = models.CharField(_("Title"), max_length=60)
     description = models.TextField(_("Description"), blank=True)
     file = models.FileField(upload_to="files", max_length=500)
     product = models.ForeignKey(
