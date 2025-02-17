@@ -350,5 +350,5 @@ def update_topseller_cache(topseller):
 @receiver(pre_delete, sender=ShippingMethodCriterion)
 @receiver(pre_delete, sender=WidthCriterion)
 def clear_criterion_cache(sender, instance, **kwargs):
-    cache_key = "criteria_for_model_{}_{}".format(instance.content_id, instance.content_type.pk)
+    cache_key = "criteria_for_model_{}_{}".format(instance.content_id, instance.content_type_id)
     cache.delete(cache_key)
