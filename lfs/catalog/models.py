@@ -616,7 +616,7 @@ class Product(models.Model):
         _("Slug"), help_text=_("The unique last part of the Product's URL."), unique=True, max_length=120
     )
     sku = models.CharField(
-        _("SKU"), help_text=_("Your unique article number of the product."), blank=True, max_length=30
+        _("SKU"), help_text=_("Your unique article number of the product."), blank=True, max_length=40
     )
     price = models.FloatField(_("Price"), default=0.0)
     price_calculator = models.CharField(
