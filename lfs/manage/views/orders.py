@@ -417,7 +417,7 @@ def delete_order(request, order_id):
 def send_order(request, order_id):
     """Sends order with passed order id to the customer of this order."""
     order = lfs_get_object_or_404(Order, pk=order_id)
-    mail_utils.send_order_received_mail(order)
+    mail_utils.send_order_received_mail(request, order)
 
     return lfs.core.utils.set_message_cookie(
         url=reverse("lfs_manage_order", kwargs={"order_id": order.id}),
