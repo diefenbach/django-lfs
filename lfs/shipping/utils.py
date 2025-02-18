@@ -121,7 +121,7 @@ def get_valid_shipping_methods(request, product=None):
     """Returns a list of all valid shipping methods for the passed request."""
     result = []
 
-    cache_key = "all_active_shipping_methods"
+    cache_key = "%s-all-active-shipping-methods" % settings.CACHE_MIDDLEWARE_KEY_PREFIX
     shipping_methods = cache.get(cache_key)
     if shipping_methods is None:
         shipping_methods = ShippingMethod.objects.filter(active=True)
