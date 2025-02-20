@@ -7,7 +7,6 @@ from django.conf import settings
 def main(request):
     """context processor for lfs"""
     shop = get_default_shop(request)
-
     return {
         "SHOP": shop,
         "ANON_ONLY": shop.checkout_type == CHECKOUT_TYPE_ANON,
