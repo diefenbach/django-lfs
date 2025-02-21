@@ -683,7 +683,9 @@ class Product(models.Model):
 
     active_packing_unit = models.PositiveSmallIntegerField(_("Active packing"), default=0)
     packing_unit = models.FloatField(_("Amount per packing"), blank=True, null=True)
-    packing_unit_unit = models.CharField(_("Packing unit"), blank=True, max_length=30, choices=LFS_PACKING_UNITS)
+    packing_unit_unit = models.CharField(
+        _("Packing unit"), blank=True, default="", max_length=30, choices=LFS_PACKING_UNITS
+    )
 
     static_block = models.ForeignKey(
         "StaticBlock", models.SET_NULL, verbose_name=_("Static block"), blank=True, null=True, related_name="products"
@@ -743,7 +745,9 @@ class Product(models.Model):
 
     # Base price
     active_base_price = models.PositiveSmallIntegerField(_("Active base price"), default=0)
-    base_price_unit = models.CharField(_("Base price unit"), blank=True, max_length=30, choices=LFS_BASE_PRICE_UNITS)
+    base_price_unit = models.CharField(
+        _("Base price unit"), blank=True, default="", max_length=30, choices=LFS_BASE_PRICE_UNITS
+    )
     base_price_amount = models.FloatField(_("Base price amount"), default=0.0, blank=True, null=True)
 
     # Manufacturer
