@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 
-from lfs.catalog.models import LFS_BASE_PRICE_UNITS, LFS_PACKING_UNITS
+from lfs.catalog.models import LFS_BASE_PRICE_UNITS, LFS_PACKING_UNITS, LFS_PRICE_UNITS, LFS_UNITS
 
 
 class Migration(migrations.Migration):
@@ -42,6 +42,26 @@ class Migration(migrations.Migration):
                 choices=[(0, "Default template"), (1, "Default template")],
                 null=True,
                 verbose_name="Product template",
+            ),
+        ),
+        migrations.AlterField(
+            model_name="product",
+            name="price_unit",
+            field=models.CharField(
+                blank=True,
+                choices=LFS_PRICE_UNITS,
+                max_length=20,
+                verbose_name="Price unit",
+            ),
+        ),
+        migrations.AlterField(
+            model_name="product",
+            name="unit",
+            field=models.CharField(
+                blank=True,
+                choices=LFS_UNITS,
+                max_length=20,
+                verbose_name="Quantity field unit",
             ),
         ),
     ]
