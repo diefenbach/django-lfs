@@ -527,6 +527,9 @@ class Product(models.Model):
     creation_date
         The creation date of the product
 
+    modification_date
+        The modification date of the product
+
     deliverable
         If True the product is deliverable. Otherwise not.
 
@@ -656,6 +659,7 @@ class Product(models.Model):
     for_sale_price = models.FloatField(_("For sale price"), default=0.0)
     active = models.BooleanField(_("Active"), default=False)
     creation_date = models.DateTimeField(_("Creation date"), auto_now_add=True)
+    modification_date = models.DateTimeField(_("Modification date"), auto_now=True)
 
     # Stocks
     supplier = models.ForeignKey(Supplier, models.SET_NULL, related_name="product_set", null=True, blank=True)
