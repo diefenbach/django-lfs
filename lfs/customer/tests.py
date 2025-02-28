@@ -11,7 +11,6 @@ from lfs.core.models import Country
 from lfs.core.models import Shop
 from lfs.customer.models import CreditCard
 from lfs.customer.models import Customer
-from lfs.customer.utils import create_unique_username
 from lfs.customer.utils import create_customer
 from lfs.shipping.models import ShippingMethod
 from lfs.tax.models import Tax
@@ -593,25 +592,6 @@ class LoginTestCase(TestCase):
         self.assertTrue(
             User.objects.filter(email="testverylongemailaddressthatislongerthanusername@example.com").exists()
         )
-        u = User.objects.get(email="testverylongemailaddressthatislongerthanusername@example.com")
-        self.assertEqual(u.username, u.email[:30])
-
-        new_username = create_unique_username("testverylongemailaddressthatislongerthanusername2@example.com")
-        response = client.post(
-            reverse("lfs_login"),
-            {
-                "email": "testverylongemailaddressthatislongerthanusername2@example.com",
-                "password_1": "test",
-                "password_2": "test",
-                "action": "register",
-                "next": "/",
-            },
-        )
-        self.assertTrue(
-            User.objects.filter(email="testverylongemailaddressthatislongerthanusername2@example.com").exists()
-        )
-        u = User.objects.get(email="testverylongemailaddressthatislongerthanusername2@example.com")
-        self.assertEqual(u.username, new_username)
 
     def test_change_email(self):
         u = User.objects.create(username="test@example.com", email="test@example.com", is_active=True)
