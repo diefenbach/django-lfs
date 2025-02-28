@@ -23,7 +23,6 @@ from lfs.cart import utils as cart_utils
 from lfs.core.models import Country
 from lfs.checkout.settings import CHECKOUT_TYPE_ANON, CHECKOUT_TYPE_AUTH, ONE_PAGE_CHECKOUT_FORM
 from lfs.customer import utils as customer_utils
-from lfs.customer.utils import create_unique_username
 from lfs.customer.forms import CreditCardForm, CustomerAuthenticationForm
 from lfs.customer.forms import BankAccountForm
 from lfs.customer.settings import REGISTER_FORM
@@ -59,7 +58,7 @@ def login(request, template_name="lfs/checkout/login.html"):
         if login_form.is_valid():
             from django.contrib.auth import login
 
-            login(request, login_form.get_user(), backend="lfs.customer.auth.EmailBackend")
+            login(request, login_form.get_user())
 
             return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"), msg=_("You have been logged in."))
 
@@ -70,7 +69,7 @@ def login(request, template_name="lfs/checkout/login.html"):
             password = register_form.data.get("password_1")
 
             # Create user
-            user = User.objects.create_user(username=create_unique_username(email), email=email, password=password)
+            user = User.objects.create_user(username=email, email=email, password=password)
 
             # Notify
             lfs.core.signals.customer_added.send(sender=user)
@@ -82,7 +81,7 @@ def login(request, template_name="lfs/checkout/login.html"):
 
             from django.contrib.auth import login
 
-            login(request, user, backend="lfs.customer.auth.EmailBackend")
+            login(request, user)
 
             return lfs.core.utils.set_message_cookie(
                 reverse("lfs_checkout"), msg=_("You have been registered and logged in.")
