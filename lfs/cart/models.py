@@ -1,11 +1,11 @@
 import re
-import locale
 import logging
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.db import models
+from django.utils import formats
 from django.utils.translation import gettext_lazy as _
 
 from lfs.catalog.models import Product, PropertyGroup
@@ -365,7 +365,7 @@ class CartItem(models.Model):
                 try:
                     value = format_string % float(cipv.value)
                 except ValueError:
-                    value = locale.format("%.2f", float(cipv.value))
+                    value = formats.localize("%.2f" % float(cipv.value))
             else:
                 value = cipv.value
 
