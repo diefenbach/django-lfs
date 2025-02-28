@@ -311,7 +311,7 @@ class Criterion(models.Model):
             operators.append(
                 {
                     "id": operator[0],
-                    "name": operator[1].encode("utf-8"),
+                    "name": operator[1],
                     "selected": selected,
                 }
             )
