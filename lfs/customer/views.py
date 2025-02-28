@@ -18,7 +18,6 @@ from lfs.addresses.utils import AddressManagement
 from lfs.customer import utils as customer_utils
 from lfs.customer.forms import EmailForm, CustomerAuthenticationForm
 from lfs.customer.settings import REGISTER_FORM
-from lfs.customer.utils import create_unique_username
 from lfs.order.models import Order
 
 
@@ -54,10 +53,10 @@ def login(request, template_name="lfs/customer/login.html"):
             if not redirect_to or "//" in redirect_to or " " in redirect_to:
                 redirect_to = reverse("lfs_shop_view")
 
-            from django.contrib.auth import login
-
             # Store the "old" session to be able to merge the carts after login
             request.META["anonymous_session_key"] = request.session.session_key
+
+            from django.contrib.auth import login
 
             login(request, login_form.get_user())
 
@@ -70,7 +69,7 @@ def login(request, template_name="lfs/customer/login.html"):
             password = register_form.data.get("password_1")
 
             # Create user
-            user = User.objects.create_user(username=create_unique_username(email), email=email, password=password)
+            user = User.objects.create_user(username=email, email=email, password=password)
 
             # Create customer
             customer = customer_utils.get_or_create_customer(request)
@@ -87,7 +86,7 @@ def login(request, template_name="lfs/customer/login.html"):
 
             from django.contrib.auth import login
 
-            login(request, user, backend="lfs.customer.auth.EmailBackend")
+            login(request, user)
 
             redirect_to = request.POST.get("next")
             if not redirect_to or "//" in redirect_to or " " in redirect_to:
