@@ -7,7 +7,11 @@ def copy_product_modification_date(apps, schema_editor):
     """
     Copies the modification date from the old holzimgarten_app
     """
-    HIG = apps.get_model("holzimgarten_app", "ProductMetaData")
+    try:
+        HIG = apps.get_model("holzimgarten_app", "ProductMetaData")
+    except LookupError:
+        return
+
     HEO = apps.get_model("catalog", "Product")
 
     for p in HEO.objects.all():
