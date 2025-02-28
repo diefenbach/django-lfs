@@ -53,7 +53,7 @@ class PageTestCase(TestCase):
         url = reverse("lfs_page_view", kwargs={"slug": self.page.slug})
         response = self.client.get(url)
 
-        self.assertFalse(response.content.find(b"We are sorry") == -1)
+        self.assertEqual(response.status_code, 404)
 
         self.page.active = True
         self.page.save()
