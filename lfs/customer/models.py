@@ -113,7 +113,7 @@ class Customer(models.Model):
     def sync_default_to_selected_addresses(self, force=False):
         return
         # Synchronize selected addresses with default addresses
-        auto_update = settings.AUTO_UPDATE_DEFAULT_ADDRESSES
+        auto_update = settings.LFS_AUTO_UPDATE_DEFAULT_ADDRESSES
         if force or not auto_update:
             shipping_address = deepcopy(self.default_shipping_address)
             if self.selected_shipping_address:
@@ -140,7 +140,7 @@ class Customer(models.Model):
     def sync_selected_to_default_invoice_address(self, force=False):
         return
         # Synchronize default invoice address with selected address
-        auto_update = settings.AUTO_UPDATE_DEFAULT_ADDRESSES
+        auto_update = settings.LFS_AUTO_UPDATE_DEFAULT_ADDRESSES
         if force or auto_update:
             address = deepcopy(self.selected_invoice_address)
             address.id = self.default_invoice_address.id
@@ -150,7 +150,7 @@ class Customer(models.Model):
     def sync_selected_to_default_shipping_address(self, force=False):
         return
         # Synchronize default shipping address with selected address
-        auto_update = settings.AUTO_UPDATE_DEFAULT_ADDRESSES
+        auto_update = settings.LFS_AUTO_UPDATE_DEFAULT_ADDRESSES
         if force or auto_update:
             address = deepcopy(self.selected_shipping_address)
             address.id = self.default_shipping_address.id
