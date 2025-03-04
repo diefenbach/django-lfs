@@ -2619,7 +2619,9 @@ class Image(models.Model):
 
     title = models.CharField(_("Title"), blank=True, max_length=100)
     alt = models.CharField(_("Alt"), blank=True, max_length=255)
-    image = ImageWithThumbsField(_("Image"), upload_to="images", blank=True, null=True, sizes=THUMBNAIL_SIZES)
+    image = ImageWithThumbsField(
+        _("Image"), upload_to="images", blank=True, null=True, max_length=120, sizes=THUMBNAIL_SIZES
+    )
     position = models.PositiveSmallIntegerField(_("Position"), default=999)
 
     class Meta:
