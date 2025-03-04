@@ -2320,7 +2320,7 @@ class Property(models.Model):
         Product, verbose_name=_("Products"), blank=True, through="ProductsPropertiesRelation", related_name="properties"
     )
     position = models.IntegerField(_("Position"), blank=True, null=True)
-    unit = models.CharField(_("Unit"), blank=True, max_length=15)
+    unit = models.CharField(_("Unit"), blank=True, max_length=15, default="")
     display_on_product = models.BooleanField(_("Display on product"), default=False)
     local = models.BooleanField(_("Local"), default=False)
     variants = models.BooleanField(_("For Variants"), default=False)
