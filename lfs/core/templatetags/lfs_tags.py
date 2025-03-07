@@ -551,12 +551,12 @@ def currency(value, request=None, grouping=True):
 def decimal_l10n(value, digits=2):
     """Returns the decimal value of value based on current locale."""
     try:
-        value = float(value)
-    except ValueError:
-        return value
+        num = Decimal(value)
+        rounded_num = num.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    except:
+        rounded_num = 0
 
-    format_str = "%%.%sf" % digits
-    return locale.format_string(format_str, value)
+    return formats.localize(rounded_num)
 
 
 @register.filter
