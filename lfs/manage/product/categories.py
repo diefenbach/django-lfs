@@ -76,7 +76,7 @@ def change_categories(request, product_id):
         category_changed.send(category)
 
     if request.method == "POST":
-        product.categories = request.POST.getlist("categories")
+        product.categories.set(request.POST.getlist("categories"))
         product.save()
 
     # Signal that the new categories of the product have been changed.
