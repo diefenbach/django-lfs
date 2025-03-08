@@ -36,6 +36,28 @@ logger = logging.getLogger(__name__)
 register = template.Library()
 
 
+class IfLocalNode(template.Node):
+    def __init__(self, nodelist):
+        self.nodelist = nodelist
+
+    def render(self, context):
+        if getattr(settings, "LFS_IS_LOCAL", False):
+            return self.nodelist.render(context)
+        return ""
+
+
+@register.tag(name="if_local")
+def do_if_local(parser, token):
+    """
+    Custom template tag {% if_local %} ... {% endif_local %}
+    Checks if settings.IS_LOCAL is True.
+    """
+    nodelist = parser.parse(("endif_local",))
+    parser.delete_first_token()
+
+    return IfLocalNode(nodelist)
+
+
 @register.inclusion_tag("lfs/catalog/category_tree.html", takes_context=True)
 def category_tree(context):
     ct = lfs.core.utils.CategoryTree(currents=[], start_level=1, expand_level=100)
