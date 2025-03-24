@@ -2137,8 +2137,8 @@ class Product(models.Model):
         Method to return the path of the product template
         """
         if self.template is not None:
-            id = int(self.template)
-            return PRODUCT_TEMPLATES[id]["file"]
+            tmpl_id = int(self.template)
+            return PRODUCT_TEMPLATES[tmpl_id]["file"]
         return None
 
 
