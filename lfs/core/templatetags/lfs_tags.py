@@ -17,8 +17,6 @@ from django.utils.translation import gettext_lazy as _
 
 import lfs.catalog.utils
 import lfs.core.utils
-import lfs.core.views
-import lfs.utils.misc
 from lfs.caching.utils import get_cache_group_id
 from lfs.catalog.models import Category
 from lfs.catalog.settings import VARIANT
@@ -576,7 +574,7 @@ def decimal_l10n(value, digits=2):
         num = Decimal(value)
         rounded_num = num.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     except:
-        rounded_num = 0
+        rounded_num = value
 
     return formats.localize(rounded_num)
 
