@@ -1,5 +1,4 @@
 # django imports
-from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
 from django.core.mail import EmailMultiAlternatives
@@ -170,7 +169,7 @@ def send_review_added(review):
     html = render_to_string(
         "lfs/mail/review_added_mail.html",
         {
-            "site": "http://%s" % Site.objects.get(id=settings.SITE_ID),
+            "site": "http://%s" % Site.objects.first(),
             "review": review,
             "product": product,
         },
