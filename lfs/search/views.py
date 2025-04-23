@@ -13,6 +13,8 @@ from django.utils.translation import ngettext
 from lfs.catalog.models import Product
 from lfs.core.utils import lfs_pagination
 
+from django.db.models import Q
+
 
 def livesearch(request, template_name="lfs/search/livesearch_results.html"):
     """ """
@@ -27,7 +29,11 @@ def livesearch(request, template_name="lfs/search/livesearch_results.html"):
     else:
         # Products
         query = Q(active=True) & (
-            Q(name__icontains=q) | Q(manufacturer__name__icontains=q) | Q(sku_manufacturer__icontains=q)
+            Q(name__unaccent__icontains=q)
+            | Q(short_description__unaccent__icontains=q)
+            | Q(description__unaccent__icontains=q)
+            | Q(manufacturer__name__unaccent__icontains=q)
+            | Q(sku_manufacturer__unaccent__icontains=q)
         )
 
         temp = Product.objects.filter(query)
@@ -62,7 +68,11 @@ def search(request, template_name="lfs/search/search_results.html"):
 
     # Products
     query = Q(active=True) & (
-        Q(name__icontains=q) | Q(manufacturer__name__icontains=q) | Q(sku_manufacturer__icontains=q)
+        Q(name__unaccent__icontains=q)
+        | Q(short_description__unaccent__icontains=q)
+        | Q(description__unaccent__icontains=q)
+        | Q(manufacturer__name__unaccent__icontains=q)
+        | Q(sku_manufacturer__unaccent__icontains=q)
     )
 
     products = Product.objects.filter(query)
