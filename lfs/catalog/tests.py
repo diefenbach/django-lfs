@@ -74,8 +74,8 @@ class PriceFilterTestCase(TestCase):
         result = lfs.catalog.utils.get_price_filters(self.c1, [], None, [])
         self.assertEqual(result["disabled"], False)
         self.assertEqual(result["show_reset"], False)
-        self.assertEqual(result["min"], "1.0")
-        self.assertEqual(result["max"], "5.0")
+        self.assertEqual(result["min"], "1.00")
+        self.assertEqual(result["max"], "5.00")
 
 
 class ManufacturerFilterTestCase(TestCase):

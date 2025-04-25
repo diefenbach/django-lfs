@@ -1,9 +1,10 @@
 # python imports
-import locale
 
 # django imports
 from django import forms
 from django.template.loader import render_to_string
+
+from lfs.core.utils import atof
 
 # portlets imports
 from portlets.models import Portlet
@@ -31,7 +32,7 @@ class CartPortlet(Portlet):
             price = None
         else:
             cart_amount_of_items = cart.get_amount_of_items()
-            amount_of_items_locale = locale.format("%.2f", cart_amount_of_items)
+            amount_of_items_locale = atof(cart_amount_of_items)
             amount_of_items_int = int(cart_amount_of_items)
             price = cart.get_price_gross(request, total=True)
 

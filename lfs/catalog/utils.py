@@ -1,4 +1,3 @@
-import locale
 import logging
 
 from django.db import connection
@@ -43,8 +42,8 @@ def get_price_filters(category, product_filter, price_filter, manufacturer_filte
     if price_filter:
         return {
             "show_reset": True,
-            "min": locale.format("%.2f", price_filter["min"]),
-            "max": locale.format("%.2f", price_filter["max"]),
+            "min": formats.number_format(price_filter["min"], decimal_pos=2),
+            "max": formats.number_format(price_filter["max"], decimal_pos=2),
             "disabled": False,
         }
 
@@ -63,14 +62,14 @@ def get_price_filters(category, product_filter, price_filter, manufacturer_filte
     disabled = (pmin and pmax) is None
 
     try:
-        pmin = formats.localize(float("%.2f" % pmin))
+        pmin = formats.number_format(pmin, decimal_pos=2)
     except TypeError:
         pmin = 0
 
     try:
-        pmax = formats.localize(float("%.2f" % pmax))
+        pmax = formats.number_format(pmax, decimal_pos=2)
     except TypeError:
-        pmin = 0
+        pmax = 0
 
     return {
         "show_reset": False,
@@ -156,11 +155,11 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
                 show_reset = False
 
             try:
-                pmin = locale.format("%.2f", float(pmin))
+                pmin = formats.number_format(pmin, decimal_pos=2)
             except TypeError:
                 pmin = 0.0
             try:
-                pmax = locale.format("%.2f", float(pmax))
+                pmax = formats.number_format(pmax, decimal_pos=2)
             except TypeError:
                 pmax = 0.0
 

@@ -26,7 +26,7 @@ from lfs.catalog.models import PropertyOption
 from lfs.catalog.settings import CONTENT_PRODUCTS
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_DEFAULT
 from lfs.catalog.settings import SELECT
-from lfs.core.utils import LazyEncoder, lfs_pagination
+from lfs.core.utils import LazyEncoder, atof, lfs_pagination
 from lfs.core.templatetags import lfs_tags
 from lfs.manufacturer.models import Manufacturer
 
@@ -69,7 +69,7 @@ def calculate_packing(
 
     if quantity is None:
         try:
-            quantity = request.POST.get("quantity")
+            quantity = atof(request.POST.get("quantity"))
         except (AttributeError, TypeError, ValueError):
             quantity = 1
 

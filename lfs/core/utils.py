@@ -1,11 +1,11 @@
-from collections import deque
 import datetime
-from itertools import count
-import locale
-import sys
-import urllib
 import json
+import sys
 import time
+import urllib
+
+from collections import deque
+from itertools import count
 
 from django.conf import settings
 from django.contrib.redirects.models import Redirect
@@ -15,6 +15,9 @@ from django.utils.functional import Promise
 from django.utils.encoding import force_str
 from django.shortcuts import render
 from django.utils.http import http_date
+
+from babel.numbers import parse_decimal, get_decimal_symbol, get_group_symbol
+from babel.core import Locale
 
 
 def is_ajax(request):
@@ -35,20 +38,39 @@ def l10n_float(string):
         return 0.0
 
 
-def atof(value):
+def atof(value: str) -> float:
     """
-    locale.atof() on unicode string fails in some environments, like Czech.
+    Converts inputs like "6,6", "6.6", "1.234,56", etc., into floats in a language-sensitive manner.
+    Language is based on settings.LANGUAGE_CODE.
     """
-    val = str(value)
-    try:
-        return float(val)
-    except ValueError:
-        try:
-            return float(val.replace(",", "."))
-        except ValueError:
-            pass
+    lang_code = (settings.LANGUAGE_CODE or "en").replace("-", "_")
 
-    return locale.atof(value)
+    # Determine the expected separators
+    locale = Locale.parse(lang_code)
+
+    # First attempt: as entered by the user
+    try:
+        return float(parse_decimal(value, locale=locale))
+    except Exception:
+        pass
+
+    # Fallback: Correct inputs with "incorrect" decimal separators
+    decimal_sep = get_decimal_symbol(locale)
+    group_sep = get_group_symbol(locale)
+
+    try:
+        # Remove grouping separators
+        cleaned = value.replace(group_sep, "")
+
+        # Replace "incorrect" decimal separator with the correct one
+        if decimal_sep == ",":
+            cleaned = cleaned.replace(".", ",")
+        else:
+            cleaned = cleaned.replace(",", ".")
+
+        return float(parse_decimal(cleaned, locale=locale))
+    except Exception as e:
+        raise ValueError(f"Invalid numeric input '{value}': {e}")
 
 
 def get_default_shop(request=None):
