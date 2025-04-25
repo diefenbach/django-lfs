@@ -1,23 +1,23 @@
-{% load i18n sql static %}
+{% load i18n sql static compress %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <title>{% block title %}{% endblock %}</title>
         <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/ico" />
-        {% comment %} {% compress css %} {% endcomment %}
+        {% compress css %}
             <link rel="stylesheet" type="text/css" href="{% static 'lfs/bower_components/superfish/dist/css/superfish.css' %}" />
             <link rel="stylesheet" type="text/css" href="{% static 'lfs/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css' %}" />
             <link rel="stylesheet" type="text/css" href="{% static 'lfs/bower_components/jquery-ui/themes/smoothness/theme.css' %}" />
             <link rel="stylesheet" type="text/css" href="{% static 'lfs/bower_components/jgrowl/jquery.jgrowl.css' %}" />
             <link rel="stylesheet" type="text/css" href="{% static 'lfs/css/lfs.manage.css' %}" />
             <link rel="stylesheet" type="text/css" href="{% static 'lfs/css/lfs.manage-custom.css' %}" />
-        {% comment %} {% endcompress %} {% endcomment %}
+        {% endcompress %}
         <script type="text/javascript">
             var LFS_MANAGE_IMAGEBROWSER_URL = '{% url 'lfs_manage_imagebrowser' %}';
             var STATIC_URL = '{% static '' %}';
         </script>
-        {% comment %} {% compress js %} {% endcomment %}
+        {% compress js %}
             <script type="text/javascript" src="{% static 'lfs/bower_components/jquery/dist/jquery.min.js' %}"></script>
             <script type="text/javascript" src="{% static 'lfs/bower_components/jquery-ui/jquery-ui.js' %}"></script>
             <script type="text/javascript" src="{% static 'lfs/bower_components/jquery-cookie/jquery.cookie.js' %}"></script>
@@ -37,7 +37,8 @@
             <script type="text/javascript" src="{% static 'lfs/js/lfs.manage.js' %}"></script>
             <script type="text/javascript" src="{% static 'lfs/js/urlify.js' %}"></script>
             <script type="text/javascript" src="{% static 'lfs/js/lfs.manage-custom.js' %}"></script>
-        {% comment %} {% endcompress %} {% endcomment %}
+        {% endcompress %}
+
         {% block javascript %}{% endblock %}
     </head>
     <body class="{% block section %}{% endblock %}">
