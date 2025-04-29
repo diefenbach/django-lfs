@@ -646,10 +646,9 @@ def packages(cart_item):
     Returns the packages based on product's package unit and cart items
     amount.
     """
-    packing_unit, packing_unit_unit = cart_item.product.get_packing_info()
+    packing_unit, _ = cart_item.product.get_packing_info()
     if packing_unit:
-        amount = lfs.core.utils.atof(cart_item.amount)
-        return int(math.ceil(amount / packing_unit))
+        return int(math.ceil(cart_item.amount / packing_unit))
     return 0
 
 
