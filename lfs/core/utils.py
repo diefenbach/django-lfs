@@ -16,8 +16,7 @@ from django.utils.encoding import force_str
 from django.shortcuts import render
 from django.utils.http import http_date
 
-from babel.numbers import parse_decimal, get_decimal_symbol, get_group_symbol
-from babel.core import Locale
+from babel.numbers import parse_decimal
 
 
 def is_ajax(request):
@@ -48,32 +47,11 @@ def atof(value: str) -> float:
 
     language_code = (settings.LANGUAGE_CODE or "en").replace("-", "_")
 
-    # Determine the expected separators
-    locale = Locale.parse(language_code)
+    # This handles cases where a user mistakenly uses "." instead of "," as the decimal separator.
+    if language_code == "de" and "." in value:
+        value = value.replace(".", ",")
 
-    # First attempt: as entered by the user
-    try:
-        return float(parse_decimal(value, locale=locale))
-    except Exception:
-        pass
-
-    # Fallback: Correct inputs with "incorrect" decimal separators
-    decimal_sep = get_decimal_symbol(locale)
-    group_sep = get_group_symbol(locale)
-
-    try:
-        # Remove grouping separators
-        cleaned = value.replace(group_sep, "")
-
-        # Replace "incorrect" decimal separator with the correct one
-        if decimal_sep == ",":
-            cleaned = cleaned.replace(".", ",")
-        else:
-            cleaned = cleaned.replace(",", ".")
-
-        return float(parse_decimal(cleaned, locale=locale))
-    except Exception as e:
-        raise ValueError(f"Invalid numeric input '{value}': {e}")
+    return float(parse_decimal(value, locale=language_code))
 
 
 def get_default_shop(request=None):
