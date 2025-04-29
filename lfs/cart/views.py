@@ -15,7 +15,6 @@ from django.utils.translation import gettext as _
 
 # lfs imports
 import lfs.cart.utils
-import lfs.catalog.utils
 from lfs.payment.models import PaymentMethod
 from lfs.shipping.models import ShippingMethod
 import lfs.voucher.utils

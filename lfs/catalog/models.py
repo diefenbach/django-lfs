@@ -788,7 +788,7 @@ class Product(models.Model):
         # TODO: This might be removed when a new wysiwyg editor is used
         self.description = unescape(self.description)
         self.short_description = unescape(self.short_description)
-        
+
         pc = self.get_price_calculator(None)
         self.effective_price = pc.get_effective_price()
         if self.is_variant():
