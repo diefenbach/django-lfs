@@ -43,10 +43,13 @@ def atof(value: str) -> float:
     Converts inputs like "6,6", "6.6", "1.234,56", etc., into floats in a language-sensitive manner.
     Language is based on settings.LANGUAGE_CODE.
     """
-    lang_code = (settings.LANGUAGE_CODE or "en").replace("-", "_")
+    if not isinstance(value, str):
+        value = str(value)
+
+    language_code = (settings.LANGUAGE_CODE or "en").replace("-", "_")
 
     # Determine the expected separators
-    locale = Locale.parse(lang_code)
+    locale = Locale.parse(language_code)
 
     # First attempt: as entered by the user
     try:
