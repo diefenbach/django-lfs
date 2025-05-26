@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.urls import reverse
 
 from lfs.core.signals import order_submitted
@@ -5,7 +6,6 @@ from lfs.criteria import utils as criteria_utils
 from lfs.customer import utils as customer_utils
 from lfs.payment.models import PaymentMethod
 from lfs.payment.settings import PM_ORDER_IMMEDIATELY
-from lfs.payment.settings import PM_ORDER_ACCEPTED
 
 import logging
 
@@ -110,26 +110,15 @@ def process_payment(request):
                 order.state = result.get("order_state")
                 order.save()
             order_submitted.send(sender=order, request=request)
+            return result
         else:
             cart = get_cart(request)
             payment_instance.cart = cart
-            result = payment_instance.process()
-
-        if result["accepted"]:
-            if create_order_time == PM_ORDER_ACCEPTED:
-                order = add_order(request)
-                if result.get("order_state"):
-                    order.state = result.get("order_state")
-                    order.save()
-                order_submitted.send(sender=order, request=request)
-        return result
+            return payment_instance.process()
     else:
         order = add_order(request)
         order_submitted.send(sender=order, request=request)
-        return {
-            "accepted": True,
-            "next_url": reverse("lfs_thank_you"),
-        }
+        return redirect(reverse("lfs_thank_you"))
 
 
 # DEPRECATED 0.8

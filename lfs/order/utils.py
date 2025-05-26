@@ -5,8 +5,6 @@ from copy import deepcopy
 from django.conf import settings
 
 # lfs imports
-import lfs.discounts.utils
-import lfs.voucher.utils
 from lfs.cart import utils as cart_utils
 from lfs.core.signals import order_created
 from lfs.core.utils import import_symbol
@@ -14,9 +12,6 @@ from lfs.customer import utils as customer_utils
 from lfs.order.models import Order, OrderDeliveryTime
 from lfs.order.models import OrderItem
 from lfs.order.models import OrderItemPropertyValue
-from lfs.payment import utils as payment_utils
-from lfs.shipping import utils as shipping_utils
-from lfs.voucher.utils import get_voucher_data
 
 
 def add_order(request):
@@ -47,19 +42,6 @@ def add_order(request):
     if cart is None:
         return order
 
-    shipping_method = shipping_utils.get_selected_shipping_method(request)
-    shipping_costs = shipping_utils.get_shipping_costs(request, shipping_method)
-
-    payment_method = payment_utils.get_selected_payment_method(request)
-    payment_costs = payment_utils.get_payment_costs(request, payment_method)
-
-    # Set email dependend on login state. An anonymous customer doesn't  have a
-    # django user account, so we set the name of the invoice address to the
-    # customer name.
-
-    # Note: After this has been processed the order's customer email has an
-    # email in any case. That means you can use it to send emails to the
-    # customer.
     if request.user.is_authenticated:
         user = request.user
         customer_email = user.email
@@ -67,46 +49,18 @@ def add_order(request):
         user = None
         customer_email = customer.selected_invoice_address.email
 
-    # Calculate the totals
-    price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
-    tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
-
-    # get voucher data (if voucher exists)
-    voucher_data = get_voucher_data(request, cart)
-
-    # get discounts data
-    discounts_data = lfs.discounts.utils.get_discounts_data(request)
-
-    # calculate total value of discounts and voucher that sum up
-    summed_up_value = discounts_data["summed_up_value"]
-    if voucher_data["sums_up"]:
-        summed_up_value += voucher_data["voucher_value"]
-
-    # initialize discounts with summed up discounts
-    use_voucher = voucher_data["voucher"] is not None
-    discounts = discounts_data["summed_up_discounts"]
-    if voucher_data["voucher_value"] > summed_up_value or discounts_data["max_value"] > summed_up_value:
-        # use not summed up value
-        if voucher_data["voucher_value"] > discounts_data["max_value"]:
-            # use voucher only
-            discounts = []
-        else:
-            # use discount only
-            discounts = discounts_data["max_discounts"]
-            use_voucher = False
-
-    for discount in discounts:
-        price -= discount["price_gross"]
-        tax -= discount["tax"]
-
-    if use_voucher:
-        price -= voucher_data["voucher_value"]
-        tax -= voucher_data["voucher_tax"]
-
-    if price < 0:
-        price = 0
-    if tax < 0:
-        tax = 0
+    (
+        price,
+        tax,
+        shipping_method,
+        shipping_costs,
+        payment_method,
+        payment_costs,
+        voucher_data,
+        discounts_data,
+        use_voucher,
+        discounts,
+    ) = cart.get_order_data(request)
 
     # Copy addresses
     invoice_address = deepcopy(invoice_address)

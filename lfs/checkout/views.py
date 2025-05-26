@@ -17,14 +17,13 @@ import lfs.payment.settings
 import lfs.payment.utils
 import lfs.shipping.utils
 import lfs.voucher.utils
-from lfs.addresses.utils import AddressManagement
 from lfs.addresses.settings import CHECKOUT_NOT_REQUIRED_ADDRESS
+from lfs.addresses.utils import AddressManagement
 from lfs.cart import utils as cart_utils
-from lfs.core.models import Country
 from lfs.checkout.settings import CHECKOUT_TYPE_ANON, CHECKOUT_TYPE_AUTH, ONE_PAGE_CHECKOUT_FORM
+from lfs.core.models import Country
 from lfs.customer import utils as customer_utils
-from lfs.customer.forms import CreditCardForm, CustomerAuthenticationForm
-from lfs.customer.forms import BankAccountForm
+from lfs.customer.forms import CreditCardForm, CustomerAuthenticationForm, BankAccountForm
 from lfs.customer.settings import REGISTER_FORM
 from lfs.payment.models import PaymentMethod
 from lfs.voucher.models import Voucher
@@ -325,13 +324,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
             customer.save()
 
             # process the payment method
-            result = lfs.payment.utils.process_payment(request)
-
-            if result["accepted"]:
-                return HttpResponseRedirect(result.get("next_url", reverse("lfs_thank_you")))
-            else:
-                if "message" in result:
-                    checkout_form._errors[result.get("message_location")] = result.get("message")
+            return lfs.payment.utils.process_payment(request)
 
     else:
         checkout_form = OnePageCheckoutForm()
@@ -386,13 +379,13 @@ def empty_page_checkout(request, template_name="lfs/checkout/empty_page_checkout
 def thank_you(request, template_name="lfs/checkout/thank_you_page.html"):
     """Displays a thank you page ot the customer"""
     order = request.session.get("order")
-    pay_link = order.get_pay_link(request) if order else None
+    # pay_link = order.get_pay_link(request) if order else None
     return render(
         request,
         template_name,
         {
             "order": order,
-            "pay_link": pay_link,
+            # "pay_link": pay_link,
         },
     )
 

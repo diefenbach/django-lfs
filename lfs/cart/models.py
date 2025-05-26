@@ -194,6 +194,82 @@ class Cart(models.Model):
 
         return tax
 
+    def get_total_price_gross(self, request):
+        """
+        Returns the total gross price of the cart including shipping, payment costs, discounts and voucher.
+        """
+        return self.get_order_data(request)[0]
+
+    def get_order_data(self, request):
+        """
+        Returns all data needed to create an order.
+        """
+        # circular imports
+        from lfs.discounts.utils import get_discounts_data
+        from lfs.payment import utils as payment_utils
+        from lfs.shipping import utils as shipping_utils
+        from lfs.voucher.utils import get_voucher_data
+
+        shipping_method = shipping_utils.get_selected_shipping_method(request)
+        shipping_costs = shipping_utils.get_shipping_costs(request, shipping_method)
+
+        payment_method = payment_utils.get_selected_payment_method(request)
+        payment_costs = payment_utils.get_payment_costs(request, payment_method)
+
+        price = self.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
+        tax = self.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
+
+        # get voucher data (if voucher exists)
+        voucher_data = get_voucher_data(request, self)
+
+        # get discounts data
+        discounts_data = get_discounts_data(request)
+
+        # calculate total value of discounts and voucher that sum up
+        summed_up_value = discounts_data["summed_up_value"]
+        if voucher_data["sums_up"]:
+            summed_up_value += voucher_data["voucher_value"]
+
+        # initialize discounts with summed up discounts
+        use_voucher = voucher_data["voucher"] is not None
+        discounts = discounts_data["summed_up_discounts"]
+        if voucher_data["voucher_value"] > summed_up_value or discounts_data["max_value"] > summed_up_value:
+            # use not summed up value
+            if voucher_data["voucher_value"] > discounts_data["max_value"]:
+                # use voucher only
+                discounts = []
+            else:
+                # use discount only
+                discounts = discounts_data["max_discounts"]
+                use_voucher = False
+
+        for discount in discounts:
+            price -= discount["price_gross"]
+            tax -= discount["tax"]
+
+        if use_voucher:
+            price -= voucher_data["voucher_value"]
+            tax -= voucher_data["voucher_tax"]
+
+        if price < 0:
+            price = 0
+
+        if tax < 0:
+            tax = 0
+
+        return (
+            price,
+            tax,
+            shipping_method,
+            shipping_costs,
+            payment_method,
+            payment_costs,
+            voucher_data,
+            discounts_data,
+            use_voucher,
+            discounts,
+        )
+
     def _update_product_amounts(self):
         items = CartItem.objects.select_related("product").filter(
             cart=self, product__active=True, product__manage_stock_amount=True
