@@ -563,7 +563,7 @@ def currency(value, request=None, grouping=True):
     currency = getattr(settings, "LFS_CURRENCY", "EUR")
     price = formats.localize(rounded_num)
 
-    return f"{currency} {price}"
+    return f"{price} {currency}"
 
 
 @register.filter

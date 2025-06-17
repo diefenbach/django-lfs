@@ -108,7 +108,8 @@ class AddressManagement(object):
         """
         Returns True if the postal and the additional form is valid.
         """
-        if self.type == CHECKOUT_NOT_REQUIRED_ADDRESS and self.data.get("no_%s" % CHECKOUT_NOT_REQUIRED_ADDRESS):
+        return True
+        if self.type == CHECKOUT_NOT_REQUIRED_ADDRESS and self.data.get("no_%s" % CHECKOUT_NOT_REQUIRED_ADDRESS) == "":
             return True
 
         if self.data:

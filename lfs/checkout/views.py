@@ -272,7 +272,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
         ):
             if CHECKOUT_NOT_REQUIRED_ADDRESS == "shipping":
                 iam.save()
-                if request.POST.get("no_shipping", "") == "":
+                if request.POST.get("no_shipping", "") == "on":
                     # If the shipping address is given then save it.
                     sam.save()
                 else:
