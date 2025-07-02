@@ -671,6 +671,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
         if parent.variants_display_type != SELECT:
             variants = parent.get_variants()
         else:
+            variants = parent.get_variants()
             display_variants_list = False
 
     elif product.is_configurable_product():

@@ -78,7 +78,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     payment_costs = payment_utils.get_payment_costs(request, selected_payment_method)
 
     # Cart costs
-    cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
+    cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price_gross"]
     cart_tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
     # get voucher data (if voucher exists)
@@ -147,7 +147,8 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
             "shipping_costs": shipping_costs,
             "payment_methods": payment_utils.get_valid_payment_methods(request),
             "selected_payment_method": selected_payment_method,
-            "payment_price": payment_costs["price"],
+            "payment_price": payment_costs["price_gross"],
+            "payment_costs": payment_costs,
             "countries": countries,
             "selected_country": selected_country,
             "max_delivery_time": max_delivery_time,

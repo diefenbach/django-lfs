@@ -106,7 +106,7 @@ def checkout_dispatcher(request):
         return empty_page_checkout(request)
 
     if request.user.is_authenticated or shop.checkout_type == CHECKOUT_TYPE_ANON:
-        return HttpResponseRedirect(reverse("lfs_checkout"))
+        return HttpResponseRedirect(reverse("lfs_checkout_addresses"))
     else:
         return HttpResponseRedirect(reverse("lfs_checkout_login"))
 
@@ -132,7 +132,7 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
     cart_price = 0
     cart_tax = 0
     if cart is not None:
-        cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
+        cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price_gross"]
         cart_tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
     # get voucher data (if voucher exists)
@@ -201,7 +201,8 @@ def cart_inline(request, template_name="lfs/checkout/checkout_cart_inline.html")
             "voucher_value": voucher_data["voucher_value"],
             "voucher_tax": voucher_data["voucher_tax"],
             "shipping_costs": shipping_costs,
-            "payment_price": payment_costs["price"],
+            "payment_price": payment_costs["price_gross"],
+            "payment_costs": payment_costs,
             "selected_shipping_method": selected_shipping_method,
             "selected_payment_method": selected_payment_method,
             "voucher_number": voucher_data["voucher_number"],
@@ -302,6 +303,7 @@ def one_page_checkout(request, template_name="lfs/checkout/one_page_checkout.htm
                         invoice_address.pk = None
                         invoice_address.save()
                         customer.selected_invoice_address = invoice_address
+
             customer.sync_selected_to_default_addresses()
 
             # Save payment method
@@ -507,6 +509,17 @@ def changed_shipping_country(request):
     )
 
     return HttpResponse(result, content_type="application/json")
+
+
+def voucher_inline(request):
+    """ """
+    return render_to_string(
+        "lfs/checkout/voucher_inline.html",
+        request=request,
+        context={
+            "voucher_number": lfs.voucher.utils.get_current_voucher_number(request),
+        },
+    )
 
 
 def _save_country(request, customer):

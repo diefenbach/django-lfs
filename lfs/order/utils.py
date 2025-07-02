@@ -12,6 +12,7 @@ from lfs.customer import utils as customer_utils
 from lfs.order.models import Order, OrderDeliveryTime
 from lfs.order.models import OrderItem
 from lfs.order.models import OrderItemPropertyValue
+from lfs.voucher.utils import delete_current_voucher_number
 
 
 def add_order(request):
@@ -85,7 +86,7 @@ def add_order(request):
         shipping_price=shipping_costs["price_gross"],
         shipping_tax=shipping_costs["tax"],
         payment_method=payment_method,
-        payment_price=payment_costs["price"],
+        payment_price=payment_costs["price_gross"],
         payment_tax=payment_costs["tax"],
         invoice_address=invoice_address,
         shipping_address=shipping_address,
@@ -173,6 +174,7 @@ def add_order(request):
     order_created.send(order, cart=cart, request=request)
 
     cart.delete()
+    delete_current_voucher_number(request)
 
     # Note: Save order for later use in thank you page. The order will be
     # removed from the session if the thank you page has been called.

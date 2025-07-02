@@ -63,7 +63,7 @@ def get_payment_costs(request, payment_method):
     Returns the payment price and tax for the given request.
     """
     if payment_method is None:
-        return {"price": 0.0, "tax": 0.0}
+        return {"price_net": 0.0, "tax": 0.0, "price_gross": 0.0}
 
     try:
         tax_rate = payment_method.tax.rate
@@ -76,11 +76,11 @@ def get_payment_costs(request, payment_method):
         price = payment_method.price
         tax = (tax_rate / (tax_rate + 100)) * price
 
-        return {"price": price, "tax": tax}
+        return {"price_net": price - tax, "tax": tax, "price_gross": price}
     else:
         tax = (tax_rate / (tax_rate + 100)) * price.price
 
-        return {"price": price.price, "tax": tax}
+        return {"price_net": price.price - tax, "tax": tax, "price_gross": price.price}
 
 
 def process_payment(request):

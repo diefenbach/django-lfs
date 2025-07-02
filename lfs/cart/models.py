@@ -216,7 +216,7 @@ class Cart(models.Model):
         payment_method = payment_utils.get_selected_payment_method(request)
         payment_costs = payment_utils.get_payment_costs(request, payment_method)
 
-        price = self.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
+        price = self.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price_gross"]
         tax = self.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
         # get voucher data (if voucher exists)
