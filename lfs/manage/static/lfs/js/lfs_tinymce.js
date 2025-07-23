@@ -2,10 +2,10 @@ var editor;
 
 function addEditor(selector, hide_save, height) {
     if (hide_save == true) {
-        buttons = "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,forecolor,backcolor,styleselect,formatselect,imagebrowser,image,media,|,link,mylink,unlink,|,removeformat,code,|,fullscreen"
+        buttons = "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,forecolor,backcolor,styleselect,formatselect,imagebrowser,customimage,|,link,mylink,unlink,|,removeformat,htmlview,|,fullscreen"
     }
     else {
-        buttons  = "save,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,forecolor,backcolor,styleselect,formatselect,imagebrowser,image,media,|,link,mylink,unlink,|,removeformat,code,|,fullscreen"
+        buttons  = "save,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,bullist,numlist,|,forecolor,backcolor,styleselect,formatselect,imagebrowser,customimage,|,link,mylink,unlink,|,removeformat,htmlview,|,fullscreen"
     }
 
     if (!height) {
@@ -33,6 +33,88 @@ function addEditor(selector, hide_save, height) {
         height : height,
         content_css : STATIC_URL + "css/tinymce_styles.css",
         setup : function(ed) {
+            ed.addButton('customimage', {
+                title: 'Bild einfügen',
+                image: STATIC_URL + 'lfs/icons/tinymce_image_icon.png', 
+                onclick: function() {
+                    const node = ed.selection.getNode();
+                    const currentSrc = node && node.nodeName === 'IMG' ? node.src : '';
+                    const currentTitle = node && node.nodeName === 'IMG' ? node.title : '';
+                    const currentClass = node && node.nodeName === 'IMG' ? node.className : '';
+            
+                    const formHtml = `
+                        <label>Bild-URL:<br><input type="text" id="img-url" style="width:100%" value="${currentSrc}"></label><br><br>
+                        <label>Titel (optional):<br><input type="text" id="img-title" style="width:100%" value="${currentTitle}"></label><br><br>
+                        <label>CSS-Klasse (optional):<br><input type="text" id="img-class" style="width:100%" value="${currentClass}"></label><br><br>
+                        <div style="text-align:center;">
+                            <img id="img-preview" src="${currentSrc}" style="max-width:100%; max-height:200px; display:${currentSrc ? 'block' : 'none'};">
+                        </div>
+                    `;
+            
+                    $("#dialog").html(formHtml);
+            
+                    // Live-Vorschau
+                    $("#img-url").on("input", function () {
+                        const val = $(this).val();
+                        if (val) {
+                            $("#img-preview").attr("src", val).show();
+                        } else {
+                            $("#img-preview").hide();
+                        }
+                    });
+            
+                    $("#dialog").dialog({
+                        modal: true,
+                        width: 600,
+                        title: "Bild einfügen",
+                        buttons: {
+                            "Einfügen": function () {
+                                const src = $("#img-url").val();
+                                const title = $("#img-title").val();
+                                const klass = $("#img-class").val();
+                                if (src) {
+                                    const imgHtml = `<img src="${src}" title="${title}" class="${klass}">`;
+                                    ed.selection.setContent(imgHtml);
+                                }
+                                $(this).dialog("close");
+                            },
+                            "Abbrechen": function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    }).dialog("open");
+                }
+            });            
+            ed.addButton('htmlview', {
+                title: 'HTML anzeigen',
+                image: STATIC_URL + 'lfs/icons/tinymce_html_icon.png',
+                onclick: function() {
+                    const html = ed.getContent({ format: 'html' });
+        
+                    $("#dialog").html(
+                        '<textarea id="html-source-view" style="width:100%; height:400px;">' +
+                        $('<div>').text(html).html() +
+                        '</textarea>'
+                    );
+        
+                    $("#dialog").dialog({
+                        modal: true,
+                        width: 800,
+                        height: 500,
+                        title: "HTML-Quelltext",
+                        buttons: {
+                            "Einfügen": function() {
+                                const newHtml = $("#html-source-view").val();
+                                ed.setContent(newHtml);
+                                $(this).dialog("close");
+                            },
+                            "Abbrechen": function() {
+                                $(this).dialog("close");
+                            }
+                        }
+                    }).dialog("open");
+                }
+            });            
             ed.addButton('imagebrowser', {
                 // TODO: use gettext
                 title : 'Image browser',
