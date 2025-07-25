@@ -189,7 +189,7 @@ def imagebrowser(request, template_name="manage/images/filebrowser_images.html")
     # Calculate urls
     pagination_data = lfs_pagination(request, current_page, url=request.path)
 
-    pagination_data["total_text"] = ungettext("%(count)d image", "%(count)d images", amount_of_images) % {
+    pagination_data["total_text"] = ngettext("%(count)d image", "%(count)d images", amount_of_images) % {
         "count": amount_of_images
     }
 
