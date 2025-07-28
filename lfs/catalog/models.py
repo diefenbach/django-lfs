@@ -1621,6 +1621,10 @@ class Product(models.Model):
         properties = self.get_global_properties()
         properties.extend(self.get_local_properties())
 
+        for prop_dict in properties:
+            if prop_dict["property"].position is None:
+                prop_dict["property"].position = 10
+
         properties.sort(key=lambda a: a["property"].position)
 
         return properties
