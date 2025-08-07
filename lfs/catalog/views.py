@@ -306,6 +306,7 @@ def reset_filter(request, category_slug, property_group_id, property_id):
     """Resets product filter with given property id. Redirects to the category
     with given slug.
     """
+    breakpoint()
     if "product-filter" in request.session:
         key = "{0}_{1}".format(property_group_id, property_id)
         try:
@@ -314,7 +315,10 @@ def reset_filter(request, category_slug, property_group_id, property_id):
             pass
 
         if not request.session["product-filter"].get("select-filter"):
-            del request.session["product-filter"]["select-filter"]
+            try:
+                del request.session["product-filter"]["select-filter"]
+            except KeyError:
+                pass
 
         request.session.modified = True
 
