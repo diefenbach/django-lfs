@@ -1,4 +1,4 @@
-from django.urls import re_path, path
+from django.urls import re_path
 from . import views
 
 urlpatterns = [
@@ -11,11 +11,6 @@ urlpatterns = [
         r"^set-product-filter/(?P<category_slug>[-\w]+)/(?P<property_group_id>\d+)/(?P<property_id>\d+)/(?P<value>.+)/$",
         views.set_filter,
         name="lfs_set_product_filter",
-    ),
-    path(
-        "set-filter-form/",
-        views.set_filter_form,
-        name="lfs_set_filter_form",
     ),
     re_path(r"^set-price-filter/(?P<category_slug>[-\w]+)/$", views.set_price_filter, name="lfs_set_price_filter"),
     re_path(
