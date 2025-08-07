@@ -38,17 +38,8 @@ def get_price_filters(category, product_filter, price_filter, manufacturer_filte
     """Creates price filter based on the min and max prices of the category's
     products
     """
-    # If a price filter is set we return just this.
-    if price_filter:
-        return {
-            "show_reset": True,
-            "min": formats.number_format(price_filter["min"], decimal_pos=2),
-            "max": formats.number_format(price_filter["max"], decimal_pos=2),
-            "disabled": False,
-        }
-
     # Base are the filtered products
-    products = get_filtered_products_for_category(category, product_filter, price_filter, None, manufacturer_filter)
+    products = get_filtered_products_for_category(category, None, None, None, manufacturer_filter)
     if not products:
         return []
 
@@ -58,6 +49,15 @@ def get_price_filters(category, product_filter, price_filter, manufacturer_filte
     res = all_products.aggregate(min_price=Min("effective_price"), max_price=Max("effective_price"))
 
     pmin, pmax = res["min_price"], res["max_price"]
+
+    # If a price filter is set we return just this.
+    if price_filter and (price_filter["min"] != pmin or price_filter["max"] != pmax):
+        return {
+            "min": formats.number_format(price_filter["min"], decimal_pos=2),
+            "max": formats.number_format(price_filter["max"], decimal_pos=2),
+            "disabled": False,
+            "show_reset": True,
+        }
 
     disabled = (pmin and pmax) is None
 
@@ -233,12 +233,20 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
             # initialize list of property values
             properties.setdefault(property_id, [])
 
+            try:
+                float(name)
+            except ValueError:
+                name_is_number = False
+            else:
+                name_is_number = True
+
             properties[property_id].append(
                 {
                     "id": property_id,
                     "property_group_id": property_group_id,
                     "value": value,
                     "name": name,
+                    "name_is_number": name_is_number,
                     "title": prop.title,
                     "position": position,
                     "show_quantity": True,

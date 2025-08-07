@@ -118,7 +118,7 @@ def check_and_pay(request, template_name="lfs/checkout/new_check_and_pay.html"):
         if checkout_form.is_valid():
             return lfs.payment.utils.process_payment(request)
     else:
-        checkout_form = checkout_form = CheckoutFormClass()
+        checkout_form = CheckoutFormClass()
 
     return render(
         request,
