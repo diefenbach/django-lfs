@@ -57,7 +57,11 @@ def do_if_local(parser, token):
 
 @register.inclusion_tag("lfs/catalog/category_tree.html", takes_context=True)
 def category_tree(context):
-    ct = lfs.core.utils.CategoryTree(currents=[], start_level=1, expand_level=100)
+    request = context.get("request")
+    current_object = context.get("current_object")
+    currents = lfs.core.utils.get_current_categories(request, current_object)
+
+    ct = lfs.core.utils.CategoryTree(currents=currents, start_level=1, expand_level=100)
     return {"category_tree": ct.get_category_tree()}
 
 
