@@ -62,14 +62,25 @@ def category_tree(context):
     currents = lfs.core.utils.get_current_categories(request, current_object)
 
     ct = lfs.core.utils.CategoryTree(currents=currents, start_level=1, expand_level=100)
-    return {"category_tree": ct.get_category_tree()}
+    return {
+        "category_tree": ct.get_category_tree(),
+        "request": request,
+    }
 
 
 @register.inclusion_tag("lfs/catalog/category_tree_children.html", takes_context=True)
 def category_tree_children(context, category):
+    request = context.get("request")
+    if category["category"].get_absolute_url() == request.path:
+        is_current = True
+    else:
+        is_current = False
+
     return {
         "category": category["category"],
         "categories": category["children"],
+        "is_current": is_current,
+        "request": request,
     }
 
 
