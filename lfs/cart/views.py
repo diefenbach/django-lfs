@@ -140,6 +140,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         context={
             "cart": cart,
             "cart_items": cart_items,
+            "cart_items_count": int(cart.get_amount_of_items()),
             "cart_price": cart_price,
             "cart_tax": cart_tax,
             "shipping_methods": shipping_utils.get_valid_shipping_methods(request),
