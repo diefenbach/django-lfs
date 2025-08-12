@@ -768,10 +768,11 @@ def product_form_dispatcher(request):
          variants of of the product are displayed as select box. This may change
          in future, when the switch may made with an ajax request.)
     """
-    if (request.POST if request.method == "POST" else request.GET).get("add-to-cart") is not None:
+    data = request.POST if request.method == "POST" else request.GET
+    if data.get("action") in ("add-to-cart", "add-sample-to-cart"):
         return add_to_cart(request)
     else:
-        product_id = request.POST.get("product_id")
+        product_id = data.get("product_id")
         product = lfs_get_object_or_404(Product, pk=product_id)
 
         options = lfs.utils.misc.parse_properties(request)

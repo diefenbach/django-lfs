@@ -263,8 +263,12 @@ def add_to_cart(request, product_id=None):
     some validations have been taken place. The amount is taken from the query
     string.
     """
-    if product_id is None:
-        product_id = (request.POST if request.method == "POST" else request.GET).get("product_id")
+    data = request.POST if request.method == "POST" else request.GET
+    if product_id is None and data.get("action") == "add-sample-to-cart":
+        product_id = data.get("sample_id")
+
+    elif product_id is None and data.get("action") == "add-to-cart":
+        product_id = data.get("product_id")
 
     product = lfs_get_object_or_404(Product, pk=product_id)
 
