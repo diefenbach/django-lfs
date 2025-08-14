@@ -4,13 +4,11 @@ from django.conf import settings
 from django.core.cache import cache
 from django.utils import timezone
 
-from lfs.catalog.models import Product
 from lfs.marketing.models import Topseller
 from lfs.marketing.models import ProductSales
 from lfs.order.models import Order
 from lfs.order.settings import CLOSED
 from lfs.order.models import OrderItem
-from django.db import connection
 
 
 def calculate_product_sales():
@@ -51,26 +49,7 @@ def get_topseller(limit=5):
     if topseller is not None:
         return topseller
 
-    # TODO: Check Django 1.1's aggregation
-    cursor = connection.cursor()
-    cursor.execute(
-        """SELECT product_id, sum(product_amount) as sum
-                      FROM order_orderitem
-                      where product_id is not null
-                      GROUP BY product_id
-                      ORDER BY sum DESC limit %s"""
-        % (limit * 2)
-    )
-
     products = []
-    for topseller in cursor.fetchall():
-        product = Product.objects.get(pk=topseller[0])
-        if product.is_active():
-            try:
-                products.append(product)
-            except Product.DoesNotExist:
-                pass
-
     for explicit_ts in Topseller.objects.all():
         if explicit_ts.product.is_active():
             # Remove explicit_ts if it's already in the object list
