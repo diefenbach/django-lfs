@@ -42,7 +42,7 @@ def get_orders(days=14):
     return orders
 
 
-def get_topseller(limit=5):
+def get_topseller():
     """Returns products with the most sales. Limited by given limit."""
     cache_key = "%s-topseller" % settings.CACHE_MIDDLEWARE_KEY_PREFIX
     topseller = cache.get(cache_key)
@@ -52,17 +52,8 @@ def get_topseller(limit=5):
     products = []
     for explicit_ts in Topseller.objects.all():
         if explicit_ts.product.is_active():
-            # Remove explicit_ts if it's already in the object list
-            if explicit_ts.product in products:
-                products.pop(products.index(explicit_ts.product))
+            products.append(explicit_ts.product)
 
-            # Then reinsert the explicit_ts on the given position
-            position = explicit_ts.position - 1
-            if position < 0:
-                position = 0
-            products.insert(position, explicit_ts.product)
-
-    products = products[:limit]
     cache.set(cache_key, products)
     return products
 

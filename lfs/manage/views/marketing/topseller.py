@@ -149,12 +149,12 @@ def update_topseller(request):
             temp_id = temp_id.split("-")[1]
             try:
                 topseller = Topseller.objects.get(pk=temp_id)
-                topseller.delete()
             except (Topseller.DoesNotExist, ValueError):
                 pass
-
-            _update_positions()
-            topseller_changed.send(topseller)
+            else:
+                _update_positions()
+                topseller_changed.send(topseller)
+                topseller.delete()
 
         html = [["#topseller-inline", manage_topseller_inline(request, as_string=True)]]
         result = json.dumps({"html": html, "message": _("Topseller have been removed.")}, cls=LazyEncoder)
