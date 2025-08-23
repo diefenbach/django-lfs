@@ -1,0 +1,17 @@
+.lfs-actions {
+    .action-item {
+        cursor: move;
+    }
+
+    .action-group-name {
+        font-weight: bold;
+        display: block;
+    }
+    .action-group-name {
+        font-size: .75rem;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: #6c757d;
+        margin: 1rem 0 .5rem;
+    }
+}

@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.urls import path, re_path
 import lfs.manage
 import lfs.manage.actions.views
 import lfs.manage.categories.category
@@ -857,13 +857,12 @@ urlpatterns = [
         name="lfs_save_shop_default_values_tab",
     ),
     # Actions
-    re_path(r"^actions$", lfs.manage.actions.views.manage_actions, name="lfs_manage_actions"),
-    re_path(r"^action/(?P<id>\d*)$", lfs.manage.actions.views.manage_action, name="lfs_manage_action"),
-    re_path(r"^no-actions$", lfs.manage.actions.views.no_actions, name="lfs_no_actions"),
-    re_path(r"^add-action$", lfs.manage.actions.views.add_action, name="lfs_add_action"),
-    re_path(r"^delete-action/(?P<id>\d*)$", lfs.manage.actions.views.delete_action, name="lfs_delete_action"),
-    re_path(r"^save-action/(?P<id>\d*)$", lfs.manage.actions.views.save_action, name="lfs_save_action"),
-    re_path(r"^sort-actions$", lfs.manage.actions.views.sort_actions, name="lfs_sort_actions"),
+    path("actions/", lfs.manage.actions.views.manage_actions, name="lfs_manage_actions"),
+    path("action/<int:pk>/", lfs.manage.actions.views.ActionUpdateView.as_view(), name="lfs_manage_action"),
+    path("add-action/", lfs.manage.actions.views.ActionCreateView.as_view(), name="lfs_add_action"),
+    path("delete-action/<int:pk>/", lfs.manage.actions.views.ActionDeleteView.as_view(), name="lfs_delete_action"),
+    path("no-actions/", lfs.manage.actions.views.NoActionsView.as_view(), name="lfs_no_actions"),
+    path("sort-actions/", lfs.manage.actions.views.sort_actions, name="lfs_sort_actions"),
     # Product Taxes
     re_path(r"^add-product-tax$", lfs.manage.product_taxes.views.add_tax, name="lfs_manage_add_tax"),
     re_path(r"^delete-product-tax/(?P<id>\d*)$", lfs.manage.product_taxes.views.delete_tax, name="lfs_delete_tax"),

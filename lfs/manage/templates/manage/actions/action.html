@@ -1,40 +1,151 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n %}
-
-{% block help_link %}user/management/shop/actions.html{% endblock %}
-
-{% block section %}manage-action{% endblock %}
-{% block left_slot %}
-    <h2 class="navigation-title">
-        {% trans "Actions" %}
-    </h2>
-    <div id="navigation"
-         class="navigation-body">
-        {{ navigation|safe }}
-    </div>
-{% endblock %}
+{% load i18n static crispy_forms_tags %}
 
 {% block content %}
-    <div class="site-actions">
-        <a class="add"
-           href="{% url 'lfs_add_action' %}?came_from={% url 'lfs_manage_action' action.id %}">{% trans 'Add action' %}</a>
+    <div class="lfs-actions">
+        <div class="row">
+            <aside class="col-3 bg-white border-end vh-100 p-4">
+                <h2 class="h4 mb-3">{% trans "Actions" %}</h2>
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="search" class="form-control" placeholder="Suchen …" aria-label="Suchen">
+                  </div>
+        
+                <div id="action-groups" hx-swap-oob="true">
+                    {% for group in groups %}
+                        <div class="action-group-name mt-3 mb-2">{{ group.name }}</div>
+                            <div class="action-group list-group" data-list="{{ group.id }}">
+                                {% for group_action in group.actions.all %}
+                                    <a class="list-group-item list-group-item-action action-item {% if group_action.id == action.id %}active{% endif %}" 
+                                        data-id="{{ group_action.id }}" 
+                                        href="{% url 'lfs_manage_action' group_action.id %}">
+                                        {{ group_action.title }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                    {% endfor %}
+                </div>
+            </aside>
 
-        <a class="delete delete-link"
-           dialog_message="{% trans 'Do you really want to delete this action?' %}"
-           href="{% url 'lfs_delete_action' action.id %}">{% trans 'Delete action' %}</a>
+        <main class="col-9 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h4 mb-3">{% trans 'Edit Action' %}</h2>
+                <div class="site-actions mb-3" 
+                        id="site-actions" 
+                        hx-swap-oob="true">
 
-        <a class="view popup-link"
-           href="{% url 'lfs_shop_view' %}">
-           {% trans 'View Shop' %}
-        </a>
+                    <a class="btn btn-sm btn-outline-primary"            
+                        href="{% url 'lfs_add_action' %}?came_from={% url 'lfs_manage_action' action.id %}">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        {% trans 'Add action' %}
+                    </a>
+
+                    <a class="btn btn-sm btn-outline-danger"
+                        href="{% url 'lfs_delete_action' action.id %}"
+                        hx-post="{% url 'lfs_delete_action' action.id %}"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                        hx-select="#data-content"
+                        hx-target="#data-content"
+                        hx-swap="innerHTML"
+                        hx-push-url="true">
+                        <i class="bi bi-trash"></i>
+                        {% trans 'Delete action' %}
+                    </a>
+
+                    <a class="btn btn-sm btn-outline-secondary"
+                        href="{% url 'lfs_shop_view' %}">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                        {% trans 'View Shop' %}
+                    </a>
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs" id="actionTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="data-tab" data-bs-toggle="tab" data-bs-target="#data-content" type="button" role="tab" aria-controls="data-content" aria-selected="true">{% trans 'Data' %}</button>
+                </li>
+            </ul>
+                
+            <div class="tab-content border border-top-0 bg-white p-4" id="actionTabsContent">
+                <div class="tab-pane fade show active" 
+                        id="data-content" 
+                        role="tabpanel" 
+                        aria-labelledby="data-tab">
+                    <form hx-post="."
+                            hx-swap="none">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="buttons">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-save me-1"></i>
+                                {% trans 'Save' %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
     </div>
+    <script>    
+        document.addEventListener('DOMContentLoaded', function() {
+            const el = document.querySelectorAll('.action-group');
+            el.forEach(function(el) {
+                const sortable = Sortable.create(el, {
+                    draggable: '.action-item',
+                    group: 'actions',
+                    onEnd: function(evt) {
+                        // Which ID was moved?
+                        const itemId = evt.item.dataset.id;
 
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Action' %}</a></li>
-        </ul>
-        <div id="data">
-            {{ data|safe }}
-        </div>
-    </div>
+                        // From which list to which list?
+                        const fromList = evt.from.dataset.list;
+                        const toList   = evt.to.dataset.list;
+
+                        // New position within the target list
+                        const newIndex = evt.newIndex;
+
+                        // Send to your backend (no DOM swap, just action)
+                        htmx.ajax('POST', '{% url "lfs_sort_actions" %}', {
+                            values: {
+                                csrfmiddlewaretoken: document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+                                item_id: itemId,
+                                from_list: fromList,
+                                to_list: toList,
+                                new_index: newIndex,
+                            },
+                            swap: "none"
+                        });
+                    }
+                });
+            });
+        });
+
+        // Search functionality for action items
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('input[type="search"]');            
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase().trim();
+                    const actionItems = document.querySelectorAll('.action-item');
+                    
+                    actionItems.forEach(function(item) {
+                        const itemText = item.textContent.toLowerCase();
+                        if (searchTerm === '' || itemText.includes(searchTerm)) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });                    
+                });
+                
+                // Clear search when ESC key is pressed
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        this.value = '';
+                        this.dispatchEvent(new Event('input'));
+                    }
+                });
+            }
+        });
+    </script>
 {% endblock %}

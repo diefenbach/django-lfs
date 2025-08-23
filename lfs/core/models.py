@@ -77,7 +77,7 @@ class Action(models.Model):
 
     active = models.BooleanField(_("Active"), default=False)
     title = models.CharField(_("Title"), max_length=40)
-    link = models.CharField(_("Link"), blank=True, max_length=100)
+    link = models.URLField(_("Link"), max_length=100)
     group = models.ForeignKey(ActionGroup, models.CASCADE, verbose_name=_("Group"), related_name="actions")
     position = models.IntegerField(_("Position"), default=999)
     parent = models.ForeignKey("self", models.SET_NULL, verbose_name=_("Parent"), blank=True, null=True)
