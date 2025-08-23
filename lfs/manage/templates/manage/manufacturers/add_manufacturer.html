@@ -1,37 +1,41 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% load i18n crispy_forms_tags %}
 
 {% block help_link %}user/management/shop/manufacturers.html{% endblock %}
 {% block section %}add-manufacturer{% endblock %}
-{% block left-slot-wrapper %}{% endblock %}
+{% block left_slot %}{% endblock %}
 
 {% block content %}
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add Manufacturer' %}</a></li>
+    <div class="tabs">
+        <ul class="nav nav-tabs" id="manufacturerTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="data-tab" data-bs-toggle="tab" data-bs-target="#data-content" type="button" role="tab" aria-controls="data-content" aria-selected="true">{% trans 'Add Manufacturer' %}</button>
+            </li>
         </ul>
-        <div id="data">
-            <h2>{% trans "Data" %}</h2>
-            <form method="post">
-                {% csrf_token %}
-                {% include "manage/lfs_form.html" %}
-                <input type="submit"
-                       class="button"
-                       name="save"
-                       value="{% trans 'Add Manufacturer' %}" />
-                <input type="button"
-                       class="button"
-                       onclick="window.location='{{ came_from }}'"
-                       value="{% trans 'Cancel' %}" />
-            </form>
+        <div class="tab-content mt-3 ms-3" id="manufacturerTabsContent">
+            <div class="tab-pane show active" id="data-content" role="tabpanel" aria-labelledby="data-tab">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i>
+                            {% trans 'Add Manufacturer' %}
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="window.location='{{ came_from }}'">
+                            {% trans 'Cancel' %}
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     <script>
-        $(function() {
-            $("#id_name").on("keyup", function() {
-                var slug = $("#id_name").val()
-                slug = URLify(slug, 200)
-                $("#id_slug").val(slug);
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('id_name').addEventListener('keyup', function() {
+                var slug = document.getElementById('id_name').value;
+                slug = LFS.slugify(slug);
+                document.getElementById('id_slug').value = slug;
             });
         });
     </script>
