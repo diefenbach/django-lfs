@@ -69,9 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
 document.body.addEventListener('htmx:afterSwap', function(evt) {
     initActionGroupDnD();
     initActionSearch();
-});
 
-document.body.addEventListener('htmx:afterSwap', function(evt) {
+    // Show modal only after swap to make it a nicer experience
     if (evt.detail.target.id === "modal-body") {
         var modalEl = document.getElementById('actionModal');
         var modalInstance = bootstrap.Modal.getInstance(modalEl);
@@ -83,4 +82,3 @@ document.body.addEventListener('htmx:afterSwap', function(evt) {
         }
     }
 });
-

@@ -58,10 +58,16 @@ class NoActionsView(PermissionRequiredMixin, TemplateView):
 
 class ActionCreateView(PermissionRequiredMixin, CreateView):
     model = Action
-    fields = ("title", "link", "group")
+    fields = ("active", "title", "link", "group")
     template_name = "manage/actions/add_action.html"
     permission_required = "core.manage_shop"
 
+    def get_form_kwargs(self):
+        # Add prefix to form fields to avoid conflicts with existing fields, as this view is used within a modal
+        kwargs = super().get_form_kwargs()
+        kwargs["prefix"] = "create"
+        return kwargs
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["groups"] = ActionGroup.objects.all()
