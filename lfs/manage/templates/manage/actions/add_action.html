@@ -1,34 +1,16 @@
-{% extends "manage/manage_base.html" %}
 {% load i18n crispy_forms_tags %}
 
-{% block help_link %}user/management/shop/actions.html{% endblock %}
-{% block section %}add-action{% endblock %}
-{% block left_slot %}{% endblock %}
-
-{% block content %}
-    <div class="tabs">
-        <ul class="nav nav-tabs" id="actionTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="data-tab" data-bs-toggle="tab" data-bs-target="#data-content" type="button" role="tab" aria-controls="data-content" aria-selected="true">{% trans 'Add action' %}</button>
-            </li>
-        </ul>
-        
-        <div class="tab-content mt-3 ms-3" id="actionTabsContent">
-            <div class="tab-pane show active" id="data-content" role="tabpanel" aria-labelledby="data-tab">
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <div class="buttons">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i>
-                            {% trans 'Add' %}
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="window.location='{{ came_from }}'">
-                            {% trans 'Cancel' %}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+<h5 id="modal-title" class="modal-title" hx-swap-oob="true">{% trans 'Add action' %}</h5>
+<form method="post" hx-post="{% url 'lfs_add_action' %}" hx-target="#modal-body" hx-swap="innerHTML">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="buttons">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save"></i>
+            {% trans 'Add' %}
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            {% trans 'Cancel' %}
+        </button>
     </div>
-{% endblock %}
+</form>

@@ -71,7 +71,12 @@ class ActionCreateView(PermissionRequiredMixin, CreateView):
     def form_valid(self, form):
         action = form.save()
         _update_positions()
-
+        
+        if self.request.headers.get('HX-Request') == 'true':
+            response = HttpResponse()
+            response["HX-Redirect"] = reverse("lfs_manage_action", kwargs={"pk": action.id})
+            return response
+        
         messages.success(self.request, _("Action has been added."))
         return HttpResponseRedirect(reverse("lfs_manage_action", kwargs={"pk": action.id}))
 

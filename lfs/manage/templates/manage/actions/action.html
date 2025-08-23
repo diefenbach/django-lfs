@@ -34,11 +34,16 @@
                         id="site-actions" 
                         hx-swap-oob="true">
 
-                    <a class="btn btn-sm btn-outline-primary"            
-                        href="{% url 'lfs_add_action' %}?came_from={% url 'lfs_manage_action' action.id %}">
+                    <button class="btn btn-sm btn-outline-primary" 
+                        hx-get="{% url 'lfs_add_action' %}" 
+                        hx-target="#modal-body" 
+                        hx-trigger="click" 
+                        hx-swap="innerHTML" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#actionModal">
                         <i class="bi bi-plus-circle-fill"></i>
                         {% trans 'Add action' %}
-                    </a>
+                    </button>
 
                     <a class="btn btn-sm btn-outline-danger"
                         href="{% url 'lfs_delete_action' action.id %}"
@@ -147,5 +152,5 @@
                 });
             }
         });
-    </script>
+    </script>    
 {% endblock %}

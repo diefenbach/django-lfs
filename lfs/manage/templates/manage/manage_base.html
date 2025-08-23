@@ -150,6 +150,18 @@
                     {% block content %}{% endblock %}
                 </div>
             </div>
+
+            <div class="modal" id="actionModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modal-title"></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body" id="modal-body"></div>
+                    </div>
+                </div>
+            </div>
         {% endblock %}
 
         {% block footer %}
