@@ -29,7 +29,7 @@ def manage_actions(request):
 
 class ActionUpdateView(PermissionRequiredMixin, UpdateView):
     model = Action
-    fields = ("active", "title", "link", "group")
+    fields = ("active", "title", "link")
     template_name = "manage/actions/action.html"
     permission_required = "core.manage_shop"
     context_object_name = "action"
@@ -108,11 +108,30 @@ def sort_actions(request):
     to_list = int(request.POST.get("to_list", ""))
     new_index = int(request.POST.get("new_index", ""))
 
-    action = Action.objects.get(pk=item_id)
-    action.group_id = to_list
-    action.position = new_index * 10 + 5
-    action.save()
-
+    # action which has been dragged and dropped
+    dnd_action = Action.objects.get(pk=item_id)
+    
+    # Update the group if it changed
+    if dnd_action.group_id != to_list:
+        dnd_action.group_id = to_list
+        dnd_action.save()
+    
+    # Get all actions in the target group ordered by position
+    actions_in_group = list(Action.objects.filter(group_id=to_list).exclude(pk=item_id).order_by("position"))
+    
+    if new_index < len(actions_in_group):
+        new_position = actions_in_group[new_index].position
+        for action in actions_in_group[new_index:]:
+            action.position += 10
+            action.save()
+    else:
+        new_position = (actions_in_group[-1].position + 10) if actions_in_group else 10
+    
+    # Set the new position for the sorted action
+    dnd_action.position = new_position
+    dnd_action.save()
+    
+    # Update all positions to ensure consistency
     _update_positions()
 
     return HttpResponse()
@@ -120,7 +139,7 @@ def sort_actions(request):
 
 def _update_positions():
     """Updates the positions of all actions."""
-    for group in ActionGroup.objects.all():
+    for group in ActionGroup.objects.all():        
         for i, action in enumerate(group.actions.all()):
             action.position = (i + 1) * 10
             action.save()

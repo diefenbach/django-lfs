@@ -14,12 +14,12 @@
                 <div id="action-groups" hx-swap-oob="true">
                     {% for group in groups %}
                         <div class="action-group-name mt-3 mb-2">{{ group.name }}</div>
-                            <div class="action-group list-group" data-list="{{ group.id }}">
+                            <div class="action-group" data-list="{{ group.id }}">
                                 {% for group_action in group.actions.all %}
-                                    <a class="list-group-item list-group-item-action action-item {% if group_action.id == action.id %}active{% endif %}" 
-                                        data-id="{{ group_action.id }}" 
-                                        href="{% url 'lfs_manage_action' group_action.id %}">
-                                        {{ group_action.title }}
+                                    <a class="d-block p-2 mb-1 border rounded text-decoration-none action-item {% if group_action.id == action.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
+                                       data-id="{{ group_action.id }}" 
+                                       href="{% url 'lfs_manage_action' group_action.id %}">
+                                       {{ group_action.title }}
                                     </a>
                                 {% endfor %}
                             </div>
@@ -39,8 +39,7 @@
                         hx-target="#modal-body" 
                         hx-trigger="click" 
                         hx-swap="innerHTML" 
-                        data-bs-toggle="modal" 
-                        data-bs-target="#actionModal">
+                        id="add-action-btn">
                         <i class="bi bi-plus-circle-fill"></i>
                         {% trans 'Add action' %}
                     </button>
@@ -77,7 +76,7 @@
                         role="tabpanel" 
                         aria-labelledby="data-tab">
                     <form hx-post="."
-                            hx-swap="none">
+                          hx-swap="none">
                         {% csrf_token %}
                         {{ form|crispy }}
                         <div class="buttons">
@@ -91,66 +90,8 @@
             </div>
         </main>
     </div>
-    <script>    
-        document.addEventListener('DOMContentLoaded', function() {
-            const el = document.querySelectorAll('.action-group');
-            el.forEach(function(el) {
-                const sortable = Sortable.create(el, {
-                    draggable: '.action-item',
-                    group: 'actions',
-                    onEnd: function(evt) {
-                        // Which ID was moved?
-                        const itemId = evt.item.dataset.id;
-
-                        // From which list to which list?
-                        const fromList = evt.from.dataset.list;
-                        const toList   = evt.to.dataset.list;
-
-                        // New position within the target list
-                        const newIndex = evt.newIndex;
-
-                        // Send to your backend (no DOM swap, just action)
-                        htmx.ajax('POST', '{% url "lfs_sort_actions" %}', {
-                            values: {
-                                csrfmiddlewaretoken: document.querySelector('input[name="csrfmiddlewaretoken"]').value,
-                                item_id: itemId,
-                                from_list: fromList,
-                                to_list: toList,
-                                new_index: newIndex,
-                            },
-                            swap: "none"
-                        });
-                    }
-                });
-            });
-        });
-
-        // Search functionality for action items
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.querySelector('input[type="search"]');            
-            if (searchInput) {
-                searchInput.addEventListener('input', function(e) {
-                    const searchTerm = e.target.value.toLowerCase().trim();
-                    const actionItems = document.querySelectorAll('.action-item');
-                    
-                    actionItems.forEach(function(item) {
-                        const itemText = item.textContent.toLowerCase();
-                        if (searchTerm === '' || itemText.includes(searchTerm)) {
-                            item.style.display = '';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });                    
-                });
-                
-                // Clear search when ESC key is pressed
-                searchInput.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') {
-                        this.value = '';
-                        this.dispatchEvent(new Event('input'));
-                    }
-                });
-            }
-        });
-    </script>    
+    <script>
+        window.LFS_SORT_ACTIONS_URL = '{% url "lfs_sort_actions" %}';
+    </script>
+    <script src="{% static 'lfs/js/management/action.js' %}"></script>
 {% endblock %}
