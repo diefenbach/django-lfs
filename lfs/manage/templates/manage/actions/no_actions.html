@@ -1,21 +1,31 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block help_link %}user/management/shop/actions.html{% endblock %}
 
-{% block section %}no-actions{% endblock %}
-
-{% block left_slot %}
-    <div id="navigation" hx-swap-oob="true"></div>
-{% endblock %}
 
 {% block content %}
-    <h2>{% trans "Actions" %}</h2>
-    <div style="padding:10px 0 20px 0" id="data-content">
-        {% trans "There are no actions defined yet." %}
-    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm my-5">
+                <div class="card-body text-center p-5">
+                    <h2 class="card-title mb-4">{% trans "Actions" %}</h2>
+                    <div id="data-content" class="card-text mb-4">
+                        {% trans "There are no actions defined yet." %}
+                    </div>
 
-    <div class="buttons">
-        <a class="btn btn-primary" href="{% url 'lfs_add_action' %}">{% trans "Add Action" %}</a>
+                    <div class="buttons mt-4">
+                        <button class="btn btn-primary" 
+                                hx-get="{% url 'lfs_add_action' %}" 
+                                hx-target="#modal-body" 
+                                hx-trigger="click" 
+                                hx-swap="innerHTML">
+                            {% trans "Add Action" %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <script src="{% static 'lfs/js/management/action.js' %}"></script>
 {% endblock %}
