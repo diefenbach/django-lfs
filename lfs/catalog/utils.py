@@ -52,9 +52,8 @@ def get_price_filters(category, product_filter, price_filter, manufacturer_filte
     if not products:
         return []
 
-    all_products = lfs.catalog.models.Product.objects.filter(
-        Q(pk__in=products) | (Q(parent__in=products) & Q(active=True))
-    )
+    all_products = lfs.catalog.models.Product.objects.filter(pk__in=products, active=True)
+
     res = all_products.aggregate(min_price=Min("effective_price"), max_price=Max("effective_price"))
 
     pmin, pmax = res["min_price"], res["max_price"]
@@ -233,12 +232,20 @@ def get_product_filters(category, product_filter, price_filter, manufacturer_fil
             # initialize list of property values
             properties.setdefault(property_id, [])
 
+            try:
+                float(name)
+            except ValueError:
+                name_is_number = False
+            else:
+                name_is_number = True
+
             properties[property_id].append(
                 {
                     "id": property_id,
                     "property_group_id": property_group_id,
                     "value": value,
                     "name": name,
+                    "name_is_number": name_is_number,
                     "title": prop.title,
                     "position": position,
                     "show_quantity": True,
@@ -449,35 +456,11 @@ def get_filtered_products_for_category(category, filters, price_filter, sorting,
 
     # TODO: It might be more effective to move price filters directly into if/else clause above
     if price_filter:
-        # Get all variants of the products
-        variants = lfs.catalog.models.Product.objects.filter(parent__in=products, active=True)
-        # Filter the variants by price
-        variants = variants.filter(effective_price__range=[price_filter["min"], price_filter["max"]])
         # Filter the products
-        filtered_products = products.filter(
-            effective_price__range=[price_filter["min"], price_filter["max"]], active=True
-        )
-        # merge the result and get a new query set of all products
-        # We get the parent ids of the variants as the "product with variants"
-        # should be displayed and not the variants.
-        products = lfs.catalog.models.Product.objects.filter(
-            Q(pk__in=filtered_products) | Q(pk__in=variants.values_list("parent_id", flat=True))
-        )
+        products = products.filter(effective_price__range=[price_filter["min"], price_filter["max"]], active=True)
 
     if manufacturers_filter:
-        # Get all variants of the products
-        variants = lfs.catalog.models.Product.objects.filter(parent__in=products)
-        # Filter the variants by manufacturer
-        variants = variants.filter(manufacturer__in=manufacturers_filter)
-        # Filter the products
-        filtered_products = products.filter(manufacturer__in=manufacturers_filter)
-
-        # merge the result and get a new query set of all products
-        # We get the parent ids of the variants as the "product with variants"
-        # should be displayed and not the variants.
-        products = lfs.catalog.models.Product.objects.filter(
-            Q(pk__in=filtered_products) | Q(pk__in=variants.values_list("parent_id", flat=True))
-        )
+        products = products.filter(manufacturer__in=manufacturers_filter)
 
     if sorting:
         try:

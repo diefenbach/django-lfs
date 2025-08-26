@@ -78,7 +78,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
     payment_costs = payment_utils.get_payment_costs(request, selected_payment_method)
 
     # Cart costs
-    cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
+    cart_price = cart.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price_gross"]
     cart_tax = cart.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
     # get voucher data (if voucher exists)
@@ -140,6 +140,7 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
         context={
             "cart": cart,
             "cart_items": cart_items,
+            "cart_items_count": int(cart.get_amount_of_items()),
             "cart_price": cart_price,
             "cart_tax": cart_tax,
             "shipping_methods": shipping_utils.get_valid_shipping_methods(request),
@@ -147,7 +148,8 @@ def cart_inline(request, template_name="lfs/cart/cart_inline.html"):
             "shipping_costs": shipping_costs,
             "payment_methods": payment_utils.get_valid_payment_methods(request),
             "selected_payment_method": selected_payment_method,
-            "payment_price": payment_costs["price"],
+            "payment_price": payment_costs["price_gross"],
+            "payment_costs": payment_costs,
             "countries": countries,
             "selected_country": selected_country,
             "max_delivery_time": max_delivery_time,
@@ -261,8 +263,12 @@ def add_to_cart(request, product_id=None):
     some validations have been taken place. The amount is taken from the query
     string.
     """
-    if product_id is None:
-        product_id = (request.POST if request.method == "POST" else request.GET).get("product_id")
+    data = request.POST if request.method == "POST" else request.GET
+    if product_id is None and data.get("action") == "add-sample-to-cart":
+        product_id = data.get("sample_id")
+
+    elif product_id is None and data.get("action") == "add-to-cart":
+        product_id = data.get("product_id")
 
     product = lfs_get_object_or_404(Product, pk=product_id)
 

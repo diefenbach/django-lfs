@@ -1760,7 +1760,7 @@ class Product(models.Model):
         """
         cheapest_variant = None
         min_price = None
-        for variant in Product.objects.filter(parent=self):
+        for variant in Product.objects.filter(parent=self, active=True):
             price = variant.get_price_gross(request)
             if price == 0:
                 continue
@@ -1776,7 +1776,7 @@ class Product(models.Model):
         """
         cheapest_variant = None
         min_price = None
-        for variant in Product.objects.filter(parent=self):
+        for variant in Product.objects.filter(parent=self, active=True):
             price = variant.get_base_price_gross(request, amount=sys.maxsize)
             if price == 0:
                 continue

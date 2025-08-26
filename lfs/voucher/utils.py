@@ -30,12 +30,17 @@ def create_voucher_number():
 
 def get_current_voucher_number(request):
     """ """
-    return request.POST.get("voucher", request.session.get("voucher", ""))
+    return request.session.get("voucher", "")
 
 
 def set_current_voucher_number(request, number):
     """ """
     request.session["voucher"] = number
+
+
+def delete_current_voucher_number(request):
+    """ """
+    request.session.pop("voucher", None)
 
 
 def get_voucher_data(request, cart):

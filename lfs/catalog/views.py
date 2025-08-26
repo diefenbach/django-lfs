@@ -308,10 +308,18 @@ def reset_filter(request, category_slug, property_group_id, property_id):
     """
     if "product-filter" in request.session:
         key = "{0}_{1}".format(property_group_id, property_id)
-        select_filter = request.session["product-filter"].get("select-filter", {})
-        if key in select_filter:
-            del select_filter[key]
-            request.session["product-filter"] = request.session["product-filter"]
+        try:
+            del request.session["product-filter"].get("select-filter", {})[key]
+        except KeyError:
+            pass
+
+        if not request.session["product-filter"].get("select-filter"):
+            try:
+                del request.session["product-filter"]["select-filter"]
+            except KeyError:
+                pass
+
+        request.session.modified = True
 
     url = reverse("lfs_category", kwargs={"slug": category_slug})
     return HttpResponseRedirect(url)
@@ -671,6 +679,7 @@ def product_inline(request, product, template_name="lfs/catalog/products/product
         if parent.variants_display_type != SELECT:
             variants = parent.get_variants()
         else:
+            variants = parent.get_variants()
             display_variants_list = False
 
     elif product.is_configurable_product():
@@ -759,10 +768,11 @@ def product_form_dispatcher(request):
          variants of of the product are displayed as select box. This may change
          in future, when the switch may made with an ajax request.)
     """
-    if (request.POST if request.method == "POST" else request.GET).get("add-to-cart") is not None:
+    data = request.POST if request.method == "POST" else request.GET
+    if data.get("action") in ("add-to-cart", "add-sample-to-cart"):
         return add_to_cart(request)
     else:
-        product_id = request.POST.get("product_id")
+        product_id = data.get("product_id")
         product = lfs_get_object_or_404(Product, pk=product_id)
 
         options = lfs.utils.misc.parse_properties(request)

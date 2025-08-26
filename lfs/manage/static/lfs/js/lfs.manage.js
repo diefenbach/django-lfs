@@ -6,7 +6,7 @@ function popup(url, w, h) {
 
 function safeParseJSON(data) {
     if (typeof(data) == 'string') {
-        data = $.parseJSON(data);
+        data = $.parseJSON(data);p
     }
     return data;
 }

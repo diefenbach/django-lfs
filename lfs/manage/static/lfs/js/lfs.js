@@ -51,15 +51,6 @@ $(function() {
         });
     };
 
-    // Message ################################################################
-
-    var message = $.cookie("message");
-
-    if (message != null) {
-        $.jGrowl(message);
-        $.removeCookie('message', { path: '/' });
-    }
-
     // Rating #################################################################
     $(".rate").click(function() {
         var $this = $(this);
@@ -84,7 +75,6 @@ $(function() {
 
     // Product ################################################################
 
-    $("a.product-image").fancybox({loop: false});
 
     // ----- REPORTED TO BE WORKING IN RECENT jQuery VERSIONS WITHOUT THIS HACK ------
     //    // Hack to make the change event on radio buttons for IE working

@@ -64,6 +64,17 @@ def search(request, template_name="lfs/search/search_results.html"):
     ordered by the globally set sorting.
     """
     q = request.GET.get("q", "")
+
+    if q == "":
+        return render(
+            request,
+            template_name,
+            {
+                "q": q,
+                "total": 0,
+            },
+        )
+
     start = request.GET.get("start", 1)
 
     # Products

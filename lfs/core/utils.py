@@ -289,6 +289,7 @@ class CategoryTree(object):
         # actual position of a category based on the current tree. In this way
         # the category tree always start with level 1 (even if we start with
         # category level 2) an the correct css is applied.
+
         level = 0
         categories = []
         for category in Category.objects.filter(level=self.start_level):

@@ -45,7 +45,7 @@ class Cart(models.Model):
 
     # TODO: Keep cart for now, when the user is deleted for reporting or similar,
     # can be deleted later by a maintenance script or something else.
-    user = models.ForeignKey(User, models.SET_NULL, verbose_name=_("User"), blank=True, null=True)
+    user = models.ForeignKey(User, models.SET_NULL, verbose_name=_("User"), blank=True, null=True, related_name="cart")
     session = models.CharField(_("Session"), blank=True, max_length=100)
     creation_date = models.DateTimeField(_("Creation date"), auto_now_add=True)
     modification_date = models.DateTimeField(_("Modification date"), auto_now=True)
@@ -216,7 +216,7 @@ class Cart(models.Model):
         payment_method = payment_utils.get_selected_payment_method(request)
         payment_costs = payment_utils.get_payment_costs(request, payment_method)
 
-        price = self.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price"]
+        price = self.get_price_gross(request) + shipping_costs["price_gross"] + payment_costs["price_gross"]
         tax = self.get_tax(request) + shipping_costs["tax"] + payment_costs["tax"]
 
         # get voucher data (if voucher exists)

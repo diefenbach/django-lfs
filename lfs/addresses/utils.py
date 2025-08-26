@@ -3,7 +3,7 @@ from django.template.loader import select_template
 
 # lfs imports
 import lfs.core.utils
-from lfs.addresses.settings import INVOICE_ADDRESS_FORM, SHIPPING_ADDRESS_FORM, CHECKOUT_NOT_REQUIRED_ADDRESS
+from lfs.addresses.settings import INVOICE_ADDRESS_FORM, SHIPPING_ADDRESS_FORM
 from lfs.core.models import Country
 
 # django-postal imports
@@ -82,6 +82,8 @@ class AddressManagement(object):
         """
         if country_iso is None:
             country_iso = self.address.country.code.upper()
+        if self.data:
+            country_iso = self.data.get("%s-country" % self.type, country_iso)
 
         form_model = form_factory(country_iso)
         postal_form = form_model(initial=self.get_address_as_dict(), data=self.data, prefix=self.type)
@@ -108,9 +110,6 @@ class AddressManagement(object):
         """
         Returns True if the postal and the additional form is valid.
         """
-        if self.type == CHECKOUT_NOT_REQUIRED_ADDRESS and self.data.get("no_%s" % CHECKOUT_NOT_REQUIRED_ADDRESS):
-            return True
-
         if self.data:
             form_model = form_factory(self.data.get("%s-country" % self.type, self.address.country.code.upper()))
         else:
@@ -126,26 +125,21 @@ class AddressManagement(object):
         """
         Saves the postal and the additional form.
         """
-        if self.type == CHECKOUT_NOT_REQUIRED_ADDRESS and self.data.get("no_%s" % CHECKOUT_NOT_REQUIRED_ADDRESS):
-            return
-        else:
-            self.address.line1 = self.data.get("%s-line1" % self.type)
-            self.address.line2 = self.data.get("%s-line2" % self.type)
-            self.address.city = self.data.get("%s-city" % self.type)
-            self.address.state = self.data.get("%s-state" % self.type)
-            self.address.zip_code = self.data.get("%s-code" % self.type)
+        self.address.line1 = self.data.get("%s-line1" % self.type)
+        self.address.line2 = self.data.get("%s-line2" % self.type)
+        self.address.city = self.data.get("%s-city" % self.type)
+        self.address.state = self.data.get("%s-state" % self.type)
+        self.address.zip_code = self.data.get("%s-code" % self.type)
 
-            try:
-                country = Country.objects.get(code__iexact=self.data.get("%s-country" % self.type))
-                self.address.country = country
-            except Country.DoesNotExist:
-                pass
+        try:
+            country = Country.objects.get(code__iexact=self.data.get("%s-country" % self.type))
+            self.address.country = country
+        except Country.DoesNotExist:
+            pass
 
-            self.address.customer = self.customer
-            self.address.save()
+        self.address.customer = self.customer
+        self.address.save()
 
-            address_form_model = self.get_form_model()
-            address_form = address_form_model(
-                data=self.data, instance=self.address, initial=self.initial, prefix=self.type
-            )
-            address_form.save()
+        address_form_model = self.get_form_model()
+        address_form = address_form_model(data=self.data, instance=self.address, initial=self.initial, prefix=self.type)
+        address_form.save()
