@@ -1,3 +1,8 @@
+function getCSRFToken() {
+    const tokenInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+    return tokenInput ? tokenInput.value : '';
+}
+
 function initActionGroupDnD() {
     document.querySelectorAll('.action-group').forEach(function(el) {
         if (el.getAttribute('data-sortable-initialized')) return;
@@ -5,20 +10,18 @@ function initActionGroupDnD() {
             draggable: '.action-item',
             group: 'actions',
             onEnd: function(evt) {
-                // Which ID was moved?
                 const itemId = evt.item.dataset.id;
-
-                // From which list to which list?
                 const fromList = evt.from.dataset.list;
                 const toList   = evt.to.dataset.list;
-
-                // New position within the target list
                 const newIndex = evt.newIndex;
-
-                // Send to your backend (no DOM swap, just action)
+                const csrfToken = getCSRFToken();
+                if (!csrfToken) {
+                    console.error('CSRF token not found!');
+                    return;
+                }
                 htmx.ajax('POST', window.LFS_SORT_ACTIONS_URL || '', {
                     values: {
-                        csrfmiddlewaretoken: document.querySelector('input[name="csrfmiddlewaretoken"]').value,
+                        csrfmiddlewaretoken: csrfToken,
                         item_id: itemId,
                         from_list: fromList,
                         to_list: toList,
@@ -37,21 +40,13 @@ function initActionSearch() {
     if (searchInput) {
         searchInput.addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase().trim();
-            const actionItems = document.querySelectorAll('.action-item');
-            
-            actionItems.forEach(function(item) {
+            document.querySelectorAll('.action-item').forEach(function(item) {
                 const itemText = item.textContent.toLowerCase();
-                
-                if (searchTerm === '' || itemText.includes(searchTerm)) {
-                    item.style.display = '';
-                    item.classList.add('d-block');
-                } else {
-                    item.style.display = 'none';
-                    item.classList.remove('d-block');
-                }
+                const match = searchTerm === '' || itemText.includes(searchTerm);
+                item.style.display = match ? '' : 'none';
+                item.classList.toggle('d-block', match);
             });
         });
-        // Clear search when ESC key is pressed
         searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 this.value = '';
@@ -61,19 +56,22 @@ function initActionSearch() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function initActionsUI() {
     initActionGroupDnD();
     initActionSearch();
-});
+}
 
+document.addEventListener('DOMContentLoaded', initActionsUI);
+
+// Shows the modal after content swap. This approach provides a better user experience than using Bootstrap attributes 
+// directly in HTML (data-bs-toggle="modal" data-bs-target="#myModal"), as it ensures the modal is initialized with its 
+// final dimensions, preventing any visible resizing after display.
 document.body.addEventListener('htmx:afterSwap', function(evt) {
-    initActionGroupDnD();
-    initActionSearch();
-
-    // Show modal only after swap to make it a nicer experience
-    if (evt.detail.target.id === "modal-body") {
-        var modalEl = document.getElementById('actionModal');
-        var modalInstance = bootstrap.Modal.getInstance(modalEl);
+    initActionsUI();
+    // Modal-Handling
+    if (evt.detail.target && evt.detail.target.id === "modal-body") {
+        const modalEl = document.getElementById('actionModal');
+        let modalInstance = bootstrap.Modal.getInstance(modalEl);
         if (!modalInstance) {
             modalInstance = new bootstrap.Modal(modalEl);
         }
