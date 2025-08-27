@@ -1,71 +1,77 @@
 {% extends "manage/manage_base.html" %}
-{% load compress i18n static %}
-
-{% block javascript %}
-    {% compress js %}
-        <script type="text/javascript" src="{% static 'lfs/js/lfs.manage.static-blocks.js' %}"></script>
-    {% endcompress %}
-{% endblock %}
-
+{% load compress i18n static crispy_forms_tags %}
 
 {% block help_link %}user/management/html/static_block.html{% endblock %}
-{% block left_slot %}
-    <h2 class="navigation-title">
-        {% trans "Static blocks" %}
-    </h2>
-    <div class="navigation-body">
-        <ul class="sortable"
-            href="{% url 'lfs_sort_static_blocks' %}">
-            {% for static_block in static_blocks %}
-                <li id="static_block_{{ static_block.id}}">
-                    <div>
-                        <a href="{% url 'lfs_manage_static_block' static_block.id %}"
-                           class="selectable {% if static_block.id == current_id %}selected{% endif %}">
-                            <img class="handle" src="{% static 'lfs/img/handle.png' %}" alt="Handle" />
-                            <span class="sortable-item-name">{{ static_block.name }}</span>
-                        </a>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-{% endblock %}
 
 {% block content %}
-
-    <div class="site-actions">
-        <a class="add"
-           href="{% url 'lfs_manage_add_static_block' %}?came_from={% url 'lfs_manage_static_block' static_block.id %}">{% trans 'Add Static Block' %}</a>
-        <a class="delete delete-link"
-           dialog_message="{% trans 'Do you really want to delete this static block?' %}"
-           href="{% url 'lfs_delete_static_block' static_block.id %}">{% trans 'Delete Static Block' %}</a>
-        <a class="view popup-link"
-           href="{% url 'lfs_preview_static_block' static_block.id %}">{% trans 'View Static Block' %}</a>
-    </div>
-
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#files">{% trans 'Files' %}</a></li>
-        </ul>
-
-        <div id="data">
-            <h2>{% trans 'Data' %}</h2>
-            <form action="{% url 'lfs_manage_static_block' static_block.id %}"
-                  method="post">
-                {% csrf_token %}
-                {% include "manage/lfs_form.html" %}
-
-                <div class="buttons">
-                    <input type="submit"
-                           class="button"
-                           value="{% trans 'Save data' %}" />
+<div class="lfs-static-blocks">
+    <div class="row">
+        <aside class="sidebar col-3 bg-white border-end p-4">
+            <h2 class="h4 mb-3">{% trans "Static blocks" %}</h2>
+            <div class="input-group mb-3">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="search" class="form-control" placeholder="Suchen …" aria-label="Suchen">
+            </div>
+            <div class="navigation" id="navigation" hx-swap-oob="true">
+                {% for static_block in static_blocks %}
+                    <a class="d-block p-2 mb-1 border rounded text-decoration-none action-item {% if current_static_block.id == static_block.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
+                        data-id="{{ static_block.id }}" 
+                        href="{% url 'lfs_manage_static_block' static_block.id %}">
+                        {{ static_block.name }}
+                    </a>
+                {% endfor %}
+            </div>
+        </aside>
+        <main class="col-9 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h4 mb-3">{% trans 'Edit Static Block' %}</h2>
+                <div class="site-actions mb-3" id="site-actions">
+                    <a class="btn btn-sm btn-outline-primary me-2"
+                       href="{% url 'lfs_manage_add_static_block' %}?came_from={% url 'lfs_manage_static_block' static_block.id %}">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        {% trans 'Add Static Block' %}
+                    </a>
+                    <a class="btn btn-sm btn-outline-danger me-2 delete-link"
+                       dialog_message="{% trans 'Do you really want to delete this static block?' %}"
+                       href="{% url 'lfs_delete_static_block' static_block.id %}">
+                        <i class="bi bi-trash"></i>
+                        {% trans 'Delete Static Block' %}
+                    </a>
+                    <a class="btn btn-sm btn-outline-secondary view popup-link"
+                       href="{% url 'lfs_preview_static_block' static_block.id %}">
+                        <i class="bi bi-box-arrow-up-right"></i>
+                        {% trans 'View Static Block' %}
+                    </a>
                 </div>
-            </form>
-        </div>
-        <div id="files">
-            {{ files }}
-        </div>
+            </div>
+            <ul class="nav nav-tabs" id="staticBlockTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="data-tab" data-bs-toggle="tab" data-bs-target="#data-content" type="button" role="tab" aria-controls="data-content" aria-selected="true">{% trans 'Data' %}</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="files-tab" data-bs-toggle="tab" data-bs-target="#files-content" type="button" role="tab" aria-controls="files-content" aria-selected="false">{% trans 'Files' %}</button>
+                </li>
+            </ul>
+            <div class="tab-content border border-top-0 bg-white p-4" id="staticBlockTabsContent">
+                <div class="tab-pane show active" id="data-content" role="tabpanel" aria-labelledby="data-tab">
+                    <form action="{% url 'lfs_manage_static_block' static_block.id %}" method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="buttons mt-3">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-save me-1"></i>
+                                {% trans 'Save data' %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane" id="files-content" role="tabpanel" aria-labelledby="files-tab">
+                    {{ files }}
+                </div>
+            </div>
+        </main>
     </div>
-    <script>sortable()</script>
+</div>
+<script src="{% static 'lfs/js/management/shared.js' %}"></script>
+<script src="{% static 'lfs/js/management/static-blocks.js' %}"></script>
 {% endblock %}

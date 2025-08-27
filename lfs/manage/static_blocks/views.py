@@ -54,7 +54,7 @@ def manage_static_block(request, id, template_name="manage/static_block/static_b
         request,
         template_name,
         {
-            "static_block": sb,
+            "current_static_block": sb,
             "static_blocks": StaticBlock.objects.all(),
             "files": files(request, sb),
             "form": form,
