@@ -14,7 +14,7 @@
 }
 
 .sidebar {
-  height: 100vh;
+  height: calc(100vh - 57px);
   overflow-y: auto;
 }
 
