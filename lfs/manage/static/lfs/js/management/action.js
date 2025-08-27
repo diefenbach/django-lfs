@@ -35,39 +35,19 @@ function initActionGroupDnD() {
     });
 }
 
-function initActionSearch() {
-    const searchInput = document.querySelector('input[type="search"]');
-    if (searchInput) {
-        searchInput.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase().trim();
-            document.querySelectorAll('.action-item').forEach(function(item) {
-                const itemText = item.textContent.toLowerCase();
-                const match = searchTerm === '' || itemText.includes(searchTerm);
-                item.style.display = match ? '' : 'none';
-                item.classList.toggle('d-block', match);
-            });
-        });
-        searchInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                this.value = '';
-                this.dispatchEvent(new Event('input'));
-            }
-        });
-    }
-}
-
 function initActionsUI() {
     initActionGroupDnD();
-    initActionSearch();
+    new SidebarSearch();
 }
 
-document.addEventListener('DOMContentLoaded', initActionsUI);
+document.addEventListener('DOMContentLoaded', () => {
+    initActionsUI();
+});
 
 // Shows the modal after content swap. This approach provides a better user experience than using Bootstrap attributes 
 // directly in HTML (data-bs-toggle="modal" data-bs-target="#myModal"), as it ensures the modal is initialized with its 
 // final dimensions, preventing any visible resizing after display.
-document.body.addEventListener('htmx:afterSwap', function(evt) {
-    initActionsUI();
+document.body.addEventListener('htmx:afterSwap', evt => {
     // Modal-Handling
     if (evt.detail.target && evt.detail.target.id === "modal-body") {
         const modalEl = document.getElementById('actionModal');
