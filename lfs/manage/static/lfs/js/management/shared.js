@@ -2,19 +2,26 @@ class SidebarSearch {
     constructor(inputSelector = 'input[type="search"]', itemSelector = '.action-item') {
         this.searchInput = document.querySelector(inputSelector);
         this.itemSelector = itemSelector;
+
+        this.storageKey = 'sidebarSearchTerm_' + (this.searchInput?.dataset.searchId || this.searchInput?.id || 'default');
         if (this.searchInput) {
             this.init();
         }
     }
 
     init() {
+        const saved = localStorage.getItem(this.storageKey);
+        if (saved !== null) {
+            this.searchInput.value = saved;
+            this.handleInput({target: this.searchInput});
+        }
         this.searchInput.addEventListener('input', (e) => this.handleInput(e));
         this.searchInput.addEventListener('keydown', (e) => this.handleKeydown(e));
     }
 
     handleInput(e) {
-        console.log('handleInput', e);
         const searchTerm = e.target.value.toLowerCase().trim();
+        localStorage.setItem(this.storageKey, e.target.value);
         for (const item of document.querySelectorAll(this.itemSelector)) {
             const itemText = item.textContent?.toLowerCase() ?? '';
             const match = !searchTerm || itemText.includes(searchTerm);

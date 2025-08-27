@@ -10,11 +10,11 @@
             <h2 class="h4 mb-3">{% trans "Static blocks" %}</h2>
             <div class="input-group mb-3">
                 <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                <input type="search" class="form-control" placeholder="Suchen …" aria-label="Suchen">
+                <input type="search" class="form-control" placeholder="Suchen …" aria-label="Suchen" data-search-id="static-blocks">
             </div>
-            <div class="navigation" id="navigation" hx-swap-oob="true">
+            <div id="navigation" hx-swap-oob="true">
                 {% for static_block in static_blocks %}
-                    <a class="d-block p-2 mb-1 border rounded text-decoration-none action-item {% if current_static_block.id == static_block.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
+                    <a class="navigation-item d-block p-2 mb-1 border rounded text-decoration-none action-item pre-filter {% if current_static_block.id == static_block.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
                         data-id="{{ static_block.id }}" 
                         href="{% url 'lfs_manage_static_block' static_block.id %}">
                         {{ static_block.name }}
@@ -72,6 +72,5 @@
         </main>
     </div>
 </div>
-<script src="{% static 'lfs/js/management/shared.js' %}"></script>
 <script src="{% static 'lfs/js/management/static-blocks.js' %}"></script>
 {% endblock %}
