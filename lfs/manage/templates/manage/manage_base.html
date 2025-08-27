@@ -5,19 +5,18 @@
     <head>
         <title>{% block title %}{% endblock %}</title>
         <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/ico" />
-        {% compress css %}
             <link rel="stylesheet" type="text/css" href="{% static 'lfs/bower_components/superfish/dist/css/superfish.css' %}" />
             <link rel="stylesheet" type="text/css" href="{% static 'lfs/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css' %}" />
             <link rel="stylesheet" type="text/css" href="{% static 'lfs/bower_components/jquery-ui/themes/smoothness/theme.css' %}" />
             <link rel="stylesheet" type="text/css" href="{% static 'lfs/bower_components/jgrowl/jquery.jgrowl.css' %}" />
             <link rel="stylesheet" type="text/css" href="{% static 'lfs/css/lfs.manage.css' %}" />
             <link rel="stylesheet" type="text/css" href="{% static 'lfs/css/lfs.manage-custom.css' %}" />
-        {% endcompress %}
+
         <script type="text/javascript">
             var LFS_MANAGE_IMAGEBROWSER_URL = '{% url 'lfs_manage_imagebrowser' %}';
             var STATIC_URL = '{% static '' %}';
         </script>
-        {% compress js %}
+
             <script type="text/javascript" src="{% static 'lfs/bower_components/jquery/dist/jquery.min.js' %}"></script>
             <script type="text/javascript" src="{% static 'lfs/bower_components/jquery-ui/jquery-ui.js' %}"></script>
             <script type="text/javascript" src="{% static 'lfs/bower_components/jquery-cookie/jquery.cookie.js' %}"></script>
@@ -37,7 +36,7 @@
             <script type="text/javascript" src="{% static 'lfs/js/lfs.manage.js' %}"></script>
             <script type="text/javascript" src="{% static 'lfs/js/urlify.js' %}"></script>
             <script type="text/javascript" src="{% static 'lfs/js/lfs.manage-custom.js' %}"></script>
-        {% endcompress %}
+
 
         {% block javascript %}{% endblock %}
     </head>
