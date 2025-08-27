@@ -33,6 +33,12 @@ logger = logging.getLogger(__name__)
 register = template.Library()
 
 
+@register.filter
+def replace_comma(value):
+    """Replaces commas with periods in a string."""
+    return str(value).replace(",", ".")
+
+
 class IfLocalNode(template.Node):
     def __init__(self, nodelist):
         self.nodelist = nodelist
