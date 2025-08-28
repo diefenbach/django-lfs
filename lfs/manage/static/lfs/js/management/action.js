@@ -43,20 +43,3 @@ function initActionsUI() {
 document.addEventListener('DOMContentLoaded', () => {
     initActionsUI();
 });
-
-// Shows the modal after content swap. This approach provides a better user experience than using Bootstrap attributes 
-// directly in HTML (data-bs-toggle="modal" data-bs-target="#myModal"), as it ensures the modal is initialized with its 
-// final dimensions, preventing any visible resizing after display.
-document.body.addEventListener('htmx:afterSwap', evt => {
-    // Modal-Handling
-    if (evt.detail.target && evt.detail.target.id === "modal-body") {
-        const modalEl = document.getElementById('actionModal');
-        let modalInstance = bootstrap.Modal.getInstance(modalEl);
-        if (!modalInstance) {
-            modalInstance = new bootstrap.Modal(modalEl);
-        }
-        if (!modalEl.classList.contains('show')) {
-            modalInstance.show();
-        }
-    }
-});

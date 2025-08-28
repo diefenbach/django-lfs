@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
-from django.views.generic import UpdateView, FormView, CreateView
+from django.views.generic import UpdateView, FormView, CreateView, DeleteView
 
 import lfs.core.utils
 from lfs.core.utils import LazyEncoder
@@ -242,17 +242,24 @@ def sort_static_blocks(request: HttpRequest) -> HttpResponse:
         return HttpResponse(result, content_type="application/json")
 
 
-@permission_required("core.manage_shop")
-@require_POST
-def delete_static_block(request: HttpRequest, id: str) -> HttpResponse:
+class StaticBlockDeleteView(PermissionRequiredMixin, DeleteView):
     """Deletes static block with passed id."""
-    sb = get_object_or_404(StaticBlock, pk=id)
-    sb.delete()
 
-    return lfs.core.utils.set_message_cookie(
-        url=reverse("lfs_manage_static_blocks"),
-        msg=_("Static block has been deleted."),
-    )
+    model = StaticBlock
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
+
+    def get_success_url(self) -> str:
+        """Returns URL to redirect after successful deletion."""
+        return reverse("lfs_manage_static_blocks")
+
+    def delete(self, request, *args, **kwargs):
+        """Override to add success message after deletion."""
+        response = super().delete(request, *args, **kwargs)
+        return lfs.core.utils.set_message_cookie(
+            url=self.get_success_url(),
+            msg=_("Static block has been deleted."),
+        )
 
 
 # Utility functions
