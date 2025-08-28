@@ -806,28 +806,31 @@ urlpatterns = [
     # Static blocks
     re_path(r"^add-static-block$", lfs.manage.static_blocks.views.add_static_block, name="lfs_manage_add_static_block"),
     re_path(
-        r"^delete-static-block/(?P<id>\d*)$",
+        r"^delete-static-block/(?P<id>\d+)$",
         lfs.manage.static_blocks.views.delete_static_block,
         name="lfs_delete_static_block",
     ),
     re_path(
-        r"^preview-static-block/(?P<id>\d*)$",
+        r"^preview-static-block/(?P<id>\d+)$",
         lfs.manage.static_blocks.views.preview_static_block,
         name="lfs_preview_static_block",
     ),
     re_path(r"^static-blocks$", lfs.manage.static_blocks.views.manage_static_blocks, name="lfs_manage_static_blocks"),
-    re_path(
-        r"^static-block/(?P<id>\d*)$",
-        lfs.manage.static_blocks.views.manage_static_block,
+    path(
+        "static-block/<int:id>/",
+        lfs.manage.static_blocks.views.StaticBlockDataView.as_view(),
         name="lfs_manage_static_block",
     ),
     re_path(
-        r"^add_files/(?P<id>[-\w]*)", lfs.manage.static_blocks.views.add_files, name="lfs_add_files_to_static_block"
+        r"^static-block/(?P<id>\d+)/files/$",
+        lfs.manage.static_blocks.views.StaticBlockFilesView.as_view(),
+        name="lfs_manage_static_block_files",
     ),
     re_path(
-        r"^update_files/(?P<id>[-\w]*)", lfs.manage.static_blocks.views.update_files, name="lfs_manage_update_files_sb"
+        r"^update_files/(?P<id>[-\w]*)",
+        lfs.manage.static_blocks.views.StaticBlockFilesView.as_view(),
+        name="lfs_manage_update_files_sb",
     ),
-    re_path(r"^reload_files/(?P<id>[-\w]*)", lfs.manage.static_blocks.views.reload_files, name="lfs_reload_files"),
     re_path(r"^sort-static-blocks$", lfs.manage.static_blocks.views.sort_static_blocks, name="lfs_sort_static_blocks"),
     re_path(r"^no-static-blocks$", lfs.manage.static_blocks.views.no_static_blocks, name="lfs_manage_no_static_blocks"),
     # Reviews
