@@ -1,0 +1,9 @@
+# E2E Testing Requirements
+# Install with: pip install -r requirements_e2e.txt
+
+# Playwright for browser automation
+pytest-playwright>=0.4.3
+
+# Already included in project but listed for reference:
+# pytest-django>=4.5.0
+# pytest>=7.0.0

@@ -1,23 +1,31 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block help_link %}/user/management/html/static_block.html{% endblock %}
 
-{% block sextion %}no-static-blocks{% endblock %}
-{% block left-slot-wrapper %}{% endblock %}
-
 {% block content %}
-    <h2>
-        {% trans "Static Blocks" %}
-    </h2>
-    <div class="no-content">
-        {% trans "There are no static blocks yet." %}
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm my-5">
+                <div class="card-body text-center p-5">
+                    <h2 class="card-title mb-4">{% trans "Static Blocks" %}</h2>
+                    <div id="data-content" class="card-text mb-4">
+                        {% trans "There are no static blocks yet." %}
+                    </div>
+
+                    <div class="buttons mt-4">
+                        <button class="btn btn-primary" 
+                                hx-get="{% url 'lfs_manage_add_static_block' %}" 
+                                hx-target="#modal-body-lg" 
+                                hx-trigger="click" 
+                                hx-swap="innerHTML">
+                            {% trans "Add Static Block" %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="buttons">
-        <form action="{% url 'lfs_manage_add_static_block' %}">
-            <input type="submit"
-                   class="button"
-                   value="{% trans 'Add Static Block' %}" />
-        </form>
-    </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    <script src="{% static 'lfs/js/management/shared.js' %}"></script>
 {% endblock %}
