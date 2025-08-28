@@ -28,7 +28,8 @@ class TestStaticBlockCRUDFlow:
         page.goto(f"{live_server.url}/manage/")
 
         # Act: Navigate to StaticBlocks - first open HTML dropdown, then click
-        page.click("text=HTML")  # Open HTML dropdown menu first
+        page.click("#htmlDropdown")  # Open HTML dropdown menu using specific ID
+        page.wait_for_selector('a[href="/manage/static-blocks"]', state="visible")  # Wait for dropdown to open
         page.click('a[href="/manage/static-blocks"]')  # Then click static blocks link
 
         # Expect: Should see StaticBlocks management page (either list or no-blocks page)
