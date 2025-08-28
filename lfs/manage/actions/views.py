@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponse
@@ -67,7 +66,7 @@ class ActionCreateView(PermissionRequiredMixin, CreateView):
         kwargs = super().get_form_kwargs()
         kwargs["prefix"] = "create"
         return kwargs
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["groups"] = ActionGroup.objects.all()
@@ -77,14 +76,10 @@ class ActionCreateView(PermissionRequiredMixin, CreateView):
     def form_valid(self, form):
         action = form.save()
         _update_positions()
-        
-        if self.request.headers.get('HX-Request') == 'true':
-            response = HttpResponse()
-            response["HX-Redirect"] = reverse("lfs_manage_action", kwargs={"pk": action.id})
-            return response
-        
-        messages.success(self.request, _("Action has been added."))
-        return HttpResponseRedirect(reverse("lfs_manage_action", kwargs={"pk": action.id}))
+
+        response = HttpResponse()
+        response["HX-Redirect"] = reverse("lfs_manage_action", kwargs={"pk": action.id})
+        return response
 
 
 class ActionDeleteView(PermissionRequiredMixin, DeleteView):
@@ -116,15 +111,15 @@ def sort_actions(request):
 
     # action which has been dragged and dropped
     dnd_action = Action.objects.get(pk=item_id)
-    
+
     # Update the group if it changed
     if dnd_action.group_id != to_list:
         dnd_action.group_id = to_list
         dnd_action.save()
-    
+
     # Get all actions in the target group ordered by position
     actions_in_group = list(Action.objects.filter(group_id=to_list).exclude(pk=item_id).order_by("position"))
-    
+
     if new_index < len(actions_in_group):
         new_position = actions_in_group[new_index].position
         for action in actions_in_group[new_index:]:
@@ -132,11 +127,11 @@ def sort_actions(request):
             action.save()
     else:
         new_position = (actions_in_group[-1].position + 10) if actions_in_group else 10
-    
+
     # Set the new position for the sorted action
     dnd_action.position = new_position
     dnd_action.save()
-    
+
     # Update all positions to ensure consistency
     _update_positions()
 
@@ -145,7 +140,7 @@ def sort_actions(request):
 
 def _update_positions():
     """Updates the positions of all actions."""
-    for group in ActionGroup.objects.all():        
+    for group in ActionGroup.objects.all():
         for i, action in enumerate(group.actions.all()):
             action.position = (i + 1) * 10
             action.save()

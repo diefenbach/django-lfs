@@ -28,11 +28,14 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="h4 mb-3">{% trans 'Edit Static Block' %}</h2>
                     <div class="site-actions mb-3" id="site-actions">
-                        <a class="btn btn-sm btn-outline-primary me-2"
-                           href="{% url 'lfs_manage_add_static_block' %}?came_from={% url 'lfs_manage_static_block' current_static_block.id %}">
+                        <button class="btn btn-sm btn-outline-primary me-2"
+                                hx-get="{% url 'lfs_manage_add_static_block' %}"
+                                hx-target="#modal-body"
+                                hx-trigger="click"
+                                hx-swap="innerHTML">
                             <i class="bi bi-plus-circle-fill"></i>
                             {% trans 'Add Static Block' %}
-                        </a>
+                        </button>
                         <a class="btn btn-sm btn-outline-danger me-2 delete-link"
                            dialog_message="{% trans 'Do you really want to delete this static block?' %}"
                            href="{% url 'lfs_delete_static_block' current_static_block.id %}">
@@ -74,6 +77,20 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             new SidebarSearch();
+        });
+
+        // Modal handling after htmx swap
+        document.body.addEventListener('htmx:afterSwap', evt => {
+            if (evt.detail.target && evt.detail.target.id === "modal-body") {
+                const modalEl = document.getElementById('actionModal');
+                let modalInstance = bootstrap.Modal.getInstance(modalEl);
+                if (!modalInstance) {
+                    modalInstance = new bootstrap.Modal(modalEl);
+                }
+                if (!modalEl.classList.contains('show')) {
+                    modalInstance.show();
+                }
+            }
         });
     </script>
 {% endblock %}

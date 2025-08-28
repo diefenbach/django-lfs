@@ -804,7 +804,11 @@ urlpatterns = [
         name="lfs_manage_criteria_change_criterion_form",
     ),
     # Static blocks
-    re_path(r"^add-static-block$", lfs.manage.static_blocks.views.add_static_block, name="lfs_manage_add_static_block"),
+    re_path(
+        r"^add-static-block$",
+        lfs.manage.static_blocks.views.AddStaticBlockView.as_view(),
+        name="lfs_manage_add_static_block",
+    ),
     re_path(
         r"^delete-static-block/(?P<id>\d+)$",
         lfs.manage.static_blocks.views.delete_static_block,

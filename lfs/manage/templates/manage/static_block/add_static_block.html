@@ -1,35 +1,11 @@
-{% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% load i18n crispy_forms_tags %}
 
-{% block help_link %}user/management/html/static_block.html{% endblock %}
-{% block section %}add-static-block{% endblock %}
-{% block left-slot-wrapper %}{% endblock %}
-
-{% block content %}
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add Static Block' %}</a></li>
-        </ul>
-        <div id="data">
-            <h2>
-                {% trans 'Data' %}
-            </h2>
-            <form method="post">
-                {% csrf_token %}
-                {% include "manage/lfs_form.html" %}
-                <input type="submit"
-                       class="button"
-                       value="{% trans 'Save static block' %}">
-                <input type="button"
-                       class="button"
-                       onclick="window.location='{{ came_from }}'"
-                       value="{% trans 'Cancel' %}" />
-            </form>
-        </div>
+<h5 id="modal-title" class="modal-title" hx-swap-oob="true">{% trans 'Add Static Block' %}</h5>
+<form method="post" hx-post="{% url 'lfs_manage_add_static_block' %}" hx-target="#modal-body" hx-swap="innerHTML">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
     </div>
-    <script type="text/javascript">
-        $(function () {
-            //tinyMCE.execCommand('mceAddControl', true, 'id_html');
-        });
-    </script>
-{% endblock %}
+</form>
