@@ -5,8 +5,6 @@ from django.shortcuts import render
 from lfs import __version__ as lfs_version
 from lfs.core.utils import import_symbol
 
-from lfs_theme import __version__ as lfs_theme_version
-
 
 @permission_required("core.manage_shop")
 def environment(request, template_name="manage/information/environment.html"):
@@ -35,7 +33,6 @@ def environment(request, template_name="manage/information/environment.html"):
         template_name,
         {
             "lfs_version": lfs_version,
-            "lfs_theme_version": lfs_theme_version,
             "apps": apps,
         },
     )
