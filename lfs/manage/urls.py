@@ -811,7 +811,7 @@ urlpatterns = [
     ),
     re_path(
         r"^delete-static-block/(?P<id>\d+)$",
-        lfs.manage.static_blocks.views.delete_static_block,
+        lfs.manage.static_blocks.views.StaticBlockDeleteView.as_view(),
         name="lfs_delete_static_block",
     ),
     re_path(
