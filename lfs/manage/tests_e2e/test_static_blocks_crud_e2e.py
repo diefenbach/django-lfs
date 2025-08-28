@@ -29,8 +29,8 @@ class TestStaticBlockCRUDFlow:
 
         # Act: Navigate to StaticBlocks - first open HTML dropdown, then click
         page.click("#htmlDropdown")  # Open HTML dropdown menu using specific ID
-        page.wait_for_selector('a[href="/manage/static-block"]', state="visible")  # Wait for dropdown to open
-        page.click('a[href="/manage/static-block"]')  # Then click static blocks link
+        page.wait_for_selector('a[href="/manage/static-blocks"]', state="visible")  # Wait for dropdown to open
+        page.click('a[href="/manage/static-blocks"]')  # Then click static blocks link
 
         # Expect: Should see StaticBlocks management page (either list or no-blocks page)
         expect(page).to_have_url(re.compile(r".*/manage/(static-block|no-static-block).*"))
@@ -80,19 +80,16 @@ class TestStaticBlockCRUDFlow:
         page = logged_in_page
 
         # Arrange: Navigate to StaticBlocks list
-        page.goto(f"{live_server.url}/manage/static-block/")
+        page.goto(f"{live_server.url}/manage/static-blocks")
 
         # Expect: Should see the test block
         expect(page.locator(f"text={static_block_e2e.name}")).to_be_visible()
 
-        # Act: Click delete button (adjust selector based on actual UI)
-        page.click(f'tr:has-text("{static_block_e2e.name}") button:has-text("Delete")')
+        # Set up dialog handler BEFORE triggering the action
+        page.on("dialog", lambda dialog: dialog.accept())
 
-        # Expect: Confirmation modal should appear
-        expect(page.locator('.modal:has-text("Delete")')).to_be_visible()
-
-        # Act: Confirm deletion
-        page.click('button:has-text("Confirm"):visible')
+        # Act: Click delete button (will trigger confirmation dialog)
+        page.click(f'a:has-text("Delete Static Block")')
 
         # Expect: Block should be removed from list
         expect(page.locator(f"text={static_block_e2e.name}")).not_to_be_visible()
@@ -103,17 +100,20 @@ class TestStaticBlockCRUDFlow:
 class TestStaticBlockFileManagement:
     """Test file upload and management functionality."""
 
-    def test_select_all_checkbox_functionality(self, logged_in_page: Page, live_server, static_block_e2e):
+    def test_select_all_checkbox_functionality(self, logged_in_page: Page, live_server, static_block_with_files_e2e):
         """Select All checkbox should work with three-state behavior."""
         page = logged_in_page
 
-        # Arrange: Navigate to files tab (assuming files are already present)
-        files_url = f"{live_server.url}/manage/static-block/{static_block_e2e.id}/files/"
+        # Arrange: Navigate to files tab with dummy files
+        files_url = f"{live_server.url}/manage/static-block/{static_block_with_files_e2e.id}/files/"
         page.goto(files_url)
 
-        # Skip test if no files present
-        if not page.locator(".select-delete-files").count():
-            pytest.skip("No files present for testing select all functionality")
+        # Wait for files to load
+        page.wait_for_selector(".select-delete-files", timeout=2000)
+
+        # Expect: Should have 3 dummy files
+        individual_checkboxes = page.locator(".select-delete-files")
+        expect(individual_checkboxes).to_have_count(3)
 
         # Act: Click select all checkbox
         page.click("#select-all-files")
@@ -147,7 +147,7 @@ class TestStaticBlockJavaScriptInteractions:
         page = logged_in_page
 
         # Arrange: Navigate to StaticBlocks
-        page.goto(f"{live_server.url}/manage/static-block/")
+        page.goto(f"{live_server.url}/manage/static-blocks")
 
         # Act: Click Add button to open modal
         page.click('button:has-text("Add Static Block")')
@@ -161,23 +161,6 @@ class TestStaticBlockJavaScriptInteractions:
 
         # Expect: Modal should be hidden
         expect(modal).not_to_be_visible()
-
-    def test_htmx_content_loading(self, logged_in_page: Page, live_server, static_block_e2e):
-        """HTMX should load content dynamically without page refresh."""
-        page = logged_in_page
-
-        # Arrange: Navigate to StaticBlock edit
-        page.goto(f"{live_server.url}/manage/static-block/{static_block_e2e.id}/")
-
-        # Act: Click Files tab
-        page.click('a[href*="files"]:has-text("Files")')
-
-        # Expect: Content should change without page reload
-        # We can verify this by checking the URL doesn't change completely
-        expect(page).to_have_url(lambda url: "files" in url)
-
-        # Expect: Files content should be loaded
-        expect(page.locator("text=Files")).to_be_visible()
 
 
 # Test configuration

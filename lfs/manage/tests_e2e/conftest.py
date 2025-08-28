@@ -81,6 +81,41 @@ def static_block_e2e(db, shop_e2e):
     return StaticBlock.objects.create(name="E2E Test Block", html="<p>Test content for E2E testing</p>")
 
 
+@pytest.fixture
+def static_block_with_files_e2e(db, shop_e2e):
+    """StaticBlock with dummy files for E2E testing."""
+    from lfs.catalog.models import StaticBlock, File
+    from django.core.files.base import ContentFile
+    from django.contrib.contenttypes.models import ContentType
+
+    # Create StaticBlock
+    static_block = StaticBlock.objects.create(
+        name="E2E Block with Files", html="<p>Block with test files</p>", display_files=True
+    )
+
+    # Create ContentType for StaticBlock
+    content_type = ContentType.objects.get_for_model(StaticBlock)
+
+    # Create dummy files
+    for i in range(1, 4):  # 3 dummy files
+        # Create a simple text file content
+        file_content = ContentFile(
+            f"This is test file {i} content.\nCreated for E2E testing.", name=f"test_file_{i}.txt"
+        )
+
+        File.objects.create(
+            title=f"Test File {i}",
+            slug=f"test-file-{i}",
+            description=f"Description for test file {i}",
+            file=file_content,
+            content_type=content_type,
+            content_id=static_block.id,
+            position=i,
+        )
+
+    return static_block
+
+
 def accept_cookie_banner(page: Page):
     """Helper function to close chat widget and accept cookie banner if present."""
     try:
