@@ -4,6 +4,9 @@
 # Playwright for browser automation
 pytest-playwright>=0.4.3
 
+# Parallel test execution
+pytest-xdist>=3.0.0
+
 # Already included in project but listed for reference:
 # pytest-django>=4.5.0
 # pytest>=7.0.0

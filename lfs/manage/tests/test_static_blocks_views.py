@@ -26,6 +26,7 @@ User = get_user_model()
 
 
 @pytest.mark.django_db
+@pytest.mark.unit
 class TestStaticBlockTabMixin:
     """Tests for StaticBlockTabMixin functionality."""
 
@@ -58,6 +59,7 @@ class TestStaticBlockTabMixin:
 
 
 @pytest.mark.django_db
+@pytest.mark.unit
 class TestStaticBlockDataView:
     """Tests for StaticBlockDataView (Data Tab)."""
 
@@ -132,6 +134,7 @@ class TestStaticBlockDataView:
 
 
 @pytest.mark.django_db
+@pytest.mark.unit
 class TestStaticBlockFilesView:
     """Tests for StaticBlockFilesView (Files Tab)."""
 
@@ -177,6 +180,7 @@ class TestStaticBlockFilesView:
 
 
 @pytest.mark.django_db
+@pytest.mark.integration
 class TestManageStaticBlocksDispatcher:
     """Tests for manage_static_blocks dispatcher function."""
 

@@ -12,7 +12,7 @@ import pytest
 
 # Configure Django settings before importing Django modules
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings.testing")
-os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
+os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "True")
 
 import django
 
@@ -174,18 +174,23 @@ def logged_in_page(authenticated_page):
 def pytest_configure(config):
     """Configure pytest for E2E tests."""
     # Allow Django async operations during tests
-    os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
+    os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "True")
 
 
 # Playwright pytest plugin configuration
 @pytest.fixture(scope="session")
 def browser_type_launch_args(browser_type_launch_args):
     """Configure browser launch arguments."""
+    import os
+
+    # Use headless by default, except when PLAYWRIGHT_DEBUG is set
+    is_headless = os.getenv("PLAYWRIGHT_DEBUG") != "1"
+
     return {
         **browser_type_launch_args,
-        "headless": False,  # Set to False for visual debugging
+        "headless": is_headless,  # Headless for parallel execution
         "slow_mo": 0,  # Milliseconds to slow down operations
-        "args": ["--start-maximized", "--no-sandbox", "--disable-dev-shm-usage"],  # Start browser maximized
+        "args": ["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],  # Optimized for headless
     }
 
 
