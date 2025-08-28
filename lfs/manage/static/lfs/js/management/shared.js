@@ -42,8 +42,19 @@ class SidebarSearch {
 // directly in HTML (data-bs-toggle="modal" data-bs-target="#myModal"), as it ensures the modal is initialized with its 
 // final dimensions, preventing any visible resizing after display.
 document.addEventListener('htmx:afterSwap', evt => {
-    if (evt.detail.target && evt.detail.target.id === "modal-body") {
-        const modalEl = document.getElementById('actionModal');
+    const targetId = evt.detail.target?.id;
+    let modalEl;
+    
+    // Target-based modal selection
+    if (targetId === "modal-body-sm") {
+        modalEl = document.getElementById('actionModal-sm');
+    } else if (targetId === "modal-body-lg") {
+        modalEl = document.getElementById('actionModal-lg');
+    } else if (targetId === "modal-body-xl") {
+        modalEl = document.getElementById('actionModal-xl');
+    }
+    
+    if (modalEl) {
         let modalInstance = bootstrap.Modal.getInstance(modalEl);
         if (!modalInstance) {
             modalInstance = new bootstrap.Modal(modalEl);

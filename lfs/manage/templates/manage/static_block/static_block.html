@@ -30,7 +30,7 @@
                     <div class="site-actions mb-3" id="site-actions">
                         <button class="btn btn-sm btn-outline-primary me-2"
                                 hx-get="{% url 'lfs_manage_add_static_block' %}"
-                                hx-target="#modal-body"
+                                hx-target="#modal-body-lg"
                                 hx-trigger="click"
                                 hx-swap="innerHTML">
                             <i class="bi bi-plus-circle-fill"></i>
@@ -50,7 +50,7 @@
                         </a>
                         <button class="btn btn-sm btn-outline-secondary"
                                 hx-get="{% url 'lfs_preview_static_block' current_static_block.id %}"
-                                hx-target="#modal-body"
+                                hx-target="#modal-body-xl"
                                 hx-trigger="click"
                                 hx-swap="innerHTML">
                             <i class="bi bi-eye"></i>
@@ -82,5 +82,9 @@
             </main>
         </div>
     </div>
+
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-xl.html' %}
+
     <script src="{% static 'lfs/js/management/static-blocks.js' %}"></script>
 {% endblock %}

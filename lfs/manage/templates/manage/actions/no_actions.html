@@ -17,7 +17,7 @@
                     <div class="buttons mt-4">
                         <button class="btn btn-primary" 
                                 hx-get="{% url 'lfs_add_action' %}" 
-                                hx-target="#modal-body" 
+                                hx-target="#modal-body-lg" 
                                 hx-trigger="click" 
                                 hx-swap="innerHTML">
                             {% trans "Add Action" %}
@@ -27,5 +27,6 @@
             </div>
         </div>
     </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
     <script src="{% static 'lfs/js/management/action.js' %}"></script>
 {% endblock %}

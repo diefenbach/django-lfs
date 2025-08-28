@@ -1,10 +1,7 @@
 {% load i18n crispy_forms_tags %}
-<script>
-    document.querySelector('#modal-dialog').className = 'modal-dialog modal-lg';
-</script>
 
-<h5 id="modal-title" class="modal-title" hx-swap-oob="true">{% trans 'Add Static Block' %}</h5>
-<form method="post" hx-post="{% url 'lfs_manage_add_static_block' %}" hx-target="#modal-body" hx-swap="innerHTML">
+<h5 id="modal-title-lg" class="modal-title" hx-swap-oob="true">{% trans 'Add Static Block' %}</h5>
+<form method="post" hx-post="{% url 'lfs_manage_add_static_block' %}" hx-target="#modal-body-lg" hx-swap="innerHTML">
     {% csrf_token %}
     {{ form|crispy }}
     <div class="mt-3">

@@ -36,7 +36,7 @@
 
                     <button class="btn btn-sm btn-outline-primary" 
                         hx-get="{% url 'lfs_add_action' %}" 
-                        hx-target="#modal-body" 
+                        hx-target="#modal-body-lg" 
                         hx-trigger="click" 
                         hx-swap="innerHTML" 
                         id="add-action-btn">
@@ -91,6 +91,8 @@
             </div>
         </main>
     </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+
     <script>
         window.LFS_SORT_ACTIONS_URL = '{% url "lfs_sort_actions" %}';
     </script>
