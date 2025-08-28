@@ -1,1 +1,14 @@
-{{static_block.html|safe}}
+{% load i18n %}
+
+<script>
+    document.querySelector('#modal-dialog').className = 'modal-dialog modal-xl';
+</script>
+<h5 id="modal-title" class="modal-title" hx-swap-oob="true">{% trans 'Preview Static Block' %}: {{ static_block.name }}</h5>
+
+<div class="preview-content">
+    {{ static_block.html|safe }}
+</div>
+
+<div class="mt-3">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+</div>

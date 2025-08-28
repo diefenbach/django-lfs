@@ -40,16 +40,22 @@
                            href="{% url 'lfs_delete_static_block' current_static_block.id %}"
                            hx-post="{% url 'lfs_delete_static_block' current_static_block.id %}"
                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                           hx-select=".lfs-static-blocks"
+                           hx-target=".lfs-static-blocks"
+                           hx-swap="innerHTML"   
                            hx-push-url="true"
                            hx-confirm="{% trans 'Do you really want to delete this static block?' %}">
                             <i class="bi bi-trash"></i>
                             {% trans 'Delete Static Block' %}
                         </a>
-                        <a class="btn btn-sm btn-outline-secondary view popup-link"
-                           href="{% url 'lfs_preview_static_block' current_static_block.id %}">
-                            <i class="bi bi-box-arrow-up-right"></i>
-                            {% trans 'View Static Block' %}
-                        </a>
+                        <button class="btn btn-sm btn-outline-secondary"
+                                hx-get="{% url 'lfs_preview_static_block' current_static_block.id %}"
+                                hx-target="#modal-body"
+                                hx-trigger="click"
+                                hx-swap="innerHTML">
+                            <i class="bi bi-eye"></i>
+                            {% trans 'Preview Static Block' %}
+                        </button>
                     </div>
                 </div>
 
@@ -76,24 +82,5 @@
             </main>
         </div>
     </div>
-    <script src="{% static 'lfs/js/management/shared.js' %}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            new SidebarSearch();
-        });
-
-        // Modal handling after htmx swap
-        document.body.addEventListener('htmx:afterSwap', evt => {
-            if (evt.detail.target && evt.detail.target.id === "modal-body") {
-                const modalEl = document.getElementById('actionModal');
-                let modalInstance = bootstrap.Modal.getInstance(modalEl);
-                if (!modalInstance) {
-                    modalInstance = new bootstrap.Modal(modalEl);
-                }
-                if (!modalEl.classList.contains('show')) {
-                    modalInstance.show();
-                }
-            }
-        });
-    </script>
+    <script src="{% static 'lfs/js/management/static-blocks.js' %}"></script>
 {% endblock %}

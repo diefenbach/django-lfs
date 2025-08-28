@@ -1,7 +1,9 @@
 {% load i18n crispy_forms_tags %}
-
+<script>
+    document.querySelector('#modal-dialog').className = 'modal-dialog modal-sm';
+</script>
 <h5 id="modal-title" class="modal-title" hx-swap-oob="true">{% trans 'Add action' %}</h5>
-<form method="post" hx-post="{% url 'lfs_add_action' %}" hx-target="#modal-body" hx-swap="innerHTML">
+<form method="post" hx-post="{% url 'lfs_add_action' %}">
     {% csrf_token %}
     {{ form|crispy }}
     <div class="buttons">
