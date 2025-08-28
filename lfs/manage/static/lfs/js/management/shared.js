@@ -47,11 +47,11 @@ document.addEventListener('htmx:afterSwap', evt => {
     
     // Target-based modal selection
     if (targetId === "modal-body-sm") {
-        modalEl = document.getElementById('actionModal-sm');
+        modalEl = document.getElementById('lfs-modal-sm');
     } else if (targetId === "modal-body-lg") {
-        modalEl = document.getElementById('actionModal-lg');
+        modalEl = document.getElementById('lfs-modal-lg');
     } else if (targetId === "modal-body-xl") {
-        modalEl = document.getElementById('actionModal-xl');
+        modalEl = document.getElementById('lfs-modal-xl');
     }
     
     if (modalEl) {
