@@ -380,3 +380,168 @@ class TestStaticBlockViewIntegration:
 
         # Should NOT contain old button classes
         assert 'class="button ajax-save-button"' not in template_content, "Should not use old 'button' class"
+
+
+@pytest.mark.django_db
+class TestAddStaticBlockView:
+    """Test cases for AddStaticBlockView (CreateView)."""
+
+    def test_requires_authentication(self, request_factory):
+        """Test that the view requires user authentication."""
+        from lfs.manage.static_blocks.views import AddStaticBlockView
+        from django.contrib.auth.models import AnonymousUser
+
+        request = request_factory.get("/add-static-block/")
+        request.user = AnonymousUser()
+        view = AddStaticBlockView()
+        view.setup(request)
+
+        # Should require authentication
+        response = view.dispatch(request)
+        assert response.status_code == 302  # Redirect to login
+
+    def test_requires_manage_shop_permission(self, request_factory, regular_user):
+        """Test that the view requires manage_shop permission."""
+        from lfs.manage.static_blocks.views import AddStaticBlockView
+
+        request = request_factory.get("/add-static-block/")
+        request.user = regular_user
+        view = AddStaticBlockView()
+        view.setup(request)
+
+        # Should require manage_shop permission
+        response = view.dispatch(request)
+        assert response.status_code == 302  # Redirect due to missing permission
+
+    def test_allows_access_with_manage_permission(self, request_factory, manage_user):
+        """Test that the view allows access with proper permission."""
+        from lfs.manage.static_blocks.views import AddStaticBlockView
+
+        request = request_factory.get("/add-static-block/")
+        request.user = manage_user
+        view = AddStaticBlockView()
+        view.setup(request)
+
+        response = view.dispatch(request)
+        assert response.status_code == 200
+
+    def test_get_returns_successful_response(self, request_factory, manage_user):
+        """Test that GET request returns successful response."""
+        from lfs.manage.static_blocks.views import AddStaticBlockView
+
+        request = request_factory.get("/add-static-block/")
+        request.user = manage_user
+        view = AddStaticBlockView()
+        view.setup(request)
+
+        response = view.get(request)
+        assert response.status_code == 200
+        # Note: Full template rendering requires Shop setup, testing status code only
+
+    def test_get_context_data_includes_form(self, request_factory, manage_user):
+        """Test that context includes form for static block creation."""
+        from lfs.manage.static_blocks.views import AddStaticBlockView
+
+        request = request_factory.get("/add-static-block/")
+        request.user = manage_user
+        view = AddStaticBlockView()
+        view.setup(request)
+        view.object = None  # CreateView sets this to None initially
+
+        context = view.get_context_data()
+
+        assert "form" in context
+        assert "view" in context
+
+    def test_post_creates_new_static_block(self, request_factory, manage_user):
+        """Test that POST request creates a new static block."""
+        from lfs.manage.static_blocks.views import AddStaticBlockView
+        from lfs.catalog.models import StaticBlock
+
+        initial_count = StaticBlock.objects.count()
+
+        request = request_factory.post("/add-static-block/", {"name": "New Test Block", "html": "<p>Test content</p>"})
+        request.user = manage_user
+        view = AddStaticBlockView()
+        view.setup(request)
+
+        response = view.post(request)
+
+        # Should create new static block
+        assert StaticBlock.objects.count() == initial_count + 1
+        new_block = StaticBlock.objects.get(name="New Test Block")
+        # Note: HTML content might be set to empty string by view logic
+        assert new_block.html is not None
+
+    def test_post_sets_empty_html_when_none_provided(self, request_factory, manage_user):
+        """Test that POST sets empty HTML when none provided."""
+        from lfs.manage.static_blocks.views import AddStaticBlockView
+        from lfs.catalog.models import StaticBlock
+
+        request = request_factory.post("/add-static-block/", {"name": "Empty HTML Block"})
+        request.user = manage_user
+        view = AddStaticBlockView()
+        view.setup(request)
+
+        response = view.post(request)
+
+        new_block = StaticBlock.objects.get(name="Empty HTML Block")
+        assert new_block.html == ""
+
+    def test_post_htmx_request_returns_redirect_header(self, request_factory, manage_user):
+        """Test that HTMX POST returns HX-Redirect header."""
+        from lfs.manage.static_blocks.views import AddStaticBlockView
+
+        request = request_factory.post("/add-static-block/", {"name": "HTMX Test Block"})
+        request.user = manage_user
+        request.headers = {"HX-Request": "true"}
+        view = AddStaticBlockView()
+        view.setup(request)
+
+        response = view.post(request)
+
+        assert response.status_code == 200
+        assert "HX-Redirect" in response
+        assert "/manage/static-block/" in response["HX-Redirect"]
+
+    def test_post_request_returns_htmx_redirect(self, request_factory, manage_user):
+        """Test that POST returns HTMX redirect header."""
+        from lfs.manage.static_blocks.views import AddStaticBlockView
+
+        request = request_factory.post("/add-static-block/", {"name": "Regular Test Block"})
+        request.user = manage_user
+        view = AddStaticBlockView()
+        view.setup(request)
+
+        response = view.post(request)
+
+        assert response.status_code == 200  # HTMX response
+        assert response["HX-Redirect"]
+        assert "/manage/static-block/" in response["HX-Redirect"]
+
+    def test_uses_correct_template(self, request_factory, manage_user):
+        """Test that view uses the correct template."""
+        from lfs.manage.static_blocks.views import AddStaticBlockView
+
+        view = AddStaticBlockView()
+        assert view.template_name == "manage/static_block/add_static_block.html"
+
+    def test_form_validation_error_returns_form_response(self, request_factory, manage_user):
+        """Test that form validation errors are properly handled."""
+        from lfs.manage.static_blocks.views import AddStaticBlockView
+        from lfs.catalog.models import StaticBlock
+
+        initial_count = StaticBlock.objects.count()
+
+        # Submit form without required name field
+        request = request_factory.post("/add-static-block/", {"html": "<p>Content without name</p>"})
+        request.user = manage_user
+        view = AddStaticBlockView()
+        view.setup(request)
+
+        response = view.post(request)
+
+        # Should return form with errors (status 200, not redirect)
+        assert response.status_code == 200
+        # Should not create a new static block
+        assert StaticBlock.objects.count() == initial_count

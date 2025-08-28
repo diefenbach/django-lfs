@@ -1,18 +1,17 @@
 import json
 from typing import Dict, List, Tuple, Any, Optional
 
-# django imports
+from django import forms
 from django.contrib.auth.decorators import permission_required
-from django.urls import reverse
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
-from django.views.generic import UpdateView, FormView
-from django.contrib.auth.mixins import PermissionRequiredMixin
-from django import forms
+from django.views.generic import UpdateView, FormView, CreateView
 
-# lfs imports
 import lfs.core.utils
 from lfs.core.utils import LazyEncoder
 
@@ -177,33 +176,26 @@ class StaticBlockFilesView(PermissionRequiredMixin, StaticBlockTabMixin, FormVie
         return ctx
 
 
-@permission_required("core.manage_shop")
-def add_static_block(
-    request: HttpRequest, template_name: str = "manage/static_block/add_static_block.html"
-) -> HttpResponse:
-    """Provides a form to add a new static block."""
-    if request.method == "POST":
-        form = StaticBlockForm(data=request.POST)
-        if form.is_valid():
-            new_sb = form.save()
-            return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_static_block", kwargs={"id": new_sb.id}),
-                msg=_("Static block has been added."),
-            )
-    else:
-        form = StaticBlockForm()
+class AddStaticBlockView(CreateView):
+    """Provides a modal form to add a new static block."""
 
-    return render(
-        request,
-        template_name,
-        {
-            "form": form,
-            "static_blocks": StaticBlock.objects.all(),
-            "came_from": (request.POST if request.method == "POST" else request.GET).get(
-                "came_from", reverse("lfs_manage_static_blocks")
-            ),
-        },
-    )
+    model = StaticBlock
+    fields = ["name"]
+    template_name = "manage/static_block/add_static_block.html"
+
+    @method_decorator(permission_required("core.manage_shop"))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def form_valid(self, form):
+        static_block = form.save()
+        response = HttpResponse()
+        response["HX-Redirect"] = reverse("lfs_manage_static_block", kwargs={"id": static_block.id})
+        return response
+
+    def get_success_url(self):
+        """Return the URL to redirect to after successful form submission."""
+        return reverse("lfs_manage_static_block", kwargs={"id": self.object.id})
 
 
 @permission_required("core.manage_shop")
