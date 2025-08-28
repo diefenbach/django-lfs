@@ -29,11 +29,11 @@ class TestStaticBlockCRUDFlow:
 
         # Act: Navigate to StaticBlocks - first open HTML dropdown, then click
         page.click("#htmlDropdown")  # Open HTML dropdown menu using specific ID
-        page.wait_for_selector('a[href="/manage/static-blocks"]', state="visible")  # Wait for dropdown to open
-        page.click('a[href="/manage/static-blocks"]')  # Then click static blocks link
+        page.wait_for_selector('a[href="/manage/static-block"]', state="visible")  # Wait for dropdown to open
+        page.click('a[href="/manage/static-block"]')  # Then click static blocks link
 
         # Expect: Should see StaticBlocks management page (either list or no-blocks page)
-        expect(page).to_have_url(re.compile(r".*/manage/(static-blocks|no-static-blocks).*"))
+        expect(page).to_have_url(re.compile(r".*/manage/(static-block|no-static-block).*"))
         expect(page.get_by_role("heading", name="Static Blocks")).to_be_visible()
 
         # Act: Click Add StaticBlock button to open modal
@@ -56,10 +56,11 @@ class TestStaticBlockCRUDFlow:
 
     def test_user_can_edit_static_block(self, logged_in_page: Page, live_server, static_block_e2e):
         """User should be able to edit an existing StaticBlock."""
+
         page = logged_in_page
 
         # Arrange: Navigate to edit view of existing block
-        edit_url = f"{live_server.url}/manage/static-blocks/{static_block_e2e.id}/"
+        edit_url = f"{live_server.url}/manage/static-block/{static_block_e2e.id}/"
         page.goto(edit_url)
 
         # Expect: Should be on edit page
@@ -79,7 +80,7 @@ class TestStaticBlockCRUDFlow:
         page = logged_in_page
 
         # Arrange: Navigate to StaticBlocks list
-        page.goto(f"{live_server.url}/manage/static-blocks/")
+        page.goto(f"{live_server.url}/manage/static-block/")
 
         # Expect: Should see the test block
         expect(page.locator(f"text={static_block_e2e.name}")).to_be_visible()
@@ -107,7 +108,7 @@ class TestStaticBlockFileManagement:
         page = logged_in_page
 
         # Arrange: Navigate to files tab (assuming files are already present)
-        files_url = f"{live_server.url}/manage/static-blocks/{static_block_e2e.id}/files/"
+        files_url = f"{live_server.url}/manage/static-block/{static_block_e2e.id}/files/"
         page.goto(files_url)
 
         # Skip test if no files present
@@ -146,7 +147,7 @@ class TestStaticBlockJavaScriptInteractions:
         page = logged_in_page
 
         # Arrange: Navigate to StaticBlocks
-        page.goto(f"{live_server.url}/manage/static-blocks/")
+        page.goto(f"{live_server.url}/manage/static-block/")
 
         # Act: Click Add button to open modal
         page.click('button:has-text("Add Static Block")')
@@ -166,7 +167,7 @@ class TestStaticBlockJavaScriptInteractions:
         page = logged_in_page
 
         # Arrange: Navigate to StaticBlock edit
-        page.goto(f"{live_server.url}/manage/static-blocks/{static_block_e2e.id}/")
+        page.goto(f"{live_server.url}/manage/static-block/{static_block_e2e.id}/")
 
         # Act: Click Files tab
         page.click('a[href*="files"]:has-text("Files")')

@@ -66,31 +66,11 @@ def manage_user_e2e(db):
 
 
 @pytest.fixture
-def shop_e2e(transactional_db):
+def shop_e2e(db):
     """Shop instance with robust initialization handling."""
-    from django.core.management import call_command
     from lfs.core.models import Shop
 
-    # Check if shop already exists first
-    shop = Shop.objects.first()
-    if shop:
-        return shop
-
-    # Try to run lfs_init, but handle duplicate key errors gracefully
-    try:
-        call_command("lfs_init")
-    except Exception as e:
-        # If it fails due to existing data, that's usually fine for E2E tests
-        if "UNIQUE constraint failed" in str(e) or "duplicate key" in str(e).lower():
-            pass  # Data already exists, continue
-        else:
-            # For other errors, try creating minimal shop
-            print(f"lfs_init failed with: {e}, creating minimal shop")
-
-    # Get or create shop
-    shop = Shop.objects.first()
-    if not shop:
-        shop = Shop.objects.create(name="Test Shop", slug="test-shop")
+    shop = Shop.objects.create(name="Test Shop")
 
     return shop
 
@@ -170,6 +150,7 @@ def browser_type_launch_args(browser_type_launch_args):
         **browser_type_launch_args,
         "headless": False,  # Set to False for visual debugging
         "slow_mo": 0,  # Milliseconds to slow down operations
+        "args": ["--start-maximized", "--no-sandbox", "--disable-dev-shm-usage"],  # Start browser maximized
     }
 
 
