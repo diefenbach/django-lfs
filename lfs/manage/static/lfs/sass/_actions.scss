@@ -7,11 +7,23 @@
         font-weight: bold;
         display: block;
     }
+
     .action-group-name {
         font-size: .75rem;
         text-transform: uppercase;
         letter-spacing: .06em;
         color: #6c757d;
         margin: 1rem 0 .5rem;
+    }
+
+    .action-group { 
+        border: none; 
+    }
+
+    .action-group:not(:has(.action-item)) {
+        min-height: 40px;
+        border: 1px dashed #aaa;
+        border-radius: 4px;
+        box-sizing: border-box;
     }
 }

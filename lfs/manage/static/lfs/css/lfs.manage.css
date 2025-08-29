@@ -12,6 +12,15 @@
   color: #6c757d;
   margin: 1rem 0 0.5rem;
 }
+.lfs-actions .action-group {
+  border: none;
+}
+.lfs-actions .action-group:not(:has(.action-item)) {
+  min-height: 40px;
+  border: 1px dashed #aaa;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
 
 .scrollable-content {
   height: calc(100vh - 57px);

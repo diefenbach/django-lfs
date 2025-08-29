@@ -169,6 +169,22 @@ def multiple_actions_e2e(db, multiple_action_groups_e2e):
     return actions
 
 
+@pytest.fixture
+def multiple_actions_same_group_e2e(db, action_group_e2e):
+    """Multiple Actions in the same group for E2E testing."""
+    actions = []
+    for i in range(1, 4):  # 3 actions in the same group
+        action = Action.objects.create(
+            title=f"Same Group Action {i}",
+            link=f"https://example.com/same-group-{i}",
+            active=True,
+            group=action_group_e2e,
+            position=i,
+        )
+        actions.append(action)
+    return actions
+
+
 def accept_cookie_banner(page: Page):
     """Helper function to close chat widget and accept cookie banner if present."""
     try:
