@@ -37,9 +37,14 @@ function initActionGroupDnD() {
 
 function initActionsUI() {
     initActionGroupDnD();
-    new SidebarSearch();
+    // SidebarSearch removed - using HTMX backend search instead
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initActionsUI();
+});
+
+document.addEventListener('htmx:afterSwap', () => {
+    // Re-initialize drag & drop after HTMX swaps
+    initActionGroupDnD();
 });

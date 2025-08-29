@@ -8,21 +8,34 @@
                 <h2 class="h4 mb-3">{% trans "Actions" %}</h2>
                 <div class="input-group">
                     <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                    <input type="search" class="form-control" placeholder="Suchen …" aria-label="Suchen">
+                    <input type="search" 
+                           class="form-control" 
+                           placeholder="Suchen …" 
+                           name="q"
+                           value="{{ search_query }}"
+                           hx-get="{{ request.path }}"
+                           hx-target="#action-groups"
+                           hx-select="#action-groups"
+                           hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                           hx-include="this"
+                           hx-push-url="true"
+                           aria-label="Suchen">
                   </div>
         
                 <div id="action-groups" hx-swap-oob="true">
                     {% for group in groups %}
-                        <div class="action-group-name mt-3 mb-2">{{ group.name }}</div>
-                            <div class="action-group" data-list="{{ group.id }}">
-                                {% for group_action in group.actions.all %}
-                                    <a class="d-block p-2 mb-1 border rounded text-decoration-none action-item {% if group_action.id == action.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
-                                       data-id="{{ group_action.id }}" 
-                                       href="{% url 'lfs_manage_action' group_action.id %}">
-                                       {{ group_action.title }}
-                                    </a>
-                                {% endfor %}
-                            </div>
+                        {% if group.filtered_actions %}
+                            <div class="action-group-name mt-3 mb-2">{{ group.name }}</div>
+                                <div class="action-group" data-list="{{ group.id }}">
+                                    {% for group_action in group.filtered_actions %}
+                                        <a class="d-block p-2 mb-1 border rounded text-decoration-none action-item {% if group_action.id == action.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
+                                           data-id="{{ group_action.id }}" 
+                                           href="{% url 'lfs_manage_action' group_action.id %}?q={{ search_query }}">
+                                           {{ group_action.title }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </aside>
@@ -79,6 +92,7 @@
                     <form hx-post="."
                           hx-swap="none">
                         {% csrf_token %}
+                        <input type="hidden" name="q" value="{{ search_query }}" id="search-query" hx-swap-oob="true">
                         {{ form|crispy }}
                         <div class="buttons">
                             <button class="btn btn-primary" type="submit">

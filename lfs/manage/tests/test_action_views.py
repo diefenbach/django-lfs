@@ -153,6 +153,53 @@ class TestActionUpdateView:
         assert super_called
         assert isinstance(response, HttpResponse)
 
+    def test_get_action_groups_queryset_without_search(self, request_factory, action_group):
+        """Should return all action groups with all actions when no search query provided."""
+        # Create test actions
+        action1 = Action.objects.create(title="Test Action 1", group=action_group)
+        action2 = Action.objects.create(title="Another Action", group=action_group)
+
+        view = ActionUpdateView()
+        view.request = request_factory.get("/test/")
+
+        groups = view.get_action_groups_queryset()
+
+        assert groups.count() == 1
+        group = groups.first()
+        assert group == action_group
+        assert action1 in group.filtered_actions
+        assert action2 in group.filtered_actions
+
+    def test_get_action_groups_queryset_with_search(self, request_factory, action_group):
+        """Should return filtered action groups when search query provided."""
+        # Create test actions
+        action1 = Action.objects.create(title="Test Action", group=action_group)
+        action2 = Action.objects.create(title="Another Action", group=action_group)
+        action3 = Action.objects.create(title="Test Something", group=action_group)
+
+        view = ActionUpdateView()
+        view.request = request_factory.get("/test/", {"q": "Test"})
+
+        groups = view.get_action_groups_queryset()
+
+        assert groups.count() == 1
+        group = groups.first()
+        assert group == action_group
+        assert action1 in group.filtered_actions
+        assert action2 not in group.filtered_actions  # "Another Action" doesn't contain "Test"
+        assert action3 in group.filtered_actions
+
+    def test_get_context_data_includes_search_query(self, request_factory, action_group, action):
+        """Should include search query in context."""
+        view = ActionUpdateView()
+        view.request = request_factory.get("/test/", {"q": "test_search"})
+        view.object = action
+
+        context = view.get_context_data()
+
+        assert "search_query" in context
+        assert context["search_query"] == "test_search"
+
 
 class TestNoActionsView:
     """Test the NoActionsView template view."""

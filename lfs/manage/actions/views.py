@@ -35,11 +35,39 @@ class ActionUpdateView(PermissionRequiredMixin, UpdateView):
     permission_required = "core.manage_shop"
 
     def get_success_url(self):
-        return reverse_lazy("lfs_manage_action", kwargs={"pk": self.object.id})
+        search_query = self.request.POST.get("q", "")
+        url = reverse_lazy("lfs_manage_action", kwargs={"pk": self.object.id})
+        if search_query:
+            url = f"{url}?q={search_query}"
+        print(url)
+        return url
+
+    def get_action_groups_queryset(self):
+        """Liefert gefilterte ActionGroups mit Actions basierend auf Suchparameter."""
+        search_query = self.request.GET.get("q", "").strip()
+
+        if search_query:
+            # Filtere Actions basierend auf Titel und hole deren Gruppen
+            filtered_actions = Action.objects.filter(title__icontains=search_query)
+            group_ids = filtered_actions.values_list("group_id", flat=True).distinct()
+            # Hole nur Gruppen, die gefilterte Actions enthalten
+            groups = ActionGroup.objects.filter(id__in=group_ids)
+
+            # Füge gefilterte Actions zu jeder Gruppe hinzu
+            for group in groups:
+                group.filtered_actions = filtered_actions.filter(group=group).order_by("position")
+        else:
+            # Alle Gruppen mit allen Actions
+            groups = ActionGroup.objects.all()
+            for group in groups:
+                group.filtered_actions = group.actions.all()
+
+        return groups
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["groups"] = ActionGroup.objects.all()
+        context["groups"] = self.get_action_groups_queryset()
+        context["search_query"] = self.request.GET.get("q", "")
         return context
 
     def form_valid(self, form):
