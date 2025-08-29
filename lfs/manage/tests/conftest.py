@@ -16,6 +16,7 @@ from django.contrib.auth import get_user_model
 from django.test import RequestFactory
 
 from lfs.catalog.models import StaticBlock
+from lfs.core.models import Action, ActionGroup
 
 
 User = get_user_model()
@@ -79,3 +80,60 @@ def authenticated_request(request_factory, manage_user):
         return request
 
     return _make_request
+
+
+@pytest.fixture
+def action_group(db):
+    """Sample ActionGroup for testing."""
+    return ActionGroup.objects.create(name="Test Group")
+
+
+@pytest.fixture
+def action(db, action_group):
+    """Sample Action for testing."""
+    return Action.objects.create(
+        title="Test Action", link="https://example.com", active=True, group=action_group, position=10
+    )
+
+
+@pytest.fixture
+def multiple_actions(db, action_group):
+    """Multiple Actions for list testing."""
+    actions = []
+    for i in range(3):
+        action = Action.objects.create(
+            title=f"Test Action {i+1}",
+            link=f"https://example{i+1}.com",
+            active=True,
+            group=action_group,
+            position=(i + 1) * 10,
+        )
+        actions.append(action)
+    return actions
+
+
+@pytest.fixture
+def multiple_action_groups(db):
+    """Multiple ActionGroups for testing."""
+    groups = []
+    for i in range(3):
+        group = ActionGroup.objects.create(name=f"Test Group {i+1}")
+        groups.append(group)
+    return groups
+
+
+@pytest.fixture
+def action_with_mixed_groups(db, multiple_action_groups):
+    """Actions distributed across multiple groups."""
+    actions = []
+    for i, group in enumerate(multiple_action_groups):
+        for j in range(2):  # 2 actions per group
+            action = Action.objects.create(
+                title=f"Action {i+1}-{j+1}",
+                link=f"https://example{i+1}-{j+1}.com",
+                active=True,
+                group=group,
+                position=(j + 1) * 10,
+            )
+            actions.append(action)
+    return actions
