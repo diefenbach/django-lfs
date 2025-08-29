@@ -144,6 +144,17 @@
         </nav>
 
         {% block main %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} position-fixed top-0 end-0 m-3 fade show" style="z-index: 1050;" id="auto-dismiss-alert-{{ forloop.counter }}">{{ message }}</div>
+                <script>
+                    setTimeout(function() {
+                        var alert = document.getElementById('auto-dismiss-alert-{{ forloop.counter }}');
+                        if (alert) {
+                            alert.classList.remove('show');
+                        }
+                    }, 2000);
+                </script>
+            {% endfor %}
             <div class="flex-grow-1">
                 <div class="container-fluid">
                     {% block content %}{% endblock %}

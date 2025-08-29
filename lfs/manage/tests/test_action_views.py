@@ -143,10 +143,11 @@ class TestActionUpdateView:
         assert "groups" in context
         assert action_group in context["groups"]
 
-    def test_form_valid_calls_update_positions(self, action, monkeypatch):
+    def test_form_valid_calls_update_positions(self, action, request_factory, monkeypatch):
         """Should call _update_positions after successful form submission."""
         view = ActionUpdateView()
         view.object = action
+        view.request = request_factory.post("/")
 
         mock_form = MagicMock()
         update_called = False
@@ -162,8 +163,12 @@ class TestActionUpdateView:
             assert form == mock_form
             return HttpResponse()
 
+        def mock_messages_success(request, message):
+            pass  # Mock the messages.success call
+
         monkeypatch.setattr("lfs.manage.actions.views._update_positions", mock_update_positions)
         monkeypatch.setattr("django.views.generic.edit.UpdateView.form_valid", mock_super_form_valid)
+        monkeypatch.setattr("lfs.manage.actions.views.messages.success", mock_messages_success)
 
         response = view.form_valid(mock_form)
 
@@ -296,9 +301,10 @@ class TestActionCreateView:
 
         assert context["came_from"] == "/manage/actions/"
 
-    def test_form_valid_creates_action_and_returns_htmx_redirect(self, action_group, monkeypatch):
-        """Should create action, update positions, and return HTMX redirect."""
+    def test_form_valid_creates_action_and_calls_update_positions(self, action_group, request_factory, monkeypatch):
+        """Should create action, update positions, and return normal redirect response."""
         view = ActionCreateView()
+        view.request = request_factory.post("/")
 
         mock_form = MagicMock()
         mock_action = Action(id=123, title="New Action")
@@ -310,19 +316,20 @@ class TestActionCreateView:
             nonlocal update_called
             update_called = True
 
-        def mock_reverse(view_name, kwargs=None):
-            if view_name == "lfs_manage_action" and kwargs and kwargs.get("pk") == 123:
-                return "/manage/action/123/"
-            return f"/mock-url/{view_name}/"
+        def mock_super_form_valid(self, form):
+            # Mock the super().form_valid() call
+            return HttpResponseRedirect("/success/")
+
+        def mock_messages_success(request, message):
+            pass  # Mock the messages.success call
 
         monkeypatch.setattr("lfs.manage.actions.views._update_positions", mock_update_positions)
-        monkeypatch.setattr("lfs.manage.actions.views.reverse", mock_reverse)
+        monkeypatch.setattr("django.views.generic.edit.CreateView.form_valid", mock_super_form_valid)
+        monkeypatch.setattr("lfs.manage.actions.views.messages.success", mock_messages_success)
 
         response = view.form_valid(mock_form)
 
-        assert isinstance(response, HttpResponse)
-        assert response["HX-Redirect"] == "/manage/action/123/"
-        mock_form.save.assert_called_once()
+        assert isinstance(response, HttpResponseRedirect)
         assert update_called
 
 
@@ -351,15 +358,19 @@ class TestActionDeleteView:
         def mock_get_object():
             return multiple_actions[0]
 
+        def mock_messages_success(request, message):
+            pass  # Mock the messages.success call
+
         monkeypatch.setattr(view, "get_object", mock_get_object)
+        monkeypatch.setattr("lfs.manage.actions.views.messages.success", mock_messages_success)
 
         response = view.post(request)
 
-        assert isinstance(response, HttpResponseRedirect)
-        # Should redirect to one of the remaining actions
+        assert isinstance(response, HttpResponse)
+        # Should have HX-Redirect header to one of the remaining actions
         remaining_action = Action.objects.exclude(pk=multiple_actions[0].pk).first()
         expected_url = reverse("lfs_manage_action", kwargs={"pk": remaining_action.id})
-        assert response.url == expected_url
+        assert response["HX-Redirect"] == expected_url
 
     def test_post_returns_htmx_redirect_when_no_actions_remain(self, request_factory, action, monkeypatch):
         """Should return HTMX redirect to no actions when last action is deleted."""
@@ -372,7 +383,11 @@ class TestActionDeleteView:
         def mock_get_object():
             return action
 
+        def mock_messages_success(request, message):
+            pass  # Mock the messages.success call
+
         monkeypatch.setattr(view, "get_object", mock_get_object)
+        monkeypatch.setattr("lfs.manage.actions.views.messages.success", mock_messages_success)
 
         response = view.post(request)
 

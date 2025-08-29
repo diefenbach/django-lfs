@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponse
@@ -7,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
+
 
 from lfs.core.models import Action
 from lfs.core.models import ActionGroup
@@ -32,7 +34,6 @@ class ActionUpdateView(PermissionRequiredMixin, UpdateView):
     template_name = "manage/actions/action.html"
     permission_required = "core.manage_shop"
     context_object_name = "action"
-    permission_required = "core.manage_shop"
 
     def get_success_url(self):
         search_query = self.request.POST.get("q", "")
@@ -72,6 +73,9 @@ class ActionUpdateView(PermissionRequiredMixin, UpdateView):
     def form_valid(self, form):
         response = super().form_valid(form)
         _update_positions()
+
+        messages.success(self.request, _("Action has been saved."))
+
         return response
 
 
@@ -88,6 +92,13 @@ class ActionCreateView(PermissionRequiredMixin, CreateView):
     template_name = "manage/actions/add_action.html"
     permission_required = "core.manage_shop"
 
+    def get_success_url(self):
+        search_query = self.request.POST.get("q", "")
+        url = reverse_lazy("lfs_manage_action", kwargs={"pk": self.object.id})
+        if search_query:
+            url = f"{url}?q={search_query}"
+        return url
+
     def get_form_kwargs(self):
         # Add prefix to form fields to avoid conflicts with existing fields, as this view is used within a modal
         kwargs = super().get_form_kwargs()
@@ -101,11 +112,11 @@ class ActionCreateView(PermissionRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        action = form.save()
+        response = super().form_valid(form)
         _update_positions()
 
-        response = HttpResponse()
-        response["HX-Redirect"] = reverse("lfs_manage_action", kwargs={"pk": action.id})
+        messages.success(self.request, _("Action has been added."))
+
         return response
 
 
@@ -119,13 +130,17 @@ class ActionDeleteView(PermissionRequiredMixin, DeleteView):
         self.object = self.get_object()
         self.object.delete()
 
+        messages.success(self.request, _("Action has been deleted."))
+
+        response = HttpResponse()
         first_action = Action.objects.exclude(pk=self.object.pk).first()
         if first_action:
-            return HttpResponseRedirect(reverse("lfs_manage_action", kwargs={"pk": first_action.id}))
+            response["HX-Redirect"] = reverse("lfs_manage_action", kwargs={"pk": first_action.id})
+
         else:
-            response = HttpResponse()
             response["HX-Redirect"] = reverse("lfs_no_actions")
-            return response
+
+        return response
 
 
 @permission_required("core.manage_shop")

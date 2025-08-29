@@ -20,7 +20,7 @@
                            hx-include="this"
                            hx-push-url="true"
                            aria-label="Suchen">
-                  </div>
+                </div>
         
                 <div id="action-groups" hx-swap-oob="true">
                     {% for group in groups %}
@@ -41,9 +41,7 @@
         <main class="col-9 p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="h4 mb-3">{% trans 'Edit Action' %}</h2>
-                <div class="site-actions mb-3" 
-                     id="site-actions" 
-                     hx-swap-oob="true">
+                <div class="site-actions mb-3">
 
                     <button class="btn btn-sm btn-outline-primary" 
                         hx-get="{% url 'lfs_add_action' %}" 
@@ -87,8 +85,7 @@
                         id="data-content" 
                         role="tabpanel" 
                         aria-labelledby="data-tab">
-                    <form hx-post="."
-                          hx-swap="none">
+                    <form action="." method="post">
                         {% csrf_token %}
                         <input type="hidden" name="q" value="{{ search_query }}" id="search-query" hx-swap-oob="true">
                         {{ form|crispy }}
