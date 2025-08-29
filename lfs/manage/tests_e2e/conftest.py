@@ -22,6 +22,7 @@ from django.contrib.auth import get_user_model
 from playwright.sync_api import Browser, BrowserContext, Page
 
 from lfs.catalog.models import StaticBlock
+from lfs.core.models import Action, ActionGroup
 
 
 User = get_user_model()
@@ -114,6 +115,58 @@ def static_block_with_files_e2e(db, shop_e2e):
         )
 
     return static_block
+
+
+@pytest.fixture
+def action_group_e2e(db):
+    """ActionGroup for E2E testing."""
+    return ActionGroup.objects.create(name="E2E Test Group")
+
+
+@pytest.fixture
+def action_e2e(db, action_group_e2e):
+    """Action for E2E testing."""
+    return Action.objects.create(
+        title="E2E Test Action", link="https://example.com/e2e-test", active=True, group=action_group_e2e, position=1
+    )
+
+
+@pytest.fixture
+def action_with_group_e2e(db, action_group_e2e):
+    """Action with group for E2E testing."""
+    return Action.objects.create(
+        title="E2E Action with Group",
+        link="https://example.com/e2e-group",
+        active=True,
+        group=action_group_e2e,
+        position=2,
+    )
+
+
+@pytest.fixture
+def multiple_action_groups_e2e(db):
+    """Multiple ActionGroups for E2E testing."""
+    groups = []
+    for i in range(1, 4):  # 3 groups
+        group = ActionGroup.objects.create(name=f"E2E Test Group {i}")
+        groups.append(group)
+    return groups
+
+
+@pytest.fixture
+def multiple_actions_e2e(db, multiple_action_groups_e2e):
+    """Multiple Actions across groups for E2E testing."""
+    actions = []
+    for i, group in enumerate(multiple_action_groups_e2e):
+        action = Action.objects.create(
+            title=f"E2E Test Action {i+1}",
+            link=f"https://example.com/e2e-action-{i+1}",
+            active=True,
+            group=group,
+            position=i + 1,
+        )
+        actions.append(action)
+    return actions
 
 
 def accept_cookie_banner(page: Page):
