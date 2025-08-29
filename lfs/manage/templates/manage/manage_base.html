@@ -153,12 +153,10 @@
 
         {% block footer %}
             <footer class="footer bg-dark mt-auto fixed-bottom py-3">
-                <div class="container text-light d-flex flex-column align-items-center">
-                    <div>{% trans 'Powered by' %} <a target="_blank" href="http://www.getlfs.com">LFS</a> &mdash; Lightning Fast Shop</div>
-                    <div>
-                        &copy; 2009 - {% now "Y" %} {% trans 'by' %} Kai Diefenbach and contributors &mdash; {% trans 'All rights reserved' %}
-                    </div>
-                    <div>{% trans 'Distributed under the' %} <a target="_blank" href="http://www.opensource.org/licenses/bsd-license.php">{% trans 'BSD-License' %}</a></div>
+                <div class="container text-light align-items-center">
+                    <a target="_blank" class="text-light" href="http://www.getlfs.com">LFS</a> &mdash; Lightning Fast Shop 
+                    &copy; 2009 - {% now "Y" %} {% trans 'by' %} Kai Diefenbach and contributors &mdash; {% trans 'All rights reserved' %} &mdash;
+                    {% trans 'Distributed under the' %} <a target="_blank" class="text-light" href="http://www.opensource.org/licenses/bsd-license.php">{% trans 'BSD-License' %}</a>
                 </div>
             </footer>
         {% endblock %}
