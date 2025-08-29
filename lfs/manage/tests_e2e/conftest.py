@@ -184,12 +184,13 @@ def browser_type_launch_args(browser_type_launch_args):
     import os
 
     # Use headless by default, except when PLAYWRIGHT_DEBUG is set
-    is_headless = os.getenv("PLAYWRIGHT_DEBUG") != "1"
+    is_headless = not os.getenv("PLAYWRIGHT_DEBUG")
+    slow_mo = os.getenv("PLAYWRIGHT_SLOWMO", 0)
 
     return {
         **browser_type_launch_args,
         "headless": is_headless,  # Headless for parallel execution
-        "slow_mo": 0,  # Milliseconds to slow down operations
+        "slow_mo": int(slow_mo),  # Milliseconds to slow down operations
         "args": ["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],  # Optimized for headless
     }
 

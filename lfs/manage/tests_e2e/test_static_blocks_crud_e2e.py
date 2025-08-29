@@ -109,77 +109,8 @@ class TestStaticBlockCRUDFlow:
         expect(page.locator(f"text={static_block_e2e.name}")).not_to_be_visible()
 
 
-@pytest.mark.e2e
-@pytest.mark.django_db
-class TestStaticBlockFileManagement:
-    """Test file upload and management functionality."""
-
-    @pytest.mark.parametrize(
-        "expected_file_count,checkbox_selector",
-        [
-            (3, ".select-delete-files"),
-        ],
-    )
-    def test_select_all_checkbox_functionality(
-        self, logged_in_page: Page, live_server, static_block_with_files_e2e, expected_file_count, checkbox_selector
-    ):
-        """Select All checkbox should work with three-state behavior."""
-        page = logged_in_page
-
-        # Arrange: Navigate to files tab with dummy files
-        files_url = f"{live_server.url}/manage/static-block/{static_block_with_files_e2e.id}/files/"
-        page.goto(files_url)
-
-        # Wait for files to load
-        page.wait_for_selector(checkbox_selector, timeout=2000)
-
-        # Expect: Should have expected number of dummy files
-        individual_checkboxes = page.locator(checkbox_selector)
-        expect(individual_checkboxes).to_have_count(expected_file_count)
-
-        # Act: Click select all checkbox
-        page.click("#select-all-files")
-
-        # Expect: All individual checkboxes should be checked
-        individual_checkboxes = page.locator(checkbox_selector)
-        for i in range(individual_checkboxes.count()):
-            expect(individual_checkboxes.nth(i)).to_be_checked()
-
-        # Act: Uncheck one individual checkbox
-        individual_checkboxes.first.click()
-
-        # Expect: Select all checkbox should be in indeterminate state
-        # Note: Playwright doesn't have direct indeterminate check, but we can verify behavior
-        expect(page.locator("#select-all-files")).not_to_be_checked()
-
-        # Act: Check the individual checkbox again
-        individual_checkboxes.first.click()
-
-        # Expect: Select all checkbox should be checked again
-        expect(page.locator("#select-all-files")).to_be_checked()
-
-
-@pytest.mark.e2e
-@pytest.mark.django_db
-class TestStaticBlockJavaScriptInteractions:
-    """Test JavaScript functionality and modal behavior."""
-
-    def test_modal_opens_and_closes_correctly(self, logged_in_page: Page, live_server):
-        """Modal should open and close without flickering."""
-        page = logged_in_page
-
-        # Arrange: Navigate to StaticBlocks
-        navigate_to_static_blocks(page, live_server)
-
-        # Act: Open modal
-        open_add_static_block_modal(page)
-        modal = page.locator(".modal")
-
-        # Act: Close modal via close button
-        page.click(".modal .btn-close")
-
-        # Expect: Modal should be hidden
-        expect(modal).not_to_be_visible()
+# File management tests moved to: test_static_blocks_file_management_e2e.py
+# UI interaction tests moved to: test_static_blocks_ui_e2e.py
 
 
 # Test configuration
