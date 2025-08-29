@@ -17,6 +17,7 @@ from django.test import RequestFactory
 
 from lfs.catalog.models import StaticBlock
 from lfs.core.models import Action, ActionGroup
+from lfs.catalog.models import File
 
 
 User = get_user_model()
@@ -137,3 +138,27 @@ def action_with_mixed_groups(db, multiple_action_groups):
             )
             actions.append(action)
     return actions
+
+
+@pytest.fixture
+def files_for_static_block(db, static_block):
+    """Multiple Files attached to a StaticBlock for testing."""
+    files = []
+    for i in range(3):
+        file_obj = File.objects.create(
+            content=static_block,
+            title=f"Test File {i+1}",
+            position=(i + 1) * 10,
+        )
+        files.append(file_obj)
+    return files
+
+
+@pytest.fixture
+def single_file(db, static_block):
+    """Single File for testing."""
+    return File.objects.create(
+        content=static_block,
+        title="Test File",
+        position=10,
+    )
