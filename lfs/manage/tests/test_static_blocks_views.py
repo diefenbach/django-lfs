@@ -19,6 +19,7 @@ from lfs.manage.static_blocks.views import (
     StaticBlockDataView,
     StaticBlockFilesView,
     StaticBlockTabMixin,
+    AddStaticBlockView,
     manage_static_blocks,
 )
 
@@ -94,17 +95,17 @@ class TestStaticBlockDataView:
 
         assert view.has_permission()
 
-    def test_tab_name_is_data(self):
-        """Should have tab_name set to 'data'."""
+    @pytest.mark.parametrize(
+        "attribute,expected",
+        [
+            ("tab_name", "data"),
+            ("model", StaticBlock),
+        ],
+    )
+    def test_view_configuration(self, attribute, expected):
+        """Should have correct view configuration."""
         view = StaticBlockDataView()
-
-        assert view.tab_name == "data"
-
-    def test_uses_correct_model(self):
-        """Should use StaticBlock model."""
-        view = StaticBlockDataView()
-
-        assert view.model == StaticBlock
+        assert getattr(view, attribute) == expected
 
     def test_get_success_url_returns_data_tab_url(self, static_block):
         """Should return URL to data tab after successful save."""
@@ -148,11 +149,16 @@ class TestStaticBlockFilesView:
 
         assert not view.has_permission()
 
-    def test_tab_name_is_files(self):
-        """Should have tab_name set to 'files'."""
+    @pytest.mark.parametrize(
+        "attribute,expected",
+        [
+            ("tab_name", "files"),
+        ],
+    )
+    def test_view_configuration(self, attribute, expected):
+        """Should have correct view configuration."""
         view = StaticBlockFilesView()
-
-        assert view.tab_name == "files"
+        assert getattr(view, attribute) == expected
 
     def test_get_success_url_returns_files_tab_url(self, static_block):
         """Should return URL to files tab after successful operation."""
@@ -390,48 +396,36 @@ class TestStaticBlockViewIntegration:
 class TestAddStaticBlockView:
     """Test cases for AddStaticBlockView (CreateView)."""
 
-    def test_requires_authentication(self, request_factory):
-        """Test that the view requires user authentication."""
-        from lfs.manage.static_blocks.views import AddStaticBlockView
-        from django.contrib.auth.models import AnonymousUser
+    @pytest.mark.parametrize(
+        "user_type,expected_status,description",
+        [
+            ("anonymous", 302, "requires authentication"),
+            ("regular", 302, "requires manage_shop permission"),
+            ("manager", 200, "allows access with proper permission"),
+        ],
+    )
+    def test_permission_requirements(
+        self, request_factory, user_type, expected_status, description, regular_user, manage_user
+    ):
+        """Test view permission requirements for different user types."""
+        # Select user based on type
+        if user_type == "anonymous":
+            user = AnonymousUser()
+        elif user_type == "regular":
+            user = regular_user
+        else:  # manager
+            user = manage_user
 
         request = request_factory.get("/add-static-block/")
-        request.user = AnonymousUser()
-        view = AddStaticBlockView()
-        view.setup(request)
-
-        # Should require authentication
-        response = view.dispatch(request)
-        assert response.status_code == 302  # Redirect to login
-
-    def test_requires_manage_shop_permission(self, request_factory, regular_user):
-        """Test that the view requires manage_shop permission."""
-        from lfs.manage.static_blocks.views import AddStaticBlockView
-
-        request = request_factory.get("/add-static-block/")
-        request.user = regular_user
-        view = AddStaticBlockView()
-        view.setup(request)
-
-        # Should require manage_shop permission
-        response = view.dispatch(request)
-        assert response.status_code == 302  # Redirect due to missing permission
-
-    def test_allows_access_with_manage_permission(self, request_factory, manage_user):
-        """Test that the view allows access with proper permission."""
-        from lfs.manage.static_blocks.views import AddStaticBlockView
-
-        request = request_factory.get("/add-static-block/")
-        request.user = manage_user
+        request.user = user
         view = AddStaticBlockView()
         view.setup(request)
 
         response = view.dispatch(request)
-        assert response.status_code == 200
+        assert response.status_code == expected_status, f"Failed: {description}"
 
     def test_get_returns_successful_response(self, request_factory, manage_user):
         """Test that GET request returns successful response."""
-        from lfs.manage.static_blocks.views import AddStaticBlockView
 
         request = request_factory.get("/add-static-block/")
         request.user = manage_user
@@ -444,7 +438,6 @@ class TestAddStaticBlockView:
 
     def test_get_context_data_includes_form(self, request_factory, manage_user):
         """Test that context includes form for static block creation."""
-        from lfs.manage.static_blocks.views import AddStaticBlockView
 
         request = request_factory.get("/add-static-block/")
         request.user = manage_user
@@ -459,7 +452,7 @@ class TestAddStaticBlockView:
 
     def test_post_creates_new_static_block(self, request_factory, manage_user):
         """Test that POST request creates a new static block."""
-        from lfs.manage.static_blocks.views import AddStaticBlockView
+
         from lfs.catalog.models import StaticBlock
 
         initial_count = StaticBlock.objects.count()
@@ -479,7 +472,7 @@ class TestAddStaticBlockView:
 
     def test_post_sets_empty_html_when_none_provided(self, request_factory, manage_user):
         """Test that POST sets empty HTML when none provided."""
-        from lfs.manage.static_blocks.views import AddStaticBlockView
+
         from lfs.catalog.models import StaticBlock
 
         request = request_factory.post("/add-static-block/", {"name": "Empty HTML Block"})
@@ -494,7 +487,6 @@ class TestAddStaticBlockView:
 
     def test_post_htmx_request_returns_redirect_header(self, request_factory, manage_user):
         """Test that HTMX POST returns HX-Redirect header."""
-        from lfs.manage.static_blocks.views import AddStaticBlockView
 
         request = request_factory.post("/add-static-block/", {"name": "HTMX Test Block"})
         request.user = manage_user
@@ -510,7 +502,6 @@ class TestAddStaticBlockView:
 
     def test_post_request_returns_htmx_redirect(self, request_factory, manage_user):
         """Test that POST returns HTMX redirect header."""
-        from lfs.manage.static_blocks.views import AddStaticBlockView
 
         request = request_factory.post("/add-static-block/", {"name": "Regular Test Block"})
         request.user = manage_user
@@ -525,14 +516,13 @@ class TestAddStaticBlockView:
 
     def test_uses_correct_template(self, request_factory, manage_user):
         """Test that view uses the correct template."""
-        from lfs.manage.static_blocks.views import AddStaticBlockView
 
         view = AddStaticBlockView()
         assert view.template_name == "manage/static_block/add_static_block.html"
 
     def test_form_validation_error_returns_form_response(self, request_factory, manage_user):
         """Test that form validation errors are properly handled."""
-        from lfs.manage.static_blocks.views import AddStaticBlockView
+
         from lfs.catalog.models import StaticBlock
 
         initial_count = StaticBlock.objects.count()
