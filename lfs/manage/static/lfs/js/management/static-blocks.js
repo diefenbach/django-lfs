@@ -94,10 +94,9 @@ class SelectAllCheckboxManager {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    new SidebarSearch();
     new SelectAllCheckboxManager();
 });
 
 document.addEventListener('htmx:afterSwap', function() {
-    new SidebarSearch();
+    new SelectAllCheckboxManager();
 });

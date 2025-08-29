@@ -35,6 +35,16 @@ class StaticBlockTabMixin:
         """Holt das StaticBlock-Objekt."""
         return get_object_or_404(StaticBlock, pk=self.kwargs["id"])
 
+    def get_static_blocks_queryset(self):
+        """Liefert gefilterte StaticBlocks basierend auf Suchparameter."""
+        queryset = StaticBlock.objects.all().order_by("name")
+        search_query = self.request.GET.get("q", "").strip()
+
+        if search_query:
+            queryset = queryset.filter(name__icontains=search_query)
+
+        return queryset
+
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Erweitert Kontext um Tab-Navigation und StaticBlock."""
         ctx = super().get_context_data(**kwargs)
@@ -43,7 +53,8 @@ class StaticBlockTabMixin:
         ctx.update(
             {
                 "current_static_block": static_block,
-                "static_blocks": StaticBlock.objects.all().order_by("name"),
+                "static_blocks": self.get_static_blocks_queryset(),
+                "search_query": self.request.GET.get("q", ""),
                 "active_tab": self.tab_name,
                 "tabs": self._get_tabs(static_block),
                 "current_id": static_block.pk,
@@ -52,10 +63,23 @@ class StaticBlockTabMixin:
         return ctx
 
     def _get_tabs(self, static_block: StaticBlock) -> List[Tuple[str, str]]:
-        """Erstellt Tab-Navigation URLs."""
+        """Erstellt Tab-Navigation URLs mit Suchparameter."""
+        search_query = self.request.GET.get("q", "").strip()
+
+        data_url = reverse("lfs_manage_static_block", args=[static_block.pk])
+        files_url = reverse("lfs_manage_static_block_files", args=[static_block.pk])
+
+        # Füge Suchparameter hinzu, falls vorhanden
+        if search_query:
+            from urllib.parse import urlencode
+
+            query_params = urlencode({"q": search_query})
+            data_url += "?" + query_params
+            files_url += "?" + query_params
+
         return [
-            ("data", reverse("lfs_manage_static_block", args=[static_block.pk])),
-            ("files", reverse("lfs_manage_static_block_files", args=[static_block.pk])),
+            ("data", data_url),
+            ("files", files_url),
         ]
 
 

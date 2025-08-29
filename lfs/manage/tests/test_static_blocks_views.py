@@ -48,15 +48,66 @@ class TestStaticBlockTabMixin:
         with pytest.raises(Http404):
             mixin.get_static_block()
 
-    def test_get_tabs_returns_correct_navigation_urls(self, static_block):
-        """Should return list of tab navigation URLs."""
+    def test_get_tabs_returns_correct_navigation_urls_without_search(self, static_block, rf):
+        """Should return list of tab navigation URLs without search parameters."""
         mixin = StaticBlockTabMixin()
+        mixin.request = rf.get("/test/")
 
         tabs = mixin._get_tabs(static_block)
 
         assert len(tabs) == 2
         assert tabs[0] == ("data", reverse("lfs_manage_static_block", args=[static_block.pk]))
         assert tabs[1] == ("files", reverse("lfs_manage_static_block_files", args=[static_block.pk]))
+
+    def test_get_tabs_returns_correct_navigation_urls_with_search(self, static_block, rf):
+        """Should return list of tab navigation URLs with search parameters."""
+        mixin = StaticBlockTabMixin()
+        mixin.request = rf.get("/test/", {"q": "test_search"})
+
+        tabs = mixin._get_tabs(static_block)
+
+        expected_data_url = reverse("lfs_manage_static_block", args=[static_block.pk]) + "?q=test_search"
+        expected_files_url = reverse("lfs_manage_static_block_files", args=[static_block.pk]) + "?q=test_search"
+
+        assert len(tabs) == 2
+        assert tabs[0] == ("data", expected_data_url)
+        assert tabs[1] == ("files", expected_files_url)
+
+    def test_get_static_blocks_queryset_without_search(self, rf):
+        """Should return all static blocks when no search query provided."""
+        from lfs.catalog.models import StaticBlock
+
+        # Create test static blocks
+        sb1 = StaticBlock.objects.create(name="Test Block 1", html="<p>Test 1</p>")
+        sb2 = StaticBlock.objects.create(name="Another Block", html="<p>Test 2</p>")
+
+        mixin = StaticBlockTabMixin()
+        mixin.request = rf.get("/test/")
+
+        queryset = mixin.get_static_blocks_queryset()
+
+        assert queryset.count() == 2
+        assert sb1 in queryset
+        assert sb2 in queryset
+
+    def test_get_static_blocks_queryset_with_search(self, rf):
+        """Should return filtered static blocks when search query provided."""
+        from lfs.catalog.models import StaticBlock
+
+        # Create test static blocks
+        sb1 = StaticBlock.objects.create(name="Test Block", html="<p>Test 1</p>")
+        sb2 = StaticBlock.objects.create(name="Another Block", html="<p>Test 2</p>")
+        sb3 = StaticBlock.objects.create(name="Test Another", html="<p>Test 3</p>")
+
+        mixin = StaticBlockTabMixin()
+        mixin.request = rf.get("/test/", {"q": "Test"})
+
+        queryset = mixin.get_static_blocks_queryset()
+
+        assert queryset.count() == 2
+        assert sb1 in queryset
+        assert sb2 not in queryset  # "Another Block" doesn't contain "Test"
+        assert sb3 in queryset
 
 
 @pytest.mark.django_db
