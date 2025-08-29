@@ -24,18 +24,16 @@
         
                 <div id="action-groups" hx-swap-oob="true">
                     {% for group in groups %}
-                        {% if group.filtered_actions %}
-                            <div class="action-group-name mt-3 mb-2">{{ group.name }}</div>
-                                <div class="action-group" data-list="{{ group.id }}">
-                                    {% for group_action in group.filtered_actions %}
-                                        <a class="d-block p-2 mb-1 border rounded text-decoration-none action-item {% if group_action.id == action.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
-                                           data-id="{{ group_action.id }}" 
-                                           href="{% url 'lfs_manage_action' group_action.id %}?q={{ search_query }}">
-                                           {{ group_action.title }}
-                                        </a>
-                                    {% endfor %}
-                                </div>
-                        {% endif %}
+                        <div class="action-group-name mt-3 mb-2">{{ group.name }}</div>
+                        <div class="action-group" data-list="{{ group.id }}">
+                            {% for group_action in group.filtered_actions %}
+                                <a class="d-block p-2 mb-1 border rounded text-decoration-none action-item {% if group_action.id == action.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
+                                    data-id="{{ group_action.id }}" 
+                                    href="{% url 'lfs_manage_action' group_action.id %}?q={{ search_query }}">
+                                    {{ group_action.title }}
+                                </a>
+                            {% endfor %}
+                        </div>                            
                     {% endfor %}
                 </div>
             </aside>

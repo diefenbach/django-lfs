@@ -97,10 +97,11 @@ class TestActionUpdateView:
         """Should have correct view configuration."""
         assert getattr(ActionUpdateView, attribute) == expected
 
-    def test_get_success_url_returns_action_edit_url(self, action, monkeypatch):
-        """Should return URL to edit the same action after successful update."""
+    def test_get_success_url_returns_action_edit_url_without_search(self, action, request_factory, monkeypatch):
+        """Should return URL to edit the same action after successful update without search parameter."""
         view = ActionUpdateView()
         view.object = action
+        view.request = request_factory.post("/")
 
         def mock_reverse_lazy(view_name, kwargs=None):
             if view_name == "lfs_manage_action" and kwargs and kwargs.get("pk") == action.id:
@@ -112,6 +113,23 @@ class TestActionUpdateView:
         url = view.get_success_url()
 
         assert url == f"/manage/action/{action.id}/"
+
+    def test_get_success_url_returns_action_edit_url_with_search(self, action, request_factory, monkeypatch):
+        """Should return URL to edit the same action after successful update with search parameter."""
+        view = ActionUpdateView()
+        view.object = action
+        view.request = request_factory.post("/", {"q": "test_search"})
+
+        def mock_reverse_lazy(view_name, kwargs=None):
+            if view_name == "lfs_manage_action" and kwargs and kwargs.get("pk") == action.id:
+                return f"/manage/action/{action.id}/"
+            return f"/mock-url/{view_name}/"
+
+        monkeypatch.setattr("lfs.manage.actions.views.reverse_lazy", mock_reverse_lazy)
+
+        url = view.get_success_url()
+
+        assert url == f"/manage/action/{action.id}/?q=test_search"
 
     def test_get_context_data_includes_action_groups(self, request_factory, action_group, action):
         """Should include all action groups in context."""
