@@ -654,10 +654,12 @@ class TestAddStaticBlockView:
         assert "form" in context
         assert "view" in context
 
-    def test_post_creates_new_static_block(self, request_factory, manage_user):
+    def test_post_creates_new_static_block(self, request_factory, manage_user, monkeypatch):
         """Test that POST request creates a new static block."""
-
         from lfs.catalog.models import StaticBlock
+
+        # Mock messages framework
+        monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
 
         initial_count = StaticBlock.objects.count()
 
@@ -674,10 +676,12 @@ class TestAddStaticBlockView:
         # Note: HTML content might be set to empty string by view logic
         assert new_block.html is not None
 
-    def test_post_sets_empty_html_when_none_provided(self, request_factory, manage_user):
+    def test_post_sets_empty_html_when_none_provided(self, request_factory, manage_user, monkeypatch):
         """Test that POST sets empty HTML when none provided."""
-
         from lfs.catalog.models import StaticBlock
+
+        # Mock messages framework
+        monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
 
         request = request_factory.post("/add-static-block/", {"name": "Empty HTML Block"})
         request.user = manage_user
@@ -689,8 +693,10 @@ class TestAddStaticBlockView:
         new_block = StaticBlock.objects.get(name="Empty HTML Block")
         assert new_block.html == ""
 
-    def test_post_htmx_request_returns_redirect_header(self, request_factory, manage_user):
+    def test_post_htmx_request_returns_redirect_header(self, request_factory, manage_user, monkeypatch):
         """Test that HTMX POST returns HX-Redirect header."""
+        # Mock messages framework
+        monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
 
         request = request_factory.post("/add-static-block/", {"name": "HTMX Test Block"})
         request.user = manage_user
@@ -704,8 +710,10 @@ class TestAddStaticBlockView:
         assert "HX-Redirect" in response
         assert "/manage/static-block/" in response["HX-Redirect"]
 
-    def test_post_request_returns_htmx_redirect(self, request_factory, manage_user):
+    def test_post_request_returns_htmx_redirect(self, request_factory, manage_user, monkeypatch):
         """Test that POST returns HTMX redirect header."""
+        # Mock messages framework
+        monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
 
         request = request_factory.post("/add-static-block/", {"name": "Regular Test Block"})
         request.user = manage_user
