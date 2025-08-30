@@ -6,24 +6,76 @@
 <div class="mb-4">
     <h3 class="h5">{% trans "Existing Vouchers" %}</h3>
     
-    {# Search for vouchers #}
-    <div class="input-group mb-3">
-        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-        <input type="search" 
-               class="form-control" 
-               placeholder="{% trans 'Search vouchers...' %}" 
-               name="voucher_search"
-               value="{{ voucher_search }}"
-               hx-get="{{ request.path }}"
-               hx-target="main"
-               hx-select="main"
-               hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
-               hx-include="this"
-               hx-push-url="true"
-               aria-label="{% trans 'Search vouchers' %}">
+    {# Search and filter for vouchers #}
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="search" 
+                       class="form-control" 
+                       placeholder="{% trans 'Search vouchers...' %}" 
+                       name="voucher_search"
+                       value="{{ voucher_search }}"
+                       hx-get="{{ request.path }}"
+                       hx-swap="outerHTML"
+                       hx-target="main"
+                       hx-select="main"
+                       hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                       hx-include="[name='usage_filter']"
+                       hx-push-url="true"
+                       aria-label="{% trans 'Search vouchers' %}">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select name="usage_filter" 
+                    class="form-select"
+                    hx-get="{{ request.path }}"
+                    hx-swap="outerHTML"
+                    hx-target="main"
+                    hx-select="main"
+                    hx-trigger="change"
+                    hx-include="[name='voucher_search']"
+                    hx-push-url="true">
+                <option value="">{% trans 'All vouchers' %}</option>
+                <option value="used" {% if usage_filter == 'used' %}selected{% endif %}>
+                    {% trans 'Used vouchers' %}
+                </option>
+                <option value="unused" {% if usage_filter == 'unused' %}selected{% endif %}>
+                    {% trans 'Unused vouchers' %}
+                </option>
+            </select>
+        </div>
     </div>
 
     {% if vouchers %}
+        {# Filter info #}
+        {% if voucher_search or usage_filter %}
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+                <span>
+                    <i class="bi bi-info-circle me-2"></i>
+                    {% blocktrans count counter=vouchers|length %}
+                        {{ counter }} voucher found
+                    {% plural %}
+                        {{ counter }} vouchers found
+                    {% endblocktrans %}
+                    {% if voucher_search %}
+                        {% trans "for" %} "<strong>{{ voucher_search }}</strong>"
+                    {% endif %}
+                    {% if usage_filter %}
+                        {% if usage_filter == 'used' %}
+                            ({% trans "used only" %})
+                        {% elif usage_filter == 'unused' %}
+                            ({% trans "unused only" %})
+                        {% endif %}
+                    {% endif %}
+                </span>
+                <a href="{{ request.path }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-x-circle me-1"></i>
+                    {% trans "Clear filters" %}
+                </a>
+            </div>
+        {% endif %}
+
         <form method="post">
             {% csrf_token %}
             <div class="table-responsive">

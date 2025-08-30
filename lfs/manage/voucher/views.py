@@ -16,7 +16,6 @@ from lfs.voucher.models import VoucherGroup
 from lfs.voucher.models import VoucherOptions
 from lfs.manage.voucher.forms import VoucherForm
 from lfs.manage.voucher.forms import VoucherGroupAddForm
-from lfs.manage.voucher.forms import VoucherGroupForm
 from lfs.manage.voucher.forms import VoucherOptionsForm
 
 
@@ -104,7 +103,7 @@ class VoucherGroupDataView(PermissionRequiredMixin, VoucherGroupTabMixin, Update
     """View for data tab of a VoucherGroup."""
 
     model = VoucherGroup
-    form_class = VoucherGroupForm
+    fields = ["name"]
     tab_name = "data"
     pk_url_kwarg = "id"
     permission_required = "core.manage_shop"
@@ -204,11 +203,20 @@ class VoucherGroupVouchersView(PermissionRequiredMixin, VoucherGroupTabMixin, Fo
         ctx = super().get_context_data(**kwargs)
         voucher_group = self.get_voucher_group()
 
-        # Filter vouchers based on search
+        # Filter vouchers based on search and usage status
         vouchers = voucher_group.vouchers.all()
+
+        # Search filter
         search_query = self.request.GET.get("voucher_search", "").strip()
         if search_query:
             vouchers = vouchers.filter(number__icontains=search_query)
+
+        # Usage status filter
+        usage_filter = self.request.GET.get("usage_filter", "").strip()
+        if usage_filter == "used":
+            vouchers = vouchers.filter(used_amount__gt=0)
+        elif usage_filter == "unused":
+            vouchers = vouchers.filter(used_amount__isnull=True) | vouchers.filter(used_amount=0)
 
         ctx.update(
             {
@@ -216,6 +224,7 @@ class VoucherGroupVouchersView(PermissionRequiredMixin, VoucherGroupTabMixin, Fo
                 "vouchers": vouchers,
                 "taxes": Tax.objects.all(),
                 "voucher_search": search_query,
+                "usage_filter": usage_filter,
             }
         )
         return ctx
@@ -297,12 +306,13 @@ class VoucherGroupDeleteView(PermissionRequiredMixin, DeleteView):
         """Returns URL to redirect after successful deletion."""
         return reverse("lfs_manage_voucher_groups")
 
-    def get(self, request, *args, **kwargs):
-        """Handle GET request - delete directly without confirmation."""
+    def post(self, request, *args, **kwargs):
+        """Handle POST request - delete directly without confirmation."""
         return self.delete(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         """Override to add success message after deletion."""
         response = super().delete(request, *args, **kwargs)
+        response["HX-Redirect"] = self.get_success_url()
         messages.success(request, _("Voucher group and assigned vouchers have been deleted."))
         return response

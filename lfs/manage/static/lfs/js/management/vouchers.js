@@ -39,4 +39,16 @@ document.addEventListener('htmx:afterSwap', function(event) {
         event.detail.target.querySelector('#select-all-vouchers')) {
         initVoucherManagement();
     }
+    
+    // Update filter state after HTMX swap
+    updateFilterState();
 });
+
+function updateFilterState() {
+    // Ensure filter dropdowns maintain their state after HTMX updates
+    const usageFilter = document.querySelector('select[name="usage_filter"]');
+    if (usageFilter) {
+        // The selected state should be maintained by the template
+        // This function can be extended for additional filter logic if needed
+    }
+}

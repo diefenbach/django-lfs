@@ -18,6 +18,9 @@ from django.test import RequestFactory
 from lfs.catalog.models import StaticBlock
 from lfs.core.models import Action, ActionGroup
 from lfs.catalog.models import File
+from lfs.voucher.models import VoucherGroup, VoucherOptions, Voucher
+from lfs.tax.models import Tax
+from lfs.core.models import Shop
 
 
 User = get_user_model()
@@ -162,3 +165,106 @@ def single_file(db, static_block):
         title="Test File",
         position=10,
     )
+
+
+# Voucher-related fixtures
+
+
+@pytest.fixture
+def voucher_group(db, manage_user):
+    """Sample VoucherGroup for testing."""
+    return VoucherGroup.objects.create(name="Test Voucher Group", creator=manage_user, position=10)
+
+
+@pytest.fixture
+def multiple_voucher_groups(db, manage_user):
+    """Multiple VoucherGroups for list testing."""
+    groups = []
+    for i in range(3):
+        group = VoucherGroup.objects.create(name=f"Group {i+1}", creator=manage_user, position=(i + 1) * 10)
+        groups.append(group)
+    return groups
+
+
+@pytest.fixture
+def voucher_options(db):
+    """Sample VoucherOptions for testing."""
+    return VoucherOptions.objects.create(
+        number_prefix="TEST-", number_suffix="-2024", number_length=8, number_letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    )
+
+
+@pytest.fixture
+def voucher(db, voucher_group, manage_user):
+    """Sample Voucher for testing."""
+    from decimal import Decimal
+
+    return Voucher.objects.create(
+        number="TEST123",
+        group=voucher_group,
+        creator=manage_user,
+        kind_of=0,  # Absolute
+        value=Decimal("25.00"),
+        active=True,
+    )
+
+
+@pytest.fixture
+def multiple_vouchers(db, voucher_group, manage_user):
+    """Multiple Vouchers for testing."""
+    from decimal import Decimal
+
+    vouchers = []
+    for i in range(3):
+        voucher = Voucher.objects.create(
+            number=f"VOUCHER{i+1:03d}",
+            group=voucher_group,
+            creator=manage_user,
+            kind_of=i % 2,  # Mix of absolute (0) and percentage (1)
+            value=Decimal(f"{(i+1)*10}.00"),
+            active=True,
+        )
+        vouchers.append(voucher)
+    return vouchers
+
+
+@pytest.fixture
+def used_and_unused_vouchers(db, voucher_group, manage_user):
+    """Mix of used and unused vouchers for testing filters."""
+    from decimal import Decimal
+
+    vouchers = []
+
+    # Create used voucher
+    used_voucher = Voucher.objects.create(
+        number="USED001",
+        group=voucher_group,
+        creator=manage_user,
+        kind_of=0,
+        value=Decimal("50.00"),
+        used_amount=Decimal("50.00"),
+        active=True,
+    )
+    vouchers.append(used_voucher)
+
+    # Create unused voucher
+    unused_voucher = Voucher.objects.create(
+        number="UNUSED001", group=voucher_group, creator=manage_user, kind_of=0, value=Decimal("25.00"), active=True
+    )
+    vouchers.append(unused_voucher)
+
+    return vouchers
+
+
+@pytest.fixture
+def tax(db):
+    """Sample Tax for testing."""
+    from decimal import Decimal
+
+    return Tax.objects.create(rate=Decimal("19.00"))
+
+
+@pytest.fixture
+def shop(db):
+    """Sample Shop for testing."""
+    return Shop.objects.create(name="Test Shop", shop_owner="Test Owner")
