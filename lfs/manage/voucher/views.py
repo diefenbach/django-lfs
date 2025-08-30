@@ -286,9 +286,8 @@ class AddVoucherGroupView(PermissionRequiredMixin, CreateView):
         voucher_group.creator = self.request.user
         voucher_group.save()
 
-        response = HttpResponse()
-        response["HX-Redirect"] = reverse("lfs_manage_voucher_group", kwargs={"id": voucher_group.id})
-        return response
+        messages.success(self.request, _("Voucher group has been created."))
+        return HttpResponseRedirect(reverse("lfs_manage_voucher_group", kwargs={"id": voucher_group.id}))
 
     def get_success_url(self):
         """Return the URL to redirect to after successful form submission."""

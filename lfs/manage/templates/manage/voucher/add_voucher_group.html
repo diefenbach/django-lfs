@@ -3,7 +3,7 @@
 <h5 id="modal-title-lg" class="modal-title" hx-swap-oob="true">
     {% trans 'Add Voucher Group' %}
 </h5>
-<form method="post" hx-post="{% url 'lfs_manage_add_voucher_group' %}" hx-target="#modal-body-lg">
+<form method="post" action="{% url 'lfs_manage_add_voucher_group' %}">
     {% csrf_token %}
     {{ form|crispy }}
     <div class="mt-3">
