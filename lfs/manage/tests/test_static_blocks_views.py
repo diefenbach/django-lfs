@@ -181,8 +181,8 @@ class TestStaticBlockDataView:
         assert "active_tab" in context
         assert context["active_tab"] == "data"
         assert "tabs" in context
-        assert "current_static_block" in context
-        assert context["current_static_block"] == static_block
+        assert "static_block" in context
+        assert context["static_block"] == static_block
 
 
 @pytest.mark.django_db
@@ -232,8 +232,8 @@ class TestStaticBlockFilesView:
 
         assert "static_block" in context
         assert context["static_block"] == static_block
-        assert "current_static_block" in context
-        assert context["current_static_block"] == static_block
+        assert "static_block" in context
+        assert context["static_block"] == static_block
 
 
 @pytest.mark.django_db
@@ -274,6 +274,7 @@ class TestStaticBlockViewIntegration:
 
     def test_data_view_form_submission_saves_changes(self, authenticated_request, static_block, monkeypatch):
         """Should save changes when valid form is submitted to data view."""
+
         # Mock messages.success to avoid MessageMiddleware requirement
         def mock_messages_success(request, message):
             pass

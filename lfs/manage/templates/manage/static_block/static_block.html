@@ -26,7 +26,7 @@
         
                 <div id="navigation" class="mt-3 padding-bottom-100">
                     {% for sb in static_blocks %}
-                        <a class="d-block p-2 mb-1 border rounded text-decoration-none action-item {% if current_static_block.id == sb.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
+                        <a class="d-block p-2 mb-1 border rounded text-decoration-none action-item {% if static_block.id == sb.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
                            data-id="{{ sb.id }}" 
                            href="{% url 'lfs_manage_static_block' sb.id %}?q={{ search_query }}">
                            {{ sb.name }}
@@ -49,8 +49,8 @@
                                 {% trans 'Add Static Block' %}
                             </button>
                             <a class="btn btn-sm btn-outline-danger me-2"
-                                href="{% url 'lfs_delete_static_block' current_static_block.id %}"
-                                hx-post="{% url 'lfs_delete_static_block' current_static_block.id %}"
+                                href="{% url 'lfs_delete_static_block' static_block.id %}"
+                                hx-post="{% url 'lfs_delete_static_block' static_block.id %}"
                                 hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                                 hx-select=".lfs-static-blocks"
                                 hx-target=".lfs-static-blocks"
@@ -61,7 +61,7 @@
                                 {% trans 'Delete Static Block' %}
                             </a>
                             <button class="btn btn-sm btn-outline-secondary"
-                                    hx-get="{% url 'lfs_preview_static_block' current_static_block.id %}"
+                                    hx-get="{% url 'lfs_preview_static_block' static_block.id %}"
                                     hx-target="#modal-body-xl"
                                     hx-trigger="click"
                                     hx-swap="innerHTML">

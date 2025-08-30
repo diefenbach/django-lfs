@@ -66,12 +66,11 @@ class StaticBlockTabMixin:
 
         ctx.update(
             {
-                "current_static_block": static_block,
+                "static_block": static_block,
                 "static_blocks": self.get_static_blocks_queryset(),
                 "search_query": self.request.GET.get("q", ""),
                 "active_tab": self.tab_name,
                 "tabs": self._get_tabs(static_block),
-                "current_id": static_block.pk,
             }
         )
         return ctx
@@ -140,50 +139,94 @@ class StaticBlockFilesView(PermissionRequiredMixin, StaticBlockTabMixin, FormVie
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Handles file uploads and updates."""
-        static_block = self.get_static_block()
-
         # Handle file operations (upload/update/delete)
         if "files[]" in request.FILES:
-            return self._handle_file_upload(request, static_block)
+            return self._handle_file_upload(request)
         elif "update" in request.POST:
-            return self._handle_file_update(request, static_block)
+            return self._handle_file_update(request)
         elif "delete" in request.POST:
-            return self._handle_file_delete(request, static_block)
+            return self._handle_file_delete(request)
 
         return super().post(request, *args, **kwargs)
 
-    def _handle_file_upload(self, request: HttpRequest, static_block: StaticBlock) -> HttpResponse:
+    def _handle_file_upload(self, request: HttpRequest) -> HttpResponse:
         """Handles file upload."""
+        static_block = self.get_static_block()
         for file_content in request.FILES.getlist("files[]"):
             file = File(content=static_block, title=file_content.name)
             file.file.save(file_content.name, file_content, save=True)
 
-        refresh_file_positions(static_block)
+        self._refresh_file_positions()
 
         messages.success(self.request, _("Files have been uploaded successfully."))
         return HttpResponseRedirect(self.get_success_url())
 
-    def _handle_file_update(self, request: HttpRequest, static_block: StaticBlock) -> HttpResponse:
+    def _handle_file_update(self, request: HttpRequest) -> HttpResponse:
         """Handles file update actions."""
-        update_files_by_keys(request)
+        self._update_files_by_keys(request)
         messages.success(self.request, _("Files have been updated successfully."))
         return HttpResponseRedirect(self.get_success_url())
 
-    def _handle_file_delete(self, request: HttpRequest, static_block: StaticBlock) -> HttpResponse:
+    def _handle_file_delete(self, request: HttpRequest) -> HttpResponse:
         """Handles file delete actions."""
-        delete_files_by_keys(request)
-        refresh_file_positions(static_block)
+        self._delete_files_by_keys(request)
+        self._refresh_file_positions()
         messages.success(self.request, _("Files have been deleted successfully."))
         return HttpResponseRedirect(self.get_success_url())
 
+    def _refresh_file_positions(self) -> None:
+        """Normalizes file positions of a StaticBlock."""
+        static_block = self.get_static_block()
+        for i, file in enumerate(static_block.files.all()):
+            file.position = (i + 1) * 10
+            file.save()
+
+    def _delete_files_by_keys(self, request: HttpRequest) -> None:
+        """Deletes files based on delete-* keys in POST request."""
+        for key in request.POST.keys():
+            if key.startswith("delete-"):
+                try:
+                    file_id = key.split("-")[1]
+                    # Skip invalid IDs gracefully
+                    if not file_id.isdigit():
+                        continue
+                    File.objects.get(pk=file_id).delete()
+                except (IndexError, File.DoesNotExist, ValueError):
+                    pass
+
+    def _update_files_by_keys(self, request: HttpRequest) -> None:
+        """Updates file titles and positions based on POST keys."""
+        for key, value in request.POST.items():
+            if key.startswith("title-"):
+                file_id = key.split("-")[1]
+                try:
+                    # Skip invalid IDs gracefully
+                    if not file_id.isdigit():
+                        continue
+                    file = File.objects.get(pk=file_id)
+                    file.title = value
+                    file.save()
+                except (File.DoesNotExist, ValueError):
+                    pass
+            elif key.startswith("position-"):
+                try:
+                    file_id = key.split("-")[1]
+                    # Skip invalid IDs gracefully
+                    if not file_id.isdigit():
+                        continue
+                    file = File.objects.get(pk=file_id)
+                    file.position = value
+                    file.save()
+                except (IndexError, File.DoesNotExist, ValueError):
+                    pass
+
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        """Extends context with files."""
+        """Extends context with static block."""
         ctx = super().get_context_data(**kwargs)
         static_block = self.get_static_block()
         ctx.update(
             {
                 "static_block": static_block,
-                "current_static_block": static_block,  # Alias for template compatibility
             }
         )
         return ctx
@@ -241,51 +284,3 @@ class StaticBlockPreviewView(PermissionRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["static_block"] = get_object_or_404(StaticBlock, pk=self.kwargs["id"])
         return context
-
-
-def refresh_file_positions(static_block: StaticBlock) -> None:
-    """Normalizes file positions of a StaticBlock."""
-    for i, file in enumerate(static_block.files.all()):
-        file.position = (i + 1) * 10
-        file.save()
-
-
-def delete_files_by_keys(request: HttpRequest) -> None:
-    """Deletes files based on delete-* keys in POST request."""
-    for key in request.POST.keys():
-        if key.startswith("delete-"):
-            try:
-                file_id = key.split("-")[1]
-                # Skip invalid IDs gracefully
-                if not file_id.isdigit():
-                    continue
-                File.objects.get(pk=file_id).delete()
-            except (IndexError, File.DoesNotExist, ValueError):
-                pass
-
-
-def update_files_by_keys(request: HttpRequest) -> None:
-    """Updates file titles and positions based on POST keys."""
-    for key, value in request.POST.items():
-        if key.startswith("title-"):
-            file_id = key.split("-")[1]
-            try:
-                # Skip invalid IDs gracefully
-                if not file_id.isdigit():
-                    continue
-                file = File.objects.get(pk=file_id)
-                file.title = value
-                file.save()
-            except (File.DoesNotExist, ValueError):
-                pass
-        elif key.startswith("position-"):
-            try:
-                file_id = key.split("-")[1]
-                # Skip invalid IDs gracefully
-                if not file_id.isdigit():
-                    continue
-                file = File.objects.get(pk=file_id)
-                file.position = value
-                file.save()
-            except (IndexError, File.DoesNotExist, ValueError):
-                pass
