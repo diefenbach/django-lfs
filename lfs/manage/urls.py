@@ -804,39 +804,46 @@ urlpatterns = [
         name="lfs_manage_criteria_change_criterion_form",
     ),
     # Static blocks
-    re_path(
-        r"^add-static-block$",
+    path(
+        "add-static-block",
         lfs.manage.static_blocks.views.AddStaticBlockView.as_view(),
         name="lfs_manage_add_static_block",
     ),
-    re_path(
-        r"^delete-static-block/(?P<id>\d+)$",
+    path(
+        "delete-static-block/<int:id>",
         lfs.manage.static_blocks.views.StaticBlockDeleteView.as_view(),
         name="lfs_delete_static_block",
     ),
-    re_path(
-        r"^preview-static-block/(?P<id>\d+)$",
-        lfs.manage.static_blocks.views.preview_static_block,
+    path(
+        "preview-static-block/<int:id>",
+        lfs.manage.static_blocks.views.StaticBlockPreviewView.as_view(),
         name="lfs_preview_static_block",
     ),
-    re_path(r"^static-blocks$", lfs.manage.static_blocks.views.manage_static_blocks, name="lfs_manage_static_blocks"),
+    path(
+        "static-blocks",
+        lfs.manage.static_blocks.views.ManageStaticBlocksView.as_view(),
+        name="lfs_manage_static_blocks",
+    ),
     path(
         "static-block/<int:id>/",
         lfs.manage.static_blocks.views.StaticBlockDataView.as_view(),
         name="lfs_manage_static_block",
     ),
-    re_path(
-        r"^static-block/(?P<id>\d+)/files/$",
+    path(
+        "static-block/<int:id>/files/",
         lfs.manage.static_blocks.views.StaticBlockFilesView.as_view(),
         name="lfs_manage_static_block_files",
     ),
-    re_path(
-        r"^update_files/(?P<id>[-\w]*)",
+    path(
+        "update_files/<str:id>",
         lfs.manage.static_blocks.views.StaticBlockFilesView.as_view(),
         name="lfs_manage_update_files_sb",
     ),
-    re_path(r"^sort-static-blocks$", lfs.manage.static_blocks.views.sort_static_blocks, name="lfs_sort_static_blocks"),
-    re_path(r"^no-static-blocks$", lfs.manage.static_blocks.views.no_static_blocks, name="lfs_manage_no_static_blocks"),
+    path(
+        "no-static-blocks",
+        lfs.manage.static_blocks.views.NoStaticBlocksView.as_view(),
+        name="lfs_manage_no_static_blocks",
+    ),
     # Reviews
     re_path(r"^reviews$", lfs.manage.views.review.reviews, name="lfs_manage_reviews"),
     re_path(r"^review/(?P<review_id>\d*)$", lfs.manage.views.review.review, name="lfs_manage_review"),

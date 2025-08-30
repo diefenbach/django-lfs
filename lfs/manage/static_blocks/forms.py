@@ -1,15 +1,7 @@
-# django imports
-from django.forms import ModelForm
-
-# lfs imports
-from lfs.catalog.models import StaticBlock
+from django import forms
 
 
-class StaticBlockForm(ModelForm):
-    """
-    Form to add and edit a static block.
-    """
+class FileUploadForm(forms.Form):
+    """Simple form for file uploads in FilesView."""
 
-    class Meta:
-        model = StaticBlock
-        fields = ["name", "html"]
+    pass  # No form fields needed - we handle file uploads directly in the view

@@ -20,7 +20,7 @@ from lfs.manage.static_blocks.views import (
     StaticBlockFilesView,
     StaticBlockTabMixin,
     AddStaticBlockView,
-    manage_static_blocks,
+    ManageStaticBlocksView,
 )
 
 User = get_user_model()
@@ -238,14 +238,15 @@ class TestStaticBlockFilesView:
 
 @pytest.mark.django_db
 @pytest.mark.integration
-class TestManageStaticBlocksDispatcher:
-    """Tests for manage_static_blocks dispatcher function."""
+class TestManageStaticBlocksView:
+    """Tests for ManageStaticBlocksView dispatcher class."""
 
     def test_redirects_to_first_static_block_when_blocks_exist(self, authenticated_request, multiple_static_blocks):
         """Should redirect to first StaticBlock when blocks exist."""
         request = authenticated_request("GET", "/static-blocks/")
 
-        response = manage_static_blocks(request)
+        view = ManageStaticBlocksView.as_view()
+        response = view(request)
 
         first_block = multiple_static_blocks[0]
         expected_url = reverse("lfs_manage_static_block", kwargs={"id": first_block.id})
@@ -259,7 +260,8 @@ class TestManageStaticBlocksDispatcher:
 
         request = authenticated_request("GET", "/static-blocks/")
 
-        response = manage_static_blocks(request)
+        view = ManageStaticBlocksView.as_view()
+        response = view(request)
 
         expected_url = reverse("lfs_manage_no_static_blocks")
         assert response.status_code == 302
@@ -361,7 +363,7 @@ class TestStaticBlockViewIntegration:
         # RED: This test should FAIL initially because template is missing {% csrf_token %}
 
         # Read the template file directly
-        with open("src/lfs/lfs/manage/templates/manage/static_block/files-list.html", "r") as f:
+        with open("src/lfs/lfs/manage/templates/manage/static_block/tabs/_files.html", "r") as f:
             template_content = f.read()
 
         # Should contain {% csrf_token %} in the form
@@ -430,7 +432,7 @@ class TestStaticBlockViewIntegration:
         # RED: This test should FAIL initially because buttons use old 'button' class
 
         # Read the template file directly
-        with open("src/lfs/lfs/manage/templates/manage/static_block/files-list.html", "r") as f:
+        with open("src/lfs/lfs/manage/templates/manage/static_block/tabs/_files.html", "r") as f:
             template_content = f.read()
 
         # Should contain Bootstrap button classes (allowing additional classes)
