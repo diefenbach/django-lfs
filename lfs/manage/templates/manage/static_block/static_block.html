@@ -40,27 +40,31 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="h4 mb-3">{% trans 'Edit Static Block' %}</h2>
                         <div class="site-actions mb-3" id="site-actions">
-                            <button class="btn btn-sm btn-outline-primary me-2"
+                            <a class="btn btn-sm btn-outline-primary me-2"
                                     hx-get="{% url 'lfs_manage_add_static_block' %}"
                                     hx-target="#modal-body-lg"
                                     hx-trigger="click"
                                     hx-swap="innerHTML">
                                 <i class="bi bi-plus-circle-fill"></i>
                                 {% trans 'Add Static Block' %}
-                            </button>
+                            </a>
                             <a class="btn btn-sm btn-outline-danger me-2"
-                                href="{% url 'lfs_delete_static_block' static_block.id %}">
+                               hx-get="{% url 'lfs_manage_delete_static_block_confirm' static_block.id %}"
+                               hx-target="#modal-body-sm"
+                               hx-trigger="click"
+                               hx-swap="innerHTML"
+                               href="#">
                                 <i class="bi bi-trash"></i>
                                 {% trans 'Delete Static Block' %}
                             </a>
-                            <button class="btn btn-sm btn-outline-secondary"
+                            <a class="btn btn-sm btn-outline-secondary"
                                     hx-get="{% url 'lfs_preview_static_block' static_block.id %}"
                                     hx-target="#modal-body-xl"
                                     hx-trigger="click"
                                     hx-swap="innerHTML">
                                 <i class="bi bi-eye"></i>
                                 {% trans 'Preview Static Block' %}
-                            </button>
+                            </a>
                         </div>
                     </div>
 
@@ -91,6 +95,7 @@
 
     {% include 'manage/snippets/modals/modal-lg.html' %}
     {% include 'manage/snippets/modals/modal-xl.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
 
     <script src="{% static 'lfs/js/management/static-blocks.js' %}"></script>
 {% endblock %}

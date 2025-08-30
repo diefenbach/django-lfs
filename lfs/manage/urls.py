@@ -831,6 +831,11 @@ urlpatterns = [
         name="lfs_manage_add_static_block",
     ),
     path(
+        "delete-static-block-confirm/<int:id>",
+        lfs.manage.static_blocks.views.StaticBlockDeleteConfirmView.as_view(),
+        name="lfs_manage_delete_static_block_confirm",
+    ),
+    path(
         "delete-static-block/<int:id>",
         lfs.manage.static_blocks.views.StaticBlockDeleteView.as_view(),
         name="lfs_delete_static_block",

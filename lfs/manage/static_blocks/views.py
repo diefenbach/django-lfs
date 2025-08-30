@@ -244,6 +244,18 @@ class AddStaticBlockView(PermissionRequiredMixin, CreateView):
         return response
 
 
+class StaticBlockDeleteConfirmView(PermissionRequiredMixin, TemplateView):
+    """Provides a modal form to confirm deletion of a static block."""
+
+    template_name = "manage/static_block/delete_static_block.html"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["static_block"] = get_object_or_404(StaticBlock, pk=self.kwargs["id"])
+        return context
+
+
 class StaticBlockDeleteView(PermissionRequiredMixin, DeleteView):
     """Deletes static block with passed id."""
 
@@ -262,6 +274,7 @@ class StaticBlockDeleteView(PermissionRequiredMixin, DeleteView):
     def delete(self, request, *args, **kwargs):
         """Override to add success message after deletion."""
         response = super().delete(request, *args, **kwargs)
+        response["HX-Redirect"] = self.get_success_url()
         messages.success(request, _("Static block has been deleted."))
         return response
 

@@ -99,14 +99,15 @@ class TestStaticBlockCRUDFlow:
         # Expect: Should see the test block
         expect(page.locator(f"text={static_block_e2e.name}")).to_be_visible()
 
-        # Set up dialog handler BEFORE triggering the action
-        page.on("dialog", lambda dialog: dialog.accept())
+        # Act: Click delete link to open modal
+        page.click('a:has-text("Delete Static Block")')
 
-        # Act: Click delete button (will trigger confirmation dialog)
-        page.click(f'a:has-text("Delete Static Block")')
+        # Wait for modal to appear and click delete
+        page.wait_for_selector("#lfs-modal-sm", state="visible")
+        page.click('button.btn-danger:has-text("Delete")')
 
-        # Expect: Block should be removed from list
-        expect(page.locator(f"text={static_block_e2e.name}")).not_to_be_visible()
+        # Expect: Block should be removed from sidebar list
+        expect(page.locator(f'aside a:has-text("{static_block_e2e.name}")')).not_to_be_visible()
 
 
 # File management tests moved to: test_static_blocks_file_management_e2e.py
