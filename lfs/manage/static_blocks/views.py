@@ -1,12 +1,10 @@
 from typing import Dict, List, Tuple, Any, Optional
 
 from django.contrib import messages
-from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import UpdateView, FormView, CreateView, DeleteView, RedirectView, TemplateView
 
@@ -232,16 +230,13 @@ class StaticBlockFilesView(PermissionRequiredMixin, StaticBlockTabMixin, FormVie
         return ctx
 
 
-class AddStaticBlockView(CreateView):
+class AddStaticBlockView(PermissionRequiredMixin, CreateView):
     """Provides a modal form to add a new static block."""
 
     model = StaticBlock
     fields = ["name"]
     template_name = "manage/static_block/add_static_block.html"
-
-    @method_decorator(permission_required("core.manage_shop"))
-    def dispatch(self, *args, **kwargs):
-        return super().dispatch(*args, **kwargs)
+    permission_required = "core.manage_shop"
 
     def form_valid(self, form):
         static_block = form.save()

@@ -21,6 +21,8 @@ from lfs.manage.static_blocks.views import (
     StaticBlockTabMixin,
     AddStaticBlockView,
     ManageStaticBlocksView,
+    StaticBlockDeleteView,
+    StaticBlockPreviewView,
 )
 
 User = get_user_model()
@@ -190,6 +192,16 @@ class TestStaticBlockDataView:
 class TestStaticBlockFilesView:
     """Tests for StaticBlockFilesView (Files Tab)."""
 
+    def test_requires_authentication(self, request_factory, static_block):
+        """Should require user to be authenticated."""
+        request = request_factory.get(f"/static-block/{static_block.id}/files/")
+        request.user = AnonymousUser()
+
+        view = StaticBlockFilesView()
+        view.setup(request, id=static_block.id)
+
+        assert not view.has_permission()
+
     def test_requires_manage_shop_permission(self, request_factory, regular_user, static_block):
         """Should require manage_shop permission."""
         request = request_factory.get(f"/static-block/{static_block.id}/files/")
@@ -199,6 +211,16 @@ class TestStaticBlockFilesView:
         view.setup(request, id=static_block.id)
 
         assert not view.has_permission()
+
+    def test_allows_access_with_manage_permission(self, request_factory, manage_user, static_block):
+        """Should allow access for users with manage_shop permission."""
+        request = request_factory.get(f"/static-block/{static_block.id}/files/")
+        request.user = manage_user
+
+        view = StaticBlockFilesView()
+        view.setup(request, id=static_block.id)
+
+        assert view.has_permission()
 
     @pytest.mark.parametrize(
         "attribute,expected",
@@ -234,6 +256,42 @@ class TestStaticBlockFilesView:
         assert context["static_block"] == static_block
         assert "static_block" in context
         assert context["static_block"] == static_block
+
+
+@pytest.mark.django_db
+@pytest.mark.unit
+class TestManageStaticBlocksViewPermissions:
+    """Unit tests for ManageStaticBlocksView permissions."""
+
+    def test_requires_authentication(self, request_factory):
+        """Should require user to be authenticated."""
+        request = request_factory.get("/manage/static-blocks/")
+        request.user = AnonymousUser()
+
+        view = ManageStaticBlocksView()
+        view.setup(request)
+
+        assert not view.has_permission()
+
+    def test_requires_manage_shop_permission(self, request_factory, regular_user):
+        """Should require manage_shop permission."""
+        request = request_factory.get("/manage/static-blocks/")
+        request.user = regular_user
+
+        view = ManageStaticBlocksView()
+        view.setup(request)
+
+        assert not view.has_permission()
+
+    def test_allows_access_with_manage_permission(self, request_factory, manage_user):
+        """Should allow access for users with manage_shop permission."""
+        request = request_factory.get("/manage/static-blocks/")
+        request.user = manage_user
+
+        view = ManageStaticBlocksView()
+        view.setup(request)
+
+        assert view.has_permission()
 
 
 @pytest.mark.django_db
@@ -465,6 +523,78 @@ class TestStaticBlockViewIntegration:
 
 
 @pytest.mark.django_db
+@pytest.mark.unit
+class TestStaticBlockDeleteViewPermissions:
+    """Unit tests for StaticBlockDeleteView permissions."""
+
+    def test_requires_authentication(self, request_factory, static_block):
+        """Should require user to be authenticated."""
+        request = request_factory.delete(f"/manage/static-block/{static_block.id}/delete/")
+        request.user = AnonymousUser()
+
+        view = StaticBlockDeleteView()
+        view.setup(request, id=static_block.id)
+
+        assert not view.has_permission()
+
+    def test_requires_manage_shop_permission(self, request_factory, regular_user, static_block):
+        """Should require manage_shop permission."""
+        request = request_factory.delete(f"/manage/static-block/{static_block.id}/delete/")
+        request.user = regular_user
+
+        view = StaticBlockDeleteView()
+        view.setup(request, id=static_block.id)
+
+        assert not view.has_permission()
+
+    def test_allows_access_with_manage_permission(self, request_factory, manage_user, static_block):
+        """Should allow access for users with manage_shop permission."""
+        request = request_factory.delete(f"/manage/static-block/{static_block.id}/delete/")
+        request.user = manage_user
+
+        view = StaticBlockDeleteView()
+        view.setup(request, id=static_block.id)
+
+        assert view.has_permission()
+
+
+@pytest.mark.django_db
+@pytest.mark.unit
+class TestStaticBlockPreviewViewPermissions:
+    """Unit tests for StaticBlockPreviewView permissions."""
+
+    def test_requires_authentication(self, request_factory, static_block):
+        """Should require user to be authenticated."""
+        request = request_factory.get(f"/manage/static-block/{static_block.id}/preview/")
+        request.user = AnonymousUser()
+
+        view = StaticBlockPreviewView()
+        view.setup(request, id=static_block.id)
+
+        assert not view.has_permission()
+
+    def test_requires_manage_shop_permission(self, request_factory, regular_user, static_block):
+        """Should require manage_shop permission."""
+        request = request_factory.get(f"/manage/static-block/{static_block.id}/preview/")
+        request.user = regular_user
+
+        view = StaticBlockPreviewView()
+        view.setup(request, id=static_block.id)
+
+        assert not view.has_permission()
+
+    def test_allows_access_with_manage_permission(self, request_factory, manage_user, static_block):
+        """Should allow access for users with manage_shop permission."""
+        request = request_factory.get(f"/manage/static-block/{static_block.id}/preview/")
+        request.user = manage_user
+
+        view = StaticBlockPreviewView()
+        view.setup(request, id=static_block.id)
+
+        assert view.has_permission()
+
+
+@pytest.mark.django_db
 class TestAddStaticBlockView:
     """Test cases for AddStaticBlockView (CreateView)."""
 
@@ -493,8 +623,10 @@ class TestAddStaticBlockView:
         view = AddStaticBlockView()
         view.setup(request)
 
-        response = view.dispatch(request)
-        assert response.status_code == expected_status, f"Failed: {description}"
+        if expected_status == 302:  # Permission denied
+            assert not view.has_permission(), f"Failed: {description}"
+        else:  # Should have permission
+            assert view.has_permission(), f"Failed: {description}"
 
     def test_get_returns_successful_response(self, request_factory, manage_user):
         """Test that GET request returns successful response."""
