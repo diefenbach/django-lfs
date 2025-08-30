@@ -272,8 +272,14 @@ class TestManageStaticBlocksView:
 class TestStaticBlockViewIntegration:
     """Integration tests for StaticBlock views."""
 
-    def test_data_view_form_submission_saves_changes(self, authenticated_request, static_block):
+    def test_data_view_form_submission_saves_changes(self, authenticated_request, static_block, monkeypatch):
         """Should save changes when valid form is submitted to data view."""
+        # Mock messages.success to avoid MessageMiddleware requirement
+        def mock_messages_success(request, message):
+            pass
+
+        monkeypatch.setattr("lfs.manage.static_blocks.views.messages.success", mock_messages_success)
+
         form_data = {"name": "Updated Block Name", "html": "<p>Updated content</p>"}
         request = authenticated_request("POST", f"/static-block/{static_block.id}/", data=form_data)
 
@@ -328,7 +334,7 @@ class TestStaticBlockViewIntegration:
         except NoReverseMatch:
             pytest.fail("URL 'lfs_manage_update_files_sb' does not exist but is used in templates")
 
-    def test_file_upload_redirects_to_files_tab_not_json(self, authenticated_request, static_block):
+    def test_file_upload_redirects_to_files_tab_not_json(self, authenticated_request, static_block, monkeypatch):
         """File upload should redirect to files tab, not return JSON."""
         # RED: This test should FAIL initially because current code returns JSON
         from django.core.files.uploadedfile import SimpleUploadedFile
@@ -339,6 +345,12 @@ class TestStaticBlockViewIntegration:
         user = User.objects.create_user(username="testuser", password="testpass")
         user.is_superuser = True
         user.save()
+
+        # Mock messages.success to avoid MessageMiddleware requirement
+        def mock_messages_success(request, message):
+            pass
+
+        monkeypatch.setattr("lfs.manage.static_blocks.views.messages.success", mock_messages_success)
 
         # Create a fake uploaded file
         uploaded_file = SimpleUploadedFile("test-image.png", b"fake image content", content_type="image/png")
@@ -385,7 +397,7 @@ class TestStaticBlockViewIntegration:
 
         assert csrf_found, "{% csrf_token %} should be inside the form"
 
-    def test_file_update_saves_changes_and_redirects(self, authenticated_request, static_block):
+    def test_file_update_saves_changes_and_redirects(self, authenticated_request, static_block, monkeypatch):
         """File update should save changes and redirect, not return JSON."""
         # RED: This test should FAIL initially because update action is not processed correctly
         from django.core.files.uploadedfile import SimpleUploadedFile
@@ -396,6 +408,12 @@ class TestStaticBlockViewIntegration:
         user = User.objects.create_user(username="testuser2", password="testpass")
         user.is_superuser = True
         user.save()
+
+        # Mock messages.success to avoid MessageMiddleware requirement
+        def mock_messages_success(request, message):
+            pass
+
+        monkeypatch.setattr("lfs.manage.static_blocks.views.messages.success", mock_messages_success)
 
         # Create a file for the static block first
         from lfs.catalog.models import File

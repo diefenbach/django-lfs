@@ -1,5 +1,6 @@
 from typing import Dict, List, Tuple, Any, Optional
 
+from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
@@ -112,10 +113,8 @@ class StaticBlockDataView(PermissionRequiredMixin, StaticBlockTabMixin, UpdateVi
     def form_valid(self, form):
         """Saves and shows success message."""
         response = super().form_valid(form)
-        return lfs.core.utils.set_message_cookie(
-            url=self.get_success_url(),
-            msg=_("Static block has been saved."),
-        )
+        messages.success(self.request, _("Static block has been saved."))
+        return response
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Extends context for data tab."""
@@ -163,17 +162,20 @@ class StaticBlockFilesView(PermissionRequiredMixin, StaticBlockTabMixin, FormVie
 
         refresh_file_positions(static_block)
 
-        # Redirect to files tab instead of returning JSON
+        messages.success(self.request, _("Files have been uploaded successfully."))
         return HttpResponseRedirect(self.get_success_url())
 
     def _handle_file_action(self, request: HttpRequest, static_block: StaticBlock, action: str) -> HttpResponse:
         """Handles file update/delete actions."""
         if action == "delete":
             delete_files_by_keys(request)
+            # Only refresh positions after delete (to fill gaps)
             refresh_file_positions(static_block)
         elif action == "update":
             update_files_by_keys(request)
+            # Don't refresh positions after update - user set them manually
 
+        # Redirect to files tab instead of returning JSON
         return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
