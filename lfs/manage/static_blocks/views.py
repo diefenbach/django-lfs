@@ -142,15 +142,13 @@ class StaticBlockFilesView(PermissionRequiredMixin, StaticBlockTabMixin, FormVie
         """Handles file uploads and updates."""
         static_block = self.get_static_block()
 
-        # Handle file uploads
+        # Handle file operations (upload/update/delete)
         if "files[]" in request.FILES:
             return self._handle_file_upload(request, static_block)
-
-        # Handle file operations (update/delete)
-        if "update" in request.POST:
-            return self._handle_file_action(request, static_block, "update")
+        elif "update" in request.POST:
+            return self._handle_file_update(request, static_block)
         elif "delete" in request.POST:
-            return self._handle_file_action(request, static_block, "delete")
+            return self._handle_file_delete(request, static_block)
 
         return super().post(request, *args, **kwargs)
 
@@ -165,17 +163,17 @@ class StaticBlockFilesView(PermissionRequiredMixin, StaticBlockTabMixin, FormVie
         messages.success(self.request, _("Files have been uploaded successfully."))
         return HttpResponseRedirect(self.get_success_url())
 
-    def _handle_file_action(self, request: HttpRequest, static_block: StaticBlock, action: str) -> HttpResponse:
-        """Handles file update/delete actions."""
-        if action == "delete":
-            delete_files_by_keys(request)
-            # Only refresh positions after delete (to fill gaps)
-            refresh_file_positions(static_block)
-        elif action == "update":
-            update_files_by_keys(request)
-            # Don't refresh positions after update - user set them manually
+    def _handle_file_update(self, request: HttpRequest, static_block: StaticBlock) -> HttpResponse:
+        """Handles file update actions."""
+        update_files_by_keys(request)
+        messages.success(self.request, _("Files have been updated successfully."))
+        return HttpResponseRedirect(self.get_success_url())
 
-        # Redirect to files tab instead of returning JSON
+    def _handle_file_delete(self, request: HttpRequest, static_block: StaticBlock) -> HttpResponse:
+        """Handles file delete actions."""
+        delete_files_by_keys(request)
+        refresh_file_positions(static_block)
+        messages.success(self.request, _("Files have been deleted successfully."))
         return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
