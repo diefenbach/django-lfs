@@ -295,6 +295,18 @@ class AddVoucherGroupView(PermissionRequiredMixin, CreateView):
         return reverse("lfs_manage_voucher_group", kwargs={"id": self.object.id})
 
 
+class VoucherGroupDeleteConfirmView(PermissionRequiredMixin, TemplateView):
+    """Provides a modal form to confirm deletion of a voucher group."""
+
+    template_name = "manage/voucher/delete_voucher_group.html"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["voucher_group"] = get_object_or_404(VoucherGroup, pk=self.kwargs["id"])
+        return context
+
+
 class VoucherGroupDeleteView(PermissionRequiredMixin, DeleteView):
     """Deletes voucher group with passed id."""
 
@@ -302,17 +314,12 @@ class VoucherGroupDeleteView(PermissionRequiredMixin, DeleteView):
     pk_url_kwarg = "id"
     permission_required = "core.manage_shop"
 
-    def get_success_url(self) -> str:
-        """Returns URL to redirect after successful deletion."""
-        return reverse("lfs_manage_voucher_groups")
-
     def post(self, request, *args, **kwargs):
-        """Handle POST request - delete directly without confirmation."""
-        return self.delete(request, *args, **kwargs)
+        """Handle POST request - delete voucher group and redirect with message."""
+        self.object = self.get_object()
+        self.object.delete()
 
-    def delete(self, request, *args, **kwargs):
-        """Override to add success message after deletion."""
-        response = super().delete(request, *args, **kwargs)
-        response["HX-Redirect"] = self.get_success_url()
         messages.success(request, _("Voucher group and assigned vouchers have been deleted."))
+
+        response = HttpResponseRedirect(reverse("lfs_manage_voucher_groups"))
         return response

@@ -189,6 +189,11 @@ urlpatterns = [
         name="lfs_manage_add_voucher_group",
     ),
     re_path(
+        r"^delete-voucher-group-confirm/(?P<id>\d+)$",
+        lfs.manage.voucher.views.VoucherGroupDeleteConfirmView.as_view(),
+        name="lfs_manage_delete_voucher_group_confirm",
+    ),
+    re_path(
         r"^delete-voucher-group/(?P<id>\d+)$",
         lfs.manage.voucher.views.VoucherGroupDeleteView.as_view(),
         name="lfs_delete_voucher_group",

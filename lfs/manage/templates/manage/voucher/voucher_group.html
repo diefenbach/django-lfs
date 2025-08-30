@@ -49,14 +49,11 @@
                                 {% trans 'Add Voucher Group' %}
                             </button>
                             <a class="btn btn-sm btn-outline-danger me-2"
-                                href="{% url 'lfs_delete_voucher_group' voucher_group.id %}"
-                                hx-post="{% url 'lfs_delete_voucher_group' voucher_group.id %}"
-                                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                                hx-select=".lfs-voucher-groups"
-                                hx-target=".lfs-voucher-groups"
-                                hx-swap="innerHTML"   
-                                hx-push-url="true"
-                                hx-confirm="{% trans 'Do you really want to delete this voucher group?' %}">
+                               hx-get="{% url 'lfs_manage_delete_voucher_group_confirm' voucher_group.id %}"
+                               hx-target="#modal-body-sm"
+                               hx-trigger="click"
+                               hx-swap="innerHTML"
+                               href="#">
                                 <i class="bi bi-trash"></i>
                                 {% trans 'Delete Voucher Group' %}
                             </a>
@@ -91,6 +88,7 @@
     </div>
 
     {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
 
     <script src="{% static 'lfs/js/management/vouchers.js' %}"></script>
 {% endblock %}

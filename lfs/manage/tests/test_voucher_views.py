@@ -11,7 +11,7 @@ Following TDD principles:
 import pytest
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from decimal import Decimal
 
 from lfs.voucher.models import VoucherGroup, VoucherOptions, Voucher
@@ -406,14 +406,24 @@ class TestVoucherGroupDeleteView:
         view = VoucherGroupDeleteView()
         assert view.permission_required == "core.manage_shop"
 
-    def test_get_success_url_returns_voucher_groups_list_url(self):
-        """Should return URL to voucher groups list after successful deletion."""
+    def test_post_deletes_voucher_group_and_redirects(self, request_factory, voucher_group, monkeypatch):
+        """Should delete voucher group and redirect with success message."""
+        request = request_factory.post("/")
+
         view = VoucherGroupDeleteView()
+        view.request = request
+        view.kwargs = {"id": voucher_group.id}
 
-        success_url = view.get_success_url()
+        def mock_messages_success(request, message):
+            pass  # Mock the messages.success call
 
-        expected_url = reverse("lfs_manage_voucher_groups")
-        assert success_url == expected_url
+        monkeypatch.setattr("lfs.manage.voucher.views.messages.success", mock_messages_success)
+
+        response = view.post(request)
+
+        assert isinstance(response, HttpResponseRedirect)
+        assert response.url == reverse("lfs_manage_voucher_groups")
+        assert response["HX-Redirect"] == reverse("lfs_manage_voucher_groups")
 
 
 @pytest.mark.django_db
