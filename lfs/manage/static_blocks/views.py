@@ -9,12 +9,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import UpdateView, FormView, CreateView, DeleteView, RedirectView, TemplateView
 
 import lfs.core.utils
-
 from lfs.catalog.models import StaticBlock, File
 from lfs.manage.static_blocks.forms import FileUploadForm
-
-
-from django.views.generic.base import RedirectView
 
 
 class ManageStaticBlocksView(PermissionRequiredMixin, RedirectView):
