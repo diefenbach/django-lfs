@@ -49,14 +49,7 @@
                                 {% trans 'Add Static Block' %}
                             </button>
                             <a class="btn btn-sm btn-outline-danger me-2"
-                                href="{% url 'lfs_delete_static_block' static_block.id %}"
-                                hx-post="{% url 'lfs_delete_static_block' static_block.id %}"
-                                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                                hx-select=".lfs-static-blocks"
-                                hx-target=".lfs-static-blocks"
-                                hx-swap="innerHTML"   
-                                hx-push-url="true"
-                                hx-confirm="{% trans 'Do you really want to delete this static block?' %}">
+                                href="{% url 'lfs_delete_static_block' static_block.id %}">
                                 <i class="bi bi-trash"></i>
                                 {% trans 'Delete Static Block' %}
                             </a>

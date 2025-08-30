@@ -1,0 +1,137 @@
+{% load i18n crispy_forms_tags %}
+
+{# Vouchers-Tab für VoucherGroup #}
+
+{# Existing Vouchers List #}
+<div class="mb-4">
+    <h3 class="h5">{% trans "Existing Vouchers" %}</h3>
+    
+    {# Search for vouchers #}
+    <div class="input-group mb-3">
+        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+        <input type="search" 
+               class="form-control" 
+               placeholder="{% trans 'Search vouchers...' %}" 
+               name="voucher_search"
+               value="{{ voucher_search }}"
+               hx-get="{{ request.path }}"
+               hx-target="main"
+               hx-select="main"
+               hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+               hx-include="this"
+               hx-push-url="true"
+               aria-label="{% trans 'Search vouchers' %}">
+    </div>
+
+    {% if vouchers %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="select-all-vouchers" class="form-check-input">
+                            </th>
+                            <th>{% trans "Number" %}</th>
+                            <th>{% trans "Kind" %}</th>
+                            <th>{% trans "Value" %}</th>
+                            <th>{% trans "Start Date" %}</th>
+                            <th>{% trans "End Date" %}</th>
+                            <th>{% trans "Used" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for voucher in vouchers %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="voucher-ids" value="{{ voucher.id }}" class="form-check-input voucher-checkbox">
+                                </td>
+                                <td>{{ voucher.number }}</td>
+                                <td>
+                                    {% if voucher.kind_of == 0 %}
+                                        {% trans "Absolute" %}
+                                    {% else %}
+                                        {% trans "Percentage" %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if voucher.kind_of == 0 %}
+                                        {{ voucher.value|floatformat:2 }} €
+                                    {% else %}
+                                        {{ voucher.value|floatformat:2 }} %
+                                    {% endif %}
+                                </td>
+                                <td>{{ voucher.start_date|date:"d.m.Y"|default:"-" }}</td>
+                                <td>{{ voucher.end_date|date:"d.m.Y"|default:"-" }}</td>
+                                <td>
+                                    {% if voucher.used_amount %}
+                                        <span class="badge bg-success">{% trans "Used" %}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{% trans "Unused" %}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-3">
+                <button type="submit" name="delete_vouchers" class="btn btn-outline-danger" 
+                        onclick="return confirm('{% trans "Do you really want to delete the selected vouchers?" %}')">
+                    <i class="bi bi-trash me-1"></i>
+                    {% trans "Delete selected vouchers" %}
+                </button>
+            </div>
+        </form>
+    {% else %}
+        <div class="alert alert-info">
+            {% trans "No vouchers found." %}
+        </div>
+    {% endif %}
+</div>
+
+{# Add New Vouchers Form #}
+<div class="border-top pt-4">
+    <h3 class="h5">{% trans "Add New Vouchers" %}</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="buttons mt-3">
+            <button type="submit" name="add_vouchers" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i>
+                {% trans "Add vouchers" %}
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Select all checkbox functionality
+    const selectAllCheckbox = document.getElementById('select-all-vouchers');
+    const voucherCheckboxes = document.querySelectorAll('.voucher-checkbox');
+    
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            voucherCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    }
+    
+    // Update select all checkbox when individual checkboxes change
+    voucherCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const checkedCount = document.querySelectorAll('.voucher-checkbox:checked').length;
+            const totalCount = voucherCheckboxes.length;
+            
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = checkedCount === totalCount;
+                selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < totalCount;
+            }
+        });
+    });
+});
+</script>

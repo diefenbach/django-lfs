@@ -42,7 +42,7 @@ from lfs.manage.seo.views import SEOView
 from lfs.manage.delivery_times import views as delivery_times_views
 from lfs.manage.manufacturers import views as manufacturers_views
 from lfs.manage.manufacturers import products as manufacturers_products_views
-from lfs.manage.voucher import views as voucher_views
+import lfs.manage.voucher.views
 from lfs.manage.views import lfs_portlets
 from lfs.manage.product import product
 from lfs.manufacturer.models import Manufacturer
@@ -162,21 +162,42 @@ urlpatterns = [
         lfs.manage.views.marketing.topseller.manage_topseller_inline,
         name="lfs_manage_topseller_inline",
     ),
-    # Voucher
-    re_path(r"^vouchers$", voucher_views.manage_vouchers, name="lfs_manage_vouchers"),
-    re_path(r"^no-vouchers$", voucher_views.no_vouchers, name="lfs_no_vouchers"),
-    re_path(r"^add-voucher-group$", voucher_views.add_voucher_group, name="lfs_manage_add_voucher_group"),
-    re_path(r"^voucher-group/(?P<id>\d+)$", voucher_views.voucher_group, name="lfs_manage_voucher_group"),
-    re_path(r"^delete-voucher-group/(?P<id>\d+)$", voucher_views.delete_voucher_group, name="lfs_delete_voucher_group"),
+    # Voucher Groups
     re_path(
-        r"^save-voucher-group-data/(?P<id>\d+)$",
-        voucher_views.save_voucher_group_data,
-        name="lfs_manage_save_voucher_group_data",
+        r"^vouchers$",
+        lfs.manage.voucher.views.ManageVoucherGroupsView.as_view(),
+        name="lfs_manage_voucher_groups",
     ),
-    re_path(r"^save-voucher-options$", voucher_views.save_voucher_options, name="lfs_manage_save_voucher_options"),
-    re_path(r"^add-vouchers/(?P<group_id>\d+)$", voucher_views.add_vouchers, name="lfs_manage_add_vouchers"),
-    re_path(r"^delete-vouchers/(?P<group_id>\d+)$", voucher_views.delete_vouchers, name="lfs_manage_delete_vouchers"),
-    re_path(r"^set-vouchers-page$", voucher_views.set_vouchers_page, name="lfs_set_vouchers_page"),
+    re_path(
+        r"^voucher-group/(?P<id>\d+)$",
+        lfs.manage.voucher.views.VoucherGroupDataView.as_view(),
+        name="lfs_manage_voucher_group",
+    ),
+    re_path(
+        r"^voucher-group/(?P<id>\d+)/vouchers$",
+        lfs.manage.voucher.views.VoucherGroupVouchersView.as_view(),
+        name="lfs_manage_voucher_group_vouchers",
+    ),
+    re_path(
+        r"^voucher-group/(?P<id>\d+)/options$",
+        lfs.manage.voucher.views.VoucherGroupOptionsView.as_view(),
+        name="lfs_manage_voucher_group_options",
+    ),
+    re_path(
+        r"^add-voucher-group$",
+        lfs.manage.voucher.views.AddVoucherGroupView.as_view(),
+        name="lfs_manage_add_voucher_group",
+    ),
+    re_path(
+        r"^delete-voucher-group/(?P<id>\d+)$",
+        lfs.manage.voucher.views.VoucherGroupDeleteView.as_view(),
+        name="lfs_delete_voucher_group",
+    ),
+    re_path(
+        r"^no-voucher-groups$",
+        lfs.manage.voucher.views.NoVoucherGroupsView.as_view(),
+        name="lfs_manage_no_voucher_groups",
+    ),
     # Portlets
     re_path(
         r"^add-portlet/(?P<object_type_id>\d+)/(?P<object_id>\d+)$", lfs_portlets.add_portlet, name="lfs_add_portlet"

@@ -28,6 +28,20 @@ document.addEventListener('htmx:afterSwap', evt => {
 
 
 document.addEventListener('DOMContentLoaded', function() {
+    flatpickr(".dateinput", {
+        dateFormat: "d.m.Y",
+        locale: "de",
+        allowInput: true
+    });
+
+    flatpickr(".datetimeinput", {
+        enableTime: true,
+        dateFormat: "d.m.Y H:i",
+        time_24hr: true,
+        locale: "de",
+        allowInput: true
+    });
+
     tinymce.init({
         selector: '#id_html, #id_description, #id_short_description',
         license_key: 'gpl',

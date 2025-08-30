@@ -1,0 +1,42 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/marketing/vouchers.html{% endblock %}
+
+{% block content %}
+    <div class="lfs-voucher-groups">
+        <div class="row">
+            <aside class="scrollable-content col-3 bg-white border-end p-4">
+                <h2 class="h4 mb-3">{% trans "Voucher groups" %}</h2>
+                <div class="alert alert-info">
+                    {% trans "No voucher groups exist yet." %}
+                </div>
+            </aside>
+
+            <main class="col-9 p-4 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="h4 mb-3">{% trans 'Voucher Groups' %}</h2>
+                        <div class="site-actions mb-3" id="site-actions">
+                            <button class="btn btn-sm btn-outline-primary me-2"
+                                    hx-get="{% url 'lfs_manage_add_voucher_group' %}"
+                                    hx-target="#modal-body-lg"
+                                    hx-trigger="click"
+                                    hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Voucher Group' %}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <h4>{% trans "No voucher groups" %}</h4>
+                        <p>{% trans "There are no voucher groups yet. Please add one." %}</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+{% endblock %}
