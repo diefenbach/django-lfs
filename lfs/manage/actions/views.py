@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
@@ -120,6 +121,18 @@ class ActionCreateView(PermissionRequiredMixin, CreateView):
         return response
 
 
+class ActionDeleteConfirmView(PermissionRequiredMixin, TemplateView):
+    """Provides a modal form to confirm deletion of an action."""
+
+    template_name = "manage/actions/delete_action.html"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["action"] = get_object_or_404(Action, pk=self.kwargs["pk"])
+        return context
+
+
 class ActionDeleteView(PermissionRequiredMixin, DeleteView):
     """Deletes the action with passed id."""
 
@@ -127,19 +140,13 @@ class ActionDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = "core.manage_shop"
 
     def post(self, request, *args, **kwargs):
+        """Handle POST request - delete static block and redirect with message."""
         self.object = self.get_object()
         self.object.delete()
 
-        messages.success(self.request, _("Action has been deleted."))
+        messages.success(request, _("Action has been deleted."))
 
-        response = HttpResponse()
-        first_action = Action.objects.exclude(pk=self.object.pk).first()
-        if first_action:
-            response["HX-Redirect"] = reverse("lfs_manage_action", kwargs={"pk": first_action.id})
-
-        else:
-            response["HX-Redirect"] = reverse("lfs_no_actions")
-
+        response = HttpResponseRedirect(reverse("lfs_manage_actions"))
         return response
 
 

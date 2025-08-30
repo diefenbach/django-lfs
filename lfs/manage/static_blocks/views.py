@@ -263,19 +263,18 @@ class StaticBlockDeleteView(PermissionRequiredMixin, DeleteView):
     pk_url_kwarg = "id"
     permission_required = "core.manage_shop"
 
-    def get_success_url(self) -> str:
-        """Returns URL to redirect after successful deletion."""
-        return reverse("lfs_manage_static_blocks")
-
     def get(self, request, *args, **kwargs):
         """Handle GET request - delete directly without confirmation."""
-        return self.delete(request, *args, **kwargs)
+        return self.post(request, *args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
-        """Override to add success message after deletion."""
-        response = super().delete(request, *args, **kwargs)
-        response["HX-Redirect"] = self.get_success_url()
+    def post(self, request, *args, **kwargs):
+        """Handle POST request - delete static block and redirect with message."""
+        self.object = self.get_object()
+        self.object.delete()
+
         messages.success(request, _("Static block has been deleted."))
+
+        response = HttpResponseRedirect(reverse("lfs_manage_static_blocks"))
         return response
 
 

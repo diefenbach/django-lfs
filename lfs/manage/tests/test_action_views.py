@@ -364,16 +364,16 @@ class TestActionDeleteView:
         monkeypatch.setattr(view, "get_object", mock_get_object)
         monkeypatch.setattr("lfs.manage.actions.views.messages.success", mock_messages_success)
 
-        response = view.post(request)
+        response = view.delete(request)
 
-        assert isinstance(response, HttpResponse)
-        # Should have HX-Redirect header to one of the remaining actions
+        assert isinstance(response, HttpResponseRedirect)
+        # Should redirect to one of the remaining actions
         remaining_action = Action.objects.exclude(pk=multiple_actions[0].pk).first()
         expected_url = reverse("lfs_manage_action", kwargs={"pk": remaining_action.id})
-        assert response["HX-Redirect"] == expected_url
+        assert response.url == expected_url
 
-    def test_post_returns_htmx_redirect_when_no_actions_remain(self, request_factory, action, monkeypatch):
-        """Should return HTMX redirect to no actions when last action is deleted."""
+    def test_post_returns_redirect_when_no_actions_remain(self, request_factory, action, monkeypatch):
+        """Should return redirect to no actions when last action is deleted."""
         request = request_factory.post("/")
 
         view = ActionDeleteView()
@@ -389,10 +389,10 @@ class TestActionDeleteView:
         monkeypatch.setattr(view, "get_object", mock_get_object)
         monkeypatch.setattr("lfs.manage.actions.views.messages.success", mock_messages_success)
 
-        response = view.post(request)
+        response = view.delete(request)
 
-        assert isinstance(response, HttpResponse)
-        assert response["HX-Redirect"] == reverse("lfs_no_actions")
+        assert isinstance(response, HttpResponseRedirect)
+        assert response.url == reverse("lfs_no_actions")
 
 
 class TestSortActions:

@@ -1,0 +1,26 @@
+{% load i18n %}
+
+<h5 id="modal-title-sm" class="modal-title" hx-swap-oob="true">{% trans 'Delete Action' %}</h5>
+<div class="text-center">
+    <p class="mb-3">
+        {% blocktrans with title=action.title %}
+            Are you sure you want to delete the action "<strong>{{ title }}</strong>"?
+        {% endblocktrans %}
+    </p>
+    <p class="text-muted small">{% trans 'This action cannot be undone.' %}</p>
+    
+    <div class="mt-4">
+        <form method="post" 
+              action="{% url 'lfs_delete_action' action.pk %}" 
+              class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger me-2">
+                <i class="bi bi-trash me-1"></i>
+                {% trans 'Delete' %}
+            </button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            {% trans 'Cancel' %}
+        </button>
+    </div>
+</div>

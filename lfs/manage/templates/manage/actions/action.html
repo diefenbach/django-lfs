@@ -54,14 +54,11 @@
                     </button>
 
                     <a class="btn btn-sm btn-outline-danger"
-                        href="{% url 'lfs_delete_action' action.id %}"
-                        hx-post="{% url 'lfs_delete_action' action.id %}"
-                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                        hx-select="#data-content"
-                        hx-target="#data-content"
-                        hx-swap="innerHTML"
-                        hx-push-url="true"
-                        hx-confirm="Möchten Sie diese Aktion wirklich löschen?">
+                       hx-get="{% url 'lfs_manage_delete_action_confirm' action.id %}"
+                       hx-target="#modal-body-sm"
+                       hx-trigger="click"
+                       hx-swap="innerHTML"
+                       href="#">
                         <i class="bi bi-trash"></i>
                         {% trans 'Delete action' %}
                     </a>
@@ -101,6 +98,7 @@
         </main>
     </div>
     {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
 
     <script>
         window.LFS_SORT_ACTIONS_URL = '{% url "lfs_sort_actions" %}';
