@@ -8,7 +8,6 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import UpdateView, FormView, CreateView, DeleteView, RedirectView, TemplateView
 
-import lfs.core.utils
 from lfs.catalog.models import StaticBlock, File
 from lfs.manage.static_blocks.forms import FileUploadForm
 
@@ -236,13 +235,13 @@ class AddStaticBlockView(PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         static_block = form.save()
+
         response = HttpResponse()
         response["HX-Redirect"] = reverse("lfs_manage_static_block", kwargs={"id": static_block.id})
-        return response
 
-    def get_success_url(self):
-        """Return the URL to redirect to after successful form submission."""
-        return reverse("lfs_manage_static_block", kwargs={"id": self.object.id})
+        messages.success(self.request, _("Static block has been created."))
+
+        return response
 
 
 class StaticBlockDeleteView(PermissionRequiredMixin, DeleteView):
@@ -256,13 +255,15 @@ class StaticBlockDeleteView(PermissionRequiredMixin, DeleteView):
         """Returns URL to redirect after successful deletion."""
         return reverse("lfs_manage_static_blocks")
 
+    def get(self, request, *args, **kwargs):
+        """Handle GET request - delete directly without confirmation."""
+        return self.delete(request, *args, **kwargs)
+
     def delete(self, request, *args, **kwargs):
         """Override to add success message after deletion."""
         response = super().delete(request, *args, **kwargs)
-        return lfs.core.utils.set_message_cookie(
-            url=self.get_success_url(),
-            msg=_("Static block has been deleted."),
-        )
+        messages.success(request, _("Static block has been deleted."))
+        return response
 
 
 class StaticBlockPreviewView(PermissionRequiredMixin, TemplateView):
