@@ -16,11 +16,13 @@ from django.contrib.auth import get_user_model
 from django.test import RequestFactory
 
 from lfs.catalog.models import StaticBlock
-from lfs.core.models import Action, ActionGroup
-from lfs.catalog.models import File
+from lfs.core.models import Action, ActionGroup, Country
+from lfs.catalog.models import File, DeliveryTime
+from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
 from lfs.voucher.models import VoucherGroup, VoucherOptions, Voucher
 from lfs.tax.models import Tax
 from lfs.core.models import Shop
+from lfs.cart.models import Cart
 
 
 User = get_user_model()
@@ -265,6 +267,50 @@ def tax(db):
 
 
 @pytest.fixture
-def shop(db):
-    """Sample Shop for testing."""
-    return Shop.objects.create(name="Test Shop", shop_owner="Test Owner")
+def default_country(db):
+    """Create a default country for testing."""
+    return Country.objects.create(code="us", name="USA")
+
+
+@pytest.fixture
+def delivery_time(db):
+    """Create a default delivery time for testing."""
+    return DeliveryTime.objects.create(min=1, max=2, unit=DELIVERY_TIME_UNIT_DAYS)
+
+
+@pytest.fixture
+def shop(db, default_country, delivery_time):
+    """Sample Shop for testing with all required dependencies."""
+    shop = Shop.objects.create(
+        name="Test Shop",
+        shop_owner="Test Owner",
+        from_email="test@example.com",
+        notification_emails="test@example.com",
+        description="Test shop description",
+        default_country=default_country,
+        delivery_time=delivery_time,
+    )
+    shop.invoice_countries.add(default_country)
+    shop.shipping_countries.add(default_country)
+    return shop
+
+
+@pytest.fixture
+def admin_user(db):
+    """Create an admin user for testing."""
+    return User.objects.create_user(username="admin", password="testpass123", is_staff=True, is_superuser=True)
+
+
+@pytest.fixture
+def authenticated_client(client, admin_user, shop):
+    """Create an authenticated client."""
+    client.login(username="admin", password="testpass123")
+    return client
+
+
+@pytest.fixture
+def test_carts(db, shop):
+    """Create test carts."""
+    cart1 = Cart.objects.create(session="test_session_1")
+    cart2 = Cart.objects.create(session="test_session_2")
+    return cart1, cart2

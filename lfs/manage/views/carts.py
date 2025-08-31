@@ -1,111 +1,166 @@
-# python imports
-from datetime import datetime
-from datetime import timedelta
-import json
+from typing import Dict, Any, Optional
+from datetime import datetime, timedelta
 
-# django imports
-from django.contrib.auth.decorators import permission_required
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.template.loader import render_to_string
-from django.utils import timezone
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.utils import timezone, formats
 from django.utils.translation import gettext_lazy as _
+from django.views.generic import FormView, DeleteView, RedirectView, TemplateView
 
-# lfs imports
-import lfs.core.utils
-from lfs.caching.utils import lfs_get_object_or_404
 from lfs.cart.models import Cart
-from lfs.core.utils import LazyEncoder
 from lfs.customer.models import Customer
+from lfs.manage.carts.forms import CartFilterForm
+from lfs.manage.mixins import DirectDeleteMixin
 
 
-# Views
-@permission_required("core.manage_shop")
-def carts_view(request, template_name="manage/cart/carts.html"):
-    """Displays the carts overview."""
-    return render(
-        request,
-        template_name,
-        {
-            "carts_filters_inline": carts_filters_inline(request),
-            "carts_inline": carts_inline(request),
-        },
-    )
+def parse_localized_date(date_string: str) -> datetime:
+    """Parse date string using localized formats."""
+    if not date_string:
+        return None
+
+    # Get date input formats from settings
+    date_formats = getattr(settings, "DATE_INPUT_FORMATS", ["%Y-%m-%d"])
+
+    for fmt in date_formats:
+        try:
+            return datetime.strptime(date_string, fmt)
+        except ValueError:
+            continue
+
+    # Fallback to ISO format
+    try:
+        return datetime.strptime(date_string, "%Y-%m-%d")
+    except ValueError:
+        return None
 
 
-@permission_required("core.manage_shop")
-def cart_view(request, cart_id, template_name="manage/cart/cart.html"):
-    """Displays the cart with the passed cart id."""
-    return render(
-        request,
-        template_name,
-        {
-            "cart_filters_inline": cart_filters_inline(request, cart_id),
-            "selectable_carts_inline": selectable_carts_inline(request, cart_id),
-            "cart_inline": cart_inline(request, cart_id),
-        },
-    )
+def format_localized_date(date_obj: datetime) -> str:
+    """Format date using localized format."""
+    if not date_obj:
+        return ""
+
+    # Use Django's localized formatting
+    return formats.date_format(date_obj, format="SHORT_DATE_FORMAT")
 
 
-# Parts
-def cart_filters_inline(request, cart_id, template_name="manage/cart/cart_filters_inline.html"):
-    """Renders the filters section of the cart view."""
-    cart = lfs_get_object_or_404(Cart, pk=cart_id)
-    cart_filters = request.session.get("cart-filters", {})
+class ManageCartsView(PermissionRequiredMixin, RedirectView):
+    """Dispatches to the first cart or to the no carts view."""
 
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "cart": cart,
-            "start": cart_filters.get("start", ""),
-            "end": cart_filters.get("end", ""),
-        },
-    )
+    permission_required = "core.manage_shop"
+
+    def get_redirect_url(self, *args, **kwargs):
+        try:
+            cart = Cart.objects.all().order_by("-modification_date")[0]
+            return reverse("lfs_manage_cart", kwargs={"id": cart.id})
+        except IndexError:
+            return reverse("lfs_manage_no_carts")
 
 
-def carts_filters_inline(request, template_name="manage/cart/carts_filters_inline.html"):
-    """Displays the filters part of the carts overview."""
-    cart_filters = request.session.get("cart-filters", {})
-    temp = _get_filtered_carts(cart_filters)
+class NoCartsView(PermissionRequiredMixin, TemplateView):
+    """Displays that no carts exist."""
 
-    paginator = Paginator(temp, 30)
-
-    page = (request.POST if request.method == "POST" else request.GET).get("page", 1)
-    page = paginator.page(page)
-
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "page": page,
-            "paginator": paginator,
-            "start": cart_filters.get("start", ""),
-            "end": cart_filters.get("end", ""),
-        },
-    )
+    permission_required = "core.manage_shop"
+    template_name = "manage/cart/no_carts.html"
 
 
-@permission_required("core.manage_shop")
-def carts_inline(request, template_name="manage/cart/carts_inline.html"):
-    """Displays carts overview."""
-    cart_filters = request.session.get("cart-filters", {})
-    temp = _get_filtered_carts(cart_filters)
+class CartTabMixin:
+    """Mixin for tab navigation in Cart views."""
 
-    paginator = Paginator(temp, 30)
+    template_name = "manage/cart/cart.html"
+    tab_name: Optional[str] = None
 
-    page = (request.POST if request.method == "POST" else request.GET).get("page", 1)
-    page = paginator.page(page)
+    def get_cart(self) -> Cart:
+        """Gets the Cart object."""
+        return get_object_or_404(Cart, pk=self.kwargs["id"])
 
-    carts = []
-    for cart in page.object_list:
-        products = []
+    def get_carts_queryset(self):
+        """Returns filtered Carts based on session filters with pagination."""
+        queryset = Cart.objects.all().order_by("-modification_date")
+        cart_filters = self.request.session.get("cart-filters", {})
+
+        # Apply date filters
+        start = cart_filters.get("start", "")
+        end = cart_filters.get("end", "")
+
+        # Parse start date using localized formats
+        start_date = parse_localized_date(start)
+        if start_date:
+            start_date = timezone.make_aware(start_date.replace(hour=0, minute=0, second=0))
+        else:
+            start_date = timezone.datetime(1970, 1, 1)
+
+        # Parse end date using localized formats
+        end_date = parse_localized_date(end)
+        if end_date:
+            end_date = timezone.make_aware(end_date.replace(hour=23, minute=59, second=59))
+        else:
+            end_date = timezone.now()
+
+        queryset = queryset.filter(modification_date__range=(start_date, end_date))
+        return queryset
+
+    def get_paginated_carts(self):
+        """Returns paginated carts for sidebar."""
+        carts_queryset = self.get_carts_queryset()
+        paginator = Paginator(carts_queryset, 10)
+        page_number = self.request.GET.get("page", 1)
+        return paginator.get_page(page_number)
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with sidebar navigation and Cart."""
+        ctx = super().get_context_data(**kwargs)
+        cart = getattr(self, "object", None) or self.get_cart()
+        cart_filters = self.request.session.get("cart-filters", {})
+
+        # Get paginated carts for sidebar
+        carts_page = self.get_paginated_carts()
+
+        # Create filter form with initial data
+        from lfs.manage.carts.forms import CartFilterForm
+
+        filter_form = CartFilterForm(
+            initial={
+                "start": cart_filters.get("start", ""),
+                "end": cart_filters.get("end", ""),
+            }
+        )
+
+        ctx.update(
+            {
+                "cart": cart,
+                "carts_page": carts_page,
+                "cart_filters": cart_filters,
+                "filter_form": filter_form,
+                "active_tab": self.tab_name,
+            }
+        )
+        return ctx
+
+
+class CartDataView(PermissionRequiredMixin, CartTabMixin, TemplateView):
+    """View for data tab of a Cart."""
+
+    tab_name = "data"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context for data tab."""
+        ctx = super().get_context_data(**kwargs)
+        cart = self.get_cart()
+
+        # Calculate cart totals and items
         total = 0
+        products = []
         for item in cart.get_items():
-            total += item.get_price_gross(request)
+            total += item.get_price_gross(self.request)
             products.append(item.product.get_name())
 
+        # Get customer information
         try:
             if cart.user:
                 customer = Customer.objects.get(user=cart.user)
@@ -114,261 +169,139 @@ def carts_inline(request, template_name="manage/cart/carts_inline.html"):
         except Customer.DoesNotExist:
             customer = None
 
-        carts.append(
+        ctx.update(
             {
-                "id": cart.id,
-                "amount_of_items": cart.get_amount_of_items(),
-                "session": cart.session,
-                "user": cart.user,
-                "total": total,
-                "products": ", ".join(products),
-                "creation_date": cart.creation_date,
-                "modification_date": cart.modification_date,
+                "cart_total": total,
+                "cart_products": ", ".join(products),
                 "customer": customer,
+                "cart_items": cart.get_items(),
             }
         )
-
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "carts": carts,
-            "page": page,
-            "paginator": paginator,
-            "start": cart_filters.get("start", ""),
-            "end": cart_filters.get("end", ""),
-        },
-    )
+        return ctx
 
 
-@permission_required("core.manage_shop")
-def cart_inline(request, cart_id, template_name="manage/cart/cart_inline.html"):
-    """Displays cart with provided cart id."""
-    cart = lfs_get_object_or_404(Cart, pk=cart_id)
+class ApplyCartFiltersView(PermissionRequiredMixin, FormView):
+    """Handles filter form submissions and redirects back to cart view."""
 
-    total = 0
-    for item in cart.get_items():
-        total += item.get_price_gross(request)
+    permission_required = "core.manage_shop"
+    form_class = CartFilterForm
 
-    try:
-        if cart.user:
-            customer = Customer.objects.get(user=cart.user)
-        else:
-            customer = Customer.objects.get(session=cart.session)
-    except Customer.DoesNotExist:
-        customer = None
+    def get_success_url(self) -> str:
+        """Redirects back to the cart view."""
+        cart_id = self.kwargs.get("id")
+        if cart_id:
+            return reverse("lfs_manage_cart", kwargs={"id": cart_id})
+        return reverse("lfs_manage_carts")
 
-    cart_filters = request.session.get("cart-filters", {})
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "cart": cart,
-            "customer": customer,
-            "total": total,
-            "start": cart_filters.get("start", ""),
-            "end": cart_filters.get("end", ""),
-        },
-    )
+    def form_valid(self, form):
+        """Saves filter data to session."""
+        cart_filters = self.request.session.get("cart-filters", {})
 
+        # Update filters
+        start = form.cleaned_data.get("start")
+        end = form.cleaned_data.get("end")
 
-@permission_required("core.manage_shop")
-def selectable_carts_inline(request, cart_id, template_name="manage/cart/selectable_carts_inline.html"):
-    """Displays selectable carts section within cart view."""
-    cart_filters = request.session.get("cart-filters", {})
-    carts = _get_filtered_carts(cart_filters)
-
-    paginator = Paginator(carts, 30)
-
-    try:
-        page = int((request.POST if request.method == "POST" else request.GET).get("page", 1))
-    except TypeError:
-        page = 1
-    page = paginator.page(page)
-
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "paginator": paginator,
-            "page": page,
-            "cart_id": int(cart_id),
-        },
-    )
-
-
-# Actions
-@permission_required("core.manage_shop")
-def set_carts_page(request):
-    """Sets the page of the displayed carts."""
-    result = json.dumps(
-        {
-            "html": (
-                ("#carts-inline", carts_inline(request)),
-                ("#carts-filters-inline", carts_filters_inline(request)),
-            ),
-        },
-        cls=LazyEncoder,
-    )
-
-    return HttpResponse(result, content_type="application/json")
-
-
-@permission_required("core.manage_shop")
-def set_cart_page(request):
-    """Sets the page of the selectable carts within cart view."""
-    cart_id = request.GET.get("cart-id")
-
-    result = json.dumps(
-        {
-            "html": (
-                ("#cart-inline", cart_inline(request, cart_id)),
-                ("#cart-filters-inline", cart_filters_inline(request, cart_id)),
-                ("#selectable-carts-inline", selectable_carts_inline(request, cart_id)),
-            ),
-        },
-        cls=LazyEncoder,
-    )
-
-    return HttpResponse(result, content_type="application/json")
-
-
-@permission_required("core.manage_shop")
-def set_cart_filters(request):
-    """Sets cart filters given by passed request."""
-    cart_filters = request.session.get("cart-filters", {})
-
-    if request.POST.get("start", "") != "":
-        cart_filters["start"] = request.POST.get("start")
-    else:
-        if cart_filters.get("start"):
+        if start:
+            cart_filters["start"] = format_localized_date(start)
+        elif "start" in cart_filters:
             del cart_filters["start"]
 
-    if request.POST.get("end", "") != "":
-        cart_filters["end"] = request.POST.get("end")
-    else:
-        if cart_filters.get("end"):
+        if end:
+            cart_filters["end"] = format_localized_date(end)
+        elif "end" in cart_filters:
             del cart_filters["end"]
 
-    request.session["cart-filters"] = cart_filters
+        self.request.session["cart-filters"] = cart_filters
 
-    if (request.POST if request.method == "POST" else request.GET).get("came-from") == "cart":
-        cart_id = (request.POST if request.method == "POST" else request.GET).get("cart-id")
-        html = (
-            ("#selectable-carts-inline", selectable_carts_inline(request, cart_id)),
-            ("#cart-filters-inline", cart_filters_inline(request, cart_id)),
-            ("#cart-inline", cart_inline(request, cart_id)),
-        )
-    else:
-        html = (
-            ("#carts-filters-inline", carts_filters_inline(request)),
-            ("#carts-inline", carts_inline(request)),
-        )
-
-    msg = _("Cart filters has been set.")
-
-    result = json.dumps(
-        {
-            "html": html,
-            "message": msg,
-        },
-        cls=LazyEncoder,
-    )
-
-    return HttpResponse(result, content_type="application/json")
+        messages.success(self.request, _("Cart filters have been updated."))
+        return super().form_valid(form)
 
 
-@permission_required("core.manage_shop")
-def set_cart_filters_date(request):
-    """Sets the date filter by given short cut link"""
-    req = request.POST if request.method == "POST" else request.GET
-    cart_filters = request.session.get("cart-filters", {})
+class CartDeleteConfirmView(PermissionRequiredMixin, TemplateView):
+    """Provides a modal form to confirm deletion of a cart."""
 
-    start = datetime.now() - timedelta(int(req.get("start")))
-    end = datetime.now() - timedelta(int(req.get("end")))
+    template_name = "manage/cart/delete_cart.html"
+    permission_required = "core.manage_shop"
 
-    cart_filters["start"] = start.strftime("%Y-%m-%d")
-    cart_filters["end"] = end.strftime("%Y-%m-%d")
-    request.session["cart-filters"] = cart_filters
-
-    if req.get("came-from") == "cart":
-        cart_id = req.get("cart-id")
-        html = (
-            ("#selectable-carts-inline", selectable_carts_inline(request, cart_id)),
-            ("#cart-filters-inline", cart_filters_inline(request, cart_id)),
-            ("#cart-inline", cart_inline(request, cart_id)),
-        )
-    else:
-        html = (
-            ("#carts-filters-inline", carts_filters_inline(request)),
-            ("#carts-inline", carts_inline(request)),
-        )
-
-    msg = _("Cart filters has been set")
-
-    result = json.dumps(
-        {
-            "html": html,
-            "message": msg,
-        },
-        cls=LazyEncoder,
-    )
-
-    return HttpResponse(result, content_type="application/json")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cart"] = get_object_or_404(Cart, pk=self.kwargs["id"])
+        return context
 
 
-@permission_required("core.manage_shop")
-def reset_cart_filters(request):
+class CartDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
+    """Deletes cart with passed id."""
+
+    model = Cart
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
+    success_message = _("Cart has been deleted.")
+
+    def get_success_url(self):
+        return reverse("lfs_manage_carts")
+
+
+class ResetCartFiltersView(PermissionRequiredMixin, RedirectView):
     """Resets all cart filters."""
-    req = request.POST if request.method == "POST" else request.GET
-    if "cart-filters" in request.session:
-        del request.session["cart-filters"]
 
-    if req.get("came-from") == "cart":
-        cart_id = req.get("cart-id")
-        html = (
-            ("#selectable-carts-inline", selectable_carts_inline(request, cart_id)),
-            ("#cart-inline", cart_inline(request, cart_id)),
-        )
-    else:
-        html = (("#carts-inline", carts_inline(request)),)
+    permission_required = "core.manage_shop"
 
-    msg = _("Cart filters has been reset")
+    def get_redirect_url(self, *args, **kwargs):
+        # Clear filters from session
+        if "cart-filters" in self.request.session:
+            del self.request.session["cart-filters"]
 
-    result = json.dumps(
-        {
-            "html": html,
-            "message": msg,
-        },
-        cls=LazyEncoder,
-    )
+        messages.success(self.request, _("Cart filters have been reset."))
 
-    return HttpResponse(result, content_type="application/json")
+        # Redirect back to where we came from
+        cart_id = self.request.GET.get("cart_id")
+        if cart_id:
+            return reverse("lfs_manage_cart", kwargs={"id": cart_id})
+        else:
+            return reverse("lfs_manage_carts")
 
 
-# Private methods
-def _get_filtered_carts(cart_filters):
-    """ """
-    carts = Cart.objects.all().order_by("-modification_date")
+class ApplyPredefinedCartFilterView(PermissionRequiredMixin, RedirectView):
+    """Applies predefined date filters (today, week, month) to cart view."""
 
-    # start
-    start = cart_filters.get("start", "")
-    s = start
-    if start != "":
-        s = lfs.core.utils.get_start_day(start)
+    permission_required = "core.manage_shop"
 
-    if not s:
-        s = timezone.datetime(1970, 1, 1)
+    def get_redirect_url(self, *args, **kwargs):
+        cart_id = self.kwargs.get("id")
+        filter_type = self.kwargs.get("filter_type")
 
-    # end
-    end = cart_filters.get("end", "")
-    e = end
-    if end != "":
-        e = lfs.core.utils.get_end_day(end)
+        now = timezone.now()
+        start_date = None
+        end_date = now
 
-    if not e:
-        e = timezone.datetime.now()
+        if filter_type == "today":
+            start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            end_date = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+            filter_name = _("Today")
+        elif filter_type == "week":
+            # Start of current week (Monday)
+            days_since_monday = now.weekday()
+            start_date = (now - timedelta(days=days_since_monday)).replace(hour=0, minute=0, second=0, microsecond=0)
+            end_date = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+            filter_name = _("This Week")
+        elif filter_type == "month":
+            # Start of current month
+            start_date = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            end_date = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+            filter_name = _("This Month")
+        else:
+            messages.error(self.request, _("Invalid filter type."))
+            return reverse("lfs_manage_cart", kwargs={"id": cart_id}) if cart_id else reverse("lfs_manage_carts")
 
-    carts = carts.filter(modification_date__range=(s, e))
+        # Save filter to session
+        cart_filters = self.request.session.get("cart-filters", {})
+        cart_filters["start"] = format_localized_date(start_date)
+        cart_filters["end"] = format_localized_date(end_date)
+        self.request.session["cart-filters"] = cart_filters
 
-    return carts
+        messages.success(self.request, _("Filter applied: %(filter_name)s") % {"filter_name": filter_name})
+
+        if cart_id:
+            return reverse("lfs_manage_cart", kwargs={"id": cart_id})
+        else:
+            return reverse("lfs_manage_carts")

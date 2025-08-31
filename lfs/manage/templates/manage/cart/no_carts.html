@@ -1,0 +1,25 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/customer/carts.html{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-cart-x display-1 text-muted"></i>
+                    </div>
+                    <h2 class="h4 mb-3">{% trans "No Carts Found" %}</h2>
+                    <p class="text-muted mb-4">
+                        {% trans "There are currently no carts in the system. Carts will appear here when customers add items to their shopping carts." %}
+                    </p>
+                    <a href="{% url 'lfs_manage_shop' %}" class="btn btn-primary">
+                        <i class="bi bi-arrow-left me-1"></i>{% trans "Back to Management" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

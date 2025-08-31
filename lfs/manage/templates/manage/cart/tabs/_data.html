@@ -1,0 +1,84 @@
+{% load i18n lfs_tags %}
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-info-circle me-2"></i>{% trans "Cart Information" %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">{% trans "Cart ID" %}:</dt>
+                    <dd class="col-sm-8">{{ cart.id }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "Session" %}:</dt>
+                    <dd class="col-sm-8">{{ cart.session|default:"-" }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "User" %}:</dt>
+                    <dd class="col-sm-8">{{ cart.user|default:"-" }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "Customer" %}:</dt>
+                    <dd class="col-sm-8">
+                        {% if customer %}
+                            {{ customer }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </dd>
+                    
+                    <dt class="col-sm-4">{% trans "Creation Date" %}:</dt>
+                    <dd class="col-sm-8">{{ cart.creation_date|date:"M d, Y H:i" }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "Modification Date" %}:</dt>
+                    <dd class="col-sm-8">{{ cart.modification_date|date:"M d, Y H:i" }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "Total Amount" %}:</dt>
+                    <dd class="col-sm-8">{{ cart_total|currency:request }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "Items Count" %}:</dt>
+                    <dd class="col-sm-8">{{ cart.get_amount_of_items }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>    
+</div>
+
+{% if cart_items %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-list-ul me-2"></i>{% trans "Cart Items" %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>{% trans "Product" %}</th>
+                                <th class="text-end">{% trans "Quantity" %}</th>
+                                <th class="text-end">{% trans "Price" %}</th>
+                                <th class="text-end">{% trans "Total" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td><a href="{% url 'lfs_manage_product' item.product.id %}">{{ item.product.get_name }}</a></td>
+                                <td class="text-end">{{ item.amount }}</td>
+                                <td class="text-end">{{ item.product|get_price_gross:request|currency:request }}</td>
+                                <td class="text-end">{{ item|get_price_gross:request|currency:request }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

@@ -523,18 +523,46 @@ urlpatterns = [
         name="lfs_manage_update_related_products",
     ),
     # Carts
-    re_path(r"^carts$", lfs.manage.views.carts.carts_view, name="lfs_manage_carts"),
-    re_path(r"^carts-inline$", lfs.manage.views.carts.carts_inline, name="lfs_carts_inline"),
-    re_path(r"^cart-inline/(?P<cart_id>\d*)$", lfs.manage.views.carts.cart_inline, name="lfs_cart_inline"),
-    re_path(r"^cart/(?P<cart_id>\d*)$", lfs.manage.views.carts.cart_view, name="lfs_manage_cart"),
-    re_path(
-        r"^selectable-carts-inline$", lfs.manage.views.carts.selectable_carts_inline, name="lfs_selectable_carts_inline"
+    path(
+        "carts",
+        lfs.manage.views.carts.ManageCartsView.as_view(),
+        name="lfs_manage_carts",
     ),
-    re_path(r"^set-cart-filters$", lfs.manage.views.carts.set_cart_filters, name="lfs_set_cart_filters"),
-    re_path(r"^set-cart-filters-date$", lfs.manage.views.carts.set_cart_filters_date, name="lfs_set_cart_filters_date"),
-    re_path(r"^reset-cart-filters$", lfs.manage.views.carts.reset_cart_filters, name="lfs_reset_cart_filters"),
-    re_path(r"^set-carts-page$", lfs.manage.views.carts.set_carts_page, name="lfs_set_carts_page"),
-    re_path(r"^set-cart-page$", lfs.manage.views.carts.set_cart_page, name="lfs_set_cart_page"),
+    path(
+        "cart/<int:id>/",
+        lfs.manage.views.carts.CartDataView.as_view(),
+        name="lfs_manage_cart",
+    ),
+    path(
+        "cart/<int:id>/apply-filters/",
+        lfs.manage.views.carts.ApplyCartFiltersView.as_view(),
+        name="lfs_apply_cart_filters",
+    ),
+    path(
+        "cart/<int:id>/apply-predefined-filter/<str:filter_type>/",
+        lfs.manage.views.carts.ApplyPredefinedCartFilterView.as_view(),
+        name="lfs_apply_predefined_cart_filter",
+    ),
+    path(
+        "delete-cart-confirm/<int:id>",
+        lfs.manage.views.carts.CartDeleteConfirmView.as_view(),
+        name="lfs_manage_delete_cart_confirm",
+    ),
+    path(
+        "delete-cart/<int:id>",
+        lfs.manage.views.carts.CartDeleteView.as_view(),
+        name="lfs_delete_cart",
+    ),
+    path(
+        "no-carts",
+        lfs.manage.views.carts.NoCartsView.as_view(),
+        name="lfs_manage_no_carts",
+    ),
+    path(
+        "reset-cart-filters",
+        lfs.manage.views.carts.ResetCartFiltersView.as_view(),
+        name="lfs_reset_cart_filters",
+    ),
     # Categories
     re_path(r"^categories$", lfs.manage.categories.category.manage_categories, name="lfs_manage_categories"),
     re_path(

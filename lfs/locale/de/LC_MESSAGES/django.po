@@ -1918,6 +1918,12 @@ msgstr "Ende"
 msgid "Today"
 msgstr "Heute"
 
+msgid "This Week"
+msgstr "Diese Woche"
+
+msgid "This Month"
+msgstr "Diesen Monat"
+
 #: manage/templates/manage/cart/cart_filters_inline.html:19
 msgid "T"
 msgstr "H"
