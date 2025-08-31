@@ -1,3 +1,162 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
-<h1>{% trans 'Dashboard' %}</h1>
+
+{% block title %}{% trans 'Dashboard' %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="h2 mb-4">{% trans 'Dashboard' %}</h1>
+        </div>
+    </div>
+    
+    <!-- Products Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="h4 mb-3 text-muted">{% trans 'Products' %}</h3>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-6 text-primary mb-2">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <h6 class="card-title text-muted">{% trans 'Total Products' %}</h6>
+                    <h3 class="fw-bold text-dark">{{ total_products }}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-6 text-success mb-2">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <h6 class="card-title text-muted">{% trans 'Active Products' %}</h6>
+                    <h3 class="fw-bold text-dark">{{ active_products }}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-6 text-warning mb-2">
+                        <i class="bi bi-pause-circle"></i>
+                    </div>
+                    <h6 class="card-title text-muted">{% trans 'Inactive Products' %}</h6>
+                    <h3 class="fw-bold text-dark">{{ inactive_products }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Categories Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="h4 mb-3 text-muted">{% trans 'Categories' %}</h3>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-6 text-info mb-2">
+                        <i class="bi bi-folder"></i>
+                    </div>
+                    <h6 class="card-title text-muted">{% trans 'Total Categories' %}</h6>
+                    <h3 class="fw-bold text-dark">{{ total_categories }}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-6 text-success mb-2">
+                        <i class="bi bi-folder-check"></i>
+                    </div>
+                    <h6 class="card-title text-muted">{% trans 'Visible Categories' %}</h6>
+                    <h3 class="fw-bold text-dark">{{ visible_categories }}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-6 text-warning mb-2">
+                        <i class="bi bi-folder-x"></i>
+                    </div>
+                    <h6 class="card-title text-muted">{% trans 'Hidden Categories' %}</h6>
+                    <h3 class="fw-bold text-dark">{{ hidden_categories }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Orders Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="h4 mb-3 text-muted">{% trans 'Orders' %}</h3>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-6 text-primary mb-2">
+                        <i class="bi bi-cart"></i>
+                    </div>
+                    <h6 class="card-title text-muted">{% trans 'Total Orders' %}</h6>
+                    <h3 class="fw-bold text-dark">{{ total_orders }}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-6 text-warning mb-2">
+                        <i class="bi bi-calendar-month"></i>
+                    </div>
+                    <h6 class="card-title text-muted">{% trans 'Orders This Month' %}</h6>
+                    <h3 class="fw-bold text-dark">{{ orders_this_month }}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-6 text-success mb-2">
+                        <i class="bi bi-calendar3"></i>
+                    </div>
+                    <h6 class="card-title text-muted">{% trans 'Orders This Year' %}</h6>
+                    <h3 class="fw-bold text-dark">{{ orders_this_year }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Best Selling Product Section -->
+    {% if best_selling_product %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="h4 mb-3 text-muted">{% trans 'Best Selling Product' %}</h3>
+        </div>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="display-6 text-danger mb-2">
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <h6 class="card-title text-muted">{% trans 'Best Seller' %}</h6>
+                    <h5 class="fw-bold text-dark mb-2">{{ best_selling_product.name }}</h5>
+                    <p class="text-muted mb-1">{% trans 'Quantity Sold' %}</p>
+                    <h4 class="fw-bold text-success">{{ best_selling_count }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

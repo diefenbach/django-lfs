@@ -68,6 +68,7 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="shopDropdown">
                             <li><a class="dropdown-item" href="{% url 'lfs_manage_actions' %}">{% trans 'Actions' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_dashboard' %}">{% trans 'Dashboard' %}</a></li>
                             <li><a class="dropdown-item" href="{% url 'lfs_manage_delivery_times' %}">{% trans 'Delivery Times' %}</a></li>
                             <li><a class="dropdown-item" href="{% url 'lfs_manufacturer_dispatcher' %}">{% trans 'Manufacturers' %}</a></li>
                             <li><a class="dropdown-item" href="{% url 'lfs_manage_payment' %}">{% trans 'Payment Methods' %}</a></li>
@@ -145,6 +146,13 @@
                         </a>
                     </li>
                 </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lfs_manage_dashboard' %}">
+                            {% trans "Dashboard" %}
+                        </a>
+                    </li>
+                </ul>                
             </div>
         </nav>
 

@@ -2735,7 +2735,7 @@ msgstr "Auswahl umschalten"
 
 #: manage/templates/manage/images/images-list.html:25
 msgid "There are no images yet."
-msgstr "Es sind noch keine Bilder vorhanden."
+msgstr "Es sind keine Bilder vorhanden."
 
 #: manage/templates/manage/images/images.html:6
 msgid "Manage images"
@@ -4738,3 +4738,18 @@ msgstr "Hersteller hinzufügen"
 
 msgid "Display no results"
 msgstr "Keine Ergebnisse anzeigen"
+
+msgid "Orders This Month"
+msgstr "Bestellungen diesen Monat"
+
+msgid "Orders This Year"
+msgstr "Bestellungen dieses Jahr"
+
+msgid "Best Selling Product"
+msgstr "Meistverkauftes Produkt"
+
+msgid "Best Seller"
+msgstr "Bestseller"
+
+msgid "Quantity Sold"
+msgstr "Verkaufte Menge"
