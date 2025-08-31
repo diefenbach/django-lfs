@@ -6,30 +6,35 @@
 {% block content %}
     <div class="lfs-carts">
         <div class="row">
-            <aside class="scrollable-content col-3 bg-white border-end p-4">
-                <h2 class="h4 mb-3">{% trans "Carts" %}</h2>
+            <aside class="scrollable-content col-2 bg-white border-end p-4">
+                <h2 class="h4 mb-3">{% trans "Filter" %}</h2>
                 
                 <!-- Filter Form in Sidebar -->
                 <div class="card mb-3">
+                    <div class="card-header py-2">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-funnel me-1"></i>{% trans "Filter" %}
+                        </h6>
+                    </div>
                     <div class="card-body py-2">
                         <div class="mb-3">
                             <div class="btn-group w-100">
-                                <a href="{% url 'lfs_apply_predefined_cart_filter' cart.id 'today' %}" 
+                                <a href="{% url 'lfs_apply_predefined_cart_filter_list' 'today' %}" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-calendar-day me-1"></i>{% trans "Today" %}
                                 </a>
-                                <a href="{% url 'lfs_apply_predefined_cart_filter' cart.id 'week' %}" 
+                                <a href="{% url 'lfs_apply_predefined_cart_filter_list' 'week' %}" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-calendar-week me-1"></i>{% trans "Week" %}
                                 </a>
-                                <a href="{% url 'lfs_apply_predefined_cart_filter' cart.id 'month' %}" 
+                                <a href="{% url 'lfs_apply_predefined_cart_filter_list' 'month' %}" 
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-calendar-month me-1"></i>{% trans "Month" %}
                                 </a>
                             </div>
                         </div>
                         
-                        <form method="post" action="{% url 'lfs_apply_cart_filters' cart.id %}">
+                        <form method="post" action="{% url 'lfs_apply_cart_filters_list' %}">
                             {% csrf_token %}
                             <div class="mb-2">
                                 {{ filter_form.start }}
@@ -51,53 +56,100 @@
                                 <button type="submit" class="btn btn-primary btn-sm">
                                     <i class="bi bi-check-circle me-1"></i>{% trans "Apply" %}
                                 </button>
-                                <a href="{% url 'lfs_reset_cart_filters' %}?cart_id={{ cart.id }}" class="btn btn-outline-secondary btn-sm">
+                                <a href="{% url 'lfs_reset_cart_filters' %}" class="btn btn-outline-secondary btn-sm">
                                     <i class="bi bi-arrow-clockwise me-1"></i>{% trans "Reset" %}
                                 </a>
                             </div>
                         </form>
                     </div>
                 </div>
-                
-                <!-- Cart Navigation with Pagination -->
-                <div id="navigation" class="padding-bottom-100">
-                    {% for c in carts_page %}
-                        <a class="d-block p-2 mb-1 border rounded text-decoration-none action-item {% if cart.id == c.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}" 
-                           data-id="{{ c.id }}" 
-                           href="{% url 'lfs_manage_cart' c.id %}{% if request.GET.page %}?page={{ request.GET.page }}{% endif %}">
-                           <div class="d-flex justify-content-between align-items-center">
-                               <div>
-                                   <strong>Cart #{{ c.id }}</strong><br>
-                                   <small class="{% if cart.id == c.id %}text-white-50{% else %}text-muted{% endif %}">
-                                       {{ c.modification_date|date:"SHORT_DATETIME_FORMAT" }}
-                                   </small>
-                               </div>
-                               <div class="text-end">
-                                   <small class="{% if cart.id == c.id %}text-white-50{% else %}text-muted{% endif %}">
-                                       {{ c|get_price_gross:request|currency:request }}
-                                   </small>
-                               </div>
-                           </div>
-                        </a>
-                    {% empty %}
-                        <div class="text-center text-muted py-3">
-                            <i class="bi bi-cart-x"></i><br>
-                            <small>{% trans "No carts found" %}</small>
+            </aside>
+
+            <main class="col-10 p-4 scrollable-content">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 mb-0">{% trans "Carts" %}</h1>
+                </div>
+
+                <!-- Carts Table -->
+                {% if carts_with_data %}
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>{% trans "Cart ID" %}</th>
+                                            <th>{% trans "Customer" %}</th>
+                                            <th>{% trans "Products" %}</th>
+                                            <th>{% trans "Items" %}</th>
+                                            <th>{% trans "Total" %}</th>
+                                            <th>{% trans "Modified" %}</th>
+                                            <th class="text-center">{% trans "Actions" %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for cart_data in carts_with_data %}
+                                        <tr class="cart-row" style="cursor: pointer;" onclick="window.location.href='{% url 'lfs_manage_cart' cart_data.cart.id %}'">
+                                            <td>
+                                                #{{ cart_data.cart.id }}
+                                            </td>
+                                            <td>
+                                                {% if cart_data.customer.user %}
+                                                    {{ cart_data.customer.user.get_full_name|default:cart_data.customer.user.username }}
+                                                {% else %}
+                                                    <span class="text-muted">{% trans "Anonymous" %}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {{ cart_data.products|truncatechars:50 }}
+                                            </td>
+                                            <td>
+                                                {{ cart_data.item_count }}
+                                            </td>
+                                            <td>
+                                                {{ cart_data.total|currency:request }}
+                                            </td>
+                                            <td>
+                                                <div>{{ cart_data.cart.modification_date|date:"SHORT_DATETIME_FORMAT" }}</div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="{% url 'lfs_manage_cart' cart_data.cart.id %}" 
+                                                       class="btn btn-outline-primary btn-sm" 
+                                                       onclick="event.stopPropagation();"
+                                                       title="{% trans 'View Cart' %}">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                    <button class="btn btn-outline-danger btn-sm" 
+                                                            onclick="event.stopPropagation();"
+                                                            hx-get="{% url 'lfs_manage_delete_cart_confirm' cart_data.cart.id %}" 
+                                                            hx-target="#modal-body-lg"
+                                                            hx-swap="innerHTML"
+                                                            title="{% trans 'Delete Cart' %}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    {% endfor %}
-                    
+                    </div>
+
                     <!-- Pagination -->
                     {% if carts_page.paginator.num_pages > 1 %}
                     <nav aria-label="{% trans 'Carts pagination' %}" class="mt-3">
                         <ul class="pagination pagination-sm justify-content-center">
                             {% if carts_page.has_previous %}
                                 <li class="page-item">
-                                    <a class="page-link d-flex align-items-center justify-content-center" href="{% url 'lfs_manage_cart' cart.id %}?page=1">
+                                    <a class="page-link d-flex align-items-center justify-content-center" href="?page=1">
                                         <i class="bi bi-chevron-double-left"></i>
                                     </a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link d-flex align-items-center justify-content-center" href="{% url 'lfs_manage_cart' cart.id %}?page={{ carts_page.previous_page_number }}">
+                                    <a class="page-link d-flex align-items-center justify-content-center" href="?page={{ carts_page.previous_page_number }}">
                                         <i class="bi bi-chevron-left"></i>
                                     </a>
                                 </li>
@@ -112,7 +164,7 @@
                                             </li>
                                         {% else %}
                                             <li class="page-item">
-                                                <a class="page-link d-flex align-items-center justify-content-center" href="{% url 'lfs_manage_cart' cart.id %}?page={{ num }}">{{ num }}</a>
+                                                <a class="page-link d-flex align-items-center justify-content-center" href="?page={{ num }}">{{ num }}</a>
                                             </li>
                                         {% endif %}
                                     {% endfor %}
@@ -125,7 +177,7 @@
                                                 </li>
                                             {% else %}
                                                 <li class="page-item">
-                                                    <a class="page-link d-flex align-items-center justify-content-center" href="{% url 'lfs_manage_cart' cart.id %}?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+                                                    <a class="page-link d-flex align-items-center justify-content-center" href="?page={{ forloop.counter }}">{{ forloop.counter }}</a>
                                                 </li>
                                             {% endif %}
                                         {% endfor %}
@@ -138,7 +190,7 @@
                                                     </li>
                                                 {% else %}
                                                     <li class="page-item">
-                                                        <a class="page-link d-flex align-items-center justify-content-center" href="{% url 'lfs_manage_cart' cart.id %}?page={{ page_num }}">{{ page_num }}</a>
+                                                        <a class="page-link d-flex align-items-center justify-content-center" href="?page={{ page_num }}">{{ page_num }}</a>
                                                     </li>
                                                 {% endif %}
                                             {% endwith %}
@@ -152,7 +204,7 @@
                                                     </li>
                                                 {% else %}
                                                     <li class="page-item">
-                                                        <a class="page-link d-flex align-items-center justify-content-center" href="{% url 'lfs_manage_cart' cart.id %}?page={{ page_num }}">{{ page_num }}</a>
+                                                        <a class="page-link d-flex align-items-center justify-content-center" href="?page={{ page_num }}">{{ page_num }}</a>
                                                     </li>
                                                 {% endif %}
                                             {% endwith %}
@@ -163,12 +215,12 @@
                             
                             {% if carts_page.has_next %}
                                 <li class="page-item">
-                                    <a class="page-link d-flex align-items-center justify-content-center" href="{% url 'lfs_manage_cart' cart.id %}?page={{ carts_page.next_page_number }}">
+                                    <a class="page-link d-flex align-items-center justify-content-center" href="?page={{ carts_page.next_page_number }}">
                                         <i class="bi bi-chevron-right"></i>
                                     </a>
                                 </li>
                                 <li class="page-item">
-                                    <a class="page-link d-flex align-items-center justify-content-center" href="{% url 'lfs_manage_cart' cart.id %}?page={{ carts_page.paginator.num_pages }}">
+                                    <a class="page-link d-flex align-items-center justify-content-center" href="?page={{ carts_page.paginator.num_pages }}">
                                         <i class="bi bi-chevron-double-right"></i>
                                     </a>
                                 </li>
@@ -183,27 +235,20 @@
                         </div>
                     </nav>
                     {% endif %}
-                </div>
-            </aside>
 
-            <main class="col-9 p-4 scrollable-content">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3 mb-0">{% trans "Cart" %} #{{ cart.id }}</h1>
-                    <div class="d-flex gap-2">
-                        <a href="{% url 'lfs_manage_carts' %}" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-list"></i> {% trans "All Carts" %}
-                        </a>
-                        <button class="btn btn-outline-danger btn-sm" 
-                                hx-get="{% url 'lfs_manage_delete_cart_confirm' cart.id %}" 
-                                hx-target="#modal-body-lg"
-                                hx-swap="innerHTML">
-                            <i class="bi bi-trash"></i> {% trans "Delete Cart" %}
-                        </button>
+                {% else %}
+                    <!-- No Carts Found -->
+                    <div class="card">
+                        <div class="card-body text-center py-5">
+                            <i class="bi bi-cart-x display-1 text-muted"></i>
+                            <h4 class="mt-3">{% trans "No carts found" %}</h4>
+                            <p class="text-muted">{% trans "No carts match your current filter criteria." %}</p>
+                            <a href="{% url 'lfs_reset_cart_filters' %}" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-clockwise me-1"></i>{% trans "Reset Filters" %}
+                            </a>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Only Data Tab Content -->
-                {% include "manage/cart/tabs/_data.html" %}
+                {% endif %}
             </main>
         </div>
     </div>

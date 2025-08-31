@@ -48,17 +48,102 @@ def format_localized_date(date_obj: datetime) -> str:
     return formats.date_format(date_obj, format="SHORT_DATE_FORMAT")
 
 
-class ManageCartsView(PermissionRequiredMixin, RedirectView):
-    """Dispatches to the first cart or to the no carts view."""
+class ManageCartsView(PermissionRequiredMixin, TemplateView):
+    """Shows a table view of all carts with filtering and pagination."""
 
     permission_required = "core.manage_shop"
+    template_name = "manage/cart/cart_list.html"
 
-    def get_redirect_url(self, *args, **kwargs):
-        try:
-            cart = Cart.objects.all().order_by("-modification_date")[0]
-            return reverse("lfs_manage_cart", kwargs={"id": cart.id})
-        except IndexError:
-            return reverse("lfs_manage_no_carts")
+    def get_carts_queryset(self):
+        """Returns filtered Carts based on session filters."""
+        queryset = Cart.objects.all().order_by("-modification_date")
+        cart_filters = self.request.session.get("cart-filters", {})
+
+        # Apply date filters
+        start = cart_filters.get("start", "")
+        end = cart_filters.get("end", "")
+
+        # Parse start date using localized formats
+        start_date = parse_localized_date(start)
+        if start_date:
+            start_date = timezone.make_aware(start_date.replace(hour=0, minute=0, second=0))
+        else:
+            start_date = timezone.datetime(1970, 1, 1)
+
+        # Parse end date using localized formats
+        end_date = parse_localized_date(end)
+        if end_date:
+            end_date = timezone.make_aware(end_date.replace(hour=23, minute=59, second=59))
+        else:
+            end_date = timezone.now()
+
+        queryset = queryset.filter(modification_date__range=(start_date, end_date))
+        return queryset
+
+    def get_paginated_carts(self):
+        """Returns paginated carts for the table."""
+        carts_queryset = self.get_carts_queryset()
+        paginator = Paginator(carts_queryset, 15)
+        page_number = self.request.GET.get("page", 1)
+        return paginator.get_page(page_number)
+
+    def get_context_data(self, **kwargs):
+        """Extends context with carts and filter form."""
+        ctx = super().get_context_data(**kwargs)
+        cart_filters = self.request.session.get("cart-filters", {})
+
+        # Get paginated carts for table
+        carts_page = self.get_paginated_carts()
+
+        # Create filter form with initial data
+        from lfs.manage.carts.forms import CartFilterForm
+
+        filter_form = CartFilterForm(
+            initial={
+                "start": cart_filters.get("start", ""),
+                "end": cart_filters.get("end", ""),
+            }
+        )
+
+        # Calculate totals for each cart
+        carts_with_data = []
+        for cart in carts_page:
+            total = 0
+            item_count = 0
+            products = []
+            for item in cart.get_items():
+                total += item.get_price_gross(self.request)
+                item_count += item.amount
+                products.append(item.product.get_name())
+
+            # Get customer information
+            try:
+                if cart.user:
+                    customer = Customer.objects.get(user=cart.user)
+                else:
+                    customer = Customer.objects.get(session=cart.session)
+            except Customer.DoesNotExist:
+                customer = None
+
+            carts_with_data.append(
+                {
+                    "cart": cart,
+                    "total": total,
+                    "item_count": item_count,
+                    "products": ", ".join(products[:3]),  # Show first 3 products
+                    "customer": customer,
+                }
+            )
+
+        ctx.update(
+            {
+                "carts_page": carts_page,
+                "carts_with_data": carts_with_data,
+                "cart_filters": cart_filters,
+                "filter_form": filter_form,
+            }
+        )
+        return ctx
 
 
 class NoCartsView(PermissionRequiredMixin, TemplateView):
@@ -187,7 +272,7 @@ class ApplyCartFiltersView(PermissionRequiredMixin, FormView):
     form_class = CartFilterForm
 
     def get_success_url(self) -> str:
-        """Redirects back to the cart view."""
+        """Redirects back to the cart view or cart list."""
         cart_id = self.kwargs.get("id")
         if cart_id:
             return reverse("lfs_manage_cart", kwargs={"id": cart_id})

@@ -29,10 +29,10 @@
                     </dd>
                     
                     <dt class="col-sm-4">{% trans "Creation Date" %}:</dt>
-                    <dd class="col-sm-8">{{ cart.creation_date|date:"M d, Y H:i" }}</dd>
+                    <dd class="col-sm-8">{{ cart.creation_date|date:"DATETIME_FORMAT" }}</dd>
                     
                     <dt class="col-sm-4">{% trans "Modification Date" %}:</dt>
-                    <dd class="col-sm-8">{{ cart.modification_date|date:"M d, Y H:i" }}</dd>
+                    <dd class="col-sm-8">{{ cart.modification_date|date:"DATETIME_FORMAT" }}</dd>
                     
                     <dt class="col-sm-4">{% trans "Total Amount" %}:</dt>
                     <dd class="col-sm-8">{{ cart_total|currency:request }}</dd>

@@ -7,19 +7,20 @@ from django.urls import reverse
 from lfs.cart.models import Cart
 
 
-def test_manage_carts_view_redirects_to_first_cart(authenticated_client, test_carts):
-    """Test that ManageCartsView redirects to the first cart."""
+def test_manage_carts_view_shows_cart_list(authenticated_client, test_carts):
+    """Test that ManageCartsView shows the cart list template."""
     response = authenticated_client.get(reverse("lfs_manage_carts"))
-    # Should redirect to the first cart (most recent by modification_date)
-    assert response.status_code == 302
+    # Should show cart list template, not redirect
+    assert response.status_code == 200
+    assert "carts_with_data" in response.context
 
 
-def test_manage_carts_view_redirects_to_no_carts_when_empty(authenticated_client):
-    """Test that ManageCartsView redirects to no carts view when no carts exist."""
+def test_manage_carts_view_shows_empty_list_when_no_carts(authenticated_client):
+    """Test that ManageCartsView shows empty list when no carts exist."""
     Cart.objects.all().delete()
     response = authenticated_client.get(reverse("lfs_manage_carts"))
-    assert response.status_code == 302
-    assert response.url == reverse("lfs_manage_no_carts")
+    assert response.status_code == 200
+    assert len(response.context["carts_with_data"]) == 0
 
 
 def test_no_carts_view_renders_correctly(authenticated_client):
@@ -175,3 +176,123 @@ def test_reset_cart_filters_with_cart_id_parameter(authenticated_client, test_ca
     # Filters should be cleared
     session = authenticated_client.session
     assert "cart-filters" not in session
+
+
+def test_cart_list_view_shows_15_carts_per_page(authenticated_client, test_carts):
+    """Test that cart list shows 15 carts per page."""
+    cart1, cart2 = test_carts
+    # Create 20 carts to test pagination (plus the 2 existing = 22 total)
+    for i in range(20):
+        Cart.objects.create(session=f"test_session_{i}")
+
+    response = authenticated_client.get(reverse("lfs_manage_carts"))
+    assert response.status_code == 200
+
+    # Should have pagination context
+    assert "carts_page" in response.context
+    carts_page = response.context["carts_page"]
+
+    # Should show 15 carts per page in list view
+    assert len(carts_page) == 15
+    assert carts_page.has_next()
+
+
+def test_cart_list_view_contains_cart_data(authenticated_client, test_carts):
+    """Test that cart list view contains enriched cart data."""
+    response = authenticated_client.get(reverse("lfs_manage_carts"))
+    assert response.status_code == 200
+
+    # Should have carts_with_data in context
+    assert "carts_with_data" in response.context
+    carts_with_data = response.context["carts_with_data"]
+
+    # Should have at least the test carts
+    assert len(carts_with_data) >= 2
+
+    # Each cart data should have required fields
+    for cart_data in carts_with_data:
+        assert "cart" in cart_data
+        assert "total" in cart_data
+        assert "item_count" in cart_data
+        assert "products" in cart_data
+        assert "customer" in cart_data
+
+
+def test_cart_list_filter_form_is_present(authenticated_client, test_carts):
+    """Test that cart list contains the filter form."""
+    response = authenticated_client.get(reverse("lfs_manage_carts"))
+    assert response.status_code == 200
+
+    # Should have filter form in context
+    assert "filter_form" in response.context
+
+    # Should contain filter form in HTML
+    content = response.content.decode()
+    assert 'name="start"' in content
+    assert 'name="end"' in content
+    assert "dateinput" in content
+
+
+def test_apply_cart_filters_list_view_processes_form(authenticated_client, test_carts):
+    """Test that ApplyCartFiltersView processes filter form correctly for list view."""
+    response = authenticated_client.post(
+        reverse("lfs_apply_cart_filters_list"),
+        {"start": "2023-01-01", "end": "2023-12-31"},  # ISO format (testing settings)
+    )
+    assert response.status_code == 302  # Should redirect after processing
+    assert response.url == reverse("lfs_manage_carts")  # Should redirect to list view
+
+    # Check that filters are saved in session
+    session = authenticated_client.session
+    cart_filters = session.get("cart-filters", {})
+    assert "start" in cart_filters
+    assert "end" in cart_filters
+
+
+def test_apply_predefined_cart_filter_list_view(authenticated_client, test_carts):
+    """Test that predefined filters work for list view."""
+    response = authenticated_client.get(
+        reverse("lfs_apply_predefined_cart_filter_list", kwargs={"filter_type": "today"})
+    )
+    assert response.status_code == 302  # Should redirect after processing
+    assert response.url == reverse("lfs_manage_carts")  # Should redirect to list view
+
+    # Check that filters are saved in session
+    session = authenticated_client.session
+    cart_filters = session.get("cart-filters", {})
+    assert "start" in cart_filters
+    assert "end" in cart_filters
+
+
+def test_cart_list_view_filtering_works(authenticated_client, test_carts):
+    """Test that filtering works in cart list view."""
+    # Set filters in session
+    session = authenticated_client.session
+    session["cart-filters"] = {"start": "2023-01-01", "end": "2023-12-31"}
+    session.save()
+
+    response = authenticated_client.get(reverse("lfs_manage_carts"))
+    assert response.status_code == 200
+
+    # Should apply filters to queryset
+    assert "carts_page" in response.context
+    # The actual filtering logic is tested in the view method tests
+
+
+def test_cart_list_view_template_renders_correctly(authenticated_client, test_carts):
+    """Test that cart list template renders correctly."""
+    response = authenticated_client.get(reverse("lfs_manage_carts"))
+    assert response.status_code == 200
+
+    content = response.content.decode()
+    # Should contain table headers
+    assert "Cart ID" in content or "cart id" in content.lower()
+    assert "Customer" in content or "customer" in content.lower()
+    assert "Items" in content or "items" in content.lower()
+    assert "Total" in content or "total" in content.lower()
+
+    # Should contain filter toggle button
+    assert "Filter" in content or "filter" in content.lower()
+
+    # Should contain cart rows (clickable)
+    assert "cart-row" in content

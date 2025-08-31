@@ -544,6 +544,16 @@ urlpatterns = [
         name="lfs_apply_predefined_cart_filter",
     ),
     path(
+        "carts/apply-filters/",
+        lfs.manage.views.carts.ApplyCartFiltersView.as_view(),
+        name="lfs_apply_cart_filters_list",
+    ),
+    path(
+        "carts/apply-predefined-filter/<str:filter_type>/",
+        lfs.manage.views.carts.ApplyPredefinedCartFilterView.as_view(),
+        name="lfs_apply_predefined_cart_filter_list",
+    ),
+    path(
         "delete-cart-confirm/<int:id>",
         lfs.manage.views.carts.CartDeleteConfirmView.as_view(),
         name="lfs_manage_delete_cart_confirm",
