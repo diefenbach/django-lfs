@@ -1,0 +1,132 @@
+{% load i18n %}
+{% comment %}
+    Reusable pagination snippet for LFS management templates.
+    
+    Required context variables:
+    - page_obj: The paginated object (e.g., carts_page, products_page)
+    - url_name: The URL name for pagination links (e.g., 'lfs_manage_cart')
+    - url_params: Optional URL parameters (e.g., cart.id for cart detail view)
+    
+    Usage:
+    {% include 'manage/snippets/pagination.html' with page_obj=carts_page url_name='lfs_manage_cart' url_params=cart.id %}
+    
+    For list views without additional parameters:
+    {% include 'manage/snippets/pagination.html' with page_obj=carts_page url_name='lfs_manage_cart' %}
+{% endcomment %}
+
+{% if page_obj.paginator.num_pages > 1 %}
+<nav aria-label="{% trans 'Pagination' %}" class="mt-3">
+    <ul class="pagination pagination-sm justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link d-flex align-items-center justify-content-center" 
+                   href="{% if url_params %}{% url url_name url_params %}?page=1{% else %}?page=1{% endif %}"
+                   title="{% trans 'First page' %}">
+                    <i class="bi bi-chevron-double-left"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link d-flex align-items-center justify-content-center" 
+                   href="{% if url_params %}{% url url_name url_params %}?page={{ page_obj.previous_page_number }}{% else %}?page={{ page_obj.previous_page_number }}{% endif %}"
+                   title="{% trans 'Previous page' %}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+        {% endif %}
+        
+        {% with total_pages=page_obj.paginator.num_pages current_page=page_obj.number %}
+            {% if total_pages <= 4 %}
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == current_page %}
+                        <li class="page-item active">
+                            <span class="page-link d-flex align-items-center justify-content-center">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link d-flex align-items-center justify-content-center" 
+                               href="{% if url_params %}{% url url_name url_params %}?page={{ num }}{% else %}?page={{ num }}{% endif %}">
+                                {{ num }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% if current_page <= 2 %}
+                    {% for num in "1234"|make_list %}
+                        {% if forloop.counter == current_page %}
+                            <li class="page-item active">
+                                <span class="page-link d-flex align-items-center justify-content-center">{{ forloop.counter }}</span>
+                            </li>
+                        {% else %}
+                            <li class="page-item">
+                                <a class="page-link d-flex align-items-center justify-content-center" 
+                                   href="{% if url_params %}{% url url_name url_params %}?page={{ forloop.counter }}{% else %}?page={{ forloop.counter }}{% endif %}">
+                                    {{ forloop.counter }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                {% elif current_page >= total_pages|add:'-1' %}
+                    {% for num in "1234"|make_list %}
+                        {% with page_num=total_pages|add:'-4'|add:forloop.counter %}
+                            {% if page_num == current_page %}
+                                <li class="page-item active">
+                                    <span class="page-link d-flex align-items-center justify-content-center">{{ page_num }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link d-flex align-items-center justify-content-center" 
+                                       href="{% if url_params %}{% url url_name url_params %}?page={{ page_num }}{% else %}?page={{ page_num }}{% endif %}">
+                                        {{ page_num }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endwith %}
+                    {% endfor %}
+                {% else %}
+                    {% for num in "1234"|make_list %}
+                        {% with page_num=current_page|add:'-2'|add:forloop.counter %}
+                            {% if page_num == current_page %}
+                                <li class="page-item active">
+                                    <span class="page-link d-flex align-items-center justify-content-center">{{ page_num }}</span>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link d-flex align-items-center justify-content-center" 
+                                       href="{% if url_params %}{% url url_name url_params %}?page={{ page_num }}{% else %}?page={{ page_num }}{% endif %}">
+                                        {{ page_num }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endwith %}
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        {% endwith %}
+        
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link d-flex align-items-center justify-content-center" 
+                   href="{% if url_params %}{% url url_name url_params %}?page={{ page_obj.next_page_number }}{% else %}?page={{ page_obj.next_page_number }}{% endif %}"
+                   title="{% trans 'Next page' %}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link d-flex align-items-center justify-content-center" 
+                   href="{% if url_params %}{% url url_name url_params %}?page={{ page_obj.paginator.num_pages }}{% else %}?page={{ page_obj.paginator.num_pages }}{% endif %}"
+                   title="{% trans 'Last page' %}">
+                    <i class="bi bi-chevron-double-right"></i>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+    <div class="text-center">
+        <small class="text-muted">
+            {% blocktrans with current=page_obj.number total=page_obj.paginator.num_pages %}
+            Page {{ current }} of {{ total }}
+            {% endblocktrans %}
+        </small>
+    </div>
+</nav>
+{% endif %}
