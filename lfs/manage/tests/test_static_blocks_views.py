@@ -19,7 +19,7 @@ from lfs.manage.static_blocks.views import (
     StaticBlockDataView,
     StaticBlockFilesView,
     StaticBlockTabMixin,
-    AddStaticBlockView,
+    StaticBlockCreateView,
     ManageStaticBlocksView,
     StaticBlockDeleteView,
     StaticBlockPreviewView,
@@ -595,8 +595,8 @@ class TestStaticBlockPreviewViewPermissions:
 
 
 @pytest.mark.django_db
-class TestAddStaticBlockView:
-    """Test cases for AddStaticBlockView (CreateView)."""
+class TestStaticBlockCreateView:
+    """Test cases for StaticBlockCreateView (CreateView)."""
 
     @pytest.mark.parametrize(
         "user_type,expected_status,description",
@@ -620,7 +620,7 @@ class TestAddStaticBlockView:
 
         request = request_factory.get("/add-static-block/")
         request.user = user
-        view = AddStaticBlockView()
+        view = StaticBlockCreateView()
         view.setup(request)
 
         if expected_status == 302:  # Permission denied
@@ -633,7 +633,7 @@ class TestAddStaticBlockView:
 
         request = request_factory.get("/add-static-block/")
         request.user = manage_user
-        view = AddStaticBlockView()
+        view = StaticBlockCreateView()
         view.setup(request)
 
         response = view.get(request)
@@ -645,7 +645,7 @@ class TestAddStaticBlockView:
 
         request = request_factory.get("/add-static-block/")
         request.user = manage_user
-        view = AddStaticBlockView()
+        view = StaticBlockCreateView()
         view.setup(request)
         view.object = None  # CreateView sets this to None initially
 
@@ -665,7 +665,7 @@ class TestAddStaticBlockView:
 
         request = request_factory.post("/add-static-block/", {"name": "New Test Block", "html": "<p>Test content</p>"})
         request.user = manage_user
-        view = AddStaticBlockView()
+        view = StaticBlockCreateView()
         view.setup(request)
 
         response = view.post(request)
@@ -685,7 +685,7 @@ class TestAddStaticBlockView:
 
         request = request_factory.post("/add-static-block/", {"name": "Empty HTML Block"})
         request.user = manage_user
-        view = AddStaticBlockView()
+        view = StaticBlockCreateView()
         view.setup(request)
 
         response = view.post(request)
@@ -701,7 +701,7 @@ class TestAddStaticBlockView:
         request = request_factory.post("/add-static-block/", {"name": "HTMX Test Block"})
         request.user = manage_user
         request.headers = {"HX-Request": "true"}
-        view = AddStaticBlockView()
+        view = StaticBlockCreateView()
         view.setup(request)
 
         response = view.post(request)
@@ -717,7 +717,7 @@ class TestAddStaticBlockView:
 
         request = request_factory.post("/add-static-block/", {"name": "Regular Test Block"})
         request.user = manage_user
-        view = AddStaticBlockView()
+        view = StaticBlockCreateView()
         view.setup(request)
 
         response = view.post(request)
@@ -729,7 +729,7 @@ class TestAddStaticBlockView:
     def test_uses_correct_template(self, request_factory, manage_user):
         """Test that view uses the correct template."""
 
-        view = AddStaticBlockView()
+        view = StaticBlockCreateView()
         assert view.template_name == "manage/static_block/add_static_block.html"
 
     def test_form_validation_error_returns_form_response(self, request_factory, manage_user):
@@ -742,7 +742,7 @@ class TestAddStaticBlockView:
         # Submit form without required name field
         request = request_factory.post("/add-static-block/", {"html": "<p>Content without name</p>"})
         request.user = manage_user
-        view = AddStaticBlockView()
+        view = StaticBlockCreateView()
         view.setup(request)
 
         response = view.post(request)

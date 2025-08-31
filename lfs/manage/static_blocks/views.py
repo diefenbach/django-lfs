@@ -225,7 +225,7 @@ class StaticBlockFilesView(PermissionRequiredMixin, StaticBlockTabMixin, FormVie
         return ctx
 
 
-class AddStaticBlockView(PermissionRequiredMixin, CreateView):
+class StaticBlockCreateView(PermissionRequiredMixin, CreateView):
     """Provides a modal form to add a new static block."""
 
     model = StaticBlock

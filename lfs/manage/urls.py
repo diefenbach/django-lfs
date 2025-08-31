@@ -832,7 +832,7 @@ urlpatterns = [
     # Static blocks
     path(
         "add-static-block",
-        lfs.manage.static_blocks.views.AddStaticBlockView.as_view(),
+        lfs.manage.static_blocks.views.StaticBlockCreateView.as_view(),
         name="lfs_manage_add_static_block",
     ),
     path(
