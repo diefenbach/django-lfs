@@ -694,10 +694,10 @@ class TestStaticBlockCreateView:
         assert new_block.html == ""
 
     def test_post_htmx_request_returns_redirect_header(self, request_factory, manage_user, monkeypatch):
-        """Test that HTMX POST returns HX-Redirect header."""
+        """Test that HTMX POST returns standard redirect."""
         # Mock messages framework
         monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
-
+        
         request = request_factory.post("/add-static-block/", {"name": "HTMX Test Block"})
         request.user = manage_user
         request.headers = {"HX-Request": "true"}
@@ -706,15 +706,14 @@ class TestStaticBlockCreateView:
 
         response = view.post(request)
 
-        assert response.status_code == 200
-        assert "HX-Redirect" in response
-        assert "/manage/static-block/" in response["HX-Redirect"]
+        assert response.status_code == 302
+        assert "/manage/static-block/" in response.url
 
-    def test_post_request_returns_htmx_redirect(self, request_factory, manage_user, monkeypatch):
-        """Test that POST returns HTMX redirect header."""
+    def test_post_request_returns_standard_redirect(self, request_factory, manage_user, monkeypatch):
+        """Test that POST returns standard Django redirect."""
         # Mock messages framework
         monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
-
+        
         request = request_factory.post("/add-static-block/", {"name": "Regular Test Block"})
         request.user = manage_user
         view = StaticBlockCreateView()
@@ -722,9 +721,8 @@ class TestStaticBlockCreateView:
 
         response = view.post(request)
 
-        assert response.status_code == 200  # HTMX response
-        assert response["HX-Redirect"]
-        assert "/manage/static-block/" in response["HX-Redirect"]
+        assert response.status_code == 302  # Standard redirect
+        assert "/manage/static-block/" in response.url
 
     def test_uses_correct_template(self, request_factory, manage_user):
         """Test that view uses the correct template."""

@@ -2,6 +2,7 @@ from typing import Dict, List, Tuple, Any, Optional
 
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -225,23 +226,17 @@ class StaticBlockFilesView(PermissionRequiredMixin, StaticBlockTabMixin, FormVie
         return ctx
 
 
-class StaticBlockCreateView(PermissionRequiredMixin, CreateView):
+class StaticBlockCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateView):
     """Provides a modal form to add a new static block."""
 
     model = StaticBlock
     fields = ["name"]
     template_name = "manage/static_block/add_static_block.html"
     permission_required = "core.manage_shop"
+    success_message = _("Static block has been created.")
 
-    def form_valid(self, form):
-        static_block = form.save()
-
-        response = HttpResponse()
-        response["HX-Redirect"] = reverse("lfs_manage_static_block", kwargs={"id": static_block.id})
-
-        messages.success(self.request, _("Static block has been created."))
-
-        return response
+    def get_success_url(self):
+        return reverse("lfs_manage_static_block", kwargs={"id": self.object.id})
 
 
 class StaticBlockDeleteConfirmView(PermissionRequiredMixin, TemplateView):
