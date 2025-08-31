@@ -2,6 +2,7 @@ from typing import Dict, List, Tuple, Any, Optional
 
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -10,6 +11,7 @@ from django.views.generic import UpdateView, FormView, CreateView, DeleteView, R
 
 import lfs.core.utils
 import lfs.voucher.utils
+from lfs.manage.mixins import DirectDeleteMixin
 from lfs.tax.models import Tax
 from lfs.voucher.models import Voucher
 from lfs.voucher.models import VoucherGroup
@@ -306,19 +308,13 @@ class VoucherGroupDeleteConfirmView(PermissionRequiredMixin, TemplateView):
         return context
 
 
-class VoucherGroupDeleteView(PermissionRequiredMixin, DeleteView):
+class VoucherGroupDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
     """Deletes voucher group with passed id."""
 
     model = VoucherGroup
     pk_url_kwarg = "id"
     permission_required = "core.manage_shop"
+    success_message = _("Voucher group and assigned vouchers have been deleted.")
 
-    def post(self, request, *args, **kwargs):
-        """Handle POST request - delete voucher group and redirect with message."""
-        self.object = self.get_object()
-        self.object.delete()
-
-        messages.success(request, _("Voucher group and assigned vouchers have been deleted."))
-
-        response = HttpResponseRedirect(reverse("lfs_manage_voucher_groups"))
-        return response
+    def get_success_url(self):
+        return reverse("lfs_manage_voucher_groups")

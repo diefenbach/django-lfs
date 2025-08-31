@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -13,6 +14,7 @@ from django.views.generic.edit import UpdateView, DeleteView, CreateView
 
 from lfs.core.models import Action
 from lfs.core.models import ActionGroup
+from lfs.manage.mixins import DirectDeleteMixin
 
 
 @permission_required("core.manage_shop")
@@ -133,21 +135,21 @@ class ActionDeleteConfirmView(PermissionRequiredMixin, TemplateView):
         return context
 
 
-class ActionDeleteView(PermissionRequiredMixin, DeleteView):
+class ActionDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
     """Deletes the action with passed id."""
 
     model = Action
     permission_required = "core.manage_shop"
+    success_message = _("Action has been deleted.")
 
-    def post(self, request, *args, **kwargs):
-        """Handle POST request - delete static block and redirect with message."""
-        self.object = self.get_object()
-        self.object.delete()
-
-        messages.success(request, _("Action has been deleted."))
-
-        response = HttpResponseRedirect(reverse("lfs_manage_actions"))
-        return response
+    def get_success_url(self):
+        """Return the URL to redirect to after successful deletion."""
+        # Find next action to redirect to
+        first_action = Action.objects.exclude(pk=self.object.pk).first()
+        if first_action:
+            return reverse("lfs_manage_action", kwargs={"pk": first_action.id})
+        else:
+            return reverse("lfs_no_actions")
 
 
 @permission_required("core.manage_shop")

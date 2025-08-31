@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import UpdateView, FormView, CreateView, DeleteView, RedirectView, TemplateView
 
 from lfs.catalog.models import StaticBlock, File
+from lfs.manage.mixins import DirectDeleteMixin
 from lfs.manage.static_blocks.forms import FileUploadForm
 
 
@@ -251,26 +252,16 @@ class StaticBlockDeleteConfirmView(PermissionRequiredMixin, TemplateView):
         return context
 
 
-class StaticBlockDeleteView(PermissionRequiredMixin, DeleteView):
+class StaticBlockDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
     """Deletes static block with passed id."""
 
     model = StaticBlock
     pk_url_kwarg = "id"
     permission_required = "core.manage_shop"
+    success_message = _("Static block has been deleted.")
 
-    def get(self, request, *args, **kwargs):
-        """Handle GET request - delete directly without confirmation."""
-        return self.post(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        """Handle POST request - delete static block and redirect with message."""
-        self.object = self.get_object()
-        self.object.delete()
-
-        messages.success(request, _("Static block has been deleted."))
-
-        response = HttpResponseRedirect(reverse("lfs_manage_static_blocks"))
-        return response
+    def get_success_url(self):
+        return reverse("lfs_manage_static_blocks")
 
 
 class StaticBlockPreviewView(PermissionRequiredMixin, TemplateView):
