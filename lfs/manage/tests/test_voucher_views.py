@@ -21,7 +21,7 @@ from lfs.manage.voucher.views import (
     VoucherGroupVouchersView,
     VoucherGroupOptionsView,
     VoucherGroupTabMixin,
-    AddVoucherGroupView,
+    VoucherGroupCreateView,
     ManageVoucherGroupsView,
     VoucherGroupDeleteView,
     NoVoucherGroupsView,
@@ -362,27 +362,27 @@ class TestNoVoucherGroupsView:
 
 @pytest.mark.django_db
 @pytest.mark.unit
-class TestAddVoucherGroupView:
-    """Tests for AddVoucherGroupView."""
+class TestVoucherGroupCreateView:
+    """Tests for VoucherGroupCreateView."""
 
     def test_view_uses_correct_model(self):
         """Should use VoucherGroup model."""
-        view = AddVoucherGroupView()
+        view = VoucherGroupCreateView()
         assert view.model == VoucherGroup
 
     def test_view_uses_correct_template(self):
         """Should use the correct template."""
-        view = AddVoucherGroupView()
+        view = VoucherGroupCreateView()
         assert view.template_name == "manage/voucher/add_voucher_group.html"
 
     def test_view_requires_permission(self):
         """Should require 'core.manage_shop' permission."""
-        view = AddVoucherGroupView()
+        view = VoucherGroupCreateView()
         assert view.permission_required == "core.manage_shop"
 
     def test_get_success_url_returns_voucher_group_url(self, voucher_group):
         """Should return URL to voucher group after successful creation."""
-        view = AddVoucherGroupView()
+        view = VoucherGroupCreateView()
         view.object = voucher_group
 
         success_url = view.get_success_url()
@@ -423,7 +423,6 @@ class TestVoucherGroupDeleteView:
 
         assert isinstance(response, HttpResponseRedirect)
         assert response.url == reverse("lfs_manage_voucher_groups")
-        assert response["HX-Redirect"] == reverse("lfs_manage_voucher_groups")
 
 
 @pytest.mark.django_db

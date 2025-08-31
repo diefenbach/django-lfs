@@ -185,7 +185,7 @@ urlpatterns = [
     ),
     re_path(
         r"^add-voucher-group$",
-        lfs.manage.voucher.views.AddVoucherGroupView.as_view(),
+        lfs.manage.voucher.views.VoucherGroupCreateView.as_view(),
         name="lfs_manage_add_voucher_group",
     ),
     re_path(

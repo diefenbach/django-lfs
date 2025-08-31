@@ -272,7 +272,7 @@ class VoucherGroupOptionsView(PermissionRequiredMixin, VoucherGroupTabMixin, Upd
         return ctx
 
 
-class AddVoucherGroupView(PermissionRequiredMixin, CreateView):
+class VoucherGroupCreateView(PermissionRequiredMixin, CreateView):
     """Provides a modal form to add a new voucher group."""
 
     model = VoucherGroup
