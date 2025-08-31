@@ -697,7 +697,7 @@ class TestStaticBlockCreateView:
         """Test that HTMX POST returns standard redirect."""
         # Mock messages framework
         monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
-        
+
         request = request_factory.post("/add-static-block/", {"name": "HTMX Test Block"})
         request.user = manage_user
         request.headers = {"HX-Request": "true"}
@@ -713,7 +713,7 @@ class TestStaticBlockCreateView:
         """Test that POST returns standard Django redirect."""
         # Mock messages framework
         monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
-        
+
         request = request_factory.post("/add-static-block/", {"name": "Regular Test Block"})
         request.user = manage_user
         view = StaticBlockCreateView()
