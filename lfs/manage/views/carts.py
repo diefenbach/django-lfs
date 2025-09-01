@@ -1,10 +1,9 @@
 from typing import Dict, Any, Optional
-from datetime import timedelta, datetime
+from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
@@ -12,110 +11,33 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, DeleteView, RedirectView, TemplateView
 
 from lfs.cart.models import Cart
-from lfs.customer.models import Customer
 from lfs.manage.carts.forms import CartFilterForm
+from lfs.manage.carts.mixins import CartFilterMixin, CartPaginationMixin, CartDataMixin, CartContextMixin
+from lfs.manage.carts.services import CartFilterService
 from lfs.manage.mixins import DirectDeleteMixin
 
 
-class ManageCartsView(PermissionRequiredMixin, TemplateView):
+class CartListView(
+    PermissionRequiredMixin, CartFilterMixin, CartPaginationMixin, CartDataMixin, CartContextMixin, TemplateView
+):
     """Shows a table view of all carts with filtering and pagination."""
 
     permission_required = "core.manage_shop"
     template_name = "manage/cart/cart_list.html"
-
-    def get_carts_queryset(self):
-        """Returns filtered Carts based on session filters."""
-        queryset = Cart.objects.all().order_by("-modification_date")
-        cart_filters = self.request.session.get("cart-filters", {})
-
-        # Apply date filters
-        start = cart_filters.get("start", "")
-        end = cart_filters.get("end", "")
-
-        # Parse start date using ISO format
-        start_date = parse_iso_date(start)
-        if start_date:
-            start_date = timezone.make_aware(start_date.replace(hour=0, minute=0, second=0))
-        else:
-            start_date = timezone.datetime(1970, 1, 1)
-
-        # Parse end date using ISO format
-        end_date = parse_iso_date(end)
-        if end_date:
-            end_date = timezone.make_aware(end_date.replace(hour=23, minute=59, second=59))
-        else:
-            end_date = timezone.now()
-
-        queryset = queryset.filter(modification_date__range=(start_date, end_date))
-        return queryset
-
-    def get_paginated_carts(self):
-        """Returns paginated carts for the table."""
-        carts_queryset = self.get_carts_queryset()
-        paginator = Paginator(carts_queryset, 15)
-        page_number = self.request.GET.get("page", 1)
-        return paginator.get_page(page_number)
+    model = Cart
 
     def get_context_data(self, **kwargs):
         """Extends context with carts and filter form."""
         ctx = super().get_context_data(**kwargs)
 
         carts_page = self.get_paginated_carts()
-
-        cart_filters = self.request.session.get("cart-filters", {})
-        if cart_filters.get("start"):
-            start = parse_iso_date(cart_filters["start"])
-        else:
-            start = None
-
-        if cart_filters.get("end"):
-            end = parse_iso_date(cart_filters["end"])
-        else:
-            end = None
-
-        filter_form = CartFilterForm(
-            initial={
-                "start": start,
-                "end": end,
-            }
-        )
-
-        # Calculate totals for each cart
-        carts_with_data = []
-        for cart in carts_page:
-            total = 0
-            item_count = 0
-            products = []
-            for item in cart.get_items():
-                total += item.get_price_gross(self.request)
-                item_count += item.amount
-                products.append(item.product.get_name())
-
-            # Get customer information
-            try:
-                if cart.user:
-                    customer = Customer.objects.get(user=cart.user)
-                else:
-                    customer = Customer.objects.get(session=cart.session)
-            except Customer.DoesNotExist:
-                customer = None
-
-            carts_with_data.append(
-                {
-                    "cart": cart,
-                    "total": total,
-                    "item_count": item_count,
-                    "products": products,
-                    "customer": customer,
-                }
-            )
+        carts_with_data = self.get_carts_with_data(carts_page)
 
         ctx.update(
             {
                 "carts_page": carts_page,
                 "carts_with_data": carts_with_data,
-                "cart_filters": cart_filters,
-                "filter_form": filter_form,
+                **self.get_cart_context_data(),
             }
         )
         return ctx
@@ -128,48 +50,20 @@ class NoCartsView(PermissionRequiredMixin, TemplateView):
     template_name = "manage/cart/no_carts.html"
 
 
-class CartTabMixin:
+class CartTabMixin(CartFilterMixin, CartPaginationMixin, CartContextMixin):
     """Mixin for tab navigation in Cart views."""
 
     template_name = "manage/cart/cart.html"
     tab_name: Optional[str] = None
+    model = Cart
 
     def get_cart(self) -> Cart:
         """Gets the Cart object."""
         return get_object_or_404(Cart, pk=self.kwargs["id"])
 
-    def get_carts_queryset(self):
-        """Returns filtered Carts based on session filters with pagination."""
-        queryset = Cart.objects.all().order_by("-modification_date")
-        cart_filters = self.request.session.get("cart-filters", {})
-
-        # Apply date filters
-        start = cart_filters.get("start", "")
-        end = cart_filters.get("end", "")
-
-        # Parse start date using ISO format
-        start_date = parse_iso_date(start)
-        if start_date:
-            start_date = timezone.make_aware(start_date.replace(hour=0, minute=0, second=0))
-        else:
-            start_date = timezone.datetime(1970, 1, 1)
-
-        # Parse end date using ISO format
-        end_date = parse_iso_date(end)
-        if end_date:
-            end_date = timezone.make_aware(end_date.replace(hour=23, minute=59, second=59))
-        else:
-            end_date = timezone.now()
-
-        queryset = queryset.filter(modification_date__range=(start_date, end_date))
-        return queryset
-
     def get_paginated_carts(self):
         """Returns paginated carts for sidebar."""
-        carts_queryset = self.get_carts_queryset()
-        paginator = Paginator(carts_queryset, 10)
-        page_number = self.request.GET.get("page", 1)
-        return paginator.get_page(page_number)
+        return super().get_paginated_carts(page_size=10)
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Extends context with sidebar navigation and Cart."""
@@ -179,37 +73,18 @@ class CartTabMixin:
         # Get paginated carts for sidebar
         carts_page = self.get_paginated_carts()
 
-        cart_filters = self.request.session.get("cart-filters", {})
-        if cart_filters.get("start"):
-            start = parse_iso_date(cart_filters["start"])
-        else:
-            start = None
-
-        if cart_filters.get("end"):
-            end = parse_iso_date(cart_filters["end"])
-        else:
-            end = None
-
-        filter_form = CartFilterForm(
-            initial={
-                "start": start,
-                "end": end,
-            }
-        )
-
         ctx.update(
             {
                 "cart": cart,
                 "carts_page": carts_page,
-                "cart_filters": cart_filters,
-                "filter_form": filter_form,
                 "active_tab": self.tab_name,
+                **self.get_cart_context_data(),
             }
         )
         return ctx
 
 
-class CartDataView(PermissionRequiredMixin, CartTabMixin, TemplateView):
+class CartDataView(PermissionRequiredMixin, CartTabMixin, CartDataMixin, TemplateView):
     """View for data tab of a Cart."""
 
     tab_name = "data"
@@ -220,14 +95,12 @@ class CartDataView(PermissionRequiredMixin, CartTabMixin, TemplateView):
         ctx = super().get_context_data(**kwargs)
         cart = self.get_cart()
 
-        # Calculate cart totals and items
-        total = 0
-        products = []
-        for item in cart.get_items():
-            total += item.get_price_gross(self.request)
-            products.append(item.product.get_name())
+        # Get cart summary using service
+        summary = self.get_cart_summary(cart)
 
         # Get customer information
+        from lfs.customer.models import Customer
+
         try:
             if cart.user:
                 customer = Customer.objects.get(user=cart.user)
@@ -238,8 +111,8 @@ class CartDataView(PermissionRequiredMixin, CartTabMixin, TemplateView):
 
         ctx.update(
             {
-                "cart_total": total,
-                "cart_products": ", ".join(products),
+                "cart_total": summary["total"],
+                "cart_products": ", ".join(summary["products"]),
                 "customer": customer,
                 "cart_items": cart.get_items(),
             }
@@ -268,13 +141,14 @@ class ApplyCartFiltersView(PermissionRequiredMixin, FormView):
         start = form.cleaned_data.get("start")
         end = form.cleaned_data.get("end")
 
+        filter_service = CartFilterService()
         if start:
-            cart_filters["start"] = format_iso_date(start)
+            cart_filters["start"] = filter_service.format_iso_date(start)
         elif "start" in cart_filters:
             del cart_filters["start"]
 
         if end:
-            cart_filters["end"] = format_iso_date(end)
+            cart_filters["end"] = filter_service.format_iso_date(end)
         elif "end" in cart_filters:
             del cart_filters["end"]
 
@@ -362,8 +236,9 @@ class ApplyPredefinedCartFilterView(PermissionRequiredMixin, RedirectView):
 
         # Save filter to session
         cart_filters = self.request.session.get("cart-filters", {})
-        cart_filters["start"] = format_iso_date(start_date)
-        cart_filters["end"] = format_iso_date(end_date)
+        filter_service = CartFilterService()
+        cart_filters["start"] = filter_service.format_iso_date(start_date)
+        cart_filters["end"] = filter_service.format_iso_date(end_date)
         self.request.session["cart-filters"] = cart_filters
 
         messages.success(self.request, _("Filter applied: %(filter_name)s") % {"filter_name": filter_name})
@@ -372,22 +247,3 @@ class ApplyPredefinedCartFilterView(PermissionRequiredMixin, RedirectView):
             return reverse("lfs_manage_cart", kwargs={"id": cart_id})
         else:
             return reverse("lfs_manage_carts")
-
-
-def parse_iso_date(date_string: str) -> datetime:
-    """Parse ISO format date string (YYYY-MM-DD)."""
-    if not date_string:
-        return None
-
-    try:
-        return datetime.strptime(date_string, "%Y-%m-%d")
-    except ValueError:
-        return None
-
-
-def format_iso_date(date_obj: datetime) -> str:
-    """Format date as ISO format string (YYYY-MM-DD)."""
-    if not date_obj:
-        return ""
-
-    return date_obj.strftime("%Y-%m-%d")

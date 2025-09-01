@@ -525,7 +525,7 @@ urlpatterns = [
     # Carts
     path(
         "carts",
-        lfs.manage.views.carts.ManageCartsView.as_view(),
+        lfs.manage.views.carts.CartListView.as_view(),
         name="lfs_manage_carts",
     ),
     path(

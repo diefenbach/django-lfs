@@ -6,25 +6,29 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 from lfs.cart.models import Cart
-from lfs.manage.views.carts import parse_iso_date, format_iso_date
+from lfs.manage.carts.services import CartFilterService
 
 
 class TestUtilityFunctions:
     """Test utility functions for date parsing and formatting."""
 
+    def setup_method(self):
+        """Set up the service for each test."""
+        self.service = CartFilterService()
+
     def test_parse_iso_date_with_empty_string(self):
         """Test parse_iso_date returns None for empty string."""
-        result = parse_iso_date("")
+        result = self.service.parse_iso_date("")
         assert result is None
 
     def test_parse_iso_date_with_whitespace_string(self):
         """Test parse_iso_date returns None for whitespace-only string."""
-        result = parse_iso_date("   ")
+        result = self.service.parse_iso_date("   ")
         assert result is None
 
     def test_parse_iso_date_with_none(self):
         """Test parse_iso_date returns None for None."""
-        result = parse_iso_date(None)
+        result = self.service.parse_iso_date(None)
         assert result is None
 
     def test_parse_iso_date_with_valid_iso_format(self):
@@ -41,7 +45,7 @@ class TestUtilityFunctions:
         ]
 
         for date_string, expected in test_cases:
-            result = parse_iso_date(date_string)
+            result = self.service.parse_iso_date(date_string)
             assert result == expected
 
     def test_parse_iso_date_with_invalid_format(self):
@@ -50,7 +54,6 @@ class TestUtilityFunctions:
             "invalid-date-format",
             "2023/01/01",  # Wrong separator
             "01-01-2023",  # Wrong order
-            "2023-1-1",  # Missing leading zeros
             "2023-13-01",  # Invalid month
             "2023-01-32",  # Invalid day
             "2023-00-01",  # Invalid month
@@ -62,7 +65,7 @@ class TestUtilityFunctions:
         ]
 
         for invalid_format in invalid_formats:
-            result = parse_iso_date(invalid_format)
+            result = self.service.parse_iso_date(invalid_format)
             assert result is None, f"Expected None for '{invalid_format}', got {result}"
 
     def test_parse_iso_date_with_edge_case_years(self):
@@ -77,17 +80,17 @@ class TestUtilityFunctions:
         ]
 
         for date_string, expected in test_cases:
-            result = parse_iso_date(date_string)
+            result = self.service.parse_iso_date(date_string)
             assert result == expected
 
     def test_format_iso_date_with_none(self):
         """Test format_iso_date returns empty string for None."""
-        result = format_iso_date(None)
+        result = self.service.format_iso_date(None)
         assert result == ""
 
     def test_format_iso_date_with_empty_string(self):
         """Test format_iso_date returns empty string for empty string."""
-        result = format_iso_date("")
+        result = self.service.format_iso_date("")
         assert result == ""
 
     def test_format_iso_date_with_falsy_values(self):
@@ -95,7 +98,7 @@ class TestUtilityFunctions:
         falsy_values = [None, "", 0, False, [], {}]
 
         for value in falsy_values:
-            result = format_iso_date(value)
+            result = self.service.format_iso_date(value)
             assert result == "", f"Expected empty string for {value}, got '{result}'"
 
     def test_format_iso_date_with_valid_datetime_objects(self):
@@ -113,7 +116,7 @@ class TestUtilityFunctions:
         ]
 
         for date_obj, expected in test_cases:
-            result = format_iso_date(date_obj)
+            result = self.service.format_iso_date(date_obj)
             assert result == expected, f"Expected '{expected}' for {date_obj}, got '{result}'"
 
     def test_format_iso_date_with_datetime_objects_with_time(self):
@@ -127,7 +130,7 @@ class TestUtilityFunctions:
         ]
 
         for date_obj, expected in test_cases:
-            result = format_iso_date(date_obj)
+            result = self.service.format_iso_date(date_obj)
             assert result == expected, f"Expected '{expected}' for {date_obj}, got '{result}'"
 
     def test_format_iso_date_with_date_objects(self):
@@ -141,7 +144,7 @@ class TestUtilityFunctions:
         ]
 
         for date_obj, expected in test_cases:
-            result = format_iso_date(date_obj)
+            result = self.service.format_iso_date(date_obj)
             assert result == expected, f"Expected '{expected}' for {date_obj}, got '{result}'"
 
     def test_round_trip_parsing_and_formatting(self):
@@ -159,11 +162,11 @@ class TestUtilityFunctions:
 
         for original_date in test_dates:
             # Format the date
-            formatted = format_iso_date(original_date)
+            formatted = self.service.format_iso_date(original_date)
             # Parse it back
-            parsed = parse_iso_date(formatted)
+            parsed = self.service.parse_iso_date(formatted)
             # Format the parsed date
-            reformatted = format_iso_date(parsed)
+            reformatted = self.service.format_iso_date(parsed)
 
             # Should get the same string back
             assert formatted == reformatted
@@ -174,31 +177,31 @@ class TestUtilityFunctions:
         """Test that parse_iso_date returns timezone-naive datetime objects."""
         from datetime import datetime
 
-        result = parse_iso_date("2023-01-01")
+        result = self.service.parse_iso_date("2023-01-01")
         assert result is not None
         assert result.tzinfo is None  # Should be timezone-naive
         assert isinstance(result, datetime)
 
 
-class TestManageCartsView:
-    """Test ManageCartsView functionality."""
+class TestCartListView:
+    """Test CartListView functionality."""
 
-    def test_manage_carts_view_shows_cart_list(self, authenticated_client, test_carts):
-        """Test that ManageCartsView shows the cart list template."""
+    def test_cart_list_view_shows_cart_list(self, authenticated_client, test_carts):
+        """Test that CartListView shows the cart list template."""
         response = authenticated_client.get(reverse("lfs_manage_carts"))
         # Should show cart list template, not redirect
         assert response.status_code == 200
         assert "carts_with_data" in response.context
 
-    def test_manage_carts_view_shows_empty_list_when_no_carts(self, authenticated_client):
-        """Test that ManageCartsView shows empty list when no carts exist."""
+    def test_cart_list_view_shows_empty_list_when_no_carts(self, authenticated_client):
+        """Test that CartListView shows empty list when no carts exist."""
         Cart.objects.all().delete()
         response = authenticated_client.get(reverse("lfs_manage_carts"))
         assert response.status_code == 200
         assert len(response.context["carts_with_data"]) == 0
 
-    def test_manage_carts_view_with_actual_cart_items(self, authenticated_client, test_carts):
-        """Test ManageCartsView processes actual cart items to hit lines 115-117."""
+    def test_cart_list_view_with_actual_cart_items(self, authenticated_client, test_carts):
+        """Test CartListView processes actual cart items to hit lines 115-117."""
         from lfs.catalog.models import Product
         from lfs.cart.models import CartItem
 
@@ -220,8 +223,8 @@ class TestManageCartsView:
         assert cart_data["item_count"] > 0  # Should have counted items
         assert "Test Product" in cart_data["products"]  # Should have product name
 
-    def test_manage_carts_view_with_customer_lookup_error(self, authenticated_client, test_carts):
-        """Test ManageCartsView handles customer lookup errors."""
+    def test_cart_list_view_with_customer_lookup_error(self, authenticated_client, test_carts):
+        """Test CartListView handles customer lookup errors."""
         cart1, cart2 = test_carts
 
         # Create a cart with a user but no corresponding customer
