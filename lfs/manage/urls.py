@@ -840,21 +840,19 @@ urlpatterns = [
     # Orders
     re_path(r"^manage-orders$", lfs.manage.views.orders.manage_orders, name="lfs_manage_orders"),
     re_path(r"^orders$", lfs.manage.views.orders.orders_view, name="lfs_orders"),
-    re_path(r"^orders-inline$", lfs.manage.views.orders.orders_inline, name="lfs_orders_inline"),
+    # Inline endpoints no longer used after clean cut; keep temporarily for compatibility if referenced
     re_path(r"^order/(?P<order_id>\d*)$", lfs.manage.views.orders.order_view, name="lfs_manage_order"),
-    re_path(r"^delete-order/(?P<order_id>\d*)$", lfs.manage.views.orders.delete_order, name="lfs_delete_order"),
+    re_path(r"^delete-order/(?P<order_id>\d*)$", lfs.manage.views.orders.OrderDeleteView.as_view(), name="lfs_delete_order"),
     re_path(r"^send-order/(?P<order_id>\d*)$", lfs.manage.views.orders.send_order, name="lfs_send_order"),
-    re_path(r"^set-orders-filter$", lfs.manage.views.orders.set_order_filters, name="lfs_set_order_filter"),
-    re_path(
-        r"^set-orders-filter-date$", lfs.manage.views.orders.set_order_filters_date, name="lfs_set_order_filters_date"
+    # Order filters (class-based equivalents wired through function delegations for now)
+    path("set-orders-filter", lfs.manage.views.orders.ApplyOrderFiltersView.as_view(), name="lfs_set_order_filter"),
+    path(
+        "set-orders-filter-date/<str:filter_type>",
+        lfs.manage.views.orders.ApplyPredefinedOrderFilterView.as_view(),
+        name="lfs_apply_predefined_order_filter",
     ),
-    re_path(r"^reset-order-filter$", lfs.manage.views.orders.reset_order_filters, name="lfs_reset_order_filters"),
-    re_path(
-        r"^set-selectable-orders-page$",
-        lfs.manage.views.orders.set_selectable_orders_page,
-        name="lfs_set_selectable_orders_page",
-    ),
-    re_path(r"^set-orders-page$", lfs.manage.views.orders.set_orders_page, name="lfs_set_orders_page"),
+    path("reset-order-filter", lfs.manage.views.orders.ResetOrderFiltersView.as_view(), name="lfs_reset_order_filters"),
+    # Deprecated: inline pagination endpoints removed in clean cut
     re_path(r"^change-order-state$", lfs.manage.views.orders.change_order_state, name="lfs_change_order_state"),
     # Order numbers
     re_path(
