@@ -1,14 +1,13 @@
 from typing import Dict, Any, Optional
-from datetime import datetime, timedelta
+from datetime import timedelta, datetime
 
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.utils import timezone, formats
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView, DeleteView, RedirectView, TemplateView
 
@@ -16,36 +15,6 @@ from lfs.cart.models import Cart
 from lfs.customer.models import Customer
 from lfs.manage.carts.forms import CartFilterForm
 from lfs.manage.mixins import DirectDeleteMixin
-
-
-def parse_localized_date(date_string: str) -> datetime:
-    """Parse date string using localized formats."""
-    if not date_string:
-        return None
-
-    # Get date input formats from settings
-    date_formats = getattr(settings, "DATE_INPUT_FORMATS", ["%Y-%m-%d"])
-
-    for fmt in date_formats:
-        try:
-            return datetime.strptime(date_string, fmt)
-        except ValueError:
-            continue
-
-    # Fallback to ISO format
-    try:
-        return datetime.strptime(date_string, "%Y-%m-%d")
-    except ValueError:
-        return None
-
-
-def format_localized_date(date_obj: datetime) -> str:
-    """Format date using localized format."""
-    if not date_obj:
-        return ""
-
-    # Use Django's localized formatting
-    return formats.date_format(date_obj, format="SHORT_DATE_FORMAT")
 
 
 class ManageCartsView(PermissionRequiredMixin, TemplateView):
@@ -63,15 +32,15 @@ class ManageCartsView(PermissionRequiredMixin, TemplateView):
         start = cart_filters.get("start", "")
         end = cart_filters.get("end", "")
 
-        # Parse start date using localized formats
-        start_date = parse_localized_date(start)
+        # Parse start date using ISO format
+        start_date = parse_iso_date(start)
         if start_date:
             start_date = timezone.make_aware(start_date.replace(hour=0, minute=0, second=0))
         else:
             start_date = timezone.datetime(1970, 1, 1)
 
-        # Parse end date using localized formats
-        end_date = parse_localized_date(end)
+        # Parse end date using ISO format
+        end_date = parse_iso_date(end)
         if end_date:
             end_date = timezone.make_aware(end_date.replace(hour=23, minute=59, second=59))
         else:
@@ -90,18 +59,24 @@ class ManageCartsView(PermissionRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         """Extends context with carts and filter form."""
         ctx = super().get_context_data(**kwargs)
-        cart_filters = self.request.session.get("cart-filters", {})
 
-        # Get paginated carts for table
         carts_page = self.get_paginated_carts()
 
-        # Create filter form with initial data
-        from lfs.manage.carts.forms import CartFilterForm
+        cart_filters = self.request.session.get("cart-filters", {})
+        if cart_filters.get("start"):
+            start = parse_iso_date(cart_filters["start"])
+        else:
+            start = None
+
+        if cart_filters.get("end"):
+            end = parse_iso_date(cart_filters["end"])
+        else:
+            end = None
 
         filter_form = CartFilterForm(
             initial={
-                "start": cart_filters.get("start", ""),
-                "end": cart_filters.get("end", ""),
+                "start": start,
+                "end": end,
             }
         )
 
@@ -130,7 +105,7 @@ class ManageCartsView(PermissionRequiredMixin, TemplateView):
                     "cart": cart,
                     "total": total,
                     "item_count": item_count,
-                    "products": ", ".join(products[:3]),  # Show first 3 products
+                    "products": products,
                     "customer": customer,
                 }
             )
@@ -172,15 +147,15 @@ class CartTabMixin:
         start = cart_filters.get("start", "")
         end = cart_filters.get("end", "")
 
-        # Parse start date using localized formats
-        start_date = parse_localized_date(start)
+        # Parse start date using ISO format
+        start_date = parse_iso_date(start)
         if start_date:
             start_date = timezone.make_aware(start_date.replace(hour=0, minute=0, second=0))
         else:
             start_date = timezone.datetime(1970, 1, 1)
 
-        # Parse end date using localized formats
-        end_date = parse_localized_date(end)
+        # Parse end date using ISO format
+        end_date = parse_iso_date(end)
         if end_date:
             end_date = timezone.make_aware(end_date.replace(hour=23, minute=59, second=59))
         else:
@@ -200,18 +175,25 @@ class CartTabMixin:
         """Extends context with sidebar navigation and Cart."""
         ctx = super().get_context_data(**kwargs)
         cart = getattr(self, "object", None) or self.get_cart()
-        cart_filters = self.request.session.get("cart-filters", {})
 
         # Get paginated carts for sidebar
         carts_page = self.get_paginated_carts()
 
-        # Create filter form with initial data
-        from lfs.manage.carts.forms import CartFilterForm
+        cart_filters = self.request.session.get("cart-filters", {})
+        if cart_filters.get("start"):
+            start = parse_iso_date(cart_filters["start"])
+        else:
+            start = None
+
+        if cart_filters.get("end"):
+            end = parse_iso_date(cart_filters["end"])
+        else:
+            end = None
 
         filter_form = CartFilterForm(
             initial={
-                "start": cart_filters.get("start", ""),
-                "end": cart_filters.get("end", ""),
+                "start": start,
+                "end": end,
             }
         )
 
@@ -287,12 +269,12 @@ class ApplyCartFiltersView(PermissionRequiredMixin, FormView):
         end = form.cleaned_data.get("end")
 
         if start:
-            cart_filters["start"] = format_localized_date(start)
+            cart_filters["start"] = format_iso_date(start)
         elif "start" in cart_filters:
             del cart_filters["start"]
 
         if end:
-            cart_filters["end"] = format_localized_date(end)
+            cart_filters["end"] = format_iso_date(end)
         elif "end" in cart_filters:
             del cart_filters["end"]
 
@@ -360,28 +342,28 @@ class ApplyPredefinedCartFilterView(PermissionRequiredMixin, RedirectView):
         end_date = now
 
         if filter_type == "today":
+            # Full current day: start of today to start of tomorrow
             start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
-            end_date = now.replace(hour=23, minute=59, second=59, microsecond=999999)
+            end_date = start_date + timedelta(days=1)
             filter_name = _("Today")
         elif filter_type == "week":
-            # Start of current week (Monday)
-            days_since_monday = now.weekday()
-            start_date = (now - timedelta(days=days_since_monday)).replace(hour=0, minute=0, second=0, microsecond=0)
-            end_date = now.replace(hour=23, minute=59, second=59, microsecond=999999)
-            filter_name = _("This Week")
+            # Last 7 days including today
+            start_date = (now - timedelta(days=6)).replace(hour=0, minute=0, second=0, microsecond=0)
+            end_date = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+            filter_name = _("Last 7 Days")
         elif filter_type == "month":
-            # Start of current month
-            start_date = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-            end_date = now.replace(hour=23, minute=59, second=59, microsecond=999999)
-            filter_name = _("This Month")
+            # Last 31 days including today
+            start_date = (now - timedelta(days=30)).replace(hour=0, minute=0, second=0, microsecond=0)
+            end_date = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+            filter_name = _("Last 31 Days")
         else:
             messages.error(self.request, _("Invalid filter type."))
             return reverse("lfs_manage_cart", kwargs={"id": cart_id}) if cart_id else reverse("lfs_manage_carts")
 
         # Save filter to session
         cart_filters = self.request.session.get("cart-filters", {})
-        cart_filters["start"] = format_localized_date(start_date)
-        cart_filters["end"] = format_localized_date(end_date)
+        cart_filters["start"] = format_iso_date(start_date)
+        cart_filters["end"] = format_iso_date(end_date)
         self.request.session["cart-filters"] = cart_filters
 
         messages.success(self.request, _("Filter applied: %(filter_name)s") % {"filter_name": filter_name})
@@ -390,3 +372,22 @@ class ApplyPredefinedCartFilterView(PermissionRequiredMixin, RedirectView):
             return reverse("lfs_manage_cart", kwargs={"id": cart_id})
         else:
             return reverse("lfs_manage_carts")
+
+
+def parse_iso_date(date_string: str) -> datetime:
+    """Parse ISO format date string (YYYY-MM-DD)."""
+    if not date_string:
+        return None
+
+    try:
+        return datetime.strptime(date_string, "%Y-%m-%d")
+    except ValueError:
+        return None
+
+
+def format_iso_date(date_obj: datetime) -> str:
+    """Format date as ISO format string (YYYY-MM-DD)."""
+    if not date_obj:
+        return ""
+
+    return date_obj.strftime("%Y-%m-%d")
