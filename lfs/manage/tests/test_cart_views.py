@@ -33,15 +33,15 @@ class TestUtilityFunctions:
 
     def test_parse_iso_date_with_valid_iso_format(self):
         """Test parse_iso_date correctly parses valid ISO format dates."""
-        from datetime import datetime
+        from datetime import datetime, date as _date
 
         # Test various valid ISO dates
         test_cases = [
-            ("2023-01-01", datetime(2023, 1, 1)),
-            ("2023-12-31", datetime(2023, 12, 31)),
-            ("2000-02-29", datetime(2000, 2, 29)),  # Leap year
-            ("1999-06-15", datetime(1999, 6, 15)),
-            ("2024-03-08", datetime(2024, 3, 8)),
+            ("2023-01-01", _date(2023, 1, 1)),
+            ("2023-12-31", _date(2023, 12, 31)),
+            ("2000-02-29", _date(2000, 2, 29)),  # Leap year
+            ("1999-06-15", _date(1999, 6, 15)),
+            ("2024-03-08", _date(2024, 3, 8)),
         ]
 
         for date_string, expected in test_cases:
@@ -70,13 +70,13 @@ class TestUtilityFunctions:
 
     def test_parse_iso_date_with_edge_case_years(self):
         """Test parse_iso_date with edge case years."""
-        from datetime import datetime
+        from datetime import datetime, date as _date
 
         # Test very old and very new years
         test_cases = [
-            ("1900-01-01", datetime(1900, 1, 1)),
-            ("9999-12-31", datetime(9999, 12, 31)),
-            ("0001-01-01", datetime(1, 1, 1)),
+            ("1900-01-01", _date(1900, 1, 1)),
+            ("9999-12-31", _date(9999, 12, 31)),
+            ("0001-01-01", _date(1, 1, 1)),
         ]
 
         for date_string, expected in test_cases:
@@ -170,17 +170,16 @@ class TestUtilityFunctions:
 
             # Should get the same string back
             assert formatted == reformatted
-            # Parsed date should have same date components (ignoring time)
-            assert parsed.date() == original_date.date()
+            # Parsed date is a date; compare to original date's date()
+            assert parsed == original_date.date()
 
     def test_parse_iso_date_preserves_timezone_naive_datetime(self):
         """Test that parse_iso_date returns timezone-naive datetime objects."""
-        from datetime import datetime
-
         result = self.service.parse_iso_date("2023-01-01")
         assert result is not None
-        assert result.tzinfo is None  # Should be timezone-naive
-        assert isinstance(result, datetime)
+        # Now returns a date object
+        from datetime import date as _date
+        assert isinstance(result, _date)
 
 
 class TestCartListView:
@@ -455,7 +454,7 @@ class TestApplyCartFiltersView:
         )
         assert response.status_code == 302  # Should redirect after processing
 
-        # Check that filters are saved in localized format
+        # Check that filters are saved in session
         session = authenticated_client.session
         cart_filters = session.get("cart-filters", {})
         assert "start" in cart_filters
@@ -535,11 +534,11 @@ class TestApplyPredefinedCartFilterView:
         assert response.status_code == 302
         assert response.url == reverse("lfs_manage_cart", kwargs={"id": cart1.id})
 
-        # Check that weekly filters are saved in session
+        # Check that weekly filters are saved in session (presets only set start)
         session = authenticated_client.session
         cart_filters = session.get("cart-filters", {})
         assert "start" in cart_filters
-        assert "end" in cart_filters
+        assert "end" not in cart_filters
 
     def test_apply_predefined_filter_month(self, authenticated_client, test_carts):
         """Test applying monthly filter."""
@@ -552,11 +551,11 @@ class TestApplyPredefinedCartFilterView:
         assert response.status_code == 302
         assert response.url == reverse("lfs_manage_cart", kwargs={"id": cart1.id})
 
-        # Check that monthly filters are saved in session
+        # Check that monthly filters are saved in session (presets only set start)
         session = authenticated_client.session
         cart_filters = session.get("cart-filters", {})
         assert "start" in cart_filters
-        assert "end" in cart_filters
+        assert "end" not in cart_filters
 
     def test_apply_predefined_filter_invalid_type(self, authenticated_client, test_carts):
         """Test applying invalid filter type shows error."""
@@ -591,11 +590,11 @@ class TestApplyPredefinedCartFilterView:
         assert response.status_code == 302
         assert response.url == reverse("lfs_manage_carts")
 
-        # Check that weekly filters are saved in session
+        # Check that weekly filters are saved in session (presets only set start)
         session = authenticated_client.session
         cart_filters = session.get("cart-filters", {})
         assert "start" in cart_filters
-        assert "end" in cart_filters
+        assert "end" not in cart_filters
 
     def test_apply_predefined_filter_list_view_month(self, authenticated_client, test_carts):
         """Test applying monthly filter for list view."""
@@ -606,11 +605,11 @@ class TestApplyPredefinedCartFilterView:
         assert response.status_code == 302
         assert response.url == reverse("lfs_manage_carts")
 
-        # Check that monthly filters are saved in session
+        # Check that monthly filters are saved in session (presets only set start)
         session = authenticated_client.session
         cart_filters = session.get("cart-filters", {})
         assert "start" in cart_filters
-        assert "end" in cart_filters
+        assert "end" not in cart_filters
 
     def test_apply_predefined_filter_list_view_invalid_type(self, authenticated_client, test_carts):
         """Test applying invalid filter type for list view shows error."""
@@ -629,11 +628,11 @@ class TestApplyPredefinedCartFilterView:
         assert response.status_code == 302  # Should redirect after processing
         assert response.url == reverse("lfs_manage_carts")  # Should redirect to list view
 
-        # Check that filters are saved in session
+        # Check that filters are saved in session (presets only set start)
         session = authenticated_client.session
         cart_filters = session.get("cart-filters", {})
         assert "start" in cart_filters
-        assert "end" in cart_filters
+        assert "end" not in cart_filters
 
 
 class TestCartDeleteViews:

@@ -97,8 +97,8 @@ class TestCartFilterService:
         """Test parsing valid ISO date strings."""
         date_str = "2024-01-15"
         result = cart_filter_service.parse_iso_date(date_str)
-
-        assert result == datetime(2024, 1, 15)
+        from datetime import date as _date
+        assert result == _date(2024, 1, 15)
 
     def test_parse_iso_date_invalid(self, cart_filter_service):
         """Test parsing invalid date strings."""

@@ -1,5 +1,5 @@
-from datetime import datetime
-from typing import Dict, Any
+from datetime import datetime, date, time
+from typing import Dict, Any, Optional
 
 from django.utils import timezone
 
@@ -8,41 +8,46 @@ class CartFilterService:
     """Service for filtering carts based on various criteria."""
 
     def filter_carts(self, queryset, filters: Dict[str, Any]):
-        """Filter carts based on session filters."""
-        if not filters:
-            return queryset
+        """Filter carts based on session filters using half-open intervals.
 
+        - start: interpreted as the start of that day (00:00:00)
+        - end: interpreted as exclusive end; if omitted, defaults to start of tomorrow
+        """
         # Apply date filters
-        start = filters.get("start", "")
-        end = filters.get("end", "")
+        start = (filters or {}).get("start", "")
+        end = (filters or {}).get("end", "")
 
-        # Parse start date using ISO format
+        # Start datetime (aware) — default to epoch start
         start_date = self.parse_iso_date(start)
         if start_date:
-            start_date = timezone.make_aware(start_date.replace(hour=0, minute=0, second=0))
+            start_dt = timezone.make_aware(datetime.combine(start_date, time.min))
         else:
-            start_date = timezone.make_aware(datetime(1970, 1, 1))
+            start_dt = timezone.make_aware(datetime(1970, 1, 1))
 
-        # Parse end date using ISO format
+        # End datetime exclusive (aware)
         end_date = self.parse_iso_date(end)
         if end_date:
-            end_date = timezone.make_aware(end_date.replace(hour=23, minute=59, second=59))
+            # If a calendar end date is given, treat it as exclusive next-day start
+            end_dt = timezone.make_aware(datetime.combine(end_date, time.min))
         else:
-            end_date = timezone.now()
+            # If no end given, use start of tomorrow relative to today
+            now = timezone.now()
+            tomorrow = (now.replace(hour=0, minute=0, second=0, microsecond=0)) + timezone.timedelta(days=1)
+            end_dt = tomorrow
 
-        return queryset.filter(modification_date__range=(start_date, end_date))
+        return queryset.filter(modification_date__gte=start_dt, modification_date__lt=end_dt)
 
-    def parse_iso_date(self, date_string: str) -> datetime:
-        """Parse ISO format date string (YYYY-MM-DD)."""
-        if not date_string:
+    def parse_iso_date(self, date_string: str) -> Optional[date]:
+        """Parse ISO format date string (YYYY-MM-DD) and return a date."""
+        if not date_string or not str(date_string).strip():
             return None
 
         try:
-            return datetime.strptime(date_string, "%Y-%m-%d")
+            return datetime.strptime(date_string, "%Y-%m-%d").date()
         except ValueError:
             return None
 
-    def format_iso_date(self, date_obj: datetime) -> str:
+    def format_iso_date(self, date_obj: datetime | date) -> str:
         """Format date as ISO format string (YYYY-MM-DD)."""
         if not date_obj:
             return ""
@@ -71,21 +76,40 @@ class CartDataService:
         }
 
     def get_carts_with_data(self, carts, request):
-        """Get list of carts with calculated data."""
+        """Get list of carts with calculated data with batched customer lookup."""
         from lfs.customer.models import Customer
+
+        # Collect keys for batched customer lookup
+        user_ids = set()
+        sessions = set()
+        for cart in carts:
+            if getattr(cart, "user_id", None):
+                user_ids.add(cart.user_id)
+            elif getattr(cart, "session", None):
+                sessions.add(cart.session)
+
+        # Fetch customers in batches
+        customers_by_user = {}
+        customers_by_session = {}
+        if user_ids:
+            for cust in Customer.objects.filter(user_id__in=user_ids):
+                if getattr(cust, "user_id", None) is not None:
+                    customers_by_user[cust.user_id] = cust
+        if sessions:
+            for cust in Customer.objects.filter(session__in=sessions):
+                if getattr(cust, "session", None) is not None:
+                    customers_by_session[cust.session] = cust
 
         carts_with_data = []
         for cart in carts:
             summary = self.get_cart_summary(cart, request)
 
-            # Get customer information
-            try:
-                if cart.user:
-                    customer = Customer.objects.get(user=cart.user)
-                else:
-                    customer = Customer.objects.get(session=cart.session)
-            except Customer.DoesNotExist:
-                customer = None
+            # Resolve customer from maps without per-cart queries
+            customer = None
+            if getattr(cart, "user_id", None):
+                customer = customers_by_user.get(cart.user_id)
+            elif getattr(cart, "session", None):
+                customer = customers_by_session.get(cart.session)
 
             carts_with_data.append(
                 {

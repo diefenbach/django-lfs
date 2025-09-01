@@ -95,25 +95,14 @@ class CartDataView(PermissionRequiredMixin, CartTabMixin, CartDataMixin, Templat
         ctx = super().get_context_data(**kwargs)
         cart = self.get_cart()
 
-        # Get cart summary using service
-        summary = self.get_cart_summary(cart)
-
-        # Get customer information
-        from lfs.customer.models import Customer
-
-        try:
-            if cart.user:
-                customer = Customer.objects.get(user=cart.user)
-            else:
-                customer = Customer.objects.get(session=cart.session)
-        except Customer.DoesNotExist:
-            customer = None
+        # Get enriched cart data (summary + customer) via service
+        cart_data = self.get_cart_with_data(cart)
 
         ctx.update(
             {
-                "cart_total": summary["total"],
-                "cart_products": ", ".join(summary["products"]),
-                "customer": customer,
+                "cart_total": cart_data["total"],
+                "cart_products": ", ".join(cart_data["products"]),
+                "customer": cart_data["customer"],
                 "cart_items": cart.get_items(),
             }
         )
@@ -213,10 +202,9 @@ class ApplyPredefinedCartFilterView(PermissionRequiredMixin, RedirectView):
 
         now = timezone.now()
         start_date = None
-        end_date = now
 
         if filter_type == "today":
-            # Full current day: start of today to start of tomorrow
+            # Start of today
             start_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
             end_date = start_date + timedelta(days=1)
             filter_name = _("Today")
@@ -226,19 +214,21 @@ class ApplyPredefinedCartFilterView(PermissionRequiredMixin, RedirectView):
             end_date = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
             filter_name = _("Last 7 Days")
         elif filter_type == "month":
-            # Last 31 days including today
-            start_date = (now - timedelta(days=30)).replace(hour=0, minute=0, second=0, microsecond=0)
+            # Start of current month
+            start_date = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
             end_date = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
-            filter_name = _("Last 31 Days")
+            filter_name = _("This Month")
         else:
             messages.error(self.request, _("Invalid filter type."))
             return reverse("lfs_manage_cart", kwargs={"id": cart_id}) if cart_id else reverse("lfs_manage_carts")
 
-        # Save filter to session
+        # Save only start to session (service uses half-open interval and handles missing end)
         cart_filters = self.request.session.get("cart-filters", {})
         filter_service = CartFilterService()
         cart_filters["start"] = filter_service.format_iso_date(start_date)
-        cart_filters["end"] = filter_service.format_iso_date(end_date)
+        # We intentionally do not set end for presets
+        if "end" in cart_filters:
+            del cart_filters["end"]
         self.request.session["cart-filters"] = cart_filters
 
         messages.success(self.request, _("Filter applied: %(filter_name)s") % {"filter_name": filter_name})

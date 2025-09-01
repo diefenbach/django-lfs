@@ -63,6 +63,12 @@ class CartDataMixin:
         data_service = CartDataService()
         return data_service.get_carts_with_data(carts, self.request)
 
+    def get_cart_with_data(self, cart):
+        """Get a single cart enriched with calculated data and customer."""
+        data_service = CartDataService()
+        result = data_service.get_carts_with_data([cart], self.request)
+        return result[0] if result else None
+
 
 class CartContextMixin:
     """Mixin for providing common cart context data."""
