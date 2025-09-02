@@ -68,10 +68,14 @@ class OrderFilterService:
         except ValueError:
             return None
 
-    def format_iso_date(self, date_obj: datetime | date) -> str:
+    def format_iso_date(self, date_obj: datetime | date | str) -> str:
         """Format date as ISO format string (YYYY-MM-DD)."""
         if not date_obj:
             return ""
+
+        # If it's already a string, return as is (assuming it's already in ISO format)
+        if isinstance(date_obj, str):
+            return date_obj
 
         return date_obj.strftime("%Y-%m-%d")
 

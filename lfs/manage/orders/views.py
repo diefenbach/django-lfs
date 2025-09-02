@@ -12,7 +12,6 @@ from django.urls import reverse
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
@@ -334,45 +333,24 @@ def change_order_state(request):
     try:
         order.state = int(state_id)
     except ValueError:
-        pass
+        messages.error(request, _("Invalid state selected."))
     else:
         order.state_modified = timezone.now()
         order.save()
 
-    if order.state == lfs.order.settings.SENT:
-        lfs.core.signals.order_sent.send(sender=order, request=request)
-    if order.state == lfs.order.settings.PAID:
-        lfs.core.signals.order_paid.send(sender=order, request=request)
+        if order.state == lfs.order.settings.SENT:
+            lfs.core.signals.order_sent.send(sender=order, request=request)
+        if order.state == lfs.order.settings.PAID:
+            lfs.core.signals.order_paid.send(sender=order, request=request)
 
-    lfs.core.signals.order_state_changed.send(sender=order, order=order, request=request, old_state=old_state)
+        lfs.core.signals.order_state_changed.send(sender=order, order=order, request=request, old_state=old_state)
 
-    cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, Order.__name__.lower(), order.pk)
-    cache.delete(cache_key)
+        cache_key = "%s-%s-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, Order.__name__.lower(), order.pk)
+        cache.delete(cache_key)
 
-    msg = _("State has been changed")
+        messages.success(request, _("Order state has been changed to %(state)s") % {"state": order.get_state_display()})
 
-    # Build states context for template
-    states = []
-    for state in lfs.order.settings.ORDER_STATES:
-        states.append(
-            {
-                "id": state[0],
-                "name": state[1],
-            }
-        )
-
-    # Clean cut: no inline fragment updates here
-    html = render_to_string("manage/order/order_state_inline.html", {"order": order, "states": states})
-
-    result = json.dumps(
-        {
-            "html": html,
-            "message": msg,
-        },
-        cls=LazyEncoder,
-    )
-
-    return HttpResponse(result, content_type="application/json")
+    return HttpResponseRedirect(reverse("lfs_manage_order", kwargs={"order_id": order_id}))
 
 
 # Legacy function removed - _get_filtered_orders is now handled by OrderFilterService
