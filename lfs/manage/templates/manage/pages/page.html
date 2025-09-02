@@ -1,49 +1,104 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% load i18n static crispy_forms_tags %}
 
 {% block help_link %}user/management/html/page.html{% endblock %}
 {% block section %}manage-page{% endblock %}
-{% block left_slot %}
-    <div id="navigation">
-        {{ navigation|safe }}
-    </div>
-{% endblock %}
-
 {% block content %}
-    <div class="site-actions">
-            <a class="add"
-               href="{% url 'lfs_add_page' %}?came_from={% url 'lfs_manage_page' page.id %}">{% trans 'Add Page' %}</a>
-
-            {% if page.id != 1 %}
-                <a class="delete delete-link"
-                   dialog_message="{% trans 'Do you really want to delete this page?' %}"
-                   href="{% url 'lfs_delete_page' page.id %}">{% trans 'Delete Page' %}</a>
-
-                <a class="view popup-link"
-                   href="{% url 'lfs_page_view_by_id' page.id %}">{% trans 'View Page' %}</a>
-
-                <a class="goto"
-                   href="{% url 'lfs_page_view_by_id' page.id %}">{% trans 'Goto Page' %}</a>
-            {% endif %}
-        </div>
-        <div id="manage-tabs">
-            <ul>
-                {% if page.id != 1 %}
-                    <li class="ui-tabs-nav-item"><a href="#data_tab">{% trans 'Data' %}</a></li>
-                    <li class="ui-tabs-nav-item"><a href="#seo_tab">{% trans 'SEO' %}</a></li>
-                {% endif %}
-                <li class="ui-tabs-nav-item"><a href="#portlets">{% trans 'Portlets' %}</a></li>
-            </ul>
-            {% if page.id != 1 %}
-                <div id="data_tab">
-                    {{ data_tab|safe }}
+    <div class="lfs-pages">
+        <div class="row">
+            <aside class="scrollable-content col-3 bg-white border-end vh-100 p-4">
+                <h2 class="h4 mb-3">{% trans "Pages" %}</h2>
+                <div class="input-group mb-3">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="search" 
+                           class="form-control" 
+                           placeholder="{% trans 'Search pages...' %}" 
+                           name="q"
+                           value="{{ search_query }}"
+                           hx-get="{{ request.path }}"
+                           hx-target="#pages-list"
+                           hx-select="#pages-list"
+                           hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                           hx-include="this"
+                           hx-push-url="true"
+                           aria-label="{% trans 'Search pages' %}">
                 </div>
-                <div id="seo_tab">
-                    {{ seo_tab|safe }}
+                <div id="pages-list" hx-swap-oob="true">
+                    <div class="top-page mb-2">
+                        <a href="{% url 'lfs_manage_page' 1 %}{% if search_query %}?q={{ search_query }}{% endif %}"
+                           class="d-block p-2 mb-1 border rounded text-decoration-none {% if page.id == 1 %}bg-primary text-white{% else %}bg-light text-dark{% endif %}">
+                            {{ root.title }}
+                        </a>
+                    </div>
+                    {% for p in pages %}
+                        <div class="page-item" data-id="{{ p.id }}">
+                            <a href="{% url 'lfs_manage_page' p.id %}{% if search_query %}?q={{ search_query }}{% endif %}"
+                               class="d-block p-2 mb-1 border rounded text-decoration-none {% if p.id == page.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}">
+                                {{ p.title }}
+                            </a>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endif %}
-            <div id="portlets">
-                {{ portlets|safe }}
-            </div>
+            </aside>
+
+            <main class="col-9 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h4 mb-3">{% trans 'Edit Page' %}</h2>
+                    <div class="site-actions mb-3">
+                        <button class="btn btn-sm btn-outline-primary" 
+                            hx-get="{% url 'lfs_add_page' %}?came_from={% url 'lfs_manage_page' page.id %}"
+                            hx-target="#modal-body-lg"
+                            hx-trigger="click" 
+                            hx-swap="innerHTML">
+                            <i class="bi bi-plus-circle-fill"></i>
+                            {% trans 'Add Page' %}
+                        </button>
+
+                        {% if page.id != 1 %}
+                            <button class="btn btn-sm btn-outline-danger"
+                                hx-get="{% url 'lfs_delete_page_confirm' page.id %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click"
+                                hx-swap="innerHTML">
+                                <i class="bi bi-trash"></i>
+                                {% trans 'Delete Page' %}
+                            </button>
+
+                            <a class="btn btn-sm btn-outline-secondary"
+                                href="{% url 'lfs_page_view_by_id' page.id %}">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                                {% trans 'View Page' %}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <ul class="nav nav-tabs" id="pageTabs" role="tablist">
+                    {% for key, url in tabs %}
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link {% if active_tab == key %}active{% endif %}" 
+                               href="{{ url }}" 
+                               role="tab"
+                               aria-controls="{{ key }}-content"
+                               aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
+                                {% trans key|title %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                
+                <div class="tab-content border border-top-0 bg-white p-4" id="pageTabsContent">
+                    {% if active_tab == "data" %}
+                        {% include "manage/pages/tabs/_data.html" %}
+                    {% elif active_tab == "seo" %}
+                        {% include "manage/pages/tabs/_seo.html" %}
+                    {% elif active_tab == "portlets" %}
+                        {% include "manage/pages/tabs/_portlets.html" %}
+                    {% endif %}
+                </div>
+            </main>
         </div>
+    </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
 {% endblock %}

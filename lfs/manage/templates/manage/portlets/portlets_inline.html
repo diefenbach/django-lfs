@@ -1,103 +1,137 @@
 {% load i18n %}
 
 {% if parent_for_portlets %}
-    <form class="portlets-form"
-          action="{% url 'lfs_update_portlets' object_type_id object.id %}"
-          method="post"
-          style="padding-bottom:25px">
-        <h2>{% trans 'Blocked parent slots' %}</h2>
-        {% for slot in slots.items %}
-            <div>
-                <input type="checkbox"
-                       id="block-slot-{{ slot.id }}"
-                       name="block_slot"
-                       value="{{ slot.id }}"
-                       {% if slot.is_blocked %}checked="checked"{% endif %} />
-                <label class="middle" for="block-slot-{{ slot.id }}">{% trans slot.name %}</label>
-            </div>
-        {% endfor %}
-
-        <div class="buttons">
-            <input type="submit"
-                   class="button ajax-save-button"
-                   value="{% trans 'Save blocked parent slots' %}" />
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">{% trans 'Blocked parent slots' %}</h5>
         </div>
-    </form>
+        <div class="card-body">
+            <form class="portlets-form"
+                  action="{% url 'lfs_update_portlets' object_type_id object.id %}"
+                  method="post">
+                {% for slot in slots.items %}
+                    <div class="form-check mb-2">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               id="block-slot-{{ slot.id }}"
+                               name="block_slot"
+                               value="{{ slot.id }}"
+                               {% if slot.is_blocked %}checked="checked"{% endif %} />
+                        <label class="form-check-label" for="block-slot-{{ slot.id }}">
+                            {% trans slot.name %}
+                        </label>
+                    </div>
+                {% endfor %}
+
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary ajax-save-button">
+                        <i class="bi bi-save me-1"></i>
+                        {% trans 'Save blocked parent slots' %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endif %}
 
-<h2>{% trans 'Slots' %}</h2>
-{% for slot in slots.items %}
-    <h3 {% if forloop.first %}class="first-heading"{% endif %}>
-        {% trans 'Slot' %}: {% trans slot.name %}
-    </h3>
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">{% trans 'Slots' %}</h5>
+    </div>
+    <div class="card-body">
+        {% for slot in slots.items %}
+            <div class="mb-4">
+                <h6 class="text-muted mb-3">
+                    <i class="bi bi-layout-sidebar me-2"></i>
+                    {% trans 'Slot' %}: {% trans slot.name %}
+                </h6>
 
-    {% if slot.portlets %}
-        <table class="lfs-manage-table">
-            <tr>
-                <th class="middle">
-                    {% trans 'Type' %}
-                </th>
-                <th>
-                    {% trans 'Title' %}
-                </th>
-                <th class="small right-padding">
-                    {% trans 'Manage' %}
-                </th>
-            </tr>
-            {% for portlet in slot.portlets %}
-                <tr class="portlet-edit-button"
-                    href="{% url 'lfs_edit_portlet' portlet.pa_id %}">
-                    <td>
-                        {% trans portlet.type %}
-                    </td>
-                    <td>
-                        {{ portlet.title }}
-                    </td>
-                    <td class="right-padding" nowrap="nowrap">
-                        {% if not forloop.first %}
-                            <a class="up ajax-link"
-                               href="{% url 'lfs_move_portlet' portlet.pa_id %}?direction=0"
-                               title='{% trans "Move Up" %}'></a>
-                        {% else %}
-                            <span class="blank"></span>
-                        {% endif %}
-                        {% if not forloop.last %}
-                            <a class="down ajax-link"
-                               href="{% url 'lfs_move_portlet' portlet.pa_id %}?direction=1"
-                               title='{% trans "Move Down" %}'></a>
-                        {% else %}
-                            <span class="blank"></span>
-                        {% endif %}
-                        <a class="delete-link delete"
-                           dialog_yes_button_class="ajax-save-button"
-                           dialog_message='{% trans "Do you really want to delete this portlet?" %}'
-                           href="{% url 'lfs_delete_portlet' portlet.pa_id %}"
-                           title='{% trans "Delete" %}'></a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p class="no-portlets">{% trans 'There are no portlets assigned' %}</p>
-    {% endif %}
-{% endfor %}
-
-<h2 class="heading-middle">
-    {% trans 'Add new portlet' %}
-</h2>
-
-<form class="portlet-add-form"
-      action="{% url 'lfs_add_portlet' object_type_id object.id %}"
-      method="get">
-    <select name="portlet_type">
-        {% for portlet_type in portlet_types %}
-            <option value="{{ portlet_type.type }}">
-                {% trans portlet_type.name %}
-            </option>
+                {% if slot.portlets %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{% trans 'Type' %}</th>
+                                    <th>{% trans 'Title' %}</th>
+                                    <th class="text-end">{% trans 'Actions' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for portlet in slot.portlets %}
+                                    <tr class="portlet-edit-button" 
+                                        href="{% url 'lfs_edit_portlet' portlet.pa_id %}"
+                                        style="cursor: pointer;">
+                                        <td>
+                                            <span class="badge bg-secondary">{% trans portlet.type %}</span>
+                                        </td>
+                                        <td>{{ portlet.title }}</td>
+                                        <td class="text-end">
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                {% if not forloop.first %}
+                                                    <a class="btn btn-outline-secondary ajax-link"
+                                                       href="{% url 'lfs_move_portlet' portlet.pa_id %}?direction=0"
+                                                       title='{% trans "Move Up" %}'>
+                                                        <i class="bi bi-arrow-up"></i>
+                                                    </a>
+                                                {% endif %}
+                                                {% if not forloop.last %}
+                                                    <a class="btn btn-outline-secondary ajax-link"
+                                                       href="{% url 'lfs_move_portlet' portlet.pa_id %}?direction=1"
+                                                       title='{% trans "Move Down" %}'>
+                                                        <i class="bi bi-arrow-down"></i>
+                                                    </a>
+                                                {% endif %}
+                                                <a class="btn btn-outline-danger delete-link delete"
+                                                   dialog_yes_button_class="ajax-save-button"
+                                                   dialog_message='{% trans "Do you really want to delete this portlet?" %}'
+                                                   href="{% url 'lfs_delete_portlet' portlet.pa_id %}"
+                                                   title='{% trans "Delete" %}'>
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        {% trans 'There are no portlets assigned' %}
+                    </div>
+                {% endif %}
+            </div>
         {% endfor %}
-    </select>
+    </div>
+</div>
 
-    <input class="button portlet-add-button"
-           type="submit"
-           value="{% trans 'Add portlet' %}" />
-</form>
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0">{% trans 'Add new portlet' %}</h5>
+    </div>
+    <div class="card-body">
+        <form class="portlet-add-form"
+              action="{% url 'lfs_add_portlet' object_type_id object.id %}"
+              method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-8">
+                    <label for="portlet_type" class="form-label">{% trans 'Portlet Type' %}</label>
+                    <select name="portlet_type" class="form-select" id="portlet_type">
+                        {% for portlet_type in portlet_types %}
+                            <option value="{{ portlet_type.type }}">
+                                {% trans portlet_type.name %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary portlet-add-button w-100">
+                        <i class="bi bi-plus-circle me-1"></i>
+                        {% trans 'Add portlet' %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

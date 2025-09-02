@@ -1,0 +1,17 @@
+{% load i18n %}
+<h5 id="modal-title-lg" class="modal-title" hx-swap-oob="true">
+    {% trans 'Delete Page' %}
+</h5>
+<div class="modal-body">
+    <p>{% trans 'Do you really want to delete this page?' %}</p>
+    <p><strong>{{ page.title }}</strong></p>
+    <form method="post" action="{% url 'lfs_delete_page' page.id %}">
+        {% csrf_token %}
+        <div class="mt-3">
+            <button type="submit" class="btn btn-danger">{% trans 'Delete' %}</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                {% trans 'Cancel' %}
+            </button>
+        </div>
+    </form>
+</div>

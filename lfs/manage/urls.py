@@ -32,11 +32,11 @@ import lfs.manage.orders.views
 import lfs.manage.views.payment
 import lfs.manage.views.review
 import lfs.manage.views.utils
+import lfs.manage.pages.views
 from lfs.catalog.models import Product
 from lfs.catalog.models import Category
 from lfs.core.models import Shop
 from lfs.manage.product.seo import SEOForm as ProductSEOForm
-from lfs.manage.pages.views import PageSEOView
 from lfs.manage.views.shop import ShopSEOView
 from lfs.manage.seo.views import SEOView
 from lfs.manage.delivery_times import views as delivery_times_views
@@ -46,7 +46,6 @@ import lfs.manage.voucher.views
 from lfs.manage.views import lfs_portlets
 from lfs.manage.product import product
 from lfs.manufacturer.models import Manufacturer
-from lfs.page.models import Page
 
 
 urlpatterns = [
@@ -786,13 +785,22 @@ urlpatterns = [
         name="lfs_discount_products_inline",
     ),
     # Pages
-    re_path(r"^add-page$", lfs.manage.pages.views.add_page, name="lfs_add_page"),
-    re_path(r"^delete-page/(?P<id>\d*)$", lfs.manage.pages.views.delete_page, name="lfs_delete_page"),
-    re_path(r"^manage-pages$", lfs.manage.pages.views.manage_pages, name="lfs_manage_pages"),
-    re_path(r"^manage-page/(?P<id>\d*)$", lfs.manage.pages.views.manage_page, name="lfs_manage_page"),
-    re_path(r"^page-by-id/(?P<id>\d*)$", lfs.manage.pages.views.page_view_by_id, name="lfs_page_view_by_id"),
-    re_path(r"^sort-pages$", lfs.manage.pages.views.sort_pages, name="lfs_sort_pages"),
-    re_path(r"^save-page-data-tab/(?P<id>\d*)$", lfs.manage.pages.views.save_data_tab, name="lfs_save_page_data_tab"),
+    re_path(r"^add-page$", lfs.manage.pages.views.PageCreateView.as_view(), name="lfs_add_page"),
+    re_path(r"^delete-page/(?P<id>\d*)$", lfs.manage.pages.views.PageDeleteView.as_view(), name="lfs_delete_page"),
+    re_path(
+        r"^delete-page-confirm/(?P<id>\d*)$",
+        lfs.manage.pages.views.PageDeleteConfirmView.as_view(),
+        name="lfs_delete_page_confirm",
+    ),
+    re_path(r"^manage-pages$", lfs.manage.pages.views.ManagePagesView.as_view(), name="lfs_manage_pages"),
+    re_path(r"^manage-page/(?P<id>\d*)$", lfs.manage.pages.views.PageDataView.as_view(), name="lfs_manage_page"),
+    re_path(r"^manage-page-seo/(?P<id>\d*)$", lfs.manage.pages.views.PageSEOView.as_view(), name="lfs_manage_page_seo"),
+    re_path(
+        r"^manage-page-portlets/(?P<id>\d*)$",
+        lfs.manage.pages.views.PagePortletsView.as_view(),
+        name="lfs_manage_page_portlets",
+    ),
+    re_path(r"^page-by-id/(?P<id>\d*)$", lfs.manage.pages.views.PageViewByIDView.as_view(), name="lfs_page_view_by_id"),
     # Payment
     re_path(r"^payment$", lfs.manage.views.payment.manage_payment, name="lfs_manage_payment"),
     re_path(
@@ -996,6 +1004,5 @@ urlpatterns = [
 # Manufacturer / SEO
 urlpatterns += SEOView.get_seo_urlpattern(Manufacturer)
 urlpatterns += ShopSEOView.get_seo_urlpattern(Shop)
-urlpatterns += PageSEOView.get_seo_urlpattern(Page)
 urlpatterns += SEOView.get_seo_urlpattern(Product, form_klass=ProductSEOForm, template_name="manage/product/seo.html")
 urlpatterns += SEOView.get_seo_urlpattern(Category)

@@ -1,216 +1,236 @@
-import json
+from typing import Dict, List, Tuple, Any, Optional
 
-# django imports
-from django.contrib.auth.decorators import permission_required
-from django.urls import reverse
-from django.http import Http404, HttpResponseForbidden
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
-from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_POST
+from django.views.generic import UpdateView, CreateView, DeleteView, RedirectView, TemplateView
 
-# lfs imports
-import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
-from lfs.core.utils import LazyEncoder
-from lfs.manage.seo.views import SEOView
+from lfs.manage.mixins import DirectDeleteMixin
+from lfs.manage.pages.forms import PageAddForm, PageForm
 from lfs.manage.views.lfs_portlets import portlets_inline
-from lfs.manage.pages.forms import PageAddForm
-from lfs.manage.pages.forms import PageForm
 from lfs.page.models import Page
 
 
-# Views
-class PageSEOView(SEOView):
-    def get(self, request, id):
-        if id == "1":
-            return HttpResponseForbidden()
-        return super(PageSEOView, self).get(request, id)
+class ManagePagesView(PermissionRequiredMixin, RedirectView):
+    """Dispatches to the first page or to the add page form."""
 
-    def post(self, request, id):
-        if id == "1":
-            return HttpResponseForbidden()
-        return super(PageSEOView, self).post(request, id)
+    permission_required = "core.manage_shop"
 
-
-@permission_required("core.manage_shop")
-def manage_pages(request):
-    """Dispatches to the first page or to the form to add a page (if there is no
-    page yet).
-    """
-    try:
-        page = Page.objects.all()[0]
-        url = reverse("lfs_manage_page", kwargs={"id": page.id})
-    except IndexError:
-        url = reverse("lfs_add_page")
-
-    return HttpResponseRedirect(url)
+    def get_redirect_url(self, *args, **kwargs):
+        try:
+            page = Page.objects.all()[0]
+            return reverse("lfs_manage_page", kwargs={"id": page.id})
+        except IndexError:
+            return reverse("lfs_add_page")
 
 
-@permission_required("core.manage_shop")
-def manage_page(request, id, template_name="manage/pages/page.html"):
-    """Provides a form to edit the page with the passed id."""
-    page = get_object_or_404(Page, pk=id)
+class PageTabMixin:
+    """Mixin for tab navigation in Page views."""
 
-    return render(
-        request,
-        template_name,
-        {
-            "page": page,
-            "navigation": navigation(request, page),
-            "seo_tab": PageSEOView(Page).render(request, page),
-            "data_tab": data_tab(request, page),
-            "portlets": portlets_inline(request, page),
-        },
-    )
+    template_name = "manage/pages/page.html"
+    tab_name: Optional[str] = None
 
+    def get_page(self) -> Page:
+        """Gets the Page object."""
+        return get_object_or_404(Page, pk=self.kwargs["id"])
 
-@permission_required("core.manage_shop")
-def page_view_by_id(request, id, template_name="lfs/page/page.html"):
-    """Displays page with passed id."""
-    if id == 1:
-        raise Http404()
+    def get_pages_queryset(self):
+        """Returns filtered Pages based on search parameter."""
+        queryset = Page.objects.exclude(pk=1).order_by("title")
+        search_query = self.request.GET.get("q", "").strip()
 
-    page = lfs_get_object_or_404(Page, pk=id)
-    url = reverse("lfs_page_view", kwargs={"slug": page.slug})
-    return HttpResponseRedirect(url)
+        if search_query:
+            queryset = queryset.filter(title__icontains=search_query)
 
+        return queryset
 
-# Parts
-def data_tab(request, page, template_name="manage/pages/data_tab.html"):
-    """Renders the data tab for passed page."""
-    if request.method == "POST":
-        form = PageForm(instance=page, data=request.POST, files=request.FILES)
-        if form.is_valid():
-            page = form.save()
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with tab navigation and Page."""
+        ctx = super().get_context_data(**kwargs)
+        page = getattr(self, "object", None) or self.get_page()
 
-        # delete file
-        if request.POST.get("delete_file"):
-            page.file.delete()
+        ctx.update(
+            {
+                "page": page,
+                "active_tab": self.tab_name,
+                "tabs": self._get_tabs(page),
+                **self._get_navigation_context(page),
+            }
+        )
+        return ctx
 
-    else:
-        form = PageForm(instance=page)
+    def _get_tabs(self, page: Page) -> List[Tuple[str, str]]:
+        """Creates tab navigation URLs with search parameter."""
+        search_query = self.request.GET.get("q", "").strip()
 
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "form": form,
-            "page": page,
-        },
-    )
+        data_url = reverse("lfs_manage_page", args=[page.pk])
+        seo_url = reverse("lfs_manage_page_seo", args=[page.pk])
+        portlets_url = reverse("lfs_manage_page_portlets", args=[page.pk])
 
+        # Add search parameter if present
+        if search_query:
+            from urllib.parse import urlencode
 
-def navigation(request, page, template_name="manage/pages/navigation.html"):
-    """Renders the navigation for passed page."""
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
+            query_params = urlencode({"q": search_query})
+            data_url += "?" + query_params
+            seo_url += "?" + query_params
+            portlets_url += "?" + query_params
+
+        tabs = []
+        if page.id != 1:
+            tabs.extend(
+                [
+                    ("data", data_url),
+                    ("seo", seo_url),
+                ]
+            )
+        tabs.append(("portlets", portlets_url))
+
+        return tabs
+
+    def _get_navigation_context(self, page: Page) -> Dict[str, Any]:
+        """Returns navigation context data."""
+        return {
             "root": Page.objects.get(pk=1),
             "page": page,
-            "pages": Page.objects.exclude(pk=1),
-        },
-    )
+            "pages": self.get_pages_queryset(),
+            "search_query": self.request.GET.get("q", ""),
+        }
 
 
-# Actions
-@permission_required("core.manage_shop")
-def save_data_tab(request, id):
-    """Saves the data tab."""
-    if id == 1:
-        raise Http404()
+class PageDataView(PermissionRequiredMixin, PageTabMixin, UpdateView):
+    """View for data tab of a Page."""
 
-    page = lfs_get_object_or_404(Page, pk=id)
+    model = Page
+    form_class = PageForm
+    tab_name = "data"
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
 
-    html = (
-        ("#data_tab", data_tab(request, page)),
-        ("#navigation", navigation(request, page)),
-    )
+    def get_success_url(self) -> str:
+        """Stays on the data tab after successful save."""
+        return reverse("lfs_manage_page", kwargs={"id": self.object.pk})
 
-    result = json.dumps(
-        {
-            "html": html,
-            "message": _("Data has been saved."),
-        },
-        cls=LazyEncoder,
-    )
+    def form_valid(self, form):
+        """Saves and shows success message."""
+        response = super().form_valid(form)
+        messages.success(self.request, _("Page has been saved."))
+        return response
 
-    return HttpResponse(result, content_type="application/json")
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Handles form submission and file deletion."""
+        if request.POST.get("delete_file"):
+            page = self.get_object()
+            if page.file:
+                page.file.delete()
+                messages.success(self.request, _("File has been deleted."))
+            return HttpResponseRedirect(self.get_success_url())
+
+        return super().post(request, *args, **kwargs)
 
 
-@permission_required("core.manage_shop")
-def add_page(request, template_name="manage/pages/add_page.html"):
+class PageSEOView(PermissionRequiredMixin, PageTabMixin, UpdateView):
+    """View for SEO tab of a Page."""
+
+    model = Page
+    fields = ["meta_title", "meta_description", "meta_keywords"]
+    tab_name = "seo"
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
+
+    def get_success_url(self) -> str:
+        """Stays on the SEO tab after successful save."""
+        return reverse("lfs_manage_page_seo", kwargs={"id": self.object.pk})
+
+    def form_valid(self, form):
+        """Saves and shows success message."""
+        response = super().form_valid(form)
+        messages.success(self.request, _("SEO data has been saved."))
+        return response
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Prevents access to root page SEO."""
+        if self.kwargs["id"] == "1":
+            return HttpResponseForbidden()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Prevents access to root page SEO."""
+        if self.kwargs["id"] == "1":
+            return HttpResponseForbidden()
+        return super().post(request, *args, **kwargs)
+
+
+class PagePortletsView(PermissionRequiredMixin, PageTabMixin, TemplateView):
+    """View for portlets tab of a Page."""
+
+    tab_name = "portlets"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with portlets."""
+        ctx = super().get_context_data(**kwargs)
+        page = self.get_page()
+        ctx["portlets"] = portlets_inline(self.request, page)
+        return ctx
+
+
+class PageCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateView):
     """Provides a form to add a new page."""
-    if request.method == "POST":
-        form = PageAddForm(data=request.POST, files=request.FILES)
-        if form.is_valid():
-            page = form.save()
-            _update_positions()
 
-            return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_page", kwargs={"id": page.id}),
-                msg=_("Page has been added."),
-            )
-    else:
-        form = PageAddForm()
+    model = Page
+    form_class = PageAddForm
+    template_name = "manage/pages/add_page.html"
+    permission_required = "core.manage_shop"
+    success_message = _("Page has been created.")
 
-    return render(
-        request,
-        template_name,
-        {
-            "form": form,
-            "pages": Page.objects.all(),
-            "came_from": (request.POST if request.method == "POST" else request.GET).get(
-                "came_from", reverse("lfs_manage_pages")
-            ),
-        },
-    )
+    def get_success_url(self):
+        return reverse("lfs_manage_page", kwargs={"id": self.object.id})
+
+    def form_valid(self, form):
+        """Saves the page."""
+        response = super().form_valid(form)
+        return response
 
 
-@permission_required("core.manage_shop")
-@require_POST
-def delete_page(request, id):
-    """Deletes the page with passed id."""
-    page = get_object_or_404(Page, pk=id)
-    page.delete()
+class PageDeleteConfirmView(PermissionRequiredMixin, TemplateView):
+    """Provides a modal form to confirm deletion of a page."""
 
-    return lfs.core.utils.set_message_cookie(
-        url=reverse("lfs_manage_pages"),
-        msg=_("Page has been deleted."),
-    )
+    template_name = "manage/pages/delete_page.html"
+    permission_required = "core.manage_shop"
 
-
-@permission_required("core.manage_shop")
-@require_POST
-def sort_pages(request):
-    """Sorts pages after drag 'n drop."""
-    page_list = request.POST.get("objs", "").split("&")
-    assert isinstance(page_list, list)
-    if len(page_list) > 0:
-        pos = 10
-        for page_str in page_list:
-            page_id = page_str.split("=")[1]
-            page_obj = Page.objects.get(pk=page_id)
-            page_obj.position = pos
-            page_obj.save()
-            pos = pos + 10
-
-        result = json.dumps(
-            {
-                "message": _("The pages have been sorted."),
-            },
-            cls=LazyEncoder,
-        )
-
-        return HttpResponse(result, content_type="application/json")
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page"] = get_object_or_404(Page, pk=self.kwargs["id"])
+        return context
 
 
-def _update_positions():
-    """Updates the positions of all pages."""
-    for i, page in enumerate(Page.objects.all()):
-        page.position = (i + 1) * 10
-        page.save()
+class PageDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
+    """Deletes page with passed id."""
+
+    model = Page
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
+    success_message = _("Page has been deleted.")
+
+    def get_success_url(self):
+        return reverse("lfs_manage_pages")
+
+
+class PageViewByIDView(PermissionRequiredMixin, RedirectView):
+    """Displays page with passed id."""
+
+    permission_required = "core.manage_shop"
+
+    def get_redirect_url(self, *args, **kwargs):
+        page_id = self.kwargs["id"]
+        if page_id == 1:
+            raise Http404()
+
+        page = lfs_get_object_or_404(Page, pk=page_id)
+        return reverse("lfs_page_view", kwargs={"slug": page.slug})

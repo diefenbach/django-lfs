@@ -1,0 +1,7 @@
+{% load i18n %}
+<div class="tab-pane {% if active_tab == 'portlets' %}show active{% endif %}" 
+     id="portlets-content" 
+     role="tabpanel" 
+     aria-labelledby="portlets-tab">
+    {{ portlets|safe }}
+</div>

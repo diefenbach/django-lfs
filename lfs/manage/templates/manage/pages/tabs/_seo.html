@@ -1,0 +1,16 @@
+{% load i18n crispy_forms_tags %}
+<div class="tab-pane {% if active_tab == 'seo' %}show active{% endif %}" 
+     id="seo-content" 
+     role="tabpanel" 
+     aria-labelledby="seo-tab">
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="buttons">
+            <button class="btn btn-primary" type="submit">
+                <i class="bi bi-save me-1"></i>
+                {% trans 'Save SEO' %}
+            </button>
+        </div>
+    </form>
+</div>
