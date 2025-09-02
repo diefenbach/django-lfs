@@ -125,15 +125,15 @@
                             <a href="{% url 'lfs_orders' %}" class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-list"></i> {% trans "All Orders" %}
                             </a>
+                            <a class="btn btn-outline-primary btn-sm" 
+                            dialog_message="{% trans 'Do you really want to resend this order?' %}" 
+                            href="{% url 'lfs_send_order' current_order.id %}">
+                                <i class="bi bi-envelope"></i> {% trans "Resend Order" %}
+                            </a>
                             <a class="btn btn-outline-danger btn-sm delete-link" 
                             dialog_message="{% trans 'Do you really want to delete this order?' %}" 
                             href="{% url 'lfs_delete_order' current_order.id %}">
                                 <i class="bi bi-trash"></i> {% trans "Delete Order" %}
-                            </a>
-                            <a class="btn btn-outline-warning btn-sm" 
-                            dialog_message="{% trans 'Do you really want to resend this order?' %}" 
-                            href="{% url 'lfs_send_order' current_order.id %}">
-                                <i class="bi bi-envelope"></i> {% trans "Resend Order" %}
                             </a>
                         </div>
                     </div>
@@ -150,7 +150,7 @@
                                     {% endfor %}
                                 </select>
                                 <input type="hidden" name="order-id" value="{{ current_order.id }}">
-                                <button type="submit" class="btn btn-primary btn-sm ajax-save-button">
+                                <button type="submit" class="btn btn-primary btn-sm">
                                     <i class="bi bi-check-circle me-1"></i>{% trans "Change" %}
                                 </button>
                             </form>
@@ -268,13 +268,13 @@
                                 <table class="table table-hover mb-0">
                                     <thead class="table-light">
                                         <tr>
-                                            <th style="width: 80px;">{% trans 'Image' %}</th>
+                                            <th>{% trans 'Image' %}</th>
                                             <th style="width: 100px;">{% trans 'SKU' %}</th>
                                             <th>{% trans 'Name' %}</th>
-                                            <th style="width: 80px;" class="text-center">{% trans 'Amount' %}</th>
-                                            <th style="width: 120px;" class="text-end">{% trans 'Price' %}</th>
-                                            <th style="width: 120px;" class="text-end">{% trans 'VAT' %}</th>
-                                            <th style="width: 120px;" class="text-end">{% trans 'Total' %}</th>
+                                            <th class="text-center">{% trans 'Amount' %}</th>
+                                            <th class="text-end">{% trans 'Price' %}</th>
+                                            <th class="text-end">{% trans 'VAT' %}</th>
+                                            <th class="text-end">{% trans 'Total' %}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -341,7 +341,7 @@
                                             <td class="text-end">
                                                 {{ item.product_tax|currency:request }}
                                             </td>
-                                            <td class="text-end fw-bold">
+                                            <td class="text-end">
                                                 {{ item.price_gross|currency:request }}
                                             </td>
                                         </tr>
@@ -379,13 +379,10 @@
                                         </tr>
                                         
                                         <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td>{% trans 'Total' %}:</td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td class="text-end fw-bold">{{ current_order.price|currency:request }}</td>
+                                            <td colspan="7" class="text-end">
+                                                {% trans 'Total' %}: <span class="fw-bold">{{ current_order.price|currency:request }}</span><br>
+                                                <small class="text-muted">{% trans 'Inclusive VAT' %}: {{ current_order.tax|currency:request }}</small>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
