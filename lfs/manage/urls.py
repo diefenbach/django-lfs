@@ -19,7 +19,7 @@ import lfs.manage.property.views
 import lfs.manage.property_groups.views
 import lfs.manage.shipping_methods.views
 import lfs.manage.static_blocks.views
-import lfs.manage.views.carts
+import lfs.manage.carts.views
 import lfs.manage.views.customer
 import lfs.manage.views.criteria
 import lfs.manage.views.dashboard
@@ -525,52 +525,52 @@ urlpatterns = [
     # Carts
     path(
         "carts",
-        lfs.manage.views.carts.CartListView.as_view(),
+        lfs.manage.carts.views.CartListView.as_view(),
         name="lfs_manage_carts",
     ),
     path(
         "cart/<int:id>/",
-        lfs.manage.views.carts.CartDataView.as_view(),
+        lfs.manage.carts.views.CartDataView.as_view(),
         name="lfs_manage_cart",
     ),
     path(
         "cart/<int:id>/apply-filters/",
-        lfs.manage.views.carts.ApplyCartFiltersView.as_view(),
+        lfs.manage.carts.views.ApplyCartFiltersView.as_view(),
         name="lfs_apply_cart_filters",
     ),
     path(
         "cart/<int:id>/apply-predefined-filter/<str:filter_type>/",
-        lfs.manage.views.carts.ApplyPredefinedCartFilterView.as_view(),
+        lfs.manage.carts.views.ApplyPredefinedCartFilterView.as_view(),
         name="lfs_apply_predefined_cart_filter",
     ),
     path(
         "carts/apply-filters/",
-        lfs.manage.views.carts.ApplyCartFiltersView.as_view(),
+        lfs.manage.carts.views.ApplyCartFiltersView.as_view(),
         name="lfs_apply_cart_filters_list",
     ),
     path(
         "carts/apply-predefined-filter/<str:filter_type>/",
-        lfs.manage.views.carts.ApplyPredefinedCartFilterView.as_view(),
+        lfs.manage.carts.views.ApplyPredefinedCartFilterView.as_view(),
         name="lfs_apply_predefined_cart_filter_list",
     ),
     path(
         "delete-cart-confirm/<int:id>",
-        lfs.manage.views.carts.CartDeleteConfirmView.as_view(),
+        lfs.manage.carts.views.CartDeleteConfirmView.as_view(),
         name="lfs_manage_delete_cart_confirm",
     ),
     path(
         "delete-cart/<int:id>",
-        lfs.manage.views.carts.CartDeleteView.as_view(),
+        lfs.manage.carts.views.CartDeleteView.as_view(),
         name="lfs_delete_cart",
     ),
     path(
         "no-carts",
-        lfs.manage.views.carts.NoCartsView.as_view(),
+        lfs.manage.carts.views.NoCartsView.as_view(),
         name="lfs_manage_no_carts",
     ),
     path(
         "reset-cart-filters",
-        lfs.manage.views.carts.ResetCartFiltersView.as_view(),
+        lfs.manage.carts.views.ResetCartFiltersView.as_view(),
         name="lfs_reset_cart_filters",
     ),
     # Categories
@@ -842,7 +842,9 @@ urlpatterns = [
     re_path(r"^orders$", lfs.manage.views.orders.orders_view, name="lfs_orders"),
     # Inline endpoints no longer used after clean cut; keep temporarily for compatibility if referenced
     re_path(r"^order/(?P<order_id>\d*)$", lfs.manage.views.orders.order_view, name="lfs_manage_order"),
-    re_path(r"^delete-order/(?P<order_id>\d*)$", lfs.manage.views.orders.OrderDeleteView.as_view(), name="lfs_delete_order"),
+    re_path(
+        r"^delete-order/(?P<order_id>\d*)$", lfs.manage.views.orders.OrderDeleteView.as_view(), name="lfs_delete_order"
+    ),
     re_path(r"^send-order/(?P<order_id>\d*)$", lfs.manage.views.orders.send_order, name="lfs_send_order"),
     # Order filters (class-based equivalents wired through function delegations for now)
     path("set-orders-filter", lfs.manage.views.orders.ApplyOrderFiltersView.as_view(), name="lfs_set_order_filter"),
