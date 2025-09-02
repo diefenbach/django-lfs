@@ -23,6 +23,11 @@ from lfs.voucher.models import VoucherGroup, VoucherOptions, Voucher
 from lfs.tax.models import Tax
 from lfs.core.models import Shop
 from lfs.cart.models import Cart
+from lfs.order.models import Order
+from lfs.customer.models import Customer
+from lfs.shipping.models import ShippingMethod
+from lfs.payment.models import PaymentMethod
+from lfs.addresses.models import Address
 
 
 User = get_user_model()
@@ -314,3 +319,152 @@ def test_carts(db, shop):
     cart1 = Cart.objects.create(session="test_session_1")
     cart2 = Cart.objects.create(session="test_session_2")
     return cart1, cart2
+
+
+# Order-related fixtures
+
+
+@pytest.fixture
+def customer(db):
+    """Sample Customer for testing."""
+    return Customer.objects.create(
+        session="test_session_123",
+    )
+
+
+@pytest.fixture
+def address(db, customer, default_country):
+    """Sample Address for testing."""
+    return Address.objects.create(
+        customer=customer,
+        firstname="John",
+        lastname="Doe",
+        line1="123 Main St",
+        city="Test City",
+        zip_code="12345",
+        country=default_country,
+        email="john.doe@example.com",
+    )
+
+
+@pytest.fixture
+def shipping_method(db):
+    """Sample ShippingMethod for testing."""
+    return ShippingMethod.objects.create(
+        name="Standard Shipping",
+        active=True,
+        price=5.99,
+    )
+
+
+@pytest.fixture
+def payment_method(db):
+    """Sample PaymentMethod for testing."""
+    return PaymentMethod.objects.create(
+        name="Credit Card",
+        active=True,
+        price=0.00,
+    )
+
+
+@pytest.fixture
+def order(db, customer, address, shipping_method, payment_method, shop):
+    """Sample Order for testing."""
+    from decimal import Decimal
+    from django.utils import timezone
+    from django.contrib.contenttypes.models import ContentType
+
+    # Get the content type for Address
+    address_content_type = ContentType.objects.get_for_model(address.__class__)
+
+    return Order.objects.create(
+        number="ORD-001",
+        session=customer.session,
+        customer_firstname="John",
+        customer_lastname="Doe",
+        customer_email="john.doe@example.com",
+        shipping_method=shipping_method,
+        payment_method=payment_method,
+        price=Decimal("99.99"),
+        tax=Decimal("19.00"),
+        shipping_price=Decimal("5.99"),
+        payment_price=Decimal("0.00"),
+        state=1,  # Pending
+        created=timezone.now(),
+        # Set the address relationships
+        sa_content_type=address_content_type,
+        sa_object_id=address.id,
+        ia_content_type=address_content_type,
+        ia_object_id=address.id,
+    )
+
+
+@pytest.fixture
+def multiple_orders(db, customer, address, shipping_method, payment_method, shop):
+    """Multiple Orders for testing."""
+    from decimal import Decimal
+    from django.utils import timezone
+    from django.contrib.contenttypes.models import ContentType
+    import lfs.order.settings
+
+    orders = []
+    states = [state[0] for state in lfs.order.settings.ORDER_STATES]
+
+    # Get the content type for Address
+    address_content_type = ContentType.objects.get_for_model(address.__class__)
+
+    for i in range(5):
+        order = Order.objects.create(
+            number=f"ORD-{i+1:03d}",
+            session=customer.session,
+            customer_firstname=f"Customer{i+1}",
+            customer_lastname="Test",
+            customer_email=f"customer{i+1}@example.com",
+            shipping_method=shipping_method,
+            payment_method=payment_method,
+            price=Decimal(f"{(i+1)*50}.00"),
+            tax=Decimal(f"{(i+1)*10}.00"),
+            shipping_price=Decimal("5.99"),
+            payment_price=Decimal("0.00"),
+            state=states[i % len(states)],
+            created=timezone.now(),
+            # Set the address relationships
+            sa_content_type=address_content_type,
+            sa_object_id=address.id,
+            ia_content_type=address_content_type,
+            ia_object_id=address.id,
+        )
+        orders.append(order)
+
+    return orders
+
+
+@pytest.fixture
+def order_with_items(db, order):
+    """Order with order items for testing."""
+    from lfs.catalog.models import Product
+    from lfs.order.models import OrderItem
+    from decimal import Decimal
+
+    # Create a test product
+    product = Product.objects.create(
+        name="Test Product",
+        slug="test-product",
+        sku="TEST-001",
+        price=Decimal("29.99"),
+        active=True,
+    )
+
+    # Create order item
+    OrderItem.objects.create(
+        order=order,
+        product=product,
+        product_name=product.name,
+        product_sku=product.sku,
+        product_price_gross=product.price,
+        product_tax=Decimal("5.70"),
+        product_amount=2,
+        price_gross=Decimal("59.98"),
+    )
+
+    return order
