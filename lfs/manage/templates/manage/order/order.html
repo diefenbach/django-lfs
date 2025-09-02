@@ -118,296 +118,311 @@
             </aside>
 
             <main class="col-9 p-4 scrollable-content">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h3 mb-0">{% trans "Order" %} #{{ current_order.id }}</h1>
-                    <div class="d-flex gap-2">
-                        <a href="{% url 'lfs_orders' %}" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-list"></i> {% trans "All Orders" %}
-                        </a>
-                        <a class="btn btn-outline-danger btn-sm delete-link" 
-                           dialog_message="{% trans 'Do you really want to delete this order?' %}" 
-                           href="{% url 'lfs_delete_order' current_order.id %}">
-                            <i class="bi bi-trash"></i> {% trans "Delete Order" %}
-                        </a>
-                        <a class="btn btn-outline-warning btn-sm" 
-                           dialog_message="{% trans 'Do you really want to resend this order?' %}" 
-                           href="{% url 'lfs_send_order' current_order.id %}">
-                            <i class="bi bi-envelope"></i> {% trans "Resend Order" %}
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Order State Change -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <form action="{% url 'lfs_change_order_state' %}" method="post" class="d-flex align-items-center gap-2">
-                            {% csrf_token %}
-                            <label class="form-label mb-0">{% trans "State" %}:</label>
-                            <select id="states-filter" name="new-state" class="form-select form-select-sm" style="width: auto;">
-                                {% for state in states %}
-                                    <option value="{{ state.id }}" {% if state.selected_order %}selected="selected"{% endif %}>{{ state.name }}</option>
-                                {% endfor %}
-                            </select>
-                            <input type="hidden" name="order-id" value="{{ current_order.id }}">
-                            <button type="submit" class="btn btn-primary btn-sm ajax-save-button">
-                                <i class="bi bi-check-circle me-1"></i>{% trans "Change" %}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- General Order Information -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">{% trans "General Information" %}</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <table class="table table-borderless">
-                                    <tr>
-                                        <td class="fw-bold" style="width: 40%;">{% trans 'Order number' %}:</td>
-                                        <td>{{ current_order.number|default_if_none:"-" }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">{% trans 'Date' %}:</td>
-                                        <td>{{ current_order.created|date:_("DATETIME_FORMAT") }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">{% trans 'E-mail' %}:</td>
-                                        <td><a href="mailto:{{ current_order.customer_email }}">{{ current_order.customer_email }}</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">{% trans 'Phone' %}:</td>
-                                        <td>{{ current_order.shipping_phone|default:"-" }}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-md-6">
-                                <table class="table table-borderless">
-                                    <tr>
-                                        <td class="fw-bold" style="width: 40%;">{% trans 'State' %}:</td>
-                                        <td>{{ current_order.get_state_display }}</td>
-                                    </tr>
-                                    {% if current_order.state_modified %}
-                                    <tr>
-                                        <td class="fw-bold">{% trans 'State modified' %}:</td>
-                                        <td>{{ current_order.state_modified|date:_("DATETIME_FORMAT") }}</td>
-                                    </tr>
-                                    {% endif %}
-                                    <tr>
-                                        <td class="fw-bold">{% trans 'Total' %}:</td>
-                                        <td class="fw-bold text-primary">{{ current_order.price|currency:request }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold">{% trans 'Inclusive VAT' %}:</td>
-                                        <td>{{ current_order.tax|currency:request }}</td>
-                                    </tr>
-                                </table>
-                            </div>
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="h3 mb-0">{% trans "Order" %} #{{ current_order.id }}</h1>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'lfs_orders' %}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-list"></i> {% trans "All Orders" %}
+                            </a>
+                            <a class="btn btn-outline-danger btn-sm delete-link" 
+                            dialog_message="{% trans 'Do you really want to delete this order?' %}" 
+                            href="{% url 'lfs_delete_order' current_order.id %}">
+                                <i class="bi bi-trash"></i> {% trans "Delete Order" %}
+                            </a>
+                            <a class="btn btn-outline-warning btn-sm" 
+                            dialog_message="{% trans 'Do you really want to resend this order?' %}" 
+                            href="{% url 'lfs_send_order' current_order.id %}">
+                                <i class="bi bi-envelope"></i> {% trans "Resend Order" %}
+                            </a>
                         </div>
                     </div>
-                </div>
 
-                <!-- Addresses and Methods -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">{% trans "Addresses & Methods" %}</h5>
+                    <!-- Order State Change -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form action="{% url 'lfs_change_order_state' %}" method="post" class="d-flex align-items-center gap-2">
+                                {% csrf_token %}
+                                <label class="form-label mb-0">{% trans "State" %}:</label>
+                                <select id="states-filter" name="new-state" class="form-select form-select-sm" style="width: auto;">
+                                    {% for state in states %}
+                                        <option value="{{ state.id }}" {% if state.selected_order %}selected="selected"{% endif %}>{{ state.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <input type="hidden" name="order-id" value="{{ current_order.id }}">
+                                <button type="submit" class="btn btn-primary btn-sm ajax-save-button">
+                                    <i class="bi bi-check-circle me-1"></i>{% trans "Change" %}
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6>{% trans "Shipping Address" %}</h6>
-                                <div class="border rounded p-3 bg-light">
-                                    {{ current_order.shipping_address.as_html|safe }}
+
+                    <!-- General Order Information -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">{% trans "General Information" %}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td class="fw-bold" style="width: 40%;">{% trans 'Order number' %}:</td>
+                                            <td>{{ current_order.number|default_if_none:"-" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">{% trans 'Date' %}:</td>
+                                            <td>{{ current_order.created|date:_("DATETIME_FORMAT") }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">{% trans 'E-mail' %}:</td>
+                                            <td><a href="mailto:{{ current_order.customer_email }}">{{ current_order.customer_email }}</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">{% trans 'Phone' %}:</td>
+                                            <td>{{ current_order.shipping_phone|default:"-" }}</td>
+                                        </tr>
+                                    </table>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <h6>{% trans "Invoice Address" %}</h6>
-                                <div class="border rounded p-3 bg-light">
-                                    {{ current_order.invoice_address.as_html|safe }}
+                                <div class="col-md-6">
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <td class="fw-bold" style="width: 40%;">{% trans 'State' %}:</td>
+                                            <td>{{ current_order.get_state_display }}</td>
+                                        </tr>
+                                        {% if current_order.state_modified %}
+                                        <tr>
+                                            <td class="fw-bold">{% trans 'State modified' %}:</td>
+                                            <td>{{ current_order.state_modified|date:_("DATETIME_FORMAT") }}</td>
+                                        </tr>
+                                        {% endif %}
+                                        <tr>
+                                            <td class="fw-bold">{% trans 'Total' %}:</td>
+                                            <td>{{ current_order.price|currency:request }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">{% trans 'Inclusive VAT' %}:</td>
+                                            <td>{{ current_order.tax|currency:request }}</td>
+                                        </tr>
+                                    </table>
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <h6>{% trans "Shipping Method" %}</h6>
-                                <p class="mb-0">{{ current_order.shipping_method }}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <h6>{% trans "Payment Method" %}</h6>
-                                <p class="mb-0">{{ current_order.payment_method.name }}</p>
-                                {% if current_order.payment_method.id == 1 %}
-                                    <div class="mt-2">
-                                        <small class="text-muted">
-                                            <div>{% trans 'Account' %}: {{ current_order.account_number }}</div>
-                                            <div>{% trans 'BIC' %}: {{ current_order.bank_identification_code }}</div>
-                                            <div>{% trans 'Bank' %}: {{ current_order.bank_name }}</div>
-                                            <div>{% trans 'Depositor' %}: {{ current_order.depositor }}</div>
-                                        </small>
+                    </div>
+
+                    <!-- Addresses and Methods -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">{% trans "Addresses & Methods" %}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>{% trans "Shipping Address" %}</h6>
+                                    <div class="border rounded p-3 bg-light">
+                                        {{ current_order.shipping_address.as_html|safe }}
                                     </div>
-                                {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>{% trans "Invoice Address" %}</h6>
+                                    <div class="border rounded p-3 bg-light">
+                                        {{ current_order.invoice_address.as_html|safe }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <h6>{% trans "Shipping Method" %}</h6>
+                                    <div class="border rounded p-3 bg-light">
+                                        {{ current_order.shipping_method }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>{% trans "Payment Method" %}</h6>
+                                    <div class="border rounded p-3 bg-light">
+                                        {{ current_order.payment_method.name }}
+                                    </div>
+                                    {% if current_order.payment_method.id == 1 %}
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <div>{% trans 'Account' %}: {{ current_order.account_number }}</div>
+                                                <div>{% trans 'BIC' %}: {{ current_order.bank_identification_code }}</div>
+                                                <div>{% trans 'Bank' %}: {{ current_order.bank_name }}</div>
+                                                <div>{% trans 'Depositor' %}: {{ current_order.depositor }}</div>
+                                            </small>
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Order Items -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">{% trans "Order Items" %}</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th style="width: 80px;">{% trans 'Image' %}</th>
-                                        <th style="width: 100px;">{% trans 'SKU' %}</th>
-                                        <th>{% trans 'Name' %}</th>
-                                        <th style="width: 80px;" class="text-center">{% trans 'Amount' %}</th>
-                                        <th style="width: 120px;" class="text-end">{% trans 'Price' %}</th>
-                                        <th style="width: 120px;" class="text-end">{% trans 'VAT' %}</th>
-                                        <th style="width: 120px;" class="text-end">{% trans 'Total' %}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for item in current_order.items.all %}
-                                    <tr>
-                                        <td class="text-center">
-                                            {% if item.product.get_image.image %}
-                                                <a href="{% url 'lfs_manage_product' item.product.id %}">
-                                                    <img alt="{{ item.product_name }}" 
-                                                         src="{{ item.product.get_image.image.url_100x100 }}" 
-                                                         class="img-thumbnail" style="max-width: 60px;" />
-                                                </a>
-                                            {% else %}
-                                                <span class="text-muted">-</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <small class="text-muted">{{ item.product_sku }}</small>
-                                        </td>
-                                        <td>
-                                            {% if item.product %}
-                                                <a href="{% url 'lfs_manage_product' item.product.id %}">
+                    <!-- Order Items & Summary -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">{% trans "Order Items" %}</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <!-- Order Items Table with Summary -->
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 80px;">{% trans 'Image' %}</th>
+                                            <th style="width: 100px;">{% trans 'SKU' %}</th>
+                                            <th>{% trans 'Name' %}</th>
+                                            <th style="width: 80px;" class="text-center">{% trans 'Amount' %}</th>
+                                            <th style="width: 120px;" class="text-end">{% trans 'Price' %}</th>
+                                            <th style="width: 120px;" class="text-end">{% trans 'VAT' %}</th>
+                                            <th style="width: 120px;" class="text-end">{% trans 'Total' %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in current_order.items.all %}
+                                        <tr>
+                                            <td class="text-center">
+                                                {% if item.product.get_image.image %}
+                                                    <a href="{% url 'lfs_manage_product' item.product.id %}">
+                                                        <img alt="{{ item.product_name }}" 
+                                                            src="{{ item.product.get_image.image.url_100x100 }}" 
+                                                            class="img-thumbnail" style="max-width: 60px;" />
+                                                    </a>
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">{{ item.product_sku }}</small>
+                                            </td>
+                                            <td>
+                                                {% if item.product %}
+                                                    <a href="{% url 'lfs_manage_product' item.product.id %}">
+                                                        {{ item.product_name }}
+                                                    </a>
+                                                {% else %}
                                                     {{ item.product_name }}
-                                                </a>
-                                            {% else %}
-                                                {{ item.product_name }}
-                                            {% endif %}
-                                            
-                                            {% for property in item.product.get_displayed_properties %}
-                                                <div class="small text-muted">
-                                                    {{ property.title }}: {{ property.value }} {{ property.unit|safe }}
-                                                </div>
-                                            {% endfor %}
-
-                                            {% for property in item.product.get_variant_properties %}
-                                                <div class="small text-muted">
-                                                    {{ property.title }}: {{ property.value }} {{ property.unit|safe }}
-                                                </div>
-                                            {% endfor %}
-
-                                            {% if item.product.is_configurable_product %}
-                                                {% for property in item.get_properties %}
+                                                {% endif %}
+                                                
+                                                {% for property in item.product.get_displayed_properties %}
                                                     <div class="small text-muted">
-                                                        {{ property.title }} [{{ property.property_group_name }}]: {{ property.value }} {{ property.unit|safe }}
-                                                        {% if property.display_price %}
-                                                            ({{ property.price|currency:request }})
-                                                        {% endif %}
+                                                        {{ property.title }}: {{ property.value }} {{ property.unit|safe }}
                                                     </div>
                                                 {% endfor %}
-                                            {% endif %}
-                                        </td>
-                                        <td class="text-center">
-                                            {{ item.amount }} {{ item.product.unit }}
-                                            {% if item.product.active_packing_unit %}
-                                                <div class="small text-muted">
-                                                    ({{ item|packages }} {{ item.product.packing_unit_unit }})
-                                                </div>
-                                            {% endif %}
-                                        </td>
-                                        <td class="text-end">
-                                            {{ item.product_price_gross|currency:request }}
-                                            {% if item.product.price_unit %}<br><small class="text-muted">/ {{ item.product.price_unit }}</small>{% endif %}
-                                        </td>
-                                        <td class="text-end">
-                                            {{ item.product_tax|currency:request }}
-                                        </td>
-                                        <td class="text-end fw-bold">
-                                            {{ item.price_gross|currency:request }}
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Order Summary -->
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">{% trans "Order Summary" %}</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row justify-content-end">
-                            <div class="col-md-6">
-                                <table class="table table-borderless">
-                                    {% if current_order.voucher_number %}
-                                    <tr>
-                                        <td>{% trans 'Voucher' %} ({{ current_order.voucher_number }})</td>
-                                        <td class="text-end">- {{ current_order.voucher_price|currency:request }}</td>
-                                    </tr>
-                                    {% endif %}
-                                    <tr>
-                                        <td>{% trans 'Shipping' %} ({{ current_order.shipping_method }})</td>
-                                        <td class="text-end">{{ current_order.shipping_price|currency:request }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>{% trans 'Payment' %} ({{ current_order.payment_method }})</td>
-                                        <td class="text-end">{{ current_order.payment_price|currency:request }}</td>
-                                    </tr>
-                                    <tr class="border-top">
-                                        <td class="fw-bold">{% trans 'Total' %}</td>
-                                        <td class="text-end fw-bold text-primary fs-5">{{ current_order.price|currency:request }}</td>
-                                    </tr>
+                                                {% for property in item.product.get_variant_properties %}
+                                                    <div class="small text-muted">
+                                                        {{ property.title }}: {{ property.value }} {{ property.unit|safe }}
+                                                    </div>
+                                                {% endfor %}
+
+                                                {% if item.product.is_configurable_product %}
+                                                    {% for property in item.get_properties %}
+                                                        <div class="small text-muted">
+                                                            {{ property.title }} [{{ property.property_group_name }}]: {{ property.value }} {{ property.unit|safe }}
+                                                            {% if property.display_price %}
+                                                                ({{ property.price|currency:request }})
+                                                            {% endif %}
+                                                        </div>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ item.amount }} {{ item.product.unit }}
+                                                {% if item.product.active_packing_unit %}
+                                                    <div class="small text-muted">
+                                                        ({{ item|packages }} {{ item.product.packing_unit_unit }})
+                                                    </div>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-end">
+                                                {{ item.product_price_gross|currency:request }}
+                                                {% if item.product.price_unit %}<br><small class="text-muted">/ {{ item.product.price_unit }}</small>{% endif %}
+                                            </td>
+                                            <td class="text-end">
+                                                {{ item.product_tax|currency:request }}
+                                            </td>
+                                            <td class="text-end fw-bold">
+                                                {{ item.price_gross|currency:request }}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        
+                                        <!-- Order Summary Rows -->
+                                        {% if current_order.voucher_number %}
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="text-end fw-bold">{% trans 'Voucher' %} ({{ current_order.voucher_number }}):</td>
+                                            <td class="text-end">- {{ current_order.voucher_price|currency:request }}</td>
+                                        </tr>
+                                        {% endif %}
+                                        
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{% trans 'Shipping' %} ({{ current_order.shipping_method }}):</td>
+                                            <td class="text-center">1</td>
+                                            <td class="text-end">{{ current_order.shipping_price|currency:request }}</td>
+                                            <td class="text-end">{{ current_order.shipping_tax|currency:request }}</td>
+                                            <td class="text-end">{{ current_order.shipping_price|currency:request }}</td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{% trans 'Payment' %} ({{ current_order.payment_method }}):</td>
+                                            <td class="text-center">1</td>
+                                            <td class="text-end">{{ current_order.payment_price|currency:request }}</td>
+                                            <td class="text-end">{{ current_order.payment_tax|currency:request }}</td>
+                                            <td class="text-end">{{ current_order.payment_price|currency:request }}</td>
+
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{% trans 'Total' %}:</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="text-end fw-bold">{{ current_order.price|currency:request }}</td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Customer Message -->
-                {% if current_order.message %}
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">{% trans "Message from the customer" %}</h5>
+                    <!-- Customer Message -->
+                    {% if current_order.message %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">{% trans "Message from the customer" %}</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-0">{{ current_order.message }}</p>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p class="mb-0">{{ current_order.message }}</p>
-                    </div>
-                </div>
-                {% endif %}
+                    {% endif %}
 
-                <!-- PayPal Transactions -->
-                {% if current_order.paypalordertransaction_set.all %}
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">{% trans "PayPal Transaction ID" %}</h5>
-                    </div>
-                    <div class="card-body">
-                        {% for ppt in current_order.paypalordertransaction_set.all %}
-                            {% for ipn in ppt.ipn.all %}
-                                <div class="mb-2">
-                                    <code>{{ ipn.txn_id }}</code>
-                                </div>
+                    <!-- PayPal Transactions -->
+                    {% if current_order.paypalordertransaction_set.all %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">{% trans "PayPal Transaction ID" %}</h5>
+                        </div>
+                        <div class="card-body">
+                            {% for ppt in current_order.paypalordertransaction_set.all %}
+                                {% for ipn in ppt.ipn.all %}
+                                    <div class="mb-2">
+                                        <code>{{ ipn.txn_id }}</code>
+                                    </div>
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
+                        </div>
                     </div>
+                    {% endif %}
                 </div>
-                {% endif %}
             </main>
         </div>
     </div>
