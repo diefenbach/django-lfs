@@ -1,7 +1,12 @@
-{% load i18n %}
+{% load i18n static %}
 <div class="tab-pane {% if active_tab == 'portlets' %}show active{% endif %}" 
      id="portlets-content" 
      role="tabpanel" 
      aria-labelledby="portlets-tab">
     {{ portlets|safe }}
+    
+    <script>
+        window.LFS_SORT_PORTLETS_URL = '{% url "lfs_sort_portlets" %}';
+    </script>
+    <script src="{% static 'lfs/js/management/portlets.js' %}"></script>
 </div>

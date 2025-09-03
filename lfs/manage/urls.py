@@ -214,6 +214,7 @@ urlpatterns = [
     re_path(r"^delete-portlet/(?P<portletassignment_id>\d+)$", lfs_portlets.delete_portlet, name="lfs_delete_portlet"),
     re_path(r"^edit-portlet/(?P<portletassignment_id>\d+)$", lfs_portlets.edit_portlet, name="lfs_edit_portlet"),
     re_path(r"^move-portlet/(?P<portletassignment_id>\d+)$", lfs_portlets.move_portlet, name="lfs_move_portlet"),
+    re_path(r"^sort-portlets$", lfs_portlets.sort_portlets, name="lfs_sort_portlets"),
     # Product
     re_path(r"^product-dispatcher$", product.product_dispatcher, name="lfs_manage_product_dispatcher"),
     re_path(r"^product-by-id/(?P<product_id>\d*)$", product.product_by_id, name="lfs_manage_product_by_id"),

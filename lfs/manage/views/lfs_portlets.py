@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_POST
 
 # portlets imports
 import portlets.utils
@@ -331,6 +332,49 @@ def move_portlet(request, portletassignment_id):
     result = json.dumps({"html": [["#portlets", portlets_inline(request, pa.content)]]}, cls=LazyEncoder)
 
     return HttpResponse(result, content_type="application/json")
+
+
+@permission_required("core.manage_shop")
+@require_POST
+def sort_portlets(request):
+    """Sorts portlets after drag 'n drop."""
+    portlet_id = int(request.POST.get("portlet_id", ""))
+    to_slot = int(request.POST.get("to_slot", ""))
+    new_index = int(request.POST.get("new_index", ""))
+
+    # portlet which has been dragged and dropped
+    dnd_portlet = PortletAssignment.objects.get(pk=portlet_id)
+
+    # Update the slot if it changed
+    if dnd_portlet.slot_id != to_slot:
+        dnd_portlet.slot_id = to_slot
+        dnd_portlet.save()
+
+    # Get all portlets in the target slot ordered by position
+    portlets_in_slot = list(
+        PortletAssignment.objects.filter(
+            content_type=dnd_portlet.content_type, content_id=dnd_portlet.content_id, slot_id=to_slot
+        )
+        .exclude(pk=portlet_id)
+        .order_by("position")
+    )
+
+    if new_index < len(portlets_in_slot):
+        new_position = portlets_in_slot[new_index].position
+        for portlet in portlets_in_slot[new_index:]:
+            portlet.position += 10
+            portlet.save()
+    else:
+        new_position = (portlets_in_slot[-1].position + 10) if portlets_in_slot else 10
+
+    # Set the new position for the sorted portlet
+    dnd_portlet.position = new_position
+    dnd_portlet.save()
+
+    # Update all positions to ensure consistency
+    update_portlet_positions(dnd_portlet)
+
+    return HttpResponse()
 
 
 def update_portlet_positions(pa):

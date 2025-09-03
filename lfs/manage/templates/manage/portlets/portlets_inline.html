@@ -48,54 +48,26 @@
                 </h6>
 
                 {% if slot.portlets %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>{% trans 'Type' %}</th>
-                                    <th>{% trans 'Title' %}</th>
-                                    <th class="text-end">{% trans 'Actions' %}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for portlet in slot.portlets %}
-                                    <tr class="portlet-edit-button" 
-                                        href="{% url 'lfs_edit_portlet' portlet.pa_id %}"
-                                        style="cursor: pointer;">
-                                        <td>
-                                            <span>{% trans portlet.type %}</span>
-                                        </td>
-                                        <td>{{ portlet.title }}</td>
-                                        <td class="text-end">
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                {% if not forloop.first %}
-                                                    <a class="btn btn-outline-secondary ajax-link"
-                                                       href="{% url 'lfs_move_portlet' portlet.pa_id %}?direction=0"
-                                                       title='{% trans "Move Up" %}'>
-                                                        <i class="bi bi-arrow-up"></i>
-                                                    </a>
-                                                {% endif %}
-                                                {% if not forloop.last %}
-                                                    <a class="btn btn-outline-secondary ajax-link"
-                                                       href="{% url 'lfs_move_portlet' portlet.pa_id %}?direction=1"
-                                                       title='{% trans "Move Down" %}'>
-                                                        <i class="bi bi-arrow-down"></i>
-                                                    </a>
-                                                {% endif %}
-                                                <a class="btn btn-outline-danger"
-                                                   hx-get="{% url 'lfs_delete_portlet' portlet.pa_id %}"
-                                                   hx-target="#modal-body-lg"
-                                                   hx-trigger="click"
-                                                   hx-swap="innerHTML"
-                                                   title='{% trans "Delete" %}'>
-                                                    <i class="bi bi-trash"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                    <div class="portlet-slot" data-slot-id="{{ slot.id }}">
+                        {% for portlet in slot.portlets %}
+                            <div class="portlet-item d-flex justify-content-between align-items-center p-2 mb-1 border rounded bg-light text-dark" 
+                                 data-portlet-id="{{ portlet.pa_id }}"
+                                 style="cursor: pointer;">
+                                <div class="portlet-info">
+                                    <strong>{% trans portlet.type %}</strong> - {{ portlet.title }}
+                                </div>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a class="btn btn-outline-danger"
+                                       hx-get="{% url 'lfs_delete_portlet' portlet.pa_id %}"
+                                       hx-target="#modal-body-lg"
+                                       hx-trigger="click"
+                                       hx-swap="innerHTML"
+                                       title='{% trans "Delete" %}'>
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 {% else %}
                     <div class="alert alert-info">
@@ -143,3 +115,21 @@
         </form>
     </div>
 </div>
+
+<style>
+    .portlet-ghost {
+        opacity: 0.4;
+    }
+    .portlet-chosen {
+        cursor: grabbing;
+    }
+    .portlet-drag {
+        opacity: 0.8;
+    }
+    .portlet-item {
+        cursor: grab;
+    }
+    .portlet-item:active {
+        cursor: grabbing;
+    }
+</style>
