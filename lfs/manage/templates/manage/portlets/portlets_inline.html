@@ -1,151 +1,124 @@
 {% load i18n %}
 
-{% if parent_for_portlets %}
+<div class="lfs-portlets">
+    {% if parent_for_portlets %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">{% trans 'Blocked parent slots' %}</h5>
+            </div>
+            <div class="card-body">
+                <form class="portlets-form"
+                    action="{% url 'lfs_update_portlets' object_type_id object.id %}"
+                    method="post">
+                    {% csrf_token %}
+                    {% for slot in slots.items %}
+                        <div class="form-check mb-2">
+                            <input type="checkbox"
+                                class="form-check-input"
+                                id="block-slot-{{ slot.id }}"
+                                name="block_slot"
+                                value="{{ slot.id }}"
+                                {% if slot.is_blocked %}checked="checked"{% endif %} />
+                            <label class="form-check-label" for="block-slot-{{ slot.id }}">
+                                {% trans slot.name %}
+                            </label>
+                        </div>
+                    {% endfor %}
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i>
+                            {% trans 'Save blocked parent slots' %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="card-title mb-0">{% trans 'Blocked parent slots' %}</h5>
+            <h5 class="card-title mb-0">{% trans 'Slots' %}</h5>
         </div>
         <div class="card-body">
-            <form class="portlets-form"
-                  action="{% url 'lfs_update_portlets' object_type_id object.id %}"
-                  method="post">
-                {% csrf_token %}
-                {% for slot in slots.items %}
-                    <div class="form-check mb-2">
-                        <input type="checkbox"
-                               class="form-check-input"
-                               id="block-slot-{{ slot.id }}"
-                               name="block_slot"
-                               value="{{ slot.id }}"
-                               {% if slot.is_blocked %}checked="checked"{% endif %} />
-                        <label class="form-check-label" for="block-slot-{{ slot.id }}">
-                            {% trans slot.name %}
-                        </label>
-                    </div>
-                {% endfor %}
+            {% for slot in slots.items %}
+                <div class="mb-4">
+                    <h6 class="text-muted mb-3">
+                        <i class="bi bi-layout-sidebar me-2"></i>
+                        {% trans 'Slot' %}: {% trans slot.name %}
+                    </h6>
 
-                <div class="mt-3">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save me-1"></i>
-                        {% trans 'Save blocked parent slots' %}
-                    </button>
+                    <div class="portlet-slot" data-list="{{ slot.id }}">
+                        <div class="portlet-empty-info d-none">
+                            <i class="bi bi-info-circle me-2"></i>
+                            {% trans 'Portlets can be added here' %}
+                        </div>
+                        {% for portlet in slot.portlets %}
+                            <div class="portlet-item d-flex justify-content-between align-items-center p-2 mb-1 border rounded bg-light text-dark" 
+                                data-id="{{ portlet.pa_id }}"
+                                style="cursor: pointer;">
+                                <div class="portlet-info">
+                                    <strong>{% trans portlet.type %}</strong> - {{ portlet.title }} 
+                                </div>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a class="btn btn-outline-primary"
+                                    hx-get="{% url 'lfs_edit_portlet' portlet.pa_id %}"
+                                    hx-target="#modal-body-lg"
+                                    hx-trigger="click"
+                                    hx-swap="innerHTML"
+                                    title='{% trans "Edit" %}'>
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a class="btn btn-outline-danger"
+                                    hx-get="{% url 'lfs_delete_portlet' portlet.pa_id %}"
+                                    hx-target="#modal-body-lg"
+                                    hx-trigger="click"
+                                    hx-swap="innerHTML"
+                                    title='{% trans "Delete" %}'>
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">{% trans 'Add new portlet' %}</h5>
+        </div>
+        <div class="card-body">
+            <form class="portlet-add-form"
+                action="{% url 'lfs_add_portlet' object_type_id object.id %}"
+                method="get"
+                hx-get="{% url 'lfs_add_portlet' object_type_id object.id %}"
+                hx-target="#modal-body-lg"
+                hx-trigger="submit"
+                hx-swap="innerHTML">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-8">
+                        <label for="portlet_type" class="form-label">{% trans 'Portlet Type' %}</label>
+                        <select name="portlet_type" class="form-select" id="portlet_type" required>
+                            <option value="">{% trans 'Select a portlet type...' %}</option>
+                            {% for portlet_type in portlet_types %}
+                                <option value="{{ portlet_type.type }}">
+                                    {% trans portlet_type.name %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" 
+                                class="btn btn-primary portlet-add-button w-100">
+                            <i class="bi bi-plus-circle me-1"></i>
+                            {% trans 'Add portlet' %}
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
-{% endif %}
-
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="card-title mb-0">{% trans 'Slots' %}</h5>
-    </div>
-    <div class="card-body">
-        {% for slot in slots.items %}
-            <div class="mb-4">
-                <h6 class="text-muted mb-3">
-                    <i class="bi bi-layout-sidebar me-2"></i>
-                    {% trans 'Slot' %}: {% trans slot.name %}
-                </h6>
-
-                <div class="portlet-slot" data-slot-id="{{ slot.id }}">
-                    <div class="portlet-empty-info d-none">
-                        <i class="bi bi-info-circle me-2"></i>
-                        {% trans 'Portlets can be added here' %}
-                    </div>
-                    {% for portlet in slot.portlets %}
-                        <div class="portlet-item d-flex justify-content-between align-items-center p-2 mb-1 border rounded bg-light text-dark" 
-                             data-portlet-id="{{ portlet.pa_id }}"
-                             style="cursor: pointer;">
-                            <div class="portlet-info">
-                                <strong>{% trans portlet.type %}</strong> - {{ portlet.title }}
-                            </div>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn-outline-danger"
-                                   hx-get="{% url 'lfs_delete_portlet' portlet.pa_id %}"
-                                   hx-target="#modal-body-lg"
-                                   hx-trigger="click"
-                                   hx-swap="innerHTML"
-                                   title='{% trans "Delete" %}'>
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        {% endfor %}
-    </div>
 </div>
-
-<div class="card">
-    <div class="card-header">
-        <h5 class="card-title mb-0">{% trans 'Add new portlet' %}</h5>
-    </div>
-    <div class="card-body">
-        <form class="portlet-add-form"
-              action="{% url 'lfs_add_portlet' object_type_id object.id %}"
-              method="get"
-              hx-get="{% url 'lfs_add_portlet' object_type_id object.id %}"
-              hx-target="#modal-body-lg"
-              hx-trigger="submit"
-              hx-swap="innerHTML">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-8">
-                    <label for="portlet_type" class="form-label">{% trans 'Portlet Type' %}</label>
-                    <select name="portlet_type" class="form-select" id="portlet_type" required>
-                        <option value="">{% trans 'Select a portlet type...' %}</option>
-                        {% for portlet_type in portlet_types %}
-                            <option value="{{ portlet_type.type }}">
-                                {% trans portlet_type.name %}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" 
-                            class="btn btn-primary portlet-add-button w-100">
-                        <i class="bi bi-plus-circle me-1"></i>
-                        {% trans 'Add portlet' %}
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<style>
-    .portlet-ghost {
-        opacity: 0.4;
-    }
-    .portlet-chosen {
-        cursor: grabbing;
-    }
-    .portlet-drag {
-        opacity: 0.8;
-    }
-    .portlet-item {
-        cursor: grab;
-    }
-    .portlet-item:active {
-        cursor: grabbing;
-    }
-    .portlet-slot-empty {
-        min-height: 50px;
-        border: 1px dashed #aaa;
-        border-radius: 4px;
-        box-sizing: border-box;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 1rem;
-    }
-    .portlet-empty-info {
-        color: #6c757d;
-        font-size: 0.875rem;
-        text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-    }
-</style>

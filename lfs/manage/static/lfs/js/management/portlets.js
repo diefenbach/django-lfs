@@ -36,7 +36,7 @@ class PortletManager {
         document.querySelectorAll('.portlet-slot').forEach((slotEl) => {
             if (slotEl.getAttribute('data-sortable-initialized')) return;
             
-            console.log('Initializing portlet slot:', slotEl.dataset.slotId);
+            console.log('Initializing portlet slot:', slotEl.dataset.list);
             
             // Initial state
             this.updateSlotEmptyState(slotEl);
@@ -50,7 +50,7 @@ class PortletManager {
                 dragClass: 'portlet-drag',
                 emptyInsertThreshold: 5,
                 onStart: (evt) => {
-                    console.log('Drag started:', evt.item.dataset.portletId);
+                    console.log('Drag started:', evt.item.dataset.id);
                 },
                 onChange: (evt) => {
                     // Update empty state when items are added/removed
@@ -68,13 +68,12 @@ class PortletManager {
     }
 
     handleDragEnd(evt) {
-        const portletId = evt.item.dataset.portletId;
-        const fromSlot = evt.from.dataset.slotId;
-        const toSlot = evt.to.dataset.slotId;
+        const portletId = evt.item.dataset.id;
+        const toSlot = evt.to.dataset.list;
         const newIndex = evt.newIndex;
         const csrfToken = this.getCSRFToken();
         
-        console.log('Drag ended:', {portletId, fromSlot, toSlot, newIndex});
+        console.log('Drag ended:', {portletId, toSlot, newIndex});
         
         if (!csrfToken) {
             console.error('CSRF token not found!');
@@ -90,7 +89,6 @@ class PortletManager {
             values: {
                 csrfmiddlewaretoken: csrfToken,
                 portlet_id: portletId,
-                from_slot: fromSlot,
                 to_slot: toSlot,
                 new_index: newIndex,
             },

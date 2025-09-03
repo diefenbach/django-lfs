@@ -36,4 +36,24 @@
   padding-bottom: 100px;
 }
 
+.lfs-portlets .portlet-slot-empty {
+  min-height: 50px;
+  border: 1px dashed #aaa;
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.lfs-portlets .portlet-empty-info {
+  color: #6c757d;
+  font-size: 0.875rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
 /*# sourceMappingURL=lfs.manage.css.map */

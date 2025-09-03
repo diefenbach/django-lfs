@@ -245,7 +245,10 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
     try:
         pa = PortletAssignment.objects.get(pk=portletassignment_id)
     except PortletAssignment.DoesNotExist:
-        return ""
+        if request.headers.get("HX-Request"):
+            return HttpResponse("<div class='alert alert-danger'>Portlet not found.</div>")
+        else:
+            return HttpResponse("")
 
     if request.method == "POST":
         form = pa.portlet.form(prefix="portlet", data=request.POST)
@@ -256,25 +259,36 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
             pa.slot_id = request.POST.get("slot")
             pa.save()
 
-            html = [["#portlets", portlets_inline(request, pa.content)]]
+            # Always redirect to the portlets page after successful save
+            from django.contrib import messages
+            from django.shortcuts import redirect
+            from django.urls import reverse
 
-            result = json.dumps(
-                {"html": html, "close-dialog": True, "message": _("Portlet has been saved.")}, cls=LazyEncoder
-            )
+            messages.success(request, _("Portlet has been saved."))
+            return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": pa.content.id}))
         else:
-            html = [
-                [
-                    "#portlet-form-inline",
-                    render_to_string("manage/lfs_form.html", request=request, context={"form": form}),
-                ]
-            ]
+            # Form has errors, re-render the form
+            slots = []
+            for slot in Slot.objects.all():
+                slots.append(
+                    {
+                        "id": slot.id,
+                        "name": slot.name,
+                        "selected": slot.id == pa.slot.id,
+                    }
+                )
 
-            result = json.dumps(
-                {"html": html, "close-dialog": False, "message": _("Please correct errors and try again.")},
-                cls=LazyEncoder,
+            return render(
+                request,
+                template_name,
+                {
+                    "form": form,
+                    "portletassigment_id": pa.id,
+                    "slots": slots,
+                },
             )
-        return HttpResponse(result, content_type="application/json")
     else:
+        # GET request - show the form
         slots = []
         for slot in Slot.objects.all():
             slots.append(
@@ -286,6 +300,7 @@ def edit_portlet(request, portletassignment_id, template_name="manage/portlets/p
             )
 
         form = pa.portlet.form(prefix="portlet")
+
         return render(
             request,
             template_name,
@@ -350,7 +365,7 @@ def sort_portlets(request):
         dnd_portlet.slot_id = to_slot
         dnd_portlet.save()
 
-    # Get all portlets in the target slot ordered by position
+    # Get all portlets in the target slot ordered by position (excluding the dragged one)
     portlets_in_slot = list(
         PortletAssignment.objects.filter(
             content_type=dnd_portlet.content_type, content_id=dnd_portlet.content_id, slot_id=to_slot
@@ -359,13 +374,18 @@ def sort_portlets(request):
         .order_by("position")
     )
 
-    if new_index < len(portlets_in_slot):
-        new_position = portlets_in_slot[new_index].position
-        for portlet in portlets_in_slot[new_index:]:
+    if new_index == 1:
+        new_position = 10
+        for portlet in portlets_in_slot:
             portlet.position += 10
             portlet.save()
+    elif new_index > len(portlets_in_slot):
+        new_position = portlets_in_slot[-1].position + 10
     else:
-        new_position = (portlets_in_slot[-1].position + 10) if portlets_in_slot else 10
+        new_position = portlets_in_slot[new_index - 1].position
+        for portlet in portlets_in_slot[new_index - 1 :]:
+            portlet.position += 10
+            portlet.save()
 
     # Set the new position for the sorted portlet
     dnd_portlet.position = new_position
@@ -390,8 +410,10 @@ def update_portlet_positions(pa):
 
         None (as this is not called from outside)
     """
-    for i, pa in enumerate(
-        PortletAssignment.objects.filter(content_type=pa.content_type, content_id=pa.content_id, slot=pa.slot)
-    ):
-        pa.position = (i + 1) * 10
-        pa.save()
+    queryset = PortletAssignment.objects.filter(
+        content_type=pa.content_type, content_id=pa.content_id, slot=pa.slot
+    ).order_by("position")
+
+    for i, portlet in enumerate(queryset):
+        portlet.position = (i + 1) * 10
+        portlet.save()
