@@ -135,20 +135,17 @@ class PageDataView(PermissionRequiredMixin, PageTabMixin, UpdateView):
 
     def form_valid(self, form):
         """Saves and shows success message."""
-        response = super().form_valid(form)
-        messages.success(self.request, _("Page has been saved."))
-        return response
-
-    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Handles form submission and file deletion."""
-        if request.POST.get("delete_file"):
+        # Handle file deletion if checkbox is checked
+        if self.request.POST.get("delete_file"):
             page = self.get_object()
             if page.file:
                 page.file.delete()
-            messages.success(self.request, _("File has been deleted."))
-            return HttpResponseRedirect(reverse("lfs_manage_page", kwargs={"id": page.pk}))
+                page.file = None
+                page.save()
 
-        return super().post(request, *args, **kwargs)
+        response = super().form_valid(form)
+        messages.success(self.request, _("Page has been saved."))
+        return response
 
 
 class PageSEOView(PermissionRequiredMixin, PageTabMixin, UpdateView):

@@ -5,8 +5,8 @@
      aria-labelledby="data-tab">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form|crispy }}
-        <div class="buttons">
+        {{ form|crispy }}                
+        <div class="buttons mt-3">
             <button class="btn btn-primary" type="submit">
                 <i class="bi bi-save me-1"></i>
                 {% trans 'Save data' %}
