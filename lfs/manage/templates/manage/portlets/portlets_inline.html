@@ -47,34 +47,31 @@
                     {% trans 'Slot' %}: {% trans slot.name %}
                 </h6>
 
-                {% if slot.portlets %}
-                    <div class="portlet-slot" data-slot-id="{{ slot.id }}">
-                        {% for portlet in slot.portlets %}
-                            <div class="portlet-item d-flex justify-content-between align-items-center p-2 mb-1 border rounded bg-light text-dark" 
-                                 data-portlet-id="{{ portlet.pa_id }}"
-                                 style="cursor: pointer;">
-                                <div class="portlet-info">
-                                    <strong>{% trans portlet.type %}</strong> - {{ portlet.title }}
-                                </div>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn-outline-danger"
-                                       hx-get="{% url 'lfs_delete_portlet' portlet.pa_id %}"
-                                       hx-target="#modal-body-lg"
-                                       hx-trigger="click"
-                                       hx-swap="innerHTML"
-                                       title='{% trans "Delete" %}'>
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="alert alert-info">
+                <div class="portlet-slot" data-slot-id="{{ slot.id }}">
+                    <div class="portlet-empty-info d-none">
                         <i class="bi bi-info-circle me-2"></i>
-                        {% trans 'There are no portlets assigned' %}
+                        {% trans 'Portlets can be added here' %}
                     </div>
-                {% endif %}
+                    {% for portlet in slot.portlets %}
+                        <div class="portlet-item d-flex justify-content-between align-items-center p-2 mb-1 border rounded bg-light text-dark" 
+                             data-portlet-id="{{ portlet.pa_id }}"
+                             style="cursor: pointer;">
+                            <div class="portlet-info">
+                                <strong>{% trans portlet.type %}</strong> - {{ portlet.title }}
+                            </div>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a class="btn btn-outline-danger"
+                                   hx-get="{% url 'lfs_delete_portlet' portlet.pa_id %}"
+                                   hx-target="#modal-body-lg"
+                                   hx-trigger="click"
+                                   hx-swap="innerHTML"
+                                   title='{% trans "Delete" %}'>
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         {% endfor %}
     </div>
@@ -131,5 +128,24 @@
     }
     .portlet-item:active {
         cursor: grabbing;
+    }
+    .portlet-slot-empty {
+        min-height: 50px;
+        border: 1px dashed #aaa;
+        border-radius: 4px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+    .portlet-empty-info {
+        color: #6c757d;
+        font-size: 0.875rem;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
     }
 </style>
