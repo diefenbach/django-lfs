@@ -1,6 +1,8 @@
 {% load i18n %}
 
 <div class="lfs-portlets">
+
+
     {% if parent_for_portlets %}
         <div class="card mb-4">
             <div class="card-header">
@@ -44,7 +46,11 @@
             {% for slot in slots.items %}
                 <div class="mb-4">
                     <h6 class="text-muted mb-3">
-                        <i class="bi bi-layout-sidebar me-2"></i>
+                        {% if forloop.first %}  
+                            <i class="bi bi-layout-sidebar me-2"></i>
+                        {% else %}
+                            <i class="bi bi-layout-sidebar-reverse me-2"></i>
+                        {% endif %}
                         {% trans 'Slot' %}: {% trans slot.name %}
                     </h6>
 
@@ -58,7 +64,7 @@
                                 data-id="{{ portlet.pa_id }}"
                                 style="cursor: pointer;">
                                 <div class="row align-items-center">
-                                    <div class="col">
+                                    <div class="col-3">
                                         <span>{% trans portlet.type %}</span>
                                     </div>
                                     <div class="col">
