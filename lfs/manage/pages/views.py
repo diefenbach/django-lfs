@@ -145,8 +145,8 @@ class PageDataView(PermissionRequiredMixin, PageTabMixin, UpdateView):
             page = self.get_object()
             if page.file:
                 page.file.delete()
-                messages.success(self.request, _("File has been deleted."))
-            return HttpResponseRedirect(self.get_success_url())
+            messages.success(self.request, _("File has been deleted."))
+            return HttpResponseRedirect(reverse("lfs_manage_page", kwargs={"id": page.pk}))
 
         return super().post(request, *args, **kwargs)
 

@@ -28,6 +28,7 @@ from lfs.customer.models import Customer
 from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
 from lfs.addresses.models import Address
+from lfs.page.models import Page
 
 
 User = get_user_model()
@@ -468,3 +469,120 @@ def order_with_items(db, order):
     )
 
     return order
+
+
+# Page-related fixtures
+
+
+@pytest.fixture
+def root_page(db):
+    """Create the root page (id=1) for testing."""
+    return Page.objects.create(
+        id=1,
+        title="Root Page",
+        slug="root",
+        active=True,
+        position=1,
+        short_text="Root page short text",
+        body="Root page body content",
+        meta_title="<title>",
+        meta_description="Root page meta description",
+        meta_keywords="root, page, meta",
+    )
+
+
+@pytest.fixture
+def page(db):
+    """Sample Page for testing."""
+    return Page.objects.create(
+        title="Test Page",
+        slug="test-page",
+        active=True,
+        position=10,
+        short_text="Test page short text",
+        body="Test page body content",
+        meta_title="<title>",
+        meta_description="Test page meta description",
+        meta_keywords="test, page, meta",
+    )
+
+
+@pytest.fixture
+def regular_page(db):
+    """Sample regular Page (not root) for testing."""
+    # Ensure we don't get id=1 by creating with explicit id
+    return Page.objects.create(
+        id=2,  # Explicitly set id to avoid root page conflict
+        title="Regular Page",
+        slug="regular-page",
+        active=True,
+        position=15,
+        short_text="Regular page short text",
+        body="Regular page body content",
+        meta_title="<title>",
+        meta_description="Regular page meta description",
+        meta_keywords="regular, page, meta",
+    )
+
+
+@pytest.fixture
+def multiple_pages(db):
+    """Multiple Pages for list testing."""
+    pages = []
+    for i in range(3):
+        page = Page.objects.create(
+            title=f"Test Page {i+1}",
+            slug=f"test-page-{i+1}",
+            active=True,
+            position=(i + 1) * 10,
+            short_text=f"Test page {i+1} short text",
+            body=f"Test page {i+1} body content",
+            meta_title="<title>",
+            meta_description=f"Test page {i+1} meta description",
+            meta_keywords=f"test, page{i+1}, meta",
+        )
+        pages.append(page)
+    return pages
+
+
+@pytest.fixture
+def inactive_page(db):
+    """Inactive Page for testing."""
+    return Page.objects.create(
+        title="Inactive Page",
+        slug="inactive-page",
+        active=False,
+        position=20,
+        short_text="Inactive page short text",
+        body="Inactive page body content",
+        meta_title="<title>",
+        meta_description="Inactive page meta description",
+        meta_keywords="inactive, page, meta",
+    )
+
+
+@pytest.fixture
+def page_with_file(db, tmp_path):
+    """Page with attached file for testing."""
+    from django.core.files.uploadedfile import SimpleUploadedFile
+
+    # Create a temporary file
+    test_file = SimpleUploadedFile("test_file.txt", b"Test file content", content_type="text/plain")
+
+    page = Page.objects.create(
+        title="Page With File",
+        slug="page-with-file",
+        active=True,
+        position=30,
+        short_text="Page with file short text",
+        body="Page with file body content",
+        meta_title="<title>",
+        meta_description="Page with file meta description",
+        meta_keywords="page, file, meta",
+    )
+
+    # Attach the file
+    page.file = test_file
+    page.save()
+
+    return page
