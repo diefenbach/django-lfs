@@ -1,11 +1,12 @@
-"""
-Tests for refactored cart management views.
-"""
+from datetime import datetime, date
 
 from django.contrib.auth.models import User
 from django.urls import reverse
 
-from lfs.cart.models import Cart
+import pytest
+
+from lfs.cart.models import Cart, CartItem
+from lfs.catalog.models import Product
 from lfs.manage.carts.services import CartFilterService
 
 
@@ -31,57 +32,56 @@ class TestUtilityFunctions:
         result = self.service.parse_iso_date(None)
         assert result is None
 
-    def test_parse_iso_date_with_valid_iso_format(self):
+    @pytest.mark.parametrize(
+        "date_string,expected",
+        [
+            ("2023-01-01", date(2023, 1, 1)),
+            ("2023-12-31", date(2023, 12, 31)),
+            ("2000-02-29", date(2000, 2, 29)),
+            ("1999-06-15", date(1999, 6, 15)),
+            ("2024-03-08", date(2024, 3, 8)),
+        ],
+    )
+    def test_parse_iso_date_with_valid_iso_format(self, date_string, expected):
         """Test parse_iso_date correctly parses valid ISO format dates."""
-        from datetime import datetime, date as _date
-
         # Test various valid ISO dates
-        test_cases = [
-            ("2023-01-01", _date(2023, 1, 1)),
-            ("2023-12-31", _date(2023, 12, 31)),
-            ("2000-02-29", _date(2000, 2, 29)),  # Leap year
-            ("1999-06-15", _date(1999, 6, 15)),
-            ("2024-03-08", _date(2024, 3, 8)),
-        ]
+        result = self.service.parse_iso_date(date_string)
+        assert result == expected
 
-        for date_string, expected in test_cases:
-            result = self.service.parse_iso_date(date_string)
-            assert result == expected
-
-    def test_parse_iso_date_with_invalid_format(self):
-        """Test parse_iso_date returns None for invalid format."""
-        invalid_formats = [
+    @pytest.mark.parametrize(
+        "invalid_format",
+        [
             "invalid-date-format",
-            "2023/01/01",  # Wrong separator
-            "01-01-2023",  # Wrong order
-            "2023-13-01",  # Invalid month
-            "2023-01-32",  # Invalid day
-            "2023-00-01",  # Invalid month
-            "2023-01-00",  # Invalid day
-            "2023-02-30",  # Invalid day for February
-            "abc-def-ghi",  # Non-numeric
-            "2023-01-01T12:00:00",  # ISO datetime (not just date)
-            "2023-01-01 12:00:00",  # Space separator
-        ]
+            "2023/01/01",
+            "01-01-2023",
+            "2023-13-01",
+            "2023-01-32",
+            "2023-00-01",
+            "2023-01-00",
+            "2023-02-30",
+            "abc-def-ghi",
+            "2023-01-01T12:00:00",
+            "2023-01-01 12:00:00",
+        ],
+    )
+    def test_parse_iso_date_with_invalid_format(self, invalid_format):
+        """Test parse_iso_date returns None for invalid format."""
+        result = self.service.parse_iso_date(invalid_format)
+        assert result is None, f"Expected None for '{invalid_format}', got {result}"
 
-        for invalid_format in invalid_formats:
-            result = self.service.parse_iso_date(invalid_format)
-            assert result is None, f"Expected None for '{invalid_format}', got {result}"
-
-    def test_parse_iso_date_with_edge_case_years(self):
+    @pytest.mark.parametrize(
+        "date_string,expected",
+        [
+            ("1900-01-01", date(1900, 1, 1)),
+            ("9999-12-31", date(9999, 12, 31)),
+            ("0001-01-01", date(1, 1, 1)),
+        ],
+    )
+    def test_parse_iso_date_with_edge_case_years(self, date_string, expected):
         """Test parse_iso_date with edge case years."""
-        from datetime import datetime, date as _date
-
         # Test very old and very new years
-        test_cases = [
-            ("1900-01-01", _date(1900, 1, 1)),
-            ("9999-12-31", _date(9999, 12, 31)),
-            ("0001-01-01", _date(1, 1, 1)),
-        ]
-
-        for date_string, expected in test_cases:
-            result = self.service.parse_iso_date(date_string)
-            assert result == expected
+        result = self.service.parse_iso_date(date_string)
+        assert result == expected
 
     def test_format_iso_date_with_none(self):
         """Test format_iso_date returns empty string for None."""
@@ -93,50 +93,44 @@ class TestUtilityFunctions:
         result = self.service.format_iso_date("")
         assert result == ""
 
-    def test_format_iso_date_with_falsy_values(self):
+    @pytest.mark.parametrize("value", [None, "", 0, False, [], {}])
+    def test_format_iso_date_with_falsy_values(self, value):
         """Test format_iso_date returns empty string for falsy values."""
-        falsy_values = [None, "", 0, False, [], {}]
+        result = self.service.format_iso_date(value)
+        assert result == "", f"Expected empty string for {value}, got '{result}'"
 
-        for value in falsy_values:
-            result = self.service.format_iso_date(value)
-            assert result == "", f"Expected empty string for {value}, got '{result}'"
-
-    def test_format_iso_date_with_valid_datetime_objects(self):
-        """Test format_iso_date correctly formats valid datetime objects."""
-        from datetime import datetime
-
-        test_cases = [
+    @pytest.mark.parametrize(
+        "date_obj,expected",
+        [
             (datetime(2023, 1, 1), "2023-01-01"),
             (datetime(2023, 12, 31), "2023-12-31"),
-            (datetime(2000, 2, 29), "2000-02-29"),  # Leap year
+            (datetime(2000, 2, 29), "2000-02-29"),
             (datetime(1999, 6, 15), "1999-06-15"),
             (datetime(2024, 3, 8), "2024-03-08"),
             (datetime(1900, 1, 1), "1900-01-01"),
             (datetime(9999, 12, 31), "9999-12-31"),
-        ]
+        ],
+    )
+    def test_format_iso_date_with_valid_datetime_objects(self, date_obj, expected):
+        """Test format_iso_date correctly formats valid datetime objects."""
+        result = self.service.format_iso_date(date_obj)
+        assert result == expected, f"Expected '{expected}' for {date_obj}, got '{result}'"
 
-        for date_obj, expected in test_cases:
-            result = self.service.format_iso_date(date_obj)
-            assert result == expected, f"Expected '{expected}' for {date_obj}, got '{result}'"
-
-    def test_format_iso_date_with_datetime_objects_with_time(self):
-        """Test format_iso_date ignores time component and only formats date."""
-        from datetime import datetime
-
-        test_cases = [
+    @pytest.mark.parametrize(
+        "date_obj,expected",
+        [
             (datetime(2023, 1, 1, 12, 30, 45, 123456), "2023-01-01"),
             (datetime(2023, 12, 31, 23, 59, 59, 999999), "2023-12-31"),
             (datetime(2000, 2, 29, 0, 0, 0, 0), "2000-02-29"),
-        ]
-
-        for date_obj, expected in test_cases:
-            result = self.service.format_iso_date(date_obj)
-            assert result == expected, f"Expected '{expected}' for {date_obj}, got '{result}'"
+        ],
+    )
+    def test_format_iso_date_with_datetime_objects_with_time(self, date_obj, expected):
+        """Test format_iso_date ignores time component and only formats date."""
+        result = self.service.format_iso_date(date_obj)
+        assert result == expected, f"Expected '{expected}' for {date_obj}, got '{result}'"
 
     def test_format_iso_date_with_date_objects(self):
         """Test format_iso_date works with date objects (not just datetime)."""
-        from datetime import date
-
         test_cases = [
             (date(2023, 1, 1), "2023-01-01"),
             (date(2023, 12, 31), "2023-12-31"),
@@ -147,40 +141,30 @@ class TestUtilityFunctions:
             result = self.service.format_iso_date(date_obj)
             assert result == expected, f"Expected '{expected}' for {date_obj}, got '{result}'"
 
-    def test_round_trip_parsing_and_formatting(self):
-        """Test that parse_iso_date and format_iso_date work together correctly."""
-        from datetime import datetime
-
-        # Test round-trip: format -> parse -> format should give same result
-        test_dates = [
+    @pytest.mark.parametrize(
+        "original_date",
+        [
             datetime(2023, 1, 1),
             datetime(2023, 12, 31),
             datetime(2000, 2, 29),
             datetime(1999, 6, 15),
             datetime(2024, 3, 8),
-        ]
+        ],
+    )
+    def test_round_trip_parsing_and_formatting(self, original_date):
+        """Test that parse_iso_date and format_iso_date work together correctly."""
+        formatted = self.service.format_iso_date(original_date)
+        parsed = self.service.parse_iso_date(formatted)
+        reformatted = self.service.format_iso_date(parsed)
 
-        for original_date in test_dates:
-            # Format the date
-            formatted = self.service.format_iso_date(original_date)
-            # Parse it back
-            parsed = self.service.parse_iso_date(formatted)
-            # Format the parsed date
-            reformatted = self.service.format_iso_date(parsed)
-
-            # Should get the same string back
-            assert formatted == reformatted
-            # Parsed date is a date; compare to original date's date()
-            assert parsed == original_date.date()
+        assert formatted == reformatted
+        assert parsed == original_date.date()
 
     def test_parse_iso_date_preserves_timezone_naive_datetime(self):
         """Test that parse_iso_date returns timezone-naive datetime objects."""
         result = self.service.parse_iso_date("2023-01-01")
         assert result is not None
-        # Now returns a date object
-        from datetime import date as _date
-
-        assert isinstance(result, _date)
+        assert isinstance(result, date)
 
 
 class TestCartListView:
@@ -202,9 +186,6 @@ class TestCartListView:
 
     def test_cart_list_view_with_actual_cart_items(self, authenticated_client, test_carts):
         """Test CartListView processes actual cart items to hit lines 115-117."""
-        from lfs.catalog.models import Product
-        from lfs.cart.models import CartItem
-
         cart1, cart2 = test_carts
 
         # Create actual products and cart items to ensure lines 115-117 are executed
@@ -348,9 +329,6 @@ class TestCartDataView:
 
     def test_cart_data_view_with_actual_cart_items(self, authenticated_client, test_carts):
         """Test CartDataView processes actual cart items to hit lines 245-246."""
-        from lfs.catalog.models import Product
-        from lfs.cart.models import CartItem
-
         cart1, cart2 = test_carts
 
         # Create actual products and cart items to ensure lines 245-246 are executed

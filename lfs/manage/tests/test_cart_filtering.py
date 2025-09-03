@@ -1,5 +1,5 @@
 import pytest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from django.test import RequestFactory
 from django.utils import timezone
 
@@ -97,16 +97,13 @@ class TestCartFilterService:
         """Test parsing valid ISO date strings."""
         date_str = "2024-01-15"
         result = cart_filter_service.parse_iso_date(date_str)
-        from datetime import date as _date
-        assert result == _date(2024, 1, 15)
+        assert result == date(2024, 1, 15)
 
-    def test_parse_iso_date_invalid(self, cart_filter_service):
-        """Test parsing invalid date strings."""
-        invalid_dates = ["", "invalid", "2024-13-45", None]
-
-        for date_str in invalid_dates:
-            result = cart_filter_service.parse_iso_date(date_str)
-            assert result is None
+    @pytest.mark.parametrize("date_str", ["", "invalid", "2024-13-45", None])
+    def test_parse_iso_date_invalid(self, cart_filter_service, date_str):
+        """Test parsing invalid date strings (parametrized)."""
+        result = cart_filter_service.parse_iso_date(date_str)
+        assert result is None
 
     def test_format_iso_date_valid(self, cart_filter_service):
         """Test formatting valid datetime objects."""

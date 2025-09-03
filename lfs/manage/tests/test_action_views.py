@@ -496,7 +496,7 @@ class TestUpdatePositionsHelper:
         """Should set sequential positions (10, 20, 30, ...) for all actions in their groups."""
         # Mess up the positions first
         for i, action in enumerate(multiple_actions):
-            action.position = 999 - i  # Reverse order
+            action.position = 999 - i
             action.save()
 
         _update_positions()

@@ -12,10 +12,12 @@ import json
 import pytest
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, QueryDict
 from django.contrib.contenttypes.models import ContentType
 
 from portlets.models import PortletAssignment, PortletBlocking
+from portlets.example.models import TextPortlet
+
 from lfs.page.models import Page
 from lfs.manage.views.lfs_portlets import (
     PortletsInlineView,
@@ -25,6 +27,7 @@ from lfs.manage.views.lfs_portlets import (
     EditPortletView,
     MovePortletView,
     SortPortletsView,
+    update_portlet_positions,
 )
 
 User = get_user_model()
@@ -127,8 +130,6 @@ class TestUpdatePortletsView:
 
     def test_post_updates_portlet_blocking(self, page, authenticated_request, slot, monkeypatch):
         """Should update portlet blocking settings."""
-        from django.http import QueryDict
-
         request = authenticated_request()
         request.method = "POST"
         request.POST = QueryDict("block_slot=" + str(slot.id))
@@ -152,8 +153,6 @@ class TestUpdatePortletsView:
 
     def test_post_removes_unchecked_blocking(self, page, authenticated_request, slot):
         """Should remove blocking for unchecked slots."""
-        from django.http import QueryDict
-
         request = authenticated_request()
         request.method = "POST"
         request.POST = QueryDict()  # No slots checked
@@ -174,8 +173,6 @@ class TestUpdatePortletsView:
 
     def test_post_ajax_request_returns_json(self, page, authenticated_request, slot, monkeypatch):
         """Should return JSON response for AJAX requests."""
-        from django.http import QueryDict
-
         request = authenticated_request()
         request.method = "POST"
         request.POST = QueryDict("block_slot=" + str(slot.id))
@@ -201,8 +198,6 @@ class TestUpdatePortletsView:
 
     def test_post_regular_request_redirects(self, page, authenticated_request, slot, monkeypatch):
         """Should redirect for regular form submissions."""
-        from django.http import QueryDict
-
         request = authenticated_request()
         request.method = "POST"
         request.POST = QueryDict("block_slot=" + str(slot.id))
@@ -302,8 +297,6 @@ class TestAddPortletView:
 
     def test_post_with_invalid_form_rerenders_form(self, page, authenticated_request, monkeypatch):
         """Should re-render form when validation fails."""
-        from django.http import QueryDict
-
         request = authenticated_request()
         request.method = "POST"
         request.POST = QueryDict("portlet_type=textportlet&slot=1")
@@ -345,8 +338,6 @@ class TestAddPortletView:
 
     def test_post_with_valid_form_creates_portlet(self, page, authenticated_request, slot, monkeypatch):
         """Should create portlet when form is valid."""
-        from django.http import QueryDict
-
         request = authenticated_request()
         request.method = "POST"
         request.POST = QueryDict(f"portlet_type=textportlet&slot={slot.id}")
@@ -551,8 +542,6 @@ class TestEditPortletView:
 
     def test_post_with_valid_form_saves_and_redirects(self, portlet_assignment, authenticated_request, monkeypatch):
         """Should save changes and redirect when form is valid."""
-        from django.http import QueryDict
-
         request = authenticated_request()
         request.method = "POST"
         request.POST = QueryDict("slot=1")
@@ -611,8 +600,6 @@ class TestEditPortletView:
 
     def test_post_with_invalid_form_rerenders_form(self, portlet_assignment, authenticated_request, monkeypatch):
         """Should re-render form when validation fails."""
-        from django.http import QueryDict
-
         request = authenticated_request()
         request.method = "POST"
         request.POST = QueryDict("slot=1")
@@ -782,8 +769,6 @@ class TestSortPortletsView:
 
     def test_post_sorts_portlets_correctly(self, portlet_assignment, authenticated_request, slot):
         """Should sort portlets after drag and drop."""
-        from django.http import QueryDict
-
         request = authenticated_request()
         request.method = "POST"
         request.POST = QueryDict(f"portlet_id={portlet_assignment.id}&to_slot={slot.id}&new_index=1")
@@ -797,8 +782,6 @@ class TestSortPortletsView:
 
     def test_post_updates_slot_when_changed(self, portlet_assignment, multiple_slots, authenticated_request):
         """Should update slot when portlet is moved to different slot."""
-        from django.http import QueryDict
-
         # Use a different slot than the one the portlet is currently in
         target_slot = multiple_slots[1] if multiple_slots[1].id != portlet_assignment.slot_id else multiple_slots[0]
 
@@ -817,8 +800,6 @@ class TestSortPortletsView:
 
     def test_post_handles_first_position(self, portlet_assignment, authenticated_request):
         """Should handle moving portlet to first position."""
-        from django.http import QueryDict
-
         request = authenticated_request()
         request.method = "POST"
         request.POST = QueryDict(f"portlet_id={portlet_assignment.id}&to_slot={portlet_assignment.slot_id}&new_index=1")
@@ -830,12 +811,7 @@ class TestSortPortletsView:
         assert portlet_assignment.position == 10
 
     def test_post_handles_last_position(self, page, slot, authenticated_request, shop_for_portlets):
-        """Should handle moving portlet to last position."""
-        from django.http import QueryDict
-        from portlets.example.models import TextPortlet
-        from portlets.models import PortletAssignment
-
-        # Create multiple portlets in the same slot
+        """Should handle moving portlet to last position."""  # Create multiple portlets in the same slot
         portlets = []
         assignments = []
         for i in range(3):
@@ -866,49 +842,49 @@ class TestSortPortletsView:
 class TestPortletViewsIntegration:
     """Integration tests for Portlet views."""
 
-    def test_portlet_crud_workflow(self, page, authenticated_client, slot):
+    @pytest.mark.parametrize(
+        "url_name",
+        [
+            "lfs_add_portlet",
+            "lfs_update_portlets",
+            "lfs_sort_portlets",
+        ],
+    )
+    def test_portlet_crud_workflow(self, page, authenticated_client, slot, url_name):
         """Should support complete CRUD workflow for portlets."""
-        # This would be a more complex integration test
-        # For now, we'll test that the URLs are accessible
-        urls_to_test = [
-            reverse(
-                "lfs_add_portlet",
+        if url_name in ("lfs_add_portlet", "lfs_update_portlets"):
+            url = reverse(
+                url_name,
                 kwargs={"object_type_id": ContentType.objects.get_for_model(page).id, "object_id": page.id},
-            ),
-            reverse(
-                "lfs_update_portlets",
-                kwargs={"object_type_id": ContentType.objects.get_for_model(page).id, "object_id": page.id},
-            ),
-            reverse("lfs_sort_portlets"),
-        ]
+            )
+        else:
+            url = reverse(url_name)
+        response = authenticated_client.get(url)
+        assert response.status_code != 404
 
-        for url in urls_to_test:
-            response = authenticated_client.get(url)
-            # Should not return 404 (might be 405 for POST-only endpoints)
-            assert response.status_code != 404
-
-    def test_permission_required_for_all_views(self, client):
+    @pytest.mark.parametrize(
+        "url_name,extra_kwargs",
+        [
+            ("lfs_add_portlet", {"needs_obj": True}),
+            ("lfs_update_portlets", {"needs_obj": True}),
+            ("lfs_delete_portlet", {"portletassignment_id": 1}),
+            ("lfs_edit_portlet", {"portletassignment_id": 1}),
+            ("lfs_move_portlet", {"portletassignment_id": 1}),
+            ("lfs_sort_portlets", {}),
+        ],
+    )
+    def test_permission_required_for_all_views(self, client, url_name, extra_kwargs):
         """Should require authentication for all portlet views."""
         page = Page.objects.create(title="Test Page", slug="test-page")
-
-        urls_to_test = [
-            reverse(
-                "lfs_add_portlet",
+        if extra_kwargs.get("needs_obj"):
+            url = reverse(
+                url_name,
                 kwargs={"object_type_id": ContentType.objects.get_for_model(page).id, "object_id": page.id},
-            ),
-            reverse(
-                "lfs_update_portlets",
-                kwargs={"object_type_id": ContentType.objects.get_for_model(page).id, "object_id": page.id},
-            ),
-            reverse("lfs_delete_portlet", kwargs={"portletassignment_id": 1}),
-            reverse("lfs_edit_portlet", kwargs={"portletassignment_id": 1}),
-            reverse("lfs_move_portlet", kwargs={"portletassignment_id": 1}),
-            reverse("lfs_sort_portlets"),
-        ]
-
-        for url in urls_to_test:
-            response = client.get(url)
-            assert response.status_code in [302, 403]  # Redirect to login or forbidden
+            )
+        else:
+            url = reverse(url_name, kwargs={k: v for k, v in extra_kwargs.items() if k != "needs_obj"})
+        response = client.get(url)
+        assert response.status_code in [302, 403]
 
 
 # =============================================================================
@@ -923,8 +899,6 @@ class TestUpdatePortletPositions:
 
     def test_update_portlet_positions_reorders_correctly(self, page, slot, shop_for_portlets):
         """Should reorder portlet positions correctly."""
-        from portlets.example.models import TextPortlet
-        from portlets.models import PortletAssignment
 
         # Create multiple portlets in the same slot
         assignments = []
@@ -942,8 +916,6 @@ class TestUpdatePortletPositions:
         for assignment in assignments:
             assignment.save()
 
-        from lfs.manage.views.lfs_portlets import update_portlet_positions
-
         update_portlet_positions(assignments[0])
 
         # Refresh from database and get assignments in position order
@@ -960,8 +932,6 @@ class TestUpdatePortletPositions:
         portlet_assignment.position = 999
         portlet_assignment.save()
 
-        from lfs.manage.views.lfs_portlets import update_portlet_positions
-
         update_portlet_positions(portlet_assignment)
 
         portlet_assignment.refresh_from_db()
@@ -969,7 +939,6 @@ class TestUpdatePortletPositions:
 
     def test_update_portlet_positions_handles_empty_slot(self, page, slot):
         """Should handle empty slot without errors."""
-        from lfs.manage.views.lfs_portlets import update_portlet_positions
 
         # Create a mock PortletAssignment-like object
         class MockPA:
@@ -1056,7 +1025,6 @@ class TestPortletViewsEdgeCases:
 
     def test_sort_portlets_with_invalid_data(self, authenticated_request):
         """Should handle invalid POST data gracefully."""
-        from django.http import QueryDict
 
         request = authenticated_request()
         request.method = "POST"
@@ -1070,7 +1038,6 @@ class TestPortletViewsEdgeCases:
 
     def test_update_portlets_with_invalid_object_id(self, authenticated_request, monkeypatch):
         """Should handle invalid object ID gracefully."""
-        from django.http import QueryDict
 
         request = authenticated_request()
         request.method = "POST"
@@ -1141,7 +1108,6 @@ class TestPortletViewsPermissions:
 
     def test_update_portlets_requires_permission(self, page, request_factory, regular_user, slot):
         """Should require manage_shop permission."""
-        from django.http import QueryDict
 
         request = request_factory.post("/", QueryDict(f"block_slot={slot.id}"))
         request.user = regular_user
@@ -1193,7 +1159,6 @@ class TestPortletViewsPermissions:
 
     def test_sort_portlets_requires_permission(self, portlet_assignment, request_factory, regular_user, slot):
         """Should require manage_shop permission."""
-        from django.http import QueryDict
 
         request = request_factory.post(
             "/", QueryDict(f"portlet_id={portlet_assignment.id}&to_slot={slot.id}&new_index=1")

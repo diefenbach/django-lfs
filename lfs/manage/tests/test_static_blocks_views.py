@@ -9,20 +9,22 @@ Following TDD principles:
 """
 
 import pytest
-from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import Http404
+from django.test import RequestFactory
+from django.urls import NoReverseMatch, reverse
 
-from lfs.catalog.models import StaticBlock
+from lfs.catalog.models import File, StaticBlock
 from lfs.manage.static_blocks.views import (
-    StaticBlockDataView,
-    StaticBlockFilesView,
-    StaticBlockTabMixin,
-    StaticBlockCreateView,
     ManageStaticBlocksView,
+    StaticBlockCreateView,
+    StaticBlockDataView,
     StaticBlockDeleteView,
+    StaticBlockFilesView,
     StaticBlockPreviewView,
+    StaticBlockTabMixin,
 )
 
 User = get_user_model()
@@ -77,8 +79,6 @@ class TestStaticBlockTabMixin:
 
     def test_get_static_blocks_queryset_without_search(self, rf):
         """Should return all static blocks when no search query provided."""
-        from lfs.catalog.models import StaticBlock
-
         # Create test static blocks
         sb1 = StaticBlock.objects.create(name="Test Block 1", html="<p>Test 1</p>")
         sb2 = StaticBlock.objects.create(name="Another Block", html="<p>Test 2</p>")
@@ -94,8 +94,6 @@ class TestStaticBlockTabMixin:
 
     def test_get_static_blocks_queryset_with_search(self, rf):
         """Should return filtered static blocks when search query provided."""
-        from lfs.catalog.models import StaticBlock
-
         # Create test static blocks
         sb1 = StaticBlock.objects.create(name="Test Block", html="<p>Test 1</p>")
         sb2 = StaticBlock.objects.create(name="Another Block", html="<p>Test 2</p>")
@@ -369,8 +367,6 @@ class TestStaticBlockViewIntegration:
     def test_static_block_files_url_exists_and_resolves(self):
         """The lfs_manage_static_block_files URL should exist and be resolvable."""
         # RED: This test would fail if the URL doesn't exist
-        from django.urls import reverse, NoReverseMatch
-
         # Should not raise NoReverseMatch
         try:
             url = reverse("lfs_manage_static_block_files", args=[1])
@@ -382,8 +378,6 @@ class TestStaticBlockViewIntegration:
     def test_update_files_sb_url_exists_and_resolves(self):
         """The lfs_manage_update_files_sb URL should exist for legacy template compatibility."""
         # RED: This test should FAIL initially due to missing lfs_manage_update_files_sb URL
-        from django.urls import reverse, NoReverseMatch
-
         # Should not raise NoReverseMatch - used in files-list.html template
         try:
             url = reverse("lfs_manage_update_files_sb", args=[1])
@@ -396,11 +390,6 @@ class TestStaticBlockViewIntegration:
     def test_file_upload_redirects_to_files_tab_not_json(self, authenticated_request, static_block, monkeypatch):
         """File upload should redirect to files tab, not return JSON."""
         # RED: This test should FAIL initially because current code returns JSON
-        from django.core.files.uploadedfile import SimpleUploadedFile
-        from django.test import RequestFactory
-        from django.contrib.auth import get_user_model
-
-        User = get_user_model()
         user = User.objects.create_user(username="testuser", password="testpass")
         user.is_superuser = True
         user.save()
@@ -459,11 +448,6 @@ class TestStaticBlockViewIntegration:
     def test_file_update_saves_changes_and_redirects(self, authenticated_request, static_block, monkeypatch):
         """File update should save changes and redirect, not return JSON."""
         # RED: This test should FAIL initially because update action is not processed correctly
-        from django.core.files.uploadedfile import SimpleUploadedFile
-        from django.test import RequestFactory
-        from django.contrib.auth import get_user_model
-
-        User = get_user_model()
         user = User.objects.create_user(username="testuser2", password="testpass")
         user.is_superuser = True
         user.save()
@@ -475,8 +459,6 @@ class TestStaticBlockViewIntegration:
         monkeypatch.setattr("lfs.manage.static_blocks.views.messages.success", mock_messages_success)
 
         # Create a file for the static block first
-        from lfs.catalog.models import File
-
         uploaded_file = SimpleUploadedFile("test.png", b"content", content_type="image/png")
         file = File.objects.create(content=static_block, title="Original Title")
         file.file.save("test.png", uploaded_file, save=True)
@@ -656,8 +638,6 @@ class TestStaticBlockCreateView:
 
     def test_post_creates_new_static_block(self, request_factory, manage_user, monkeypatch):
         """Test that POST request creates a new static block."""
-        from lfs.catalog.models import StaticBlock
-
         # Mock messages framework
         monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
 
@@ -678,8 +658,6 @@ class TestStaticBlockCreateView:
 
     def test_post_sets_empty_html_when_none_provided(self, request_factory, manage_user, monkeypatch):
         """Test that POST sets empty HTML when none provided."""
-        from lfs.catalog.models import StaticBlock
-
         # Mock messages framework
         monkeypatch.setattr("django.contrib.messages.success", lambda request, message: None)
 
@@ -732,9 +710,6 @@ class TestStaticBlockCreateView:
 
     def test_form_validation_error_returns_form_response(self, request_factory, manage_user):
         """Test that form validation errors are properly handled."""
-
-        from lfs.catalog.models import StaticBlock
-
         initial_count = StaticBlock.objects.count()
 
         # Submit form without required name field
