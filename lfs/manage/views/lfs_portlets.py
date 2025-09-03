@@ -63,11 +63,26 @@ def update_portlets(request, object_type_id, object_id):
     for slot in Slot.objects.filter(id__in=blocked_slots):
         PortletBlocking.objects.get_or_create(slot=slot, content_type_id=object_type_id, content_id=object_id)
 
-    result = json.dumps(
-        {"html": [["#portlets", portlets_inline(request, obj)]], "message": _("Portlet has been updated.")},
-        cls=LazyEncoder,
-    )
-    return HttpResponse(result, content_type="application/json")
+    # Check if this is an AJAX request
+    if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+        result = json.dumps(
+            {"html": [["#portlets", portlets_inline(request, obj)]], "message": _("Portlet has been updated.")},
+            cls=LazyEncoder,
+        )
+        return HttpResponse(result, content_type="application/json")
+    else:
+        # Regular form submission - redirect back to the portlets page
+        from django.contrib import messages
+        from django.shortcuts import redirect
+        from django.urls import reverse
+
+        messages.success(request, _("Portlet has been updated."))
+
+        # Determine the correct redirect URL based on object type
+        if hasattr(obj, "id") and obj.id == 1:  # Root page
+            return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": obj.id}))
+        else:
+            return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": obj.id}))
 
 
 @permission_required("core.manage_shop")

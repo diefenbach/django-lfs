@@ -9,6 +9,7 @@
             <form class="portlets-form"
                   action="{% url 'lfs_update_portlets' object_type_id object.id %}"
                   method="post">
+                {% csrf_token %}
                 {% for slot in slots.items %}
                     <div class="form-check mb-2">
                         <input type="checkbox"
@@ -24,7 +25,7 @@
                 {% endfor %}
 
                 <div class="mt-3">
-                    <button type="submit" class="btn btn-primary ajax-save-button">
+                    <button type="submit" class="btn btn-primary">
                         <i class="bi bi-save me-1"></i>
                         {% trans 'Save blocked parent slots' %}
                     </button>
