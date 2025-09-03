@@ -25,7 +25,7 @@
                 </div>
                 <div id="pages-list" hx-swap-oob="true">
                     <div class="top-page mb-2">
-                        <a href="{% url 'lfs_manage_page' 1 %}{% if search_query %}?q={{ search_query }}{% endif %}"
+                        <a href="{% url 'lfs_manage_page_portlets' 1 %}{% if search_query %}?q={{ search_query }}{% endif %}"
                            class="d-block p-2 mb-1 border rounded text-decoration-none {% if page.id == 1 %}bg-primary text-white{% else %}bg-light text-dark{% endif %}">
                             {{ root.title }}
                         </a>

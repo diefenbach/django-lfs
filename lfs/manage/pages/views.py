@@ -68,8 +68,6 @@ class PageTabMixin:
         """Creates tab navigation URLs with search parameter."""
         search_query = self.request.GET.get("q", "").strip()
 
-        data_url = reverse("lfs_manage_page", args=[page.pk])
-        seo_url = reverse("lfs_manage_page_seo", args=[page.pk])
         portlets_url = reverse("lfs_manage_page_portlets", args=[page.pk])
 
         # Add search parameter if present
@@ -77,19 +75,32 @@ class PageTabMixin:
             from urllib.parse import urlencode
 
             query_params = urlencode({"q": search_query})
-            data_url += "?" + query_params
-            seo_url += "?" + query_params
             portlets_url += "?" + query_params
 
         tabs = []
-        if page.id != 1:
+
+        # For root page (id=1), only show portlets tab
+        if page.id == 1:
+            tabs.append(("portlets", portlets_url))
+        else:
+            # For other pages, show data, seo, and portlets tabs
+            data_url = reverse("lfs_manage_page", args=[page.pk])
+            seo_url = reverse("lfs_manage_page_seo", args=[page.pk])
+
+            if search_query:
+                from urllib.parse import urlencode
+
+                query_params = urlencode({"q": search_query})
+                data_url += "?" + query_params
+                seo_url += "?" + query_params
+
             tabs.extend(
                 [
                     ("data", data_url),
                     ("seo", seo_url),
+                    ("portlets", portlets_url),
                 ]
             )
-        tabs.append(("portlets", portlets_url))
 
         return tabs
 
@@ -111,6 +122,12 @@ class PageDataView(PermissionRequiredMixin, PageTabMixin, UpdateView):
     tab_name = "data"
     pk_url_kwarg = "id"
     permission_required = "core.manage_shop"
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Redirects root page to portlets tab."""
+        if self.kwargs["id"] == "1":
+            return HttpResponseRedirect(reverse("lfs_manage_page_portlets", kwargs={"id": "1"}))
+        return super().get(request, *args, **kwargs)
 
     def get_success_url(self) -> str:
         """Stays on the data tab after successful save."""
