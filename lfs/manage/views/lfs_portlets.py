@@ -96,13 +96,7 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
 
     # Check if portlet_type is empty
     if not portlet_type:
-        if request.headers.get("HX-Request"):
-            return HttpResponse("<div class='alert alert-warning'>Please select a portlet type.</div>")
-        else:
-            return HttpResponse(
-                json.dumps({"html": "<div class='alert alert-warning'>Please select a portlet type.</div>"}),
-                content_type="application/json",
-            )
+        return HttpResponse("<div class='alert alert-warning'>Please select a portlet type.</div>")
 
     if request.method == "POST":
         try:
@@ -122,51 +116,36 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
 
                 update_portlet_positions(pa)
 
-                # Check if this is an HTMX request (for modal)
-                if request.headers.get("HX-Request"):
-                    html = [["#portlets", portlets_inline(request, obj)]]
-                    result = json.dumps(
-                        {"html": html, "close-dialog": True, "message": _("Portlet has been added.")}, cls=LazyEncoder
-                    )
-                else:
-                    # Regular form submission - redirect back to the portlets page
-                    from django.contrib import messages
-                    from django.shortcuts import redirect
-                    from django.urls import reverse
+                from django.contrib import messages
+                from django.shortcuts import redirect
+                from django.urls import reverse
 
-                    messages.success(request, _("Portlet has been added."))
-                    return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": obj.id}))
+                messages.success(request, _("Portlet has been added."))
+                return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": obj.id}))
             else:
-                # Check if this is an HTMX request (for modal)
-                if request.headers.get("HX-Request"):
-                    html = [
-                        [
-                            "#portlet-form-inline",
-                            render_to_string("manage/lfs_form.html", request=request, context={"form": form}),
-                        ]
-                    ]
-                    result = json.dumps(
-                        {"html": html, "close-dialog": False, "message": _("Please correct errors and try again.")},
-                        cls=LazyEncoder,
-                    )
-                else:
-                    # Regular form submission with errors - redirect back to the portlets page
-                    from django.contrib import messages
-                    from django.shortcuts import redirect
-                    from django.urls import reverse
+                # Form has errors, re-render the form
+                try:
+                    portlet_registration = PortletRegistration.objects.get(type=portlet_type)
+                    portlet_type_name = portlet_registration.name
+                except PortletRegistration.DoesNotExist:
+                    portlet_type_name = portlet_type
 
-                    messages.error(request, _("Please correct errors and try again."))
-                    return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": obj.id}))
-
-            return HttpResponse(result, content_type="application/json")
+                return render(
+                    request,
+                    template_name,
+                    {
+                        "form": form,
+                        "object_id": object_id,
+                        "object_type_id": object_ct.id,
+                        "portlet_type": portlet_type,
+                        "portlet_type_name": portlet_type_name,
+                        "slots": Slot.objects.all(),
+                    },
+                )
 
         except ContentType.DoesNotExist:
             # Handle invalid portlet type
-            result = json.dumps(
-                {"html": [], "close-dialog": False, "message": _("Invalid portlet type.")},
-                cls=LazyEncoder,
-            )
-            return HttpResponse(result, content_type="application/json")
+            return HttpResponse("<div class='alert alert-danger'>Invalid portlet type.</div>")
     else:
         try:
             portlet_ct_queryset = ContentType.objects.filter(model=portlet_type.lower())
@@ -184,46 +163,22 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
             except PortletRegistration.DoesNotExist:
                 portlet_type_name = portlet_type
 
-            # Check if this is an HTMX request (for modal)
-            if request.headers.get("HX-Request"):
-                result = render_to_string(
-                    template_name,
-                    request=request,
-                    context={
-                        "form": form,
-                        "object_id": object_id,
-                        "object_type_id": object_ct.id,
-                        "portlet_type": portlet_type,
-                        "portlet_type_name": portlet_type_name,
-                        "slots": Slot.objects.all(),
-                    },
-                )
-                return HttpResponse(result)
-            else:
-                # Legacy JSON response for non-HTMX requests
-                result = render_to_string(
-                    template_name,
-                    request=request,
-                    context={
-                        "form": form,
-                        "object_id": object_id,
-                        "object_type_id": object_ct.id,
-                        "portlet_type": portlet_type,
-                        "portlet_type_name": portlet_type_name,
-                        "slots": Slot.objects.all(),
-                    },
-                )
-                return HttpResponse(json.dumps({"html": result}), content_type="application/json")
+            return render(
+                request,
+                template_name,
+                {
+                    "form": form,
+                    "object_id": object_id,
+                    "object_type_id": object_ct.id,
+                    "portlet_type": portlet_type,
+                    "portlet_type_name": portlet_type_name,
+                    "slots": Slot.objects.all(),
+                },
+            )
 
         except ContentType.DoesNotExist:
             # Handle invalid portlet type
-            if request.headers.get("HX-Request"):
-                return HttpResponse("<div class='alert alert-danger'>Invalid portlet type.</div>")
-            else:
-                return HttpResponse(
-                    json.dumps({"html": "<div class='alert alert-danger'>Invalid portlet type.</div>"}),
-                    content_type="application/json",
-                )
+            return HttpResponse("<div class='alert alert-danger'>Invalid portlet type.</div>")
 
 
 @permission_required("core.manage_shop")

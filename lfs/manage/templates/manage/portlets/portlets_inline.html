@@ -63,7 +63,7 @@
                                         href="{% url 'lfs_edit_portlet' portlet.pa_id %}"
                                         style="cursor: pointer;">
                                         <td>
-                                            <span class="badge bg-secondary">{% trans portlet.type %}</span>
+                                            <span>{% trans portlet.type %}</span>
                                         </td>
                                         <td>{{ portlet.title }}</td>
                                         <td class="text-end">
@@ -115,7 +115,11 @@
     <div class="card-body">
         <form class="portlet-add-form"
               action="{% url 'lfs_add_portlet' object_type_id object.id %}"
-              method="get">
+              method="get"
+              hx-get="{% url 'lfs_add_portlet' object_type_id object.id %}"
+              hx-target="#modal-body-lg"
+              hx-trigger="submit"
+              hx-swap="innerHTML">
             <div class="row g-3 align-items-end">
                 <div class="col-md-8">
                     <label for="portlet_type" class="form-label">{% trans 'Portlet Type' %}</label>
@@ -129,13 +133,8 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <button type="button" 
-                            class="btn btn-primary portlet-add-button w-100"
-                            hx-get="{% url 'lfs_add_portlet' object_type_id object.id %}"
-                            hx-target="#modal-body-lg"
-                            hx-trigger="click"
-                            hx-swap="innerHTML"
-                            hx-include="[name='portlet_type']">
+                    <button type="submit" 
+                            class="btn btn-primary portlet-add-button w-100">
                         <i class="bi bi-plus-circle me-1"></i>
                         {% trans 'Add portlet' %}
                     </button>
