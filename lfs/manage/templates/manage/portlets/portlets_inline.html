@@ -54,29 +54,36 @@
                             {% trans 'Portlets can be added here' %}
                         </div>
                         {% for portlet in slot.portlets %}
-                            <div class="portlet-item d-flex justify-content-between align-items-center p-2 mb-1 border rounded bg-light text-dark" 
+                            <div class="portlet-item p-2 mb-1 border rounded bg-light text-dark" 
                                 data-id="{{ portlet.pa_id }}"
                                 style="cursor: pointer;">
-                                <div class="portlet-info">
-                                    <strong>{% trans portlet.type %}</strong> - {{ portlet.title }} 
-                                </div>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn-outline-primary"
-                                    hx-get="{% url 'lfs_edit_portlet' portlet.pa_id %}"
-                                    hx-target="#modal-body-lg"
-                                    hx-trigger="click"
-                                    hx-swap="innerHTML"
-                                    title='{% trans "Edit" %}'>
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <a class="btn btn-outline-danger"
-                                    hx-get="{% url 'lfs_delete_portlet' portlet.pa_id %}"
-                                    hx-target="#modal-body-lg"
-                                    hx-trigger="click"
-                                    hx-swap="innerHTML"
-                                    title='{% trans "Delete" %}'>
-                                        <i class="bi bi-trash"></i>
-                                    </a>
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <span>{% trans portlet.type %}</span>
+                                    </div>
+                                    <div class="col">
+                                        <span>{% trans portlet.title %}</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a class="btn btn-outline-primary"
+                                            hx-get="{% url 'lfs_edit_portlet' portlet.pa_id %}"
+                                            hx-target="#modal-body-lg"
+                                            hx-trigger="click"
+                                            hx-swap="innerHTML"
+                                            title='{% trans "Edit" %}'>
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a class="btn btn-outline-danger"
+                                            hx-get="{% url 'lfs_delete_portlet' portlet.pa_id %}"
+                                            hx-target="#modal-body-lg"
+                                            hx-trigger="click"
+                                            hx-swap="innerHTML"
+                                            title='{% trans "Delete" %}'>
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         {% endfor %}

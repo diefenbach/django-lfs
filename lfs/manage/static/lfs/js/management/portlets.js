@@ -36,22 +36,13 @@ class PortletManager {
         document.querySelectorAll('.portlet-slot').forEach((slotEl) => {
             if (slotEl.getAttribute('data-sortable-initialized')) return;
             
-            console.log('Initializing portlet slot:', slotEl.dataset.list);
-            
             // Initial state
             this.updateSlotEmptyState(slotEl);
             
             Sortable.create(slotEl, {
                 draggable: '.portlet-item',
                 group: 'portlets',
-                animation: 150,
-                ghostClass: 'portlet-ghost',
-                chosenClass: 'portlet-chosen',
-                dragClass: 'portlet-drag',
-                emptyInsertThreshold: 5,
-                onStart: (evt) => {
-                    console.log('Drag started:', evt.item.dataset.id);
-                },
+
                 onChange: (evt) => {
                     // Update empty state when items are added/removed
                     this.updateSlotEmptyState(evt.to);
@@ -73,15 +64,11 @@ class PortletManager {
         const newIndex = evt.newIndex;
         const csrfToken = this.getCSRFToken();
         
-        console.log('Drag ended:', {portletId, toSlot, newIndex});
-        
         if (!csrfToken) {
-            console.error('CSRF token not found!');
             return;
         }
         
         if (!window.LFS_SORT_PORTLETS_URL) {
-            console.error('LFS_SORT_PORTLETS_URL not found!');
             return;
         }
         
