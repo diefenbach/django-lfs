@@ -7,7 +7,6 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_POST
 
 # portlets imports
 import portlets.utils
@@ -95,9 +94,23 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
     # Get the portlet type
     portlet_type = (request.POST if request.method == "POST" else request.GET).get("portlet_type", "")
 
+    # Check if portlet_type is empty
+    if not portlet_type:
+        if request.headers.get("HX-Request"):
+            return HttpResponse("<div class='alert alert-warning'>Please select a portlet type.</div>")
+        else:
+            return HttpResponse(
+                json.dumps({"html": "<div class='alert alert-warning'>Please select a portlet type.</div>"}),
+                content_type="application/json",
+            )
+
     if request.method == "POST":
         try:
-            ct = ContentType.objects.filter(model=portlet_type.lower())[0]
+            ct_queryset = ContentType.objects.filter(model=portlet_type.lower())
+            if not ct_queryset.exists():
+                raise ContentType.DoesNotExist()
+
+            ct = ct_queryset[0]
             mc = ct.model_class()
             form = mc().form(prefix="portlet", data=request.POST)
 
@@ -109,70 +122,165 @@ def add_portlet(request, object_type_id, object_id, template_name="manage/portle
 
                 update_portlet_positions(pa)
 
-                html = [["#portlets", portlets_inline(request, obj)]]
+                # Check if this is an HTMX request (for modal)
+                if request.headers.get("HX-Request"):
+                    html = [["#portlets", portlets_inline(request, obj)]]
+                    result = json.dumps(
+                        {"html": html, "close-dialog": True, "message": _("Portlet has been added.")}, cls=LazyEncoder
+                    )
+                else:
+                    # Regular form submission - redirect back to the portlets page
+                    from django.contrib import messages
+                    from django.shortcuts import redirect
+                    from django.urls import reverse
 
-                result = json.dumps(
-                    {"html": html, "close-dialog": True, "message": _("Portlet has been added.")}, cls=LazyEncoder
-                )
+                    messages.success(request, _("Portlet has been added."))
+                    return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": obj.id}))
             else:
-                html = [
-                    [
-                        "#portlet-form-inline",
-                        render_to_string("manage/lfs_form.html", request=request, context={"form": form}),
+                # Check if this is an HTMX request (for modal)
+                if request.headers.get("HX-Request"):
+                    html = [
+                        [
+                            "#portlet-form-inline",
+                            render_to_string("manage/lfs_form.html", request=request, context={"form": form}),
+                        ]
                     ]
-                ]
+                    result = json.dumps(
+                        {"html": html, "close-dialog": False, "message": _("Please correct errors and try again.")},
+                        cls=LazyEncoder,
+                    )
+                else:
+                    # Regular form submission with errors - redirect back to the portlets page
+                    from django.contrib import messages
+                    from django.shortcuts import redirect
+                    from django.urls import reverse
 
-                result = json.dumps(
-                    {"html": html, "close-dialog": False, "message": _("Please correct errors and try again.")},
-                    cls=LazyEncoder,
-                )
+                    messages.error(request, _("Please correct errors and try again."))
+                    return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": obj.id}))
+
             return HttpResponse(result, content_type="application/json")
 
         except ContentType.DoesNotExist:
-            pass
+            # Handle invalid portlet type
+            result = json.dumps(
+                {"html": [], "close-dialog": False, "message": _("Invalid portlet type.")},
+                cls=LazyEncoder,
+            )
+            return HttpResponse(result, content_type="application/json")
     else:
         try:
-            portlet_ct = ContentType.objects.filter(model=portlet_type.lower())[0]
+            portlet_ct_queryset = ContentType.objects.filter(model=portlet_type.lower())
+            if not portlet_ct_queryset.exists():
+                raise ContentType.DoesNotExist()
+
+            portlet_ct = portlet_ct_queryset[0]
             mc = portlet_ct.model_class()
             form = mc().form(prefix="portlet")
+
+            # Get portlet type name for modal title
+            try:
+                portlet_registration = PortletRegistration.objects.get(type=portlet_type)
+                portlet_type_name = portlet_registration.name
+            except PortletRegistration.DoesNotExist:
+                portlet_type_name = portlet_type
+
+            # Check if this is an HTMX request (for modal)
+            if request.headers.get("HX-Request"):
+                result = render_to_string(
+                    template_name,
+                    request=request,
+                    context={
+                        "form": form,
+                        "object_id": object_id,
+                        "object_type_id": object_ct.id,
+                        "portlet_type": portlet_type,
+                        "portlet_type_name": portlet_type_name,
+                        "slots": Slot.objects.all(),
+                    },
+                )
+                return HttpResponse(result)
+            else:
+                # Legacy JSON response for non-HTMX requests
+                result = render_to_string(
+                    template_name,
+                    request=request,
+                    context={
+                        "form": form,
+                        "object_id": object_id,
+                        "object_type_id": object_ct.id,
+                        "portlet_type": portlet_type,
+                        "portlet_type_name": portlet_type_name,
+                        "slots": Slot.objects.all(),
+                    },
+                )
+                return HttpResponse(json.dumps({"html": result}), content_type="application/json")
+
+        except ContentType.DoesNotExist:
+            # Handle invalid portlet type
+            if request.headers.get("HX-Request"):
+                return HttpResponse("<div class='alert alert-danger'>Invalid portlet type.</div>")
+            else:
+                return HttpResponse(
+                    json.dumps({"html": "<div class='alert alert-danger'>Invalid portlet type.</div>"}),
+                    content_type="application/json",
+                )
+
+
+@permission_required("core.manage_shop")
+def delete_portlet(request, portletassignment_id, template_name="manage/portlets/delete_portlet.html"):
+    """Shows confirmation modal for GET, deletes portlet for POST."""
+    try:
+        pa = PortletAssignment.objects.get(pk=portletassignment_id)
+    except PortletAssignment.DoesNotExist:
+        if request.method == "GET":
+            return HttpResponse("<div class='alert alert-danger'>Portlet not found.</div>")
+        else:
+            # POST request - redirect back to portlets page even if portlet not found
+            from django.contrib import messages
+            from django.shortcuts import redirect
+            from django.urls import reverse
+
+            messages.error(request, _("Portlet not found."))
+            # We need to get the content object from somewhere, but since portlet doesn't exist,
+            # we'll redirect to a general portlets page or the root page
+            return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": 1}))
+
+    if request.method == "GET":
+        # Show confirmation modal
+        if request.headers.get("HX-Request"):
             result = render_to_string(
                 template_name,
                 request=request,
                 context={
-                    "form": form,
-                    "object_id": object_id,
-                    "object_type_id": object_ct.id,
-                    "portlet_type": portlet_type,
-                    "slots": Slot.objects.all(),
+                    "portlet": pa.portlet,
+                    "portlet_assignment": pa,
                 },
             )
-
+            return HttpResponse(result)
+        else:
+            # Legacy JSON response for non-HTMX requests
+            result = render_to_string(
+                template_name,
+                request=request,
+                context={
+                    "portlet": pa.portlet,
+                    "portlet_assignment": pa,
+                },
+            )
             return HttpResponse(json.dumps({"html": result}), content_type="application/json")
-
-        except ContentType.DoesNotExist:
-            pass
-
-
-@permission_required("core.manage_shop")
-@require_POST
-def delete_portlet(request, portletassignment_id):
-    """Deletes a portlet for given portlet assignment."""
-    try:
-        pa = PortletAssignment.objects.get(pk=portletassignment_id)
-    except PortletAssignment.DoesNotExist:
-        pass
     else:
+        # POST request - actually delete the portlet
+        content_obj = pa.content
         pa.delete()
         update_portlet_positions(pa)
-        result = json.dumps(
-            {
-                "html": [["#portlets", portlets_inline(request, pa.content)]],
-                "close-dialog": True,
-                "message": _("Portlet has been deleted."),
-            },
-            cls=LazyEncoder,
-        )
-        return HttpResponse(result, content_type="application/json")
+
+        # Always redirect back to the portlets page after deletion
+        from django.contrib import messages
+        from django.shortcuts import redirect
+        from django.urls import reverse
+
+        messages.success(request, _("Portlet has been deleted."))
+        return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": content_obj.id}))
 
 
 @permission_required("core.manage_shop")

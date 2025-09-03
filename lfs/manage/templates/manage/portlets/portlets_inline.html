@@ -82,10 +82,11 @@
                                                         <i class="bi bi-arrow-down"></i>
                                                     </a>
                                                 {% endif %}
-                                                <a class="btn btn-outline-danger delete-link delete"
-                                                   dialog_yes_button_class="ajax-save-button"
-                                                   dialog_message='{% trans "Do you really want to delete this portlet?" %}'
-                                                   href="{% url 'lfs_delete_portlet' portlet.pa_id %}"
+                                                <a class="btn btn-outline-danger"
+                                                   hx-get="{% url 'lfs_delete_portlet' portlet.pa_id %}"
+                                                   hx-target="#modal-body-lg"
+                                                   hx-trigger="click"
+                                                   hx-swap="innerHTML"
                                                    title='{% trans "Delete" %}'>
                                                     <i class="bi bi-trash"></i>
                                                 </a>
@@ -118,7 +119,8 @@
             <div class="row g-3 align-items-end">
                 <div class="col-md-8">
                     <label for="portlet_type" class="form-label">{% trans 'Portlet Type' %}</label>
-                    <select name="portlet_type" class="form-select" id="portlet_type">
+                    <select name="portlet_type" class="form-select" id="portlet_type" required>
+                        <option value="">{% trans 'Select a portlet type...' %}</option>
                         {% for portlet_type in portlet_types %}
                             <option value="{{ portlet_type.type }}">
                                 {% trans portlet_type.name %}
@@ -127,7 +129,13 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary portlet-add-button w-100">
+                    <button type="button" 
+                            class="btn btn-primary portlet-add-button w-100"
+                            hx-get="{% url 'lfs_add_portlet' object_type_id object.id %}"
+                            hx-target="#modal-body-lg"
+                            hx-trigger="click"
+                            hx-swap="innerHTML"
+                            hx-include="[name='portlet_type']">
                         <i class="bi bi-plus-circle me-1"></i>
                         {% trans 'Add portlet' %}
                     </button>
