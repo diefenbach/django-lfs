@@ -15,7 +15,7 @@ import pytest
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from unittest.mock import MagicMock
+
 
 from lfs.core.models import Action, ActionGroup
 from lfs.manage.actions.views import (
@@ -149,7 +149,13 @@ class TestActionUpdateView:
         view.object = action
         view.request = request_factory.post("/")
 
-        mock_form = MagicMock()
+        # Create a simple mock form object
+        class MockForm:
+            def __init__(self):
+                self.cleaned_data = {}
+                self.is_valid = lambda: True
+
+        mock_form = MockForm()
         update_called = False
         super_called = False
 
@@ -306,10 +312,16 @@ class TestActionCreateView:
         view = ActionCreateView()
         view.request = request_factory.post("/")
 
-        mock_form = MagicMock()
-        mock_action = Action(id=123, title="New Action")
-        mock_form.save.return_value = mock_action
+        # Create a simple mock form object with save method
+        class MockForm:
+            def __init__(self):
+                self.cleaned_data = {}
+                self.is_valid = lambda: True
 
+            def save(self):
+                return Action(id=123, title="New Action")
+
+        mock_form = MockForm()
         update_called = False
 
         def mock_update_positions():

@@ -30,6 +30,10 @@ from lfs.payment.models import PaymentMethod
 from lfs.addresses.models import Address
 from lfs.page.models import Page
 
+# Portlet imports
+from portlets.models import Slot, PortletAssignment, PortletRegistration, PortletBlocking
+from portlets.example.models import TextPortlet
+
 
 User = get_user_model()
 
@@ -89,6 +93,21 @@ def authenticated_request(request_factory, manage_user):
             raise ValueError(f"Unsupported method: {method}")
 
         request.user = manage_user
+
+        # Add messages framework support for testing
+        from django.contrib.messages.storage.fallback import FallbackStorage
+        from django.contrib.sessions.backends.db import SessionStore
+        from django.contrib.sessions.models import Session
+
+        # Create a session store
+        session = SessionStore()
+        session.create()
+        request.session = session
+
+        # Add messages storage
+        messages = FallbackStorage(request)
+        request._messages = messages
+
         return request
 
     return _make_request
@@ -492,7 +511,7 @@ def root_page(db):
 
 
 @pytest.fixture
-def page(db):
+def page(db, shop_for_portlets):
     """Sample Page for testing."""
     return Page.objects.create(
         title="Test Page",
@@ -567,6 +586,90 @@ def page_with_file(db, tmp_path):
     from django.core.files.uploadedfile import SimpleUploadedFile
 
     # Create a temporary file
+
+
+# Portlet-related fixtures
+
+
+@pytest.fixture
+def slot(db):
+    """Sample Slot for testing."""
+    return Slot.objects.create(name="Test Slot")
+
+
+@pytest.fixture
+def multiple_slots(db):
+    """Multiple Slots for testing."""
+    slots = []
+    for i in range(3):
+        slot = Slot.objects.create(name=f"Test Slot {i+1}")
+        slots.append(slot)
+    return slots
+
+
+@pytest.fixture
+def text_portlet(db):
+    """Sample TextPortlet for testing."""
+    return TextPortlet.objects.create(title="Test Portlet", text="Test portlet content")
+
+
+@pytest.fixture
+def portlet_registration(db):
+    """Sample PortletRegistration for testing."""
+    return PortletRegistration.objects.create(type="textportlet", name="Text Portlet", active=True)
+
+
+@pytest.fixture
+def portlet_assignment(db, page, slot, text_portlet, shop_for_portlets):
+    """Sample PortletAssignment for testing."""
+    from django.contrib.contenttypes.models import ContentType
+
+    return PortletAssignment.objects.create(slot=slot, content=page, portlet=text_portlet, position=10)
+
+
+@pytest.fixture
+def portlet_blocking(db, page, slot):
+    """Sample PortletBlocking for testing."""
+    from django.contrib.contenttypes.models import ContentType
+
+    return PortletBlocking.objects.create(
+        slot=slot, content_type=ContentType.objects.get_for_model(page), content_id=page.id
+    )
+
+
+@pytest.fixture
+def multiple_portlet_assignments(db, page, multiple_slots, shop_for_portlets):
+    """Multiple PortletAssignments for testing."""
+    from django.contrib.contenttypes.models import ContentType
+
+    assignments = []
+    for i, slot in enumerate(multiple_slots):
+        portlet = TextPortlet.objects.create(title=f"Test Portlet {i+1}", text=f"Content {i+1}")
+        assignment = PortletAssignment.objects.create(slot=slot, content=page, portlet=portlet, position=(i + 1) * 10)
+        assignments.append(assignment)
+    return assignments
+
+
+@pytest.fixture
+def shop_for_portlets(db, default_country, delivery_time):
+    """Create a shop for portlet testing."""
+    from lfs.core.models import Shop
+
+    return Shop.objects.create(
+        name="Test Shop for Portlets",
+        shop_owner="Test Owner",
+        from_email="test@example.com",
+        notification_emails="admin@example.com",
+        default_country=default_country,
+        delivery_time=delivery_time,
+    )
+
+
+@pytest.fixture
+def page_with_file(db, tmp_path):
+    """Page with attached file for testing."""
+    from django.core.files.uploadedfile import SimpleUploadedFile
+
     test_file = SimpleUploadedFile("test_file.txt", b"Test file content", content_type="text/plain")
 
     page = Page.objects.create(

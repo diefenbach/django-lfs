@@ -12,7 +12,7 @@ from django.views.generic import UpdateView, CreateView, DeleteView, RedirectVie
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.manage.mixins import DirectDeleteMixin
 from lfs.manage.pages.forms import PageAddForm, PageForm
-from lfs.manage.views.lfs_portlets import portlets_inline
+from lfs.manage.views.lfs_portlets import PortletsInlineView
 from lfs.page.models import Page
 
 
@@ -190,7 +190,7 @@ class PagePortletsView(PermissionRequiredMixin, PageTabMixin, TemplateView):
         """Extends context with portlets."""
         ctx = super().get_context_data(**kwargs)
         page = self.get_page()
-        ctx["portlets"] = portlets_inline(self.request, page)
+        ctx["portlets"] = PortletsInlineView().get(self.request, page)
         return ctx
 
 

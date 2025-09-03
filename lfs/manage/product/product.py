@@ -31,7 +31,7 @@ from lfs.manage.product.images import manage_images
 from lfs.manage.product.properties import manage_properties
 from lfs.manage.product.attachments import manage_attachments
 from lfs.manage.product.seo import SEOForm
-from lfs.manage.views.lfs_portlets import portlets_inline
+from lfs.manage.views.lfs_portlets import PortletsInlineView
 from lfs.manage.utils import get_current_page
 from lfs.manage.seo.views import SEOView
 from lfs.manufacturer.models import Manufacturer
@@ -259,7 +259,7 @@ def manage_product(request, product_id, template_name="manage/product/product.ht
                 request, product
             ),
             "stock": stock(request, product_id),
-            "portlets": portlets_inline(request, product),
+            "portlets": PortletsInlineView().get(request, product),
             "properties": manage_properties(request, product_id),
             "form": ProductSubTypeForm(instance=product),
             "name_filter_value": request.session.get("product_filters", {}).get("product_name", ""),

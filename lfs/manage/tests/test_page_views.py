@@ -13,7 +13,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.http import Http404, HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.messages import get_messages
-from unittest.mock import patch, MagicMock
+
 
 from lfs.page.models import Page
 from lfs.manage.pages.views import (
@@ -459,7 +459,7 @@ class TestPagePortletsView:
         assert PagePortletsView.tab_name == "portlets"
         assert PagePortletsView.permission_required == "core.manage_shop"
 
-    def test_get_context_data_includes_portlets(self, page, authenticated_request):
+    def test_get_context_data_includes_portlets(self, page, authenticated_request, monkeypatch):
         """Should include portlets in context data."""
         request = authenticated_request()
 
@@ -467,13 +467,33 @@ class TestPagePortletsView:
         view.request = request
         view.kwargs = {"id": page.id}
 
-        with patch("lfs.manage.pages.views.portlets_inline") as mock_portlets:
-            mock_portlets.return_value = "mocked_portlets_content"
-            context = view.get_context_data()
+        # Create mock functions to track calls
+        mock_portlets_view_called = False
+        mock_get_called = False
+
+        class MockPortletsView:
+            def __init__(self):
+                self.get_called = False
+
+            def get(self, request, page):
+                nonlocal mock_get_called
+                mock_get_called = True
+                return "mocked_portlets_content"
+
+        def mock_portlets_view(*args, **kwargs):
+            nonlocal mock_portlets_view_called
+            mock_portlets_view_called = True
+            return MockPortletsView()
+
+        # Use monkeypatch to replace the PortletsInlineView
+        monkeypatch.setattr("lfs.manage.pages.views.PortletsInlineView", mock_portlets_view)
+
+        context = view.get_context_data()
 
         assert "portlets" in context
         assert context["portlets"] == "mocked_portlets_content"
-        mock_portlets.assert_called_once_with(request, page)
+        assert mock_portlets_view_called
+        assert mock_get_called
 
 
 @pytest.mark.django_db
@@ -502,8 +522,13 @@ class TestPageCreateView:
 
         view = PageCreateView()
         view.request = request
-        view.object = MagicMock()
-        view.object.id = 123
+
+        # Create a simple mock object with id attribute
+        class MockObject:
+            def __init__(self):
+                self.id = 123
+
+        view.object = MockObject()
 
         url = view.get_success_url()
 

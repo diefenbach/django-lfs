@@ -16,7 +16,7 @@ from lfs.core.signals import shop_changed
 from lfs.core.utils import import_symbol
 from lfs.core.utils import LazyEncoder
 from lfs.core.widgets.image import LFSImageInput
-from lfs.manage.views.lfs_portlets import portlets_inline
+from lfs.manage.views.lfs_portlets import PortletsInlineView
 from lfs.manage.seo.views import SEOView
 
 
@@ -94,7 +94,7 @@ def manage_shop(request, template_name="manage/shop/shop.html"):
             "default_values": default_values_tab(request, shop, default_values_form),
             "order_numbers": order_numbers_tab(request, shop, order_numbers_form),
             "seo": ShopSEOView(Shop).render(request, shop),
-            "portlets": portlets_inline(request, shop),
+            "portlets": PortletsInlineView().get(request, shop),
         },
     )
 

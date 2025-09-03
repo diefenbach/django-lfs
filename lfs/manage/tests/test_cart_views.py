@@ -179,6 +179,7 @@ class TestUtilityFunctions:
         assert result is not None
         # Now returns a date object
         from datetime import date as _date
+
         assert isinstance(result, _date)
 
 

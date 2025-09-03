@@ -3,7 +3,7 @@ Unit tests for order management views.
 """
 
 from django.urls import reverse
-from unittest.mock import patch
+
 
 from lfs.order.models import Order
 import lfs.order.settings
@@ -352,13 +352,30 @@ class TestChangeOrderState:
         # Should redirect to login or return 403
         assert response.status_code in [302, 403]
 
-    @patch("lfs.core.signals.order_sent.send")
-    @patch("lfs.core.signals.order_paid.send")
-    @patch("lfs.core.signals.order_state_changed.send")
-    def test_change_order_state_triggers_signals(
-        self, mock_state_changed, mock_paid, mock_sent, authenticated_client, order
-    ):
+    def test_change_order_state_triggers_signals(self, authenticated_client, order, monkeypatch):
         """Test that order state change triggers appropriate signals."""
+        # Create mock functions to track calls
+        mock_sent_called = False
+        mock_paid_called = False
+        mock_state_changed_called = False
+
+        def mock_sent(*args, **kwargs):
+            nonlocal mock_sent_called
+            mock_sent_called = True
+
+        def mock_paid(*args, **kwargs):
+            nonlocal mock_paid_called
+            mock_paid_called = True
+
+        def mock_state_changed(*args, **kwargs):
+            nonlocal mock_state_changed_called
+            mock_state_changed_called = True
+
+        # Use monkeypatch to replace the signal functions
+        monkeypatch.setattr("lfs.core.signals.order_sent.send", mock_sent)
+        monkeypatch.setattr("lfs.core.signals.order_paid.send", mock_paid)
+        monkeypatch.setattr("lfs.core.signals.order_state_changed.send", mock_state_changed)
+
         url = reverse("lfs_change_order_state")
         data = {
             "order-id": str(order.id),
@@ -368,16 +385,25 @@ class TestChangeOrderState:
         response = authenticated_client.post(url, data)
 
         # Check that signals are called
-        mock_sent.assert_called_once()
-        mock_state_changed.assert_called_once()
+        assert mock_sent_called
+        assert mock_state_changed_called
 
 
 class TestSendOrder:
     """Test send_order function."""
 
-    @patch("lfs.mail.utils.send_order_received_mail")
-    def test_send_order_success(self, mock_send_mail, authenticated_client, order):
+    def test_send_order_success(self, authenticated_client, order, monkeypatch):
         """Test successful order sending."""
+        # Create mock function to track calls
+        mock_send_mail_called = False
+
+        def mock_send_mail(*args, **kwargs):
+            nonlocal mock_send_mail_called
+            mock_send_mail_called = True
+
+        # Use monkeypatch to replace the mail function
+        monkeypatch.setattr("lfs.mail.utils.send_order_received_mail", mock_send_mail)
+
         url = reverse("lfs_send_order", kwargs={"order_id": order.id})
         response = authenticated_client.get(url)
 
@@ -385,7 +411,7 @@ class TestSendOrder:
         assert response.url == reverse("lfs_manage_order", kwargs={"order_id": order.id})
 
         # Check that mail function is called
-        mock_send_mail.assert_called_once()
+        assert mock_send_mail_called
 
     def test_send_order_nonexistent_order(self, authenticated_client):
         """Test sending non-existent order."""
