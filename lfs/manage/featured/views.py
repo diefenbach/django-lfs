@@ -1,9 +1,14 @@
+import json
+
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category, Product
@@ -126,7 +131,7 @@ def add_featured(request):
 
 
 def update_featured(request):
-    """Saves or removes passed featured product passed id (within request body)."""
+    """Removes passed featured product passed id (within request body)."""
     if request.POST.get("action") == "remove":
         for temp_id in request.POST.keys():
             if not temp_id.startswith("product"):
@@ -141,21 +146,6 @@ def update_featured(request):
 
         _update_positions()
 
-    else:
-        for temp_id in request.POST.keys():
-            if temp_id.startswith("position") is False:
-                continue
-
-            temp_id = temp_id.split("-")[1]
-            featured = FeaturedProduct.objects.get(pk=temp_id)
-
-            # Update position
-            position = request.POST.get("position-%s" % temp_id)
-            featured.position = position
-            featured.save()
-
-        _update_positions()
-
     # Render ManageFeaturedView
     view = ManageFeaturedView()
     view.request = request
@@ -166,6 +156,24 @@ def update_featured(request):
         "manage/featured/featured.html",
         context=context,
     )
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def sort_featured(request):
+    """Handle drag and drop sorting of featured products."""
+    data = json.loads(request.body)
+    featured_ids = data.get("featured_ids", [])
+
+    for index, featured_id in enumerate(featured_ids):
+        try:
+            featured = FeaturedProduct.objects.get(pk=featured_id)
+            featured.position = (index + 1) * 10
+            featured.save()
+        except FeaturedProduct.DoesNotExist:
+            continue
+
+    return HttpResponse()
 
 
 def _update_positions():

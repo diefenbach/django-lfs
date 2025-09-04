@@ -13,51 +13,46 @@
         <div class="card-header">
             <h2 class="h4 mb-0">{% trans 'Featured Products' %}</h2>
         </div>
-        <div class="card-body flex-grow-1" style="overflow-y: auto;">
+        <div class="card-body overflow-y-auto">
             {% if featured %}
                 <div class="table-responsive">
                     <table class="table table-sm table-hover">
                         <thead>
                             <tr>
-                                <th class="checkbox">
+                                <th class="checkbox" style="width: 1px;">
                                     <input type="checkbox" class="form-check-input select-all-featured" />
                                 </th>
+                                <th class="small text-center">{% trans 'Sort' %}</th>
                                 <th>{% trans 'Name' %}</th>
                                 <th class="small">{% trans 'SKU' %}</th>
-                                <th class="small">{% trans 'Position' %}</th>
                                 <th class="small">{% trans 'Active' %}</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {% for ts in featured %}
-                                <tr>
+                        <tbody id="sortable-table">
+                            {% for featured_item in featured %}
+                                <tr data-id="{{ featured_item.id }}">
                                     <td>
                                         <input type="checkbox"
-                                               name="product-{{ ts.id }}"
+                                               name="product-{{ featured_item.id }}"
                                                class="form-check-input select-featured" />
                                     </td>
+                                    <td class="text-center align-middle">
+                                        <i class="bi bi-grip-vertical text-muted handle" style="cursor: move;"></i>
+                                    </td>
                                     <td>
-                                        <a href="{% url 'lfs_manage_product' ts.product.id %}" class="text-decoration-none">
-                                            {% if ts.product.get_name %}
-                                                {{ ts.product.get_name }}
+                                        <a href="{% url 'lfs_manage_product' featured_item.product.id %}" class="text-decoration-none">
+                                            {% if featured_item.product.get_name %}
+                                                {{ featured_item.product.get_name }}
                                             {% else %}
                                                 ---
                                             {% endif %}
                                         </a>
                                     </td>
                                     <td class="small text-muted">
-                                        {{ ts.product.get_sku|default:"---" }}
+                                        {{ featured_item.product.get_sku|default:"---" }}
                                     </td>
-                                    <td>
-                                        <input class="form-control form-control-sm"
-                                               type="number"
-                                               size="3"
-                                               name="position-{{ ts.id }}"
-                                               value="{{ ts.position }}"
-                                               min="1" />
-                                    </td>
-                                    <td class="text-center">
-                                        {% if ts.product.is_active %}
+                                    <td class="text-center align-middle">
+                                        {% if featured_item.product.is_active %}
                                             <i class="bi bi-check-circle-fill text-success"></i>
                                         {% else %}
                                             <i class="bi bi-x-circle-fill text-danger"></i>
@@ -76,16 +71,9 @@
                 </div>
             {% endif %}
         </div>
-        <div class="card-footer">
+        <div class="card-footer" style="min-height: 60px;">
             {% if featured %}
                 <div class="d-flex gap-2">
-                    <button type="submit" 
-                            name="save" 
-                            class="btn btn-primary">
-                        <i class="bi bi-save me-1"></i>
-                        {% trans 'Save Featured' %}
-                    </button>
-                    
                     <button type="submit" 
                             name="action" 
                             value="remove"

@@ -170,6 +170,11 @@ urlpatterns = [
         featured_views.update_featured,
         name="lfs_manage_update_featured",
     ),
+    path(
+        "sort-featured",
+        featured_views.sort_featured,
+        name="lfs_manage_sort_featured",
+    ),
     # Marketing
     re_path(r"^marketing$", lfs.manage.views.marketing.marketing.manage_marketing, name="lfs_manage_marketing"),
     re_path(

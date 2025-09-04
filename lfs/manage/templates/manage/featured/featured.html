@@ -26,6 +26,7 @@
                                        hx-target="#products-list"
                                        hx-select="#products-list"
                                        hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                                       hx-swap="outerHTML"
                                        hx-include="this"
                                        hx-push-url="true"
                                        aria-label="{% trans 'Search products' %}">
@@ -43,6 +44,7 @@
                                     hx-get="{{ request.path }}"
                                     hx-target="#products-list"
                                     hx-select="#products-list"
+                                    hx-swap="outerHTML"
                                     hx-trigger="change"
                                     hx-include="this">
                                 <option value="All" {% if not category_filter or category_filter == "All" %}selected{% endif %}>
@@ -70,6 +72,7 @@
                                     hx-get="{{ request.path }}"
                                     hx-target="#products-list"
                                     hx-select="#products-list"
+                                    hx-swap="outerHTML"
                                     hx-trigger="change"
                                     hx-include="this">
                                 {% for option in amount_options %}
@@ -85,7 +88,7 @@
         </div>
 
         <!-- Products Lists -->
-        <div class="row mt-4">
+        <div class="row mt-4 flex-grow-1">
             <div class="col-6">
                 {% include "manage/featured/_products_list.html" %}
             </div>

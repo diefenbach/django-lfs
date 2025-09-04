@@ -148,13 +148,13 @@
                 {% endif %}
             </div>
         </div>
-        <div class="card-body flex-grow-1" style="overflow-y: auto;">
+        <div class="card-body overflow-y-auto">
 
             <div class="table-responsive">
                 <table class="table table-sm table-hover">
                     <thead>
                         <tr>
-                            <th class="checkbox">
+                            <th class="checkbox" style="width: 40px;">
                                 <input type="checkbox" class="form-check-input select-all-products" />
                             </th>
                             <th>{% trans 'Name' %}</th>
@@ -178,7 +178,7 @@
                                 <td class="small text-muted">
                                     {{ product.get_sku|default:"---" }}
                                 </td>
-                                <td class="text-center">
+                                <td class="text-center align-middle">
                                     {% if product.is_active %}
                                         <i class="bi bi-check-circle-fill text-success"></i>
                                     {% else %}
@@ -197,7 +197,7 @@
                 </table>
             </div>
         </div>
-        <div class="card-footer">
+        <div class="card-footer" style="min-height: 60px;">
             {% if page.object_list %}
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-plus-circle me-1"></i>
