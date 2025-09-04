@@ -89,31 +89,3 @@
     {% endif %}
 </form>
 
-<script>
-// Select all functionality for featured products
-document.addEventListener('DOMContentLoaded', function() {
-    const selectAllCheckbox = document.querySelector('.select-all-featured');
-    const featuredCheckboxes = document.querySelectorAll('.select-featured');
-    
-    if (selectAllCheckbox && featuredCheckboxes.length > 0) {
-        selectAllCheckbox.addEventListener('change', function() {
-            featuredCheckboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-        });
-    }
-    
-    // Update select all when individual checkboxes change
-    featuredCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const checkedCount = document.querySelectorAll('.select-featured:checked').length;
-            const totalCount = featuredCheckboxes.length;
-            
-            if (selectAllCheckbox) {
-                selectAllCheckbox.checked = checkedCount === totalCount;
-                selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < totalCount;
-            }
-        });
-    });
-});
-</script>

@@ -109,32 +109,3 @@
         </div>
     {% endif %}
 </form>
-
-<script>
-// Select all functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const selectAllCheckbox = document.querySelector('.select-all-products');
-    const productCheckboxes = document.querySelectorAll('.select-product');
-    
-    if (selectAllCheckbox) {
-        selectAllCheckbox.addEventListener('change', function() {
-            productCheckboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-        });
-    }
-    
-    // Update select all when individual checkboxes change
-    productCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const checkedCount = document.querySelectorAll('.select-product:checked').length;
-            const totalCount = productCheckboxes.length;
-            
-            if (selectAllCheckbox) {
-                selectAllCheckbox.checked = checkedCount === totalCount;
-                selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < totalCount;
-            }
-        });
-    });
-});
-</script>
