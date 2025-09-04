@@ -20,17 +20,15 @@
                     <div class="pagination-info">
                         {% if page.has_previous %}
                             <a class="btn btn-sm btn-outline-primary me-2"
-                               hx-get="{{ request.path }}?page=1"
+                               hx-get="{{ request.path }}?page=1&keep-filters=1"
                                hx-target="#products-list"
-                               hx-select="#products-list"
-                               hx-include="[name='filter'], [name='featured_category_filter'], [name='featured-amount']">
+                               hx-select="#products-list">
                                 <i class="bi bi-chevron-double-left"></i>
                             </a>
                             <a class="btn btn-sm btn-outline-primary me-2"
-                               hx-get="{{ request.path }}?page={{ page.previous_page_number }}"
+                               hx-get="{{ request.path }}?page={{ page.previous_page_number }}&keep-filters=1"
                                hx-target="#products-list"
-                               hx-select="#products-list"
-                               hx-include="[name='filter'], [name='featured_category_filter'], [name='featured-amount']">
+                               hx-select="#products-list">
                                 <i class="bi bi-chevron-left"></i>
                             </a>
                         {% endif %}
@@ -41,17 +39,15 @@
                         
                         {% if page.has_next %}
                             <a class="btn btn-sm btn-outline-primary ms-2"
-                               hx-get="{{ request.path }}?page={{ page.next_page_number }}"
+                               hx-get="{{ request.path }}?page={{ page.next_page_number }}&keep-filters=1"
                                hx-target="#products-list"
-                               hx-select="#products-list"
-                               hx-include="[name='filter'], [name='featured_category_filter'], [name='featured-amount']">
+                               hx-select="#products-list">
                                 <i class="bi bi-chevron-right"></i>
                             </a>
                             <a class="btn btn-sm btn-outline-primary ms-2"
-                               hx-get="{{ request.path }}?page={{ paginator.num_pages }}"
+                               hx-get="{{ request.path }}?page={{ paginator.num_pages }}&keep-filters=1"
                                hx-target="#products-list"
-                               hx-select="#products-list"
-                               hx-include="[name='filter'], [name='featured_category_filter'], [name='featured-amount']">
+                               hx-select="#products-list">
                                 <i class="bi bi-chevron-double-right"></i>
                             </a>
                         {% endif %}
