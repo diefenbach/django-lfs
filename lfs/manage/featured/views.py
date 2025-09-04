@@ -80,8 +80,8 @@ class ManageFeaturedView(PermissionRequiredMixin, TemplateView):
         try:
             page_obj = paginator.page(page)
         except EmptyPage:
-            # If the page is out of range, get the last page
-            page_obj = paginator.page(paginator.num_pages)
+            # If the page is out of range, return 0
+            page_obj = 0
 
         # Amount options for pagination
         amount_options = []
@@ -97,7 +97,7 @@ class ManageFeaturedView(PermissionRequiredMixin, TemplateView):
                 "total": total,
                 "page": page_obj,
                 "paginator": paginator,
-                "filter": filter_,
+                "filter": filter_ or "",
                 "category_filter": category_filter,
                 "amount_options": amount_options,
                 "categories": categories,

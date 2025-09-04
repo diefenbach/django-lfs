@@ -21,19 +21,19 @@
                                 {% if page.has_previous %}
                                     <li class="page-item">
                                         <a class="page-link d-flex align-items-center justify-content-center" 
-                                           hx-get="{{ request.path }}?page=1&keep-filters=1"
-                                           hx-target="#products-list"
-                                           hx-select="#products-list"
-                                           title="{% trans 'First page' %}">
+                                        hx-get="{{ request.path }}?page=1&keep-filters=1"
+                                        hx-target="#products-list"
+                                        hx-select="#products-list"
+                                        title="{% trans 'First page' %}">
                                             <i class="bi bi-chevron-double-left"></i>
                                         </a>
                                     </li>
                                     <li class="page-item">
                                         <a class="page-link d-flex align-items-center justify-content-center" 
-                                           hx-get="{{ request.path }}?page={{ page.previous_page_number }}&keep-filters=1"
-                                           hx-target="#products-list"
-                                           hx-select="#products-list"
-                                           title="{% trans 'Previous page' %}">
+                                        hx-get="{{ request.path }}?page={{ page.previous_page_number }}&keep-filters=1"
+                                        hx-target="#products-list"
+                                        hx-select="#products-list"
+                                        title="{% trans 'Previous page' %}">
                                             <i class="bi bi-chevron-left"></i>
                                         </a>
                                     </li>
@@ -49,9 +49,9 @@
                                             {% else %}
                                                 <li class="page-item">
                                                     <a class="page-link d-flex align-items-center justify-content-center" 
-                                                       hx-get="{{ request.path }}?page={{ num }}&keep-filters=1"
-                                                       hx-target="#products-list"
-                                                       hx-select="#products-list">
+                                                    hx-get="{{ request.path }}?page={{ num }}&keep-filters=1"
+                                                    hx-target="#products-list"
+                                                    hx-select="#products-list">
                                                         {{ num }}
                                                     </a>
                                                 </li>
@@ -67,9 +67,9 @@
                                                 {% else %}
                                                     <li class="page-item">
                                                         <a class="page-link d-flex align-items-center justify-content-center" 
-                                                           hx-get="{{ request.path }}?page={{ forloop.counter }}&keep-filters=1"
-                                                           hx-target="#products-list"
-                                                           hx-select="#products-list">
+                                                        hx-get="{{ request.path }}?page={{ forloop.counter }}&keep-filters=1"
+                                                        hx-target="#products-list"
+                                                        hx-select="#products-list">
                                                             {{ forloop.counter }}
                                                         </a>
                                                     </li>
@@ -85,9 +85,9 @@
                                                     {% else %}
                                                         <li class="page-item">
                                                             <a class="page-link d-flex align-items-center justify-content-center" 
-                                                               hx-get="{{ request.path }}?page={{ page_num }}&keep-filters=1"
-                                                               hx-target="#products-list"
-                                                               hx-select="#products-list">
+                                                            hx-get="{{ request.path }}?page={{ page_num }}&keep-filters=1"
+                                                            hx-target="#products-list"
+                                                            hx-select="#products-list">
                                                                 {{ page_num }}
                                                             </a>
                                                         </li>
@@ -104,9 +104,9 @@
                                                     {% else %}
                                                         <li class="page-item">
                                                             <a class="page-link d-flex align-items-center justify-content-center" 
-                                                               hx-get="{{ request.path }}?page={{ page_num }}&keep-filters=1"
-                                                               hx-target="#products-list"
-                                                               hx-select="#products-list">
+                                                            hx-get="{{ request.path }}?page={{ page_num }}&keep-filters=1"
+                                                            hx-target="#products-list"
+                                                            hx-select="#products-list">
                                                                 {{ page_num }}
                                                             </a>
                                                         </li>
@@ -120,19 +120,19 @@
                                 {% if page.has_next %}
                                     <li class="page-item">
                                         <a class="page-link d-flex align-items-center justify-content-center" 
-                                           hx-get="{{ request.path }}?page={{ page.next_page_number }}&keep-filters=1"
-                                           hx-target="#products-list"
-                                           hx-select="#products-list"
-                                           title="{% trans 'Next page' %}">
+                                        hx-get="{{ request.path }}?page={{ page.next_page_number }}&keep-filters=1"
+                                        hx-target="#products-list"
+                                        hx-select="#products-list"
+                                        title="{% trans 'Next page' %}">
                                             <i class="bi bi-chevron-right"></i>
                                         </a>
                                     </li>
                                     <li class="page-item">
                                         <a class="page-link d-flex align-items-center justify-content-center" 
-                                           hx-get="{{ request.path }}?page={{ page.paginator.num_pages }}&keep-filters=1"
-                                           hx-target="#products-list"
-                                           hx-select="#products-list"
-                                           title="{% trans 'Last page' %}">
+                                        hx-get="{{ request.path }}?page={{ page.paginator.num_pages }}&keep-filters=1"
+                                        hx-target="#products-list"
+                                        hx-select="#products-list"
+                                        title="{% trans 'Last page' %}">
                                             <i class="bi bi-chevron-double-right"></i>
                                         </a>
                                     </li>
