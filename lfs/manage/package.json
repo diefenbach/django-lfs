@@ -1,0 +1,33 @@
+{
+    "private": true,
+    "scripts": {
+      "setup": "npm install && npm run vendor:update",
+  
+      "vendor:clean": "rm -rf static/lfs/manage/vendor/*",
+  
+      "vendor:flatpickr": "mkdir -p static/lfs/manage/vendor/flatpickr/l10n && cp node_modules/flatpickr/dist/flatpickr.min.js static/lfs/manage/vendor/flatpickr/ && cp node_modules/flatpickr/dist/flatpickr.min.css static/lfs/manage/vendor/flatpickr/ && cp node_modules/flatpickr/dist/l10n/de.js static/lfs/manage/vendor/flatpickr/l10n/",
+  
+      "vendor:swiper": "mkdir -p static/lfs/manage/vendor/swiper && cp node_modules/swiper/swiper-bundle.min.js static/lfs/manage/vendor/swiper/ && cp node_modules/swiper/swiper-bundle.min.js.map static/lfs/manage/vendor/swiper/ && cp node_modules/swiper/swiper-bundle.min.css static/lfs/manage/vendor/swiper/",
+  
+      "vendor:tinymce": "mkdir -p static/lfs/manage/vendor/tinymce && cp node_modules/tinymce/tinymce.min.js static/lfs/manage/vendor/tinymce/ && mkdir -p static/lfs/manage/vendor/tinymce/icons/default && cp node_modules/tinymce/icons/default/icons.min.js static/lfs/manage/vendor/tinymce/icons/default/ && mkdir -p static/lfs/manage/vendor/tinymce/themes && cp -R node_modules/tinymce/themes/* static/lfs/manage/vendor/tinymce/themes/ && mkdir -p static/lfs/manage/vendor/tinymce/plugins && cp -R node_modules/tinymce/plugins/* static/lfs/manage/vendor/tinymce/plugins/",
+  
+      "vendor:sortable": "mkdir -p static/lfs/manage/vendor/sortable && cp node_modules/sortablejs/Sortable.min.js static/lfs/manage/vendor/sortable/",
+  
+      "vendor:htmx": "mkdir -p static/lfs/manage/vendor/htmx && cp node_modules/htmx.org/dist/htmx.min.js static/lfs/manage/vendor/htmx/",
+  
+      "vendor:bootstrap": "mkdir -p static/lfs/manage/vendor/bootstrap && cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js static/lfs/manage/vendor/bootstrap/ && cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js.map static/lfs/manage/vendor/bootstrap/ && cp node_modules/bootstrap/dist/css/bootstrap.min.css static/lfs/manage/vendor/bootstrap/ && cp node_modules/bootstrap/dist/css/bootstrap.min.css.map static/lfs/manage/vendor/bootstrap/",
+  
+      "vendor:bootstrap-icons": "mkdir -p static/lfs/manage/vendor/bootstrap-icons/fonts && cp node_modules/bootstrap-icons/font/bootstrap-icons.css static/lfs/manage/vendor/bootstrap-icons/ && cp node_modules/bootstrap-icons/font/bootstrap-icons.min.css static/lfs/manage/vendor/bootstrap-icons/ && cp node_modules/bootstrap-icons/font/bootstrap-icons.json static/lfs/manage/vendor/bootstrap-icons/ && cp node_modules/bootstrap-icons/font/bootstrap-icons.scss static/lfs/manage/vendor/bootstrap-icons/ && cp node_modules/bootstrap-icons/font/fonts/* static/lfs/manage/vendor/bootstrap-icons/fonts/",
+  
+      "vendor:update": "npm run vendor:clean && npm run vendor:flatpickr && npm run vendor:swiper && npm run vendor:tinymce && npm run vendor:sortable && npm run vendor:htmx && npm run vendor:bootstrap && npm run vendor:bootstrap-icons"
+    },
+    "dependencies": {
+      "flatpickr": "^4.6.13",
+      "swiper": "^11.2.10",
+      "tinymce": "^8.0.2",
+      "sortablejs": "^1.15.6",
+      "htmx.org": "^2.0.6",
+      "bootstrap": "^5.3.8",
+      "bootstrap-icons": "^1.13.1"
+    }
+  }
