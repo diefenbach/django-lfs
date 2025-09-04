@@ -88,8 +88,8 @@ class ManageFeaturedView(PermissionRequiredMixin, TemplateView):
         for value in (10, 25, 50, 100):
             amount_options.append({"value": value, "selected": value == s.get("featured-amount")})
 
-        # Get all categories for filter dropdown
-        categories = Category.objects.all().order_by("name")
+        # Get all categories for filter dropdown in hierarchical structure
+        categories = self._build_hierarchical_categories()
 
         context.update(
             {
@@ -105,6 +105,33 @@ class ManageFeaturedView(PermissionRequiredMixin, TemplateView):
         )
 
         return context
+
+    def _build_hierarchical_categories(self):
+        """Build a hierarchical list of categories with proper indentation."""
+        categories = []
+
+        def _add_category_with_children(category, level=0):
+            """Recursively add category and its children with proper indentation."""
+            # Create a simple object that mimics the Category model but with indented name
+            indent = "&nbsp;" * 5 * level
+            category_with_indent = type(
+                "CategoryWithIndent",
+                (),
+                {"id": category.id, "name": f"{indent}{category.name}", "level": level, "category": category},
+            )()
+            categories.append(category_with_indent)
+
+            # Add children recursively
+            children = category.get_children().order_by("name")
+            for child in children:
+                _add_category_with_children(child, level + 1)
+
+        # Start with top-level categories (no parent)
+        top_level_categories = Category.objects.filter(parent=None).order_by("name")
+        for category in top_level_categories:
+            _add_category_with_children(category)
+
+        return categories
 
 
 def add_featured(request):

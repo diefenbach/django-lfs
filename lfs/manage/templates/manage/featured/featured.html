@@ -1,5 +1,5 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n static crispy_forms_tags %}
+{% load i18n static crispy_forms_tags lfs_tags %}
 
 {% block content %}
     <div class="lfs-featured">
@@ -54,10 +54,10 @@
                                     {% trans "No Category" %}
                                 </option>
                                 {% for category in categories %}
-                                    <option value="{{ category.id }}" {% if category_filter == category.id|stringformat:"s" %}selected{% endif %}>
-                                        {{ category.name }}
+                                    <option value="{{ category.id }}">
+                                        {{ category.name|safe }}
                                     </option>
-                                {% endfor %}
+                                {% endfor %}                            
                             </select>
                         </div>
                     </div>
