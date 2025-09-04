@@ -9,7 +9,7 @@
   
       "vendor:swiper": "mkdir -p static/lfs/manage/vendor/swiper && cp node_modules/swiper/swiper-bundle.min.js static/lfs/manage/vendor/swiper/ && cp node_modules/swiper/swiper-bundle.min.js.map static/lfs/manage/vendor/swiper/ && cp node_modules/swiper/swiper-bundle.min.css static/lfs/manage/vendor/swiper/",
   
-      "vendor:tinymce": "mkdir -p static/lfs/manage/vendor/tinymce && cp node_modules/tinymce/tinymce.min.js static/lfs/manage/vendor/tinymce/ && mkdir -p static/lfs/manage/vendor/tinymce/icons/default && cp node_modules/tinymce/icons/default/icons.min.js static/lfs/manage/vendor/tinymce/icons/default/ && mkdir -p static/lfs/manage/vendor/tinymce/themes && cp -R node_modules/tinymce/themes/* static/lfs/manage/vendor/tinymce/themes/ && mkdir -p static/lfs/manage/vendor/tinymce/plugins && cp -R node_modules/tinymce/plugins/* static/lfs/manage/vendor/tinymce/plugins/",
+      "vendor:tinymce": "rm -rf static/lfs/manage/vendor/tinymce && cp -R node_modules/tinymce static/lfs/manage/vendor/",
   
       "vendor:sortable": "mkdir -p static/lfs/manage/vendor/sortable && cp node_modules/sortablejs/Sortable.min.js static/lfs/manage/vendor/sortable/",
   
