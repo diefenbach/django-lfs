@@ -1,55 +1,46 @@
 // Featured Products Management JavaScript
 
-// Select all functionality for featured products
-document.addEventListener('DOMContentLoaded', function() {
-    const selectAllFeaturedCheckbox = document.querySelector('.select-all-featured');
-    const featuredCheckboxes = document.querySelectorAll('.select-featured');
-    
-    if (selectAllFeaturedCheckbox && featuredCheckboxes.length > 0) {
-        selectAllFeaturedCheckbox.addEventListener('change', function() {
-            featuredCheckboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
+class CheckboxManager {
+    constructor(selectAllSelector, itemSelector) {
+        this.selectAllCheckbox = document.querySelector(selectAllSelector);
+        this.itemCheckboxes = document.querySelectorAll(itemSelector);
+        this.initialize();
+    }
+
+    initialize() {
+        if (!this.selectAllCheckbox || this.itemCheckboxes.length === 0) return;
+
+        // Set up select all checkbox
+        this.selectAllCheckbox.addEventListener('change', () => {
+            this.itemCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.selectAllCheckbox.checked;
             });
         });
-    }
-    
-    // Update select all when individual featured checkboxes change
-    featuredCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const checkedCount = document.querySelectorAll('.select-featured:checked').length;
-            const totalCount = featuredCheckboxes.length;
-            
-            if (selectAllFeaturedCheckbox) {
-                selectAllFeaturedCheckbox.checked = checkedCount === totalCount;
-                selectAllFeaturedCheckbox.indeterminate = checkedCount > 0 && checkedCount < totalCount;
-            }
+
+        // Set up individual checkboxes
+        this.itemCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => this.updateSelectAllState());
         });
-    });
+    }
+
+    updateSelectAllState() {
+        const checkedCount = document.querySelectorAll(`${this.itemCheckboxes[0].className.split(' ').map(c => '.' + c).join('')}:checked`).length;
+        const totalCount = this.itemCheckboxes.length;
+        
+        if (this.selectAllCheckbox) {
+            this.selectAllCheckbox.checked = checkedCount === totalCount;
+            this.selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < totalCount;
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    new CheckboxManager('.select-all-featured', '.select-featured');
+    new CheckboxManager('.select-all-products', '.select-product');
 });
 
-// Select all functionality for products list
-document.addEventListener('DOMContentLoaded', function() {
-    const selectAllProductsCheckbox = document.querySelector('.select-all-products');
-    const productCheckboxes = document.querySelectorAll('.select-product');
-    
-    if (selectAllProductsCheckbox) {
-        selectAllProductsCheckbox.addEventListener('change', function() {
-            productCheckboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-        });
-    }
-    
-    // Update select all when individual product checkboxes change
-    productCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const checkedCount = document.querySelectorAll('.select-product:checked').length;
-            const totalCount = productCheckboxes.length;
-            
-            if (selectAllProductsCheckbox) {
-                selectAllProductsCheckbox.checked = checkedCount === totalCount;
-                selectAllProductsCheckbox.indeterminate = checkedCount > 0 && checkedCount < totalCount;
-            }
-        });
-    });
+
+document.addEventListener('htmx:afterSwap', function(event) {
+    new CheckboxManager('.select-all-featured', '.select-featured');
+    new CheckboxManager('.select-all-products', '.select-product');
 });

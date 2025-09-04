@@ -3,18 +3,21 @@
 
 {% block content %}
     <div class="lfs-featured">
-        <div class="row mt-4">
-            <div class="col-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="h4 mb-0">{% trans 'Products' %}</h2>
-                    </div>
-                    <div class="card-body">
-                        <!-- Search and Filter -->
+        <!-- Filters Card -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h2 class="h4 mb-0">{% trans 'Filters' %}</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <!-- Search Filter -->
                         <div class="mb-3">
+                            <label for="product-search" class="form-label">{% trans 'Search Products' %}</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
                                 <input type="search"
+                                       id="product-search"
                                        class="form-control"
                                        placeholder="{% trans 'Search products...' %}"
                                        name="filter"
@@ -28,10 +31,14 @@
                                        aria-label="{% trans 'Search products' %}">
                             </div>
                         </div>
-
+                    </div>
+                    
+                    <div class="col-md-4">
                         <!-- Category Filter -->
                         <div class="mb-3">
-                            <select class="form-select"
+                            <label for="category-filter" class="form-label">{% trans 'Category' %}</label>
+                            <select id="category-filter"
+                                    class="form-select"
                                     name="featured_category_filter"
                                     hx-get="{{ request.path }}"
                                     hx-target="#products-list"
@@ -51,10 +58,14 @@
                                 {% endfor %}
                             </select>
                         </div>
-
+                    </div>
+                    
+                    <div class="col-md-4">
                         <!-- Amount per page -->
                         <div class="mb-3">
-                            <select class="form-select"
+                            <label for="amount-filter" class="form-label">{% trans 'Products per Page' %}</label>
+                            <select id="amount-filter"
+                                    class="form-select"
                                     name="featured-amount"
                                     hx-get="{{ request.path }}"
                                     hx-target="#products-list"
@@ -68,26 +79,19 @@
                                 {% endfor %}
                             </select>
                         </div>
-
-                        <!-- Products List -->
-                        <div id="products-list">
-                            {% include "manage/featured/_products_list.html" %}
-                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Products Lists -->
+        <div class="row mt-4">
+            <div class="col-6">
+                {% include "manage/featured/_products_list.html" %}
+            </div>
 
             <div class="col-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="h4 mb-0">{% trans 'Featured Products' %}</h2>
-                    </div>
-                    <div class="card-body">
-                        <div id="featured-list">
-                            {% include "manage/featured/_featured_list.html" %}
-                        </div>
-                    </div>
-                </div>
+                {% include "manage/featured/_featured_list.html" %}
             </div>
         </div>
     </div>
