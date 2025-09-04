@@ -62,6 +62,69 @@ class TestDeliveryTimeUpdateView:
 
         assert result.count() == 0
 
+    def test_get_delivery_times_queryset_with_unit_search(self, delivery_time):
+        """Should filter delivery times based on unit search query."""
+        from lfs.catalog.settings import (
+            DELIVERY_TIME_UNIT_DAYS,
+            DELIVERY_TIME_UNIT_HOURS,
+            DELIVERY_TIME_UNIT_WEEKS,
+            DELIVERY_TIME_UNIT_MONTHS,
+            DELIVERY_TIME_UNIT_CHOICES,
+        )
+        from django.utils.translation import gettext
+
+        # Create delivery times with different units
+        hours_dt = DeliveryTime.objects.create(
+            min=24, max=48, unit=DELIVERY_TIME_UNIT_HOURS, description="Hours delivery"
+        )
+        weeks_dt = DeliveryTime.objects.create(
+            min=1, max=2, unit=DELIVERY_TIME_UNIT_WEEKS, description="Weeks delivery"
+        )
+        months_dt = DeliveryTime.objects.create(
+            min=1, max=2, unit=DELIVERY_TIME_UNIT_MONTHS, description="Months delivery"
+        )
+
+        # Get translated unit names
+        unit_choices_dict = dict(DELIVERY_TIME_UNIT_CHOICES)
+        translated_hours = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_HOURS])
+        translated_days = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_DAYS])
+        translated_weeks = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_WEEKS])
+        translated_months = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_MONTHS])
+
+        # Test searching for translated "days" - should find the fixture delivery_time
+        view = DeliveryTimeUpdateView()
+        view.request = type("Request", (), {"GET": {"q": translated_days}})()
+        result = view.get_delivery_times_queryset()
+        assert result.count() == 1
+        assert delivery_time in result
+
+        # Test searching for translated "hours"
+        view.request = type("Request", (), {"GET": {"q": translated_hours}})()
+        result = view.get_delivery_times_queryset()
+        assert result.count() == 1
+        assert hours_dt in result
+
+        # Test searching for translated "weeks"
+        view.request = type("Request", (), {"GET": {"q": translated_weeks}})()
+        result = view.get_delivery_times_queryset()
+        assert result.count() == 1
+        assert weeks_dt in result
+
+        # Test searching for translated "months"
+        view.request = type("Request", (), {"GET": {"q": translated_months}})()
+        result = view.get_delivery_times_queryset()
+        assert result.count() == 1
+        assert months_dt in result
+
+        # Test partial search - should work bidirectionally
+        # If "days" is "werktage", then "werk" should find it
+        if len(translated_days) > 3:  # Only test if the translated word is long enough
+            partial_search = translated_days[:3]  # First 3 characters
+            view.request = type("Request", (), {"GET": {"q": partial_search}})()
+            result = view.get_delivery_times_queryset()
+            assert result.count() == 1
+            assert delivery_time in result
+
     def test_get_context_data_includes_search_query(self, delivery_time):
         """Should include search query in context."""
         view = DeliveryTimeUpdateView()
@@ -94,6 +157,25 @@ class TestDeliveryTimeUpdateView:
 
         assert f"delivery-time/{delivery_time.id}" in url
         assert "?q=test" in url
+
+    def test_form_valid_called_on_valid_submit(self, client, admin_user, delivery_time):
+        """Should call form_valid when form is submitted with valid data."""
+        client.force_login(admin_user)
+
+        # Submit form with valid data
+        response = client.post(
+            reverse("lfs_manage_delivery_time", kwargs={"pk": delivery_time.id}),
+            {
+                "min": "1.0",
+                "max": "3.0",
+                "unit": "1",  # DELIVERY_TIME_UNIT_DAYS
+                "description": "Updated description",
+                "q": "",  # search query
+            },
+        )
+
+        # Should redirect after successful form submission
+        assert response.status_code == 302
 
 
 @pytest.mark.django_db

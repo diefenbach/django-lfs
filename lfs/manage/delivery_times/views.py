@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -33,7 +34,7 @@ class ManageDeliveryTimesView(PermissionRequiredMixin, RedirectView):
 
 class DeliveryTimeUpdateView(PermissionRequiredMixin, UpdateView):
     model = DeliveryTime
-    fields = ("min", "max", "unit")
+    fields = ("min", "max", "unit", "description")
     template_name = "manage/delivery_times/delivery_time.html"
     permission_required = "core.manage_shop"
     context_object_name = "delivery_time"
@@ -50,8 +51,43 @@ class DeliveryTimeUpdateView(PermissionRequiredMixin, UpdateView):
         search_query = self.request.GET.get("q", "").strip()
 
         if search_query:
-            # Filter delivery times based on description or name
-            return DeliveryTime.objects.filter(description__icontains=search_query).order_by("min")
+            # Filter delivery times based on min, max, description and unit
+            queryset = DeliveryTime.objects.filter(
+                Q(min__icontains=search_query) | Q(max__icontains=search_query) | Q(description__icontains=search_query)
+            )
+
+            # Search in unit display values (translated units)
+            from lfs.catalog.settings import (
+                DELIVERY_TIME_UNIT_HOURS,
+                DELIVERY_TIME_UNIT_DAYS,
+                DELIVERY_TIME_UNIT_WEEKS,
+                DELIVERY_TIME_UNIT_MONTHS,
+                DELIVERY_TIME_UNIT_CHOICES,
+            )
+            from django.utils.translation import gettext
+
+            # Get translated unit names
+            unit_choices_dict = dict(DELIVERY_TIME_UNIT_CHOICES)
+            translated_hours = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_HOURS])
+            translated_days = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_DAYS])
+            translated_weeks = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_WEEKS])
+            translated_months = gettext(unit_choices_dict[DELIVERY_TIME_UNIT_MONTHS])
+
+            unit_filters = Q()
+            search_lower = search_query.lower()
+            if translated_hours.lower() in search_lower or search_lower in translated_hours.lower():
+                unit_filters |= Q(unit=DELIVERY_TIME_UNIT_HOURS)
+            if translated_days.lower() in search_lower or search_lower in translated_days.lower():
+                unit_filters |= Q(unit=DELIVERY_TIME_UNIT_DAYS)
+            if translated_weeks.lower() in search_lower or search_lower in translated_weeks.lower():
+                unit_filters |= Q(unit=DELIVERY_TIME_UNIT_WEEKS)
+            if translated_months.lower() in search_lower or search_lower in translated_months.lower():
+                unit_filters |= Q(unit=DELIVERY_TIME_UNIT_MONTHS)
+
+            if unit_filters:
+                queryset = queryset | DeliveryTime.objects.filter(unit_filters)
+
+            return queryset.order_by("min")
         else:
             # All delivery times
             return DeliveryTime.objects.all().order_by("min")
@@ -77,7 +113,7 @@ class NoDeliveryTimesView(PermissionRequiredMixin, TemplateView):
 
 class DeliveryTimeCreateView(PermissionRequiredMixin, CreateView):
     model = DeliveryTime
-    fields = ("min", "max", "unit", "description")
+    fields = ("min", "max", "unit")
     template_name = "manage/delivery_times/add_delivery_time.html"
     permission_required = "core.manage_shop"
 

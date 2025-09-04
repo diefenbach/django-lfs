@@ -71,9 +71,9 @@
 
                     <div class="tab-content border border-top-0 bg-white p-4">
                         <div class="tab-pane show active">
-                            <form action="." method="post">
+                            <form action="{% url 'lfs_manage_delivery_time' delivery_time.id %}" method="post">
                                 {% csrf_token %}
-                                <input type="hidden" name="q" value="{{ search_query }}" id="search-query" hx-swap-oob="true">
+                                <input type="hidden" name="q" value="{{ search_query }}" id="search-query">
                                 {{ form|crispy }}
                                 <div class="buttons">
                                     <button class="btn btn-primary" type="submit">
