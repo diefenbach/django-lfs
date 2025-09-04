@@ -3,20 +3,38 @@
 
 {% block help_link %}user/management/shop/delivery_times.html{% endblock %}
 {% block section %}no-delivery-times{% endblock %}
-{% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
-    <h2>
-        {% trans "Delivery Time" %}
-    </h2>
-    <div class="no-content">
-        {% trans "There are no delivery times yet." %}
+    <div class="lfs-delivery-times">
+        <div class="row">
+            <aside class="col-3 bg-white border-end vh-100 p-4">
+                <h2 class="h4 mb-3">{% trans "Delivery Times" %}</h2>
+                <div class="no-content">
+                    {% trans "There are no delivery times yet." %}
+                </div>
+            </aside>
+
+            <main class="col-9 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="h4 mb-3">{% trans 'No Delivery Times' %}</h2>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{% trans "No delivery times available" %}</h5>
+                        <p class="card-text">{% trans "There are no delivery times yet. Create your first delivery time to get started." %}</p>
+                        <button class="btn btn-primary" 
+                            hx-get="{% url 'lfs_manage_add_delivery_time' %}" 
+                            hx-target="#modal-body-lg" 
+                            hx-trigger="click" 
+                            hx-swap="innerHTML">
+                            <i class="bi bi-plus-circle-fill"></i>
+                            {% trans 'Add Delivery Time' %}
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
-    <div class="buttons">
-        <form action="{% url 'lfs_manage_add_delivery_time' %}">
-            <input type="submit"
-                   class="button"
-                   value="{% trans 'Add Delivery Time' %}">
-        </form>
-    </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
 {% endblock %}

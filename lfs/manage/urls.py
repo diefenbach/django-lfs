@@ -52,14 +52,27 @@ urlpatterns = [
     re_path(r"^$", lfs.manage.views.dashboard.dashboard, name="lfs_manage_dashboard"),
     # Delivery Times
     re_path(r"^delivery_times$", delivery_times_views.manage_delivery_times, name="lfs_manage_delivery_times"),
-    re_path(r"^delivery_time/(?P<id>\d*)$", delivery_times_views.manage_delivery_time, name="lfs_manage_delivery_time"),
-    re_path(r"^add-delivery-time$", delivery_times_views.add_delivery_time, name="lfs_manage_add_delivery_time"),
     re_path(
-        r"^delete-delivery-time/(?P<id>\d*)$",
-        delivery_times_views.delete_delivery_time,
-        name="lfs_delete_delivery_time",
+        r"^delivery_time/(?P<pk>\d*)$",
+        delivery_times_views.DeliveryTimeUpdateView.as_view(),
+        name="lfs_manage_delivery_time",
     ),
-    re_path(r"^no-times$", delivery_times_views.no_delivery_times, name="lfs_no_delivery_times"),
+    re_path(
+        r"^add-delivery-time$",
+        delivery_times_views.DeliveryTimeCreateView.as_view(),
+        name="lfs_manage_add_delivery_time",
+    ),
+    re_path(
+        r"^delete-delivery-time/(?P<pk>\d*)$",
+        delivery_times_views.DeliveryTimeDeleteView.as_view(),
+        name="lfs_manage_delete_delivery_time",
+    ),
+    re_path(
+        r"^delete-delivery-time-confirm/(?P<pk>\d*)$",
+        delivery_times_views.DeliveryTimeDeleteConfirmView.as_view(),
+        name="lfs_manage_delete_delivery_time_confirm",
+    ),
+    re_path(r"^no-times$", delivery_times_views.NoDeliveryTimesView.as_view(), name="lfs_no_delivery_times"),
     # Manufacturer
     re_path(
         r"^manufacturer-dispatcher$", manufacturers_views.manufacturer_dispatcher, name="lfs_manufacturer_dispatcher"

@@ -43,10 +43,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     tinymce.init({
-        selector: '#id_html, #id_description, #id_short_description,#id_body,#id_short_text',
+        selector: '#id_html,#id_description,#id_short_description,#id_body,#id_short_text',
         license_key: 'gpl',
         menubar: false,
         toolbar: 'undo redo bold italic blocks alignleft aligncenter alignright link image code forecolor backcolor removeformat',
-        plugins: 'link image code'
+        plugins: 'link image code',
     });
 });
