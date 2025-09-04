@@ -11,8 +11,8 @@
                 <h2 class="h4 mb-3">{% trans "Bestellungen" %}</h2>
                 
                 <!-- Filter Form in Sidebar -->
-                <div class="card mb-3">
-                    <div class="card-header py-2">
+                <div class="card shadow mb-3">
+                    <div class="card-header bg-primary-subtle p-2">
                         <h6 class="card-title mb-0">
                             <i class="bi bi-funnel me-1"></i>{% trans "Filter" %}
                         </h6>
@@ -139,7 +139,7 @@
                     </div>
 
                     <!-- Order State Change -->
-                    <div class="card mb-4">
+                    <div class="card shadow mb-4">
                         <div class="card-body">
                             <form action="{% url 'lfs_change_order_state' %}" method="post" class="d-flex align-items-center gap-2">
                                 {% csrf_token %}
@@ -158,8 +158,8 @@
                     </div>
 
                     <!-- General Order Information -->
-                    <div class="card mb-4">
-                        <div class="card-header">
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-primary-subtle">
                             <h5 class="card-title mb-0">{% trans "General Information" %}</h5>
                         </div>
                         <div class="card-body">
@@ -211,8 +211,8 @@
                     </div>
 
                     <!-- Addresses and Methods -->
-                    <div class="card mb-4">
-                        <div class="card-header">
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-primary-subtle">
                             <h5 class="card-title mb-0">{% trans "Addresses & Methods" %}</h5>
                         </div>
                         <div class="card-body">
@@ -258,8 +258,8 @@
                     </div>
 
                     <!-- Order Items & Summary -->
-                    <div class="card mb-4">
-                        <div class="card-header">
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-primary-subtle">
                             <h5 class="card-title mb-0">{% trans "Order Items" %}</h5>
                         </div>
                         <div class="card-body p-0">

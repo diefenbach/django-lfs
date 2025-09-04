@@ -76,7 +76,7 @@ class OrderTabMixin(OrderFilterMixin, OrderPaginationMixin, OrderContextMixin):
         """Gets the Order object."""
         return lfs_get_object_or_404(Order, pk=self.kwargs["order_id"])
 
-    def get_paginated_orders(self, page_size=10):
+    def get_paginated_orders(self, page_size=8):
         """Returns paginated orders for sidebar."""
         return super().get_paginated_orders(page_size=page_size)
 

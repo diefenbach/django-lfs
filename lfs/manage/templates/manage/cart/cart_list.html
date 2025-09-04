@@ -7,10 +7,13 @@
     <div class="lfs-carts">
         <div class="row">
             <aside class="scrollable-content col-3 bg-white border-end p-4">  
-                <h2 class="h4 mb-3">{% trans "Filter" %}</h2>
-                
                 <!-- Filter Form in Sidebar -->
-                <div class="card mb-3">
+                <div class="card shadow mb-3">
+                    <div class="card-header bg-primary-subtle p-2">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-funnel me-1"></i>{% trans "Filter" %}
+                        </h6>
+                    </div>
                     <div class="card-body py-2">
                         <div class="mb-3">
                             <div class="btn-group w-100">
@@ -67,70 +70,66 @@
 
                 <!-- Carts Table -->
                 {% if carts_with_data %}
-                    <div class="card">
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>{% trans "Cart ID" %}</th>
-                                            <th>{% trans "Customer" %}</th>
-                                            <th>{% trans "Products" %}</th>
-                                            <th>{% trans "Items" %}</th>
-                                            <th>{% trans "Total" %}</th>
-                                            <th>{% trans "Modified" %}</th>
-                                            <th class="text-center">{% trans "Actions" %}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for cart_data in carts_with_data %}
-                                        <tr class="cart-row" style="cursor: pointer;" onclick="window.location.href='{% url 'lfs_manage_cart' cart_data.cart.id %}'">
-                                            <td>
-                                                #{{ cart_data.cart.id }}
-                                            </td>
-                                            <td>
-                                                {% if cart_data.customer.user %}
-                                                    {{ cart_data.customer.user.get_full_name|default:cart_data.customer.user.username }}
-                                                {% else %}
-                                                    <span class="text-muted">{% trans "Anonymous" %}</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {{ cart_data.products|truncatechars:50 }}
-                                            </td>
-                                            <td>
-                                                {{ cart_data.item_count }}
-                                            </td>
-                                            <td>
-                                                {{ cart_data.total|currency:request }}
-                                            </td>
-                                            <td>
-                                                <div>{{ cart_data.cart.modification_date|date:"SHORT_DATETIME_FORMAT" }}</div>
-                                            </td>
-                                            <td class="text-center">
-                                                <div class="btn-group btn-group-sm">
-                                                    <a href="{% url 'lfs_manage_cart' cart_data.cart.id %}" 
-                                                       class="btn btn-outline-primary btn-sm" 
-                                                       onclick="event.stopPropagation();"
-                                                       title="{% trans 'View Cart' %}">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
-                                                    <button class="btn btn-outline-danger btn-sm" 
-                                                            onclick="event.stopPropagation();"
-                                                            hx-get="{% url 'lfs_manage_delete_cart_confirm' cart_data.cart.id %}" 
-                                                            hx-target="#modal-body-lg"
-                                                            hx-swap="innerHTML"
-                                                            title="{% trans 'Delete Cart' %}">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                    <div class="rounded overflow-hidden border shadow">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>{% trans "Cart ID" %}</th>
+                                    <th>{% trans "Customer" %}</th>
+                                    <th>{% trans "Products" %}</th>
+                                    <th>{% trans "Items" %}</th>
+                                    <th>{% trans "Total" %}</th>
+                                    <th>{% trans "Modified" %}</th>
+                                    <th class="text-center">{% trans "Actions" %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cart_data in carts_with_data %}
+                                <tr class="cart-row" style="cursor: pointer;" onclick="window.location.href='{% url 'lfs_manage_cart' cart_data.cart.id %}'">
+                                    <td>
+                                        #{{ cart_data.cart.id }}
+                                    </td>
+                                    <td>
+                                        {% if cart_data.customer.user %}
+                                            {{ cart_data.customer.user.get_full_name|default:cart_data.customer.user.username }}
+                                        {% else %}
+                                            <span class="text-muted">{% trans "Anonymous" %}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ cart_data.products|truncatechars:50 }}
+                                    </td>
+                                    <td>
+                                        {{ cart_data.item_count }}
+                                    </td>
+                                    <td>
+                                        {{ cart_data.total|currency:request }}
+                                    </td>
+                                    <td>
+                                        <div>{{ cart_data.cart.modification_date|date:"SHORT_DATETIME_FORMAT" }}</div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'lfs_manage_cart' cart_data.cart.id %}" 
+                                                class="btn btn-outline-primary btn-sm" 
+                                                onclick="event.stopPropagation();"
+                                                title="{% trans 'View Cart' %}">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <button class="btn btn-outline-danger btn-sm" 
+                                                    onclick="event.stopPropagation();"
+                                                    hx-get="{% url 'lfs_manage_delete_cart_confirm' cart_data.cart.id %}" 
+                                                    hx-target="#modal-body-lg"
+                                                    hx-swap="innerHTML"
+                                                    title="{% trans 'Delete Cart' %}">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
 
                     <!-- Pagination -->

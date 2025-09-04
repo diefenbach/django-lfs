@@ -9,9 +9,12 @@
     {% csrf_token %}
     <input type="hidden" name="keep-filters" value="1">
     
-    <div id="featured-list" class="card d-flex flex-column" style="height: calc(100vh - 420px);">
-        <div class="card-header">
-            <h2 class="h4 mb-0">{% trans 'Featured Products' %}</h2>
+    <div id="featured-list" class="card shadow" style="height: calc(100vh - 420px);">
+        <div class="card-header bg-primary-subtle">
+            <h2 class="h4 mb-0">
+                <i class="bi bi-star me-2"></i>
+                {% trans 'Featured Products' %}
+            </h2>
         </div>
         <div class="card-body overflow-y-auto">
             {% if featured %}
