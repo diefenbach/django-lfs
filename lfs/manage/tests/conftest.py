@@ -15,7 +15,7 @@ import pytest
 from django.contrib.auth import get_user_model
 from django.test import RequestFactory
 
-from lfs.catalog.models import StaticBlock
+from lfs.catalog.models import StaticBlock, Product, Category
 from lfs.core.models import Action, ActionGroup, Country
 from lfs.catalog.models import File, DeliveryTime
 from lfs.catalog.settings import DELIVERY_TIME_UNIT_DAYS
@@ -29,6 +29,7 @@ from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
 from lfs.addresses.models import Address
 from lfs.page.models import Page
+from lfs.marketing.models import FeaturedProduct
 
 # Portlet imports
 from portlets.models import Slot, PortletAssignment, PortletRegistration, PortletBlocking
@@ -689,3 +690,101 @@ def page_with_file(db, tmp_path):
     page.save()
 
     return page
+
+
+# Featured product fixtures
+
+
+@pytest.fixture
+def multiple_products(db, shop):
+    """Multiple Products for testing."""
+    from decimal import Decimal
+
+    products = []
+    for i in range(5):
+        product = Product.objects.create(
+            name=f"Product {i+1}",
+            slug=f"product-{i+1}",
+            sku=f"SKU-{i+1:03d}",
+            price=Decimal(f"{(i+1)*10}.99"),
+            active=True,
+        )
+        products.append(product)
+    return products
+
+
+@pytest.fixture
+def many_products(db, shop):
+    """Many Products for pagination testing."""
+    from decimal import Decimal
+
+    products = []
+    for i in range(30):  # Enough to trigger pagination
+        product = Product.objects.create(
+            name=f"Product {i+1}",
+            slug=f"product-{i+1}",
+            sku=f"SKU-{i+1:03d}",
+            price=Decimal(f"{(i+1)*10}.99"),
+            active=True,
+        )
+        products.append(product)
+    return products
+
+
+@pytest.fixture
+def multiple_categories(db):
+    """Multiple Categories for testing."""
+    categories = []
+    for i, name in enumerate(["Category C", "Category A", "Category B"]):  # Unsorted for testing
+        category = Category.objects.create(
+            name=name,
+            slug=f"category-{name.lower().replace(' ', '-')}",
+            position=(i + 1) * 10,
+        )
+        categories.append(category)
+    return categories
+
+
+@pytest.fixture
+def featured_products(db, multiple_products):
+    """Multiple FeaturedProducts for testing."""
+    featured = []
+    for i, product in enumerate(multiple_products[:3]):  # Feature first 3 products
+        fp = FeaturedProduct.objects.create(
+            product=product,
+            position=(i + 1) * 10,
+        )
+        featured.append(fp)
+    return featured
+
+
+@pytest.fixture
+def product_with_variant(db, shop):
+    """Product with variant for testing variant filtering."""
+    from decimal import Decimal
+    from lfs.catalog.settings import PRODUCT_WITH_VARIANTS, VARIANT
+
+    # Create parent product
+    parent = Product.objects.create(
+        name="Parent Product",
+        slug="parent-product",
+        sku="PARENT-001",
+        price=Decimal("29.99"),
+        active=True,
+        sub_type=PRODUCT_WITH_VARIANTS,
+    )
+
+    # Create variant
+    variant = Product.objects.create(
+        name="Variant Product",
+        slug="variant-product",
+        sku="VARIANT-001",
+        price=Decimal("39.99"),
+        active=True,
+        sub_type=VARIANT,
+        parent=parent,
+        active_sku=False,  # Use parent's SKU
+        active_name=False,  # Use parent's name
+    )
+
+    return parent, variant

@@ -42,6 +42,7 @@ from lfs.manage.seo.views import SEOView
 from lfs.manage.delivery_times import views as delivery_times_views
 from lfs.manage.manufacturers import views as manufacturers_views
 from lfs.manage.manufacturers import products as manufacturers_products_views
+from lfs.manage.featured import views as featured_views
 import lfs.manage.voucher.views
 from lfs.manage.views import lfs_portlets
 from lfs.manage.product import product
@@ -153,18 +154,24 @@ urlpatterns = [
         manufacturers_products_views.products_tab,
         name="lfs_manufacturer_load_products_tab",
     ),
+    # Featured Products
+    path(
+        "featured",
+        featured_views.ManageFeaturedView.as_view(),
+        name="lfs_manage_featured",
+    ),
+    path(
+        "add-featured",
+        featured_views.add_featured,
+        name="lfs_manage_add_featured",
+    ),
+    path(
+        "update-featured",
+        featured_views.update_featured,
+        name="lfs_manage_update_featured",
+    ),
     # Marketing
-    re_path(r"^featured$", lfs.manage.views.marketing.marketing.manage_featured_page, name="lfs_manage_featured"),
     re_path(r"^marketing$", lfs.manage.views.marketing.marketing.manage_marketing, name="lfs_manage_marketing"),
-    re_path(r"^add-featured$", lfs.manage.views.marketing.featured.add_featured, name="lfs_manage_add_featured"),
-    re_path(
-        r"^update-featured$", lfs.manage.views.marketing.featured.update_featured, name="lfs_manage_update_featured"
-    ),
-    re_path(
-        r"^featured-inline$",
-        lfs.manage.views.marketing.featured.manage_featured_inline,
-        name="lfs_manage_featured_inline",
-    ),
     re_path(
         r"^manage-rating-mails$",
         lfs.manage.views.marketing.rating_mails.manage_rating_mails,
