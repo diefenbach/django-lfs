@@ -1,9 +1,8 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import TemplateView
@@ -14,23 +13,27 @@ from lfs.catalog.models import Product
 from lfs.manage.mixins import DirectDeleteMixin
 
 
-@permission_required("core.manage_shop")
-def manage_delivery_times(request):
-    """Dispatches to the first delivery time or to the form to add a delivery
+from django.views.generic.base import RedirectView
+
+
+class ManageDeliveryTimesView(PermissionRequiredMixin, RedirectView):
+    """Redirects to the first delivery time or to the form to add a delivery
     time (if there is no delivery time yet).
     """
-    try:
-        delivery_time = DeliveryTime.objects.all()[0]
-        url = reverse("lfs_manage_delivery_time", kwargs={"pk": delivery_time.id})
-    except IndexError:
-        url = reverse("lfs_no_delivery_times")
 
-    return HttpResponseRedirect(url)
+    permission_required = "core.manage_shop"
+
+    def get_redirect_url(self, *args, **kwargs):
+        try:
+            delivery_time = DeliveryTime.objects.all()[0]
+            return reverse("lfs_manage_delivery_time", kwargs={"pk": delivery_time.id})
+        except IndexError:
+            return reverse("lfs_no_delivery_times")
 
 
 class DeliveryTimeUpdateView(PermissionRequiredMixin, UpdateView):
     model = DeliveryTime
-    fields = ("min", "max", "unit", "description")
+    fields = ("min", "max", "unit")
     template_name = "manage/delivery_times/delivery_time.html"
     permission_required = "core.manage_shop"
     context_object_name = "delivery_time"

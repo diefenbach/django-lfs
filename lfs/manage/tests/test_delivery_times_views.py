@@ -81,7 +81,7 @@ class TestDeliveryTimeUpdateView:
 
         url = view.get_success_url()
 
-        assert f"delivery_time/{delivery_time.id}" in url
+        assert f"delivery-time/{delivery_time.id}" in url
         assert "?q=" not in url
 
     def test_get_success_url_with_search(self, delivery_time):
@@ -92,7 +92,7 @@ class TestDeliveryTimeUpdateView:
 
         url = view.get_success_url()
 
-        assert f"delivery_time/{delivery_time.id}" in url
+        assert f"delivery-time/{delivery_time.id}" in url
         assert "?q=test" in url
 
 
@@ -128,7 +128,7 @@ class TestDeliveryTimeCreateView:
 
         url = view.get_success_url()
 
-        assert f"delivery_time/{delivery_time.id}" in url
+        assert f"delivery-time/{delivery_time.id}" in url
         assert "?q=" not in url
 
     def test_get_success_url_with_search(self, delivery_time):
@@ -139,7 +139,7 @@ class TestDeliveryTimeCreateView:
 
         url = view.get_success_url()
 
-        assert f"delivery_time/{delivery_time.id}" in url
+        assert f"delivery-time/{delivery_time.id}" in url
         assert "?q=test" in url
 
 
@@ -181,7 +181,7 @@ class TestDeliveryTimeDeleteView:
 
         url = view.get_success_url()
 
-        assert f"delivery_time/{other_delivery_time.id}" in url
+        assert f"delivery-time/{other_delivery_time.id}" in url
 
     def test_get_success_url_with_no_remaining_delivery_times(self, delivery_time):
         """Should redirect to no delivery times view when no others exist."""
@@ -190,7 +190,7 @@ class TestDeliveryTimeDeleteView:
 
         url = view.get_success_url()
 
-        assert "no-times" in url
+        assert "no-delivery-times" in url
 
 
 @pytest.mark.django_db
