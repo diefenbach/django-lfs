@@ -118,9 +118,9 @@
                                 <td>{{ voucher.end_date|date:"d.m.Y"|default:"-" }}</td>
                                 <td>
                                     {% if voucher.used_amount %}
-                                        <span class="badge bg-success">{% trans "Used" %}</span>
+                                        <i class="bi bi-check-circle-fill text-success"></i>
                                     {% else %}
-                                        <span class="badge bg-secondary">{% trans "Unused" %}</span>
+                                        <i class="bi bi-x-circle-fill text-danger"></i>
                                     {% endif %}
                                 </td>
                             </tr>

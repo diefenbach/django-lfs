@@ -42,7 +42,7 @@ class CartFilterMixin:
 class CartPaginationMixin:
     """Mixin for handling cart pagination."""
 
-    def get_paginated_carts(self, page_size=15):
+    def get_paginated_carts(self, page_size=22):
         """Get paginated carts."""
         queryset = self.get_filtered_carts_queryset()
         paginator = Paginator(queryset, page_size)
