@@ -1,0 +1,198 @@
+{% load i18n lfs_tags static crispy_forms_tags %}
+
+{# Pagination #}
+{% if page and paginator.num_pages > 1 %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="pagination-info">
+        {% blocktrans with start=page.start_index end=page.end_index total=paginator.count %}
+            Showing {{ start }} to {{ end }} of {{ total }} products
+        {% endblocktrans %}
+    </div>
+    <nav aria-label="{% trans 'Product pagination' %}">
+        <ul class="pagination pagination-sm mb-0">
+            {% if page.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if filter %}&filter={{ filter }}{% endif %}{% if category_filter %}&products_category_filter={{ category_filter }}{% endif %}{% if manufacturer_filter %}&products_manufacturer_filter={{ manufacturer_filter }}{% endif %}">
+                        <i class="bi bi-chevron-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page.previous_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if category_filter %}&products_category_filter={{ category_filter }}{% endif %}{% if manufacturer_filter %}&products_manufacturer_filter={{ manufacturer_filter }}{% endif %}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+            {% endif %}
+            
+            <li class="page-item active">
+                <span class="page-link">{{ page.number }} / {{ paginator.num_pages }}</span>
+            </li>
+            
+            {% if page.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page.next_page_number }}{% if filter %}&filter={{ filter }}{% endif %}{% if category_filter %}&products_category_filter={{ category_filter }}{% endif %}{% if manufacturer_filter %}&products_manufacturer_filter={{ manufacturer_filter }}{% endif %}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ paginator.num_pages }}{% if filter %}&filter={{ filter }}{% endif %}{% if category_filter %}&products_category_filter={{ category_filter }}{% endif %}{% if manufacturer_filter %}&products_manufacturer_filter={{ manufacturer_filter }}{% endif %}">
+                        <i class="bi bi-chevron-double-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6">
+        <h4 class="h6 mb-3">{% trans 'Available Products' %}</h4>
+        <form id="add-products-form" action="{% url 'lfs_manage_discount_products' discount.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="keep-filters" value="1" />
+            <input type="hidden" name="assign_products" value="1" />
+            
+            {% if page and page.object_list %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="select-all-products" class="form-check-input">
+                                </th>
+                                <th>{% trans 'Name' %}</th>
+                                <th>{% trans 'SKU' %}</th>
+                                <th>{% trans 'Active' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in page.object_list %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="product-{{ product.id }}" class="form-check-input product-checkbox">
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'lfs_manage_product' product.id %}" class="text-decoration-none">
+                                            {{ product.get_name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ product.get_sku }}</small>
+                                    </td>
+                                    <td>
+                                        {% if product.is_active %}
+                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                        {% else %}
+                                            <i class="bi bi-x-circle-fill text-danger"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-plus-circle me-1"></i>
+                        {% trans 'Add to Discount' %}
+                    </button>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    {% trans "No products found." %}
+                </div>
+            {% endif %}
+        </form>
+    </div>
+    
+    <div class="col-md-6">
+        <h4 class="h6 mb-3">{% trans 'Assigned Products' %}</h4>
+        <form id="products-update-form" action="{% url 'lfs_manage_discount_products' discount.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="keep-filters" value="1" />
+            <input type="hidden" name="remove_products" value="1" />
+            
+            {% if discount_products %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="select-all-assigned" class="form-check-input">
+                                </th>
+                                <th>{% trans 'Name' %}</th>
+                                <th>{% trans 'SKU' %}</th>
+                                <th>{% trans 'Active' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in discount_products %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="product-{{ product.id }}" class="form-check-input assigned-checkbox">
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'lfs_manage_product' product.id %}" class="text-decoration-none">
+                                            {{ product.get_name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">{{ product.get_sku }}</small>
+                                    </td>
+                                    <td>
+                                        {% if product.is_active %}
+                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                        {% else %}
+                                            <i class="bi bi-x-circle-fill text-danger"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-outline-danger btn-sm" 
+                            onclick="return confirm('{% trans "Do you really want to remove the selected products from this discount?" %}')">
+                        <i class="bi bi-trash me-1"></i>
+                        {% trans 'Remove from Discount' %}
+                    </button>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    {% trans "No products assigned to this discount." %}
+                </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Select all functionality for available products
+    const selectAllProducts = document.getElementById('select-all-products');
+    const productCheckboxes = document.querySelectorAll('.product-checkbox');
+    
+    if (selectAllProducts) {
+        selectAllProducts.addEventListener('change', function() {
+            productCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    }
+    
+    // Select all functionality for assigned products
+    const selectAllAssigned = document.getElementById('select-all-assigned');
+    const assignedCheckboxes = document.querySelectorAll('.assigned-checkbox');
+    
+    if (selectAllAssigned) {
+        selectAllAssigned.addEventListener('change', function() {
+            assignedCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    }
+});
+</script>

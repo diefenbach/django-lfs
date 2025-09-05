@@ -1,0 +1,13 @@
+{% load i18n crispy_forms_tags %}
+
+{# Stammdaten-Tab für Discount #}
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="buttons mt-3">
+        <button class="btn btn-primary" type="submit">
+            <i class="bi bi-save me-1"></i>
+            {% trans 'Save discount' %}
+        </button>
+    </div>
+</form>

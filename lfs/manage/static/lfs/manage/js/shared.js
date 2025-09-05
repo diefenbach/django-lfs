@@ -26,6 +26,27 @@ document.addEventListener('htmx:afterSwap', evt => {
 });
 
 
+// Configure HTMX to include CSRF tokens automatically
+document.addEventListener('htmx:configRequest', function(evt) {
+    // Only add CSRF token for non-GET requests
+    if (evt.detail.verb !== 'get') {
+        // Try to get CSRF token from cookie first
+        const csrfCookie = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='));
+        
+        if (csrfCookie) {
+            const csrfToken = csrfCookie.split('=')[1];
+            evt.detail.headers['X-CSRFToken'] = csrfToken;
+        } else {
+            // Fallback to getting CSRF token from form input
+            const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
+            if (csrfInput) {
+                evt.detail.headers['X-CSRFToken'] = csrfInput.value;
+            }
+        }
+    }
+});
 
 document.addEventListener('DOMContentLoaded', function() {
     flatpickr(".dateinput", {

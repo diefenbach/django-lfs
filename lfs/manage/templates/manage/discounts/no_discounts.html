@@ -3,18 +3,28 @@
 
 {% block help_link %}/user/management/marketing/discounts.html{% endblock %}
 
-{% block sextion %}no-discounts{% endblock %}
+{% block section %}no-discounts{% endblock %}
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
-    <h2>{% trans "Discounts" %}</h2>
-    <div class="no-content">
-        {% trans "There are no discounts yet." %}
+    <div class="text-center py-5">
+        <h2 class="h4 mb-3">{% trans "Discounts" %}</h2>
+        <div class="no-content mb-4">
+            <i class="bi bi-percent-circle display-1 text-muted"></i>
+            <p class="text-muted">{% trans "There are no discounts yet." %}</p>
+        </div>
+
+        <div class="buttons">
+            <button class="btn btn-primary"
+                    hx-get="{% url 'lfs_manage_add_discount' %}"
+                    hx-target="#modal-body-lg"
+                    hx-swap="innerHTML">
+                <i class="bi bi-plus-circle me-1"></i>
+                {% trans 'Add Discount' %}
+            </button>
+        </div>
     </div>
 
-    <div class="buttons">
-        <input class="button"
-               onclick="window.location='{% url 'lfs_manage_add_discount' %}'"
-               value="{% trans 'Add Discount' %}">
-    </div>
+    <!-- Include required modal sizes -->
+    {% include 'manage/snippets/modals/modal-lg.html' %}
 {% endblock %}

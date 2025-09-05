@@ -51,7 +51,7 @@ class Criteria(object):
             if key.startswith("type"):
                 try:
                     id = key.split("-")[1]
-                except KeyError:
+                except (KeyError, IndexError):
                     continue
 
                 # Get the values for the criterion

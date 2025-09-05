@@ -1,41 +1,49 @@
 {% load i18n static %}
 <tr class="criterion" id="criterion-{{ id }}">
-    <td>
-        <input type="text" size="2" class="position" name="position-{{ id }}" value="{{ position }}" />
+    <td class="px-2">
+        <input type="text" 
+               class="form-control form-control-sm position" 
+               name="position-{{ id }}" 
+               value="{{ position }}" 
+               style="width: 3rem;" />
     </td>
-    <td style="padding:0 3px">
+    <td class="px-2">
         {% block criteria %}
-            <select class="criterion-type" name="type-{{ id }}">
+            <select class="form-select form-select-sm criterion-type" 
+                    name="type-{{ id }}"
+                    hx-post="{% url 'lfs_change_criterion_form' %}"
+                    hx-target="closest tr"
+                    hx-swap="outerHTML"
+                    hx-trigger="change"
+                    hx-vals='js:{type: this.value, criterion_id: "{{ id }}"}'>
                 {% for criterion in criteria %}
                     <option {% if criterion.selected %}selected="selected"{% endif %} value="{{ criterion.module }}">{{ criterion.name }}</option>
                 {% endfor %}
             </select>
         {% endblock %}
     </td>
-    <td style="padding:0 3px">
+    <td class="px-2">
         {% block operators %}
-            <select class="criterion-operator"
-                    name="operator-{{ id }}"
-                    style="width:170px">
+            <select class="form-select form-select-sm criterion-operator"
+                    name="operator-{{ id }}">
                 {% for operator in operators %}
                     <option value="{{ operator.id }}" {% if operator.selected %}selected="selected"{% endif %}>{{ operator.name }}</option>
                 {% endfor %}
             </select>
         {% endblock %}
     </td>
-    <td style="padding:0 3px">
+    <td class="px-2">
         {% block values %}
             {% if value_type == criterion.INPUT %}
-                <input class="criterion-value"
+                <input class="form-control form-control-sm criterion-value"
                        type="text"
                        name="value-{{ id }}"
-                       value="{{ value }}"
-                       style="width:193px"/>
+                       value="{{ value }}" />
             {% endif %}
             {% if value_type == criterion.SELECT %}
                 <select name="value-{{ id }}"
-                        size="5"
-                        style="width:200px">
+                        class="form-select form-select-sm"
+                        size="5">
                     {% for value in selectable_values %}
                         <option value="{{ value.id }}" {% if value.selected %}selected="selected"{% endif %}>{{ value.name }}</option>
                     {% endfor %}
@@ -43,9 +51,9 @@
             {% endif %}
             {% if value_type == criterion.MULTIPLE_SELECT %}
                 <select name="value-{{ id }}"
+                        class="form-select form-select-sm"
                         multiple="multiple"
-                        size="5"
-                        style="width:200px">
+                        size="5">
                     {% for value in selectable_values %}
                         <option value="{{ value.id }}" {% if value.selected %}selected="selected"{% endif %}>{{ value.name }}</option>
                     {% endfor %}
@@ -53,16 +61,22 @@
             {% endif %}
         {% endblock %}
     </td>
-    <td>
-        <a class="criterion-add-button"
-           href="{% url 'lfs_add_criterion' %}">
-            <img src="{% static 'lfs/icons/add.png' %}"
-                 alt="Add" />
-        </a>
-        <a class="criterion-delete-button"
-           style="cursor:pointer">
-            <img src="{% static 'lfs/icons/delete.png' %}"
-                 alt="Delete" />
-        </a>
+    <td class="px-2">
+        <div class="btn-group" role="group">
+            <button type="button" 
+                    class="btn btn-sm btn-outline-success criterion-add-button"
+                    hx-get="{% url 'lfs_add_criterion' %}"
+                    hx-target="closest tr"
+                    hx-swap="afterend">
+                <i class="bi bi-plus"></i>
+            </button>
+            <button type="button" 
+                    class="btn btn-sm btn-outline-danger criterion-delete-button"
+                    hx-delete="{% url 'lfs_delete_criterion' %}"
+                    hx-target="closest tr"
+                    hx-swap="outerHTML">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
     </td>
 </tr>

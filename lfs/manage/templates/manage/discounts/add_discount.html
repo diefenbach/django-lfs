@@ -1,36 +1,16 @@
-{% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% load i18n crispy_forms_tags %}
 
-{% block help_link %}user/management/marketing/discounts.html{% endblock %}
+<h5 id="modal-title-lg" class="modal-title" hx-swap-oob="true">
+    {% trans 'Add Discount' %}
+</h5>
 
-{% block section %}add-discount{% endblock %}
-{% block left-slot-wrapper %}{% endblock %}
-
-{% block content %}
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Add discount' %}</a></li>
-        </ul>
-
-        <div id="data">
-            <h2>{% trans 'Add discount' %}</h2>
-            <form method="post"
-                 enctype="multipart/form-data">
-                {% csrf_token %}
-                {% include "manage/lfs_form.html" %}
-
-                <div class="buttons">
-
-                    <input type="submit"
-                           class="button"
-                           value="{% trans 'Add discount' %}" />
-
-                    <input type="button"
-                           class="button"
-                           onclick="window.location='{{ came_from }}'"
-                           value="{% trans 'Cancel' %}" />
-                </div>
-            </form>
-        </div>
+<form method="post" action="{% url 'lfs_manage_add_discount' %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">{% trans 'Add discount' %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            {% trans 'Cancel' %}
+        </button>
     </div>
-{% endblock %}
+</form>

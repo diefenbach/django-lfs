@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
 from django.http import HttpResponse
+from django.views.decorators.http import require_http_methods
 
 # lfs imports
 from lfs.core.utils import import_symbol
@@ -41,3 +42,14 @@ def change_criterion_form(request):
     # create dummy criterion
     result = criterion(pk=1).render(request, 10)
     return HttpResponse(result)
+
+
+@permission_required("core.manage_shop")
+@require_http_methods(["DELETE"])
+def delete_criterion(request):
+    """
+    Handles HTMX delete requests for criteria.
+    Returns empty response to remove the criterion row from the UI.
+    The actual criterion deletion is handled when the parent form is saved.
+    """
+    return HttpResponse("")

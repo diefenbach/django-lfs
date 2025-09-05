@@ -1,0 +1,62 @@
+{% load i18n static crispy_forms_tags %}
+
+{# Criteria-Tab für Discount #}
+<div class="mb-4">
+    <h3 class="h5">{% trans "Discount Criteria" %}</h3>
+    
+
+    <form method="post" 
+          hx-post="{% url 'lfs_manage_discount_criteria' discount.id %}"
+          hx-target="closest .tab-content"
+          hx-swap="innerHTML">
+        {% csrf_token %}
+        <div class="d-flex justify-content-start align-items-center mb-4">
+            <button type="button" 
+                    class="btn btn-success btn-sm d-flex align-items-center gap-2 shadow-sm"
+                    hx-get="{% url 'lfs_add_criterion' %}"
+                    hx-target="tbody.criteria"
+                    hx-swap="afterbegin"
+                    hx-on::after-request="document.querySelector('.no-criteria-row')?.remove()"
+                    style="border-radius: 8px; font-weight: 500; transition: all 0.2s ease;">
+                <i class="bi bi-plus-lg"></i>
+                <span>{% trans 'Add criterion' %}</span>
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover border-0" style="border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <thead class="table-light">
+                    <tr>
+                        <th class="border-0 py-3 px-4" style="font-weight: 600; color: #495057;">{% trans "Position" %}</th>
+                        <th class="border-0 py-3 px-4" style="font-weight: 600; color: #495057;">{% trans "Type" %}</th>
+                        <th class="border-0 py-3 px-4" style="font-weight: 600; color: #495057;">{% trans "Operator" %}</th>
+                        <th class="border-0 py-3 px-4" style="font-weight: 600; color: #495057;">{% trans "Value" %}</th>
+                        <th class="border-0 py-3 px-4" style="font-weight: 600; color: #495057;">{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="criteria">
+                    {% for criterion in criteria %}
+                        {{ criterion|safe }}
+                    {% empty %}
+                        <tr class="no-criteria-row">
+                            <td colspan="5" class="text-center py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                                <div class="d-flex flex-column align-items-center">
+                                    <i class="bi bi-funnel text-muted mb-3" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                                    <h6 class="text-muted mb-2">{% trans "No criteria defined yet" %}</h6>
+                                    <p class="text-muted small mb-0">{% trans "Click 'Add criterion' to create your first condition" %}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+     <div class="buttons mt-3">
+            <button class="btn btn-primary" type="submit">
+                <i class="bi bi-save me-1"></i>
+                {% trans 'Save criteria' %}
+            </button>
+        </div>
+    </form>
+</div>

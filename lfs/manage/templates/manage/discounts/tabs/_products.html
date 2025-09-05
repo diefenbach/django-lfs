@@ -1,0 +1,43 @@
+{% load i18n lfs_manage_tags crispy_forms_tags %}
+
+{# Products-Tab für Discount #}
+<div class="mb-4">
+    <h3 class="h5">{% trans "Discount Products" %}</h3>
+    
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        {% trans "If you assign products to discount then it will only be applied to selected products. If you don't select any product then Discount will be applied to whole cart." %}
+    </div>
+
+    {# Search and filter for products #}
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="search" 
+                       class="form-control" 
+                       placeholder="{% trans 'Search products...' %}" 
+                       name="filter"
+                       value="{{ filter }}"
+                       hx-get="{{ request.path }}"
+                       hx-swap="outerHTML"
+                       hx-target="main"
+                       hx-select="main"
+                       hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                       hx-include="[name='products_category_filter'], [name='products_manufacturer_filter']"
+                       hx-push-url="true"
+                       aria-label="{% trans 'Search products' %}">
+            </div>
+        </div>
+        <div class="col-md-4">
+            {% category_filter "refresh-on-change" "products_category_filter" %}
+        </div>
+        <div class="col-md-4">
+            {% manufacturer_filter "refresh-on-change" "products_manufacturer_filter" %}
+        </div>
+    </div>
+
+    <div id="products-inline">
+        {% include "manage/discounts/tabs/_products_inline.html" %}
+    </div>
+</div>
