@@ -24,10 +24,9 @@ import lfs.manage.views.customer
 import lfs.manage.views.criteria
 import lfs.manage.views.dashboard
 import lfs.manage.views.export
-import lfs.manage.views.marketing.marketing
 import lfs.manage.views.marketing.featured
 import lfs.manage.views.marketing.rating_mails
-import lfs.manage.views.marketing.topseller
+import lfs.manage.topseller.views
 import lfs.manage.orders.views
 import lfs.manage.views.payment
 import lfs.manage.views.review
@@ -176,7 +175,6 @@ urlpatterns = [
         name="lfs_manage_sort_featured",
     ),
     # Marketing
-    re_path(r"^marketing$", lfs.manage.views.marketing.marketing.manage_marketing, name="lfs_manage_marketing"),
     re_path(
         r"^manage-rating-mails$",
         lfs.manage.views.marketing.rating_mails.manage_rating_mails,
@@ -185,13 +183,30 @@ urlpatterns = [
     re_path(
         r"^send-rating-mails$", lfs.manage.views.marketing.rating_mails.send_rating_mails, name="lfs_send_rating_mails"
     ),
-    re_path(r"^add-topseller$", lfs.manage.views.marketing.topseller.add_topseller, name="lfs_manage_add_topseller"),
-    re_path(
-        r"^update-topseller$", lfs.manage.views.marketing.topseller.update_topseller, name="lfs_manage_update_topseller"
+    # Topseller Products
+    path(
+        "topseller",
+        lfs.manage.topseller.views.ManageTopsellerView.as_view(),
+        name="lfs_manage_topseller",
+    ),
+    path(
+        "add-topseller",
+        lfs.manage.topseller.views.add_topseller,
+        name="lfs_manage_add_topseller",
+    ),
+    path(
+        "update-topseller",
+        lfs.manage.topseller.views.update_topseller,
+        name="lfs_manage_update_topseller",
+    ),
+    path(
+        "sort-topseller",
+        lfs.manage.topseller.views.sort_topseller,
+        name="lfs_manage_sort_topseller",
     ),
     re_path(
         r"^topseller-inline$",
-        lfs.manage.views.marketing.topseller.manage_topseller_inline,
+        lfs.manage.topseller.views.manage_topseller_inline,
         name="lfs_manage_topseller_inline",
     ),
     # Voucher Groups

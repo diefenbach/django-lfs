@@ -1,0 +1,91 @@
+{% load i18n static %}
+
+<!-- Topseller Products Form -->
+<form id="topseller-update-form"
+      hx-post="{% url 'lfs_manage_update_topseller' %}"
+      hx-target="#topseller-list"
+      hx-select="#topseller-list"
+      hx-swap="outerHTML">
+    {% csrf_token %}
+    <input type="hidden" name="keep-filters" value="1">
+    
+    <div id="topseller-list" class="card shadow" style="height: calc(100vh - 420px);">
+        <div class="card-header bg-primary-subtle">
+            <h2 class="h4 mb-0">
+                <i class="bi bi-trophy me-2"></i>
+                {% trans 'Topseller Products' %}
+            </h2>
+        </div>
+        <div class="card-body overflow-y-auto">
+            {% if topseller %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th class="checkbox" style="width: 1px;">
+                                    <input type="checkbox" class="form-check-input select-all-topseller" />
+                                </th>
+                                <th class="small text-center">{% trans 'Sort' %}</th>
+                                <th>{% trans 'Name' %}</th>
+                                <th class="small">{% trans 'SKU' %}</th>
+                                <th class="small">{% trans 'Active' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sortable-table">
+                            {% for topseller_item in topseller %}
+                                <tr data-id="{{ topseller_item.id }}">
+                                    <td>
+                                        <input type="checkbox"
+                                               name="product-{{ topseller_item.id }}"
+                                               class="form-check-input select-topseller" />
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <i class="bi bi-grip-vertical text-muted handle" style="cursor: move;"></i>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'lfs_manage_product' topseller_item.product.id %}" class="text-decoration-none">
+                                            {% if topseller_item.product.get_name %}
+                                                {{ topseller_item.product.get_name }}
+                                            {% else %}
+                                                ---
+                                            {% endif %}
+                                        </a>
+                                    </td>
+                                    <td class="small text-muted">
+                                        {{ topseller_item.product.get_sku|default:"---" }}
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        {% if topseller_item.product.is_active %}
+                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                        {% else %}
+                                            <i class="bi bi-x-circle-fill text-danger"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-trophy fs-1 d-block mb-3"></i>
+                    <p>{% trans "No topseller products yet." %}</p>
+                    <p class="small">{% trans "Select products from the left panel and add them to topseller products." %}</p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer" style="min-height: 60px;">
+            {% if topseller %}
+                <div class="d-flex gap-2">
+                    <button type="submit" 
+                            name="action" 
+                            value="remove"
+                            class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>
+                        {% trans 'Remove from Topseller' %}
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</form>

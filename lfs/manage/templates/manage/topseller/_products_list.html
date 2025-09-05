@@ -1,0 +1,83 @@
+{% load i18n static %}
+
+<!-- Products Form -->
+<form id="add-topseller-form"
+      hx-post="{% url 'lfs_manage_add_topseller' %}"
+      hx-target="#topseller-list"
+      hx-select="#topseller-list"
+      hx-swap="outerHTML">
+    {% csrf_token %}
+    <input type="hidden" name="keep-filters" value="1">
+    
+    <div id="products-list" class="card shadow" style="height: calc(100vh - 420px);">
+        <div class="card-header bg-primary-subtle">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h4 mb-0">
+                    <i class="bi bi-box me-2"></i>
+                    {% trans 'Products' %}
+                </h2>
+                <!-- Pagination -->
+                {% if page and page.has_other_pages %}
+                    {% include 'manage/snippets/pagination.html' with page_obj=page url_name='lfs_manage_topseller' page_info_position='beside' %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body overflow-y-auto">
+
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th class="checkbox" style="width: 40px;">
+                                <input type="checkbox" class="form-check-input select-all-products" />
+                            </th>
+                            <th>{% trans 'Name' %}</th>
+                            <th class="small">{% trans 'SKU' %}</th>
+                            <th class="small">{% trans 'Active' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in page.object_list %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox"
+                                           name="product-{{ product.id }}"
+                                           class="form-check-input select-product" />
+                                </td>
+                                <td>
+                                    <a href="{% url 'lfs_manage_product' product.id %}" class="text-decoration-none">
+                                        {{ product.get_name }}
+                                    </a>
+                                </td>
+                                <td class="small text-muted">
+                                    {{ product.get_sku|default:"---" }}
+                                </td>
+                                <td class="text-center align-middle">
+                                    {% if product.is_active %}
+                                        <i class="bi bi-check-circle-fill text-success"></i>
+                                    {% else %}
+                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    {% trans "No products found." %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer" style="min-height: 60px;">
+            {% if page.object_list %}
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    {% trans 'Add to Topseller' %}
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</form>

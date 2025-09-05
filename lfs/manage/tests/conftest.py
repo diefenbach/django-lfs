@@ -29,7 +29,7 @@ from lfs.shipping.models import ShippingMethod
 from lfs.payment.models import PaymentMethod
 from lfs.addresses.models import Address
 from lfs.page.models import Page
-from lfs.marketing.models import FeaturedProduct
+from lfs.marketing.models import FeaturedProduct, Topseller
 
 # Portlet imports
 from portlets.models import Slot, PortletAssignment, PortletRegistration, PortletBlocking
@@ -788,3 +788,59 @@ def product_with_variant(db, shop):
     )
 
     return parent, variant
+
+
+# Topseller product fixtures
+
+
+@pytest.fixture
+def topseller_products(db, multiple_products):
+    """Multiple Topseller products for testing."""
+    topseller = []
+    for i, product in enumerate(multiple_products[:3]):  # Make first 3 products topseller
+        tp = Topseller.objects.create(
+            product=product,
+            position=(i + 1) * 10,
+        )
+        topseller.append(tp)
+    return topseller
+
+
+@pytest.fixture
+def hierarchical_categories(db):
+    """Create hierarchical categories for testing category filtering."""
+    # Create parent categories
+    parent1 = Category.objects.create(
+        name="Parent Category 1",
+        slug="parent-category-1",
+        position=10,
+    )
+    parent2 = Category.objects.create(
+        name="Parent Category 2",
+        slug="parent-category-2",
+        position=20,
+    )
+
+    # Create child categories
+    child1 = Category.objects.create(
+        name="Child Category 1",
+        slug="child-category-1",
+        position=10,
+        parent=parent1,
+    )
+    child2 = Category.objects.create(
+        name="Child Category 2",
+        slug="child-category-2",
+        position=20,
+        parent=parent1,
+    )
+
+    # Create grandchild category
+    grandchild = Category.objects.create(
+        name="Grandchild Category",
+        slug="grandchild-category",
+        position=10,
+        parent=child1,
+    )
+
+    return [parent1, parent2, child1, child2, grandchild]

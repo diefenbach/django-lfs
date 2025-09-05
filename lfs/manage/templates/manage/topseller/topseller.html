@@ -1,0 +1,101 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n static crispy_forms_tags lfs_tags %}
+
+{% block content %}
+    <div class="lfs-topseller" data-sort-url="{% url 'lfs_manage_sort_topseller' %}">
+        <!-- Filters Card -->
+        <div class="card mt-4 shadow">
+            <div class="card-header bg-primary-subtle">
+                <h2 class="h4 mb-0">
+                    <i class="bi bi-funnel me-2"></i>
+                    {% trans 'Filters' %}
+                </h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <!-- Search Filter -->
+                        <div class="mb-3">
+                            <label for="product-search" class="form-label">{% trans 'Search Products' %}</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                                <input type="search"
+                                       id="product-search"
+                                       class="form-control"
+                                       placeholder="{% trans 'Search products...' %}"
+                                       name="filter"
+                                       value="{{ filter }}"
+                                       hx-get="{{ request.path }}"
+                                       hx-target="#products-list"
+                                       hx-select="#products-list"
+                                       hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                                       hx-swap="outerHTML"
+                                       hx-include="this"
+                                       hx-push-url="true"
+                                       aria-label="{% trans 'Search products' %}">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <!-- Category Filter -->
+                        <div class="mb-3">
+                            <label for="category-filter" class="form-label">{% trans 'Category' %}</label>
+                            <select id="category-filter"
+                                    class="form-select"
+                                    name="topseller_category_filter"
+                                    hx-get="{{ request.path }}"
+                                    hx-target="#products-list"
+                                    hx-select="#products-list"
+                                    hx-swap="outerHTML"
+                                    hx-trigger="change"
+                                    hx-include="this">
+                                <option value="All">{% trans "All Categories" %}</option>
+                                <option value="None" {% if category_filter == "None" %}selected{% endif %}>{% trans "No Category" %}</option>
+                                {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if category_filter == category.id|stringformat:"s" %}selected{% endif %}>
+                                        {{ category.name|safe }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <!-- Amount per page -->
+                        <div class="mb-3">
+                            <label for="amount-filter" class="form-label">{% trans 'Products per Page' %}</label>
+                            <select id="amount-filter"
+                                    class="form-select"
+                                    name="topseller-amount"
+                                    hx-get="{{ request.path }}"
+                                    hx-target="#products-list"
+                                    hx-select="#products-list"
+                                    hx-swap="outerHTML"
+                                    hx-trigger="change"
+                                    hx-include="this">
+                                {% for option in amount_options %}
+                                    <option value="{{ option.value }}" {% if option.selected %}selected{% endif %}>
+                                        {{ option.value }} {% trans "per page" %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Lists -->
+        <div class="row mt-4 flex-grow-1">
+            <div class="col-6">
+                {% include "manage/topseller/_products_list.html" %}
+            </div>
+
+            <div class="col-6">
+                {% include "manage/topseller/_topseller_list.html" %}
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'lfs/manage/js/topseller.js' %}"></script>
+{% endblock %}
