@@ -834,22 +834,6 @@ urlpatterns = [
         name="lfs_manage_delete_discount",
     ),
     path("no-discounts/", lfs.manage.discounts.views.NoDiscountsView.as_view(), name="lfs_manage_no_discounts"),
-    # Discounts / Products
-    re_path(
-        r"^assign-products-to-discount/(?P<discount_id>\d*)",
-        lfs.manage.discounts.views.assign_products,
-        name="lfs_assign_products_to_discount",
-    ),
-    re_path(
-        r"^remove-products-from-discount/(?P<discount_id>\d*)",
-        lfs.manage.discounts.views.remove_products,
-        name="lfs_discount_remove_products",
-    ),
-    re_path(
-        r"^discount-products-inline/(?P<discount_id>\d*)",
-        lfs.manage.discounts.views.products_inline,
-        name="lfs_discount_products_inline",
-    ),
     # Pages
     re_path(r"^add-page$", lfs.manage.pages.views.PageCreateView.as_view(), name="lfs_add_page"),
     re_path(r"^delete-page/(?P<id>\d*)$", lfs.manage.pages.views.PageDeleteView.as_view(), name="lfs_delete_page"),

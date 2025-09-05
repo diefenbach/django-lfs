@@ -221,8 +221,8 @@ class TestCartListView:
         assert cart_data is not None
         assert cart_data["customer"] is None
 
-    def test_cart_list_view_shows_15_carts_per_page(self, authenticated_client, test_carts):
-        """Test that cart list shows 15 carts per page."""
+    def test_cart_list_view_shows_22_carts_per_page(self, authenticated_client, test_carts):
+        """Test that cart list shows 22 carts per page."""
         cart1, cart2 = test_carts
         # Create 20 carts to test pagination (plus the 2 existing = 22 total)
         for i in range(20):
@@ -235,9 +235,9 @@ class TestCartListView:
         assert "carts_page" in response.context
         carts_page = response.context["carts_page"]
 
-        # Should show 15 carts per page in list view
-        assert len(carts_page) == 15
-        assert carts_page.has_next()
+        # Should show 22 carts per page in list view (default page size)
+        assert len(carts_page) == 22
+        assert not carts_page.has_next()  # All carts fit on one page
 
     def test_cart_list_view_contains_cart_data(self, authenticated_client, test_carts):
         """Test that cart list view contains enriched cart data."""
