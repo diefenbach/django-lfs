@@ -93,7 +93,9 @@
                     
                     <!-- Pagination -->
                     {% if carts_page.paginator.num_pages > 1 %}
-                        {% include 'manage/snippets/pagination.html' with page_obj=carts_page url_name='lfs_manage_cart' url_params=cart.id %}
+                        <div class="mt-3">
+                            {% include 'manage/snippets/pagination.html' with page_obj=carts_page url_name='lfs_manage_cart' url_params=cart.id page_info_position='below' %}
+                        </div>
                     {% endif %}
                 </div>
             </aside>
