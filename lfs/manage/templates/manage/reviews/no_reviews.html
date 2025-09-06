@@ -1,0 +1,25 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block help_link %}user/management/customer/reviews.html{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-star display-1 text-muted mb-4"></i>
+                        <h2 class="h4 mb-3">{% trans "No Reviews Available" %}</h2>
+                        <p class="text-muted mb-4">
+                            {% trans "There are currently no reviews in the system. Reviews will appear here once customers start leaving feedback on products." %}
+                        </p>
+                        <a href="{% url 'lfs_manage_products' %}" class="btn btn-primary">
+                            <i class="bi bi-box me-2"></i>{% trans "Manage Products" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

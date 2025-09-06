@@ -1,0 +1,85 @@
+{% load i18n lfs_tags %}
+
+<div class="row">
+    <div class="col">
+        <div class="card shadow">
+            <div class="card-header bg-primary-subtle">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-info-circle me-2"></i>{% trans "Review Information" %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">{% trans "Review ID" %}:</dt>
+                    <dd class="col-sm-8">{{ review.id }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "User Name" %}:</dt>
+                    <dd class="col-sm-8">{{ review.user_name|default:"-" }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "User Email" %}:</dt>
+                    <dd class="col-sm-8">{{ review.user_email|default:"-" }}</dd>
+                    
+                    <dt class="col-sm-4">{% trans "Product" %}:</dt>
+                    <dd class="col-sm-8">
+                        {% if review.content %}
+                            <a href="{% url 'lfs_manage_product' review.content.id %}">{{ review.content.get_name }}</a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </dd>
+                    
+                    <dt class="col-sm-4">{% trans "Rating" %}:</dt>
+                    <dd class="col-sm-8">
+                        {% if review.score %}
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.score %}
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                {% else %}
+                                    <i class="bi bi-star text-muted"></i>
+                                {% endif %}
+                            {% endfor %}
+                            ({{ review.score }}/5)
+                        {% else %}
+                            -
+                        {% endif %}
+                    </dd>
+                    
+                    <dt class="col-sm-4">{% trans "Active" %}:</dt>
+                    <dd class="col-sm-8">
+                        <form method="post" action="{% url 'lfs_set_review_state' review.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <div class="d-flex align-items-center gap-2 flex-nowrap">
+                                {{ state_form.active }}
+                                <button type="submit" class="btn btn-sm btn-primary flex-shrink-0">
+                                    <i class="bi bi-check"></i> {% trans "Update" %}
+                                </button>
+                            </div>
+                        </form>
+                    </dd>
+                    
+                    <dt class="col-sm-4">{% trans "Creation Date" %}:</dt>
+                    <dd class="col-sm-8">{{ review.creation_date|date:"DATETIME_FORMAT" }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>    
+</div>
+
+{% if review.comment %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-primary-subtle">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-chat-text me-2"></i>{% trans "Review Comment" %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="bg-light p-3 rounded">
+                    {{ review.comment|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

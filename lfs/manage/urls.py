@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 import lfs.manage
 import lfs.manage.actions.views
 import lfs.manage.categories.category
@@ -28,7 +28,6 @@ import lfs.manage.views.marketing.rating_mails
 import lfs.manage.topseller.views
 import lfs.manage.orders.views
 import lfs.manage.views.payment
-import lfs.manage.views.review
 import lfs.manage.views.utils
 import lfs.manage.pages.views
 from lfs.catalog.models import Product
@@ -976,23 +975,7 @@ urlpatterns = [
         name="lfs_manage_no_static_blocks",
     ),
     # Reviews
-    re_path(r"^reviews$", lfs.manage.views.review.reviews, name="lfs_manage_reviews"),
-    re_path(r"^review/(?P<review_id>\d*)$", lfs.manage.views.review.review, name="lfs_manage_review"),
-    re_path(r"^set-review-filters$", lfs.manage.views.review.set_review_filters, name="lfs_set_review_filters"),
-    re_path(r"^reset-review-filters$", lfs.manage.views.review.reset_review_filters, name="lfs_reset_review_filters"),
-    re_path(
-        r"^set-review-ordering/(?P<ordering>\w*)$", lfs.manage.views.review.set_ordering, name="lfs_set_review_ordering"
-    ),
-    re_path(
-        r"^set-review-state/(?P<review_id>\d*)$", lfs.manage.views.review.set_review_state, name="lfs_set_review_state"
-    ),
-    re_path(r"^delete-review/(?P<review_id>\d*)$", lfs.manage.views.review.delete_review, name="lfs_delete_review"),
-    re_path(r"^set-reviews-page$", lfs.manage.views.review.set_reviews_page, name="lfs_set_reviews_page"),
-    re_path(
-        r"^set-selectable-reviews-page$",
-        lfs.manage.views.review.set_selectable_reviews_page,
-        name="lfs_set_selectable_reviews_page",
-    ),
+    path("reviews/", include("lfs.manage.reviews.urls")),
     # Shop
     re_path(r"^shop$", lfs.manage.views.shop.manage_shop, name="lfs_manage_shop"),
     re_path(r"^save-shop-data-tab$", lfs.manage.views.shop.save_data_tab, name="lfs_save_shop_data_tab"),

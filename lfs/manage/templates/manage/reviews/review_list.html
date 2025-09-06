@@ -1,0 +1,183 @@
+{% extends "manage/manage_base.html" %}
+{% load compress i18n static crispy_forms_tags lfs_tags %}
+
+{% block help_link %}user/management/customer/reviews.html{% endblock %}
+
+{% block content %}
+    <div class="lfs-reviews">
+        <div class="row">
+            <aside class="scrollable-content col-3 bg-white border-end p-4">  
+                <!-- Filter Form in Sidebar -->
+                <div class="card shadow mb-3">
+                    <div class="card-header bg-primary-subtle p-2">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-funnel me-1"></i>{% trans "Filter" %}
+                        </h6>
+                    </div>
+                    <div class="card-body py-2">
+                        <form method="post" action="{% url 'lfs_apply_review_filters_list' %}">
+                            {% csrf_token %}
+                            <div class="mb-2">
+                                {{ filter_form.name }}
+                                {% if filter_form.name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ filter_form.name.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-2">
+                                {{ filter_form.active }}
+                                {% if filter_form.active.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ filter_form.active.errors.0 }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="btn-group d-flex mt-2">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-check-circle me-1"></i>{% trans "Apply" %}
+                                </button>
+                                <a href="{% url 'lfs_reset_review_filters' %}" class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-arrow-clockwise me-1"></i>{% trans "Reset" %}
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="col p-4 scrollable-content">
+                <!-- Reviews Table -->
+                {% if reviews_with_data %}
+                    <div class="card shadow" style="height: calc(100vh - 250px);">
+                        <div class="card-header bg-primary-subtle">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="h4 mb-0">
+                                    <i class="bi bi-star me-2"></i>
+                                    {% trans 'Reviews' %}
+                                </h2>
+                                <!-- Pagination -->
+                                {% if reviews_page.paginator.num_pages > 1 %}
+                                    {% include 'manage/snippets/pagination.html' with page_obj=reviews_page url_name='lfs_manage_reviews' page_info_position='beside' %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-body overflow-y-auto">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <a href="{% url 'lfs_set_review_ordering' 'id' %}" class="text-decoration-none">
+                                                    {% trans "ID" %}
+                                                    {% if ordering == 'id' %}
+                                                        <i class="bi bi-sort-down"></i>
+                                                    {% endif %}
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a href="{% url 'lfs_set_review_ordering' 'user_name' %}" class="text-decoration-none">
+                                                    {% trans "User" %}
+                                                    {% if ordering == 'user_name' %}
+                                                        <i class="bi bi-sort-down"></i>
+                                                    {% endif %}
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a href="{% url 'lfs_set_review_ordering' 'product' %}" class="text-decoration-none">
+                                                    {% trans "Product" %}
+                                                    {% if ordering == 'product' %}
+                                                        <i class="bi bi-sort-down"></i>
+                                                    {% endif %}
+                                                </a>
+                                            </th>
+                                            <th>{% trans "Rating" %}</th>
+                                            <th>
+                                                <a href="{% url 'lfs_set_review_ordering' 'active' %}" class="text-decoration-none">
+                                                    {% trans "Active" %}
+                                                    {% if ordering == 'active' %}
+                                                        <i class="bi bi-sort-down"></i>
+                                                    {% endif %}
+                                                </a>
+                                            </th>
+                                            <th>
+                                                <a href="{% url 'lfs_set_review_ordering' 'creation_date' %}" class="text-decoration-none">
+                                                    {% trans "Created" %}
+                                                    {% if ordering == 'creation_date' %}
+                                                        <i class="bi bi-sort-down"></i>
+                                                    {% endif %}
+                                                </a>
+                                            </th>
+                                            <th class="text-center">{% trans "Actions" %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for review_data in reviews_with_data %}
+                                        <tr class="review-row" style="cursor: pointer;" onclick="window.location.href='{% url 'lfs_manage_review' review_data.review.id %}'">
+                                            <td>
+                                                #{{ review_data.review.id }}
+                                            </td>
+                                            <td>
+                                                {{ review_data.user_display }}
+                                            </td>
+                                            <td>
+                                                {{ review_data.product_name|truncatechars:50 }}
+                                            </td>
+                                            <td>
+                                                {{ review_data.rating_display }}
+                                            </td>
+                                            <td>
+                                                {% if review_data.review.active %}
+                                                    <span class="badge bg-success"><i class="bi bi-check"></i></span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary"><i class="bi bi-x"></i></span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <div>{{ review_data.review.creation_date|date:"SHORT_DATETIME_FORMAT" }}</div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="{% url 'lfs_manage_review' review_data.review.id %}" 
+                                                        class="btn btn-outline-primary btn-sm"
+                                                        title="{% trans 'View Review' %}">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                    <button class="btn btn-outline-danger btn-sm"
+                                                            onclick="event.stopPropagation();"
+                                                            hx-get="{% url 'lfs_manage_delete_review_confirm' review_data.review.id %}" 
+                                                            hx-target="#modal-body-lg"
+                                                            hx-swap="innerHTML"
+                                                            title="{% trans 'Delete Review' %}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                {% else %}
+                    <!-- No Reviews Found -->
+                    <div class="card">
+                        <div class="card-body text-center py-5">
+                            <i class="bi bi-star display-1 text-muted"></i>
+                            <h4 class="mt-3">{% trans "No reviews found" %}</h4>
+                            <p class="text-muted">{% trans "No reviews match your current filter criteria." %}</p>
+                            <a href="{% url 'lfs_reset_review_filters' %}" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-clockwise me-1"></i>{% trans "Reset Filters" %}
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Include required modal sizes -->
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+{% endblock %}
