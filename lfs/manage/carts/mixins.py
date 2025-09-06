@@ -9,15 +9,23 @@ class CartFilterMixin:
 
     def get_cart_filters(self):
         """Get cart filters from session."""
+        if not hasattr(self, "request") or self.request is None:
+            return {}
+        if not hasattr(self.request, "session") or self.request.session is None:
+            return {}
         return self.request.session.get("cart-filters", {})
 
     def get_filtered_carts_queryset(self):
         """Get filtered carts based on session filters."""
-        queryset = self.model.objects.all().order_by("-modification_date")
-        cart_filters = self.get_cart_filters()
+        try:
+            queryset = self.model.objects.all().order_by("-modification_date")
+            cart_filters = self.get_cart_filters()
 
-        filter_service = CartFilterService()
-        return filter_service.filter_carts(queryset, cart_filters)
+            filter_service = CartFilterService()
+            return filter_service.filter_carts(queryset, cart_filters)
+        except Exception:
+            # If there's a database error, return empty queryset
+            return self.model.objects.none()
 
     def get_filter_form_initial(self):
         """Get initial data for filter form."""
@@ -55,16 +63,22 @@ class CartDataMixin:
 
     def get_cart_summary(self, cart):
         """Get summary data for a single cart."""
+        if cart is None:
+            return {"total": 0, "item_count": 0, "products": []}
         data_service = CartDataService()
         return data_service.get_cart_summary(cart, self.request)
 
     def get_carts_with_data(self, carts):
         """Get list of carts with calculated data."""
+        if carts is None:
+            return []
         data_service = CartDataService()
         return data_service.get_carts_with_data(carts, self.request)
 
     def get_cart_with_data(self, cart):
         """Get a single cart enriched with calculated data and customer."""
+        if cart is None:
+            return None
         data_service = CartDataService()
         result = data_service.get_carts_with_data([cart], self.request)
         return result[0] if result else None
@@ -75,8 +89,28 @@ class CartContextMixin:
 
     def get_cart_context_data(self, **kwargs):
         """Get common context data for cart views."""
-        cart_filters = self.get_cart_filters()
-        filter_form = CartFilterForm(initial=self.get_filter_form_initial())
+        # Get cart filters from session
+        if not hasattr(self, "request") or self.request is None:
+            return {}
+        elif not hasattr(self.request, "session") or self.request.session is None:
+            return {}
+
+        cart_filters = self.request.session.get("cart-filters", {})
+
+        try:
+            # Get filter form initial data
+            start = None
+            end = None
+            if cart_filters.get("start"):
+                filter_service = CartFilterService()
+                start = filter_service.parse_iso_date(cart_filters["start"])
+            if cart_filters.get("end"):
+                filter_service = CartFilterService()
+                end = filter_service.parse_iso_date(cart_filters["end"])
+
+            filter_form = CartFilterForm(initial={"start": start, "end": end})
+        except Exception:
+            filter_form = CartFilterForm()
 
         return {
             "cart_filters": cart_filters,

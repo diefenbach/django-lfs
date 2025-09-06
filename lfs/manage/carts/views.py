@@ -114,6 +114,7 @@ class ApplyCartFiltersView(PermissionRequiredMixin, FormView):
 
     permission_required = "core.manage_shop"
     form_class = CartFilterForm
+    template_name = "manage/cart/cart_list.html"  # Fallback template for form errors
 
     def get_success_url(self) -> str:
         """Redirects back to the cart view or cart list."""

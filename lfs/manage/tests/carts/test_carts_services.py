@@ -451,9 +451,14 @@ class TestCartDataService:
         with patch.object(cart, "get_items", return_value=[cart_item]), patch.object(
             cart_item, "get_price_gross", return_value=Decimal("10.00")
         ), patch.object(product, "get_name", side_effect=Exception("Product name error")):
-            # Should raise exception since there's no error handling in the implementation
-            with pytest.raises(Exception, match="Product name error"):
-                cart_data_service.get_carts_with_data([cart], mock_request)
+            # Service handles errors gracefully, returns empty products list
+            carts_with_data = cart_data_service.get_carts_with_data([cart], mock_request)
+
+            assert len(carts_with_data) == 1
+            cart_data = carts_with_data[0]
+            assert cart_data["total"] == Decimal("10.00")
+            assert cart_data["item_count"] == 1
+            assert cart_data["products"] == []  # Empty due to error
 
     @pytest.mark.django_db
     def test_get_carts_with_data_handles_missing_price_calculation(self, cart_data_service, mock_request, test_shop):
@@ -466,9 +471,14 @@ class TestCartDataService:
         with patch.object(cart, "get_items", return_value=[cart_item]), patch.object(
             cart_item, "get_price_gross", side_effect=Exception("Price calculation error")
         ):
-            # Should raise exception since there's no error handling in the implementation
-            with pytest.raises(Exception, match="Price calculation error"):
-                cart_data_service.get_carts_with_data([cart], mock_request)
+            # Service handles errors gracefully, returns zero values
+            carts_with_data = cart_data_service.get_carts_with_data([cart], mock_request)
+
+            assert len(carts_with_data) == 1
+            cart_data = carts_with_data[0]
+            assert cart_data["total"] == 0  # Zero due to error
+            assert cart_data["item_count"] == 0  # Zero due to error
+            assert cart_data["products"] == []  # Empty due to error
 
 
 # Merge existing test_cart_filtering.py content

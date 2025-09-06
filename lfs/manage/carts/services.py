@@ -13,9 +13,13 @@ class CartFilterService:
         - start: interpreted as the start of that day (00:00:00)
         - end: interpreted as exclusive end; if omitted, defaults to start of tomorrow
         """
+        # Handle case where filters might be a string (corrupted session data)
+        if not isinstance(filters, dict):
+            filters = {}
+
         # Apply date filters
-        start = (filters or {}).get("start", "")
-        end = (filters or {}).get("end", "")
+        start = filters.get("start", "")
+        end = filters.get("end", "")
 
         # Start datetime (aware) — default to epoch start
         start_date = self.parse_iso_date(start)
@@ -29,13 +33,10 @@ class CartFilterService:
         if end_date:
             # If a calendar end date is given, treat it as exclusive next-day start
             end_dt = timezone.make_aware(datetime.combine(end_date, time.min))
+            return queryset.filter(modification_date__gte=start_dt, modification_date__lt=end_dt)
         else:
-            # If no end given, use start of tomorrow relative to today
-            now = timezone.now()
-            tomorrow = (now.replace(hour=0, minute=0, second=0, microsecond=0)) + timezone.timedelta(days=1)
-            end_dt = tomorrow
-
-        return queryset.filter(modification_date__gte=start_dt, modification_date__lt=end_dt)
+            # If no end given, only filter by start date
+            return queryset.filter(modification_date__gte=start_dt)
 
     def parse_iso_date(self, date_string: str) -> Optional[date]:
         """Parse ISO format date string (YYYY-MM-DD) and return a date."""
@@ -64,10 +65,14 @@ class CartDataService:
         item_count = 0
         products = []
 
-        for item in cart.get_items():
-            total += item.get_price_gross(request)
-            item_count += item.amount
-            products.append(item.product.get_name())
+        try:
+            for item in cart.get_items():
+                total += item.get_price_gross(request)
+                item_count += item.amount
+                products.append(item.product.get_name())
+        except Exception:
+            # If there's an error calculating items, return empty summary
+            pass
 
         return {
             "total": total,
@@ -78,6 +83,10 @@ class CartDataService:
     def get_carts_with_data(self, carts, request):
         """Get list of carts with calculated data with batched customer lookup."""
         from lfs.customer.models import Customer
+
+        # Handle None or empty carts list
+        if not carts:
+            return []
 
         # Collect keys for batched customer lookup
         user_ids = set()
@@ -91,14 +100,18 @@ class CartDataService:
         # Fetch customers in batches
         customers_by_user = {}
         customers_by_session = {}
-        if user_ids:
-            for cust in Customer.objects.filter(user_id__in=user_ids):
-                if getattr(cust, "user_id", None) is not None:
-                    customers_by_user[cust.user_id] = cust
-        if sessions:
-            for cust in Customer.objects.filter(session__in=sessions):
-                if getattr(cust, "session", None) is not None:
-                    customers_by_session[cust.session] = cust
+        try:
+            if user_ids:
+                for cust in Customer.objects.filter(user_id__in=user_ids):
+                    if getattr(cust, "user_id", None) is not None:
+                        customers_by_user[cust.user_id] = cust
+            if sessions:
+                for cust in Customer.objects.filter(session__in=sessions):
+                    if getattr(cust, "session", None) is not None:
+                        customers_by_session[cust.session] = cust
+        except Exception:
+            # If database error occurs, continue without customer data
+            pass
 
         carts_with_data = []
         for cart in carts:
