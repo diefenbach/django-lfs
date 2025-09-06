@@ -1,0 +1,50 @@
+from django.urls import path
+import lfs.manage.static_blocks.views
+
+urlpatterns = [
+    path(
+        "add-static-block",
+        lfs.manage.static_blocks.views.StaticBlockCreateView.as_view(),
+        name="lfs_manage_add_static_block",
+    ),
+    path(
+        "delete-static-block-confirm/<int:id>",
+        lfs.manage.static_blocks.views.StaticBlockDeleteConfirmView.as_view(),
+        name="lfs_manage_delete_static_block_confirm",
+    ),
+    path(
+        "delete-static-block/<int:id>",
+        lfs.manage.static_blocks.views.StaticBlockDeleteView.as_view(),
+        name="lfs_delete_static_block",
+    ),
+    path(
+        "preview-static-block/<int:id>",
+        lfs.manage.static_blocks.views.StaticBlockPreviewView.as_view(),
+        name="lfs_preview_static_block",
+    ),
+    path(
+        "static-blocks",
+        lfs.manage.static_blocks.views.ManageStaticBlocksView.as_view(),
+        name="lfs_manage_static_blocks",
+    ),
+    path(
+        "static-block/<int:id>/",
+        lfs.manage.static_blocks.views.StaticBlockDataView.as_view(),
+        name="lfs_manage_static_block",
+    ),
+    path(
+        "static-block/<int:id>/files/",
+        lfs.manage.static_blocks.views.StaticBlockFilesView.as_view(),
+        name="lfs_manage_static_block_files",
+    ),
+    path(
+        "update_files/<str:id>",
+        lfs.manage.static_blocks.views.StaticBlockFilesView.as_view(),
+        name="lfs_manage_update_files_sb",
+    ),
+    path(
+        "no-static-blocks",
+        lfs.manage.static_blocks.views.NoStaticBlocksView.as_view(),
+        name="lfs_manage_no_static_blocks",
+    ),
+]

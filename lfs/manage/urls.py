@@ -1,12 +1,10 @@
 from django.urls import path, re_path, include
 import lfs.manage
-import lfs.manage.actions.views
 import lfs.manage.categories.category
 import lfs.manage.categories.portlet
 import lfs.manage.categories.products
 import lfs.manage.categories.view
 import lfs.manage.customer_tax.views
-import lfs.manage.discounts.views
 import lfs.manage.images.views
 import lfs.manage.information.views
 import lfs.manage.product
@@ -18,29 +16,21 @@ import lfs.manage.product_taxes.views
 import lfs.manage.property.views
 import lfs.manage.property_groups.views
 import lfs.manage.shipping_methods.views
-import lfs.manage.static_blocks.views
-import lfs.manage.carts.views
 import lfs.manage.views.customer
 import lfs.manage.views.criteria
 import lfs.manage.views.dashboard
 import lfs.manage.views.export
 import lfs.manage.views.marketing.rating_mails
-import lfs.manage.topseller.views
-import lfs.manage.orders.views
 import lfs.manage.views.payment
 import lfs.manage.views.utils
-import lfs.manage.pages.views
 from lfs.catalog.models import Product
 from lfs.catalog.models import Category
 from lfs.core.models import Shop
 from lfs.manage.product.seo import SEOForm as ProductSEOForm
 from lfs.manage.views.shop import ShopSEOView
 from lfs.manage.seo.views import SEOView
-from lfs.manage.delivery_times import views as delivery_times_views
 from lfs.manage.manufacturers import views as manufacturers_views
 from lfs.manage.manufacturers import products as manufacturers_products_views
-from lfs.manage.featured import views as featured_views
-import lfs.manage.voucher.views
 from lfs.manage.views import lfs_portlets
 from lfs.manage.product import product
 from lfs.manufacturer.models import Manufacturer
@@ -49,36 +39,7 @@ from lfs.manufacturer.models import Manufacturer
 urlpatterns = [
     path("", lfs.manage.views.dashboard.dashboard, name="lfs_manage_dashboard"),
     # Delivery Times
-    path(
-        "delivery-times",
-        delivery_times_views.ManageDeliveryTimesView.as_view(),
-        name="lfs_manage_delivery_times",
-    ),
-    path(
-        "delivery-time/<int:pk>",
-        delivery_times_views.DeliveryTimeUpdateView.as_view(),
-        name="lfs_manage_delivery_time",
-    ),
-    path(
-        "add-delivery-time",
-        delivery_times_views.DeliveryTimeCreateView.as_view(),
-        name="lfs_manage_add_delivery_time",
-    ),
-    path(
-        "delete-delivery-time/<int:pk>",
-        delivery_times_views.DeliveryTimeDeleteView.as_view(),
-        name="lfs_manage_delete_delivery_time",
-    ),
-    path(
-        "delete-delivery-time-confirm/<int:pk>",
-        delivery_times_views.DeliveryTimeDeleteConfirmView.as_view(),
-        name="lfs_manage_delete_delivery_time_confirm",
-    ),
-    path(
-        "no-delivery-times",
-        delivery_times_views.NoDeliveryTimesView.as_view(),
-        name="lfs_no_delivery_times",
-    ),
+    path("", include("lfs.manage.delivery_times.urls")),
     # Manufacturer
     re_path(
         r"^manufacturer-dispatcher$", manufacturers_views.manufacturer_dispatcher, name="lfs_manufacturer_dispatcher"
@@ -152,26 +113,7 @@ urlpatterns = [
         name="lfs_manufacturer_load_products_tab",
     ),
     # Featured Products
-    path(
-        "featured",
-        featured_views.ManageFeaturedView.as_view(),
-        name="lfs_manage_featured",
-    ),
-    path(
-        "add-featured",
-        featured_views.add_featured,
-        name="lfs_manage_add_featured",
-    ),
-    path(
-        "update-featured",
-        featured_views.update_featured,
-        name="lfs_manage_update_featured",
-    ),
-    path(
-        "sort-featured",
-        featured_views.sort_featured,
-        name="lfs_manage_sort_featured",
-    ),
+    path("", include("lfs.manage.featured.urls")),
     # Marketing
     re_path(
         r"^manage-rating-mails$",
@@ -182,72 +124,9 @@ urlpatterns = [
         r"^send-rating-mails$", lfs.manage.views.marketing.rating_mails.send_rating_mails, name="lfs_send_rating_mails"
     ),
     # Topseller Products
-    path(
-        "topseller",
-        lfs.manage.topseller.views.ManageTopsellerView.as_view(),
-        name="lfs_manage_topseller",
-    ),
-    path(
-        "add-topseller",
-        lfs.manage.topseller.views.add_topseller,
-        name="lfs_manage_add_topseller",
-    ),
-    path(
-        "update-topseller",
-        lfs.manage.topseller.views.update_topseller,
-        name="lfs_manage_update_topseller",
-    ),
-    path(
-        "sort-topseller",
-        lfs.manage.topseller.views.sort_topseller,
-        name="lfs_manage_sort_topseller",
-    ),
-    re_path(
-        r"^topseller-inline$",
-        lfs.manage.topseller.views.manage_topseller_inline,
-        name="lfs_manage_topseller_inline",
-    ),
+    path("", include("lfs.manage.topseller.urls")),
     # Voucher Groups
-    re_path(
-        r"^vouchers$",
-        lfs.manage.voucher.views.ManageVoucherGroupsView.as_view(),
-        name="lfs_manage_voucher_groups",
-    ),
-    re_path(
-        r"^voucher-group/(?P<id>\d+)$",
-        lfs.manage.voucher.views.VoucherGroupDataView.as_view(),
-        name="lfs_manage_voucher_group",
-    ),
-    re_path(
-        r"^voucher-group/(?P<id>\d+)/vouchers$",
-        lfs.manage.voucher.views.VoucherGroupVouchersView.as_view(),
-        name="lfs_manage_voucher_group_vouchers",
-    ),
-    re_path(
-        r"^voucher-group/(?P<id>\d+)/options$",
-        lfs.manage.voucher.views.VoucherGroupOptionsView.as_view(),
-        name="lfs_manage_voucher_group_options",
-    ),
-    re_path(
-        r"^add-voucher-group$",
-        lfs.manage.voucher.views.VoucherGroupCreateView.as_view(),
-        name="lfs_manage_add_voucher_group",
-    ),
-    re_path(
-        r"^delete-voucher-group-confirm/(?P<id>\d+)$",
-        lfs.manage.voucher.views.VoucherGroupDeleteConfirmView.as_view(),
-        name="lfs_manage_delete_voucher_group_confirm",
-    ),
-    re_path(
-        r"^delete-voucher-group/(?P<id>\d+)$",
-        lfs.manage.voucher.views.VoucherGroupDeleteView.as_view(),
-        name="lfs_delete_voucher_group",
-    ),
-    re_path(
-        r"^no-voucher-groups$",
-        lfs.manage.voucher.views.NoVoucherGroupsView.as_view(),
-        name="lfs_manage_no_voucher_groups",
-    ),
+    path("", include("lfs.manage.voucher.urls")),
     # Portlets
     re_path(
         r"^add-portlet/(?P<object_type_id>\d+)/(?P<object_id>\d+)$",
@@ -579,56 +458,7 @@ urlpatterns = [
         name="lfs_manage_update_related_products",
     ),
     # Carts
-    path(
-        "carts",
-        lfs.manage.carts.views.CartListView.as_view(),
-        name="lfs_manage_carts",
-    ),
-    path(
-        "cart/<int:id>/",
-        lfs.manage.carts.views.CartDataView.as_view(),
-        name="lfs_manage_cart",
-    ),
-    path(
-        "cart/<int:id>/apply-filters/",
-        lfs.manage.carts.views.ApplyCartFiltersView.as_view(),
-        name="lfs_apply_cart_filters",
-    ),
-    path(
-        "cart/<int:id>/apply-predefined-filter/<str:filter_type>/",
-        lfs.manage.carts.views.ApplyPredefinedCartFilterView.as_view(),
-        name="lfs_apply_predefined_cart_filter",
-    ),
-    path(
-        "carts/apply-filters/",
-        lfs.manage.carts.views.ApplyCartFiltersView.as_view(),
-        name="lfs_apply_cart_filters_list",
-    ),
-    path(
-        "carts/apply-predefined-filter/<str:filter_type>/",
-        lfs.manage.carts.views.ApplyPredefinedCartFilterView.as_view(),
-        name="lfs_apply_predefined_cart_filter_list",
-    ),
-    path(
-        "delete-cart-confirm/<int:id>",
-        lfs.manage.carts.views.CartDeleteConfirmView.as_view(),
-        name="lfs_manage_delete_cart_confirm",
-    ),
-    path(
-        "delete-cart/<int:id>",
-        lfs.manage.carts.views.CartDeleteView.as_view(),
-        name="lfs_delete_cart",
-    ),
-    path(
-        "no-carts",
-        lfs.manage.carts.views.NoCartsView.as_view(),
-        name="lfs_manage_no_carts",
-    ),
-    path(
-        "reset-cart-filters",
-        lfs.manage.carts.views.ResetCartFiltersView.as_view(),
-        name="lfs_reset_cart_filters",
-    ),
+    path("", include("lfs.manage.carts.urls")),
     # Categories
     re_path(r"^categories$", lfs.manage.categories.category.manage_categories, name="lfs_manage_categories"),
     re_path(
@@ -808,47 +638,9 @@ urlpatterns = [
         name="lfs_manage_no_shipping_methods",
     ),
     # Discounts
-    path("discounts/", lfs.manage.discounts.views.ManageDiscountsView.as_view(), name="lfs_manage_discounts"),
-    path("discount/<int:id>/", lfs.manage.discounts.views.DiscountDataView.as_view(), name="lfs_manage_discount"),
-    path(
-        "discount/<int:id>/criteria/",
-        lfs.manage.discounts.views.DiscountCriteriaView.as_view(),
-        name="lfs_manage_discount_criteria",
-    ),
-    path(
-        "discount/<int:id>/products/",
-        lfs.manage.discounts.views.DiscountProductsView.as_view(),
-        name="lfs_manage_discount_products",
-    ),
-    path("add-discount/", lfs.manage.discounts.views.DiscountCreateView.as_view(), name="lfs_manage_add_discount"),
-    path(
-        "delete-discount-confirm/<int:id>/",
-        lfs.manage.discounts.views.DiscountDeleteConfirmView.as_view(),
-        name="lfs_manage_delete_discount_confirm",
-    ),
-    path(
-        "delete-discount/<int:id>/",
-        lfs.manage.discounts.views.DiscountDeleteView.as_view(),
-        name="lfs_manage_delete_discount",
-    ),
-    path("no-discounts/", lfs.manage.discounts.views.NoDiscountsView.as_view(), name="lfs_manage_no_discounts"),
+    path("", include("lfs.manage.discounts.urls")),
     # Pages
-    re_path(r"^add-page$", lfs.manage.pages.views.PageCreateView.as_view(), name="lfs_add_page"),
-    re_path(r"^delete-page/(?P<id>\d*)$", lfs.manage.pages.views.PageDeleteView.as_view(), name="lfs_delete_page"),
-    re_path(
-        r"^delete-page-confirm/(?P<id>\d*)$",
-        lfs.manage.pages.views.PageDeleteConfirmView.as_view(),
-        name="lfs_delete_page_confirm",
-    ),
-    re_path(r"^manage-pages$", lfs.manage.pages.views.ManagePagesView.as_view(), name="lfs_manage_pages"),
-    re_path(r"^manage-page/(?P<id>\d*)$", lfs.manage.pages.views.PageDataView.as_view(), name="lfs_manage_page"),
-    re_path(r"^manage-page-seo/(?P<id>\d*)$", lfs.manage.pages.views.PageSEOView.as_view(), name="lfs_manage_page_seo"),
-    re_path(
-        r"^manage-page-portlets/(?P<id>\d*)$",
-        lfs.manage.pages.views.PagePortletsView.as_view(),
-        name="lfs_manage_page_portlets",
-    ),
-    re_path(r"^page-by-id/(?P<id>\d*)$", lfs.manage.pages.views.PageViewByIDView.as_view(), name="lfs_page_view_by_id"),
+    path("", include("lfs.manage.pages.urls")),
     # Payment
     re_path(r"^payment$", lfs.manage.views.payment.manage_payment, name="lfs_manage_payment"),
     re_path(
@@ -894,24 +686,7 @@ urlpatterns = [
     ),
     re_path(r"^sort-payment-methods$", lfs.manage.views.payment.sort_payment_methods, name="lfs_sort_payment_methods"),
     # Orders
-    re_path(r"^manage-orders$", lfs.manage.orders.views.manage_orders, name="lfs_manage_orders"),
-    re_path(r"^orders$", lfs.manage.orders.views.orders_view, name="lfs_orders"),
-    # Inline endpoints no longer used after clean cut; keep temporarily for compatibility if referenced
-    re_path(r"^order/(?P<order_id>\d*)$", lfs.manage.orders.views.order_view, name="lfs_manage_order"),
-    re_path(
-        r"^delete-order/(?P<order_id>\d*)$", lfs.manage.orders.views.OrderDeleteView.as_view(), name="lfs_delete_order"
-    ),
-    re_path(r"^send-order/(?P<order_id>\d*)$", lfs.manage.orders.views.send_order, name="lfs_send_order"),
-    # Order filters (class-based equivalents wired through function delegations for now)
-    path("set-orders-filter", lfs.manage.orders.views.ApplyOrderFiltersView.as_view(), name="lfs_set_order_filter"),
-    path(
-        "set-orders-filter-date/<str:filter_type>",
-        lfs.manage.orders.views.ApplyPredefinedOrderFilterView.as_view(),
-        name="lfs_apply_predefined_order_filter",
-    ),
-    path("reset-order-filter", lfs.manage.orders.views.ResetOrderFiltersView.as_view(), name="lfs_reset_order_filters"),
-    # Deprecated: inline pagination endpoints removed in clean cut
-    re_path(r"^change-order-state$", lfs.manage.orders.views.change_order_state, name="lfs_change_order_state"),
+    path("", include("lfs.manage.orders.urls")),
     # Order numbers
     re_path(
         r"^save-order-numbers-tab$", lfs.manage.views.shop.save_order_numbers_tab, name="lfs_save_order_numbers_tab"
@@ -929,51 +704,7 @@ urlpatterns = [
         name="lfs_delete_criterion",
     ),
     # Static blocks
-    path(
-        "add-static-block",
-        lfs.manage.static_blocks.views.StaticBlockCreateView.as_view(),
-        name="lfs_manage_add_static_block",
-    ),
-    path(
-        "delete-static-block-confirm/<int:id>",
-        lfs.manage.static_blocks.views.StaticBlockDeleteConfirmView.as_view(),
-        name="lfs_manage_delete_static_block_confirm",
-    ),
-    path(
-        "delete-static-block/<int:id>",
-        lfs.manage.static_blocks.views.StaticBlockDeleteView.as_view(),
-        name="lfs_delete_static_block",
-    ),
-    path(
-        "preview-static-block/<int:id>",
-        lfs.manage.static_blocks.views.StaticBlockPreviewView.as_view(),
-        name="lfs_preview_static_block",
-    ),
-    path(
-        "static-blocks",
-        lfs.manage.static_blocks.views.ManageStaticBlocksView.as_view(),
-        name="lfs_manage_static_blocks",
-    ),
-    path(
-        "static-block/<int:id>/",
-        lfs.manage.static_blocks.views.StaticBlockDataView.as_view(),
-        name="lfs_manage_static_block",
-    ),
-    path(
-        "static-block/<int:id>/files/",
-        lfs.manage.static_blocks.views.StaticBlockFilesView.as_view(),
-        name="lfs_manage_static_block_files",
-    ),
-    path(
-        "update_files/<str:id>",
-        lfs.manage.static_blocks.views.StaticBlockFilesView.as_view(),
-        name="lfs_manage_update_files_sb",
-    ),
-    path(
-        "no-static-blocks",
-        lfs.manage.static_blocks.views.NoStaticBlocksView.as_view(),
-        name="lfs_manage_no_static_blocks",
-    ),
+    path("", include("lfs.manage.static_blocks.urls")),
     # Reviews
     path("reviews/", include("lfs.manage.reviews.urls")),
     # Shop
@@ -985,17 +716,7 @@ urlpatterns = [
         name="lfs_save_shop_default_values_tab",
     ),
     # Actions
-    path("actions/", lfs.manage.actions.views.manage_actions, name="lfs_manage_actions"),
-    path("action/<int:pk>/", lfs.manage.actions.views.ActionUpdateView.as_view(), name="lfs_manage_action"),
-    path("add-action/", lfs.manage.actions.views.ActionCreateView.as_view(), name="lfs_add_action"),
-    path(
-        "delete-action-confirm/<int:pk>/",
-        lfs.manage.actions.views.ActionDeleteConfirmView.as_view(),
-        name="lfs_manage_delete_action_confirm",
-    ),
-    path("delete-action/<int:pk>/", lfs.manage.actions.views.ActionDeleteView.as_view(), name="lfs_delete_action"),
-    path("no-actions/", lfs.manage.actions.views.NoActionsView.as_view(), name="lfs_no_actions"),
-    path("sort-actions/", lfs.manage.actions.views.sort_actions, name="lfs_sort_actions"),
+    path("", include("lfs.manage.actions.urls")),
     # Product Taxes
     re_path(r"^add-product-tax$", lfs.manage.product_taxes.views.add_tax, name="lfs_manage_add_tax"),
     re_path(r"^delete-product-tax/(?P<id>\d*)$", lfs.manage.product_taxes.views.delete_tax, name="lfs_delete_tax"),
