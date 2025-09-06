@@ -32,14 +32,14 @@
         {% if page_obj.has_previous %}
             <li class="page-item">
                 <a class="page-link d-flex align-items-center justify-content-center" 
-                   href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1{% endif %}"
+                   href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1{% else %}{% url url_name %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page=1{% endif %}"
                    title="{% trans 'First page' %}">
                     <i class="bi bi-chevron-double-left"></i>
                 </a>
             </li>
             <li class="page-item">
                 <a class="page-link d-flex align-items-center justify-content-center" 
-                   href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}{% endif %}"
+                   href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}{% else %}{% url url_name %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ page_obj.previous_page_number }}{% endif %}"
                    title="{% trans 'Previous page' %}">
                     <i class="bi bi-chevron-left"></i>
                 </a>
@@ -56,7 +56,7 @@
                     {% else %}
                         <li class="page-item">
                             <a class="page-link d-flex align-items-center justify-content-center" 
-                               href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}{% else %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}{% endif %}">
+                               href="{% if url_params %}{% url url_name url_params %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}{% else %}{% url url_name %}?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}{% endif %}">
                                 {{ num }}
                             </a>
                         </li>

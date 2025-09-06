@@ -844,3 +844,72 @@ def hierarchical_categories(db):
     )
 
     return [parent1, parent2, child1, child2, grandchild]
+
+
+# Customer-related fixtures for edge case testing
+
+@pytest.fixture
+def mock_request():
+    """Mock request object for testing."""
+    factory = RequestFactory()
+    request = factory.get("/")
+    request.session = {}
+    return request
+
+
+@pytest.fixture
+def user_with_customer(db):
+    """User with associated customer and address."""
+    user = User.objects.create_user(username="testuser", email="test@example.com", password="testpass123")
+    customer = Customer.objects.create(user=user, session="test_session_123")
+    address = Address.objects.create(
+        customer=customer,
+        firstname="John",
+        lastname="Doe",
+        line1="123 Main St",
+        city="Test City",
+        zip_code="12345",
+        email="john.doe@example.com",
+    )
+    return user, customer, address
+
+
+@pytest.fixture
+def multiple_customers(db):
+    """Multiple customers for testing pagination and filtering."""
+    customers = []
+    
+    # Create user-based customers
+    for i in range(15):
+        user = User.objects.create_user(
+            username=f"user{i+1}", 
+            email=f"user{i+1}@example.com", 
+            password="testpass123"
+        )
+        customer = Customer.objects.create(user=user, session=f"user_session_{i+1}")
+        Address.objects.create(
+            customer=customer,
+            firstname=f"User{i+1}",
+            lastname="Test",
+            line1=f"{i+1}00 Main St",
+            city="Test City",
+            zip_code=f"{10000+i}",
+            email=f"user{i+1}@example.com",
+        )
+        customers.append(customer)
+    
+    # Create session-based customers
+    for i in range(5):
+        customer = Customer.objects.create(session=f"session_{i+1}")
+        Address.objects.create(
+            customer=customer,
+            firstname=f"Session{i+1}",
+            lastname="User",
+            line1=f"{i+16}00 Main St",
+            city="Test City",
+            zip_code=f"{10000+i+15}",
+            email=f"session{i+1}@example.com",
+        )
+        customers.append(customer)
+    
+    return customers

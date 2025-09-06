@@ -16,7 +16,7 @@ import lfs.manage.product_taxes.views
 import lfs.manage.property.views
 import lfs.manage.property_groups.views
 import lfs.manage.shipping_methods.views
-import lfs.manage.views.customer
+from lfs.manage.customers import urls as customers_urls
 import lfs.manage.views.criteria
 import lfs.manage.views.dashboard
 import lfs.manage.views.export
@@ -515,33 +515,8 @@ urlpatterns = [
     ),
     re_path(r"^sort-categories$", lfs.manage.categories.category.sort_categories, name="lfs_sort_categories"),
     re_path(r"^no-categories$", lfs.manage.categories.view.no_categories, name="lfs_manage_no_categories"),
-    # Customers
-    re_path(r"^customers$", lfs.manage.views.customer.customers, name="lfs_manage_customers"),
-    re_path(r"^customers-inline$", lfs.manage.views.customer.customers_inline, name="lfs_customers_inline"),
-    re_path(r"^customer/(?P<customer_id>\d*)$", lfs.manage.views.customer.customer, name="lfs_manage_customer"),
-    re_path(
-        r"^customer-inline/(?P<customer_id>\d*)$", lfs.manage.views.customer.customer_inline, name="lfs_customer_inline"
-    ),
-    re_path(r"^set-customer-filters$", lfs.manage.views.customer.set_customer_filters, name="lfs_set_customer_filters"),
-    re_path(
-        r"^reset-customer-filters$", lfs.manage.views.customer.reset_customer_filters, name="lfs_reset_customer_filters"
-    ),
-    re_path(
-        r"^set-customer-ordering/(?P<ordering>\w*)$",
-        lfs.manage.views.customer.set_ordering,
-        name="lfs_set_customer_ordering",
-    ),
-    re_path(
-        r"^selectable-customers-inline$",
-        lfs.manage.views.customer.selectable_customers_inline,
-        name="lfs_selectable_customers_inline",
-    ),
-    re_path(
-        r"^set-selectable-customers-page$",
-        lfs.manage.views.customer.set_selectable_customers_page,
-        name="lfs_set_selectable_customers_page",
-    ),
-    re_path(r"^set-customers-page$", lfs.manage.views.customer.set_customers_page, name="lfs_set_customers_page"),
+    # Customers (refactored views)
+    path("customers/", include(customers_urls)),
     # export
     re_path(r"^export-dispatcher$", lfs.manage.views.export.export_dispatcher, name="lfs_export_dispatcher"),
     re_path(r"^export/(?P<export_id>\d*)$", lfs.manage.views.export.manage_export, name="lfs_export"),

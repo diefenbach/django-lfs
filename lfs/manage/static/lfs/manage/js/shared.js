@@ -49,7 +49,7 @@ document.addEventListener('htmx:configRequest', function(evt) {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    flatpickr(".dateinput", {
+    flatpickr(".dateinput, input[type='date']", {
         dateFormat: "d.m.Y",
         locale: "de",
         allowInput: true
