@@ -24,7 +24,6 @@ import lfs.manage.views.customer
 import lfs.manage.views.criteria
 import lfs.manage.views.dashboard
 import lfs.manage.views.export
-import lfs.manage.views.marketing.featured
 import lfs.manage.views.marketing.rating_mails
 import lfs.manage.topseller.views
 import lfs.manage.orders.views
