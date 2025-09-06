@@ -41,7 +41,7 @@ class DiscountsManager {
 
 document.addEventListener('DOMContentLoaded', () => new DiscountsManager());
 document.addEventListener('htmx:afterSwap', (event) => {
-    if (event.target.id === 'assigned-products-list') {
+    if (event.target.id === 'products-tables') {
         new DiscountsManager();
     }
 });

@@ -1,10 +1,7 @@
 {% load i18n static crispy_forms_tags %}
 
-{# Criteria-Tab für Discount #}
-<div class="mb-4">
-    <h3 class="h5">{% trans "Discount Criteria" %}</h3>
-    
 
+<div class="mb-4">
     <form method="post" 
           hx-post="{% url 'lfs_manage_discount_criteria' discount.id %}"
           hx-target="closest .tab-content"
@@ -23,15 +20,15 @@
             </button>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-sm table-hover border-0" style="border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <div class="table-responsive">            
+            <table class="table table-sm table-hover">
                 <thead>
                     <tr>
-                        <th class="border-0 py-3 px-4" style="font-weight: 600; color: #495057;">{% trans "Position" %}</th>
-                        <th class="border-0 py-3 px-4" style="font-weight: 600; color: #495057;">{% trans "Type" %}</th>
-                        <th class="border-0 py-3 px-4" style="font-weight: 600; color: #495057;">{% trans "Operator" %}</th>
-                        <th class="border-0 py-3 px-4" style="font-weight: 600; color: #495057;">{% trans "Value" %}</th>
-                        <th class="border-0 py-3 px-4" style="font-weight: 600; color: #495057;">{% trans "Actions" %}</th>
+                        <th>{% trans "Position" %}</th>
+                        <th>{% trans "Type" %}</th>
+                        <th>{% trans "Operator" %}</th>
+                        <th>{% trans "Value" %}</th>
+                        <th>{% trans "Actions" %}</th>
                     </tr>
                 </thead>
                 <tbody class="criteria">

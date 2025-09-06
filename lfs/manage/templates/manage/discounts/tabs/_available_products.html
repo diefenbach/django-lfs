@@ -3,8 +3,8 @@
 <!-- Available Products Form -->
 <form id="add-products-form"
       hx-post="{% url 'lfs_manage_discount_products' discount.id %}"
-      hx-target="#assigned-products-list"
-      hx-select="#assigned-products-list"
+      hx-target="#products-tables"
+      hx-select="#products-tables"
       hx-swap="outerHTML">
     {% csrf_token %}
     <input type="hidden" name="keep-filters" value="1">
