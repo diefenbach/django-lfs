@@ -275,6 +275,12 @@ class DiscountProductsView(PermissionRequiredMixin, DiscountTabMixin, TemplateVi
         except EmptyPage:
             page_obj = 0
 
+        # Get all categories for filter dropdown in hierarchical structure
+        categories = self._build_hierarchical_categories()
+
+        # Get all manufacturers for filter dropdown
+        manufacturers = Manufacturer.objects.all().order_by("name")
+
         ctx.update(
             {
                 "discount_products": discount_products,
@@ -283,9 +289,38 @@ class DiscountProductsView(PermissionRequiredMixin, DiscountTabMixin, TemplateVi
                 "filter": filter_ or "",
                 "category_filter": category_filter or "",
                 "manufacturer_filter": manufacturer_filter or "",
+                "categories": categories,
+                "manufacturers": manufacturers,
             }
         )
         return ctx
+
+    def _build_hierarchical_categories(self):
+        """Build a hierarchical list of categories with proper indentation."""
+        categories = []
+
+        def _add_category_with_children(category, level=0):
+            """Recursively add category and its children with proper indentation."""
+            # Create a simple object that mimics the Category model but with indented name
+            indent = "&nbsp;" * 5 * level
+            category_with_indent = type(
+                "CategoryWithIndent",
+                (),
+                {"id": category.id, "name": f"{indent}{category.name}", "level": level, "category": category},
+            )()
+            categories.append(category_with_indent)
+
+            # Add children recursively
+            children = category.get_children().order_by("name")
+            for child in children:
+                _add_category_with_children(child, level + 1)
+
+        # Start with top-level categories (no parent)
+        top_level_categories = Category.objects.filter(parent=None).order_by("name")
+        for category in top_level_categories:
+            _add_category_with_children(category)
+
+        return categories
 
 
 class DiscountCreateView(PermissionRequiredMixin, CreateView):
