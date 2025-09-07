@@ -18,7 +18,6 @@ import lfs.manage.property_groups.views
 import lfs.manage.shipping_methods.views
 from lfs.manage.customers import urls as customers_urls
 import lfs.manage.views.criteria
-import lfs.manage.views.dashboard
 import lfs.manage.views.export
 import lfs.manage.views.payment
 import lfs.manage.views.utils
@@ -36,7 +35,7 @@ from lfs.manufacturer.models import Manufacturer
 
 
 urlpatterns = [
-    path("", lfs.manage.views.dashboard.dashboard, name="lfs_manage_dashboard"),
+    path("", include("lfs.manage.dashboard.urls")),
     # Delivery Times
     path("", include("lfs.manage.delivery_times.urls")),
     # Manufacturer

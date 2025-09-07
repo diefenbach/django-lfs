@@ -6,7 +6,7 @@ from lfs.catalog.models import Product, Category
 from lfs.order.models import Order
 from lfs.core.models import Shop
 from lfs.marketing.models import OrderRatingMail
-from lfs.manage.views.dashboard import dashboard
+from lfs.manage.dashboard.views import dashboard
 
 
 @pytest.fixture

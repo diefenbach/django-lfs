@@ -10,7 +10,7 @@ from lfs.marketing.models import OrderRatingMail
 
 
 @permission_required("core.manage_shop")
-def dashboard(request, template_name="manage/dashboard.html"):
+def dashboard(request, template_name="manage/dashboard/dashboard.html"):
     """Dashboard view showing shop statistics"""
     total_products = Product.objects.count()
     active_products = Product.objects.filter(active=True).count()
@@ -20,7 +20,7 @@ def dashboard(request, template_name="manage/dashboard.html"):
     visible_categories = Category.objects.filter(exclude_from_navigation=False).count()
     hidden_categories = total_categories - visible_categories
 
-    total_orders = get_orders().count()
+    total_orders = Order.objects.count()
 
     # Calculate orders this month (from 1st day of current month)
     now = timezone.now()
@@ -33,7 +33,7 @@ def dashboard(request, template_name="manage/dashboard.html"):
 
     # Calculate eligible rating mails (orders without rating mail sent)
     orders_with_rating_mail = OrderRatingMail.objects.values_list("order_id", flat=True)
-    eligible_rating_mails = total_orders - len(orders_with_rating_mail)
+    eligible_rating_mails = get_orders().count() - len(orders_with_rating_mail)
 
     # Find best selling product
     best_selling_product = None
