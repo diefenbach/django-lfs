@@ -20,7 +20,6 @@ from lfs.manage.customers import urls as customers_urls
 import lfs.manage.views.criteria
 import lfs.manage.views.dashboard
 import lfs.manage.views.export
-import lfs.manage.views.marketing.rating_mails
 import lfs.manage.views.payment
 import lfs.manage.views.utils
 from lfs.catalog.models import Product
@@ -115,14 +114,7 @@ urlpatterns = [
     # Featured Products
     path("", include("lfs.manage.featured.urls")),
     # Marketing
-    re_path(
-        r"^manage-rating-mails$",
-        lfs.manage.views.marketing.rating_mails.manage_rating_mails,
-        name="lfs_manage_rating_mails",
-    ),
-    re_path(
-        r"^send-rating-mails$", lfs.manage.views.marketing.rating_mails.send_rating_mails, name="lfs_send_rating_mails"
-    ),
+    path("", include("lfs.manage.review_mails.urls")),
     # Topseller Products
     path("", include("lfs.manage.topseller.urls")),
     # Voucher Groups
