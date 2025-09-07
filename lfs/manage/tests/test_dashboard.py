@@ -5,6 +5,7 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from lfs.catalog.models import Product, Category
 from lfs.order.models import Order
 from lfs.core.models import Shop
+from lfs.marketing.models import OrderRatingMail
 from lfs.manage.views.dashboard import dashboard
 
 
@@ -309,3 +310,53 @@ class TestDashboardView:
         # Check that the best selling product data is displayed
         # Note: The product name might not be in the content if the template is not fully updated
         # We'll check for the section headers instead
+
+    def test_dashboard_shows_eligible_rating_mails(
+        self, rf, user_with_permission, sample_products, sample_categories, sample_orders
+    ):
+        """Test that dashboard displays correct eligible rating mails count"""
+        request = rf.get("/manage/")
+        request.user = user_with_permission
+
+        # Add session middleware
+        middleware = SessionMiddleware(lambda request: None)
+        middleware.process_request(request)
+        request.session.save()
+
+        # Mark one order as having rating mail sent
+        orders = Order.objects.all()
+        if orders.exists():
+            OrderRatingMail.objects.create(order=orders.first())
+
+        response = dashboard(request)
+        assert response.status_code == 200
+
+        # Check that the response content contains eligible rating mails
+        content = response.content.decode()
+        # Should show eligible rating mails count (total orders - 1 with rating mail sent)
+        assert "Eligible Rating Mails" in content
+        assert "4" in content  # 5 total orders - 1 with rating mail sent = 4 eligible
+
+    def test_dashboard_with_no_eligible_rating_mails(
+        self, rf, user_with_permission, sample_products, sample_categories, sample_orders
+    ):
+        """Test dashboard when all orders have rating mails sent"""
+        request = rf.get("/manage/")
+        request.user = user_with_permission
+
+        # Add session middleware
+        middleware = SessionMiddleware(lambda request: None)
+        middleware.process_request(request)
+        request.session.save()
+
+        # Mark all orders as having rating mail sent
+        for order in Order.objects.all():
+            OrderRatingMail.objects.create(order=order)
+
+        response = dashboard(request)
+        assert response.status_code == 200
+
+        # Check that the response content shows 0 eligible rating mails
+        content = response.content.decode()
+        assert "Eligible Rating Mails" in content
+        assert "0" in content  # All orders have rating mails sent

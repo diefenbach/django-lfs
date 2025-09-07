@@ -4,7 +4,9 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.db.models import Sum
 from lfs.catalog.models import Product, Category
+from lfs.marketing.utils import get_orders
 from lfs.order.models import Order, OrderItem
+from lfs.marketing.models import OrderRatingMail
 
 
 @permission_required("core.manage_shop")
@@ -18,7 +20,7 @@ def dashboard(request, template_name="manage/dashboard.html"):
     visible_categories = Category.objects.filter(exclude_from_navigation=False).count()
     hidden_categories = total_categories - visible_categories
 
-    total_orders = Order.objects.count()
+    total_orders = get_orders().count()
 
     # Calculate orders this month (from 1st day of current month)
     now = timezone.now()
@@ -28,6 +30,10 @@ def dashboard(request, template_name="manage/dashboard.html"):
     # Calculate orders this year (from January 1st)
     first_day_of_year = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
     orders_this_year = Order.objects.filter(created__gte=first_day_of_year).count()
+
+    # Calculate eligible rating mails (orders without rating mail sent)
+    orders_with_rating_mail = OrderRatingMail.objects.values_list("order_id", flat=True)
+    eligible_rating_mails = total_orders - len(orders_with_rating_mail)
 
     # Find best selling product
     best_selling_product = None
@@ -60,6 +66,7 @@ def dashboard(request, template_name="manage/dashboard.html"):
         "total_orders": total_orders,
         "orders_this_month": orders_this_month,
         "orders_this_year": orders_this_year,
+        "eligible_rating_mails": eligible_rating_mails,
         "best_selling_product": best_selling_product,
         "best_selling_count": best_selling_count,
     }
