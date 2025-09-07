@@ -1,4 +1,5 @@
-from typing import Dict, Any, List
+from datetime import datetime, date
+from typing import Dict, Any, List, Optional
 from django.db.models import QuerySet, Q
 from lfs.customer.models import Customer
 from lfs.cart.models import Cart
@@ -33,27 +34,15 @@ class CustomerFilterService:
             # For user-based customers, filter by user.date_joined
             user_q = Q()
             if start:
-                # Parse date string if it's a string
+                # Parse date string using the service method
                 if isinstance(start, str):
-                    from datetime import datetime
-
-                    try:
-                        start = datetime.fromisoformat(start).date()
-                    except ValueError:
-                        # If parsing fails, skip date filtering
-                        start = None
+                    start = self.parse_iso_date(start)
                 if start:
                     user_q &= Q(user__date_joined__gte=start)
             if end:
-                # Parse date string if it's a string
+                # Parse date string using the service method
                 if isinstance(end, str):
-                    from datetime import datetime
-
-                    try:
-                        end = datetime.fromisoformat(end).date()
-                    except ValueError:
-                        # If parsing fails, skip date filtering
-                        end = None
+                    end = self.parse_iso_date(end)
                 if end:
                     user_q &= Q(user__date_joined__lte=end)
 
@@ -81,6 +70,23 @@ class CustomerFilterService:
             ordering = "id"
 
         return f"{ordering_order}{ordering}"
+
+    def parse_iso_date(self, date_string: str) -> Optional[date]:
+        """Parse ISO format date string (YYYY-MM-DD) and return a date."""
+        if not date_string or not str(date_string).strip():
+            return None
+
+        try:
+            return datetime.strptime(date_string, "%Y-%m-%d").date()
+        except ValueError:
+            return None
+
+    def format_iso_date(self, date_obj: datetime | date) -> str:
+        """Format date as ISO format string (YYYY-MM-DD)."""
+        if not date_obj:
+            return ""
+
+        return date_obj.strftime("%Y-%m-%d")
 
 
 class CustomerDataService:

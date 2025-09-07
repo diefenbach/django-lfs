@@ -40,11 +40,30 @@ class CustomerFilterMixin:
     def get_filter_form_initial(self):
         """Get initial data for filter form."""
         customer_filters = self.get_customer_filters()
+
+        filter_service = CustomerFilterService()
+        name = ""
+        start = None
+        end = None
+
+        if customer_filters.get("start"):
+            start = filter_service.parse_iso_date(customer_filters["start"])
+
+        if customer_filters.get("end"):
+            end = filter_service.parse_iso_date(customer_filters["end"])
+
+        if customer_filters.get("name"):
+            name = customer_filters["name"]
+
         return {
-            "name": customer_filters.get("name", ""),
-            "start": customer_filters.get("start", ""),
-            "end": customer_filters.get("end", ""),
+            "name": name,
+            "start": start,
+            "end": end,
         }
+
+    def get_filter_service(self):
+        """Get CustomerFilterService instance."""
+        return CustomerFilterService()
 
 
 class CustomerPaginationMixin:

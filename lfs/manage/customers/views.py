@@ -4,7 +4,7 @@ from datetime import timedelta
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -18,6 +18,7 @@ from lfs.manage.customers.mixins import (
     CustomerDataMixin,
     CustomerContextMixin,
 )
+from lfs.manage.customers.services import CustomerFilterService
 
 
 class CustomerListView(
@@ -132,54 +133,44 @@ class ApplyCustomerFiltersView(PermissionRequiredMixin, FormView):
 
     permission_required = "core.manage_shop"
     form_class = CustomerFilterForm
+    template_name = "manage/customers/customer_list.html"  # Fallback template for form errors
+
+    def get_success_url(self) -> str:
+        """Redirects back to the customer view or customer list."""
+        customer_id = self.kwargs.get("customer_id")
+        if customer_id:
+            return reverse("lfs_manage_customer", kwargs={"customer_id": customer_id})
+        return reverse("lfs_manage_customers")
 
     def form_valid(self, form):
-        """Process filter form and update session."""
-        try:
-            customer_filters = self.request.session.get("customer-filters", {})
-            if not isinstance(customer_filters, dict):
-                customer_filters = {}
+        """Saves filter data to session."""
+        customer_filters = self.request.session.get("customer-filters", {})
 
-            # Update filters based on form data
-            name = form.cleaned_data.get("name", "")
-            if name:
-                customer_filters["name"] = name
-            elif "name" in customer_filters:
-                del customer_filters["name"]
+        # Update filters
+        name = form.cleaned_data.get("name", "")
+        if name:
+            customer_filters["name"] = name
+        elif "name" in customer_filters:
+            del customer_filters["name"]
 
-            start = form.cleaned_data.get("start")
-            if start:
-                customer_filters["start"] = start.isoformat()
-            elif "start" in customer_filters:
-                del customer_filters["start"]
+        start = form.cleaned_data.get("start")
+        end = form.cleaned_data.get("end")
 
-            end = form.cleaned_data.get("end")
-            if end:
-                customer_filters["end"] = end.isoformat()
-            elif "end" in customer_filters:
-                del customer_filters["end"]
+        filter_service = CustomerFilterService()
+        if start:
+            customer_filters["start"] = filter_service.format_iso_date(start)
+        elif "start" in customer_filters:
+            del customer_filters["start"]
 
-            self.request.session["customer-filters"] = customer_filters
-            messages.success(self.request, _("Customer filters have been applied"))
+        if end:
+            customer_filters["end"] = filter_service.format_iso_date(end)
+        elif "end" in customer_filters:
+            del customer_filters["end"]
 
-        except Exception:
-            messages.error(self.request, _("Error applying filters"))
+        self.request.session["customer-filters"] = customer_filters
 
-        return self.get_success_response()
-
-    def form_invalid(self, form):
-        """Handle invalid form."""
-        messages.error(self.request, _("Invalid filter data"))
-        return self.get_success_response()
-
-    def get_success_response(self):
-        """Determine where to redirect after filter application."""
-        # Check if we came from a specific customer
-        customer_id = self.request.POST.get("customer_id") or self.request.GET.get("customer_id")
-        if customer_id:
-            return redirect("lfs_manage_customer", customer_id=customer_id)
-        else:
-            return redirect("lfs_manage_customers")
+        messages.success(self.request, _("Customer filters have been updated."))
+        return super().form_valid(form)
 
 
 class ResetCustomerFiltersView(PermissionRequiredMixin, RedirectView):
@@ -188,13 +179,13 @@ class ResetCustomerFiltersView(PermissionRequiredMixin, RedirectView):
     permission_required = "core.manage_shop"
 
     def get_redirect_url(self, *args, **kwargs):
-        """Reset filters and redirect."""
+        # Clear filters from session
         if "customer-filters" in self.request.session:
             del self.request.session["customer-filters"]
 
-        messages.success(self.request, _("Customer filters have been reset"))
+        messages.success(self.request, _("Customer filters have been reset."))
 
-        # Check if we came from a specific customer
+        # Redirect back to where we came from
         customer_id = self.request.GET.get("customer_id")
         if customer_id:
             return reverse("lfs_manage_customer", kwargs={"customer_id": customer_id})
@@ -208,7 +199,6 @@ class SetCustomerOrderingView(PermissionRequiredMixin, RedirectView):
     permission_required = "core.manage_shop"
 
     def get_redirect_url(self, *args, **kwargs):
-        """Set ordering and redirect."""
         ordering = kwargs.get("ordering", "id")
 
         # Toggle ordering direction if same field
@@ -222,7 +212,7 @@ class SetCustomerOrderingView(PermissionRequiredMixin, RedirectView):
 
         self.request.session["customer-ordering"] = ordering
 
-        # Check if we came from a specific customer
+        # Redirect back to where we came from
         customer_id = self.request.GET.get("customer_id")
         if customer_id:
             return reverse("lfs_manage_customer", kwargs={"customer_id": customer_id})
@@ -265,9 +255,10 @@ class ApplyPredefinedCustomerFilterView(PermissionRequiredMixin, RedirectView):
                 else reverse("lfs_manage_customers")
             )
 
-        # Save filters to session
+        # Save only start to session (service uses half-open interval and handles missing end)
         customer_filters = self.request.session.get("customer-filters", {})
-        customer_filters["start"] = start_date.isoformat()
+        filter_service = CustomerFilterService()
+        customer_filters["start"] = filter_service.format_iso_date(start_date)
         # We intentionally do not set end for presets
         if "end" in customer_filters:
             del customer_filters["end"]

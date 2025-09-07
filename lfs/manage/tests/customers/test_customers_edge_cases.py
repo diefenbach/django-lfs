@@ -617,7 +617,7 @@ class TestCustomerViewsEdgeCases:
         # Should handle gracefully (may return 400 or redirect)
         assert response.status_code in [200, 302, 400]
 
-    def test_should_handle_very_large_post_data(self, client, admin_user):
+    def test_should_handle_very_large_post_data(self, client, admin_user, shop):
         """Test that very large POST data is handled gracefully."""
         client.force_login(admin_user)
 
