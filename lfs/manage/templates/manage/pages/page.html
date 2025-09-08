@@ -6,8 +6,8 @@
 {% block content %}
     <div class="lfs-pages">
         <div class="row">
-            <aside class="scrollable-content col-3 bg-white border-end vh-100 p-4">
-                <h2 class="h4 mb-3">{% trans "Pages" %}</h2>
+            <aside class="scrollable-content col-3 bg-white border-end vh-100 p-4 pt-3">
+                <div class="mb-3 fw-semibold">{% trans "Pages" %}</div>
                 <div class="input-group mb-3">
                     <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
                     <input type="search" 
@@ -41,39 +41,44 @@
                 </div>
             </aside>
 
-            <main class="col-9 p-4">
-                <div class="scrollable-content">
-                    <div class="padding-bottom-100">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h2 class="h4 mb-3">{% trans 'Edit Page' %}</h2>
-                            <div class="site-actions mb-3">
-                                <button class="btn btn-sm btn-outline-primary" 
-                                    hx-get="{% url 'lfs_add_page' %}?came_from={% url 'lfs_manage_page' page.id %}"
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Pages</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ page.title }}</li>
+                            </ol>
+                        </nav>                                
+                        <div class="site-actions mb-2" id="site-actions">
+                            <button class="btn btn-sm btn-outline-primary me-2" 
+                                hx-get="{% url 'lfs_add_page' %}?came_from={% url 'lfs_manage_page' page.id %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click" 
+                                hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Page' %}
+                            </button>
+
+                            {% if page.id != 1 %}
+                                <button class="btn btn-sm btn-outline-danger me-2"
+                                    hx-get="{% url 'lfs_delete_page_confirm' page.id %}"
                                     hx-target="#modal-body-lg"
-                                    hx-trigger="click" 
+                                    hx-trigger="click"
                                     hx-swap="innerHTML">
-                                    <i class="bi bi-plus-circle-fill"></i>
-                                    {% trans 'Add Page' %}
+                                    <i class="bi bi-trash"></i>
+                                    {% trans 'Delete Page' %}
                                 </button>
 
-                                {% if page.id != 1 %}
-                                    <button class="btn btn-sm btn-outline-danger"
-                                        hx-get="{% url 'lfs_delete_page_confirm' page.id %}"
-                                        hx-target="#modal-body-lg"
-                                        hx-trigger="click"
-                                        hx-swap="innerHTML">
-                                        <i class="bi bi-trash"></i>
-                                        {% trans 'Delete Page' %}
-                                    </button>
-
-                                    <a class="btn btn-sm btn-outline-secondary"
-                                        href="{% url 'lfs_page_view_by_id' page.id %}">
-                                        <i class="bi bi-box-arrow-up-right"></i>
-                                        {% trans 'View Page' %}
-                                    </a>
-                                {% endif %}
-                            </div>
+                                <a class="btn btn-sm btn-outline-secondary"
+                                    href="{% url 'lfs_page_view_by_id' page.id %}">
+                                    <i class="bi bi-box-arrow-up-right"></i>
+                                    {% trans 'View Page' %}
+                                </a>
+                            {% endif %}
                         </div>
+                    </div>
 
                         <ul class="nav nav-tabs" id="pageTabs" role="tablist">
                             {% for key, url in tabs %}
@@ -104,5 +109,6 @@
         </div>
     </div>
     {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-xl.html' %}
     {% include 'manage/snippets/modals/modal-sm.html' %}
 {% endblock %}

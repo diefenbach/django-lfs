@@ -6,8 +6,8 @@
 {% block content %}
     <div class="lfs-static-blocks">
         <div class="row">
-            <aside class="scrollable-content col-3 bg-white border-end p-4">
-                <h2 class="h4 mb-3">{% trans "Static blocks" %}</h2>
+            <aside class="scrollable-content col-3 bg-white border-end p-4 pt-3">
+                <div class="mb-3 fw-semibold">{% trans "Static blocks" %}</div>
                 <div class="input-group">
                     <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
                     <input type="search" 
@@ -35,11 +35,17 @@
                 </div>
             </aside>
 
-            <main class="col-9 p-4 scrollable-content">
+            <main class="col-9 p-4 pt-3 scrollable-content">
                 <div class="padding-bottom-100">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="h4 mb-3">{% trans 'Edit Static Block' %}</h2>
-                        <div class="site-actions mb-3" id="site-actions">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Statische Blöcke</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ static_block.name }}</li>
+                            </ol>
+                        </nav>                                
+                        <div class="site-actions mb-2" id="site-actions">
                             <a class="btn btn-sm btn-outline-primary me-2"
                                     hx-get="{% url 'lfs_manage_add_static_block' %}"
                                     hx-target="#modal-body-lg"

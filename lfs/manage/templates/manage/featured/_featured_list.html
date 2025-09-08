@@ -19,7 +19,7 @@
         <div class="card-body overflow-y-auto">
             {% if featured %}
                 <div class="table-responsive">
-                    <table class="table table-sm table-hover">
+                    <table class="table-sm table-hover">
                         <thead>
                             <tr>
                                 <th class="checkbox" style="width: 1px;">
@@ -31,7 +31,7 @@
                                 <th>{% trans 'Active' %}</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="sortable-table">
                             {% for featured_item in featured %}
                                 <tr data-id="{{ featured_item.id }}">
                                     <td>

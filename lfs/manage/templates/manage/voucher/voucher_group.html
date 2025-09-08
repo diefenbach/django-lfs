@@ -6,8 +6,8 @@
 {% block content %}
     <div class="lfs-voucher-groups">
         <div class="row">
-            <aside class="scrollable-content col-3 bg-white border-end p-4">
-                <h2 class="h4 mb-3">{% trans "Voucher groups" %}</h2>
+            <aside class="scrollable-content col-3 bg-white border-end p-4 pt-3">
+                <div class="mb-3 fw-semibold">{% trans "Voucher groups" %}</div>
                 <div class="input-group">
                     <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
                     <input type="search" 
@@ -35,11 +35,17 @@
                 </div>
             </aside>
 
-            <main class="col-9 p-4 scrollable-content">
+            <main class="col-9 p-4 pt-3 scrollable-content">
                 <div class="padding-bottom-100">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="h4 mb-3">{% trans 'Edit Voucher Group' %}</h2>
-                        <div class="site-actions mb-3" id="site-actions">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Voucher Groups</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ voucher_group.name }}</li>
+                            </ol>
+                        </nav>                                
+                        <div class="site-actions mb-2" id="site-actions">
                             <button class="btn btn-sm btn-outline-primary me-2"
                                     hx-get="{% url 'lfs_manage_add_voucher_group' %}"
                                     hx-target="#modal-body-lg"
