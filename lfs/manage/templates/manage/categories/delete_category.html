@@ -1,0 +1,46 @@
+{% load i18n %}
+
+<div class="modal-header">
+    <h5 class="modal-title">{% trans "Delete Category" %}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle"></i>
+        {% trans "Are you sure you want to delete this category?" %}
+    </div>
+    
+    <p>
+        {% blocktrans with name=category.name %}
+            You are about to delete the category <strong>"{{ name }}"</strong> and all its sub categories.
+            This action cannot be undone.
+        {% endblocktrans %}
+    </p>
+    
+    {% if category.category_set.exists %}
+        <div class="alert alert-warning">
+            <i class="bi bi-info-circle"></i>
+            {% trans "This category has sub categories that will also be deleted:" %}
+            <ul class="mb-0 mt-2">
+                {% for subcategory in category.category_set.all %}
+                    <li>{{ subcategory.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</div>
+
+<div class="modal-footer">
+    <form method="post" action="{% url 'lfs_delete_category' category.id %}">
+        {% csrf_token %}
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle"></i>
+            {% trans "Cancel" %}
+        </button>
+        <button type="submit" class="btn btn-danger">
+            <i class="bi bi-trash"></i>
+            {% trans "Delete Category" %}
+        </button>
+    </form>
+</div>

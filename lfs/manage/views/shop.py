@@ -16,7 +16,7 @@ from lfs.core.signals import shop_changed
 from lfs.core.utils import import_symbol
 from lfs.core.utils import LazyEncoder
 from lfs.core.widgets.image import LFSImageInput
-from lfs.manage.views.lfs_portlets import PortletsInlineView
+from lfs.manage.portlets.views import PortletsInlineView
 from lfs.manage.seo.views import SEOView
 
 

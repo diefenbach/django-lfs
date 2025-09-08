@@ -12,7 +12,7 @@ from django.views.generic import UpdateView, CreateView, DeleteView, RedirectVie
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.manage.mixins import DirectDeleteMixin
 from lfs.manage.pages.forms import PageAddForm, PageForm
-from lfs.manage.views.lfs_portlets import PortletsInlineView
+from lfs.manage.portlets.views import PortletsInlineView
 from lfs.page.models import Page
 
 

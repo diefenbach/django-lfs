@@ -22,6 +22,20 @@ from portlets.models import Slot
 from lfs.core.utils import LazyEncoder
 
 
+def get_portlet_management_url(obj):
+    """Returns the correct portlet management URL based on the object type."""
+    from lfs.page.models import Page
+    from lfs.catalog.models import Category
+
+    if isinstance(obj, Page):
+        return reverse("lfs_manage_page_portlets", kwargs={"id": obj.id})
+    elif isinstance(obj, Category):
+        return reverse("lfs_manage_category_portlets", kwargs={"id": obj.id})
+    else:
+        # Fallback to page portlets for unknown object types
+        return reverse("lfs_manage_page_portlets", kwargs={"id": 1})
+
+
 def update_portlet_positions(pa):
     """Updates the portlet positions for a content object and a slot.
 
@@ -119,7 +133,7 @@ class UpdatePortletsView(PermissionRequiredMixin, View):
         else:
             # Regular form submission - redirect back to the portlets page
             messages.success(request, _("Portlet has been updated."))
-            return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": obj.id}))
+            return redirect(get_portlet_management_url(obj))
 
 
 class AddPortletView(PermissionRequiredMixin, View):
@@ -211,7 +225,7 @@ class AddPortletView(PermissionRequiredMixin, View):
                 update_portlet_positions(pa)
 
                 messages.success(request, _("Portlet has been added."))
-                return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": obj.id}))
+                return redirect(get_portlet_management_url(obj))
             else:
                 # Form has errors, re-render the form
                 try:
@@ -291,7 +305,11 @@ class DeletePortletView(PermissionRequiredMixin, View):
 
         # Always redirect back to the portlets page after deletion
         messages.success(request, _("Portlet has been deleted."))
-        return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": content_obj_id}))
+        if content_obj:
+            return redirect(get_portlet_management_url(content_obj))
+        else:
+            # Fallback if content_obj is None
+            return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": 1}))
 
 
 class EditPortletView(PermissionRequiredMixin, View):
@@ -353,7 +371,7 @@ class EditPortletView(PermissionRequiredMixin, View):
 
             # Always redirect to the portlets page after successful save
             messages.success(request, _("Portlet has been saved."))
-            return redirect(reverse("lfs_manage_page_portlets", kwargs={"id": pa.content.id}))
+            return redirect(get_portlet_management_url(pa.content))
         else:
             # Form has errors, re-render the form
             slots = []

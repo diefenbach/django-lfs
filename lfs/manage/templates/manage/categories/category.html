@@ -1,0 +1,116 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n static crispy_forms_tags %}
+
+{% block help_link %}user/management/catalog/categories.html{% endblock %}
+{% block section %}manage-category{% endblock %}
+{% block content %}
+    <div class="lfs-categories">
+        <div class="row">
+            <aside class="scrollable-content col-3 bg-white border-end vh-100 p-4 pt-3">
+                <div class="mb-3 fw-semibold">{% trans "Categories" %}</div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="search" 
+                           class="form-control" 
+                           placeholder="{% trans 'Search categories...' %}" 
+                           name="q"
+                           value="{{ search_query }}"
+                           hx-get="{{ request.path }}"
+                           hx-target="#categories-list"
+                           hx-select="#categories-list"
+                           hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                           hx-include="this"
+                           hx-push-url="true"
+                           aria-label="{% trans 'Search categories' %}">
+                </div>
+                <div id="categories-list" hx-swap-oob="true">
+                    {% include "manage/categories/sidebar/hierarchical_categories.html" with current_category_id=category.id %}
+                </div>
+            </aside>
+
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Categories</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ category.name }}</li>
+                            </ol>
+                        </nav>                                
+                        <div class="site-actions mb-2" id="site-actions">
+                            <button class="btn btn-sm btn-outline-primary me-2" 
+                                hx-get="{% url 'lfs_manage_add_top_category' %}?came_from={% url 'lfs_manage_category' category.id %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click" 
+                                hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Top Category' %}
+                            </button>
+
+                            <button class="btn btn-sm btn-outline-primary me-2" 
+                                hx-get="{% url 'lfs_manage_add_category' category.id %}?came_from={% url 'lfs_manage_category' category.id %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click" 
+                                hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Category' %}
+                            </button>
+
+                            <button class="btn btn-sm btn-outline-danger me-2"
+                                hx-get="{% url 'lfs_delete_category_confirm' category.id %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click"
+                                hx-swap="innerHTML">
+                                <i class="bi bi-trash"></i>
+                                {% trans 'Delete Category' %}
+                            </button>
+
+                            <a class="btn btn-sm btn-outline-secondary"
+                                href="{% url 'lfs_category_by_id' category.id %}">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                                {% trans 'View Category' %}
+                            </a>
+                        </div>
+                    </div>
+
+                        <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
+                            {% for key, url in tabs %}
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link {% if active_tab == key %}active{% endif %}" 
+                                    href="{{ url }}" 
+                                    role="tab"
+                                    aria-controls="{{ key }}-content"
+                                    aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
+                                        {% trans key|title %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        
+                        <div class="tab-content border border-top-0 bg-white p-4" id="categoryTabsContent">
+                            {% if active_tab == "data" %}
+                                {% include "manage/categories/tabs/_data.html" %}
+                            {% elif active_tab == "view" %}
+                                {% include "manage/categories/tabs/_view.html" %}
+                            {% elif active_tab == "products" %}
+                                {% include "manage/categories/tabs/_products.html" %}
+                            {% elif active_tab == "seo" %}
+                                {% include "manage/categories/tabs/_seo.html" %}
+                            {% elif active_tab == "portlets" %}
+                                {% include "manage/categories/tabs/_portlets.html" %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-xl.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'lfs/manage/js/categories.js' %}"></script>
+{% endblock %}

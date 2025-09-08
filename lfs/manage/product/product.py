@@ -31,7 +31,7 @@ from lfs.manage.product.images import manage_images
 from lfs.manage.product.properties import manage_properties
 from lfs.manage.product.attachments import manage_attachments
 from lfs.manage.product.seo import SEOForm
-from lfs.manage.views.lfs_portlets import PortletsInlineView
+from lfs.manage.portlets.views import PortletsInlineView
 from lfs.manage.utils import get_current_page
 from lfs.manage.seo.views import SEOView
 from lfs.manufacturer.models import Manufacturer

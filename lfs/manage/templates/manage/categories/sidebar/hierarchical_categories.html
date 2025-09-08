@@ -1,0 +1,24 @@
+{% load i18n static %}
+
+<div class="hierarchical-categories-sidebar">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button id="dnd-toggle" 
+                class="btn btn-sm btn-outline-secondary" 
+                title="{% trans 'Toggle drag and drop mode' %}"
+                data-dnd-active="false">
+            <i class="bi bi-lock-fill"></i>
+        </button>
+    </div>
+    
+    <div id="categories-list" hx-swap-oob="true">
+        <ul class="hierarchical-sortable"
+            data-sort-url="{% url 'lfs_sort_categories' %}"
+            data-csrf-token="{{ csrf_token }}">
+            {% for cat in hierarchical_categories %}
+                {% include "manage/categories/sidebar/category_item.html" with category=cat current_category_id=current_category_id search_query=search_query %}
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+

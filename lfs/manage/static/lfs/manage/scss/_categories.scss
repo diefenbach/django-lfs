@@ -1,0 +1,212 @@
+// Categories styling
+.hierarchical-sortable,
+.category-children {
+    list-style-type: none;
+    padding-left: 1.5rem;
+    margin-left: 0;
+}
+
+// Enhanced drag and drop styling
+.category-item {
+    position: relative;
+    margin: 2px 0;
+    
+    .category-link {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.2s ease;
+        
+        &:hover {
+            background-color: #f8f9fa;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        &.selected {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+    }
+    
+    .drag-handle {
+        cursor: grab;
+        margin-right: 8px;
+        color: #6c757d;
+        font-size: 14px;
+        
+        &:hover {
+            color: #495057;
+        }
+    }
+    
+}
+
+// Toggle Button
+#dnd-toggle {
+    min-width: 36px;
+    
+    &[data-dnd-active="true"] {
+        background-color: #28a745;
+        border-color: #28a745;
+        color: white;
+        
+        &:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+    }
+}
+
+// Category Modes
+.hierarchical-categories-sidebar {
+    // Compact Mode (Default)
+    &:not(.dnd-mode) {
+        .drag-handle {
+            display: none;
+        }
+        
+        .category-drop-zones {
+            display: none;
+        }
+        
+        .category-item {
+            margin: 1px 0;
+        }
+        
+        .category-link {
+            padding: 4px 8px;
+        }
+    }
+    
+    // DnD Mode
+    &.dnd-mode {
+        .category-item {
+            margin: 8px 0;
+        }
+        
+        .category-content {
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            background-color: #fff;
+            padding: 8px;
+        }
+        
+        .category-link {
+            margin-bottom: 8px;
+        }
+    }
+}
+
+// Large Drop Zones for DnD Mode
+.category-drop-zones {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    
+    .drop-zone {
+        height: 40px;
+        border: 2px dashed #dee2e6;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f8f9fa;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        
+        i {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+        
+        .drop-zone-label {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        
+        // Hover states
+        &.drop-zone-sibling {
+            &:hover,
+            &.drag-over {
+                background-color: #e3f2fd;
+                border-color: #007bff;
+                
+                i {
+                    color: #007bff;
+                }
+            }
+        }
+        
+        &.drop-zone-child {
+            &:hover,
+            &.drag-over {
+                background-color: #e8f5e8;
+                border-color: #28a745;
+                
+                i, .drop-zone-label {
+                    color: #28a745;
+                }
+            }
+        }
+        
+        // Active drop state
+        &.drag-over {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        // Prevent jumping during drag operations
+        &.sortable-ghost {
+            opacity: 0 !important;
+        }
+    }
+    
+    // Hide drop zones in compact mode
+    .dnd-mode-only {
+        display: none;
+        
+        .dnd-mode & {
+            display: block;
+        }
+    }
+}
+
+// Enhanced children container
+.category-children {
+    margin-top: 4px;
+    padding-left: 20px;
+    
+    &.drop-zone-empty {
+        min-height: 40px;
+        background-color: #f8f9fa;
+        border: 2px dashed #dee2e6;
+        border-radius: 4px;
+        margin: 4px 0;
+        
+        &::before {
+            content: 'Hier ablegen um als Kind hinzuzufügen';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 36px;
+            color: #6c757d;
+            font-size: 12px;
+            font-style: italic;
+        }
+        
+        &.drop-zone-active {
+            background-color: #e8f5e8;
+            border-color: #28a745;
+            color: #28a745;
+            
+            &::before {
+                color: #28a745;
+            }
+        }
+    }
+}

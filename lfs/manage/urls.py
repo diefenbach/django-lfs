@@ -1,9 +1,5 @@
 from django.urls import path, re_path, include
 import lfs.manage
-import lfs.manage.categories.category
-import lfs.manage.categories.portlet
-import lfs.manage.categories.products
-import lfs.manage.categories.view
 import lfs.manage.customer_tax.views
 import lfs.manage.images.views
 import lfs.manage.information.views
@@ -29,7 +25,6 @@ from lfs.manage.views.shop import ShopSEOView
 from lfs.manage.seo.views import SEOView
 from lfs.manage.manufacturers import views as manufacturers_views
 from lfs.manage.manufacturers import products as manufacturers_products_views
-from lfs.manage.views import lfs_portlets
 from lfs.manage.product import product
 from lfs.manufacturer.models import Manufacturer
 
@@ -119,28 +114,7 @@ urlpatterns = [
     # Voucher Groups
     path("", include("lfs.manage.voucher.urls")),
     # Portlets
-    re_path(
-        r"^add-portlet/(?P<object_type_id>\d+)/(?P<object_id>\d+)$",
-        lfs_portlets.AddPortletView.as_view(),
-        name="lfs_add_portlet",
-    ),
-    re_path(
-        r"^update-portlets/(?P<object_type_id>\d+)/(?P<object_id>\d+)$",
-        lfs_portlets.UpdatePortletsView.as_view(),
-        name="lfs_update_portlets",
-    ),
-    re_path(
-        r"^delete-portlet/(?P<portletassignment_id>\d+)$",
-        lfs_portlets.DeletePortletView.as_view(),
-        name="lfs_delete_portlet",
-    ),
-    re_path(
-        r"^edit-portlet/(?P<portletassignment_id>\d+)$", lfs_portlets.EditPortletView.as_view(), name="lfs_edit_portlet"
-    ),
-    re_path(
-        r"^move-portlet/(?P<portletassignment_id>\d+)$", lfs_portlets.MovePortletView.as_view(), name="lfs_move_portlet"
-    ),
-    re_path(r"^sort-portlets$", lfs_portlets.SortPortletsView.as_view(), name="lfs_sort_portlets"),
+    path("", include("lfs.manage.portlets.urls")),
     # Product
     re_path(r"^product-dispatcher$", product.product_dispatcher, name="lfs_manage_product_dispatcher"),
     re_path(r"^product-by-id/(?P<product_id>\d*)$", product.product_by_id, name="lfs_manage_product_by_id"),
@@ -451,61 +425,7 @@ urlpatterns = [
     # Carts
     path("", include("lfs.manage.carts.urls")),
     # Categories
-    re_path(r"^categories$", lfs.manage.categories.category.manage_categories, name="lfs_manage_categories"),
-    re_path(
-        r"^category/(?P<category_id>\d*)$", lfs.manage.categories.category.manage_category, name="lfs_manage_category"
-    ),
-    re_path(
-        r"^category-by-id/(?P<category_id>\d*)$",
-        lfs.manage.categories.category.category_by_id,
-        name="lfs_category_by_id",
-    ),
-    re_path(
-        r"^add-products/(?P<category_id>\d*)$",
-        lfs.manage.categories.products.add_products,
-        name="lfs_manage_category_add_products",
-    ),
-    re_path(
-        r"^remove-products/(?P<category_id>\d*)$",
-        lfs.manage.categories.products.remove_products,
-        name="lfs_manage_category_remove_products",
-    ),
-    re_path(r"^add-top-category$", lfs.manage.categories.category.add_category, name="lfs_manage_add_top_category"),
-    re_path(
-        r"^add-category/(?P<category_id>\d*)$",
-        lfs.manage.categories.category.add_category,
-        name="lfs_manage_add_category",
-    ),
-    re_path(
-        r"^delete-category/(?P<id>[-\w]*)$", lfs.manage.categories.category.delete_category, name="lfs_delete_category"
-    ),
-    re_path(
-        r"^products-inline/(?P<category_id>\d*)$",
-        lfs.manage.categories.products.products_inline,
-        name="lfs_manage_category_products_inline",
-    ),
-    re_path(
-        r"^edit-category-data/(?P<category_id>\d*)$",
-        lfs.manage.categories.category.edit_category_data,
-        name="lfs_manage_category_edit_data",
-    ),
-    re_path(
-        r"^edit-category-view/(?P<category_id>\d*)$",
-        lfs.manage.categories.category.category_view,
-        name="lfs_manage_category_view",
-    ),
-    re_path(
-        r"^selected-products/(?P<category_id>\d*)$",
-        lfs.manage.categories.products.selected_products,
-        name="lfs_selected_products",
-    ),
-    re_path(
-        r"^load-products-tab/(?P<category_id>\d*)$",
-        lfs.manage.categories.products.products_tab,
-        name="lfs_load_products_tab",
-    ),
-    re_path(r"^sort-categories$", lfs.manage.categories.category.sort_categories, name="lfs_sort_categories"),
-    re_path(r"^no-categories$", lfs.manage.categories.view.no_categories, name="lfs_manage_no_categories"),
+    path("categories/", include("lfs.manage.categories.urls")),
     # Customers (refactored views)
     path("customers/", include(customers_urls)),
     # export

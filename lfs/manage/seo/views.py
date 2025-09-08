@@ -1,9 +1,10 @@
 import json
 
+from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.urls import reverse
 from django.forms.models import modelform_factory
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 from django.urls import re_path
@@ -80,20 +81,22 @@ class SEOView(View):
     def form_valid(self, form):
         """Handle successfull validation"""
         form.save()
-        message = _("SEO data has been saved.")
-        return self.render_to_response(form, message)
+        messages.success(self.request, _("SEO data has been saved."))
+        return HttpResponseRedirect(reverse(self.urlname, args=(form.instance.pk,)))
 
     def form_invalid(self, form):
         """Handle validation errors"""
-        message = _("Please correct the indicated errors.")
-        return self.render_to_response(form, message)
+        messages.error(self.request, _("Please correct the indicated errors."))
+        seo_html = self.render(self.request, form.instance, form)
+        return HttpResponse(seo_html)
 
     def get(self, request, id):
         """Handle GET request"""
         obj = lfs_get_object_or_404(self.model_klass, pk=id)
 
         form = self.form_klass(instance=obj)
-        return self.render_to_response(form)
+        seo_html = self.render(request, obj, form)
+        return HttpResponse(seo_html)
 
     def post(self, request, id):
         """Handle POST request"""

@@ -19,7 +19,7 @@ from portlets.models import PortletAssignment, PortletBlocking
 from portlets.example.models import TextPortlet
 
 from lfs.page.models import Page
-from lfs.manage.views.lfs_portlets import (
+from lfs.manage.portlets.views import (
     PortletsInlineView,
     UpdatePortletsView,
     AddPortletView,
@@ -54,7 +54,7 @@ class TestPortletsInlineView:
             render_calls.append((template_name, request, context))
             return "rendered_content"
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.render_to_string", mock_render_to_string)
+        monkeypatch.setattr("lfs.manage.portlets.views.render_to_string", mock_render_to_string)
 
         view = PortletsInlineView()
         result = view.get(request, page)
@@ -84,7 +84,7 @@ class TestPortletsInlineView:
             render_calls.append((template_name, request, context))
             return "rendered_content"
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.render_to_string", mock_render_to_string)
+        monkeypatch.setattr("lfs.manage.portlets.views.render_to_string", mock_render_to_string)
 
         view = PortletsInlineView()
         result = view.get(request, page)
@@ -109,7 +109,7 @@ class TestPortletsInlineView:
             render_calls.append((template_name, request, context))
             return "rendered_content"
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.render_to_string", mock_render_to_string)
+        monkeypatch.setattr("lfs.manage.portlets.views.render_to_string", mock_render_to_string)
 
         view = PortletsInlineView()
         result = view.get(request, page, template_name=custom_template)
@@ -139,7 +139,7 @@ class TestUpdatePortletsView:
             return "updated_portlets"
 
         monkeypatch.setattr(
-            "lfs.manage.views.lfs_portlets.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
+            "lfs.manage.portlets.views.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
         )
 
         view = UpdatePortletsView()
@@ -183,7 +183,7 @@ class TestUpdatePortletsView:
             return "updated_portlets"
 
         monkeypatch.setattr(
-            "lfs.manage.views.lfs_portlets.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
+            "lfs.manage.portlets.views.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
         )
 
         view = UpdatePortletsView()
@@ -207,7 +207,7 @@ class TestUpdatePortletsView:
         def mock_redirect(url):
             return HttpResponseRedirect("/redirect/")
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.redirect", mock_redirect)
+        monkeypatch.setattr("lfs.manage.portlets.views.redirect", mock_redirect)
 
         view = UpdatePortletsView()
         response = view.post(request, ContentType.objects.get_for_model(page).id, page.id)
@@ -268,7 +268,7 @@ class TestAddPortletView:
         def mock_filter(model):
             return mock_queryset
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.ContentType.objects.filter", mock_filter)
+        monkeypatch.setattr("lfs.manage.portlets.views.ContentType.objects.filter", mock_filter)
 
         # Mock render to capture the call
         render_calls = []
@@ -277,7 +277,7 @@ class TestAddPortletView:
             render_calls.append((request, template, context))
             return type("MockResponse", (), {})()
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.render", mock_render)
+        monkeypatch.setattr("lfs.manage.portlets.views.render", mock_render)
 
         view = AddPortletView()
         response = view.get(request, ContentType.objects.get_for_model(page).id, page.id)
@@ -320,7 +320,7 @@ class TestAddPortletView:
         def mock_filter(model):
             return mock_queryset
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.ContentType.objects.filter", mock_filter)
+        monkeypatch.setattr("lfs.manage.portlets.views.ContentType.objects.filter", mock_filter)
 
         # Mock render to capture the call
         render_calls = []
@@ -329,7 +329,7 @@ class TestAddPortletView:
             render_calls.append((request, template, context))
             return type("MockResponse", (), {})()
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.render", mock_render)
+        monkeypatch.setattr("lfs.manage.portlets.views.render", mock_render)
 
         view = AddPortletView()
         response = view.post(request, ContentType.objects.get_for_model(page).id, page.id)
@@ -362,7 +362,7 @@ class TestAddPortletView:
         def mock_filter(model):
             return mock_queryset
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.ContentType.objects.filter", mock_filter)
+        monkeypatch.setattr("lfs.manage.portlets.views.ContentType.objects.filter", mock_filter)
 
         # Mock ContentType.objects.get to return a valid ContentType
         mock_content_type = type(
@@ -374,7 +374,7 @@ class TestAddPortletView:
         def mock_get(*args, **kwargs):
             return mock_content_type
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.ContentType.objects.get", mock_get)
+        monkeypatch.setattr("lfs.manage.portlets.views.ContentType.objects.get", mock_get)
 
         # Mock PortletAssignment.objects.create
         mock_pa = type(
@@ -387,19 +387,19 @@ class TestAddPortletView:
             create_calls.append(kwargs)
             return mock_pa
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.PortletAssignment.objects.create", mock_create)
+        monkeypatch.setattr("lfs.manage.portlets.views.PortletAssignment.objects.create", mock_create)
 
         # Mock update_portlet_positions
         def mock_update_positions(pa):
             pass
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.update_portlet_positions", mock_update_positions)
+        monkeypatch.setattr("lfs.manage.portlets.views.update_portlet_positions", mock_update_positions)
 
         # Mock redirect
         def mock_redirect(url):
             return HttpResponseRedirect("/redirect/")
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.redirect", mock_redirect)
+        monkeypatch.setattr("lfs.manage.portlets.views.redirect", mock_redirect)
 
         view = AddPortletView()
         response = view.post(request, ContentType.objects.get_for_model(page).id, page.id)
@@ -436,7 +436,7 @@ class TestDeletePortletView:
         def mock_render_to_string(template, request=None, context=None):
             return "confirmation_html"
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.render_to_string", mock_render_to_string)
+        monkeypatch.setattr("lfs.manage.portlets.views.render_to_string", mock_render_to_string)
 
         view = DeletePortletView()
         response = view.get(request, portlet_assignment.id)
@@ -452,7 +452,7 @@ class TestDeletePortletView:
         def mock_render_to_string(template, request=None, context=None):
             return "confirmation_html"
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.render_to_string", mock_render_to_string)
+        monkeypatch.setattr("lfs.manage.portlets.views.render_to_string", mock_render_to_string)
 
         view = DeletePortletView()
         response = view.get(request, portlet_assignment.id)
@@ -470,7 +470,7 @@ class TestDeletePortletView:
         def mock_redirect(url):
             return HttpResponseRedirect("/redirect/")
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.redirect", mock_redirect)
+        monkeypatch.setattr("lfs.manage.portlets.views.redirect", mock_redirect)
 
         view = DeletePortletView()
         response = view.post(request, portlet_assignment.id)
@@ -488,7 +488,7 @@ class TestDeletePortletView:
         def mock_redirect(url):
             return HttpResponseRedirect("/redirect/")
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.redirect", mock_redirect)
+        monkeypatch.setattr("lfs.manage.portlets.views.redirect", mock_redirect)
 
         view = DeletePortletView()
         response = view.post(request, 99999)
@@ -527,7 +527,7 @@ class TestEditPortletView:
             render_calls.append((request, template, context))
             return type("MockResponse", (), {})()
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.render", mock_render)
+        monkeypatch.setattr("lfs.manage.portlets.views.render", mock_render)
 
         view = EditPortletView()
         response = view.get(request, portlet_assignment.id)
@@ -576,7 +576,7 @@ class TestEditPortletView:
         def mock_get(pk):
             return mock_pa
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.PortletAssignment.objects.get", mock_get)
+        monkeypatch.setattr("lfs.manage.portlets.views.PortletAssignment.objects.get", mock_get)
 
         # Mock save method to track calls
         def mock_save():
@@ -588,7 +588,7 @@ class TestEditPortletView:
         def mock_redirect(url):
             return HttpResponseRedirect("/redirect/")
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.redirect", mock_redirect)
+        monkeypatch.setattr("lfs.manage.portlets.views.redirect", mock_redirect)
 
         view = EditPortletView()
         response = view.post(request, portlet_assignment.id)
@@ -633,7 +633,7 @@ class TestEditPortletView:
         def mock_get(pk):
             return mock_pa
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.PortletAssignment.objects.get", mock_get)
+        monkeypatch.setattr("lfs.manage.portlets.views.PortletAssignment.objects.get", mock_get)
 
         # Mock render to capture the call
         render_calls = []
@@ -642,7 +642,7 @@ class TestEditPortletView:
             render_calls.append((request, template, context))
             return type("MockResponse", (), {})()
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.render", mock_render)
+        monkeypatch.setattr("lfs.manage.portlets.views.render", mock_render)
 
         view = EditPortletView()
         response = view.post(request, portlet_assignment.id)
@@ -682,7 +682,7 @@ class TestMovePortletView:
             return "updated_portlets"
 
         monkeypatch.setattr(
-            "lfs.manage.views.lfs_portlets.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
+            "lfs.manage.portlets.views.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
         )
 
         view = MovePortletView()
@@ -704,7 +704,7 @@ class TestMovePortletView:
             return "updated_portlets"
 
         monkeypatch.setattr(
-            "lfs.manage.views.lfs_portlets.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
+            "lfs.manage.portlets.views.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
         )
 
         view = MovePortletView()
@@ -728,7 +728,7 @@ class TestMovePortletView:
             return "updated_portlets"
 
         monkeypatch.setattr(
-            "lfs.manage.views.lfs_portlets.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
+            "lfs.manage.portlets.views.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
         )
 
         view = MovePortletView()
@@ -747,7 +747,7 @@ class TestMovePortletView:
             return "updated_portlets"
 
         monkeypatch.setattr(
-            "lfs.manage.views.lfs_portlets.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
+            "lfs.manage.portlets.views.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
         )
 
         view = MovePortletView()
@@ -972,7 +972,7 @@ class TestPortletViewsEdgeCases:
         def mock_get(pk):
             raise ContentType.DoesNotExist()
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.ContentType.objects.get", mock_get)
+        monkeypatch.setattr("lfs.manage.portlets.views.ContentType.objects.get", mock_get)
 
         view = AddPortletView()
         response = view.get(request, 99999, 99999)
@@ -993,7 +993,7 @@ class TestPortletViewsEdgeCases:
         def mock_redirect(url):
             return HttpResponseRedirect("/redirect/")
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.redirect", mock_redirect)
+        monkeypatch.setattr("lfs.manage.portlets.views.redirect", mock_redirect)
 
         view = DeletePortletView()
         response = view.post(request, portlet_assignment.id)
@@ -1013,7 +1013,7 @@ class TestPortletViewsEdgeCases:
             return "updated_portlets"
 
         monkeypatch.setattr(
-            "lfs.manage.views.lfs_portlets.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
+            "lfs.manage.portlets.views.PortletsInlineView", type("MockView", (), {"get": mock_inline_view_get})
         )
 
         view = MovePortletView()
@@ -1047,7 +1047,7 @@ class TestPortletViewsEdgeCases:
         def mock_get(pk):
             raise ContentType.DoesNotExist()
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.ContentType.objects.get", mock_get)
+        monkeypatch.setattr("lfs.manage.portlets.views.ContentType.objects.get", mock_get)
 
         view = UpdatePortletsView()
         response = view.post(request, 99999, 99999)
@@ -1071,13 +1071,13 @@ class TestPortletViewsEdgeCases:
         def mock_get_for_model(model):
             return type("MockCT", (), {})()
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.ContentType.objects.get_for_model", mock_get_for_model)
+        monkeypatch.setattr("lfs.manage.portlets.views.ContentType.objects.get_for_model", mock_get_for_model)
 
         # Mock render_to_string
         def mock_render_to_string(template, request=None, context=None):
             return "rendered_content"
 
-        monkeypatch.setattr("lfs.manage.views.lfs_portlets.render_to_string", mock_render_to_string)
+        monkeypatch.setattr("lfs.manage.portlets.views.render_to_string", mock_render_to_string)
 
         view = PortletsInlineView()
 
