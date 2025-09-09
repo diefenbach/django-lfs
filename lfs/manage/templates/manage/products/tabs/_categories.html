@@ -1,7 +1,6 @@
 {% load i18n %}
 
 <div class="tab-pane fade show active" id="categories-content" role="tabpanel" aria-labelledby="categories-tab">
-    <h5 class="mb-3">{% trans "Categories" %}</h5>
     <form method="post" action="">
         {% csrf_token %}
         <ul class="list-unstyled">
@@ -13,7 +12,7 @@
                     </div>
                     {% if node.children %}
                         <ul class="list-unstyled ms-4">
-                            {% include "manage/product/tabs/_categories_children.html" with children=node.children %}
+                            {% include "manage/products/tabs/_categories_children.html" with children=node.children %}
                         </ul>
                     {% endif %}
                 </li>

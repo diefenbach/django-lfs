@@ -1,0 +1,89 @@
+{% load i18n %}
+
+<div id="attachments-list">
+    {% if product.attachments.all %}
+        <form method="post" class="mb-4">
+            {% csrf_token %}    
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col" width="40">
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                        class="form-check-input select-all"
+                                        id="select-all-attachments"
+                                        value="delete-attachments" />
+                                    <label class="form-check-label visually-hidden" for="select-all-attachments">{% trans 'Select all' %}</label>
+                                </div>
+                            </th>
+                            <th scope="col" width="80">{% trans 'File' %}</th>
+                            <th scope="col" width="80" class="text-end">{% trans 'Position' %}</th>
+                            <th scope="col">{% trans 'Title' %}</th>
+                            <th scope="col">{% trans 'Description' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attachment in product.attachments.all %}
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input type="checkbox"
+                                            class="form-check-input select-delete-attachments"
+                                            id="delete-attachment-{{ attachment.id }}"
+                                            name="delete-{{ attachment.id }}" />
+                                        <label class="form-check-label visually-hidden" for="delete-attachment-{{ attachment.id }}">{% trans 'Select attachment' %}</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <i class="bi bi-file-earmark" style="font-size: 2rem; color: #6c757d;"></i>
+                                </td>
+                                <td>
+                                    <input type="number" name="position-{{ attachment.id }}" value="{{ attachment.position }}" class="form-control form-control-sm" min="0" />
+                                </td>
+                                <td>
+                                    <input type="text" name="title-{{ attachment.id }}" value="{{ attachment.title }}" class="form-control" />
+                                </td>
+                                <td>
+                                    <textarea name="description-{{ attachment.id }}" class="form-control" rows="2">{{ attachment.description }}</textarea>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" name="action" value="update" class="btn btn-primary">
+                    <i class="bi bi-check-lg me-1"></i> {% trans 'Save Changes' %}
+                </button>
+                <button type="submit" name="action" value="delete" class="btn btn-danger">
+                    <i class="bi bi-trash me-1"></i> {% trans 'Delete Selected Attachments' %}
+                </button>
+            </div>
+        </form>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i> {% trans 'There are no attachments' %}
+        </div>
+    {% endif %}    
+</div>
+
+<hr class="my-4">
+
+<h3 class="h5 mb-3">{% trans 'Add attachments' %}</h3>
+
+<div id="attachment-upload-section">
+    <form id="attachment_upload" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <input class="form-control" type="file" name="files[]" multiple>
+        </div>
+        <button class="btn btn-primary" type="submit" name="action" value="upload">
+            <i class="bi bi-upload me-1"></i>
+            {% trans 'Upload attachments' %}
+        </button>
+    </form>
+</div>
+

@@ -16,7 +16,7 @@ from lfs.core.utils import LazyEncoder
 
 
 @permission_required("core.manage_shop")
-def manage_related_products(request, product_id, template_name="manage/product/related_products.html"):
+def manage_related_products(request, product_id, template_name="manage/products/related_products.html"):
     """ """
     product = Product.objects.get(pk=product_id)
     inline = manage_related_products_inline(request, product_id, as_string=True)
@@ -39,7 +39,7 @@ def manage_related_products(request, product_id, template_name="manage/product/r
 
 @permission_required("core.manage_shop")
 def manage_related_products_inline(
-    request, product_id, as_string=False, template_name="manage/product/related_products_inline.html"
+    request, product_id, as_string=False, template_name="manage/products/related_products_inline.html"
 ):
     """View which shows all related products for the product with the passed id."""
     product = Product.objects.get(pk=product_id)

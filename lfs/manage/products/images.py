@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 @permission_required("core.manage_shop")
-def manage_images(request, product_id, as_string=False, template_name="manage/product/images.html"):
+def manage_images(request, product_id, as_string=False, template_name="manage/products/images.html"):
     """ """
     product = lfs_get_object_or_404(Product, pk=product_id)
 
@@ -50,7 +50,7 @@ def manage_images(request, product_id, as_string=False, template_name="manage/pr
 
 
 @permission_required("core.manage_shop")
-def list_images(request, product_id, as_string=False, template_name="manage/product/images-list.html"):
+def list_images(request, product_id, as_string=False, template_name="manage/products/images-list.html"):
     """ """
     result = manage_images(request, product_id, as_string=True, template_name=template_name)
 

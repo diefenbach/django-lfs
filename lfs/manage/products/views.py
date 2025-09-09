@@ -30,7 +30,7 @@ from .product import (
 )
 from .seo import SEOForm
 from lfs.core.signals import category_changed, product_changed
-from lfs.manage.product.variants import (
+from lfs.manage.products.variants import (
     DefaultVariantForm,
     DisplayTypeForm,
     CategoryVariantForm,
@@ -185,7 +185,7 @@ class ProductPortletsView(PermissionRequiredMixin, ProductTabMixin, TemplateView
 
 
 class NoProductsView(PermissionRequiredMixin, TemplateView):
-    template_name = "manage/product/no_products.html"
+    template_name = "manage/products/no_products.html"
     permission_required = "core.manage_shop"
 
 

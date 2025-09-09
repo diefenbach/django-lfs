@@ -176,7 +176,7 @@ class DefaultVariantForm(ModelForm):
 
 @permission_required("core.manage_shop")
 def manage_variants(
-    request, product_id, as_string=False, variant_simple_form=None, template_name="manage/product/variants.html"
+    request, product_id, as_string=False, variant_simple_form=None, template_name="manage/products/variants.html"
 ):
     """Manages the variants of a product."""
     product = Product.objects.get(pk=product_id)
@@ -834,9 +834,9 @@ def _selectable_products_inline(request, product):
     """
     # Somewhat ugly but it works for now. This is will be updated if the
     # planned refactoring of the whole product management takes place
-    from lfs.manage.product.product import selectable_products_inline
-    from lfs.manage.product.product import _get_filtered_products_for_product_view
-    from lfs.manage.product.product import get_current_page
+    from lfs.manage.products.product import selectable_products_inline
+    from lfs.manage.products.product import _get_filtered_products_for_product_view
+    from lfs.manage.products.product import get_current_page
     from django.core.paginator import Paginator
 
     AMOUNT = 20

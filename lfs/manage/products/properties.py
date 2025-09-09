@@ -21,7 +21,7 @@ from lfs.core.signals import product_removed_property_group
 
 
 @permission_required("core.manage_shop")
-def manage_properties(request, product_id, template_name="manage/product/properties.html"):
+def manage_properties(request, product_id, template_name="manage/products/properties.html"):
     """Displays the UI for manage the properties for the product with passed
     product_id.
     """

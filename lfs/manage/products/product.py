@@ -2,7 +2,7 @@ import json
 
 from django import forms
 from django.contrib.auth.decorators import permission_required
-from django.core.paginator import Paginator, EmptyPage
+from django.core.paginator import Paginator
 from django.urls import reverse
 from django.db import IntegrityError
 from django.db.models import Q
@@ -27,13 +27,6 @@ from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TYPE_FORM_CHOICES
 from lfs.catalog.settings import VARIANT
 from lfs.core.utils import LazyEncoder, atof, is_ajax
-from lfs.manage.product.images import manage_images
-from lfs.manage.product.properties import manage_properties
-from lfs.manage.product.attachments import manage_attachments
-from lfs.manage.product.seo import SEOForm
-from lfs.manage.portlets.views import PortletsInlineView
-from lfs.manage.utils import get_current_page
-from lfs.manage.seo.views import SEOView
 from lfs.manufacturer.models import Manufacturer
 from lfs.utils.widgets import SelectImage
 from lfs.core.widgets.checkbox import LFSCheckboxInput
@@ -229,20 +222,20 @@ class ProductStockForm(forms.ModelForm):
 
 
 @permission_required("core.manage_shop")
-def manage_product(request, product_id, template_name="manage/product/product.html"):
+def manage_product(request, product_id, template_name="manage/products/product.html"):
     """Legacy entry: redirect to new Bootstrap product UI."""
     return HttpResponseRedirect(reverse("lfs_manage_product_data", kwargs={"id": product_id}))
 
 
 @permission_required("core.manage_shop")
-def no_products(request, template_name="manage/product/no_products.html"):
+def no_products(request, template_name="manage/products/no_products.html"):
     """Displays that there are no products"""
     return render(request, template_name)
 
 
 # Tabs
 @permission_required("core.manage_shop")
-def stock(request, product_id, template_name="manage/product/stock.html"):
+def stock(request, product_id, template_name="manage/products/stock.html"):
     """
     Displays and updates product's stock data.
     """
@@ -285,7 +278,7 @@ def stock(request, product_id, template_name="manage/product/stock.html"):
 
 
 @permission_required("core.manage_shop")
-def product_data_form(request, product_id, template_name="manage/product/data.html"):
+def product_data_form(request, product_id, template_name="manage/products/data.html"):
     """
     Displays the product master data form within the manage product view.
     """
@@ -312,7 +305,7 @@ def product_data_form(request, product_id, template_name="manage/product/data.ht
 
 
 @permission_required("core.manage_shop")
-def products(request, template_name="manage/product/products.html"):
+def products(request, template_name="manage/products/products.html"):
     """
     Displays an overview list of all products.
     """
@@ -334,7 +327,7 @@ def products(request, template_name="manage/product/products.html"):
 
 # Parts
 @permission_required("core.manage_shop")
-def products_inline(request, page, paginator, template_name="manage/product/products_inline.html"):
+def products_inline(request, page, paginator, template_name="manage/products/products_inline.html"):
     """
     Displays the list of products.
     """
@@ -350,7 +343,7 @@ def products_inline(request, page, paginator, template_name="manage/product/prod
 
 @permission_required("core.manage_shop")
 def product_filters_inline(
-    request, page, paginator, product_id=0, template_name="manage/product/product_filters_inline.html"
+    request, page, paginator, product_id=0, template_name="manage/products/product_filters_inline.html"
 ):
     """
     Displays the filter section of the product overview view.
@@ -386,7 +379,7 @@ def product_filters_inline(
 
 
 @permission_required("core.manage_shop")
-def pages_inline(request, page, paginator, product_id, template_name="manage/product/pages_inline.html"):
+def pages_inline(request, page, paginator, product_id, template_name="manage/products/pages_inline.html"):
     """
     Displays the page navigation.
     """
@@ -403,7 +396,7 @@ def pages_inline(request, page, paginator, product_id, template_name="manage/pro
 
 @permission_required("core.manage_shop")
 def selectable_products_inline(
-    request, page, paginator, product_id, template_name="manage/product/selectable_products_inline.html"
+    request, page, paginator, product_id, template_name="manage/products/selectable_products_inline.html"
 ):
     """
     Displays the selectable products for the product view.
@@ -432,7 +425,7 @@ def selectable_products_inline(
 
 # Actions
 @permission_required("core.manage_shop")
-def add_product(request, template_name="manage/product/add_product.html"):
+def add_product(request, template_name="manage/products/add_product.html"):
     """Shows a simplified product form and adds a new product."""
     if request.method == "POST":
         form = ProductAddForm(request.POST)
@@ -484,7 +477,7 @@ def delete_product(request, product_id):
 
 @permission_required("core.manage_shop")
 @require_POST
-def edit_product_data(request, product_id, template_name="manage/product/data.html"):
+def edit_product_data(request, product_id, template_name="manage/products/data.html"):
     """Edits the product with given."""
     product = lfs_get_object_or_404(Product, pk=product_id)
     products = _get_filtered_products_for_product_view(request)

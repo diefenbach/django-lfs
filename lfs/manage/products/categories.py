@@ -15,7 +15,7 @@ from lfs.catalog.models import Category
 
 
 @permission_required("core.manage_shop")
-def manage_categories(request, product_id, template_name="manage/product/categories.html"):
+def manage_categories(request, product_id, template_name="manage/products/categories.html"):
     """Displays the manage category view."""
     product = lfs_get_object_or_404(Product, pk=product_id)
     product_category_ids = [p.id for p in product.get_categories()]
@@ -42,7 +42,7 @@ def manage_categories(request, product_id, template_name="manage/product/categor
 
 @permission_required("core.manage_shop")
 def children_categories(
-    request, category, product_category_ids, template_name="manage/product/categories_children.html"
+    request, category, product_category_ids, template_name="manage/products/categories_children.html"
 ):
     """Renders the children categories of given category as HTML."""
     categories = []

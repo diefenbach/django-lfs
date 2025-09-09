@@ -18,7 +18,7 @@ from lfs.core.utils import LazyEncoder
 
 
 @permission_required("core.manage_shop")
-def manage_accessories(request, product_id, template_name="manage/product/accessories.html"):
+def manage_accessories(request, product_id, template_name="manage/products/accessories.html"):
     """ """
     product = Product.objects.get(pk=product_id)
     inline = manage_accessories_inline(request, product_id, as_string=True)
@@ -41,7 +41,7 @@ def manage_accessories(request, product_id, template_name="manage/product/access
 
 @permission_required("core.manage_shop")
 def manage_accessories_inline(
-    request, product_id, as_string=False, template_name="manage/product/accessories_inline.html"
+    request, product_id, as_string=False, template_name="manage/products/accessories_inline.html"
 ):
     """View which shows all accessories for the product with the passed id."""
     product = Product.objects.get(pk=product_id)

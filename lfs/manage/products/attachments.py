@@ -16,7 +16,7 @@ from lfs.core.utils import LazyEncoder
 
 
 @permission_required("core.manage_shop")
-def manage_attachments(request, product_id, as_string=False, template_name="manage/product/attachments.html"):
+def manage_attachments(request, product_id, as_string=False, template_name="manage/products/attachments.html"):
     """ """
     product = lfs_get_object_or_404(Product, pk=product_id)
 
@@ -43,7 +43,7 @@ def manage_attachments(request, product_id, as_string=False, template_name="mana
 
 
 @permission_required("core.manage_shop")
-def list_attachments(request, product_id, as_string=False, template_name="manage/product/attachments-list.html"):
+def list_attachments(request, product_id, as_string=False, template_name="manage/products/attachments-list.html"):
     """ """
     result = manage_attachments(request, product_id, as_string=True, template_name=template_name)
     if as_string:
