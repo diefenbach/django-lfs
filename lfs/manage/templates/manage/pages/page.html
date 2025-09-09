@@ -24,20 +24,18 @@
                             hx-push-url="true"
                             aria-label="{% trans 'Search pages' %}">
                     </div>
-                    <div id="pages-list" hx-swap-oob="true">
-                        <div class="top-page mb-2">
-                            <a href="{% url 'lfs_manage_page_portlets' 1 %}{% if search_query %}?q={{ search_query }}{% endif %}"
-                            class="d-block p-2 mb-1 border rounded text-decoration-none {% if page.id == 1 %}bg-primary text-white{% else %}bg-light text-dark{% endif %}">
-                                {{ root.title }}
-                            </a>
-                        </div>
+                    <div class="list-group">
+                        <a class="list-group-item list-group-item-action {% if page.id == 1 %}active{% endif %}"
+                           href="{% url 'lfs_manage_page_portlets' 1 %}{% if search_query %}?q={{ search_query }}{% endif %}">
+                            {{ root.title }}
+                        </a>
                         {% for p in pages %}
-                            <div class="page-item" data-id="{{ p.id }}">
-                                <a href="{% url 'lfs_manage_page' p.id %}{% if search_query %}?q={{ search_query }}{% endif %}"
-                                class="d-block p-2 mb-1 border rounded text-decoration-none {% if p.id == page.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}">
-                                    {{ p.title }}
-                                </a>
-                            </div>
+                            <a class="list-group-item list-group-item-action {% if p.id == page.id %}active{% endif %}"
+                               href="{% url 'lfs_manage_page' p.id %}{% if search_query %}?q={{ search_query }}{% endif %}">
+                                {{ p.title }}
+                            </a>
+                        {% empty %}
+                            <div class="text-muted small">{% trans "No pages found." %}</div>
                         {% endfor %}
                     </div>
                 </div>
