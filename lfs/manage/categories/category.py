@@ -47,7 +47,8 @@ class CategoryForm(ModelForm):
             "description",
             "exclude_from_navigation",
             "image",
-            "static_block",
+            "static_block_above",
+            "static_block_below",
         )
 
 
