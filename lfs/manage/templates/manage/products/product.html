@@ -27,15 +27,23 @@
                     </div>
                     <div id="products-list" class="list-group" hx-swap-oob="true">
                         {% for p in products %}
-                            <a class="list-group-item list-group-item-action {% if p.id == product.id %}active{% endif %}"
+                            <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if p.id == product.id %}active{% endif %}"
                                href="{% url 'lfs_manage_product_data' p.id %}?q={{ search_query }}">
-                                {{ p.get_name }}
+                                <div class="d-flex align-items-center">
+                                    <i class="bi {% if p.is_standard %}bi-box{% elif p.is_product_with_variants %}bi-collection{% elif p.sub_type == '3' %}bi-gear{% else %}bi-box{% endif %} me-2"></i>
+                                    {{ p.get_name }}
+                                </div>
+                                <i class="bi {% if p.is_active %}bi-check-circle-fill text-success{% else %}bi-x-circle-fill text-danger{% endif %}"></i>
                             </a>
                             {% if p.is_product_with_variants %}
                                 {% for variant in p.variants.all %}
-                                    <a class="list-group-item list-group-item-action ps-4 text-muted small {% if variant.id == product.id %}active{% endif %}"
+                                    <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center ps-4 text-muted small {% if variant.id == product.id %}active{% endif %}"
                                        href="{% url 'lfs_manage_product_data' variant.id %}?q={{ search_query }}">
-                                        └ {{ variant.get_name }}
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-box-seam me-2"></i>
+                                            {{ variant.get_name }}
+                                        </div>
+                                        <i class="bi {% if variant.is_active %}bi-check-circle-fill text-success{% else %}bi-x-circle-fill text-danger{% endif %}"></i>
                                     </a>
                                 {% endfor %}
                             {% endif %}
