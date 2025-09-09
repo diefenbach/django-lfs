@@ -100,6 +100,12 @@ class DiscountTabMixin:
             ("products", products_url),
         ]
 
+    def _get_navigation_context(self):
+        """Get navigation context for templates."""
+        return {
+            "search_query": self.request.GET.get("q", ""),
+        }
+
 
 class DiscountDataView(PermissionRequiredMixin, DiscountTabMixin, UpdateView):
     """View for data tab of a Discount."""
