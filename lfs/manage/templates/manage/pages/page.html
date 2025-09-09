@@ -6,38 +6,40 @@
 {% block content %}
     <div class="lfs-pages">
         <div class="row">
-            <aside class="scrollable-content col-3 bg-white border-end vh-100 p-4 pt-3">
-                <div class="mb-3 fw-semibold">{% trans "Pages" %}</div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                    <input type="search" 
-                           class="form-control" 
-                           placeholder="{% trans 'Search pages...' %}" 
-                           name="q"
-                           value="{{ search_query }}"
-                           hx-get="{{ request.path }}"
-                           hx-target="#pages-list"
-                           hx-select="#pages-list"
-                           hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
-                           hx-include="this"
-                           hx-push-url="true"
-                           aria-label="{% trans 'Search pages' %}">
-                </div>
-                <div id="pages-list" hx-swap-oob="true">
-                    <div class="top-page mb-2">
-                        <a href="{% url 'lfs_manage_page_portlets' 1 %}{% if search_query %}?q={{ search_query }}{% endif %}"
-                           class="d-block p-2 mb-1 border rounded text-decoration-none {% if page.id == 1 %}bg-primary text-white{% else %}bg-light text-dark{% endif %}">
-                            {{ root.title }}
-                        </a>
+            <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
+                <div class="padding-bottom-100">
+                    <div class="mb-3 fw-semibold">{% trans "Pages" %}</div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="search" 
+                            class="form-control" 
+                            placeholder="{% trans 'Search pages...' %}" 
+                            name="q"
+                            value="{{ search_query }}"
+                            hx-get="{{ request.path }}"
+                            hx-target="#pages-list"
+                            hx-select="#pages-list"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search pages' %}">
                     </div>
-                    {% for p in pages %}
-                        <div class="page-item" data-id="{{ p.id }}">
-                            <a href="{% url 'lfs_manage_page' p.id %}{% if search_query %}?q={{ search_query }}{% endif %}"
-                               class="d-block p-2 mb-1 border rounded text-decoration-none {% if p.id == page.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}">
-                                {{ p.title }}
+                    <div id="pages-list" hx-swap-oob="true">
+                        <div class="top-page mb-2">
+                            <a href="{% url 'lfs_manage_page_portlets' 1 %}{% if search_query %}?q={{ search_query }}{% endif %}"
+                            class="d-block p-2 mb-1 border rounded text-decoration-none {% if page.id == 1 %}bg-primary text-white{% else %}bg-light text-dark{% endif %}">
+                                {{ root.title }}
                             </a>
                         </div>
-                    {% endfor %}
+                        {% for p in pages %}
+                            <div class="page-item" data-id="{{ p.id }}">
+                                <a href="{% url 'lfs_manage_page' p.id %}{% if search_query %}?q={{ search_query }}{% endif %}"
+                                class="d-block p-2 mb-1 border rounded text-decoration-none {% if p.id == page.id %}bg-primary text-white{% else %}bg-light text-dark{% endif %}">
+                                    {{ p.title }}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </aside>
 
