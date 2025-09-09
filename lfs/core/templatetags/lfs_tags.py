@@ -667,9 +667,14 @@ def packages(cart_item):
     Returns the packages based on product's package unit and cart items
     amount.
     """
+    if isinstance(cart_item.amount, str):
+        cart_item_amount = float(cart_item.amount.replace(",", "."))
+    else:
+        cart_item_amount = cart_item.amount
+
     packing_unit, _ = cart_item.product.get_packing_info()
     if packing_unit:
-        return int(math.ceil(cart_item.amount / packing_unit))
+        return int(math.ceil(cart_item_amount / packing_unit))
     return 0
 
 

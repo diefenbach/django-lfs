@@ -15,6 +15,7 @@ from django.utils.translation import gettext_lazy as _
 import lfs
 import lfs.core.utils
 from lfs.addresses.utils import AddressManagement
+from lfs.cart import utils as cart_utils
 from lfs.customer import utils as customer_utils
 from lfs.customer.forms import EmailForm, CustomerAuthenticationForm
 from lfs.customer.settings import REGISTER_FORM
@@ -54,11 +55,14 @@ def login(request, template_name="lfs/customer/login.html"):
                 redirect_to = reverse("lfs_shop_view")
 
             # Store the "old" session to be able to merge the carts after login
-            request.META["anonymous_session_key"] = request.session.session_key
+            request.session["anonymous_session_key"] = request.session.session_key
 
             from django.contrib.auth import login
 
             login(request, login_form.get_user())
+
+            cart_utils.update_cart_after_login(request)
+            customer_utils.update_customer_after_login(request)
 
             return lfs.core.utils.set_message_cookie(redirect_to, msg=_("You have been logged in."))
 
@@ -87,6 +91,9 @@ def login(request, template_name="lfs/customer/login.html"):
             from django.contrib.auth import login
 
             login(request, user)
+
+            cart_utils.update_cart_after_login(request)
+            customer_utils.update_customer_after_login(request)
 
             redirect_to = request.POST.get("next")
             if not redirect_to or "//" in redirect_to or " " in redirect_to:

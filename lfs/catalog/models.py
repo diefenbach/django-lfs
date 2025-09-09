@@ -129,8 +129,11 @@ class Category(models.Model):
         The position of the category within the shop resp. the parent
         category.
 
-    static_block
-        A assigned static block to the category.
+    static_block_above
+        A assigned static block to the category, which is displayed above the category's items
+
+    static_block_below
+        A assigned static block to the category, which is displayed below the category's items
 
     content
         decides which content will be displayed. At the moment this is either
@@ -177,14 +180,24 @@ class Category(models.Model):
     image = ImageWithThumbsField(_("Image"), upload_to="images", blank=True, null=True, sizes=THUMBNAIL_SIZES)
     position = models.IntegerField(_("Position"), default=1000)
     exclude_from_navigation = models.BooleanField(_("Exclude from navigation"), default=False)
-    static_block = models.ForeignKey(
+    static_block_above = models.ForeignKey(
         "StaticBlock",
-        verbose_name=_("Static block"),
+        verbose_name=_("Static block Above"),
         blank=True,
         null=True,
-        related_name="categories",
+        related_name="categories_above",
         on_delete=models.SET_NULL,
     )
+
+    static_block_below = models.ForeignKey(
+        "StaticBlock",
+        verbose_name=_("Static block Below"),
+        blank=True,
+        null=True,
+        related_name="categories_below",
+        on_delete=models.SET_NULL,
+    )
+
     template = models.PositiveSmallIntegerField(
         _("Category template"), blank=True, null=True, choices=CATEGORY_TEMPLATES_CHOICES
     )

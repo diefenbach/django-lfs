@@ -110,7 +110,7 @@ def update_cart_after_login(request):
     3. if there is a session cart and a user cart we add the session cart items
        to the user cart.
     """
-    anonymous_session_key = request.META.get("anonymous_session_key")
+    anonymous_session_key = request.session.get("anonymous_session_key")
     # 1.
     if not anonymous_session_key:
         return
@@ -140,3 +140,7 @@ def update_cart_after_login(request):
 
             user_cart.add(session_cart_item.product, properties_dict=properties_dict, amount=session_cart_item.amount)
         session_cart.delete()
+
+    # Clean up the anonymous session key from session
+    if "anonymous_session_key" in request.session:
+        del request.session["anonymous_session_key"]

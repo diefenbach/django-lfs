@@ -95,16 +95,31 @@
             </div>
             <div class="field">
                 <div class="label">
-                    {{ form.static_block.label_tag }}
+                    {{ form.static_block_above.label_tag }}
                 </div>
-                {% if form.static_block.errors %}
+                {% if form.static_block_above.errors %}
                     <div class="error">
-                        {{ form.static_block }}
-                        {{ form.static_block.errors }}
+                        {{ form.static_block_above }}
+                        {{ form.static_block_above.errors }}
                     </div>
                 {% else %}
                     <div>
-                        {{ form.static_block }}
+                        {{ form.static_block_above }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="field">
+                <div class="label">
+                    {{ form.static_block_below.label_tag }}
+                </div>
+                {% if form.static_block_below.errors %}
+                    <div class="error">
+                        {{ form.static_block_below }}
+                        {{ form.static_block_below.errors }}
+                    </div>
+                {% else %}
+                    <div>
+                        {{ form.static_block_below }}
                     </div>
                 {% endif %}
             </div>

@@ -55,11 +55,20 @@ def login(request, template_name="lfs/checkout/login.html"):
         login_form = CustomerAuthenticationForm(data=request.POST)
         login_form.fields["username"].label = _("E-Mail")
         if login_form.is_valid():
+            # Store the "old" session to be able to merge the carts after login
+            request.session["anonymous_session_key"] = request.session.session_key
+
             from django.contrib.auth import login
 
             login(request, login_form.get_user())
 
-            return lfs.core.utils.set_message_cookie(reverse("lfs_checkout"), msg=_("You have been logged in."))
+            # Manually trigger cart merge
+            cart_utils.update_cart_after_login(request)
+            customer_utils.update_customer_after_login(request)
+
+            return lfs.core.utils.set_message_cookie(
+                reverse("lfs_checkout_addresses"), msg=_("You have been logged in.")
+            )
 
     elif request.POST.get("action") == "register":
         register_form = RegisterForm(data=request.POST)
@@ -73,17 +82,21 @@ def login(request, template_name="lfs/checkout/login.html"):
             # Notify
             lfs.core.signals.customer_added.send(sender=user)
 
-            # Log in user
-            from django.contrib.auth import authenticate
+            # Store the "old" session to be able to merge the carts after login
+            request.session["anonymous_session_key"] = request.session.session_key
 
-            user = authenticate(username=email, password=password)
-
+            # Log in user (no need to authenticate, we just created the user)
             from django.contrib.auth import login
 
             login(request, user)
 
+            # Manually trigger cart merge since user_logged_in signal won't fire
+            # when calling login() directly without authenticate()
+            cart_utils.update_cart_after_login(request)
+            customer_utils.update_customer_after_login(request)
+
             return lfs.core.utils.set_message_cookie(
-                reverse("lfs_checkout"), msg=_("You have been registered and logged in.")
+                reverse("lfs_checkout_addresses"), msg=_("You have been registered and logged in.")
             )
 
     return render(
