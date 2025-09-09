@@ -1,20 +1,25 @@
 {% load i18n %}
 
-<li class="category-item level-{{ category.level }}" 
-    data-category-id="{{ category.id }}" 
+<li data-category-id="{{ category.id }}"
     data-level="{{ category.level }}"
     id="category_{{ category.id }}">
-    
-    <a href="{% url 'lfs_manage_category' category.id %}{% if search_query %}?q={{ search_query }}{% endif %}"
-       class="category-link {% if category.id == current_category_id %}selected{% endif %}">
+    <div class="item-content">
         <span class="drag-handle">⋮⋮</span>
-        <span class="category-name">{{ category.name }}</span>
-    </a>
-    
-    {% if category.children %}
-        <ul class="category-children">
+        {% if category.children %}
+            <button type="button" class="toggle-btn expanded" data-category-id="{{ category.id }}" title="Ausklappen/Zuklappen">
+                <i class="bi bi-chevron-down"></i>
+            </button>
+        {% endif %}
+        <a href="{% url 'lfs_manage_category' category.id %}{% if search_query %}?q={{ search_query }}{% endif %}"
+           class="category-link {% if category.id == current_category_id %}selected{% endif %}"
+           style="text-decoration: none; color: inherit;">
+            {{ category.name }}
+        </a>
+    </div>
+    {% if css_level|add:0 < 4 %}
+        <ul class="level-{{ css_level|add:1 }} expanded">
             {% for child in category.children %}
-                {% include "manage/categories/sidebar/category_item.html" with category=child current_category_id=current_category_id search_query=search_query %}
+                {% include "manage/categories/sidebar/category_item.html" with category=child current_category_id=current_category_id search_query=search_query css_level=css_level|add:1 %}
             {% endfor %}
         </ul>
     {% endif %}

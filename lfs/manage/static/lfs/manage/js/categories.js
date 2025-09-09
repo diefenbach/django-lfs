@@ -1,505 +1,304 @@
-/**
- * Enhanced hierarchical category drag and drop functionality
- * Supports both sibling and parent-child relationships
- * 
- * jQuery has been removed. All UI feedback is now handled with vanilla JS.
- * Notification is shown using a custom vanilla notification if jGrowl is not present.
- */
+// Funktion zum Ein-/Ausklappen von Kategorien
+function toggleCategory(categoryId) {
+    const toggleBtn = document.querySelector(`.toggle-btn[data-category-id="${categoryId}"]`);
+    const categoryLi = document.getElementById(`category_${categoryId}`);
 
-let draggedElement = null;
-let dropZoneTimeout = null;
-
-// Simple vanilla notification fallback
-function showNotification(message) {
-    // If jGrowl is available, use it
-    if (typeof window.$ !== 'undefined' && typeof window.$.jGrowl !== 'undefined') {
-        window.$.jGrowl(message, {theme: 'lfs'});
+    if (!toggleBtn || !categoryLi) {
         return;
     }
-    // Otherwise, use a simple vanilla notification
-    let notif = document.createElement('div');
-    notif.textContent = message;
-    notif.style.position = 'fixed';
-    notif.style.top = '20px';
-    notif.style.right = '20px';
-    notif.style.background = '#333';
-    notif.style.color = '#fff';
-    notif.style.padding = '12px 20px';
-    notif.style.borderRadius = '6px';
-    notif.style.zIndex = 9999;
-    notif.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
-    notif.style.fontSize = '1rem';
-    notif.className = 'vanilla-notification';
-    document.body.appendChild(notif);
-    setTimeout(() => {
-        notif.style.transition = 'opacity 0.5s';
-        notif.style.opacity = 0;
-        setTimeout(() => notif.remove(), 500);
-    }, 2500);
-}
 
-// Initialize Sortable.js for hierarchical categories
-document.addEventListener('DOMContentLoaded', function() {
-    initializeCategoryManagement();
-});
+    // Finde die nächste UL-Ebene
+    const childUl = categoryLi.querySelector('ul');
 
-// Also initialize when HTMX swaps content
-document.addEventListener('htmx:afterSwap', function(evt) {
-    if (evt.detail.target.id === 'categories-list') {
-        // Clean up existing sortable instances
-        cleanupSortableInstances();
-        initializeCategoryManagement();
-    }
-});
+    if (childUl) {
+        const isExpanded = toggleBtn.classList.contains('expanded');
 
-function cleanupSortableInstances() {
-    // Destroy existing sortable instances to prevent memory leaks
-    const sortableElement = document.querySelector('.hierarchical-sortable');
-    if (sortableElement && sortableElement.sortableInstance) {
-        sortableElement.sortableInstance.destroy();
-        sortableElement.sortableInstance = null;
-    }
-    
-    // Destroy nested sortable instances
-    const childrenContainers = document.querySelectorAll('.category-children');
-    childrenContainers.forEach(container => {
-        if (container.sortableInstance) {
-            container.sortableInstance.destroy();
-            container.sortableInstance = null;
-        }
-    });
-    
-    // Clean up drop zone event listeners
-    const dropZones = document.querySelectorAll('.drop-zone');
-    dropZones.forEach(dropZone => {
-        dropZone.classList.remove('drag-over');
-        // Note: Native event listeners will be removed when elements are destroyed
-    });
-    
-    // Clear any remaining drop zone indicators
-    clearAllDropZones();
-}
+        const icon = toggleBtn.querySelector('i');
 
-// Main initialization function
-function initializeCategoryManagement() {
-    setupDnDToggle();
-    // Start in compact mode - only initialize DnD if toggle is active
-    const toggle = document.getElementById('dnd-toggle');
-    if (toggle && toggle.dataset.dndActive === 'true') {
-        initializeEnhancedHierarchicalSortable();
-    }
-}
-
-// DnD Toggle functionality
-function setupDnDToggle() {
-    const toggle = document.getElementById('dnd-toggle');
-    const sidebar = document.querySelector('.hierarchical-categories-sidebar');
-    
-    if (!toggle || !sidebar) return;
-    
-    toggle.addEventListener('click', function() {
-        const isActive = toggle.dataset.dndActive === 'true';
-        const newState = !isActive;
-        
-        // Update toggle state
-        toggle.dataset.dndActive = newState;
-        const icon = toggle.querySelector('i');
-        
-        if (newState) {
-            // Enable DnD mode
-            sidebar.classList.add('dnd-mode');
-            icon.className = 'bi bi-unlock-fill';
-            toggle.title = 'Drag & Drop Modus deaktivieren';
-            
-            // Initialize sortable
-            initializeEnhancedHierarchicalSortable();
+        if (isExpanded) {
+            // Einklappen
+            toggleBtn.classList.remove('expanded');
+            toggleBtn.classList.add('collapsed');
+            if (icon) {
+                icon.className = 'bi bi-chevron-right';
+            }
+            childUl.classList.add('collapsed');
+            childUl.classList.remove('expanded');
         } else {
-            // Disable DnD mode
-            sidebar.classList.remove('dnd-mode');
-            icon.className = 'bi bi-lock-fill';
-            toggle.title = 'Drag & Drop Modus aktivieren';
-            
-            // Clean up sortable
-            cleanupSortableInstances();
+            // Ausklappen
+            toggleBtn.classList.remove('collapsed');
+            toggleBtn.classList.add('expanded');
+            if (icon) {
+                icon.className = 'bi bi-chevron-down';
+            }
+            childUl.classList.add('expanded');
+            childUl.classList.remove('collapsed');
         }
-        
-        // Save state to localStorage
-        localStorage.setItem('categories-dnd-mode', newState);
-    });
-    
-    // Restore state from localStorage
-    const savedState = localStorage.getItem('categories-dnd-mode');
-    if (savedState === 'true') {
-        toggle.click(); // This will trigger the toggle
     }
 }
 
-function initializeEnhancedHierarchicalSortable() {
-    const sortableElement = document.querySelector('.hierarchical-sortable');
-    if (sortableElement && !sortableElement.sortableInstance) {
-        // Initialize main level sortable with enhanced options
-        sortableElement.sortableInstance = new Sortable(sortableElement, {
-            animation: 150,
-            handle: '.drag-handle',
-            group: {
-                name: 'categories',
-                pull: true,
-                put: true
-            },
-            // Don't filter drop zones - we need them as drop targets
-            // filter: '.category-drop-zones',
-            onStart: function(evt) {
-                draggedElement = evt.item;
-                document.body.classList.add('dragging');
-                //console.log('Drag started:', draggedElement.dataset.categoryId);
-            },
-            onEnd: function(evt) {
-                document.body.classList.remove('dragging');
-                // Only handle sort if it's not a drop zone operation
-                if (!evt.to.classList.contains('drop-zone')) {
-                    handleSortEnd(sortableElement);
-                }
-                draggedElement = null;
+// Drag & Drop Toggle State
+let dndEnabled = true;
+
+// Drag & Drop sperren/aktivieren
+function toggleDnD() {
+    const toggleBtn = document.getElementById('toggle-dnd');
+    if (!toggleBtn) return;
+
+    dndEnabled = !dndEnabled;
+    const icon = toggleBtn.querySelector('i');
+
+    if (dndEnabled) {
+        // Aktiviere Drag & Drop
+        icon.className = 'bi bi-unlock';
+        toggleBtn.title = 'Drag & drop aktiv';
+        // Re-initialisiere Sortable für alle Listen
+        initSortable('level-1', 'nested-list');
+        document.querySelectorAll('.level-2, .level-3, .level-4').forEach(list => {
+            if (list.id) {
+                initSortable(list.id, 'nested-list');
             }
         });
-        
-        // Initialize nested sortables for each category children container
-        initializeEnhancedNestedSortables();
-        
-        // Initialize drop zones with native drag/drop events
-        initializeNativeDropZones();
-        
+    } else {
+        // Deaktiviere Drag & Drop
+        icon.className = 'bi bi-lock';
+        toggleBtn.title = 'Drag & drop gesperrt';
+        // Zerstöre alle Sortable-Instanzen
+        document.querySelectorAll('.level-1, .level-2, .level-3, .level-4').forEach(list => {
+            if (list.sortable) {
+                list.sortable.destroy();
+                list.sortable = null;
+            }
+        });
     }
 }
 
-function initializeNestedSortables() {
-    // Find all category children containers and make them sortable
-    const childrenContainers = document.querySelectorAll('.category-children');
-    childrenContainers.forEach(container => {
-        if (!container.sortableInstance) {
-            container.sortableInstance = new Sortable(container, {
-                animation: 150,
-                handle: '.drag-handle',
-                group: {
-                    name: 'categories',
-                    pull: true,
-                    put: true
-                },
-                onEnd: function(evt) {
-                    const sortableElement = document.querySelector('.hierarchical-sortable');
-                    handleSortEnd(sortableElement);
-                }
-            });
+// Alle Kategorien ausklappen
+function expandAllCategories() {
+    // Setze alle Toggle-Buttons auf expanded
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.classList.remove('collapsed');
+        btn.classList.add('expanded');
+        const icon = btn.querySelector('i');
+        if (icon) {
+            icon.className = 'bi bi-chevron-down';
         }
+    });
+
+    // Zeige alle UL-Elemente
+    document.querySelectorAll('.level-2, .level-3, .level-4').forEach(ul => {
+        ul.classList.remove('collapsed');
+        ul.classList.add('expanded');
     });
 }
 
-function handleSortEnd(sortableElement) {
-    // Handle the sort end event
-    const sortUrl = sortableElement.dataset.sortUrl;
-    const csrfToken = sortableElement.dataset.csrfToken;
-    
-    // Serialize the new order
-    const serialized = serializeHierarchicalOrder(sortableElement);
-    
-    // Send to server
-    fetch(sortUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': csrfToken
-        },
-        body: 'categories=' + encodeURIComponent(serialized)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            showNotification(data.message);
+// Alle Kategorien einklappen
+function collapseAllCategories() {
+    // Setze alle Toggle-Buttons auf collapsed
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.classList.remove('expanded');
+        btn.classList.add('collapsed');
+        const icon = btn.querySelector('i');
+        if (icon) {
+            icon.className = 'bi bi-chevron-right';
         }
-    })
-    .catch(error => {
-        console.error('Error sorting categories:', error);
+    });
+
+    // Verstecke alle UL-Elemente
+    document.querySelectorAll('.level-2, .level-3, .level-4').forEach(ul => {
+        ul.classList.remove('expanded');
+        ul.classList.add('collapsed');
     });
 }
 
-function serializeHierarchicalOrder(element) {
-    const result = [];
-    
-    function processItem(item, parentId = 'root') {
-        const categoryId = item.dataset.categoryId;
-        result.push(`category[${categoryId}]=${parentId}`);
-        
-        // Process direct children only (not nested deeper)
-        const childrenContainer = item.querySelector(':scope > .category-children');
-        if (childrenContainer) {
-            const directChildren = childrenContainer.querySelectorAll(':scope > .category-item');
-            directChildren.forEach(child => {
-                processItem(child, categoryId);
-            });
-        }
-    }
-    
-    // Process top-level items
-    const topLevelItems = element.querySelectorAll(':scope > .category-item');
-    topLevelItems.forEach(item => {
-        processItem(item);
-    });
-    
-    return result.join('&');
-}
-
-// Enhanced drop zone functions
-function initializeEnhancedNestedSortables() {
-    // Find all category children containers and make them sortable
-    const childrenContainers = document.querySelectorAll('.category-children');
-    childrenContainers.forEach(container => {
-        if (!container.sortableInstance) {
-            container.sortableInstance = new Sortable(container, {
-                animation: 150,
-                handle: '.drag-handle',
-                group: {
-                    name: 'categories',
-                    pull: true,
-                    put: true
-                },
-                // Don't filter drop zones - we need them as drop targets
-                // filter: '.category-drop-zones',
-                onStart: function(evt) {
-                    draggedElement = evt.item;
-                    document.body.classList.add('dragging');
-                },
-                onEnd: function(evt) {
-                    document.body.classList.remove('dragging');
-                    // Only handle sort if it's not a drop zone operation
-                    if (!evt.to.classList.contains('drop-zone')) {
-                        const sortableElement = document.querySelector('.hierarchical-sortable');
-                        handleSortEnd(sortableElement);
-                    }
-                    draggedElement = null;
-                }
-            });
-        }
-    });
-}
-
-// Initialize drop zones with native drag and drop
-function initializeNativeDropZones() {
-    const dropZones = document.querySelectorAll('.drop-zone');
-    
-    dropZones.forEach(dropZone => {
-        // Make drop zones accept drops
-        dropZone.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-        });
-        
-        dropZone.addEventListener('dragenter', function(e) {
-            e.preventDefault();
-            //console.log('Dragenter on drop zone:', this.dataset.dropType, this.dataset.targetId);
-            if (draggedElement) {
-                const targetId = this.dataset.targetId;
-                const draggedId = draggedElement.dataset.categoryId;
-                
-                // Don't allow dropping on self
-                if (targetId !== draggedId) {
-                    this.classList.add('drag-over');
-                    //console.log('Added drag-over class');
-                }
-            }
-        });
-        
-        dropZone.addEventListener('dragleave', function(e) {
-            // Only remove if we're actually leaving the drop zone
-            if (!this.contains(e.relatedTarget)) {
-                this.classList.remove('drag-over');
-            }
-        });
-        
-        dropZone.addEventListener('drop', function(e) {
+// Event-Handler für Toggle-Buttons
+function initToggleButtons() {
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('toggle-btn') || e.target.closest('.toggle-btn')) {
             e.preventDefault();
             e.stopPropagation();
-            
-            this.classList.remove('drag-over');
-            
-            if (draggedElement) {
-                const dropType = this.dataset.dropType;
-                const targetId = this.dataset.targetId;
-                const draggedId = draggedElement.dataset.categoryId;
-                
-                // Don't allow dropping on self
-                if (targetId !== draggedId) {
-                    //console.log('Drop successful:', { dropType, targetId, draggedId });
-                    handleSpecificDrop(draggedId, targetId, dropType);
+            const toggleBtn = e.target.closest('.toggle-btn');
+            if (toggleBtn) {
+                const categoryId = toggleBtn.getAttribute('data-category-id');
+                if (categoryId) {
+                    toggleCategory(categoryId);
                 }
             }
-        });
-    });
-}
-
-function setupDropZones(draggedItem) {
-    // Clear any existing drop zones
-    clearAllDropZones();
-    
-    // Get all category items except the dragged one and its descendants
-    const allItems = document.querySelectorAll('.category-item');
-    const draggedId = draggedItem.dataset.categoryId;
-    
-    allItems.forEach(item => {
-        const itemId = item.dataset.categoryId;
-        
-        // Skip the dragged item itself
-        if (itemId === draggedId) return;
-        
-        // Skip descendants of the dragged item (prevent circular references)
-        if (isDescendantOf(item, draggedItem)) return;
-        
-        // Enable as potential drop zone
-        item.classList.add('drop-zone-available');
-        
-        // Ensure children containers exist for potential child drops
-        ensureChildrenContainer(item);
-    });
-}
-
-function isDescendantOf(potentialDescendant, ancestor) {
-    // Check if potentialDescendant is a child of ancestor
-    let parent = potentialDescendant.parentElement;
-    while (parent) {
-        if (parent === ancestor) return true;
-        parent = parent.parentElement;
-        // Stop at category boundaries
-        if (parent && parent.classList.contains('category-item')) {
-            parent = parent.parentElement;
         }
-    }
-    return false;
+    });
+
+    // Verhindere Drag beim Klick auf Toggle-Button
+    document.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('toggle-btn') || e.target.closest('.toggle-btn')) {
+            e.stopPropagation();
+        }
+    });
 }
 
-function ensureChildrenContainer(categoryItem) {
-    // Check if the category item already has a children container
-    let childrenContainer = categoryItem.querySelector(':scope > .category-children');
-    
-    if (!childrenContainer) {
-        // Create a children container for potential drops
-        childrenContainer = document.createElement('ul');
-        childrenContainer.className = 'category-children drop-zone-empty';
-        categoryItem.appendChild(childrenContainer);
-        
-        // Make the new container sortable
-        childrenContainer.sortableInstance = new Sortable(childrenContainer, {
-            animation: 150,
-            ghostClass: 'sortable-ghost',
-            chosenClass: 'sortable-chosen',
-            dragClass: 'sortable-drag',
-            handle: '.drag-handle',
-            group: {
-                name: 'categories',
-                pull: true,
-                put: true
-            },
-            onStart: function(evt) {
-                draggedElement = evt.item;
-            },
-            onEnd: function(evt) {
-                clearAllDropZones();
-                const sortableElement = document.querySelector('.hierarchical-sortable');
-                handleSortEnd(sortableElement);
-                draggedElement = null;
+// Event-Handler für Sidebar-Buttons
+function initSidebarButtons() {
+    // Toggle DnD Button
+    const toggleDndBtn = document.getElementById('toggle-dnd');
+    if (toggleDndBtn) {
+        toggleDndBtn.addEventListener('click', toggleDnD);
+    }
+
+    // Expand All Button
+    const expandAllBtn = document.getElementById('expand-all');
+    if (expandAllBtn) {
+        expandAllBtn.addEventListener('click', expandAllCategories);
+    }
+
+    // Collapse All Button
+    const collapseAllBtn = document.getElementById('collapse-all');
+    if (collapseAllBtn) {
+        collapseAllBtn.addEventListener('click', collapseAllCategories);
+    }
+}
+
+// Funktion zum Sammeln der Kategorie-Hierarchie
+function collectCategoryData() {
+    const data = [];
+
+    // Sammle alle LI-Elemente mit data-category-id
+    document.querySelectorAll('li[data-category-id]').forEach(li => {
+        const categoryId = li.getAttribute('data-category-id');
+        const level = parseInt(li.getAttribute('data-level')) || 0;
+
+        // Finde den Parent basierend auf der UL-Hierarchie
+        let parentId = 'root';
+        let parentUl = li.closest('ul');
+
+        // Gehe nach oben in der Hierarchie
+        while (parentUl) {
+            const parentLi = parentUl.closest('li[data-category-id]');
+            if (parentLi) {
+                parentId = parentLi.getAttribute('data-category-id');
+                break;
             }
-        });
-    } else if (childrenContainer.children.length === 0) {
-        // Add empty drop zone class to existing empty containers
-        childrenContainer.classList.add('drop-zone-empty');
-    }
-}
-
-function clearAllDropZones() {
-    // Remove all drop zone classes
-    clearDropZoneClass('drop-zone-available');
-    clearDropZoneClass('drop-zone-child');
-    clearDropZoneClass('drop-zone-sibling');
-    clearDropZoneClass('drop-zone-empty');
-    clearDropZoneClass('drop-zone-active');
-    
-    // Remove empty children containers that were created for drop zones
-    const emptyContainers = document.querySelectorAll('.category-children:empty');
-    emptyContainers.forEach(container => {
-        // Only remove if it was created as a temporary drop zone
-        if (container.classList.contains('drop-zone-empty')) {
-            if (container.sortableInstance) {
-                container.sortableInstance.destroy();
-            }
-            container.remove();
+            parentUl = parentUl.parentElement.closest('ul');
         }
+
+        data.push(`category[${categoryId}]=${parentId}`);
     });
+
+    return data.join('&');
 }
 
-function clearDropZoneClass(className) {
-    const elements = document.querySelectorAll('.' + className);
-    elements.forEach(el => el.classList.remove(className));
-}
-
-// Drop Zone Event Handlers are now handled by Sortable.js in initializeDropZones()
-
-function handleSpecificDrop(draggedId, targetId, dropType) {
-    const sortableElement = document.querySelector('.hierarchical-sortable');
-    const sortUrl = sortableElement.dataset.sortUrl;
-    const csrfToken = sortableElement.dataset.csrfToken;
-    
-    // Create the data based on drop type
-    let parentId, position;
-    
-    if (dropType === 'sibling') {
-        // Make it a sibling of target - same parent as target
-        const targetElement = document.getElementById(`category_${targetId}`);
-        const targetParent = targetElement.closest('.category-children');
-        
-        if (targetParent) {
-            // Target has a parent, get the parent's ID
-            const parentElement = targetParent.closest('.category-item');
-            parentId = parentElement.dataset.categoryId;
-        } else {
-            // Target is top-level
-            parentId = 'root';
-        }
-        
-        // Position after target
-        const targetPos = Array.from(targetElement.parentElement.children).indexOf(targetElement);
-        position = (targetPos + 1) * 10;
-    } else {
-        // Make it a child of target
-        parentId = targetId;
-        position = 10; // First child
+// Funktion zum Senden der Daten an den Server
+function saveCategoryStructure() {
+    const categoriesList = document.getElementById('categories-list');
+    if (!categoriesList) {
+        return;
     }
-    
-    // Send to server
-    const data = `categories=category[${draggedId}]=${parentId}`;
-    
+
+    const sortUrl = categoriesList.querySelector('ul')?.getAttribute('data-sort-url');
+    const csrfToken = categoriesList.querySelector('ul')?.getAttribute('data-csrf-token');
+
+    if (!sortUrl) {
+        return;
+    }
+
+    const categoryData = collectCategoryData();
+
+    // Erstelle FormData für den POST-Request
+    const formData = new FormData();
+    formData.append('categories', categoryData);
+
     fetch(sortUrl, {
         method: 'POST',
+        body: formData,
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': csrfToken
-        },
-        body: data
+            'X-CSRFToken': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+        }
     })
     .then(response => response.json())
     .then(data => {
-        if (data.message) {
-            showNotification(data.message);
-        }
-        // Refresh categories list via HTMX instead of full reload
-        const categoriesList = document.getElementById('categories-list');
-        if (categoriesList && typeof window.htmx !== 'undefined') {
-            window.htmx.ajax('GET', window.location.pathname, {
-                target: '#categories-list',
-                select: '#categories-list'
-            });
-        } else {
-            location.reload();
-        }
+        // Server response verarbeitet
     })
     .catch(error => {
-        console.error('Error moving category:', error);
+        // Fehler beim Speichern
     });
+}
+
+// Funktion zum Initialisieren von Sortable für eine Ebene
+function initSortable(levelId, groupName, handleSelector = '.drag-handle') {
+    const element = document.getElementById(levelId);
+    if (!element) {
+        return;
+    }
+
+    // Check if Sortable is already initialized
+    if (element.sortable) {
+        element.sortable.destroy();
+    }
+
+    const sortable = new Sortable(element, {
+        animation: 150,
+        ghostClass: 'ghost',
+        chosenClass: 'chosen',
+        handle: handleSelector,
+        group: groupName,
+
+        // Event-Handler für Sortier-Änderungen
+        onEnd: function(evt) {
+            // Nach dem Sortieren automatisch die Struktur speichern
+            setTimeout(saveCategoryStructure, 500); // Kleine Verzögerung für bessere UX
+        },
+
+        onStart: function(evt) {
+            // Drag gestartet
+        }
+    });
+
+    // Store reference to sortable instance
+    element.sortable = sortable;
+}
+
+// Wait for DOM to be ready
+function initializeWhenReady() {
+    // Initialisiere Toggle-Buttons
+    initToggleButtons();
+
+    // Initialisiere Sidebar-Buttons
+    initSidebarButtons();
+
+    // Initialisiere alle Ebenen
+    initSortable('level-1', 'nested-list');
+
+    // Initialisiere alle Unterlisten
+    document.querySelectorAll('.level-2').forEach((list, index) => {
+        list.id = list.id || `level-2-${index}`;
+        initSortable(list.id, 'nested-list');
+    });
+
+    document.querySelectorAll('.level-3').forEach((list, index) => {
+        list.id = list.id || `level-3-${index}`;
+        initSortable(list.id, 'nested-list');
+    });
+
+    document.querySelectorAll('.level-4').forEach((list, index) => {
+        list.id = list.id || `level-4-${index}`;
+        initSortable(list.id, 'nested-list');
+    });
+}
+
+// Only initialize once
+let initialized = false;
+
+function initializeOnce() {
+    if (initialized) {
+        return;
+    }
+    initialized = true;
+    initializeWhenReady();
+}
+
+// Try different ways to ensure DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeOnce);
+} else {
+    // DOM is already ready
+    initializeOnce();
 }

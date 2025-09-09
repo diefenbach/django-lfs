@@ -7,7 +7,20 @@
     <div class="lfs-categories">
         <div class="row">
             <aside class="scrollable-content col-3 bg-white border-end vh-100 p-4 pt-3">
-                <div class="mb-3 fw-semibold">{% trans "Categories" %}</div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="fw-semibold">{% trans "Categories" %}</div>
+                    <div class="d-flex gap-1">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="toggle-dnd" title="{% trans 'Toggle drag & drop' %}">
+                            <i class="bi bi-unlock"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="expand-all" title="{% trans 'Expand all categories' %}">
+                            <i class="bi bi-plus-square"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="collapse-all" title="{% trans 'Collapse all categories' %}">
+                            <i class="bi bi-dash-square"></i>
+                        </button>
+                    </div>
+                </div>
                 <div class="input-group mb-3">
                     <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
                     <input type="search" 
