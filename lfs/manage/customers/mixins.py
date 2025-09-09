@@ -43,14 +43,16 @@ class CustomerFilterMixin:
 
         filter_service = CustomerFilterService()
         name = ""
-        start = None
-        end = None
+        start = ""
+        end = ""
 
         if customer_filters.get("start"):
-            start = filter_service.parse_iso_date(customer_filters["start"])
+            parsed_date = filter_service.parse_iso_date(customer_filters["start"])
+            start = filter_service.format_iso_date(parsed_date) if parsed_date else ""
 
         if customer_filters.get("end"):
-            end = filter_service.parse_iso_date(customer_filters["end"])
+            parsed_date = filter_service.parse_iso_date(customer_filters["end"])
+            end = filter_service.format_iso_date(parsed_date) if parsed_date else ""
 
         if customer_filters.get("name"):
             name = customer_filters["name"]

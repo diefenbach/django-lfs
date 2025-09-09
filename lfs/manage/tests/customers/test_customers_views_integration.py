@@ -409,7 +409,7 @@ class TestApplyCustomerFiltersView:
         assert response.status_code == 302  # Unauthenticated users get redirected to login
         assert response.url == reverse("lfs_manage_customers")
 
-    def test_should_handle_invalid_form_data(self, client, admin_user):
+    def test_should_handle_invalid_form_data(self, client, admin_user, shop):
         """Test that invalid form data is handled gracefully."""
         client.force_login(admin_user)
         data = {"start": "invalid-date"}
@@ -418,7 +418,7 @@ class TestApplyCustomerFiltersView:
         # Should still redirect but with error message
         assert response.status_code == 302  # Unauthenticated users get redirected to login
 
-    def test_should_handle_mixed_valid_and_invalid_data(self, client, admin_user):
+    def test_should_handle_mixed_valid_and_invalid_data(self, client, admin_user, shop):
         """Test that mixed valid and invalid data is handled correctly."""
         client.force_login(admin_user)
         data = {"name": "John", "start": "invalid-date", "end": "2024-12-31"}  # Valid  # Invalid  # Valid

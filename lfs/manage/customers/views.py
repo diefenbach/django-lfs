@@ -137,7 +137,7 @@ class ApplyCustomerFiltersView(PermissionRequiredMixin, FormView):
 
     def get_success_url(self) -> str:
         """Redirects back to the customer view or customer list."""
-        customer_id = self.kwargs.get("customer_id")
+        customer_id = self.kwargs.get("customer_id") or self.request.POST.get("customer_id")
         if customer_id:
             return reverse("lfs_manage_customer", kwargs={"customer_id": customer_id})
         return reverse("lfs_manage_customers")
@@ -170,6 +170,11 @@ class ApplyCustomerFiltersView(PermissionRequiredMixin, FormView):
         self.request.session["customer-filters"] = customer_filters
 
         messages.success(self.request, _("Customer filters have been updated."))
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """Handle invalid form data by redirecting with error message."""
+        messages.error(self.request, _("Invalid filter data provided. Please check your input."))
         return super().form_valid(form)
 
 
