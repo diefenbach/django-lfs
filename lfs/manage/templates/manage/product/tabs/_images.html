@@ -1,73 +1,99 @@
-{% load i18n static %}
+{% load i18n %}
 
-<div class="tab-pane fade show active" id="images-content" role="tabpanel" aria-labelledby="images-tab">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0">{% trans "Images" %}</h5>
+<div id="images-list">
+    {% if product.images.all %}
+        <form method="post" class="mb-4">
+            {% csrf_token %}    
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col" width="40">
+                                <div class="form-check">
+                                    <input type="checkbox"
+                                        class="form-check-input select-all"
+                                        id="select-all-images"
+                                        value="delete-images" />
+                                    <label class="form-check-label visually-hidden" for="select-all-images">{% trans 'Select all' %}</label>
+                                </div>
+                            </th>
+                            <th scope="col" width="80">{% trans 'Image' %}</th>
+                            <th scope="col" width="80" class="text-end">{% trans 'Position' %}</th>
+                            <th scope="col">{% trans 'Title' %}</th>
+                            <th scope="col">{% trans 'Alt Text' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for image in product.images.all %}
+                            <tr>
+                                <td>
+                                    <div class="form-check">
+                                        <input type="checkbox"
+                                            class="form-check-input select-delete-images"
+                                            id="delete-image-{{ image.id }}"
+                                            name="delete-{{ image.id }}" />
+                                        <label class="form-check-label visually-hidden" for="delete-image-{{ image.id }}">{% trans 'Select image' %}</label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <img src="{{ image.image.url_60x60 }}" alt="" class="img-thumbnail" style="width:60px;height:60px;object-fit:cover;">
+                                </td>
+                                <td>
+                                    <input type="number" name="position-{{ image.id }}" value="{{ image.position }}" class="form-control form-control-sm" min="0" />
+                                </td>
+                                <td>
+                                    <input type="text" name="title-{{ image.id }}" value="{{ image.title }}" class="form-control" />
+                                </td>
+                                <td>
+                                    <input type="text" name="alt-{{ image.id }}" value="{{ image.alt }}" class="form-control" />
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" name="action" value="update" class="btn btn-primary">
+                    <i class="bi bi-check-lg me-1"></i> {% trans 'Save Changes' %}
+                </button>
+                <button type="submit" name="action" value="delete" class="btn btn-danger">
+                    <i class="bi bi-trash me-1"></i> {% trans 'Delete Selected Images' %}
+                </button>
+            </div>
+        </form>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i> {% trans 'There are no images' %}
+        </div>
+    {% endif %}    
+</div>
+
+<hr class="my-4">
+
+<h3 class="h5 mb-3">{% trans 'Add images' %}</h3>
+
+<div id="image-upload-section">
+    <form id="image_upload" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {# Active images toggle for variants #}
         {% if product.is_variant %}
-            <form method="post" class="d-flex align-items-center gap-2 mb-0">
-                {% csrf_token %}
-                <input type="hidden" name="toggle_active_images" value="1" />
+            <div class="mb-3">
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="activeImages" name="active_images" {% if product.active_images %}checked{% endif %}>
                     <label class="form-check-label" for="activeImages">{% trans "Active images" %}</label>
                 </div>
-                <button type="submit" class="btn btn-sm btn-outline-secondary">{% trans "Update" %}</button>
-            </form>
+            </div>
         {% endif %}
-    </div>
-
-    <form method="post" enctype="multipart/form-data" class="mb-4">
-        {% csrf_token %}
-        <div class="input-group">
-            <input class="form-control" type="file" name="files[]" multiple>
-            <button class="btn btn-primary" type="submit">{% trans "Upload" %}</button>
+        
+        <div class="mb-3">
+            <input class="form-control" type="file" name="files[]" multiple accept="image/*">
         </div>
-    </form>
-
-    <form method="post">
-        {% csrf_token %}
-        <div class="table-responsive">
-            <table class="table table-sm align-middle">
-                <thead>
-                    <tr>
-                        <th style="width:2rem;">
-                            <input type="checkbox" class="form-check-input" onclick="document.querySelectorAll('.select-delete-image').forEach(cb=>cb.checked=this.checked)">
-                        </th>
-                        <th style="width:80px;">{% trans "Image" %}</th>
-                        <th>{% trans "Title" %}</th>
-                        <th>{% trans "Alt" %}</th>
-                        <th style="width:8rem;">{% trans "Position" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for image in product.images.all %}
-                        <tr>
-                            <td>
-                                <input type="checkbox" class="form-check-input select-delete-image" name="delete-{{ image.id }}">
-                            </td>
-                            <td>
-                                <img src="{{ image.image.url_60x60 }}" alt="" class="img-thumbnail" style="width:60px;height:60px;object-fit:cover;">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" name="title-{{ image.id }}" value="{{ image.title }}">
-                            </td>
-                            <td>
-                                <input type="text" class="form-control form-control-sm" name="alt-{{ image.id }}" value="{{ image.alt }}">
-                            </td>
-                            <td>
-                                <input type="number" class="form-control form-control-sm" style="max-width:6rem" name="position-{{ image.id }}" value="{{ image.position }}">
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr><td colspan="5" class="text-muted">{% trans "There are no images" %}</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-primary" type="submit" name="action" value="update">{% trans "Save" %}</button>
-            <button class="btn btn-outline-danger" type="submit" name="action" value="delete">{% trans "Delete selected" %}</button>
-        </div>
+        <button class="btn btn-primary" type="submit" name="action" value="upload">
+            <i class="bi bi-upload me-1"></i>
+            {% trans 'Upload images' %}
+        </button>
     </form>
 </div>
 
