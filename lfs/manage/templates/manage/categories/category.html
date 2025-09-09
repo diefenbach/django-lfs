@@ -6,42 +6,44 @@
 {% block content %}
     <div class="lfs-categories">
         <div class="row">
-            <aside class="scrollable-content col-3 bg-white border-end vh-100 p-4 pt-3">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="fw-semibold">{% trans "Categories" %}</div>
-                    <div class="d-flex gap-1">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="toggle-dnd" title="{% trans 'Toggle drag & drop' %}">
-                            <i class="bi bi-unlock"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="expand-all" title="{% trans 'Expand all categories' %}">
-                            <i class="bi bi-plus-square"></i>
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" id="collapse-all" title="{% trans 'Collapse all categories' %}">
-                            <i class="bi bi-dash-square"></i>
-                        </button>
+            <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="fw-semibold">{% trans "Categories" %}</div>
+                        <div class="d-flex gap-1">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="toggle-dnd" title="{% trans 'Toggle drag & drop' %}">
+                                <i class="bi bi-unlock"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="expand-all" title="{% trans 'Expand all categories' %}">
+                                <i class="bi bi-plus-square"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="collapse-all" title="{% trans 'Collapse all categories' %}">
+                                <i class="bi bi-dash-square"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                    <input type="search" 
-                           class="form-control" 
-                           placeholder="{% trans 'Search categories...' %}" 
-                           name="q"
-                           value="{{ search_query }}"
-                           hx-get="{{ request.path }}"
-                           hx-target="#categories-list"
-                           hx-select="#categories-list"
-                           hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
-                           hx-include="this"
-                           hx-push-url="true"
-                           aria-label="{% trans 'Search categories' %}">
-                </div>
-                <div id="categories-list" hx-swap-oob="true">
-                    {% include "manage/categories/sidebar/hierarchical_categories.html" with current_category_id=category.id %}
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="search" 
+                            class="form-control" 
+                            placeholder="{% trans 'Search categories...' %}" 
+                            name="q"
+                            value="{{ search_query }}"
+                            hx-get="{{ request.path }}"
+                            hx-target="#categories-list"
+                            hx-select="#categories-list"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search categories' %}">
+                    </div>
+                    <div id="categories-list" hx-swap-oob="true">
+                        {% include "manage/categories/sidebar/hierarchical_categories.html" with current_category_id=category.id %}
+                    </div>
                 </div>
             </aside>
 
-            <main class="col-9 p-4 pt-3 scrollable-content">
+            <main class="col-9 p-4 pt-3 overflow-y-auto">
                 <div class="padding-bottom-100">
                     <div class="d-flex justify-content-between fw-semibold">
                         <nav aria-label="Breadcrumb" class="me-2">
