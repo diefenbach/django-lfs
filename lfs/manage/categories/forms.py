@@ -25,7 +25,8 @@ class CategoryForm(forms.ModelForm):
         # Set up static_block choices
         static_block_choices = [("", _("No static block"))]
         static_block_choices.extend([(sb.id, sb.name) for sb in StaticBlock.objects.all().order_by("name")])
-        self.fields["static_block"].choices = static_block_choices
+        self.fields["static_block_above"].choices = static_block_choices
+        self.fields["static_block_below"].choices = static_block_choices
 
     class Meta:
         model = Category
@@ -36,7 +37,8 @@ class CategoryForm(forms.ModelForm):
             "description",
             "exclude_from_navigation",
             "image",
-            "static_block",
+            "static_block_above",
+            "static_block_below",
         )
 
 
