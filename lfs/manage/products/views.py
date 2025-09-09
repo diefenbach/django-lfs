@@ -85,7 +85,9 @@ class ProductTabMixin:
 
     def _get_products_queryset(self):
         q = self.request.GET.get("q", "").strip()
-        qs = Product.objects.exclude(sub_type=PRODUCT_VARIANT).order_by("name")
+        # Get all non-variant products (standard, product_with_variants, configurable)
+        # Prefetch variants to avoid N+1 queries
+        qs = Product.objects.exclude(sub_type=PRODUCT_VARIANT).prefetch_related("variants").order_by("name")
         if q:
             from django.db.models import Q
 

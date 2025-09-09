@@ -25,12 +25,20 @@
                             hx-push-url="true"
                             aria-label="{% trans 'Search products' %}">
                     </div>
-                    <div class="list-group">
+                    <div id="products-list" class="list-group" hx-swap-oob="true">
                         {% for p in products %}
                             <a class="list-group-item list-group-item-action {% if p.id == product.id %}active{% endif %}"
                                href="{% url 'lfs_manage_product_data' p.id %}?q={{ search_query }}">
-                                {{ p.name }}
+                                {{ p.get_name }}
                             </a>
+                            {% if p.is_product_with_variants %}
+                                {% for variant in p.variants.all %}
+                                    <a class="list-group-item list-group-item-action ps-4 text-muted small {% if variant.id == product.id %}active{% endif %}"
+                                       href="{% url 'lfs_manage_product_data' variant.id %}?q={{ search_query }}">
+                                        └ {{ variant.get_name }}
+                                    </a>
+                                {% endfor %}
+                            {% endif %}
                         {% empty %}
                             <div class="text-muted small">{% trans "No products found." %}</div>
                         {% endfor %}
