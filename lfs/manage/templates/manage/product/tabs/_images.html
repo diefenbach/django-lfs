@@ -1,0 +1,73 @@
+{% load i18n static %}
+
+<div class="tab-pane fade show active" id="images-content" role="tabpanel" aria-labelledby="images-tab">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">{% trans "Images" %}</h5>
+        {% if product.is_variant %}
+            <form method="post" class="d-flex align-items-center gap-2 mb-0">
+                {% csrf_token %}
+                <input type="hidden" name="toggle_active_images" value="1" />
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="activeImages" name="active_images" {% if product.active_images %}checked{% endif %}>
+                    <label class="form-check-label" for="activeImages">{% trans "Active images" %}</label>
+                </div>
+                <button type="submit" class="btn btn-sm btn-outline-secondary">{% trans "Update" %}</button>
+            </form>
+        {% endif %}
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="mb-4">
+        {% csrf_token %}
+        <div class="input-group">
+            <input class="form-control" type="file" name="files[]" multiple>
+            <button class="btn btn-primary" type="submit">{% trans "Upload" %}</button>
+        </div>
+    </form>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th style="width:2rem;">
+                            <input type="checkbox" class="form-check-input" onclick="document.querySelectorAll('.select-delete-image').forEach(cb=>cb.checked=this.checked)">
+                        </th>
+                        <th style="width:80px;">{% trans "Image" %}</th>
+                        <th>{% trans "Title" %}</th>
+                        <th>{% trans "Alt" %}</th>
+                        <th style="width:8rem;">{% trans "Position" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for image in product.images.all %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="form-check-input select-delete-image" name="delete-{{ image.id }}">
+                            </td>
+                            <td>
+                                <img src="{{ image.image.url_60x60 }}" alt="" class="img-thumbnail" style="width:60px;height:60px;object-fit:cover;">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" name="title-{{ image.id }}" value="{{ image.title }}">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" name="alt-{{ image.id }}" value="{{ image.alt }}">
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm" style="max-width:6rem" name="position-{{ image.id }}" value="{{ image.position }}">
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="5" class="text-muted">{% trans "There are no images" %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary" type="submit" name="action" value="update">{% trans "Save" %}</button>
+            <button class="btn btn-outline-danger" type="submit" name="action" value="delete">{% trans "Delete selected" %}</button>
+        </div>
+    </form>
+</div>
+

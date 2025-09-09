@@ -1,0 +1,14 @@
+{% for node in children %}
+    <li class="mb-1">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="categories" id="cat-{{ node.id }}" value="{{ node.id }}" {% if node.checked %}checked{% endif %}>
+            <label class="form-check-label" for="cat-{{ node.id }}">{{ node.name }}</label>
+        </div>
+        {% if node.children %}
+            <ul class="list-unstyled ms-4">
+                {% include "manage/product/tabs/_categories_children.html" with children=node.children %}
+            </ul>
+        {% endif %}
+    </li>
+{% endfor %}
+

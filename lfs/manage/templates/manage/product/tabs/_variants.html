@@ -1,0 +1,219 @@
+{% load i18n %}
+
+<div class="tab-pane fade show active" id="variants-content" role="tabpanel" aria-labelledby="variants-tab">
+    <h5 class="mb-3">{% trans "Variants" %}</h5>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="border rounded p-3">
+                <h6 class="mb-3">{% trans "Local properties" %}</h6>
+                <form method="post" class="mb-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_local_property">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" name="name" placeholder="{% trans 'New property name' %}">
+                        <button class="btn btn-outline-primary" type="submit">{% trans "Add property" %}</button>
+                    </div>
+                </form>
+
+                {% for lp in local_properties %}
+                    {% with prop=lp.property %}
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="fw-semibold">{{ prop.name }}</div>
+                            <div class="d-flex gap-2">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="move_local_property">
+                                    <input type="hidden" name="property_id" value="{{ prop.id }}">
+                                    <input type="hidden" name="direction" value="up">
+                                    <button class="btn btn-sm btn-outline-secondary" type="submit" title="{% trans 'Up' %}">▲</button>
+                                </form>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="move_local_property">
+                                    <input type="hidden" name="property_id" value="{{ prop.id }}">
+                                    <input type="hidden" name="direction" value="down">
+                                    <button class="btn btn-sm btn-outline-secondary" type="submit" title="{% trans 'Down' %}">▼</button>
+                                </form>
+                                <form method="post" onsubmit="return confirm('{% trans 'Do you really want to delete this property and all its options?' %}')">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="delete_local_property">
+                                    <input type="hidden" name="property_id" value="{{ prop.id }}">
+                                    <button class="btn btn-sm btn-outline-danger" type="submit" title="{% trans 'Delete' %}">✕</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="ms-2 mb-3">
+                            {% for option in prop.options.all %}
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span>{{ option.name }}</span>
+                                    <form method="post" onsubmit="return confirm('{% trans 'Do you really want to delete this option?' %}')">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="delete_local_property_option">
+                                        <input type="hidden" name="option_id" value="{{ option.id }}">
+                                        <button class="btn btn-xs btn-outline-danger" type="submit">{% trans 'Delete' %}</button>
+                                    </form>
+                                </div>
+                            {% empty %}
+                                <div class="text-muted small">{% trans "No options." %}</div>
+                            {% endfor %}
+                            <form method="post" class="mt-2">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="add_local_property_option">
+                                <input type="hidden" name="property_id" value="{{ prop.id }}">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control" name="option_names" placeholder="{% trans 'Comma separated option names' %}">
+                                    <button class="btn btn-outline-primary" type="submit">{% trans 'Add option' %}</button>
+                                </div>
+                            </form>
+                        </div>
+                    {% endwith %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="border rounded p-3">
+                <h6 class="mb-3">{% trans "Property Groups" %}</h6>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_property_groups">
+                    <select class="form-select" name="selected-property-groups" multiple size="6">
+                        {% for pg in shop_property_groups %}
+                            <option value="{{ pg.id }}" {% if pg.selected %}selected{% endif %}>{{ pg.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="mt-2">
+                        <button type="submit" class="btn btn-outline-secondary">{% trans "Update property groups" %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="border rounded p-3">
+                <h6 class="mb-3">{% trans "Add Variants" %}</h6>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_variants">
+                    <div class="row g-2">
+                        {% for pd in all_properties %}
+                            {% with prop=pd.property pg=pd.property_group %}
+                                <div class="col-12 col-md-6">
+                                    <label class="form-label small">{% if pg %}[{{ pg.name }}]{% endif %} {{ prop.name }}</label>
+                                    <select class="form-select form-select-sm" name="property_{{ pg.id|default_if_none:0 }}_{{ prop.id }}">
+                                        <option value="all">{% trans "All" %}</option>
+                                        <option value="">---</option>
+                                        {% for opt in prop.options.all %}
+                                            <option value="{{ opt.id }}">{{ opt.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endwith %}
+                        {% endfor %}
+                    </div>
+                    <div class="mt-2">
+                        <button type="submit" class="btn btn-primary">{% trans "Add variants" %}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update">
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th style="width:2rem;"></th>
+                        <th style="width:6rem;">{% trans "Position" %}</th>
+                        <th style="width:5rem;">{% trans "Active" %}</th>
+                        <th style="width:10rem;">Slug</th>
+                        <th style="width:14rem;">SKU</th>
+                        <th>{% trans "Name" %}</th>
+                        {% for prop_dict in all_properties %}
+                            <th>{% if prop_dict.property_group %}[{{ prop_dict.property_group.name }}]{% endif %} {{ prop_dict.property.name }}</th>
+                        {% endfor %}
+                        <th style="width:5rem;">{% trans "Active price" %}</th>
+                        <th style="width:8rem;">{% trans "Price" %}</th>
+                        <th style="width:6rem;">{% trans "Default" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in variants %}
+                        <tr>
+                            <td>
+                                <input type="hidden" name="variant-{{ v.id }}" value="1">
+                                <input type="checkbox" class="form-check-input" name="delete-{{ v.id }}" form="variants-delete-form">
+                            </td>
+                            <td><input type="number" class="form-control form-control-sm" name="position-{{ v.id }}" value="{{ v.position }}"></td>
+                            <td><input type="checkbox" class="form-check-input" name="active-{{ v.id }}" {% if v.active %}checked{% endif %}></td>
+                            <td><input type="text" class="form-control form-control-sm" name="slug-{{ v.id }}" value="{{ v.slug }}"></td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-text"><input class="form-check-input mt-0" type="checkbox" name="active_sku-{{ v.id }}" {% if v.active_sku %}checked{% endif %}></div>
+                                    <input type="text" class="form-control" name="sku-{{ v.id }}" value="{{ v.sku }}">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm">
+                                    <div class="input-group-text"><input class="form-check-input mt-0" type="checkbox" name="active_name-{{ v.id }}" {% if v.active_name %}checked{% endif %}></div>
+                                    <input type="text" class="form-control" name="name-{{ v.id }}" value="{{ v.name }}">
+                                </div>
+                            </td>
+                            {% for prop in v.properties %}
+                                <td>
+                                    <select class="form-select form-select-sm" name="property-{{ v.id }}|{{ prop.property_group_id }}|{{ prop.id }}">
+                                        <option value=""></option>
+                                        {% for opt in prop.options %}
+                                            <option value="{{ opt.id }}" {% if opt.selected %}selected{% endif %}>{{ opt.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            {% endfor %}
+                            <td class="text-center"><input type="checkbox" class="form-check-input" name="active_price-{{ v.id }}" {% if v.active_price %}checked{% endif %}></td>
+                            <td><input type="text" class="form-control form-control-sm" name="price-{{ v.id }}" value="{{ v.price }}"></td>
+                            <td class="text-center"><input type="radio" class="form-check-input" name="default_variant" value="{{ v.id }}" {% if default_variant_form.instance.default_variant.id == v.id %}checked{% endif %}></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="{{ variant_columns }}" class="text-muted">{% trans "No variants" %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+            <button type="submit" class="btn btn-outline-danger" form="variants-delete-form">{% trans "Delete selected" %}</button>
+        </div>
+    </form>
+
+    <form id="variants-delete-form" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="delete">
+    </form>
+
+    <div class="row g-4 mt-4">
+        <div class="col-md-6">
+            <div class="border rounded p-3">
+                <h6 class="mb-3">{% trans "Category variant" %}</h6>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="update_category_variant">
+                    <div class="mb-2">{{ category_variant_form.category_variant }}</div>
+                    <button class="btn btn-outline-secondary" type="submit">{% trans "Change category variant" %}</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="border rounded p-3">
+                <h6 class="mb-3">{% trans "Display type" %}</h6>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="edit_sub_type">
+                    <div class="mb-2">{{ display_type_form.variants_display_type }}</div>
+                    <button class="btn btn-outline-secondary" type="submit">{% trans "Change variant display type" %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

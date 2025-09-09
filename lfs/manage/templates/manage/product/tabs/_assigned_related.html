@@ -1,0 +1,87 @@
+{% load i18n static %}
+
+<!-- Assigned Related Products Form -->
+<form id="remove-related-form"
+      hx-post="{% url 'lfs_manage_product_related' product.id %}"
+      hx-target="#related-tables"
+      hx-select="#related-tables"
+      hx-swap="outerHTML">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="remove">
+    <input type="hidden" name="keep-filters" value="1">
+
+    <div id="assigned-related-list" class="card shadow" style="height: calc(100vh - 450px);">
+        <div class="card-header bg-success-subtle d-flex justify-content-between align-items-center">
+            <h2 class="h4 mb-0">
+                <i class="bi bi-link me-2"></i>
+                {% trans 'Related Products' %}
+            </h2>
+            <i class="bi bi-question-circle text-muted me-2"
+               data-bs-toggle="popover"
+               data-bs-placement="top"
+               data-bs-content="{% trans 'Related products are shown to customers who view this product.' %}"
+               data-bs-trigger="hover"
+               style="cursor: help; font-size: 1.25rem;"></i>
+        </div>
+        <div class="card-body overflow-y-auto">
+            {% if related_products %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th class="checkbox" style="width: 40px;">
+                                    <input type="checkbox" class="form-check-input select-all-assigned" />
+                                </th>
+                                <th>{% trans 'Name' %}</th>
+                                <th class="small">{% trans 'SKU' %}</th>
+                                <th class="small">{% trans 'Active' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rp in related_products %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox"
+                                               name="product-{{ rp.id }}"
+                                               class="form-check-input select-assigned" />
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'lfs_manage_product' rp.id %}" class="text-decoration-none">
+                                            {{ rp.get_name }}
+                                        </a>
+                                    </td>
+                                    <td class="small text-muted">
+                                        {{ rp.get_sku|default:"---" }}
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        {% if rp.is_active %}
+                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                        {% else %}
+                                            <i class="bi bi-x-circle-fill text-danger"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-link fs-1 d-block mb-3"></i>
+                    <p>{% trans "No related products assigned." %}</p>
+                    <p class="small">{% trans "Select products from the left panel and add them as related products." %}</p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer" style="min-height: 60px;">
+            {% if related_products %}
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>
+                        {% trans 'Remove Selected' %}
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</form>

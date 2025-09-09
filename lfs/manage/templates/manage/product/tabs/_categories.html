@@ -1,0 +1,30 @@
+{% load i18n %}
+
+<div class="tab-pane fade show active" id="categories-content" role="tabpanel" aria-labelledby="categories-tab">
+    <h5 class="mb-3">{% trans "Categories" %}</h5>
+    <form method="post" action="">
+        {% csrf_token %}
+        <ul class="list-unstyled">
+            {% for node in category_tree %}
+                <li class="mb-1">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="categories" id="cat-{{ node.id }}" value="{{ node.id }}" {% if node.checked %}checked{% endif %}>
+                        <label class="form-check-label" for="cat-{{ node.id }}">{{ node.name }}</label>
+                    </div>
+                    {% if node.children %}
+                        <ul class="list-unstyled ms-4">
+                            {% include "manage/product/tabs/_categories_children.html" with children=node.children %}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> {% trans "Save Categories" %}
+            </button>
+        </div>
+    </form>
+    <p class="text-muted mt-3 small">{% trans "Assign the product to one or more categories." %}</p>
+</div>
+

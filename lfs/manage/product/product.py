@@ -230,41 +230,8 @@ class ProductStockForm(forms.ModelForm):
 
 @permission_required("core.manage_shop")
 def manage_product(request, product_id, template_name="manage/product/product.html"):
-    """
-    Displays the whole manage/edit form for the product with the passed id.
-    """
-    product = lfs_get_object_or_404(Product, pk=product_id)
-    products = _get_filtered_products_for_product_view(request)
-    paginator = Paginator(products, 25)
-    temp = product.parent if product.is_variant() else product
-    page = get_current_page(request, products, temp, 25)
-
-    try:
-        page = paginator.page(page)
-    except EmptyPage:
-        page = paginator.page(1)
-
-    return render(
-        request,
-        template_name,
-        {
-            "product": product,
-            "product_filters": product_filters_inline(request, page, paginator, product_id),
-            "pages_inline": pages_inline(request, page, paginator, product_id),
-            "product_data": product_data_form(request, product_id),
-            "images": manage_images(request, product_id, as_string=True),
-            "attachments": manage_attachments(request, product_id, as_string=True),
-            "selectable_products": selectable_products_inline(request, page, paginator, product.id),
-            "seo": SEOView(Product, form_klass=SEOForm, template_name="manage/product/seo.html").render(
-                request, product
-            ),
-            "stock": stock(request, product_id),
-            "portlets": PortletsInlineView().get(request, product),
-            "properties": manage_properties(request, product_id),
-            "form": ProductSubTypeForm(instance=product),
-            "name_filter_value": request.session.get("product_filters", {}).get("product_name", ""),
-        },
-    )
+    """Legacy entry: redirect to new Bootstrap product UI."""
+    return HttpResponseRedirect(reverse("lfs_manage_product_data", kwargs={"id": product_id}))
 
 
 @permission_required("core.manage_shop")
@@ -585,7 +552,7 @@ def product_dispatcher(request):
     """
     try:
         product = Product.objects.exclude(sub_type=VARIANT)[0]
-        url = reverse("lfs_manage_product", kwargs={"product_id": product.id})
+        url = reverse("lfs_manage_product_data", kwargs={"id": product.id})
     except IndexError:
         url = reverse("lfs_manage_no_products")
 

@@ -23,6 +23,93 @@
   box-sizing: border-box;
 }
 
+#bulk-prices-content .bulk-price-card {
+  transition: all 0.2s ease-in-out;
+}
+#bulk-prices-content .bulk-price-card:hover {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+#bulk-prices-content .bulk-price-card .card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+#bulk-prices-content .bulk-price-card .card-header.bg-light {
+  background-color: #e3f2fd !important;
+  border-color: #2196f3;
+}
+#bulk-prices-content .bulk-price-card .card-header h6 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+}
+#bulk-prices-content .bulk-price-card .card-body .form-label {
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  color: #6c757d;
+}
+#bulk-prices-content .bulk-price-card .card-body .input-group-text {
+  min-width: 50px;
+  justify-content: center;
+  font-weight: 500;
+}
+#bulk-prices-content .bulk-price-card .card-body .form-control:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+#bulk-prices-content .bulk-price-card.border-primary {
+  border-color: #2196f3;
+}
+#bulk-prices-content .bulk-price-card.border-primary .card-header {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+}
+#bulk-prices-content .alert-info {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+  color: #0c5460;
+}
+#bulk-prices-content .alert-info .bi-info-circle {
+  color: #2196f3;
+}
+#bulk-prices-content .btn {
+  border-radius: 0.375rem;
+}
+#bulk-prices-content .btn.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+#bulk-prices-content .btn.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+#bulk-prices-content .btn.btn-success {
+  background-color: #198754;
+  border-color: #198754;
+}
+#bulk-prices-content .btn.btn-success:hover {
+  background-color: #157347;
+  border-color: #146c43;
+}
+#bulk-prices-content #empty-state .display-1 {
+  font-size: 4rem;
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  #bulk-prices-content .bulk-price-card .card-body .row .col-md-4 {
+    margin-bottom: 1rem;
+  }
+  #bulk-prices-content .bulk-price-card .card-body .row .col-md-4:last-child {
+    margin-bottom: 0;
+  }
+  #bulk-prices-content .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  #bulk-prices-content .d-flex.justify-content-between .d-flex {
+    justify-content: center;
+  }
+}
 /* Categories DnD Styling - Exact copy from dnd.html */
 /* Make links behave like text */
 .item-content a {

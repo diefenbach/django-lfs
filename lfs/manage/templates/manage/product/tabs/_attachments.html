@@ -1,0 +1,56 @@
+{% load i18n %}
+
+<div class="tab-pane fade show active" id="attachments-content" role="tabpanel" aria-labelledby="attachments-tab">
+    <h5 class="mb-3">{% trans "Attachments" %}</h5>
+
+    <form method="post" enctype="multipart/form-data" class="mb-4">
+        {% csrf_token %}
+        <div class="input-group">
+            <input class="form-control" type="file" name="files[]" multiple>
+            <button class="btn btn-primary" type="submit">{% trans "Upload" %}</button>
+        </div>
+    </form>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="table-responsive">
+            <table class="table table-sm align-middle">
+                <thead>
+                    <tr>
+                        <th style="width:2rem;">
+                            <input type="checkbox" class="form-check-input" onclick="document.querySelectorAll('.select-delete-attachment').forEach(cb=>cb.checked=this.checked)">
+                        </th>
+                        <th>{% trans "Title" %}</th>
+                        <th>{% trans "Description" %}</th>
+                        <th style="width:8rem;">{% trans "Position" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attachment in product.attachments.all %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="form-check-input select-delete-attachment" name="delete-{{ attachment.id }}">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control form-control-sm" name="title-{{ attachment.id }}" value="{{ attachment.title }}">
+                            </td>
+                            <td>
+                                <textarea class="form-control form-control-sm" name="description-{{ attachment.id }}">{{ attachment.description }}</textarea>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control form-control-sm" style="max-width:6rem" name="position-{{ attachment.id }}" value="{{ attachment.position }}">
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4" class="text-muted">{% trans "There are no attachments" %}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary" type="submit" name="action" value="update">{% trans "Save" %}</button>
+            <button class="btn btn-outline-danger" type="submit" name="action" value="delete">{% trans "Delete selected" %}</button>
+        </div>
+    </form>
+</div>
+

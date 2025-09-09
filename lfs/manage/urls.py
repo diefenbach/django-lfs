@@ -428,6 +428,8 @@ urlpatterns = [
     path("categories/", include("lfs.manage.categories.urls")),
     # Customers (refactored views)
     path("customers/", include(customers_urls)),
+    # Products (refactored views)
+    path("products/", include("lfs.manage.product.urls")),
     # export
     re_path(r"^export-dispatcher$", lfs.manage.views.export.export_dispatcher, name="lfs_export_dispatcher"),
     re_path(r"^export/(?P<export_id>\d*)$", lfs.manage.views.export.manage_export, name="lfs_export"),

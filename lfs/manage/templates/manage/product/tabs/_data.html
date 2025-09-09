@@ -1,0 +1,25 @@
+{% load i18n crispy_forms_tags %}
+
+<div class="tab-pane fade show active" id="data-content" role="tabpanel" aria-labelledby="data-tab">
+    <form method="post" action="{% url 'lfs_manage_product_data' product.id %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-8">
+                <h5 class="mb-3">{% trans "Product Data" %}</h5>
+                {{ form|crispy }}
+            </div>
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i>
+                {% trans "Save Product Data" %}
+            </button>
+        </div>
+    </form>
+    {% if product.is_variant %}
+        <div class="alert alert-info mt-3">
+            {% trans "You are editing a variant of a product." %}
+        </div>
+    {% endif %}
+</div>
+

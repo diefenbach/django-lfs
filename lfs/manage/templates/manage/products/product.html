@@ -1,0 +1,129 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n static crispy_forms_tags %}
+
+{% block help_link %}user/management/catalog/products.html{% endblock %}
+{% block section %}manage-product{% endblock %}
+
+{% block content %}
+    <div class="lfs-products">
+        <div class="row">
+            <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
+                <div class="padding-bottom-100">
+                    <div class="mb-3 fw-semibold">{% trans "Products" %}</div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="search"
+                            class="form-control"
+                            placeholder="{% trans 'Search products...' %}"
+                            name="q"
+                            value="{{ search_query }}"
+                            hx-get="{{ request.path }}"
+                            hx-target="#products-list"
+                            hx-select="#products-list"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search products' %}">
+                    </div>
+                    <div class="list-group">
+                        {% for p in products %}
+                            <a class="list-group-item list-group-item-action {% if p.id == product.id %}active{% endif %}"
+                               href="{% url 'lfs_manage_product_data' p.id %}?q={{ search_query }}">
+                                {{ p.name }}
+                            </a>
+                        {% empty %}
+                            <div class="text-muted small">{% trans "No products found." %}</div>
+                        {% endfor %}
+                    </div>
+                </div>                            
+            </aside>
+
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Products</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+                            </ol>
+                        </nav>
+                        <div class="site-actions mb-2">
+                            <a class="btn btn-sm btn-outline-primary me-2"
+                               href="{% url 'lfs_manage_add_product' %}?came_from={% url 'lfs_manage_product_data' product.id %}">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Product' %}
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger me-2"
+                               href="{% url 'lfs_manage_delete_product' product.id %}"
+                               onclick="return confirm('{% trans "Do you really want to delete this product?" %}')">
+                                <i class="bi bi-trash"></i>
+                                {% trans 'Delete Product' %}
+                            </a>
+                            <a class="btn btn-sm btn-outline-secondary"
+                               href="{% url 'lfs_manage_product_by_id' product.id %}">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                                {% trans 'View Product' %}
+                            </a>
+                        </div>
+                    </div>
+
+                    <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                        {% for key, url in tabs %}
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link {% if active_tab == key %}active{% endif %}"
+                                   href="{{ url }}"
+                                   role="tab"
+                                   aria-controls="{{ key }}-content"
+                                   aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
+                                    {% if key == 'data' %}{% trans 'Data' %}
+                                    {% elif key == 'categories' %}{% trans 'Categories' %}
+                                    {% elif key == 'images' %}{% trans 'Images' %}
+                                    {% elif key == 'attachments' %}{% trans 'Attachments' %}
+                                    {% elif key == 'variants' %}{% trans 'Variants' %}
+                                    {% elif key == 'bulk_prices' %}{% trans 'Bulk prices' %}
+                                    {% elif key == 'accessories' %}{% trans 'Accessories' %}
+                                    {% elif key == 'related' %}{% trans 'Related products' %}
+                                    {% elif key == 'stock' %}{% trans 'Stock' %}
+                                    {% elif key == 'seo' %}{% trans 'SEO' %}
+                                    {% elif key == 'portlets' %}{% trans 'Portlets' %}
+                                    {% else %}{{ key|title }}{% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+
+                    <div class="tab-content border border-top-0 bg-white p-4" id="productTabsContent">
+                        {% if active_tab == "data" %}
+                            {% include "manage/product/tabs/_data.html" %}
+                        {% elif active_tab == "categories" %}
+                            {% include "manage/product/tabs/_categories.html" %}
+                        {% elif active_tab == "images" %}
+                            {% include "manage/product/tabs/_images.html" %}
+                        {% elif active_tab == "attachments" %}
+                            {% include "manage/product/tabs/_attachments.html" %}
+                        {% elif active_tab == "variants" %}
+                            {% include "manage/product/tabs/_variants.html" %}
+                        {% elif active_tab == "bulk_prices" %}
+                            {% include "manage/product/tabs/_bulk_prices.html" %}
+                        {% elif active_tab == "accessories" %}
+                            {% include "manage/product/tabs/_accessories.html" %}
+                        {% elif active_tab == "related" %}
+                            {% include "manage/product/tabs/_related.html" %}
+                        {% elif active_tab == "stock" %}
+                            {% include "manage/product/tabs/_stock.html" %}
+                        {% elif active_tab == "seo" %}
+                            {% include "manage/product/tabs/_seo.html" %}
+                        {% elif active_tab == "portlets" %}
+                            {% include "manage/product/tabs/_portlets.html" %}
+                        {% endif %}
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-xl.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
+{% endblock %}
