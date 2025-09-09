@@ -280,9 +280,9 @@ class TestDeliveryTimeDeleteView:
 class TestDeliveryTimeViewsIntegration:
     """Integration tests for delivery time views."""
 
-    def test_delivery_time_update_view_renders_correctly(self, client, manage_user, delivery_time, shop):
+    def test_delivery_time_update_view_renders_correctly(self, client, admin_user, delivery_time, shop):
         """Should render delivery time update view correctly."""
-        client.force_login(manage_user)
+        client.force_login(admin_user)
 
         response = client.get(reverse("lfs_manage_delivery_time", args=[delivery_time.id]))
 
@@ -290,26 +290,26 @@ class TestDeliveryTimeViewsIntegration:
         assert "delivery_time" in response.context
         assert response.context["delivery_time"] == delivery_time
 
-    def test_delivery_time_create_view_renders_correctly(self, client, manage_user, shop):
+    def test_delivery_time_create_view_renders_correctly(self, client, admin_user, shop):
         """Should render delivery time create view correctly."""
-        client.force_login(manage_user)
+        client.force_login(admin_user)
 
         response = client.get(reverse("lfs_manage_add_delivery_time"))
 
         assert response.status_code == 200
         assert "form" in response.context
 
-    def test_no_delivery_times_view_renders_correctly(self, client, manage_user, shop):
+    def test_no_delivery_times_view_renders_correctly(self, client, admin_user, shop):
         """Should render no delivery times view correctly."""
-        client.force_login(manage_user)
+        client.force_login(admin_user)
 
         response = client.get(reverse("lfs_no_delivery_times"))
 
         assert response.status_code == 200
 
-    def test_delivery_time_delete_confirm_view_renders_correctly(self, client, manage_user, delivery_time, shop):
+    def test_delivery_time_delete_confirm_view_renders_correctly(self, client, admin_user, delivery_time, shop):
         """Should render delivery time delete confirm view correctly."""
-        client.force_login(manage_user)
+        client.force_login(admin_user)
 
         response = client.get(reverse("lfs_manage_delete_delivery_time_confirm", args=[delivery_time.id]))
 
