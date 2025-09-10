@@ -14,10 +14,9 @@
         {% trans "There are no products yet." %}
     </div>
     <div class="buttons">
-        <form action="{% url 'lfs_manage_add_product' %}">
-            <input type="submit"
-                   class="button"
-                   value="{% trans 'Add Product' %}">
-        </form>
+        <a href="{% url 'lfs_manage_add_product' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle-fill"></i>
+            {% trans 'Add Product' %}
+        </a>
     </div>
 {% endblock %}

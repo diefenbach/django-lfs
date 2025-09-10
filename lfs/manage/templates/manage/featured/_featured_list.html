@@ -43,7 +43,7 @@
                                         <i class="bi bi-grip-vertical text-muted handle" style="cursor: move;"></i>
                                     </td>
                                     <td>
-                                        <a href="{% url 'lfs_manage_product' featured_item.product.id %}" class="text-decoration-none">
+                                        <a href="{% url 'lfs_manage_product_data' featured_item.product.id %}" class="text-decoration-none">
                                             {% if featured_item.product.get_name %}
                                                 {{ featured_item.product.get_name }}
                                             {% else %}

@@ -68,7 +68,7 @@
                         <tbody>
                             {% for item in cart_items %}
                             <tr>
-                                <td><a href="{% url 'lfs_manage_product' item.product.id %}">{{ item.product.get_name }}</a></td>
+                                <td><a href="{% url 'lfs_manage_product_data' item.product.id %}">{{ item.product.get_name }}</a></td>
                                 <td class="text-end">{{ item.amount }}</td>
                                 <td class="text-end">{{ item.product|get_price_gross:request|currency:request }}</td>
                                 <td class="text-end">{{ item|get_price_gross:request|currency:request }}</td>

@@ -22,7 +22,7 @@
                     <dt class="col-sm-4">{% trans "Product" %}:</dt>
                     <dd class="col-sm-8">
                         {% if review.content %}
-                            <a href="{% url 'lfs_manage_product' review.content.id %}">{{ review.content.get_name }}</a>
+                            <a href="{% url 'lfs_manage_product_data' review.content.id %}">{{ review.content.get_name }}</a>
                         {% else %}
                             -
                         {% endif %}

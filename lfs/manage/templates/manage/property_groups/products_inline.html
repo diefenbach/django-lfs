@@ -59,7 +59,7 @@
                                            class="select-products" />
                                 </td>
                                 <td>
-                                    <a href="{% url 'lfs_manage_product' product.id %}">
+                                    <a href="{% url 'lfs_manage_product_data' product.id %}">
                                         {{ product.get_name }}
                                     </a>
                                 </td>
@@ -120,7 +120,7 @@
                                            class="select-assigned-products"/>
                                 </td>
                                 <td>
-                                    <a href="{% url 'lfs_manage_product' product.id %}">
+                                    <a href="{% url 'lfs_manage_product_data' product.id %}">
                                         {{ product.get_name }}
                                     </a>
                                 </td>

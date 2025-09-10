@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (
+    AddProductView,
     ManageProductsView,
     NoProductsView,
     ProductDataView,
@@ -19,6 +20,7 @@ from .views import (
 
 urlpatterns = [
     path("", ManageProductsView.as_view(), name="lfs_manage_products2"),
+    path("add/", AddProductView.as_view(), name="lfs_manage_add_product"),
     path("no-products/", NoProductsView.as_view(), name="lfs_manage_no_products"),
     path("<int:id>/data/", ProductDataView.as_view(), name="lfs_manage_product_data"),
     path("<int:id>/categories/", ProductCategoriesView.as_view(), name="lfs_manage_product_categories"),

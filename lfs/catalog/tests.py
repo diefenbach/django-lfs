@@ -2848,6 +2848,7 @@ class ProductTestCase(TestCase):
         product = Product.objects.get(slug="product-1")
 
         variant_data = {
+            "action": "add_variants",
             "slug": "variant-slug",
             "name": "variant",
             "price": 10.00,
@@ -2863,7 +2864,7 @@ class ProductTestCase(TestCase):
         # login the manager account so we can access the add variant function
         self.client.post(reverse("lfs_login"), dict(username="manager", password="pass", action="login"), follow=True)
 
-        response = self.client.post(reverse("lfs_manage_add_variants", args=(product.id,)), variant_data)
+        response = self.client.post(reverse("lfs_manage_product_variants", args=(product.id,)), variant_data)
         # following code in try loop will only be relevant if there are errors in the form
         try:
             if hasattr(response, "context"):

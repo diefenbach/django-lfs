@@ -33,6 +33,7 @@ from .forms import (
     CategoryVariantForm,
     DefaultVariantForm,
     DisplayTypeForm,
+    ProductAddForm,
     ProductDataForm,
     ProductStockForm,
     ProductVariantCreateForm,
@@ -56,6 +57,29 @@ class ManageProductsView(PermissionRequiredMixin, RedirectView):
         if p is not None:
             return reverse("lfs_manage_product_data", kwargs={"id": p.id})
         return reverse("lfs_manage_no_products")
+
+
+class AddProductView(PermissionRequiredMixin, TemplateView):
+    """View for adding a new product."""
+
+    template_name = "manage/product/add_product.html"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["came_from"] = self.request.GET.get("came_from", reverse("lfs_manage_products2"))
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = ProductAddForm(request.POST)
+        if form.is_valid():
+            new_product = form.save()
+            messages.success(request, _("Product has been added."))
+            return HttpResponseRedirect(reverse("lfs_manage_product_data", kwargs={"id": new_product.id}))
+
+        context = self.get_context_data()
+        context["form"] = form
+        return self.render_to_response(context)
 
 
 class ProductTabMixin:
@@ -143,6 +167,25 @@ class ProductDataView(PermissionRequiredMixin, ProductTabMixin, UpdateView):
 
     def get_success_url(self) -> str:
         return reverse("lfs_manage_product_data", kwargs={"id": self.object.pk})
+
+    def delete(self, request, *args, **kwargs):
+        """Handle product deletion via POST request."""
+        product = self.get_object()
+        url = reverse("lfs_manage_products2")  # Redirect to products overview
+        if product.is_variant():
+            url = reverse("lfs_manage_product_data", kwargs={"id": product.parent_id})
+
+        product.delete()
+        messages.success(request, _("Product has been deleted."))
+        return HttpResponseRedirect(url)
+
+    def get(self, request, *args, **kwargs):
+        """Handle GET requests - support viewing product by redirecting to public page."""
+        if "view" in request.GET:
+            product = self.get_object()
+            url = reverse("lfs_product", kwargs={"slug": product.slug})
+            return HttpResponseRedirect(url)
+        return super().get(request, *args, **kwargs)
 
 
 class ProductStockView(PermissionRequiredMixin, ProductTabMixin, UpdateView):
