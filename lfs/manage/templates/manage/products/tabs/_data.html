@@ -1,11 +1,11 @@
 {% load i18n crispy_forms_tags %}
 
-<div class="tab-pane fade show active" id="data-content" role="tabpanel" aria-labelledby="data-tab">
+<div class="tab-pane show active" id="data-content" role="tabpanel" aria-labelledby="data-tab">
     <form method="post" action="{% url 'lfs_manage_product_data' product.id %}">
         {% csrf_token %}
         <div class="row">
-            <div class="col-md-8">
-                {{ form|crispy }}
+            <div class="col-12">
+                {% crispy form %}
             </div>
         </div>
         <div class="mt-3">

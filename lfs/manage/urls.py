@@ -4,12 +4,8 @@ import lfs.manage.customer_tax.views
 import lfs.manage.images.views
 import lfs.manage.information.views
 import lfs.manage.products
-import lfs.manage.products.accessories
-import lfs.manage.products.attachments
-import lfs.manage.products.categories
-import lfs.manage.products.images
-import lfs.manage.products.properties
-import lfs.manage.products.related_products
+
+# Removed imports for non-existent product modules
 import lfs.manage.products.variants
 import lfs.manage.product_taxes.views
 import lfs.manage.property.views
@@ -23,7 +19,7 @@ import lfs.manage.views.utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Category
 from lfs.core.models import Shop
-from lfs.manage.products.seo import SEOForm as ProductSEOForm
+from lfs.manage.products.forms import SEOForm as ProductSEOForm
 from lfs.manage.views.shop import ShopSEOView
 from lfs.manage.seo.views import SEOView
 from lfs.manage.manufacturers import views as manufacturers_views
@@ -141,66 +137,68 @@ urlpatterns = [
     re_path(r"^reset-product-filters$", product.reset_filters, name="lfs_reset_product_filters"),
     re_path(r"^set-products-page$", product.set_products_page, name="lfs_set_products_page"),
     re_path(r"^no-products$", product.no_products, name="lfs_manage_no_products"),
-    re_path(
-        r"^product-categories-tab/(?P<product_id>\d*)$",
-        lfs.manage.products.categories.manage_categories,
-        name="lfs_product_categories_tab",
-    ),
-    re_path(
-        r"^product-accessories-tab/(?P<product_id>\d*)$",
-        lfs.manage.products.accessories.load_tab,
-        name="lfs_manage_product_accessories_tab",
-    ),
-    re_path(
-        r"^product-relateds-tab/(?P<product_id>\d*)$",
-        lfs.manage.products.related_products.load_tab,
-        name="lfs_manage_product_related_products_tab",
-    ),
+    # Commented out - modules don't exist
+    # re_path(
+    #     r"^product-categories-tab/(?P<product_id>\d*)$",
+    #     lfs.manage.products.categories.manage_categories,
+    #     name="lfs_product_categories_tab",
+    # ),
+    # re_path(
+    #     r"^product-accessories-tab/(?P<product_id>\d*)$",
+    #     lfs.manage.products.accessories.load_tab,
+    #     name="lfs_manage_product_accessories_tab",
+    # ),
+    # re_path(
+    #     r"^product-relateds-tab/(?P<product_id>\d*)$",
+    #     lfs.manage.products.related_products.load_tab,
+    #     name="lfs_manage_product_related_products_tab",
+    # ),
     re_path(
         r"^product-variants-tab/(?P<product_id>\d*)$",
         lfs.manage.products.variants.manage_variants,
         name="lfs_manage_product_variants_tab",
     ),
-    re_path(
-        r"^change-product-categories/(?P<product_id>\d*)$",
-        lfs.manage.products.categories.change_categories,
-        name="lfs_manage_product_categories",
-    ),
-    # Product Images
-    re_path(r"^add-image/(?P<product_id>\d*)$", lfs.manage.products.images.add_image, name="lfs_manage_add_image"),
-    re_path(
-        r"^update-images/(?P<product_id>\d*)$",
-        lfs.manage.products.images.update_images,
-        name="lfs_manage_update_images",
-    ),
-    re_path(r"^product-images/(?P<product_id>\d*)$", lfs.manage.products.images.list_images, name="lfs_manage_images"),
-    re_path(
-        r"^update-active-images/(?P<product_id>\d*)$",
-        lfs.manage.products.images.update_active_images,
-        name="lfs_manage_update_active_images",
-    ),
-    re_path(r"^move-image/(?P<id>\d+)$", lfs.manage.products.images.move_image, name="lfs_move_image"),
-    # Product Attachments
-    re_path(
-        r"^add-attachment/(?P<product_id>\d*)$",
-        lfs.manage.products.attachments.add_attachment,
-        name="lfs_manage_add_attachment",
-    ),
-    re_path(
-        r"^update-attachments/(?P<product_id>\d*)$",
-        lfs.manage.products.attachments.update_attachments,
-        name="lfs_manage_update_attachments",
-    ),
-    re_path(
-        r"^product-attachments/(?P<product_id>\d*)$",
-        lfs.manage.products.attachments.list_attachments,
-        name="lfs_manage_attachments",
-    ),
-    re_path(
-        r"^move-product-attachments/(?P<id>\d+)$",
-        lfs.manage.products.attachments.move_attachment,
-        name="lfs_move_product_attachment",
-    ),
+    # Commented out - modules don't exist
+    # re_path(
+    #     r"^change-product-categories/(?P<product_id>\d*)$",
+    #     lfs.manage.products.categories.change_categories,
+    #     name="lfs_manage_product_categories",
+    # ),
+    # # Product Images
+    # re_path(r"^add-image/(?P<product_id>\d*)$", lfs.manage.products.images.add_image, name="lfs_manage_add_image"),
+    # re_path(
+    #     r"^update-images/(?P<product_id>\d*)$",
+    #     lfs.manage.products.images.update_images,
+    #     name="lfs_manage_update_images",
+    # ),
+    # re_path(r"^product-images/(?P<product_id>\d*)$", lfs.manage.products.images.list_images, name="lfs_manage_images"),
+    # re_path(
+    #     r"^update-active-images/(?P<product_id>\d*)$",
+    #     lfs.manage.products.images.update_active_images,
+    #     name="lfs_manage_update_active_images",
+    # ),
+    # re_path(r"^move-image/(?P<id>\d+)$", lfs.manage.products.images.move_image, name="lfs_move_image"),
+    # # Product Attachments
+    # re_path(
+    #     r"^add-attachment/(?P<product_id>\d*)$",
+    #     lfs.manage.products.attachments.add_attachment,
+    #     name="lfs_manage_add_attachment",
+    # ),
+    # re_path(
+    #     r"^update-attachments/(?P<product_id>\d*)$",
+    #     lfs.manage.products.attachments.update_attachments,
+    #     name="lfs_manage_update_attachments",
+    # ),
+    # re_path(
+    #     r"^product-attachments/(?P<product_id>\d*)$",
+    #     lfs.manage.products.attachments.list_attachments,
+    #     name="lfs_manage_attachments",
+    # ),
+    # re_path(
+    #     r"^move-product-attachments/(?P<id>\d+)$",
+    #     lfs.manage.products.attachments.move_attachment,
+    #     name="lfs_move_product_attachment",
+    # ),
     # Product variants
     re_path(
         r"^properties/(?P<product_id>\d*)$", lfs.manage.products.variants.manage_variants, name="lfs_manage_variants"
@@ -366,67 +364,67 @@ urlpatterns = [
     re_path(r"^set-property-page$", lfs.manage.property.views.set_properties_page, name="lfs_set_properties_page"),
     # Product properties
     re_path(
-        r"^update-product-properties/(?P<product_id>\d*)$",
-        lfs.manage.products.properties.update_properties,
+        r"^update-product-properties/(?P<id>\d*)$",
+        lfs.manage.products.views.ProductPropertiesView.as_view(),
         name="lfs_update_product_properties",
     ),
     re_path(
-        r"^update-product-property-groups/(?P<product_id>\d*)$",
-        lfs.manage.products.properties.update_property_groups,
+        r"^update-product-property-groups/(?P<id>\d*)$",
+        lfs.manage.products.views.ProductPropertiesView.as_view(),
         name="lfs_update_product_property_groups",
     ),
-    # Accesories
-    re_path(
-        r"^accessories/(?P<product_id>\d*)$",
-        lfs.manage.products.accessories.manage_accessories,
-        name="lfs_manage_accessories",
-    ),
-    re_path(
-        r"^accessories-inline/(?P<product_id>\d*)$",
-        lfs.manage.products.accessories.manage_accessories_inline,
-        name="lfs_manage_accessories_inline",
-    ),
-    re_path(
-        r"^add-accessories/(?P<product_id>\d*)$",
-        lfs.manage.products.accessories.add_accessories,
-        name="lfs_manage_add_accessories",
-    ),
-    re_path(
-        r"^remove-accessories/(?P<product_id>\d*)$",
-        lfs.manage.products.accessories.remove_accessories,
-        name="lfs_manage_remove_accessories",
-    ),
-    re_path(
-        r"^update-accessories/(?P<product_id>\d*)$",
-        lfs.manage.products.accessories.update_accessories,
-        name="lfs_manage_update_accessories",
-    ),
-    # Related Products
-    re_path(
-        r"^related-products/(?P<product_id>\d*)$",
-        lfs.manage.products.related_products.manage_related_products,
-        name="lfs_manage_related_products",
-    ),
-    re_path(
-        r"^related-products-inline/(?P<product_id>\d*)$",
-        lfs.manage.products.related_products.manage_related_products_inline,
-        name="lfs_manage_related_products_inline",
-    ),
-    re_path(
-        r"^add-related-products/(?P<product_id>\d*)$",
-        lfs.manage.products.related_products.add_related_products,
-        name="lfs_manage_add_related_products",
-    ),
-    re_path(
-        r"^remove-related-products/(?P<product_id>\d*)$",
-        lfs.manage.products.related_products.remove_related_products,
-        name="lfs_manage_remove_related_products",
-    ),
-    re_path(
-        r"^manage-related-products/(?P<product_id>\d*)$",
-        lfs.manage.products.related_products.update_related_products,
-        name="lfs_manage_update_related_products",
-    ),
+    # # Accesories
+    # re_path(
+    #     r"^accessories/(?P<product_id>\d*)$",
+    #     lfs.manage.products.accessories.manage_accessories,
+    #     name="lfs_manage_accessories",
+    # ),
+    # re_path(
+    #     r"^accessories-inline/(?P<product_id>\d*)$",
+    #     lfs.manage.products.accessories.manage_accessories_inline,
+    #     name="lfs_manage_accessories_inline",
+    # ),
+    # re_path(
+    #     r"^add-accessories/(?P<product_id>\d*)$",
+    #     lfs.manage.products.accessories.add_accessories,
+    #     name="lfs_manage_add_accessories",
+    # ),
+    # re_path(
+    #     r"^remove-accessories/(?P<product_id>\d*)$",
+    #     lfs.manage.products.accessories.remove_accessories,
+    #     name="lfs_manage_remove_accessories",
+    # ),
+    # re_path(
+    #     r"^update-accessories/(?P<product_id>\d*)$",
+    #     lfs.manage.products.accessories.update_accessories,
+    #     name="lfs_manage_update_accessories",
+    # ),
+    # # Related Products
+    # re_path(
+    #     r"^related-products/(?P<product_id>\d*)$",
+    #     lfs.manage.products.related_products.manage_related_products,
+    #     name="lfs_manage_related_products",
+    # ),
+    # re_path(
+    #     r"^related-products-inline/(?P<product_id>\d*)$",
+    #     lfs.manage.products.related_products.manage_related_products_inline,
+    #     name="lfs_manage_related_products_inline",
+    # ),
+    # re_path(
+    #     r"^add-related-products/(?P<product_id>\d*)$",
+    #     lfs.manage.products.related_products.add_related_products,
+    #     name="lfs_manage_add_related_products",
+    # ),
+    # re_path(
+    #     r"^remove-related-products/(?P<product_id>\d*)$",
+    #     lfs.manage.products.related_products.remove_related_products,
+    #     name="lfs_manage_remove_related_products",
+    # ),
+    # re_path(
+    #     r"^manage-related-products/(?P<product_id>\d*)$",
+    #     lfs.manage.products.related_products.update_related_products,
+    #     name="lfs_manage_update_related_products",
+    # ),
     # Carts
     path("", include("lfs.manage.carts.urls")),
     # Categories

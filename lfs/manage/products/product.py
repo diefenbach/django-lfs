@@ -1,224 +1,31 @@
 import json
 
-from django import forms
 from django.contrib.auth.decorators import permission_required
 from django.core.paginator import Paginator
 from django.urls import reverse
 from django.db import IntegrityError
 from django.db.models import Q
-from django.forms.utils import ErrorList
-from django.forms.widgets import Select
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
-from django.forms.widgets import HiddenInput
-from django.conf import settings
 
 import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category
 from lfs.catalog.models import Product
-from lfs.catalog.settings import CHOICES
-from lfs.catalog.settings import CHOICES_YES
-from lfs.catalog.settings import PRODUCT_TEMPLATES
-from lfs.catalog.settings import PRODUCT_TYPE_FORM_CHOICES
 from lfs.catalog.settings import VARIANT
 from lfs.core.utils import LazyEncoder, atof, is_ajax
-from lfs.manufacturer.models import Manufacturer
-from lfs.utils.widgets import SelectImage
-from lfs.core.widgets.checkbox import LFSCheckboxInput
-
-
-# Forms
-class ProductAddForm(forms.ModelForm):
-    """
-    Form to add a new product.
-    """
-
-    class Meta:
-        model = Product
-        fields = ("name", "slug")
-
-
-class ProductSubTypeForm(forms.ModelForm):
-    """
-    Form to change the sub type.
-    """
-
-    class Meta:
-        model = Product
-        fields = ("sub_type",)
-
-    def __init__(self, *args, **kwargs):
-        super(ProductSubTypeForm, self).__init__(*args, **kwargs)
-        self.fields["sub_type"].choices = PRODUCT_TYPE_FORM_CHOICES
-
-
-class ProductDataForm(forms.ModelForm):
-    """
-    Form to add and edit master data of a product.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super(ProductDataForm, self).__init__(*args, **kwargs)
-
-        choices = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
-        self.fields["template"].widget = SelectImage(choices=choices)
-
-        self.fields["active_base_price"].widget = LFSCheckboxInput(check_test=lambda v: v != 0)
-
-        man_count = Manufacturer.objects.count()
-        if man_count > getattr(settings, "LFS_SELECT_LIMIT", 20):
-            self.fields["manufacturer"].widget = HiddenInput()
-
-    class Meta:
-        model = Product
-        fields = (
-            "active",
-            "name",
-            "slug",
-            "manufacturer",
-            "sku",
-            "sku_manufacturer",
-            "price",
-            "tax",
-            "price_calculator",
-            "short_description",
-            "description",
-            "for_sale",
-            "for_sale_price",
-            "static_block",
-            "template",
-            "active_price_calculation",
-            "price_calculation",
-            "price_unit",
-            "unit",
-            "type_of_quantity_field",
-            "active_base_price",
-            "base_price_unit",
-            "base_price_amount",
-        )
-
-    def clean(self):
-        super(ProductDataForm, self).clean()
-        if self.instance:
-            redirect_to = self.data.get("redirect_to", "")
-            if redirect_to != "":
-                lfs.core.utils.set_redirect_for(self.instance.get_absolute_url(), redirect_to)
-            else:
-                lfs.core.utils.remove_redirect_for(self.instance.get_absolute_url())
-
-        if self.data.get("active_base_price", 0):
-            if self.data.get("base_price_amount", "") == "":
-                self.errors["base_price_amount"] = ErrorList([_("This field is required.")])
-
-        return self.cleaned_data
-
-
-class VariantDataForm(forms.ModelForm):
-    """
-    Form to add and edit master data of a variant.
-    """
-
-    class Meta:
-        model = Product
-        fields = (
-            "active",
-            "active_name",
-            "name",
-            "slug",
-            "manufacturer",
-            "active_sku",
-            "sku",
-            "sku_manufacturer",
-            "active_price",
-            "price",
-            "price_calculator",
-            "active_short_description",
-            "short_description",
-            "active_description",
-            "description",
-            "for_sale",
-            "for_sale_price",
-            "active_for_sale",
-            "active_for_sale_price",
-            "active_related_products",
-            "active_static_block",
-            "static_block",
-            "template",
-            "active_base_price",
-            "base_price_unit",
-            "base_price_amount",
-        )
-
-    def __init__(self, *args, **kwargs):
-        super(VariantDataForm, self).__init__(*args, **kwargs)
-        choices = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
-        self.fields["template"].widget = SelectImage(choices=choices)
-        self.fields["active_base_price"].widget = Select(choices=CHOICES)
-
-    def clean(self):
-        if self.instance:
-            redirect_to = self.data.get("redirect_to", "")
-            if redirect_to != "":
-                lfs.core.utils.set_redirect_for(self.instance.get_absolute_url(), redirect_to)
-            else:
-                lfs.core.utils.remove_redirect_for(self.instance.get_absolute_url())
-
-        if self.data.get("active_base_price") == str(CHOICES_YES):
-            if self.data.get("base_price_amount", "") == "":
-                self.errors["base_price_amount"] = ErrorList([_("This field is required.")])
-
-        return self.cleaned_data
-
-
-class PaginationDataForm(forms.Form):
-    page = forms.IntegerField(label=_("Page"), widget=HiddenInput)
-
-
-class ProductStockForm(forms.ModelForm):
-    """
-    Form to add and edit stock data of a product.
-    """
-
-    class Meta:
-        model = Product
-        fields = (
-            "weight",
-            "width",
-            "height",
-            "length",
-            "manage_stock_amount",
-            "stock_amount",
-            "manual_delivery_time",
-            "delivery_time",
-            "deliverable",
-            "order_time",
-            "ordered_at",
-            "active_dimensions",
-            "packing_unit",
-            "packing_unit_unit",
-            "active_packing_unit",
-        )
-
-    def __init__(self, *args, **kwargs):
-        super(ProductStockForm, self).__init__(*args, **kwargs)
-        self.fields["ordered_at"].widget.attrs = {"class": "date-picker"}
-
-        if kwargs.get("instance").is_variant():
-            self.fields["active_packing_unit"].widget = Select(choices=CHOICES)
-        else:
-            self.fields["active_packing_unit"].widget = LFSCheckboxInput(check_test=lambda v: v != 0)
-
-    def clean(self):
-        if self.data.get("stock-active_packing_unit") == str(CHOICES_YES):
-            if self.data.get("stock-packing_unit", "") == "":
-                self.errors["packing_unit"] = ErrorList([_("This field is required.")])
-
-        return self.cleaned_data
+from .forms import (
+    PaginationDataForm,
+    ProductAddForm,
+    ProductDataForm,
+    ProductStockForm,
+    ProductSubTypeForm,
+    VariantDataForm,
+)
 
 
 @permission_required("core.manage_shop")

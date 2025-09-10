@@ -7,10 +7,7 @@ from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import EmptyPage
 from django.db import IntegrityError
-from django.forms import ModelForm, ChoiceField
-from django.forms.widgets import Select
 from django.http import HttpResponse
-from django.template.defaultfilters import slugify
 from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 
@@ -22,156 +19,21 @@ from lfs.catalog.models import ProductsPropertiesRelation
 from lfs.catalog.models import Property
 from lfs.catalog.models import PropertyGroup
 from lfs.catalog.models import PropertyOption
-from lfs.catalog.settings import CATEGORY_VARIANT_CHOICES
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_FILTER
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT
 from lfs.catalog.settings import VARIANT, PROPERTY_SELECT_FIELD
 from lfs.core.utils import LazyEncoder
 from lfs.core.utils import atof
 from lfs.manage import utils as manage_utils
-
-
-class PropertyOptionForm(ModelForm):
-    """Form to add/edit property options."""
-
-    class Meta:
-        model = PropertyOption
-        fields = ("name",)
-
-
-class PropertyForm(ModelForm):
-    """Form to add/edit properties."""
-
-    class Meta:
-        model = Property
-        fields = ("name",)
-
-
-class ProductVariantSimpleForm(ModelForm):
-    """Variants add form."""
-
-    def __init__(self, all_properties, *args, **kwargs):
-        super(ProductVariantSimpleForm, self).__init__(*args, **kwargs)
-        self.fields["slug"].required = False
-        for prop_dict in all_properties:
-            prop = prop_dict["property"]
-            property_group = prop_dict["property_group"]
-            property_group_id = property_group.pk if property_group else 0
-            property_group_name = property_group.name if property_group else _("Local")
-            field_label = '<span class="property-group-label">[%s]</span> %s' % (property_group_name, prop.name)
-            choices = [("all", _("All")), ("", "---")]
-            choices.extend(list(prop.options.values_list("pk", "name")))
-            self.fields["property_%s_%s" % (property_group_id, prop.id)] = ChoiceField(
-                label=field_label, choices=choices, required=False
-            )
-            self.initial["property_%s_%s" % (property_group_id, prop.id)] = "all"
-
-    class Meta:
-        model = Product
-        fields = (
-            "slug",
-            "name",
-            "price",
-        )
-
-
-class ProductVariantCreateForm(ModelForm):
-    """Form used to create product variant for specific set of options"""
-
-    def __init__(self, options=None, product=None, *args, **kwargs):
-        super(ProductVariantCreateForm, self).__init__(*args, **kwargs)
-        self.fields["slug"].required = False
-        self.options = options
-        self.product = product
-
-    def prepare_slug(self, slug):
-        for option in self.options:
-            property_group_id, property_id, option_id = option.split("|")
-            o = PropertyOption.objects.get(pk=option_id)
-            if slug:
-                slug += "-"
-            slug += slugify(o.name)
-
-        product_slug = self.product.slug
-        if product_slug is None:
-            product_slug = ""
-        if product_slug + slug.replace("-", "") == "":
-            slug = ""
-        else:
-            slug = "%s-%s" % (product_slug, slug)
-            slug = slug.rstrip("-")
-
-        # create unique slug
-        slug = slug[:80]
-        new_slug = slug
-        counter = 1
-        while Product.objects.filter(slug=new_slug).exists():
-            new_slug = "%s-%s" % (slug[: (79 - len(str(counter)))], counter)
-            counter += 1
-        slug = new_slug
-
-        return slug
-
-    def clean(self):
-        cleaned_data = super(ProductVariantCreateForm, self).clean()
-        slug = self.prepare_slug(cleaned_data.get("slug", ""))
-        cleaned_data["slug"] = slug
-
-        return cleaned_data
-
-    class Meta:
-        model = Product
-        fields = (
-            "slug",
-            "name",
-            "price",
-        )
-
-
-class CategoryVariantForm(ModelForm):
-    """ """
-
-    def __init__(self, *args, **kwargs):
-        super(CategoryVariantForm, self).__init__(*args, **kwargs)
-        product = kwargs.get("instance")
-
-        choices = []
-        for cv in CATEGORY_VARIANT_CHOICES:
-            choices.append(cv)
-
-        for variant in Product.objects.filter(parent=product):
-            choices.append([variant.id, "%s (%s)" % (variant.get_name(), variant.variant_position)])
-
-        self.fields["category_variant"].widget = Select(choices=choices)
-
-    class Meta:
-        model = Product
-        fields = ("category_variant",)
-
-
-class DisplayTypeForm(ModelForm):
-    """Form to add/edit product's sub types."""
-
-    class Meta:
-        model = Product
-        fields = ("variants_display_type",)
-
-
-class DefaultVariantForm(ModelForm):
-    """Form to edit the default variant."""
-
-    def __init__(self, *args, **kwargs):
-        super(DefaultVariantForm, self).__init__(*args, **kwargs)
-        instance = kwargs.get("instance")
-
-        choices = [("", "------")]
-        choices.extend([(v.id, "%s (%s)" % (v.get_name(), v.variant_position)) for v in instance.variants.all()])
-
-        self.fields["default_variant"].choices = choices
-
-    class Meta:
-        model = Product
-        fields = ("default_variant",)
+from .forms import (
+    CategoryVariantForm,
+    DefaultVariantForm,
+    DisplayTypeForm,
+    ProductVariantCreateForm,
+    ProductVariantSimpleForm,
+    PropertyForm,
+    PropertyOptionForm,
+)
 
 
 @permission_required("core.manage_shop")

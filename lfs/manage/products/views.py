@@ -29,19 +29,17 @@ from lfs.catalog.settings import (
 )
 from lfs.manage.portlets.views import PortletsInlineView
 
-from .product import (
-    ProductDataForm,
-    ProductStockForm,
-    VariantDataForm,
-)
-from .seo import SEOForm
-from lfs.core.signals import category_changed, product_changed
-from lfs.manage.products.variants import (
+from .forms import (
+    CategoryVariantForm,
     DefaultVariantForm,
     DisplayTypeForm,
-    CategoryVariantForm,
+    ProductDataForm,
+    ProductStockForm,
     ProductVariantCreateForm,
+    SEOForm,
+    VariantDataForm,
 )
+from lfs.core.signals import category_changed, product_changed
 from lfs.core.utils import atof
 from lfs.manage import utils as manage_utils
 from lfs.caching.listeners import update_product_cache
@@ -1352,3 +1350,70 @@ class ProductPropertiesView(PermissionRequiredMixin, ProductTabMixin, TemplateVi
             }
         )
         return ctx
+
+    def post(self, request, *args, **kwargs):
+        """Handle property updates."""
+        from django.contrib import messages
+        from django.shortcuts import redirect
+        from django.urls import reverse
+        from lfs.core.signals import product_removed_property_group
+        from lfs.caching.listeners import update_product_cache
+
+        product = self.get_product()
+        action = request.POST.get("action", "")
+
+        if action == "update_property_groups":
+            # Handle property group updates
+            selected_group_ids = request.POST.getlist("selected-property-groups")
+
+            for property_group in PropertyGroup.objects.all():
+                # if the group is within selected groups we try to add it to the product
+                # otherwise we try do delete it
+                if str(property_group.id) in selected_group_ids:
+                    if not property_group.products.filter(pk=product.pk).exists():
+                        property_group.products.add(product.pk)
+                else:
+                    if property_group.products.filter(pk=product.pk).exists():
+                        property_group.products.remove(product.pk)
+                        product_removed_property_group.send(sender=property_group, product=product)
+
+            update_product_cache(product)
+            messages.success(request, _("Property groups have been updated."))
+
+        elif action == "update_properties":
+            # Handle individual property updates
+            ppv_type = int(request.POST.get("type", PROPERTY_VALUE_TYPE_DEFAULT))
+            ProductPropertyValue.objects.filter(product=product.pk, type=ppv_type).delete()
+
+            # Update property values
+            for key in request.POST.keys():
+                if not key.startswith("property"):
+                    continue
+
+                try:
+                    _property, property_group_id, property_id = key.split("-")
+                    if property_group_id == "0":
+                        property_group_id = None
+                    prop = Property.objects.get(pk=property_id)
+
+                    for value in request.POST.getlist(key):
+                        if prop.is_valid_value(value):
+                            # we have to use get_or_create because it is possible that we get same property values twice
+                            ProductPropertyValue.objects.get_or_create(
+                                product=product,
+                                property_group_id=property_group_id,
+                                property=prop,
+                                value=value,
+                                type=ppv_type,
+                            )
+                except (ValueError, Property.DoesNotExist):
+                    continue
+
+            update_product_cache(product)
+            messages.success(request, _("Properties have been updated."))
+
+        # Redirect back to the properties tab
+        return redirect(reverse("lfs_manage_product_properties", kwargs={"id": product.pk}))
+
+
+# Removed duplicate standalone functions - functionality is in ProductPropertiesView.post()

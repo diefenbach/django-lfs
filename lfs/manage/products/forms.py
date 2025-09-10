@@ -1,0 +1,504 @@
+from django import forms
+from django.conf import settings
+from django.forms import ModelForm, ChoiceField
+from django.forms.utils import ErrorList
+from django.forms.widgets import Select, HiddenInput
+from django.template.defaultfilters import slugify
+from django.utils.translation import gettext_lazy as _
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Fieldset, Field, Div
+
+import lfs.core.utils
+from lfs.catalog.models import Product
+from lfs.catalog.models import Property
+from lfs.catalog.models import PropertyOption
+from lfs.catalog.settings import CHOICES
+from lfs.catalog.settings import CHOICES_YES
+from lfs.catalog.settings import CATEGORY_VARIANT_CHOICES
+from lfs.catalog.settings import PRODUCT_TEMPLATES
+from lfs.catalog.settings import PRODUCT_TYPE_FORM_CHOICES
+from lfs.manufacturer.models import Manufacturer
+from lfs.utils.widgets import SelectImage
+from lfs.core.widgets.checkbox import LFSCheckboxInput
+
+
+class PropertyOptionForm(ModelForm):
+    """Form to add/edit property options."""
+
+    class Meta:
+        model = PropertyOption
+        fields = ("name",)
+
+
+class PropertyForm(ModelForm):
+    """Form to add/edit properties."""
+
+    class Meta:
+        model = Property
+        fields = ("name",)
+
+
+class ProductVariantSimpleForm(ModelForm):
+    """Variants add form."""
+
+    def __init__(self, all_properties, *args, **kwargs):
+        super(ProductVariantSimpleForm, self).__init__(*args, **kwargs)
+        self.fields["slug"].required = False
+        for prop_dict in all_properties:
+            prop = prop_dict["property"]
+            property_group = prop_dict["property_group"]
+            property_group_id = property_group.pk if property_group else 0
+            property_group_name = property_group.name if property_group else _("Local")
+            field_label = '<span class="property-group-label">[%s]</span> %s' % (property_group_name, prop.name)
+            choices = [("all", _("All")), ("", "---")]
+            choices.extend(list(prop.options.values_list("pk", "name")))
+            self.fields["property_%s_%s" % (property_group_id, prop.id)] = ChoiceField(
+                label=field_label, choices=choices, required=False
+            )
+            self.initial["property_%s_%s" % (property_group_id, prop.id)] = "all"
+
+    class Meta:
+        model = Product
+        fields = (
+            "slug",
+            "name",
+            "price",
+        )
+
+
+class ProductVariantCreateForm(ModelForm):
+    """Form used to create product variant for specific set of options"""
+
+    def __init__(self, options=None, product=None, *args, **kwargs):
+        super(ProductVariantCreateForm, self).__init__(*args, **kwargs)
+        self.fields["slug"].required = False
+        self.options = options
+        self.product = product
+
+    def prepare_slug(self, slug):
+        for option in self.options:
+            property_group_id, property_id, option_id = option.split("|")
+            o = PropertyOption.objects.get(pk=option_id)
+            if slug:
+                slug += "-"
+            slug += slugify(o.name)
+
+        product_slug = self.product.slug
+        if product_slug is None:
+            product_slug = ""
+        if product_slug + slug.replace("-", "") == "":
+            slug = ""
+        else:
+            slug = "%s-%s" % (product_slug, slug)
+            slug = slug.rstrip("-")
+
+        # create unique slug
+        slug = slug[:80]
+        new_slug = slug
+        counter = 1
+        while Product.objects.filter(slug=new_slug).exists():
+            new_slug = "%s-%s" % (slug[: (79 - len(str(counter)))], counter)
+            counter += 1
+        slug = new_slug
+
+        return slug
+
+    def clean(self):
+        cleaned_data = super(ProductVariantCreateForm, self).clean()
+        slug = self.prepare_slug(cleaned_data.get("slug", ""))
+        cleaned_data["slug"] = slug
+
+        return cleaned_data
+
+    class Meta:
+        model = Product
+        fields = (
+            "slug",
+            "name",
+            "price",
+        )
+
+
+class CategoryVariantForm(ModelForm):
+    """ """
+
+    def __init__(self, *args, **kwargs):
+        super(CategoryVariantForm, self).__init__(*args, **kwargs)
+        product = kwargs.get("instance")
+
+        choices = []
+        for cv in CATEGORY_VARIANT_CHOICES:
+            choices.append(cv)
+
+        for variant in Product.objects.filter(parent=product):
+            choices.append([variant.id, "%s (%s)" % (variant.get_name(), variant.variant_position)])
+
+        self.fields["category_variant"].widget = Select(choices=choices)
+
+    class Meta:
+        model = Product
+        fields = ("category_variant",)
+
+
+class DisplayTypeForm(ModelForm):
+    """Form to add/edit product's sub types."""
+
+    class Meta:
+        model = Product
+        fields = ("variants_display_type",)
+
+
+class DefaultVariantForm(ModelForm):
+    """Form to edit the default variant."""
+
+    def __init__(self, *args, **kwargs):
+        super(DefaultVariantForm, self).__init__(*args, **kwargs)
+        instance = kwargs.get("instance")
+
+        choices = [("", "------")]
+        choices.extend([(v.id, "%s (%s)" % (v.get_name(), v.variant_position)) for v in instance.variants.all()])
+
+        self.fields["default_variant"].choices = choices
+
+    class Meta:
+        model = Product
+        fields = ("default_variant",)
+
+
+class ProductAddForm(forms.ModelForm):
+    """
+    Form to add a new product.
+    """
+
+    class Meta:
+        model = Product
+        fields = ("name", "slug")
+
+
+class ProductSubTypeForm(forms.ModelForm):
+    """
+    Form to change the sub type.
+    """
+
+    class Meta:
+        model = Product
+        fields = ("sub_type",)
+
+    def __init__(self, *args, **kwargs):
+        super(ProductSubTypeForm, self).__init__(*args, **kwargs)
+        self.fields["sub_type"].choices = PRODUCT_TYPE_FORM_CHOICES
+
+
+class ProductDataForm(forms.ModelForm):
+    """
+    Form to add and edit master data of a product.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(ProductDataForm, self).__init__(*args, **kwargs)
+
+        choices = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
+        self.fields["template"].widget = SelectImage(choices=choices)
+
+        self.fields["active_base_price"].widget = LFSCheckboxInput(check_test=lambda v: v != 0)
+
+        man_count = Manufacturer.objects.count()
+        if man_count > getattr(settings, "LFS_SELECT_LIMIT", 20):
+            self.fields["manufacturer"].widget = HiddenInput()
+
+        # Crispy forms helper for better layout
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.form_tag = False  # Don't render form tag, template handles it
+        self.helper.layout = Layout(
+            Fieldset(
+                _("General"),
+                Field("active"),
+                Field("name"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("URLs"),
+                Field("slug"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Article numbers"),
+                Field("sku"),
+                Field("manufacturer"),
+                Field("sku_manufacturer"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Prices"),
+                Field("price"),
+                Field("tax"),
+                Field("price_calculator"),
+                Field("for_sale"),
+                Field("for_sale_price"),
+                Field("price_unit"),
+                Field("active_price_calculation"),
+                Field("price_calculation"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Quantity field"),
+                Field("unit"),
+                Field("type_of_quantity_field"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Base price"),
+                Field("active_base_price"),
+                Field("base_price_unit"),
+                Field("base_price_amount"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Content"),
+                Field("short_description"),
+                Field("description"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Appearance"),
+                Field("static_block"),
+                Field("template"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+        )
+
+    class Meta:
+        model = Product
+        fields = (
+            "active",
+            "name",
+            "slug",
+            "manufacturer",
+            "sku",
+            "sku_manufacturer",
+            "price",
+            "tax",
+            "price_calculator",
+            "short_description",
+            "description",
+            "for_sale",
+            "for_sale_price",
+            "static_block",
+            "template",
+            "active_price_calculation",
+            "price_calculation",
+            "price_unit",
+            "unit",
+            "type_of_quantity_field",
+            "active_base_price",
+            "base_price_unit",
+            "base_price_amount",
+        )
+
+    def clean(self):
+        super(ProductDataForm, self).clean()
+        if self.instance:
+            redirect_to = self.data.get("redirect_to", "")
+            if redirect_to != "":
+                lfs.core.utils.set_redirect_for(self.instance.get_absolute_url(), redirect_to)
+            else:
+                lfs.core.utils.remove_redirect_for(self.instance.get_absolute_url())
+
+        if self.data.get("active_base_price", 0):
+            if self.data.get("base_price_amount", "") == "":
+                self.errors["base_price_amount"] = ErrorList([_("This field is required.")])
+
+        return self.cleaned_data
+
+
+class VariantDataForm(forms.ModelForm):
+    """
+    Form to add and edit master data of a variant.
+    """
+
+    class Meta:
+        model = Product
+        fields = (
+            "active",
+            "active_name",
+            "name",
+            "slug",
+            "manufacturer",
+            "active_sku",
+            "sku",
+            "sku_manufacturer",
+            "active_price",
+            "price",
+            "price_calculator",
+            "active_short_description",
+            "short_description",
+            "active_description",
+            "description",
+            "for_sale",
+            "for_sale_price",
+            "active_for_sale",
+            "active_for_sale_price",
+            "active_related_products",
+            "active_static_block",
+            "static_block",
+            "template",
+            "active_base_price",
+            "base_price_unit",
+            "base_price_amount",
+        )
+
+    def __init__(self, *args, **kwargs):
+        super(VariantDataForm, self).__init__(*args, **kwargs)
+        choices = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
+        self.fields["template"].widget = SelectImage(choices=choices)
+        self.fields["active_base_price"].widget = Select(choices=CHOICES)
+
+        # Crispy forms helper for variants
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.form_tag = False  # Don't render form tag, template handles it
+        self.helper.layout = Layout(
+            Fieldset(
+                _("General"),
+                Field("active"),
+                Div(
+                    Field("active_name", wrapper_class="col-md-2"),
+                    Field("name", wrapper_class="col-md-10"),
+                    css_class="row",
+                ),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("URLs"),
+                Field("slug"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Article numbers"),
+                Div(
+                    Field("active_sku", wrapper_class="col-md-2"),
+                    Field("sku", wrapper_class="col-md-10"),
+                    css_class="row",
+                ),
+                Field("manufacturer"),
+                Field("sku_manufacturer"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Prices"),
+                Div(
+                    Field("active_price", wrapper_class="col-md-2"),
+                    Field("price", wrapper_class="col-md-10"),
+                    css_class="row",
+                ),
+                Field("price_calculator"),
+                Div(
+                    Field("active_for_sale", wrapper_class="col-md-2"),
+                    Field("for_sale", wrapper_class="col-md-10"),
+                    css_class="row",
+                ),
+                Div(
+                    Field("active_for_sale_price", wrapper_class="col-md-2"),
+                    Field("for_sale_price", wrapper_class="col-md-10"),
+                    css_class="row",
+                ),
+                css_class="mb-4 border border-dark rounded-2 px-3",
+            ),
+            Fieldset(
+                _("Base price"),
+                Field("active_base_price"),
+                Field("base_price_unit"),
+                Field("base_price_amount"),
+                css_class="mb-4 border border-dark rounded-2 p-3",
+            ),
+            Fieldset(
+                _("Content"),
+                Div(
+                    Field("active_short_description", wrapper_class="col-md-2"),
+                    Field("short_description", wrapper_class="col-md-10"),
+                    css_class="row",
+                ),
+                Div(
+                    Field("active_description", wrapper_class="col-md-2"),
+                    Field("description", wrapper_class="col-md-10"),
+                    css_class="row",
+                ),
+                css_class="mb-4 border border-dark rounded-2 p-3",
+            ),
+            Fieldset(
+                _("Appearance"),
+                Div(
+                    Field("active_static_block", wrapper_class="col-md-2"),
+                    Field("static_block", wrapper_class="col-md-10"),
+                    css_class="row",
+                ),
+                Field("template"),
+                css_class="mb-4 border border-dark rounded-2 p-3",
+            ),
+            Fieldset(
+                _("Related Products"),
+                Field("active_related_products"),
+                css_class="mb-4 border border-dark rounded-2 p-3",
+            ),
+        )
+
+    def clean(self):
+        if self.instance:
+            redirect_to = self.data.get("redirect_to", "")
+            if redirect_to != "":
+                lfs.core.utils.set_redirect_for(self.instance.get_absolute_url(), redirect_to)
+            else:
+                lfs.core.utils.remove_redirect_for(self.instance.get_absolute_url())
+
+        if self.data.get("active_base_price") == str(CHOICES_YES):
+            if self.data.get("base_price_amount", "") == "":
+                self.errors["base_price_amount"] = ErrorList([_("This field is required.")])
+
+        return self.cleaned_data
+
+
+class PaginationDataForm(forms.Form):
+    page = forms.IntegerField(label=_("Page"), widget=HiddenInput)
+
+
+class ProductStockForm(forms.ModelForm):
+    """
+    Form to add and edit stock data of a product.
+    """
+
+    class Meta:
+        model = Product
+        fields = (
+            "weight",
+            "width",
+            "height",
+            "length",
+            "manage_stock_amount",
+            "stock_amount",
+            "manual_delivery_time",
+            "delivery_time",
+            "deliverable",
+            "order_time",
+            "ordered_at",
+            "active_dimensions",
+            "packing_unit",
+            "packing_unit_unit",
+            "active_packing_unit",
+        )
+
+
+class SEOForm(ModelForm):
+    """Form to add/edit seo properties of a product."""
+
+    class Meta:
+        model = Product
+        fields = (
+            "active_meta_title",
+            "meta_title",
+            "active_meta_keywords",
+            "meta_keywords",
+            "active_meta_description",
+            "meta_description",
+        )
