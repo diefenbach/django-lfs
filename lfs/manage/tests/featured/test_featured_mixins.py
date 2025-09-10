@@ -126,3 +126,4 @@ class TestFeaturedPaginationMixin:
         view = TestView()
         assert view.page_size == 25
 """
+

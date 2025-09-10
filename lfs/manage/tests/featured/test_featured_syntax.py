@@ -349,3 +349,4 @@ class TestFeaturedSyntaxValidation:
             compile(content, str(init_path), "exec")
         except SyntaxError as e:
             pytest.fail(f"Syntax error in __init__.py: {e}")
+
