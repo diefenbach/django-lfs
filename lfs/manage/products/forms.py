@@ -404,14 +404,14 @@ class VariantDataForm(forms.ModelForm):
                     Field("for_sale_price", wrapper_class="col-md-10"),
                     css_class="row",
                 ),
-                css_class="mb-4 border border-dark rounded-2 px-3",
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
             ),
             Fieldset(
                 _("Base price"),
                 Field("active_base_price"),
                 Field("base_price_unit"),
                 Field("base_price_amount"),
-                css_class="mb-4 border border-dark rounded-2 p-3",
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
             ),
             Fieldset(
                 _("Content"),
@@ -425,7 +425,7 @@ class VariantDataForm(forms.ModelForm):
                     Field("description", wrapper_class="col-md-10"),
                     css_class="row",
                 ),
-                css_class="mb-4 border border-dark rounded-2 p-3",
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
             ),
             Fieldset(
                 _("Appearance"),
@@ -435,12 +435,12 @@ class VariantDataForm(forms.ModelForm):
                     css_class="row",
                 ),
                 Field("template"),
-                css_class="mb-4 border border-dark rounded-2 p-3",
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
             ),
             Fieldset(
                 _("Related Products"),
                 Field("active_related_products"),
-                css_class="mb-4 border border-dark rounded-2 p-3",
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
             ),
         )
 
@@ -468,6 +468,47 @@ class ProductStockForm(forms.ModelForm):
     Form to add and edit stock data of a product.
     """
 
+    def __init__(self, *args, **kwargs):
+        super(ProductStockForm, self).__init__(*args, **kwargs)
+
+        # Crispy forms helper for stock data
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.form_tag = False  # Don't render form tag, template handles it
+        self.helper.layout = Layout(
+            Fieldset(
+                _("Dimensions & Weight"),
+                Field("weight"),
+                Field("width"),
+                Field("height"),
+                Field("length"),
+                Field("active_dimensions"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Stock Management"),
+                Field("manage_stock_amount"),
+                Field("stock_amount"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Delivery"),
+                Field("manual_delivery_time"),
+                Field("delivery_time"),
+                Field("deliverable"),
+                Field("order_time"),
+                Field("ordered_at"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Packing"),
+                Field("active_packing_unit"),
+                Field("packing_unit"),
+                Field("packing_unit_unit"),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+        )
+
     class Meta:
         model = Product
         fields = (
@@ -491,6 +532,43 @@ class ProductStockForm(forms.ModelForm):
 
 class SEOForm(ModelForm):
     """Form to add/edit seo properties of a product."""
+
+    def __init__(self, *args, **kwargs):
+        super(SEOForm, self).__init__(*args, **kwargs)
+
+        # Crispy forms helper for SEO data
+        self.helper = FormHelper()
+        self.helper.form_method = "post"
+        self.helper.form_tag = False  # Don't render form tag, template handles it
+        self.helper.layout = Layout(
+            Fieldset(
+                _("Meta Title"),
+                Div(
+                    Field("active_meta_title", wrapper_class="col-md-2"),
+                    Field("meta_title", wrapper_class="col-md-10"),
+                    css_class="row",
+                ),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Meta Keywords"),
+                Div(
+                    Field("active_meta_keywords", wrapper_class="col-md-2"),
+                    Field("meta_keywords", wrapper_class="col-md-10"),
+                    css_class="row",
+                ),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+            Fieldset(
+                _("Meta Description"),
+                Div(
+                    Field("active_meta_description", wrapper_class="col-md-2"),
+                    Field("meta_description", wrapper_class="col-md-10"),
+                    css_class="row",
+                ),
+                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
+            ),
+        )
 
     class Meta:
         model = Product

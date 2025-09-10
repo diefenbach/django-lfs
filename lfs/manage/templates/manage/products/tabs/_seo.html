@@ -4,8 +4,8 @@
     <form method="post" action="{% url 'lfs_manage_product_seo' product.id %}">
         {% csrf_token %}
         <div class="row">
-            <div class="col-md-8">
-                {{ form|crispy }}
+            <div class="col-12">
+                {% crispy form %}
             </div>
         </div>
         <div class="mt-3">
