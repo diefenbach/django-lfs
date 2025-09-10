@@ -1,5 +1,21 @@
 {% load i18n %}
 
+{# Active images toggle for variants - moved above image list #}
+{% if product.is_variant %}
+    <div class="mb-4">
+        <form method="post" class="d-inline">
+            {% csrf_token %}
+            <div class="form-check d-inline-block me-3">
+                <input class="form-check-input" type="checkbox" id="activeImages" name="active_images" {% if product.active_images %}checked{% endif %}>
+                <label class="form-check-label" for="activeImages">{% trans "Zugewiesene Bilder" %}</label>
+            </div>
+            <button type="submit" name="toggle_active_images" value="1" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-check-lg me-1"></i> {% trans 'Save' %}
+            </button>
+        </form>
+    </div>
+{% endif %}
+
 <div id="images-list">
     {% if product.images.all %}
         <form method="post" class="mb-4">
@@ -76,16 +92,6 @@
 <div id="image-upload-section">
     <form id="image_upload" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        
-        {# Active images toggle for variants #}
-        {% if product.is_variant %}
-            <div class="mb-3">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="activeImages" name="active_images" {% if product.active_images %}checked{% endif %}>
-                    <label class="form-check-label" for="activeImages">{% trans "Active images" %}</label>
-                </div>
-            </div>
-        {% endif %}
         
         <div class="mb-3">
             <input class="form-control" type="file" name="files[]" multiple accept="image/*">

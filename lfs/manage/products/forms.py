@@ -1,5 +1,4 @@
 from django import forms
-from django.conf import settings
 from django.forms import ModelForm, ChoiceField
 from django.forms.utils import ErrorList
 from django.forms.widgets import Select, HiddenInput
@@ -18,9 +17,8 @@ from lfs.catalog.settings import CHOICES_YES
 from lfs.catalog.settings import CATEGORY_VARIANT_CHOICES
 from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TYPE_FORM_CHOICES
-from lfs.manufacturer.models import Manufacturer
-from lfs.utils.widgets import SelectImage
 from lfs.core.widgets.checkbox import LFSCheckboxInput
+from lfs.utils.widgets import SelectImage
 
 
 class PropertyOptionForm(ModelForm):
@@ -195,80 +193,6 @@ class ProductDataForm(forms.ModelForm):
     Form to add and edit master data of a product.
     """
 
-    def __init__(self, *args, **kwargs):
-        super(ProductDataForm, self).__init__(*args, **kwargs)
-
-        choices = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
-        self.fields["template"].widget = SelectImage(choices=choices)
-
-        self.fields["active_base_price"].widget = LFSCheckboxInput(check_test=lambda v: v != 0)
-
-        man_count = Manufacturer.objects.count()
-        if man_count > getattr(settings, "LFS_SELECT_LIMIT", 20):
-            self.fields["manufacturer"].widget = HiddenInput()
-
-        # Crispy forms helper for better layout
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_tag = False  # Don't render form tag, template handles it
-        self.helper.layout = Layout(
-            Fieldset(
-                _("General"),
-                Field("active"),
-                Field("name"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("URLs"),
-                Field("slug"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Article numbers"),
-                Field("sku"),
-                Field("manufacturer"),
-                Field("sku_manufacturer"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Prices"),
-                Field("price"),
-                Field("tax"),
-                Field("price_calculator"),
-                Field("for_sale"),
-                Field("for_sale_price"),
-                Field("price_unit"),
-                Field("active_price_calculation"),
-                Field("price_calculation"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Quantity field"),
-                Field("unit"),
-                Field("type_of_quantity_field"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Base price"),
-                Field("active_base_price"),
-                Field("base_price_unit"),
-                Field("base_price_amount"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Content"),
-                Field("short_description"),
-                Field("description"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Appearance"),
-                Field("static_block"),
-                Field("template"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-        )
-
     class Meta:
         model = Product
         fields = (
@@ -296,6 +220,34 @@ class ProductDataForm(forms.ModelForm):
             "base_price_unit",
             "base_price_amount",
         )
+
+    active_base_price = forms.IntegerField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(ProductDataForm, self).__init__(*args, **kwargs)
+
+        choices = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
+        self.fields["template"].widget = SelectImage(choices=choices)
+        self.fields["active_base_price"].widget = LFSCheckboxInput(check_test=lambda v: v != 0)
+
+        # Add Bootstrap classes to form fields
+        for field_name, field in self.fields.items():
+            if hasattr(field.widget, "attrs"):
+                widget_class = field.widget.__class__.__name__
+                if widget_class in [
+                    "TextInput",
+                    "EmailInput",
+                    "URLInput",
+                    "NumberInput",
+                    "Textarea",
+                    "DateInput",
+                    "DateTimeInput",
+                ]:
+                    field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-control"
+                elif widget_class in ["Select"]:
+                    field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-select"
+                elif widget_class in ["CheckboxInput", "LFSCheckboxInput"]:
+                    field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-check-input"
 
     def clean(self):
         super(ProductDataForm, self).clean()
@@ -336,7 +288,6 @@ class VariantDataForm(forms.ModelForm):
             "short_description",
             "active_description",
             "description",
-            "for_sale",
             "for_sale_price",
             "active_for_sale",
             "active_for_sale_price",
@@ -349,100 +300,30 @@ class VariantDataForm(forms.ModelForm):
             "base_price_amount",
         )
 
+    active_base_price = forms.IntegerField(required=False)
+
     def __init__(self, *args, **kwargs):
         super(VariantDataForm, self).__init__(*args, **kwargs)
-        choices = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
-        self.fields["template"].widget = SelectImage(choices=choices)
         self.fields["active_base_price"].widget = Select(choices=CHOICES)
-
-        # Crispy forms helper for variants
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_tag = False  # Don't render form tag, template handles it
-        self.helper.layout = Layout(
-            Fieldset(
-                _("General"),
-                Field("active"),
-                Div(
-                    Field("active_name", wrapper_class="col-md-2"),
-                    Field("name", wrapper_class="col-md-10"),
-                    css_class="row",
-                ),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("URLs"),
-                Field("slug"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Article numbers"),
-                Div(
-                    Field("active_sku", wrapper_class="col-md-2"),
-                    Field("sku", wrapper_class="col-md-10"),
-                    css_class="row",
-                ),
-                Field("manufacturer"),
-                Field("sku_manufacturer"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Prices"),
-                Div(
-                    Field("active_price", wrapper_class="col-md-2"),
-                    Field("price", wrapper_class="col-md-10"),
-                    css_class="row",
-                ),
-                Field("price_calculator"),
-                Div(
-                    Field("active_for_sale", wrapper_class="col-md-2"),
-                    Field("for_sale", wrapper_class="col-md-10"),
-                    css_class="row",
-                ),
-                Div(
-                    Field("active_for_sale_price", wrapper_class="col-md-2"),
-                    Field("for_sale_price", wrapper_class="col-md-10"),
-                    css_class="row",
-                ),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Base price"),
-                Field("active_base_price"),
-                Field("base_price_unit"),
-                Field("base_price_amount"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Content"),
-                Div(
-                    Field("active_short_description", wrapper_class="col-md-2"),
-                    Field("short_description", wrapper_class="col-md-10"),
-                    css_class="row",
-                ),
-                Div(
-                    Field("active_description", wrapper_class="col-md-2"),
-                    Field("description", wrapper_class="col-md-10"),
-                    css_class="row",
-                ),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Appearance"),
-                Div(
-                    Field("active_static_block", wrapper_class="col-md-2"),
-                    Field("static_block", wrapper_class="col-md-10"),
-                    css_class="row",
-                ),
-                Field("template"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Related Products"),
-                Field("active_related_products"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-        )
+        # Add Bootstrap classes to form fields
+        for field_name, field in self.fields.items():
+            if hasattr(field.widget, "attrs"):
+                widget_class = field.widget.__class__.__name__
+                if widget_class in [
+                    "TextInput",
+                    "EmailInput",
+                    "URLInput",
+                    "NumberInput",
+                    "Textarea",
+                    "DateInput",
+                    "DateTimeInput",
+                ]:
+                    field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-control"
+                elif widget_class in ["Select"]:
+                    field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-select"
+                elif widget_class in ["CheckboxInput"]:
+                    field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-check-input"
+        choices = [(ord, d["name"]) for (ord, d) in enumerate(PRODUCT_TEMPLATES)]
 
     def clean(self):
         if self.instance:
@@ -471,43 +352,29 @@ class ProductStockForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ProductStockForm, self).__init__(*args, **kwargs)
 
-        # Crispy forms helper for stock data
-        self.helper = FormHelper()
-        self.helper.form_method = "post"
-        self.helper.form_tag = False  # Don't render form tag, template handles it
-        self.helper.layout = Layout(
-            Fieldset(
-                _("Dimensions & Weight"),
-                Field("weight"),
-                Field("width"),
-                Field("height"),
-                Field("length"),
-                Field("active_dimensions"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Stock Management"),
-                Field("manage_stock_amount"),
-                Field("stock_amount"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Delivery"),
-                Field("manual_delivery_time"),
-                Field("delivery_time"),
-                Field("deliverable"),
-                Field("order_time"),
-                Field("ordered_at"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-            Fieldset(
-                _("Packing"),
-                Field("active_packing_unit"),
-                Field("packing_unit"),
-                Field("packing_unit_unit"),
-                css_class="mb-4 border border-dark rounded-2 px-3 py-1",
-            ),
-        )
+        if kwargs.get("instance").is_variant():
+            self.fields["active_packing_unit"].widget = Select(choices=CHOICES)
+        else:
+            self.fields["active_packing_unit"].widget = LFSCheckboxInput(check_test=lambda v: v != 0)
+
+        # Add Bootstrap classes to form fields
+        for field_name, field in self.fields.items():
+            if hasattr(field.widget, "attrs"):
+                widget_class = field.widget.__class__.__name__
+                if widget_class in [
+                    "TextInput",
+                    "EmailInput",
+                    "URLInput",
+                    "NumberInput",
+                    "Textarea",
+                    "DateInput",
+                    "DateTimeInput",
+                ]:
+                    field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-control"
+                elif widget_class in ["Select"]:
+                    field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-select"
+                elif widget_class in ["CheckboxInput", "LFSCheckboxInput"]:
+                    field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-check-input"
 
     class Meta:
         model = Product
@@ -535,6 +402,25 @@ class SEOForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(SEOForm, self).__init__(*args, **kwargs)
+
+        # Add Bootstrap classes to form fields
+        for field_name, field in self.fields.items():
+            if hasattr(field.widget, "attrs"):
+                widget_class = field.widget.__class__.__name__
+                if widget_class in [
+                    "TextInput",
+                    "EmailInput",
+                    "URLInput",
+                    "NumberInput",
+                    "Textarea",
+                    "DateInput",
+                    "DateTimeInput",
+                ]:
+                    field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-control"
+                elif widget_class in ["Select"]:
+                    field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-select"
+                elif widget_class in ["CheckboxInput", "LFSCheckboxInput"]:
+                    field.widget.attrs["class"] = field.widget.attrs.get("class", "") + " form-check-input"
 
         # Crispy forms helper for SEO data
         self.helper = FormHelper()

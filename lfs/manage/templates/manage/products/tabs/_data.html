@@ -1,13 +1,370 @@
-{% load i18n crispy_forms_tags %}
+{% load i18n %}
 
 <div class="tab-pane show active" id="data-content" role="tabpanel" aria-labelledby="data-tab">
     <form method="post" action="{% url 'lfs_manage_product_data' product.id %}">
         {% csrf_token %}
-        <div class="row">
-            <div class="col-12">
-                {% crispy form %}
+        
+        <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+            <legend>{% trans "General" %}</legend>
+            <div class="field mb-3">
+                {{ form.active }}
+                <label for="{{ form.active.id_for_label }}" class="form-label">
+                    {{ form.active.label }}
+                </label>
+                {% if form.active.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.active.errors }}
+                    </div>
+                {% endif %}
             </div>
-        </div>
+        </fieldset>
+
+        <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+            <legend>{% trans "Name" %}</legend>
+            <div class="field mb-3">
+                <label for="{{ form.name.id_for_label }}" class="form-label">
+                    {% if product.is_variant %}
+                        {{ form.active_name }}
+                    {% endif %}
+                    {{ form.name.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.name.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <span class="form-control-plaintext">
+                            {% if product.is_variant %}
+                                {{ product.parent.name }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+            <legend>{% trans "URLs" %}</legend>
+            <div class="field mb-3">
+                <label for="{{ form.slug.id_for_label }}" class="form-label">
+                    {{ form.slug.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.slug }}
+                        {% if form.slug.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.slug.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <span class="form-control-plaintext">
+                            {% if product.is_variant %}
+                                {{ product.parent.slug }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+            <legend>{% trans "Article numbers" %}</legend>
+            <div class="field mb-3">
+                <label for="{{ form.sku.id_for_label }}" class="form-label">
+                    {% if product.is_variant %}
+                        {{ form.active_sku }}
+                    {% endif %}
+                    {{ form.sku.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.sku }}
+                        {% if form.sku.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.sku.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <span class="form-control-plaintext">
+                            {% if product.is_variant %}
+                                {{ product.parent.sku }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="field mb-3">
+                <label for="{{ form.manufacturer.id_for_label }}" class="form-label">
+                    {{ form.manufacturer.label }}
+                </label>
+                {% if product.is_variant %}
+                    <span class="form-control-plaintext">
+                        {{ product.get_manufacturer|default_if_none:"-" }}
+                    </span>
+                {% else %}
+                    {{ form.manufacturer }}
+                    {% if form.manufacturer.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.manufacturer.errors }}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            
+            <div class="field mb-3">
+                <label for="{{ form.sku_manufacturer.id_for_label }}" class="form-label">
+                    {{ form.sku_manufacturer.label }}
+                </label>
+                {{ form.sku_manufacturer }}
+                {% if form.sku_manufacturer.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.sku_manufacturer.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+            <legend>{% trans "Prices" %}</legend>
+            <div class="field mb-3">
+                <label for="{{ form.price.id_for_label }}" class="form-label">
+                    {% if product.is_variant %}
+                        {{ form.active_price }}
+                    {% endif %}
+                    {{ form.price.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.price }}
+                        {% if form.price.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.price.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <span class="form-control-plaintext">
+                            {% if product.is_variant %}
+                                {{ product.parent.price|floatformat:2 }} €
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="field mb-3">
+                <label for="{{ form.price_calculator.id_for_label }}" class="form-label">
+                    {{ form.price_calculator.label }}
+                </label>
+                {{ form.price_calculator }}
+                {% if form.price_calculator.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.price_calculator.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            {% if product.is_variant %}
+                <div class="field mb-3">
+                    <label for="{{ form.for_sale.id_for_label }}" class="form-label">
+                        {{ form.for_sale.label }}
+                    </label>
+                    {{ form.active_for_sale }}
+                    <span class="form-control-plaintext">
+                        {% if product.parent.for_sale %}
+                            {% trans 'Yes' %}
+                        {% else %}
+                            {% trans 'No' %}
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <div class="field mb-3">
+                    <label for="{{ form.for_sale_price.id_for_label }}" class="form-label">
+                        {{ form.active_for_sale_price }}
+                        {{ form.for_sale_price.label }}
+                    </label>
+                    <div class="row">
+                        <div class="col-md-8">
+                            {{ form.for_sale_price }}
+                            {% if form.for_sale_price.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.for_sale_price.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <span class="form-control-plaintext">
+                                {{ product.parent.for_sale_price|floatformat:2 }} €
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="field mb-3">
+                    <div class="form-check">
+                        {{ form.for_sale }}
+                        <label for="{{ form.for_sale.id_for_label }}" class="form-check-label">
+                            {{ form.for_sale.label }}
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="field mb-3">
+                    <label for="{{ form.for_sale_price.id_for_label }}" class="form-label">
+                        {{ form.for_sale_price.label }}
+                    </label>
+                    {{ form.for_sale_price }}
+                    {% if form.for_sale_price.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.for_sale_price.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </fieldset>
+
+        <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+            <legend>{% trans "Base price" %}</legend>
+            <div class="field mb-3">
+                <label for="{{ form.active_base_price.id_for_label }}" class="form-label">
+                    {{ form.active_base_price.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.active_base_price }}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant %}
+                            <span class="form-control-plaintext">
+                                {% if product.parent.active_base_price %}
+                                    {% trans 'Yes' %}
+                                {% else %}
+                                    {% trans 'No' %}
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="field mb-3">
+                <label for="{{ form.base_price_unit.id_for_label }}" class="form-label">
+                    {{ form.base_price_unit.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.base_price_unit }}
+                        {% if form.base_price_unit.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.base_price_unit.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant and product.parent.base_price_unit %}
+                            <span class="form-control-plaintext">
+                                {{ product.parent.base_price_unit }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="field mb-3">
+                <label for="{{ form.base_price_amount.id_for_label }}" class="form-label">
+                    {{ form.base_price_amount.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.base_price_amount }}
+                        {% if form.base_price_amount.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.base_price_amount.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        <span class="form-control-plaintext">
+                            {{ product.parent.base_price_amount }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+            <legend>{% trans "Content" %}</legend>
+            <div class="field mb-3">
+                <label for="{{ form.short_description.id_for_label }}" class="form-label">
+                    {% if product.is_variant %}
+                        {{ form.active_short_description }}
+                    {% endif %}
+                    {{ form.short_description.label }}
+                </label>
+                {{ form.short_description }}
+                {% if form.short_description.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.short_description.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="field mb-3">
+                <label for="{{ form.description.id_for_label }}" class="form-label">
+                    {% if product.is_variant %}
+                        {{ form.active_description }}
+                    {% endif %}
+                    {{ form.description.label }}
+                </label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.description.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+            <legend>{% trans "Appearance" %}</legend>
+            <div class="field mb-3">
+                <label for="{{ form.static_block.id_for_label }}" class="form-label">
+                    {% if product.is_variant %}
+                        {{ form.active_static_block }}
+                    {% endif %}
+                    {{ form.static_block.label }}
+                </label>
+                {{ form.static_block }}
+                {% if form.static_block.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.static_block.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="field mb-3">
+                <label for="{{ form.template.id_for_label }}" class="form-label">
+                    {{ form.template.label }}
+                </label>
+                {{ form.template }}
+                {% if form.template.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.template.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </fieldset>
+
         <div class="mt-3">
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-save"></i>
@@ -15,10 +372,10 @@
             </button>
         </div>
     </form>
+    
     {% if product.is_variant %}
         <div class="alert alert-info mt-3">
             {% trans "You are editing a variant of a product." %}
         </div>
     {% endif %}
 </div>
-

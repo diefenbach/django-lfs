@@ -1,13 +1,322 @@
-{% load i18n crispy_forms_tags %}
+{% load i18n %}
 
 <div class="tab-pane fade show active" id="stock-content" role="tabpanel" aria-labelledby="stock-tab">
     <form method="post" action="{% url 'lfs_manage_product_stock' product.id %}">
         {% csrf_token %}
-        <div class="row">
-            <div class="col-12">
-                {% crispy form %}
+
+        <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+            <legend>{% trans "Dimensions & Weight" %}</legend>
+
+            <div class="field mb-3">
+                <label for="{{ form.weight.id_for_label }}" class="form-label">
+                    {% if product.is_variant %}
+                        {{ form.active_dimensions }}
+                    {% endif %}
+                    {{ form.weight.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.weight }}
+                        {% if form.weight.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.weight.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant %}
+                            <span class="form-control-plaintext">
+                                {{ product.parent.weight|floatformat:2 }} kg
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-        </div>
+
+            <div class="field mb-3">
+                <label for="{{ form.width.id_for_label }}" class="form-label">
+                    {{ form.width.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.width }}
+                        {% if form.width.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.width.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant %}
+                            <span class="form-control-plaintext">
+                                {{ product.parent.width|floatformat:2 }} cm
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="field mb-3">
+                <label for="{{ form.height.id_for_label }}" class="form-label">
+                    {{ form.height.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.height }}
+                        {% if form.height.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.height.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant %}
+                            <span class="form-control-plaintext">
+                                {{ product.parent.height|floatformat:2 }} cm
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="field mb-3">
+                <label for="{{ form.length.id_for_label }}" class="form-label">
+                    {{ form.length.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.length }}
+                        {% if form.length.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.length.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant %}
+                            <span class="form-control-plaintext">
+                                {{ product.parent.length|floatformat:2 }} cm
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+            <legend>{% trans "Stock Management" %}</legend>
+
+            <div class="field mb-3">
+                <div class="form-check">
+                    {{ form.manage_stock_amount }}
+                    <label for="{{ form.manage_stock_amount.id_for_label }}" class="form-check-label">
+                        {{ form.manage_stock_amount.label }}
+                    </label>
+                </div>
+                {% if form.manage_stock_amount.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.manage_stock_amount.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="field mb-3">
+                <label for="{{ form.stock_amount.id_for_label }}" class="form-label">
+                    {{ form.stock_amount.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.stock_amount }}
+                        {% if form.stock_amount.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.stock_amount.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant %}
+                            <span class="form-control-plaintext">
+                                {{ product.parent.stock_amount }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+            <legend>{% trans "Delivery" %}</legend>
+
+            <div class="field mb-3">
+                <div class="form-check">
+                    {{ form.deliverable }}
+                    <label for="{{ form.deliverable.id_for_label }}" class="form-check-label">
+                        {{ form.deliverable.label }}
+                    </label>
+                </div>
+                {% if form.deliverable.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.deliverable.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="field mb-3">
+                <div class="form-check">
+                    {{ form.manual_delivery_time }}
+                    <label for="{{ form.manual_delivery_time.id_for_label }}" class="form-check-label">
+                        {{ form.manual_delivery_time.label }}
+                    </label>
+                </div>
+                {% if form.manual_delivery_time.errors %}
+                    <div class="invalid-feedback d-block">
+                        {{ form.manual_delivery_time.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="field mb-3">
+                <label for="{{ form.delivery_time.id_for_label }}" class="form-label">
+                    {{ form.delivery_time.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.delivery_time }}
+                        {% if form.delivery_time.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.delivery_time.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant %}
+                            <span class="form-control-plaintext">
+                                {{ product.parent.delivery_time }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="field mb-3">
+                <label for="{{ form.order_time.id_for_label }}" class="form-label">
+                    {{ form.order_time.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.order_time }}
+                        {% if form.order_time.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.order_time.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant %}
+                            <span class="form-control-plaintext">
+                                {{ product.parent.order_time }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="field mb-3">
+                <label for="{{ form.ordered_at.id_for_label }}" class="form-label">
+                    {{ form.ordered_at.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.ordered_at }}
+                        {% if form.ordered_at.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.ordered_at.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant %}
+                            <span class="form-control-plaintext">
+                                {{ product.parent.ordered_at|date:"d.m.Y" }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="mb-4 border border-dark rounded-2 px-3 py-1">
+            <legend>{% trans "Packing" %}</legend>
+
+            <div class="field mb-3">
+                <label for="{{ form.active_packing_unit.id_for_label }}" class="form-label">
+                    {{ form.active_packing_unit.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.active_packing_unit }}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant %}
+                            <span class="form-control-plaintext">
+                                {% if product.parent.active_packing_unit %}
+                                    {% trans 'Yes' %}
+                                {% else %}
+                                    {% trans 'No' %}
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="field mb-3">
+                <label for="{{ form.packing_unit.id_for_label }}" class="form-label">
+                    {{ form.packing_unit.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.packing_unit }}
+                        {% if form.packing_unit.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.packing_unit.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant %}
+                            <span class="form-control-plaintext">
+                                {{ product.parent.packing_unit }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="field mb-3">
+                <label for="{{ form.packing_unit_unit.id_for_label }}" class="form-label">
+                    {{ form.packing_unit_unit.label }}
+                </label>
+                <div class="row">
+                    <div class="col-md-8">
+                        {{ form.packing_unit_unit }}
+                        {% if form.packing_unit_unit.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ form.packing_unit_unit.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-4">
+                        {% if product.is_variant %}
+                            <span class="form-control-plaintext">
+                                {{ product.parent.packing_unit_unit }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
         <div class="mt-3">
             <button type="submit" class="btn btn-primary">
                 <i class="bi bi-save"></i>
@@ -15,5 +324,11 @@
             </button>
         </div>
     </form>
+
+    {% if product.is_variant %}
+        <div class="alert alert-info mt-3">
+            {% trans "You are editing a variant of a product." %}
+        </div>
+    {% endif %}
 </div>
 

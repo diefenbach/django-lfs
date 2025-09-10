@@ -81,6 +81,15 @@ class ProductTabMixin:
                 ("properties", reverse("lfs_manage_product_properties", args=[product.pk])),
                 ("accessories", reverse("lfs_manage_product_accessories", args=[product.pk])),
                 ("related", reverse("lfs_manage_product_related", args=[product.pk])),
+            ]
+        )
+
+        # Only show bulk prices tab if price calculator is set to bulk prices
+        if product.price_calculator == "lfs_bulk_prices.calculator.BulkPricesCalculator":
+            tabs.append(("bulk_prices", reverse("lfs_manage_product_bulk_prices", args=[product.pk])))
+
+        tabs.extend(
+            [
                 ("stock", reverse("lfs_manage_product_stock", args=[product.pk])),
                 ("seo", reverse("lfs_manage_product_seo", args=[product.pk])),
                 ("portlets", reverse("lfs_manage_product_portlets", args=[product.pk])),
