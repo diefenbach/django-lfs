@@ -42,7 +42,7 @@
                                     {% endif %}
                                 </a>
                                 {% if p.is_product_with_variants and p.variants.count > 0 %}
-                                    <div class="collapse" id="variants-{{ p.id }}">
+                                    <div class="collapse{% for variant in p.variants.all %}{% if variant.id == product.id %} show{% endif %}{% endfor %}" id="variants-{{ p.id }}">
                                         {% for variant in p.variants.all %}
                                             <a class="list-group-item list-group-item-action d-flex align-items-center ps-4 text-muted small border-0 {% if variant.id == product.id %}bg-primary text-white{% endif %}"
                                                href="{% url 'lfs_manage_product_data' variant.id %}?q={{ search_query }}">
