@@ -1,0 +1,246 @@
+{% load i18n crispy_forms_tags %}
+
+<div class="row">
+    <div class="col-12">
+        <h4>{% trans 'Property Groups' %}</h4>
+
+        {% if not shop_property_groups %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i>
+                {% trans "There are no property groups yet." %}
+            </div>
+        {% else %}
+            <form action="{% url 'lfs_update_product_property_groups' product.id %}" method="post" class="mb-4">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="selected-property-groups" class="form-label">{% trans 'Select Property Groups' %}</label>
+                    <select id="selected-property-groups"
+                            name="selected-property-groups"
+                            class="form-select"
+                            multiple="multiple"
+                            size="5">
+                        {% for property_group in shop_property_groups %}
+                            <option value="{{ property_group.id }}"
+                                    {% if property_group.selected %}selected="selected"{% endif %}>
+                                {{ property_group.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text">{% trans 'Hold Ctrl/Cmd to select multiple groups' %}</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-1"></i>
+                    {% trans 'Update property groups' %}
+                </button>
+            </form>
+
+            {% if display_configurables %}
+                <form action="{% url 'lfs_update_product_properties' product.id %}" method="post" class="mb-4">
+                    {% csrf_token %}
+                    <h5 class="border-bottom pb-2 mb-3">{% trans 'Default values' %}</h5>
+
+                    {% for property_group in configurables %}
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <a href="{% url 'lfs_manage_property_group' property_group.id %}" class="text-decoration-none">
+                                        {{ property_group.name }}
+                                    </a>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                {% for property in property_group.properties %}
+                                    <div class="mb-3">
+                                        {% if property.display_text_field or property.display_number_field %}
+                                            <label for="property-{{ property_group.id }}-{{ property.id }}" class="form-label">
+                                                <a href="{% url 'lfs_manage_shop_property' property.id %}" class="text-decoration-none">
+                                                    {{ property.title }}:
+                                                </a>
+                                            </label>
+                                            <input type="text"
+                                                   id="property-{{ property_group.id }}-{{ property.id }}"
+                                                   name="property-{{ property_group.id }}-{{ property.id }}"
+                                                   value="{{ property.value }}"
+                                                   class="form-control" />
+                                        {% endif %}
+                                        {% if property.display_select_field %}
+                                            <label for="property-{{ property_group.id }}-{{ property.id }}" class="form-label">
+                                                {{ property.title }}:
+                                            </label>
+                                            <select id="property-{{ property_group.id }}-{{ property.id }}"
+                                                    name="property-{{ property_group.id }}-{{ property.id }}"
+                                                    class="form-select">
+                                                <option value="">-----</option>
+                                                {% for option in property.options %}
+                                                    <option value="{{ option.id }}"
+                                                            {% if option.selected %}selected="selected"{% endif %}>
+                                                        {{ option.name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <input type="hidden" name="type" value="1" />
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save me-1"></i>
+                        {% trans 'Update default values' %}
+                    </button>
+                </form>
+            {% endif %}
+
+            {% if display_filterables %}
+                <form action="{% url 'lfs_update_product_properties' product.id %}" method="post" class="mb-4">
+                    {% csrf_token %}
+                    <h5 class="border-bottom pb-2 mb-3">{% trans "Filter values" %}</h5>
+                    {% for property_group in filterables %}
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <a href="{% url 'lfs_manage_property_group' property_group.id %}" class="text-decoration-none">
+                                        {{ property_group.name }}
+                                    </a>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                {% for property in property_group.properties %}
+                                    <div class="mb-3">
+                                        {% if property.display_text_field or property.display_number_field %}
+                                            <label for="filter-property-{{ property_group.id }}-{{ property.id }}" class="form-label">
+                                                <a href="{% url 'lfs_manage_shop_property' property.id %}" class="text-decoration-none">
+                                                    {{ property.title }}:
+                                                </a>
+                                            </label>
+                                            <input type="text"
+                                                   id="filter-property-{{ property_group.id }}-{{ property.id }}"
+                                                   name="property-{{ property_group.id }}-{{ property.id }}"
+                                                   value="{{ property.value }}"
+                                                   class="form-control" />
+                                        {% endif %}
+                                        {% if property.display_select_field %}
+                                            <label for="filter-property-{{ property_group.id }}-{{ property.id }}" class="form-label">
+                                                <a href="{% url 'lfs_manage_shop_property' property.id %}" class="text-decoration-none">
+                                                    {{ property.title }}:
+                                                </a>
+                                            </label>
+                                            <select id="filter-property-{{ property_group.id }}-{{ property.id }}"
+                                                    name="property-{{ property_group.id }}-{{ property.id }}"
+                                                    class="form-select"
+                                                    multiple="multiple">
+                                                {% for option in property.options %}
+                                                    <option value="{{ option.id }}"
+                                                            {% if option.selected %}selected="selected"{% endif %}>
+                                                        {{ option.name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <input type="hidden" name="type" value="0" />
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save me-1"></i>
+                        {% trans 'Update filter values' %}
+                    </button>
+                </form>
+            {% endif %}
+
+            {% if display_displayables %}
+                <form action="{% url 'lfs_update_product_properties' product.id %}" method="post" class="mb-4">
+                    {% csrf_token %}
+                    <h5 class="border-bottom pb-2 mb-3">{% trans "Displayed values" %}</h5>
+                    {% for property_group in displayables %}
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0">
+                                    <a href="{% url 'lfs_manage_property_group' property_group.id %}" class="text-decoration-none">
+                                        {{ property_group.name }}
+                                    </a>
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                {% for property in property_group.properties %}
+                                    <div class="mb-3">
+                                        {% if property.display_text_field or property.display_number_field %}
+                                            <label for="display-property-{{ property_group.id }}-{{ property.id }}" class="form-label">
+                                                <a href="{% url 'lfs_manage_shop_property' property.id %}" class="text-decoration-none">
+                                                    {{ property.title }}:
+                                                </a>
+                                            </label>
+                                            <input type="text"
+                                                   id="display-property-{{ property_group.id }}-{{ property.id }}"
+                                                   name="property-{{ property_group.id }}-{{ property.id }}"
+                                                   value="{{ property.value }}"
+                                                   class="form-control" />
+                                        {% endif %}
+                                        {% if property.display_select_field %}
+                                            <label for="display-property-{{ property_group.id }}-{{ property.id }}" class="form-label">
+                                                {{ property.title }}:
+                                            </label>
+                                            <select id="display-property-{{ property_group.id }}-{{ property.id }}"
+                                                    name="property-{{ property_group.id }}-{{ property.id }}"
+                                                    class="form-select"
+                                                    multiple="multiple">
+                                                {% for option in property.options %}
+                                                    <option value="{{ option.id }}"
+                                                            {% if option.selected %}selected="selected"{% endif %}>
+                                                        {{ option.name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <input type="hidden" name="type" value="2" />
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save me-1"></i>
+                        {% trans 'Update displayed values' %}
+                    </button>
+                </form>
+            {% endif %}
+        {% endif %}
+
+        {% if product_variant_properties %}
+            <h5 class="border-bottom pb-2 mb-3">{% trans "Variant properties" %}</h5>
+            {% for property_group in product_variant_properties %}
+                <div class="card mb-3">
+                    {% if property_group.property_group_name %}
+                        <div class="card-header">
+                            <h6 class="mb-0">{{ property_group.property_group_name }}</h6>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        {% for property_option in property_group.properties %}
+                            <div class="mb-2">
+                                <strong>{{ property_option.property.title }}</strong>: {{ property_option.name }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if shop_property_groups and product.is_product_with_variants %}
+            <div class="alert alert-info">
+                <h5 class="alert-heading">{% trans "Property values" %}</h5>
+                {% trans "Please go to the variants to assign property values." %}
+            </div>
+        {% endif %}
+    </div>
+</div>

@@ -284,7 +284,7 @@ def update_property_groups(request, product_id):
 
     update_product_cache(product)
 
-    url = reverse("lfs_manage_product", kwargs={"product_id": product_id})
+    url = reverse("lfs_manage_product_properties", kwargs={"id": product_id})
     return HttpResponseRedirect(url)
 
 
@@ -316,5 +316,5 @@ def update_properties(request, product_id):
                 )
     update_product_cache(product)
 
-    url = reverse("lfs_manage_product", kwargs={"product_id": product_id})
+    url = reverse("lfs_manage_product_properties", kwargs={"id": product_id})
     return HttpResponseRedirect(url)

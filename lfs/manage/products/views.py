@@ -21,6 +21,12 @@ from lfs.catalog.models import (
 )
 from lfs.catalog.settings import VARIANT as PRODUCT_VARIANT
 from lfs.catalog.settings import PROPERTY_VALUE_TYPE_VARIANT, PROPERTY_VALUE_TYPE_FILTER, PROPERTY_SELECT_FIELD
+from lfs.catalog.settings import (
+    PROPERTY_NUMBER_FIELD,
+    PROPERTY_TEXT_FIELD,
+    PROPERTY_VALUE_TYPE_DEFAULT,
+    PROPERTY_VALUE_TYPE_DISPLAY,
+)
 from lfs.manage.portlets.views import PortletsInlineView
 
 from .product import (
@@ -74,6 +80,7 @@ class ProductTabMixin:
             tabs.append(("variants", reverse("lfs_manage_product_variants", args=[product.pk])))
         tabs.extend(
             [
+                ("properties", reverse("lfs_manage_product_properties", args=[product.pk])),
                 ("accessories", reverse("lfs_manage_product_accessories", args=[product.pk])),
                 ("related", reverse("lfs_manage_product_related", args=[product.pk])),
                 ("stock", reverse("lfs_manage_product_stock", args=[product.pk])),
@@ -1093,6 +1100,255 @@ class ProductRelatedProductsView(PermissionRequiredMixin, ProductTabMixin, Templ
                 "page_sizes": [10, 25, 50, 100],
                 "available_page": available_page,
                 "available_paginator": paginator,
+            }
+        )
+        return ctx
+
+
+class ProductPropertiesView(PermissionRequiredMixin, ProductTabMixin, TemplateView):
+    """Properties tab for a Product."""
+
+    tab_name = "properties"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        ctx = super().get_context_data(**kwargs)
+        product = self.get_product()
+
+        # Generate lists of properties. For entering values.
+        display_configurables = False
+        display_filterables = False
+        display_displayables = False
+        configurables = []
+        filterables = []
+        displayables = []
+        product_variant_properties = []
+
+        # Configurable
+        if not product.is_product_with_variants():
+            for property_group in product.property_groups.all():
+                properties = []
+                for prop in property_group.properties.filter(configurable=True).order_by("groupspropertiesrelation"):
+                    display_configurables = True
+
+                    try:
+                        ppv = ProductPropertyValue.objects.get(
+                            property=prop,
+                            property_group=property_group,
+                            product=product,
+                            type=PROPERTY_VALUE_TYPE_DEFAULT,
+                        )
+                    except ProductPropertyValue.DoesNotExist:
+                        ppv_value = ""
+                    else:
+                        ppv_value = ppv.value
+
+                    # Mark selected options
+                    options = []
+                    for option in prop.options.all():
+                        if str(option.id) == ppv_value:
+                            selected = True
+                        else:
+                            selected = False
+
+                        options.append(
+                            {
+                                "id": option.id,
+                                "name": option.name,
+                                "selected": selected,
+                            }
+                        )
+
+                    properties.append(
+                        {
+                            "id": prop.id,
+                            "name": prop.name,
+                            "title": prop.title,
+                            "type": prop.type,
+                            "options": options,
+                            "display_number_field": prop.type == PROPERTY_NUMBER_FIELD,
+                            "display_text_field": prop.type == PROPERTY_TEXT_FIELD,
+                            "display_select_field": prop.type == PROPERTY_SELECT_FIELD,
+                            "value": ppv_value,
+                        }
+                    )
+
+                if properties:
+                    configurables.append(
+                        {
+                            "id": property_group.id,
+                            "name": property_group.name,
+                            "properties": properties,
+                        }
+                    )
+
+            # Filterable
+            for property_group in product.property_groups.all():
+                properties = []
+                for prop in property_group.properties.filter(filterable=True).order_by("groupspropertiesrelation"):
+                    display_filterables = True
+
+                    # Try to get the value, if it already exists.
+                    ppvs = ProductPropertyValue.objects.filter(
+                        property=prop, property_group=property_group, product=product, type=PROPERTY_VALUE_TYPE_FILTER
+                    )
+                    value_ids = [p.value for p in ppvs]
+
+                    # Mark selected options
+                    options = []
+                    for option in prop.options.all():
+                        if str(option.id) in value_ids:
+                            selected = True
+                        else:
+                            selected = False
+
+                        options.append(
+                            {
+                                "id": option.id,
+                                "name": option.name,
+                                "selected": selected,
+                            }
+                        )
+
+                    value = ""
+                    if prop.type == PROPERTY_SELECT_FIELD:
+                        display_select_field = True
+                    else:
+                        display_select_field = False
+                        try:
+                            value = value_ids[0]
+                        except IndexError:
+                            pass
+
+                    properties.append(
+                        {
+                            "id": prop.id,
+                            "name": prop.name,
+                            "title": prop.title,
+                            "type": prop.type,
+                            "options": options,
+                            "value": value,
+                            "display_on_product": prop.display_on_product,
+                            "display_number_field": prop.type == PROPERTY_NUMBER_FIELD,
+                            "display_text_field": prop.type == PROPERTY_TEXT_FIELD,
+                            "display_select_field": display_select_field,
+                        }
+                    )
+                if properties:
+                    filterables.append(
+                        {
+                            "id": property_group.id,
+                            "name": property_group.name,
+                            "properties": properties,
+                        }
+                    )
+
+            # Displayable
+            for property_group in product.property_groups.all():
+                properties = []
+                for prop in property_group.properties.filter(display_on_product=True).order_by(
+                    "groupspropertiesrelation"
+                ):
+                    display_displayables = True
+
+                    # Try to get the value, if it already exists.
+                    ppvs = ProductPropertyValue.objects.filter(
+                        property=prop, property_group=property_group, product=product, type=PROPERTY_VALUE_TYPE_DISPLAY
+                    )
+                    value_ids = [p.value for p in ppvs]
+
+                    # Mark selected options
+                    options = []
+                    for option in prop.options.all():
+                        if str(option.id) in value_ids:
+                            selected = True
+                        else:
+                            selected = False
+
+                        options.append(
+                            {
+                                "id": option.id,
+                                "name": option.name,
+                                "selected": selected,
+                            }
+                        )
+
+                    value = ""
+                    if prop.type == PROPERTY_SELECT_FIELD:
+                        display_select_field = True
+                    else:
+                        display_select_field = False
+                        try:
+                            value = value_ids[0]
+                        except IndexError:
+                            pass
+
+                    properties.append(
+                        {
+                            "id": prop.id,
+                            "name": prop.name,
+                            "title": prop.title,
+                            "type": prop.type,
+                            "options": options,
+                            "value": value,
+                            "filterable": prop.filterable,
+                            "display_number_field": prop.type == PROPERTY_NUMBER_FIELD,
+                            "display_text_field": prop.type == PROPERTY_TEXT_FIELD,
+                            "display_select_field": display_select_field,
+                        }
+                    )
+
+                if properties:
+                    displayables.append(
+                        {
+                            "id": property_group.id,
+                            "name": property_group.name,
+                            "properties": properties,
+                        }
+                    )
+
+        if product.is_variant():
+            product_variant_properties_dict = {}
+            qs = ProductPropertyValue.objects.filter(product=product, type=PROPERTY_VALUE_TYPE_VARIANT)
+            for ppv in qs:
+                try:
+                    property_option = PropertyOption.objects.get(property_id=ppv.property_id, pk=ppv.value)
+                    property_group_name = ppv.property_group.name if ppv.property_group_id else ""
+                    group_dict = product_variant_properties_dict.setdefault(
+                        ppv.property_group_id or 0, {"property_group_name": property_group_name, "properties": []}
+                    )
+                    group_dict["properties"].append(property_option)
+                except (ProductPropertyValue.DoesNotExist, PropertyOption.DoesNotExist):
+                    continue
+
+            groups = product_variant_properties_dict.values()
+            sorted_groups = sorted(groups, key=lambda group: group["property_group_name"])
+            for group in sorted_groups:
+                product_variant_properties.append(group)
+
+        # Generate list of all property groups; used for group selection
+        product_property_group_ids = [p.id for p in product.property_groups.all()]
+        shop_property_groups = []
+        for property_group in PropertyGroup.objects.all():
+            shop_property_groups.append(
+                {
+                    "id": property_group.id,
+                    "name": property_group.name,
+                    "selected": property_group.id in product_property_group_ids,
+                }
+            )
+
+        ctx.update(
+            {
+                "filterables": filterables,
+                "display_filterables": display_filterables,
+                "configurables": configurables,
+                "display_configurables": display_configurables,
+                "displayables": displayables,
+                "display_displayables": display_displayables,
+                "product_property_groups": product.property_groups.all(),
+                "shop_property_groups": shop_property_groups,
+                "product_variant_properties": product_variant_properties,
             }
         )
         return ctx
