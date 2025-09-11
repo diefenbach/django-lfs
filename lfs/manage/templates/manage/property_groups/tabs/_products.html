@@ -1,0 +1,81 @@
+{% load i18n static %}
+<div class="tab-pane {% if active_tab == 'products' %}show active{% endif %}" 
+     id="products-content" 
+     role="tabpanel" 
+     aria-labelledby="products-tab">
+     {% load i18n static %}
+
+     <div class="lfs-property-group-products" data-property-group-id="{{ property_group.id }}">
+        <!-- Filters -->
+        <div class="row">
+            <div class="col-md-4">
+                <!-- Search Filter -->
+                <label for="product-search" class="form-label">{% trans 'Search Products' %}</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="search"
+                            id="product-search"
+                            class="form-control"
+                            placeholder="{% trans 'Search products...' %}"
+                            name="filter"
+                            value="{{ filter }}"
+                            hx-get="{% url 'lfs_manage_property_group_products' property_group.id %}"
+                            hx-target="#products-content"
+                            hx-select="#products-content"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-swap="outerHTML"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search products' %}">
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <!-- Category Filter -->
+                <label for="category-filter" class="form-label">{% trans 'Category' %}</label>
+                <select id="category-filter"
+                        class="form-select"
+                        name="products_category_filter"
+                        hx-get="{% url 'lfs_manage_property_group_products' property_group.id %}"
+                        hx-target="#products-content"
+                        hx-select="#products-content"
+                        hx-swap="outerHTML"
+                        hx-trigger="change"
+                        hx-include="this">
+                    <option value="All">{% trans "All Categories" %}</option>
+                    <option value="None" {% if category_filter == "None" %}selected{% endif %}>{% trans "No Category" %}</option>
+                    <!-- Add category options here if needed -->
+                </select>
+            </div>
+            
+            <div class="col-md-4">
+                <!-- Amount per page -->
+                <label for="amount-filter" class="form-label">{% trans 'Products per Page' %}</label>
+                <select id="amount-filter"
+                        class="form-select"
+                        name="products-amount"
+                        hx-get="{% url 'lfs_manage_property_group_products' property_group.id %}"
+                        hx-target="#products-content"
+                        hx-select="#products-content"
+                        hx-swap="outerHTML"
+                        hx-trigger="change"
+                        hx-include="this">
+                    <option value="25" selected>25 {% trans "per page" %}</option>
+                    <option value="50">50 {% trans "per page" %}</option>
+                    <option value="100">100 {% trans "per page" %}</option>
+                </select>
+            </div>
+        </div>
+     
+         <!-- Products Lists -->
+         <div class="row mt-4" id="products-tables">
+             <div class="col-6">
+                 {% include "manage/property_groups/tabs/_available_products.html" %}
+             </div>
+     
+             <div class="col-6">
+                 {% include "manage/property_groups/tabs/_assigned_products.html" %}
+             </div>
+         </div>
+     </div>         
+</div>

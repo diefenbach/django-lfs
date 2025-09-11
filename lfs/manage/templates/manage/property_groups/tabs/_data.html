@@ -1,0 +1,16 @@
+{% load i18n crispy_forms_tags %}
+<div class="tab-pane {% if active_tab == 'data' %}show active{% endif %}" 
+     id="data-content" 
+     role="tabpanel" 
+     aria-labelledby="data-tab">
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}                
+        <div class="buttons mt-3">
+            <button class="btn btn-primary" type="submit">
+                <i class="bi bi-save me-1"></i>
+                {% trans 'Save property group' %}
+            </button>
+        </div>
+    </form>
+</div>

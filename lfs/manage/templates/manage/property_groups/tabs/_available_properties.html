@@ -1,0 +1,81 @@
+{% load i18n static %}
+
+<!-- Available Properties Form -->
+<form id="add-properties-form"
+      method="post"
+      action="{% url 'lfs_manage_property_group_properties' property_group.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="keep-filters" value="1">
+    
+    <div id="properties-list" class="card shadow" style="height: calc(100vh - 430px);">
+        <div class="card-header bg-primary-subtle">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h4 mb-0">
+                    <i class="bi bi-tags me-2"></i>
+                    {% trans 'Available Properties' %}
+                </h2>
+                <!-- Pagination -->
+                {% if page and page.has_other_pages %}
+                    {% include 'manage/snippets/pagination.html' with page_obj=page url_name='lfs_manage_property_group_properties' url_params=property_group.id page_info_position='beside' %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body overflow-y-auto">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th class="checkbox" style="width: 40px;">
+                                <input type="checkbox" class="form-check-input select-all-properties" />
+                            </th>
+                            <th>{% trans 'Name' %}</th>
+                            <th class="small">{% trans 'Type' %}</th>
+                            <th class="small">{% trans 'Required' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for property in page.object_list %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox"
+                                           name="property-{{ property.id }}"
+                                           value="on"
+                                           class="form-check-input select-property" />
+                                </td>
+                                <td>
+                                    <a href="{% url 'lfs_manage_shop_property' property.id %}" class="text-decoration-none">
+                                        {{ property.name }}
+                                    </a>
+                                </td>
+                                <td class="small text-muted">
+                                    <span class="badge bg-secondary">{{ property.get_type_display }}</span>
+                                </td>
+                                <td class="text-center align-middle">
+                                    {% if property.required %}
+                                        <i class="bi bi-check-circle-fill text-success"></i>
+                                    {% else %}
+                                        <i class="bi bi-x-circle-fill text-muted"></i>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    {% trans "No properties found." %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer" style="min-height: 60px;">
+            {% if page.object_list %}
+                <button type="submit" name="assign_properties" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    {% trans 'Add to Property Group' %}
+                </button>
+            {% endif %}
+        </div>
+    </div>
+</form>

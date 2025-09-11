@@ -1,321 +1,463 @@
 import json
+from typing import Dict, List, Tuple, Any, Optional
 
-from django.contrib.auth.decorators import permission_required
-from django.core.paginator import EmptyPage
-from django.core.paginator import Paginator
-from django.urls import reverse
+from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Q
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_POST
+from django.views.generic import UpdateView, CreateView, DeleteView, RedirectView, TemplateView
 
-import lfs.core.utils
 from lfs.caching.utils import lfs_get_object_or_404
-from lfs.catalog.models import Category
-from lfs.catalog.models import GroupsPropertiesRelation
-from lfs.catalog.models import Product
-from lfs.catalog.models import Property
-from lfs.catalog.models import PropertyGroup
+from lfs.catalog.models import Category, GroupsPropertiesRelation, Product, Property, PropertyGroup
 from lfs.core.utils import LazyEncoder
 from lfs.core.signals import product_removed_property_group
+from lfs.manage.mixins import DirectDeleteMixin
 from lfs.manage.property_groups.forms import PropertyGroupForm
 
 
-@permission_required("core.manage_shop")
-def manage_property_groups(request):
-    """The main view to manage properties."""
-    try:
-        prop = PropertyGroup.objects.all()[0]
-        url = reverse("lfs_manage_property_group", kwargs={"id": prop.id})
-    except IndexError:
-        url = reverse("lfs_manage_no_property_groups")
+class ManagePropertyGroupsView(PermissionRequiredMixin, RedirectView):
+    """Dispatches to the first property group or to the add property group form."""
 
-    return HttpResponseRedirect(url)
+    permission_required = "core.manage_shop"
+
+    def get_redirect_url(self, *args, **kwargs):
+        # Use the same filtering logic as the tab mixin
+        queryset = PropertyGroup.objects.all().order_by("name")
+        search_query = self.request.GET.get("q", "").strip()
+
+        if search_query:
+            queryset = queryset.filter(name__icontains=search_query)
+
+        try:
+            property_group = queryset[0]
+            return reverse("lfs_manage_property_group", kwargs={"id": property_group.id})
+        except IndexError:
+            return reverse("lfs_manage_no_property_groups")
 
 
-@permission_required("core.manage_shop")
-def manage_property_group(request, id, template_name="manage/property_groups/property_group.html"):
-    """Edits property group with given id."""
-    property_group = get_object_or_404(PropertyGroup, pk=id)
-    if request.method == "POST":
-        form = PropertyGroupForm(instance=property_group, data=request.POST)
-        if form.is_valid():
-            form.save()
-            return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_property_group", kwargs={"id": property_group.id}),
-                msg=_("Property group has been saved."),
-            )
-    else:
-        form = PropertyGroupForm(instance=property_group)
+class PropertyGroupTabMixin:
+    """Mixin for tab navigation in PropertyGroup views."""
 
-    return render(
-        request,
-        template_name,
-        {
+    template_name = "manage/property_groups/property_group.html"
+    tab_name: Optional[str] = None
+
+    def get_property_group(self) -> PropertyGroup:
+        """Gets the PropertyGroup object."""
+        return get_object_or_404(PropertyGroup, pk=self.kwargs["id"])
+
+    def get_property_groups_queryset(self):
+        """Returns filtered PropertyGroups based on search parameter."""
+        queryset = PropertyGroup.objects.all().order_by("name")
+        search_query = self.request.GET.get("q", "").strip()
+
+        if search_query:
+            queryset = queryset.filter(name__icontains=search_query)
+
+        return queryset
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with tab navigation and PropertyGroup."""
+        # Ensure object is set before calling super()
+        if not hasattr(self, "object") or self.object is None:
+            self.object = self.get_property_group()
+
+        ctx = super().get_context_data(**kwargs)
+        property_group = self.object
+
+        ctx.update(
+            {
+                "property_group": property_group,
+                "active_tab": self.tab_name,
+                "tabs": self._get_tabs(property_group),
+                **self._get_navigation_context(property_group),
+            }
+        )
+        return ctx
+
+    def _get_tabs(self, property_group: PropertyGroup) -> List[Tuple[str, str]]:
+        """Creates tab navigation URLs with search parameter."""
+        search_query = self.request.GET.get("q", "").strip()
+
+        data_url = reverse("lfs_manage_property_group", args=[property_group.pk])
+        products_url = reverse("lfs_manage_property_group_products", args=[property_group.pk])
+        properties_url = reverse("lfs_manage_property_group_properties", args=[property_group.pk])
+
+        # Add search parameter if present
+        if search_query:
+            from urllib.parse import urlencode
+
+            query_params = urlencode({"q": search_query})
+            data_url += "?" + query_params
+            products_url += "?" + query_params
+            properties_url += "?" + query_params
+
+        tabs = [
+            ("data", data_url),
+            ("products", products_url),
+            ("properties", properties_url),
+        ]
+
+        return tabs
+
+    def _get_navigation_context(self, property_group: PropertyGroup) -> Dict[str, Any]:
+        """Returns navigation context data."""
+        return {
             "property_group": property_group,
-            "property_groups": PropertyGroup.objects.all(),
-            "properties": properties_inline(request, id),
-            "products": products_tab(request, id),
-            "form": form,
-            "current_id": int(id),
-        },
-    )
+            "property_groups": self.get_property_groups_queryset(),
+            "search_query": self.request.GET.get("q", ""),
+        }
 
 
-@permission_required("core.manage_shop")
-def no_property_groups(request, template_name="manage/property_groups/no_property_groups.html"):
-    """Displays that there are no property groups."""
-    return render(request, template_name, {})
+class PropertyGroupDataView(PermissionRequiredMixin, PropertyGroupTabMixin, UpdateView):
+    """View for data tab of a PropertyGroup."""
+
+    model = PropertyGroup
+    form_class = PropertyGroupForm
+    tab_name = "data"
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
+
+    def get_object(self, queryset=None):
+        """Get the PropertyGroup object."""
+        return self.get_property_group()
+
+    def get_success_url(self) -> str:
+        """Stays on the data tab after successful save."""
+        return reverse("lfs_manage_property_group", kwargs={"id": self.object.pk})
+
+    def form_valid(self, form):
+        """Saves and shows success message."""
+        response = super().form_valid(form)
+        messages.success(self.request, _("Property group has been saved."))
+        return response
 
 
-@permission_required("core.manage_shop")
-def properties_inline(request, id, template_name="manage/property_groups/properties_inline.html"):
-    """ """
-    property_group = get_object_or_404(PropertyGroup, pk=id)
+class PropertyGroupProductsView(PermissionRequiredMixin, PropertyGroupTabMixin, TemplateView):
+    """View for products tab of a PropertyGroup."""
 
-    gps = GroupsPropertiesRelation.objects.filter(group=id).select_related("property")
+    tab_name = "products"
+    permission_required = "core.manage_shop"
 
-    # Calculate assignable properties
-    # assigned_property_ids = [p.property.id for p in gps]
-    # assignable_properties = Property.objects.exclude(
-    #    pk__in=assigned_property_ids).exclude(local=True)
+    def get_success_url(self) -> str:
+        """Stays on the products tab."""
+        return reverse("lfs_manage_property_group_products", kwargs={"id": self.kwargs["id"]})
 
-    assignable_properties = Property.objects.exclude(local=True).exclude(groupspropertiesrelation__in=gps)
-    assignable_properties = assignable_properties.order_by("name")
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Handles product operations (assign/remove)."""
+        if "assign_products" in request.POST:
+            return self._handle_assign_products(request)
+        elif "remove_products" in request.POST:
+            return self._handle_remove_products(request)
 
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "property_group": property_group,
-            "properties": assignable_properties,
-            "gps": gps,
-        },
-    )
+        return super().post(request, *args, **kwargs)
 
+    def _handle_assign_products(self, request: HttpRequest) -> HttpResponse:
+        """Handles assigning products to property group."""
+        property_group = self.get_property_group()
 
-@permission_required("core.manage_shop")
-def add_property_group(request, template_name="manage/property_groups/add_property_group.html"):
-    """Adds a new property group"""
-    if request.method == "POST":
-        form = PropertyGroupForm(data=request.POST)
-        if form.is_valid():
-            property_group = form.save()
-            return lfs.core.utils.set_message_cookie(
-                url=reverse("lfs_manage_property_group", kwargs={"id": property_group.id}),
-                msg=_("Property group has been added."),
-            )
-    else:
-        form = PropertyGroupForm()
+        # Get all checked product checkboxes
+        for key, value in request.POST.items():
+            if key.startswith("product-") and value == "on":
+                product_id = key.split("-")[1]
+                # Skip if product_id is empty or not a valid integer
+                if not product_id or not product_id.isdigit():
+                    continue
+                try:
+                    product = Product.objects.get(pk=product_id)
+                    property_group.products.add(product)
+                except Product.DoesNotExist:
+                    pass
 
-    return render(
-        request,
-        template_name,
-        {
-            "form": form,
-            "property_groups": PropertyGroup.objects.all(),
-            "came_from": (request.POST if request.method == "POST" else request.GET).get(
-                "came_from", reverse("lfs_manage_property_groups")
-            ),
-        },
-    )
+        messages.success(self.request, _("Products have been assigned."))
+        return HttpResponseRedirect(self.get_success_url())
 
+    def _handle_remove_products(self, request: HttpRequest) -> HttpResponse:
+        """Handles removing products from property group."""
+        property_group = self.get_property_group()
 
-@permission_required("core.manage_shop")
-@require_POST
-def delete_property_group(request, id):
-    """Deletes the property group with passed id."""
-    property_group = get_object_or_404(PropertyGroup, pk=id)
-    property_group.delete()
+        # Get all checked product checkboxes
+        for key, value in request.POST.items():
+            if key.startswith("product-") and value == "on":
+                product_id = key.split("-")[1]
+                # Skip if product_id is empty or not a valid integer
+                if not product_id or not product_id.isdigit():
+                    continue
+                try:
+                    product = Product.objects.get(pk=product_id)
+                    property_group.products.remove(product)
 
-    return lfs.core.utils.set_message_cookie(
-        url=reverse("lfs_manage_property_groups"),
-        msg=_("Property group has been deleted."),
-    )
+                    # Notify removing
+                    product_removed_property_group.send(sender=property_group, product=product)
+                except Product.DoesNotExist:
+                    pass
 
+        messages.success(self.request, _("Products have been removed."))
+        return HttpResponseRedirect(self.get_success_url())
 
-@permission_required("core.manage_shop")
-def assign_properties(request, group_id):
-    """Assignes given properties (via request body) to passed group id."""
-    for property_id in request.POST.getlist("property-id"):
-        GroupsPropertiesRelation.objects.get_or_create(group_id=group_id, property_id=property_id)
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with products and filters."""
+        ctx = super().get_context_data(**kwargs)
+        property_group = self.get_property_group()
 
-    _udpate_positions(group_id)
+        # Get assigned products
+        group_products = property_group.products.all().select_related("parent")
 
-    html = [["#properties", properties_inline(request, group_id)]]
-    result = json.dumps({"html": html, "message": _("Properties have been assigned.")}, cls=LazyEncoder)
+        # Handle filters
+        r = self.request.POST if self.request.method == "POST" else self.request.GET
+        s = self.request.session
 
-    return HttpResponse(result, content_type="application/json")
+        if r.get("keep-filters") or r.get("page"):
+            page = r.get("page", s.get("property_group_page", 1))
+            filter_ = r.get("filter", s.get("filter"))
+            category_filter = r.get("products_category_filter", s.get("products_category_filter"))
+        else:
+            page = r.get("page", 1)
+            filter_ = r.get("filter")
+            category_filter = r.get("products_category_filter")
 
+        # Save filters in session (convert None to empty string for display)
+        s["property_group_page"] = page
+        s["filter"] = filter_ or ""
+        s["products_category_filter"] = category_filter or ""
 
-@permission_required("core.manage_shop")
-def update_properties(request, group_id):
-    """Update or Removes given properties (via request body) from passed group id."""
-    if request.POST.get("action") == "remove":
-        for property_id in request.POST.getlist("property-id"):
-            try:
-                gp = GroupsPropertiesRelation.objects.get(group=group_id, property=property_id)
-            except GroupsPropertiesRelation.DoesNotExist:
+        # Apply filters
+        filters = Q()
+        if filter_:
+            filters &= Q(name__icontains=filter_)
+
+        if category_filter:
+            if category_filter == "None":
+                filters &= Q(categories=None)
+            elif category_filter == "All":
                 pass
             else:
-                gp.delete()
+                category = lfs_get_object_or_404(Category, pk=category_filter)
+                categories = [category]
+                categories.extend(category.get_all_children())
+                filters &= Q(categories__in=categories)
 
-        message = _("Properties have been removed.")
+        # Get available products (excluding already assigned)
+        products = Product.objects.select_related("parent").filter(filters)
+        paginator = Paginator(products.exclude(pk__in=group_products), 25)
 
-    else:
-        message = _("There are no properties to update.")
-        for gp in GroupsPropertiesRelation.objects.filter(group=group_id):
+        try:
+            page_obj = paginator.page(page)
+        except EmptyPage:
+            page_obj = 0
+
+        # Get all categories for filter dropdown in hierarchical structure
+        categories = self._build_hierarchical_categories()
+
+        ctx.update(
+            {
+                "group_products": group_products,
+                "page": page_obj,
+                "paginator": paginator,
+                "filter": filter_ or "",
+                "category_filter": category_filter or "",
+                "categories": categories,
+            }
+        )
+        return ctx
+
+    def _build_hierarchical_categories(self):
+        """Build a hierarchical list of categories with proper indentation."""
+        categories = []
+
+        def _add_category_with_children(category, level=0):
+            """Recursively add category and its children with proper indentation."""
+            # Create a simple object that mimics the Category model but with indented name
+            indent = "&nbsp;" * 5 * level
+            category_with_indent = type(
+                "CategoryWithIndent",
+                (),
+                {"id": category.id, "name": f"{indent}{category.name}", "level": level, "category": category},
+            )()
+            categories.append(category_with_indent)
+
+            # Add children recursively
+            children = category.get_children().order_by("name")
+            for child in children:
+                _add_category_with_children(child, level + 1)
+
+        # Start with top-level categories (no parent)
+        top_level_categories = Category.objects.filter(parent=None).order_by("name")
+        for category in top_level_categories:
+            _add_category_with_children(category)
+
+        return categories
+
+
+class PropertyGroupPropertiesView(PermissionRequiredMixin, PropertyGroupTabMixin, TemplateView):
+    """View for properties tab of a PropertyGroup."""
+
+    tab_name = "properties"
+    permission_required = "core.manage_shop"
+
+    def get_success_url(self) -> str:
+        """Stays on the properties tab."""
+        return reverse("lfs_manage_property_group_properties", kwargs={"id": self.kwargs["id"]})
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Handles property operations (assign/update/remove)."""
+        if "assign_properties" in request.POST:
+            return self._handle_assign_properties(request)
+        elif "update_properties" in request.POST:
+            return self._handle_update_properties(request)
+        elif "remove_properties" in request.POST:
+            return self._handle_remove_properties(request)
+
+        return super().post(request, *args, **kwargs)
+
+    def _handle_assign_properties(self, request: HttpRequest) -> HttpResponse:
+        """Handles assigning properties to property group."""
+        property_group = self.get_property_group()
+
+        for temp_id in request.POST.keys():
+            if temp_id.startswith("property"):
+                property_id = temp_id.split("-")[1]
+                GroupsPropertiesRelation.objects.get_or_create(group_id=property_group.id, property_id=property_id)
+
+        _udpate_positions(property_group.id)
+        messages.success(self.request, _("Properties have been assigned."))
+        return HttpResponseRedirect(self.get_success_url())
+
+    def _handle_update_properties(self, request: HttpRequest) -> HttpResponse:
+        """Handles updating property positions."""
+        property_group = self.get_property_group()
+
+        for gp in GroupsPropertiesRelation.objects.filter(group=property_group.id):
             position = request.POST.get("position-%s" % gp.property.id, 999)
             gp.position = int(position)
             gp.save()
-            message = _("Properties have been updated.")
 
-    _udpate_positions(group_id)
+        _udpate_positions(property_group.id)
+        messages.success(self.request, _("Properties have been updated."))
+        return HttpResponseRedirect(self.get_success_url())
 
-    html = [["#properties", properties_inline(request, group_id)]]
-    result = json.dumps({"html": html, "message": message}, cls=LazyEncoder)
+    def _handle_remove_properties(self, request: HttpRequest) -> HttpResponse:
+        """Handles removing properties from property group."""
+        property_group = self.get_property_group()
 
-    return HttpResponse(result, content_type="application/json")
+        # Get all checked property checkboxes
+        for key, value in request.POST.items():
+            if key.startswith("property-") and value == "on":
+                property_id = key.split("-")[1]
+                # Skip if property_id is empty or not a valid integer
+                if not property_id or not property_id.isdigit():
+                    continue
+                try:
+                    gp = GroupsPropertiesRelation.objects.get(group=property_group.id, property=property_id)
+                    gp.delete()
+                except GroupsPropertiesRelation.DoesNotExist:
+                    pass
 
+        _udpate_positions(property_group.id)
+        messages.success(self.request, _("Properties have been removed."))
+        return HttpResponseRedirect(self.get_success_url())
 
-# Product tab
-@permission_required("core.manage_shop")
-def products_tab(request, product_group_id, template_name="manage/property_groups/products.html"):
-    """Renders the products tab of the property groups management views."""
-    property_group = PropertyGroup.objects.get(pk=product_group_id)
-    inline = products_inline(request, product_group_id, as_string=True)
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with properties."""
+        ctx = super().get_context_data(**kwargs)
+        property_group = self.get_property_group()
 
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "property_group": property_group,
-            "products_inline": inline,
-        },
-    )
+        # Get filters from request
+        filter_value = self.request.GET.get("filter", "")
+        type_filter = self.request.GET.get("properties_type_filter", "All")
+        amount = int(self.request.GET.get("properties-amount", 25))
 
+        gps = GroupsPropertiesRelation.objects.filter(group=property_group.id).select_related("property")
+        group_properties = gps
 
-@permission_required("core.manage_shop")
-def products_inline(
-    request, product_group_id, as_string=False, template_name="manage/property_groups/products_inline.html"
-):
-    """Renders the products tab of the property groups management views."""
-    property_group = PropertyGroup.objects.get(pk=product_group_id)
-    group_products = property_group.products.all().select_related("parent")
+        # Calculate assignable properties with filters
+        assignable_properties = Property.objects.exclude(local=True).exclude(groupspropertiesrelation__in=gps)
 
-    r = request.POST if request.method == "POST" else request.GET
-    s = request.session
+        # Apply search filter
+        if filter_value:
+            assignable_properties = assignable_properties.filter(name__icontains=filter_value)
 
-    # If we get the parameter ``keep-filters`` or ``page`` we take the
-    # filters out of the request resp. session. The request takes precedence.
-    # The page parameter is given if the user clicks on the next/previous page
-    # links. The ``keep-filters`` parameters is given is the users adds/removes
-    # products. In this way we keeps the current filters when we needed to. If
-    # the whole page is reloaded there is no ``keep-filters`` or ``page`` and
-    # all filters are reset as they should.
+        # Apply type filter
+        if type_filter != "All":
+            assignable_properties = assignable_properties.filter(type=type_filter)
 
-    if r.get("keep-filters") or r.get("page"):
-        page = r.get("page", s.get("property_group_page", 1))
-        filter_ = r.get("filter", s.get("filter"))
-        category_filter = r.get("products_category_filter", s.get("products_category_filter"))
-    else:
-        page = r.get("page", 1)
-        filter_ = r.get("filter")
-        category_filter = r.get("products_category_filter")
+        assignable_properties = assignable_properties.order_by("name")
 
-    # The current filters are saved in any case for later use.
-    s["property_group_page"] = page
-    s["filter"] = filter_
-    s["products_category_filter"] = category_filter
+        # Pagination
+        paginator = Paginator(assignable_properties, amount)
+        page_number = self.request.GET.get("page", 1)
+        page = paginator.get_page(page_number)
 
-    filters = Q()
-    if filter_:
-        filters &= Q(name__icontains=filter_)
-    if category_filter:
-        if category_filter == "None":
-            filters &= Q(categories=None)
-        elif category_filter == "All":
-            pass
-        else:
-            # First we collect all sub categories and using the `in` operator
-            category = lfs_get_object_or_404(Category, pk=category_filter)
-            categories = [category]
-            categories.extend(category.get_all_children())
-
-            filters &= Q(categories__in=categories)
-
-    products = Product.objects.select_related("parent").filter(filters)
-    paginator = Paginator(products.exclude(pk__in=group_products), 25)
-
-    try:
-        page = paginator.page(page)
-    except EmptyPage:
-        page = 0
-
-    result = render_to_string(
-        template_name,
-        request=request,
-        context={
-            "property_group": property_group,
-            "group_products": group_products,
-            "page": page,
-            "paginator": paginator,
-            "filter": filter_,
-        },
-    )
-
-    if as_string:
-        return result
-    else:
-        return HttpResponse(
-            json.dumps(
-                {
-                    "html": [["#products-inline", result]],
-                }
-            ),
-            content_type="application/json",
+        ctx.update(
+            {
+                "property_group": property_group,
+                "properties": assignable_properties,
+                "gps": gps,
+                "group_properties": group_properties,
+                "page": page,
+                "filter": filter_value,
+                "type_filter": type_filter,
+            }
         )
+        return ctx
 
 
-@permission_required("core.manage_shop")
-def assign_products(request, group_id):
-    """Assign products to given property group with given property_group_id."""
-    property_group = lfs_get_object_or_404(PropertyGroup, pk=group_id)
+class NoPropertyGroupsView(PermissionRequiredMixin, TemplateView):
+    """Displays that there are no property groups."""
 
-    for temp_id in request.POST.keys():
-        if temp_id.startswith("product"):
-            temp_id = temp_id.split("-")[1]
-            product = Product.objects.get(pk=temp_id)
-            property_group.products.add(product)
-
-    html = [["#products-inline", products_inline(request, group_id, as_string=True)]]
-    result = json.dumps({"html": html, "message": _("Products have been assigned.")}, cls=LazyEncoder)
-
-    return HttpResponse(result, content_type="application/json")
+    template_name = "manage/property_groups/no_property_groups.html"
+    permission_required = "core.manage_shop"
 
 
-@permission_required("core.manage_shop")
-def remove_products(request, group_id):
-    """Remove products from given property group with given property_group_id."""
-    property_group = lfs_get_object_or_404(PropertyGroup, pk=group_id)
+class PropertyGroupCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateView):
+    """Provides a form to add a new property group."""
 
-    for temp_id in request.POST.keys():
-        if temp_id.startswith("product"):
-            temp_id = temp_id.split("-")[1]
-            product = Product.objects.get(pk=temp_id)
-            property_group.products.remove(product)
+    model = PropertyGroup
+    form_class = PropertyGroupForm
+    template_name = "manage/property_groups/add_property_group.html"
+    permission_required = "core.manage_shop"
+    success_message = _("Property group has been created.")
 
-            # Notify removing
-            product_removed_property_group.send(sender=property_group, product=product)
+    def get_success_url(self):
+        return reverse("lfs_manage_property_group", kwargs={"id": self.object.id})
 
-    html = [["#products-inline", products_inline(request, group_id, as_string=True)]]
-    result = json.dumps({"html": html, "message": _("Products have been removed.")}, cls=LazyEncoder)
+    def get_context_data(self, **kwargs):
+        # CreateView doesn't need object set, but ensure it's None for consistency
+        if not hasattr(self, "object"):
+            self.object = None
 
-    return HttpResponse(result, content_type="application/json")
+        context = super().get_context_data(**kwargs)
+        context["property_groups"] = PropertyGroup.objects.all()
+        context["came_from"] = self.request.GET.get("came_from", reverse("lfs_manage_property_groups"))
+        return context
+
+
+class PropertyGroupDeleteConfirmView(PermissionRequiredMixin, TemplateView):
+    """Provides a modal form to confirm deletion of a property group."""
+
+    template_name = "manage/property_groups/delete_property_group.html"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["property_group"] = get_object_or_404(PropertyGroup, pk=self.kwargs["id"])
+        return context
+
+
+class PropertyGroupDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
+    """Deletes property group with passed id."""
+
+    model = PropertyGroup
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
+    success_message = _("Property group has been deleted.")
+
+    def get_success_url(self):
+        return reverse("lfs_manage_property_groups")
 
 
 def _udpate_positions(group_id):
@@ -325,7 +467,6 @@ def _udpate_positions(group_id):
         gp.save()
 
 
-@permission_required("core.manage_shop")
 def sort_property_groups(request):
     """Sort property groups"""
     property_group_list = request.POST.get("serialized", "").split("&")

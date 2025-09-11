@@ -8,9 +8,9 @@ import lfs.manage.products
 # Removed imports for non-existent product modules
 import lfs.manage.product_taxes.views
 import lfs.manage.property.views
-import lfs.manage.property_groups.views
 import lfs.manage.shipping_methods.views
 from lfs.manage.customers import urls as customers_urls
+from lfs.manage.property_groups import urls as property_groups_urls
 import lfs.manage.views.criteria
 import lfs.manage.views.export
 import lfs.manage.views.payment
@@ -120,60 +120,7 @@ urlpatterns = [
     re_path(r"^delete-global-images$", lfs.manage.images.views.delete_images, name="lfs_manage_delete_images"),
     re_path(r"^add-global-images$", lfs.manage.images.views.add_images, name="lfs_manage_add_global_image"),
     # Property Groups
-    re_path(
-        r"^property-groups", lfs.manage.property_groups.views.manage_property_groups, name="lfs_manage_property_groups"
-    ),
-    re_path(
-        r"^property-group/(?P<id>\d*)",
-        lfs.manage.property_groups.views.manage_property_group,
-        name="lfs_manage_property_group",
-    ),
-    re_path(
-        r"^add-property-group",
-        lfs.manage.property_groups.views.add_property_group,
-        name="lfs_manage_add_property_group",
-    ),
-    re_path(
-        r"^delete-property-group/(?P<id>\d*)",
-        lfs.manage.property_groups.views.delete_property_group,
-        name="lfs_delete_property_group",
-    ),
-    re_path(
-        r"^assign-properties/(?P<group_id>\d*)",
-        lfs.manage.property_groups.views.assign_properties,
-        name="lfs_assign_properties",
-    ),
-    re_path(
-        r"^update-properties/(?P<group_id>\d*)",
-        lfs.manage.property_groups.views.update_properties,
-        name="lfs_update_properties",
-    ),
-    re_path(
-        r"^no-property-groups$",
-        lfs.manage.property_groups.views.no_property_groups,
-        name="lfs_manage_no_property_groups",
-    ),
-    re_path(
-        r"^sort-property-groups$",
-        lfs.manage.property_groups.views.sort_property_groups,
-        name="lfs_manage_sort_property_groups",
-    ),
-    # Property Groups / Products
-    re_path(
-        r"^assign-products-to-property-group/(?P<group_id>\d*)",
-        lfs.manage.property_groups.views.assign_products,
-        name="lfs_assign_products_to_property_group",
-    ),
-    re_path(
-        r"^remove-products-from-property-group/(?P<group_id>\d*)",
-        lfs.manage.property_groups.views.remove_products,
-        name="lfs_pg_remove_products",
-    ),
-    re_path(
-        r"^pg-products-inline/(?P<product_group_id>\d*)",
-        lfs.manage.property_groups.views.products_inline,
-        name="lfs_pg_products_inline",
-    ),
+    path("", include(property_groups_urls)),
     # Shop Properties
     re_path(r"^shop-properties$", lfs.manage.property.views.manage_properties, name="lfs_manage_shop_properties"),
     re_path(r"^shop-property/(?P<id>\d*)", lfs.manage.property.views.manage_property, name="lfs_manage_shop_property"),

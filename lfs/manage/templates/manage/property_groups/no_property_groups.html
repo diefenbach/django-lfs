@@ -1,23 +1,27 @@
 {% extends "manage/manage_base.html" %}
 {% load i18n %}
 
-{% block help_link %}user/management/properties/properties.html{% endblock %}
-
-{% block sextion %}no-property-groups{% endblock %}
-{% block left-slot-wrapper %}{% endblock %}
-
+{% block help_link %}user/management/properties/property_groups.html{% endblock %}
+{% block section %}manage-property-groups{% endblock %}
 {% block content %}
-    <h2>
-        {% trans "Property Groups" %}
-    </h2>
-    <div class="no-content">
-        {% trans "There are no property groups yet." %}
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <div class="text-center">
+            <div class="mb-4">
+                <i class="bi bi-collection display-1 text-muted"></i>
+            </div>
+            <h2 class="h4 mb-3">{% trans "No Property Groups" %}</h2>
+            <p class="text-muted mb-4">
+                {% trans "You haven't created any property groups yet. Property groups help organize product properties and make them easier to manage." %}
+            </p>
+            <button type="button" class="btn btn-primary" 
+                hx-get="{% url 'lfs_manage_add_property_group' %}"
+                hx-target="#modal-body-lg"
+                hx-trigger="click" 
+                hx-swap="innerHTML">
+                <i class="bi bi-plus-circle"></i>
+                {% trans "Create Your First Property Group" %}
+            </button>
+        </div>
     </div>
-    <div class="buttons">
-        <form action="{% url 'lfs_manage_add_property_group' %}">
-            <input type="submit"
-                   class="button"
-                   value="{% trans 'Add Property Group' %}">
-        </form>
-    </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
 {% endblock %}

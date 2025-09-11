@@ -1,0 +1,88 @@
+{% load i18n static %}
+
+<div class="tab-pane {% if active_tab == 'properties' %}show active{% endif %}" 
+     id="properties-content" 
+     role="tabpanel" 
+     aria-labelledby="properties-tab">
+     
+     <div class="lfs-property-group-properties" data-property-group-id="{{ property_group.id }}">
+         <!-- Filters -->
+         <div class="row">
+             <div class="col-md-4">
+                 <!-- Search Filter -->
+                 <label for="property-search" class="form-label">{% trans 'Search Properties' %}</label>
+                 <div class="input-group">
+                     <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                     <input type="search"
+                            id="property-search"
+                            class="form-control"
+                            placeholder="{% trans 'Search properties...' %}"
+                            name="filter"
+                            value="{{ filter }}"
+                            hx-get="{% url 'lfs_manage_property_group_properties' property_group.id %}"
+                            hx-target="#properties-content"
+                            hx-select="#properties-content"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-swap="outerHTML"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search properties' %}">
+                 </div>
+             </div>
+             
+             <div class="col-md-4">
+                 <!-- Property Type Filter -->
+                 <label for="type-filter" class="form-label">{% trans 'Property Type' %}</label>
+                 <select id="type-filter"
+                         class="form-select"
+                         name="properties_type_filter"
+                         hx-get="{% url 'lfs_manage_property_group_properties' property_group.id %}"
+                         hx-target="#properties-content"
+                         hx-select="#properties-content"
+                         hx-swap="outerHTML"
+                         hx-trigger="change"
+                         hx-include="this">
+                     <option value="All">{% trans "All Types" %}</option>
+                     <option value="text" {% if type_filter == "text" %}selected{% endif %}>{% trans "Text" %}</option>
+                     <option value="number" {% if type_filter == "number" %}selected{% endif %}>{% trans "Number" %}</option>
+                     <option value="select" {% if type_filter == "select" %}selected{% endif %}>{% trans "Select" %}</option>
+                     <option value="checkbox" {% if type_filter == "checkbox" %}selected{% endif %}>{% trans "Checkbox" %}</option>
+                 </select>
+             </div>
+             
+             <div class="col-md-4">
+                 <!-- Amount per page -->
+                 <label for="amount-filter" class="form-label">{% trans 'Properties per Page' %}</label>
+                 <select id="amount-filter"
+                         class="form-select"
+                         name="properties-amount"
+                         hx-get="{% url 'lfs_manage_property_group_properties' property_group.id %}"
+                         hx-target="#properties-content"
+                         hx-select="#properties-content"
+                         hx-swap="outerHTML"
+                         hx-trigger="change"
+                         hx-include="this">
+                     <option value="25" selected>25 {% trans "per page" %}</option>
+                     <option value="50">50 {% trans "per page" %}</option>
+                     <option value="100">100 {% trans "per page" %}</option>
+                 </select>
+             </div>
+         </div>
+
+         <!-- Properties Lists -->
+         <div class="row mt-4">
+             <div class="col-6">
+                 {% include "manage/property_groups/tabs/_available_properties.html" %}
+             </div>
+
+             <div class="col-6">
+                 {% include "manage/property_groups/tabs/_assigned_properties.html" %}
+             </div>
+         </div>
+     </div>
+
+     <script>
+         $("#manage-tabs").show();
+         align_buttons("#properties");
+     </script>
+</div>

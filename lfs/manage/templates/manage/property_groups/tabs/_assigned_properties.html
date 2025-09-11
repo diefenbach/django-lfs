@@ -1,0 +1,84 @@
+{% load i18n static %}
+
+<!-- Assigned Properties Form -->
+<form id="remove-properties-form"
+      method="post"
+      action="{% url 'lfs_manage_property_group_properties' property_group.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="keep-filters" value="1">
+    
+    <div id="assigned-properties-list" class="card shadow" style="height: calc(100vh - 430px);">
+        <div class="card-header bg-success-subtle">
+            <h2 class="h4 mb-0">
+                <i class="bi bi-collection me-2"></i>
+                {% trans 'Assigned Properties' %}
+            </h2>
+        </div>
+        <div class="card-body overflow-y-auto">
+            {% if group_properties %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th class="checkbox" style="width: 40px;">
+                                    <input type="checkbox" class="form-check-input select-all-assigned" />
+                                </th>
+                                <th>{% trans 'Name' %}</th>
+                                <th class="small">{% trans 'Type' %}</th>
+                                <th class="small">{% trans 'Position' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for gp in group_properties %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox"
+                                               name="property-{{ gp.property.id }}"
+                                               value="on"
+                                               class="form-check-input select-assigned" />
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'lfs_manage_shop_property' gp.property.id %}" class="text-decoration-none">
+                                            {{ gp.property.name }}
+                                        </a>
+                                    </td>
+                                    <td class="small text-muted">
+                                        <span class="badge bg-secondary">{{ gp.property.get_type_display }}</span>
+                                    </td>
+                                    <td>
+                                        <input class="form-control form-control-sm"
+                                               type="number"
+                                               size="3"
+                                               name="position-{{ gp.property.id }}"
+                                               value="{{ gp.position }}"
+                                               style="width: 60px;" />
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-collection display-1 text-muted"></i>
+                    <h5 class="mt-3">{% trans 'No Properties Assigned' %}</h5>
+                    <p>{% trans 'Select properties from the left column to assign them to this property group.' %}</p>
+                </div>
+            {% endif %}
+        </div>
+        {% if group_properties %}
+            <div class="card-footer" style="min-height: 60px;">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-danger" name="remove_properties">
+                        <i class="bi bi-trash me-1"></i>
+                        {% trans 'Remove from Property Group' %}
+                    </button>
+                    <button type="submit" class="btn btn-outline-primary" name="update_properties">
+                        <i class="bi bi-arrow-up-down me-1"></i>
+                        {% trans 'Update Positions' %}
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</form>

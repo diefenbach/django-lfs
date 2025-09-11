@@ -1,62 +1,104 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n static %}
+{% load i18n static crispy_forms_tags %}
 
 {% block help_link %}user/management/properties/property_groups.html{% endblock %}
-{% block left_slot %}
-    <h2 class="navigation-title">
-        {% trans "Property groups" %}
-    </h2>
-    <div class="navigation-body">
-        <ol class="manage-categories-tree flat-sortable"
-            href="{% url 'lfs_manage_sort_property_groups' %}">
-            {% for property_group in property_groups %}
-                <li id="property_group_{{ property_group.pk }}">
-                    <div>
-                        <a href="{% url 'lfs_manage_property_group' property_group.id %}"
-                           class="selectable {% if property_group.id == current_id %}selected{% endif %}">
-                            <img class="handle" src="{% static 'lfs/img/handle.png' %}" alt="Handle" />
-                            <span class="sortable-item-name">{{ property_group.name }}</span>
-                        </a>
+{% block section %}manage-property-groups{% endblock %}
+{% block content %}
+    <div class="lfs-property-groups">
+        <div class="row">
+            <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
+                <div class="padding-bottom-100">
+                    <div class="mb-3 fw-semibold">{% trans "Property Groups" %}</div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="search" 
+                            class="form-control" 
+                            placeholder="{% trans 'Search property groups...' %}" 
+                            name="q"
+                            value="{{ search_query }}"
+                            hx-get="{{ request.path }}"
+                            hx-target="#property-groups-list"
+                            hx-select="#property-groups-list"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search property groups' %}">
                     </div>
-                </li>
-            {% endfor %}
-        </ol>
+                    <div class="list-group" id="property-groups-list">
+                        {% for pg in property_groups %}
+                            <a class="list-group-item list-group-item-action {% if pg.id == property_group.id %}active{% endif %}"
+                               href="{% url 'lfs_manage_property_group' pg.id %}{% if search_query %}?q={{ search_query }}{% endif %}">
+                                {{ pg.name }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </aside>
+
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Property Groups</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ property_group.name }}</li>
+                            </ol>
+                        </nav>                                
+                        <div class="site-actions mb-2" id="site-actions">
+                            <button class="btn btn-sm btn-outline-primary me-2" 
+                                hx-get="{% url 'lfs_manage_add_property_group' %}?came_from={% url 'lfs_manage_property_group' property_group.id %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click" 
+                                hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Property Group' %}
+                            </button>
+
+                            <button class="btn btn-sm btn-outline-danger me-2"
+                                hx-get="{% url 'lfs_delete_property_group_confirm' property_group.id %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click"
+                                hx-swap="innerHTML">
+                                <i class="bi bi-trash"></i>
+                                {% trans 'Delete Property Group' %}
+                            </button>
+                        </div>
+                    </div>
+
+                        <ul class="nav nav-tabs" id="propertyGroupTabs" role="tablist">
+                            {% for key, url in tabs %}
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link {% if active_tab == key %}active{% endif %}" 
+                                    href="{{ url }}" 
+                                    role="tab"
+                                    aria-controls="{{ key }}-content"
+                                    aria-selected="{% if active_tab == key %}true{% else %}false{% endif %}">
+                                        {% trans key|title %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        
+                        <div class="tab-content border border-top-0 bg-white p-4" id="propertyGroupTabsContent">
+                            {% if active_tab == "data" %}
+                                {% include "manage/property_groups/tabs/_data.html" %}
+                            {% elif active_tab == "products" %}
+                                {% include "manage/property_groups/tabs/_products.html" %}
+                            {% elif active_tab == "properties" %}
+                                {% include "manage/property_groups/tabs/_properties.html" %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-xl.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
 {% endblock %}
 
-{% block content %}
-    <div class="site-actions">
-        <a class="add"
-           href="{% url 'lfs_manage_add_property_group' %}?came_from={% url 'lfs_manage_property_group' property_group.id %}">{% trans 'Add Property Group' %}</a>
-        <a class="delete delete-link"
-           dialog_message="{% trans 'Do you really want to delete this property group?' %}"
-           href="{% url 'lfs_delete_property_group' property_group.id %}">{% trans 'Delete Property Group' %}</a>
-    </div>
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Data' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#products">{% trans 'Products' %}</a></li>
-            <li class="ui-tabs-nav-item"><a href="#properties">{% trans 'Properties' %}</a></li>
-        </ul>
-        <div id="data">
-            <h2>{% trans 'Data' %}</h2>
-            <form action="{% url 'lfs_manage_property_group' property_group.id %}"
-                  method="post">
-                {% csrf_token %}
-                {% include "manage/lfs_form.html" %}
-                <div class="buttons">
-                    <input type="submit"
-                           class="button"
-                           value="{% trans 'Save property group' %}">
-                </div>
-            </form>
-        </div>
-        <div id="properties">
-            {{ properties|safe }}
-        </div>
-
-        <div id="products">
-            {{ products|safe }}
-        </div>
-    </div>
+{% block javascript %}
+    <script src="{% static 'lfs/manage/js/property_groups.js' %}"></script>
 {% endblock %}
