@@ -2,6 +2,7 @@ class PropertyGroupsManager {
     constructor() {
         this.initializeSelectAll();
         this.initializePopovers();
+        this.initializeSortable();
     }
 
     initializeSelectAll() {
@@ -60,6 +61,48 @@ class PropertyGroupsManager {
             return new bootstrap.Popover(popoverTriggerEl);
         });
     }
+
+    initializeSortable() {
+        console.log('PropertyGroupsManager: Initializing sortable functionality');
+        
+        // Initialize sortable for assigned properties table
+        const propertiesTable = document.getElementById("sortable-properties-table");
+        if (propertiesTable && typeof Sortable !== 'undefined') {
+            Sortable.create(propertiesTable, {
+                animation: 150,
+                handle: ".handle",
+                onEnd: (evt) => {
+                    console.log('PropertyGroupsManager: Properties sort ended');
+                    // Get the new order of property items
+                    const rows = propertiesTable.querySelectorAll('tr[data-id]');
+                    const propertyIds = Array.from(rows).map(row => row.getAttribute('data-id'));
+                    
+                    // Send AJAX request to update positions
+                    const sortUrl = document.querySelector('[data-sort-url]')?.getAttribute('data-sort-url');
+                    if (sortUrl) {
+                        fetch(sortUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                            },
+                            body: JSON.stringify({
+                                property_ids: propertyIds
+                            })
+                        }).then(response => {
+                            if (response.ok) {
+                                console.log('PropertyGroupsManager: Properties sorted successfully');
+                            } else {
+                                console.error('PropertyGroupsManager: Failed to sort properties');
+                            }
+                        }).catch(error => {
+                            console.error('PropertyGroupsManager: Error sorting properties:', error);
+                        });
+                    }
+                }
+            });
+        }
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -69,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('htmx:afterSwap', (event) => {
     console.log('PropertyGroupsManager: HTMX afterSwap', event.target.id);
-    if (event.target.id === 'products-tables' || event.target.id === 'properties-content' || event.target.id === 'products-content') {
+    if (event.target.id === 'products-tables' || event.target.id === 'properties-content' || event.target.id === 'products-content' || event.target.id === 'assigned-properties-list') {
         console.log('PropertyGroupsManager: Reinitializing after HTMX swap');
         new PropertyGroupsManager();
     }

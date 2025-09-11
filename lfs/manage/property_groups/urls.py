@@ -22,6 +22,11 @@ urlpatterns = [
         views.sort_property_groups,
         name="lfs_manage_sort_property_groups",
     ),
+    path(
+        "sort-property-group-properties/<int:id>/",
+        views.sort_property_group_properties,
+        name="lfs_manage_sort_property_group_properties",
+    ),
     # Property Group Detail Views
     path(
         "property-group/<int:id>/products/",

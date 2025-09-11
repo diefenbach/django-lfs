@@ -10,6 +10,8 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from django.views.generic import UpdateView, CreateView, DeleteView, RedirectView, TemplateView
 
 from lfs.caching.utils import lfs_get_object_or_404
@@ -490,3 +492,24 @@ def sort_property_groups(request):
     )
 
     return HttpResponse(result, content_type="application/json")
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def sort_property_group_properties(request, id):
+    """Handle drag and drop sorting of properties within a property group."""
+    data = json.loads(request.body)
+    property_ids = data.get("property_ids", [])
+
+    property_group = get_object_or_404(PropertyGroup, pk=id)
+
+    for index, property_id in enumerate(property_ids):
+        try:
+            # Get the GroupsPropertiesRelation for this property and group
+            relation = GroupsPropertiesRelation.objects.get(group=property_group, property_id=property_id)
+            relation.position = (index + 1) * 10
+            relation.save()
+        except GroupsPropertiesRelation.DoesNotExist:
+            continue
+
+    return HttpResponse()
