@@ -21,21 +21,81 @@ from .views import (
 )
 
 urlpatterns = [
-    path("", ManageProductsView.as_view(), name="lfs_manage_products2"),
-    path("add/", ProductCreateView.as_view(), name="lfs_manage_add_product"),
-    path("no-products/", NoProductsView.as_view(), name="lfs_manage_no_products"),
-    path("<int:id>/data/", ProductDataView.as_view(), name="lfs_manage_product_data"),
-    path("<int:id>/categories/", ProductCategoriesView.as_view(), name="lfs_manage_product_categories"),
-    path("<int:id>/images/", ProductImagesView.as_view(), name="lfs_manage_product_images"),
-    path("<int:id>/attachments/", ProductAttachmentsView.as_view(), name="lfs_manage_product_attachments"),
-    path("<int:id>/bulk-prices/", ProductBulkPricesView.as_view(), name="lfs_manage_product_bulk_prices"),
-    path("<int:id>/variants/", ProductVariantsView.as_view(), name="lfs_manage_product_variants"),
-    path("<int:id>/properties/", ProductPropertiesView.as_view(), name="lfs_manage_product_properties"),
-    path("<int:id>/accessories/", ProductAccessoriesView.as_view(), name="lfs_manage_product_accessories"),
-    path("<int:id>/related/", ProductRelatedProductsView.as_view(), name="lfs_manage_product_related"),
-    path("<int:id>/stock/", ProductStockView.as_view(), name="lfs_manage_product_stock"),
-    path("<int:id>/seo/", ProductSEOView.as_view(), name="lfs_manage_product_seo"),
-    path("<int:id>/portlets/", ProductPortletsView.as_view(), name="lfs_manage_product_portlets"),
+    path(
+        "",
+        ManageProductsView.as_view(),
+        name="lfs_manage_products2",
+    ),
+    path(
+        "add/",
+        ProductCreateView.as_view(),
+        name="lfs_manage_add_product",
+    ),
+    path(
+        "no-products/",
+        NoProductsView.as_view(),
+        name="lfs_manage_no_products",
+    ),
+    path(
+        "<int:id>/data/",
+        ProductDataView.as_view(),
+        name="lfs_manage_product_data",
+    ),
+    path(
+        "<int:id>/categories/",
+        ProductCategoriesView.as_view(),
+        name="lfs_manage_product_categories",
+    ),
+    path(
+        "<int:id>/images/",
+        ProductImagesView.as_view(),
+        name="lfs_manage_product_images",
+    ),
+    path(
+        "<int:id>/attachments/",
+        ProductAttachmentsView.as_view(),
+        name="lfs_manage_product_attachments",
+    ),
+    path(
+        "<int:id>/bulk-prices/",
+        ProductBulkPricesView.as_view(),
+        name="lfs_manage_product_bulk_prices",
+    ),
+    path(
+        "<int:id>/variants/",
+        ProductVariantsView.as_view(),
+        name="lfs_manage_product_variants",
+    ),
+    path(
+        "<int:id>/properties/",
+        ProductPropertiesView.as_view(),
+        name="lfs_manage_product_properties",
+    ),
+    path(
+        "<int:id>/accessories/",
+        ProductAccessoriesView.as_view(),
+        name="lfs_manage_product_accessories",
+    ),
+    path(
+        "<int:id>/related/",
+        ProductRelatedProductsView.as_view(),
+        name="lfs_manage_product_related",
+    ),
+    path(
+        "<int:id>/stock/",
+        ProductStockView.as_view(),
+        name="lfs_manage_product_stock",
+    ),
+    path(
+        "<int:id>/seo/",
+        ProductSEOView.as_view(),
+        name="lfs_manage_product_seo",
+    ),
+    path(
+        "<int:id>/portlets/",
+        ProductPortletsView.as_view(),
+        name="lfs_manage_product_portlets",
+    ),
     path(
         "delete-product-confirm/<int:id>/",
         ProductDeleteConfirmView.as_view(),

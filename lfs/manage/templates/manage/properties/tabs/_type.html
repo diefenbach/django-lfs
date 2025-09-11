@@ -1,0 +1,20 @@
+{% load i18n crispy_forms_tags %}
+<div class="tab-pane {% if active_tab == 'type' %}show active{% endif %}" 
+     id="type-content" 
+     role="tabpanel" 
+     aria-labelledby="type-tab">
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        {% trans "Changing the property type will delete all existing product property values." %}
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <div class="buttons">
+            <button class="btn btn-primary" type="submit">
+                <i class="bi bi-save me-1"></i>
+                {% trans 'Save type' %}
+            </button>
+        </div>
+    </form>
+</div>

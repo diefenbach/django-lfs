@@ -1,91 +1,260 @@
 {% extends "manage/manage_base.html" %}
-{% load i18n %}
+{% load i18n static crispy_forms_tags %}
 
-{% block help_link %}user/management/properties/properties.html{% endblock %}
-
-
-{% block left_slot %}
-    <form action="{% url 'lfs_set_property_name_filter' %}"
-          method="post">
-
-        <input type="text"
-               name="name"
-               class="refresh-on-keyup disable-enter-key"
-               style="width:100%"
-               value="{{ name_filter_value }}" />
-
-        <input type="hidden"
-               name="property-id"
-               value="{{ property.id }}" />
-    </form>
-
-    <div id="pages-inline">
-        {{ pages_inline|safe }}
-    </div>
-
-    <div class="navigation-body"
-         id="selectable-properties-inline">
-        {{ selectable_properties }}
-    </div>
-{% endblock %}
-
+{% block help_link %}user/management/html/property.html{% endblock %}
+{% block section %}manage-property{% endblock %}
 {% block content %}
-    <div class="site-actions">
-        <a class="add"
-           href="{% url 'lfs_add_shop_property' %}?came_from={% url 'lfs_manage_shop_property' property.id %}">{% trans 'Add Property' %}</a>
-        <a class="delete delete-link"
-           dialog_message="{% trans 'Do you really want to delete this property?' %}"
-           href="{% url 'lfs_delete_shop_property' property.id %}">{% trans 'Delete Property' %}</a>
-    </div>
-
-    <div id="manage-tabs">
-        <ul>
-            <li class="ui-tabs-nav-item"><a href="#data">{% trans 'Property' %}</a></li>
-        </ul>
-
-        <div id="data">
-            <h2>{% trans 'Data' %}</h2>
-
-            <form action="{% url 'lfs_manage_shop_property' property.id %}"
-                  method="post">
-                {% csrf_token %}
-                {% include "manage/lfs_form.html" %}
-
-                <div class="buttons">
-                    <input type="submit"
-                           class="button"
-                           value="{% trans 'Save property' %}">
+    <div class="lfs-properties">
+        <div class="row">
+            <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
+                <div class="padding-bottom-100">
+                    <div class="mb-3 fw-semibold">{% trans "Properties" %}</div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="search" 
+                            class="form-control" 
+                            placeholder="{% trans 'Search properties...' %}" 
+                            name="q"
+                            value="{{ search_query }}"
+                            hx-get="{{ request.path }}"
+                            hx-target="#properties-list"
+                            hx-select="#properties-list"
+                            hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                            hx-include="this"
+                            hx-push-url="true"
+                            aria-label="{% trans 'Search properties' %}">
+                    </div>
+                    <div class="list-group" id="properties-list">
+                        {% for p in page %}
+                            <a class="list-group-item list-group-item-action {% if p.id == property.id %}active{% endif %}"
+                               href="{% url 'lfs_manage_property' p.id %}{% if search_query %}?q={{ search_query }}{% endif %}">
+                                {{ p.name }}
+                            </a>
+                        {% endfor %}
+                    </div>
                 </div>
-            </form>
+            </aside>
 
-            <h2 class="heading-middle">{% trans 'Field type' %}</h2>
-            <form action="{% url 'lfs_update_shop_property_type' property.id %}"
-                  method="post">
-                {% csrf_token %}
-                {{ type_form.type }}
-                <input type="submit"
-                       class="button"
-                       value="{% trans 'Save property type' %}">
-            </form>
-            {% if property.is_select_field %}
-                <div id="select_field">
-                    {{ select_field|safe }}
-                </div>
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Properties</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ property.name }}</li>
+                            </ol>
+                        </nav>                                
+                        <div class="site-actions mb-2" id="site-actions">
+                            <button class="btn btn-sm btn-outline-primary me-2" 
+                                hx-get="{% url 'lfs_add_property' %}?came_from={% url 'lfs_manage_property' property.id %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click" 
+                                hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Property' %}
+                            </button>
 
-                <div id="options">
-                    {{ options|safe }}
+                            <button class="btn btn-sm btn-outline-danger me-2"
+                                hx-get="{% url 'lfs_delete_property_confirm' property.id %}"
+                                hx-target="#modal-body-lg"
+                                hx-trigger="click"
+                                hx-swap="innerHTML">
+                                <i class="bi bi-trash"></i>
+                                {% trans 'Delete Property' %}
+                            </button>
+                        </div>
+                    </div>
+
+                    <ul class="nav nav-tabs" id="propertyTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="data-tab" data-bs-toggle="tab" data-bs-target="#data-content" type="button" role="tab" aria-controls="data-content" aria-selected="true">{% trans 'Data' %}</button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content border border-top-0 bg-white p-4" id="propertyTabsContent">
+                        <div class="tab-pane show active" 
+                                id="data-content" 
+                                role="tabpanel" 
+                                aria-labelledby="data-tab">
+                            <form method="post" id="property-form">
+                                {% csrf_token %}
+                                {{ form.name|as_crispy_field }}
+                                {{ form.title|as_crispy_field }}
+                                {{ form.unit|as_crispy_field }}
+                                
+                                <div class="form-check mb-3">
+                                    {{ form.variants }}
+                                    <label class="form-check-label" for="{{ form.variants.id_for_label }}">
+                                        {{ form.variants.label }}
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check mb-3">
+                                    {{ form.filterable }}
+                                    <label class="form-check-label" for="{{ form.filterable.id_for_label }}">
+                                        {{ form.filterable.label }}
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check mb-3">
+                                    {{ form.configurable }}
+                                    <label class="form-check-label" for="{{ form.configurable.id_for_label }}">
+                                        {{ form.configurable.label }}
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check mb-3">
+                                    {{ form.required }}
+                                    <label class="form-check-label" for="{{ form.required.id_for_label }}">
+                                        {{ form.required.label }}
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check mb-3">
+                                    {{ form.display_on_product }}
+                                    <label class="form-check-label" for="{{ form.display_on_product.id_for_label }}">
+                                        {{ form.display_on_product.label }}
+                                    </label>
+                                </div>
+                                
+                                <h3 class="h5 mb-3">{% trans 'Field Type' %}</h3>
+                                {{ form.type|as_crispy_field }}
+                                
+                                <div id="select-field-options" style="display: none;">
+                                    <h4 class="h6 mt-4 mb-3">{% trans 'Select Field Properties' %}</h4>
+                                    <div class="form-check mb-3">
+                                        {{ form.display_price }}
+                                        <label class="form-check-label" for="{{ form.display_price.id_for_label }}">
+                                            {% trans 'Display price' %}
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        {{ form.add_price }}
+                                        <label class="form-check-label" for="{{ form.add_price.id_for_label }}">
+                                            {% trans 'Add price' %}
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div id="number-field-options" style="display: none;">
+                                    <h4 class="h6 mt-4 mb-3">{% trans 'Number Field Properties' %}</h4>
+                                    {{ form.decimal_places|as_crispy_field }}
+                                    {{ form.unit_min|as_crispy_field }}
+                                    {{ form.unit_max|as_crispy_field }}
+                                    {{ form.unit_step|as_crispy_field }}
+                                </div>
+                                
+                                <div id="step-options" style="display: none;">
+                                    <h4 class="h6 mt-4 mb-3">{% trans 'Step Properties' %}</h4>
+                                    {{ form.step_type|as_crispy_field }}
+                                    {{ form.step|as_crispy_field }}
+                                </div>
+                                
+                                <!-- Save Button -->
+                                <div class="buttons mt-4">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="bi bi-save me-1"></i>
+                                        {% trans 'Save property' %}
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <!-- Options Management for Select Fields -->
+                            <div id="options-management" style="display: none;" class="mt-4">
+                                <h4 class="h5 mb-3">{% trans 'Select field options' %}</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>{% trans 'Name' %}</th>
+                                                <th>{% trans 'Price' %}</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Add new option row -->
+                                            <tr>
+                                                <form method="post" action="{% url 'lfs_add_property_option' property.id %}" class="add-option-form">
+                                                    {% csrf_token %}
+                                                    <td>
+                                                        <input class="form-control form-control-sm" 
+                                                               type="text" 
+                                                               name="name" 
+                                                               placeholder="{% trans 'Option name' %}" 
+                                                               required/>
+                                                    </td>
+                                                    <td>
+                                                        <input class="form-control form-control-sm" 
+                                                               type="number" 
+                                                               step="0.01" 
+                                                               name="price" 
+                                                               placeholder="0.00"/>
+                                                    </td>
+                                                    <td>
+                                                        <button type="submit" name="action" value="add" class="btn btn-sm btn-success">
+                                                            <i class="bi bi-plus"></i> {% trans 'Add' %}
+                                                        </button>
+                                                    </td>
+                                                </form>
+                                            </tr>
+                                            
+                                            <!-- Existing options -->
+                                            {% for option in property.options.all %}
+                                            <tr>
+                                                <form method="post" action="{% url 'lfs_update_property_option' property.id %}" class="update-option-form">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="option_id" value="{{ option.id }}"/>
+                                                    <td>
+                                                        <input class="form-control form-control-sm" 
+                                                               type="text" 
+                                                               name="name" 
+                                                               value="{{ option.name }}"/>
+                                                    </td>
+                                                    <td>
+                                                        <input class="form-control form-control-sm" 
+                                                               type="number" 
+                                                               step="0.01" 
+                                                               name="price" 
+                                                               value="{{ option.price }}"/>
+                                                    </td>
+                                                    <td>
+                                                        <button type="submit" name="action" value="update" class="btn btn-sm btn-primary me-1">
+                                                            <i class="bi bi-save"></i>
+                                                        </button>
+                                                        <button type="button" 
+                                                                class="btn btn-sm btn-outline-danger delete-option-btn"
+                                                                hx-delete="{% url 'lfs_delete_property_option' option.id %}"
+                                                                hx-confirm="{% trans 'Do you really want to delete this option?' %}"
+                                                                hx-target="closest tr"
+                                                                hx-swap="outerHTML swap:0.5s">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                </form>
+                                            </tr>
+                                            {% empty %}
+                                            <tr class="no-options">
+                                                <td colspan="3" class="text-muted text-center py-3">
+                                                    {% trans 'No options defined yet. Add options above.' %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
                 </div>
-            {% endif %}
-            {% if display_step_form %}
-                <div id="steps">
-                    {{ steps|safe }}
-                </div>
-            {% endif %}
-            {% if property.is_number_field %}
-                <div id="number_field">
-                    {{ number_field|safe }}
-                </div>
-            {% endif %}
+            </main>
         </div>
     </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-xl.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
+    
+    <script src="{% static 'lfs/manage/js/properties.js' %}"></script>
 {% endblock %}

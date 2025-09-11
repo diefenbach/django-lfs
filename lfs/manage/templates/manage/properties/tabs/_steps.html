@@ -1,0 +1,11 @@
+{% load i18n crispy_forms_tags %}
+<div class="tab-pane {% if active_tab == 'steps' %}show active{% endif %}" 
+     id="steps-content" 
+     role="tabpanel" 
+     aria-labelledby="steps-tab">
+    <p class="text-muted">{% trans "Filter steps management for number field properties." %}</p>
+    <p class="text-info">
+        <i class="bi bi-info-circle me-1"></i>
+        {% trans "This functionality will be implemented in a future iteration." %}
+    </p>
+</div>

@@ -7,10 +7,8 @@ import lfs.manage.products
 
 # Removed imports for non-existent product modules
 import lfs.manage.product_taxes.views
-import lfs.manage.property.views
 import lfs.manage.shipping_methods.views
 from lfs.manage.customers import urls as customers_urls
-from lfs.manage.property_groups import urls as property_groups_urls
 import lfs.manage.views.criteria
 import lfs.manage.views.export
 import lfs.manage.views.payment
@@ -120,64 +118,9 @@ urlpatterns = [
     re_path(r"^delete-global-images$", lfs.manage.images.views.delete_images, name="lfs_manage_delete_images"),
     re_path(r"^add-global-images$", lfs.manage.images.views.add_images, name="lfs_manage_add_global_image"),
     # Property Groups
-    path("", include(property_groups_urls)),
-    # Shop Properties
-    re_path(r"^shop-properties$", lfs.manage.property.views.manage_properties, name="lfs_manage_shop_properties"),
-    re_path(r"^shop-property/(?P<id>\d*)", lfs.manage.property.views.manage_property, name="lfs_manage_shop_property"),
-    re_path(
-        r"^update-shop-property-type/(?P<id>\d*)",
-        lfs.manage.property.views.update_property_type,
-        name="lfs_update_shop_property_type",
-    ),
-    re_path(r"^add-shop-property$", lfs.manage.property.views.add_property, name="lfs_add_shop_property"),
-    re_path(
-        r"^delete-shop-property/(?P<id>\d*)", lfs.manage.property.views.delete_property, name="lfs_delete_shop_property"
-    ),
-    re_path(
-        r"^add-shop-property-option/(?P<property_id>\d*)",
-        lfs.manage.property.views.add_option,
-        name="lfs_add_shop_property_option",
-    ),
-    re_path(
-        r"^add-shop-property-step/(?P<property_id>\d*)",
-        lfs.manage.property.views.add_step,
-        name="lfs_add_shop_property_step",
-    ),
-    re_path(
-        r"^save-shop-property-step/(?P<property_id>\d*)",
-        lfs.manage.property.views.save_step_range,
-        name="lfs_save_shop_property_step_range",
-    ),
-    re_path(
-        r"^save-shop-property-step-type/(?P<property_id>\d*)",
-        lfs.manage.property.views.save_step_type,
-        name="lfs_save_shop_property_step_type",
-    ),
-    re_path(
-        r"^delete-shop-property-option/(?P<id>\d*)",
-        lfs.manage.property.views.delete_option,
-        name="lfs_delete_shop_property_option",
-    ),
-    re_path(
-        r"^delete-shop-property-step/(?P<id>\d*)",
-        lfs.manage.property.views.delete_step,
-        name="lfs_delete_shop_property_step",
-    ),
-    re_path(
-        r"^save-number-field-validators/(?P<property_id>\d*)",
-        lfs.manage.property.views.save_number_field_validators,
-        name="lfs_save_number_field_validators",
-    ),
-    re_path(
-        r"^save-select-field/(?P<property_id>\d*)",
-        lfs.manage.property.views.save_select_field,
-        name="lfs_save_select_field",
-    ),
-    re_path(r"^no-properties$", lfs.manage.property.views.no_properties, name="lfs_manage_no_shop_properties"),
-    re_path(
-        r"^set-property-name-filter$", lfs.manage.property.views.set_name_filter, name="lfs_set_property_name_filter"
-    ),
-    re_path(r"^set-property-page$", lfs.manage.property.views.set_properties_page, name="lfs_set_properties_page"),
+    path("", include("lfs.manage.property_groups.urls")),
+    # Properties
+    path("", include("lfs.manage.properties.urls")),
     # Product properties
     re_path(
         r"^update-product-properties/(?P<id>\d*)$",

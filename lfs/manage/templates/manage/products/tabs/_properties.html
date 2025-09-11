@@ -54,7 +54,7 @@
                                     <div class="mb-3">
                                         {% if property.display_text_field or property.display_number_field %}
                                             <label for="property-{{ property_group.id }}-{{ property.id }}" class="form-label">
-                                                <a href="{% url 'lfs_manage_shop_property' property.id %}" class="text-decoration-none">
+                                                <a href="{% url 'lfs_manage_property' property.id %}" class="text-decoration-none">
                                                     {{ property.title }}:
                                                 </a>
                                             </label>
@@ -113,7 +113,7 @@
                                     <div class="mb-3">
                                         {% if property.display_text_field or property.display_number_field %}
                                             <label for="filter-property-{{ property_group.id }}-{{ property.id }}" class="form-label">
-                                                <a href="{% url 'lfs_manage_shop_property' property.id %}" class="text-decoration-none">
+                                                <a href="{% url 'lfs_manage_property' property.id %}" class="text-decoration-none">
                                                     {{ property.title }}:
                                                 </a>
                                             </label>
@@ -125,7 +125,7 @@
                                         {% endif %}
                                         {% if property.display_select_field %}
                                             <label for="filter-property-{{ property_group.id }}-{{ property.id }}" class="form-label">
-                                                <a href="{% url 'lfs_manage_shop_property' property.id %}" class="text-decoration-none">
+                                                <a href="{% url 'lfs_manage_property' property.id %}" class="text-decoration-none">
                                                     {{ property.title }}:
                                                 </a>
                                             </label>
@@ -174,7 +174,7 @@
                                     <div class="mb-3">
                                         {% if property.display_text_field or property.display_number_field %}
                                             <label for="display-property-{{ property_group.id }}-{{ property.id }}" class="form-label">
-                                                <a href="{% url 'lfs_manage_shop_property' property.id %}" class="text-decoration-none">
+                                                <a href="{% url 'lfs_manage_property' property.id %}" class="text-decoration-none">
                                                     {{ property.title }}:
                                                 </a>
                                             </label>
