@@ -1,0 +1,54 @@
+/* Custom styles for django-lfs documentation */
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.header img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Ensure proper spacing for code blocks */
+.highlight {
+    margin: 1em 0;
+}
+
+/* Style for todo items */
+.todo {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+/* Improve table styling */
+table.docutils {
+    border-collapse: collapse;
+    border-spacing: 0;
+    empty-cells: show;
+    border: 1px solid #ddd;
+}
+
+table.docutils th {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+table.docutils td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .header img {
+        height: 80px;
+    }
+}
