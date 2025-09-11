@@ -319,7 +319,10 @@ def update_static_block_cache(instance):
     """Deletes all static block relevant caches."""
     delete_cache("%s-static-block-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, instance.id))
 
-    for category in instance.categories.all():
+    for category in instance.categories_above.all():
+        delete_cache("%s-category-inline-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.slug))
+
+    for category in instance.categories_below.all():
         delete_cache("%s-category-inline-%s" % (settings.CACHE_MIDDLEWARE_KEY_PREFIX, category.slug))
 
 
