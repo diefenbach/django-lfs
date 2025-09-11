@@ -94,7 +94,7 @@ def sample_property():
 
 
 @pytest.fixture
-def sample_product():
+def sample_product(shop):
     """Create a sample product for testing."""
     return Product.objects.create(name="Test Product", slug="test-product", price=10.99, active=True)
 

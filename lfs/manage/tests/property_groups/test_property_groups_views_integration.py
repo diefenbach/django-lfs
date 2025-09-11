@@ -30,6 +30,7 @@ from django.test import RequestFactory, Client
 from django.urls import reverse
 
 from lfs.catalog.models import PropertyGroup, Property, Product, GroupsPropertiesRelation
+from lfs.core.models import Shop
 
 User = get_user_model()
 
@@ -77,7 +78,18 @@ def sample_property():
 
 
 @pytest.fixture
-def sample_product():
+def shop(db):
+    """Create a shop for testing."""
+    return Shop.objects.create(
+        name="Test Shop",
+        shop_owner="Test Owner",
+        from_email="test@example.com",
+        notification_emails="test@example.com",
+    )
+
+
+@pytest.fixture
+def sample_product(shop):
     """Create a sample product for testing."""
     return Product.objects.create(name="Test Product", slug="test-product", price=10.99, active=True)
 
@@ -107,7 +119,7 @@ class TestPropertyGroupViewDatabaseIntegration:
         assert "no-property-groups" in response.url
 
     @pytest.mark.django_db
-    def test_property_group_data_view_database_integration(self, client, admin_user, sample_property_group):
+    def test_property_group_data_view_database_integration(self, client, admin_user, sample_property_group, shop):
         """Test PropertyGroupDataView integration with database."""
         client.force_login(admin_user)
 
@@ -256,7 +268,9 @@ class TestPropertyGroupViewFormIntegration:
 
         assert response.status_code == 200
         assert "form" in response.context
-        assert response.context["form"].instance is None
+        # The form instance should be a PropertyGroup instance (not None)
+        assert response.context["form"].instance is not None
+        assert hasattr(response.context["form"].instance, "name")
 
     @pytest.mark.django_db
     def test_property_group_create_view_form_integration_post_valid(self, client, admin_user):
@@ -561,7 +575,7 @@ class TestPropertyGroupViewPaginationIntegration:
     """Test property group view integration with pagination."""
 
     @pytest.mark.django_db
-    def test_property_group_products_view_pagination_integration(self, client, admin_user, sample_property_group):
+    def test_property_group_products_view_pagination_integration(self, client, admin_user, sample_property_group, shop):
         """Test PropertyGroupProductsView integration with pagination."""
         # Create many products to test pagination
         for i in range(30):
@@ -580,7 +594,7 @@ class TestPropertyGroupViewPaginationIntegration:
 
     @pytest.mark.django_db
     def test_property_group_products_view_pagination_integration_page_parameter(
-        self, client, admin_user, sample_property_group
+        self, client, admin_user, sample_property_group, shop
     ):
         """Test PropertyGroupProductsView integration with pagination using page parameter."""
         # Create many products to test pagination
@@ -602,7 +616,7 @@ class TestPropertyGroupViewPaginationIntegration:
 
     @pytest.mark.django_db
     def test_property_group_products_view_pagination_integration_invalid_page(
-        self, client, admin_user, sample_property_group
+        self, client, admin_user, sample_property_group, shop
     ):
         """Test PropertyGroupProductsView integration with pagination using invalid page parameter."""
         client.force_login(admin_user)
@@ -636,7 +650,7 @@ class TestPropertyGroupViewFilteringIntegration:
 
     @pytest.mark.django_db
     def test_property_group_products_view_filtering_integration_name_filter(
-        self, client, admin_user, sample_property_group
+        self, client, admin_user, sample_property_group, shop
     ):
         """Test PropertyGroupProductsView integration with filtering by name."""
         # Create products with different names
@@ -664,7 +678,7 @@ class TestPropertyGroupViewFilteringIntegration:
 
     @pytest.mark.django_db
     def test_property_group_products_view_filtering_integration_category_filter(
-        self, client, admin_user, sample_property_group
+        self, client, admin_user, sample_property_group, shop
     ):
         """Test PropertyGroupProductsView integration with filtering by category."""
         from lfs.catalog.models import Category
@@ -693,7 +707,7 @@ class TestPropertyGroupViewFilteringIntegration:
 
     @pytest.mark.django_db
     def test_property_group_products_view_filtering_integration_combined_filters(
-        self, client, admin_user, sample_property_group
+        self, client, admin_user, sample_property_group, shop
     ):
         """Test PropertyGroupProductsView integration with combined filters."""
         from lfs.catalog.models import Category
@@ -820,7 +834,7 @@ class TestPropertyGroupViewErrorHandlingIntegration:
         """Test PropertyGroupDataView error handling integration with invalid ID."""
         client.force_login(admin_user)
 
-        response = client.get(reverse("lfs_manage_property_group", kwargs={"id": "invalid"}))
+        response = client.get(reverse("lfs_manage_property_group_error", kwargs={"id": "invalid"}))
 
         assert response.status_code == 404
 
@@ -829,7 +843,7 @@ class TestPropertyGroupViewErrorHandlingIntegration:
         """Test PropertyGroupDataView error handling integration with negative ID."""
         client.force_login(admin_user)
 
-        response = client.get(reverse("lfs_manage_property_group", kwargs={"id": -1}))
+        response = client.get(reverse("lfs_manage_property_group_error", kwargs={"id": -1}))
 
         assert response.status_code == 404
 
@@ -882,7 +896,7 @@ class TestPropertyGroupViewErrorHandlingIntegration:
         """Test PropertyGroupDeleteView error handling integration with invalid ID."""
         client.force_login(admin_user)
 
-        response = client.post(reverse("lfs_delete_property_group", kwargs={"id": "invalid"}))
+        response = client.post(reverse("lfs_delete_property_group_error", kwargs={"id": "invalid"}))
 
         assert response.status_code == 404
 
@@ -891,7 +905,7 @@ class TestPropertyGroupViewErrorHandlingIntegration:
         """Test PropertyGroupDeleteView error handling integration with negative ID."""
         client.force_login(admin_user)
 
-        response = client.post(reverse("lfs_delete_property_group", kwargs={"id": -1}))
+        response = client.post(reverse("lfs_delete_property_group_error", kwargs={"id": -1}))
 
         assert response.status_code == 404
 

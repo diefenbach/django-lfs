@@ -289,7 +289,7 @@ class TestDatabaseConstraintEdgeCases:
             PropertyGroup.objects.create(name="Group 2", uid="duplicate_uid")
 
     @pytest.mark.django_db
-    def test_property_group_cascade_delete_with_products(self, admin_user):
+    def test_property_group_cascade_delete_with_products(self, admin_user, shop):
         """Test property group deletion with associated products."""
         property_group = PropertyGroup.objects.create(name="Test Group")
         product = Product.objects.create(name="Test Product", slug="test-product", price=Decimal("10.99"), active=True)
@@ -441,7 +441,7 @@ class TestLargeDatasetEdgeCases:
         assert property_group.properties.count() == 100
 
     @pytest.mark.django_db
-    def test_property_group_with_many_products(self, admin_user):
+    def test_property_group_with_many_products(self, admin_user, shop):
         """Test property group with many products."""
         property_group = PropertyGroup.objects.create(name="Large Product Group")
 
