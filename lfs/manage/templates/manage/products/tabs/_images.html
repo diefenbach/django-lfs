@@ -7,7 +7,7 @@
             {% csrf_token %}
             <div class="form-check d-inline-block me-3">
                 <input class="form-check-input" type="checkbox" id="activeImages" name="active_images" {% if product.active_images %}checked{% endif %}>
-                <label class="form-check-label" for="activeImages">{% trans "Zugewiesene Bilder" %}</label>
+                <label class="form-check-label" for="activeImages">{% trans "Activate Images" %}</label>
             </div>
             <button type="submit" name="toggle_active_images" value="1" class="btn btn-sm btn-outline-primary">
                 <i class="bi bi-check-lg me-1"></i> {% trans 'Save' %}

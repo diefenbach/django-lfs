@@ -3,16 +3,16 @@
 <div class="tab-pane fade show active" id="variants-content" role="tabpanel" aria-labelledby="variants-tab">
 
     <div class="row g-4 mb-4">
-        <div class="col-md-6">
+        <div class="col">
             <div class="border rounded p-3">
                 <h6 class="mb-3">{% trans "Local properties" %}</h6>
                 <form method="post" class="mb-3">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="add_local_property">
-                    <div class="input-group input-group-sm">
+                    <div class="mb-2">
                         <input type="text" class="form-control" name="name" placeholder="{% trans 'New property name' %}">
-                        <button class="btn btn-outline-primary" type="submit">{% trans "Add property" %}</button>
                     </div>
+                    <button class="btn btn-primary" type="submit">{% trans "Add property" %}</button>
                 </form>
 
                 {% for lp in local_properties %}
@@ -70,24 +70,10 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="border rounded p-3">
-                <h6 class="mb-3">{% trans "Property Groups" %}</h6>
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="action" value="update_property_groups">
-                    <select class="form-select" name="selected-property-groups" multiple size="6">
-                        {% for pg in shop_property_groups %}
-                            <option value="{{ pg.id }}" {% if pg.selected %}selected{% endif %}>{{ pg.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <div class="mt-2">
-                        <button type="submit" class="btn btn-outline-secondary">{% trans "Update property groups" %}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="col-md-6">
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-12">
             <div class="border rounded p-3">
                 <h6 class="mb-3">{% trans "Add Variants" %}</h6>
                 <form method="post">
@@ -120,7 +106,7 @@
     <form method="post" class="mb-4">
         {% csrf_token %}
         <input type="hidden" name="action" value="update">
-        <div class="table-responsive">
+        <div class="table-responsive border rounded p-3">
             <table class="table table-sm align-middle">
                 <thead>
                     <tr>
@@ -179,10 +165,10 @@
                     {% endfor %}
                 </tbody>
             </table>
-        </div>
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
-            <button type="submit" class="btn btn-outline-danger" form="variants-delete-form">{% trans "Delete selected" %}</button>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+                <button type="submit" class="btn btn-outline-danger" form="variants-delete-form">{% trans "Delete selected" %}</button>
+            </div>
         </div>
     </form>
 

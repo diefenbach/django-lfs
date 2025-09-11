@@ -803,7 +803,13 @@ class Product(models.Model):
         self.short_description = unescape(self.short_description)
 
         pc = self.get_price_calculator(None)
-        self.effective_price = pc.get_effective_price()
+
+        # For newly added Product with Variants
+        try:
+            self.effective_price = pc.get_effective_price()
+        except ValueError:
+            self.effective_price = 0.0
+
         if self.is_variant():
             dv = self.parent.get_default_variant()
             # if this is default variant

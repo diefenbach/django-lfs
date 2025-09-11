@@ -2,11 +2,12 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import RedirectView, TemplateView, UpdateView
+from django.views.generic import RedirectView, TemplateView, UpdateView, CreateView, DeleteView
 
 from lfs.catalog.models import (
     Product,
@@ -28,6 +29,7 @@ from lfs.catalog.settings import (
     PROPERTY_VALUE_TYPE_DISPLAY,
 )
 from lfs.manage.portlets.views import PortletsInlineView
+from lfs.manage.mixins import DirectDeleteMixin
 
 from .forms import (
     CategoryVariantForm,
@@ -59,27 +61,19 @@ class ManageProductsView(PermissionRequiredMixin, RedirectView):
         return reverse("lfs_manage_no_products")
 
 
-class AddProductView(PermissionRequiredMixin, TemplateView):
+class ProductCreateView(PermissionRequiredMixin, CreateView):
     """View for adding a new product."""
 
-    template_name = "manage/product/add_product.html"
+    model = Product
+    form_class = ProductAddForm
+    template_name = "manage/products/add_product.html"
     permission_required = "core.manage_shop"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["came_from"] = self.request.GET.get("came_from", reverse("lfs_manage_products2"))
-        return context
-
-    def post(self, request, *args, **kwargs):
-        form = ProductAddForm(request.POST)
-        if form.is_valid():
-            new_product = form.save()
-            messages.success(request, _("Product has been added."))
-            return HttpResponseRedirect(reverse("lfs_manage_product_data", kwargs={"id": new_product.id}))
-
-        context = self.get_context_data()
-        context["form"] = form
-        return self.render_to_response(context)
+    def form_valid(self, form):
+        """Saves the product and redirects."""
+        product = form.save()
+        messages.success(self.request, _("Product has been added."))
+        return HttpResponseRedirect(reverse("lfs_manage_product_data", kwargs={"id": product.id}))
 
 
 class ProductTabMixin:
@@ -94,10 +88,13 @@ class ProductTabMixin:
     def _get_tabs(self, product: Product) -> List[Tuple[str, str]]:
         tabs: List[Tuple[str, str]] = [
             ("data", reverse("lfs_manage_product_data", args=[product.pk])),
-            ("categories", reverse("lfs_manage_product_categories", args=[product.pk])),
             ("images", reverse("lfs_manage_product_images", args=[product.pk])),
             ("attachments", reverse("lfs_manage_product_attachments", args=[product.pk])),
         ]
+
+        # Only include categories tab for non-variant products
+        if product.sub_type != PRODUCT_VARIANT:
+            tabs.insert(1, ("categories", reverse("lfs_manage_product_categories", args=[product.pk])))
         if product.is_product_with_variants():
             tabs.append(("variants", reverse("lfs_manage_product_variants", args=[product.pk])))
         tabs.extend(
@@ -477,7 +474,7 @@ class ProductBulkPricesView(PermissionRequiredMixin, ProductTabMixin, TemplateVi
 
 
 class ProductVariantsView(PermissionRequiredMixin, ProductTabMixin, TemplateView):
-    """Variants tab (Bootstrap, non-AJAX)."""
+    """"""
 
     tab_name = "variants"
     permission_required = "core.manage_shop"
@@ -712,6 +709,7 @@ class ProductVariantsView(PermissionRequiredMixin, ProductTabMixin, TemplateView
                 pvcf = ProductVariantCreateForm(options=options, product=product, data=request.POST)
                 if pvcf.is_valid():
                     variant = pvcf.save(commit=False)
+                    variant.price = product.price
                     variant.sku = f"{product.sku}-{variants_count + i + 1}"
                     variant.parent = product
                     variant.variant_position = (variants_count + i + 1) * 10
@@ -1468,4 +1466,44 @@ class ProductPropertiesView(PermissionRequiredMixin, ProductTabMixin, TemplateVi
         return redirect(reverse("lfs_manage_product_properties", kwargs={"id": product.pk}))
 
 
-# Removed duplicate standalone functions - functionality is in ProductPropertiesView.post()
+class ProductDeleteConfirmView(PermissionRequiredMixin, TemplateView):
+    """Provides a modal form to confirm deletion of a product."""
+
+    template_name = "manage/products/delete_product.html"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["product"] = get_object_or_404(Product, pk=self.kwargs["id"])
+        return context
+
+
+class ProductDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
+    """Deletes product with passed id."""
+
+    model = Product
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
+    success_message = _("Product has been deleted.")
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Call the delete() method on the fetched object and then redirect to the
+        success URL.
+        """
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+        messages.success(self.request, self.success_message)
+
+        # Check if this is an HTMX request
+        if request.headers.get("HX-Request"):
+            # For HTMX requests, use HX-Redirect header to redirect the browser
+            response = HttpResponse()
+            response["HX-Redirect"] = success_url
+            return response
+
+        return HttpResponseRedirect(success_url)
+
+    def get_success_url(self):
+        return reverse("lfs_manage_products2")

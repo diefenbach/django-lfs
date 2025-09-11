@@ -1,7 +1,9 @@
 from django.urls import path
 
 from .views import (
-    AddProductView,
+    ProductCreateView,
+    ProductDeleteConfirmView,
+    ProductDeleteView,
     ManageProductsView,
     NoProductsView,
     ProductDataView,
@@ -20,7 +22,7 @@ from .views import (
 
 urlpatterns = [
     path("", ManageProductsView.as_view(), name="lfs_manage_products2"),
-    path("add/", AddProductView.as_view(), name="lfs_manage_add_product"),
+    path("add/", ProductCreateView.as_view(), name="lfs_manage_add_product"),
     path("no-products/", NoProductsView.as_view(), name="lfs_manage_no_products"),
     path("<int:id>/data/", ProductDataView.as_view(), name="lfs_manage_product_data"),
     path("<int:id>/categories/", ProductCategoriesView.as_view(), name="lfs_manage_product_categories"),
@@ -34,4 +36,14 @@ urlpatterns = [
     path("<int:id>/stock/", ProductStockView.as_view(), name="lfs_manage_product_stock"),
     path("<int:id>/seo/", ProductSEOView.as_view(), name="lfs_manage_product_seo"),
     path("<int:id>/portlets/", ProductPortletsView.as_view(), name="lfs_manage_product_portlets"),
+    path(
+        "delete-product-confirm/<int:id>/",
+        ProductDeleteConfirmView.as_view(),
+        name="lfs_manage_delete_product_confirm",
+    ),
+    path(
+        "delete-product/<int:id>/",
+        ProductDeleteView.as_view(),
+        name="lfs_manage_delete_product",
+    ),
 ]

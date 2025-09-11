@@ -114,7 +114,6 @@ class ProductVariantCreateForm(ModelForm):
         fields = (
             "slug",
             "name",
-            "price",
         )
 
 
@@ -169,9 +168,13 @@ class ProductAddForm(forms.ModelForm):
     Form to add a new product.
     """
 
+    def __init__(self, *args, **kwargs):
+        super(ProductAddForm, self).__init__(*args, **kwargs)
+        self.fields["sub_type"].choices = PRODUCT_TYPE_FORM_CHOICES
+
     class Meta:
         model = Product
-        fields = ("name", "slug")
+        fields = ("sub_type", "name", "slug")
 
 
 class ProductSubTypeForm(forms.ModelForm):
