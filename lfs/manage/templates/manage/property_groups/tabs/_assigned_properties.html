@@ -29,7 +29,6 @@
                                 <th class="small text-center">{% trans 'Sort' %}</th>
                                 <th>{% trans 'Name' %}</th>
                                 <th class="small">{% trans 'Type' %}</th>
-                                <th class="small">{% trans 'Position' %}</th>
                             </tr>
                         </thead>
                         <tbody id="sortable-properties-table">
@@ -52,14 +51,6 @@
                                     <td class="small text-muted">
                                         <span class="badge bg-secondary">{{ gp.property.get_type_display }}</span>
                                     </td>
-                                    <td>
-                                        <input class="form-control form-control-sm"
-                                               type="number"
-                                               size="3"
-                                               name="position-{{ gp.property.id }}"
-                                               value="{{ gp.position }}"
-                                               style="width: 60px;" />
-                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -79,10 +70,6 @@
                     <button type="submit" class="btn btn-danger" name="remove_properties">
                         <i class="bi bi-trash me-1"></i>
                         {% trans 'Remove from Property Group' %}
-                    </button>
-                    <button type="submit" class="btn btn-outline-primary" name="update_properties">
-                        <i class="bi bi-arrow-up-down me-1"></i>
-                        {% trans 'Update Positions' %}
                     </button>
                 </div>
             </div>
