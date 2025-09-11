@@ -4,6 +4,7 @@ from django.forms.utils import ErrorList
 from django.forms.widgets import Select, HiddenInput
 from django.template.defaultfilters import slugify
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Field, Div
@@ -19,6 +20,66 @@ from lfs.catalog.settings import PRODUCT_TEMPLATES
 from lfs.catalog.settings import PRODUCT_TYPE_FORM_CHOICES
 from lfs.core.widgets.checkbox import LFSCheckboxInput
 from lfs.utils.widgets import SelectImage
+
+
+class ProductFilterForm(forms.Form):
+    """Form for filtering products in the management interface."""
+
+    name = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control form-control-sm", "placeholder": _("Product name")}),
+        label=_("Name"),
+    )
+    sku = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control form-control-sm", "placeholder": _("SKU")}),
+        label=_("SKU"),
+    )
+    sub_type = forms.ChoiceField(
+        required=False,
+        choices=[("", _("All Types"))] + list(PRODUCT_TYPE_FORM_CHOICES),
+        widget=forms.Select(attrs={"class": "form-control form-control-sm"}),
+        label=_("Product Type"),
+    )
+    price_calculator = forms.ChoiceField(
+        required=False,
+        choices=[],  # Will be populated in __init__
+        widget=forms.Select(attrs={"class": "form-control form-control-sm"}),
+        label=_("Price Calculator"),
+    )
+    status = forms.ChoiceField(
+        required=False,
+        choices=[
+            ("", _("All Status")),
+            ("active", _("Active")),
+            ("inactive", _("Inactive")),
+        ],
+        widget=forms.Select(attrs={"class": "form-control form-control-sm"}),
+        label=_("Status"),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Get the default shop's price calculator to mark it in choices
+        try:
+            from lfs.core.utils import get_default_shop
+
+            shop = get_default_shop()
+            default_calc = shop.price_calculator
+        except:
+            default_calc = None
+
+        # Build price calculator choices with default indicator
+        calc_choices = [("", _("All Calculators"))]
+        for calc in settings.LFS_PRICE_CALCULATORS:
+            if calc[0] == default_calc:
+                label = f"{calc[1]} (Default)"
+            else:
+                label = calc[1]
+            calc_choices.append((calc[0], label))
+
+        self.fields["price_calculator"].choices = calc_choices
 
 
 class PropertyOptionForm(ModelForm):

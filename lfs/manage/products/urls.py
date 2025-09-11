@@ -1,9 +1,11 @@
 from django.urls import path
 
 from .views import (
+    ApplyProductFiltersView,
     ProductCreateView,
     ProductDeleteConfirmView,
     ProductDeleteView,
+    ProductListView,
     ManageProductsView,
     NoProductsView,
     ProductDataView,
@@ -18,6 +20,7 @@ from .views import (
     ProductSEOView,
     ProductStockView,
     ProductPropertiesView,
+    ResetProductFiltersView,
 )
 
 urlpatterns = [
@@ -25,6 +28,11 @@ urlpatterns = [
         "",
         ManageProductsView.as_view(),
         name="lfs_manage_products2",
+    ),
+    path(
+        "list/",
+        ProductListView.as_view(),
+        name="lfs_manage_products_list",
     ),
     path(
         "add/",
@@ -105,5 +113,27 @@ urlpatterns = [
         "delete-product/<int:id>/",
         ProductDeleteView.as_view(),
         name="lfs_manage_delete_product",
+    ),
+    # Filter URLs for product list
+    path(
+        "list/apply-filters/",
+        ApplyProductFiltersView.as_view(),
+        name="lfs_apply_product_filters_list",
+    ),
+    path(
+        "list/reset-filters/",
+        ResetProductFiltersView.as_view(),
+        name="lfs_reset_product_filters_list",
+    ),
+    # Filter URLs for product detail views
+    path(
+        "<int:id>/apply-filters/",
+        ApplyProductFiltersView.as_view(),
+        name="lfs_apply_product_filters",
+    ),
+    path(
+        "<int:id>/reset-filters/",
+        ResetProductFiltersView.as_view(),
+        name="lfs_reset_product_filters",
     ),
 ]

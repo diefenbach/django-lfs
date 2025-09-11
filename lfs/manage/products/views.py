@@ -7,7 +7,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import RedirectView, TemplateView, UpdateView, CreateView, DeleteView
+from django.views.generic import RedirectView, TemplateView, UpdateView, CreateView, DeleteView, FormView
 
 from lfs.catalog.models import (
     Product,
@@ -30,8 +30,10 @@ from lfs.catalog.settings import (
 )
 from lfs.manage.portlets.views import PortletsInlineView
 from lfs.manage.mixins import DirectDeleteMixin
+from lfs.manage.products.mixins import ProductFilterMixin, ProductPaginationMixin, ProductDataMixin, ProductContextMixin
 
 from .forms import (
+    ProductFilterForm,
     CategoryVariantForm,
     DefaultVariantForm,
     DisplayTypeForm,
@@ -49,13 +51,46 @@ from lfs.caching.listeners import update_product_cache
 from lfs.core.signals import product_removed_property_group
 
 
+class ProductListView(
+    PermissionRequiredMixin,
+    ProductFilterMixin,
+    ProductPaginationMixin,
+    ProductDataMixin,
+    ProductContextMixin,
+    TemplateView,
+):
+    """Shows a table view of all products with filtering and pagination."""
+
+    permission_required = "core.manage_shop"
+    template_name = "manage/products/product_list.html"
+    model = Product
+
+    def get_context_data(self, **kwargs):
+        """Extends context with products and filter form."""
+        ctx = super().get_context_data(**kwargs)
+
+        products_page = self.get_paginated_products()
+        products_with_data = self.get_products_with_data(products_page)
+
+        ctx.update(
+            {
+                "products_page": products_page,
+                "products_with_data": products_with_data,
+                **self.get_product_context_data(),
+            }
+        )
+        return ctx
+
+
 class ManageProductsView(PermissionRequiredMixin, RedirectView):
-    """Redirect to the first product or to the 'no products' page."""
+    """Redirect to the first product's data tab or to the 'no products' page."""
 
     permission_required = "core.manage_shop"
 
     def get_redirect_url(self, *args, **kwargs):
-        p = Product.objects.exclude(sub_type=PRODUCT_VARIANT).first()
+        from lfs.catalog.settings import VARIANT as PRODUCT_VARIANT
+
+        p = Product.objects.exclude(sub_type=PRODUCT_VARIANT).order_by("name").first()
         if p is not None:
             return reverse("lfs_manage_product_data", kwargs={"id": p.id})
         return reverse("lfs_manage_no_products")
@@ -1506,4 +1541,62 @@ class ProductDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequir
         return HttpResponseRedirect(success_url)
 
     def get_success_url(self):
-        return reverse("lfs_manage_products2")
+        return reverse("lfs_manage_products_list")
+
+
+class ApplyProductFiltersView(PermissionRequiredMixin, FormView):
+    """Handles filter form submissions and redirects back to product view."""
+
+    permission_required = "core.manage_shop"
+    form_class = ProductFilterForm
+
+    def form_valid(self, form):
+        """Save filters to session and redirect."""
+        filters = {}
+
+        # Text filters
+        if form.cleaned_data.get("name"):
+            filters["name"] = form.cleaned_data["name"]
+        if form.cleaned_data.get("sku"):
+            filters["sku"] = form.cleaned_data["sku"]
+        if form.cleaned_data.get("sub_type"):
+            filters["sub_type"] = form.cleaned_data["sub_type"]
+        if form.cleaned_data.get("price_calculator"):
+            filters["price_calculator"] = form.cleaned_data["price_calculator"]
+        if form.cleaned_data.get("status"):
+            filters["status"] = form.cleaned_data["status"]
+
+        self.request.session["product-filters"] = filters
+
+        # Determine redirect URL based on current context
+        if "id" in self.kwargs:
+            # We're in a product detail view
+            return HttpResponseRedirect(reverse("lfs_manage_product_data", kwargs={"id": self.kwargs["id"]}))
+        else:
+            # We're in the product list view
+            return HttpResponseRedirect(reverse("lfs_manage_products_list"))
+
+    def form_invalid(self, form):
+        """Handle invalid form - redirect back with error."""
+        messages.error(self.request, _("Invalid filter data."))
+        if "id" in self.kwargs:
+            return HttpResponseRedirect(reverse("lfs_manage_product_data", kwargs={"id": self.kwargs["id"]}))
+        else:
+            return HttpResponseRedirect(reverse("lfs_manage_products_list"))
+
+
+class ResetProductFiltersView(PermissionRequiredMixin, RedirectView):
+    """Resets all product filters."""
+
+    permission_required = "core.manage_shop"
+
+    def get_redirect_url(self, *args, **kwargs):
+        """Reset filters and redirect."""
+        if "product-filters" in self.request.session:
+            del self.request.session["product-filters"]
+
+        # Determine redirect URL based on current context
+        if "id" in self.kwargs:
+            return reverse("lfs_manage_product_data", kwargs={"id": self.kwargs["id"]})
+        else:
+            return reverse("lfs_manage_products_list")
