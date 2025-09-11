@@ -4,7 +4,7 @@ from typing import Dict, List, Tuple, Any, Optional
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.paginator import EmptyPage, Paginator
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -215,15 +215,18 @@ class PropertyGroupProductsView(PermissionRequiredMixin, PropertyGroupTabMixin, 
             page = r.get("page", s.get("property_group_page", 1))
             filter_ = r.get("filter", s.get("filter"))
             category_filter = r.get("products_category_filter", s.get("products_category_filter"))
+            amount = int(r.get("products-amount", s.get("products_amount", 25)))
         else:
             page = r.get("page", 1)
             filter_ = r.get("filter")
             category_filter = r.get("products_category_filter")
+            amount = int(r.get("products-amount", 25))
 
         # Save filters in session (convert None to empty string for display)
         s["property_group_page"] = page
         s["filter"] = filter_ or ""
         s["products_category_filter"] = category_filter or ""
+        s["products_amount"] = amount
 
         # Apply filters
         filters = Q()
@@ -243,12 +246,9 @@ class PropertyGroupProductsView(PermissionRequiredMixin, PropertyGroupTabMixin, 
 
         # Get available products (excluding already assigned)
         products = Product.objects.select_related("parent").filter(filters)
-        paginator = Paginator(products.exclude(pk__in=group_products), 25)
+        paginator = Paginator(products.exclude(pk__in=group_products), amount)
 
-        try:
-            page_obj = paginator.page(page)
-        except EmptyPage:
-            page_obj = 0
+        page_obj = paginator.get_page(page)
 
         # Get all categories for filter dropdown in hierarchical structure
         categories = self._build_hierarchical_categories()
@@ -261,6 +261,7 @@ class PropertyGroupProductsView(PermissionRequiredMixin, PropertyGroupTabMixin, 
                 "filter": filter_ or "",
                 "category_filter": category_filter or "",
                 "categories": categories,
+                "amount": amount,
             }
         )
         return ctx
@@ -401,6 +402,7 @@ class PropertyGroupPropertiesView(PermissionRequiredMixin, PropertyGroupTabMixin
                 "page": page,
                 "filter": filter_value,
                 "type_filter": type_filter,
+                "amount": amount,
             }
         )
         return ctx

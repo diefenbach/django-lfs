@@ -44,7 +44,9 @@
                         hx-include="this">
                     <option value="All">{% trans "All Categories" %}</option>
                     <option value="None" {% if category_filter == "None" %}selected{% endif %}>{% trans "No Category" %}</option>
-                    <!-- Add category options here if needed -->
+                    {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category_filter == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name|safe }}</option>
+                    {% endfor %}
                 </select>
             </div>
             
@@ -60,9 +62,9 @@
                         hx-swap="outerHTML"
                         hx-trigger="change"
                         hx-include="this">
-                    <option value="25" selected>25 {% trans "per page" %}</option>
-                    <option value="50">50 {% trans "per page" %}</option>
-                    <option value="100">100 {% trans "per page" %}</option>
+                    <option value="25" {% if amount == 25 %}selected{% endif %}>25 {% trans "per page" %}</option>
+                    <option value="50" {% if amount == 50 %}selected{% endif %}>50 {% trans "per page" %}</option>
+                    <option value="100" {% if amount == 100 %}selected{% endif %}>100 {% trans "per page" %}</option>
                 </select>
             </div>
         </div>
