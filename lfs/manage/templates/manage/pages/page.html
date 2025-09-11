@@ -34,8 +34,6 @@
                                href="{% url 'lfs_manage_page' p.id %}{% if search_query %}?q={{ search_query }}{% endif %}">
                                 {{ p.title }}
                             </a>
-                        {% empty %}
-                            <div class="text-muted small">{% trans "No pages found." %}</div>
                         {% endfor %}
                     </div>
                 </div>
