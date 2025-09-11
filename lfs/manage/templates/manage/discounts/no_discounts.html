@@ -7,24 +7,24 @@
 {% block left-slot-wrapper %}{% endblock %}
 
 {% block content %}
-    <div class="text-center py-5">
-        <h2 class="h4 mb-3">{% trans "Discounts" %}</h2>
-        <div class="no-content mb-4">
-            <i class="bi bi-percent-circle display-1 text-muted"></i>
-            <p class="text-muted">{% trans "There are no discounts yet." %}</p>
-        </div>
-
-        <div class="buttons">
-            <button class="btn btn-primary"
-                    hx-get="{% url 'lfs_manage_add_discount' %}"
-                    hx-target="#modal-body-lg"
-                    hx-swap="innerHTML">
-                <i class="bi bi-plus-circle me-1"></i>
-                {% trans 'Add Discount' %}
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <div class="text-center">
+            <div class="mb-4">
+                <i class="bi bi-percent-circle display-1 text-muted"></i>
+            </div>
+            <h2 class="h4 mb-3">{% trans "No Discounts" %}</h2>
+            <p class="text-muted mb-4">
+                {% trans "You haven't created any discounts yet. Discounts help you offer special pricing and promotional deals to your customers." %}
+            </p>
+            <button type="button" class="btn btn-primary" 
+                hx-get="{% url 'lfs_manage_add_discount' %}"
+                hx-target="#modal-body-lg"
+                hx-trigger="click" 
+                hx-swap="innerHTML">
+                <i class="bi bi-plus-circle"></i>
+                {% trans "Create Your First Discount" %}
             </button>
         </div>
     </div>
-
-    <!-- Include required modal sizes -->
     {% include 'manage/snippets/modals/modal-lg.html' %}
 {% endblock %}

@@ -4,26 +4,23 @@
 {% block help_link %}/user/management/html/static_block.html{% endblock %}
 
 {% block content %}
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm my-5">
-                <div class="card-body text-center p-5">
-                    <h2 class="card-title mb-4">{% trans "Static Blocks" %}</h2>
-                    <div id="data-content" class="card-text mb-4">
-                        {% trans "There are no static blocks yet." %}
-                    </div>
-
-                    <div class="buttons mt-4">
-                        <button class="btn btn-primary" 
-                                hx-get="{% url 'lfs_manage_add_static_block' %}" 
-                                hx-target="#modal-body-lg" 
-                                hx-trigger="click" 
-                                hx-swap="innerHTML">
-                            {% trans "Add Static Block" %}
-                        </button>
-                    </div>
-                </div>
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <div class="text-center">
+            <div class="mb-4">
+                <i class="bi bi-layout-text-window display-1 text-muted"></i>
             </div>
+            <h2 class="h4 mb-3">{% trans "No Static Blocks" %}</h2>
+            <p class="text-muted mb-4">
+                {% trans "You haven't created any static blocks yet. Static blocks allow you to add custom HTML content to your store pages." %}
+            </p>
+            <button type="button" class="btn btn-primary" 
+                hx-get="{% url 'lfs_manage_add_static_block' %}"
+                hx-target="#modal-body-lg"
+                hx-trigger="click" 
+                hx-swap="innerHTML">
+                <i class="bi bi-plus-circle"></i>
+                {% trans "Create Your First Static Block" %}
+            </button>
         </div>
     </div>
     {% include 'manage/snippets/modals/modal-lg.html' %}

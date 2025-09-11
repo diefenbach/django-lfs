@@ -13,10 +13,15 @@
             <p class="text-muted mb-4">
                 {% trans "You haven't created any categories yet. Categories help organize your products and make them easier to find." %}
             </p>
-            <a href="{% url 'lfs_manage_add_top_category' %}" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" 
+                hx-get="{% url 'lfs_manage_add_top_category' %}"
+                hx-target="#modal-body-lg"
+                hx-trigger="click" 
+                hx-swap="innerHTML">
                 <i class="bi bi-plus-circle"></i>
                 {% trans "Create Your First Category" %}
-            </a>
+            </button>
         </div>
     </div>
+    {% include 'manage/snippets/modals/modal-lg.html' %}
 {% endblock %}

@@ -5,35 +5,23 @@
 {% block section %}no-delivery-times{% endblock %}
 
 {% block content %}
-    <div class="lfs-delivery-times">
-        <div class="row">
-            <aside class="col-3 bg-white border-end vh-100 p-4">
-                <h2 class="h4 mb-3">{% trans "Delivery Times" %}</h2>
-                <div class="no-content">
-                    {% trans "There are no delivery times yet." %}
-                </div>
-            </aside>
-
-            <main class="col-9 p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="h4 mb-3">{% trans 'No Delivery Times' %}</h2>
-                </div>
-                
-                <div class="card">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">{% trans "No delivery times available" %}</h5>
-                        <p class="card-text">{% trans "There are no delivery times yet. Create your first delivery time to get started." %}</p>
-                        <button class="btn btn-primary" 
-                            hx-get="{% url 'lfs_manage_add_delivery_time' %}" 
-                            hx-target="#modal-body-lg" 
-                            hx-trigger="click" 
-                            hx-swap="innerHTML">
-                            <i class="bi bi-plus-circle-fill"></i>
-                            {% trans 'Add Delivery Time' %}
-                        </button>
-                    </div>
-                </div>
-            </main>
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <div class="text-center">
+            <div class="mb-4">
+                <i class="bi bi-truck display-1 text-muted"></i>
+            </div>
+            <h2 class="h4 mb-3">{% trans "No Delivery Times" %}</h2>
+            <p class="text-muted mb-4">
+                {% trans "You haven't created any delivery times yet. Delivery times help customers understand when they can expect their orders to arrive." %}
+            </p>
+            <button type="button" class="btn btn-primary" 
+                hx-get="{% url 'lfs_manage_add_delivery_time' %}"
+                hx-target="#modal-body-lg"
+                hx-trigger="click" 
+                hx-swap="innerHTML">
+                <i class="bi bi-plus-circle"></i>
+                {% trans "Create Your First Delivery Time" %}
+            </button>
         </div>
     </div>
     {% include 'manage/snippets/modals/modal-lg.html' %}

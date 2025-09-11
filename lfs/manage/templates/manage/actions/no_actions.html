@@ -5,26 +5,23 @@
 
 
 {% block content %}
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm my-5">
-                <div class="card-body text-center p-5">
-                    <h2 class="card-title mb-4">{% trans "Actions" %}</h2>
-                    <div id="data-content" class="card-text mb-4">
-                        {% trans "There are no actions defined yet." %}
-                    </div>
-
-                    <div class="buttons mt-4">
-                        <button class="btn btn-primary" 
-                                hx-get="{% url 'lfs_add_action' %}" 
-                                hx-target="#modal-body-lg" 
-                                hx-trigger="click" 
-                                hx-swap="innerHTML">
-                            {% trans "Add Action" %}
-                        </button>
-                    </div>
-                </div>
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <div class="text-center">
+            <div class="mb-4">
+                <i class="bi bi-lightning display-1 text-muted"></i>
             </div>
+            <h2 class="h4 mb-3">{% trans "No Actions" %}</h2>
+            <p class="text-muted mb-4">
+                {% trans "You haven't created any actions yet. Actions allow you to define custom behaviors and workflows for your store." %}
+            </p>
+            <button type="button" class="btn btn-primary" 
+                hx-get="{% url 'lfs_add_action' %}"
+                hx-target="#modal-body-lg"
+                hx-trigger="click" 
+                hx-swap="innerHTML">
+                <i class="bi bi-plus-circle"></i>
+                {% trans "Create Your First Action" %}
+            </button>
         </div>
     </div>
     {% include 'manage/snippets/modals/modal-lg.html' %}
