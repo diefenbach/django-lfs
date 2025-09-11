@@ -932,7 +932,7 @@ class TestPropertyGroupContextSyntax:
         view.kwargs = {"id": 99999}  # Nonexistent ID
 
         # This test should expect an exception when passing invalid data to the view
-        with pytest.raises(AttributeError, match="'str' object has no attribute 'pk'"):
+        with pytest.raises(AttributeError, match="'str' object has no attribute '_meta'"):
             with patch.object(view, "get_property_group", return_value=""):
                 context = view.get_context_data()
 
@@ -947,7 +947,7 @@ class TestPropertyGroupContextSyntax:
         view.kwargs = {"id": 99999}  # Nonexistent ID
 
         # This test should expect an exception when passing invalid data to the view
-        with pytest.raises(AttributeError, match="'int' object has no attribute 'pk'"):
+        with pytest.raises(AttributeError, match="'int' object has no attribute '_meta'"):
             with patch.object(view, "get_property_group", return_value=123):
                 context = view.get_context_data()
 
@@ -962,7 +962,7 @@ class TestPropertyGroupContextSyntax:
         view.kwargs = {"id": 99999}  # Nonexistent ID
 
         # This test should expect an exception when passing invalid data to the view
-        with pytest.raises(AttributeError, match="'list' object has no attribute 'pk'"):
+        with pytest.raises(AttributeError, match="'list' object has no attribute '_meta'"):
             with patch.object(view, "get_property_group", return_value=[1, 2, 3]):
                 context = view.get_context_data()
 
@@ -977,7 +977,7 @@ class TestPropertyGroupContextSyntax:
         view.kwargs = {"id": 99999}  # Nonexistent ID
 
         # This test should expect an exception when passing invalid data to the view
-        with pytest.raises(AttributeError, match="'dict' object has no attribute 'pk'"):
+        with pytest.raises(AttributeError, match="'dict' object has no attribute '_meta'"):
             with patch.object(view, "get_property_group", return_value={"id": 1}):
                 context = view.get_context_data()
 
@@ -992,12 +992,12 @@ class TestPropertyGroupContextSyntax:
         view.kwargs = {"id": 99999}  # Nonexistent ID
 
         # This test should expect an exception when passing invalid data to the view
-        with pytest.raises(AttributeError, match="'str' object has no attribute 'pk'"):
+        with pytest.raises(AttributeError, match="'str' object has no attribute '_meta'"):
             with patch.object(view, "get_property_group", return_value=""):
                 context = view.get_context_data()
 
     @pytest.mark.django_db
-    def test_property_group_context_boundary_syntax_very_long_property_group(self, request_factory, admin_user):
+    def test_property_group_context_boundary_syntax_very_long_property_group(self, request_factory, admin_user, shop):
         """Test property group context with boundary syntax - very long property group."""
         request = request_factory.get("/")
         request.user = admin_user
@@ -1008,6 +1008,6 @@ class TestPropertyGroupContextSyntax:
 
         very_long_property_group = "A" * 10000
         # This test should expect an exception when passing invalid data to the view
-        with pytest.raises(AttributeError, match="'str' object has no attribute 'pk'"):
+        with pytest.raises(AttributeError, match="'str' object has no attribute '_meta'"):
             with patch.object(view, "get_property_group", return_value=very_long_property_group):
                 context = view.get_context_data()

@@ -66,7 +66,7 @@ def shop(db):
 
 
 @pytest.fixture
-def comprehensive_property_group_data(db):
+def comprehensive_property_group_data(db, shop):
     """Comprehensive property group data for workflow testing."""
     property_groups = []
 

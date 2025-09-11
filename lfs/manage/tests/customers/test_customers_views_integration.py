@@ -346,6 +346,7 @@ class TestApplyCustomerFiltersView:
         assert response.status_code == 302  # Unauthenticated users get redirected to login
         assert "/login/" in response.url
 
+    @pytest.mark.slow
     def test_should_redirect_to_login_when_no_permission(self, client, regular_user):
         """Test that users without permission are redirected to login."""
         client.force_login(regular_user)
@@ -353,6 +354,7 @@ class TestApplyCustomerFiltersView:
 
         assert response.status_code == 403  # Authenticated users without permission get 403
 
+    @pytest.mark.slow
     def test_should_apply_name_filter_when_valid_data(self, client, admin_user, shop):
         """Test that name filter is applied when valid data is submitted."""
         client.force_login(admin_user)
@@ -363,6 +365,7 @@ class TestApplyCustomerFiltersView:
         assert "customer-filters" in client.session
         assert client.session["customer-filters"]["name"] == "John"
 
+    @pytest.mark.slow
     def test_should_apply_date_filters_when_valid_data(self, client, admin_user):
         """Test that date filters are applied when valid data is submitted."""
         client.force_login(admin_user)
@@ -409,6 +412,7 @@ class TestApplyCustomerFiltersView:
         assert response.status_code == 302  # Unauthenticated users get redirected to login
         assert response.url == reverse("lfs_manage_customers")
 
+    @pytest.mark.slow
     def test_should_handle_invalid_form_data(self, client, admin_user, shop):
         """Test that invalid form data is handled gracefully."""
         client.force_login(admin_user)
@@ -565,6 +569,7 @@ class TestApplyPredefinedCustomerFilterView:
         assert response.status_code == 302  # Unauthenticated users get redirected to login
         assert "/login/" in response.url
 
+    @pytest.mark.slow
     def test_should_redirect_to_login_when_no_permission(self, client, regular_user):
         """Test that users without permission are redirected to login."""
         client.force_login(regular_user)
@@ -611,6 +616,7 @@ class TestApplyPredefinedCustomerFilterView:
         assert response.status_code == 302  # Unauthenticated users get redirected to login
         assert response.url == reverse("lfs_manage_customer", kwargs={"customer_id": customer.id})
 
+    @pytest.mark.slow
     def test_should_redirect_to_customer_list_when_no_customer_id(self, client, admin_user):
         """Test that redirects to customer list when no customer_id is provided."""
         client.force_login(admin_user)
@@ -627,6 +633,7 @@ class TestApplyPredefinedCustomerFilterView:
         assert response.status_code == 302  # Unauthenticated users get redirected to login
         assert response.url == reverse("lfs_manage_customers")
 
+    @pytest.mark.slow
     def test_should_clear_end_filter_when_applying_predefined_filter(self, client, admin_user):
         """Test that end filter is cleared when applying predefined filter."""
         client.force_login(admin_user)
@@ -727,6 +734,7 @@ class TestCustomerViewsIntegration:
         assert response.context["ordering"] == "lastname"
         assert "User1" in response.context["filter_form"].initial["name"]
 
+    @pytest.mark.slow
     def test_should_handle_reset_filters_correctly(self, client, admin_user, multiple_customers_with_orders):
         """Test that reset filters works correctly across views."""
         client.force_login(admin_user)

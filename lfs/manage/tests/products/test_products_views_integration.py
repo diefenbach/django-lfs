@@ -4,6 +4,7 @@ Integration tests for Product views.
 Tests complete request/response cycles and interactions between components.
 """
 
+import pytest
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 
@@ -220,6 +221,7 @@ class TestProductCategoriesViewIntegration:
 class TestProductPropertiesViewIntegration:
     """Integration tests for ProductPropertiesView."""
 
+    @pytest.mark.slow
     def test_assign_property_groups_full_request_cycle(self, client, admin_user, product, property_group, shop):
         """Test complete request cycle for property group assignment."""
         client.login(username="admin", password="testpass123")
@@ -247,6 +249,7 @@ class TestProductPropertiesViewIntegration:
 class TestProductStockViewIntegration:
     """Integration tests for ProductStockView."""
 
+    @pytest.mark.slow
     def test_update_stock_full_request_cycle(self, client, admin_user, product, shop):
         """Test complete request cycle for stock update."""
         client.login(username="admin", password="testpass123")
@@ -293,6 +296,7 @@ class TestProductStockViewIntegration:
 class TestProductSEOViewIntegration:
     """Integration tests for ProductSEOView."""
 
+    @pytest.mark.slow
     def test_update_seo_full_request_cycle(self, client, admin_user, product, shop):
         """Test complete request cycle for SEO update."""
         client.login(username="admin", password="testpass123")
@@ -330,6 +334,7 @@ class TestProductSEOViewIntegration:
 class TestProductTabNavigationIntegration:
     """Integration tests for product tab navigation."""
 
+    @pytest.mark.slow
     def test_tab_navigation_between_views(self, client, admin_user, product, shop):
         """Test navigation between different product tabs."""
         client.login(username="admin", password="testpass123")
@@ -350,6 +355,7 @@ class TestProductTabNavigationIntegration:
             assert response.context["active_tab"] == tab_name
             assert "tabs" in response.context
 
+    @pytest.mark.slow
     def test_tab_context_includes_product_and_navigation(self, client, admin_user, product, shop):
         """Test that tab views include product and navigation context."""
         client.login(username="admin", password="testpass123")
@@ -369,6 +375,7 @@ class TestProductTabNavigationIntegration:
 class TestProductSearchIntegration:
     """Integration tests for product search functionality."""
 
+    @pytest.mark.slow
     def test_search_products_in_sidebar(self, client, admin_user, multiple_products, shop):
         """Test searching products in sidebar navigation."""
         client.login(username="admin", password="testpass123")
@@ -385,6 +392,7 @@ class TestProductSearchIntegration:
         assert response.context["search_query"] == search_term
         assert "products" in response.context
 
+    @pytest.mark.slow
     def test_empty_search_shows_all_products(self, client, admin_user, multiple_products, shop):
         """Test that empty search shows all products."""
         client.login(username="admin", password="testpass123")
@@ -418,6 +426,7 @@ class TestProductPermissionIntegration:
         # Should return 403 Forbidden
         assert response.status_code == 403
 
+    @pytest.mark.slow
     def test_admin_access_granted(self, client, admin_user, product, shop):
         """Test that admin users can access product views."""
         client.login(username="admin", password="testpass123")

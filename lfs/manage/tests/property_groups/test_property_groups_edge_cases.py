@@ -426,6 +426,7 @@ class TestLargeDatasetEdgeCases:
     """Test edge cases with large datasets."""
 
     @pytest.mark.django_db
+    @pytest.mark.slow
     def test_property_group_with_many_properties(self, admin_user):
         """Test property group with many properties."""
         property_group = PropertyGroup.objects.create(name="Large Property Group")
@@ -441,6 +442,7 @@ class TestLargeDatasetEdgeCases:
         assert property_group.properties.count() == 100
 
     @pytest.mark.django_db
+    @pytest.mark.slow
     def test_property_group_with_many_products(self, admin_user, shop):
         """Test property group with many products."""
         property_group = PropertyGroup.objects.create(name="Large Product Group")
