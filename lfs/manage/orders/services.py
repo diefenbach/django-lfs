@@ -117,6 +117,8 @@ class OrderDataService:
 
     def get_order_with_data(self, order):
         """Get a single order enriched with calculated data."""
+        if order is None:
+            return None
         result = self.get_orders_with_data([order])
         return result[0] if result else None
 

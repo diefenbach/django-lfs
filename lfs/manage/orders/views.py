@@ -219,7 +219,7 @@ class ApplyPredefinedOrderFilterView(PermissionRequiredMixin, RedirectView):
     permission_required = "core.manage_shop"
 
     def get_redirect_url(self, *args, **kwargs):
-        order_id = self.kwargs.get("order_id")
+        order_id = self.request.GET.get("order_id") or self.kwargs.get("order_id")
         filter_type = self.kwargs.get("filter_type")
 
         now = timezone.now()

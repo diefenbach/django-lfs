@@ -18,7 +18,6 @@ Tests cover:
 
 import pytest
 from datetime import date
-from unittest.mock import MagicMock
 
 from django.test import RequestFactory
 
@@ -44,8 +43,20 @@ def mock_request(request_factory):
 @pytest.fixture
 def mock_request_with_filters(request_factory):
     """Mock request with session filters."""
+    from django.utils import timezone
+    from datetime import date
+
     request = request_factory.get("/")
-    request.session = {"order-filters": {"name": "John Doe", "state": "1", "start": "2023-01-01", "end": "2023-12-31"}}
+    # Use current year and match the actual order data
+    current_year = timezone.now().year
+    request.session = {
+        "order-filters": {
+            "name": "Customer",
+            "state": "0",
+            "start": f"{current_year}-01-01",
+            "end": f"{current_year}-12-31",
+        }
+    }
     return request
 
 
@@ -68,7 +79,15 @@ class TestOrderFilterMixin:
 
         filters = mixin.get_order_filters()
 
-        expected_filters = {"name": "John Doe", "state": "1", "start": "2023-01-01", "end": "2023-12-31"}
+        from django.utils import timezone
+
+        current_year = timezone.now().year
+        expected_filters = {
+            "name": "Customer",
+            "state": "0",
+            "start": f"{current_year}-01-01",
+            "end": f"{current_year}-12-31",
+        }
         assert filters == expected_filters
 
     def test_get_filtered_orders_queryset_no_filters(self, mock_request):
@@ -113,10 +132,13 @@ class TestOrderFilterMixin:
 
         initial = mixin.get_filter_form_initial()
 
-        assert initial["name"] == "John Doe"
-        assert initial["state"] == "1"
-        assert initial["start"] == date(2023, 1, 1)
-        assert initial["end"] == date(2023, 12, 31)
+        assert initial["name"] == "Customer"
+        assert initial["state"] == "0"
+        from django.utils import timezone
+
+        current_year = timezone.now().year
+        assert initial["start"] == date(current_year, 1, 1)
+        assert initial["end"] == date(current_year, 12, 31)
 
 
 class TestOrderPaginationMixin:
@@ -124,7 +146,11 @@ class TestOrderPaginationMixin:
 
     def test_get_paginated_orders_default_page_size(self, mock_request, multiple_orders):
         """Should paginate with default page size of 20."""
-        mixin = OrderPaginationMixin()
+
+        class CombinedMixin(OrderFilterMixin, OrderPaginationMixin):
+            pass
+
+        mixin = CombinedMixin()
         mixin.request = mock_request
 
         page = mixin.get_paginated_orders()
@@ -135,7 +161,11 @@ class TestOrderPaginationMixin:
 
     def test_get_paginated_orders_custom_page_size(self, mock_request, multiple_orders):
         """Should paginate with custom page size."""
-        mixin = OrderPaginationMixin()
+
+        class CombinedMixin(OrderFilterMixin, OrderPaginationMixin):
+            pass
+
+        mixin = CombinedMixin()
         mixin.request = mock_request
 
         page = mixin.get_paginated_orders(page_size=5)
@@ -147,19 +177,25 @@ class TestOrderPaginationMixin:
         request = request_factory.get("/?page=2")
         request.session = {}
 
-        mixin = OrderPaginationMixin()
+        class CombinedMixin(OrderFilterMixin, OrderPaginationMixin):
+            pass
+
+        mixin = CombinedMixin()
         mixin.request = request
 
         page = mixin.get_paginated_orders(page_size=2)
 
         assert page.number == 2
 
-    def test_get_paginated_orders_empty_queryset(self, mock_request):
+    def test_get_paginated_orders_empty_queryset(self, mock_request, db):
         """Should handle empty queryset gracefully."""
         # Ensure no orders exist
         Order.objects.all().delete()
 
-        mixin = OrderPaginationMixin()
+        class CombinedMixin(OrderFilterMixin, OrderPaginationMixin):
+            pass
+
+        mixin = CombinedMixin()
         mixin.request = mock_request
 
         page = mixin.get_paginated_orders()
@@ -215,7 +251,11 @@ class TestOrderContextMixin:
 
     def test_get_order_context_data_no_filters(self, mock_request):
         """Should return context data with empty filters."""
-        mixin = OrderContextMixin()
+
+        class CombinedMixin(OrderFilterMixin, OrderContextMixin):
+            pass
+
+        mixin = CombinedMixin()
         mixin.request = mock_request
 
         context = mixin.get_order_context_data()
@@ -227,28 +267,39 @@ class TestOrderContextMixin:
 
     def test_get_order_context_data_with_filters(self, mock_request_with_filters):
         """Should return context data with populated filters."""
-        mixin = OrderContextMixin()
+
+        class CombinedMixin(OrderFilterMixin, OrderContextMixin):
+            pass
+
+        mixin = CombinedMixin()
         mixin.request = mock_request_with_filters
 
         context = mixin.get_order_context_data()
 
         assert "order_filters" in context
         assert "filter_form" in context
-        assert context["order_filters"]["name"] == "John Doe"
+        assert context["order_filters"]["name"] == "Customer"
         assert isinstance(context["filter_form"], OrderFilterForm)
 
     def test_get_order_context_data_form_initial_values(self, mock_request_with_filters):
         """Should initialize form with parsed filter values."""
-        mixin = OrderContextMixin()
+
+        class CombinedMixin(OrderFilterMixin, OrderContextMixin):
+            pass
+
+        mixin = CombinedMixin()
         mixin.request = mock_request_with_filters
 
         context = mixin.get_order_context_data()
         form = context["filter_form"]
 
-        assert form.initial["name"] == "John Doe"
-        assert form.initial["state"] == "1"
-        assert form.initial["start"] == date(2023, 1, 1)
-        assert form.initial["end"] == date(2023, 12, 31)
+        assert form.initial["name"] == "Customer"
+        assert form.initial["state"] == "0"
+        from django.utils import timezone
+
+        current_year = timezone.now().year
+        assert form.initial["start"] == date(current_year, 1, 1)
+        assert form.initial["end"] == date(current_year, 12, 31)
 
 
 class TestOrderMixinIntegration:
@@ -270,31 +321,58 @@ class TestOrderMixinIntegration:
         assert hasattr(mixin, "get_order_summary")
         assert hasattr(mixin, "get_order_context_data")
 
-    def test_mixin_error_handling_session_none(self):
+    def test_mixin_error_handling_session_none(self, monkeypatch):
         """Test mixin handles None session gracefully."""
         mixin = OrderFilterMixin()
-        mixin.request = MagicMock()
-        mixin.request.session = None
+
+        # Create a mock request with None session
+        mock_request = type("MockRequest", (), {"session": None})()
+
+        # Use monkeypatch to patch hasattr to return True for 'request'
+        original_hasattr = hasattr
+
+        def mock_hasattr(obj, name):
+            if obj is mixin and name == "request":
+                return True
+            return original_hasattr(obj, name)
+
+        monkeypatch.setattr("builtins.hasattr", mock_hasattr)
+        mixin.request = mock_request
 
         # Should not crash
         filters = mixin.get_order_filters()
         assert filters == {}
 
-    def test_mixin_error_handling_missing_session_key(self):
+    def test_mixin_error_handling_missing_session_key(self, monkeypatch):
         """Test mixin handles missing session key gracefully."""
         mixin = OrderFilterMixin()
-        mixin.request = MagicMock()
-        mixin.request.session = {"other_key": "value"}
+
+        # Create a mock request with session missing the order-filters key
+        mock_request = type("MockRequest", (), {"session": {"other_key": "value"}})()
+
+        # Use monkeypatch to patch hasattr to return True for 'request'
+        original_hasattr = hasattr
+
+        def mock_hasattr(obj, name):
+            if obj is mixin and name == "request":
+                return True
+            return original_hasattr(obj, name)
+
+        monkeypatch.setattr("builtins.hasattr", mock_hasattr)
+        mixin.request = mock_request
 
         filters = mixin.get_order_filters()
         assert filters == {}
 
-    def test_pagination_mixin_with_invalid_page(self, request_factory):
+    def test_pagination_mixin_with_invalid_page(self, request_factory, db):
         """Test pagination mixin handles invalid page numbers."""
         request = request_factory.get("/?page=invalid")
         request.session = {}
 
-        mixin = OrderPaginationMixin()
+        class CombinedMixin(OrderFilterMixin, OrderPaginationMixin):
+            pass
+
+        mixin = CombinedMixin()
         mixin.request = request
 
         page = mixin.get_paginated_orders(page_size=5)
@@ -302,11 +380,25 @@ class TestOrderMixinIntegration:
         # Should default to page 1
         assert page.number == 1
 
-    def test_filter_mixin_with_malformed_dates(self):
+    def test_filter_mixin_with_malformed_dates(self, monkeypatch):
         """Test filter mixin handles malformed date strings."""
         mixin = OrderFilterMixin()
-        mixin.request = MagicMock()
-        mixin.request.session = {"order-filters": {"start": "invalid-date", "end": "also-invalid"}}
+
+        # Create a mock request with malformed date filters
+        mock_request = type(
+            "MockRequest", (), {"session": {"order-filters": {"start": "invalid-date", "end": "also-invalid"}}}
+        )()
+
+        # Use monkeypatch to patch hasattr to return True for 'request'
+        original_hasattr = hasattr
+
+        def mock_hasattr(obj, name):
+            if obj is mixin and name == "request":
+                return True
+            return original_hasattr(obj, name)
+
+        monkeypatch.setattr("builtins.hasattr", mock_hasattr)
+        mixin.request = mock_request
 
         initial = mixin.get_filter_form_initial()
 

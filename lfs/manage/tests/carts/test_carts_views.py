@@ -18,7 +18,7 @@ Tests cover:
 
 import pytest
 from datetime import datetime, date
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.http import Http404
@@ -52,9 +52,15 @@ def mock_request(request_factory):
     request = request_factory.get("/")
     request.session = {}
     # Mock messages framework for unit tests
-    messages_mock = MagicMock()
-    messages_mock.success = MagicMock()
-    messages_mock.error = MagicMock()
+    messages_mock = type(
+        "MockMessages",
+        (),
+        {
+            "success": lambda msg: None,
+            "error": lambda msg: None,
+            "add": lambda self, level, message, extra_tags="": None,
+        },
+    )()
     request._messages = messages_mock
     return request
 

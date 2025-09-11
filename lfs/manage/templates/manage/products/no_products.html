@@ -1,0 +1,23 @@
+{% extends "manage/manage_base.html" %}
+{% load i18n %}
+
+{% block section %}manage-product{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body p-5 text-center">
+          <div class="display-6 mb-3">{% trans "Products" %}</div>
+          <p class="text-muted mb-4">{% trans "There are no products yet." %}</p>
+          <a class="btn btn-primary" href="{% url 'lfs_manage_add_product' %}">
+            {% trans "Add your first product" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

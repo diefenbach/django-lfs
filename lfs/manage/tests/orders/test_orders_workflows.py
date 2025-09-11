@@ -20,7 +20,6 @@ Workflows covered:
 """
 
 import pytest
-from decimal import Decimal
 from datetime import date, timedelta
 
 from django.contrib.auth import get_user_model
@@ -42,42 +41,56 @@ def admin_user(db):
 @pytest.fixture
 def order(db, customer, address, payment_method, shipping_method):
     """Create a test order."""
+    from django.contrib.contenttypes.models import ContentType
+
+    address_content_type = ContentType.objects.get_for_model(address.__class__)
+
     return Order.objects.create(
-        customer=customer,
-        billing_address=address,
-        shipping_address=address,
-        payment_method=payment_method,
-        shipping_method=shipping_method,
+        number="WORKFLOW001",
+        user=None,
+        session=customer.session,
         state=1,  # Submitted state
         customer_firstname="John",
         customer_lastname="Doe",
         customer_email="customer@example.com",
-        subtotal=Decimal("10.00"),
-        shipping_price=Decimal("5.00"),
-        payment_price=Decimal("0.00"),
-        total=Decimal("15.00"),
+        price=10.00,
+        shipping_price=5.00,
+        payment_price=0.00,
+        sa_content_type=address_content_type,
+        sa_object_id=address.id,
+        ia_content_type=address_content_type,
+        ia_object_id=address.id,
+        shipping_method=shipping_method,
+        payment_method=payment_method,
     )
 
 
 @pytest.fixture
 def multiple_orders(db, customer, address, payment_method, shipping_method, product):
     """Create multiple orders for testing."""
+    from django.contrib.contenttypes.models import ContentType
+
+    address_content_type = ContentType.objects.get_for_model(address.__class__)
     orders = []
+
     for i in range(5):
         order = Order.objects.create(
-            customer=customer,
-            billing_address=address,
-            shipping_address=address,
-            payment_method=payment_method,
-            shipping_method=shipping_method,
+            number=f"WORKFLOW{i:03d}",
+            user=None,
+            session=customer.session,
             state=i + 1,  # Different states
             customer_firstname=f"John{i}",
             customer_lastname=f"Doe{i}",
             customer_email=f"john{i}@example.com",
-            subtotal=Decimal("10.00"),
-            shipping_price=Decimal("5.00"),
-            payment_price=Decimal("0.00"),
-            total=Decimal("15.00"),
+            price=10.00,
+            shipping_price=5.00,
+            payment_price=0.00,
+            sa_content_type=address_content_type,
+            sa_object_id=address.id,
+            ia_content_type=address_content_type,
+            ia_object_id=address.id,
+            shipping_method=shipping_method,
+            payment_method=payment_method,
             created=date.today() - timedelta(days=i),
         )
         OrderItem.objects.create(
@@ -85,10 +98,12 @@ def multiple_orders(db, customer, address, payment_method, shipping_method, prod
             product=product,
             product_name="Test Product",
             product_sku="TEST001",
-            product_price_net=Decimal("10.00"),
-            product_price_gross=Decimal("10.00"),
-            product_quantity=1,
-            total=Decimal("10.00"),
+            product_price_net=10.00,
+            product_price_gross=10.00,
+            product_amount=1,
+            price_net=10.00,
+            price_gross=10.00,
+            tax=0.00,
         )
         orders.append(order)
     return orders
@@ -186,15 +201,15 @@ class TestOrderManagementWorkflow:
         client.force_login(admin_user)
 
         # Step 1: Apply "today" filter
-        today_response = client.get(reverse("lfs_apply_predefined_order_filter", args=["today"]))
+        today_response = client.get(reverse("lfs_apply_predefined_order_filter", kwargs={"filter_type": "today"}))
         assert today_response.status_code == 302
 
         # Step 2: Apply "week" filter
-        week_response = client.get(reverse("lfs_apply_predefined_order_filter", args=["week"]))
+        week_response = client.get(reverse("lfs_apply_predefined_order_filter", kwargs={"filter_type": "week"}))
         assert week_response.status_code == 302
 
         # Step 3: Apply "month" filter
-        month_response = client.get(reverse("lfs_apply_predefined_order_filter", args=["month"]))
+        month_response = client.get(reverse("lfs_apply_predefined_order_filter", kwargs={"filter_type": "month"}))
         assert month_response.status_code == 302
 
         # Step 4: Verify filters are working (check that request succeeds)
@@ -273,7 +288,7 @@ class TestOrderPermissionWorkflow:
         """Test workflow: regular user tries to delete -> access denied."""
         client.force_login(regular_user)
 
-        response = client.post(reverse("lfs_manage_delete_order", args=[order.id]))
+        response = client.post(reverse("lfs_delete_order", args=[order.id]))
         assert response.status_code in [302, 403]  # Redirect or forbidden
 
 
@@ -316,7 +331,7 @@ class TestOrderErrorRecoveryWorkflow:
         """Test workflow: delete non-existent order -> handle gracefully."""
         client.force_login(admin_user)
 
-        response = client.post(reverse("lfs_manage_delete_order", args=[99999]))
+        response = client.post(reverse("lfs_delete_order", args=[99999]))
         assert response.status_code == 404
 
         # Should still be able to view order list

@@ -155,7 +155,7 @@
                     </button>
                 </form>
             {% endif %}
-            
+
             {% if display_displayables %}
                 <form action="{% url 'lfs_update_product_properties' product.id %}" method="post" class="mb-4">
                     {% csrf_token %}

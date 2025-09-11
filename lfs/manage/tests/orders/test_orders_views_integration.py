@@ -19,7 +19,6 @@ Integration tests cover:
 """
 
 import pytest
-from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
@@ -41,20 +40,25 @@ def admin_user(db):
 @pytest.fixture
 def order(db, customer, address, payment_method, shipping_method):
     """Create a test order."""
+    from django.contrib.contenttypes.models import ContentType
+
+    address_content_type = ContentType.objects.get_for_model(address.__class__)
+
     return Order.objects.create(
-        customer=customer,
-        billing_address=address,
-        shipping_address=address,
-        payment_method=payment_method,
-        shipping_method=shipping_method,
+        number="TEST001",
+        user=None,
+        session=customer.session,
         state=1,  # Submitted state
-        customer_firstname="John",
-        customer_lastname="Doe",
-        customer_email="customer@example.com",
-        subtotal=Decimal("10.00"),
-        shipping_price=Decimal("5.00"),
-        payment_price=Decimal("0.00"),
-        total=Decimal("15.00"),
+        customer_firstname="Test",
+        customer_lastname="Customer",
+        customer_email="test@example.com",
+        price=100.00,
+        sa_content_type=address_content_type,
+        sa_object_id=address.id,
+        ia_content_type=address_content_type,
+        ia_object_id=address.id,
+        shipping_method=shipping_method,
+        payment_method=payment_method,
     )
 
 
@@ -66,42 +70,53 @@ def order_item(db, order, product):
         product=product,
         product_name="Test Product",
         product_sku="TEST001",
-        product_price_net=Decimal("10.00"),
-        product_price_gross=Decimal("10.00"),
-        product_quantity=1,
-        total=Decimal("10.00"),
+        product_price_net=10.00,
+        product_price_gross=10.00,
+        product_amount=1,
+        price_net=10.00,
+        price_gross=10.00,
+        tax=0.00,
     )
 
 
 @pytest.fixture
 def multiple_orders(db, customer, address, payment_method, shipping_method, product):
     """Create multiple orders for testing."""
+    from django.contrib.contenttypes.models import ContentType
+
+    address_content_type = ContentType.objects.get_for_model(address.__class__)
     orders = []
+
     for i in range(5):
         order = Order.objects.create(
-            customer=customer,
-            billing_address=address,
-            shipping_address=address,
-            payment_method=payment_method,
-            shipping_method=shipping_method,
+            number=f"MULTI{i:03d}",
+            user=None,
+            session=customer.session,
             state=i + 1,  # Different states
             customer_firstname=f"John{i}",
             customer_lastname=f"Doe{i}",
             customer_email=f"john{i}@example.com",
-            subtotal=Decimal("10.00"),
-            shipping_price=Decimal("5.00"),
-            payment_price=Decimal("0.00"),
-            total=Decimal("15.00"),
+            price=10.00,
+            shipping_price=5.00,
+            payment_price=0.00,
+            sa_content_type=address_content_type,
+            sa_object_id=address.id,
+            ia_content_type=address_content_type,
+            ia_object_id=address.id,
+            shipping_method=shipping_method,
+            payment_method=payment_method,
         )
         OrderItem.objects.create(
             order=order,
             product=product,
             product_name="Test Product",
             product_sku="TEST001",
-            product_price_net=Decimal("10.00"),
-            product_price_gross=Decimal("10.00"),
-            product_quantity=1,
-            total=Decimal("10.00"),
+            product_price_net=10.00,
+            product_price_gross=10.00,
+            product_amount=1,
+            price_net=10.00,
+            price_gross=10.00,
+            tax=0.00,
         )
         orders.append(order)
     return orders
@@ -210,9 +225,10 @@ class TestOrderViewsIntegration:
         filter_data = {
             "name": "Test Customer",
             "state": "1",
+            "order-id": order.id,
         }
 
-        response = client.post(reverse("lfs_set_order_filter", args=[order.id]), filter_data)
+        response = client.post(reverse("lfs_set_order_filter"), filter_data)
 
         assert response.status_code == 302
         assert f"/manage/order/{order.id}" in response.url
@@ -235,7 +251,7 @@ class TestOrderViewsIntegration:
         """Should apply today filter successfully."""
         client.force_login(admin_user)
 
-        response = client.get(reverse("lfs_apply_predefined_order_filter", args=["today"]))
+        response = client.get(reverse("lfs_apply_predefined_order_filter", kwargs={"filter_type": "today"}))
 
         assert response.status_code == 302
         assert response.url == reverse("lfs_orders")
@@ -244,7 +260,7 @@ class TestOrderViewsIntegration:
         """Should apply week filter successfully."""
         client.force_login(admin_user)
 
-        response = client.get(reverse("lfs_apply_predefined_order_filter", args=["week"]))
+        response = client.get(reverse("lfs_apply_predefined_order_filter", kwargs={"filter_type": "week"}))
 
         assert response.status_code == 302
         assert response.url == reverse("lfs_orders")
@@ -253,7 +269,7 @@ class TestOrderViewsIntegration:
         """Should apply month filter successfully."""
         client.force_login(admin_user)
 
-        response = client.get(reverse("lfs_apply_predefined_order_filter", args=["month"]))
+        response = client.get(reverse("lfs_apply_predefined_order_filter", kwargs={"filter_type": "month"}))
 
         assert response.status_code == 302
         assert response.url == reverse("lfs_orders")
@@ -262,7 +278,9 @@ class TestOrderViewsIntegration:
         """Should apply predefined filter and redirect to specific order."""
         client.force_login(admin_user)
 
-        response = client.get(reverse("lfs_apply_predefined_order_filter", args=["today", order.id]))
+        response = client.get(
+            reverse("lfs_apply_predefined_order_filter", kwargs={"filter_type": "today"}), {"order_id": order.id}
+        )
 
         assert response.status_code == 302
         assert f"/manage/order/{order.id}" in response.url
@@ -271,7 +289,7 @@ class TestOrderViewsIntegration:
         """Should handle invalid filter type gracefully."""
         client.force_login(admin_user)
 
-        response = client.get(reverse("lfs_apply_predefined_order_filter", args=["invalid"]))
+        response = client.get(reverse("lfs_apply_predefined_order_filter", kwargs={"filter_type": "invalid"}))
 
         assert response.status_code == 302
         assert response.url == reverse("lfs_orders")
@@ -280,7 +298,7 @@ class TestOrderViewsIntegration:
         """Should successfully delete order."""
         client.force_login(admin_user)
 
-        response = client.post(reverse("lfs_manage_delete_order", args=[order.id]))
+        response = client.post(reverse("lfs_delete_order", args=[order.id]))
 
         assert response.status_code == 302
         assert response.url == reverse("lfs_orders")
@@ -311,19 +329,21 @@ class TestOrderViewsIntegration:
         assert response.url == reverse("lfs_orders")
 
     def test_orders_view_function_delegates_correctly(self, client, admin_user, multiple_orders, shop):
-        """Should delegate orders_view function to OrderListView."""
+        """Should delegate orders_view function to OrderListView (redirects to first order if orders exist)."""
         client.force_login(admin_user)
 
-        response = client.get("/manage/orders/orders/")  # Direct URL for orders_view
+        response = client.get(reverse("lfs_manage_orders"))
 
-        assert response.status_code == 200
-        assert "orders_with_data" in response.context
+        # Should redirect to the first order since multiple_orders exist
+        assert response.status_code == 302
+        # Check that it redirects to some order page (don't hardcode the ID since it may vary)
+        assert "/manage/order/" in response.url
 
     def test_order_view_function_delegates_correctly(self, client, admin_user, order, shop):
         """Should delegate order_view function to OrderDataView."""
         client.force_login(admin_user)
 
-        response = client.get(f"/manage/orders/order/{order.id}/")  # Direct URL for order_view
+        response = client.get(reverse("lfs_manage_order", args=[order.id]))
 
         assert response.status_code == 200
         assert "current_order" in response.context
@@ -338,7 +358,7 @@ class TestOrderViewsIntegration:
 
     def test_order_delete_view_permission_denied(self, client, order):
         """Should deny delete access to unauthorized users."""
-        response = client.post(reverse("lfs_manage_delete_order", args=[order.id]))
+        response = client.post(reverse("lfs_delete_order", args=[order.id]))
 
         assert response.status_code == 302
         assert "login" in response.url.lower()

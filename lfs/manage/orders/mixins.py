@@ -9,6 +9,8 @@ class OrderFilterMixin:
 
     def get_order_filters(self):
         """Get order filters from session."""
+        if not hasattr(self, "request") or self.request is None or self.request.session is None:
+            return {}
         return self.request.session.get("order-filters", {})
 
     def get_filtered_orders_queryset(self):
