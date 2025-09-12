@@ -27,7 +27,7 @@ urlpatterns = [
     path(
         "products/",
         ManageProductsView.as_view(),
-        name="lfs_manage_products2",
+        name="lfs_manage_products",
     ),
     path(
         "products/list/",

@@ -23,8 +23,11 @@ class ManagePagesView(PermissionRequiredMixin, RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         try:
-            page = Page.objects.all()[0]
-            return reverse("lfs_manage_page", kwargs={"id": page.id})
+            page = Page.objects.exclude(pk=1).order_by("title").first()
+            if page:
+                return reverse("lfs_manage_page", kwargs={"id": page.id})
+            else:
+                return reverse("lfs_add_page")
         except IndexError:
             return reverse("lfs_add_page")
 

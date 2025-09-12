@@ -27,6 +27,14 @@
         <script src="{% static 'lfs/manage/vendor/tinymce/tinymce.min.js' %}"></script>      
         <script src="{% static 'lfs/manage/js/utils.js' %}"></script>
         <script src="{% static 'lfs/manage/js/shared.js' %}"></script>
+        
+        <!-- HTMX Configuration -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Disable HTMX history caching to prevent historyCacheError
+                htmx.config.historyCacheSize = 0;
+            });
+        </script>
 
         {% block javascript %}{% endblock %}
     </head>
@@ -59,7 +67,7 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="catalogDropdown">
                             <li><a class="dropdown-item" href="{% url 'lfs_manage_categories' %}">{% trans 'Categories' %}</a></li>
-                            <li><a class="dropdown-item" href="{% url 'lfs_manage_products2' %}">{% trans 'Products' %}</a></li>
+                            <li><a class="dropdown-item" href="{% url 'lfs_manage_products' %}">{% trans 'Products' %}</a></li>
                             <li><a class="dropdown-item" href="{% url 'lfs_manage_products_list' %}">{% trans 'Products Overview' %}</a></li>
                         </ul>
                     </li>

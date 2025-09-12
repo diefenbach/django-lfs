@@ -88,7 +88,7 @@
                     </div>
                 </div>
 
-                <ul class="nav nav-tabs" id="categoryTabs" role="tablist">
+                <ul class="nav nav-tabs" id="categoryTabs" role="tablist" hx-swap-oob="true">
                     {% for key, url in tabs %}
                         <li class="nav-item" role="presentation">
                             <a class="nav-link {% if active_tab == key %}active{% endif %}" 

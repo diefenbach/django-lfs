@@ -121,34 +121,38 @@ class ProductTabMixin:
         return get_object_or_404(Product, pk=self.kwargs["id"])
 
     def _get_tabs(self, product: Product) -> List[Tuple[str, str]]:
+        # Get search query parameter to preserve it in tab URLs
+        search_query = self.request.GET.get("q", "").strip()
+        query_param = f"?q={search_query}" if search_query else ""
+
         tabs: List[Tuple[str, str]] = [
-            ("data", reverse("lfs_manage_product_data", args=[product.pk])),
-            ("images", reverse("lfs_manage_product_images", args=[product.pk])),
-            ("attachments", reverse("lfs_manage_product_attachments", args=[product.pk])),
+            ("data", reverse("lfs_manage_product_data", args=[product.pk]) + query_param),
+            ("images", reverse("lfs_manage_product_images", args=[product.pk]) + query_param),
+            ("attachments", reverse("lfs_manage_product_attachments", args=[product.pk]) + query_param),
         ]
 
         # Only include categories tab for non-variant products
         if product.sub_type != PRODUCT_VARIANT:
-            tabs.insert(1, ("categories", reverse("lfs_manage_product_categories", args=[product.pk])))
+            tabs.insert(1, ("categories", reverse("lfs_manage_product_categories", args=[product.pk]) + query_param))
         if product.is_product_with_variants():
-            tabs.append(("variants", reverse("lfs_manage_product_variants", args=[product.pk])))
+            tabs.append(("variants", reverse("lfs_manage_product_variants", args=[product.pk]) + query_param))
         tabs.extend(
             [
-                ("properties", reverse("lfs_manage_product_properties", args=[product.pk])),
-                ("accessories", reverse("lfs_manage_product_accessories", args=[product.pk])),
-                ("related", reverse("lfs_manage_product_related", args=[product.pk])),
+                ("properties", reverse("lfs_manage_product_properties", args=[product.pk]) + query_param),
+                ("accessories", reverse("lfs_manage_product_accessories", args=[product.pk]) + query_param),
+                ("related", reverse("lfs_manage_product_related", args=[product.pk]) + query_param),
             ]
         )
 
         # Only show bulk prices tab if price calculator is set to bulk prices
         if product.price_calculator == "lfs_bulk_prices.calculator.BulkPricesCalculator":
-            tabs.append(("bulk_prices", reverse("lfs_manage_product_bulk_prices", args=[product.pk])))
+            tabs.append(("bulk_prices", reverse("lfs_manage_product_bulk_prices", args=[product.pk]) + query_param))
 
         tabs.extend(
             [
-                ("stock", reverse("lfs_manage_product_stock", args=[product.pk])),
-                ("seo", reverse("lfs_manage_product_seo", args=[product.pk])),
-                ("portlets", reverse("lfs_manage_product_portlets", args=[product.pk])),
+                ("stock", reverse("lfs_manage_product_stock", args=[product.pk]) + query_param),
+                ("seo", reverse("lfs_manage_product_seo", args=[product.pk]) + query_param),
+                ("portlets", reverse("lfs_manage_product_portlets", args=[product.pk]) + query_param),
             ]
         )
         return tabs
@@ -203,7 +207,7 @@ class ProductDataView(PermissionRequiredMixin, ProductTabMixin, UpdateView):
     def delete(self, request, *args, **kwargs):
         """Handle product deletion via POST request."""
         product = self.get_object()
-        url = reverse("lfs_manage_products2")  # Redirect to products overview
+        url = reverse("lfs_manage_products")  # Redirect to products overview
         if product.is_variant():
             url = reverse("lfs_manage_product_data", kwargs={"id": product.parent_id})
 
