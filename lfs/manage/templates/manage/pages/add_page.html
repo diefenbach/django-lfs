@@ -3,16 +3,25 @@
 <h5 id="modal-title-lg" class="modal-title" hx-swap-oob="true">
     {% trans 'Add Page' %}
 </h5>
-<form method="post" action="{% url 'lfs_add_page' %}" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <div class="mt-3">
-        <button type="submit" class="btn btn-primary">{% trans 'Add Page' %}</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            {% trans 'Cancel' %}
-        </button>
+
+<div class="row">
+    <div class="col-12">
+        <form method="post" action="{% url 'lfs_add_page' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    {% trans "Add Page" %}
+                </button>
+                <a href="{% url 'lfs_manage_pages' %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i>
+                    {% trans "Cancel" %}
+                </a>
+            </div>        
+        </form>
     </div>
-</form>
+</div>
 
 <script>
     $(function() {

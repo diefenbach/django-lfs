@@ -1,11 +1,24 @@
 {% load i18n crispy_forms_tags %}
 
-<h5 id="modal-title-lg" class="modal-title" hx-swap-oob="true">{% trans 'Add Static Block' %}</h5>
-<form method="post" hx-post="{% url 'lfs_manage_add_static_block' %}" hx-target="#modal-body-lg" hx-swap="innerHTML">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <div class="mt-3">
-        <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+<h5 id="modal-title-lg" class="modal-title" hx-swap-oob="true">
+    {% trans 'Add Static Block' %}
+</h5>
+
+<div class="row">
+    <div class="col-12">
+        <form method="post" hx-post="{% url 'lfs_manage_add_static_block' %}" hx-target="#modal-body-lg" hx-swap="innerHTML">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    {% trans "Add Static Block" %}
+                </button>
+                <a href="{% url 'lfs_manage_static_blocks' %}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i>
+                    {% trans "Cancel" %}
+                </a>
+            </div>        
+        </form>
     </div>
-</form>
+</div>

@@ -9,7 +9,6 @@
         <form method="post" action="{% url 'lfs_manage_add_manufacturer' %}">
             {% csrf_token %}
             {{ form|crispy }}
-            
             <div class="mt-3">
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-plus-circle"></i>
@@ -19,9 +18,7 @@
                     <i class="bi bi-x-circle"></i>
                     {% trans "Cancel" %}
                 </a>
-            </div>
+            </div>        
         </form>
     </div>
 </div>
-
-
