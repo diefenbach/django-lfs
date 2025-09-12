@@ -10,18 +10,12 @@
     <input type="hidden" name="keep-filters" value="1">
     <input type="hidden" name="remove_products" value="1">
     
-    <div id="assigned-products-list" class="card shadow" style="height: calc(100vh - 450px);">
+    <div id="assigned-products-list" class="card shadow" style="height: calc(100vh - 310px);">
         <div class="card-header bg-success-subtle d-flex justify-content-between align-items-center">
             <h2 class="h4 mb-0">
                 <i class="bi bi-check-circle me-2"></i>
                 {% trans 'Assigned Products' %}
             </h2>
-            <i class="bi bi-question-circle text-muted me-2" 
-               data-bs-toggle="popover" 
-               data-bs-placement="top" 
-               data-bs-content="{% trans 'Products assigned to this category will be displayed in the category view and can be filtered by this category.' %}"
-               data-bs-trigger="hover"
-               style="cursor: help; font-size: 1.25rem;"></i>
         </div>
         <div class="card-body overflow-y-auto">
             {% if category_products %}

@@ -2,10 +2,9 @@
 
 <div class="tab-pane fade show active" id="products-content" role="tabpanel" aria-labelledby="products-tab">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h5 class="mb-0">{% trans "Category Products" %}</h5>
         <div class="d-flex gap-2">
             <!-- Filter Controls -->
-            <div class="input-group" style="width: 200px;">
+            <div class="input-group" style="width: 300px;">
                 <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
                 <input type="text" 
                        class="form-control" 
@@ -22,7 +21,7 @@
             
             <select name="products_category_filter" 
                     class="form-select" 
-                    style="width: 150px;"
+                    style="width: 200px;"
                     hx-get="{% url 'lfs_manage_category_products' category.id %}"
                     hx-target="#products-tables"
                     hx-select="#products-tables"
@@ -39,7 +38,7 @@
             
             <select name="products_manufacturer_filter" 
                     class="form-select" 
-                    style="width: 150px;"
+                    style="width: 200px;"
                     hx-get="{% url 'lfs_manage_category_products' category.id %}"
                     hx-target="#products-tables"
                     hx-select="#products-tables"
