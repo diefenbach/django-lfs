@@ -22,7 +22,7 @@
                     <table class="table table-sm table-hover">
                         <thead>
                             <tr>
-                                <th class="checkbox" style="width: 1px;">
+                                <th class="checkbox" style="width: 40px;">
                                     <input type="checkbox" class="form-check-input select-all-topseller" />
                                 </th>
                                 <th class="small text-center">{% trans 'Sort' %}</th>
@@ -31,7 +31,7 @@
                                 <th class="small">{% trans 'Active' %}</th>
                             </tr>
                         </thead>
-                        <tbody id="sortable-table">
+                        <tbody>
                             {% for topseller_item in topseller %}
                                 <tr data-id="{{ topseller_item.id }}">
                                     <td>
