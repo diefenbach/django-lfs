@@ -54,15 +54,19 @@ class ShippingMethodTabMixin:
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Get context data for ShippingMethod."""
+        ctx = super().get_context_data(**kwargs)
         shipping_method = getattr(self, "object", None) or self.get_shipping_method()
 
-        return {
-            "shipping_method": shipping_method,
-            "shipping_methods": self.get_shipping_methods_queryset(),
-            "search_query": self.request.GET.get("q", ""),
-            "active_tab": self.tab_name,
-            "tabs": self._get_tabs(shipping_method),
-        }
+        ctx.update(
+            {
+                "shipping_method": shipping_method,
+                "shipping_methods": self.get_shipping_methods_queryset(),
+                "search_query": self.request.GET.get("q", ""),
+                "active_tab": self.tab_name,
+                "tabs": self._get_tabs(shipping_method),
+            }
+        )
+        return ctx
 
     def _get_tabs(self, shipping_method: ShippingMethod) -> List[Tuple[str, str]]:
         """Creates tab navigation URLs with search parameter."""
@@ -119,24 +123,6 @@ class ShippingMethodDataView(PermissionRequiredMixin, ShippingMethodTabMixin, Up
         response = super().form_valid(form)
         messages.success(self.request, _("Shipping method has been saved."))
         return response
-
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
-        """Get context data with form for the data tab."""
-        # First get the form from UpdateView
-        ctx = UpdateView.get_context_data(self, **kwargs)
-        # Then add the tab-specific context from the mixin
-        shipping_method = getattr(self, "object", None) or self.get_shipping_method()
-
-        ctx.update(
-            {
-                "shipping_method": shipping_method,
-                "shipping_methods": self.get_shipping_methods_queryset(),
-                "search_query": self.request.GET.get("q", ""),
-                "active_tab": self.tab_name,
-                "tabs": self._get_tabs(shipping_method),
-            }
-        )
-        return ctx
 
 
 class ShippingMethodCriteriaView(PermissionRequiredMixin, ShippingMethodTabMixin, TemplateView):

@@ -1,15 +1,17 @@
 from typing import Dict, List, Tuple, Any, Optional
 
 # django imports
-from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.views.generic import UpdateView, CreateView, DeleteView, RedirectView, TemplateView
+from django.views.generic import RedirectView, TemplateView, UpdateView
+from django.views.generic import CreateView, DeleteView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render
+from django.contrib import messages
 
 # lfs imports
 from lfs.customer.models import Customer
@@ -61,15 +63,20 @@ class PaymentMethodTabMixin:
 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Get context data for PaymentMethod."""
+        ctx = super().get_context_data(**kwargs)
         payment_method = getattr(self, "object", None) or self.get_payment_method()
 
-        return {
-            "payment_method": payment_method,
-            "payment_methods": self.get_payment_methods_queryset(),
-            "search_query": self.request.GET.get("q", ""),
-            "active_tab": self.tab_name,
-            "tabs": self._get_tabs(payment_method),
-        }
+        ctx.update(
+            {
+                "payment_method": payment_method,
+                "payment_methods": self.get_payment_methods_queryset(),
+                "search_query": self.request.GET.get("q", ""),
+                "active_tab": self.tab_name,
+                "tabs": self._get_tabs(payment_method),
+            }
+        )
+
+        return ctx
 
     def _get_tabs(self, payment_method: PaymentMethod) -> List[Tuple[str, str]]:
         """Creates tab navigation URLs with search parameter."""

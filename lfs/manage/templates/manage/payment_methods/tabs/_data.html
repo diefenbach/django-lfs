@@ -1,10 +1,7 @@
 {% load i18n crispy_forms_tags %}
 
 {# Data tab for Payment Method #}
-<form method="post" 
-      hx-post="{% url 'lfs_manage_payment_method' payment_method.id %}"
-      hx-target="closest .tab-content"
-      hx-swap="innerHTML">
+<form method="post" action="{% url 'lfs_manage_payment_method' payment_method.id %}">
     {% csrf_token %}
     {{ form|crispy }}
     <div class="buttons mt-3">
