@@ -42,8 +42,12 @@ class Criteria(object):
         """
         Saves all passed criteria (via request.POST) to the object.
         """
-        # First we delete all existing criteria objects for the given object.
+        # Store existing criteria values before deletion
+        existing_criteria = {}
         for co in self.get_criteria():
+            # Try to match by type and position to preserve values
+            key = f"{co.__class__.__module__}.{co.__class__.__name__}_{co.position}"
+            existing_criteria[key] = co.get_value()
             co.delete()
 
         # Then we add all passed criteria to the object.
@@ -65,6 +69,12 @@ class Criteria(object):
                     value = request.POST.getlist("value-%s" % id)
                 else:
                     value = request.POST.get("value-%s" % id)
+
+                # If value is empty, try to use existing value
+                if not value or str(value).strip() == "":
+                    criterion_key = f"{model}_{position}"
+                    if criterion_key in existing_criteria:
+                        value = existing_criteria[criterion_key]
 
                 criterion.update(value)
 

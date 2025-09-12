@@ -42,4 +42,14 @@ urlpatterns = [
         lfs.manage.payment_methods.views.NoPaymentMethodsView.as_view(),
         name="lfs_manage_no_payment_methods",
     ),
+    path(
+        "payment-price/<int:price_id>/criteria/",
+        lfs.manage.payment_methods.views.PaymentMethodPriceCriteriaView.as_view(),
+        name="lfs_manage_payment_price_criteria",
+    ),
+    path(
+        "payment-price/<int:price_id>/criteria/save/",
+        lfs.manage.payment_methods.views.PaymentMethodPriceCriteriaSaveView.as_view(),
+        name="lfs_manage_save_payment_price_criteria",
+    ),
 ]

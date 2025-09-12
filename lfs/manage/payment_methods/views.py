@@ -203,10 +203,6 @@ class PaymentMethodPricesView(PermissionRequiredMixin, PaymentMethodTabMixin, Te
 
         messages.success(self.request, _("Price has been added"))
 
-        # Check if this is an HTMX request
-        if request.headers.get("HX-Request"):
-            return render(request, "manage/payment_methods/tabs/_prices.html", self.get_context_data())
-
         return HttpResponseRedirect(self.get_success_url())
 
     def _handle_update_prices(self, request: HttpRequest) -> HttpResponse:
@@ -246,10 +242,7 @@ class PaymentMethodPricesView(PermissionRequiredMixin, PaymentMethodTabMixin, Te
         self._update_price_positions(payment_method)
         messages.success(self.request, message)
 
-        # Check if this is an HTMX request
-        if request.headers.get("HX-Request"):
-            return render(request, "manage/payment_methods/tabs/_prices.html", self.get_context_data())
-
+        # Always redirect to prices tab for non-HTMX requests
         return HttpResponseRedirect(self.get_success_url())
 
     def _update_price_positions(self, payment_method):
@@ -324,3 +317,80 @@ class PaymentMethodDeleteView(DirectDeleteMixin, SuccessMessageMixin, Permission
             customer.save()
 
         return super().delete(request, *args, **kwargs)
+
+
+class PaymentMethodPriceCriteriaView(PermissionRequiredMixin, TemplateView):
+    """View for editing criteria of a specific payment method price."""
+
+    template_name = "manage/payment_methods/payment_price_criteria.html"
+    permission_required = "core.manage_shop"
+
+    def get_payment_price(self) -> PaymentMethodPrice:
+        """Gets the PaymentMethodPrice object."""
+        return get_object_or_404(PaymentMethodPrice, pk=self.kwargs["price_id"])
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with payment price and criteria."""
+        ctx = super().get_context_data(**kwargs)
+        payment_price = self.get_payment_price()
+
+        criteria = []
+        position = 0
+        for criterion_object in payment_price.get_criteria():
+            position += 10
+            criterion_html = criterion_object.render(self.request, position)
+            criteria.append(criterion_html)
+
+        ctx.update(
+            {
+                "payment_price": payment_price,
+                "criteria": criteria,
+            }
+        )
+        return ctx
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Handles GET requests for criteria editing."""
+        # Check if this is an HTMX request for modal
+        if request.headers.get("HX-Request"):
+            return render(request, "manage/payment_methods/payment_price_criteria_modal.html", self.get_context_data())
+
+        # Regular page request
+        return super().get(request, *args, **kwargs)
+
+
+class PaymentMethodPriceCriteriaSaveView(PermissionRequiredMixin, TemplateView):
+    """View for saving criteria of a specific payment method price."""
+
+    permission_required = "core.manage_shop"
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Handles criteria saving."""
+        payment_price = get_object_or_404(PaymentMethodPrice, pk=self.kwargs["price_id"])
+        payment_price.save_criteria(request)
+
+        messages.success(self.request, _("Criteria have been saved."))
+
+        # Check if this is an HTMX request
+        if request.headers.get("HX-Request"):
+            # Redirect to the payment method prices tab
+            from django.http import HttpResponse
+
+            response = HttpResponse()
+            response["HX-Redirect"] = reverse(
+                "lfs_manage_payment_method_prices", kwargs={"id": payment_price.payment_method.id}
+            )
+
+            return response
+
+        return HttpResponseRedirect(reverse("lfs_manage_payment_price_criteria", kwargs={"price_id": payment_price.id}))
+
+    def _get_criteria(self, payment_price: PaymentMethodPrice) -> List[str]:
+        """Get criteria HTML for the payment price."""
+        criteria = []
+        position = 0
+        for criterion_object in payment_price.get_criteria():
+            position += 10
+            criterion_html = criterion_object.render(self.request, position)
+            criteria.append(criterion_html)
+        return criteria
