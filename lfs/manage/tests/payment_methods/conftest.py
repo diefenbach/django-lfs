@@ -4,9 +4,13 @@ Pytest configuration for payment method tests.
 
 import pytest
 from decimal import Decimal
+from unittest.mock import Mock
+from django.contrib.auth import get_user_model
+from django.test import RequestFactory, Client
 from lfs.core.models import Shop
 from lfs.payment.models import PaymentMethod, PaymentMethodPrice
-from django.contrib.auth import get_user_model
+from lfs.tax.models import Tax
+from lfs.manage.payment_methods.views import PaymentMethodTabMixin
 
 User = get_user_model()
 
@@ -95,3 +99,52 @@ def multiple_payment_methods(db):
 def payment_method_price(db, payment_method):
     """Create a payment method price for testing."""
     return PaymentMethodPrice.objects.create(payment_method=payment_method, price=Decimal("15.00"), priority=10)
+
+
+@pytest.fixture
+def client():
+    """Django test client."""
+    return Client()
+
+
+@pytest.fixture
+def request_factory():
+    """Request factory for creating mock requests."""
+    return RequestFactory()
+
+
+@pytest.fixture
+def mock_request(request_factory):
+    """Mock request for testing."""
+    request = request_factory.get("/")
+    request.user = Mock()
+    request.user.has_perm = Mock(return_value=True)
+    request.session = {}
+    return request
+
+
+@pytest.fixture
+def tax_rate(db):
+    """Create a tax rate for testing."""
+    return Tax.objects.create(rate=19.0)
+
+
+@pytest.fixture
+def mock_view():
+    """Mock view that uses PaymentMethodTabMixin."""
+
+    class MockBaseView:
+        def get_context_data(self, **kwargs):
+            return {}
+
+    class MockView(PaymentMethodTabMixin, MockBaseView):
+        def __init__(self):
+            self.request = None
+            self.kwargs = {}
+            self.object = None
+            self.tab_name = None
+
+        def get_object(self):
+            return self.object
+
+    return MockView()

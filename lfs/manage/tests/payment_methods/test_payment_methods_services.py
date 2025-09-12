@@ -22,35 +22,12 @@ from decimal import Decimal
 from unittest.mock import patch, Mock
 
 from django.contrib.auth import get_user_model
-from django.test import RequestFactory
 
 from lfs.payment.models import PaymentMethod, PaymentMethodPrice
 from lfs.payment import utils as payment_utils
 from lfs.customer.models import Customer
-from lfs.tax.models import Tax
 
 User = get_user_model()
-
-
-@pytest.fixture
-def request_factory():
-    """Request factory for creating mock requests."""
-    return RequestFactory()
-
-
-@pytest.fixture
-def mock_request(request_factory):
-    """Mock request for testing."""
-    request = request_factory.get("/")
-    request.user = Mock()
-    request.session = {}
-    return request
-
-
-@pytest.fixture
-def tax_rate(db):
-    """Create a tax rate for testing."""
-    return Tax.objects.create(rate=19.0)
 
 
 class TestPaymentMethodUtilityServices:

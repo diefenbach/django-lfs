@@ -19,17 +19,10 @@ Tests cover:
 import pytest
 
 from django import forms
-from django.test import RequestFactory
 
 from lfs.manage.payment_methods.forms import PaymentMethodForm, PaymentMethodAddForm
 from lfs.payment.models import PaymentMethod
 from lfs.core.widgets.image import LFSImageInput
-
-
-@pytest.fixture
-def request_factory():
-    """Request factory for creating mock requests."""
-    return RequestFactory()
 
 
 class TestPaymentMethodForm:

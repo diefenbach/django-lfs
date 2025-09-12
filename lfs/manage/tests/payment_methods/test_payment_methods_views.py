@@ -22,7 +22,6 @@ from unittest.mock import patch, Mock
 
 from django.contrib.auth import get_user_model
 from django.http import Http404
-from django.test import RequestFactory
 from django.urls import reverse
 
 from lfs.payment.models import PaymentMethod, PaymentMethodPrice
@@ -42,21 +41,6 @@ from lfs.manage.payment_methods.views import (
 )
 
 User = get_user_model()
-
-
-@pytest.fixture
-def request_factory():
-    """Request factory for creating mock requests."""
-    return RequestFactory()
-
-
-@pytest.fixture
-def mock_request(request_factory):
-    """Mock request with GET parameters."""
-    request = request_factory.get("/")
-    request.user = Mock()
-    request.user.has_perm = Mock(return_value=True)
-    return request
 
 
 class TestManagePaymentsView:
@@ -199,19 +183,9 @@ class TestPaymentMethodTabMixin:
         mixin = PaymentMethodTabMixin()
         mixin.request = request
         mixin.kwargs = {"id": payment_method.id}
-
-        # Mock the super().get_context_data method
-        with patch.object(PaymentMethodTabMixin, "__bases__", (object,)):
-            mixin.get_context_data = lambda **kwargs: {}
-            context = mixin.get_context_data()
-
-        # Manually call the actual method
-        mixin = PaymentMethodTabMixin()
-        mixin.request = request
-        mixin.kwargs = {"id": payment_method.id}
         mixin.object = None
 
-        context = mixin.get_context_data()
+        context = mixin.get_tab_context_data()
 
         assert context["payment_method"] == payment_method
 
@@ -224,7 +198,7 @@ class TestPaymentMethodTabMixin:
         mixin.kwargs = {"id": payment_method.id}
         mixin.object = None
 
-        context = mixin.get_context_data()
+        context = mixin.get_tab_context_data()
 
         assert context["search_query"] == "test"
 
@@ -238,7 +212,7 @@ class TestPaymentMethodTabMixin:
         mixin.tab_name = "data"
         mixin.object = None
 
-        context = mixin.get_context_data()
+        context = mixin.get_tab_context_data()
 
         assert context["active_tab"] == "data"
 

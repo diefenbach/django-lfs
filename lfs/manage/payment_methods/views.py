@@ -61,22 +61,17 @@ class PaymentMethodTabMixin:
 
         return queryset
 
-    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+    def get_tab_context_data(self, **kwargs) -> Dict[str, Any]:
         """Get context data for PaymentMethod."""
-        ctx = super().get_context_data(**kwargs)
         payment_method = getattr(self, "object", None) or self.get_payment_method()
 
-        ctx.update(
-            {
-                "payment_method": payment_method,
-                "payment_methods": self.get_payment_methods_queryset(),
-                "search_query": self.request.GET.get("q", ""),
-                "active_tab": self.tab_name,
-                "tabs": self._get_tabs(payment_method),
-            }
-        )
-
-        return ctx
+        return {
+            "payment_method": payment_method,
+            "payment_methods": self.get_payment_methods_queryset(),
+            "search_query": self.request.GET.get("q", ""),
+            "active_tab": self.tab_name,
+            "tabs": self._get_tabs(payment_method),
+        }
 
     def _get_tabs(self, payment_method: PaymentMethod) -> List[Tuple[str, str]]:
         """Creates tab navigation URLs with search parameter."""
@@ -127,6 +122,11 @@ class PaymentMethodDataView(PermissionRequiredMixin, PaymentMethodTabMixin, Upda
         messages.success(self.request, _("Payment method has been saved."))
         return response
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx.update(self.get_tab_context_data())
+        return ctx
+
 
 class PaymentMethodCriteriaView(PermissionRequiredMixin, PaymentMethodTabMixin, TemplateView):
     """View for criteria tab of a Payment Method."""
@@ -156,6 +156,8 @@ class PaymentMethodCriteriaView(PermissionRequiredMixin, PaymentMethodTabMixin, 
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Extends context with criteria."""
         ctx = super().get_context_data(**kwargs)
+        ctx.update(self.get_tab_context_data())
+
         payment_method = self.get_payment_method()
 
         criteria = []
@@ -291,6 +293,8 @@ class PaymentMethodPricesView(PermissionRequiredMixin, PaymentMethodTabMixin, Te
     def get_context_data(self, **kwargs) -> Dict[str, Any]:
         """Extends context with prices."""
         ctx = super().get_context_data(**kwargs)
+        ctx.update(self.get_tab_context_data())
+
         payment_method = self.get_payment_method()
 
         ctx.update(

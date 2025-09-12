@@ -24,37 +24,12 @@ from urllib.parse import urlencode
 
 from django.contrib.auth import get_user_model
 from django.http import Http404
-from django.test import RequestFactory
 from django.urls import reverse
 
 from lfs.payment.models import PaymentMethod
 from lfs.manage.payment_methods.views import PaymentMethodTabMixin
 
 User = get_user_model()
-
-
-@pytest.fixture
-def request_factory():
-    """Request factory for creating mock requests."""
-    return RequestFactory()
-
-
-@pytest.fixture
-def mock_view():
-    """Mock view that uses PaymentMethodTabMixin."""
-
-    class MockBaseView:
-        def get_context_data(self, **kwargs):
-            return {}
-
-    class MockView(PaymentMethodTabMixin, MockBaseView):
-        def __init__(self):
-            self.request = None
-            self.kwargs = {}
-            self.object = None
-            self.tab_name = None
-
-    return MockView()
 
 
 class TestPaymentMethodTabMixin:
@@ -206,7 +181,7 @@ class TestPaymentMethodTabMixin:
         mock_view.kwargs = {"id": payment_method.id}
         mock_view.object = None
 
-        context = mock_view.get_context_data()
+        context = mock_view.get_tab_context_data()
 
         assert context["payment_method"] == payment_method
 
@@ -217,7 +192,7 @@ class TestPaymentMethodTabMixin:
         mock_view.kwargs = {"id": 999}  # Different ID
         mock_view.object = payment_method  # Should use this instead
 
-        context = mock_view.get_context_data()
+        context = mock_view.get_tab_context_data()
 
         assert context["payment_method"] == payment_method
 
@@ -228,7 +203,7 @@ class TestPaymentMethodTabMixin:
         mock_view.kwargs = {"id": multiple_payment_methods[0].id}
         mock_view.object = None
 
-        context = mock_view.get_context_data()
+        context = mock_view.get_tab_context_data()
 
         assert "payment_methods" in context
         assert context["payment_methods"].count() == 3
@@ -240,7 +215,7 @@ class TestPaymentMethodTabMixin:
         mock_view.kwargs = {"id": payment_method.id}
         mock_view.object = None
 
-        context = mock_view.get_context_data()
+        context = mock_view.get_tab_context_data()
 
         assert context["search_query"] == "test"
 
@@ -252,7 +227,7 @@ class TestPaymentMethodTabMixin:
         mock_view.object = None
         mock_view.tab_name = "data"
 
-        context = mock_view.get_context_data()
+        context = mock_view.get_tab_context_data()
 
         assert context["active_tab"] == "data"
 
@@ -263,7 +238,7 @@ class TestPaymentMethodTabMixin:
         mock_view.kwargs = {"id": payment_method.id}
         mock_view.object = None
 
-        context = mock_view.get_context_data()
+        context = mock_view.get_tab_context_data()
 
         assert "tabs" in context
         assert len(context["tabs"]) == 3
@@ -388,7 +363,7 @@ class TestPaymentMethodTabMixin:
         assert view.get_payment_method() == payment_method
         assert view.tab_name == "test_tab"
 
-        context = view.get_context_data()
+        context = view.get_tab_context_data()
         assert context["active_tab"] == "test_tab"
 
     def test_mixin_handles_multiple_inheritance(self, rf, payment_method):
@@ -419,34 +394,6 @@ class TestPaymentMethodTabMixin:
         assert view.get_payment_method() == payment_method
         assert view.get_other_data() == "other_data"
         assert view.tab_name == "multi_tab"
-
-    def test_mixin_context_data_calls_super(self, rf, payment_method, mock_view):
-        """Test that get_context_data calls super().get_context_data()."""
-        request = rf.get("/")
-        mock_view.request = request
-        mock_view.kwargs = {"id": payment_method.id}
-        mock_view.object = None
-
-        # Mock the super call
-        with patch.object(PaymentMethodTabMixin, "__bases__", (object,)):
-            # Since we're testing the mixin in isolation, we need to mock super
-            original_get_context_data = PaymentMethodTabMixin.get_context_data
-
-            def mock_get_context_data(self, **kwargs):
-                # Simulate what a parent class might return
-                base_context = {"base_key": "base_value"}
-                # Call the actual mixin method
-                mixin_context = original_get_context_data(self, **kwargs)
-                # Merge contexts
-                return {**base_context, **mixin_context}
-
-            mock_view.get_context_data = lambda **kwargs: mock_get_context_data(mock_view, **kwargs)
-
-            context = mock_view.get_context_data()
-
-            # Should include both base and mixin context
-            assert "payment_method" in context
-            assert "tabs" in context
 
     def test_mixin_handles_database_errors_gracefully(self, rf, mock_view):
         """Test that mixin handles database errors gracefully."""
@@ -482,7 +429,7 @@ class TestPaymentMethodTabMixin:
         mock_view.kwargs = {"id": payment_methods[0].id}
 
         # Should handle large queryset efficiently
-        context = mock_view.get_context_data()
+        context = mock_view.get_tab_context_data()
 
         assert context["payment_methods"].count() == 100
         assert context["payment_method"] == payment_methods[0]
@@ -507,8 +454,8 @@ class TestPaymentMethodTabMixin:
         mixin2.tab_name = "tab2"
 
         # Each instance should maintain its own state
-        context1 = mixin1.get_context_data()
-        context2 = mixin2.get_context_data()
+        context1 = mixin1.get_tab_context_data()
+        context2 = mixin2.get_tab_context_data()
 
         assert context1["search_query"] == "test1"
         assert context2["search_query"] == "test2"
@@ -524,7 +471,7 @@ class TestPaymentMethodTabMixin:
 
         # Get context data multiple times
         for i in range(10):
-            context = mock_view.get_context_data()
+            context = mock_view.get_tab_context_data()
             assert context["payment_method"] == payment_method
             # Context should be fresh each time, not cached
             del context
@@ -543,12 +490,12 @@ class TestPaymentMethodTabMixin:
         # Mock error in _get_tabs
         with patch.object(mock_view, "_get_tabs", side_effect=Exception("Tab generation error")):
             with pytest.raises(Exception):
-                mock_view.get_context_data()
+                mock_view.get_tab_context_data()
 
         # Mock error in get_payment_methods_queryset
         with patch.object(mock_view, "get_payment_methods_queryset", side_effect=Exception("Queryset error")):
             with pytest.raises(Exception):
-                mock_view.get_context_data()
+                mock_view.get_tab_context_data()
 
     def test_mixin_customization_via_subclassing(self, rf, payment_method):
         """Test that mixin can be customized via subclassing."""
@@ -580,7 +527,7 @@ class TestPaymentMethodTabMixin:
         view.request = request
         view.kwargs = {"id": payment_method.id}
 
-        context = view.get_context_data()
+        context = view.get_tab_context_data()
 
         # Should only include active payment methods
         payment_methods = context["payment_methods"]
@@ -607,6 +554,7 @@ class TestPaymentMethodTabMixin:
 
         # Should work with TemplateView
         context = view.get_context_data()
+        context.update(view.get_tab_context_data())
 
         assert context["payment_method"] == payment_method
         assert context["active_tab"] == "integration_test"
@@ -620,7 +568,7 @@ class TestPaymentMethodTabMixin:
         mock_view.object = None
 
         # Test that all expected context keys are present
-        context = mock_view.get_context_data()
+        context = mock_view.get_tab_context_data()
 
         required_keys = ["payment_method", "payment_methods", "search_query", "active_tab", "tabs"]
 
