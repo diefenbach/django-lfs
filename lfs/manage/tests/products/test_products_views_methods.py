@@ -15,7 +15,7 @@ class TestManageProductsViewMethods:
         """Test redirect URL when products exist."""
         client.login(username="admin", password="testpass123")
 
-        response = client.get(reverse("lfs_manage_products2"))
+        response = client.get(reverse("lfs_manage_products"))
         assert response.status_code == 302
         assert f"/manage/product/{product.id}/data/" in response.url
 
@@ -23,7 +23,7 @@ class TestManageProductsViewMethods:
         """Test redirect URL when no products exist."""
         client.login(username="admin", password="testpass123")
 
-        response = client.get(reverse("lfs_manage_products2"))
+        response = client.get(reverse("lfs_manage_products"))
         assert response.status_code == 302
         assert "/manage/products/no/" in response.url
 
@@ -362,7 +362,7 @@ class TestProductTabMixinMethods:
         """Test get_products_queryset method."""
         client.login(username="admin", password="testpass123")
 
-        response = client.get(reverse("lfs_manage_products2"))
+        response = client.get(reverse("lfs_manage_products"))
         assert response.status_code == 302
 
     def test_get_context_data_method(self, client, admin_user, product, shop):
@@ -387,7 +387,7 @@ class TestViewErrorHandling:
 
     def test_unauthorized_access(self, client, shop):
         """Test unauthorized access to views."""
-        response = client.get(reverse("lfs_manage_products2"))
+        response = client.get(reverse("lfs_manage_products"))
         assert response.status_code == 302  # Redirect to login
 
     def test_permission_denied(self, client, shop):
@@ -399,7 +399,7 @@ class TestViewErrorHandling:
         user = User.objects.create_user(username="regular", password="testpass123")
         client.login(username="regular", password="testpass123")
 
-        response = client.get(reverse("lfs_manage_products2"))
+        response = client.get(reverse("lfs_manage_products"))
         assert response.status_code == 403  # Permission denied
 
 

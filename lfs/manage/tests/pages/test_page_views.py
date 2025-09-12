@@ -173,13 +173,15 @@ class TestManagePagesView:
         """Should have correct view configuration."""
         assert ManagePagesView.permission_required == "core.manage_shop"
 
-    def test_get_redirect_url_redirects_to_first_page_when_pages_exist(self, page, authenticated_request, monkeypatch):
-        """Should redirect to first page when pages exist."""
+    def test_get_redirect_url_redirects_to_first_non_root_page_when_pages_exist(
+        self, regular_page, authenticated_request, monkeypatch
+    ):
+        """Should redirect to first non-root page when pages exist."""
         request = authenticated_request()
 
         def mock_reverse(view_name, kwargs=None):
-            if view_name == "lfs_manage_page" and kwargs and kwargs.get("id") == page.id:
-                return f"/manage/page/{page.id}/"
+            if view_name == "lfs_manage_page" and kwargs and kwargs.get("id") == regular_page.id:
+                return f"/manage/page/{regular_page.id}/"
             return f"/mock-url/{view_name}/"
 
         monkeypatch.setattr("lfs.manage.pages.views.reverse", mock_reverse)
@@ -189,10 +191,30 @@ class TestManagePagesView:
 
         url = view.get_redirect_url()
 
-        assert url == f"/manage/page/{page.id}/"
+        assert url == f"/manage/page/{regular_page.id}/"
 
     def test_get_redirect_url_redirects_to_add_page_when_no_pages_exist(self, authenticated_request, db, monkeypatch):
         """Should redirect to add page when no pages exist."""
+        request = authenticated_request()
+
+        def mock_reverse(view_name, kwargs=None):
+            if view_name == "lfs_add_page":
+                return "/manage/add-page/"
+            return f"/mock-url/{view_name}/"
+
+        monkeypatch.setattr("lfs.manage.pages.views.reverse", mock_reverse)
+
+        view = ManagePagesView()
+        view.request = request
+
+        url = view.get_redirect_url()
+
+        assert url == "/manage/add-page/"
+
+    def test_get_redirect_url_redirects_to_add_page_when_only_root_page_exists(
+        self, root_page, authenticated_request, monkeypatch
+    ):
+        """Should redirect to add page when only root page exists."""
         request = authenticated_request()
 
         def mock_reverse(view_name, kwargs=None):
