@@ -197,6 +197,40 @@ class TestDeliveryTimeViewsIntegration:
         assert "express" in response.content.decode().lower()
         assert response.context["search_query"] == "express"
 
+    def test_delivery_time_htmx_search_integration(self, client, admin_user, delivery_time, shop):
+        """Should handle HTMX search requests correctly with proper target element."""
+        client.force_login(admin_user)
+
+        # Create another delivery time for search testing
+        other_delivery_time = DeliveryTime.objects.create(
+            min=5.0, max=10.0, unit=DELIVERY_TIME_UNIT_DAYS, description="Premium delivery"
+        )
+
+        # Add search term to first delivery time
+        delivery_time.description = "Express delivery service"
+        delivery_time.save()
+
+        # Simulate HTMX search request - should return only the delivery-times-list element
+        response = client.get(
+            reverse("lfs_manage_delivery_time", args=[delivery_time.id]),
+            {"q": "express"},
+            HTTP_HX_REQUEST="true",
+            HTTP_HX_TARGET="delivery-times-list",
+        )
+
+        assert response.status_code == 200
+        content = response.content.decode()
+
+        # Should contain the delivery-times-list element
+        assert 'id="delivery-times-list"' in content
+        assert "Express delivery service" in content
+
+        # Should NOT contain premium delivery (doesn't match search)
+        assert "Premium delivery" not in content
+
+        # Should contain the search query in context
+        assert response.context["search_query"] == "express"
+
     def test_delivery_time_form_validation_errors(self, client, admin_user, delivery_time, shop):
         """Should handle form validation errors correctly."""
         client.force_login(admin_user)
@@ -242,7 +276,7 @@ class TestDeliveryTimeViewsIntegration:
         response = client.get(reverse("lfs_manage_delivery_times"))
 
         assert response.status_code == 302
-        assert "no-delivery-times" in response.url
+        assert "delivery-times/no" in response.url
 
     def test_delivery_time_context_data_includes_related_objects(self, client, manage_user, delivery_time, shop):
         """Should include all necessary context data for template rendering."""

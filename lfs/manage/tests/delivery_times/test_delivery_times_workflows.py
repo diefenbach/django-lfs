@@ -188,7 +188,7 @@ class TestDeliveryTimeNavigationWorkflow:
         # Should redirect to no delivery times view
         response = client.get(reverse("lfs_manage_delivery_times"))
         assert response.status_code == 302
-        assert "no-delivery-times" in response.url
+        assert "delivery-times/no" in response.url
 
         # Verify no delivery times view renders
         no_delivery_times_response = client.get(reverse("lfs_no_delivery_times"))

@@ -22,7 +22,7 @@
                             hx-push-url="true"
                             aria-label="{% trans 'Search delivery times' %}">
                     </div>
-                    <div class="list-group">
+                    <div id="delivery-times-list" class="list-group">
                         {% for dt in delivery_times %}
                             <a class="list-group-item list-group-item-action {% if dt.id == delivery_time.id %}active{% endif %}"
                                href="{% url 'lfs_manage_delivery_time' dt.id %}?q={{ search_query }}">
