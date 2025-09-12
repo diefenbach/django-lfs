@@ -11,9 +11,9 @@
                     class="btn btn-success btn-sm d-flex align-items-center gap-2 shadow-sm"
                     hx-post="{% url 'lfs_manage_payment_method_prices' payment_method.id %}"
                     hx-vals='{"add_price": "1", "price": "0.00"}'
-                    hx-target="closest .tab-content"
-                    hx-swap="innerHTML"
-                    style="border-radius: 8px; font-weight: 500; transition: all 0.2s ease;">
+                    hx-target=".tab-content"
+                    hx-select=".tab-content"
+                    hx-swap="outerHTML">
                 <i class="bi bi-plus-lg"></i>
                 <span>{% trans 'Add Price' %}</span>
             </button>
@@ -23,15 +23,23 @@
             <table class="table table-sm table-hover">
                 <thead>
                     <tr>
+                        <th><input class="form-check-input select-all" type="checkbox" value="prices"></th>
                         <th>{% trans "Priority" %}</th>
                         <th>{% trans "Price" %}</th>
                         <th>{% trans "Criteria" %}</th>
-                        <th>{% trans "Actions" %}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for price in prices %}
                         <tr>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           name="delete-{{ price.id }}" 
+                                           id="delete-{{ price.id }}">
+                                </div>
+                            </td>
                             <td>
                                 <input type="number" 
                                        name="priority-{{ price.id }}" 
@@ -66,17 +74,6 @@
                                             {% trans "No criteria" %}
                                         </small>
                                     {% endfor %}
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-check">
-                                    <input class="form-check-input" 
-                                           type="checkbox" 
-                                           name="delete-{{ price.id }}" 
-                                           id="delete-{{ price.id }}">
-                                    <label class="form-check-label text-danger" for="delete-{{ price.id }}">
-                                        {% trans "Delete" %}
-                                    </label>
                                 </div>
                             </td>
                         </tr>

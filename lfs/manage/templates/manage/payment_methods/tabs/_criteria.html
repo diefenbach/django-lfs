@@ -12,8 +12,7 @@
                     hx-get="{% url 'lfs_add_criterion' %}"
                     hx-target="tbody.criteria"
                     hx-swap="afterbegin"
-                    hx-on::after-request="document.querySelector('.no-criteria-row')?.remove()"
-                    style="border-radius: 8px; font-weight: 500; transition: all 0.2s ease;">
+                    hx-on::after-request="document.querySelector('.no-criteria-row')?.remove()">
                 <i class="bi bi-plus-lg"></i>
                 <span>{% trans 'Add criterion' %}</span>
             </button>

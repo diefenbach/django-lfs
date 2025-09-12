@@ -82,4 +82,8 @@
 
     {% include 'manage/snippets/modals/modal-lg.html' %}
     {% include 'manage/snippets/modals/modal-sm.html' %}
+
+    {% block javascript %}
+        <script src="{% static 'lfs/manage/js/payment_methods.js' %}"></script>
+    {% endblock %}
 {% endblock %}

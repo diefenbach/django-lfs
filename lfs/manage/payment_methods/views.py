@@ -42,7 +42,7 @@ class NoPaymentMethodsView(PermissionRequiredMixin, TemplateView):
 class PaymentMethodTabMixin:
     """Mixin for tab navigation in Payment Method views."""
 
-    template_name = "manage/payment_methods/payment.html"
+    template_name = "manage/payment_methods/payment_method.html"
     tab_name: Optional[str] = None
 
     def get_payment_method(self) -> PaymentMethod:
@@ -129,7 +129,7 @@ class PaymentMethodCriteriaView(PermissionRequiredMixin, PaymentMethodTabMixin, 
     """View for criteria tab of a Payment Method."""
 
     tab_name = "criteria"
-    template_name = "manage/payment_methods/payment.html"
+    template_name = "manage/payment_methods/payment_method.html"
     permission_required = "core.manage_shop"
 
     def get_success_url(self) -> str:
@@ -174,7 +174,7 @@ class PaymentMethodPricesView(PermissionRequiredMixin, PaymentMethodTabMixin, Te
     """View for prices tab of a Payment Method."""
 
     tab_name = "prices"
-    template_name = "manage/payment_methods/payment.html"
+    template_name = "manage/payment_methods/payment_method.html"
     permission_required = "core.manage_shop"
 
     def get_success_url(self) -> str:
