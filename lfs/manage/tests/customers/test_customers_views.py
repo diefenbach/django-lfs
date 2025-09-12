@@ -11,7 +11,6 @@ Following TDD principles:
 Tests cover:
 - CustomerListView (list view with filtering and pagination)
 - NoCustomersView (empty state view)
-- CustomerTabMixin (tab navigation functionality)
 - CustomerDataView (data tab view)
 - ApplyCustomerFiltersView (filter form handling)
 - ResetCustomerFiltersView (filter reset)
@@ -26,9 +25,6 @@ from django.urls import reverse
 
 from lfs.customer.models import Customer
 from lfs.catalog.models import Product
-from lfs.manage.customers.views import (
-    CustomerTabMixin,
-)
 
 
 User = get_user_model()
@@ -273,30 +269,3 @@ class TestNoCustomersView:
         response = client.get(reverse("lfs_manage_no_customers"))
         assert response.status_code == 200
         assert "No customers found" in response.content.decode()
-
-
-class TestCustomerTabMixin:
-    """Test CustomerTabMixin functionality."""
-
-    def test_should_get_customer_by_id(self, customer):
-        """Test that customer is retrieved by ID."""
-        mixin = CustomerTabMixin()
-        mixin.kwargs = {"customer_id": customer.id}
-
-        # Mock the get_object_or_404 behavior
-        from unittest.mock import patch
-
-        with patch("lfs.manage.customers.views.get_object_or_404", return_value=customer) as mock_get:
-            result = mixin.get_customer()
-            assert result == customer
-            mock_get.assert_called_once()
-
-    def test_should_have_correct_template_name(self):
-        """Test that mixin has correct template name."""
-        mixin = CustomerTabMixin()
-        assert mixin.template_name == "manage/customers/customer.html"
-
-    def test_should_have_correct_model(self):
-        """Test that mixin has correct model."""
-        mixin = CustomerTabMixin()
-        assert mixin.model == Customer

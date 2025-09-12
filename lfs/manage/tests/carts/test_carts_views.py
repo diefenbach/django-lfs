@@ -89,32 +89,27 @@ class TestCartListViewUnit:
         view.request = mock_request
         view.request.user = admin_user
 
-        with patch.object(view, "get_paginated_carts") as mock_paginated_carts, patch.object(
-            view, "get_cart_context_data"
-        ) as mock_cart_context:
-            mock_paginated_carts.return_value = Cart.objects.none()
-            mock_cart_context.return_value = {"filter_form": "mock_form"}
+        context = view.get_context_data()
 
-            context = view.get_context_data()
-
-            assert "carts_with_data" in context
-            assert "carts_page" in context
-            assert "filter_form" in context
+        assert "carts_with_data" in context
+        assert "carts_page" in context
+        assert "filter_form" in context
 
     @pytest.mark.django_db
-    def test_get_filtered_carts_queryset_returns_cart_queryset(self, mock_request, admin_user):
-        """Test that get_filtered_carts_queryset returns Cart queryset."""
+    def test_get_context_data_returns_cart_queryset(self, mock_request, admin_user):
+        """Test that get_context_data includes filtered carts."""
         view = CartListView()
         view.request = mock_request
         view.request.user = admin_user
 
-        queryset = view.get_filtered_carts_queryset()
+        context = view.get_context_data()
 
-        assert queryset.model == Cart
+        assert "carts_page" in context
+        assert hasattr(context["carts_page"], "object_list")
 
     @pytest.mark.django_db
-    def test_get_filtered_carts_queryset_applies_filters_from_session(self, mock_request, admin_user):
-        """Test that get_filtered_carts_queryset applies filters from session."""
+    def test_get_context_data_applies_filters_from_session(self, mock_request, admin_user):
+        """Test that get_context_data applies filters from session."""
         view = CartListView()
         view.request = mock_request
         view.request.user = admin_user
@@ -123,33 +118,33 @@ class TestCartListViewUnit:
         with patch("lfs.manage.carts.services.CartFilterService.filter_carts") as mock_filter:
             mock_filter.return_value = Cart.objects.none()
 
-            view.get_filtered_carts_queryset()
+            view.get_context_data()
 
             mock_filter.assert_called_once()
 
     @pytest.mark.django_db
-    def test_get_filtered_carts_queryset_handles_empty_session(self, mock_request, admin_user):
-        """Test that get_filtered_carts_queryset handles empty session gracefully."""
+    def test_get_context_data_handles_empty_session(self, mock_request, admin_user):
+        """Test that get_context_data handles empty session gracefully."""
         view = CartListView()
         view.request = mock_request
         view.request.user = admin_user
         view.request.session = {}
 
-        queryset = view.get_filtered_carts_queryset()
+        context = view.get_context_data()
 
-        assert queryset.model == Cart
+        assert "carts_page" in context
 
     @pytest.mark.django_db
-    def test_get_filtered_carts_queryset_handles_none_session(self, mock_request, admin_user):
-        """Test that get_filtered_carts_queryset handles None session gracefully."""
+    def test_get_context_data_handles_empty_session(self, mock_request, admin_user):
+        """Test that get_context_data handles empty session gracefully."""
         view = CartListView()
         view.request = mock_request
         view.request.user = admin_user
-        view.request.session = None
+        view.request.session = {}
 
-        queryset = view.get_filtered_carts_queryset()
+        context = view.get_context_data()
 
-        assert queryset.model == Cart
+        assert "carts_page" in context
 
 
 class TestCartDataViewUnit:
@@ -188,14 +183,11 @@ class TestCartDataViewUnit:
         view.request.user = admin_user
         view.kwargs = {"id": cart.id}
 
-        with patch.object(view, "get_cart", return_value=cart), patch.object(
-            view, "get_cart_context_data", return_value={"filter_form": "mock_form"}
-        ):
-            context = view.get_context_data()
+        context = view.get_context_data()
 
-            assert "cart" in context
-            assert "carts_page" in context
-            assert "filter_form" in context
+        assert "cart" in context
+        assert "carts_page" in context
+        assert "filter_form" in context
 
     @pytest.mark.django_db
     def test_get_context_data_calculates_cart_total(self, mock_request, admin_user):

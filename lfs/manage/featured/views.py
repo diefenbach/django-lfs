@@ -1,14 +1,13 @@
 import json
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views.generic.base import RedirectView
 from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Q
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
-from django.views.generic.base import TemplateView
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
+from django.views.generic.base import TemplateView, RedirectView, View
 
 from lfs.caching.utils import lfs_get_object_or_404
 from lfs.catalog.models import Category, Product
@@ -134,73 +133,68 @@ class ManageFeaturedView(PermissionRequiredMixin, TemplateView):
         return categories
 
 
-def add_featured(request):
+class AddFeaturedView(PermissionRequiredMixin, RedirectView):
     """Adds featured products by given ids (within request body)."""
-    for temp_id in request.POST.keys():
-        if temp_id.startswith("product") is False:
-            continue
 
-        temp_id = temp_id.split("-")[1]
-        FeaturedProduct.objects.create(product_id=temp_id)
+    permission_required = "core.manage_shop"
 
-    _update_positions()
-
-    # Render ManageFeaturedView
-    view = ManageFeaturedView()
-    view.request = request
-    context = view.get_context_data()
-
-    return render(
-        request,
-        "manage/featured/featured.html",
-        context=context,
-    )
-
-
-def update_featured(request):
-    """Removes passed featured product passed id (within request body)."""
-    if request.POST.get("action") == "remove":
+    def post(self, request, *args, **kwargs):
+        """Handle POST request to add featured products."""
         for temp_id in request.POST.keys():
-            if not temp_id.startswith("product"):
+            if temp_id.startswith("product") is False:
                 continue
 
             temp_id = temp_id.split("-")[1]
-            try:
-                featured = FeaturedProduct.objects.get(pk=temp_id)
-                featured.delete()
-            except (FeaturedProduct.DoesNotExist, ValueError):
-                pass
+            FeaturedProduct.objects.create(product_id=temp_id)
 
         _update_positions()
 
-    # Render ManageFeaturedView
-    view = ManageFeaturedView()
-    view.request = request
-    context = view.get_context_data()
-
-    return render(
-        request,
-        "manage/featured/featured.html",
-        context=context,
-    )
+        return redirect("lfs_manage_featured")
 
 
-@csrf_exempt
-@require_http_methods(["POST"])
-def sort_featured(request):
+class RemoveFeaturedView(PermissionRequiredMixin, RedirectView):
+    """Removes passed featured product passed id (within request body)."""
+
+    permission_required = "core.manage_shop"
+
+    def post(self, request, *args, **kwargs):
+        """Handle POST request to remove featured products."""
+        if request.POST.get("action") == "remove":
+            for temp_id in request.POST.keys():
+                if not temp_id.startswith("product"):
+                    continue
+
+                temp_id = temp_id.split("-")[1]
+                try:
+                    featured = FeaturedProduct.objects.get(pk=temp_id)
+                    featured.delete()
+                except (FeaturedProduct.DoesNotExist, ValueError):
+                    pass
+
+            _update_positions()
+
+        return redirect("lfs_manage_featured")
+
+
+class SortFeaturedView(PermissionRequiredMixin, View):
     """Handle drag and drop sorting of featured products."""
-    data = json.loads(request.body)
-    featured_ids = data.get("featured_ids", [])
 
-    for index, featured_id in enumerate(featured_ids):
-        try:
-            featured = FeaturedProduct.objects.get(pk=featured_id)
-            featured.position = (index + 1) * 10
-            featured.save()
-        except FeaturedProduct.DoesNotExist:
-            continue
+    permission_required = "core.manage_shop"
 
-    return HttpResponse()
+    def post(self, request, *args, **kwargs):
+        """Handle POST request for drag and drop sorting."""
+        data = json.loads(request.body)
+        featured_ids = data.get("featured_ids", [])
+
+        for index, featured_id in enumerate(featured_ids):
+            try:
+                featured = FeaturedProduct.objects.get(pk=featured_id)
+                featured.position = (index + 1) * 10
+                featured.save()
+            except FeaturedProduct.DoesNotExist:
+                continue
+
+        return HttpResponse()
 
 
 def _update_positions():

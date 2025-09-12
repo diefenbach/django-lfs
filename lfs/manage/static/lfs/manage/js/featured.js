@@ -50,7 +50,7 @@ function initializeSortable() {
                 const featuredIds = Array.from(rows).map(row => row.getAttribute('data-id'));
                 
                 // Send AJAX request to update positions
-                fetch('/manage/sort-featured', {
+                fetch('/manage/featured/sort', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

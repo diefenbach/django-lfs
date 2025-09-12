@@ -229,14 +229,15 @@ class TestCustomerFilterService:
         service = CustomerFilterService()
         queryset = Customer.objects.all()
 
-        # Set user's date_joined to a specific date
-        test_date = timezone.now().date() - timedelta(days=30)
-        user.date_joined = timezone.make_aware(
-            timezone.datetime.combine(test_date, timezone.datetime.min.time()), timezone.get_current_timezone()
-        )
+        # Set user's date_joined to a fixed date that's clearly in the past
+        from datetime import date
+
+        fixed_date = date(2020, 1, 15)  # Fixed date to avoid timezone issues
+        test_datetime = timezone.make_aware(timezone.datetime.combine(fixed_date, timezone.datetime.min.time()))
+        user.date_joined = test_datetime
         user.save()
 
-        result = service.filter_customers(queryset, {"start": test_date.isoformat()})
+        result = service.filter_customers(queryset, {"start": fixed_date.isoformat()})
 
         assert result.count() == 1
         assert result.first() == customer
@@ -247,14 +248,17 @@ class TestCustomerFilterService:
         service = CustomerFilterService()
         queryset = Customer.objects.all()
 
-        # Set user's date_joined to a specific date
-        test_date = timezone.now().date() - timedelta(days=30)
-        user.date_joined = timezone.make_aware(
-            timezone.datetime.combine(test_date, timezone.datetime.min.time()), timezone.get_current_timezone()
-        )
+        # Set user's date_joined to a fixed date that's clearly in the past
+        from datetime import date
+
+        fixed_date = date(2020, 1, 15)  # Fixed date to avoid timezone issues
+        test_datetime = timezone.make_aware(timezone.datetime.combine(fixed_date, timezone.datetime.min.time()))
+        user.date_joined = test_datetime
         user.save()
 
-        result = service.filter_customers(queryset, {"end": test_date.isoformat()})
+        # Use the same date for filtering
+        filter_date = fixed_date.isoformat()
+        result = service.filter_customers(queryset, {"end": filter_date})
 
         assert result.count() == 1
         assert result.first() == customer
@@ -265,15 +269,16 @@ class TestCustomerFilterService:
         service = CustomerFilterService()
         queryset = Customer.objects.all()
 
-        # Set user's date_joined to a specific date
-        test_date = timezone.now().date() - timedelta(days=30)
-        user.date_joined = timezone.make_aware(
-            timezone.datetime.combine(test_date, timezone.datetime.min.time()), timezone.get_current_timezone()
-        )
+        # Set user's date_joined to a fixed date that's clearly in the past
+        from datetime import date
+
+        fixed_date = date(2020, 1, 15)  # Fixed date to avoid timezone issues
+        test_datetime = timezone.make_aware(timezone.datetime.combine(fixed_date, timezone.datetime.min.time()))
+        user.date_joined = test_datetime
         user.save()
 
-        start_date = (test_date - timedelta(days=1)).isoformat()
-        end_date = (test_date + timedelta(days=1)).isoformat()
+        start_date = (fixed_date - timedelta(days=1)).isoformat()
+        end_date = (fixed_date + timedelta(days=1)).isoformat()
 
         result = service.filter_customers(queryset, {"start": start_date, "end": end_date})
 
@@ -286,15 +291,16 @@ class TestCustomerFilterService:
         service = CustomerFilterService()
         queryset = Customer.objects.all()
 
-        # Set user's date_joined to a specific date
-        test_date = timezone.now().date() - timedelta(days=30)
-        user.date_joined = timezone.make_aware(
-            timezone.datetime.combine(test_date, timezone.datetime.min.time()), timezone.get_current_timezone()
-        )
+        # Set user's date_joined to a fixed date that's clearly in the past
+        from datetime import date
+
+        fixed_date = date(2020, 1, 15)  # Fixed date to avoid timezone issues
+        test_datetime = timezone.make_aware(timezone.datetime.combine(fixed_date, timezone.datetime.min.time()))
+        user.date_joined = test_datetime
         user.save()
 
-        start_date = (test_date - timedelta(days=10)).isoformat()
-        end_date = (test_date - timedelta(days=5)).isoformat()
+        start_date = (fixed_date - timedelta(days=10)).isoformat()
+        end_date = (fixed_date - timedelta(days=5)).isoformat()
 
         result = service.filter_customers(queryset, {"start": start_date, "end": end_date})
 
@@ -306,14 +312,15 @@ class TestCustomerFilterService:
         service = CustomerFilterService()
         queryset = Customer.objects.all()
 
-        # Set user's date_joined to a specific date
-        test_date = timezone.now().date() - timedelta(days=30)
-        user.date_joined = timezone.make_aware(
-            timezone.datetime.combine(test_date, timezone.datetime.min.time()), timezone.get_current_timezone()
-        )
+        # Set user's date_joined to a fixed date that's clearly in the past
+        from datetime import date
+
+        fixed_date = date(2020, 1, 15)  # Fixed date to avoid timezone issues
+        test_datetime = timezone.make_aware(timezone.datetime.combine(fixed_date, timezone.datetime.min.time()))
+        user.date_joined = test_datetime
         user.save()
 
-        filters = {"name": "John", "start": test_date.isoformat()}
+        filters = {"name": "John", "start": fixed_date.isoformat()}
 
         result = service.filter_customers(queryset, filters)
 

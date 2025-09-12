@@ -122,19 +122,30 @@ def request_factory():
 def mock_request(request_factory):
     """Mock request object for testing."""
     request = request_factory.get("/")
-    # Mock session with session_key attribute
-    session_mock = type(
-        "MockSession",
-        (),
-        {
-            "session_key": "test_session_key",
-            "get": lambda self, key, default=None: default,
-            "__setitem__": lambda self, key, value: None,
-            "__getitem__": lambda self, key: None,
-            "__contains__": lambda self, key: False,
-        },
-    )()
-    request.session = session_mock
+
+    # Mock session that behaves like a dictionary
+    class MockSession(dict):
+        def __init__(self):
+            super().__init__()
+            self.session_key = "test_session_key"
+
+        def get(self, key, default=None):
+            return super().get(key, default)
+
+        def __setitem__(self, key, value):
+            super().__setitem__(key, value)
+
+        def __getitem__(self, key):
+            return super().__getitem__(key)
+
+        def __contains__(self, key):
+            return super().__contains__(key)
+
+    request.session = MockSession()
+    # Set default session values
+    request.session["topseller-amount"] = 25
+    # Add session_key attribute for cart utils
+    request.session.session_key = "test_session_key"
     # Mock messages framework for unit tests
     messages_mock = type(
         "MockMessages",

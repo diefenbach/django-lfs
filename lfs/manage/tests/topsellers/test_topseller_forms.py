@@ -46,12 +46,12 @@ class TestTopsellerForms:
 
     def test_views_use_direct_post_data_handling(self):
         """Test that views handle POST data directly without forms."""
-        from lfs.manage.topseller.views import add_topseller, update_topseller
+        from lfs.manage.topseller.views import AddTopsellerView, RemoveTopsellerView
 
-        # These functions should handle POST data directly
+        # These view classes should handle POST data directly
         # This is a documentation test showing the current approach
-        assert callable(add_topseller)
-        assert callable(update_topseller)
+        assert hasattr(AddTopsellerView, "post")
+        assert hasattr(RemoveTopsellerView, "post")
 
     def test_views_use_session_for_filter_state(self):
         """Test that views use session for maintaining filter state."""
@@ -64,28 +64,28 @@ class TestTopsellerForms:
 
     def test_views_handle_json_data_directly(self):
         """Test that views handle JSON data directly for AJAX operations."""
-        from lfs.manage.topseller.views import sort_topseller
+        from lfs.manage.topseller.views import SortTopsellerView
 
-        # The sort_topseller function should handle JSON data directly
-        assert callable(sort_topseller)
+        # The SortTopsellerView should handle JSON data directly
+        assert hasattr(SortTopsellerView, "post")
 
     def test_views_use_csrf_exempt_for_ajax(self):
         """Test that AJAX views use csrf_exempt decorator."""
-        from lfs.manage.topseller.views import sort_topseller
+        from lfs.manage.topseller.views import SortTopsellerView
         from django.views.decorators.csrf import csrf_exempt
 
-        # The sort_topseller function should be csrf_exempt
+        # The SortTopsellerView should handle AJAX requests
         # This is a documentation test showing the current approach
-        assert callable(sort_topseller)
+        assert hasattr(SortTopsellerView, "post")
 
     def test_views_use_http_method_decorators(self):
         """Test that views use appropriate HTTP method decorators."""
-        from lfs.manage.topseller.views import sort_topseller
+        from lfs.manage.topseller.views import SortTopsellerView
         from django.views.decorators.http import require_http_methods
 
-        # The sort_topseller function should use require_http_methods
+        # The SortTopsellerView should handle POST requests
         # This is a documentation test showing the current approach
-        assert callable(sort_topseller)
+        assert hasattr(SortTopsellerView, "post")
 
     def test_views_handle_permission_checks(self):
         """Test that views handle permission checks appropriately."""
@@ -98,12 +98,13 @@ class TestTopsellerForms:
 
     def test_views_use_template_rendering(self):
         """Test that views use appropriate template rendering."""
-        from lfs.manage.topseller.views import manage_topseller, manage_topseller_inline
+        from lfs.manage.topseller.views import ManageTopsellerView
         from django.template.loader import render_to_string
 
-        # These functions should use render_to_string
-        assert callable(manage_topseller)
-        assert callable(manage_topseller_inline)
+        # The view class should use template rendering
+        view = ManageTopsellerView()
+        assert hasattr(view, "template_name")
+        assert view.template_name == "manage/topseller/topseller.html"
 
     def test_views_handle_pagination_directly(self):
         """Test that views handle pagination without forms."""
@@ -125,35 +126,38 @@ class TestTopsellerForms:
 
     def test_views_handle_ajax_responses(self):
         """Test that views handle AJAX responses appropriately."""
-        from lfs.manage.topseller.views import manage_topseller_inline
+        # Note: The inline functionality has been removed in the class-based refactor
+        # This test documents that inline views are not currently available
+        from lfs.manage.topseller.views import ManageTopsellerView
         from django.http import HttpResponse
 
-        # The manage_topseller_inline function should return HttpResponse for AJAX
-        assert callable(manage_topseller_inline)
+        # AJAX responses are handled by SortTopsellerView
+        view = ManageTopsellerView()
+        assert hasattr(view, "get_context_data")
 
     def test_views_handle_json_parsing(self):
         """Test that views handle JSON parsing for AJAX requests."""
-        from lfs.manage.topseller.views import sort_topseller
+        from lfs.manage.topseller.views import SortTopsellerView
         import json
 
-        # The sort_topseller function should parse JSON
-        assert callable(sort_topseller)
+        # The SortTopsellerView should parse JSON
+        assert hasattr(SortTopsellerView, "post")
 
     def test_views_handle_error_conditions(self):
         """Test that views handle error conditions gracefully."""
-        from lfs.manage.topseller.views import update_topseller, sort_topseller
+        from lfs.manage.topseller.views import RemoveTopsellerView, SortTopsellerView
 
-        # These functions should handle errors gracefully
-        assert callable(update_topseller)
-        assert callable(sort_topseller)
+        # These view classes should handle errors gracefully
+        assert hasattr(RemoveTopsellerView, "post")
+        assert hasattr(SortTopsellerView, "post")
 
     def test_views_use_signals_appropriately(self):
         """Test that views use signals appropriately."""
-        from lfs.manage.topseller.views import update_topseller
+        from lfs.manage.topseller.views import RemoveTopsellerView
         from lfs.core.signals import topseller_changed
 
-        # The update_topseller function should send signals
-        assert callable(update_topseller)
+        # The RemoveTopsellerView should send signals
+        assert hasattr(RemoveTopsellerView, "post")
 
     def test_views_handle_position_updates(self):
         """Test that views handle position updates correctly."""
@@ -204,32 +208,30 @@ class TestTopsellerForms:
 
     def test_views_handle_csrf_exempt_decorator(self):
         """Test that views use csrf_exempt decorator appropriately."""
-        from lfs.manage.topseller.views import sort_topseller
+        from lfs.manage.topseller.views import SortTopsellerView
         from django.views.decorators.csrf import csrf_exempt
 
-        # The sort_topseller function should be decorated with csrf_exempt
-        assert callable(sort_topseller)
+        # The SortTopsellerView should handle AJAX requests without CSRF
+        assert hasattr(SortTopsellerView, "post")
 
     def test_views_handle_http_methods_decorator(self):
         """Test that views use require_http_methods decorator appropriately."""
-        from lfs.manage.topseller.views import sort_topseller
+        from lfs.manage.topseller.views import SortTopsellerView
         from django.views.decorators.http import require_http_methods
 
-        # The sort_topseller function should be decorated with require_http_methods
-        assert callable(sort_topseller)
+        # The SortTopsellerView should handle POST requests
+        assert hasattr(SortTopsellerView, "post")
 
     def test_views_handle_permission_required_decorator(self):
         """Test that views use permission_required decorator appropriately."""
         from lfs.manage.topseller.views import (
-            manage_topseller,
-            manage_topseller_inline,
-            add_topseller,
-            update_topseller,
+            ManageTopsellerView,
+            AddTopsellerView,
+            RemoveTopsellerView,
         )
-        from django.contrib.auth.decorators import permission_required
+        from django.contrib.auth.mixins import PermissionRequiredMixin
 
-        # These functions should be decorated with permission_required
-        assert callable(manage_topseller)
-        assert callable(manage_topseller_inline)
-        assert callable(add_topseller)
-        assert callable(update_topseller)
+        # These view classes should inherit from PermissionRequiredMixin
+        assert issubclass(ManageTopsellerView, PermissionRequiredMixin)
+        assert issubclass(AddTopsellerView, PermissionRequiredMixin)
+        assert issubclass(RemoveTopsellerView, PermissionRequiredMixin)

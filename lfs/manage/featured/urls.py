@@ -9,17 +9,17 @@ urlpatterns = [
     ),
     path(
         "featured/add",
-        featured_views.add_featured,
+        featured_views.AddFeaturedView.as_view(),
         name="lfs_manage_add_featured",
     ),
     path(
         "featured/update",
-        featured_views.update_featured,
-        name="lfs_manage_update_featured",
+        featured_views.RemoveFeaturedView.as_view(),
+        name="lfs_manage_delete_featured",
     ),
     path(
         "featured/sort",
-        featured_views.sort_featured,
+        featured_views.SortFeaturedView.as_view(),
         name="lfs_manage_sort_featured",
     ),
 ]

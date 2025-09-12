@@ -15,8 +15,8 @@ from django.test import RequestFactory
 from lfs.marketing.models import FeaturedProduct
 from lfs.manage.featured.views import (
     ManageFeaturedView,
-    add_featured,
-    update_featured,
+    AddFeaturedView,
+    RemoveFeaturedView,
     _update_positions,
 )
 
@@ -289,7 +289,9 @@ class TestAddFeatured:
         # Verify no featured products exist initially
         assert FeaturedProduct.objects.count() == 0
 
-        response = add_featured(request)
+        view = AddFeaturedView()
+        view.request = request
+        response = view.post(request)
 
         # Should create 2 featured products
         assert FeaturedProduct.objects.count() == 2
@@ -309,7 +311,9 @@ class TestAddFeatured:
             },
         )
 
-        response = add_featured(request)
+        view = AddFeaturedView()
+        view.request = request
+        response = view.post(request)
 
         # Should only create 1 featured product
         assert FeaturedProduct.objects.count() == 1
@@ -325,7 +329,9 @@ class TestAddFeatured:
             },
         )
 
-        response = add_featured(request)
+        view = AddFeaturedView()
+        view.request = request
+        response = view.post(request)
 
         featured_products = FeaturedProduct.objects.all().order_by("position")
         assert len(featured_products) == 3
@@ -334,22 +340,25 @@ class TestAddFeatured:
         assert featured_products[2].position == 30
 
     def test_add_featured_renders_manage_view(self, authenticated_request, multiple_products):
-        """Should render the manage featured view after adding."""
+        """Should redirect to manage featured view after adding."""
         request = authenticated_request(method="POST", data={"product-1": "on"})
 
-        response = add_featured(request)
+        view = AddFeaturedView()
+        view.request = request
+        response = view.post(request)
 
-        assert response.status_code == 200
-        # Check that the response contains the expected content
-        assert b"featured" in response.content.lower()
+        assert response.status_code == 302  # Redirect to manage view
+        assert response.url == "/manage/featured"
 
     def test_add_featured_handles_empty_post_data(self, authenticated_request, shop):
         """Should handle empty POST data gracefully."""
         request = authenticated_request(method="POST", data={})
 
-        response = add_featured(request)
+        view = AddFeaturedView()
+        view.request = request
+        response = view.post(request)
 
-        assert response.status_code == 200
+        assert response.status_code == 302  # Still redirects even with empty data
         assert FeaturedProduct.objects.count() == 0
 
 
@@ -372,7 +381,9 @@ class TestUpdateFeatured:
         # Verify featured products exist initially
         assert FeaturedProduct.objects.count() == 3
 
-        response = update_featured(request)
+        view = RemoveFeaturedView()
+        view.request = request
+        response = view.post(request)
 
         # Should remove 2 featured products
         assert FeaturedProduct.objects.count() == 1
@@ -390,7 +401,9 @@ class TestUpdateFeatured:
             },
         )
 
-        response = update_featured(request)
+        view = RemoveFeaturedView()
+        view.request = request
+        response = view.post(request)
 
         # Should only remove 1 featured product
         assert FeaturedProduct.objects.count() == 2
@@ -405,7 +418,9 @@ class TestUpdateFeatured:
             },
         )
 
-        response = update_featured(request)
+        view = RemoveFeaturedView()
+        view.request = request
+        response = view.post(request)
 
         # Should not crash and all products should remain
         assert FeaturedProduct.objects.count() == 3
@@ -420,7 +435,9 @@ class TestUpdateFeatured:
             },
         )
 
-        response = update_featured(request)
+        view = RemoveFeaturedView()
+        view.request = request
+        response = view.post(request)
 
         featured_products = FeaturedProduct.objects.all().order_by("position")
         assert len(featured_products) == 2
@@ -437,7 +454,9 @@ class TestUpdateFeatured:
             },
         )
 
-        response = update_featured(request)
+        view = RemoveFeaturedView()
+        view.request = request
+        response = view.post(request)
 
         featured_products = FeaturedProduct.objects.all().order_by("position")
         assert len(featured_products) == 3
@@ -456,7 +475,9 @@ class TestUpdateFeatured:
             },
         )
 
-        response = update_featured(request)
+        view = RemoveFeaturedView()
+        view.request = request
+        response = view.post(request)
 
         # Should update positions and normalize them
         featured_products = FeaturedProduct.objects.all().order_by("position")
@@ -466,7 +487,7 @@ class TestUpdateFeatured:
         assert featured_products[2].position == 30
 
     def test_update_featured_renders_manage_view_after_removing(self, authenticated_request, featured_products):
-        """Should render the manage featured view after removing."""
+        """Should redirect to manage featured view after removing."""
         request = authenticated_request(
             method="POST",
             data={
@@ -475,14 +496,15 @@ class TestUpdateFeatured:
             },
         )
 
-        response = update_featured(request)
+        view = RemoveFeaturedView()
+        view.request = request
+        response = view.post(request)
 
-        assert response.status_code == 200
-        # Check that the response contains the expected content
-        assert b"featured" in response.content.lower()
+        assert response.status_code == 302  # Redirect to manage view
+        assert response.url == "/manage/featured"
 
     def test_update_featured_renders_manage_view_after_updating(self, authenticated_request, featured_products):
-        """Should render the manage featured view after updating positions."""
+        """Should redirect to manage featured view after updating positions."""
         request = authenticated_request(
             method="POST",
             data={
@@ -490,19 +512,22 @@ class TestUpdateFeatured:
             },
         )
 
-        response = update_featured(request)
+        view = RemoveFeaturedView()
+        view.request = request
+        response = view.post(request)
 
-        assert response.status_code == 200
-        # Check that the response contains the expected content
-        assert b"featured" in response.content.lower()
+        assert response.status_code == 302  # Redirect to manage view
+        assert response.url == "/manage/featured"
 
     def test_update_featured_handles_empty_post_data(self, authenticated_request, shop):
         """Should handle empty POST data gracefully."""
         request = authenticated_request(method="POST", data={})
 
-        response = update_featured(request)
+        view = RemoveFeaturedView()
+        view.request = request
+        response = view.post(request)
 
-        assert response.status_code == 200
+        assert response.status_code == 302  # Still redirects even with empty data
 
 
 @pytest.mark.django_db
@@ -581,8 +606,10 @@ class TestFeaturedViewsIntegration:
                 "product-2": "on",
             },
         )
-        response = add_featured(request)
-        assert response.status_code == 200
+        view = AddFeaturedView()
+        view.request = request
+        response = view.post(request)
+        assert response.status_code == 302  # Redirect status
         assert FeaturedProduct.objects.count() == 2
 
         # Step 2: Update positions
@@ -593,8 +620,10 @@ class TestFeaturedViewsIntegration:
                 "position-2": "30",
             },
         )
-        response = update_featured(request)
-        assert response.status_code == 200
+        view = RemoveFeaturedView()
+        view.request = request
+        response = view.post(request)
+        assert response.status_code == 302  # Redirect status
 
         # Step 3: Remove one product
         request = authenticated_request(
@@ -604,8 +633,10 @@ class TestFeaturedViewsIntegration:
                 "product-1": "on",
             },
         )
-        response = update_featured(request)
-        assert response.status_code == 200
+        view = RemoveFeaturedView()
+        view.request = request
+        response = view.post(request)
+        assert response.status_code == 302  # Redirect status
         assert FeaturedProduct.objects.count() == 1
 
         # Verify final state

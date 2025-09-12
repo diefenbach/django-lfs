@@ -11,7 +11,6 @@ Following TDD principles:
 Tests cover:
 - ReviewListView (list view with filtering and pagination)
 - NoReviewsView (empty state view)
-- ReviewTabMixin (tab navigation functionality)
 - ReviewDataView (data tab view)
 - ApplyReviewFiltersView (filter form handling)
 - ResetReviewFiltersView (filter reset)
@@ -31,9 +30,6 @@ from django.utils import timezone
 
 from reviews.models import Review
 from lfs.catalog.models import Product
-from lfs.manage.reviews.views import (
-    ReviewTabMixin,
-)
 
 
 User = get_user_model()
@@ -234,59 +230,6 @@ class TestNoReviewsView:
         response = authenticated_client.get(reverse("lfs_manage_no_reviews"))
         assert response.status_code == 200
         assert "manage/reviews/no_reviews.html" in [t.name for t in response.templates]
-
-
-class TestReviewTabMixin:
-    """Test ReviewTabMixin functionality."""
-
-    def test_get_review_returns_correct_review(self, authenticated_request, review):
-        """Should return correct review by ID."""
-        request = authenticated_request()
-        view = ReviewTabMixin()
-        view.request = request
-        view.kwargs = {"id": review.id}
-
-        result = view.get_review()
-        assert result == review
-
-    def test_get_review_raises_404_for_nonexistent(self, authenticated_request):
-        """Should raise 404 for nonexistent review."""
-        from django.http import Http404
-
-        request = authenticated_request()
-        view = ReviewTabMixin()
-        view.request = request
-        view.kwargs = {"id": 99999}
-
-        with pytest.raises(Http404):
-            view.get_review()
-
-    def test_get_paginated_reviews_uses_correct_page_size(self, authenticated_request, multiple_reviews):
-        """Should use correct page size for pagination."""
-        request = authenticated_request()
-        view = ReviewTabMixin()
-        view.request = request
-
-        result = view.get_paginated_reviews()
-        assert result.paginator.per_page == 10
-
-    def test_get_context_data_includes_review(self, authenticated_request, review):
-        """Should include review in context data."""
-        from django.views.generic import TemplateView
-
-        class TestView(ReviewTabMixin, TemplateView):
-            template_name = "test.html"
-
-        request = authenticated_request()
-        view = TestView()
-        view.request = request
-        view.kwargs = {"id": review.id}
-        view.tab_name = "test"
-
-        context = view.get_context_data()
-        assert "review" in context
-        assert context["review"] == review
-        assert context["active_tab"] == "test"
 
 
 class TestReviewDataView:
