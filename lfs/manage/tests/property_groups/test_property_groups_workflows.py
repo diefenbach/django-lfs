@@ -420,7 +420,7 @@ class TestCompletePropertyGroupManagementWorkflow:
         # Step 3: Search for non-existent group
         response = client.get(reverse("lfs_manage_property_groups"), {"q": "NonExistent"})
         assert response.status_code == 302
-        assert "no-property-groups" in response.url
+        assert "/manage/property-groups/no" in response.url
 
         # Step 4: View no groups page
         response = client.get(reverse("lfs_manage_no_property_groups"))

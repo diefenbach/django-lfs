@@ -123,7 +123,7 @@ class TestManagePropertyGroupsViewUnit:
 
         url = view.get_redirect_url()
 
-        assert "no-property-groups" in url
+        assert "/manage/property-groups/no" in url
 
     @pytest.mark.django_db
     def test_permission_required_is_correct(self, mock_request, regular_user):

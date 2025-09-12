@@ -116,7 +116,7 @@ class TestPropertyGroupViewDatabaseIntegration:
         response = client.get(reverse("lfs_manage_property_groups"))
 
         assert response.status_code == 302
-        assert "no-property-groups" in response.url
+        assert "/manage/property-groups/no" in response.url
 
     @pytest.mark.django_db
     def test_property_group_data_view_database_integration(self, client, admin_user, sample_property_group, shop):

@@ -37,7 +37,7 @@ class TestManageDiscountsIntegration:
         response = client.get(reverse("lfs_manage_discounts"))
 
         assert response.status_code == 302
-        assert "/manage/no-discounts/" in response.url
+        assert "/manage/discounts/no" in response.url
 
     def test_manage_discounts_requires_login(self, client):
         """Should require login."""

@@ -34,7 +34,7 @@ class TestManageActionsIntegration:
         response = client.get(reverse("lfs_manage_actions"))
 
         assert response.status_code == 302
-        assert "/manage/no-actions/" in response.url
+        assert "/manage/actions/no" in response.url
 
     def test_manage_actions_requires_login(self, client):
         """Should require login."""
@@ -211,7 +211,7 @@ class TestActionDeleteIntegration:
 
         assert response.status_code == 302
         assert not Action.objects.filter(id=action.id).exists()
-        assert "/manage/no-actions/" in response.url
+        assert "/manage/actions/no" in response.url
 
     def test_delete_action_requires_permission(self, client, regular_user, action):
         """Should require manage_shop permission."""

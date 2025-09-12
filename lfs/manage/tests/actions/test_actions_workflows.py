@@ -233,7 +233,7 @@ class TestActionDeletionWorkflow:
         assert not Action.objects.filter(id=action.id).exists()
 
         # Verify redirect to no actions page
-        assert "/manage/no-actions/" in response.url
+        assert "/manage/actions/no" in response.url
 
 
 class TestActionActivationWorkflow:
