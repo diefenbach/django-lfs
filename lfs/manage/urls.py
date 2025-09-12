@@ -10,7 +10,6 @@ import lfs.manage.product_taxes.views
 import lfs.manage.shipping_methods.views
 import lfs.manage.views.criteria
 import lfs.manage.views.export
-import lfs.manage.views.payment
 import lfs.manage.views.utils
 from lfs.catalog.models import Product
 from lfs.catalog.models import Category
@@ -167,55 +166,9 @@ urlpatterns = [
         lfs.manage.shipping_methods.views.no_shipping_methods,
         name="lfs_manage_no_shipping_methods",
     ),
-    # Discounts
     path("", include("lfs.manage.discounts.urls")),
-    # Pages
     path("", include("lfs.manage.pages.urls")),
-    # Payment
-    re_path(r"^payment$", lfs.manage.views.payment.manage_payment, name="lfs_manage_payment"),
-    re_path(
-        r"^payment-method/(?P<payment_method_id>\d*)$",
-        lfs.manage.views.payment.manage_payment_method,
-        name="lfs_manage_payment_method",
-    ),
-    re_path(r"^add-payment-method", lfs.manage.views.payment.add_payment_method, name="lfs_add_payment_method"),
-    re_path(
-        r"^save-payment-data/(?P<payment_method_id>\d*)$",
-        lfs.manage.views.payment.save_payment_method_data,
-        name="lfs_manage_save_payment_method_data",
-    ),
-    re_path(
-        r"^delete-payment-method/(?P<payment_method_id>\d*)$",
-        lfs.manage.views.payment.delete_payment_method,
-        name="lfs_delete_payment_method",
-    ),
-    re_path(
-        r"^add-payment-price/(?P<payment_method_id>\d*)$",
-        lfs.manage.views.payment.add_payment_price,
-        name="lfs_manage_add_payment_price",
-    ),
-    re_path(
-        r"^update-payment-prices/(?P<payment_method_id>\d*)$",
-        lfs.manage.views.payment.update_payment_prices,
-        name="lfs_manage_update_payment_prices",
-    ),
-    re_path(
-        r"^payment-price-criteria/(?P<payment_price_id>\d*)$",
-        lfs.manage.views.payment.payment_price_criteria,
-        name="lfs_manage_payment_price_criteria",
-    ),
-    re_path(
-        r"^save-payment-price-criteria/(?P<payment_price_id>\d*)$",
-        lfs.manage.views.payment.save_payment_price_criteria,
-        name="lfs_manage_save_payment_price_criteria",
-    ),
-    re_path(
-        r"^save-payment-method-criteria/(?P<payment_method_id>\d*)$",
-        lfs.manage.views.payment.save_payment_method_criteria,
-        name="lfs_manage_save_payment_method_criteria",
-    ),
-    re_path(r"^sort-payment-methods$", lfs.manage.views.payment.sort_payment_methods, name="lfs_sort_payment_methods"),
-    # Orders
+    path("", include("lfs.manage.payment_methods.urls")),
     path("", include("lfs.manage.orders.urls")),
     # Order numbers
     re_path(
@@ -233,10 +186,8 @@ urlpatterns = [
         lfs.manage.views.criteria.delete_criterion,
         name="lfs_delete_criterion",
     ),
-    # Static blocks
     path("", include("lfs.manage.static_blocks.urls")),
-    # Reviews
-    path("reviews/", include("lfs.manage.reviews.urls")),
+    path("", include("lfs.manage.reviews.urls")),
     # Shop
     re_path(r"^shop$", lfs.manage.views.shop.manage_shop, name="lfs_manage_shop"),
     re_path(r"^save-shop-data-tab$", lfs.manage.views.shop.save_data_tab, name="lfs_save_shop_data_tab"),

@@ -1,0 +1,85 @@
+{% extends "manage/manage_base.html" %}
+{% load compress i18n static crispy_forms_tags %}
+
+{% block help_link %}user/management/shop/payment.html{% endblock %}
+
+{% block content %}
+    <div class="lfs-payments">
+        <div class="row">
+            <aside class="col-3 bg-white border-end p-4 pt-3 overflow-y-auto" style="height: calc(100vh - 57px);">
+                <div class="padding-bottom-100">
+                    <div class="mb-3 fw-semibold">{% trans "Payment Methods" %}</div>
+                    <div class="list-group">
+                        {% for pm in payment_methods %}
+                            <a class="list-group-item list-group-item-action {% if payment_method.id == pm.id %}active{% endif %}"
+                               href="{% url 'lfs_manage_payment_method' pm.id %}">
+                                {{ pm.name }}
+                            </a>
+                        {% empty %}
+                            <div class="text-muted small">{% trans "No payment methods found." %}</div>
+                        {% endfor %}
+                    </div>
+                </div>                            
+            </aside>
+
+            <main class="col-9 p-4 pt-3 scrollable-content">
+                <div class="padding-bottom-100">
+                    <div class="d-flex justify-content-between fw-semibold">
+                        <nav aria-label="Breadcrumb" class="me-2">
+                            <ol class="breadcrumb mb-0 small">
+                                <li class="breadcrumb-item">Manage</li>
+                                <li class="breadcrumb-item">Payment</li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ payment_method.name }}</li>
+                            </ol>
+                        </nav>                                
+                        <div class="site-actions mb-2" id="site-actions">
+                            <button class="btn btn-sm btn-outline-primary me-2"
+                                    hx-get="{% url 'lfs_manage_add_payment_method' %}"
+                                    hx-target="#modal-body-lg"
+                                    hx-trigger="click"
+                                    hx-swap="innerHTML">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                {% trans 'Add Payment Method' %}
+                            </button>
+                            <a class="btn btn-sm btn-outline-danger me-2"
+                               hx-get="{% url 'lfs_manage_delete_payment_method_confirm' payment_method.id %}"
+                               hx-target="#modal-body-sm"
+                               hx-trigger="click"
+                               hx-swap="innerHTML"
+                               href="#">
+                                <i class="bi bi-trash"></i>
+                                {% trans 'Delete Payment Method' %}
+                            </a>
+                        </div>
+                    </div>
+
+                    <ul class="nav nav-tabs" id="paymentTabs" role="tablist" hx-swap-oob="true">
+                        {% for key, url in tabs %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if active_tab == key %}active{% endif %}" 
+                                    href="{{ url }}">
+                                    {% if key == "data" %}{% trans "Data" %}{% elif key == "criteria" %}{% trans "Criteria" %}{% elif key == "prices" %}{% trans "Prices" %}{% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <div class="tab-content border border-top-0 bg-white p-4">
+                        <div class="tab-pane show active">
+                            {% if active_tab == "data" %}
+                                {% include "manage/payment_methods/tabs/_data.html" %}
+                            {% elif active_tab == "criteria" %}
+                                {% include "manage/payment_methods/tabs/_criteria.html" %}
+                            {% elif active_tab == "prices" %}
+                                {% include "manage/payment_methods/tabs/_prices.html" %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    {% include 'manage/snippets/modals/modal-lg.html' %}
+    {% include 'manage/snippets/modals/modal-sm.html' %}
+{% endblock %}
