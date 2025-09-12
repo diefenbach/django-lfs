@@ -119,29 +119,53 @@ class CategoryTabMixin:
         """Build a hierarchical list of categories for sortable sidebar."""
         search_query = self.request.GET.get("q", "").strip()
 
-        def _add_category_with_children(category, level=0):
-            """Recursively add category and its children with hierarchical structure."""
-            # Create a category object with hierarchical data
-            category_data = type(
-                "CategoryHierarchy",
-                (),
-                {"id": category.id, "name": category.name, "level": level, "category": category, "children": []},
-            )()
+        # Get filtered categories based on search query
+        filtered_categories = self.get_categories_queryset()
 
-            # Add children recursively - use direct database query instead of get_children()
-            children = Category.objects.filter(parent=category).order_by("position", "name")
-            for child in children:
-                child_data = _add_category_with_children(child, level + 1)
-                category_data.children.append(child_data)
+        # If no search query, show all categories in hierarchy
+        if not search_query:
 
-            return category_data
+            def _add_category_with_children(category, level=0):
+                """Recursively add category and its children with hierarchical structure."""
+                # Create a category object with hierarchical data
+                category_data = type(
+                    "CategoryHierarchy",
+                    (),
+                    {"id": category.id, "name": category.name, "level": level, "category": category, "children": []},
+                )()
 
-        # Start with top-level categories (no parent)
-        top_level_categories = Category.objects.filter(parent=None).order_by("position", "name")
-        # Build hierarchical structure starting from top-level categories
-        result = []
-        for category in top_level_categories:
-            result.append(_add_category_with_children(category))
+                # Add children recursively - use direct database query instead of get_children()
+                children = Category.objects.filter(parent=category).order_by("position", "name")
+                for child in children:
+                    child_data = _add_category_with_children(child, level + 1)
+                    category_data.children.append(child_data)
+
+                return category_data
+
+            # Start with top-level categories (no parent)
+            top_level_categories = Category.objects.filter(parent=None).order_by("position", "name")
+            # Build hierarchical structure starting from top-level categories
+            result = []
+            for category in top_level_categories:
+                result.append(_add_category_with_children(category))
+        else:
+            # For search results, show only matching categories in a flat structure
+            # but maintain parent-child relationships where both match
+            result = []
+            for category in filtered_categories:
+                # Create a category object with hierarchical data
+                category_data = type(
+                    "CategoryHierarchy",
+                    (),
+                    {
+                        "id": category.id,
+                        "name": category.name,
+                        "level": category.level,
+                        "category": category,
+                        "children": [],
+                    },
+                )()
+                result.append(category_data)
 
         return result
 
