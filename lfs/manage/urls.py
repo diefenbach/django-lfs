@@ -8,7 +8,6 @@ import lfs.manage.products
 # Removed imports for non-existent product modules
 import lfs.manage.product_taxes.views
 import lfs.manage.shipping_methods.views
-from lfs.manage.customers import urls as customers_urls
 import lfs.manage.views.criteria
 import lfs.manage.views.export
 import lfs.manage.views.payment
@@ -135,11 +134,11 @@ urlpatterns = [
     # Carts
     path("", include("lfs.manage.carts.urls")),
     # Categories
-    path("categories/", include("lfs.manage.categories.urls")),
+    path("", include("lfs.manage.categories.urls")),
     # Customers (refactored views)
-    path("customers/", include(customers_urls)),
+    path("", include("lfs.manage.customers.urls")),
     # Products (refactored views)
-    path("products/", include("lfs.manage.products.urls")),
+    path("", include("lfs.manage.products.urls")),
     # export
     re_path(r"^export-dispatcher$", lfs.manage.views.export.export_dispatcher, name="lfs_export_dispatcher"),
     re_path(r"^export/(?P<export_id>\d*)$", lfs.manage.views.export.manage_export, name="lfs_export"),

@@ -3,27 +3,27 @@ import lfs.manage.properties.views
 
 urlpatterns = [
     path(
-        "add-property",
+        "property/add",
         lfs.manage.properties.views.PropertyCreateView.as_view(),
         name="lfs_add_property",
     ),
     path(
-        "delete-property/<int:id>",
+        "property/<int:id>/delete",
         lfs.manage.properties.views.PropertyDeleteView.as_view(),
         name="lfs_delete_property",
     ),
     path(
-        "delete-property-confirm/<int:id>",
+        "property/<int:id>/delete-confirm",
         lfs.manage.properties.views.PropertyDeleteConfirmView.as_view(),
         name="lfs_delete_property_confirm",
     ),
     path(
-        "manage-properties",
+        "properties",
         lfs.manage.properties.views.ManagePropertiesView.as_view(),
         name="lfs_manage_properties",
     ),
     path(
-        "manage-property/<int:id>",
+        "property/<int:id>",
         lfs.manage.properties.views.PropertyDataView.as_view(),
         name="lfs_manage_property",
     ),
@@ -33,17 +33,17 @@ urlpatterns = [
         name="lfs_manage_no_properties",
     ),
     path(
-        "add-property-option/<int:property_id>",
+        "property/<int:property_id>/add-option",
         lfs.manage.properties.views.PropertyOptionAddView.as_view(),
         name="lfs_add_property_option",
     ),
     path(
-        "update-property-option/<int:property_id>",
+        "property/<int:property_id>/update-option",
         lfs.manage.properties.views.PropertyOptionUpdateView.as_view(),
         name="lfs_update_property_option",
     ),
     path(
-        "delete-property-option/<int:option_id>",
+        "property/<int:option_id>/delete-option",
         lfs.manage.properties.views.PropertyOptionDeleteView.as_view(),
         name="lfs_delete_property_option",
     ),

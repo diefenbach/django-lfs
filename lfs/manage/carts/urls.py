@@ -33,22 +33,22 @@ urlpatterns = [
         name="lfs_apply_predefined_cart_filter_list",
     ),
     path(
-        "delete-cart-confirm/<int:id>",
+        "cart/<int:id>/delete-confirm",
         lfs.manage.carts.views.CartDeleteConfirmView.as_view(),
         name="lfs_manage_delete_cart_confirm",
     ),
     path(
-        "delete-cart/<int:id>",
+        "cart/<int:id>/delete",
         lfs.manage.carts.views.CartDeleteView.as_view(),
         name="lfs_delete_cart",
     ),
     path(
-        "no-carts",
+        "carts/no",
         lfs.manage.carts.views.NoCartsView.as_view(),
         name="lfs_manage_no_carts",
     ),
     path(
-        "reset-cart-filters",
+        "carts/reset-filters",
         lfs.manage.carts.views.ResetCartFiltersView.as_view(),
         name="lfs_reset_cart_filters",
     ),

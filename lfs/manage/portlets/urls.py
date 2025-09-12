@@ -1,28 +1,35 @@
-from django.urls import re_path
+from django.urls import path
 from lfs.manage.portlets import views as lfs_portlets
 
 urlpatterns = [
-    # Portlets
-    re_path(
-        r"^add-portlet/(?P<object_type_id>\d+)/(?P<object_id>\d+)$",
+    path(
+        "portlets/add/<int:object_type_id>/<int:object_id>",
         lfs_portlets.AddPortletView.as_view(),
         name="lfs_add_portlet",
     ),
-    re_path(
-        r"^update-portlets/(?P<object_type_id>\d+)/(?P<object_id>\d+)$",
+    path(
+        "portlets/update/<int:object_type_id>/<int:object_id>",
         lfs_portlets.UpdatePortletsView.as_view(),
         name="lfs_update_portlets",
     ),
-    re_path(
-        r"^delete-portlet/(?P<portletassignment_id>\d+)$",
+    path(
+        "portlets/delete/<int:portletassignment_id>",
         lfs_portlets.DeletePortletView.as_view(),
         name="lfs_delete_portlet",
     ),
-    re_path(
-        r"^edit-portlet/(?P<portletassignment_id>\d+)$", lfs_portlets.EditPortletView.as_view(), name="lfs_edit_portlet"
+    path(
+        "portlets/edit/<int:portletassignment_id>",
+        lfs_portlets.EditPortletView.as_view(),
+        name="lfs_edit_portlet",
     ),
-    re_path(
-        r"^move-portlet/(?P<portletassignment_id>\d+)$", lfs_portlets.MovePortletView.as_view(), name="lfs_move_portlet"
+    path(
+        "portlets/move-portlet/<int:portletassignment_id>",
+        lfs_portlets.MovePortletView.as_view(),
+        name="lfs_move_portlet",
     ),
-    re_path(r"^sort-portlets$", lfs_portlets.SortPortletsView.as_view(), name="lfs_sort_portlets"),
+    path(
+        "portlets/sort",
+        lfs_portlets.SortPortletsView.as_view(),
+        name="lfs_sort_portlets",
+    ),
 ]

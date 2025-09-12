@@ -3,52 +3,52 @@ from . import views
 
 urlpatterns = [
     path(
-        "",
+        "reviews/",
         views.ReviewListView.as_view(),
         name="lfs_manage_reviews",
     ),
     path(
-        "<int:id>/",
+        "review/<int:id>/",
         views.ReviewDataView.as_view(),
         name="lfs_manage_review",
     ),
     path(
-        "<int:id>/apply-filters/",
+        "review/<int:id>/apply-filters/",
         views.ApplyReviewFiltersView.as_view(),
         name="lfs_apply_review_filters",
     ),
     path(
-        "apply-filters/",
+        "reviews/apply-filters/",
         views.ApplyReviewFiltersView.as_view(),
         name="lfs_apply_review_filters_list",
     ),
     path(
-        "delete-confirm/<int:id>/",
+        "review/delete-confirm/<int:id>/",
         views.ReviewDeleteConfirmView.as_view(),
         name="lfs_manage_delete_review_confirm",
     ),
     path(
-        "delete/<int:id>/",
+        "review/delete/<int:id>/",
         views.ReviewDeleteView.as_view(),
         name="lfs_delete_review",
     ),
     path(
-        "no-reviews/",
+        "reviews/no/",
         views.NoReviewsView.as_view(),
         name="lfs_manage_no_reviews",
     ),
     path(
-        "reset-filters/",
+        "reviews/reset-filters/",
         views.ResetReviewFiltersView.as_view(),
         name="lfs_reset_review_filters",
     ),
     path(
-        "set-ordering/<str:ordering>/",
+        "reviews/set-ordering/<str:ordering>/",
         views.SetReviewOrderingView.as_view(),
         name="lfs_set_review_ordering",
     ),
     path(
-        "set-state/<int:id>/",
+        "reviews/set-state/<int:id>/",
         views.SetReviewStateView.as_view(),
         name="lfs_set_review_state",
     ),

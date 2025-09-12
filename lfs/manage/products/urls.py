@@ -25,114 +25,112 @@ from .views import (
 
 urlpatterns = [
     path(
-        "",
+        "products/",
         ManageProductsView.as_view(),
         name="lfs_manage_products2",
     ),
     path(
-        "list/",
+        "products/list/",
         ProductListView.as_view(),
         name="lfs_manage_products_list",
     ),
     path(
-        "add/",
+        "products/add/",
         ProductCreateView.as_view(),
         name="lfs_manage_add_product",
     ),
     path(
-        "no-products/",
+        "products/no/",
         NoProductsView.as_view(),
         name="lfs_manage_no_products",
     ),
     path(
-        "<int:id>/data/",
+        "product/<int:id>/data/",
         ProductDataView.as_view(),
         name="lfs_manage_product_data",
     ),
     path(
-        "<int:id>/categories/",
+        "product/<int:id>/categories/",
         ProductCategoriesView.as_view(),
         name="lfs_manage_product_categories",
     ),
     path(
-        "<int:id>/images/",
+        "product/<int:id>/images/",
         ProductImagesView.as_view(),
         name="lfs_manage_product_images",
     ),
     path(
-        "<int:id>/attachments/",
+        "product/<int:id>/attachments/",
         ProductAttachmentsView.as_view(),
         name="lfs_manage_product_attachments",
     ),
     path(
-        "<int:id>/bulk-prices/",
+        "product/<int:id>/bulk-prices/",
         ProductBulkPricesView.as_view(),
         name="lfs_manage_product_bulk_prices",
     ),
     path(
-        "<int:id>/variants/",
+        "product/<int:id>/variants/",
         ProductVariantsView.as_view(),
         name="lfs_manage_product_variants",
     ),
     path(
-        "<int:id>/properties/",
+        "product/<int:id>/properties/",
         ProductPropertiesView.as_view(),
         name="lfs_manage_product_properties",
     ),
     path(
-        "<int:id>/accessories/",
+        "product/<int:id>/accessories/",
         ProductAccessoriesView.as_view(),
         name="lfs_manage_product_accessories",
     ),
     path(
-        "<int:id>/related/",
+        "product/<int:id>/related/",
         ProductRelatedProductsView.as_view(),
         name="lfs_manage_product_related",
     ),
     path(
-        "<int:id>/stock/",
+        "product/<int:id>/stock/",
         ProductStockView.as_view(),
         name="lfs_manage_product_stock",
     ),
     path(
-        "<int:id>/seo/",
+        "product/<int:id>/seo/",
         ProductSEOView.as_view(),
         name="lfs_manage_product_seo",
     ),
     path(
-        "<int:id>/portlets/",
+        "product/<int:id>/portlets/",
         ProductPortletsView.as_view(),
         name="lfs_manage_product_portlets",
     ),
     path(
-        "delete-product-confirm/<int:id>/",
+        "product/delete-confirm/<int:id>/",
         ProductDeleteConfirmView.as_view(),
         name="lfs_manage_delete_product_confirm",
     ),
     path(
-        "delete-product/<int:id>/",
+        "product/delete/<int:id>/",
         ProductDeleteView.as_view(),
         name="lfs_manage_delete_product",
     ),
-    # Filter URLs for product list
     path(
-        "list/apply-filters/",
+        "products/list/apply-filters/",
         ApplyProductFiltersView.as_view(),
         name="lfs_apply_product_filters_list",
     ),
     path(
-        "list/reset-filters/",
+        "products/list/reset-filters/",
         ResetProductFiltersView.as_view(),
         name="lfs_reset_product_filters_list",
     ),
-    # Filter URLs for product detail views
     path(
-        "<int:id>/apply-filters/",
+        "products/<int:id>/apply-filters/",
         ApplyProductFiltersView.as_view(),
         name="lfs_apply_product_filters",
     ),
     path(
-        "<int:id>/reset-filters/",
+        "products/<int:id>/reset-filters/",
         ResetProductFiltersView.as_view(),
         name="lfs_reset_product_filters",
     ),

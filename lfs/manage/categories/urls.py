@@ -1,68 +1,70 @@
-from django.urls import path, re_path
+from django.urls import path
 import lfs.manage.categories.views
 
 urlpatterns = [
-    # Categories (refactored views)
     path(
-        "",
+        "categories",
         lfs.manage.categories.views.ManageCategoriesView.as_view(),
         name="lfs_manage_categories",
     ),
     path(
-        "<int:id>/",
+        "category/<int:id>/",
         lfs.manage.categories.views.CategoryDataView.as_view(),
         name="lfs_manage_category",
     ),
     path(
-        "<int:id>/view/",
+        "category/<int:id>/view/",
         lfs.manage.categories.views.CategoryViewView.as_view(),
         name="lfs_manage_category_view",
     ),
     path(
-        "<int:id>/products/",
+        "category/<int:id>/products/",
         lfs.manage.categories.views.CategoryProductsView.as_view(),
         name="lfs_manage_category_products",
     ),
     path(
-        "<int:id>/seo/",
+        "category/<int:id>/seo/",
         lfs.manage.categories.views.CategorySEOView.as_view(),
         name="lfs_manage_category_seo",
     ),
     path(
-        "<int:id>/portlets/",
+        "category/<int:id>/portlets/",
         lfs.manage.categories.views.CategoryPortletsView.as_view(),
         name="lfs_manage_category_portlets",
     ),
     path(
-        "<int:id>/view-by-id/",
+        "category/<int:id>/view-by-id/",
         lfs.manage.categories.views.CategoryViewByIDView.as_view(),
         name="lfs_category_by_id",
     ),
     path(
-        "add/",
+        "category/add/",
         lfs.manage.categories.views.CategoryCreateView.as_view(),
         name="lfs_manage_add_top_category",
     ),
     path(
-        "<int:parent_id>/add/",
+        "category/<int:parent_id>/add/",
         lfs.manage.categories.views.CategoryCreateView.as_view(),
         name="lfs_manage_add_category",
     ),
     path(
-        "<int:id>/delete/",
+        "category/<int:id>/delete/",
         lfs.manage.categories.views.CategoryDeleteView.as_view(),
         name="lfs_delete_category",
     ),
     path(
-        "<int:id>/delete/confirm/",
+        "category/<int:id>/delete/confirm/",
         lfs.manage.categories.views.CategoryDeleteConfirmView.as_view(),
         name="lfs_delete_category_confirm",
     ),
     path(
-        "no-categories/",
+        "categories/no",
         lfs.manage.categories.views.NoCategoriesView.as_view(),
         name="lfs_manage_no_categories",
     ),
-    # Legacy category URLs for backward compatibility
-    re_path(r"^sort-categories$", lfs.manage.categories.views.SortCategoriesView.as_view(), name="lfs_sort_categories"),
+    path(
+        r"^sort-categories$",
+        lfs.manage.categories.views.SortCategoriesView.as_view(),
+        name="lfs_sort_categories",
+    ),
 ]

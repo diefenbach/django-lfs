@@ -13,22 +13,22 @@ urlpatterns = [
         name="lfs_manage_delivery_time",
     ),
     path(
-        "add-delivery-time",
+        "delivery-time/add",
         delivery_times_views.DeliveryTimeCreateView.as_view(),
         name="lfs_manage_add_delivery_time",
     ),
     path(
-        "delete-delivery-time/<int:pk>",
+        "delivery-time/<int:pk>/delete",
         delivery_times_views.DeliveryTimeDeleteView.as_view(),
         name="lfs_manage_delete_delivery_time",
     ),
     path(
-        "delete-delivery-time-confirm/<int:pk>",
+        "delivery-time/<int:pk>/delete-confirm",
         delivery_times_views.DeliveryTimeDeleteConfirmView.as_view(),
         name="lfs_manage_delete_delivery_time_confirm",
     ),
     path(
-        "no-delivery-times",
+        "delivery-times/no",
         delivery_times_views.NoDeliveryTimesView.as_view(),
         name="lfs_no_delivery_times",
     ),

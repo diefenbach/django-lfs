@@ -8,26 +8,25 @@ urlpatterns = [
         name="lfs_manage_property_groups",
     ),
     path(
-        "add-property-group/",
+        "property-groups/add",
         views.PropertyGroupCreateView.as_view(),
         name="lfs_manage_add_property_group",
     ),
     path(
-        "no-property-groups/",
+        "property-groups/no",
         views.NoPropertyGroupsView.as_view(),
         name="lfs_manage_no_property_groups",
     ),
     path(
-        "sort-property-groups/",
+        "property-groups/sort",
         views.sort_property_groups,
         name="lfs_manage_sort_property_groups",
     ),
     path(
-        "sort-property-group-properties/<int:id>/",
+        "property-group/<int:id>/sort-properties",
         views.sort_property_group_properties,
         name="lfs_manage_sort_property_group_properties",
     ),
-    # Property Group Detail Views
     path(
         "property-group/<int:id>/products/",
         views.PropertyGroupProductsView.as_view(),
@@ -44,12 +43,12 @@ urlpatterns = [
         name="lfs_manage_property_group",
     ),
     path(
-        "delete-property-group/<int:id>/confirm/",
+        "property-group/<int:id>/delete-confirm",
         views.PropertyGroupDeleteConfirmView.as_view(),
         name="lfs_delete_property_group_confirm",
     ),
     path(
-        "delete-property-group/<int:id>/",
+        "property-group/<int:id>/delete",
         views.PropertyGroupDeleteView.as_view(),
         name="lfs_delete_property_group",
     ),
