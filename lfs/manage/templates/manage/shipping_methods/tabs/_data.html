@@ -1,0 +1,13 @@
+{% load i18n crispy_forms_tags %}
+
+{# Data tab for Shipping Method #}
+<form method="post" action="{% url 'lfs_manage_shipping_method' shipping_method.id %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="buttons mt-3">
+        <button class="btn btn-primary" type="submit">
+            <i class="bi bi-save me-1"></i>
+            {% trans 'Save shipping method' %}
+        </button>
+    </div>
+</form>

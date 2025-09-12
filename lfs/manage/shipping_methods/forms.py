@@ -6,16 +6,8 @@ from lfs.core.widgets.image import LFSImageInput
 from lfs.shipping.models import ShippingMethod
 
 
-class ShippingMethodAddForm(ModelForm):
-    """Form to add a shipping method."""
-
-    class Meta:
-        model = ShippingMethod
-        fields = ["name"]
-
-
 class ShippingMethodForm(ModelForm):
-    """ """
+    """Form to edit a shipping method."""
 
     def __init__(self, *args, **kwargs):
         super(ShippingMethodForm, self).__init__(*args, **kwargs)
@@ -23,4 +15,12 @@ class ShippingMethodForm(ModelForm):
 
     class Meta:
         model = ShippingMethod
-        exclude = ("priority",)
+        exclude = ("deletable", "priority")
+
+
+class ShippingMethodAddForm(ModelForm):
+    """Form to add a shipping method."""
+
+    class Meta:
+        model = ShippingMethod
+        fields = ("name",)

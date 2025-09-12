@@ -1,0 +1,61 @@
+from django.urls import path
+import lfs.manage.shipping_methods.views
+
+urlpatterns = [
+    path(
+        "shipping-methods/",
+        lfs.manage.shipping_methods.views.ManageShippingView.as_view(),
+        name="lfs_manage_shipping_methods",
+    ),
+    # Backward compatibility URL
+    path(
+        "shipping",
+        lfs.manage.shipping_methods.views.ManageShippingView.as_view(),
+        name="lfs_manage_shipping",
+    ),
+    path(
+        "shipping-method/<int:id>/",
+        lfs.manage.shipping_methods.views.ShippingMethodDataView.as_view(),
+        name="lfs_manage_shipping_method",
+    ),
+    path(
+        "shipping-method/<int:id>/criteria/",
+        lfs.manage.shipping_methods.views.ShippingMethodCriteriaView.as_view(),
+        name="lfs_manage_shipping_method_criteria",
+    ),
+    path(
+        "shipping-method/<int:id>/prices/",
+        lfs.manage.shipping_methods.views.ShippingMethodPricesView.as_view(),
+        name="lfs_manage_shipping_method_prices",
+    ),
+    path(
+        "shipping-method/add",
+        lfs.manage.shipping_methods.views.ShippingMethodCreateView.as_view(),
+        name="lfs_manage_add_shipping_method",
+    ),
+    path(
+        "shipping-method/<int:id>/delete-confirm",
+        lfs.manage.shipping_methods.views.ShippingMethodDeleteConfirmView.as_view(),
+        name="lfs_manage_delete_shipping_method_confirm",
+    ),
+    path(
+        "shipping-method/<int:id>/delete",
+        lfs.manage.shipping_methods.views.ShippingMethodDeleteView.as_view(),
+        name="lfs_manage_delete_shipping_method",
+    ),
+    path(
+        "shipping-methods/no",
+        lfs.manage.shipping_methods.views.NoShippingMethodsView.as_view(),
+        name="lfs_manage_no_shipping_methods",
+    ),
+    path(
+        "shipping-price/<int:price_id>/criteria/",
+        lfs.manage.shipping_methods.views.ShippingMethodPriceCriteriaView.as_view(),
+        name="lfs_manage_shipping_price_criteria",
+    ),
+    path(
+        "shipping-price/<int:price_id>/criteria/save/",
+        lfs.manage.shipping_methods.views.ShippingMethodPriceCriteriaSaveView.as_view(),
+        name="lfs_manage_save_shipping_price_criteria",
+    ),
+]

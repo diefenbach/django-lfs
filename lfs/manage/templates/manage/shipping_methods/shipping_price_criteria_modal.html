@@ -1,0 +1,72 @@
+{% load i18n %}
+
+<div class="modal-header">
+    <h5 class="modal-title">{% trans 'Edit Price Criteria' %}</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form method="post" 
+      hx-post="{% url 'lfs_manage_save_shipping_price_criteria' shipping_price.id %}"
+      hx-target="body">
+    {% csrf_token %}
+    
+    <div class="modal-body">
+        <div class="mb-3">
+            <h6>{% trans 'Price' %}: {{ shipping_price.price|floatformat:2 }}</h6>
+            <small class="text-muted">
+                {% trans 'Shipping Method' %}: {{ shipping_price.shipping_method.name }}
+            </small>
+        </div>
+        
+        <div class="d-flex justify-content-start align-items-center mb-4">
+            <button type="button" 
+                    class="btn btn-success btn-sm d-flex align-items-center gap-2 shadow-sm"
+                    hx-get="{% url 'lfs_add_criterion' %}"
+                    hx-target="tbody.criteria"
+                    hx-swap="afterbegin"
+                    hx-on::after-request="document.querySelector('.no-criteria-row')?.remove()">
+                <i class="bi bi-plus-lg"></i>
+                <span>{% trans 'Add criterion' %}</span>
+            </button>
+        </div>
+
+        <div class="table-responsive">            
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th>{% trans "Position" %}</th>
+                        <th>{% trans "Type" %}</th>
+                        <th>{% trans "Operator" %}</th>
+                        <th>{% trans "Value" %}</th>
+                        <th>{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="criteria">
+                    {% for criterion in criteria %}
+                        {{ criterion|safe }}
+                    {% empty %}
+                        <tr class="no-criteria-row">
+                            <td colspan="5" class="text-center py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+                                <div class="d-flex flex-column align-items-center">
+                                    <i class="bi bi-funnel text-muted mb-3" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                                    <h6 class="text-muted mb-2">{% trans "No criteria defined yet" %}</h6>
+                                    <p class="text-muted small mb-0">{% trans "Click 'Add criterion' to create your first condition" %}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            {% trans 'Cancel' %}
+        </button>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save me-1"></i>
+            {% trans 'Save Criteria' %}
+        </button>
+    </div>
+</form>

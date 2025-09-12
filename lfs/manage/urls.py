@@ -7,7 +7,6 @@ import lfs.manage.products
 
 # Removed imports for non-existent product modules
 import lfs.manage.product_taxes.views
-import lfs.manage.shipping_methods.views
 import lfs.manage.views.criteria
 import lfs.manage.views.export
 import lfs.manage.views.utils
@@ -110,62 +109,7 @@ urlpatterns = [
         name="lfs_export_update_category_variants_option",
     ),
     # Shipping Methods
-    re_path(r"^shipping$", lfs.manage.shipping_methods.views.manage_shipping, name="lfs_manage_shipping"),
-    re_path(
-        r"^shipping-method/(?P<shipping_method_id>\d*)$",
-        lfs.manage.shipping_methods.views.manage_shipping_method,
-        name="lfs_manage_shipping_method",
-    ),
-    re_path(
-        r"^add-shipping-method",
-        lfs.manage.shipping_methods.views.add_shipping_method,
-        name="lfs_manage_add_shipping_method",
-    ),
-    re_path(
-        r"^save-shipping-data/(?P<shipping_method_id>\d*)$",
-        lfs.manage.shipping_methods.views.save_shipping_method_data,
-        name="lfs_manage_save_shipping_method_data",
-    ),
-    re_path(
-        r"^delete-shipping-method/(?P<shipping_method_id>\d*)$",
-        lfs.manage.shipping_methods.views.delete_shipping_method,
-        name="lfs_manage_delete_shipping_method",
-    ),
-    re_path(
-        r"^add-shipping-price/(?P<shipping_method_id>\d*)$",
-        lfs.manage.shipping_methods.views.add_shipping_price,
-        name="lfs_manage_add_shipping_price",
-    ),
-    re_path(
-        r"^update-shipping-prices/(?P<shipping_method_id>\d*)$",
-        lfs.manage.shipping_methods.views.update_shipping_prices,
-        name="lfs_manage_update_shipping_prices",
-    ),
-    re_path(
-        r"^shipping-price-criteria/(?P<shipping_price_id>\d*)$",
-        lfs.manage.shipping_methods.views.shipping_price_criteria,
-        name="lfs_manage_shipping_price_criteria",
-    ),
-    re_path(
-        r"^save-shipping-price-criteria/(?P<shipping_price_id>\d*)$",
-        lfs.manage.shipping_methods.views.save_shipping_price_criteria,
-        name="lfs_manage_save_shipping_price_criteria",
-    ),
-    re_path(
-        r"^save-shipping-method-criteria/(?P<shipping_method_id>\d*)$",
-        lfs.manage.shipping_methods.views.save_shipping_method_criteria,
-        name="lfs_manage_save_shipping_method_criteria",
-    ),
-    re_path(
-        r"^sort-shipping-methods$",
-        lfs.manage.shipping_methods.views.sort_shipping_methods,
-        name="lfs_sort_shipping_methods",
-    ),
-    re_path(
-        r"^no-shipping-methods$",
-        lfs.manage.shipping_methods.views.no_shipping_methods,
-        name="lfs_manage_no_shipping_methods",
-    ),
+    path("", include("lfs.manage.shipping_methods.urls")),
     path("", include("lfs.manage.discounts.urls")),
     path("", include("lfs.manage.pages.urls")),
     path("", include("lfs.manage.payment_methods.urls")),
