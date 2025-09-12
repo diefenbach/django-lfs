@@ -17,7 +17,7 @@ class TestManageProductsViewMethods:
 
         response = client.get(reverse("lfs_manage_products2"))
         assert response.status_code == 302
-        assert f"/manage/products/{product.id}/data/" in response.url
+        assert f"/manage/product/{product.id}/data/" in response.url
 
     def test_get_redirect_url_no_products(self, client, admin_user, shop):
         """Test redirect URL when no products exist."""
@@ -25,7 +25,7 @@ class TestManageProductsViewMethods:
 
         response = client.get(reverse("lfs_manage_products2"))
         assert response.status_code == 302
-        assert "/manage/products/no-products/" in response.url
+        assert "/manage/products/no/" in response.url
 
 
 class TestProductCreateViewMethods:
@@ -52,7 +52,7 @@ class TestProductCreateViewMethods:
 
         assert response.status_code == 302
         # Should redirect to the new product's data page
-        assert "/manage/products/" in response.url
+        assert "/manage/product/" in response.url
         assert "/data/" in response.url
 
 
