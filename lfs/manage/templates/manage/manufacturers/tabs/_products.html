@@ -1,0 +1,103 @@
+{% load i18n static %}
+
+<div class="tab-pane fade show active" id="products-content" role="tabpanel" aria-labelledby="products-tab">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex gap-2">
+            <!-- Filter Controls -->
+            <div class="input-group" style="width: 300px;">
+                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                <input type="text" 
+                       class="form-control" 
+                       placeholder="{% trans 'Search products...' %}" 
+                       name="filter"
+                       value="{{ filter }}"
+                       hx-get="{% url 'lfs_manage_manufacturer_products' manufacturer.id %}"
+                       hx-target="#products-tables"
+                       hx-select="#products-tables"
+                       hx-trigger="input changed delay:300ms, keyup[key=='Escape'] delay:100ms"
+                       hx-include="[name='products_category_filter']"
+                       hx-push-url="true">
+            </div>
+            
+            <select name="products_category_filter" 
+                    class="form-select" 
+                    style="width: 200px;"
+                    hx-get="{% url 'lfs_manage_manufacturer_products' manufacturer.id %}"
+                    hx-target="#products-tables"
+                    hx-select="#products-tables"
+                    hx-include="[name='filter']"
+                    hx-push-url="true">
+                <option value="All">{% trans "All Categories" %}</option>
+                <option value="None" {% if category_filter == "None" %}selected{% endif %}>{% trans "No Category" %}</option>
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}" {% if category_filter == cat.id|stringformat:"s" %}selected{% endif %}>
+                        {{ cat.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div id="products-tables" class="row g-4">
+        <!-- Available Products (Left Column) -->
+        <div class="col-md-6">
+            {% include 'manage/manufacturers/tabs/_available_products.html' %}
+        </div>
+        
+        <!-- Assigned Products (Right Column) -->
+        <div class="col-md-6">
+            {% include 'manage/manufacturers/tabs/_assigned_products.html' %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Select all functionality for available products
+    const selectAllAvailable = document.querySelector('.select-all-available');
+    const selectAvailableCheckboxes = document.querySelectorAll('.select-available');
+    
+    if (selectAllAvailable) {
+        selectAllAvailable.addEventListener('change', function() {
+            selectAvailableCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    }
+    
+    // Select all functionality for assigned products
+    const selectAllAssigned = document.querySelector('.select-all-assigned');
+    const selectAssignedCheckboxes = document.querySelectorAll('.select-assigned');
+    
+    if (selectAllAssigned) {
+        selectAllAssigned.addEventListener('change', function() {
+            selectAssignedCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    }
+    
+    // Update select all checkboxes when individual checkboxes change
+    selectAvailableCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const checkedCount = document.querySelectorAll('.select-available:checked').length;
+            const totalCount = selectAvailableCheckboxes.length;
+            if (selectAllAvailable) {
+                selectAllAvailable.checked = checkedCount === totalCount;
+                selectAllAvailable.indeterminate = checkedCount > 0 && checkedCount < totalCount;
+            }
+        });
+    });
+    
+    selectAssignedCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const checkedCount = document.querySelectorAll('.select-assigned:checked').length;
+            const totalCount = selectAssignedCheckboxes.length;
+            if (selectAllAssigned) {
+                selectAllAssigned.checked = checkedCount === totalCount;
+                selectAllAssigned.indeterminate = checkedCount > 0 && checkedCount < totalCount;
+            }
+        });
+    });
+});
+</script>

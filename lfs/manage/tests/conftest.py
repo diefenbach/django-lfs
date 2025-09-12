@@ -30,6 +30,7 @@ from lfs.payment.models import PaymentMethod
 from lfs.addresses.models import Address
 from lfs.page.models import Page
 from lfs.marketing.models import FeaturedProduct, Topseller
+from lfs.manufacturer.models import Manufacturer
 
 # Portlet imports
 from portlets.models import Slot, PortletAssignment, PortletRegistration, PortletBlocking
@@ -848,6 +849,7 @@ def hierarchical_categories(db):
 
 # Customer-related fixtures for edge case testing
 
+
 @pytest.fixture
 def mock_request():
     """Mock request object for testing."""
@@ -878,14 +880,10 @@ def user_with_customer(db):
 def multiple_customers(db):
     """Multiple customers for testing pagination and filtering."""
     customers = []
-    
+
     # Create user-based customers
     for i in range(15):
-        user = User.objects.create_user(
-            username=f"user{i+1}", 
-            email=f"user{i+1}@example.com", 
-            password="testpass123"
-        )
+        user = User.objects.create_user(username=f"user{i+1}", email=f"user{i+1}@example.com", password="testpass123")
         customer = Customer.objects.create(user=user, session=f"user_session_{i+1}")
         Address.objects.create(
             customer=customer,
@@ -897,7 +895,7 @@ def multiple_customers(db):
             email=f"user{i+1}@example.com",
         )
         customers.append(customer)
-    
+
     # Create session-based customers
     for i in range(5):
         customer = Customer.objects.create(session=f"session_{i+1}")
@@ -911,5 +909,30 @@ def multiple_customers(db):
             email=f"session{i+1}@example.com",
         )
         customers.append(customer)
-    
+
     return customers
+
+
+# Manufacturer and Category fixtures for portlet testing
+
+
+@pytest.fixture
+def manufacturer(db):
+    """Sample Manufacturer for testing."""
+    return Manufacturer.objects.create(
+        name="Test Manufacturer",
+        slug="test-manufacturer",
+        short_description="Test manufacturer short description",
+        description="Test manufacturer description",
+        position=10,
+    )
+
+
+@pytest.fixture
+def category(db):
+    """Sample Category for testing."""
+    return Category.objects.create(
+        name="Test Category",
+        slug="test-category",
+        position=10,
+    )

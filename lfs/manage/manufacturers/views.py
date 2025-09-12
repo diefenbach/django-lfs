@@ -1,374 +1,367 @@
-import json
+from typing import Dict, List, Tuple, Any, Optional
 
-from django.contrib.auth.decorators import permission_required
+from django.contrib import messages
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.paginator import Paginator, EmptyPage
+from django.db.models import Q
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_POST
-from django.views.decorators.cache import never_cache
+from django.views.generic import UpdateView, CreateView, DeleteView, RedirectView, TemplateView, View
 
 from lfs.caching.utils import lfs_get_object_or_404
-from lfs.catalog.settings import STANDARD_PRODUCT
-from lfs.catalog.settings import PRODUCT_WITH_VARIANTS
-from lfs.catalog.models import Category
-from lfs.catalog.models import Product
-from lfs.core.utils import LazyEncoder
-from lfs.manage.manufacturers.forms import ManufacturerDataForm, ManufacturerAddForm
+from lfs.manage.mixins import DirectDeleteMixin
+from lfs.manage.manufacturers.forms import ManufacturerAddForm, ManufacturerForm
+from lfs.manage.portlets.views import PortletsInlineView
+from lfs.catalog.models import Category, Product
 from lfs.manufacturer.models import Manufacturer
-from lfs.manage.manufacturers.forms import ViewForm
-from lfs.manage.seo.views import SEOView
-
-import logging
-
-logger = logging.getLogger(__name__)
 
 
-@permission_required("core.manage_shop")
-def manage_manufacturer(request, manufacturer_id, template_name="manage/manufacturers/manufacturer.html"):
-    """The main view to display manufacturers."""
-    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
+class ManageManufacturersView(PermissionRequiredMixin, RedirectView):
+    """Dispatches to the first manufacturer or to the add manufacturer form."""
 
-    categories = []
-    for category in Category.objects.filter(parent=None):
-        # Checking state
-        checked, klass = _get_category_state(manufacturer, category)
+    permission_required = "core.manage_shop"
 
-        categories.append(
-            {
-                "id": category.id,
-                "name": category.name,
-                "checked": checked,
-                "klass": klass,
-            }
-        )
-
-    return render(
-        request,
-        template_name,
-        {
-            "categories": categories,
-            "manufacturer": manufacturer,
-            "manufacturer_id": manufacturer_id,
-            "selectable_manufacturers_inline": selectable_manufacturers_inline(request, manufacturer_id),
-            "manufacturer_data_inline": manufacturer_data_inline(request, manufacturer_id),
-            "seo": SEOView(Manufacturer).render(request, manufacturer),
-            "view": manufacturer_view(request, manufacturer_id),
-        },
-    )
-
-
-@permission_required("core.manage_shop")
-def no_manufacturers(request, template_name="manage/manufacturers/no_manufacturers.html"):
-    """Displays that there are no manufacturers."""
-    return render(request, template_name, {})
-
-
-# Parts
-def manufacturer_data_inline(
-    request, manufacturer_id, template_name="manage/manufacturers/manufacturer_data_inline.html"
-):
-    """Displays the data form of the current manufacturer."""
-    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
-    if request.method == "POST":
-        form = ManufacturerDataForm(instance=manufacturer, data=request.POST)
-    else:
-        form = ManufacturerDataForm(instance=manufacturer)
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "manufacturer": manufacturer,
-            "form": form,
-        },
-    )
-
-
-@permission_required("core.manage_shop")
-def manufacturer_view(request, manufacturer_id, template_name="manage/manufacturers/view.html"):
-    """Displays the view data for the manufacturer with passed manufacturer id.
-
-    This is used as a part of the whole category form.
-    """
-    manufacturer = lfs_get_object_or_404(Manufacturer, pk=manufacturer_id)
-
-    if request.method == "POST":
-        form = ViewForm(instance=manufacturer, data=request.POST)
-        if form.is_valid():
-            form.save()
-            message = _("View data has been saved.")
-        else:
-            message = _("Please correct the indicated errors.")
-    else:
-        form = ViewForm(instance=manufacturer)
-
-    view_html = render_to_string(
-        template_name,
-        request=request,
-        context={
-            "manufacturer": manufacturer,
-            "form": form,
-        },
-    )
-
-    if request.headers.get("x-requested-with") == "XMLHttpRequest":
-        html = [["#view", view_html]]
-        return HttpResponse(
-            json.dumps(
-                {
-                    "html": html,
-                    "message": message,
-                },
-                cls=LazyEncoder,
-            ),
-            content_type="application/json",
-        )
-    else:
-        return view_html
-
-
-def selectable_manufacturers_inline(
-    request, manufacturer_id, template_name="manage/manufacturers/selectable_manufacturers_inline.html"
-):
-    """Displays all selectable manufacturers."""
-    return render_to_string(
-        template_name,
-        request=request,
-        context={
-            "manufacturers": Manufacturer.objects.all(),
-            "manufacturer_id": int(manufacturer_id),
-        },
-    )
-
-
-@permission_required("core.manage_shop")
-def manufacturer_inline(
-    request, manufacturer_id, category_id, template_name="manage/manufacturers/manufacturer_inline.html"
-):
-    """Returns categories and products for given manufacturer id and category id."""
-    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
-    selected_products = manufacturer.products.all()
-
-    products = []
-    for product in Product.objects.filter(
-        sub_type__in=[STANDARD_PRODUCT, PRODUCT_WITH_VARIANTS], categories__in=[category_id], active=True
-    ):
-        if product.is_standard():
-            type = "P"
-        else:
-            type = "V"
-
-        products.append(
-            {
-                "id": product.id,
-                "name": product.get_name(),
-                "checked": product in selected_products,
-                "type": type,
-            }
-        )
-
-    categories = []
-    for category in Category.objects.filter(parent=category_id):
-        checked, klass = _get_category_state(manufacturer, category)
-
-        categories.append(
-            {
-                "id": category.id,
-                "name": category.name,
-                "checked": checked,
-                "klass": klass,
-            }
-        )
-
-    result = render_to_string(
-        template_name,
-        request=request,
-        context={
-            "categories": categories,
-            "products": products,
-            "manufacturer_id": manufacturer_id,
-        },
-    )
-
-    html = (("#sub-categories-%s" % category_id, result),)
-
-    return HttpResponse(json.dumps({"html": html}), content_type="application/json")
-
-
-@permission_required("core.manage_shop")
-def add_manufacturer(request, template_name="manage/manufacturers/add_manufacturer.html"):
-    """Form and logic to add a manufacturer."""
-    if request.method == "POST":
-        form = ManufacturerAddForm(data=request.POST)
-        if form.is_valid():
-            new_manufacturer = form.save()
-            return HttpResponseRedirect(
-                reverse("lfs_manage_manufacturer", kwargs={"manufacturer_id": new_manufacturer.id})
-            )
-
-    else:
-        form = ManufacturerAddForm()
-
-    return render(
-        request,
-        template_name,
-        {
-            "form": form,
-            "selectable_manufacturers_inline": selectable_manufacturers_inline(request, 0),
-            "came_from": (request.POST if request.method == "POST" else request.GET).get(
-                "came_from", reverse("lfs_manufacturer_dispatcher")
-            ),
-        },
-    )
-
-
-# Actions
-@permission_required("core.manage_shop")
-def manufacturer_dispatcher(request):
-    """Dispatches to the first manufacturer or to the add form."""
-    try:
-        manufacturer = Manufacturer.objects.all()[0]
-    except IndexError:
-        return HttpResponseRedirect(reverse("lfs_manage_no_manufacturers"))
-    else:
-        return HttpResponseRedirect(reverse("lfs_manage_manufacturer", kwargs={"manufacturer_id": manufacturer.id}))
-
-
-@permission_required("core.manage_shop")
-@require_POST
-def delete_manufacturer(request, manufacturer_id):
-    """Deletes Manufacturer with passed manufacturer id."""
-    try:
-        manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
-    except Manufacturer.DoesNotExist:
-        pass
-    else:
-        manufacturer.delete()
-
-    return HttpResponseRedirect(reverse("lfs_manufacturer_dispatcher"))
-
-
-@permission_required("core.manage_shop")
-def edit_category(request, manufacturer_id, category_id):
-    """Adds/Removes products of given category to given manufacturer."""
-    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
-    category = Category.objects.get(pk=category_id)
-
-    if request.POST.get("action") == "add":
-        for product in category.get_all_products():
-            product.manufacturer = manufacturer
-            product.save()
-    else:
-        for product in category.get_all_products():
-            product.manufacturer = None
-            product.save()
-
-    return HttpResponse("")
-
-
-@permission_required("core.manage_shop")
-def edit_product(request, manufacturer_id, product_id):
-    """Adds/Removes given product to given manufacturer."""
-    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
-    product = Product.objects.get(pk=product_id)
-
-    if request.POST.get("action") == "add":
-        product.manufacturer = manufacturer
-        product.save()
-    else:
-        product.manufacturer = None
-        product.save()
-
-    return HttpResponse("")
-
-
-@permission_required("core.manage_shop")
-def category_state(request, manufacturer_id, category_id):
-    """Sets the state (klass and checking) for given category for given
-    manufacturer.
-    """
-    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
-    category = Category.objects.get(pk=category_id)
-    checked, klass = _get_category_state(manufacturer, category)
-
-    if klass == "half":
-        result = "(1/2)"
-    else:
-        result = ""
-
-    html = ("#category-state-%s" % category_id, result)
-    checkbox = ("#manufacturer-category-input-%s" % category_id, checked)
-
-    return HttpResponse(json.dumps({"html": html, "checkbox": checkbox}, content_type="application/json"))
-
-
-@permission_required("core.manage_shop")
-def update_data(request, manufacturer_id):
-    """Updates data of manufacturer with given manufacturer id."""
-    manufacturer = Manufacturer.objects.get(pk=manufacturer_id)
-    form = ManufacturerDataForm(instance=manufacturer, data=request.POST, files=request.FILES)
-
-    if form.is_valid():
-        manufacturer = form.save()
-        msg = _("Manufacturer data has been saved.")
-    else:
-        msg = _("Please correct the indicated errors.")
-
-    # Delete image
-    if request.POST.get("delete_image"):
+    def get_redirect_url(self, *args, **kwargs):
         try:
-            manufacturer.image.delete()
-        except OSError as e:
-            logger.error("Error while trying to delete manufacturer image: %s" % e)
-
-    html = (
-        ("#data", manufacturer_data_inline(request, manufacturer.pk)),
-        ("#selectable-manufacturers", selectable_manufacturers_inline(request, manufacturer_id)),
-    )
-
-    result = json.dumps({"html": html, "message": msg}, cls=LazyEncoder)
-
-    return HttpResponse(result, content_type="application/json")
+            manufacturer = Manufacturer.objects.all()[0]
+            return reverse("lfs_manage_manufacturer", kwargs={"id": manufacturer.id})
+        except IndexError:
+            return reverse("lfs_manage_no_manufacturers")
 
 
-def _get_category_state(manufacturer, category):
-    """Calculates the state for given category for given manufacturer."""
-    selected_products = manufacturer.products.all()
+# Legacy function-based view for backward compatibility
+def manufacturer_dispatcher(request):
+    """Legacy dispatcher - redirects to class-based view."""
+    return ManageManufacturersView.as_view()(request)
 
-    found = False
-    not_found = False
 
-    for product in category.get_all_products():
-        if product in selected_products:
-            found = True
+class ManufacturerTabMixin:
+    """Mixin for tab navigation in Manufacturer views."""
+
+    template_name = "manage/manufacturers/manufacturer.html"
+    tab_name: Optional[str] = None
+
+    def get_manufacturer(self) -> Manufacturer:
+        """Gets the Manufacturer object."""
+        return get_object_or_404(Manufacturer, pk=self.kwargs["id"])
+
+    def get_manufacturers_queryset(self):
+        """Returns filtered Manufacturers based on search parameter."""
+        queryset = Manufacturer.objects.all().order_by("name")
+        search_query = self.request.GET.get("q", "").strip()
+
+        if search_query:
+            queryset = queryset.filter(name__icontains=search_query)
+
+        return queryset
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with tab navigation and Manufacturer."""
+        ctx = super().get_context_data(**kwargs)
+        manufacturer = getattr(self, "object", None) or self.get_manufacturer()
+
+        ctx.update(
+            {
+                "manufacturer": manufacturer,
+                "active_tab": self.tab_name,
+                "tabs": self._get_tabs(manufacturer),
+                **self._get_navigation_context(manufacturer),
+            }
+        )
+        return ctx
+
+    def _get_tabs(self, manufacturer: Manufacturer) -> List[Tuple[str, str]]:
+        """Creates tab navigation URLs with search parameter."""
+        search_query = self.request.GET.get("q", "").strip()
+
+        # Add search parameter if present
+        if search_query:
+            from urllib.parse import urlencode
+
+            query_params = urlencode({"q": search_query})
         else:
-            not_found = True
+            query_params = ""
 
-    if found and not_found:
-        checked = True
-        klass = "half"
-    elif found:
-        checked = True
-        klass = "full"
-    else:
-        checked = False
-        klass = ""
+        tabs = [
+            (
+                "data",
+                reverse("lfs_manage_manufacturer", args=[manufacturer.pk])
+                + (f"?{query_params}" if query_params else ""),
+            ),
+            (
+                "products",
+                reverse("lfs_manage_manufacturer_products", args=[manufacturer.pk])
+                + (f"?{query_params}" if query_params else ""),
+            ),
+            (
+                "seo",
+                reverse("lfs_manage_manufacturer_seo", args=[manufacturer.pk])
+                + (f"?{query_params}" if query_params else ""),
+            ),
+            (
+                "portlets",
+                reverse("lfs_manage_manufacturer_portlets", args=[manufacturer.pk])
+                + (f"?{query_params}" if query_params else ""),
+            ),
+        ]
 
-    return (checked, klass)
+        return tabs
+
+    def _get_navigation_context(self, manufacturer: Manufacturer) -> Dict[str, Any]:
+        """Returns navigation context data."""
+        return {
+            "manufacturer": manufacturer,
+            "manufacturers": self.get_manufacturers_queryset(),
+            "search_query": self.request.GET.get("q", ""),
+        }
 
 
-@never_cache
-@permission_required("core.manage_shop")
-def manufacturers_ajax(request):
+class ManufacturerDataView(PermissionRequiredMixin, ManufacturerTabMixin, UpdateView):
+    """View for data tab of a Manufacturer."""
+
+    model = Manufacturer
+    form_class = ManufacturerForm
+    tab_name = "data"
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
+
+    def get_success_url(self) -> str:
+        """Stays on the data tab after successful save."""
+        return reverse("lfs_manage_manufacturer", kwargs={"id": self.object.pk})
+
+    def form_valid(self, form):
+        """Saves and shows success message."""
+        # Handle image deletion if checkbox is checked
+        if self.request.POST.get("delete_image"):
+            manufacturer = self.get_object()
+            if manufacturer.image:
+                manufacturer.image.delete()
+                manufacturer.image = None
+                manufacturer.save()
+
+        response = super().form_valid(form)
+        messages.success(self.request, _("Manufacturer data has been saved."))
+        return response
+
+
+class ManufacturerProductsView(PermissionRequiredMixin, ManufacturerTabMixin, TemplateView):
+    """View for products tab of a Manufacturer."""
+
+    tab_name = "products"
+    template_name = "manage/manufacturers/manufacturer.html"
+    permission_required = "core.manage_shop"
+
+    def get_success_url(self) -> str:
+        """Stays on the products tab."""
+        return reverse("lfs_manage_manufacturer_products", kwargs={"id": self.kwargs["id"]})
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Handles product operations (assign/remove)."""
+        if "assign_products" in request.POST:
+            return self._handle_assign_products(request)
+        elif "remove_products" in request.POST:
+            return self._handle_remove_products(request)
+
+        return super().post(request, *args, **kwargs)
+
+    def _handle_assign_products(self, request: HttpRequest) -> HttpResponse:
+        """Handles assigning products to manufacturer."""
+        manufacturer = self.get_manufacturer()
+
+        for temp_id in request.POST.keys():
+            if temp_id.startswith("product"):
+                temp_id = temp_id.split("-")[1]
+                product = Product.objects.get(pk=temp_id)
+                product.manufacturer = manufacturer
+                product.save()
+
+        messages.success(self.request, _("Products have been assigned."))
+        return HttpResponseRedirect(self.get_success_url())
+
+    def _handle_remove_products(self, request: HttpRequest) -> HttpResponse:
+        """Handles removing products from manufacturer."""
+        manufacturer = self.get_manufacturer()
+
+        for temp_id in request.POST.keys():
+            if temp_id.startswith("product"):
+                temp_id = temp_id.split("-")[1]
+                product = Product.objects.get(pk=temp_id)
+                product.manufacturer = None
+                product.save()
+
+        messages.success(self.request, _("Products have been removed."))
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with products and filters."""
+        ctx = super().get_context_data(**kwargs)
+        manufacturer = self.get_manufacturer()
+
+        # Get assigned products
+        manufacturer_products = Product.objects.filter(manufacturer=manufacturer).select_related("parent")
+
+        # Handle filters
+        r = self.request.POST if self.request.method == "POST" else self.request.GET
+        s = self.request.session
+
+        if r.get("keep-filters") or r.get("page"):
+            page = r.get("page", s.get("manufacturer_page", 1))
+            filter_ = r.get("filter", s.get("filter"))
+            category_filter = r.get("products_category_filter", s.get("products_category_filter"))
+        else:
+            page = r.get("page", 1)
+            filter_ = r.get("filter")
+            category_filter = r.get("products_category_filter")
+
+        # Save filters in session (convert None to empty string for display)
+        s["manufacturer_page"] = page
+        s["filter"] = filter_ or ""
+        s["products_category_filter"] = category_filter or ""
+
+        # Apply filters
+        filters = Q()
+        if filter_:
+            filters &= Q(name__icontains=filter_)
+
+        if category_filter:
+            if category_filter == "None":
+                filters &= Q(categories=None)
+            elif category_filter == "All":
+                pass
+            else:
+                filter_category = lfs_get_object_or_404(Category, pk=category_filter)
+                categories = [filter_category]
+                categories.extend(filter_category.get_all_children())
+                filters &= Q(categories__in=categories)
+
+        # Get available products (excluding already assigned)
+        products = Product.objects.select_related("parent").filter(filters)
+        paginator = Paginator(products.exclude(pk__in=manufacturer_products), 25)
+
+        try:
+            page_obj = paginator.page(page)
+        except EmptyPage:
+            page_obj = 0
+
+        # Get all categories for filter dropdown
+        categories = Category.objects.all().order_by("name")
+
+        ctx.update(
+            {
+                "manufacturer_products": manufacturer_products,
+                "page": page_obj,
+                "paginator": paginator,
+                "filter": filter_ or "",
+                "category_filter": category_filter or "",
+                "categories": categories,
+            }
+        )
+        return ctx
+
+
+class ManufacturerSEOView(PermissionRequiredMixin, ManufacturerTabMixin, UpdateView):
+    """View for SEO tab of a Manufacturer."""
+
+    model = Manufacturer
+    fields = ["meta_title", "meta_description", "meta_keywords"]
+    tab_name = "seo"
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
+
+    def get_success_url(self) -> str:
+        """Stays on the SEO tab after successful save."""
+        return reverse("lfs_manage_manufacturer_seo", kwargs={"id": self.object.pk})
+
+    def form_valid(self, form):
+        """Saves and shows success message."""
+        response = super().form_valid(form)
+        messages.success(self.request, _("SEO data has been saved."))
+        return response
+
+
+class ManufacturerPortletsView(PermissionRequiredMixin, ManufacturerTabMixin, TemplateView):
+    """View for portlets tab of a Manufacturer."""
+
+    tab_name = "portlets"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs) -> Dict[str, Any]:
+        """Extends context with portlets."""
+        ctx = super().get_context_data(**kwargs)
+        manufacturer = self.get_manufacturer()
+        ctx["portlets"] = PortletsInlineView().get(self.request, manufacturer)
+        return ctx
+
+
+class ManufacturerCreateView(SuccessMessageMixin, PermissionRequiredMixin, CreateView):
+    """Provides a form to add a new manufacturer."""
+
+    model = Manufacturer
+    form_class = ManufacturerAddForm
+    template_name = "manage/manufacturers/add_manufacturer.html"
+    permission_required = "core.manage_shop"
+    success_message = _("Manufacturer has been created.")
+
+    def get_success_url(self):
+        return reverse("lfs_manage_manufacturer", kwargs={"id": self.object.id})
+
+
+class ManufacturerDeleteConfirmView(PermissionRequiredMixin, TemplateView):
+    """Provides a modal form to confirm deletion of a manufacturer."""
+
+    template_name = "manage/manufacturers/delete_manufacturer.html"
+    permission_required = "core.manage_shop"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["manufacturer"] = get_object_or_404(Manufacturer, pk=self.kwargs["id"])
+        return context
+
+
+class ManufacturerDeleteView(DirectDeleteMixin, SuccessMessageMixin, PermissionRequiredMixin, DeleteView):
+    """Deletes manufacturer with passed id."""
+
+    model = Manufacturer
+    pk_url_kwarg = "id"
+    permission_required = "core.manage_shop"
+    success_message = _("Manufacturer has been deleted.")
+
+    def get_success_url(self):
+        return reverse("lfs_manage_manufacturers")
+
+
+class ManufacturerViewByIDView(PermissionRequiredMixin, RedirectView):
+    """Displays manufacturer with passed id."""
+
+    permission_required = "core.manage_shop"
+
+    def get_redirect_url(self, *args, **kwargs):
+        manufacturer_id = self.kwargs["id"]
+        manufacturer = lfs_get_object_or_404(Manufacturer, pk=manufacturer_id)
+        return reverse("lfs_manufacturer", kwargs={"slug": manufacturer.slug})
+
+
+class NoManufacturersView(PermissionRequiredMixin, TemplateView):
+    """Displays that there are no manufacturers."""
+
+    template_name = "manage/manufacturers/no_manufacturers.html"
+    permission_required = "core.manage_shop"
+
+
+class ManufacturersAjaxView(PermissionRequiredMixin, View):
     """Returns list of manufacturers for autocomplete"""
-    term = request.GET.get("term", "")
-    manufacturers = Manufacturer.objects.filter(name__istartswith=term)[:10]
 
-    out = []
-    for man in manufacturers:
-        out.append({"label": man.name, "value": man.pk})
+    permission_required = "core.manage_shop"
 
-    result = json.dumps(out, cls=LazyEncoder)
-    return HttpResponse(result, content_type="application/json")
+    def get(self, request, *args, **kwargs):
+        term = request.GET.get("term", "")
+        manufacturers = Manufacturer.objects.filter(name__istartswith=term)[:10]
+
+        out = []
+        for man in manufacturers:
+            out.append({"label": man.name, "value": man.pk})
+
+        return JsonResponse(out, safe=False)

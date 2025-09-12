@@ -1,0 +1,20 @@
+{% load i18n crispy_forms_tags %}
+
+<div class="tab-pane fade show active" id="seo-content" role="tabpanel" aria-labelledby="seo-tab">
+    <form method="post" action="{% url 'lfs_manage_manufacturer_seo' manufacturer.id %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-8">
+                <h5 class="mb-3">{% trans "SEO Settings" %}</h5>
+                {{ form|crispy }}
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i>
+                {% trans "Save SEO Settings" %}
+            </button>
+        </div>
+    </form>
+</div>

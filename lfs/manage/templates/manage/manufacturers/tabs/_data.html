@@ -1,0 +1,35 @@
+{% load i18n crispy_forms_tags %}
+
+<div class="tab-pane fade show active" id="data-content" role="tabpanel" aria-labelledby="data-tab">
+    <form method="post" enctype="multipart/form-data" action="{% url 'lfs_manage_manufacturer' manufacturer.id %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-8">
+                <h5 class="mb-3">{% trans "Manufacturer Data" %}</h5>
+                {{ form|crispy }}
+                
+                {% if manufacturer.image %}
+                    <div class="mb-3">
+                        <label class="form-label">{% trans "Current Image" %}</label>
+                        <div>
+                            <img src="{{ manufacturer.image.url }}" alt="{{ manufacturer.name }}" class="img-thumbnail" style="max-width: 200px;">
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" name="delete_image" id="delete_image">
+                                <label class="form-check-label" for="delete_image">
+                                    {% trans "Delete image" %}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i>
+                {% trans "Save Manufacturer Data" %}
+            </button>
+        </div>
+    </form>
+</div>

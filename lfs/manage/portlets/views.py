@@ -26,11 +26,14 @@ def get_portlet_management_url(obj):
     """Returns the correct portlet management URL based on the object type."""
     from lfs.page.models import Page
     from lfs.catalog.models import Category
+    from lfs.manufacturer.models import Manufacturer
 
     if isinstance(obj, Page):
         return reverse("lfs_manage_page_portlets", kwargs={"id": obj.id})
     elif isinstance(obj, Category):
         return reverse("lfs_manage_category_portlets", kwargs={"id": obj.id})
+    elif isinstance(obj, Manufacturer):
+        return reverse("lfs_manage_manufacturer_portlets", kwargs={"id": obj.id})
     else:
         # Fallback to page portlets for unknown object types
         return reverse("lfs_manage_page_portlets", kwargs={"id": 1})
@@ -76,7 +79,11 @@ class PortletsInlineView(PermissionRequiredMixin, View):
 
         ct = ContentType.objects.get_for_model(obj)
 
-        parent_for_portlets = obj.get_parent_for_portlets()
+        try:
+            parent_for_portlets = obj.get_parent_for_portlets()
+        except AttributeError:
+            parent_for_portlets = None
+
         if parent_for_portlets:
             parent_slots = portlets.utils.get_slots(parent_for_portlets)
         else:

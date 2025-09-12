@@ -19,7 +19,6 @@ from lfs.manage.products.forms import SEOForm as ProductSEOForm
 from lfs.manage.views.shop import ShopSEOView
 from lfs.manage.seo.views import SEOView
 from lfs.manage.manufacturers import views as manufacturers_views
-from lfs.manage.manufacturers import products as manufacturers_products_views
 from lfs.manufacturer.models import Manufacturer
 
 
@@ -27,77 +26,11 @@ urlpatterns = [
     path("", include("lfs.manage.dashboard.urls")),
     # Delivery Times
     path("", include("lfs.manage.delivery_times.urls")),
-    # Manufacturer
+    # Manufacturers
+    path("", include("lfs.manage.manufacturers.urls")),
+    # Legacy Manufacturer URLs (for backward compatibility)
     re_path(
         r"^manufacturer-dispatcher$", manufacturers_views.manufacturer_dispatcher, name="lfs_manufacturer_dispatcher"
-    ),
-    re_path(
-        r"^manufacturer/(?P<manufacturer_id>\d*)$",
-        manufacturers_views.manage_manufacturer,
-        name="lfs_manage_manufacturer",
-    ),
-    re_path(
-        r"^update-manufacturer-data/(?P<manufacturer_id>\d*)$",
-        manufacturers_views.update_data,
-        name="lfs_manufacturer_update_manufacturer_data",
-    ),
-    re_path(r"^add-manufacturer$", manufacturers_views.add_manufacturer, name="lfs_manufacturer_add_manufacturer"),
-    re_path(
-        r"^delete-manufacturer/(?P<manufacturer_id>\d*)$",
-        manufacturers_views.delete_manufacturer,
-        name="lfs_manufacturer_delete_manufacturer",
-    ),
-    re_path(
-        r"^edit-category-manufacturer/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$",
-        manufacturers_views.edit_category,
-        name="lfs_manufacturer_edit_category",
-    ),
-    re_path(
-        r"^edit-product-manufacturer/(?P<manufacturer_id>\d*)/(?P<product_id>\d*)$",
-        manufacturers_views.edit_product,
-        name="lfs_manufacturer_edit_product",
-    ),
-    re_path(
-        r"^category-state-manufacturer/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$",
-        manufacturers_views.category_state,
-        name="lfs_manufacturer_category_state",
-    ),
-    re_path(
-        r"^manufacturer-inline/(?P<manufacturer_id>\d*)/(?P<category_id>\d*)$",
-        manufacturers_views.manufacturer_inline,
-        name="lfs_manufacturer_inline",
-    ),
-    re_path(r"^manufacturers-ajax/$", manufacturers_views.manufacturers_ajax, name="lfs_manufacturers_ajax"),
-    re_path(r"^no-manufacturers$", manufacturers_views.no_manufacturers, name="lfs_manage_no_manufacturers"),
-    re_path(
-        r"^edit-manufacturer-view/(?P<manufacturer_id>\d*)$",
-        manufacturers_views.manufacturer_view,
-        name="lfs_manage_manufacturer_view",
-    ),
-    re_path(
-        r"^manufacturer-products-inline/(?P<manufacturer_id>\d*)$",
-        manufacturers_products_views.products_inline,
-        name="lfs_manage_manufacturer_products_inline",
-    ),
-    re_path(
-        r"^manufacturer-selected-products/(?P<manufacturer_id>\d*)$",
-        manufacturers_products_views.selected_products,
-        name="lfs_manage_manufacturer_selected_products",
-    ),
-    re_path(
-        r"^manufacturer-add-products/(?P<manufacturer_id>\d*)$",
-        manufacturers_products_views.add_products,
-        name="lfs_manage_manufacturer_add_products",
-    ),
-    re_path(
-        r"^manufacturer-remove-products/(?P<manufacturer_id>\d*)$",
-        manufacturers_products_views.remove_products,
-        name="lfs_manage_manufacturer_remove_products",
-    ),
-    re_path(
-        r"^manufacturer-load-products-tab/(?P<manufacturer_id>\d*)$",
-        manufacturers_products_views.products_tab,
-        name="lfs_manufacturer_load_products_tab",
     ),
     # Featured Products
     path("", include("lfs.manage.featured.urls")),

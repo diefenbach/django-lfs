@@ -28,6 +28,7 @@ from lfs.manage.portlets.views import (
     MovePortletView,
     SortPortletsView,
     update_portlet_positions,
+    get_portlet_management_url,
 )
 
 User = get_user_model()
@@ -951,6 +952,42 @@ class TestUpdatePortletPositions:
 
         # Should not raise an error
         update_portlet_positions(mock_pa)
+
+
+@pytest.mark.django_db
+@pytest.mark.unit
+class TestGetPortletManagementUrl:
+    """Tests for the get_portlet_management_url utility function."""
+
+    def test_returns_page_url_for_page_object(self, page):
+        """Should return correct URL for Page objects."""
+        url = get_portlet_management_url(page)
+        expected_url = reverse("lfs_manage_page_portlets", kwargs={"id": page.id})
+        assert url == expected_url
+
+    def test_returns_category_url_for_category_object(self, category):
+        """Should return correct URL for Category objects."""
+        url = get_portlet_management_url(category)
+        expected_url = reverse("lfs_manage_category_portlets", kwargs={"id": category.id})
+        assert url == expected_url
+
+    def test_returns_manufacturer_url_for_manufacturer_object(self, manufacturer):
+        """Should return correct URL for Manufacturer objects."""
+        url = get_portlet_management_url(manufacturer)
+        expected_url = reverse("lfs_manage_manufacturer_portlets", kwargs={"id": manufacturer.id})
+        assert url == expected_url
+
+    def test_returns_fallback_url_for_unknown_object_type(self):
+        """Should return fallback URL for unknown object types."""
+
+        class UnknownObject:
+            def __init__(self):
+                self.id = 123
+
+        unknown_obj = UnknownObject()
+        url = get_portlet_management_url(unknown_obj)
+        expected_url = reverse("lfs_manage_page_portlets", kwargs={"id": 1})
+        assert url == expected_url
 
 
 # =============================================================================

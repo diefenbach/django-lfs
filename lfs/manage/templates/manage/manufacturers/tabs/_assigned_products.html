@@ -1,0 +1,82 @@
+{% load i18n static %}
+
+<!-- Assigned Products Form -->
+<form id="remove-products-form"
+      hx-post="{% url 'lfs_manage_manufacturer_products' manufacturer.id %}"
+      hx-target="#products-tables"
+      hx-select="#products-tables"
+      hx-swap="outerHTML">
+    {% csrf_token %}
+    <input type="hidden" name="keep-filters" value="1">
+    <input type="hidden" name="remove_products" value="1">
+    
+    <div id="assigned-products-list" class="card shadow" style="height: calc(100vh - 310px);">
+        <div class="card-header bg-success-subtle d-flex justify-content-between align-items-center">
+            <h2 class="h4 mb-0">
+                <i class="bi bi-check-circle me-2"></i>
+                {% trans 'Assigned Products' %}
+            </h2>
+        </div>
+        <div class="card-body overflow-y-auto">
+            {% if manufacturer_products %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th class="checkbox" style="width: 40px;">
+                                    <input type="checkbox" class="form-check-input select-all-assigned" />
+                                </th>
+                                <th>{% trans 'Name' %}</th>
+                                <th class="small">{% trans 'SKU' %}</th>
+                                <th class="small">{% trans 'Active' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in manufacturer_products %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox"
+                                               name="product-{{ product.id }}"
+                                               class="form-check-input select-assigned" />
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'lfs_manage_product_data' product.id %}" class="text-decoration-none">
+                                            {{ product.get_name }}
+                                        </a>
+                                    </td>
+                                    <td class="small text-muted">
+                                        {{ product.get_sku|default:"---" }}
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        {% if product.is_active %}
+                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                        {% else %}
+                                            <i class="bi bi-x-circle-fill text-danger"></i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-tag fs-1 d-block mb-3"></i>
+                    <p>{% trans "No products assigned to this manufacturer." %}</p>
+                    <p class="small">{% trans "Select products from the left panel and add them to this manufacturer." %}</p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="card-footer" style="min-height: 60px;">
+            {% if manufacturer_products %}
+                <div class="d-flex gap-2">
+                    <button type="submit" 
+                            class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>
+                        {% trans 'Remove from Manufacturer' %}
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</form>
